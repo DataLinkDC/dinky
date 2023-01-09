@@ -33,10 +33,10 @@ import {
   TableOutlined,
 } from '@ant-design/icons';
 import {Scrollbars} from 'react-custom-scrollbars';
-import Columns from "@/pages/DataBase/Columns";
-import Tables from "@/pages/DataBase/Tables";
+import Columns from "@/pages/RegistrationCenter/DataBase/Columns";
+import Tables from "@/pages/RegistrationCenter/DataBase/Tables";
 import {TreeDataNode} from "@/components/Studio/StudioTree/Function";
-import Generation from "@/pages/DataBase/Generation";
+import Generation from "@/pages/RegistrationCenter/DataBase/Generation";
 import {getMSSchemaInfo} from "@/pages/DataStudio/service";
 import {Dispatch} from "@@/plugin-dva/connect";
 import {DIALECT} from "@/components/Studio/conf";
@@ -207,7 +207,7 @@ const StudioMetaStore = (props: any) => {
 
       setTreeData(treeDataTmp);
       props.saveMetaStoreTable(current.key, catalogTmp, databaseTmp, tables);
-      message.success(`刷新 Catalog 成功`);
+      message.success(l('pages.metadata.catalogRefreshSuccess'));
     })
   };
 
@@ -249,7 +249,7 @@ const StudioMetaStore = (props: any) => {
     <>
       <Row>
         <Col span={24}>
-          <Tooltip title="刷新 Catalog">
+          <Tooltip title={l('pages.metadata.catalogRefresh')}>
             <Button
               type="text"
               icon={<ReloadOutlined/>}
@@ -260,7 +260,7 @@ const StudioMetaStore = (props: any) => {
       </Row>
       <Select
         style={{width: '95%'}}
-        placeholder="选择 Catalog & Database"
+        placeholder={l('pages.metadata.catalogSelect')}
         optionLabelProp="label"
         onChange={onChangeMetaStoreCatalogs}
       >
@@ -297,7 +297,7 @@ const StudioMetaStore = (props: any) => {
             tab={
               <span>
           <TableOutlined/>
-          表信息
+                {l('pages.metadata.TableInfo')}
         </span>
             }
             key="tableInfo"
@@ -308,7 +308,7 @@ const StudioMetaStore = (props: any) => {
             tab={
               <span>
           <CodepenOutlined/>
-          字段信息
+                {l('pages.metadata.FieldInformation')}
         </span>
             }
             key="columnInfo"
@@ -324,7 +324,7 @@ const StudioMetaStore = (props: any) => {
             tab={
               <span>
           <OrderedListOutlined/>
-          SQL 生成
+                {l('pages.metadata.GenerateSQL')}
         </span>
             }
             key="sqlGeneration"

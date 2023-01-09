@@ -20,13 +20,15 @@
 package com.dlink.trans;
 
 import com.dlink.parser.SqlType;
-import com.dlink.trans.ddl.CreateAggTableOperation;
-import com.dlink.trans.ddl.CreateCDCSourceOperation;
-import com.dlink.trans.ddl.SetOperation;
-import com.dlink.trans.ddl.ShowFragmentOperation;
-import com.dlink.trans.ddl.ShowFragmentsOperation;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.Set;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Operations
@@ -34,17 +36,27 @@ import java.util.Arrays;
  * @author wenmo
  * @since 2021/5/25 15:50
  **/
+@Slf4j
 public class Operations {
 
     private Operations() {
     }
 
-    private static final Operation[] ALL_OPERATIONS = {new CreateAggTableOperation()
-            , new SetOperation()
-            , new CreateCDCSourceOperation()
-            , new ShowFragmentsOperation()
-            , new ShowFragmentOperation()
-    };
+    private static final Operation[] ALL_OPERATIONS = getAllOperations();
+
+    private static Operation[] getAllOperations() {
+        Reflections reflections = new Reflections(Operation.class.getPackage().getName());
+        Set<Class<?>> operations = reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
+        return operations.stream().filter(t -> !t.isInterface()).map(t -> {
+            try {
+                return t.getConstructor().newInstance();
+            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
+                    | NoSuchMethodException e) {
+                log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
+                throw new RuntimeException(e);
+            }
+        }).toArray(Operation[]::new);
+    }
 
     public static SqlType getSqlTypeFromStatements(String statement) {
         String[] statements = statement.split(";");

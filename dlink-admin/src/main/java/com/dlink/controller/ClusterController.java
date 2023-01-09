@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -166,4 +167,33 @@ public class ClusterController {
         return Result.succeed(clusterService.clearCluster(), "回收完成");
     }
 
+    /**
+     * 停止集群
+     */
+    @GetMapping("/killCluster")
+    public Result killCluster(@RequestParam("id") Integer id) {
+        clusterService.killCluster(id);
+        return Result.succeed("Kill Cluster Succeed.");
+    }
+
+    /**
+     * 批量停止
+     */
+    @DeleteMapping("/killMulCluster")
+    public Result killMulCluster(@RequestBody JsonNode para) {
+        if (para.size() > 0) {
+            for (final JsonNode item : para) {
+                clusterService.killCluster(item.asInt());
+            }
+        }
+        return Result.succeed("Kill cluster succeed.");
+    }
+
+    /**
+     * 启动 Session 集群
+     */
+    @GetMapping("/deploySessionCluster")
+    public Result deploySessionCluster(@RequestParam("id") Integer id) {
+        return Result.succeed(clusterService.deploySessionCluster(id), "Deploy session cluster succeed.");
+    }
 }

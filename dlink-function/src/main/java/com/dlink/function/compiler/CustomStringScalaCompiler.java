@@ -21,6 +21,9 @@ package com.dlink.function.compiler;
 
 import com.dlink.function.constant.PathConstant;
 
+import lombok.extern.slf4j.Slf4j;
+import scala.runtime.AbstractFunction1;
+import scala.runtime.BoxedUnit;
 import scala.tools.nsc.GenericRunnerSettings;
 import scala.tools.nsc.interpreter.IMain;
 
@@ -28,11 +31,21 @@ import scala.tools.nsc.interpreter.IMain;
  * @author ZackYoung
  * @since 0.6.8
  */
+@Slf4j
 public class CustomStringScalaCompiler {
+    
+    private static class ErrorHandler extends AbstractFunction1<String, BoxedUnit> {
+        
+        @Override
+        public BoxedUnit apply(String msg) {
+            log.error("Interpreter error: {}", msg);
+            return BoxedUnit.UNIT;
+        }
+    }
 
     public static IMain getInterpreter(Integer missionId) {
 
-        GenericRunnerSettings settings = new GenericRunnerSettings((err) -> null);
+        GenericRunnerSettings settings = new GenericRunnerSettings(new ErrorHandler());
 
         settings.usejavacp().tryToSetFromPropertyValue("true");
         settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));

@@ -95,6 +95,7 @@ body:
         Which version of Dinky are you running? We only accept bugs report from the LTS projects.
       options:
         - dev
+        - 0.7.0
         - 0.6.7
         - 0.6.6
         - 0.6.5

@@ -63,7 +63,8 @@ public class Job2MysqlHandler implements JobHandler {
     static {
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
         clusterService = SpringContextUtils.getBean("clusterServiceImpl", ClusterService.class);
-        clusterConfigurationService = SpringContextUtils.getBean("clusterConfigurationServiceImpl", ClusterConfigurationService.class);
+        clusterConfigurationService = SpringContextUtils.getBean("clusterConfigurationServiceImpl",
+                ClusterConfigurationService.class);
         jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
         jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
         jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
@@ -132,12 +133,24 @@ public class Job2MysqlHandler implements JobHandler {
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
             cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(
-                job.getJobManagerAddress(),
-                job.getJobId(),
-                job.getJobConfig().getJobName() + LocalDateTime.now(),
-                job.getType().getLongValue(),
-                clusterConfigurationId,
-                taskId));
+                    job.getJobManagerAddress(),
+                    job.getJobId(),
+                    job.getJobConfig().getJobName() + LocalDateTime.now(),
+                    job.getType().getLongValue(),
+                    clusterConfigurationId,
+                    taskId));
+            if (Asserts.isNotNull(cluster)) {
+                clusterId = cluster.getId();
+            }
+        } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
+                && Asserts.isNotNullString(job.getJobManagerAddress())) {
+            cluster = clusterService.registersCluster(Cluster.autoRegistersCluster(
+                    job.getJobManagerAddress(),
+                    job.getJobId(),
+                    job.getJobConfig().getJobName() + LocalDateTime.now(),
+                    job.getType().getLongValue(),
+                    null,
+                    taskId));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
@@ -148,7 +161,8 @@ public class Job2MysqlHandler implements JobHandler {
         history.setClusterId(clusterId);
         historyService.updateById(history);
 
-        if (Asserts.isNullCollection(job.getJids()) || GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())) {
+        if (Asserts.isNullCollection(job.getJids()) || (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
+                && Asserts.isNullString(job.getJobManagerAddress()))) {
             return true;
         }
 
@@ -174,11 +188,12 @@ public class Job2MysqlHandler implements JobHandler {
         jobHistory.setClusterJson(JSONUtil.toJsonString(cluster));
 
         jobHistory.setJarJson(Asserts.isNotNull(job.getJobConfig().getJarId())
-            ? JSONUtil.toJsonString(jarService.getById(job.getJobConfig().getJarId())) : null);
+                ? JSONUtil.toJsonString(jarService.getById(job.getJobConfig().getJarId()))
+                : null);
 
         jobHistory.setClusterConfigurationJson(Asserts.isNotNull(clusterConfigurationId)
-            ? JSONUtil.toJsonString(clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
-            : null);
+                ? JSONUtil.toJsonString(clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
+                : null);
         jobHistoryService.save(jobHistory);
 
         DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));

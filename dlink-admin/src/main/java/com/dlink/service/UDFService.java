@@ -19,17 +19,10 @@
 
 package com.dlink.service;
 
-import com.dlink.job.JobConfig;
-
 /**
  * @author ZackYoung
  * @since 0.6.8
  */
 public interface UDFService {
 
-    /**
-     * @param statement   sql语句
-     * @param config      job配置
-     */
-    void init(String statement, JobConfig config);
 }

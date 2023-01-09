@@ -60,6 +60,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/database")
 public class DataBaseController {
+
     @Autowired
     private DataBaseService databaseService;
     private static Logger logger = LoggerFactory.getLogger(DataBaseController.class);
@@ -118,7 +119,7 @@ public class DataBaseController {
     }
 
     /**
-     * 获取可用的集群列表
+     * 获取可用的数据库列表
      */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
@@ -169,7 +170,7 @@ public class DataBaseController {
     /**
      * 获取元数据的表
      */
-    @Cacheable(cacheNames = "metadata_schema",key = "#id")
+    @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     public Result getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
@@ -178,7 +179,7 @@ public class DataBaseController {
     /**
      * 清除元数据表的缓存
      */
-    @CacheEvict(cacheNames = "metadata_schema",key = "#id")
+    @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
     public Result unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed("clear cache", "success");
@@ -188,7 +189,8 @@ public class DataBaseController {
      * 获取元数据的指定表的列
      */
     @GetMapping("/listColumns")
-    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName,
+            @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
     }
 
@@ -201,7 +203,20 @@ public class DataBaseController {
         if (jdbcSelectResult.isSuccess()) {
             return Result.succeed(jdbcSelectResult, "获取成功");
         } else {
-            return Result.failed(jdbcSelectResult,"查询失败");
+            return Result.failed(jdbcSelectResult, "查询失败");
+        }
+    }
+
+    /**
+     * 执行sql
+     */
+    @PostMapping("/execSql")
+    public Result execSql(@RequestBody QueryData queryData) {
+        JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
+        if (jdbcSelectResult.isSuccess()) {
+            return Result.succeed(jdbcSelectResult, "获取成功");
+        } else {
+            return Result.failed(jdbcSelectResult, "查询失败");
         }
     }
 
@@ -209,7 +224,20 @@ public class DataBaseController {
      * 获取 SqlGeneration
      */
     @GetMapping("/getSqlGeneration")
-    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
+    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName,
+            @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
+    }
+
+    /**
+     * copyDatabase
+     */
+    @PostMapping("/copyDatabase")
+    public Result copyDatabase(@RequestBody DataBase database) {
+        if (databaseService.copyDatabase(database)) {
+            return Result.succeed("复制成功!");
+        } else {
+            return Result.failed("复制失败！");
+        }
     }
 }

@@ -39,7 +39,6 @@ import com.google.common.collect.Streams;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 /**
  * ResultRunnable
  *
@@ -56,7 +55,8 @@ public class ResultRunnable implements Runnable {
     private final boolean isAutoCancel;
     private final String timeZone;
 
-    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
+    public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
+                          String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
@@ -66,36 +66,39 @@ public class ResultRunnable implements Runnable {
 
     @Override
     public void run() {
-        tableResult.getJobClient().ifPresent(jobClient -> {
-            String jobId = jobClient.getJobID().toHexString();
-            if (!ResultPool.containsKey(jobId)) {
-                ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
-            }
-
-            try {
-                if (isChangeLog) {
-                    catchChangLog(ResultPool.get(jobId));
-                } else {
-                    catchData(ResultPool.get(jobId));
+        try {
+            tableResult.getJobClient().ifPresent(jobClient -> {
+                String jobId = jobClient.getJobID().toHexString();
+                if (!ResultPool.containsKey(jobId)) {
+                    ResultPool.put(new SelectResult(jobId, new ArrayList<>(), new LinkedHashSet<>()));
                 }
-            } catch (Exception e) {
-                log.error(String.format(e.toString()));
-            }
-        });
+
+                try {
+                    if (isChangeLog) {
+                        catchChangLog(ResultPool.get(jobId));
+                    } else {
+                        catchData(ResultPool.get(jobId));
+                    }
+                } catch (Exception e) {
+                    log.error(String.format(e.toString()));
+                }
+            });
+        } catch (Exception e) {
+            // Nothing to do
+        }
     }
 
     private void catchChangLog(SelectResult selectResult) {
         List<Map<String, Object>> rows = selectResult.getRowData();
         List<String> columns = FlinkUtil.catchColumn(tableResult);
 
+        columns.add(0, FlinkConstant.OP);
+        selectResult.setColumns(new LinkedHashSet<>(columns));
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
-            Map<String, Object> map = getFieldMap(columns, row);
+            Map<String, Object> map = getFieldMap(columns.subList(1, columns.size()), row);
             map.put(FlinkConstant.OP, row.getKind().shortString());
             rows.add(map);
         });
-
-        columns.add(0, FlinkConstant.OP);
-        selectResult.setColumns(new LinkedHashSet<>(columns));
 
         if (isAutoCancel) {
             tableResult.getJobClient().ifPresent(JobClient::cancel);
@@ -106,6 +109,7 @@ public class ResultRunnable implements Runnable {
         List<Map<String, Object>> rows = selectResult.getRowData();
         List<String> columns = FlinkUtil.catchColumn(tableResult);
 
+        selectResult.setColumns(new LinkedHashSet<>(columns));
         Streams.stream(tableResult.collect()).limit(maxRowNum).forEach(row -> {
             Map<String, Object> map = getFieldMap(columns, row);
             if (RowKind.UPDATE_BEFORE == row.getKind() || RowKind.DELETE == row.getKind()) {
@@ -114,8 +118,6 @@ public class ResultRunnable implements Runnable {
                 rows.add(map);
             }
         });
-
-        selectResult.setColumns(new LinkedHashSet<>(columns));
     }
 
     private Map<String, Object> getFieldMap(List<String> columns, Row row) {

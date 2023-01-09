@@ -7,6 +7,6 @@
                                   \__.'
 
 
-Version: 0.6.8-SNAPSHOT
+Version: @project.version@
 Github:  https://github.com/DataLinkDC/dlink
 公众号:   Dinky 开源

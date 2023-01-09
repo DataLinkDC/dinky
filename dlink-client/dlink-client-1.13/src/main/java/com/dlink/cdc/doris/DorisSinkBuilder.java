@@ -47,7 +47,7 @@ import java.util.Properties;
  **/
 public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
-    private static final String KEY_WORD = "datastream-doris";
+    public static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
     public DorisSinkBuilder() {
@@ -69,11 +69,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
 
     @Override
     public void addSink(
-        StreamExecutionEnvironment env,
-        DataStream<RowData> rowDataDataStream,
-        Table table,
-        List<String> columnNameList,
-        List<LogicalType> columnTypeList) {
+            StreamExecutionEnvironment env,
+            DataStream<RowData> rowDataDataStream,
+            Table table,
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList) {
 
         DorisExecutionOptions.Builder dorisExecutionOptionsBuilder = DorisExecutionOptions.builder();
         Map<String, String> sink = config.getSink();
@@ -95,17 +95,16 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
         rowDataDataStream.addSink(
-            DorisSink.sink(
-                columnNames,
-                columnTypes,
-                DorisReadOptions.builder().build(),
-                dorisExecutionOptionsBuilder.build(),
-                DorisOptions.builder()
-                    .setFenodes(config.getSink().get("fenodes"))
-                    .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
-                    .setUsername(config.getSink().get("username"))
-                    .setPassword(config.getSink().get("password")).build()
-            ));
+                DorisSink.sink(
+                        columnNames,
+                        columnTypes,
+                        DorisReadOptions.builder().build(),
+                        dorisExecutionOptionsBuilder.build(),
+                        DorisOptions.builder()
+                                .setFenodes(config.getSink().get("fenodes"))
+                                .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
+                                .setUsername(config.getSink().get("username"))
+                                .setPassword(config.getSink().get("password")).build()));
     }
 
     @Override
@@ -113,7 +112,8 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties") && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties")
+                    && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
             }
         }

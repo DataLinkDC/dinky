@@ -19,9 +19,9 @@
 
 
 import {DownOutlined, PlusOutlined} from '@ant-design/icons';
-import {Button, Drawer, Input, Modal} from 'antd';
+import {Button, Drawer, Modal} from 'antd';
 import React, {useRef, useState} from 'react';
-import {FooterToolbar, PageContainer} from '@ant-design/pro-layout';
+import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
@@ -31,7 +31,7 @@ import type {TaskTableListItem} from './data.d';
 
 import Dropdown from "antd/es/dropdown/dropdown";
 import Menu from "antd/es/menu";
-import {handleAddOrUpdate, handleRemove, handleSubmit, queryData, updateEnabled} from "@/components/Common/crud";
+import {handleAddOrUpdate, handleRemove, handleSubmit, queryData} from "@/components/Common/crud";
 import {l} from "@/utils/intl";
 
 const url = '/api/task';
@@ -50,8 +50,8 @@ const TaskTableList: React.FC<{}> = () => {
       setFormValues(currentItem);
     } else if (key === 'delete') {
       Modal.confirm({
-        title: '删除作业',
-        content: '确定删除该作业吗？',
+        title: l('pages.task.delete'),
+        content: l('pages.task.deleteConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
@@ -61,12 +61,12 @@ const TaskTableList: React.FC<{}> = () => {
       });
     } else if (key === 'submit') {
       Modal.confirm({
-        title: '执行作业',
-        content: '确定执行该作业吗？',
+        title: l('pages.task.exec'),
+        content: l('pages.task.execConfirm'),
         okText: l('button.confirm'),
         cancelText: l('button.cancel'),
         onOk: async () => {
-          await handleSubmit(url + '/submit', '作业', [currentItem]);
+          await handleSubmit(url + '/submit', l('pages.task.exec'), [currentItem]);
           actionRef.current?.reloadAndRest?.();
         }
       });
@@ -94,37 +94,28 @@ const TaskTableList: React.FC<{}> = () => {
 
   const columns: ProColumns<TaskTableListItem>[] = [
     {
-      title: '名称',
+      title: l('pages.task.name'),
       dataIndex: 'name',
-      tip: '名称是唯一的',
       sorter: true,
-      formItemProps: {
-        rules: [
-          {
-            required: true,
-            message: '名称为必填项',
-          },
-        ],
-      },
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: '任务ID',
+      title: l('pages.task.id'),
       dataIndex: 'id',
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
     },
     {
-      title: '别名',
+      title: l('pages.task.alias'),
       sorter: true,
       dataIndex: 'alias',
       hideInTable: false,
     },
     {
-      title: '类型',
+      title: l('pages.task.type'),
       sorter: true,
       dataIndex: 'type',
       hideInForm: false,
@@ -132,7 +123,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: false,
     },
     {
-      title: 'CheckPoint',
+      title: l('pages.task.checkPoint'),
       sorter: true,
       dataIndex: 'checkPoint',
       hideInForm: false,
@@ -140,7 +131,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: 'SavePointPath',
+      title: l('pages.task.savePointPath'),
       sorter: true,
       dataIndex: 'savePointPath',
       hideInForm: false,
@@ -148,7 +139,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: 'Parallelism',
+      title: l('pages.task.parallelism'),
       sorter: true,
       dataIndex: 'parallelism',
       hideInForm: false,
@@ -156,7 +147,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: 'Fragment',
+      title: l('pages.task.fragment'),
       sorter: true,
       dataIndex: 'fragment',
       hideInForm: false,
@@ -164,7 +155,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '集群ID',
+      title: l('pages.task.clusterId'),
       sorter: true,
       dataIndex: 'clusterId',
       hideInForm: false,
@@ -172,7 +163,7 @@ const TaskTableList: React.FC<{}> = () => {
       hideInTable: true,
     },
     {
-      title: '集群',
+      title: l('pages.task.clusterName'),
       sorter: true,
       dataIndex: 'clusterName',
       hideInForm: true,
@@ -217,16 +208,6 @@ const TaskTableList: React.FC<{}> = () => {
       valueType: 'dateTime',
       hideInForm: true,
       hideInTable: true,
-      renderFormItem: (item, {defaultRender, ...rest}, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！"/>;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: l('global.table.lastUpdateTime'),
@@ -234,16 +215,6 @@ const TaskTableList: React.FC<{}> = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInForm: true,
-      renderFormItem: (item, {defaultRender, ...rest}, form) => {
-        const status = form.getFieldValue('status');
-        if (`${status}` === '0') {
-          return false;
-        }
-        if (`${status}` === '3') {
-          return <Input {...rest} placeholder="请输入异常原因！"/>;
-        }
-        return defaultRender(item);
-      },
     },
     {
       title: l('global.table.operate'),
@@ -266,7 +237,7 @@ const TaskTableList: React.FC<{}> = () => {
   return (
     <PageContainer>
       <ProTable<TaskTableListItem>
-        headerTitle="作业管理"
+        headerTitle={l('pages.task.management')}
         actionRef={actionRef}
         rowKey="id"
         search={{
@@ -287,70 +258,6 @@ const TaskTableList: React.FC<{}> = () => {
           showSizeChanger: true,
         }}
       />
-      {selectedRowsState?.length > 0 && (
-        <FooterToolbar
-          extra={
-            <div>
-              {l('tips.selected', '',
-                {
-                  total: <a
-                    style={{fontWeight: 600}}>{selectedRowsState.length}</a>
-                })}  &nbsp;&nbsp;
-              <span>
-                被禁用的作业共 {selectedRowsState.length - selectedRowsState.reduce((pre, item) => pre + (item.enabled ? 1 : 0), 0)} 人
-              </span>
-            </div>
-          }
-        >
-          <Button type="primary" danger
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '删除作业',
-                      content: '确定删除选中的作业吗？',
-                      okText: l('button.confirm'),
-                      cancelText: l('button.cancel'),
-                      onOk: async () => {
-                        await handleRemove(url, selectedRowsState);
-                        setSelectedRows([]);
-                        actionRef.current?.reloadAndRest?.();
-                      }
-                    });
-                  }}
-          >
-            {l('button.batchDelete')}
-          </Button>
-          <Button type="primary"
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '启用作业',
-                      content: '确定启用选中的作业吗？',
-                      okText: l('button.confirm'),
-                      cancelText: l('button.cancel'),
-                      onOk: async () => {
-                        await updateEnabled(url, selectedRowsState, true);
-                        setSelectedRows([]);
-                        actionRef.current?.reloadAndRest?.();
-                      }
-                    });
-                  }}
-          >{l('button.batchEnable')}</Button>
-          <Button danger
-                  onClick={() => {
-                    Modal.confirm({
-                      title: '禁用作业',
-                      content: '确定禁用选中的作业吗？',
-                      okText: l('button.confirm'),
-                      cancelText: l('button.cancel'),
-                      onOk: async () => {
-                        await updateEnabled(url, selectedRowsState, false);
-                        setSelectedRows([]);
-                        actionRef.current?.reloadAndRest?.();
-                      }
-                    });
-                  }}
-          >{l('button.batchDisable')}</Button>
-        </FooterToolbar>
-      )}
       <CreateForm onCancel={() => handleModalVisible(false)} modalVisible={createModalVisible}>
         <ProTable<TaskTableListItem, TaskTableListItem>
           onSubmit={async (value) => {

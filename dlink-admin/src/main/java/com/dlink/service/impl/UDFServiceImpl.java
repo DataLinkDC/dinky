@@ -19,9 +19,7 @@
 
 package com.dlink.service.impl;
 
-import com.dlink.job.JobConfig;
 import com.dlink.service.UDFService;
-import com.dlink.utils.UDFUtils;
 
 import org.springframework.stereotype.Service;
 
@@ -32,14 +30,4 @@ import org.springframework.stereotype.Service;
 @Service
 public class UDFServiceImpl implements UDFService {
 
-    /**
-     * 获取所有udf相关的代码
-     *
-     * @param statement sql语句
-     * @return jobManage
-     */
-    @Override
-    public void init(String statement, JobConfig config) {
-        config.setUdfList(UDFUtils.getUDF(statement));
-    }
 }

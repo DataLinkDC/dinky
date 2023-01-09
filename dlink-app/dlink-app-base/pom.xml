@@ -15,16 +15,14 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dlink-app</artifactId>
-        <groupId>com.dlink</groupId>
-        <version>0.6.8-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dlink</groupId>
+        <artifactId>dlink-app</artifactId>
+        <version>0.7.0</version>
+    </parent>
 
     <artifactId>dlink-app-base</artifactId>
 
@@ -45,6 +43,15 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-executor</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 
@@ -132,6 +139,77 @@
         <profile>
             <id>flink-1.16</id>
             <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.16</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.16</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>all</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.11</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.11</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.12</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.12</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.13</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.13</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.14</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.14</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.15</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.15</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+
                 <dependency>
                     <groupId>com.dlink</groupId>
                     <artifactId>dlink-client-1.16</artifactId>

@@ -89,4 +89,10 @@
         where task_id = #{id}
         order by id desc limit 1
     </select>
+
+    <select id="getTenantByJobInstanceId" resultType="java.lang.Integer">
+        select tenant_id
+        from dlink_job_instance
+        where id = #{id}
+    </select>
 </mapper>

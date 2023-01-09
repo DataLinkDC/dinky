@@ -22,7 +22,6 @@ package com.dlink.gateway.kubernetes;
 import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
-import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.KubernetesResult;
 import com.dlink.model.SystemConfiguration;
@@ -32,12 +31,14 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.DeploymentOptionsInternal;
+import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.runtime.client.JobStatusMessage;
-import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
@@ -52,14 +53,10 @@ import java.util.List;
  * @since 2021/12/26 14:59
  */
 public class KubernetesApplicationGateway extends KubernetesGateway {
+
     @Override
     public GatewayType getType() {
         return GatewayType.KUBERNETES_APPLICATION;
-    }
-
-    @Override
-    public GatewayResult submitJobGraph(JobGraph jobGraph) {
-        throw new GatewayException("Couldn't deploy Kubernetes Application Cluster with job graph.");
     }
 
     @Override
@@ -69,28 +66,41 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         KubernetesResult result = KubernetesResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
+        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+        Configuration loadConfiguration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
+        if (loadConfiguration != null) {
+            loadConfiguration.addAll(configuration);
+            configuration = loadConfiguration;
+        }
+        configuration.set(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
+
         configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
-        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
-        KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration, client);
+        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas,
+                appConfig.getUserJarMainAppClass());
+        KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration,
+                client);
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder
+                    .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder
+                    .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS)).createClusterSpecification();
+            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
+                    .createClusterSpecification();
         }
 
         try {
             ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(
-                clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
+                    clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
             int counts = SystemConfiguration.getInstances().getJobIdWait();
@@ -110,12 +120,12 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 result.setJids(jids);
             }
             String jobId = "";
-            //application mode only have one job, so we can get any one to be jobId
+            // application mode only have one job, so we can get any one to be jobId
             for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
                 jobId = jobStatusMessage.getJobId().toHexString();
             }
-            //if JobStatusMessage not have job id, use timestamp
-            //and... it`s maybe wrong with submit
+            // if JobStatusMessage not have job id, use timestamp
+            // and... it`s maybe wrong with submit
             if (TextUtils.isEmpty(jobId)) {
                 jobId = "unknown" + System.currentTimeMillis();
             }

@@ -32,6 +32,8 @@ export default {
   'button.more': 'More',
   'button.config': 'Config',
   'button.edit': 'Edit',
+  'button.start': 'Start',
+  'button.stop': 'Stop',
   'button.assignUser': 'Assign Users',
   'button.assignRole': 'Assign Role',
   'button.changePassword': 'Change Password',
@@ -50,6 +52,10 @@ export default {
   'button.test': 'Test',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
+  'button.asc': 'ASC',
+  'button.desc': 'DESC',
+  'button.query': 'Query',
+  'button.exit': 'Exit',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
@@ -69,6 +75,7 @@ export default {
 
   'tips.selected': 'Selected {total} Item',
   'tips.notSelected': 'Not Select',
+  'tips.enter': 'Please Enter',
   'tips.confirm.logout.session': 'Confirm logout session [{sessionName}] ?',
   'tips.confirm.delete.table': ' Are you sure you want to delete table [{tableName}]?',
   'tips.create.session.success': 'Create Session [{session}] success!',
@@ -76,11 +83,11 @@ export default {
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
 
-  'global.time.second': 'Second',
-  'global.time.minute': 'Minute',
-  'global.time.hour': 'Hour',
-  'global.time.day': 'Day',
-  'global.time.millisecond': 'millisecond',
+  'global.time.second': 'S ',
+  'global.time.minute': 'M ',
+  'global.time.hour': 'H ',
+  'global.time.day': 'D ',
+  'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
 
@@ -118,7 +125,10 @@ export default {
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
+  'global.table.execmode': 'Execution mode',
   'global.table.runmode': 'Run Mode',
+  'global.table.runmode.local': 'Local',
+  'global.table.runmode.remote': 'Remote',
 
   'global.savepoint.strategy.disabled':'Disabled',
   'global.savepoint.strategy.latest':'Latest',

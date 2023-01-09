@@ -23,7 +23,6 @@ import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.AppConfig;
 import com.dlink.gateway.config.GatewayConfig;
-import com.dlink.gateway.exception.GatewayException;
 import com.dlink.gateway.result.GatewayResult;
 import com.dlink.gateway.result.YarnResult;
 import com.dlink.model.SystemConfiguration;
@@ -37,7 +36,6 @@ import org.apache.flink.configuration.JobManagerOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
-import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
@@ -72,11 +70,6 @@ public class YarnApplicationGateway extends YarnGateway {
     }
 
     @Override
-    public GatewayResult submitJobGraph(JobGraph jobGraph) {
-        throw new GatewayException("Couldn't deploy Yarn Application Cluster with job graph.");
-    }
-
-    @Override
     public GatewayResult submitJar() {
         if (Asserts.isNull(yarnClient)) {
             init();
@@ -88,14 +81,13 @@ public class YarnApplicationGateway extends YarnGateway {
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
-        ApplicationConfiguration applicationConfiguration =
-                new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas,
+                appConfig.getUserJarMainAppClass());
         YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
                 configuration, yarnConfiguration, yarnClient,
                 YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
 
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
             clusterSpecificationBuilder
                     .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());

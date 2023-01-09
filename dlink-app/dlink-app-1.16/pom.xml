@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dlink-app</artifactId>
-        <groupId>com.dlink</groupId>
-        <version>0.6.8-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.dlink</groupId>
+        <artifactId>dlink-app</artifactId>
+        <version>0.7.0</version>
+    </parent>
 
     <artifactId>dlink-app-1.16</artifactId>
 
@@ -57,19 +56,6 @@
         </resources>
 
         <plugins>
-            <!-- 编译插件 -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${target.java.version}</source>
-                    <target>${target.java.version}</target>
-                    <encoding>UTF-8</encoding>
-                </configuration>
-            </plugin>
-
-            <!-- 打jar包插件(会包含所有依赖) -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
@@ -84,14 +70,15 @@
                             <mainClass>com.dlink.app.MainApp</mainClass>
                         </manifest>
                     </archive>
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>

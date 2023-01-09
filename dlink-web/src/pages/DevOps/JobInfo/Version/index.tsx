@@ -32,11 +32,11 @@ const TaskVersionInfo = (props: any) => {
     <Tabs defaultActiveKey="overview" size="small" tabPosition="top" style={{
       border: "1px solid #f0f0f0",
     }}>
-      <TabPane tab={<span>&nbsp; 版本列表 &nbsp;</span>} key="versionlist">
+      <TabPane tab={<span>&nbsp; {l('pages.devops.jobinfo.version.list')} &nbsp;</span>} key="versionlist">
         <VersionList job={job}/>
       </TabPane>
 
-      <TabPane tab={<span>&nbsp; TimeLine &nbsp;</span>} key="timeline">
+      <TabPane tab={<span>&nbsp; {l('pages.devops.jobinfo.version.timeline')} &nbsp;</span>} key="timeline">
         <VersionTimeLineList job={job}/>
       </TabPane>
 

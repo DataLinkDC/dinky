@@ -25,6 +25,8 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
+      - '**/*.yml'
+      - '**/*.yaml'
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
@@ -38,15 +40,24 @@ jobs:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
       - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            frontend:
+              - 'dlink-web/**'
       - uses: actions/setup-node@v3
+        if:  steps.filter.outputs.frontend == 'true'
         with:
           node-version: 16
       - name: Get npm cache directory
         id: npm-cache-dir
+        if:  steps.filter.outputs.frontend == 'true'
         run: |
           echo "::set-output name=dir::$(npm config get cache)"
       - uses: actions/cache@v3
         id: npm-cache # use this to check for `cache-hit` ==> if: steps.npm-cache.outputs.cache-hit != 'true'
+        if:  steps.filter.outputs.frontend == 'true'
         with:
           path: |
             ${{ steps.npm-cache-dir.outputs.dir }}
@@ -55,8 +66,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
       - name: Install Dependencies
-        run: cd dlink-web && npm install --legacy-peer-deps
+        if:  steps.filter.outputs.frontend == 'true'
+        run: cd dlink-web && npm install --prefer-offline --no-audit --progress=false --legacy-peer-deps
       - name: Npm Web Build
+        if:  steps.filter.outputs.frontend == 'true'
         run: cd dlink-web && npm run build
   build_jdk:
     name: Build_JDK
@@ -86,19 +99,29 @@ jobs:
       - name: Cache local Maven repository
         uses: actions/cache@v3
         with:
-          path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          path: |
+            ~/.m2/repository/*/*/*
+            !~/.m2/repository/org/apache/flink
+          key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Cache local Flink repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository/org/apache/flink
+          key: ${{ runner.os }}-${{ matrix.flink }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.flink }}-maven-
       - name: Check Style
         run: |
-          ./mvnw -T 2C -B --no-snapshot-updates clean checkstyle:check
+          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
       - name: Build and Package
         run: |
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
                  -Dcheckstyle.skip=true \
-                 -P prod,scala-2.12,flink-${{ matrix.flink }} \
+                 -Dspotless.check.skip=true \
+                 -P prod,scala-2.12,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
 
       # 查看打包的大小

@@ -1,0 +1,42 @@
+{
+  "title": {
+    "message": "Dinky",
+    "description": "The title in the navbar"
+  },
+  "item.label.主页": {
+    "message": "主页",
+    "description": "Navbar item with label 主页"
+  },
+  "item.label.下载": {
+    "message": "下载",
+    "description": "Navbar item with label 下载"
+  },
+  "item.label.开发者指南": {
+    "message": "开发者指南",
+    "description": "Navbar item with label 开发者指南"
+  },
+  "item.label.FAQ": {
+    "message": "FAQ",
+    "description": "Navbar item with label FAQ"
+  },
+  "item.label.GitHub": {
+    "message": "GitHub",
+    "description": "Navbar item with label GitHub"
+  },
+  "item.label.RoadMap": {
+    "message": "RoadMap",
+    "description": "Navbar item with label GitHub"
+  },
+  "item.label.如何参与": {
+    "message": "如何参与",
+    "description": "Navbar item with label 如何参与"
+  },
+  "item.label.本地调试": {
+    "message": "本地调试",
+    "description": "Navbar item with label 本地调试"
+  },
+  "item.label.远程调试": {
+    "message": "远程调试",
+    "description": "Navbar item with label 远程调试"
+  }
+}

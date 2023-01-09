@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>dlink-admin</artifactId>
@@ -207,10 +207,33 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-process</artifactId>
         </dependency>
+        <dependency>
+            <groupId>io.prometheus.jmx</groupId>
+            <artifactId>jmx_prometheus_javaagent</artifactId>
+            <version>0.16.1</version>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
+
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>static/**</exclude>
+                </excludes>
+            </resource>
+
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>static/**</include>
+                </includes>
+            </resource>
+        </resources>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -283,6 +306,7 @@
                         <!--注意这玩意默认从编译结果目录开始算目录结构-->
                         <exclude>/application*.yml</exclude>
                         <exclude>/mybatis*.xml</exclude>
+                        <exclude>/DinkyFlinkDockerfile</exclude>
                     </excludes>
                 </configuration>
                 <executions>
@@ -297,4 +321,21 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <profile>
+            <id>mac</id>
+            <activation>
+                <os>
+                    <family>mac</family>
+                </os>
+            </activation>
+            <dependencies>
+                <dependency>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-resolver-dns-native-macos</artifactId>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

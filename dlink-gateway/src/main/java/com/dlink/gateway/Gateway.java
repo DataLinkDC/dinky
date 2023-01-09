@@ -85,4 +85,8 @@ public interface Gateway {
     TestResult test();
 
     JobStatus getJobStatusById(String id);
+
+    void killCluster();
+
+    GatewayResult deployCluster();
 }

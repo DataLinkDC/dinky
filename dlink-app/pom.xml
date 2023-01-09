@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>dlink-app</artifactId>
@@ -60,6 +60,18 @@
         <profile>
             <id>flink-1.16</id>
             <modules>
+                <module>dlink-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>dlink-app-1.11</module>
+                <module>dlink-app-1.12</module>
+                <module>dlink-app-1.13</module>
+                <module>dlink-app-1.14</module>
+                <module>dlink-app-1.15</module>
                 <module>dlink-app-1.16</module>
             </modules>
         </profile>

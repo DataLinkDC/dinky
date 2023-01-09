@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.dlink.cdc.kafka;
 
 import com.dlink.assertion.Asserts;
@@ -58,7 +77,7 @@ import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
  */
 public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
-    private static final String KEY_WORD = "datastream-kafka-json";
+    public static final String KEY_WORD = "datastream-kafka-json";
 
     public KafkaSinkJsonBuilder() {
     }
@@ -85,6 +104,7 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
             DataStreamSource<String> dataStreamSource) {
         try {
             SingleOutputStreamOperator<Map> mapOperator = dataStreamSource.map(new MapFunction<String, Map>() {
+
                 @Override
                 public Map map(String value) throws Exception {
                     ObjectMapper objectMapper = new ObjectMapper();
@@ -104,15 +124,18 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                         for (Table table : schema.getTables()) {
                             final String tableName = table.getName();
                             final String schemaName = table.getSchema();
-                            SingleOutputStreamOperator<Map> filterOperator = mapOperator.filter(new FilterFunction<Map>() {
-                                @Override
-                                public boolean filter(Map value) throws Exception {
-                                    LinkedHashMap source = (LinkedHashMap) value.get("source");
-                                    return tableName.equals(source.get("table").toString())
-                                            && schemaName.equals(source.get(schemaFieldName).toString());
-                                }
-                            });
-                            SingleOutputStreamOperator<String> stringOperator = filterOperator.process(new KafkaProcessFunction(schemaList));
+                            SingleOutputStreamOperator<Map> filterOperator = mapOperator
+                                    .filter(new FilterFunction<Map>() {
+
+                                        @Override
+                                        public boolean filter(Map value) throws Exception {
+                                            LinkedHashMap source = (LinkedHashMap) value.get("source");
+                                            return tableName.equals(source.get("table").toString())
+                                                    && schemaName.equals(source.get(schemaFieldName).toString());
+                                        }
+                                    });
+                            SingleOutputStreamOperator<String> stringOperator = filterOperator
+                                    .process(new KafkaProcessFunction(schemaList));
                             stringOperator.addSink(new FlinkKafkaProducer<String>(config.getSink().get("brokers"),
                                     getSinkTableName(table),
                                     new SimpleStringSchema()));
@@ -121,12 +144,13 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                 }
             }
         } catch (Exception ex) {
-            logger.error("kafka sink error:",ex);
+            logger.error("kafka sink error:", ex);
         }
         return dataStreamSource;
     }
 
     private static class KafkaProcessFunction extends ProcessFunction<Map, String> {
+
         private ObjectMapper objectMapper;
         private List<Schema> schemaList;
 
@@ -138,7 +162,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
             this.objectMapper = new ObjectMapper();
             JavaTimeModule javaTimeModule = new JavaTimeModule();
             // Hack time module to allow 'Z' at the end of string (i.e. javascript json's)
-            javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
+            javaTimeModule.addDeserializer(LocalDateTime.class,
+                    new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
             objectMapper.registerModule(javaTimeModule);
             objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         }
@@ -157,7 +182,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                     for (Table table : schema.getTables()) {
                         final String tableName1 = table.getName();
                         final String schemaName1 = table.getSchema();
-                        if (tableName1.equals(source.get("table").toString()) && schemaName1.equals(source.get("db").toString())) {
+                        if (tableName1.equals(source.get("table").toString())
+                                && schemaName1.equals(source.get("db").toString())) {
                             tableObject = table;
                             tableName = tableName1;
                             schemaName = schemaName1;
@@ -179,11 +205,11 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                                 Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
                                 after.put(columnName, columnNameNewVal);
                             }
-                            after.put("__op",Integer.valueOf(0));
-                            after.put("is_deleted",Integer.valueOf(0));
-                            after.put("db",schemaName);
-                            after.put("table",tableName);
-                            after.put("ts_ms",tsMs);
+                            after.put("__op", Integer.valueOf(0));
+                            after.put("is_deleted", Integer.valueOf(0));
+                            after.put("db", schemaName);
+                            after.put("table", tableName);
+                            after.put("ts_ms", tsMs);
                             break;
                         case "u":
                             before = (Map) value.get("before");
@@ -193,11 +219,11 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                                 Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
                                 before.put(columnName, columnNameNewVal);
                             }
-                            before.put("__op",Integer.valueOf(1));
-                            before.put("is_deleted",Integer.valueOf(1));
-                            before.put("db",schemaName);
-                            before.put("table",tableName);
-                            before.put("ts_ms",tsMs);
+                            before.put("__op", Integer.valueOf(1));
+                            before.put("is_deleted", Integer.valueOf(1));
+                            before.put("db", schemaName);
+                            before.put("table", tableName);
+                            before.put("ts_ms", tsMs);
 
                             after = (Map) value.get("after");
                             for (int i = 0; i < columnNameList.size(); i++) {
@@ -206,11 +232,11 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                                 Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
                                 after.put(columnName, columnNameNewVal);
                             }
-                            after.put("__op",Integer.valueOf(0));
-                            after.put("is_deleted",Integer.valueOf(0));
-                            after.put("db",schemaName);
-                            after.put("table",tableName);
-                            after.put("ts_ms",tsMs);
+                            after.put("__op", Integer.valueOf(0));
+                            after.put("is_deleted", Integer.valueOf(0));
+                            after.put("db", schemaName);
+                            after.put("table", tableName);
+                            after.put("ts_ms", tsMs);
                             break;
                         case "d":
                             before = (Map) value.get("before");
@@ -220,11 +246,11 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                                 Object columnNameNewVal = convertValue(columnNameValue, columnTypeList.get(i));
                                 before.put(columnName, columnNameNewVal);
                             }
-                            before.put("__op",Integer.valueOf(1));
-                            before.put("is_deleted",Integer.valueOf(1));
-                            before.put("db",schemaName);
-                            before.put("table",tableName);
-                            before.put("ts_ms",tsMs);
+                            before.put("__op", Integer.valueOf(1));
+                            before.put("is_deleted", Integer.valueOf(1));
+                            before.put("db", schemaName);
+                            before.put("table", tableName);
+                            before.put("ts_ms", tsMs);
                             break;
                         default:
                     }
@@ -244,7 +270,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
             }
         }
 
-        protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+        protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList,
+                List<Column> columns) {
             for (Column column : columns) {
                 columnNameList.add(column.getName());
                 columnTypeList.add(getLogicalType(column));
@@ -308,7 +335,8 @@ public class KafkaSinkJsonBuilder extends AbstractSinkBuilder implements SinkBui
                 }
             } else if (logicalType instanceof TimestampType) {
                 if (value instanceof Integer) {
-                    return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.of("UTC")).toLocalDateTime();
+                    return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(ZoneId.of("UTC"))
+                            .toLocalDateTime();
                 } else if (value instanceof String) {
                     return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
                 } else {

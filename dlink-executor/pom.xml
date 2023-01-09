@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.6.8-SNAPSHOT</version>
+        <version>0.7.0</version>
     </parent>
 
     <artifactId>dlink-executor</artifactId>
@@ -30,6 +30,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
+        <hadoop.version>3.1.0</hadoop.version>
     </properties>
 
     <dependencies>
@@ -56,6 +57,26 @@
             <groupId>com.dlink</groupId>
             <artifactId>dlink-metadata-mysql</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.google.guava</groupId>
+                    <artifactId>guava</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -179,6 +200,27 @@
                 <dependency>
                     <groupId>com.dlink</groupId>
                     <artifactId>dlink-flink-1.16</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.datatype</groupId>
+                    <artifactId>jackson-datatype-jsr310</artifactId>
+                    <scope>test</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>all</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-${dlink.flink.version}</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-${dlink.flink.version}</artifactId>
                     <scope>provided</scope>
                 </dependency>
                 <dependency>

@@ -57,9 +57,13 @@ public interface DataBaseService extends ISuperService<DataBase> {
 
     JdbcSelectResult queryData(QueryData queryData);
 
+    JdbcSelectResult execSql(QueryData queryData);
+
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
 
     List<String> listEnabledFlinkWith();
 
     String getEnabledFlinkWithSql();
+
+    boolean copyDatabase(DataBase database);
 }

@@ -41,10 +41,13 @@ public interface TaskMapper extends SuperMapper<Task> {
     Integer queryAllSizeByName(String name);
 
     List<Task> queryOnLineTaskByDoneStatus(@Param("parentIds") List<Integer> parentIds,
-                                           @Param("stepIds") List<Integer> stepIds,
-                                           @Param("includeNull") boolean includeNull,
-                                           @Param("jobStatuses") List<String> jobStatuses);
+            @Param("stepIds") List<Integer> stepIds,
+            @Param("includeNull") boolean includeNull,
+            @Param("jobStatuses") List<String> jobStatuses);
 
     @InterceptorIgnore(tenantLine = "true")
     Task getTaskByNameAndTenantId(@Param("name") String name, @Param("tenantId") Integer tenantId);
+
+    @InterceptorIgnore(tenantLine = "true")
+    Integer getTenantByTaskId(@Param("id") Integer id);
 }

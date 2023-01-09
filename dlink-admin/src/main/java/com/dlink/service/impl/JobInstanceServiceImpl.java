@@ -20,7 +20,9 @@
 package com.dlink.service.impl;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.assertion.Tips;
 import com.dlink.common.result.ProTableResult;
+import com.dlink.context.TenantContextHolder;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.db.util.ProTableUtil;
 import com.dlink.explainer.lineage.LineageBuilder;
@@ -225,6 +227,13 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         }
         return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current)
                 .pageSize(pageSize).build();
+    }
+
+    @Override
+    public void initTenantByJobInstanceId(Integer id) {
+        Integer tenantId = baseMapper.getTenantByJobInstanceId(id);
+        Asserts.checkNull(tenantId, Tips.JOB_INSTANCE_NOT_EXIST);
+        TenantContextHolder.set(tenantId);
     }
 
 }

@@ -45,7 +45,7 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  **/
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
-    private static final String KEY_WORD = "postgres-cdc";
+    public static final String KEY_WORD = "postgres-cdc";
     private static final String METADATA_TYPE = "PostgreSql";
 
     public PostgresCDCBuilder() {
@@ -79,11 +79,11 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
         }
 
         PostgreSQLSource.Builder<String> sourceBuilder = PostgreSQLSource.<String>builder()
-            .hostname(config.getHostname())
-            .port(config.getPort())
-            .database(config.getDatabase())
-            .username(config.getUsername())
-            .password(config.getPassword());
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .database(config.getDatabase())
+                .username(config.getUsername())
+                .password(config.getPassword());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
@@ -109,7 +109,7 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
             sourceBuilder.slotName(slotName);
         }
 
-        return env.addSource(sourceBuilder.build(),"Postgres CDC Source");
+        return env.addSource(sourceBuilder.build(), "Postgres CDC Source");
     }
 
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
@@ -131,5 +131,10 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
             allConfigMap.put(schema, configMap);
         }
         return allConfigMap;
+    }
+
+    @Override
+    public String getSchema() {
+        return config.getSchema();
     }
 }

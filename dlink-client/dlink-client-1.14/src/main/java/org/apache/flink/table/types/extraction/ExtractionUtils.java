@@ -110,18 +110,17 @@ public final class ExtractionUtils {
             final Class<?> param = executable.getParameterTypes()[currentParam];
             // last parameter is a vararg that needs to consume remaining classes
             if (currentParam == paramCount - 1 && executable.isVarArgs()) {
-                final Class<?> paramComponent =
-                        executable.getParameterTypes()[currentParam].getComponentType();
+                final Class<?> paramComponent = executable.getParameterTypes()[currentParam].getComponentType();
                 // we have more than 1 classes left so the vararg needs to consume them all
                 if (classCount - currentClass > 1) {
                     while (currentClass < classCount
                             && ExtractionUtils.isAssignable(
-                            classes[currentClass], paramComponent, true)) {
+                                    classes[currentClass], paramComponent, true)) {
                         currentClass++;
                     }
                 } else if (currentClass < classCount
                         && (parameterMatches(classes[currentClass], param)
-                        || parameterMatches(classes[currentClass], paramComponent))) {
+                                || parameterMatches(classes[currentClass], paramComponent))) {
                     currentClass++;
                 }
             }
@@ -214,10 +213,9 @@ public final class ExtractionUtils {
             // is<Name>()
             // <Name>() for Scala
             final String normalizedMethodName = normalizeAccessorName(method.getName());
-            final boolean hasName =
-                    normalizedMethodName.equals("GET" + normalizedFieldName)
-                            || normalizedMethodName.equals("IS" + normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName);
+            final boolean hasName = normalizedMethodName.equals("GET" + normalizedFieldName)
+                    || normalizedMethodName.equals("IS" + normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName);
             if (!hasName) {
                 continue;
             }
@@ -260,10 +258,9 @@ public final class ExtractionUtils {
             // <Name>(type)
             // <Name>_$eq(type) for Scala
             final String normalizedMethodName = normalizeAccessorName(method.getName());
-            final boolean hasName =
-                    normalizedMethodName.equals("SET" + normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName + "$EQ");
+            final boolean hasName = normalizedMethodName.equals("SET" + normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName + "$EQ");
             if (!hasName) {
                 continue;
             }
@@ -278,11 +275,10 @@ public final class ExtractionUtils {
 
             // check parameters:
             // one parameter that has the same (or primitive) type of the field
-            final boolean hasParameter =
-                    method.getParameterCount() == 1
-                            && (method.getGenericParameterTypes()[0].equals(field.getGenericType())
+            final boolean hasParameter = method.getParameterCount() == 1
+                    && (method.getGenericParameterTypes()[0].equals(field.getGenericType())
                             || primitiveToWrapper(method.getGenericParameterTypes()[0])
-                            .equals(field.getGenericType()));
+                                    .equals(field.getGenericType()));
             if (!hasParameter) {
                 continue;
             }
@@ -351,9 +347,8 @@ public final class ExtractionUtils {
             if (clazz.getSuperclass() != baseClass) {
                 return Optional.empty();
             }
-            final Type t =
-                    ((ParameterizedType) clazz.getGenericSuperclass())
-                            .getActualTypeArguments()[pos];
+            final Type t = ((ParameterizedType) clazz.getGenericSuperclass())
+                    .getActualTypeArguments()[pos];
             return Optional.ofNullable(toClass(t));
         } catch (Exception unused) {
             return Optional.empty();
@@ -462,9 +457,8 @@ public final class ExtractionUtils {
             final Type currentType = typeHierarchy.get(i);
 
             if (currentType instanceof ParameterizedType) {
-                final Type resolvedType =
-                        resolveVariableInParameterizedType(
-                                variable, (ParameterizedType) currentType);
+                final Type resolvedType = resolveVariableInParameterizedType(
+                        variable, (ParameterizedType) currentType);
                 if (resolvedType instanceof TypeVariable) {
                     // follow type variables transitively
                     variable = (TypeVariable<?>) resolvedType;
@@ -646,6 +640,7 @@ public final class ExtractionUtils {
      * Result of the extraction in {@link #extractAssigningConstructor(Class, List)}.
      */
     public static class AssigningConstructor {
+
         public final Constructor<?> constructor;
         public final List<String> parameterNames;
 
@@ -663,14 +658,12 @@ public final class ExtractionUtils {
             Class<?> clazz, List<Field> fields) {
         AssigningConstructor foundConstructor = null;
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-            final boolean qualifyingConstructor =
-                    Modifier.isPublic(constructor.getModifiers())
-                            && constructor.getParameterTypes().length == fields.size();
+            final boolean qualifyingConstructor = Modifier.isPublic(constructor.getModifiers())
+                    && constructor.getParameterTypes().length == fields.size();
             if (!qualifyingConstructor) {
                 continue;
             }
-            final List<String> parameterNames =
-                    extractConstructorParameterNames(constructor, fields);
+            final List<String> parameterNames = extractConstructorParameterNames(constructor, fields);
             if (parameterNames != null) {
                 if (foundConstructor != null) {
                     throw extractionError(
@@ -703,12 +696,11 @@ public final class ExtractionUtils {
             return null;
         }
 
-        final Map<String, Field> fieldMap =
-                fields.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        f -> normalizeAccessorName(f.getName()),
-                                        Function.identity()));
+        final Map<String, Field> fieldMap = fields.stream()
+                .collect(
+                        Collectors.toMap(
+                                f -> normalizeAccessorName(f.getName()),
+                                Function.identity()));
 
         // check that all fields are represented in the parameters of the constructor
         final List<String> fieldNames = new ArrayList<>();
@@ -741,10 +733,9 @@ public final class ExtractionUtils {
         }
         // by default parameter names are "arg0, arg1, arg2, ..." if compiler flag is not set
         // so we need to extract them manually if possible
-        List<String> parameterNames =
-                Stream.of(executable.getParameters())
-                        .map(Parameter::getName)
-                        .collect(Collectors.toList());
+        List<String> parameterNames = Stream.of(executable.getParameters())
+                .map(Parameter::getName)
+                .collect(Collectors.toList());
         if (parameterNames.stream().allMatch(n -> n.startsWith("arg"))) {
             final ParameterExtractor extractor;
             if (executable instanceof Constructor) {
@@ -752,7 +743,6 @@ public final class ExtractionUtils {
             } else {
                 extractor = new ParameterExtractor((Method) executable);
             }
-            getClassReader(executable.getDeclaringClass()).accept(extractor, 0);
 
             final List<String> extractedNames = extractor.getParameterNames();
             if (extractedNames.size() == 0) {
@@ -760,12 +750,11 @@ public final class ExtractionUtils {
             }
             // remove "this" and additional local variables
             // select less names if class file has not the required information
-            parameterNames =
-                    extractedNames.subList(
-                            offset,
-                            Math.min(
-                                    executable.getParameterCount() + offset,
-                                    extractedNames.size()));
+            parameterNames = extractedNames.subList(
+                    offset,
+                    Math.min(
+                            executable.getParameterCount() + offset,
+                            extractedNames.size()));
         }
 
         if (parameterNames.size() != executable.getParameterCount()) {
@@ -830,6 +819,7 @@ public final class ExtractionUtils {
                 int access, String name, String descriptor, String signature, String[] exceptions) {
             if (descriptor.equals(methodDescriptor)) {
                 return new MethodVisitor(OPCODE) {
+
                     @Override
                     public void visitLocalVariable(
                             String name,

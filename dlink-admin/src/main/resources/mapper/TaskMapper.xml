@@ -63,6 +63,12 @@
           and tenant_id = #{tenantId}
     </select>
 
+    <select id="getTenantByTaskId" resultType="java.lang.Integer">
+        select tenant_id
+        from dlink_task
+        where id = #{id}
+    </select>
+
     <select id="queryOnLineTaskByDoneStatus" resultType="com.dlink.model.Task">
         select t.id as id, t.name as name
         from dlink_task t

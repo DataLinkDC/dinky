@@ -32,6 +32,8 @@ export default {
   'button.more': '更多',
   'button.config': '配置',
   'button.edit': '编辑',
+  'button.start': '启动',
+  'button.stop': '停止',
   'button.assignUser': '分配用户',
   'button.assignRole': '分配角色',
   'button.changePassword': '修改密码',
@@ -50,6 +52,10 @@ export default {
   'button.test': '测试',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
+  'button.asc': '升序',
+  'button.desc': '倒序',
+  'button.query': '查询',
+  'button.exit': '退出',
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
@@ -70,6 +76,7 @@ export default {
 
   'tips.selected': '已选择 {total} 项',
   'tips.notSelected': '未选',
+  'tips.enter': '请输入',
   'tips.confirm.logout.session': '确认注销会话【{sessionName}】 吗？',
   'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
   'tips.create.session.success': '创建会话【{session}】成功！',
@@ -77,11 +84,11 @@ export default {
   'status.enabled': '已启用',
   'status.disabled': '已禁用',
 
-  'global.time.second': '秒',
-  'global.time.minute': '分',
-  'global.time.hour': '小时',
-  'global.time.day': '天',
-  'global.time.millisecond': '毫秒',
+  'global.time.second': '秒 ',
+  'global.time.minute': '分 ',
+  'global.time.hour': '小时 ',
+  'global.time.day': '天 ',
+  'global.time.millisecond': '毫秒 ',
 
   'global.stay.tuned': '敬请期待',
 
@@ -114,7 +121,10 @@ export default {
   'global.table.lifecycle.publish': '已发布',
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
+  'global.table.execmode': '执行模式',
   'global.table.runmode': '运行模式',
+  'global.table.runmode.local': '本地',
+  'global.table.runmode.remote': '远程',
 
   'global.savepoint.strategy.disabled':'禁用',
   'global.savepoint.strategy.latest':'最近一次',

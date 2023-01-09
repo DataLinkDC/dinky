@@ -19,13 +19,15 @@
 
 package com.dlink.gateway.config;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.gateway.GatewayType;
 
-import java.util.HashMap;
+import org.apache.http.util.TextUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -56,49 +58,60 @@ public class GatewayConfig {
         appConfig = new AppConfig();
     }
 
-    public static GatewayConfig build(JsonNode para) {
-        GatewayConfig config = new GatewayConfig();
-        if (para.has("taskId")) {
-            config.setTaskId(para.get("taskId").asInt());
+    public static GatewayConfig build(Map<String, Object> config) {
+        GatewayConfig gatewayConfig = new GatewayConfig();
+        if (config.containsKey("hadoopConfigPath")) {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
+                    config.get("flinkLibPath").toString(),
+                    config.get("hadoopConfigPath").toString()));
+        } else {
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
-        config.setType(GatewayType.get(para.get("type").asText()));
-        if (para.has("flinkConfigPath")) {
-            config.getClusterConfig().setFlinkConfigPath(para.get("flinkConfigPath").asText());
+        AppConfig appConfig = new AppConfig();
+        if (config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))) {
+            appConfig.setUserJarPath(config.get("userJarPath").toString());
+            if (config.containsKey("userJarMainAppClass")
+                    && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))) {
+                appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
+            }
+            if (config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))) {
+                // There may be multiple spaces between the parameter and value during user input,
+                // which will directly lead to a parameter passing error and needs to be eliminated
+                String[] temp = config.get("userJarParas").toString().split(" ");
+                List<String> paraSplit = new ArrayList<>();
+                for (String s : temp) {
+                    if (!TextUtils.isEmpty(s.trim())) {
+                        paraSplit.add(s);
+                    }
+                }
+                appConfig.setUserJarParas(paraSplit.toArray(new String[0]));
+            }
+            gatewayConfig.setAppConfig(appConfig);
         }
-        if (para.has("flinkLibPath")) {
-            config.getClusterConfig().setFlinkLibPath(para.get("flinkLibPath").asText());
+        if (config.containsKey("flinkConfig")
+                && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
+            gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
-        if (para.has("yarnConfigPath")) {
-            config.getClusterConfig().setYarnConfigPath(para.get("yarnConfigPath").asText());
+        if (config.containsKey("kubernetesConfig")) {
+            Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
+            gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
         }
-        if (para.has("jobName")) {
-            config.getFlinkConfig().setJobName(para.get("jobName").asText());
-        }
-        if (para.has("userJarPath")) {
-            config.getAppConfig().setUserJarPath(para.get("userJarPath").asText());
-        }
-        if (para.has("userJarParas")) {
-            config.getAppConfig().setUserJarParas(para.get("userJarParas").asText().split("\\s+"));
-        }
-        if (para.has("userJarMainAppClass")) {
-            config.getAppConfig().setUserJarMainAppClass(para.get("userJarMainAppClass").asText());
-        }
-        if (para.has("savePoint")) {
-            config.getFlinkConfig().setSavePoint(para.get("savePoint").asText());
-        }
-        if (para.has("configParas")) {
-            try {
-                Map<String, String> configMap = new HashMap<>();
-                JsonNode paras = mapper.readTree(para.get("configParas").asText());
-                paras.forEach((JsonNode node) -> {
-                    configMap.put(node.get("key").asText(), node.get("value").asText());
-                });
-                config.getFlinkConfig().setConfiguration(configMap);
-            } catch (JsonProcessingException e) {
-                e.printStackTrace();
+        // at present only k8s task have this
+        if (config.containsKey("taskCustomConfig")) {
+            Map<String, Map<String, String>> taskCustomConfig = (Map<String, Map<String, String>>) config
+                    .get("taskCustomConfig");
+            if (taskCustomConfig.containsKey("kubernetesConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("kubernetesConfig"));
+            }
+            if (taskCustomConfig.containsKey("flinkConfig")) {
+                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
-        return config;
+        if (config.containsKey("taskId")) {
+            gatewayConfig.setTaskId(Integer.valueOf(config.get("taskId").toString()));
+        }
+        // config.setType(GatewayType.get(para.get("type").asText()));
+        return gatewayConfig;
     }
 
 }

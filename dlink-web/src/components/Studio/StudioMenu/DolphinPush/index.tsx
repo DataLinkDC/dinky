@@ -61,7 +61,7 @@ const DolphinPush = (props: any) => {
             })
           ))
         } else {
-          message.error(`获取海豚任务定义集合失败，原因：\n${result.msg}`);
+          message.error(l('pages.datastudio.editor.push.ds.query.error','',{msg: result.msg}));
         }
       })
     }
@@ -131,7 +131,7 @@ const DolphinPush = (props: any) => {
       } else if (values.timeoutNotifyStrategy && values.timeoutNotifyStrategy.length === 1) {
         values.timeoutNotifyStrategy = values.timeoutNotifyStrategy[0]
       } else {
-        message.error(`超时策略必须选一个`);
+        message.error(l('pages.datastudio.editor.push.ds.timeout.strategy'));
         return
       }
     }
@@ -142,7 +142,7 @@ const DolphinPush = (props: any) => {
         if (result.code == CODE.SUCCESS) {
           handleDolphinModalVisible(false);
         } else {
-          message.error(`创建任务失败，原因：\n${result.msg}`);
+          message.error(l('pages.datastudio.editor.push.ds.add.job.error','',{msg:result.msg}));
         }
       })
     } else {
@@ -151,7 +151,7 @@ const DolphinPush = (props: any) => {
         if (result.code == CODE.SUCCESS) {
           handleDolphinModalVisible(false);
         } else {
-          message.error(`创建任务失败，原因：\n${result.msg}`);
+          message.error(l('pages.datastudio.editor.push.ds.add.job.error','',{msg:result.msg}));
         }
       })
     }
@@ -168,12 +168,12 @@ const DolphinPush = (props: any) => {
 
   return (
     <Form {...layout} ref={formRef} name="control-hooks" onFinish={onFinish}>
-      <Form.Item name={['upstreamCodes']} style={{marginBottom: 10}} label="前置任务">
-        <Select mode='multiple' style={{width: '100%'}} options={options} placeholder='选择前置任务'
+      <Form.Item name={['upstreamCodes']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.prejob')}>
+        <Select mode='multiple' style={{width: '100%'}} options={options} placeholder={l('pages.datastudio.editor.push.ds.prejob.tip')}
                 maxTagCount='responsive'/>
       </Form.Item>
 
-      <Form.Item name={['taskPriority']} style={{marginBottom: 10}} label="优先级">
+      <Form.Item name={['taskPriority']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.job.priority')}>
         <Select style={{width: 180}}>
           <Option value="HIGH">HIGH</Option>
           <Option value="HIGHEST">HIGHEST</Option>
@@ -183,43 +183,43 @@ const DolphinPush = (props: any) => {
         </Select>
       </Form.Item>
 
-      <Form.Item name={['failRetryTimes']} style={{marginBottom: 10}} label="失败重试次数">
+      <Form.Item name={['failRetryTimes']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.errortry.count')}>
         <InputNumber min={0} max={99} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['failRetryInterval']} style={{marginBottom: 10}} label="失败重试间隔(分钟)">
+      <Form.Item name={['failRetryInterval']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.errortry.min')}>
         <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['delayTime']} style={{marginBottom: 10}} label="延时执行时间(分钟)">
+      <Form.Item name={['delayTime']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.delayed.time')}>
         <InputNumber min={0} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['timeoutFlag']} style={{marginBottom: 10}} label="超时告警" valuePropName="checked">
+      <Form.Item name={['timeoutFlag']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.timeout.alarm')} valuePropName="checked">
         <Switch checkedChildren="OPEN" unCheckedChildren="CLOSE" onChange={onSwitchChange}/>
       </Form.Item>
       <Form.Item name={['timeoutNotifyStrategy']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden}
-                 label="超时策略">
+                 label={l('pages.datastudio.editor.push.ds.timeout.strategy')}>
         <CheckboxGroup>
           <Row>
             <Col span={12}>
-              <Checkbox value="WARN">超时警告</Checkbox>
+              <Checkbox value="WARN">{l('pages.datastudio.editor.push.ds.timeout.alarm')}</Checkbox>
             </Col>
             <Col span={12}>
-              <Checkbox value="FAILED">超时失败</Checkbox>
+              <Checkbox value="FAILED">{l('pages.datastudio.editor.push.ds.timeout.error')}</Checkbox>
             </Col>
           </Row>
         </CheckboxGroup>
       </Form.Item>
-      <Form.Item name={['timeout']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden} label="超时告警时长(分钟)">
+      <Form.Item name={['timeout']} style={{marginBottom: 10}} hidden={!timeoutFlagHidden} label={l('pages.datastudio.editor.push.ds.timeout.min')}>
         <InputNumber min={1} value={30} style={{width: 180}}/>
       </Form.Item>
-      <Form.Item name={['flag']} style={{marginBottom: 10}} label="运行标志" valuePropName="checked">
+      <Form.Item name={['flag']} style={{marginBottom: 10}} label={l('pages.datastudio.editor.push.ds.running.tag')} valuePropName="checked">
         <Switch checkedChildren="YES" unCheckedChildren="NO"/>
       </Form.Item>
-      <Form.Item name={['description']} style={{marginBottom: 10}} label="备注">
-        <TextArea rows={3} placeholder="备注信息" maxLength={250}/>
+      <Form.Item name={['description']} style={{marginBottom: 10}} label={l('global.table.note')}>
+        <TextArea rows={3} placeholder={l('global.table.note')} maxLength={250}/>
       </Form.Item>
       <Form.Item wrapperCol={{offset: 8, span: 16}}>
         <Button type="primary" htmlType="submit">
-          保存
+          {l('button.save')}
         </Button>
       </Form.Item>
     </Form>
