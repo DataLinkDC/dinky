@@ -14,4 +14,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-./mvnw clean package -Dmaven.test.skip=true
+./mvnw clean package -Dmaven.test.skip=true -P aliyun,prod,scala-2.12,web,flink-1.14

@@ -45,8 +45,9 @@ public class LineageRel {
 
     private static final String DELIMITER = ".";
 
-    public LineageRel(String sourceCatalog, String sourceDatabase, String sourceTable, String sourceColumn, String targetCatalog, String targetDatabase, String targetTable,
-                      String targetColumn) {
+    public LineageRel(String sourceCatalog, String sourceDatabase, String sourceTable, String sourceColumn,
+            String targetCatalog, String targetDatabase, String targetTable,
+            String targetColumn) {
         this.sourceCatalog = sourceCatalog;
         this.sourceDatabase = sourceDatabase;
         this.sourceTable = sourceTable;
@@ -57,16 +58,20 @@ public class LineageRel {
         this.targetColumn = targetColumn;
     }
 
-    public static LineageRel build(String sourceTablePath, String sourceColumn, String targetTablePath, String targetColumn) {
+    public static LineageRel build(String sourceTablePath, String sourceColumn, String targetTablePath,
+            String targetColumn) {
         String[] sourceItems = sourceTablePath.split("\\.");
         String[] targetItems = targetTablePath.split("\\.");
 
-        return new LineageRel(sourceItems[0], sourceItems[1], sourceItems[2], sourceColumn, targetItems[0], targetItems[1], targetItems[2], targetColumn);
+        return new LineageRel(sourceItems[0], sourceItems[1], sourceItems[2], sourceColumn, targetItems[0],
+                targetItems[1], targetItems[2], targetColumn);
     }
 
-    public static LineageRel build(String sourceCatalog, String sourceDatabase, String sourceTable, String sourceColumn, String targetCatalog, String targetDatabase, String targetTable,
-                                   String targetColumn) {
-        return new LineageRel(sourceCatalog, sourceDatabase, sourceTable, sourceColumn, targetCatalog, targetDatabase, targetTable, targetColumn);
+    public static LineageRel build(String sourceCatalog, String sourceDatabase, String sourceTable, String sourceColumn,
+            String targetCatalog, String targetDatabase, String targetTable,
+            String targetColumn) {
+        return new LineageRel(sourceCatalog, sourceDatabase, sourceTable, sourceColumn, targetCatalog, targetDatabase,
+                targetTable, targetColumn);
     }
 
     public String getSourceCatalog() {

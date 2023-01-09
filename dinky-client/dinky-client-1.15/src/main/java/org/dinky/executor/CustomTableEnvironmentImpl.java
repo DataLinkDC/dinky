@@ -27,6 +27,12 @@ import org.dinky.result.SqlExplainResult;
 import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
+import org.dinky.assertion.Asserts;
+import org.dinky.model.LineageRel;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
+import org.dinky.utils.LineageContext;
+
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;

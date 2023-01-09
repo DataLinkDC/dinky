@@ -39,6 +39,7 @@ import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
  * @author: jack zhong
  */
 public class MysqlJsonDebeziumDeserializationSchema implements DebeziumDeserializationSchema<String> {
+
     private static final long serialVersionUID = 1L;
     private transient JsonConverter jsonConverter;
     private final Boolean includeSchema;

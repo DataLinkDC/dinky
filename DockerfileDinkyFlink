@@ -18,4 +18,4 @@ WORKDIR /opt/dinky/
 
 EXPOSE 8888
 
-CMD  ./auto.sh restart ${FLINK_BIG_VERSION} && tail -f /opt/dinky/logs/dlink.log
+CMD  ./auto.sh restart ${FLINK_BIG_VERSION} && tail -f /opt/dinky/logs/dinky.log

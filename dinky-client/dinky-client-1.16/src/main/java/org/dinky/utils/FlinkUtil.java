@@ -40,10 +40,10 @@ import java.util.concurrent.ExecutionException;
  */
 public class FlinkUtil {
 
-    public static List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog, String database, String table) {
+    public static List<String> getFieldNamesFromCatalogManager(CatalogManager catalogManager, String catalog,
+            String database, String table) {
         Optional<ContextResolvedTable> tableOpt = catalogManager.getTable(
-                ObjectIdentifier.of(catalog, database, table)
-        );
+                ObjectIdentifier.of(catalog, database, table));
         if (tableOpt.isPresent()) {
             return tableOpt.get().getResolvedSchema().getColumnNames();
         } else {
@@ -55,15 +55,21 @@ public class FlinkUtil {
         return tableResult.getResolvedSchema().getColumnNames();
     }
 
-    public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
-        return clusterClient.triggerSavepoint(JobID.fromHexString(jobId), savePoint, SavepointFormatType.DEFAULT).get().toString();
+    public static String triggerSavepoint(ClusterClient clusterClient, String jobId, String savePoint)
+            throws ExecutionException, InterruptedException {
+        return clusterClient.triggerSavepoint(JobID.fromHexString(jobId), savePoint, SavepointFormatType.DEFAULT).get()
+                .toString();
     }
 
-    public static String stopWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
-        return clusterClient.stopWithSavepoint(JobID.fromHexString(jobId), true, savePoint, SavepointFormatType.DEFAULT).get().toString();
+    public static String stopWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint)
+            throws ExecutionException, InterruptedException {
+        return clusterClient.stopWithSavepoint(JobID.fromHexString(jobId), true, savePoint, SavepointFormatType.DEFAULT)
+                .get().toString();
     }
 
-    public static String cancelWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint) throws ExecutionException, InterruptedException {
-        return clusterClient.cancelWithSavepoint(JobID.fromHexString(jobId), savePoint, SavepointFormatType.DEFAULT).get().toString();
+    public static String cancelWithSavepoint(ClusterClient clusterClient, String jobId, String savePoint)
+            throws ExecutionException, InterruptedException {
+        return clusterClient.cancelWithSavepoint(JobID.fromHexString(jobId), savePoint, SavepointFormatType.DEFAULT)
+                .get().toString();
     }
 }

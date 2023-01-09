@@ -27,6 +27,7 @@ import org.apache.flink.table.types.DataType;
  **/
 
 public class TableSchemaField {
+
     private String name;
     private DataType type;
 
@@ -51,4 +52,3 @@ public class TableSchemaField {
         this.type = type;
     }
 }
-

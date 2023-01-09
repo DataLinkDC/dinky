@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky</artifactId>
+        <version>0.7.0</version>
+    </parent>
+
+    <artifactId>dinky-app</artifactId>
+
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>dinky-app-base</module>
+    </modules>
+
+    <properties>
+        <maven.compiler.source>${target.java.version}</maven.compiler.source>
+        <maven.compiler.target>${target.java.version}</maven.compiler.target>
+    </properties>
+
+    <profiles>
+        <profile>
+            <id>flink-1.11</id>
+            <modules>
+                <module>dinky-app-1.11</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.12</id>
+            <modules>
+                <module>dinky-app-1.12</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.13</id>
+            <modules>
+                <module>dinky-app-1.13</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.14</id>
+            <modules>
+                <module>dinky-app-1.14</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.15</id>
+            <modules>
+                <module>dinky-app-1.15</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>flink-1.16</id>
+            <modules>
+                <module>dinky-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>all</id>
+            <modules>
+                <module>dinky-app-1.11</module>
+                <module>dinky-app-1.12</module>
+                <module>dinky-app-1.13</module>
+                <module>dinky-app-1.14</module>
+                <module>dinky-app-1.15</module>
+                <module>dinky-app-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
+            <id>web</id>
+            <modules>
+                <module>../dlink-web</module>
+            </modules>
+        </profile>
+    </profiles>
+</project>
