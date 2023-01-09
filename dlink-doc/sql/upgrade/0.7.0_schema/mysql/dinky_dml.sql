@@ -67,10 +67,10 @@ INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `t
 VALUES (3, 'scala_udf', 'Scala', 'UDF', '${(package==\'\')?string(\'\',\'package \'+package+\';\')}\n\nimport org.apache.flink.table.api._\nimport org.apache.flink.table.functions.ScalarFunction\n\n// 定义可参数化的函数逻辑\nclass ${className} extends ScalarFunction {\n  def eval(s: String, begin: Integer, end: Integer): String = {\n    \"this is scala\"\n  }\n}', NULL, '2022-10-25 09:21:32', '2022-10-25 17:49:46');
 
 INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
-VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes\nfrom pyflink.table.udf import udf\n\nclass ${className}(ScalarFunction):\n    def __init__(self):\n        pass\n\n    def eval(self, variable):\n        return str(variable)\n\n\n${attr!\'f\'} = udf(HashCode(), result_type=DataTypes.STRING())', NULL, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
+VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFunction, DataTypes\nfrom pyflink.table.udf import udf\n\n\nclass ${className}(ScalarFunction):\n    def __init__(self):\n        pass\n\n    def eval(self, variable):\n        return str(variable)\n\n\n${attr!\'f\'} = udf(HashCode(), result_type=DataTypes.STRING())', NULL, '2022-10-25 09:23:07', '2022-10-25 09:34:01');
 
 INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
-VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:str):\n  return \'\'', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
+VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:str):\n    return \'\'', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
 
 UPDATE `dlink_database` set `group_name` = 'source' WHERE `group_name` = '来源';
