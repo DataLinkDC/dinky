@@ -33,11 +33,11 @@ body:
     attributes:
       label: Search before asking
       description: >
-        Please make sure to search in the [issues](https://github.com/DataLinkDC/dlink/issues?q=is%3Aissue)
+        Please make sure to search in the [issues](https://github.com/DataLinkDC/dinky/issues?q=is%3Aissue)
         first to see whether the same issue was reported already.
       options:
         - label: >
-            I had searched in the [issues](https://github.com/DataLinkDC/dlink/issues?q=is%3Aissue) and found
+            I had searched in the [issues](https://github.com/DataLinkDC/dinky/issues?q=is%3Aissue) and found
             no similar issues.
           required: true
 
@@ -68,7 +68,7 @@ body:
       label: How to reproduce
       description: >
         What should we do to reproduce the problem? If you are not able to provide a reproducible case,
-        please open a [Discussion](https://github.com/DataLinkDC/dlink/discussions) instead.
+        please open a [Discussion](https://github.com/DataLinkDC/dinky/discussions) instead.
       placeholder: >
         Please make sure you provide a reproducible step-by-step case of how to reproduce the problem
         as minimally and precisely as possible. Keep in mind we do not have access to your deployment.

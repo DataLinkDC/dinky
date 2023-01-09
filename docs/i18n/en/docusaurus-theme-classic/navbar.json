@@ -38,5 +38,9 @@
   "item.label.远程调试": {
     "message": "远程调试",
     "description": "Navbar item with label 远程调试"
+  },
+  "item.label.Roadmap": {
+    "message": "Roadmap",
+    "description": "Navbar item with label Roadmap"
   }
 }

@@ -21,31 +21,31 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.dlink</groupId>
-    <artifactId>dlink</artifactId>
+    <groupId>org.dinky</groupId>
+    <artifactId>dinky</artifactId>
     <version>0.7.0</version>
     <packaging>pom</packaging>
     <name>Dinky :</name>
 
     <modules>
-        <module>dlink-flink</module>
-        <module>dlink-common</module>
-        <module>dlink-client</module>
-        <module>dlink-catalog</module>
-        <module>dlink-process</module>
-        <module>dlink-gateway</module>
-        <module>dlink-function</module>
-        <module>dlink-metadata</module>
-        <module>dlink-connectors</module>
-        <module>dlink-executor</module>
-        <module>dlink-extends</module>
-        <module>dlink-alert</module>
-        <module>dlink-daemon</module>
-        <module>dlink-scheduler</module>
-        <module>dlink-core</module>
-        <module>dlink-app</module>
-        <module>dlink-admin</module>
-        <module>dlink-assembly</module>
+        <module>dinky-flink</module>
+        <module>dinky-common</module>
+        <module>dinky-client</module>
+        <module>dinky-catalog</module>
+        <module>dinky-process</module>
+        <module>dinky-gateway</module>
+        <module>dinky-function</module>
+        <module>dinky-metadata</module>
+        <module>dinky-connectors</module>
+        <module>dinky-executor</module>
+        <module>dinky-extends</module>
+        <module>dinky-alert</module>
+        <module>dinky-daemon</module>
+        <module>dinky-scheduler</module>
+        <module>dinky-core</module>
+        <module>dinky-app</module>
+        <module>dinky-admin</module>
+        <module>dinky-assembly</module>
     </modules>
 
     <properties>
@@ -61,7 +61,7 @@
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
-        <dlink.flink.version>1.14</dlink.flink.version>
+        <dinky.flink.version>1.14</dinky.flink.version>
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <hutool.version>5.8.4</hutool.version>
         <druid-starter>1.2.8</druid-starter>
@@ -266,233 +266,233 @@
             </dependency>
             <!--sa-token redis持久化 end-->
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-core</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-base</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.12</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.13</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.14</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.11</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.15</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.15</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-1.16</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-1.16</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-catalog-mysql-1.13</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-catalog-mysql-1.14</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-catalog-mysql-1.15</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.15</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-catalog-mysql-1.16</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-catalog-mysql-1.16</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc-1.11</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-jdbc-1.11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc-1.12</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-jdbc-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc-1.13</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-jdbc-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-jdbc-1.14</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-jdbc-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-connector-phoenix-1.13</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-connector-phoenix-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-function</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-function</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-common</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-common</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-base</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-mysql</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-mysql</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-oracle</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-oracle</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-sqlserver</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-sqlserver</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-postgresql</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-postgresql</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-clickhouse</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-clickhouse</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-doris</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-doris</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-hive</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-hive</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-phoenix</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-phoenix</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-starrocks</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-starrocks</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-metadata-presto</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-metadata-presto</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-gateway</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-gateway</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-executor</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-executor</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-client-hadoop</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-client-hadoop</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-alert-base</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-alert-dingtalk</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-dingtalk</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-alert-wechat</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-wechat</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-alert-feishu</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-feishu</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-alert-email</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-email</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-daemon</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-daemon</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-app-base</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-app-base</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.11</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.12</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.13</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.14</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.14</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.15</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.15</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-flink-1.16</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-flink-1.16</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -527,13 +527,13 @@
                 <version>${javax.mail}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-scheduler</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-scheduler</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>com.dlink</groupId>
-                <artifactId>dlink-process</artifactId>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-process</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -662,11 +662,11 @@
                     <ratchetFrom>HEAD</ratchetFrom>
                     <java>
                         <eclipse>
-                            <file>style/spotless_dlink_formatter.xml</file>
+                            <file>style/spotless_dinky_formatter.xml</file>
                         </eclipse>
                         <removeUnusedImports />
                         <importOrder>
-                            <order>\#,com.dlink,org.apache,java,javassist,javax,org,com,</order>
+                            <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
                         <licenseHeader>
                             <file>style/license_header</file>
@@ -827,7 +827,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.11</dlink.flink.version>
+                <dinky.flink.version>1.11</dinky.flink.version>
             </properties>
         </profile>
 
@@ -840,7 +840,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.12</dlink.flink.version>
+                <dinky.flink.version>1.12</dinky.flink.version>
             </properties>
         </profile>
 
@@ -853,7 +853,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.13</dlink.flink.version>
+                <dinky.flink.version>1.13</dinky.flink.version>
             </properties>
         </profile>
 
@@ -867,7 +867,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.14</dlink.flink.version>
+                <dinky.flink.version>1.14</dinky.flink.version>
             </properties>
         </profile>
 
@@ -880,7 +880,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.15</dlink.flink.version>
+                <dinky.flink.version>1.15</dinky.flink.version>
             </properties>
         </profile>
 
@@ -893,7 +893,7 @@
             </activation>
             <properties>
                 <!--  modify flink version  -->
-                <dlink.flink.version>1.16</dlink.flink.version>
+                <dinky.flink.version>1.16</dinky.flink.version>
                 <flink.version>1.16.0</flink.version>
             </properties>
         </profile>

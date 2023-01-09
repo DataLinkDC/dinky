@@ -30,11 +30,11 @@ body:
     attributes:
       label: Search before asking
       description: >
-        Please make sure to search in the [issues](https://github.com/DataLinkDC/dlink/issues?q=is%3Aissue) first
+        Please make sure to search in the [issues](https://github.com/DataLinkDC/dinky/issues?q=is%3Aissue) first
         to see whether the same feature was requested already.
       options:
         - label: >
-            I had searched in the [issues](https://github.com/DataLinkDC/dlink/issues?q=is%3Aissue) and found no
+            I had searched in the [issues](https://github.com/DataLinkDC/dinky/issues?q=is%3Aissue) and found no
             similar feature requirement.
           required: true
 

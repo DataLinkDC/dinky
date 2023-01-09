@@ -13,7 +13,7 @@
   },
   "link.item.label.文档首页": {
     "message": "文档首页",
-    "description": "The label of footer link with label=文档首页 linking to /docs/next/intro"
+    "description": "The label of footer link with label=文档首页 linking to /docs/next/platform_intro/intro"
   },
   "link.item.label.Open Api": {
     "message": "Open Api",
