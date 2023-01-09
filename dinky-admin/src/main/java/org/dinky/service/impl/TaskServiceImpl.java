@@ -242,11 +242,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         process.start();
         if (!config.isJarTask()) {
             JobResult jobResult = jobManager.executeSql(task.getStatement());
-            process.finish("Submit Flink SQL succeed.");
+            process.finish("Submit Flink SQL finished.");
             return jobResult;
         } else {
             JobResult jobResult = jobManager.executeJar();
-            process.finish("Submit Flink Jar succeed.");
+            process.finish("Submit Flink Jar finished.");
             return jobResult;
         }
     }
