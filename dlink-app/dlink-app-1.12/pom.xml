@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-app</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -33,6 +33,10 @@
         <dependency>
             <groupId>com.dlink</groupId>
             <artifactId>dlink-client-1.12</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.dlink</groupId>
+            <artifactId>dlink-flink-1.12</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>

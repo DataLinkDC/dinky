@@ -44,11 +44,11 @@ public class Task extends SuperEntity {
 
     private Integer parallelism;
 
-    private boolean fragment;
+    private Boolean fragment;
 
-    private boolean statementSet;
+    private Boolean statementSet;
 
-    private boolean batchModel;
+    private Boolean batchModel;
 
     private Integer clusterId;
 
@@ -69,6 +69,8 @@ public class Task extends SuperEntity {
     private Integer step;
 
     private Integer jobInstanceId;
+
+    private Integer versionId;
 
     @TableField(exist = false)
     private String statement;
@@ -102,10 +104,15 @@ public class Task extends SuperEntity {
         }
         Map<String, String> map = new HashMap<>();
         for (Map<String, String> item : config) {
-            map.put(item.get("key"), item.get("value"));
+            if (Asserts.isNotNull(item)) {
+                map.put(item.get("key"), item.get("value"));
+            }
         }
-        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jarId, getId(),
-                alias, fragment, statementSet, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+        int jid = Asserts.isNull(jarId) ? 0 : jarId;
+        boolean fg = Asserts.isNull(fragment) ? false : fragment;
+        boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
+        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId,jid, getId(),
+            alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
     }
 
 }

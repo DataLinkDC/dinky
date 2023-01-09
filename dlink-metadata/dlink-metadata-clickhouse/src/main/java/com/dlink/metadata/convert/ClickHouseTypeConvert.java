@@ -15,38 +15,65 @@ public class ClickHouseTypeConvert implements ITypeConvert {
     // Use mysql now,and welcome to fix it.
     @Override
     public ColumnType convert(Column column) {
+        ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
-            return ColumnType.STRING;
+            return columnType;
         }
         String t = column.getType().toLowerCase();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("tinyint")) {
-            return ColumnType.BYTE;
+            columnType = ColumnType.BYTE;
         } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
-            return ColumnType.SHORT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_SHORT;
+            } else {
+                columnType = ColumnType.SHORT;
+            }
         } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {
-            return ColumnType.DECIMAL;
+            columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint") || t.contains("int unsigned")) {
-            return ColumnType.LONG;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_LONG;
+            } else {
+                columnType = ColumnType.LONG;
+            }
         } else if (t.contains("float")) {
-            return ColumnType.FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
+            }
         } else if (t.contains("double")) {
-            return ColumnType.DOUBLE;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_DOUBLE;
+            } else {
+                columnType = ColumnType.DOUBLE;
+            }
         } else if (t.contains("boolean") || t.contains("tinyint(1)")) {
-            return ColumnType.BOOLEAN;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_BOOLEAN;
+            } else {
+                columnType = ColumnType.BOOLEAN;
+            }
         } else if (t.contains("datetime")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
-            return ColumnType.DATE;
+            columnType = ColumnType.DATE;
         } else if (t.contains("time")) {
-            return ColumnType.TIME;
+            columnType = ColumnType.TIME;
         } else if (t.contains("char") || t.contains("text")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
-            return ColumnType.BYTES;
+            columnType = ColumnType.BYTES;
         } else if (t.contains("int") || t.contains("mediumint") || t.contains("smallint unsigned")) {
-            return ColumnType.INTEGER;
+            if (isNullable) {
+                columnType = ColumnType.INTEGER;
+            } else {
+                columnType = ColumnType.INT;
+            }
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override
@@ -57,16 +84,21 @@ public class ClickHouseTypeConvert implements ITypeConvert {
             case BYTE:
                 return "tinyint";
             case SHORT:
+            case JAVA_LANG_SHORT:
                 return "smallint";
             case DECIMAL:
                 return "decimal";
             case LONG:
+            case JAVA_LANG_LONG:
                 return "bigint";
             case FLOAT:
+            case JAVA_LANG_FLOAT:
                 return "float";
             case DOUBLE:
+            case JAVA_LANG_DOUBLE:
                 return "double";
             case BOOLEAN:
+            case JAVA_LANG_BOOLEAN:
                 return "boolean";
             case TIMESTAMP:
                 return "datetime";
@@ -77,6 +109,7 @@ public class ClickHouseTypeConvert implements ITypeConvert {
             case BYTES:
                 return "binary";
             case INTEGER:
+            case INT:
                 return "int";
             default:
                 return "varchar";

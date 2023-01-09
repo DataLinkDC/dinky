@@ -61,7 +61,7 @@ public class ColumnCAGenerator implements CAGenerator {
                 }
                 for (int j = 0; j < this.columnCAS.size(); j++) {
                     ColumnCA columnCA = (ColumnCA) this.columnCAS.get(j);
-                    if (columnCA.getTableCA().getId() == tableCA.getId()) {
+                    if (columnCA.getTableCA().getId().equals(tableCA.getId())) {
                         buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
                     }
                 }
@@ -118,7 +118,7 @@ public class ColumnCAGenerator implements CAGenerator {
         for (int i = 0; i < this.sourceTableCAS.size(); i++) {
             if (this.sourceTableCAS.get(i) instanceof TableCA) {
                 TableCA sourceTableCA = (TableCA) this.sourceTableCAS.get(i);
-                if (sourceTableCA.getId() == tableCA.getId()) {
+                if (sourceTableCA.getId().equals(tableCA.getId())) {
                     tableCA.setFields(sourceTableCA.getFields());
                 }
             }
@@ -148,7 +148,7 @@ public class ColumnCAGenerator implements CAGenerator {
             Integer cid = null;
             for (int j = 0; j < this.columnCAS.size(); j++) {
                 ColumnCA columnCA1 = (ColumnCA) this.columnCAS.get(j);
-                if (columnCA1.getTableCA().getId() == tableCA.getId() && columnCA1.getName().equals(alias)) {
+                if (columnCA1.getTableCA().getId().equals(tableCA.getId()) && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;

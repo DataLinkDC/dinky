@@ -1,5 +1,10 @@
 package com.dlink.metadata.driver;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.ServiceLoader;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.exception.MetaDataException;
 import com.dlink.metadata.result.JdbcSelectResult;
@@ -7,12 +12,6 @@ import com.dlink.model.Column;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
-import sun.misc.Service;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 /**
  * Driver
@@ -24,11 +23,10 @@ public interface Driver {
 
     static Optional<Driver> get(DriverConfig config) {
         Asserts.checkNotNull(config, "数据源配置不能为空");
-        Iterator<Driver> providers = Service.providers(Driver.class);
-        while (providers.hasNext()) {
-            Driver gainer = providers.next();
-            if (gainer.canHandle(config.getType())) {
-                return Optional.of(gainer.setDriverConfig(config));
+        ServiceLoader<Driver> drivers = ServiceLoader.load(Driver.class);
+        for (Driver driver : drivers) {
+            if (driver.canHandle(config.getType())) {
+                return Optional.of(driver.setDriverConfig(config));
             }
         }
         return Optional.empty();
@@ -44,7 +42,7 @@ public interface Driver {
         }
         Optional<Driver> optionalDriver = Driver.get(config);
         if (!optionalDriver.isPresent()) {
-            throw new MetaDataException("不支持数据源类型【" + config.getType() + "】，请在 lib 下添加扩展依赖");
+            throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
         }
         Driver driver = optionalDriver.get().connect();
         DriverPool.push(key, driver);
@@ -72,6 +70,8 @@ public interface Driver {
     List<Table> listTables(String schemaName);
 
     List<Column> listColumns(String schemaName, String tableName);
+
+    List<Column> listColumnsSortByPK(String schemaName, String tableName);
 
     List<Schema> getSchemasAndTables();
 

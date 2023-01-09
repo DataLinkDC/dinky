@@ -1,1 +1,1 @@
-![](https://gitee.com/DataLinkDC/dlink/raw/main/dlink-doc/images/main/dinky_principle.png)
+![Dinky](http://www.aiwenmo.com/dinky/docs/zh-CN/architecture/dinky.png)

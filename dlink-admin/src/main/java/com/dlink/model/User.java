@@ -38,9 +38,9 @@ public class User implements Serializable {
 
     private String mobile;
 
-    private boolean enabled;
+    private Boolean enabled;
 
-    private boolean isDelete;
+    private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -49,5 +49,5 @@ public class User implements Serializable {
     private LocalDateTime updateTime;
 
     @TableField(exist = false)
-    private boolean isAdmin;
+    private Boolean isAdmin;
 }

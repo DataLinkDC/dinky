@@ -19,7 +19,7 @@ export default (): React.ReactNode => {
         <Alert
           message={intl.formatMessage({
             id: 'pages.welcome.alertMessage',
-            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.1。',
+            defaultMessage: '实时计算平台 Dinky 即将发布，目前为体验版，版本号为 0.6.5。',
           })}
           type="success"
           showIcon
@@ -854,6 +854,394 @@ export default (): React.ReactNode => {
                 </li>
                 <li>
                   <Link>修复 FlinkSQL 执行或提交由于空配置导致的 bug</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.2</Text> <Text type="secondary">2022-04-17</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 飞书报警</Link>
+                </li>
+                <li>
+                  <Link>新增 邮件报警</Link>
+                </li>
+                <li>
+                  <Link>新增 报警实例测试功能</Link>
+                </li>
+                <li>
+                  <Link>新增 docker 镜像文件</Link>
+                </li>
+                <li>
+                  <Link>新增 Remote mode（Standalone、Yarn Session、Kubernetes Session）从 SavePoint 恢复作业</Link>
+                </li>
+                <li>
+                  <Link>新增 Oracle CDC 多源合并</Link>
+                </li>
+                <li>
+                  <Link>新增 版本为 0.6.2</Link>
+                </li>
+                <li>
+                  <Link>优化 检查 FlinkSQL 不通过时返回全部的异常信息</Link>
+                </li>
+                <li>
+                  <Link>优化 Hive 的 pom</Link>
+                </li>
+                <li>
+                  <Link>优化 httpclient 的依赖</Link>
+                </li>
+                <li>
+                  <Link>优化 报警、数据源、线程任务的 SPI 机制</Link>
+                </li>
+                <li>
+                  <Link>优化 CDC 多源合并</Link>
+                </li>
+                <li>
+                  <Link>优化 运维中心始终显示 FlinkWebUI 按钮</Link>
+                </li>
+                <li>
+                  <Link>优化 集群实例显示 FlinkWebUI 按钮</Link>
+                </li>
+                <li>
+                  <Link>修复 Integer 类型判断方式从 “==” 改为 “equals”</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink 的 hadoop_conf 配置未生效</Link>
+                </li>
+                <li>
+                  <Link>修复 报警测试的最新配置未生效</Link>
+                </li>
+                <li>
+                  <Link>修复 飞书报警使用 “@all” 时会触发异常</Link>
+                </li>
+                <li>
+                  <Link>修复 install 项目失败</Link>
+                </li>
+                <li>
+                  <Link>修复 Hive 构建 sql 的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 特殊字符导致全局变量替换失败</Link>
+                </li>
+                <li>
+                  <Link>修复 不支持查看执行图 sql 的展示异常</Link>
+                </li>
+                <li>
+                  <Link>修复 CDC 多源合并 Remote 提交的任务同步问题</Link>
+                </li>
+                <li>
+                  <Link>修复 修改集群配置后显示 “新增成功”</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink Oracle Connector 读取 Date 和 Timestamp 类型的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 MybatsPlus 实体类 boolean 默认为 false 导致业务错误的异常</Link>
+                </li>
+                <li>
+                  <Link>修复 修复系统配置的 sql 分隔符默认为 “;\r\n”</Link>
+                </li>
+                <li>
+                  <Link>修复 任务失败导致的循环问题</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.3</Text> <Text type="secondary">2022-05-09</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 CDC 整库实时同步至 kafka 的一个 topic</Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库实时同步至 kafka 对应 topic</Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库实时入仓 doris</Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库实时入湖 hudi</Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库同步表名规则</Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库实时 sql sink</Link>
+                </li>
+                <li>
+                  <Link>新增 MysqlCDC 整库同步配置扩展 </Link>
+                </li>
+                <li>
+                  <Link>新增 CDC 整库同步主键注入</Link>
+                </li>
+                <li>
+                  <Link>新增 Flink 1.15.0 的支持</Link>
+                </li>
+                <li>
+                  <Link>修复当作业停止时作业状态错误的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复 Oracle 不支持的编码</Link>
+                </li>
+                <li>
+                  <Link>修复 Clickhouse 元数据无法展示的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复元数据查询切换 bug</Link>
+                </li>
+                <li>
+                  <Link>修复整库同步 Hudi 无法构建 Schema 的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复数据源单元测试的 name 缺失 bug</Link>
+                </li>
+                <li>
+                  <Link>修复默认分隔符为 ';\r\n|;\n' 来解决 windows 和 mac 同时兼容</Link>
+                </li>
+                <li>
+                  <Link>修复批任务无法正确提交 yarn application 的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复修改作业名失败的 bug</Link>
+                </li>
+                <li>
+                  <Link>修复一些错误文档连接</Link>
+                </li>
+                <li>
+                  <Link>修复获取作业执行计划被执行两次的 bug</Link>
+                </li>
+                <li>
+                  <Link>优化 Java 流的释放</Link>
+                </li>
+                <li>
+                  <Link>优化 CDC 整库实时入库 doris</Link>
+                </li>
+                <li>
+                  <Link>优化同一节点下无法启动多个进程实例的问题</Link>
+                </li>
+                <li>
+                  <Link>优化微信告警的发送标题</Link>
+                </li>
+                <li>
+                  <Link>优化启动文件编码及禁用环境变量</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.4</Text> <Text type="secondary">2022-06-05</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增整库同步表名参数支持换行和列支持按主键优先排序</Link>
+                </li>
+                <li>
+                  <Link>新增整库同步日志输出</Link>
+                </li>
+                <li>
+                  <Link>新增钉钉报警的 @mobile 配置</Link>
+                </li>
+                <li>
+                  <Link>新增任务的 StreamGraph 导出为 JSON</Link>
+                </li>
+                <li>
+                  <Link>新增任务的 API 接口示例页面</Link>
+                </li>
+                <li>
+                  <Link>新增数据开发帮助页面</Link>
+                </li>
+                <li>
+                  <Link>新增普通 SQL 的字段血缘</Link>
+                </li>
+                <li>
+                  <Link>新增作业监听池来解决频繁写库的问题</Link>
+                </li>
+                <li>
+                  <Link>新增非 FlinkSQL 作业的导出 StreamGraphPlan 的按钮隐藏</Link>
+                </li>
+                <li>
+                  <Link>新增数据源的删除按钮</Link>
+                </li>
+                <li>
+                  <Link>新增整库同步的 jdbc 配置和升级 flinkcdc 版本</Link>
+                </li>
+                <li>
+                  <Link>修复刷新作业监控页面时的抖动问题</Link>
+                </li>
+                <li>
+                  <Link>修复 Flink Oracle Connector 不能转换 CLOB 到 String 的问题</Link>
+                </li>
+                <li>
+                  <Link>修复切换任务时保存点未同步刷新的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 ClusterClient 接口不通版本的兼容性问题</Link>
+                </li>
+                <li>
+                  <Link>修复 MySQL 类型转换精度信息是空的问题</Link>
+                </li>
+                <li>
+                  <Link>修复初始化函数的冗余操作</Link>
+                </li>
+                <li>
+                  <Link>修复整库同步的 decimal 问题</Link>
+                </li>
+                <li>
+                  <Link>修复获取作业计划失败的问题</Link>
+                </li>
+                <li>
+                  <Link>修复整库同步 OracleCDC number 不能被转换为 Long 的问题</Link>
+                </li>
+                <li>
+                  <Link>修复微信企业号报警测试按钮后台错误的问题</Link>
+                </li>
+                <li>
+                  <Link>修复当切换作业 tab 时无法正确保存修改的作业配置的问题</Link>
+                </li>
+                <li>
+                  <Link>修复数据源和元数据不能展示别名的问题</Link>
+                </li>
+                <li>
+                  <Link>修复作业重命名后 tab 未更新的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 K8S 集群配置的 FlinkLibPath 是空的问题</Link>
+                </li>
+                <li>
+                  <Link>优化初始化 sql</Link>
+                </li>
+                <li>
+                  <Link>优化打包</Link>
+                </li>
+                <li>
+                  <Link>优化移除 preset-ui</Link>
+                </li>
+                <li>
+                  <Link>优化 MySQL 字段类型转换</Link>
+                </li>
+              </ul>
+            </Paragraph>
+          </Timeline.Item>
+          <Timeline.Item><Text code>0.6.5</Text> <Text type="secondary">2022-07-03</Text>
+            <p> </p>
+            <Paragraph>
+              <ul>
+                <li>
+                  <Link>新增 phoenix 的 1.14 版本的 Flink 连接器</Link>
+                </li>
+                <li>
+                  <Link>新增生成 FlinkSQL 时从元数据中获取空和非空</Link>
+                </li>
+                <li>
+                  <Link>新增作业实例信息接口</Link>
+                </li>
+                <li>
+                  <Link>新增运维中心 Flink 快照信息、JobManager 配置信息</Link>
+                </li>
+                <li>
+                  <Link>新增运维中心 TaskManager 信息</Link>
+                </li>
+                <li>
+                  <Link>新增作业信息选项卡</Link>
+                </li>
+                <li>
+                  <Link>新增运维中心 TaskManager 的表和表单详情</Link>
+                </li>
+                <li>
+                  <Link>新增作业版本管理</Link>
+                </li>
+                <li>
+                  <Link>新增作业检查点历史信息</Link>
+                </li>
+                <li>
+                  <Link>新增捕获 CDCSOURCE 中的列值转换异常</Link>
+                </li>
+                <li>
+                  <Link>新增 TaskManager 信息</Link>
+                </li>
+                <li>
+                  <Link>新增作业复制</Link>
+                </li>
+                <li>
+                  <Link>修复数据开发数据源别名是""</Link>
+                </li>
+                <li>
+                  <Link>修复数据开发关闭其他页面无法关闭第一个页面</Link>
+                </li>
+                <li>
+                  <Link>修复切换元数据时发生异常</Link>
+                </li>
+                <li>
+                  <Link>修复 flinkLibPath 和 cluster-id 在 K8S 配置中是空</Link>
+                </li>
+                <li>
+                  <Link>修复 FlinkSql 语句末尾的分号异常</Link>
+                </li>
+                <li>
+                  <Link>修复 K8S 集群配置不能获取自定义配置</Link>
+                </li>
+                <li>
+                  <Link>修复 yarn per-job 运行时的空指针异常</Link>
+                </li>
+                <li>
+                  <Link>修复任务实例信息在强制刷新且失去连接时会清空记录的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 'table.local-time-zone' 参数不生效的问题</Link>
+                </li>
+                <li>
+                  <Link>修复邮箱报警不能找到类 javax.mail.Address</Link>
+                </li>
+                <li>
+                  <Link>修复不能校验 'show datatbases' 的问题</Link>
+                </li>
+                <li>
+                  <Link>修复 setParentId 方法判空错误</Link>
+                </li>
+                <li>
+                  <Link>修复 CDCSOURCE 里当 FlinkSql 字段名为关键字时不能创建 Flink 表</Link>
+                </li>
+                <li>
+                  <Link>修复字段血缘分析不能处理相同字段名</Link>
+                </li>
+                <li>
+                  <Link>修复集群配置页面的问题</Link>
+                </li>
+                <li>
+                  <Link>修复邮件报警消息不能自定义昵称</Link>
+                </li>
+                <li>
+                  <Link>修复 dlink-connector-phoenix-1.14 编译异常</Link>
+                </li>
+                <li>
+                  <Link>修复 Oracle 字段可为空的识别错误</Link>
+                </li>
+                <li>
+                  <Link>修复 CDCSOURCE 中 MySQL varbinary 和 binary 类型的支持</Link>
+                </li>
+                <li>
+                  <Link>优化作业树搜索结果高亮与选中背景色</Link>
+                </li>
+                <li>
+                  <Link>优化多处别名是空的显示</Link>
+                </li>
+                <li>
+                  <Link>优化 explainSqlRecord 代码逻辑</Link>
+                </li>
+                <li>
+                  <Link>优化集群实例页面</Link>
+                </li>
+                <li>
+                  <Link>优化血缘分析的刷新</Link>
+                </li>
+                <li>
+                  <Link>优化作业实例信息接口</Link>
+                </li>
+                <li>
+                  <Link>优化所有报警的发送信息</Link>
                 </li>
               </ul>
             </Paragraph>

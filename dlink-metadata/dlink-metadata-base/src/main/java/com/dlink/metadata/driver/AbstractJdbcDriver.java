@@ -1,5 +1,21 @@
 package com.dlink.metadata.driver;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.alibaba.druid.sql.SQLUtils;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.dlink.assertion.Asserts;
@@ -11,11 +27,6 @@ import com.dlink.model.Schema;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.sql.*;
-import java.util.*;
 
 /**
  * AbstractJdbcDriver
@@ -204,7 +215,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                     field.setComment(columnComment);
                 }
                 if (columnList.contains(dbQuery.isNullable())) {
-                    field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()), "YES"));
+                    field.setNullable(Asserts.isEqualsIgnoreCase(results.getString(dbQuery.isNullable()), dbQuery.nullableValue()));
                 }
                 if (columnList.contains(dbQuery.characterSet())) {
                     field.setCharacterSet(results.getString(dbQuery.characterSet()));
@@ -233,6 +244,23 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
             close(preparedStatement, results);
         }
         return columns;
+    }
+
+    @Override
+    public List<Column> listColumnsSortByPK(String schemaName, String tableName) {
+        List<Column> columnList = listColumns(schemaName, tableName);
+        List<Column> columnListSortByPK = new ArrayList<>();
+        for (Column column : columnList) {
+            if (column.isKeyFlag()) {
+                columnListSortByPK.add(column);
+            }
+        }
+        for (Column column : columnList) {
+            if (!column.isKeyFlag()) {
+                columnListSortByPK.add(column);
+            }
+        }
+        return columnListSortByPK;
     }
 
     @Override

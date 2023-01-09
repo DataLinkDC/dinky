@@ -1,16 +1,22 @@
 package com.dlink.explainer.lineage;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.dlink.assertion.Asserts;
 import com.dlink.explainer.ca.ColumnCA;
 import com.dlink.explainer.ca.NodeRel;
 import com.dlink.explainer.ca.TableCA;
 import com.dlink.explainer.trans.Field;
 import com.dlink.explainer.trans.OperatorTrans;
+import com.dlink.explainer.trans.Predecessor;
 import com.dlink.explainer.trans.SinkTrans;
 import com.dlink.explainer.trans.Trans;
 import com.dlink.utils.MapParseUtils;
-
-import java.util.*;
 
 /**
  * LineageColumnGenerator
@@ -47,11 +53,11 @@ public class LineageColumnGenerator {
                 ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName, tableCA);
                 columnCASMaps.put(id, columnCA);
                 columnCAS.add(columnCA);
-                buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
+                buildColumnCAFields(tableCA, tableCA.getParentId(), tableCA.getId(), columnCA, new ArrayList<>());
             }
             /*for (ColumnCA columnCA : columnCAS) {
                 if (columnCA.getTableCA().getId() == tableCA.getId()) {
-                    buildColumnCAFields(tableCA, tableCA.getParentId(), columnCA);
+                    buildColumnCAFields(tableCA, tableCA.getParentId(), tableCA.getId() columnCA, new ArrayList<>());
                 }
             }*/
         }
@@ -68,7 +74,7 @@ public class LineageColumnGenerator {
 
     private void matchSinkField(TableCA tableCA) {
         for (ColumnCA columnCA : columnCAS) {
-            if (columnCA.getTableId() == tableCA.getId()) {
+            if (columnCA.getTableId().equals(tableCA.getId())) {
                 continue;
             }
             for (String fieldName : tableCA.getFields()) {
@@ -82,53 +88,126 @@ public class LineageColumnGenerator {
         }
     }
 
-    private void buildColumnCAFields(TableCA tableCA, Integer id, ColumnCA columnCA) {
+    private void buildColumnCAFields(TableCA tableCA, Integer id, Integer preId, ColumnCA columnCA, List<Field> ignoreSelects) {
         if (transMaps.get(id) instanceof OperatorTrans) {
-            if (tableCA.getId() == id) {
+            if (tableCA.getId().equals(id)) {
                 return;
             }
             OperatorTrans trans = (OperatorTrans) transMaps.get(id);
             List<Field> selects = trans.getSelect();
-            if (Asserts.isNotNull(selects)) {
-                for (int i = 0; i < selects.size(); i++) {
-                    String operation = selects.get(i).getFragment();
-                    String alias = selects.get(i).getAlias();
-                    searchSelect(tableCA, columnCA, trans, operation, alias);
+            List<Field> targetSelects = new ArrayList<>();
+            if (trans.getPredecessors().size() > 1) {
+                int predecessorsIndex = 0;
+                for (Predecessor predecessor : trans.getPredecessors()) {
+                    if (!predecessor.getId().equals(preId)) {
+                        predecessorsIndex = predecessorsIndex + 1;
+                    } else {
+                        break;
+                    }
+                }
+                if (predecessorsIndex == 0) {
+                    for (int i = 0; i < selects.size(); i++) {
+                        if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
+                            if (targetSelects.size() == 0) {
+                                targetSelects.add(selects.get(i));
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
+                                < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                                targetSelects.add(selects.get(i));
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    for (int i = selects.size() - 1; i >= 0; i--) {
+                        if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
+                            if (targetSelects.size() == 0) {
+                                targetSelects.add(selects.get(i));
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
+                                > tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                                targetSelects.add(selects.get(i));
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                }
+            } else {
+                if (Asserts.isNotNullCollection(trans.getTable())) {
+                    for (int i = 0; i < selects.size(); i++) {
+                        if (tableCA.getUseFields().contains(selects.get(i).getAlias())) {
+                            if (targetSelects.size() == 0) {
+                                targetSelects.add(selects.get(i));
+                            } else if (tableCA.getUseFields().indexOf(targetSelects.get(targetSelects.size() - 1).getAlias())
+                                < tableCA.getUseFields().indexOf(selects.get(i).getAlias())) {
+                                targetSelects.add(selects.get(i));
+                            } else {
+                                break;
+                            }
+                        } else {
+                            break;
+                        }
+                    }
+                } else {
+                    targetSelects = selects;
+                }
+            }
+            if (Asserts.isNotNull(targetSelects)) {
+                if (selects.size() != targetSelects.size()) {
+                    for (int i = 0; i < selects.size(); i++) {
+                        if (!targetSelects.contains(selects.get(i))) {
+                            ignoreSelects.add(selects.get(i));
+                        }
+                    }
+                }
+                for (int i = 0; i < targetSelects.size(); i++) {
+                    String operation = targetSelects.get(i).getFragment();
+                    String alias = targetSelects.get(i).getAlias();
+                    searchSelect(tableCA, columnCA, trans, operation, alias, ignoreSelects);
                 }
             }
             List<String> fields = trans.getFields();
             if (Asserts.isNotNull(fields)) {
                 for (int i = 0; i < fields.size(); i++) {
                     String field = fields.get(i);
-                    searchSelect(tableCA, columnCA, trans, field, field);
+                    searchSelect(tableCA, columnCA, trans, field, field, ignoreSelects);
                 }
             }
             if (trans.getParentId() != null) {
-                buildColumnCAFields(tableCA, trans.getParentId(), columnCA);
+                buildColumnCAFields(tableCA, trans.getParentId(), trans.getId(), columnCA, ignoreSelects);
             }
         }
     }
 
-    private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias) {
+    private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias, List<Field> ignoreSelects) {
         if (MapParseUtils.hasField(operation, columnCA.getAlias())) {
+            for (Field field : ignoreSelects) {
+                if (field.getAlias().equals(columnCA.getAlias())) {
+                    return;
+                }
+            }
             boolean isHad = false;
             Integer cid = null;
             for (Map.Entry<Integer, ColumnCA> item : columnCASMaps.entrySet()) {
                 ColumnCA columnCA1 = item.getValue();
-                if (columnCA1.getTableCA().getId() == tableCA.getId() && columnCA1.getName().equals(alias)) {
+                if (columnCA1.getTableCA().getId().equals(tableCA.getId()) && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;
                 }
             }
-            if (columnCA.getId() == cid) {
+            if (columnCA.getId().equals(cid)) {
                 return;
             }
             if (!isHad) {
                 cid = index++;
                 ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 columnCASMaps.put(cid, columnCA2);
-                buildColumnCAFields(tableCA, trans.getParentId(), columnCA2);
+                buildColumnCAFields(tableCA, trans.getParentId(), trans.getId(), columnCA2, ignoreSelects);
             }
             columnCASRel.add(new NodeRel(columnCA.getId(), cid));
         }
@@ -180,7 +259,7 @@ public class LineageColumnGenerator {
 
     private void buildSinkSuf(Integer preId, Integer sourcePreId) {
         for (NodeRel nodeRel : columnCASRel) {
-            if (nodeRel.getPreId() == preId) {
+            if (nodeRel.getPreId().equals(preId)) {
                 Integer nextSufId = nodeRel.getSufId();
                 if (sinkColumns.contains(nextSufId)) {
                     columnCASRelChain.add(new NodeRel(sourcePreId, nextSufId));

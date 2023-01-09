@@ -1,16 +1,12 @@
-* [Home](/en-US/introduce.md)
-
+* [Home](/introduce.md)
 * Documents
-    * [master](/en-US/introduce.md)
-  
-* [Downloads](/zh-CN/quick_start/download.md)
-
+    * [master](/introduce.md)
+* [Downloads](/quick_start/download.md)
 * Developers
-  * [开发调试](/zh-CN/developer-guide/debug.md)
-  
-* User Case
-
+  * [Participation and contribution](/zh-CN/developer_guide/how_contribute.md)
+  * [Local debugging](/zh-CN/developer_guide/local_debug.md)
+  * [Remote debugging](/zh-CN/developer_guide/remote_debug.md)
+* User case
 * Language
-  * [中文](/)
-  * [En](/en-US/)
-    
+    * [:cn:中文](/)
+    * [:us:English](/en-US/)

@@ -1,16 +1,10 @@
 package com.dlink.executor;
 
-import com.dlink.assertion.Asserts;
-import com.dlink.interceptor.FlinkInterceptor;
-import com.dlink.interceptor.FlinkInterceptorResult;
-import com.dlink.result.SqlExplainResult;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -19,12 +13,21 @@ import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
+import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.dlink.assertion.Asserts;
+import com.dlink.interceptor.FlinkInterceptor;
+import com.dlink.interceptor.FlinkInterceptorResult;
+import com.dlink.result.SqlExplainResult;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * Executor
@@ -116,6 +119,14 @@ public abstract class Executor {
         this.setConfig = setConfig;
     }
 
+    public TableConfig getTableConfig() {
+        return stEnvironment.getConfig();
+    }
+
+    public String getTimeZone() {
+        return getTableConfig().getLocalTimeZone().getId();
+    }
+
     protected void init() {
         initEnvironment();
         initStreamExecutionEnvironment();
@@ -204,6 +215,10 @@ public abstract class Executor {
 
     public JobExecutionResult execute(String jobName) throws Exception {
         return environment.execute(jobName);
+    }
+
+    public JobClient executeAsync(String jobName) throws Exception {
+        return environment.executeAsync(jobName);
     }
 
     public TableResult executeSql(String statement) {

@@ -26,6 +26,12 @@ public class PhoenixDialect extends AbstractDialect {
     private static final int MIN_DECIMAL_PRECISION = 1;
 
     @Override
+    public String getSelectFromStatement(String tableName, String[] selectFields, String[] conditionFields) {
+
+        return null;
+    }
+
+    @Override
     public boolean canHandle(String url) {
         return url.startsWith("jdbc:phoenix:");
     }

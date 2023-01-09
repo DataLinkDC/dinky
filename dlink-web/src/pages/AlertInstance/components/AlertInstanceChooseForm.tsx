@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Modal,List,Card} from 'antd';
+import {Card, List, Modal} from 'antd';
 
 import {AlertInstanceTableListItem} from '../data.d';
 import {connect} from "umi";
@@ -7,8 +7,10 @@ import {ALERT_CONFIG_LIST, ALERT_TYPE, AlertConfig} from "@/pages/AlertInstance/
 import {getAlertIcon} from "@/pages/AlertInstance/icon";
 import {AlertStateType} from "@/pages/AlertInstance/model";
 import DingTalkForm from "@/pages/AlertInstance/components/DingTalkForm";
-import {createOrModifyAlertInstance} from "@/pages/AlertInstance/service";
+import {createOrModifyAlertInstance, sendTest} from "@/pages/AlertInstance/service";
 import WeChatForm from "@/pages/AlertInstance/components/WeChatForm";
+import FeiShuForm from "@/pages/AlertInstance/components/FeiShuForm";
+import EmailForm from "@/pages/AlertInstance/components/EmailForm";
 
 export type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<AlertInstanceTableListItem>) => void;
@@ -40,6 +42,11 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
       handleUpdate(value);
     }
   };
+
+  const onTest = async (value:any)=>{
+    await sendTest(value);
+  };
+
 
   return (
     <Modal
@@ -86,6 +93,9 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           onSubmit={(value) => {
             onSubmit(value);
           }}
+          onTest={(value) => {
+            onTest(value);
+          }}
         />:undefined
       }
       {(values?.type == ALERT_TYPE.WECHAT || alertType == ALERT_TYPE.WECHAT)?
@@ -98,6 +108,41 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
           values={values}
           onSubmit={(value) => {
             onSubmit(value);
+          }}
+          onTest={(value) => {
+            onTest(value);
+          }}
+        />:undefined
+      }
+      {(values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU)?
+        <FeiShuForm
+          onCancel={() => {
+            setAlertType(undefined);
+            handleChooseModalVisible();
+          }}
+          modalVisible={values?.type == ALERT_TYPE.FEISHU || alertType == ALERT_TYPE.FEISHU}
+          values={values}
+          onSubmit={(value) => {
+            onSubmit(value);
+          }}
+          onTest={(value) => {
+            onTest(value);
+          }}
+        />:undefined
+      }
+      {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL)?
+        <EmailForm
+          onCancel={() => {
+            setAlertType(undefined);
+            handleChooseModalVisible();
+          }}
+          modalVisible={values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL}
+          values={values}
+          onSubmit={(value) => {
+            onSubmit(value);
+          }}
+          onTest={(value) => {
+            onTest(value);
           }}
         />:undefined
       }

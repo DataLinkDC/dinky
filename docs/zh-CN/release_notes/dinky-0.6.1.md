@@ -9,6 +9,8 @@ Dinky 0.6.1 是一个 Bug 修复版本。
 - 新增 savepointTask 的 Open API
 - 新增 WeChat WebHook 报警方式
 - 新增 数据开发全屏的退出按钮
+- 新增 飞书 WebHook 报警方式
+- 新增 邮箱 报警方式
 
 ## 修复和优化
 

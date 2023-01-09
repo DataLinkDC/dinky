@@ -1,6 +1,8 @@
 package com.dlink.trans;
 
 import com.dlink.executor.CustomTableEnvironmentImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Arrays;
 import java.util.List;
@@ -12,6 +14,8 @@ import java.util.List;
  * @since 2021/6/14 18:18
  */
 public class AbstractOperation {
+
+    protected static final Logger logger = LoggerFactory.getLogger(AbstractOperation.class);
 
     protected String statement;
 

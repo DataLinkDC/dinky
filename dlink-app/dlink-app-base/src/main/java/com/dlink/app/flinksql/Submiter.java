@@ -41,7 +41,7 @@ public class Submiter {
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint," +
                 "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config," +
-                " env_id as envId from dlink_task where id = " + id;
+                " env_id as envId,batch_model AS useBatchModel from dlink_task where id = " + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {

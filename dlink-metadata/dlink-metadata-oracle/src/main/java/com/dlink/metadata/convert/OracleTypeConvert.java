@@ -13,31 +13,47 @@ import com.dlink.model.ColumnType;
 public class OracleTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
+        ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
-            return ColumnType.STRING;
+            return columnType;
         }
         String t = column.getType().toLowerCase();
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("date")) {
-            return ColumnType.DATE;
+            columnType = ColumnType.LOCALDATETIME;
         } else if (t.contains("timestamp")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("number")) {
             if (t.matches("number\\(+\\d\\)")) {
-                return ColumnType.INTEGER;
+                if (isNullable) {
+                    columnType = ColumnType.INTEGER;
+                } else {
+                    columnType = ColumnType.INT;
+                }
             } else if (t.matches("number\\(+\\d{2}+\\)")) {
-                return ColumnType.LONG;
+                if (isNullable) {
+                    columnType = ColumnType.JAVA_LANG_LONG;
+                } else {
+                    columnType = ColumnType.LONG;
+                }
+            } else {
+                columnType = ColumnType.DECIMAL;
             }
-            return ColumnType.DECIMAL;
         } else if (t.contains("float")) {
-            return ColumnType.FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
+            }
         } else if (t.contains("clob")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("blob")) {
-            return ColumnType.BYTES;
+            columnType = ColumnType.BYTES;
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override
@@ -50,10 +66,13 @@ public class OracleTypeConvert implements ITypeConvert {
             case TIMESTAMP:
                 return "timestamp";
             case INTEGER:
+            case INT:
             case LONG:
+            case JAVA_LANG_LONG:
             case DECIMAL:
                 return "number";
             case FLOAT:
+            case JAVA_LANG_FLOAT:
                 return "float";
             case BYTES:
                 return "blob";

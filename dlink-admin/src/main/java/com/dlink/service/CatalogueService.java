@@ -27,4 +27,6 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     boolean removeCatalogueAndTaskById(Integer id);
 
     boolean moveCatalogue(Integer id, Integer parentId);
+
+    boolean copyTask(Catalogue catalogue);
 }

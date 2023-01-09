@@ -7,6 +7,7 @@ import {ALERT_TYPE} from "@/pages/AlertInstance/conf";
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<AlertInstanceTableListItem>) => void;
+  onTest: (values: Partial<AlertInstanceTableListItem>) => void;
   modalVisible: boolean;
   values: Partial<AlertInstanceTableListItem>;
 };
@@ -30,11 +31,18 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
+    onTest: handleTest,
     modalVisible,
   } = props;
 
   const onValuesChange = (change: any,all: any)=>{
     setFormVals({...formVals,...change});
+  };
+
+  const sendTestForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setFormVals(buildJSONData(formVals,fieldsValue));
+    handleTest(buildJSONData(formVals,fieldsValue));
   };
 
   const submitForm = async () => {
@@ -111,6 +119,18 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
           <Switch checkedChildren="启用" unCheckedChildren="禁用"
                   defaultChecked={vals.isAtAll}/>
         </Form.Item>
+        {vals.isAtAll ? undefined :
+          <>
+            <Form.Item
+              name="atMobiles"
+              label="@手机号"
+              rules={[{required: true, message: '请输入@手机号！'}]}
+            >
+              <Input placeholder="请输入@手机号 多个使用英文逗号分开 "/>
+            </Form.Item>
+          </>
+        }
+
         <Form.Item
           name="enabled"
           label="是否启用">
@@ -135,6 +155,7 @@ const DingTalkForm: React.FC<AlertInstanceFormProps> = (props) => {
     return (
       <>
         <Button onClick={() => handleModalVisible(false)}>取消</Button>
+        <Button type="primary" onClick={() => sendTestForm()}>测试</Button>
         <Button type="primary" onClick={() => submitForm()}>
           完成
         </Button>

@@ -1,5 +1,8 @@
 package com.dlink.service.impl;
 
+import com.dlink.constant.FlinkRestResultConstant;
+import org.springframework.stereotype.Service;
+
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.db.service.impl.SuperServiceImpl;
@@ -8,7 +11,6 @@ import com.dlink.model.JobHistory;
 import com.dlink.service.JobHistoryService;
 import com.dlink.utils.JSONUtil;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.stereotype.Service;
 
 /**
  * JobHistoryServiceImpl
@@ -64,11 +66,14 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
     }
 
     @Override
-    public JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId) {
+    public JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave) {
         JobHistory jobHistory = new JobHistory();
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
+            if(jobInfo.has(FlinkRestResultConstant.ERRORS)){
+                return jobHistory;
+            }
             JsonNode exception = FlinkAPI.build(jobManagerHost).getException(jobId);
             JsonNode checkPoints = FlinkAPI.build(jobManagerHost).getCheckPoints(jobId);
             JsonNode checkPointsConfig = FlinkAPI.build(jobManagerHost).getCheckPointsConfig(jobId);
@@ -78,12 +83,15 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             jobHistory.setCheckpointsJson(JSONUtil.toJsonString(checkPoints));
             jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
             jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
-            if (Asserts.isNotNull(getById(id))) {
-                updateById(jobHistory);
-            } else {
-                save(jobHistory);
+            if (needSave) {
+                if (Asserts.isNotNull(getById(id))) {
+                    updateById(jobHistory);
+                } else {
+                    save(jobHistory);
+                }
             }
         } catch (Exception e) {
+            e.printStackTrace();
         } finally {
             return jobHistory;
         }

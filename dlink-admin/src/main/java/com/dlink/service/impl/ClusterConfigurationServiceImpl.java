@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * ClusterConfigServiceImpl
@@ -50,18 +51,16 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
         GatewayConfig gatewayConfig = new GatewayConfig();
         if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    config.get("hadoopConfigPath").toString()));
+                config.get("flinkLibPath").toString(),
+                config.get("hadoopConfigPath").toString()));
         } else {
-            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    ""));
+            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         if (config.containsKey("flinkConfig")) {
             gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Yarn")) {
-            gatewayConfig.setType(GatewayType.YARN_PER_JOB);
+            gatewayConfig.setType(GatewayType.YARN_APPLICATION);
         } else if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Kubernetes")) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
             Map kubernetesConfig = (Map) config.get("kubernetesConfig");
@@ -70,6 +69,9 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             }
             if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
+            }else{
+                //初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", UUID.randomUUID().toString());
             }
             if (kubernetesConfig.containsKey("kubernetes.container.image")) {
                 gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());

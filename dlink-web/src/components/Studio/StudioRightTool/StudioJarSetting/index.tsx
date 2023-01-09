@@ -1,10 +1,9 @@
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
-import {Form, InputNumber, Input, Switch, Select, Tag, Row, Col, Badge, Tooltip, Button, Space} from "antd";
+import {Form, InputNumber, Input, Select, Tag, Row, Col, Badge, Tooltip, Button, Space} from "antd";
 import {InfoCircleOutlined, PlusOutlined, MinusSquareOutlined, MinusCircleOutlined,PaperClipOutlined} from "@ant-design/icons";
 import styles from "./index.less";
 import {useEffect} from "react";
-import {showTables} from "@/components/Studio/StudioEvent/DDL";
 import {JarStateType} from "@/pages/Jar/model";
 import {Scrollbars} from "react-custom-scrollbars";
 import {RUN_MODE} from "@/components/Studio/conf";
@@ -13,12 +12,12 @@ const {Option} = Select;
 
 const StudioJarSetting = (props: any) => {
 
-  const {clusterConfiguration, current, form, dispatch, tabs, currentSession, jars,env, toolHeight} = props;
+  const {clusterConfiguration, current, form, dispatch, tabs, jars,env, toolHeight} = props;
 
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -29,21 +28,7 @@ const StudioJarSetting = (props: any) => {
   const getJarOptions = () => {
     const itemList = [];
     for (const item of jars) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
-      itemList.push(<Option key={item.id} value={item.id} label={tag}>
-        {tag}
-      </Option>)
-    }
-    return itemList;
-  };
-
-  const getEnvOptions = () => {
-    const itemList = [<Option key={0} value={0} label='无'>
-      无
-    </Option>];
-    for (const item of env) {
-      const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
-      {item.fragment ? <PaperClipOutlined /> : undefined}{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -72,9 +57,6 @@ const StudioJarSetting = (props: any) => {
     });
   };
 
-  const onChangeClusterSession = () => {
-    showTables(currentSession.session, dispatch);
-  };
   return (
     <>
       <Row>
@@ -132,26 +114,6 @@ const StudioJarSetting = (props: any) => {
               {getJarOptions()}
             </Select>
           </Form.Item>
-          <Form.Item
-            label="作业名" className={styles.form_item} name="jobName"
-            tooltip='设置任务名称，默认为作业名'
-          >
-            <Input placeholder="自定义作业名"/>
-          </Form.Item>
-          <Form.Item label="FlinkSQL 环境"
-                     tooltip={`选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。`}
-                     name="envId"
-                     className={styles.form_item}>
-            <Select
-              style={{width: '100%'}}
-              placeholder="选择 FlinkSQL 环境，非必填"
-              allowClear
-              optionLabelProp="label"
-              defaultValue={0} value={0}
-            >
-              {getEnvOptions()}
-            </Select>
-          </Form.Item>
           <Row>
             <Col span={12}>
               <Form.Item label="CheckPoint" tooltip="设置Flink任务的检查点步长，0 代表不启用" name="checkPoint"
@@ -165,29 +127,6 @@ const StudioJarSetting = (props: any) => {
                 tooltip="设置Flink任务的并行度，最小为 1"
               >
                 <InputNumber min={1} max={9999} defaultValue={1}/>
-              </Form.Item>
-            </Col>
-          </Row>
-          <Row>
-            <Col span={12}>
-              <Form.Item
-                label="Fragment" className={styles.form_item} name="fragment" valuePropName="checked"
-                tooltip={{title: '【增强特性】 开启FlinkSql片段机制，使用“:=”进行定义（以“;”结束），“${}”进行调用', icon: <InfoCircleOutlined/>}}
-              >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                />
-              </Form.Item>
-            </Col>
-            <Col span={12}>
-              <Form.Item
-                label="启用语句集" className={styles.form_item} name="statementSet" valuePropName="checked"
-                tooltip={{
-                  title: '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
-                  icon: <InfoCircleOutlined/>
-                }}
-              >
-                <Switch checkedChildren="启用" unCheckedChildren="禁用"
-                />
               </Form.Item>
             </Col>
           </Row>

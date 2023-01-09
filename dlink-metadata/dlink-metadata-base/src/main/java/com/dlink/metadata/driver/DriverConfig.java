@@ -1,8 +1,11 @@
 package com.dlink.metadata.driver;
 
 
+import com.dlink.assertion.Asserts;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Map;
 
 /**
  * DriverConfig
@@ -32,5 +35,11 @@ public class DriverConfig {
         this.url = url;
         this.username = username;
         this.password = password;
+    }
+
+    public static DriverConfig build(Map<String, String> confMap) {
+        Asserts.checkNull(confMap, "数据源配置不能为空");
+        return new DriverConfig(confMap.get("name"), confMap.get("type"), confMap.get("url"), confMap.get("username")
+            , confMap.get("password"));
     }
 }

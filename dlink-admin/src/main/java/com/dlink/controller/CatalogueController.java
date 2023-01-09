@@ -85,11 +85,10 @@ public class CatalogueController {
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        BufferedReader br = null;
-        try {
+        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
+             BufferedReader br = new BufferedReader(isr);) {
             if (sourceFile.isFile() && sourceFile.exists()) {
-                InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
-                br = new BufferedReader(isr);
+
                 String lineText = null;
                 while ((lineText = br.readLine()) != null) {
                     sb.append(lineText).append("\n");
@@ -97,14 +96,6 @@ public class CatalogueController {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
         }
         return sb.toString();
     }
@@ -227,6 +218,16 @@ public class CatalogueController {
             return Result.succeed(true, "移动成功");
         } else {
             return Result.failed(false, "移动失败");
+        }
+    }
+
+    @PostMapping("/copyTask")
+    public Result copyTask(@RequestBody Catalogue catalogue) throws Exception {
+
+        if ( catalogueService.copyTask(catalogue)) {
+            return Result.succeed("复制作业成功");
+        } else {
+            return Result.failed("复制作业失败");
         }
     }
 }

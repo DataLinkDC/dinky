@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink-metadata</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -26,35 +26,6 @@
             <artifactId>druid-spring-boot-starter</artifactId>
             <scope>provided</scope>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hive</groupId>-->
-<!--            <artifactId>hive-metastore</artifactId>-->
-<!--            <version>2.1.1-cdh6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>commons-logging</groupId>-->
-<!--            <artifactId>commons-logging</artifactId>-->
-<!--            <version>1.2</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hadoop</groupId>-->
-<!--            <artifactId>hadoop-common</artifactId>-->
-<!--            <version>3.0.0-cdh6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.hive</groupId>-->
-<!--            <artifactId>hive-exec</artifactId>-->
-<!--            <version>2.1.1-cdh6.2.1</version>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>org.apache.thrift</groupId>-->
-<!--            <artifactId>libfb303</artifactId>-->
-<!--            <version>0.9.3</version>-->
-<!--        </dependency>-->
 
         <dependency>
             <groupId>org.slf4j</groupId>

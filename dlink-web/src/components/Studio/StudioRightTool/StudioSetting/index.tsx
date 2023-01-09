@@ -20,7 +20,7 @@ const StudioSetting = (props: any) => {
   const getClusterOptions = () => {
     const itemList = [];
     for (const item of sessionCluster) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -31,7 +31,7 @@ const StudioSetting = (props: any) => {
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias}</>);
+      const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)
@@ -163,12 +163,6 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          <Form.Item
-            label="作业名" className={styles.form_item} name="jobName"
-            tooltip='设置任务名称，默认为作业名'
-          >
-            <Input placeholder="自定义作业名"/>
-          </Form.Item>
           <Form.Item label="FlinkSQL 环境"
                      tooltip={`选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。`}
                      name="envId"

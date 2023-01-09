@@ -5,7 +5,7 @@
     <parent>
         <artifactId>dlink</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.6.1</version>
+        <version>0.6.5</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -15,6 +15,8 @@
         <module>dlink-alert-base</module>
         <module>dlink-alert-dingtalk</module>
         <module>dlink-alert-wechat</module>
+        <module>dlink-alert-feishu</module>
+        <module>dlink-alert-email</module>
     </modules>
 
     <properties>

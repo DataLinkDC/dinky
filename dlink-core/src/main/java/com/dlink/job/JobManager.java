@@ -1,5 +1,28 @@
 package com.dlink.job;
 
+import org.apache.flink.configuration.CoreOptions;
+import org.apache.flink.configuration.DeploymentOptions;
+import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.core.execution.JobClient;
+import org.apache.flink.runtime.jobgraph.JobGraph;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
+import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
+import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
+import org.apache.flink.streaming.api.graph.StreamGraph;
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.yarn.configuration.YarnConfigOptions;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.constant.FlinkSQLConstant;
@@ -21,7 +44,13 @@ import com.dlink.model.SystemConfiguration;
 import com.dlink.parser.SqlType;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
-import com.dlink.result.*;
+import com.dlink.result.ErrorResult;
+import com.dlink.result.ExplainResult;
+import com.dlink.result.IResult;
+import com.dlink.result.InsertResult;
+import com.dlink.result.ResultBuilder;
+import com.dlink.result.ResultPool;
+import com.dlink.result.SelectResult;
 import com.dlink.session.ExecutorEntity;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
@@ -31,27 +60,6 @@ import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 import com.dlink.utils.UDFUtil;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.api.common.JobExecutionResult;
-import org.apache.flink.configuration.CoreOptions;
-import org.apache.flink.configuration.DeploymentOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
-import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
-import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.graph.StreamGraph;
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.yarn.configuration.YarnConfigOptions;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * JobManager
@@ -155,7 +163,7 @@ public class JobManager {
 
     public static boolean useGateway(String type) {
         return (GatewayType.YARN_PER_JOB.equalsValue(type) || GatewayType.YARN_APPLICATION.equalsValue(type)
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
+            || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
     }
 
     private Executor createExecutor() {
@@ -277,7 +285,8 @@ public class JobManager {
                         }
                         if (config.isUseResult()) {
                             // Build insert result.
-                            IResult result = ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(tableResult);
+                            IResult result =
+                                ResultBuilder.build(SqlType.INSERT, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
                             job.setResult(result);
                         }
                     }
@@ -300,7 +309,8 @@ public class JobManager {
                         FlinkInterceptorResult flinkInterceptorResult = FlinkInterceptor.build(executor, item.getValue());
                         if (Asserts.isNotNull(flinkInterceptorResult.getTableResult())) {
                             if (config.isUseResult()) {
-                                IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(flinkInterceptorResult.getTableResult());
+                                IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone())
+                                    .getResult(flinkInterceptorResult.getTableResult());
                                 job.setResult(result);
                             }
                         } else {
@@ -313,7 +323,8 @@ public class JobManager {
                                     }});
                                 }
                                 if (config.isUseResult()) {
-                                    IResult result = ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(tableResult);
+                                    IResult result =
+                                        ResultBuilder.build(item.getType(), config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(tableResult);
                                     job.setResult(result);
                                 }
                             }
@@ -355,15 +366,15 @@ public class JobManager {
                             break;
                         }
                     }
-                    JobExecutionResult jobExecutionResult = executor.execute(config.getJobName());
-                    if (jobExecutionResult.isJobExecutionResult()) {
-                        job.setJobId(jobExecutionResult.getJobID().toHexString());
+                    JobClient jobClient = executor.executeAsync(config.getJobName());
+                    if (Asserts.isNotNull(jobClient)) {
+                        job.setJobId(jobClient.getJobID().toHexString());
                         job.setJids(new ArrayList<String>() {{
                             add(job.getJobId());
                         }});
                     }
                     if (config.isUseResult()) {
-                        IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel()).getResult(null);
+                        IResult result = ResultBuilder.build(SqlType.EXECUTE, config.getMaxRowNum(), config.isUseChangeLog(), config.isUseAutoCancel(), executor.getTimeZone()).getResult(null);
                         job.setResult(result);
                     }
                 }
@@ -426,7 +437,7 @@ public class JobManager {
                 }
                 LocalDateTime startTime = LocalDateTime.now();
                 TableResult tableResult = executor.executeSql(newStatement);
-                IResult result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false).getResult(tableResult);
+                IResult result = ResultBuilder.build(operationType, config.getMaxRowNum(), false, false, executor.getTimeZone()).getResult(tableResult);
                 result.setStartTime(startTime);
                 return result;
             }
@@ -474,7 +485,7 @@ public class JobManager {
     public boolean cancel(String jobId) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.CANCEL.getValue(),
-                    null, null));
+                null, null));
             Gateway.build(config.getGatewayConfig()).savepointJob();
             return true;
         } else {
@@ -490,7 +501,7 @@ public class JobManager {
     public SavePointResult savepoint(String jobId, String savePointType, String savePoint) {
         if (useGateway && !useRestAPI) {
             config.getGatewayConfig().setFlinkConfig(FlinkConfig.build(jobId, ActionType.SAVEPOINT.getValue(),
-                    savePointType, null));
+                savePointType, null));
             return Gateway.build(config.getGatewayConfig()).savepointJob(savePoint);
         } else {
             return FlinkAPI.build(config.getAddress()).savepoints(jobId, savePointType);

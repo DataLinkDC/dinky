@@ -4,7 +4,7 @@ import {
   PauseCircleTwoTone, CarryOutTwoTone, DeleteTwoTone, PlayCircleTwoTone, CameraTwoTone, SnippetsTwoTone,
   FileAddTwoTone, FolderOpenTwoTone, SafetyCertificateTwoTone, SaveTwoTone, FlagTwoTone, CodeTwoTone,
   EnvironmentOutlined, SmileOutlined, RocketTwoTone, QuestionCircleTwoTone, MessageOutlined, ClusterOutlined
-  , EditTwoTone, RestTwoTone, ShrinkOutlined
+  , EditTwoTone, RestTwoTone, ShrinkOutlined, ApiTwoTone
 } from "@ant-design/icons";
 import Space from "antd/es/space";
 import Divider from "antd/es/divider";
@@ -14,6 +14,7 @@ import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {CODE, postDataArray} from "@/components/Common/crud";
 import {executeSql, getJobPlan} from "@/pages/DataStudio/service";
+import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
@@ -198,9 +199,10 @@ const StudioMenu = (props: any) => {
     const res = getJobPlan(param);
     handleGraphModalVisible(true);
     res.then((result) => {
-      if (result.code == 0) {
+      if (result.code == CODE.SUCCESS) {
         setGraphData(buildGraphData(result.datas));
       } else {
+        message.error(`获取作业执行计划失败，原因：\n${result.msg}`);
         setGraphData(undefined);
       }
     })
@@ -455,6 +457,18 @@ const StudioMenu = (props: any) => {
     return itemList;
   };
 
+  const showAPI = () => {
+    Modal.info({
+      title: current.task.alias + ' API 手册',
+      width: 1000,
+      content: (
+        <TaskAPI task={current.task}/>
+      ),
+      onOk() {
+      },
+    });
+  };
+
   const showHelp = () => {
     Modal.info({
       title: '使用帮助',
@@ -498,14 +512,12 @@ const StudioMenu = (props: any) => {
       <Divider className={styles["ant-divider-horizontal-0"]}/>
       <Col span={24}>
         <Row>
-          <Col span={4}>
+          <Col span={16}>
             <Breadcrumb className={styles["dw-path"]}>
               <EnvironmentOutlined/>
               <Divider type="vertical"/>
               {getPathItem(currentPath)}
             </Breadcrumb>
-          </Col>
-          <Col span={12}>
             {currentSession.session &&
               (
                 <Breadcrumb className={styles["dw-path"]}>
@@ -644,6 +656,13 @@ const StudioMenu = (props: any) => {
                 />
               </Tooltip> : undefined
             }
+              <Tooltip title="查看 API">
+                <Button
+                  type="text"
+                  icon={<ApiTwoTone />}
+                  onClick={showAPI}
+                />
+              </Tooltip>
               <Tooltip title="查看使用帮助">
                 <Button
                   type="text"
@@ -651,7 +670,13 @@ const StudioMenu = (props: any) => {
                   onClick={showHelp}
                 />
               </Tooltip>
-            </Col> : undefined}
+            </Col> : <Col span={8}><Tooltip title="查看使用帮助">
+              <Button
+                type="text"
+                icon={<QuestionCircleTwoTone/>}
+                onClick={showHelp}
+              />
+            </Tooltip></Col>}
         </Row>
       </Col>
       <StudioExplain

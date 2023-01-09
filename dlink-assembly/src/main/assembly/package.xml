@@ -12,7 +12,11 @@
         <fileSet>
             <directory>${project.parent.basedir}/dlink-doc/bin</directory>
             <outputDirectory>./</outputDirectory>
+            <lineEnding>unix</lineEnding>
             <fileMode>0755</fileMode>
+            <includes>
+                <include>auto.sh</include>
+            </includes>
         </fileSet>
 
         <!-- 打包dlink-doc中的配置文件到打包目录/sql下 -->
@@ -73,7 +77,13 @@
                 <include>dlink-client-1.14-${project.version}.jar</include>
             </includes>
         </fileSet>
-
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-1.15/target</directory>
+            <outputDirectory>extends</outputDirectory>
+            <includes>
+                <include>dlink-client-1.15-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <!-- 将模块dlink-connectors的jar文件放到打包目录/lib下 -->
         <fileSet>
             <directory>${project.parent.basedir}/dlink-connectors/dlink-connector-jdbc-1.13/target</directory>
@@ -182,6 +192,22 @@
                 <include>dlink-alert-wechat-${project.version}.jar</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-feishu/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-alert-feishu-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-alert/dlink-alert-email/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dlink-alert-email-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <!-- 将模块dlink-extends的常用jar文件放到打包目录/plugins下 -->
         <!--<fileSet>
             <directory>${project.parent.basedir}/dlink-extends/target
@@ -228,6 +254,27 @@
             <outputDirectory>jar</outputDirectory>
             <includes>
                 <include>dlink-app-1.14-${project.version}-jar-with-dependencies.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-app/dlink-app-1.15/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-app-1.15-${project.version}-jar-with-dependencies.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-client/dlink-client-base/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-client-base-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/dlink-common/target</directory>
+            <outputDirectory>jar</outputDirectory>
+            <includes>
+                <include>dlink-common-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>

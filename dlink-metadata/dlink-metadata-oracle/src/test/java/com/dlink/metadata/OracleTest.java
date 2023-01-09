@@ -8,6 +8,7 @@ import com.dlink.model.Schema;
 import org.junit.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * OracleTest
@@ -21,6 +22,7 @@ public class OracleTest {
 
     public Driver getDriver() {
         DriverConfig config = new DriverConfig();
+        config.setName(UUID.randomUUID().toString());
         config.setType("Oracle");
         config.setIp(IP);
         config.setPort(1521);

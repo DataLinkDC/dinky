@@ -1,39 +1,39 @@
-Dinky平台提供OpenAPI能力，通过调用Dinky的OpenAPI可以使用Dinky的功能，实现应用和Dinky的集成和交互。
+Dinky 平台提供 OpenAPI 能力，通过调用 Dinky 的 OpenAPI 可以使用 Dinky 的功能，实现应用和 Dinky 的集成和交互。
 
 ### 背景
 
-Dinky的OpenAPI提供了10多种API功能。通过调用API，可以快速进行操作和系统集成对接等工作，提高数据开发效率，满足企业定制化需求。您还可以通过开放平台，轻松获取OpenAPI的使用情况。
+Dinky 的O penAPI 提供了 10 多种 API 功能。通过调用 API，可以快速进行操作和系统集成对接等工作，提高数据开发效率，满足企业定制化需求。您还可以通过开放平台，轻松获取 OpenAPI 的使用情况。
 
-当前支持的OpenAPI包括如下：
+当前支持的 OpenAPI 包括如下：
 
 | 序号 |    执行模式    |      类型名称      |               作用               |
 | :--: | :------------: | :----------------: | :------------------------------: |
-|  1   |   explainSql   |       cancel       |       调用取消FlinkSQL作业       |
-|  2   |   explainSql   |     statement      |        调用statement语句         |
-|  3   |   executeJar   |  yarn-application  |  调用执行yarn-application jar包  |
-|  4   |   executeSql   | kubernetes-session |  调用执行作业在k8ssession上运行  |
-|  5   |   executeSql   |       local        |    调用执行作业在local上运行     |
-|  6   |   executeSql   |    yarn-per-job    | 调用执行作业在yarn-per-job上运行 |
-|  7   |   executeSql   |     standalone     |  调用执行作业在standalone上运行  |
-|  8   |   executeSql   |    yarn-session    | 调用执行作业在yarn-session上运行 |
+|  1   |   explainSql   |       cancel       |       调用取消 FlinkSQL 作业       |
+|  2   |   explainSql   |     statement      |        调用 statement 语句         |
+|  3   |   executeJar   |  yarn-application  |  调用执行 Yarn-Application jar包  |
+|  4   |   executeSql   | kubernetes-session |  调用执行作业在 K8ssession 上运行  |
+|  5   |   executeSql   |       local        |    调用执行作业在 Local 上运行     |
+|  6   |   executeSql   |    yarn-per-job    | 调用执行作业在 Yarn-per-job 上运行 |
+|  7   |   executeSql   |     standalone     |  调用执行作业在 Standalone 上运行  |
+|  8   |   executeSql   |    yarn-session    | 调用执行作业在 Yarn-session 上运行 |
 |  9   |   getJobData   |                    |                                  |
 |  10  |   getJobPlan   |     statement      |         调用获取执行计划         |
-|  11  | getStreamGraph |     statement      |       调用获取Flink DAG图        |
-|  12  |   savepoint    |                    |     调用手动保存checkpoints      |
-|  13  | savepointTask  |                    |       调用并触发savepoint        |
+|  11  | getStreamGraph |     statement      |       调用获取 Flink DAG 图        |
+|  12  |   savepoint    |                    |     调用手动保存 Checkpoints      |
+|  13  | savepointTask  |                    |       调用并触发 Savepoint        |
 |  14  |   submitTask   |                    |             作业调度             |
 
 ### 示例
 
 **explainSql**
 
-   explainSql包括FlinkSQL作业取消和statement语句执行
+   explainSql 包括 FlinkSQL 作业取消和 statement 语句执行
 
-FlinkSQL作业cancel：
+FlinkSQL 作业 cancel：
 
 **explainSql**
 
-explainSql包括Fcancel
+explainSql 包括 cancel
 
 ```
 http://127.0.0.1:8888/openapi/explainSql
@@ -55,7 +55,7 @@ http://127.0.0.1:8888/openapi/explainSql
 }
 ```
 
-statement语句执行：
+statement 语句执行：
 
 ```
  http://127.0.0.1:8888/openapi/explainSql
@@ -80,7 +80,7 @@ statement语句执行：
 
 **executeJar**
 
-yarn-application jar包调用并提交
+Yarn-application jar 包调用并提交
 
 ```
  http://127.0.0.1:8888/openapi/executeJar
@@ -114,9 +114,9 @@ yarn-application jar包调用并提交
 
 **executeSql**
 
-executeSql提交执行作业包括local，kubernetes-session，yarn-per-job，standalone，yarn-session 
+executeSql 提交执行作业包括 Local，Kubernetes-session，Yarn-per-job，Standalone，Yarn-session 
 
-local:
+Local:
 
 ```
  http://127.0.0.1:8888/openapi/executeSql 
@@ -145,7 +145,7 @@ local:
 }
 ```
 
-kubernetes-session：
+Kubernetes-session：
 
 ```
  http://127.0.0.1:8888/openapi/executeSql
@@ -175,7 +175,7 @@ kubernetes-session：
 }
 ```
 
-yarn-per-job:
+Yarn-per-job:
 
 ```
 http://127.0.0.1:8888/openapi/executeSql 
@@ -214,7 +214,7 @@ http://127.0.0.1:8888/openapi/executeSql
 }
 ```
 
-yarn-session:
+Yarn-session:
 
 ```
  http://127.0.0.1:8888/openapi/executeSql 
@@ -244,7 +244,7 @@ yarn-session:
 }
 ```
 
-standalone:
+Standalone:
 
 ```
  http://127.0.0.1:8888/openapi/executeSql
@@ -366,4 +366,4 @@ http://127.0.0.1:8888/openapi/savepointTask
 http://127.0.0.1:8888/openapi/submitTask?id=1 
 ```
 
-OpenAPI包括元数据、数据开发、数据集成、运维中心、数据质量、数据服务等。其中数据开发已经开发完成，其他根据版本发布会逐步实现。如果您在数据开发过程中需要使用Dinky OpenAPI，使用方式请参见示例。
+OpenAPI 包括元数据、数据开发、数据集成、运维中心、数据质量、数据服务等。其中数据开发已经开发完成，其他根据版本发布会逐步实现。如果您在数据开发过程中需要使用 Dinky OpenAPI，使用方式请参见示例。

@@ -2,6 +2,7 @@ package com.dlink.controller;
 
 import com.dlink.common.result.ProTableResult;
 import com.dlink.common.result.Result;
+import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.job.JobResult;
 import com.dlink.model.Task;
 import com.dlink.service.TaskService;
@@ -129,6 +130,13 @@ public class TaskController {
         return taskService.releaseTask(id);
     }
 
+
+    @PostMapping("/rollbackTask")
+    public Result rollbackTask(@RequestBody TaskRollbackVersionDTO dto) throws Exception {
+
+       return taskService.rollbackTask(dto);
+    }
+
     /**
      * 维护任务
      */
@@ -179,6 +187,14 @@ public class TaskController {
         } else {
             return Result.succeed(taskService.restartTask(id), "重启成功");
         }
+    }
+
+    /**
+     * 获取当前的 API 的地址
+     */
+    @GetMapping(value = "/getTaskAPIAddress")
+    public Result getTaskAPIAddress() {
+        return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
     }
 }
 

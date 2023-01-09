@@ -13,40 +13,59 @@ import com.dlink.model.ColumnType;
 public class MySqlTypeConvert implements ITypeConvert {
     @Override
     public ColumnType convert(Column column) {
+        ColumnType columnType = ColumnType.STRING;
         if (Asserts.isNull(column)) {
-            return ColumnType.STRING;
+            return columnType;
         }
         String t = column.getType().toLowerCase();
-        if (t.contains("tinyint")) {
-            return ColumnType.BYTE;
-        } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
-            return ColumnType.SHORT;
-        } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {
-            return ColumnType.DECIMAL;
-        } else if (t.contains("bigint") || t.contains("int unsigned")) {
-            return ColumnType.LONG;
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
+        if (t.contains("numeric") || t.contains("decimal")) {
+            columnType = ColumnType.DECIMAL;
+        } else if (t.contains("bigint")) {
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_LONG;
+            } else {
+                columnType = ColumnType.LONG;
+            }
         } else if (t.contains("float")) {
-            return ColumnType.FLOAT;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_FLOAT;
+            } else {
+                columnType = ColumnType.FLOAT;
+            }
         } else if (t.contains("double")) {
-            return ColumnType.DOUBLE;
-        } else if (t.contains("boolean") || t.contains("tinyint(1)")) {
-            return ColumnType.BOOLEAN;
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_DOUBLE;
+            } else {
+                columnType = ColumnType.DOUBLE;
+            }
+        } else if (t.contains("boolean") || t.contains("tinyint(1)") || t.contains("bit")) {
+            if (isNullable) {
+                columnType = ColumnType.JAVA_LANG_BOOLEAN;
+            } else {
+                columnType = ColumnType.BOOLEAN;
+            }
         } else if (t.contains("datetime")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("date")) {
-            return ColumnType.DATE;
+            columnType = ColumnType.DATE;
         } else if (t.contains("timestamp")) {
-            return ColumnType.TIMESTAMP;
+            columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("time")) {
-            return ColumnType.TIME;
+            columnType = ColumnType.TIME;
         } else if (t.contains("char") || t.contains("text")) {
-            return ColumnType.STRING;
+            columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
-            return ColumnType.BYTES;
-        } else if (t.contains("int") || t.contains("mediumint") || t.contains("smallint unsigned")) {
-            return ColumnType.INTEGER;
+            columnType = ColumnType.BYTES;
+        } else if (t.contains("tinyint") || t.contains("mediumint") || t.contains("smallint") || t.contains("int")) {
+            if (isNullable) {
+                columnType = ColumnType.INTEGER;
+            } else {
+                columnType = ColumnType.INT;
+            }
         }
-        return ColumnType.STRING;
+        columnType.setPrecisionAndScale(column.getPrecision(), column.getScale());
+        return columnType;
     }
 
     @Override
@@ -61,12 +80,16 @@ public class MySqlTypeConvert implements ITypeConvert {
             case DECIMAL:
                 return "decimal";
             case LONG:
+            case JAVA_LANG_LONG:
                 return "bigint";
             case FLOAT:
+            case JAVA_LANG_FLOAT:
                 return "float";
             case DOUBLE:
+            case JAVA_LANG_DOUBLE:
                 return "double";
             case BOOLEAN:
+            case JAVA_LANG_BOOLEAN:
                 return "boolean";
             case TIMESTAMP:
                 return "datetime";
@@ -77,6 +100,7 @@ public class MySqlTypeConvert implements ITypeConvert {
             case BYTES:
                 return "binary";
             case INTEGER:
+            case INT:
                 return "int";
             default:
                 return "varchar";

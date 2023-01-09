@@ -36,14 +36,14 @@ public class WeChatSender {
     private static final String CORP_ID_REGEX = "{corpId}";
     private static final String SECRET_REGEX = "{secret}";
     private static final String TOKEN_REGEX = "{token}";
-    private static final String SHOW_TYPE_REGEX = "{showType}";
+    private static final String SHOW_TYPE_REGEX = "{msgtype}";
     private final String weChatAgentId;
     private final String weChatUsers;
     private final String weChatUserSendMsg;
     private final String weChatTokenUrlReplace;
     private final String weChatToken;
     private final String sendType;
-    private final String showType;
+    private static String showType;
     private final String webhookUrl;
     private final String KeyWord ;
     private final Boolean atAll;
@@ -76,12 +76,12 @@ public class WeChatSender {
             userList = Arrays.asList(weChatUsers.split(","));
         }
         if(atAll){
-            userList.add("ALL");
+            userList.add("所有人");
         }
 
         String data ="";
         if (sendType.equals(WeChatType.CHAT.getValue())) {
-            data = markdownByAlert(KeyWord, content ,userList);;
+            data = markdownByAlert(title, content ,userList);;
         }else{
             data = markdownByAlert(title, content, userList);
         }
@@ -171,10 +171,14 @@ public class WeChatSender {
      */
     private static String mkMarkDownAtUsers(List<String> userList){
 
-        StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder("\n");
         if (Asserts.isNotNull(userList)) {
             userList.forEach(value -> {
-                builder.append("<@").append(value).append("> ");
+                if (value.equals("所有人") && showType.equals(ShowType.TEXT.getValue())) {
+                    builder.append("@所有人 ");
+                }else{
+                    builder.append("<@").append(value).append("> ");
+                }
             });
         }
         return builder.toString();
@@ -182,7 +186,7 @@ public class WeChatSender {
 
     private String markdownByAlert(String title, String content,List<String> userList) {
         String result = "";
-        if (showType.equals(ShowType.TABLE.getValue())) {
+        if (showType.equals(ShowType.MARKDOWN.getValue())) {
             result = markdownTable(title, content,userList,sendType);
         } else if (showType.equals(ShowType.TEXT.getValue())) {
             result = markdownText(title, content,userList,sendType);

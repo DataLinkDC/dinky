@@ -1,44 +1,103 @@
 package com.dlink.service.impl;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Resource;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.dlink.alert.Alert;
 import com.dlink.alert.AlertConfig;
 import com.dlink.alert.AlertMsg;
 import com.dlink.alert.AlertResult;
+import com.dlink.alert.ShowType;
+import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Assert;
 import com.dlink.assertion.Asserts;
 import com.dlink.assertion.Tips;
 import com.dlink.common.result.Result;
 import com.dlink.config.Dialect;
 import com.dlink.constant.FlinkRestResultConstant;
+import com.dlink.constant.NetConstant;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.SqlDTO;
+import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
 import com.dlink.gateway.GatewayType;
 import com.dlink.gateway.config.SavePointStrategy;
 import com.dlink.gateway.config.SavePointType;
 import com.dlink.gateway.model.JobInfo;
 import com.dlink.gateway.result.SavePointResult;
-import com.dlink.job.*;
+import com.dlink.job.BuildConfiguration;
+import com.dlink.job.FlinkJobTask;
+import com.dlink.job.FlinkJobTaskPool;
+import com.dlink.job.Job;
+import com.dlink.job.JobConfig;
+import com.dlink.job.JobManager;
+import com.dlink.job.JobResult;
 import com.dlink.mapper.TaskMapper;
 import com.dlink.metadata.driver.Driver;
 import com.dlink.metadata.result.JdbcSelectResult;
-import com.dlink.model.*;
+import com.dlink.model.AlertGroup;
+import com.dlink.model.AlertHistory;
+import com.dlink.model.AlertInstance;
+import com.dlink.model.Cluster;
+import com.dlink.model.DataBase;
+import com.dlink.model.History;
+import com.dlink.model.Jar;
+import com.dlink.model.JobHistory;
+import com.dlink.model.JobInfoDetail;
+import com.dlink.model.JobInstance;
+import com.dlink.model.JobLifeCycle;
+import com.dlink.model.JobManagerConfiguration;
+import com.dlink.model.JobStatus;
+import com.dlink.model.Savepoints;
+import com.dlink.model.Statement;
+import com.dlink.model.SystemConfiguration;
+import com.dlink.model.Task;
+import com.dlink.model.TaskManagerConfiguration;
+import com.dlink.model.TaskVersion;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.service.*;
+import com.dlink.service.AlertGroupService;
+import com.dlink.service.AlertHistoryService;
+import com.dlink.service.ClusterConfigurationService;
+import com.dlink.service.ClusterService;
+import com.dlink.service.DataBaseService;
+import com.dlink.service.HistoryService;
+import com.dlink.service.JarService;
+import com.dlink.service.JobHistoryService;
+import com.dlink.service.JobInstanceService;
+import com.dlink.service.SavepointsService;
+import com.dlink.service.StatementService;
+import com.dlink.service.TaskService;
+import com.dlink.service.TaskVersionService;
 import com.dlink.utils.CustomStringJavaCompiler;
 import com.dlink.utils.JSONUtil;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import cn.hutool.core.bean.BeanUtil;
 
 /**
  * 任务 服务实现类
@@ -69,6 +128,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private AlertGroupService alertGroupService;
     @Autowired
     private AlertHistoryService alertHistoryService;
+    @Autowired
+    private HistoryService historyService;
+    @Resource
+    private TaskVersionService taskVersionService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -78,6 +141,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private String username;
     @Value("${spring.datasource.password}")
     private String password;
+    @Value("${server.port}")
+    private String serverPort;
 
     private String buildParas(Integer id) {
         return "--id " + id + " --driver " + driver + " --url " + url + " --username " + username + " --password " + password;
@@ -89,7 +154,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -107,7 +172,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         task.setStep(JobLifeCycle.ONLINE.getValue());
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -127,7 +192,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
         if (Dialect.isSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(),
-                    task.getDatabaseId(), null));
+                task.getDatabaseId(), null));
         }
         task.setSavePointStrategy(SavePointStrategy.LATEST.getValue());
         JobConfig config = buildJobConfig(task);
@@ -222,11 +287,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (statement != null) {
                 task.setStatement(statement.getStatement());
             }
-            if (Asserts.isNull(task.getJobInstanceId()) || task.getJobInstanceId() == 0) {
-                JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
-                if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
-                    task.setJobInstanceId(jobInstance.getId());
-                }
+            JobInstance jobInstance = jobInstanceService.getJobInstanceByTaskId(id);
+            if (Asserts.isNotNull(jobInstance) && !JobStatus.isDone(jobInstance.getStatus())) {
+                task.setJobInstanceId(jobInstance.getId());
+            } else {
+                task.setJobInstanceId(0);
             }
         }
         return task;
@@ -236,7 +301,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public boolean saveOrUpdateTask(Task task) {
         // to compiler java udf
         if (Asserts.isNotNullString(task.getDialect()) && Dialect.JAVA.equalsVal(task.getDialect())
-                && Asserts.isNotNullString(task.getStatement())) {
+            && Asserts.isNotNullString(task.getStatement())) {
             CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
             task.setSavePointPath(compiler.getFullClassName());
         }
@@ -245,8 +310,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task taskInfo = getById(task.getId());
             Assert.check(taskInfo);
             if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
-                    JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+                JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+                JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
                 throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止修改！");
             }
             task.setStep(JobLifeCycle.DEVELOP.getValue());
@@ -321,13 +386,84 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 }
             }
             task.setStep(JobLifeCycle.RELEASE.getValue());
-            if (updateById(task)) {
+            Task newTask = createTaskVersionSnapshot(task);
+            if (updateById(newTask)) {
                 return Result.succeed("发布成功");
             } else {
                 return Result.failed("由于未知原因，发布失败");
             }
         }
         return Result.succeed("发布成功");
+    }
+
+
+    public Task createTaskVersionSnapshot(Task task) {
+        List<TaskVersion> taskVersions = taskVersionService.getTaskVersionByTaskId(task.getId());
+        List<Integer> versionIds = taskVersions.stream().map(TaskVersion::getVersionId).collect(Collectors.toList());
+        Map<Integer, TaskVersion> versionMap = taskVersions.stream().collect(Collectors.toMap(TaskVersion::getVersionId, t -> t));
+
+        TaskVersion taskVersion = new TaskVersion();
+        BeanUtil.copyProperties(task, taskVersion);
+        TaskVersionConfigureDTO taskVersionConfigureDTO = new TaskVersionConfigureDTO();
+        BeanUtil.copyProperties(task, taskVersionConfigureDTO);
+        taskVersion.setTaskConfigure(taskVersionConfigureDTO);
+        taskVersion.setTaskId(taskVersion.getId());
+        taskVersion.setId(null);
+        if (Asserts.isNull(task.getVersionId())) {
+            //首次发布，新增版本
+            taskVersion.setVersionId(1);
+            task.setVersionId(1);
+            taskVersionService.save(taskVersion);
+        } else {
+            //说明存在版本，需要判断是否 是回退后的老版本
+            //1、版本号存在
+            //2、md5值与上一个版本一致
+            TaskVersion version = versionMap.get(task.getVersionId());
+            version.setId(null);
+
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+                //||  !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
+            ) {
+                taskVersion.setVersionId(Collections.max(versionIds) + 1);
+                task.setVersionId(Collections.max(versionIds) + 1);
+                taskVersionService.save(taskVersion);
+            }
+        }
+        return task;
+    }
+
+    @Override
+    public Result rollbackTask(TaskRollbackVersionDTO dto) {
+        if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
+            return Result.failed("版本指定失败");
+        }
+        Task taskInfo = getTaskInfoById(dto.getId());
+
+        if (JobLifeCycle.RELEASE.equalsValue(taskInfo.getStep()) ||
+            JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep()) ||
+            JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
+            //throw new BusException("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+            return Result.failed("该作业已" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + "，禁止回滚！");
+        }
+
+        LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>().
+            eq(TaskVersion::getTaskId, dto.getId()).
+            eq(TaskVersion::getVersionId, dto.getVersionId());
+
+        TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
+
+        Task updateTask = new Task();
+        BeanUtil.copyProperties(taskVersion, updateTask);
+        BeanUtil.copyProperties(taskVersion.getTaskConfigure(), updateTask);
+        updateTask.setId(taskVersion.getTaskId());
+        updateTask.setStep(JobLifeCycle.DEVELOP.getValue());
+        baseMapper.updateById(updateTask);
+
+        Statement statement = new Statement();
+        statement.setStatement(taskVersion.getStatement());
+        statement.setId(taskVersion.getTaskId());
+        statementService.updateById(statement);
+        return Result.succeed("回滚版本成功！");
     }
 
     @Override
@@ -361,8 +497,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             } else {
                 return Result.failed("上线失败，原因：" + jobResult.getError());
             }
+        } else if (JobLifeCycle.ONLINE.equalsValue(task.getStep())) {
+            return Result.failed("上线失败，当前作业已上线。");
         }
-        return Result.failed("上线失败，作业不存在。");
+        return Result.failed("上线失败，当前作业未发布。");
     }
 
     @Override
@@ -462,7 +600,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobManager.cancel(jobId);
         }
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
-        if (Asserts.isNotNull(savePointResult)) {
+        if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
                 if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
@@ -486,7 +624,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private JobConfig buildJobConfig(Task task) {
         boolean isJarTask = Dialect.FLINKJAR.equalsVal(task.getDialect());
-        if (!isJarTask && task.isFragment()) {
+        if (!isJarTask && Asserts.isNotNull(task.getFragment()) ? task.getFragment() : false) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
                 task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
@@ -526,15 +664,18 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 Savepoints latestSavepoints = savepointsService.getLatestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(latestSavepoints)) {
                     config.setSavePointPath(latestSavepoints.getPath());
+                    config.getConfig().put("execution.savepoint.path", latestSavepoints.getPath());
                 }
                 break;
             case EARLIEST:
                 Savepoints earliestSavepoints = savepointsService.getEarliestSavepointByTaskId(task.getId());
                 if (Asserts.isNotNull(earliestSavepoints)) {
                     config.setSavePointPath(earliestSavepoints.getPath());
+                    config.getConfig().put("execution.savepoint.path", earliestSavepoints.getPath());
                 }
                 break;
             case CUSTOM:
+                config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
                 break;
             default:
                 config.setSavePointPath(null);
@@ -544,35 +685,83 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
-        JobInstance jobInstance = jobInstanceService.getById(id);
-        Asserts.checkNull(jobInstance, "该任务实例不存在");
-        if (!isCoercive && !inRefreshPlan(jobInstance)) {
-            return jobInstance;
-        }
-        String status = jobInstance.getStatus();
-        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
-        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, cluster.getJobManagerHost(), jobInstance.getJid());
-        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
-        if (Asserts.isNull(jobHistory.getJob()) || jobHistory.getJob().has(FlinkRestResultConstant.ERRORS)) {
-            jobInstance.setStatus(JobStatus.UNKNOWN.getValue());
+        JobInfoDetail jobInfoDetail;
+        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        String key = id.toString();
+        if (pool.exist(key)) {
+            jobInfoDetail = pool.get(key);
         } else {
-            jobInstance.setDuration(jobHistory.getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
-            jobInstance.setStatus(jobHistory.getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+            jobInfoDetail = new JobInfoDetail(id);
+            JobInstance jobInstance = jobInstanceService.getById(id);
+            Asserts.checkNull(jobInstance, "该任务实例不存在");
+            jobInfoDetail.setInstance(jobInstance);
+            Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+            jobInfoDetail.setCluster(cluster);
+            History history = historyService.getById(jobInstance.getHistoryId());
+            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+
+            JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
+
+            Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
+
+            if (Asserts.isNotNullString(history.getJobManagerAddress()) && JobStatus.RUNNING.getValue().equals(jobInfoDetail.getInstance().getStatus())) { // 如果有jobManager地址，则使用该地址
+                FlinkAPI flinkAPI = FlinkAPI.build(history.getJobManagerAddress());
+
+                // 获取jobManager的配置信息 开始
+                BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, flinkAPI);
+                jobInfoDetail.setJobManagerConfiguration(jobManagerConfiguration);
+                // 获取jobManager的配置信息 结束
+
+                // 获取taskManager的配置信息 开始
+                JsonNode taskManagerContainers = flinkAPI.getTaskManagers(); //获取taskManager列表
+                BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI, taskManagerContainers);
+                jobInfoDetail.setTaskManagerConfiguration(taskManagerConfigurationList);
+                // 获取taskManager的配置信息 结束
+
+            }
+
+            if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+                jobInfoDetail.setClusterConfiguration(clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+            }
+            jobInfoDetail.setHistory(history);
+            jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
+            pool.push(key, jobInfoDetail);
         }
-        if (JobStatus.isDone(jobInstance.getStatus()) && !status.equals(jobInstance.getStatus())) {
-            jobInstance.setFinishTime(LocalDateTime.now());
-            handleJobDone(jobInstance);
+        if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
+            return jobInfoDetail.getInstance();
+        }
+        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id, jobInfoDetail.getCluster().getJobManagerHost(), jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
+        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && Asserts.isNull(jobHistory.getJob())) {
+            return jobInfoDetail.getInstance();
+        }
+        jobInfoDetail.setJobHistory(jobHistory);
+        String status = jobInfoDetail.getInstance().getStatus();
+        boolean jobStatusChanged = false;
+        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || Asserts.isNull(jobInfoDetail.getJobHistory().getJob())) {
+            jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
+        } else {
+            jobInfoDetail.getInstance().setDuration(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_DURATION).asLong() / 1000);
+            jobInfoDetail.getInstance().setStatus(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
+        }
+        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus()) && !status.equals(jobInfoDetail.getInstance().getStatus())) {
+            jobStatusChanged = true;
+            jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
+            handleJobDone(jobInfoDetail.getInstance());
         }
         if (isCoercive) {
-            DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
+            DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
         }
-        jobInstanceService.updateById(jobInstance);
-        return jobInstance;
+        if (jobStatusChanged || jobInfoDetail.isNeedSave()) {
+            jobInstanceService.updateById(jobInfoDetail.getInstance());
+        }
+        pool.refresh(jobInfoDetail);
+        return jobInfoDetail.getInstance();
     }
 
     private boolean inRefreshPlan(JobInstance jobInstance) {
         if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+            && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             return true;
         } else {
             return false;
@@ -581,8 +770,41 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public JobInfoDetail refreshJobInfoDetail(Integer id) {
-        return jobInstanceService.getJobInfoDetailInfo(refreshJobInstance(id, true));
+        return jobInstanceService.refreshJobInfoDetailInfo(refreshJobInstance(id, true));
     }
+
+    @Override
+    public String getTaskAPIAddress() {
+        try {
+            InetAddress inetAddress = InetAddress.getLocalHost();
+            if (inetAddress != null) {
+                return inetAddress.getHostAddress() + NetConstant.COLON + serverPort;
+            }
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return "127.0.0.1:" + serverPort;
+    }
+
+    @Override
+    public Integer queryAllSizeByName(String name) {
+
+        return baseMapper.queryAllSizeByName(name);
+    }
+
+
+    private String getDuration(long jobStartTimeMills, long jobEndTimeMills) {
+        Instant startTime = Instant.ofEpochMilli(jobStartTimeMills);
+        Instant endTime = Instant.ofEpochMilli(jobEndTimeMills);
+
+        long days = ChronoUnit.DAYS.between(startTime, endTime);
+        long hours = ChronoUnit.HOURS.between(startTime, endTime);
+        long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
+        long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
+        String duration = days + "天 " + (hours - (days * 24)) + "小时 " + (minutes - (hours * 60)) + "分 " + (seconds - (minutes * 60)) + "秒";
+        return duration;
+    }
+
 
     private void handleJobDone(JobInstance jobInstance) {
         if (Asserts.isNull(jobInstance.getTaskId())) {
@@ -596,20 +818,56 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             updateById(updateTask);
             return;
         }
+        Integer jobInstanceId = jobInstance.getId();
+        JobHistory jobHistory = jobHistoryService.getById(jobInstanceId); //获取任务历史信息
+        String jobJson = jobHistory.getJobJson(); //获取任务历史信息的jobJson
+        ObjectNode jsonNodes = JSONUtil.parseObject(jobJson);
+        if (jsonNodes.has("errors")) {
+            return;
+        }
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long asLongStartTime = jsonNodes.get("start-time").asLong(); //获取任务历史信息的start-time
+        long asLongEndTime = jsonNodes.get("end-time").asLong(); //获取任务历史信息的end-time
+
+        if (asLongEndTime < asLongStartTime) {
+            asLongEndTime = System.currentTimeMillis();
+        }
+        String startTime = dateFormat.format(asLongStartTime);
+        String endTime = dateFormat.format(asLongEndTime);
+//        Long duration = jsonNodes.get("duration").asLong();
+        String duration = getDuration(asLongStartTime, asLongEndTime); //获取任务的 duration 使用的是 start-time 和 end-time 计算 不采用 duration 字段
+
+        String clusterJson = jobHistory.getClusterJson(); //获取任务历史信息的clusterJson 主要获取 jobManagerHost
+        ObjectNode clusterJsonNodes = JSONUtil.parseObject(clusterJson);
+        String jobManagerHost = clusterJsonNodes.get("jobManagerHost").asText();
+
         if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
             if (Asserts.isNotNull(alertGroup)) {
-                List<AlertMsg> alertMsgList = new ArrayList<>();
                 AlertMsg alertMsg = new AlertMsg();
-                alertMsg.setType("Flink 实时监控");
-                alertMsg.setTime(LocalDateTime.now().toString());
-                alertMsg.setId(jobInstance.getId().toString());
-                alertMsg.setName(task.getAlias());
-                alertMsg.setStatus(jobInstance.getStatus());
-                alertMsg.setContent(jobInstance.getJid());
-                alertMsgList.add(alertMsg);
+                alertMsg.setAlertType("Flink 实时监控");
+                alertMsg.setAlertTime(dateFormat.format(new Date()));
+                alertMsg.setJobID(jobInstance.getJid());
+                alertMsg.setJobName(task.getName());
+                alertMsg.setJobType(task.getDialect());
+                alertMsg.setJobStatus(jobInstance.getStatus());
+                alertMsg.setJobStartTime(startTime);
+                alertMsg.setJobEndTime(endTime);
+                alertMsg.setJobDuration(duration);
+
+                String linkUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/overview";
+                String exceptionUrl = "http://" + jobManagerHost + "/#/job/" + jobInstance.getJid() + "/exceptions";
+
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
-                    sendAlert(alertInstance, jobInstance, task, alertMsgList);
+                    Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
+                    if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
+                        alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
+                        alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+                    } else {
+                        alertMsg.setLinkUrl(linkUrl);
+                        alertMsg.setExceptionUrl(exceptionUrl);
+                    }
+                    sendAlert(alertInstance, jobInstance, task, alertMsg);
                 }
             }
         }
@@ -617,12 +875,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         updateById(updateTask);
     }
 
-    private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, List<AlertMsg> alertMsgList) {
+    private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
         AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
         String title = "任务【" + task.getAlias() + "】：" + jobInstance.getStatus();
-        String content = JSONUtil.toJsonString(alertMsgList);
+        String content = alertMsg.toString();
         AlertResult alertResult = alert.send(title, content);
+
         AlertHistory alertHistory = new AlertHistory();
         alertHistory.setAlertGroupId(task.getAlertGroupId());
         alertHistory.setJobInstanceId(jobInstance.getId());

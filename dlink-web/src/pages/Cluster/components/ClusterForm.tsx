@@ -38,7 +38,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    fieldsValue.id= formVals.id;
+    fieldsValue.id = formVals.id;
     setFormVals(fieldsValue);
     handleSubmit(fieldsValue);
   };
@@ -48,14 +48,14 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       <>
         <Form.Item
           name="name"
-          label="标识"
+          label="名称"
           rules={[{required: true, message: '请输入名称！'}]}>
           <Input placeholder="请输入唯一英文标识"/>
         </Form.Item>
 
         <Form.Item
           name="alias"
-          label="名称"
+          label="别名"
         >
           <Input placeholder="请输入名称"/>
         </Form.Item>
@@ -75,6 +75,29 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
         <Form.Item
           name="hosts"
           label="JobManager HA 地址"
+          validateTrigger={['onChange']}
+          rules={[
+            {
+              required: true,
+              validator(_, hostsValue) {
+                let hostArray = [];
+                if (hostsValue.trim().length === 0) {
+                  return Promise.reject(new Error('请输入 JobManager HA 地址!'));
+                } else {
+                  hostArray = hostsValue.split(',')
+                  for (let i = 0; i < hostArray.length; i++) {
+                    if (hostArray[i].includes('/')) {
+                      return Promise.reject(new Error('不符合规则! 不能包含/'));
+                    }
+                    if (parseInt(hostArray[i].split(':')[1]) >= 65535) {
+                      return Promise.reject(new Error('不符合规则! 端口号区间[0-65535]'));
+                    }
+                  }
+                  return Promise.resolve();
+                }
+              },
+            },
+          ]}
         >
           <Input.TextArea
             placeholder="添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081"
@@ -114,7 +137,7 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
       width={640}
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
-      title={formVals.id?"修改集群":"创建集群"}
+      title={formVals.id ? "修改集群" : "创建集群"}
       visible={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
