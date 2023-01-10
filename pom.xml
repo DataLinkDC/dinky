@@ -659,7 +659,7 @@
                 <version>${spotless.version}</version>
                 <configuration>
                     <!-- optional: limit format enforcement to just the files changed by this feature branch -->
-                    <ratchetFrom>HEAD</ratchetFrom>
+                    <ratchetFrom>upstream/dev</ratchetFrom>
                     <java>
                         <eclipse>
                             <file>style/spotless_dinky_formatter.xml</file>
