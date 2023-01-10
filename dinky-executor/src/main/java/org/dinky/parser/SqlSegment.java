@@ -19,9 +19,11 @@
 
 package org.dinky.parser;
 
+import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -73,13 +75,7 @@ public class SqlSegment {
      * @param bodySplitPattern 用于分割body的正则表达式
      **/
     public SqlSegment(String segmentRegExp, String bodySplitPattern) {
-        this.type = "";
-        this.start = "";
-        this.body = "";
-        this.end = "";
-        this.segmentRegExp = segmentRegExp;
-        this.bodySplitPattern = bodySplitPattern;
-        this.bodyPieces = new ArrayList<String>();
+        this("", segmentRegExp, bodySplitPattern);
     }
 
     public SqlSegment(String type, String segmentRegExp, String bodySplitPattern) {
@@ -103,7 +99,7 @@ public class SqlSegment {
             body = matcher.group(2);
             end = matcher.group(3);
             if (Asserts.isNullString(type)) {
-                type = start.replace("\n", " ").replaceAll("\\s{1,}", " ").toUpperCase();
+                type = start.replace("\n", " ").replaceAll("\\s+", " ").toUpperCase();
             }
             parseBody();
         }
@@ -113,34 +109,25 @@ public class SqlSegment {
      * 解析body部分
      **/
     private void parseBody() {
-        List<String> ls = new ArrayList<String>();
         Pattern p = Pattern.compile(bodySplitPattern, Pattern.CASE_INSENSITIVE);
-        body = body.trim();
-        Matcher m = p.matcher(body);
+        Matcher m = p.matcher(body.trim());
         StringBuffer sb = new StringBuffer();
-        boolean result = m.find();
-        while (result) {
+        while (m.find()) {
             m.appendReplacement(sb, Crlf);
-            result = m.find();
         }
         m.appendTail(sb);
-        // ls.add(start);
         String[] arr = sb.toString().split("[|]");
-        int arrLength = arr.length;
-        for (int i = 0; i < arrLength; i++) {
-            ls.add(arr[i]);
-        }
-        bodyPieces = ls;
+        bodyPieces = Lists.newArrayList(arr);
     }
 
     /**
      * 取得解析好的Sql片段
      **/
     public String getParsedSqlSegment() {
-        StringBuffer sb = new StringBuffer();
-        sb.append(start + Crlf);
+        StringBuilder sb = new StringBuilder();
+        sb.append(start).append(Crlf);
         for (String piece : bodyPieces) {
-            sb.append(piece + Crlf);
+            sb.append(piece).append(Crlf);
         }
         return sb.toString();
     }

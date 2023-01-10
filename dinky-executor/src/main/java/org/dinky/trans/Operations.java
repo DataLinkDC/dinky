@@ -19,16 +19,14 @@
 
 package org.dinky.trans;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.parser.SqlType;
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Set;
-
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * Operations
@@ -39,50 +37,39 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class Operations {
 
+    public static final String SQL_EMPTY_STR = "[\\s\\t\\n\\r]";
+
     private Operations() {
     }
 
     private static final Operation[] ALL_OPERATIONS = getAllOperations();
 
+    /**
+     * get all {@link Operation} children ordinary class,
+     *
+     * @return all operation class define in project.
+     */
     private static Operation[] getAllOperations() {
         Reflections reflections = new Reflections(Operation.class.getPackage().getName());
         Set<Class<?>> operations = reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
+
         return operations.stream().filter(t -> !t.isInterface()).map(t -> {
             try {
-                return t.getConstructor().newInstance();
+                return (Operation) t.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException
-                    | NoSuchMethodException e) {
+                     | NoSuchMethodException e) {
                 log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
                 throw new RuntimeException(e);
             }
         }).toArray(Operation[]::new);
     }
 
-    public static SqlType getSqlTypeFromStatements(String statement) {
-        String[] statements = statement.split(";");
-        SqlType sqlType = SqlType.UNKNOWN;
-        for (String item : statements) {
-            if (item.trim().isEmpty()) {
-                continue;
-            }
-            sqlType = Operations.getOperationType(item);
-            if (sqlType == SqlType.INSERT || sqlType == SqlType.SELECT) {
-                return sqlType;
-            }
-        }
-        return sqlType;
-    }
-
     public static SqlType getOperationType(String sql) {
-        String sqlTrim = sql.replaceAll("[\\s\\t\\n\\r]", "").trim().toUpperCase();
-        SqlType type = SqlType.UNKNOWN;
-        for (SqlType sqlType : SqlType.values()) {
-            if (sqlTrim.startsWith(sqlType.getType())) {
-                type = sqlType;
-                break;
-            }
-        }
-        return type;
+        String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, "").trim().toUpperCase();
+        return Arrays.stream(SqlType.values())
+                .filter(sqlType -> sqlTrim.startsWith(sqlType.getType()))
+                .findFirst()
+                .orElse(SqlType.UNKNOWN);
     }
 
     public static Operation buildOperation(String statement) {

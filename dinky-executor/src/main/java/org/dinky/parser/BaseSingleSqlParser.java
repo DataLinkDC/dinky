@@ -72,12 +72,12 @@ public abstract class BaseSingleSqlParser {
      * 得到解析完毕的Sql语句
      **/
     public String getParsedSql() {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (SqlSegment sqlSegment : segments) {
-            sb.append(sqlSegment.getParsedSqlSegment() + "\n");
+            sb.append(sqlSegment.getParsedSqlSegment()).append("\n");
         }
-        String retval = sb.toString().replaceAll("\n+", "\n");
-        return retval;
+
+        return sb.toString().replaceAll("\n+", "\n");
     }
 
 }

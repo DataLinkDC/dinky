@@ -51,7 +51,6 @@ public class AddJarSqlParser {
 
     public static Set<File> getAllFilePath(String[] statements) {
         Set<File> fileSet = new HashSet<>();
-        ProcessEntity process = ProcessContextHolder.getProcess();
         patternStatements(statements).stream().map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
                 .distinct().forEach(path -> {
                     if (!FileUtil.exist(path)) {

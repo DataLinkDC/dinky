@@ -54,16 +54,6 @@ public class AbstractOperation {
         this.statement = statement;
     }
 
-    public boolean checkFunctionExist(CustomTableEnvironmentImpl stEnvironment, String key) {
-        String[] udfs = stEnvironment.listUserDefinedFunctions();
-        List<String> udflist = Arrays.asList(udfs);
-        if (udflist.contains(key.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     public boolean noExecute() {
         return true;
     }
