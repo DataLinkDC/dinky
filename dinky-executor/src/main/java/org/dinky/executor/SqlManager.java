@@ -252,11 +252,7 @@ public final class SqlManager {
      * @return
      */
     private boolean isInnerDateVar(String key) {
-        if (key.startsWith(FlinkSQLConstant.INNER_DATETIME_KEY)) {
-            return true;
-        }
-
-        return false;
+        return key.startsWith(FlinkSQLConstant.INNER_DATETIME_KEY);
     }
 
     /**

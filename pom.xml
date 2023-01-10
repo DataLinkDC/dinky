@@ -100,6 +100,7 @@
         <log4j.version>2.19.0</log4j.version>
         <docker.java.version>3.2.13</docker.java.version>
         <reflections.version>0.10.2</reflections.version>
+        <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
     </properties>
 
     <dependencyManagement>
@@ -692,7 +693,7 @@
                 <version>${spotless.version}</version>
                 <configuration>
                     <!-- optional: limit format enforcement to just the files changed by this feature branch -->
-                    <ratchetFrom>HEAD</ratchetFrom>
+                    <ratchetFrom>${spotless.ratchetFrom}</ratchetFrom>
                     <java>
                         <eclipse>
                             <file>style/spotless_dinky_formatter.xml</file>
@@ -730,12 +731,6 @@
                             <replacement>project</replacement>
                         </replace>
                     </pom>
-                    <markdown>
-                        <includes>
-                            <include>**/*.md</include>
-                        </includes>
-                        <flexmark />
-                    </markdown>
                 </configuration>
                 <executions>
                     <execution>

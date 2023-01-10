@@ -114,7 +114,7 @@ jobs:
             ${{ runner.os }}-${{ matrix.flink }}-maven-
       - name: Check Style
         run: |
-          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check
+          ./mvnw -T 4C -B --no-snapshot-updates -Dspotless.ratchetFrom=HEAD clean spotless:check
       - name: Build and Package
         run: |
           ./mvnw -B clean install \

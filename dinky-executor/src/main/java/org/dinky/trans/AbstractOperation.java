@@ -19,11 +19,6 @@
 
 package org.dinky.trans;
 
-import org.dinky.executor.CustomTableEnvironmentImpl;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,16 +47,6 @@ public class AbstractOperation {
 
     public void setStatement(String statement) {
         this.statement = statement;
-    }
-
-    public boolean checkFunctionExist(CustomTableEnvironmentImpl stEnvironment, String key) {
-        String[] udfs = stEnvironment.listUserDefinedFunctions();
-        List<String> udflist = Arrays.asList(udfs);
-        if (udflist.contains(key.toLowerCase())) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public boolean noExecute() {
