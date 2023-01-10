@@ -659,7 +659,7 @@
                 <version>${spotless.version}</version>
                 <configuration>
                     <!-- optional: limit format enforcement to just the files changed by this feature branch -->
-                    <ratchetFrom>upstream/dev</ratchetFrom>
+                    <ratchetFrom>origin/dev</ratchetFrom>
                     <java>
                         <eclipse>
                             <file>style/spotless_dinky_formatter.xml</file>
@@ -697,12 +697,6 @@
                             <replacement>project</replacement>
                         </replace>
                     </pom>
-                    <markdown>
-                        <includes>
-                            <include>**/*.md</include>
-                        </includes>
-                        <flexmark />
-                    </markdown>
                 </configuration>
                 <executions>
                     <execution>
