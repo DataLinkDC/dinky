@@ -19,14 +19,16 @@
 
 package org.dinky.trans;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.parser.SqlType;
-import org.reflections.Reflections;
-import org.reflections.scanners.Scanners;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.Set;
+
+import org.reflections.Reflections;
+import org.reflections.scanners.Scanners;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Operations
@@ -57,7 +59,7 @@ public class Operations {
             try {
                 return (Operation) t.getConstructor().newInstance();
             } catch (InstantiationException | IllegalAccessException | InvocationTargetException
-                     | NoSuchMethodException e) {
+                    | NoSuchMethodException e) {
                 log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
                 throw new RuntimeException(e);
             }

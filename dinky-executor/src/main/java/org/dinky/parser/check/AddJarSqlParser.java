@@ -19,9 +19,7 @@
 
 package org.dinky.parser.check;
 
-import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.exception.DinkyException;
-import org.dinky.process.model.ProcessEntity;
 
 import java.io.File;
 import java.util.HashSet;
