@@ -3,11 +3,11 @@ FROM openjdk:8u342-oracle as build-stage
 ARG DINKY_VERSION
 ENV DINKY_VERSION=${DINKY_VERSION}
 
-ADD ./build/dlink-release-${DINKY_VERSION}.tar.gz  /opt/
+ADD ./build/dinky-release-${DINKY_VERSION}.tar.gz  /opt/
 
 USER root
-RUN mv /opt/dlink-release-${DINKY_VERSION} /opt/dinky/
-RUN mkdir -p /opt/dinky/run && mkdir -p /opt/dinky/logs &&  touch /opt/dinky/logs/dlink.log
+RUN mv /opt/dinky-release-${DINKY_VERSION} /opt/dinky/
+RUN mkdir -p /opt/dinky/run && mkdir -p /opt/dinky/logs &&  touch /opt/dinky/logs/dinky.log
 RUN chmod -R 777 /opt/dinky/
 
 FROM openjdk:8u342-oracle as production-stage
@@ -16,4 +16,4 @@ WORKDIR /opt/dinky/
 
 EXPOSE 8888
 
-CMD  ./auto.sh restart && tail -f /opt/dinky/logs/dlink.log
+CMD  ./auto.sh restart && tail -f /opt/dinky/logs/dinky.log
