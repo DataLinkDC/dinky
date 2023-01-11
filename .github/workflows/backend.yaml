@@ -32,10 +32,19 @@ concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
+  check:
+    name: Check Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check Style
+        run: |
+          ./mvnw -T 4C -B --no-snapshot-updates -Dspotless.ratchetFrom=NONE clean spotless:check
   build_npm:
     name: Build_NPM
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    needs: check
     env:
       MAVEN_OPTS: -Xmx2G -Xms2G
     steps:
@@ -74,6 +83,7 @@ jobs:
   build_jdk:
     name: Build_JDK
     runs-on: ubuntu-latest
+    needs: check
     strategy:
       fail-fast: true
       matrix:
@@ -112,9 +122,6 @@ jobs:
           key: ${{ runner.os }}-${{ matrix.flink }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-${{ matrix.flink }}-maven-
-      - name: Check Style
-        run: |
-          ./mvnw -T 4C -B --no-snapshot-updates -Dspotless.ratchetFrom=HEAD clean spotless:check
       - name: Build and Package
         run: |
           ./mvnw -B clean install \
