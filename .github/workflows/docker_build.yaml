@@ -76,6 +76,9 @@ jobs:
             namespace: dinkydocker
     steps:
       - uses: actions/checkout@v3
+      - name: Move Dockerfile
+        run: |
+          cp ./docker/Dockerfile* ./
       - name: Log in to the Container registry,url -> ${{ matrix.url }}
         if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
         uses: docker/login-action@v2
@@ -114,6 +117,9 @@ jobs:
             namespace: dinkydocker
     steps:
       - uses: actions/checkout@v3
+      - name: Move Dockerfile
+        run: |
+          cp ./docker/Dockerfile* ./
       - name: Download math result for job 1
         uses: actions/download-artifact@v3
         with:
