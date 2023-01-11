@@ -21,7 +21,7 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-client</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
     <artifactId>dinky-client-1.12</artifactId>
 

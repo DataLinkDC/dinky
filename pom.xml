@@ -23,7 +23,7 @@
 
     <groupId>org.dinky</groupId>
     <artifactId>dinky</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
     <packaging>pom</packaging>
 
     <name>Dinky :</name>
