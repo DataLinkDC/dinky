@@ -45,6 +45,7 @@ import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
+import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.flink.table.catalog.FunctionCatalog;
@@ -70,7 +71,6 @@ import org.apache.flink.table.typeutils.FieldInfoUtils;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,11 +86,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author wenmo
  * @since 2021/10/22 10:02
  **/
-public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
+public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
-    private final StreamExecutionEnvironment executionEnvironment;
     private final FlinkChainedProgram flinkChainedProgram;
-
     public CustomTableEnvironmentImpl(
         CatalogManager catalogManager,
         ModuleManager moduleManager,
@@ -101,16 +99,17 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         Executor executor,
         boolean isStreamingMode,
         ClassLoader userClassLoader) {
-        super(
+        super(new StreamTableEnvironmentImpl(
             catalogManager,
             moduleManager,
-            tableConfig,
-            executor,
             functionCatalog,
+            tableConfig,
+            executionEnvironment,
             planner,
+            executor,
             isStreamingMode,
-            userClassLoader);
-        this.executionEnvironment = executionEnvironment;
+            userClassLoader));
+        this.executor = executor;
         this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
@@ -195,6 +194,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
+    @Override
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
@@ -206,9 +206,9 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
                     modifyOperations.add((ModifyOperation) operations.get(i));
                 }
             }
-            List<Transformation<?>> trans = super.planner.translate(modifyOperations);
-            if (execEnv instanceof DefaultExecutor) {
-                StreamGraph streamGraph = ((DefaultExecutor) execEnv).getExecutionEnvironment().generateStreamGraph(trans);
+            List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
+            if (executor instanceof DefaultExecutor) {
+                StreamGraph streamGraph = ((DefaultExecutor) executor).getExecutionEnvironment().generateStreamGraph(trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
                 ObjectMapper mapper = new ObjectMapper();
@@ -247,10 +247,10 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             }
         }
         List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
-        if (execEnv instanceof DefaultExecutor) {
-            StreamGraph streamGraph = ((DefaultExecutor) execEnv).getExecutionEnvironment().generateStreamGraph(trans);
-            if (tableConfig.getConfiguration().containsKey(PipelineOptions.NAME.key())) {
-                streamGraph.setJobName(tableConfig.getConfiguration().getString(PipelineOptions.NAME));
+        if (executor instanceof DefaultExecutor) {
+            StreamGraph streamGraph = ((DefaultExecutor) executor).getExecutionEnvironment().generateStreamGraph(trans);
+            if (getConfig().getConfiguration().containsKey(PipelineOptions.NAME.key())) {
+                streamGraph.setJobName(getConfig().getConfiguration().getString(PipelineOptions.NAME));
             }
             return streamGraph;
         } else {
@@ -287,7 +287,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             //record.setExplain("DDL语句不进行解释。");
             return record;
         }
-        record.setExplain(planner.explain(operations, extraDetails));
+        record.setExplain(getPlanner().explain(operations, extraDetails));
         return record;
     }
 
@@ -338,13 +338,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
-    public <T> Table fromDataStream(DataStream<T> dataStream, Expression... fields) {
-        JavaDataStreamQueryOperation<T> queryOperation =
-            asQueryOperation(dataStream, Optional.of(Arrays.asList(fields)));
-
-        return createTable(queryOperation);
-    }
-
     public <T> Table fromDataStream(DataStream<T> dataStream, String fields) {
         List<Expression> expressions = ExpressionParser.parseExpressionList(fields);
         return fromDataStream(dataStream, expressions.toArray(new Expression[0]));
@@ -357,7 +350,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        LineageContext lineageContext = new LineageContext(flinkChainedProgram, (TableEnvironmentImpl)streamTableEnvironment);
         return lineageContext.getLineage(statement);
     }
 
@@ -391,12 +384,12 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     private void validateTimeCharacteristic(boolean isRowtimeDefined) {
         if (isRowtimeDefined
-            && executionEnvironment.getStreamTimeCharacteristic()
+            && getStreamExecutionEnvironment().getStreamTimeCharacteristic()
             != TimeCharacteristic.EventTime) {
             throw new ValidationException(
                 String.format(
                     "A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s",
-                    executionEnvironment.getStreamTimeCharacteristic()));
+                    getStreamExecutionEnvironment().getStreamTimeCharacteristic()));
         }
     }
 }
