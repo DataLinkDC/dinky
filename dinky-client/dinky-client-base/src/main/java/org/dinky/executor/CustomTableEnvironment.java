@@ -1,4 +1,4 @@
-/**
+/*
  *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
@@ -42,7 +42,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @author wenmo
  * @since 2022/2/5 10:35
  */
-public interface CustomTableEnvironment extends StreamTableEnvironment, TableEnvironmentInternal, TableEnvironmentInstance {
+public interface CustomTableEnvironment
+        extends
+            StreamTableEnvironment,
+            TableEnvironmentInternal,
+            TableEnvironmentInstance {
 
     ObjectNode getStreamGraph(String statement);
 

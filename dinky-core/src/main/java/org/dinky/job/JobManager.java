@@ -543,9 +543,9 @@ public class JobManager {
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
 
-                    if (gatewayResult.isSucess()){
+                    if (gatewayResult.isSucess()) {
                         job.setStatus(Job.JobStatus.SUCCESS);
-                    }else {
+                    } else {
                         job.setStatus(Job.JobStatus.FAILED);
                         job.setError(gatewayResult.getError());
                     }
@@ -577,9 +577,9 @@ public class JobManager {
                 }
             }
             job.setEndTime(LocalDateTime.now());
-            if (job.getStatus().name().equals(Job.JobStatus.FAILED.name())){
+            if (job.getStatus().name().equals(Job.JobStatus.FAILED.name())) {
                 failed();
-            }else {
+            } else {
                 success();
             }
         } catch (Exception e) {
@@ -740,10 +740,10 @@ public class JobManager {
             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
             job.setEndTime(LocalDateTime.now());
 
-            if (gatewayResult.isSucess()){
+            if (gatewayResult.isSucess()) {
                 job.setStatus(Job.JobStatus.SUCCESS);
                 success();
-            }else {
+            } else {
                 job.setError(gatewayResult.getError());
                 job.setStatus(Job.JobStatus.FAILED);
                 failed();

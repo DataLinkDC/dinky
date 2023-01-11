@@ -43,6 +43,7 @@ import java.util.Optional;
  *
  */
 public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironmentInstance {
+
     @Override
     default Table fromValues(Expression... expressions) {
         return getTableEnvironment().fromValues(expressions);
