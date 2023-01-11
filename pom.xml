@@ -23,8 +23,9 @@
 
     <groupId>org.dinky</groupId>
     <artifactId>dinky</artifactId>
-    <version>0.7.0</version>
+    <version>0.8.0</version>
     <packaging>pom</packaging>
+
     <name>Dinky :</name>
 
     <modules>
@@ -49,53 +50,53 @@
     </modules>
 
     <properties>
-        <target.java.version>8</target.java.version>
+        <clickhouse.version>0.2.6</clickhouse.version>
+        <commons-email>1.5</commons-email>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <dinky.flink.version>1.14</dinky.flink.version>
+        <docker.java.version>3.2.13</docker.java.version>
+        <druid-starter>1.2.8</druid-starter>
+        <guava.version>31.1-jre</guava.version>
+        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
+        <httpclient.version>4.5.13</httpclient.version>
+        <hutool.version>5.8.4</hutool.version>
+        <jackjson.version>2.14.0-rc2</jackjson.version>
+        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
+        <javax.mail>1.6.2</javax.mail>
+        <jaxb.version>2.3.0</jaxb.version>
+        <jedis.version>2.9.0</jedis.version>
+        <junit.version>4.12</junit.version>
+        <knife4j.version>3.0.3</knife4j.version>
+        <log4j.version>2.19.0</log4j.version>
+        <lombok.version>1.18.24</lombok.version>
+        <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+        <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
+        <maven.clean.version>3.2.0</maven.clean.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
+        <maven.resource.version>3.2.0</maven.resource.version>
+        <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
+        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
+        <ojdbc8.version>12.2.0.1</ojdbc8.version>
+        <poi.version>4.1.2</poi.version>
+        <postgresql.version>42.2.14</postgresql.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-checkstyle-plugin.version>3.1.2</maven-checkstyle-plugin.version>
+        <protobuf-java.version>2.5.0</protobuf-java.version>
+        <reflections.version>0.10.2</reflections.version>
+        <!--<flyway.version>6.4.4</flyway.version>-->
+        <sa-token.version>1.31.0</sa-token.version>
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
-        <dinky.flink.version>1.14</dinky.flink.version>
-        <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
-        <hutool.version>5.8.4</hutool.version>
-        <druid-starter>1.2.8</druid-starter>
-        <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
-        <lombok.version>1.18.24</lombok.version>
-        <jackjson.version>2.14.0-rc2</jackjson.version>
-        <guava.version>31.1-jre</guava.version>
-        <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
-        <ojdbc8.version>12.2.0.1</ojdbc8.version>
-        <clickhouse.version>0.2.6</clickhouse.version>
-        <postgresql.version>42.2.14</postgresql.version>
-        <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
-        <!--<flyway.version>6.4.4</flyway.version>-->
-        <sa-token.version>1.31.0</sa-token.version>
-        <commons-lang3.version>3.3.2</commons-lang3.version>
-        <httpclient.version>4.5.13</httpclient.version>
-        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
-        <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
-        <maven.resource.version>3.2.0</maven.resource.version>
-        <maven.clean.version>3.2.0</maven.clean.version>
-        <junit.version>4.12</junit.version>
-        <protobuf-java.version>2.5.0</protobuf-java.version>
-        <jedis.version>2.9.0</jedis.version>
-        <javax.mail>1.6.2</javax.mail>
-        <poi.version>4.1.2</poi.version>
-        <commons-email>1.5</commons-email>
-        <knife4j.version>3.0.3</knife4j.version>
-        <spotless.version>2.27.1</spotless.version>
-        <jaxb.version>2.3.0</jaxb.version>
-        <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
-        <log4j.version>2.19.0</log4j.version>
-        <docker.java.version>3.2.13</docker.java.version>
-        <reflections.version>0.10.2</reflections.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
+        <spotless.version>2.27.1</spotless.version>
+        <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
+        <target.java.version>8</target.java.version>
     </properties>
 
     <dependencyManagement>
@@ -690,7 +691,7 @@
                             <sortExecutions>false</sortExecutions>
                             <predefinedSortOrder>custom_1</predefinedSortOrder>
                             <expandEmptyElements>false</expandEmptyElements>
-                            <sortProperties>false</sortProperties>
+                            <sortProperties>true</sortProperties>
                         </sortPom>
                         <replace>
                             <name>Leading blank line</name>
@@ -710,6 +711,21 @@
             </plugin>
         </plugins>
     </build>
+    <url>http://www.dlink.top</url>
+    <inceptionYear>2014</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>git@github.com:DataLinkDC/dinky.git</connection>
+        <url>https://github.com/DataLinkDC/dinky</url>
+    </scm>
 
     <profiles>
         <profile>

@@ -21,19 +21,17 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-client</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-client-base</artifactId>
 
+    <packaging>jar</packaging>
+
+    <name>Dinky : Client : Base</name>
+
     <properties>
-        <source.level>${target.java.version}</source.level>
-        <target.level>${target.java.version}</target.level>
         <dubbo.version>3.0.2.1</dubbo.version>
         <junit.version>4.12</junit.version>
-        <spring.version>4.3.16.RELEASE</spring.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -48,10 +46,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven-compiler-plugin.version}</version>
-                <configuration>
-                    <source>${source.level}</source>
-                    <target>${target.level}</target>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

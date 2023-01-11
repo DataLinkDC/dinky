@@ -21,11 +21,14 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-metadata</artifactId>
+
     <packaging>pom</packaging>
+
+    <name>Dinky : Metadata</name>
+
     <modules>
         <module>dinky-metadata-base</module>
         <module>dinky-metadata-mysql</module>

@@ -15,24 +15,22 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>dinky-connectors</artifactId>
-        <groupId>org.dinky</groupId>
-        <version>0.7.0</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-connectors</artifactId>
+        <version>0.8.0</version>
+    </parent>
     <artifactId>dinky-connector-doris-1.13</artifactId>
 
-    <properties>
+    <packaging>jar</packaging>
 
+    <name>Dinky : Connector : Doris 1.13</name>
+
+    <properties>
         <flink.version>1.13.6</flink.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>
@@ -58,10 +56,10 @@
                 <version>3.2.0</version>
                 <executions>
                     <execution>
-                        <phase>package</phase>
                         <goals>
                             <goal>shade</goal>
                         </goals>
+                        <phase>package</phase>
                     </execution>
                 </executions>
             </plugin>

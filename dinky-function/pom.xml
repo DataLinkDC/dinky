@@ -21,10 +21,13 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-function</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Function</name>
 
     <dependencies>
         <dependency>
