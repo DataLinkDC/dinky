@@ -19,6 +19,19 @@
 
 package com.dlink.function.util;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.ClassLoaderUtil;
+import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.digest.MD5;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
 import com.dlink.context.DinkyClassLoaderContextHolder;
@@ -33,9 +46,12 @@ import com.dlink.gateway.GatewayType;
 import com.dlink.pool.ClassEntity;
 import com.dlink.pool.ClassPool;
 import com.dlink.process.exception.DinkyException;
-
+import groovy.lang.GroovyClassLoader;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.table.catalog.FunctionLanguage;
+import org.codehaus.groovy.control.CompilerConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -46,25 +62,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.codehaus.groovy.control.CompilerConfiguration;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.ClassLoaderUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.crypto.digest.MD5;
-import cn.hutool.extra.template.TemplateConfig;
-import cn.hutool.extra.template.TemplateEngine;
-import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
-import groovy.lang.GroovyClassLoader;
 
 /**
  * UDFUtil
@@ -280,13 +277,13 @@ public class UDFUtil {
         return MD5.create().digestHex(FileUtil.file(filePath));
     }
 
-    public static boolean isUdfStatement(String statement) {
-        return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(FUNCTION_SQL_REGEX, statement, 0));
+    public static boolean isUdfStatement(Pattern pattern, String statement) {
+        return !StrUtil.isBlank(statement) && CollUtil.isNotEmpty(ReUtil.findAll(pattern, statement, 0));
     }
 
     public static UDF toUDF(String statement) {
-        if (isUdfStatement(statement)) {
-            Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
+        if (isUdfStatement(pattern, statement)) {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(pattern, statement));
             String udfName = groups.get(1);
             String className = groups.get(2);
