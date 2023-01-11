@@ -19,9 +19,7 @@
 
 package org.dinky.parser.check;
 
-import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.exception.DinkyException;
-import org.dinky.process.model.ProcessEntity;
 
 import java.io.File;
 import java.util.HashSet;
@@ -51,7 +49,6 @@ public class AddJarSqlParser {
 
     public static Set<File> getAllFilePath(String[] statements) {
         Set<File> fileSet = new HashSet<>();
-        ProcessEntity process = ProcessContextHolder.getProcess();
         patternStatements(statements).stream().map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
                 .distinct().forEach(path -> {
                     if (!FileUtil.exist(path)) {

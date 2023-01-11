@@ -17,15 +17,14 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.executor;
+
+import org.apache.flink.table.api.TableEnvironment;
 
 /**
- * TODO
  *
- * @author wenmo
- * @since 2021/6/13 19:34
  */
-public interface CreateOperation extends Operation {
+public interface TableEnvironmentInstance {
 
-    // void create(CustomTableEnvironmentImpl stEnvironment);
+    TableEnvironment getTableEnvironment();
 }
