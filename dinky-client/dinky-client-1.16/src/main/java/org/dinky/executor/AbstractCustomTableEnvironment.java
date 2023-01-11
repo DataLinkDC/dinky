@@ -29,10 +29,10 @@ import org.apache.flink.table.delegation.Planner;
  *
  */
 public abstract class AbstractCustomTableEnvironment
-    implements
-    CustomTableEnvironment,
-    DefaultTableEnvironmentInternal,
-    DefaultStreamTableEnvironment {
+        implements
+            CustomTableEnvironment,
+            DefaultTableEnvironmentInternal,
+            DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
 

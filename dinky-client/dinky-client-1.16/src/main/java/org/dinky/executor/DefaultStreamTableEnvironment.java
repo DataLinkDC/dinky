@@ -37,13 +37,17 @@ import org.apache.flink.types.Row;
 /**
  *
  */
-public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, DefaultTableEnvironment, TableEnvironmentInstance {
+public interface DefaultStreamTableEnvironment
+        extends
+            StreamTableEnvironment,
+            DefaultTableEnvironment,
+            TableEnvironmentInstance {
 
     default StreamTableEnvironment getStreamTableEnvironment() {
         return (StreamTableEnvironment) getTableEnvironment();
     }
 
-    @Override// region StreamTableEnvironment interface
+    @Override // region StreamTableEnvironment interface
     default <T> void registerFunction(String s, TableFunction<T> tableFunction) {
         getStreamTableEnvironment().registerFunction(s, tableFunction);
     }
