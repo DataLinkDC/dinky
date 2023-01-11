@@ -64,4 +64,14 @@ public abstract class AbstractGatewayResult implements GatewayResult {
         this.endTime = LocalDateTime.now();
         this.exceptionMsg = error;
     }
+
+    @Override
+    public boolean isSucess() {
+        return isSuccess;
+    }
+
+    @Override
+    public String getError() {
+        return exceptionMsg;
+    }
 }
