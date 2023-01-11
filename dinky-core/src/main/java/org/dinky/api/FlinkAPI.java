@@ -19,7 +19,6 @@
 
 package org.dinky.api;
 
-import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkRestAPIConstant;
 import org.dinky.constant.NetConstant;
@@ -29,7 +28,6 @@ import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -39,6 +37,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
@@ -174,7 +173,7 @@ public class FlinkAPI {
         try {
             json = post(FlinkRestAPIConstant.JOBS + jobId + paramType, mapper.writeValueAsString(paramMap));
         } catch (JsonProcessingException e) {
-            logger.error("savePoints error: ",e);
+            logger.error("savePoints error: ", e);
             return null;
         }
 
