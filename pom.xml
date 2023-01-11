@@ -50,6 +50,7 @@
     </modules>
 
     <properties>
+        <assertj.version>3.21.0</assertj.version>
         <clickhouse.version>0.2.6</clickhouse.version>
         <commons-email>1.5</commons-email>
         <commons-lang3.version>3.3.2</commons-lang3.version>
@@ -57,22 +58,18 @@
         <docker.java.version>3.2.13</docker.java.version>
         <druid-starter>1.2.8</druid-starter>
         <guava.version>31.1-jre</guava.version>
+        <hamcrest.version>1.3</hamcrest.version>
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
         <hutool.version>5.8.4</hutool.version>
         <jackjson.version>2.14.0-rc2</jackjson.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
-        <junit5.version>5.9.1</junit5.version>
-        <mockito.version>2.21.0</mockito.version>
-        <powermock.version>2.0.9</powermock.version>
-        <hamcrest.version>1.3</hamcrest.version>
-        <assertj.version>3.21.0</assertj.version>
-        <testcontainers.version>1.16.2</testcontainers.version>
-        <jedis.version>2.9.0</jedis.version>
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
+        <jedis.version>2.9.0</jedis.version>
         <junit.version>4.12</junit.version>
+        <junit5.version>5.9.1</junit5.version>
         <knife4j.version>3.0.3</knife4j.version>
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.24</lombok.version>
@@ -85,11 +82,13 @@
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <maven.resource.version>3.2.0</maven.resource.version>
+        <mockito.version>2.21.0</mockito.version>
         <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <poi.version>4.1.2</poi.version>
         <postgresql.version>42.2.14</postgresql.version>
+        <powermock.version>2.0.9</powermock.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <protobuf-java.version>2.5.0</protobuf-java.version>
@@ -104,6 +103,7 @@
         <spotless.version>2.27.1</spotless.version>
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <target.java.version>8</target.java.version>
+        <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 
     <dependencyManagement>
