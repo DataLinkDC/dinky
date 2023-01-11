@@ -21,15 +21,12 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-alert</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
     <artifactId>dinky-alert-feishu</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <name>Dinky : Alter : FeiShu</name>
 
     <dependencies>
         <dependency>

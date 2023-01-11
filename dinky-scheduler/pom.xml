@@ -21,10 +21,14 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-scheduler</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Scheduler</name>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>

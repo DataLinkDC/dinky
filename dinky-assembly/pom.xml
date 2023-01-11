@@ -21,11 +21,13 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-assembly</artifactId>
+
     <packaging>pom</packaging>
+
+    <name>Dinky : Assembly</name>
 
     <build>
         <plugins>

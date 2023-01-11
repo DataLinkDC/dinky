@@ -5,15 +5,13 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-catalog-mysql</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-catalog-mysql-1.16</artifactId>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Catalog : Mysql 1.16</name>
 
     <dependencies>
         <dependency>

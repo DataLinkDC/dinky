@@ -21,25 +21,27 @@
     <parent>
         <groupId>org.dinky</groupId>
         <artifactId>dinky-connectors</artifactId>
-        <version>0.7.0</version>
+        <version>0.8.0</version>
     </parent>
-
     <artifactId>dinky-connector-pulsar-1.14</artifactId>
 
+    <packaging>jar</packaging>
+
+    <name>Dinky : Connector : Pulsar 1.14</name>
+
     <properties>
-        <pulsar.version>2.10.2</pulsar.version>
-        <hbase.version>1.4.3</hbase.version>
-        <hadoop.version>2.4.1</hadoop.version>
         <fastjson.version>1.2.7</fastjson.version>
         <flink.version>1.14.6</flink.version>
+        <hadoop.version>2.4.1</hadoop.version>
+        <hbase.version>1.4.3</hbase.version>
+        <pulsar.version>2.10.2</pulsar.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-common</artifactId>
-            <version>0.7.0</version>
+            <version>0.8.0</version>
             <scope>compile</scope>
         </dependency>
 
