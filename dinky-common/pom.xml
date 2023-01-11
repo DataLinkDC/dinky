@@ -23,8 +23,12 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-common</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Common</name>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>

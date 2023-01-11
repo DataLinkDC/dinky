@@ -15,23 +15,19 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
     <parent>
-        <artifactId>dinky-catalog-mysql</artifactId>
         <groupId>org.dinky</groupId>
+        <artifactId>dinky-catalog-mysql</artifactId>
         <version>0.7.0</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
-
     <artifactId>dinky-catalog-mysql-1.13</artifactId>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Catalog : Mysql 1.13</name>
 
     <dependencies>
         <dependency>

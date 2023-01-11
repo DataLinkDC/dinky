@@ -23,13 +23,11 @@
         <artifactId>dinky-alert</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-alert-wechat</artifactId>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Alter : Wechat</name>
 
     <dependencies>
         <dependency>

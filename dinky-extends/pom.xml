@@ -23,79 +23,11 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-extends</artifactId>
-    <properties>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <flink.version>1.13.6</flink.version>
-        <mysql-connector-java.version>8.0.22</mysql-connector-java.version>
-        <ojdbc8.version>12.2.0.1</ojdbc8.version>
-        <mariaDB4j.version>2.4.0</mariaDB4j.version>
-        <mariadb-java-client.version>2.5.4</mariadb-java-client.version>
-        <derby.version>10.14.2.0</derby.version>
-        <clickhouse-jdbc.version>0.2.6</clickhouse-jdbc.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>pom</packaging>
 
-    <dependencies>
-        <!--<dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-csv</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-json</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-connector-jdbc_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-sql-connector-hbase-1.4_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-sql-connector-hbase-2.2_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-sql-connector-kafka_${scala.binary.version}</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql-connector-java.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.oracle.database.jdbc</groupId>
-            <artifactId>ojdbc8</artifactId>
-            <version>${ojdbc8.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>ru.yandex.clickhouse</groupId>
-            <artifactId>clickhouse-jdbc</artifactId>
-            <version>${clickhouse-jdbc.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-table</artifactId>
-            <version>${flink.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.flink</groupId>
-            <artifactId>flink-shaded-hadoop-3-uber</artifactId>
-            <version>3.1.1.7.2.1.0-327-9.0</version>
-        </dependency>-->
-    </dependencies>
+    <name>Dinky : Extends</name>
 
     <build>
         <finalName>${project.artifactId}</finalName>

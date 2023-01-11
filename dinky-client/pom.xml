@@ -25,7 +25,10 @@
         <version>0.7.0</version>
     </parent>
     <artifactId>dinky-client</artifactId>
+
     <packaging>pom</packaging>
+
+    <name>Dinky : Client</name>
 
     <modules>
         <module>dinky-client-hadoop</module>

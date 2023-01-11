@@ -23,9 +23,11 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-connectors</artifactId>
+
     <packaging>pom</packaging>
+
+    <name>Dinky : Connectors</name>
 
     <profiles>
         <profile>

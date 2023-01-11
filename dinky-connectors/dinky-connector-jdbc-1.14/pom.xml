@@ -23,22 +23,20 @@
         <artifactId>dinky-connectors</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-connector-jdbc-1.14</artifactId>
 
-    <properties>
+    <packaging>jar</packaging>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <name>Dinky : Connector : JDBC 1.14</name>
+
+    <properties>
         <flink.version>1.14.6</flink.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <junit.version>4.12</junit.version>
-        <postgres.version>42.2.10</postgres.version>
         <otj-pg-embedded.version>0.13.3</otj-pg-embedded.version>
+        <postgres.version>42.2.10</postgres.version>
     </properties>
 
     <dependencies>
-
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-1.14</artifactId>

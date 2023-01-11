@@ -23,14 +23,17 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-executor</artifactId>
-    <properties>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Executor</name>
+
+    <properties>
+        <hadoop.version>3.1.0</hadoop.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
-        <hadoop.version>3.1.0</hadoop.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>

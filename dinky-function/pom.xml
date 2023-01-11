@@ -23,8 +23,11 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-function</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Function</name>
 
     <dependencies>
         <dependency>

@@ -23,15 +23,15 @@
         <artifactId>dinky-flink</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-flink-1.13</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Flink 1.13</name>
 
     <properties>
         <flink.version>1.13.6</flink.version>
         <flinkcdc.version>2.3.0</flinkcdc.version>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <junit.version>4.12</junit.version>
     </properties>
 

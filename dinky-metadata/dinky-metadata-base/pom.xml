@@ -23,8 +23,11 @@
         <artifactId>dinky-metadata</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-metadata-base</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Metadata : Base</name>
 
     <dependencies>
         <dependency>

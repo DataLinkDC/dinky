@@ -23,9 +23,12 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-alert</artifactId>
+
     <packaging>pom</packaging>
+
+    <name>Dinky : Alert</name>
+
     <modules>
         <module>dinky-alert-base</module>
         <module>dinky-alert-dingtalk</module>
@@ -34,8 +37,4 @@
         <module>dinky-alert-email</module>
     </modules>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
 </project>

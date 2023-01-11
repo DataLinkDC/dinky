@@ -24,14 +24,11 @@
         <artifactId>dinky-catalog</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-catalog-mysql</artifactId>
+
     <packaging>pom</packaging>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <name>Dinky : Catalog : Mysql</name>
 
     <profiles>
         <profile>

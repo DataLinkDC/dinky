@@ -7,19 +7,15 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-app</artifactId>
 
     <packaging>pom</packaging>
 
+    <name>Dinky : App</name>
+
     <modules>
         <module>dinky-app-base</module>
     </modules>
-
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
 
     <profiles>
         <profile>

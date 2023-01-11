@@ -23,14 +23,14 @@
         <artifactId>dinky-app</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-app-1.15</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : App 1.15</name>
 
     <properties>
         <mainClass>org.dinky.app.MainApp</mainClass>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
     </properties>
 
     <dependencies>

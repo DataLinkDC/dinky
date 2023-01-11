@@ -26,10 +26,7 @@
     <artifactId>dinky-alert-feishu</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <name>Dinky : Alter : FeiShu</name>
 
     <dependencies>
         <dependency>

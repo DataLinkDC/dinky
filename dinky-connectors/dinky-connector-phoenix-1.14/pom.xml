@@ -23,14 +23,14 @@
         <artifactId>dinky-connectors</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-connector-phoenix-1.14</artifactId>
 
+    <packaging>jar</packaging>
+
+    <name>Dinky : Connector : Phoenix 1.14</name>
+
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <flink.version>1.14.6</flink.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <junit.version>4.12</junit.version>
         <!--  compile/provided-->
         <phoenix.scope.runtime>provided</phoenix.scope.runtime>

@@ -23,13 +23,12 @@
         <artifactId>dinky-metadata</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-metadata-sqlserver</artifactId>
 
-    <properties>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Metadata : Sqlserver</name>
+
     <dependencies>
         <dependency>
             <groupId>org.dinky</groupId>

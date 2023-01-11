@@ -24,14 +24,10 @@
         <version>0.7.0</version>
     </parent>
     <artifactId>dinky-core</artifactId>
+
     <packaging>jar</packaging>
 
-    <properties>
-
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <name>Dinky : Core</name>
 
     <dependencies>
         <dependency>

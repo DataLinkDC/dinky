@@ -22,9 +22,13 @@
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
+        <relativePath>..</relativePath>
     </parent>
-
     <artifactId>dinky-admin</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Admin</name>
 
     <dependencies>
         <dependency>

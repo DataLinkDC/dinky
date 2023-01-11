@@ -23,14 +23,11 @@
         <artifactId>dinky</artifactId>
         <version>0.7.0</version>
     </parent>
-
     <artifactId>dinky-gateway</artifactId>
-    <properties>
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-    </properties>
+    <packaging>jar</packaging>
+
+    <name>Dinky : Gateway</name>
 
     <dependencies>
         <dependency>
