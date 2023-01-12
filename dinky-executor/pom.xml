@@ -31,9 +31,6 @@
 
     <properties>
         <hadoop.version>3.1.0</hadoop.version>
-        <maven.compiler.source>${target.java.version}</maven.compiler.source>
-        <maven.compiler.target>${target.java.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -84,31 +81,6 @@
     </dependencies>
 
     <profiles>
-        <profile>
-            <id>flink-1.11</id>
-            <dependencyManagement>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.kafka</groupId>
-                        <artifactId>kafka-clients</artifactId>
-                        <version>2.4.1</version>
-                    </dependency>
-                </dependencies>
-            </dependencyManagement>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.11</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.11</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>flink-1.12</id>
             <dependencyManagement>
