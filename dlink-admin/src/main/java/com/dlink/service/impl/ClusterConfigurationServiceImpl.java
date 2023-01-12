@@ -55,7 +55,9 @@ import cn.hutool.core.io.FileUtil;
  * @since 2021/11/6 20:54
  */
 @Service
-public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration> implements ClusterConfigurationService {
+public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration>
+    implements
+    ClusterConfigurationService {
 
     @Value("classpath:DinkyFlinkDockerfile")
     org.springframework.core.io.Resource dockerfileResource;
@@ -99,24 +101,32 @@ public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterCon
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
             Map kubernetesConfig = (Map) config.get("kubernetesConfig");
             if (kubernetesConfig.containsKey("kubernetes.namespace")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace", kubernetesConfig.get("kubernetes.namespace").toString());
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.namespace",
+                    kubernetesConfig.get("kubernetes.namespace").toString());
             }
             if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", kubernetesConfig.get("kubernetes.cluster-id").toString());
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id",
+                    kubernetesConfig.get("kubernetes.cluster-id").toString());
             } else {
-                //初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id", UUID.randomUUID().toString());
+                // 初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.cluster-id",
+                    UUID.randomUUID().toString());
             }
             if (kubernetesConfig.containsKey("kubernetes.container.image")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", kubernetesConfig.get("kubernetes.container.image").toString());
+                gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image",
+                    kubernetesConfig.get("kubernetes.container.image").toString());
             }
-            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc") ? PathConstant.WORK_DIR + "/dlink-doc" : PathConstant.WORK_DIR;
+            String fileDir = FileUtil.isDirectory(PathConstant.WORK_DIR + "/dlink-doc")
+                ? PathConstant.WORK_DIR + "/dlink-doc"
+                : PathConstant.WORK_DIR;
             File dockerFile = null;
             try {
-                dockerFile = FileUtil.writeUtf8String(FileUtil.readUtf8String(dockerfileResource.getFile()), fileDir + "/DinkyFlinkDockerfile");
-                Docker docker = Docker.build((Map) getClusterConfigById(clusterConfiguration.getId()).getConfig().get("dockerConfig"));
-                if (docker != null && StringUtils.isNotBlank(docker.getInstance())) {
-                    new DockerClientUtils(docker,dockerFile).initImage();
+                dockerFile = FileUtil.writeUtf8String(FileUtil.readUtf8String(dockerfileResource.getFile()),
+                    fileDir + "/DinkyFlinkDockerfile");
+                Docker docker = Docker.build((Map) clusterConfiguration.getConfig().get("dockerConfig"));
+                if (docker != null && StringUtils.isNotBlank(docker.getInstance())
+                    && clusterConfiguration.getId() != null) {
+                    new DockerClientUtils(docker, dockerFile).initImage();
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

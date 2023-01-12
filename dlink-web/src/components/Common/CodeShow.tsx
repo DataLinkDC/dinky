@@ -27,6 +27,7 @@ export type CodeShowFormProps = {
   theme?: string;
   options?: any;
   code: string;
+  editorDidMountHandle: any;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
@@ -44,6 +45,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       automaticLayout: true,
     },
     code,
+    editorDidMountHandle,
   } = props;
 
   return (<>
@@ -54,6 +56,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       value={code}
       options={options}
       theme='vs-dark'
+      editorDidMount={editorDidMountHandle}
     />
   </>)
 };

@@ -22,6 +22,7 @@ on:
   pull_request:
     branches:
       - dev
+      - 0.7
     paths-ignore:
       - 'docs/**'
       - '**/*.md'

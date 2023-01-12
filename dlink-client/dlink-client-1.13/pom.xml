@@ -22,7 +22,7 @@
     <parent>
         <artifactId>dlink-client</artifactId>
         <groupId>com.dlink</groupId>
-        <version>0.7.0</version>
+        <version>0.7.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
