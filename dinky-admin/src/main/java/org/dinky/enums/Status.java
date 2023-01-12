@@ -19,10 +19,10 @@
 
 package org.dinky.enums;
 
-import org.springframework.context.i18n.LocaleContextHolder;
-
 import java.util.Locale;
 import java.util.Optional;
+
+import org.springframework.context.i18n.LocaleContextHolder;
 
 public enum Status {
 
@@ -30,6 +30,7 @@ public enum Status {
      * response data msg
      */
     SUCCESS(200, "success", "获取成功"), FAILED(400, "success", "获取失败"),
+
     /**
      * base
      */
