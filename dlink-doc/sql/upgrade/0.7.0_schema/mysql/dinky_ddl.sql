@@ -24,57 +24,57 @@
 -- Table structure for dlink_tenant
 -- ----------------------------
 CREATE TABLE  IF NOT EXISTS `dlink_tenant` (
-                                               `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                               `tenant_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tenant code',
-                                               `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
-                                               `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
-                                               `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                               `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                               PRIMARY KEY (`id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'tenant code',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='tenant';
 
 -- ----------------------------
 -- Table structure for dlink_role
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_role` (
-                                            `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                            `tenant_id` int NOT NULL COMMENT 'tenant id',
-                                            `role_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role code',
-                                            `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role name',
-                                            `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
-                                            `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
-                                            `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                            `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                            PRIMARY KEY (`id`) USING BTREE,
-                                            UNIQUE KEY `dlink_role_un` (`role_code`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT 'tenant id',
+  `role_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role code',
+  `role_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'role name',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_role_un` (`role_code`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='role';
 
 -- ----------------------------
 -- Table structure for dlink_namespace
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_namespace` (
-                                                 `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                                 `tenant_id` int NOT NULL COMMENT 'tenant id',
-                                                 `namespace_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'namespace code',
-                                                 `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is enable',
-                                                 `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
-                                                 `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                                 `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                                 PRIMARY KEY (`id`) USING BTREE,
-                                                 UNIQUE KEY `dlink_namespace_un` (`namespace_code`,`tenant_id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `tenant_id` int NOT NULL COMMENT 'tenant id',
+  `namespace_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'namespace code',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is enable',
+  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'note',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_namespace_un` (`namespace_code`,`tenant_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='namespace';
 
 -- ----------------------------
 -- Table structure for dlink_role_namespace
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_role_namespace` (
-                                                      `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                                      `role_id` int NOT NULL COMMENT 'user id',
-                                                      `namespace_id` int NOT NULL COMMENT 'namespace id',
-                                                      `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                                      `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                                      PRIMARY KEY (`id`) USING BTREE,
-                                                      UNIQUE KEY `dlink_role_namespace_un` (`role_id`,`namespace_id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `role_id` int NOT NULL COMMENT 'user id',
+  `namespace_id` int NOT NULL COMMENT 'namespace id',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_role_namespace_un` (`role_id`,`namespace_id`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Role and namespace relationship';
 
 
@@ -82,13 +82,13 @@ CREATE TABLE IF NOT EXISTS `dlink_role_namespace` (
 -- Table structure for dlink_user_role
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_user_role` (
-                                                 `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                                 `user_id` int NOT NULL COMMENT 'user id',
-                                                 `role_id` int NOT NULL COMMENT 'role id',
-                                                 `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                                 `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                                 PRIMARY KEY (`id`) USING BTREE,
-                                                 UNIQUE KEY `dlink_user_role_un` (`user_id`,`role_id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` int NOT NULL COMMENT 'user id',
+  `role_id` int NOT NULL COMMENT 'role id',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_user_role_un` (`user_id`,`role_id`) USING BTREE
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Relationship between users and roles';
 
 
@@ -96,13 +96,13 @@ CREATE TABLE IF NOT EXISTS `dlink_user_role` (
 -- Table structure for dlink_user_tenant
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_user_tenant` (
-                                                   `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                                   `user_id` int NOT NULL COMMENT 'user id',
-                                                   `tenant_id` int NOT NULL COMMENT 'tenant id',
-                                                   `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                                   `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                                   PRIMARY KEY (`id`) USING BTREE,
-                                                   UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `user_id` int NOT NULL COMMENT 'user id',
+  `tenant_id` int NOT NULL COMMENT 'tenant id',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE,
+  UNIQUE KEY `dlink_user_role_un` (`user_id`,`tenant_id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='Relationship between users and tenants';
 
 
@@ -158,38 +158,38 @@ alter table dlink_job_history add column `tenant_id` int not null DEFAULT '1' co
 -- Table structure for dlink_udf
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_udf` (
-                                           `id` int NOT NULL AUTO_INCREMENT,
-                                           `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'udf name',
-                                           `class_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Complete class name',
-                                           `source_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'source code',
-                                           `compiler_code` binary(255) DEFAULT NULL COMMENT 'compiler product',
-                                           `version_id` int DEFAULT NULL COMMENT 'version',
-                                           `version_description` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'version description',
-                                           `is_default` tinyint(1) DEFAULT NULL COMMENT 'Is it default',
-                                           `document_id` int DEFAULT NULL COMMENT 'corresponding to the document id',
-                                           `from_version_id` int DEFAULT NULL COMMENT 'Based on udf version id',
-                                           `code_md5` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'source code of md5',
-                                           `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'dialect',
-                                           `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'type',
-                                           `step` int DEFAULT NULL COMMENT 'job lifecycle step',
-                                           `enable` tinyint(1) DEFAULT NULL COMMENT 'is enable',
-                                           `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                           `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                           PRIMARY KEY (`id`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'udf name',
+  `class_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'Complete class name',
+  `source_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'source code',
+  `compiler_code` binary(255) DEFAULT NULL COMMENT 'compiler product',
+  `version_id` int DEFAULT NULL COMMENT 'version',
+  `version_description` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'version description',
+  `is_default` tinyint(1) DEFAULT NULL COMMENT 'Is it default',
+  `document_id` int DEFAULT NULL COMMENT 'corresponding to the document id',
+  `from_version_id` int DEFAULT NULL COMMENT 'Based on udf version id',
+  `code_md5` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'source code of md5',
+  `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'dialect',
+  `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'type',
+  `step` int DEFAULT NULL COMMENT 'job lifecycle step',
+  `enable` tinyint(1) DEFAULT NULL COMMENT 'is enable',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT 'udf';
 -- ----------------------------
 -- Table structure for dlink_udf_template
 -- ----------------------------
 CREATE TABLE IF NOT EXISTS `dlink_udf_template` (
-                                                    `id` int NOT NULL AUTO_INCREMENT,
-                                                    `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
-                                                    `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '代码类型',
-                                                    `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '函数类型',
-                                                    `template_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '模板代码',
-                                                    `enabled` tinyint(1) DEFAULT NULL COMMENT 'is enable',
-                                                    `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                                    `update_time` datetime DEFAULT NULL COMMENT 'update time',
-                                                    PRIMARY KEY (`id`)
+  `id` int NOT NULL AUTO_INCREMENT,
+  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '模板名称',
+  `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '代码类型',
+  `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '函数类型',
+  `template_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT '模板代码',
+  `enabled` tinyint(1) DEFAULT NULL COMMENT 'is enable',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT 'udf template';
 
 
