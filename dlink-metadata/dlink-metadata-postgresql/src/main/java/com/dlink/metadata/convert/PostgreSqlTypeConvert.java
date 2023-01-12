@@ -51,7 +51,7 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.INT;
             }
-        } else if (t.contains("bigint") || t.contains("bigserial")) {
+        } else if (t.contains("bigint") || t.contains("int8") || t.contains("bigserial")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_LONG;
             } else {
