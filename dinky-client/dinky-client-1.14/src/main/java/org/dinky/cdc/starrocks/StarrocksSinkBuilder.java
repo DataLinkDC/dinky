@@ -50,18 +50,14 @@ import com.starrocks.connector.flink.row.sink.StarRocksTableRowTransformer;
 import com.starrocks.connector.flink.table.sink.StarRocksDynamicSinkFunction;
 import com.starrocks.connector.flink.table.sink.StarRocksSinkOptions;
 
-/**
- * StarrocksSinkBuilder
- *
- **/
+/** StarrocksSinkBuilder */
 public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "datastream-starrocks";
     private static final long serialVersionUID = 8330362249137431824L;
     private final ZoneId sinkZoneIdUTC = ZoneId.of("UTC");
 
-    public StarrocksSinkBuilder() {
-    }
+    public StarrocksSinkBuilder() {}
 
     public StarrocksSinkBuilder(FlinkCDCConfig config) {
         super(config);
@@ -105,29 +101,35 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements Seriali
                 }
                 dataTypes[i] = TypeConversions.fromLogicalToDataType(logicalType);
             }
-            TableSchema tableSchema = TableSchema.builder().primaryKey(primaryKeyArrays).fields(columnNames, dataTypes)
-                    .build();
+            TableSchema tableSchema =
+                    TableSchema.builder()
+                            .primaryKey(primaryKeyArrays)
+                            .fields(columnNames, dataTypes)
+                            .build();
             Map<String, String> sink = config.getSink();
-            StarRocksSinkOptions.Builder builder = StarRocksSinkOptions.builder()
-                    .withProperty("jdbc-url", sink.get("jdbc-url"))
-                    .withProperty("load-url", sink.get("load-url"))
-                    .withProperty("username", sink.get("username"))
-                    .withProperty("password", sink.get("password"))
-                    .withProperty("table-name", getSinkTableName(table))
-                    .withProperty("database-name", getSinkSchemaName(table))
-                    .withProperty("sink.properties.format", "json")
-                    .withProperty("sink.properties.strip_outer_array", "true")
-                    // 设置并行度，多并行度情况下需要考虑如何保证数据有序性
-                    .withProperty("sink.parallelism", "1");
-            sink.forEach((key, value) -> {
-                if (key.startsWith("sink.")) {
-                    builder.withProperty(key, value);
-                }
-            });
-            StarRocksDynamicSinkFunction<RowData> starrocksSinkFunction = new StarRocksDynamicSinkFunction<RowData>(
-                    builder.build(),
-                    tableSchema,
-                    new StarRocksTableRowTransformer(TypeInformation.of(RowData.class)));
+            StarRocksSinkOptions.Builder builder =
+                    StarRocksSinkOptions.builder()
+                            .withProperty("jdbc-url", sink.get("jdbc-url"))
+                            .withProperty("load-url", sink.get("load-url"))
+                            .withProperty("username", sink.get("username"))
+                            .withProperty("password", sink.get("password"))
+                            .withProperty("table-name", getSinkTableName(table))
+                            .withProperty("database-name", getSinkSchemaName(table))
+                            .withProperty("sink.properties.format", "json")
+                            .withProperty("sink.properties.strip_outer_array", "true")
+                            // 设置并行度，多并行度情况下需要考虑如何保证数据有序性
+                            .withProperty("sink.parallelism", "1");
+            sink.forEach(
+                    (key, value) -> {
+                        if (key.startsWith("sink.")) {
+                            builder.withProperty(key, value);
+                        }
+                    });
+            StarRocksDynamicSinkFunction<RowData> starrocksSinkFunction =
+                    new StarRocksDynamicSinkFunction<RowData>(
+                            builder.build(),
+                            tableSchema,
+                            new StarRocksTableRowTransformer(TypeInformation.of(RowData.class)));
             rowDataDataStream.addSink(starrocksSinkFunction);
             logger.info("handler connector name:{} sink successful.....", getHandle());
         } catch (Exception ex) {

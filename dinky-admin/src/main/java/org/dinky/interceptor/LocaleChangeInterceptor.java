@@ -37,7 +37,8 @@ import org.springframework.web.util.WebUtils;
 public class LocaleChangeInterceptor extends HandlerInterceptorAdapter {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler) {
         Cookie cookie = WebUtils.getCookie(request, BaseConstant.LOCALE_LANGUAGE_COOKIE);
         if (Asserts.isNotNull(cookie)) {
             // Proceed in cookie
@@ -55,5 +56,4 @@ public class LocaleChangeInterceptor extends HandlerInterceptorAdapter {
     protected Locale parseLocaleValue(String localeValue) {
         return StringUtils.parseLocale(localeValue);
     }
-
 }

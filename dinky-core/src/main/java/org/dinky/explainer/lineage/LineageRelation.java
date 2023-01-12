@@ -35,17 +35,21 @@ public class LineageRelation {
     private String srcTableColName;
     private String tgtTableColName;
 
-    public LineageRelation() {
-    }
+    public LineageRelation() {}
 
-    public LineageRelation(String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
+    public LineageRelation(
+            String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
         this.srcTableId = srcTableId;
         this.tgtTableId = tgtTableId;
         this.srcTableColName = srcTableColName;
         this.tgtTableColName = tgtTableColName;
     }
 
-    public LineageRelation(String id, String srcTableId, String tgtTableId, String srcTableColName,
+    public LineageRelation(
+            String id,
+            String srcTableId,
+            String tgtTableId,
+            String srcTableColName,
             String tgtTableColName) {
         this.id = id;
         this.srcTableId = srcTableId;
@@ -54,12 +58,16 @@ public class LineageRelation {
         this.tgtTableColName = tgtTableColName;
     }
 
-    public static LineageRelation build(String srcTableId, String tgtTableId, String srcTableColName,
-            String tgtTableColName) {
+    public static LineageRelation build(
+            String srcTableId, String tgtTableId, String srcTableColName, String tgtTableColName) {
         return new LineageRelation(srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }
 
-    public static LineageRelation build(String id, String srcTableId, String tgtTableId, String srcTableColName,
+    public static LineageRelation build(
+            String id,
+            String srcTableId,
+            String tgtTableId,
+            String srcTableColName,
             String tgtTableColName) {
         return new LineageRelation(id, srcTableId, tgtTableId, srcTableColName, tgtTableColName);
     }

@@ -42,8 +42,7 @@ public class ShowResultBuilder implements ResultBuilder {
 
     private String nullColumn = "";
 
-    public ShowResultBuilder() {
-    }
+    public ShowResultBuilder() {}
 
     @Override
     public IResult getResult(TableResult tableResult) {

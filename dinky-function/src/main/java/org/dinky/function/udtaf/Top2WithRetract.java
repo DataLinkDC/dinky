@@ -29,10 +29,9 @@ import org.apache.flink.util.Collector;
  * @author wenmo
  * @since 2021/12/17 18:55
  */
-
 public class Top2WithRetract
-        extends
-            TableAggregateFunction<Tuple2<Integer, Integer>, Top2WithRetract.Top2WithRetractAccumulator> {
+        extends TableAggregateFunction<
+                Tuple2<Integer, Integer>, Top2WithRetract.Top2WithRetractAccumulator> {
 
     public static class Top2WithRetractAccumulator {
 
@@ -84,8 +83,7 @@ public class Top2WithRetract
     }
 
     public void emitUpdateWithRetract(
-            Top2WithRetractAccumulator acc,
-            RetractableCollector<Tuple2<Integer, Integer>> out) {
+            Top2WithRetractAccumulator acc, RetractableCollector<Tuple2<Integer, Integer>> out) {
         if (!acc.first.equals(acc.oldFirst)) {
             // if there is an update, retract the old value then emit a new value
             if (acc.oldFirst != Integer.MIN_VALUE) {

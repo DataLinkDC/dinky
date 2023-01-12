@@ -38,9 +38,7 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * Hdfs Handle
- **/
+/** Hdfs Handle */
 @Slf4j
 public class HdfsUtil {
 
@@ -54,12 +52,14 @@ public class HdfsUtil {
     private static Result init(String hadoopConfigPath) {
         if (hdfs == null) {
             if (Asserts.isNullString(hadoopConfigPath)) {
-                hadoopConfigPath = FilePathUtil.removeFileSeparator(UploadFileConstant.HADOOP_CONF_DIR);
+                hadoopConfigPath =
+                        FilePathUtil.removeFileSeparator(UploadFileConstant.HADOOP_CONF_DIR);
             }
             String coreSiteFilePath = hadoopConfigPath + "/core-site.xml";
             String hdfsSiteFilePath = hadoopConfigPath + "/hdfs-site.xml";
             if (!new File(coreSiteFilePath).exists() || !new File(hdfsSiteFilePath).exists()) {
-                return Result.failed("在项目根目录下没有找到 core-site.xml/hdfs-site.xml/yarn-site.xml 文件，请先上传这些文件");
+                return Result.failed(
+                        "在项目根目录下没有找到 core-site.xml/hdfs-site.xml/yarn-site.xml 文件，请先上传这些文件");
             }
             try {
                 final Configuration configuration = new Configuration();
@@ -78,7 +78,7 @@ public class HdfsUtil {
     /**
      * Upload file byte content to HDFS
      *
-     * @param path  HDFS path
+     * @param path HDFS path
      * @param bytes File byte content
      * @return {@link Result}
      */
@@ -89,8 +89,8 @@ public class HdfsUtil {
     /**
      * Upload file byte content to HDFS
      *
-     * @param path             HDFS path
-     * @param bytes            File byte content
+     * @param path HDFS path
+     * @param bytes File byte content
      * @param hadoopConfigPath hdfs config path
      * @return {@link Result}
      */
@@ -129,8 +129,8 @@ public class HdfsUtil {
     /**
      * Upload file byte content to HDFS
      *
-     * @param path             HDFS path
-     * @param file             MultipartFile instance
+     * @param path HDFS path
+     * @param file MultipartFile instance
      * @param hadoopConfigPath hdfs config path
      * @return {@link Result}
      */
@@ -142,5 +142,4 @@ public class HdfsUtil {
             return Result.failed("文件上传失败");
         }
     }
-
 }

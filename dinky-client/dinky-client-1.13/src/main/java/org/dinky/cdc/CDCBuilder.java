@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2022/4/12 21:09
- **/
+ */
 public interface CDCBuilder {
 
     String getHandle();
@@ -53,5 +53,4 @@ public interface CDCBuilder {
     default Map<String, String> parseMetaDataConfig() {
         throw new SplitTableException("此数据源并未实现分库分表");
     }
-
 }

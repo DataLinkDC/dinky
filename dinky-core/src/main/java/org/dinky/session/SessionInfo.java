@@ -39,7 +39,11 @@ public class SessionInfo {
     private String createUser;
     private LocalDateTime createTime;
 
-    public SessionInfo(String session, SessionConfig sessionConfig, String createUser, LocalDateTime createTime) {
+    public SessionInfo(
+            String session,
+            SessionConfig sessionConfig,
+            String createUser,
+            LocalDateTime createTime) {
         this.session = session;
         this.sessionConfig = sessionConfig;
         this.createUser = createUser;
@@ -47,8 +51,10 @@ public class SessionInfo {
     }
 
     public static SessionInfo build(ExecutorEntity executorEntity) {
-        return new SessionInfo(executorEntity.getSessionId(), executorEntity.getSessionConfig(),
-                executorEntity.getCreateUser(), executorEntity.getCreateTime());
+        return new SessionInfo(
+                executorEntity.getSessionId(),
+                executorEntity.getSessionConfig(),
+                executorEntity.getCreateUser(),
+                executorEntity.getCreateTime());
     }
-
 }

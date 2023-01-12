@@ -36,23 +36,30 @@ import java.util.Map;
 @Deprecated
 public class FunctionManager {
 
-    private static Map<String, UDFunction> functions = new HashMap<String, UDFunction>() {
+    private static Map<String, UDFunction> functions =
+            new HashMap<String, UDFunction>() {
 
-        {
-            put(FlinkFunctionConstant.GET_KEY,
-                    new UDFunction(FlinkFunctionConstant.GET_KEY,
-                            UDFunction.UDFunctionType.Scalar,
-                            new GetKey()));
-            put(FlinkFunctionConstant.TO_MAP,
-                    new UDFunction(FlinkFunctionConstant.TO_MAP,
-                            UDFunction.UDFunctionType.TableAggregate,
-                            new RowsToMap()));
-            put(FlinkFunctionConstant.TOP2,
-                    new UDFunction(FlinkFunctionConstant.TOP2,
-                            UDFunction.UDFunctionType.TableAggregate,
-                            new Top2()));
-        }
-    };
+                {
+                    put(
+                            FlinkFunctionConstant.GET_KEY,
+                            new UDFunction(
+                                    FlinkFunctionConstant.GET_KEY,
+                                    UDFunction.UDFunctionType.Scalar,
+                                    new GetKey()));
+                    put(
+                            FlinkFunctionConstant.TO_MAP,
+                            new UDFunction(
+                                    FlinkFunctionConstant.TO_MAP,
+                                    UDFunction.UDFunctionType.TableAggregate,
+                                    new RowsToMap()));
+                    put(
+                            FlinkFunctionConstant.TOP2,
+                            new UDFunction(
+                                    FlinkFunctionConstant.TOP2,
+                                    UDFunction.UDFunctionType.TableAggregate,
+                                    new Top2()));
+                }
+            };
 
     public static Map<String, UDFunction> getUsedFunctions(String statement) {
         Map<String, UDFunction> map = new HashMap<>();

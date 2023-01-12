@@ -72,5 +72,4 @@ public class PrestoQuery extends AbstractDBQuery {
     public String columnComment() {
         return "Comment";
     }
-
 }

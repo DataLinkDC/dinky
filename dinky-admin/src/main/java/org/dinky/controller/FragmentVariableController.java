@@ -50,12 +50,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/fragment")
 public class FragmentVariableController {
 
-    @Autowired
-    private FragmentVariableService fragmentVariableService;
+    @Autowired private FragmentVariableService fragmentVariableService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody FragmentVariable fragmentVariable) throws Exception {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
@@ -65,17 +62,13 @@ public class FragmentVariableController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
         return fragmentVariableService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -89,7 +82,8 @@ public class FragmentVariableController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");

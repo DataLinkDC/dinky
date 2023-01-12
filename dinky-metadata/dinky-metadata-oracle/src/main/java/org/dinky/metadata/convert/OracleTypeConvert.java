@@ -28,7 +28,7 @@ import org.dinky.model.ColumnType;
  *
  * @author wenmo
  * @since 2021/7/21 16:00
- **/
+ */
 public class OracleTypeConvert implements ITypeConvert {
 
     @Override

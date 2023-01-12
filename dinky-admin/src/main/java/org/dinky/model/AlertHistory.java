@@ -36,7 +36,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2022/2/24 20:12
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_alert_history")
@@ -63,6 +63,7 @@ public class AlertHistory implements Serializable {
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

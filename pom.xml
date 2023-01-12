@@ -680,12 +680,13 @@
                 <artifactId>spotless-maven-plugin</artifactId>
                 <version>${spotless.version}</version>
                 <configuration>
-                    <!-- optional: limit format enforcement to just the files changed by this feature branch -->
                     <ratchetFrom>${spotless.ratchetFrom}</ratchetFrom>
                     <java>
-                        <eclipse>
-                            <file>style/spotless_dinky_formatter.xml</file>
-                        </eclipse>
+                        <googleJavaFormat>
+                            <version>1.7</version>
+                            <style>AOSP</style>
+                        </googleJavaFormat>
+
                         <removeUnusedImports />
                         <importOrder>
                             <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
@@ -722,10 +723,11 @@
                 </configuration>
                 <executions>
                     <execution>
+                        <id>spotless-check</id>
                         <goals>
                             <goal>check</goal>
                         </goals>
-                        <phase>compile</phase>
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>

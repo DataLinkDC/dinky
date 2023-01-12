@@ -39,7 +39,7 @@ public interface TenantService extends ISuperService<Tenant> {
     Result deleteTenantById(JsonNode para);
 
     /**
-     * add  or update tenant
+     * add or update tenant
      *
      * @param tenant tenant info
      * @return add or update code

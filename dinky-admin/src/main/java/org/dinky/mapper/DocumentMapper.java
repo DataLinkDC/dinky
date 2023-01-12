@@ -29,8 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/6/3 14:31
- **/
+ */
 @Mapper
-public interface DocumentMapper extends SuperMapper<Document> {
-
-}
+public interface DocumentMapper extends SuperMapper<Document> {}

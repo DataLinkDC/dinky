@@ -40,16 +40,10 @@ import lombok.NoArgsConstructor;
 public class PageResult<T> implements Serializable {
 
     private static final long serialVersionUID = -5143774412936881374L;
-    /**
-     * 总数
-     */
+    /** 总数 */
     private Long count;
-    /**
-     * 是否成功：0 成功、1 失败
-     */
+    /** 是否成功：0 成功、1 失败 */
     private int code;
-    /**
-     * 当前页结果集
-     */
+    /** 当前页结果集 */
     private List<T> data;
 }

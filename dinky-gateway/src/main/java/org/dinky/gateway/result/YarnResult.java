@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public class YarnResult extends AbstractGatewayResult {
 
     private String appId;
@@ -40,7 +40,11 @@ public class YarnResult extends AbstractGatewayResult {
         super(type, startTime);
     }
 
-    public YarnResult(String appId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess,
+    public YarnResult(
+            String appId,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            boolean isSuccess,
             String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
         this.appId = appId;
@@ -73,5 +77,4 @@ public class YarnResult extends AbstractGatewayResult {
     public static YarnResult build(GatewayType type) {
         return new YarnResult(type, LocalDateTime.now());
     }
-
 }

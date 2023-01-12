@@ -42,8 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/namespace")
 public class NamespaceController {
 
-    @Autowired
-    private NamespaceService namespaceService;
+    @Autowired private NamespaceService namespaceService;
 
     /**
      * create or update namespace
@@ -70,9 +69,7 @@ public class NamespaceController {
         return namespaceService.deleteNamespaceById(para);
     }
 
-    /**
-     * query namespace list
-     */
+    /** query namespace list */
     @PostMapping
     public ProTableResult<Namespace> listNamespaces(@RequestBody JsonNode para) {
         return namespaceService.selectForProTable(para);

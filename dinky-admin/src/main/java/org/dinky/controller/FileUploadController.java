@@ -36,29 +36,29 @@ import org.springframework.web.multipart.MultipartFile;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * FileUploadController
- */
+/** FileUploadController */
 @Slf4j
 @RestController
 @RequestMapping("/api/fileUpload")
 public class FileUploadController {
 
-    @Resource
-    private FileUploadService fileUploadService;
+    @Resource private FileUploadService fileUploadService;
 
     /**
      * Upload file<br>
      *
-     * @param files    Multi files
-     * @param dir      Dir, default is empty. If not provide, please provide the 'fileType' value
-     * @param fileType Please refer {@link UploadFileConstant}, default is -1. If not provide, please provide the 'dir' value
+     * @param files Multi files
+     * @param dir Dir, default is empty. If not provide, please provide the 'fileType' value
+     * @param fileType Please refer {@link UploadFileConstant}, default is -1. If not provide,
+     *     please provide the 'dir' value
      * @return {@link Result}
      */
     @PostMapping
-    public Result upload(@RequestPart("files") MultipartFile[] files,
+    public Result upload(
+            @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-            @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
+            @RequestParam(value = "fileType", defaultValue = "-1", required = false)
+                    Byte fileType) {
         if (!StringUtils.isEmpty(dir) && fileType != -1) {
             return Result.failed("不要同时指定 dir 和 fileType 参数");
         } else if (StringUtils.isEmpty(dir) && fileType == -1) {
@@ -75,16 +75,17 @@ public class FileUploadController {
     /**
      * Upload hdfs file<br>
      *
-     * @param files            Multi files
-     * @param dir              Dir, default is empty. If not provide, please provide the 'fileType' value
-     * @param hadoopConfigPath Please refer {@link UploadFileConstant}, default is -1. If not provide, please provide the 'dir' value
+     * @param files Multi files
+     * @param dir Dir, default is empty. If not provide, please provide the 'fileType' value
+     * @param hadoopConfigPath Please refer {@link UploadFileConstant}, default is -1. If not
+     *     provide, please provide the 'dir' value
      * @return {@link Result}
      */
     @PostMapping(value = "hdfs")
-    public Result uploadHdfs(@RequestPart("files") MultipartFile[] files,
+    public Result uploadHdfs(
+            @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
             @RequestParam(value = "hadoopConfigPath", required = false) String hadoopConfigPath) {
         return fileUploadService.uploadHdfs(files, dir, hadoopConfigPath);
     }
-
 }

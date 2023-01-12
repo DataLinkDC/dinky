@@ -61,17 +61,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 @Service
 public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance>
-        implements
-            JobInstanceService {
+        implements JobInstanceService {
 
-    @Autowired
-    private HistoryService historyService;
-    @Autowired
-    private ClusterService clusterService;
-    @Autowired
-    private ClusterConfigurationService clusterConfigurationService;
-    @Autowired
-    private JobHistoryService jobHistoryService;
+    @Autowired private HistoryService historyService;
+    @Autowired private ClusterService clusterService;
+    @Autowired private ClusterConfigurationService clusterConfigurationService;
+    @Autowired private JobHistoryService jobHistoryService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -162,7 +157,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             jobInfoDetail.setHistory(history);
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(
-                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+                        clusterConfigurationService.getClusterConfigById(
+                                history.getClusterConfigurationId()));
             }
             return jobInfoDetail;
         }
@@ -184,7 +180,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setHistory(history);
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
             jobInfoDetail.setClusterConfiguration(
-                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
+                    clusterConfigurationService.getClusterConfigById(
+                            history.getClusterConfigurationId()));
         }
         if (pool.exist(key)) {
             pool.refresh(jobInfoDetail);
@@ -218,15 +215,36 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
         for (int i = 0; i < list.size(); i++) {
             if (pool.exist(list.get(i).getId().toString())) {
-                list.get(i).setStatus(pool.get(list.get(i).getId().toString()).getInstance().getStatus());
-                list.get(i).setUpdateTime(pool.get(list.get(i).getId().toString()).getInstance().getUpdateTime());
-                list.get(i).setFinishTime(pool.get(list.get(i).getId().toString()).getInstance().getFinishTime());
-                list.get(i).setError(pool.get(list.get(i).getId().toString()).getInstance().getError());
-                list.get(i).setDuration(pool.get(list.get(i).getId().toString()).getInstance().getDuration());
+                list.get(i)
+                        .setStatus(
+                                pool.get(list.get(i).getId().toString()).getInstance().getStatus());
+                list.get(i)
+                        .setUpdateTime(
+                                pool.get(list.get(i).getId().toString())
+                                        .getInstance()
+                                        .getUpdateTime());
+                list.get(i)
+                        .setFinishTime(
+                                pool.get(list.get(i).getId().toString())
+                                        .getInstance()
+                                        .getFinishTime());
+                list.get(i)
+                        .setError(
+                                pool.get(list.get(i).getId().toString()).getInstance().getError());
+                list.get(i)
+                        .setDuration(
+                                pool.get(list.get(i).getId().toString())
+                                        .getInstance()
+                                        .getDuration());
             }
         }
-        return ProTableResult.<JobInstance>builder().success(true).data(list).total(page.getTotal()).current(current)
-                .pageSize(pageSize).build();
+        return ProTableResult.<JobInstance>builder()
+                .success(true)
+                .data(list)
+                .total(page.getTotal())
+                .current(current)
+                .pageSize(pageSize)
+                .build();
     }
 
     @Override
@@ -235,5 +253,4 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Asserts.checkNull(tenantId, Tips.JOB_INSTANCE_NOT_EXIST);
         TenantContextHolder.set(tenantId);
     }
-
 }

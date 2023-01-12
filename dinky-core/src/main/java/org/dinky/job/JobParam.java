@@ -43,7 +43,10 @@ public class JobParam {
         this.trans = trans;
     }
 
-    public JobParam(List<String> statements, List<StatementParam> ddl, List<StatementParam> trans,
+    public JobParam(
+            List<String> statements,
+            List<StatementParam> ddl,
+            List<StatementParam> trans,
             List<StatementParam> execute) {
         this.statements = statements;
         this.ddl = ddl;
@@ -51,8 +54,12 @@ public class JobParam {
         this.execute = execute;
     }
 
-    public JobParam(List<String> statements, List<StatementParam> ddl, List<StatementParam> trans,
-            List<StatementParam> execute, List<UDF> udfList) {
+    public JobParam(
+            List<String> statements,
+            List<StatementParam> ddl,
+            List<StatementParam> trans,
+            List<StatementParam> execute,
+            List<UDF> udfList) {
         this.statements = statements;
         this.ddl = ddl;
         this.trans = trans;

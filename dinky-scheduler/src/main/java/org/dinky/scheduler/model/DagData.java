@@ -24,9 +24,7 @@ import java.util.List;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * DagData
- */
+/** DagData */
 @Data
 public class DagData {
 
@@ -38,5 +36,4 @@ public class DagData {
 
     @ApiModelProperty(value = "任务定义关联集合")
     private List<TaskDefinition> taskDefinitionList;
-
 }

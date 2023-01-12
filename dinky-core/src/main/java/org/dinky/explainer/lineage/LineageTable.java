@@ -36,8 +36,7 @@ public class LineageTable {
     private String name;
     private List<LineageColumn> columns;
 
-    public LineageTable() {
-    }
+    public LineageTable() {}
 
     public LineageTable(String id, String name) {
         this.id = id;

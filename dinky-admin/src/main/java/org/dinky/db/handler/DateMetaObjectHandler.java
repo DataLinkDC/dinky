@@ -32,7 +32,7 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
  *
  * @author wenmo
  * @since 2021/5/25
- **/
+ */
 public class DateMetaObjectHandler implements MetaObjectHandler {
 
     private MybatisPlusFillProperties mybatisPlusFillProperties;
@@ -53,15 +53,23 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {
-        Object createTime = getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
-        Object updateTime = getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
+        Object createTime =
+                getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
+        Object updateTime =
+                getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
         Object alias = getFieldValByName(mybatisPlusFillProperties.getAlias(), metaObject);
         Object name = getFieldValByName(mybatisPlusFillProperties.getName(), metaObject);
         if (createTime == null) {
-            setFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), LocalDateTime.now(), metaObject);
+            setFieldValByName(
+                    mybatisPlusFillProperties.getCreateTimeField(),
+                    LocalDateTime.now(),
+                    metaObject);
         }
         if (updateTime == null) {
-            setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
+            setFieldValByName(
+                    mybatisPlusFillProperties.getUpdateTimeField(),
+                    LocalDateTime.now(),
+                    metaObject);
         }
         if (alias == null) {
             setFieldValByName(mybatisPlusFillProperties.getAlias(), name, metaObject);
@@ -70,6 +78,7 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void updateFill(MetaObject metaObject) {
-        setFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
+        setFieldValByName(
+                mybatisPlusFillProperties.getUpdateTimeField(), LocalDateTime.now(), metaObject);
     }
 }

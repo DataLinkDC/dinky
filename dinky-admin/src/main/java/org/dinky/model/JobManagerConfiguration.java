@@ -29,7 +29,6 @@ import lombok.Data;
  * @author: zhumingye
  * @create: 2022-06-26 10:53
  */
-
 @Data
 public class JobManagerConfiguration {
 
@@ -40,5 +39,4 @@ public class JobManagerConfiguration {
     private String jobManagerLog;
 
     private String jobManagerStdout;
-
 }

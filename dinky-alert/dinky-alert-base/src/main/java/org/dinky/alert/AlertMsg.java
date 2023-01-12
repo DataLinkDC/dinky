@@ -26,7 +26,7 @@ import lombok.Data;
  *
  * @author wenmo
  * @since 2022/3/7 18:30
- **/
+ */
 @Data
 public class AlertMsg {
 
@@ -40,20 +40,16 @@ public class AlertMsg {
     private String jobEndTime;
     private String jobDuration;
 
-    /**
-     * Flink WebUI link url
-     */
+    /** Flink WebUI link url */
     private String linkUrl;
 
-    /**
-     * Flink job Root Exception url
-     */
+    /** Flink job Root Exception url */
     private String exceptionUrl;
 
-    public AlertMsg() {
-    }
+    public AlertMsg() {}
 
-    public AlertMsg(String alertType,
+    public AlertMsg(
+            String alertType,
             String alertTime,
             String jobID,
             String jobName,
@@ -79,27 +75,36 @@ public class AlertMsg {
     }
 
     public String toString() {
-        return "[{ \"Alert Type\":\"" + alertType + "\","
-                +
-                "\"Alert Time\":\"" + alertTime + "\","
-                +
-                "\"Job ID\":\"" + jobID + "\","
-                +
-                "\"Job Name\":\"" + jobName + "\","
-                +
-                "\"Job Type\":\"" + jobType + "\","
-                +
-                "\"Job Status\":\"" + jobStatus + "\","
-                +
-                "\"Job StartTime\": \"" + jobStartTime + "\","
-                +
-                "\"Job EndTime\": \"" + jobEndTime + "\","
-                +
-                "\"Job Duration\": \"" + jobDuration + "\","
-                +
-                "\"Exception Log\" :\"" + exceptionUrl + "\""
-                +
-                "}]";
+        return "[{ \"Alert Type\":\""
+                + alertType
+                + "\","
+                + "\"Alert Time\":\""
+                + alertTime
+                + "\","
+                + "\"Job ID\":\""
+                + jobID
+                + "\","
+                + "\"Job Name\":\""
+                + jobName
+                + "\","
+                + "\"Job Type\":\""
+                + jobType
+                + "\","
+                + "\"Job Status\":\""
+                + jobStatus
+                + "\","
+                + "\"Job StartTime\": \""
+                + jobStartTime
+                + "\","
+                + "\"Job EndTime\": \""
+                + jobEndTime
+                + "\","
+                + "\"Job Duration\": \""
+                + jobDuration
+                + "\","
+                + "\"Exception Log\" :\""
+                + exceptionUrl
+                + "\""
+                + "}]";
     }
-
 }

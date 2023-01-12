@@ -42,15 +42,12 @@ import org.springframework.web.multipart.MultipartFile;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * FileUploadServiceImpl
- **/
+/** FileUploadServiceImpl */
 @Slf4j
 @Service
 public class FileUploadServiceImpl implements FileUploadService {
 
-    @Resource
-    private UploadFileRecordService uploadFileRecordService;
+    @Resource private UploadFileRecordService uploadFileRecordService;
 
     @Override
     public Result upload(MultipartFile file, String dir, Byte fileType) {
@@ -61,34 +58,47 @@ public class FileUploadServiceImpl implements FileUploadService {
 
         String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
         switch (target) {
-            case UploadFileConstant.TARGET_LOCAL: {
-                try {
-                    file.transferTo(new File(filePath));
-                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType,
-                            UploadFileConstant.TARGET_LOCAL)) {
-                        return Result.succeed("上传成功");
-                    } else {
-                        return Result.failed("数据库异常");
+            case UploadFileConstant.TARGET_LOCAL:
+                {
+                    try {
+                        file.transferTo(new File(filePath));
+                        if (uploadFileRecordService.saveOrUpdateFile(
+                                file.getOriginalFilename(),
+                                dir,
+                                filePath,
+                                fileType,
+                                UploadFileConstant.TARGET_LOCAL)) {
+                            return Result.succeed("上传成功");
+                        } else {
+                            return Result.failed("数据库异常");
+                        }
+                    } catch (IOException e) {
+                        log.error(
+                                "File "
+                                        + file.getOriginalFilename()
+                                        + " upload to local dir fail, exception is:\n"
+                                        + ExceptionUtil.stacktraceToString(e));
+                        return Result.failed("上传失败");
                     }
-                } catch (IOException e) {
-                    log.error("File " + file.getOriginalFilename() + " upload to local dir fail, exception is:\n"
-                            + ExceptionUtil.stacktraceToString(e));
-                    return Result.failed("上传失败");
                 }
-            }
-            case UploadFileConstant.TARGET_HDFS: {
-                Result result = HdfsUtil.uploadFile(filePath, file);
-                if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-                    if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath, fileType,
-                            UploadFileConstant.TARGET_HDFS)) {
-                        return Result.succeed("上传成功");
+            case UploadFileConstant.TARGET_HDFS:
+                {
+                    Result result = HdfsUtil.uploadFile(filePath, file);
+                    if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
+                        if (uploadFileRecordService.saveOrUpdateFile(
+                                file.getOriginalFilename(),
+                                dir,
+                                filePath,
+                                fileType,
+                                UploadFileConstant.TARGET_HDFS)) {
+                            return Result.succeed("上传成功");
+                        } else {
+                            return Result.failed("数据库异常");
+                        }
                     } else {
-                        return Result.failed("数据库异常");
+                        return result;
                     }
-                } else {
-                    return result;
                 }
-            }
             default:
                 return Result.failed("非法的上传文件目的地");
         }
@@ -126,8 +136,12 @@ public class FileUploadServiceImpl implements FileUploadService {
         String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
         Result result = HdfsUtil.uploadFile(filePath, file, hadoopConfigPath);
         if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-            if (uploadFileRecordService.saveOrUpdateFile(file.getOriginalFilename(), dir, filePath,
-                    UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
+            if (uploadFileRecordService.saveOrUpdateFile(
+                    file.getOriginalFilename(),
+                    dir,
+                    filePath,
+                    UploadFileConstant.FLINK_LIB_ID,
+                    UploadFileConstant.TARGET_HDFS)) {
                 return Result.succeed("上传成功");
             } else {
                 return Result.failed("数据库异常");
@@ -149,8 +163,8 @@ public class FileUploadServiceImpl implements FileUploadService {
                     return uploadResult;
                 }
             }
-            if (!uploadFileRecordService.saveOrUpdateDir(dir, UploadFileConstant.FLINK_LIB_ID,
-                    UploadFileConstant.TARGET_HDFS)) {
+            if (!uploadFileRecordService.saveOrUpdateDir(
+                    dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
                 return Result.failed("数据库异常");
             }
             return Result.succeed("全部上传成功");
@@ -171,7 +185,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     /**
      * Get upload file target.
      *
-     * @param dir      If null, will return -1
+     * @param dir If null, will return -1
      * @param fileType Internal upload file type, refer {@link UploadFileConstant}
      * @return Upload file target, refer {@link UploadFileConstant}
      */
@@ -182,5 +196,4 @@ public class FileUploadServiceImpl implements FileUploadService {
         }
         return target;
     }
-
 }

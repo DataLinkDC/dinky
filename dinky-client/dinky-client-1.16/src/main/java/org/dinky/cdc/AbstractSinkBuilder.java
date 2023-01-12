@@ -76,7 +76,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2022/11/04
- **/
+ */
 public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
@@ -85,8 +85,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected List<ModifyOperation> modifyOperations = new ArrayList();
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
-    public AbstractSinkBuilder() {
-    }
+    public AbstractSinkBuilder() {}
 
     public AbstractSinkBuilder(FlinkCDCConfig config) {
         this.config = config;
@@ -104,7 +103,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("properties")
+            if (Asserts.isNotNullString(entry.getKey())
+                    && entry.getKey().startsWith("properties")
                     && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey().replace("properties.", ""), entry.getValue());
             }
@@ -112,38 +112,37 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return properties;
     }
 
-    protected SingleOutputStreamOperator<Map> deserialize(DataStreamSource<String> dataStreamSource) {
-        return dataStreamSource.map(new MapFunction<String, Map>() {
+    protected SingleOutputStreamOperator<Map> deserialize(
+            DataStreamSource<String> dataStreamSource) {
+        return dataStreamSource.map(
+                new MapFunction<String, Map>() {
 
-            @Override
-            public Map map(String value) throws Exception {
-                ObjectMapper objectMapper = new ObjectMapper();
-                return objectMapper.readValue(value, Map.class);
-            }
-        });
+                    @Override
+                    public Map map(String value) throws Exception {
+                        ObjectMapper objectMapper = new ObjectMapper();
+                        return objectMapper.readValue(value, Map.class);
+                    }
+                });
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
-            SingleOutputStreamOperator<Map> mapOperator,
-            Table table,
-            String schemaFieldName) {
+            SingleOutputStreamOperator<Map> mapOperator, Table table, String schemaFieldName) {
         final String tableName = table.getName();
         final String schemaName = table.getSchema();
-        return mapOperator.filter(new FilterFunction<Map>() {
+        return mapOperator.filter(
+                new FilterFunction<Map>() {
 
-            @Override
-            public boolean filter(Map value) throws Exception {
-                LinkedHashMap source = (LinkedHashMap) value.get("source");
-                return tableName.equals(source.get("table").toString())
-                        && schemaName.equals(source.get(schemaFieldName).toString());
-            }
-        });
+                    @Override
+                    public boolean filter(Map value) throws Exception {
+                        LinkedHashMap source = (LinkedHashMap) value.get("source");
+                        return tableName.equals(source.get("table").toString())
+                                && schemaName.equals(source.get(schemaFieldName).toString());
+                    }
+                });
     }
 
     protected DataStream<Map> shunt(
-            SingleOutputStreamOperator<Map> processOperator,
-            Table table,
-            OutputTag<Map> tag) {
+            SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }
@@ -153,8 +152,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        return filterOperator
-                .flatMap(new FlatMapFunction<Map, RowData>() {
+        return filterOperator.flatMap(
+                new FlatMapFunction<Map, RowData>() {
 
                     @Override
                     public void flatMap(Map value, Collector<RowData> out) throws Exception {
@@ -162,48 +161,67 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                             switch (value.get("op").toString()) {
                                 case "r":
                                 case "c":
-                                    GenericRowData igenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData igenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     igenericRowData.setRowKind(RowKind.INSERT);
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        igenericRowData.setField(i,
-                                                convertValue(idata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        igenericRowData.setField(
+                                                i,
+                                                convertValue(
+                                                        idata.get(columnNameList.get(i)),
+                                                        columnTypeList.get(i)));
                                     }
                                     out.collect(igenericRowData);
                                     break;
                                 case "d":
-                                    GenericRowData dgenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData dgenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     dgenericRowData.setRowKind(RowKind.DELETE);
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        dgenericRowData.setField(i,
-                                                convertValue(ddata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        dgenericRowData.setField(
+                                                i,
+                                                convertValue(
+                                                        ddata.get(columnNameList.get(i)),
+                                                        columnTypeList.get(i)));
                                     }
                                     out.collect(dgenericRowData);
                                     break;
                                 case "u":
-                                    GenericRowData ubgenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData ubgenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubgenericRowData.setField(i,
-                                                convertValue(ubdata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        ubgenericRowData.setField(
+                                                i,
+                                                convertValue(
+                                                        ubdata.get(columnNameList.get(i)),
+                                                        columnTypeList.get(i)));
                                     }
                                     out.collect(ubgenericRowData);
-                                    GenericRowData uagenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData uagenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        uagenericRowData.setField(i,
-                                                convertValue(uadata.get(columnNameList.get(i)), columnTypeList.get(i)));
+                                        uagenericRowData.setField(
+                                                i,
+                                                convertValue(
+                                                        uadata.get(columnNameList.get(i)),
+                                                        columnTypeList.get(i)));
                                     }
                                     out.collect(uagenericRowData);
                                     break;
                                 default:
                             }
                         } catch (Exception e) {
-                            logger.error("SchameTable: {} - Row: {} - Exception:", schemaTableName,
-                                    JSONUtil.toJsonString(value), e);
+                            logger.error(
+                                    "SchameTable: {} - Row: {} - Exception:",
+                                    schemaTableName,
+                                    JSONUtil.toJsonString(value),
+                                    e);
                             throw e;
                         }
                     }
@@ -231,15 +249,20 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
-                    SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
+                    SingleOutputStreamOperator<Map> filterOperator =
+                            shunt(mapOperator, table, schemaFieldName);
 
                     List<String> columnNameList = new ArrayList<>();
                     List<LogicalType> columnTypeList = new ArrayList<>();
 
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-                    DataStream<RowData> rowDataDataStream = buildRowData(filterOperator, columnNameList, columnTypeList,
-                            table.getSchemaTableName());
+                    DataStream<RowData> rowDataDataStream =
+                            buildRowData(
+                                    filterOperator,
+                                    columnNameList,
+                                    columnTypeList,
+                                    table.getSchemaTableName());
 
                     addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
@@ -248,7 +271,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return dataStreamSource;
     }
 
-    protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+    protected void buildColumn(
+            List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column));
@@ -307,7 +331,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             return StringData.fromString((String) value);
         } else if (logicalType instanceof DateType) {
             return StringData.fromString(
-                    Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate().toString());
+                    Instant.ofEpochMilli((long) value)
+                            .atZone(ZoneId.systemDefault())
+                            .toLocalDate()
+                            .toString());
         } else if (logicalType instanceof TimestampType) {
             return TimestampData.fromTimestamp(Timestamp.from(Instant.ofEpochMilli((long) value)));
         } else if (logicalType instanceof DecimalType) {

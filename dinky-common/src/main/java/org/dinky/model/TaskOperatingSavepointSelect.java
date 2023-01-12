@@ -22,9 +22,8 @@ package org.dinky.model;
 /**
  * @author csz
  * @version 1.0
- **/
+ */
 public enum TaskOperatingSavepointSelect {
-
     DEFAULT_CONFIG(0, "defaultConfig", "默认保存点"),
 
     LATEST(1, "latest", "最新保存点");
@@ -61,5 +60,4 @@ public enum TaskOperatingSavepointSelect {
         }
         return null;
     }
-
 }

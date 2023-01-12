@@ -34,9 +34,7 @@ import org.apache.flink.table.factories.FactoryUtil;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Factory for {@link DinkyMysqlCatalog}.
- */
+/** Factory for {@link DinkyMysqlCatalog}. */
 public class DinkyMysqlCatalogFactory implements CatalogFactory {
 
     @Override
@@ -62,7 +60,8 @@ public class DinkyMysqlCatalogFactory implements CatalogFactory {
 
     @Override
     public Catalog createCatalog(Context context) {
-        final FactoryUtil.CatalogFactoryHelper helper = FactoryUtil.createCatalogFactoryHelper(this, context);
+        final FactoryUtil.CatalogFactoryHelper helper =
+                FactoryUtil.createCatalogFactoryHelper(this, context);
         helper.validate();
 
         return new DinkyMysqlCatalog(

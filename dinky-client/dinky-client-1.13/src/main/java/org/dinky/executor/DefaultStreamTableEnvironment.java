@@ -36,16 +36,15 @@ import org.apache.flink.table.functions.TableFunction;
 import org.apache.flink.table.types.AbstractDataType;
 import org.apache.flink.types.Row;
 
-/**
- *
- */
-public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, DefaultTableEnvironment, TableEnvironmentInstance {
+/** */
+public interface DefaultStreamTableEnvironment
+        extends StreamTableEnvironment, DefaultTableEnvironment, TableEnvironmentInstance {
 
     default StreamTableEnvironment getStreamTableEnvironment() {
         return (StreamTableEnvironment) getTableEnvironment();
     }
 
-    @Override// region StreamTableEnvironment interface
+    @Override // region StreamTableEnvironment interface
     default <T> void registerFunction(String s, TableFunction<T> tableFunction) {
         getStreamTableEnvironment().registerFunction(s, tableFunction);
     }
@@ -56,7 +55,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T, A> void registerFunction(String s, TableAggregateFunction<T, A> tableAggregateFunction) {
+    default <T, A> void registerFunction(
+            String s, TableAggregateFunction<T, A> tableAggregateFunction) {
         getStreamTableEnvironment().registerFunction(s, tableAggregateFunction);
     }
 
@@ -81,7 +81,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default Table fromChangelogStream(DataStream<Row> dataStream, Schema schema, ChangelogMode changelogMode) {
+    default Table fromChangelogStream(
+            DataStream<Row> dataStream, Schema schema, ChangelogMode changelogMode) {
         return getStreamTableEnvironment().fromChangelogStream(dataStream, schema, changelogMode);
     }
 
@@ -121,7 +122,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default DataStream<Row> toChangelogStream(Table table, Schema schema, ChangelogMode changelogMode) {
+    default DataStream<Row> toChangelogStream(
+            Table table, Schema schema, ChangelogMode changelogMode) {
         return getStreamTableEnvironment().toChangelogStream(table, schema, changelogMode);
     }
 
@@ -151,7 +153,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T> void createTemporaryView(String s, DataStream<T> dataStream, Expression... expressions) {
+    default <T> void createTemporaryView(
+            String s, DataStream<T> dataStream, Expression... expressions) {
         getStreamTableEnvironment().createTemporaryView(s, dataStream, expressions);
     }
 
@@ -171,7 +174,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(Table table, TypeInformation<T> typeInformation) {
+    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(
+            Table table, TypeInformation<T> typeInformation) {
         return getStreamTableEnvironment().toRetractStream(table, typeInformation);
     }
 

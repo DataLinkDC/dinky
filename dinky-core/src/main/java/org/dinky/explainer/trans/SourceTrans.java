@@ -36,7 +36,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class SourceTrans extends AbstractTrans implements Trans {
 
     private String catalog;
@@ -47,8 +47,7 @@ public class SourceTrans extends AbstractTrans implements Trans {
 
     public static final String TRANS_TYPE = "Data Source";
 
-    public SourceTrans() {
-    }
+    public SourceTrans() {}
 
     public String getCatalog() {
         return catalog;
@@ -112,5 +111,4 @@ public class SourceTrans extends AbstractTrans implements Trans {
         }
         fields = (ArrayList<String>) map.get("fields");
     }
-
 }

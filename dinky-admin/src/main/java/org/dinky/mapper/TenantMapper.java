@@ -28,9 +28,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Set;
 
-/**
- * tenant mapper interface
- */
+/** tenant mapper interface */
 @Mapper
 public interface TenantMapper extends SuperMapper<Tenant> {
 

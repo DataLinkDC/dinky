@@ -31,40 +31,28 @@ import cn.hutool.core.util.StrUtil;
  */
 public class PathConstant {
 
-    /**
-     * 基本路径，dinky 部署的路径
-     */
+    /** 基本路径，dinky 部署的路径 */
     public static final String WORK_DIR = System.getProperty("user.dir");
-    /**
-     * tmp路径
-     */
+    /** tmp路径 */
     public static final String TMP_PATH = WORK_DIR + File.separator + "tmp" + File.separator;
 
-    /**
-     * udf路径
-     */
+    /** udf路径 */
     public static final String UDF_PATH = TMP_PATH + "udf" + File.separator;
+
     public static final String COMPILER = "compiler";
     public static final String PACKAGE = "package";
-    /**
-     * udf jar规则
-     */
+    /** udf jar规则 */
     public static final String UDF_JAR_RULE = "udf-\\d+.jar";
-    /**
-     * udf版本规则
-     */
+    /** udf版本规则 */
     public static final String UDF_VERSION_RULE = "\\d+";
-    /**
-     * udf jar tmp名字
-     */
+    /** udf jar tmp名字 */
     public static final String UDF_JAR_TMP_NAME = "udf-tmp.jar";
+
     public static final String UDF_JAR_NAME = "udf.jar";
     public static final String DEP_MANIFEST = "dep_manifest.json";
     public static final String DEP_ZIP = "dep.zip";
     public static final String UDF_PYTHON_NAME = "python_udf.zip";
-    /**
-     * udf jar tmp路径
-     */
+    /** udf jar tmp路径 */
     public static final String UDF_JAR_TMP_PATH = UDF_PATH + UDF_JAR_TMP_NAME;
 
     public static String getPath(Object... path) {
@@ -82,5 +70,4 @@ public class PathConstant {
     public static String getUdfPackagePath(Integer missionId, Object... path) {
         return getPath(UDF_PATH, missionId, PACKAGE, path);
     }
-
 }

@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2021/11/21
- **/
+ */
 public interface SavepointsService extends ISuperService<Savepoints> {
 
     List<Savepoints> listSavepointsByTaskId(Integer taskId);
@@ -37,5 +37,4 @@ public interface SavepointsService extends ISuperService<Savepoints> {
     Savepoints getLatestSavepointByTaskId(Integer taskId);
 
     Savepoints getEarliestSavepointByTaskId(Integer taskId);
-
 }

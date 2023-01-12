@@ -35,14 +35,13 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/5/25 15:50
- **/
+ */
 @Slf4j
 public class Operations {
 
     public static final String SQL_EMPTY_STR = "[\\s\\t\\n\\r]";
 
-    private Operations() {
-    }
+    private Operations() {}
 
     private static final Operation[] ALL_OPERATIONS = getAllOperations();
 
@@ -55,15 +54,23 @@ public class Operations {
         Reflections reflections = new Reflections(Operation.class.getPackage().getName());
         Set<Class<?>> operations = reflections.get(Scanners.SubTypes.of(Operation.class).asClass());
 
-        return operations.stream().filter(t -> !t.isInterface()).map(t -> {
-            try {
-                return (Operation) t.getConstructor().newInstance();
-            } catch (InstantiationException | IllegalAccessException | InvocationTargetException
-                    | NoSuchMethodException e) {
-                log.error(String.format("getAllOperations error, class %s, err: %s", t, e));
-                throw new RuntimeException(e);
-            }
-        }).toArray(Operation[]::new);
+        return operations.stream()
+                .filter(t -> !t.isInterface())
+                .map(
+                        t -> {
+                            try {
+                                return (Operation) t.getConstructor().newInstance();
+                            } catch (InstantiationException
+                                    | IllegalAccessException
+                                    | InvocationTargetException
+                                    | NoSuchMethodException e) {
+                                log.error(
+                                        String.format(
+                                                "getAllOperations error, class %s, err: %s", t, e));
+                                throw new RuntimeException(e);
+                            }
+                        })
+                .toArray(Operation[]::new);
     }
 
     public static SqlType getOperationType(String sql) {
@@ -75,10 +82,7 @@ public class Operations {
     }
 
     public static Operation buildOperation(String statement) {
-        String sql = statement.replace("\n", " ")
-                .replaceAll("\\s+", " ")
-                .trim()
-                .toUpperCase();
+        String sql = statement.replace("\n", " ").replaceAll("\\s+", " ").trim().toUpperCase();
 
         return Arrays.stream(ALL_OPERATIONS)
                 .filter(p -> sql.startsWith(p.getHandle()))

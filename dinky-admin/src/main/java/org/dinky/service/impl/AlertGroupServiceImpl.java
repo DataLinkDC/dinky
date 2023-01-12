@@ -40,12 +40,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  *
  * @author wenmo
  * @since 2022/2/24 20:01
- **/
+ */
 @Service
-public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
+public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
+        implements AlertGroupService {
 
-    @Autowired
-    private AlertInstanceService alertInstanceService;
+    @Autowired private AlertInstanceService alertInstanceService;
 
     @Override
     public List<AlertGroup> listEnabledAll() {

@@ -27,7 +27,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 @Getter
 @Setter
 public class Predecessor {
@@ -45,9 +45,14 @@ public class Predecessor {
     @Override
     public String toString() {
         return "Predecessor{"
-                + "id=" + id
-                + ", shipStrategy='" + shipStrategy + '\''
-                + ", side='" + side + '\''
+                + "id="
+                + id
+                + ", shipStrategy='"
+                + shipStrategy
+                + '\''
+                + ", side='"
+                + side
+                + '\''
                 + '}';
     }
 }

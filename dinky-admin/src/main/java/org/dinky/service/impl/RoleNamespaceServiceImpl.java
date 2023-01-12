@@ -30,8 +30,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace>
-        implements
-            RoleNamespaceService {
+        implements RoleNamespaceService {
 
     @Override
     public boolean deleteByRoleIds(List<Integer> roleIds) {

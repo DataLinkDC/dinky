@@ -35,22 +35,25 @@ import java.util.function.Supplier;
  *
  * @author wenmo
  * @since 2022/4/12 21:12
- **/
+ */
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
-        {
-            put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
-            put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
-            put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
-        }
-    };
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
+            new HashMap<String, Supplier<SinkBuilder>>() {
+                {
+                    put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
+                    put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
+                    put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
+                }
+            };
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
-        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder()).get()
+        return SINK_BUILDER_MAP
+                .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
+                .get()
                 .create(config);
     }
 }

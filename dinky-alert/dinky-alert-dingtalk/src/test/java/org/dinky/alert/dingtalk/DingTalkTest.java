@@ -38,11 +38,12 @@ import org.junit.Test;
  *
  * @author wenmo
  * @since 2022/2/23 20:18
- **/
+ */
 public class DingTalkTest {
 
     private static Map<String, String> config = new HashMap<>();
     private AlertMsg alertMsg = new AlertMsg();
+
     @Before
     public void initDingTalkConfig() {
         String uuid = UUID.randomUUID().toString();
@@ -88,5 +89,4 @@ public class DingTalkTest {
         AlertResult result = alert.send("Dinky钉钉告警测试", alertMsg.toString());
         Assert.assertEquals(true, result.getSuccess());
     }
-
 }

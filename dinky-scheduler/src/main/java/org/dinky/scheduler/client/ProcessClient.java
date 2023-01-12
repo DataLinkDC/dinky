@@ -54,29 +54,33 @@ public class ProcessClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
-    @Autowired
-    private DolphinSchedulerProperties dolphinSchedulerProperties;
+    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
 
     /**
      * 查询工作流定义
      *
      * @param projectCode 项目编号
      * @param processName 工作流定义名
-     * @return {@link   List<ProcessDefinition>}
+     * @return {@link List<ProcessDefinition>}
      * @author 郑文豪
      * @date 2022/9/7 16:59
      */
     public List<ProcessDefinition> getProcessDefinition(Long projectCode, String processName) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil
-                .format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/process-definition", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/process-definition",
+                        map);
 
-        String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(ParamUtil.getPageParams(processName))
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(ParamUtil.getPageParams(processName))
+                        .timeout(5000)
+                        .execute()
+                        .body();
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
         List<ProcessDefinition> lists = new ArrayList<>();
         if (data == null || data.getTotalList() == null) {
@@ -122,16 +126,21 @@ public class ProcessClient {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         map.put("code", processCode);
-        String format = StrUtil
-                .format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/process-definition/{code}", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/process-definition/{code}",
+                        map);
 
-        String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<DagData>>() {
-        }));
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<DagData>>() {}));
     }
 
     /**
@@ -143,12 +152,15 @@ public class ProcessClient {
      * @author 郑文豪
      * @date 2022/9/7 17:00
      */
-    public ProcessDefinition createProcessDefinition(Long projectCode, String processName, Long taskCode,
-            String taskDefinitionJson) {
+    public ProcessDefinition createProcessDefinition(
+            Long projectCode, String processName, Long taskCode, String taskDefinitionJson) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil
-                .format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/process-definition", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/process-definition",
+                        map);
 
         Map<String, Object> taskMap = new HashMap<>();
         taskMap.put("code", taskCode);
@@ -163,14 +175,15 @@ public class ProcessClient {
         params.put("taskDefinitionJson", taskDefinitionJson);
         params.put("executionType", "PARALLEL");
 
-        String content = HttpRequest.post(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(params)
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.post(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(params)
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {
-        }));
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<ProcessDefinition>>() {}));
     }
-
 }

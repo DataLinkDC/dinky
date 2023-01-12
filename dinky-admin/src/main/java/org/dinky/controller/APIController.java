@@ -52,14 +52,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/openapi")
 public class APIController {
 
-    @Autowired
-    private APIService apiService;
-    @Autowired
-    private StudioService studioService;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private JobInstanceService jobInstanceService;
+    @Autowired private APIService apiService;
+    @Autowired private StudioService studioService;
+    @Autowired private TaskService taskService;
+    @Autowired private JobInstanceService jobInstanceService;
 
     @GetMapping("/submitTask")
     public Result submitTask(@RequestParam Integer id) {
@@ -109,76 +105,63 @@ public class APIController {
 
     @PostMapping("/savepointTask")
     public Result savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
-        return Result.succeed(taskService.savepointTask(apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()),
+        return Result.succeed(
+                taskService.savepointTask(
+                        apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()),
                 "执行成功");
     }
 
-    /**
-     * 重启任务
-     */
+    /** 重启任务 */
     @GetMapping("/restartTask")
     public Result restartTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, null), "重启成功");
     }
 
-    /**
-     * 选择保存点重启任务
-     */
+    /** 选择保存点重启任务 */
     @GetMapping("/selectSavePointRestartTask")
     public Result restartTask(@RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
     }
 
-    /**
-     * 上线任务
-     */
+    /** 上线任务 */
     @GetMapping("/onLineTask")
     public Result onLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.onLineTask(id);
     }
 
-    /**
-     * 下线任务
-     */
+    /** 下线任务 */
     @GetMapping("/offLineTask")
     public Result offLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.offLineTask(id, null);
     }
 
-    /**
-     * 重新上线任务
-     */
+    /** 重新上线任务 */
     @GetMapping("/reOnLineTask")
     public Result reOnLineTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, null);
     }
 
-    /**
-     * 选择保存点重新上线任务
-     */
+    /** 选择保存点重新上线任务 */
     @GetMapping("/selectSavePointReOnLineTask")
-    public Result selectSavePointReOnLineTask(@RequestParam Integer id, @RequestParam String savePointPath) {
+    public Result selectSavePointReOnLineTask(
+            @RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, savePointPath);
     }
 
-    /**
-     * 获取Job实例的信息
-     */
+    /** 获取Job实例的信息 */
     @GetMapping("/getJobInstance")
     public Result getJobInstance(@RequestParam Integer id) {
         jobInstanceService.initTenantByJobInstanceId(id);
         return Result.succeed(jobInstanceService.getById(id), "获取成功");
     }
 
-    /**
-     * 通过 taskId 获取 Task 对应的 Job 实例的信息
-     */
+    /** 通过 taskId 获取 Task 对应的 Job 实例的信息 */
     @GetMapping("/getJobInstanceByTaskId")
     public Result getJobInstanceByTaskId(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);

@@ -62,14 +62,12 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author wenmo
  * @since 2022/2/24 19:53
- **/
+ */
 @Service
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance>
-        implements
-            AlertInstanceService {
+        implements AlertInstanceService {
 
-    @Autowired
-    private AlertGroupService alertGroupService;
+    @Autowired private AlertGroupService alertGroupService;
 
     @Override
     public List<AlertInstance> listEnabledAll() {
@@ -78,10 +76,15 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public AlertResult testAlert(AlertInstance alertInstance) {
-        AlertConfig alertConfig = AlertConfig.build(alertInstance.getName(), alertInstance.getType(),
-                JSONUtil.toMap(alertInstance.getParams()));
+        AlertConfig alertConfig =
+                AlertConfig.build(
+                        alertInstance.getName(),
+                        alertInstance.getType(),
+                        JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
-        String currentDateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(Calendar.getInstance().getTime());
+        String currentDateTime =
+                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                        .format(Calendar.getInstance().getTime());
         String uuid = UUID.randomUUID().toString();
 
         AlertMsg alertMsg = new AlertMsg();
@@ -125,7 +128,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -144,9 +148,11 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
             final Set<Integer> groupIdSet = entry.getValue();
             for (Integer groupId : groupIdSet) {
                 final String instanceIdString = result.get(groupId);
-                result.put(groupId, instanceIdString == null
-                        ? "" + entry.getKey()
-                        : instanceIdString + "," + entry.getKey());
+                result.put(
+                        groupId,
+                        instanceIdString == null
+                                ? "" + entry.getKey()
+                                : instanceIdString + "," + entry.getKey());
             }
         }
         updateAlertGroupInformation(result, alertGroupInformation.get(null));
@@ -154,21 +160,27 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     private void updateAlertGroupInformation(Map<Integer, String> result, Set<Integer> groupIdSet) {
         final LocalDateTime now = LocalDateTime.now();
-        final List<AlertGroup> list = groupIdSet.stream().filter(Objects::nonNull)
-                .map(groupId -> {
-                    final AlertGroup alertGroup = new AlertGroup();
-                    alertGroup.setId(groupId);
-                    final String groupIds = result.get(groupId);
-                    alertGroup.setAlertInstanceIds(groupIds == null ? "" : groupIds);
-                    alertGroup.setUpdateTime(now);
-                    return alertGroup;
-                }).collect(Collectors.toList());
+        final List<AlertGroup> list =
+                groupIdSet.stream()
+                        .filter(Objects::nonNull)
+                        .map(
+                                groupId -> {
+                                    final AlertGroup alertGroup = new AlertGroup();
+                                    alertGroup.setId(groupId);
+                                    final String groupIds = result.get(groupId);
+                                    alertGroup.setAlertInstanceIds(
+                                            groupIds == null ? "" : groupIds);
+                                    alertGroup.setUpdateTime(now);
+                                    return alertGroup;
+                                })
+                        .collect(Collectors.toList());
         alertGroupService.updateBatchById(list);
     }
 
     private Map<Integer, Set<Integer>> getAlertGroupInformation() {
-        final LambdaQueryWrapper<AlertGroup> select = new LambdaQueryWrapper<AlertGroup>()
-                .select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
+        final LambdaQueryWrapper<AlertGroup> select =
+                new LambdaQueryWrapper<AlertGroup>()
+                        .select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
         final List<AlertGroup> list = alertGroupService.list(select);
         if (CollectionUtils.isEmpty(list)) {
             return new HashMap<>(0);

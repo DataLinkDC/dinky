@@ -55,14 +55,20 @@ public class ZipWriter extends cn.hutool.core.compress.ZipWriter {
     }
 
     @Override
-    public cn.hutool.core.compress.ZipWriter add(String[] paths, InputStream[] ins) throws IORuntimeException {
+    public cn.hutool.core.compress.ZipWriter add(String[] paths, InputStream[] ins)
+            throws IORuntimeException {
         if (ArrayUtil.isEmpty(paths) || ArrayUtil.isEmpty(ins)) {
             throw new IllegalArgumentException("Paths or ins is empty !");
         }
         if (paths.length != ins.length) {
             throw new IllegalArgumentException("Paths length is not equals to ins length !");
         }
-        long maxTime = Stream.of(paths).map(FileUtil::file).mapToLong(File::lastModified).max().getAsLong();
+        long maxTime =
+                Stream.of(paths)
+                        .map(FileUtil::file)
+                        .mapToLong(File::lastModified)
+                        .max()
+                        .getAsLong();
         for (int i = 0; i < paths.length; i++) {
             add(paths[i], ins[i], maxTime);
         }
@@ -70,7 +76,8 @@ public class ZipWriter extends cn.hutool.core.compress.ZipWriter {
         return this;
     }
 
-    public cn.hutool.core.compress.ZipWriter add(String path, InputStream in, long fileTime) throws IORuntimeException {
+    public cn.hutool.core.compress.ZipWriter add(String path, InputStream in, long fileTime)
+            throws IORuntimeException {
         path = StrUtil.nullToEmpty(path);
         if (null == in) {
             // 空目录需要检查路径规范性，目录以"/"结尾
@@ -102,5 +109,4 @@ public class ZipWriter extends cn.hutool.core.compress.ZipWriter {
         IoUtil.flush(super.getOut());
         return this;
     }
-
 }

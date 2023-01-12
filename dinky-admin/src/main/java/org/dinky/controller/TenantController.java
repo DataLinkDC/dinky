@@ -41,8 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/tenant")
 public class TenantController {
 
-    @Autowired
-    private TenantService tenantService;
+    @Autowired private TenantService tenantService;
 
     /**
      * create or update tenant
@@ -64,9 +63,7 @@ public class TenantController {
         return tenantService.deleteTenantById(para);
     }
 
-    /**
-     * query tenant list
-     */
+    /** query tenant list */
     @PostMapping
     public ProTableResult<Tenant> listTenants(@RequestBody JsonNode para) {
         return tenantService.selectForProTable(para, true);

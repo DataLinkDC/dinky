@@ -57,15 +57,14 @@ public class TaskClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
-    @Autowired
-    private DolphinSchedulerProperties dolphinSchedulerProperties;
+    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
 
     /**
      * 查询任务定义
      *
      * @param projectCode 项目编号
      * @param processName 工作流定义名称
-     * @param taskName    任务定义名称
+     * @param taskName 任务定义名称
      * @return {@link TaskMainInfo}
      * @author 郑文豪
      * @date 2022/9/7 17:16
@@ -85,27 +84,33 @@ public class TaskClient {
      *
      * @param projectCode 项目编号
      * @param processName 工作流定义名称
-     * @param taskName    任务定义名称
+     * @param taskName 任务定义名称
      * @return {@link List<TaskMainInfo>}
      * @author 郑文豪
      * @date 2022/9/7 17:16
      */
-    public List<TaskMainInfo> getTaskMainInfos(Long projectCode, String processName, String taskName) {
+    public List<TaskMainInfo> getTaskMainInfos(
+            Long projectCode, String processName, String taskName) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil.format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition",
-                map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/task-definition",
+                        map);
 
         Map<String, Object> pageParams = ParamUtil.getPageParams();
         pageParams.put("searchTaskName", taskName);
         pageParams.put("searchWorkflowName", processName);
         pageParams.put("taskType", "DINKY");
 
-        String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(pageParams)
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(pageParams)
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
         PageInfo<JSONObject> data = MyJSONUtil.toPageBean(content);
         List<TaskMainInfo> lists = new ArrayList<>();
@@ -125,7 +130,7 @@ public class TaskClient {
      * 根据编号查询
      *
      * @param projectCode 项目编号
-     * @param taskCode    任务编号
+     * @param taskCode 任务编号
      * @return {@link TaskDefinition}
      * @author 郑文豪
      * @date 2022/9/13 10:52
@@ -134,16 +139,21 @@ public class TaskClient {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         map.put("code", taskCode);
-        String format = StrUtil
-                .format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/{code}", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/task-definition/{code}",
+                        map);
 
-        String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinition>>() {
-        }));
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinition>>() {}));
     }
 
     /**
@@ -155,12 +165,18 @@ public class TaskClient {
      * @author 郑文豪
      * @date 2022/9/7 17:05
      */
-    public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, String upstreamCodes,
+    public TaskDefinitionLog createTaskDefinition(
+            Long projectCode,
+            Long processCode,
+            String upstreamCodes,
             String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil.format(
-                dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/save-single", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/task-definition/save-single",
+                        map);
 
         Map<String, Object> pageParams = new HashMap<>();
         pageParams.put("processDefinitionCode", processCode);
@@ -170,53 +186,59 @@ public class TaskClient {
 
         pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
-        String content = HttpRequest.post(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(pageParams)
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.post(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(pageParams)
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinitionLog>>() {
-        }));
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<TaskDefinitionLog>>() {}));
     }
 
     /**
      * 修改任务定义
      *
-     * @param projectCode           项目编号
-     * @param taskCode              任务定义编号
+     * @param projectCode 项目编号
+     * @param taskCode 任务定义编号
      * @param taskDefinitionJsonObj 修改参数
      * @return {@link Long}
      * @author 郑文豪
      * @date 2022/9/13 8:59
      */
-    public Long updateTaskDefinition(long projectCode, long taskCode, String upstreamCodes,
-            String taskDefinitionJsonObj) {
+    public Long updateTaskDefinition(
+            long projectCode, long taskCode, String upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
         map.put("code", taskCode);
-        String format = StrUtil.format(
-                dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/{code}/with-upstream",
-                map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/task-definition/{code}/with-upstream",
+                        map);
 
         Map<String, Object> params = new HashMap<>();
         params.put("upstreamCodes", upstreamCodes);
         params.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
 
-        String content = HttpRequest.put(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(params)
-                .timeout(5000)
-                .execute().body();
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Long>>() {
-        }));
+        String content =
+                HttpRequest.put(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(params)
+                        .timeout(5000)
+                        .execute()
+                        .body();
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<Long>>() {}));
     }
 
     /**
      * 生成任务定义编号
      *
      * @param projectCode 项目编号
-     * @param genNum      生成个数
+     * @param genNum 生成个数
      * @return {@link List}
      * @author 郑文豪
      * @date 2022/9/8 18:00
@@ -224,18 +246,23 @@ public class TaskClient {
     public List<Long> genTaskCodes(Long projectCode, int genNum) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
-        String format = StrUtil.format(
-                dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/gen-task-codes", map);
+        String format =
+                StrUtil.format(
+                        dolphinSchedulerProperties.getUrl()
+                                + "/projects/{projectCode}/task-definition/gen-task-codes",
+                        map);
         Map<String, Object> params = new HashMap<>();
         params.put("genNum", genNum);
-        String content = HttpRequest.get(format)
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(params)
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(format)
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(params)
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<List<Long>>>() {
-        }));
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<List<Long>>>() {}));
     }
 
     /**
@@ -253,5 +280,4 @@ public class TaskClient {
         }
         return codes.get(0);
     }
-
 }

@@ -27,8 +27,7 @@ import cn.hutool.core.util.StrUtil;
  */
 public class UDFCompilerException extends RuntimeException {
 
-    public UDFCompilerException() {
-    }
+    public UDFCompilerException() {}
 
     public UDFCompilerException(String message) {
         super(message);

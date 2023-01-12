@@ -26,9 +26,13 @@ package org.dinky.model;
  * @since 2022/2/1 16:37
  */
 public enum JobLifeCycle {
-
-    UNKNOWN(0, "未知"), CREATE(1, "创建"), DEVELOP(2, "开发"), DEBUG(3, "调试"), RELEASE(4, "发布"), ONLINE(5, "上线"), CANCEL(6,
-            "注销");
+    UNKNOWN(0, "未知"),
+    CREATE(1, "创建"),
+    DEVELOP(2, "开发"),
+    DEBUG(3, "调试"),
+    RELEASE(4, "发布"),
+    ONLINE(5, "上线"),
+    CANCEL(6, "注销");
 
     private Integer value;
     private String label;

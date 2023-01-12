@@ -87,5 +87,4 @@ public class TaskRequest {
 
     @ApiModelProperty(value = "执行类型 默认BATCH")
     private TaskExecuteType taskExecuteType = TaskExecuteType.BATCH;
-
 }

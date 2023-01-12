@@ -30,18 +30,15 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-/**
- * @author huang
- */
+/** @author huang */
 @Service
 public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
-        implements
-            TaskVersionService {
+        implements TaskVersionService {
 
     @Override
     public List<TaskVersion> getTaskVersionByTaskId(Integer taskId) {
 
-        return baseMapper.selectList(new LambdaQueryWrapper<TaskVersion>().eq(TaskVersion::getTaskId, taskId));
+        return baseMapper.selectList(
+                new LambdaQueryWrapper<TaskVersion>().eq(TaskVersion::getTaskId, taskId));
     }
-
 }

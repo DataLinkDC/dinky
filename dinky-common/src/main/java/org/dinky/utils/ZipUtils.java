@@ -52,7 +52,6 @@ public class ZipUtils {
         } catch (IOException e) {
             log.error("压缩包处理异常，异常信息:", e);
         }
-
     }
 
     private static void writeFile(File file, InputStream inputStream) {
@@ -76,6 +75,8 @@ public class ZipUtils {
     public static void main(String[] args) throws IOException {
         // unzip("/Users/zackyoung/Downloads/85.zip", "/Users/zackyoung/Downloads/85");
 
-        Files.move(Paths.get("/Users/zackyoung/Downloads/85/jar/"), Paths.get("/Users/zackyoung/Downloads/85/123/"));
+        Files.move(
+                Paths.get("/Users/zackyoung/Downloads/85/jar/"),
+                Paths.get("/Users/zackyoung/Downloads/85/123/"));
     }
 }

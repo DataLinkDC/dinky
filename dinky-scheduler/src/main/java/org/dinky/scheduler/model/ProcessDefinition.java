@@ -32,9 +32,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * process definition
- */
+/** process definition */
 @Data
 public class ProcessDefinition {
 
@@ -111,5 +109,4 @@ public class ProcessDefinition {
 
     @ApiModelProperty(value = "执行类型")
     private ProcessExecutionTypeEnum executionType;
-
 }

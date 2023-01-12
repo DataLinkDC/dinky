@@ -39,7 +39,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2021/11/6
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster_configuration")

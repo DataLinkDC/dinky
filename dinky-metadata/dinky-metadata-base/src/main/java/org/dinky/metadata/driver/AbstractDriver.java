@@ -58,13 +58,17 @@ public abstract class AbstractDriver implements Driver {
     }
 
     public List<Schema> getSchemasAndTables() {
-        return listSchemas().stream().peek(schema -> schema.setTables(listTables(schema.getName()))).sorted()
+        return listSchemas().stream()
+                .peek(schema -> schema.setTables(listTables(schema.getName())))
+                .sorted()
                 .collect(Collectors.toList());
     }
 
     public List<Table> getTablesAndColumns(String schema) {
-        return listTables(schema).stream().peek(table -> table.setColumns(listColumns(schema, table.getName())))
-                .sorted().collect(Collectors.toList());
+        return listTables(schema).stream()
+                .peek(table -> table.setColumns(listColumns(schema, table.getName())))
+                .sorted()
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -108,7 +112,15 @@ public abstract class AbstractDriver implements Driver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM " + table.getSchema() + "." + table.getName() + ";" + " -- " + table.getComment() + "\n");
+            sb.append(
+                    " FROM "
+                            + table.getSchema()
+                            + "."
+                            + table.getName()
+                            + ";"
+                            + " -- "
+                            + table.getComment()
+                            + "\n");
         } else {
             sb.append(" FROM " + table.getSchema() + "." + table.getName() + ";\n");
         }

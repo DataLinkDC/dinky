@@ -67,8 +67,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
 
     private Map<String, AdditionalColumnEntry<String, String>> additionalColumnConfigList = null;
 
-    public DorisExtendSinkBuilder() {
-    }
+    public DorisExtendSinkBuilder() {}
 
     public DorisExtendSinkBuilder(FlinkCDCConfig config) {
         super(config);
@@ -85,10 +84,15 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         return new DorisExtendSinkBuilder(config);
     }
 
-    protected Object buildRowDataValues(Map value, Map rowData, String columnName, LogicalType columnType,
+    protected Object buildRowDataValues(
+            Map value,
+            Map rowData,
+            String columnName,
+            LogicalType columnType,
             Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList,
             ZoneId opTimeZone) {
-        if (aColumnConfigList != null && aColumnConfigList.size() > 0
+        if (aColumnConfigList != null
+                && aColumnConfigList.size() > 0
                 && aColumnConfigList.containsKey(columnName)) {
             AdditionalColumnEntry<String, String> col = aColumnConfigList.get(columnName);
             if (col != null) {
@@ -97,22 +101,29 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
                         case "op_ts":
                             Object opVal = ((Map) value.get("source")).get("ts_ms");
                             if (opVal instanceof Integer) {
-                                return TimestampData
-                                        .fromLocalDateTime(Instant.ofEpochMilli(((Integer) opVal).longValue())
-                                                .atZone(opTimeZone).toLocalDateTime());
+                                return TimestampData.fromLocalDateTime(
+                                        Instant.ofEpochMilli(((Integer) opVal).longValue())
+                                                .atZone(opTimeZone)
+                                                .toLocalDateTime());
                             } else if (opVal instanceof Long) {
                                 return TimestampData.fromLocalDateTime(
-                                        Instant.ofEpochMilli((long) opVal).atZone(opTimeZone).toLocalDateTime());
+                                        Instant.ofEpochMilli((long) opVal)
+                                                .atZone(opTimeZone)
+                                                .toLocalDateTime());
                             } else {
                                 return TimestampData.fromLocalDateTime(
-                                        Instant.parse(value.toString()).atZone(opTimeZone).toLocalDateTime());
+                                        Instant.parse(value.toString())
+                                                .atZone(opTimeZone)
+                                                .toLocalDateTime());
                             }
                         case "database_name":
                             return convertValue(((Map) value.get("source")).get("db"), columnType);
                         case "table_name":
-                            return convertValue(((Map) value.get("source")).get("table"), columnType);
+                            return convertValue(
+                                    ((Map) value.get("source")).get("table"), columnType);
                         case "schema_name":
-                            return convertValue(((Map) value.get("source")).get("schema"), columnType);
+                            return convertValue(
+                                    ((Map) value.get("source")).get("schema"), columnType);
                         default:
                             logger.warn("Unsupported meta field:" + col.getValue());
                             return null;
@@ -131,11 +142,12 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList = this.additionalColumnConfigList;
+        final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList =
+                this.additionalColumnConfigList;
         final ZoneId opTimeZone = this.getSinkTimeZone();
         logger.info("sinkTimeZone:" + this.getSinkTimeZone().toString());
-        return filterOperator
-                .flatMap(new FlatMapFunction<Map, RowData>() {
+        return filterOperator.flatMap(
+                new FlatMapFunction<Map, RowData>() {
 
                     @Override
                     public void flatMap(Map value, Collector<RowData> out) throws Exception {
@@ -143,52 +155,83 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
                             switch (value.get("op").toString()) {
                                 case "r":
                                 case "c":
-                                    GenericRowData igenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData igenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     igenericRowData.setRowKind(RowKind.INSERT);
                                     Map idata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        igenericRowData.setField(i,
-                                                buildRowDataValues(value, idata, columnNameList.get(i),
-                                                        columnTypeList.get(i), aColumnConfigList, opTimeZone));
+                                        igenericRowData.setField(
+                                                i,
+                                                buildRowDataValues(
+                                                        value,
+                                                        idata,
+                                                        columnNameList.get(i),
+                                                        columnTypeList.get(i),
+                                                        aColumnConfigList,
+                                                        opTimeZone));
                                     }
                                     out.collect(igenericRowData);
                                     break;
                                 case "d":
-                                    GenericRowData dgenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData dgenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     dgenericRowData.setRowKind(RowKind.DELETE);
                                     Map ddata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        dgenericRowData.setField(i,
-                                                buildRowDataValues(value, ddata, columnNameList.get(i),
-                                                        columnTypeList.get(i), aColumnConfigList, opTimeZone));
+                                        dgenericRowData.setField(
+                                                i,
+                                                buildRowDataValues(
+                                                        value,
+                                                        ddata,
+                                                        columnNameList.get(i),
+                                                        columnTypeList.get(i),
+                                                        aColumnConfigList,
+                                                        opTimeZone));
                                     }
                                     out.collect(dgenericRowData);
                                     break;
                                 case "u":
-                                    GenericRowData ubgenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData ubgenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
                                     Map ubdata = (Map) value.get("before");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubgenericRowData.setField(i,
-                                                buildRowDataValues(value, ubdata, columnNameList.get(i),
-                                                        columnTypeList.get(i), aColumnConfigList, opTimeZone));
+                                        ubgenericRowData.setField(
+                                                i,
+                                                buildRowDataValues(
+                                                        value,
+                                                        ubdata,
+                                                        columnNameList.get(i),
+                                                        columnTypeList.get(i),
+                                                        aColumnConfigList,
+                                                        opTimeZone));
                                     }
                                     out.collect(ubgenericRowData);
-                                    GenericRowData uagenericRowData = new GenericRowData(columnNameList.size());
+                                    GenericRowData uagenericRowData =
+                                            new GenericRowData(columnNameList.size());
                                     uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
                                     Map uadata = (Map) value.get("after");
                                     for (int i = 0; i < columnNameList.size(); i++) {
-                                        uagenericRowData.setField(i,
-                                                buildRowDataValues(value, uadata, columnNameList.get(i),
-                                                        columnTypeList.get(i), aColumnConfigList, opTimeZone));
+                                        uagenericRowData.setField(
+                                                i,
+                                                buildRowDataValues(
+                                                        value,
+                                                        uadata,
+                                                        columnNameList.get(i),
+                                                        columnTypeList.get(i),
+                                                        aColumnConfigList,
+                                                        opTimeZone));
                                     }
                                     out.collect(uagenericRowData);
                                     break;
                                 default:
                             }
                         } catch (Exception e) {
-                            logger.error("SchameTable: {} - Row: {} - Exception: {}", schemaTableName,
-                                    JSONUtil.toJsonString(value), e);
+                            logger.error(
+                                    "SchameTable: {} - Row: {} - Exception: {}",
+                                    schemaTableName,
+                                    JSONUtil.toJsonString(value),
+                                    e);
                             throw e;
                         }
                     }
@@ -196,7 +239,8 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
     }
 
     @Override
-    protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+    protected void buildColumn(
+            List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column));
@@ -205,8 +249,16 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             logger.info("Start add additional column");
             for (Map.Entry col : this.additionalColumnConfigList.entrySet()) {
                 String colName = (String) col.getKey();
-                AdditionalColumnEntry<String, String> kv = (AdditionalColumnEntry<String, String>) col.getValue();
-                logger.info("col: { name: " + colName + ", type:" + kv.getKey() + ", val: " + kv.getValue() + "}");
+                AdditionalColumnEntry<String, String> kv =
+                        (AdditionalColumnEntry<String, String>) col.getValue();
+                logger.info(
+                        "col: { name: "
+                                + colName
+                                + ", type:"
+                                + kv.getKey()
+                                + ", val: "
+                                + kv.getValue()
+                                + "}");
 
                 switch (kv.getKey()) {
                     case "META":
@@ -273,7 +325,6 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             }
             logger.info("Additional column added complete");
         }
-
     }
 
     protected Map<String, AdditionalColumnEntry<String, String>> buildAdditionalColumnsConfig() {
@@ -281,7 +332,8 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             return null;
         }
 
-        String additionalColumnConfig = config.getSink().get(DorisExtendSinkOptions.AdditionalColumns.key());
+        String additionalColumnConfig =
+                config.getSink().get(DorisExtendSinkOptions.AdditionalColumns.key());
         if (additionalColumnConfig == null || additionalColumnConfig.length() == 0) {
             return null;
         }
@@ -303,8 +355,8 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
                 return null;
             }
 
-            AdditionalColumnEntry<String, String> item = AdditionalColumnEntry.of(strs[0].trim().toUpperCase(),
-                    strs[1]);
+            AdditionalColumnEntry<String, String> item =
+                    AdditionalColumnEntry.of(strs[0].trim().toUpperCase(), strs[1]);
             cfg.put(kv[0].trim(), item);
         }
         return cfg;

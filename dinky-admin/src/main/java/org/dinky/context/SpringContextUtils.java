@@ -29,15 +29,14 @@ import org.springframework.stereotype.Component;
  *
  * @author wenmo
  * @since 2021/6/29 15:36
- **/
+ */
 @Component
 public class SpringContextUtils implements ApplicationContextAware {
 
     public static ApplicationContext applicationContext;
 
     @Override
-    public void setApplicationContext(ApplicationContext applicationContext)
-            throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         SpringContextUtils.applicationContext = applicationContext;
     }
 
@@ -64,5 +63,4 @@ public class SpringContextUtils implements ApplicationContextAware {
     public static Class<? extends Object> getType(String name) {
         return applicationContext.getType(name);
     }
-
 }

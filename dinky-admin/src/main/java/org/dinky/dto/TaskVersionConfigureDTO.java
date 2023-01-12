@@ -30,93 +30,57 @@ import lombok.Data;
 @Data
 public class TaskVersionConfigureDTO implements Serializable {
 
-    /**
-     * CheckPoint
-     */
+    /** CheckPoint */
     private Integer checkPoint;
 
-    /**
-     * SavePoint策略
-     */
+    /** SavePoint策略 */
     private Integer savePointStrategy;
 
-    /**
-     * SavePointPath
-     */
+    /** SavePointPath */
     private String savePointPath;
 
-    /**
-     * parallelism
-     */
+    /** parallelism */
     private Integer parallelism;
 
-    /**
-     * fragment
-     */
+    /** fragment */
     private Boolean fragment;
 
-    /**
-     * 启用语句集
-     */
+    /** 启用语句集 */
     private Boolean statementSet;
 
-    /**
-     * 使用批模式
-     */
+    /** 使用批模式 */
     private Boolean batchModel;
 
-    /**
-     * Flink集群ID
-     */
+    /** Flink集群ID */
     private Integer clusterId;
 
-    /**
-     * 集群配置ID
-     */
+    /** 集群配置ID */
     private Integer clusterConfigurationId;
 
-    /**
-     * 数据源ID
-     */
+    /** 数据源ID */
     private Integer databaseId;
 
-    /**
-     * jarID
-     */
+    /** jarID */
     private Integer jarId;
 
-    /**
-     * 环境ID
-     */
+    /** 环境ID */
     private Integer envId;
 
-    /**
-     * 报警组ID
-     */
+    /** 报警组ID */
     private Integer alertGroupId;
 
-    /**
-     * 配置JSON
-     */
+    /** 配置JSON */
     private String configJson;
 
-    /**
-     * 注释
-     */
+    /** 注释 */
     private String note;
 
-    /**
-     * 作业生命周期
-     */
+    /** 作业生命周期 */
     private Integer step;
 
-    /**
-     * 作业实例ID
-     */
+    /** 作业实例ID */
     private Integer jobInstanceId;
 
-    /**
-     * 是否启用
-     */
+    /** 是否启用 */
     private Boolean enabled;
 }

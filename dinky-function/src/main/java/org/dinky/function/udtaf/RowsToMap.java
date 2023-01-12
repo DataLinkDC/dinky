@@ -41,8 +41,7 @@ import java.util.Optional;
  * @param <V> Map value type
  * @author wenmo, lixiaoPing
  * @since 2021/5/25 15:50
- **/
-
+ */
 public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K, V>> {
 
     private static final long serialVersionUID = 42L;
@@ -50,25 +49,29 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
     @Override
     public TypeInference getTypeInference(DataTypeFactory typeFactory) {
         return TypeInference.newBuilder()
-                .inputTypeStrategy(InputTypeStrategies.sequence(
-                        InputTypeStrategies.ANY,
-                        InputTypeStrategies.ANY))
-                .accumulatorTypeStrategy(callContext -> {
-                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                    final DataType arg0DataType = argumentDataTypes.get(0);
-                    final DataType arg1DataType = argumentDataTypes.get(1);
-                    final DataType accDataType = DataTypes.STRUCTURED(
-                            MyAccum.class,
-                            DataTypes.FIELD("mapView",
-                                    DataTypes.MAP(arg0DataType, arg1DataType)));
-                    return Optional.of(accDataType);
-                })
-                .outputTypeStrategy(callContext -> {
-                    List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
-                    final DataType arg0DataType = argumentDataTypes.get(0);
-                    final DataType arg1DataType = argumentDataTypes.get(1);
-                    return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
-                })
+                .inputTypeStrategy(
+                        InputTypeStrategies.sequence(
+                                InputTypeStrategies.ANY, InputTypeStrategies.ANY))
+                .accumulatorTypeStrategy(
+                        callContext -> {
+                            List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                            final DataType arg0DataType = argumentDataTypes.get(0);
+                            final DataType arg1DataType = argumentDataTypes.get(1);
+                            final DataType accDataType =
+                                    DataTypes.STRUCTURED(
+                                            MyAccum.class,
+                                            DataTypes.FIELD(
+                                                    "mapView",
+                                                    DataTypes.MAP(arg0DataType, arg1DataType)));
+                            return Optional.of(accDataType);
+                        })
+                .outputTypeStrategy(
+                        callContext -> {
+                            List<DataType> argumentDataTypes = callContext.getArgumentDataTypes();
+                            final DataType arg0DataType = argumentDataTypes.get(0);
+                            final DataType arg1DataType = argumentDataTypes.get(1);
+                            return Optional.of(DataTypes.MAP(arg0DataType, arg1DataType));
+                        })
                 .build();
     }
 
@@ -77,8 +80,7 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
         return new MyAccum<>();
     }
 
-    public void accumulate(
-            MyAccum<K, V> acc, K cls, V v) {
+    public void accumulate(MyAccum<K, V> acc, K cls, V v) {
         if (v == null) {
             return;
         }
@@ -105,10 +107,9 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
      * Merges a group of accumulator instances into one accumulator instance. This function must be
      * implemented for datastream session window grouping aggregate and bounded grouping aggregate.
      *
-     * @param acc      the accumulator which will keep the merged aggregate results. It should be
-     *                 noted that the accumulator may contain the previous aggregated results.
-     *                 Therefore user should not replace or clean this instance in the custom merge
-     *                 method.
+     * @param acc the accumulator which will keep the merged aggregate results. It should be noted
+     *     that the accumulator may contain the previous aggregated results. Therefore user should
+     *     not replace or clean this instance in the custom merge method.
      * @param iterable an {@link Iterable} pointed to a group of accumulators that will be merged.
      */
     public void merge(MyAccum<K, V> acc, Iterable<MyAccum<K, V>> iterable) {
@@ -125,14 +126,10 @@ public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K
 
     public static class MyAccum<K, V> {
 
-        /**
-         * 不能 final
-         */
+        /** 不能 final */
         public Map<K, V> mapView;
 
-        /**
-         * 不能删除，否则不能生成查询计划
-         */
+        /** 不能删除，否则不能生成查询计划 */
         public MyAccum() {
             this.mapView = new HashMap<>();
         }

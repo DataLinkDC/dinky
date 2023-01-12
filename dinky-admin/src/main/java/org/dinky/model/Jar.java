@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2021/11/13
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_jar")

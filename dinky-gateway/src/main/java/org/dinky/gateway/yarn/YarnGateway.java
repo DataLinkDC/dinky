@@ -77,7 +77,7 @@ import java.util.concurrent.Executors;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public abstract class YarnGateway extends AbstractGateway {
 
     public static final String HADOOP_CONFIG = "fs.hdfs.hadoopconf";
@@ -85,8 +85,7 @@ public abstract class YarnGateway extends AbstractGateway {
     protected YarnConfiguration yarnConfiguration;
     protected YarnClient yarnClient;
 
-    public YarnGateway() {
-    }
+    public YarnGateway() {}
 
     public YarnGateway(GatewayConfig config) {
         super(config);
@@ -98,18 +97,23 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void initConfig() {
-        configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
+        configuration =
+                GlobalConfiguration.loadConfiguration(
+                        config.getClusterConfig().getFlinkConfigPath());
         if (Asserts.isNotNull(config.getFlinkConfig().getConfiguration())) {
             addConfigParas(config.getFlinkConfig().getConfiguration());
         }
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
         if (Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
-            configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
+            configuration.setString(
+                    SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
         }
-        configuration.set(YarnConfigOptions.PROVIDED_LIB_DIRS,
+        configuration.set(
+                YarnConfigOptions.PROVIDED_LIB_DIRS,
                 Collections.singletonList(config.getClusterConfig().getFlinkLibPath()));
         if (Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
-            configuration.set(YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
+            configuration.set(
+                    YarnConfigOptions.APPLICATION_NAME, config.getFlinkConfig().getJobName());
         }
 
         if (Asserts.isNotNullString(config.getClusterConfig().getYarnConfigPath())) {
@@ -130,25 +134,38 @@ public abstract class YarnGateway extends AbstractGateway {
             configuration.set(YarnConfigOptions.APPLICATION_TYPE, "Dinky Flink");
             String uuid = UUID.randomUUID().toString().replace("-", "");
             if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
-                        configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
+                configuration.set(
+                        CheckpointingOptions.CHECKPOINTS_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY)
+                                + "/"
+                                + uuid);
             }
             if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.SAVEPOINT_DIRECTORY,
-                        configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
+                configuration.set(
+                        CheckpointingOptions.SAVEPOINT_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY)
+                                + "/"
+                                + uuid);
             }
         }
-        YarnLogConfigUtil.setLogConfigFileInConfig(configuration, config.getClusterConfig().getFlinkConfigPath());
+        YarnLogConfigUtil.setLogConfigFileInConfig(
+                configuration, config.getClusterConfig().getFlinkConfigPath());
     }
 
     private void initYarnClient() {
         yarnConfiguration = new YarnConfiguration();
-        yarnConfiguration
-                .addResource(new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/yarn-site.xml")));
-        yarnConfiguration
-                .addResource(new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/core-site.xml")));
-        yarnConfiguration
-                .addResource(new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/hdfs-site.xml")));
+        yarnConfiguration.addResource(
+                new Path(
+                        URI.create(
+                                config.getClusterConfig().getYarnConfigPath() + "/yarn-site.xml")));
+        yarnConfiguration.addResource(
+                new Path(
+                        URI.create(
+                                config.getClusterConfig().getYarnConfigPath() + "/core-site.xml")));
+        yarnConfiguration.addResource(
+                new Path(
+                        URI.create(
+                                config.getClusterConfig().getYarnConfigPath() + "/hdfs-site.xml")));
         yarnClient = YarnClient.createYarnClient();
         yarnClient.init(yarnConfiguration);
         yarnClient.start();
@@ -182,14 +199,18 @@ public abstract class YarnGateway extends AbstractGateway {
         /*
          * YarnClusterDescriptor clusterDescriptor = clusterClientFactory .createClusterDescriptor( configuration);
          */
-        YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient,
-                YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
-        try (
-                ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
-                        applicationId).getClusterClient()) {
+        YarnClusterDescriptor clusterDescriptor =
+                new YarnClusterDescriptor(
+                        configuration,
+                        yarnConfiguration,
+                        yarnClient,
+                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
+                        true);
+        try (ClusterClient<ApplicationId> clusterClient =
+                clusterDescriptor.retrieve(applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
-            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
+            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture =
+                    clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
                 JobInfo jobInfo = new JobInfo(jobStatusMessage.getJobId().toHexString());
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
@@ -230,12 +251,15 @@ public abstract class YarnGateway extends AbstractGateway {
         /*
          * YarnClusterDescriptor clusterDescriptor = clusterClientFactory .createClusterDescriptor( configuration);
          */
-        YarnClusterDescriptor clusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient,
-                YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
-        try (
-                ClusterClient<ApplicationId> clusterClient = clusterDescriptor.retrieve(
-                        applicationId).getClusterClient()) {
+        YarnClusterDescriptor clusterDescriptor =
+                new YarnClusterDescriptor(
+                        configuration,
+                        yarnConfiguration,
+                        yarnClient,
+                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
+                        true);
+        try (ClusterClient<ApplicationId> clusterClient =
+                clusterDescriptor.retrieve(applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             jobInfos.add(new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
@@ -254,8 +278,9 @@ public abstract class YarnGateway extends AbstractGateway {
         return result;
     }
 
-    private void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<ApplicationId> clusterClient,
-            String savePoint) throws Exception {
+    private void runSavePointJob(
+            List<JobInfo> jobInfos, ClusterClient<ApplicationId> clusterClient, String savePoint)
+            throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
                 clusterClient.cancel(JobID.fromHexString(jobInfo.getJobId()));
@@ -264,14 +289,20 @@ public abstract class YarnGateway extends AbstractGateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.triggerSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     break;
                 case STOP:
-                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.stopWithSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
                     break;
                 case CANCEL:
-                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.cancelWithSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                     break;
                 default:
@@ -280,16 +311,18 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private void autoCancelCluster(ClusterClient<ApplicationId> clusterClient) {
-        Executors.newCachedThreadPool().submit(() -> {
-            try {
-                Thread.sleep(3000);
-                clusterClient.shutDownCluster();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                clusterClient.close();
-            }
-        });
+        Executors.newCachedThreadPool()
+                .submit(
+                        () -> {
+                            try {
+                                Thread.sleep(3000);
+                                clusterClient.shutDownCluster();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            } finally {
+                                clusterClient.close();
+                            }
+                        });
     }
 
     public TestResult test() {
@@ -335,7 +368,8 @@ public abstract class YarnGateway extends AbstractGateway {
         try {
             applicationReport = yarnClient.getApplicationReport(getApplicationId());
             YarnApplicationState yarnApplicationState = applicationReport.getYarnApplicationState();
-            FinalApplicationStatus finalApplicationStatus = applicationReport.getFinalApplicationStatus();
+            FinalApplicationStatus finalApplicationStatus =
+                    applicationReport.getFinalApplicationStatus();
             switch (yarnApplicationState) {
                 case FINISHED:
                     switch (finalApplicationStatus) {

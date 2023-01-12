@@ -57,18 +57,58 @@ public class CDCSource {
     private Map<String, String> sink;
     private List<Map<String, String>> sinks;
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
-            String password, Integer checkpoint, Integer parallelism, String startupMode,
-            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
-            Map<String, String> sink, Map<String, String> jdbc) {
-        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode,
-                split, debezium, source, sink, null, jdbc);
+    public CDCSource(
+            String connector,
+            String statement,
+            String name,
+            String hostname,
+            Integer port,
+            String username,
+            String password,
+            Integer checkpoint,
+            Integer parallelism,
+            String startupMode,
+            Map<String, String> split,
+            Map<String, String> debezium,
+            Map<String, String> source,
+            Map<String, String> sink,
+            Map<String, String> jdbc) {
+        this(
+                connector,
+                statement,
+                name,
+                hostname,
+                port,
+                username,
+                password,
+                checkpoint,
+                parallelism,
+                startupMode,
+                split,
+                debezium,
+                source,
+                sink,
+                null,
+                jdbc);
     }
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
-            String password, Integer checkpoint, Integer parallelism, String startupMode,
-            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
-            Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
+    public CDCSource(
+            String connector,
+            String statement,
+            String name,
+            String hostname,
+            Integer port,
+            String username,
+            String password,
+            Integer checkpoint,
+            Integer parallelism,
+            String startupMode,
+            Map<String, String> split,
+            Map<String, String> debezium,
+            Map<String, String> source,
+            Map<String, String> sink,
+            List<Map<String, String>> sinks,
+            Map<String, String> jdbc) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -142,9 +182,7 @@ public class CDCSource {
                 }
             }
         }
-        /**
-         * 支持多目标写入功能, 从0开始顺序写入配置.
-         */
+        /** 支持多目标写入功能, 从0开始顺序写入配置. */
         Map<String, Map<String, String>> sinks = new HashMap<>();
         final Pattern p = Pattern.compile("sink\\[(?<index>.*)\\]");
         for (Map.Entry<String, String> entry : config.entrySet()) {
@@ -169,23 +207,24 @@ public class CDCSource {
         if (sink.isEmpty() && sinkList.size() > 0) {
             sink = sinkList.get(0);
         }
-        CDCSource cdcSource = new CDCSource(
-                config.get("connector"),
-                statement,
-                map.get("CDCSOURCE").toString(),
-                config.get("hostname"),
-                Integer.valueOf(config.get("port")),
-                config.get("username"),
-                config.get("password"),
-                Integer.valueOf(config.get("checkpoint")),
-                Integer.valueOf(config.get("parallelism")),
-                config.get("scan.startup.mode"),
-                split,
-                debezium,
-                source,
-                sink,
-                sinkList,
-                jdbc);
+        CDCSource cdcSource =
+                new CDCSource(
+                        config.get("connector"),
+                        statement,
+                        map.get("CDCSOURCE").toString(),
+                        config.get("hostname"),
+                        Integer.valueOf(config.get("port")),
+                        config.get("username"),
+                        config.get("password"),
+                        Integer.valueOf(config.get("checkpoint")),
+                        Integer.valueOf(config.get("parallelism")),
+                        config.get("scan.startup.mode"),
+                        split,
+                        debezium,
+                        source,
+                        sink,
+                        sinkList,
+                        jdbc);
         if (Asserts.isNotNullString(config.get("database-name"))) {
             cdcSource.setDatabase(config.get("database-name"));
         }

@@ -26,14 +26,26 @@ import org.dinky.assertion.Asserts;
  *
  * @author wenmo
  * @since 2021/12/13
- **/
+ */
 public enum Dialect {
-
-    FLINKSQL("FlinkSql"), FLINKJAR("FlinkJar"), FLINKSQLENV("FlinkSqlEnv"), SQL("Sql"), JAVA("Java"), PYTHON(
-            "Python"), SCALA("Scala"), MYSQL("Mysql"), ORACLE("Oracle"), SQLSERVER("SqlServer"), POSTGRESQL(
-                    "PostgreSql"), CLICKHOUSE("ClickHouse"), DORIS("Doris"), PHOENIX(
-                            "Phoenix"), HIVE("Hive"), STARROCKS(
-                                    "StarRocks"), PRESTO("Presto"), KUBERNETES_APPLICATION("KubernetesApplaction");
+    FLINKSQL("FlinkSql"),
+    FLINKJAR("FlinkJar"),
+    FLINKSQLENV("FlinkSqlEnv"),
+    SQL("Sql"),
+    JAVA("Java"),
+    PYTHON("Python"),
+    SCALA("Scala"),
+    MYSQL("Mysql"),
+    ORACLE("Oracle"),
+    SQLSERVER("SqlServer"),
+    POSTGRESQL("PostgreSql"),
+    CLICKHOUSE("ClickHouse"),
+    DORIS("Doris"),
+    PHOENIX("Phoenix"),
+    HIVE("Hive"),
+    STARROCKS("StarRocks"),
+    PRESTO("Presto"),
+    KUBERNETES_APPLICATION("KubernetesApplaction");
 
     private String value;
 

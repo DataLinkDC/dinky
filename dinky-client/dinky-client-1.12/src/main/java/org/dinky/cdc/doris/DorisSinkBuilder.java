@@ -44,14 +44,13 @@ import java.util.Properties;
  *
  * @author wenmo
  * @since 2022/4/20 19:20
- **/
+ */
 public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "datastream-doris";
     private static final long serialVersionUID = 8330362249137471854L;
 
-    public DorisSinkBuilder() {
-    }
+    public DorisSinkBuilder() {}
 
     public DorisSinkBuilder(FlinkCDCConfig config) {
         super(config);
@@ -75,24 +74,29 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
             List<String> columnNameList,
             List<LogicalType> columnTypeList) {
 
-        DorisExecutionOptions.Builder dorisExecutionOptionsBuilder = DorisExecutionOptions.builder();
+        DorisExecutionOptions.Builder dorisExecutionOptionsBuilder =
+                DorisExecutionOptions.builder();
         Map<String, String> sink = config.getSink();
         if (sink.containsKey("sink.batch.size")) {
             dorisExecutionOptionsBuilder.setBatchSize(Integer.valueOf(sink.get("sink.batch.size")));
         }
         if (sink.containsKey("sink.batch.interval")) {
-            dorisExecutionOptionsBuilder.setBatchIntervalMs(Long.valueOf(sink.get("sink.batch.interval")));
+            dorisExecutionOptionsBuilder.setBatchIntervalMs(
+                    Long.valueOf(sink.get("sink.batch.interval")));
         }
         if (sink.containsKey("sink.max-retries")) {
-            dorisExecutionOptionsBuilder.setMaxRetries(Integer.valueOf(sink.get("sink.max-retries")));
+            dorisExecutionOptionsBuilder.setMaxRetries(
+                    Integer.valueOf(sink.get("sink.max-retries")));
         }
         if (sink.containsKey("sink.enable-delete")) {
-            dorisExecutionOptionsBuilder.setEnableDelete(Boolean.valueOf(sink.get("sink.enable-delete")));
+            dorisExecutionOptionsBuilder.setEnableDelete(
+                    Boolean.valueOf(sink.get("sink.enable-delete")));
         }
         dorisExecutionOptionsBuilder.setStreamLoadProp(getProperties());
 
         final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
-        final LogicalType[] columnTypes = columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
+        final LogicalType[] columnTypes =
+                columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
 
         rowDataDataStream.addSink(
                 DorisSink.sink(
@@ -102,9 +106,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
                         dorisExecutionOptionsBuilder.build(),
                         DorisOptions.builder()
                                 .setFenodes(config.getSink().get("fenodes"))
-                                .setTableIdentifier(getSinkSchemaName(table) + "." + getSinkTableName(table))
+                                .setTableIdentifier(
+                                        getSinkSchemaName(table) + "." + getSinkTableName(table))
                                 .setUsername(config.getSink().get("username"))
-                                .setPassword(config.getSink().get("password")).build()));
+                                .setPassword(config.getSink().get("password"))
+                                .build()));
     }
 
     @Override
@@ -112,9 +118,11 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
         Properties properties = new Properties();
         Map<String, String> sink = config.getSink();
         for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && entry.getKey().startsWith("sink.properties")
+            if (Asserts.isNotNullString(entry.getKey())
+                    && entry.getKey().startsWith("sink.properties")
                     && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey().replace("sink.properties.", ""), entry.getValue());
+                properties.setProperty(
+                        entry.getKey().replace("sink.properties.", ""), entry.getValue());
             }
         }
         return properties;

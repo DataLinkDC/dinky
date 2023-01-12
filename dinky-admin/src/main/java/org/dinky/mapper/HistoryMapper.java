@@ -31,5 +31,4 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2021/6/26 23:00
  */
 @Mapper
-public interface HistoryMapper extends SuperMapper<History> {
-}
+public interface HistoryMapper extends SuperMapper<History> {}

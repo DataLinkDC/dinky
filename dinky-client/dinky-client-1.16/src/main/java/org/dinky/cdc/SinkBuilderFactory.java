@@ -33,20 +33,23 @@ import java.util.function.Supplier;
  *
  * @author wenmo
  * @since 2022/11/04
- **/
+ */
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
+            new HashMap<String, Supplier<SinkBuilder>>() {
 
-        {
-        }
-    };
+                {
+                }
+            };
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
-        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder()).get()
+        return SINK_BUILDER_MAP
+                .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
+                .get()
                 .create(config);
     }
 }

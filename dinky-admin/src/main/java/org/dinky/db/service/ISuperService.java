@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author wenmo
  * @since 2021/5/25
- **/
+ */
 public interface ISuperService<T> extends IService<T> {
 
     ProTableResult<T> selectForProTable(JsonNode para);
@@ -39,5 +39,4 @@ public interface ISuperService<T> extends IService<T> {
     ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete);
 
     ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap);
-
 }

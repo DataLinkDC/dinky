@@ -30,10 +30,11 @@ import java.util.Vector;
  *
  * @author wenmo
  * @since 2021/5/25 14:32
- **/
+ */
 public class SessionPool {
 
-    private static volatile List<ExecutorEntity> executorList = new Vector<>(FlinkConstant.DEFAULT_SESSION_COUNT);
+    private static volatile List<ExecutorEntity> executorList =
+            new Vector<>(FlinkConstant.DEFAULT_SESSION_COUNT);
 
     public static boolean exist(String sessionId) {
         for (ExecutorEntity executorEntity : executorList) {
@@ -45,7 +46,8 @@ public class SessionPool {
     }
 
     public static Integer push(ExecutorEntity executorEntity) {
-        if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT * FlinkConstant.DEFAULT_FACTOR) {
+        if (executorList.size()
+                >= FlinkConstant.DEFAULT_SESSION_COUNT * FlinkConstant.DEFAULT_FACTOR) {
             executorList.remove(0);
         } else if (executorList.size() >= FlinkConstant.DEFAULT_SESSION_COUNT) {
             executorList.clear();

@@ -26,12 +26,15 @@ import org.dinky.assertion.Asserts;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public enum GatewayType {
-
-    LOCAL("l", "local"), STANDALONE("s", "standalone"), YARN_SESSION("ys", "yarn-session"), YARN_APPLICATION("ya",
-            "yarn-application"), YARN_PER_JOB("ypj", "yarn-per-job"), KUBERNETES_SESSION("ks",
-                    "kubernetes-session"), KUBERNETES_APPLICATION("ka", "kubernetes-application");
+    LOCAL("l", "local"),
+    STANDALONE("s", "standalone"),
+    YARN_SESSION("ys", "yarn-session"),
+    YARN_APPLICATION("ya", "yarn-application"),
+    YARN_PER_JOB("ypj", "yarn-per-job"),
+    KUBERNETES_SESSION("ks", "kubernetes-session"),
+    KUBERNETES_APPLICATION("ka", "kubernetes-application");
 
     private final String value;
     private final String longValue;
@@ -51,7 +54,8 @@ public enum GatewayType {
 
     public static GatewayType get(String value) {
         for (GatewayType type : GatewayType.values()) {
-            if (Asserts.isEquals(type.getValue(), value) || Asserts.isEquals(type.getLongValue(), value)) {
+            if (Asserts.isEquals(type.getValue(), value)
+                    || Asserts.isEquals(type.getLongValue(), value)) {
                 return type;
             }
         }

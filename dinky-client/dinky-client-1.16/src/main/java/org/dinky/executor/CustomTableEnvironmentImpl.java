@@ -77,7 +77,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  * @author wenmo
  * @since 2022/05/08
- **/
+ */
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private final FlinkChainedProgram flinkChainedProgram;
@@ -92,66 +92,75 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             Planner planner,
             Executor executor,
             boolean isStreamingMode) {
-        super(new StreamTableEnvironmentImpl(catalogManager,
-                moduleManager,
-                resourceManager,
-                functionCatalog,
-                tableConfig,
-                executionEnvironment,
-                planner,
-                executor,
-                isStreamingMode));
-        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical
-                .buildProgram((Configuration) executionEnvironment.getConfiguration());
+        super(
+                new StreamTableEnvironmentImpl(
+                        catalogManager,
+                        moduleManager,
+                        resourceManager,
+                        functionCatalog,
+                        tableConfig,
+                        executionEnvironment,
+                        planner,
+                        executor,
+                        isStreamingMode));
+        this.flinkChainedProgram =
+                FlinkStreamProgramWithoutPhysical.buildProgram(
+                        (Configuration) executionEnvironment.getConfiguration());
     }
 
-    public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl create(
+            StreamExecutionEnvironment executionEnvironment) {
         return create(executionEnvironment, EnvironmentSettings.newInstance().build());
     }
 
-    public static CustomTableEnvironmentImpl createBatch(StreamExecutionEnvironment executionEnvironment) {
+    public static CustomTableEnvironmentImpl createBatch(
+            StreamExecutionEnvironment executionEnvironment) {
         Configuration configuration = new Configuration();
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(executionEnvironment, EnvironmentSettings.newInstance().inBatchMode().build());
+        return create(
+                executionEnvironment, EnvironmentSettings.newInstance().inBatchMode().build());
     }
 
     public static CustomTableEnvironmentImpl create(
-            StreamExecutionEnvironment executionEnvironment,
-            EnvironmentSettings settings) {
-        final MutableURLClassLoader userClassLoader = FlinkUserCodeClassLoaders.create(
-                new URL[0], settings.getUserClassLoader(), settings.getConfiguration());
+            StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
+        final MutableURLClassLoader userClassLoader =
+                FlinkUserCodeClassLoaders.create(
+                        new URL[0], settings.getUserClassLoader(), settings.getConfiguration());
         final Executor executor = lookupExecutor(userClassLoader, executionEnvironment);
 
         final TableConfig tableConfig = TableConfig.getDefault();
         tableConfig.setRootConfiguration(executor.getConfiguration());
         tableConfig.addConfiguration(settings.getConfiguration());
 
-        final ResourceManager resourceManager = new ResourceManager(settings.getConfiguration(), userClassLoader);
+        final ResourceManager resourceManager =
+                new ResourceManager(settings.getConfiguration(), userClassLoader);
         final ModuleManager moduleManager = new ModuleManager();
 
-        final CatalogManager catalogManager = CatalogManager.newBuilder()
-                .classLoader(userClassLoader)
-                .config(tableConfig)
-                .defaultCatalog(
-                        settings.getBuiltInCatalogName(),
-                        new GenericInMemoryCatalog(
+        final CatalogManager catalogManager =
+                CatalogManager.newBuilder()
+                        .classLoader(userClassLoader)
+                        .config(tableConfig)
+                        .defaultCatalog(
                                 settings.getBuiltInCatalogName(),
-                                settings.getBuiltInDatabaseName()))
-                .executionConfig(executionEnvironment.getConfig())
-                .build();
+                                new GenericInMemoryCatalog(
+                                        settings.getBuiltInCatalogName(),
+                                        settings.getBuiltInDatabaseName()))
+                        .executionConfig(executionEnvironment.getConfig())
+                        .build();
 
-        final FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, resourceManager, catalogManager,
-                moduleManager);
+        final FunctionCatalog functionCatalog =
+                new FunctionCatalog(tableConfig, resourceManager, catalogManager, moduleManager);
 
-        final Planner planner = PlannerFactoryUtil.createPlanner(
-                executor,
-                tableConfig,
-                userClassLoader,
-                moduleManager,
-                catalogManager,
-                functionCatalog);
+        final Planner planner =
+                PlannerFactoryUtil.createPlanner(
+                        executor,
+                        tableConfig,
+                        userClassLoader,
+                        moduleManager,
+                        catalogManager,
+                        functionCatalog);
 
         return new CustomTableEnvironmentImpl(
                 catalogManager,
@@ -168,7 +177,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     public ObjectNode getStreamGraph(String statement) {
         List<Operation> operations = super.getParser().parse(statement);
         if (operations.size() != 1) {
-            throw new TableException("Unsupported SQL query! explainSql() only accepts a single SQL query.");
+            throw new TableException(
+                    "Unsupported SQL query! explainSql() only accepts a single SQL query.");
         } else {
             List<ModifyOperation> modifyOperations = new ArrayList<>();
             for (int i = 0; i < operations.size(); i++) {
@@ -182,7 +192,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             }
             StreamGraph streamGraph = getStreamExecutionEnvironment().getStreamGraph();
             if (getConfig().getConfiguration().containsKey(PipelineOptions.NAME.key())) {
-                streamGraph.setJobName(getConfig().getConfiguration().getString(PipelineOptions.NAME));
+                streamGraph.setJobName(
+                        getConfig().getConfiguration().getString(PipelineOptions.NAME));
             }
             JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
             String json = jsonGenerator.getJSON();
@@ -261,8 +272,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment,
-            Map<String, Object> setMap) {
+    public boolean parseAndLoadConfiguration(
+            String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
@@ -276,7 +287,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         return false;
     }
 
-    private void callSet(SetOperation setOperation, StreamExecutionEnvironment environment,
+    private void callSet(
+            SetOperation setOperation,
+            StreamExecutionEnvironment environment,
             Map<String, Object> setMap) {
         if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
             String key = setOperation.getKey().get().trim();
@@ -293,7 +306,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
     }
 
-    private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment,
+    private void callReset(
+            ResetOperation resetOperation,
+            StreamExecutionEnvironment environment,
             Map<String, Object> setMap) {
         if (resetOperation.getKey().isPresent()) {
             String key = resetOperation.getKey().get().trim();
@@ -313,8 +328,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(flinkChainedProgram,
-                (TableEnvironmentImpl) streamTableEnvironment);
+        LineageContext lineageContext =
+                new LineageContext(
+                        flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
     }
 }

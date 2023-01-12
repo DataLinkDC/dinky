@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
  *
  * @author wenmo
  * @since 2021/5/25 16:46
- **/
+ */
 public class RunResult {
 
     private String sessionId;
@@ -45,10 +45,14 @@ public class RunResult {
     private IResult result;
     private ExecutorSetting setting;
 
-    public RunResult() {
-    }
+    public RunResult() {}
 
-    public RunResult(String sessionId, String statement, String flinkHost, Integer flinkPort, ExecutorSetting setting,
+    public RunResult(
+            String sessionId,
+            String statement,
+            String flinkHost,
+            Integer flinkPort,
+            ExecutorSetting setting,
             String jobName) {
         this.sessionId = sessionId;
         this.statement = statement;

@@ -24,7 +24,7 @@ package org.dinky.sql;
  *
  * @author wenmo
  * @since 2022/7/18 18:43
- **/
+ */
 public class FlinkQuery {
 
     public static String separator() {

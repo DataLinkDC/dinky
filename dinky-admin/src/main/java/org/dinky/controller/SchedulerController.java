@@ -64,9 +64,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
-/**
- * @author 郑文豪
- */
+/** @author 郑文豪 */
 @RestController
 @RequestMapping("/api/scheduler")
 @Api(value = "海豚调度", tags = "海豚调度")
@@ -74,26 +72,22 @@ public class SchedulerController {
 
     private static final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
 
-    @Autowired
-    private DolphinSchedulerProperties dolphinSchedulerProperties;
-    @Autowired
-    private ProcessClient processClient;
-    @Autowired
-    private TaskClient taskClient;
-    @Autowired
-    private CatalogueService catalogueService;
+    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
+    @Autowired private ProcessClient processClient;
+    @Autowired private TaskClient taskClient;
+    @Autowired private CatalogueService catalogueService;
 
-    /**
-     * 获取任务定义
-     */
+    /** 获取任务定义 */
     @GetMapping("/task")
     @ApiOperation(value = "获取任务定义", notes = "获取任务定义")
-    public Result<TaskDefinition> getTaskDefinition(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
+    public Result<TaskDefinition> getTaskDefinition(
+            @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         TaskDefinition taskDefinition = null;
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService
-                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue =
+                catalogueService.getOne(
+                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -113,7 +107,8 @@ public class SchedulerController {
             if (taskDefinition != null) {
                 taskDefinition.setProcessDefinitionCode(taskMainInfo.getProcessDefinitionCode());
                 taskDefinition.setProcessDefinitionName(taskMainInfo.getProcessDefinitionName());
-                taskDefinition.setProcessDefinitionVersion(taskMainInfo.getProcessDefinitionVersion());
+                taskDefinition.setProcessDefinitionVersion(
+                        taskMainInfo.getProcessDefinitionVersion());
                 taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
             } else {
                 return Result.failed("请先工作流保存");
@@ -122,17 +117,17 @@ public class SchedulerController {
         return Result.succeed(taskDefinition);
     }
 
-    /**
-     * 获取前置任务定义集合
-     */
+    /** 获取前置任务定义集合 */
     @GetMapping("/upstream/tasks")
     @ApiOperation(value = "获取前置任务定义集合", notes = "获取前置任务定义集合")
-    public Result<List<TaskMainInfo>> getTaskMainInfos(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
+    public Result<List<TaskMainInfo>> getTaskMainInfos(
+            @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
 
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService
-                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue =
+                catalogueService.getOne(
+                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -144,17 +139,18 @@ public class SchedulerController {
 
         long projectCode = dinkyProject.getCode();
 
-        List<TaskMainInfo> taskMainInfos = taskClient.getTaskMainInfos(projectCode, processName, "");
+        List<TaskMainInfo> taskMainInfos =
+                taskClient.getTaskMainInfos(projectCode, processName, "");
         // 去掉本身
-        taskMainInfos.removeIf(taskMainInfo -> (catalogue.getName() + ":" + catalogue.getId())
-                .equalsIgnoreCase(taskMainInfo.getTaskName()));
+        taskMainInfos.removeIf(
+                taskMainInfo ->
+                        (catalogue.getName() + ":" + catalogue.getId())
+                                .equalsIgnoreCase(taskMainInfo.getTaskName()));
 
         return Result.succeed(taskMainInfos);
     }
 
-    /**
-     * 创建任务定义
-     */
+    /** 创建任务定义 */
     @PostMapping("/task")
     @ApiOperation(value = "创建任务定义", notes = "创建任务定义")
     public Result<String> createTaskDefinition(
@@ -169,8 +165,9 @@ public class SchedulerController {
 
         Project dinkyProject = SystemInit.getProject();
 
-        Catalogue catalogue = catalogueService
-                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+        Catalogue catalogue =
+                catalogueService.getOne(
+                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed("节点获取失败");
         }
@@ -182,7 +179,8 @@ public class SchedulerController {
         String taskName = catalogue.getName() + ":" + catalogue.getId();
 
         long projectCode = dinkyProject.getCode();
-        ProcessDefinition process = processClient.getProcessDefinitionInfo(projectCode, processName);
+        ProcessDefinition process =
+                processClient.getProcessDefinitionInfo(projectCode, processName);
         taskRequest.setName(taskName);
         if (process == null) {
             Long taskCode = taskClient.genTaskCode(projectCode);
@@ -190,7 +188,8 @@ public class SchedulerController {
             JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
             JSONArray array = new JSONArray();
             array.set(jsonObject);
-            processClient.createProcessDefinition(projectCode, processName, taskCode, array.toString());
+            processClient.createProcessDefinition(
+                    projectCode, processName, taskCode, array.toString());
 
             return Result.succeed("添加工作流定义成功");
         } else {
@@ -198,25 +197,26 @@ public class SchedulerController {
                 return Result.failed("工作流定义 [" + processName + "] 已经上线已经上线");
             }
             long processCode = process.getCode();
-            TaskMainInfo taskDefinitionInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
+            TaskMainInfo taskDefinitionInfo =
+                    taskClient.getTaskMainInfo(projectCode, processName, taskName);
             if (taskDefinitionInfo != null) {
-                return Result.failed("添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "] 请刷新");
+                return Result.failed(
+                        "添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "] 请刷新");
             }
 
             String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
-            taskClient.createTaskDefinition(projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
+            taskClient.createTaskDefinition(
+                    projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
 
             return Result.succeed("添加任务定义成功");
         }
-
     }
 
-    /**
-     * 更新任务定义
-     */
+    /** 更新任务定义 */
     @PutMapping("/task")
     @ApiOperation(value = "更新任务定义", notes = "更新任务定义")
-    public Result<String> updateTaskDefinition(@ApiParam(value = "项目编号") @RequestParam long projectCode,
+    public Result<String> updateTaskDefinition(
+            @ApiParam(value = "项目编号") @RequestParam long projectCode,
             @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
             @ApiParam(value = "任务定义编号") @RequestParam long taskCode,
             @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
@@ -246,7 +246,8 @@ public class SchedulerController {
         taskRequest.setTaskType("DINKY");
 
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
-        taskClient.updateTaskDefinition(projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
+        taskClient.updateTaskDefinition(
+                projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
         return Result.succeed("修改成功");
     }
 

@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/11/13
- **/
+ */
 @Mapper
-public interface JarMapper extends SuperMapper<Jar> {
-}
+public interface JarMapper extends SuperMapper<Jar> {}

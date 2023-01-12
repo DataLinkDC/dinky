@@ -74,7 +74,8 @@ public interface StudioService {
 
     boolean cancel(Integer clusterId, String jobId);
 
-    boolean savepoint(Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
+    boolean savepoint(
+            Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);
 

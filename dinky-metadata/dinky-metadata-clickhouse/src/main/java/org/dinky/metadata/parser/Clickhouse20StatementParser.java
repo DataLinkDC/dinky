@@ -49,7 +49,7 @@ public class Clickhouse20StatementParser extends SQLStatementParser {
 
         accept(Token.WITH);
 
-        for (;;) {
+        for (; ; ) {
             SQLWithSubqueryClause.Entry entry = new SQLWithSubqueryClause.Entry();
             entry.setParent(withQueryClause);
 
@@ -59,9 +59,7 @@ public class Clickhouse20StatementParser extends SQLStatementParser {
                     case VALUES:
                     case WITH:
                     case SELECT:
-                        entry.setSubQuery(
-                                this.createSQLSelectParser()
-                                        .select());
+                        entry.setSubQuery(this.createSQLSelectParser().select());
                         break;
                     default:
                         break;

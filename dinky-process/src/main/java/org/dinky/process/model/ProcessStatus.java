@@ -28,9 +28,12 @@ import org.dinky.assertion.Asserts;
  * @since 2022/10/16 16:33
  */
 public enum ProcessStatus {
-
-    INITIALIZING("INITIALIZING"), RUNNING("RUNNING"), FAILED("FAILED"), CANCELED("CANCELED"), FINISHED(
-            "FINISHED"), UNKNOWN("UNKNOWN");
+    INITIALIZING("INITIALIZING"),
+    RUNNING("RUNNING"),
+    FAILED("FAILED"),
+    CANCELED("CANCELED"),
+    FINISHED("FINISHED"),
+    UNKNOWN("UNKNOWN");
 
     private String value;
 

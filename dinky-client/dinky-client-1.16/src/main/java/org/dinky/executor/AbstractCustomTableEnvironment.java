@@ -25,19 +25,15 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
 import org.apache.flink.table.delegation.Planner;
 
-/**
- *
- */
+/** */
 public abstract class AbstractCustomTableEnvironment
-        implements
-            CustomTableEnvironment,
-            DefaultTableEnvironmentInternal,
-            DefaultStreamTableEnvironment {
+        implements CustomTableEnvironment,
+                DefaultTableEnvironmentInternal,
+                DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
 
-    protected AbstractCustomTableEnvironment() {
-    }
+    protected AbstractCustomTableEnvironment() {}
 
     protected AbstractCustomTableEnvironment(StreamTableEnvironment streamTableEnvironment) {
         this.streamTableEnvironment = streamTableEnvironment;
@@ -55,5 +51,4 @@ public abstract class AbstractCustomTableEnvironment
     public Planner getPlanner() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
     }
-
 }

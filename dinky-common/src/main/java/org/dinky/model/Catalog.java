@@ -41,8 +41,7 @@ public class Catalog implements Serializable {
     private String name;
     private List<Schema> schemas = new ArrayList<>();
 
-    public Catalog() {
-    }
+    public Catalog() {}
 
     public Catalog(String name) {
         this.name = name;

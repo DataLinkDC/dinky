@@ -29,18 +29,21 @@ import org.apache.flink.streaming.api.environment.RemoteStreamEnvironment;
  *
  * @author wenmo
  * @since 2021/5/25 14:05
- **/
+ */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public RemoteStreamExecutor(
+            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
         this.executorSetting = executorSetting;
 
-        Configuration configuration = Asserts.isNotNull(executorSetting.getConfig())
-                ? Configuration.fromMap(executorSetting.getConfig())
-                : null;
-        this.environment = new RemoteStreamEnvironment(environmentSetting.getHost(), environmentSetting.getPort(),
-                configuration);
+        Configuration configuration =
+                Asserts.isNotNull(executorSetting.getConfig())
+                        ? Configuration.fromMap(executorSetting.getConfig())
+                        : null;
+        this.environment =
+                new RemoteStreamEnvironment(
+                        environmentSetting.getHost(), environmentSetting.getPort(), configuration);
         init();
     }
 

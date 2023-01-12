@@ -31,7 +31,10 @@ import org.apache.flink.table.functions.FunctionDefinition;
 public class UDFunction {
 
     public enum UDFunctionType {
-        Scalar, Table, Aggregate, TableAggregate
+        Scalar,
+        Table,
+        Aggregate,
+        TableAggregate
     }
 
     private String name;

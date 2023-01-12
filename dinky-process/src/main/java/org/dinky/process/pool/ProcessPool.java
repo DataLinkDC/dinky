@@ -47,7 +47,5 @@ public class ProcessPool extends AbstractPool<ProcessEntity> {
     }
 
     @Override
-    public void refresh(ProcessEntity entity) {
-
-    }
+    public void refresh(ProcessEntity entity) {}
 }

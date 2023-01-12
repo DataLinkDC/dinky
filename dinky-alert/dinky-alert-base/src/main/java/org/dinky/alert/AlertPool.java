@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author wenmo
  * @since 2022/2/23 19:16
- **/
+ */
 public class AlertPool {
 
     private static volatile Map<String, Alert> alertMap = new ConcurrentHashMap<>();

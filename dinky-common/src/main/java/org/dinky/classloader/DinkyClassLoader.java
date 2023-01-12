@@ -39,27 +39,31 @@ import lombok.extern.slf4j.Slf4j;
 public class DinkyClassLoader extends URLClassLoader {
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent) {
-        super(new URL[]{}, parent);
+        super(new URL[] {}, parent);
     }
 
     public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
-        super(new URL[]{}, parent);
-        URL[] urls = fileSet.stream().map(x -> {
-            try {
-                return x.toURI().toURL();
-            } catch (MalformedURLException e) {
-                throw new RuntimeException(e);
-            }
-        }).toArray(URL[]::new);
+        super(new URL[] {}, parent);
+        URL[] urls =
+                fileSet.stream()
+                        .map(
+                                x -> {
+                                    try {
+                                        return x.toURI().toURL();
+                                    } catch (MalformedURLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                })
+                        .toArray(URL[]::new);
         addURL(urls);
     }
 
     public DinkyClassLoader(URL[] urls) {
-        super(new URL[]{});
+        super(new URL[] {});
     }
 
     public DinkyClassLoader(URL[] urls, ClassLoader parent, URLStreamHandlerFactory factory) {
-        super(new URL[]{}, parent, factory);
+        super(new URL[] {}, parent, factory);
     }
 
     public void addURL(URL... urls) {

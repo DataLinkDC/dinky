@@ -35,12 +35,13 @@ import org.junit.Test;
  *
  * @author heyang
  * @since 2022/4/21 1:06
- **/
+ */
 public class ClickHouseTest {
 
     private static final String IP = "127.0.0.1";
     private static String url = "jdbc:clickhouse://" + IP + ":8123/default";
     private ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
+
     public Driver getDriver() {
         DriverConfig config = new DriverConfig();
         config.setType(clickHouseDriver.getType());

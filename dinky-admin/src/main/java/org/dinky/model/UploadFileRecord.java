@@ -26,9 +26,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * UploadFileRecord
- **/
+/** UploadFileRecord */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_upload_file_record")
@@ -37,14 +35,15 @@ public class UploadFileRecord extends SuperEntity {
     private static final long serialVersionUID = 3769285632787490408L;
 
     /**
-     * File type id: hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5), -1 represent no file type.
+     * File type id: hadoop-conf(1)、flink-conf(2)、flink-lib(3)、user-jar(4)、dinky-jar(5), -1
+     * represent no file type.
      */
     private Byte fileType = -1;
+
     private String fileName;
-    /**
-     * Where file upload to: local(1)、hdfs(2)
-     */
+    /** Where file upload to: local(1)、hdfs(2) */
     private Byte target;
+
     private String fileParentPath;
     private String fileAbsolutePath;
     private Boolean isFile = true;

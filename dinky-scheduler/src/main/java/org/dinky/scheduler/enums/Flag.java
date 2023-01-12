@@ -19,21 +19,12 @@
 
 package org.dinky.scheduler.enums;
 
-/**
- * have_script
- * have_file
- * can_retry
- * have_arr_variables
- * have_map_variables
- * have_alert
- */
+/** have_script have_file can_retry have_arr_variables have_map_variables have_alert */
 public enum Flag {
 
-    /**
-     * 0 no
-     * 1 yes
-     */
-    NO(0, "no"), YES(1, "yes");
+    /** 0 no 1 yes */
+    NO(0, "no"),
+    YES(1, "yes");
 
     Flag(int code, String descp) {
         this.code = code;

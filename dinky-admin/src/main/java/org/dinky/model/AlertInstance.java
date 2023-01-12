@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2022/2/24 19:46
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_alert_instance")

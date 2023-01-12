@@ -37,5 +37,4 @@ public class UpdateSqlParser extends BaseSingleSqlParser {
         segments.add(new SqlSegment("(set)(.+?)( where | ENDOFSQL)", "[,]"));
         segments.add(new SqlSegment("(where)(.+)(ENDOFSQL)", "(and|or)"));
     }
-
 }

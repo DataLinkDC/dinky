@@ -42,7 +42,7 @@ import java.util.Set;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 @Deprecated
 public class ColumnCAGenerator implements CAGenerator {
 
@@ -85,8 +85,10 @@ public class ColumnCAGenerator implements CAGenerator {
                 for (int j = 0; j < sourceFields.size(); j++) {
                     String fieldName = sourceFields.get(j);
                     Integer id = index++;
-                    ColumnCA columnCA = new ColumnCA(id, fieldName, fieldName, fieldName, fieldName, fieldName,
-                            tableCA);
+                    ColumnCA columnCA =
+                            new ColumnCA(
+                                    id, fieldName, fieldName, fieldName, fieldName, fieldName,
+                                    tableCA);
                     this.columnCASMaps.put(id, columnCA);
                     this.columnCAS.add(columnCA);
                 }
@@ -173,13 +175,19 @@ public class ColumnCAGenerator implements CAGenerator {
         }
     }
 
-    private void searchSelect(TableCA tableCA, ColumnCA columnCA, OperatorTrans trans, String operation, String alias) {
+    private void searchSelect(
+            TableCA tableCA,
+            ColumnCA columnCA,
+            OperatorTrans trans,
+            String operation,
+            String alias) {
         if (MapParseUtils.hasField(operation, columnCA.getAlias())) {
             boolean isHad = false;
             Integer cid = null;
             for (int j = 0; j < this.columnCAS.size(); j++) {
                 ColumnCA columnCA1 = (ColumnCA) this.columnCAS.get(j);
-                if (columnCA1.getTableCA().getId().equals(tableCA.getId()) && columnCA1.getName().equals(alias)) {
+                if (columnCA1.getTableCA().getId().equals(tableCA.getId())
+                        && columnCA1.getName().equals(alias)) {
                     isHad = true;
                     cid = columnCA1.getId();
                     break;
@@ -189,7 +197,8 @@ public class ColumnCAGenerator implements CAGenerator {
                 cid = index++;
                 // String columnOperation =
                 // MapParseUtils.replaceField(operation,columnCA.getAlias(),columnCA.getOperation());
-                ColumnCA columnCA2 = new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
+                ColumnCA columnCA2 =
+                        new ColumnCA(cid, alias, alias, alias, alias, operation, tableCA);
                 this.columnCASMaps.put(cid, columnCA2);
                 this.columnCAS.add(columnCA2);
                 buildColumnCAFields(tableCA, trans.getParentId(), columnCA2);

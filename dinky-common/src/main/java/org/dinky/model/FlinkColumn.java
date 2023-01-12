@@ -29,7 +29,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2022/7/18 19:55
- **/
+ */
 @Getter
 @Setter
 public class FlinkColumn implements Serializable {
@@ -44,10 +44,15 @@ public class FlinkColumn implements Serializable {
     private String extras;
     private String watermark;
 
-    public FlinkColumn() {
-    }
+    public FlinkColumn() {}
 
-    public FlinkColumn(int position, String name, String type, String key, String nullable, String extras,
+    public FlinkColumn(
+            int position,
+            String name,
+            String type,
+            String key,
+            String nullable,
+            String extras,
             String watermark) {
         this.position = position;
         this.name = name;
@@ -58,7 +63,13 @@ public class FlinkColumn implements Serializable {
         this.watermark = watermark;
     }
 
-    public static FlinkColumn build(int position, String name, String type, String key, String nullable, String extras,
+    public static FlinkColumn build(
+            int position,
+            String name,
+            String type,
+            String key,
+            String nullable,
+            String extras,
             String watermark) {
         return new FlinkColumn(position, name, type, key, nullable, extras, watermark);
     }

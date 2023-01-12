@@ -33,9 +33,14 @@ public class SqlServerTypeConvert implements ITypeConvert {
         }
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char") || t.contains("varchar") || t.contains("text")
-                || t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
-                || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
+        if (t.contains("char")
+                || t.contains("varchar")
+                || t.contains("text")
+                || t.contains("nchar")
+                || t.contains("nvarchar")
+                || t.contains("ntext")
+                || t.contains("uniqueidentifier")
+                || t.contains("sql_variant")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("bigint")) {
             if (isNullable) {
@@ -61,7 +66,10 @@ public class SqlServerTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.DOUBLE;
             }
-        } else if (t.contains("decimal") || t.contains("money") || t.contains("smallmoney") || t.contains("numeric")) {
+        } else if (t.contains("decimal")
+                || t.contains("money")
+                || t.contains("smallmoney")
+                || t.contains("numeric")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("real")) {
             if (isNullable) {
@@ -81,7 +89,10 @@ public class SqlServerTypeConvert implements ITypeConvert {
             columnType = ColumnType.LOCALDATE;
         } else if (t.equalsIgnoreCase("time")) {
             columnType = ColumnType.LOCALTIME;
-        } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
+        } else if (t.contains("timestamp")
+                || t.contains("binary")
+                || t.contains("varbinary")
+                || t.contains("image")) {
             columnType = ColumnType.BYTES;
         }
         return columnType;

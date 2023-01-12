@@ -42,10 +42,7 @@ public class FlinkUtils {
         return StrUtil.split(version, ".").get(1);
     }
 
-    /**
-     *
-     * @return 获取当前 flink 大版本
-     */
+    /** @return 获取当前 flink 大版本 */
     public static Integer getCurFlinkBigVersion() {
         return Convert.toInt(getFlinkBigVersion(getFlinkVersion()));
     }

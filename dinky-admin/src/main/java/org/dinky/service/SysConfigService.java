@@ -31,7 +31,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author wenmo
  * @since 2021/11/18
- **/
+ */
 public interface SysConfigService extends ISuperService<SysConfig> {
 
     Map<String, Object> getAll();

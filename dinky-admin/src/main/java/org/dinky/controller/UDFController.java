@@ -55,8 +55,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/udf")
 public class UDFController {
 
-    @Resource
-    UDFTemplateService udfTemplateService;
+    @Resource UDFTemplateService udfTemplateService;
 
     @PostMapping("/template/tree")
     public Result<List<Object>> listUdfTemplates() {
@@ -65,29 +64,47 @@ public class UDFController {
         Map<String, Dict> two = new HashMap<>(3);
         Map<String, Dict> three = new HashMap<>(3);
         Map<String, Object> result = new HashMap<>(3);
-        list.forEach(t -> {
-            one.putIfAbsent(t.getCodeType(), Dict.create().set("label", t.getCodeType()).set("value", t.getCodeType()));
-            two.putIfAbsent(t.getCodeType() + t.getFunctionType(),
-                    Dict.create().set("label", t.getFunctionType()).set("value", t.getFunctionType()));
-            three.putIfAbsent(t.getCodeType() + t.getFunctionType() + t.getId(),
-                    Dict.create().set("label", t.getName()).set("value", t.getId()));
-        });
+        list.forEach(
+                t -> {
+                    one.putIfAbsent(
+                            t.getCodeType(),
+                            Dict.create()
+                                    .set("label", t.getCodeType())
+                                    .set("value", t.getCodeType()));
+                    two.putIfAbsent(
+                            t.getCodeType() + t.getFunctionType(),
+                            Dict.create()
+                                    .set("label", t.getFunctionType())
+                                    .set("value", t.getFunctionType()));
+                    three.putIfAbsent(
+                            t.getCodeType() + t.getFunctionType() + t.getId(),
+                            Dict.create().set("label", t.getName()).set("value", t.getId()));
+                });
         Set<String> twoKeys = two.keySet();
         Set<String> threeKeys = three.keySet();
-        one.forEach((k1, v1) -> {
-            result.put(k1, v1);
-            ArrayList<Dict> c1 = new ArrayList<>();
-            v1.put("children", c1);
-            twoKeys.stream().filter(x -> x.contains(k1)).map(x -> StrUtil.strip(x, k1)).forEach(k2 -> {
-                Dict v2 = two.get(k1 + k2);
-                c1.add(v2);
-                ArrayList<Dict> c2 = new ArrayList<>();
-                v2.put("children", c2);
-                threeKeys.stream().filter(x -> x.contains(k1 + k2)).map(x -> StrUtil.strip(x, k1 + k2)).forEach(k3 -> {
-                    c2.add(three.get(k1 + k2 + k3));
+        one.forEach(
+                (k1, v1) -> {
+                    result.put(k1, v1);
+                    ArrayList<Dict> c1 = new ArrayList<>();
+                    v1.put("children", c1);
+                    twoKeys.stream()
+                            .filter(x -> x.contains(k1))
+                            .map(x -> StrUtil.strip(x, k1))
+                            .forEach(
+                                    k2 -> {
+                                        Dict v2 = two.get(k1 + k2);
+                                        c1.add(v2);
+                                        ArrayList<Dict> c2 = new ArrayList<>();
+                                        v2.put("children", c2);
+                                        threeKeys.stream()
+                                                .filter(x -> x.contains(k1 + k2))
+                                                .map(x -> StrUtil.strip(x, k1 + k2))
+                                                .forEach(
+                                                        k3 -> {
+                                                            c2.add(three.get(k1 + k2 + k3));
+                                                        });
+                                    });
                 });
-            });
-        });
         return Result.succeed(CollUtil.newArrayList(result.values()));
     }
 
@@ -98,7 +115,9 @@ public class UDFController {
 
     @PutMapping("/template/")
     public Result<String> addTemplate(@RequestBody UDFTemplate udfTemplate) {
-        return udfTemplateService.saveOrUpdate(udfTemplate) ? Result.succeed("操作成功") : Result.failed("操作失败");
+        return udfTemplateService.saveOrUpdate(udfTemplate)
+                ? Result.succeed("操作成功")
+                : Result.failed("操作失败");
     }
 
     @DeleteMapping("/template/list")
@@ -114,7 +133,8 @@ public class UDFController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");

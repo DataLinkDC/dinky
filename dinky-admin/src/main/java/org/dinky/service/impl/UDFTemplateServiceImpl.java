@@ -36,8 +36,7 @@ import cn.hutool.core.util.StrUtil;
  */
 @Service
 public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate>
-        implements
-            UDFTemplateService {
+        implements UDFTemplateService {
 
     @Override
     public boolean saveOrUpdate(UDFTemplate udfTemplate) {

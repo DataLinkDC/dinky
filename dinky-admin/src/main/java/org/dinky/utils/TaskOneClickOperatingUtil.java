@@ -52,7 +52,7 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 /**
  * @author mydq
  * @version 1.0
- **/
+ */
 public class TaskOneClickOperatingUtil {
 
     private static List<TaskOperatingResult> oneClickOnlineCache = new ArrayList<>(0);
@@ -63,24 +63,34 @@ public class TaskOneClickOperatingUtil {
 
     private static final AtomicBoolean oneClickOfflineThreadStatus = new AtomicBoolean(false);
 
-    public static synchronized Result oneClickOnline(List<Task> tasks,
-            TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
+    public static synchronized Result oneClickOnline(
+            List<Task> tasks, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         if (oneClickOnlineThreadStatus.get() || oneClickOfflineThreadStatus.get()) {
             return Result.failed("存在一键上线或者下线操作，请稍后重试");
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(
-                    Arrays.asList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true, 0);
+            final Result<List<Task>> listResult =
+                    taskService.queryOnLineTaskByDoneStatus(
+                            Arrays.asList(JobLifeCycle.RELEASE),
+                            JobStatus.getAllDoneStatus(),
+                            true,
+                            0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要上线的任务");
             }
             tasks = listResult.getDatas();
         }
-        oneClickOnlineCache = tasks.stream().map(task -> new TaskOperatingResult(task, taskOperatingSavepointSelect))
-                .collect(Collectors.toList());
-        new OneClickOperatingThread("oneClickOnlineThread", oneClickOnlineCache, oneClickOnlineThreadStatus,
-                taskService::selectSavepointOnLineTask).start();
+        oneClickOnlineCache =
+                tasks.stream()
+                        .map(task -> new TaskOperatingResult(task, taskOperatingSavepointSelect))
+                        .collect(Collectors.toList());
+        new OneClickOperatingThread(
+                        "oneClickOnlineThread",
+                        oneClickOnlineCache,
+                        oneClickOnlineThreadStatus,
+                        taskService::selectSavepointOnLineTask)
+                .start();
         return Result.succeed("success");
     }
 
@@ -90,16 +100,25 @@ public class TaskOneClickOperatingUtil {
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(
-                    Arrays.asList(JobLifeCycle.ONLINE), Collections.singletonList(JobStatus.RUNNING), false, 0);
+            final Result<List<Task>> listResult =
+                    taskService.queryOnLineTaskByDoneStatus(
+                            Arrays.asList(JobLifeCycle.ONLINE),
+                            Collections.singletonList(JobStatus.RUNNING),
+                            false,
+                            0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要下线的任务");
             }
             tasks = listResult.getDatas();
         }
-        oneClickOfflineCache = tasks.stream().map(TaskOperatingResult::new).collect(Collectors.toList());
-        new OneClickOperatingThread("oneClickOfflineThread", oneClickOfflineCache, oneClickOfflineThreadStatus,
-                taskService::selectSavepointOffLineTask).start();
+        oneClickOfflineCache =
+                tasks.stream().map(TaskOperatingResult::new).collect(Collectors.toList());
+        new OneClickOperatingThread(
+                        "oneClickOfflineThread",
+                        oneClickOfflineCache,
+                        oneClickOfflineThreadStatus,
+                        taskService::selectSavepointOffLineTask)
+                .start();
         return Result.succeed("success");
     }
 
@@ -139,8 +158,11 @@ public class TaskOneClickOperatingUtil {
 
         private final Consumer<TaskOperatingResult> consumer;
 
-        public OneClickOperatingThread(String threadName, List<TaskOperatingResult> taskOperatingResults,
-                AtomicBoolean threadStatus, Consumer<TaskOperatingResult> consumer) {
+        public OneClickOperatingThread(
+                String threadName,
+                List<TaskOperatingResult> taskOperatingResults,
+                AtomicBoolean threadStatus,
+                Consumer<TaskOperatingResult> consumer) {
             super(threadName);
             this.threadName = threadName;
             this.threadStatus = threadStatus;
@@ -172,10 +194,12 @@ public class TaskOneClickOperatingUtil {
             taskOperatingResult.setStatus(TaskOperatingStatus.EXCEPTION);
             taskOperatingResult.setCode(CodeEnum.EXCEPTION.getCode());
             taskOperatingResult.setMessage(ExceptionUtil.stacktraceToString(e));
-            LOGGER.error("[{}],  taskId={}, taskName={}, operating exception", threadName,
-                    taskOperatingResult.getTask().getId(), taskOperatingResult.getTask().getName(), e);
+            LOGGER.error(
+                    "[{}],  taskId={}, taskName={}, operating exception",
+                    threadName,
+                    taskOperatingResult.getTask().getId(),
+                    taskOperatingResult.getTask().getName(),
+                    e);
         }
-
     }
-
 }

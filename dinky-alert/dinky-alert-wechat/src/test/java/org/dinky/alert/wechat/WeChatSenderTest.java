@@ -30,36 +30,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-/**
- * WeChatSenderTest
- */
+/** WeChatSenderTest */
 public class WeChatSenderTest {
 
     private static Map<String, String> weChatConfig = new HashMap<>();
 
-    private String contentTest = "[{\"id\":\"70\","
-            +
-            "\"name\":\"UserBehavior-0--1193959466\","
-            +
-            "\"Job name\":\"Start workflow\","
-            +
-            "\"State\":\"SUCCESS\","
-            +
-            "\"Recovery\":\"NO\","
-            +
-            "\"Run time\":\"1\","
-            +
-            "\"Start time\": \"2018-08-06 10:31:34.0\","
-            +
-            "\"End time\": \"2018-08-06 10:31:49.0\","
-            +
-            "\"Host\": \"192.168.xx.xx\","
-            +
-            "\"Notify group\" :\"4\"}]";
+    private String contentTest =
+            "[{\"id\":\"70\","
+                    + "\"name\":\"UserBehavior-0--1193959466\","
+                    + "\"Job name\":\"Start workflow\","
+                    + "\"State\":\"SUCCESS\","
+                    + "\"Recovery\":\"NO\","
+                    + "\"Run time\":\"1\","
+                    + "\"Start time\": \"2018-08-06 10:31:34.0\","
+                    + "\"End time\": \"2018-08-06 10:31:49.0\","
+                    + "\"Host\": \"192.168.xx.xx\","
+                    + "\"Notify group\" :\"4\"}]";
 
-    /**
-     * init WeChatConfig
-     */
+    /** init WeChatConfig */
     @Before
     public void initWeChatConfig() {
         // Just for this test, I will delete these configurations before this PR is merged
@@ -67,14 +55,15 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.SECRET, "SECRET");
         weChatConfig.put(WeChatConstants.CORP_ID, "CORP_ID");
         weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
-        weChatConfig.put(WeChatConstants.USER_SEND_MSG, "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
-                +
-                ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}");
+        weChatConfig.put(
+                WeChatConstants.USER_SEND_MSG,
+                "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
+                        + ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}");
         weChatConfig.put(WeChatConstants.USERS, "all");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());// default is "table"
+        weChatConfig.put(
+                WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
-
     }
 
     @Test
@@ -94,7 +83,8 @@ public class WeChatSenderTest {
 
     @Test
     public void testChatMarkDownMsg() throws IOException {
-        weChatConfig.put(WeChatConstants.WEBHOOK,
+        weChatConfig.put(
+                WeChatConstants.WEBHOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
@@ -107,7 +97,8 @@ public class WeChatSenderTest {
 
     @Test
     public void testChatTextMsg() throws IOException {
-        weChatConfig.put(WeChatConstants.WEBHOOK,
+        weChatConfig.put(
+                WeChatConstants.WEBHOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=822d17a1-d6e5-43c2-a566-4846fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
         weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
@@ -117,5 +108,4 @@ public class WeChatSenderTest {
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
     }
-
 }

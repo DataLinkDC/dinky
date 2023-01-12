@@ -19,13 +19,23 @@
 
 package org.dinky.metadata.constant;
 
-/**
- * Phoenix common data types and corresponding codes
- */
+/** Phoenix common data types and corresponding codes */
 public enum PhoenixEnum {
-
-    INTEGER(4), BIGINT(-5), TINYINT(-6), SMALLINT(5), FLOAT(6), DOUBLE(8), DECIMAL(3), BOOLEAN(16), TIME(92), DATE(
-            91), TIMESTAMP(93), VARCHAR(12), CHAR(1), BINARY(-2), VARBINARY(-3);
+    INTEGER(4),
+    BIGINT(-5),
+    TINYINT(-6),
+    SMALLINT(5),
+    FLOAT(6),
+    DOUBLE(8),
+    DECIMAL(3),
+    BOOLEAN(16),
+    TIME(92),
+    DATE(91),
+    TIMESTAMP(93),
+    VARCHAR(12),
+    CHAR(1),
+    BINARY(-2),
+    VARBINARY(-3);
 
     int dataTypeCode;
 
@@ -38,7 +48,7 @@ public enum PhoenixEnum {
     }
 
     /**
-     * 获取数字 对应的数据类型  默认返回VARCHAR（无对应）  ， 传参为空时返回为null
+     * 获取数字 对应的数据类型 默认返回VARCHAR（无对应） ， 传参为空时返回为null
      *
      * @param dataTypeCode
      * @return

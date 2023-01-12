@@ -57,7 +57,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2021/10/22 10:02
- **/
+ */
 @Internal
 public class CustomTableResultImpl implements TableResult {
     protected static final Logger logger = LoggerFactory.getLogger(CustomTableResultImpl.class);
@@ -209,9 +209,7 @@ public class CustomTableResultImpl implements TableResult {
         return new Builder();
     }
 
-    /**
-     * Builder for creating a {@link CustomTableResultImpl}.
-     */
+    /** Builder for creating a {@link CustomTableResultImpl}. */
     public static class Builder {
         private JobClient jobClient = null;
         private ResolvedSchema resolvedSchema = null;
@@ -221,8 +219,7 @@ public class CustomTableResultImpl implements TableResult {
                 PrintStyle.tableau(Integer.MAX_VALUE, PrintUtils.NULL_COLUMN, false, false);
         private ZoneId sessionTimeZone = ZoneId.of("UTC");
 
-        private Builder() {
-        }
+        private Builder() {}
 
         /**
          * Specifies job client which associates the submitted Flink job.
@@ -278,36 +275,28 @@ public class CustomTableResultImpl implements TableResult {
             return this;
         }
 
-        /**
-         * Specifies print style. Default is {@link TableauStyle} with max integer column width.
-         */
+        /** Specifies print style. Default is {@link TableauStyle} with max integer column width. */
         public Builder setPrintStyle(PrintStyle printStyle) {
             Preconditions.checkNotNull(printStyle, "printStyle should not be null");
             this.printStyle = printStyle;
             return this;
         }
 
-        /**
-         * Specifies session time zone.
-         */
+        /** Specifies session time zone. */
         public Builder setSessionTimeZone(ZoneId sessionTimeZone) {
             Preconditions.checkNotNull(sessionTimeZone, "sessionTimeZone should not be null");
             this.sessionTimeZone = sessionTimeZone;
             return this;
         }
 
-        /**
-         * Returns a {@link TableResult} instance.
-         */
+        /** Returns a {@link TableResult} instance. */
         public TableResult build() {
             return new CustomTableResultImpl(
                     jobClient, resolvedSchema, resultKind, data, printStyle, sessionTimeZone);
         }
     }
 
-    /**
-     * Root interface for all print styles.
-     */
+    /** Root interface for all print styles. */
     public interface PrintStyle {
         /**
          * Create a tableau print style with given max column width, null column, change mode
@@ -335,9 +324,7 @@ public class CustomTableResultImpl implements TableResult {
         }
     }
 
-    /**
-     * print the result schema and content as tableau form.
-     */
+    /** print the result schema and content as tableau form. */
     private static final class TableauStyle implements PrintStyle {
         /**
          * A flag to indicate whether the column width is derived from type (true) or content
@@ -347,9 +334,7 @@ public class CustomTableResultImpl implements TableResult {
 
         private final int maxColumnWidth;
         private final String nullColumn;
-        /**
-         * A flag to indicate whether print row kind info.
-         */
+        /** A flag to indicate whether print row kind info. */
         private final boolean printRowKind;
 
         private TableauStyle(
@@ -383,8 +368,7 @@ public class CustomTableResultImpl implements TableResult {
     /**
      * only print the result content as raw form. column delimiter is ",", row delimiter is "\n".
      */
-    private static final class RawContentStyle implements PrintStyle {
-    }
+    private static final class RawContentStyle implements PrintStyle {}
 
     /**
      * A {@link CloseableIterator} wrapper class that can return whether the first row is ready.

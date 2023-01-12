@@ -28,15 +28,14 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 import java.util.Set;
 
-/**
- * role mapper interface
- */
+/** role mapper interface */
 @Mapper
 public interface RoleMapper extends SuperMapper<Role> {
 
     List<Role> getRoleByIds(@Param("roleIds") Set<Integer> roleIds);
 
-    List<Role> getRoleByTenantIdAndIds(@Param("tenantId") String tenantId, @Param("roleIds") Set<Integer> roleIds);
+    List<Role> getRoleByTenantIdAndIds(
+            @Param("tenantId") String tenantId, @Param("roleIds") Set<Integer> roleIds);
 
     int deleteByIds(@Param("ids") List<Integer> ids);
 }

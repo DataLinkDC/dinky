@@ -48,7 +48,7 @@ import cn.hutool.http.Method;
  *
  * @author wenmo
  * @since 2021/6/24 13:56
- **/
+ */
 public class FlinkAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
@@ -78,8 +78,10 @@ public class FlinkAPI {
 
     private JsonNode get(String route) {
         try {
-            String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route,
-                    NetConstant.SERVER_TIME_OUT_ACTIVE);
+            String res =
+                    HttpUtil.get(
+                            NetConstant.HTTP + address + NetConstant.SLASH + route,
+                            NetConstant.SERVER_TIME_OUT_ACTIVE);
             return parse(res);
         } catch (Exception e) {
             logger.info("Unable to connect to Flink JobManager: {}", NetConstant.HTTP + address);
@@ -94,20 +96,31 @@ public class FlinkAPI {
      * @return
      */
     private String getResult(String route) {
-        String res = HttpUtil.get(NetConstant.HTTP + address + NetConstant.SLASH + route,
-                NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String res =
+                HttpUtil.get(
+                        NetConstant.HTTP + address + NetConstant.SLASH + route,
+                        NetConstant.SERVER_TIME_OUT_ACTIVE);
         return res;
     }
 
     private JsonNode post(String route, String body) {
-        String res = HttpUtil.post(NetConstant.HTTP + address + NetConstant.SLASH + route, body,
-                NetConstant.SERVER_TIME_OUT_ACTIVE);
+        String res =
+                HttpUtil.post(
+                        NetConstant.HTTP + address + NetConstant.SLASH + route,
+                        body,
+                        NetConstant.SERVER_TIME_OUT_ACTIVE);
         return parse(res);
     }
 
     private JsonNode patch(String route, String body) {
-        String res = HttpUtil.createRequest(Method.PATCH, NetConstant.HTTP + address + NetConstant.SLASH + route)
-                .timeout(NetConstant.SERVER_TIME_OUT_ACTIVE).body(body).execute().body();
+        String res =
+                HttpUtil.createRequest(
+                                Method.PATCH,
+                                NetConstant.HTTP + address + NetConstant.SLASH + route)
+                        .timeout(NetConstant.SERVER_TIME_OUT_ACTIVE)
+                        .body(body)
+                        .execute()
+                        .body();
         return parse(res);
     }
 
@@ -128,7 +141,8 @@ public class FlinkAPI {
         return true;
     }
 
-    public SavePointResult savepoints(String jobId, String savePointType, Map<String, String> taskConfig) {
+    public SavePointResult savepoints(
+            String jobId, String savePointType, Map<String, String> taskConfig) {
         SavePointType type = SavePointType.get(savePointType);
         String paramType = null;
         SavePointResult result = SavePointResult.build(GatewayType.YARN_PER_JOB);
@@ -155,7 +169,8 @@ public class FlinkAPI {
         }
 
         if (Asserts.isNotNull(taskConfig) && taskConfig.containsKey(REST_TARGET_DIRECTORY)) {
-            paramMap.put(REST_TARGET_DIRECTORY.substring(REST_TARGET_DIRECTORY.indexOf(".") + 1),
+            paramMap.put(
+                    REST_TARGET_DIRECTORY.substring(REST_TARGET_DIRECTORY.indexOf(".") + 1),
                     taskConfig.get(REST_TARGET_DIRECTORY));
         }
 
@@ -171,8 +186,13 @@ public class FlinkAPI {
         while (triggerid != null) {
             try {
                 Thread.sleep(1000);
-                JsonNode node = get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.SAVEPOINTS
-                        + NetConstant.SLASH + triggerid);
+                JsonNode node =
+                        get(
+                                FlinkRestAPIConstant.JOBS
+                                        + jobId
+                                        + FlinkRestAPIConstant.SAVEPOINTS
+                                        + NetConstant.SLASH
+                                        + triggerid);
                 String status = node.get("status").get("id").asText();
                 if (Asserts.isEquals(status, "IN_PROGRESS")) {
                     continue;
@@ -234,51 +254,44 @@ public class FlinkAPI {
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerMetrics 获取jobManager的监控信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerMetrics 获取jobManager的监控信息
      */
     public JsonNode getJobManagerMetrics() {
-        return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.METRICS + FlinkRestAPIConstant.GET
-                + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
+        return get(
+                FlinkRestAPIConstant.JOB_MANAGER
+                        + FlinkRestAPIConstant.METRICS
+                        + FlinkRestAPIConstant.GET
+                        + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerConfig 获取jobManager的配置信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerConfig 获取jobManager的配置信息
      */
     public JsonNode getJobManagerConfig() {
         return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.CONFIG);
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerLog 获取jobManager的日志信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerLog 获取jobManager的日志信息
      */
     public String getJobManagerLog() {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOG);
     }
 
     /**
-     * @return String
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerStdOut 获取jobManager的控制台输出日志
+     * @return String @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerStdOut 获取jobManager的控制台输出日志
      */
     public String getJobManagerStdOut() {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.STDOUT);
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerLogList 获取jobManager的日志列表
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerLogList 获取jobManager的日志列表
      */
     public JsonNode getJobManagerLogList() {
         return get(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS);
@@ -286,31 +299,25 @@ public class FlinkAPI {
 
     /**
      * @param logName 日志文件名
-     * @return String
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerLogFileDetail 获取jobManager的日志文件的具体信息
+     * @return String @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerLogFileDetail 获取jobManager的日志文件的具体信息
      */
     public String getJobManagerLogFileDetail(String logName) {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOGS + logName);
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagers 获取taskManager的列表
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagers 获取taskManager的列表
      */
     public JsonNode getTaskManagers() {
         return get(FlinkRestAPIConstant.TASK_MANAGER);
     }
 
     /**
-     * @return String
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: buildMetricsParms 构建metrics参数
-     * @Params: type:  入参类型 可选值：task-manager, job-manager
+     * @return String @Author: zhumingye
+     * @date: 2022/6/24 @Description: buildMetricsParms 构建metrics参数 @Params: type: 入参类型
+     *     可选值：task-manager, job-manager
      */
     public String buildMetricsParms(String type) {
         JsonNode jsonNode = get(type + FlinkRestAPIConstant.METRICS);
@@ -329,44 +336,42 @@ public class FlinkAPI {
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getJobManagerLog 获取jobManager的日志信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getJobManagerLog 获取jobManager的日志信息
      */
     public JsonNode getTaskManagerMetrics(String containerId) {
-        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.METRICS
-                + FlinkRestAPIConstant.GET + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
+        return get(
+                FlinkRestAPIConstant.TASK_MANAGER
+                        + containerId
+                        + FlinkRestAPIConstant.METRICS
+                        + FlinkRestAPIConstant.GET
+                        + buildMetricsParms(FlinkRestAPIConstant.JOB_MANAGER));
     }
 
     /**
      * @param containerId 容器id
-     * @return String
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagerLog 获取taskManager的日志信息
+     * @return String @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagerLog 获取taskManager的日志信息
      */
     public String getTaskManagerLog(String containerId) {
-        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOG);
+        return getResult(
+                FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOG);
     }
 
     /**
      * @param containerId 容器id
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagerStdOut 获取taskManager的StdOut日志信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagerStdOut 获取taskManager的StdOut日志信息
      */
     public String getTaskManagerStdOut(String containerId) {
-        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.STDOUT);
+        return getResult(
+                FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.STDOUT);
     }
 
     /**
      * @param containerId 容器id
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagerLogList 获取taskManager的日志列表
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagerLogList 获取taskManager的日志列表
      */
     public JsonNode getTaskManagerLogList(String containerId) {
         return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOGS);
@@ -374,22 +379,23 @@ public class FlinkAPI {
 
     /**
      * @param logName 日志名称
-     * @return String
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagerLogFileDeatil 获取具体日志的详细信息
+     * @return String @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagerLogFileDeatil 获取具体日志的详细信息
      */
     public String getTaskManagerLogFileDeatil(String containerId, String logName) {
-        return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOGS + logName);
+        return getResult(
+                FlinkRestAPIConstant.TASK_MANAGER
+                        + containerId
+                        + FlinkRestAPIConstant.LOGS
+                        + logName);
     }
 
     /**
-     * @return JsonNode
-     * @Author: zhumingye
-     * @date: 2022/6/24
-     * @Description: getTaskManagerThreadDump 获取taskManager的线程信息
+     * @return JsonNode @Author: zhumingye
+     * @date: 2022/6/24 @Description: getTaskManagerThreadDump 获取taskManager的线程信息
      */
     public JsonNode getTaskManagerThreadDump(String containerId) {
-        return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
+        return get(
+                FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
     }
 }

@@ -26,10 +26,11 @@ package org.dinky.model;
  * @since 2021/5/28 19:58
  */
 public enum CodeEnum {
+    SUCCESS(0),
+    ERROR(1),
 
-    SUCCESS(0), ERROR(1),
-
-    EXCEPTION(5), NOTLOGIN(401);
+    EXCEPTION(5),
+    NOTLOGIN(401);
 
     private Integer code;
 

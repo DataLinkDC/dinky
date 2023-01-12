@@ -32,8 +32,7 @@ public class LineageColumn {
     private String name;
     private String title;
 
-    public LineageColumn() {
-    }
+    public LineageColumn() {}
 
     public LineageColumn(String name, String title) {
         this.name = name;

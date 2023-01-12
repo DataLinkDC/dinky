@@ -61,13 +61,10 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/database")
 public class DataBaseController {
 
-    @Autowired
-    private DataBaseService databaseService;
+    @Autowired private DataBaseService databaseService;
     private static Logger logger = LoggerFactory.getLogger(DataBaseController.class);
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
@@ -78,17 +75,13 @@ public class DataBaseController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
         return databaseService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -102,34 +95,29 @@ public class DataBaseController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody DataBase database) {
         database = databaseService.getById(database.getId());
         return Result.succeed(database, "获取成功");
     }
 
-    /**
-     * 获取可用的数据库列表
-     */
+    /** 获取可用的数据库列表 */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         return Result.succeed(dataBases, "获取成功");
     }
 
-    /**
-     * 连接测试
-     */
+    /** 连接测试 */
     @PostMapping("/testConnect")
     public Result testConnect(@RequestBody DataBase database) {
         String msg = databaseService.testConnect(database);
@@ -141,9 +129,7 @@ public class DataBaseController {
         }
     }
 
-    /**
-     * 全部心跳监测
-     */
+    /** 全部心跳监测 */
     @PostMapping("/checkHeartBeats")
     public Result checkHeartBeats() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
@@ -155,9 +141,7 @@ public class DataBaseController {
         return Result.succeed("状态刷新完成");
     }
 
-    /**
-     * 心跳检测指定ID
-     */
+    /** 心跳检测指定ID */
     @GetMapping("/checkHeartBeatById")
     public Result checkHeartBeatById(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
@@ -167,36 +151,30 @@ public class DataBaseController {
         return Result.succeed(dataBase, "状态刷新完成");
     }
 
-    /**
-     * 获取元数据的表
-     */
+    /** 获取元数据的表 */
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     public Result getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
     }
 
-    /**
-     * 清除元数据表的缓存
-     */
+    /** 清除元数据表的缓存 */
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
     public Result unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed("clear cache", "success");
     }
 
-    /**
-     * 获取元数据的指定表的列
-     */
+    /** 获取元数据的指定表的列 */
     @GetMapping("/listColumns")
-    public Result listColumns(@RequestParam Integer id, @RequestParam String schemaName,
+    public Result listColumns(
+            @RequestParam Integer id,
+            @RequestParam String schemaName,
             @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
     }
 
-    /**
-     * 获取元数据的指定表的数据
-     */
+    /** 获取元数据的指定表的数据 */
     @PostMapping("/queryData")
     public Result queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
@@ -207,9 +185,7 @@ public class DataBaseController {
         }
     }
 
-    /**
-     * 执行sql
-     */
+    /** 执行sql */
     @PostMapping("/execSql")
     public Result execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
@@ -220,18 +196,16 @@ public class DataBaseController {
         }
     }
 
-    /**
-     * 获取 SqlGeneration
-     */
+    /** 获取 SqlGeneration */
     @GetMapping("/getSqlGeneration")
-    public Result getSqlGeneration(@RequestParam Integer id, @RequestParam String schemaName,
+    public Result getSqlGeneration(
+            @RequestParam Integer id,
+            @RequestParam String schemaName,
             @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
     }
 
-    /**
-     * copyDatabase
-     */
+    /** copyDatabase */
     @PostMapping("/copyDatabase")
     public Result copyDatabase(@RequestBody DataBase database) {
         if (databaseService.copyDatabase(database)) {

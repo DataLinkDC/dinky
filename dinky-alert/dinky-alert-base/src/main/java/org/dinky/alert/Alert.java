@@ -29,7 +29,7 @@ import java.util.ServiceLoader;
  *
  * @author wenmo
  * @since 2022/2/23 19:05
- **/
+ */
 public interface Alert {
 
     static Optional<Alert> get(AlertConfig config) {

@@ -41,6 +41,7 @@ public class APIExplainSqlDTO extends AbstractStatementDTO {
     private Map<String, String> configuration;
 
     public JobConfig getJobConfig() {
-        return new JobConfig("local", false, false, isFragment(), useStatementSet, parallelism, configuration);
+        return new JobConfig(
+                "local", false, false, isFragment(), useStatementSet, parallelism, configuration);
     }
 }

@@ -1,19 +1,20 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 package org.apache.flink.client.python;
@@ -40,9 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
-/**
- * The factory which creates the PythonFunction objects from given module name and object name.
- */
+/** The factory which creates the PythonFunction objects from given module name and object name. */
 public interface PythonFunctionFactory {
 
     long CHECK_INTERVAL = 100;
@@ -65,33 +64,35 @@ public interface PythonFunctionFactory {
      * ${moduleName}.${functionName} or ${moduleName}.${className}.
      *
      * @param fullyQualifiedName The fully qualified name of the Python UDF.
-     * @param config             The configuration of python dependencies.
+     * @param config The configuration of python dependencies.
      * @return The PythonFunction object which represents the Python UDF.
      */
     static PythonFunction getPythonFunction(String fullyQualifiedName, ReadableConfig config)
-        throws IOException, ExecutionException, InterruptedException {
+            throws IOException, ExecutionException, InterruptedException {
         int splitIndex = fullyQualifiedName.lastIndexOf(".");
         if (splitIndex <= 0) {
             throw new IllegalArgumentException(
-                String.format("The fully qualified name is invalid: '%s'", fullyQualifiedName));
+                    String.format("The fully qualified name is invalid: '%s'", fullyQualifiedName));
         }
         String moduleName = fullyQualifiedName.substring(0, splitIndex);
         String objectName = fullyQualifiedName.substring(splitIndex + 1);
 
         Configuration mergedConfig =
-            new Configuration(
-                ExecutionEnvironment.getExecutionEnvironment().getConfiguration());
+                new Configuration(
+                        ExecutionEnvironment.getExecutionEnvironment().getConfiguration());
         PythonDependencyUtils.merge(mergedConfig, (Configuration) config);
         PythonFunctionFactory pythonFunctionFactory = getPythonFunctionFactory(mergedConfig);
         return pythonFunctionFactory.getPythonFunction(moduleName, objectName);
     }
 
-    static PythonFunction getPythonFunction(String fullyQualifiedName, ReadableConfig config, ClassLoader classLoader) throws ExecutionException, IOException, InterruptedException {
+    static PythonFunction getPythonFunction(
+            String fullyQualifiedName, ReadableConfig config, ClassLoader classLoader)
+            throws ExecutionException, IOException, InterruptedException {
         return getPythonFunction(fullyQualifiedName, config);
     }
 
     static PythonFunctionFactory getPythonFunctionFactory(ReadableConfig config)
-        throws ExecutionException, InterruptedException, IOException {
+            throws ExecutionException, InterruptedException, IOException {
         synchronized (PythonFunctionFactory.class) {
             if (PYTHON_FUNCTION_FACTORY_REF.get() != null) {
                 return PYTHON_FUNCTION_FACTORY_REF.get();
@@ -107,16 +108,16 @@ public interface PythonFunctionFactory {
                         commands.add("-m");
                         commands.add("pyflink.pyflink_callback_server");
                         String tmpDir =
-                            System.getProperty("java.io.tmpdir")
-                                + File.separator
-                                + "pyflink"
-                                + File.separator
-                                + UUID.randomUUID();
+                                System.getProperty("java.io.tmpdir")
+                                        + File.separator
+                                        + "pyflink"
+                                        + File.separator
+                                        + UUID.randomUUID();
                         pythonProcess =
-                            launchPy4jPythonClient(
-                                gatewayServer, config, commands, null, tmpDir, false);
+                                launchPy4jPythonClient(
+                                        gatewayServer, config, commands, null, tmpDir, false);
                         entryPoint =
-                            (Map<String, Object>) gatewayServer.getGateway().getEntryPoint();
+                                (Map<String, Object>) gatewayServer.getGateway().getEntryPoint();
                         int i = 0;
                         while (!entryPoint.containsKey("PythonFunctionFactory")) {
                             if (!pythonProcess.isAlive()) {
@@ -126,8 +127,8 @@ public interface PythonFunctionFactory {
                                 Thread.sleep(CHECK_INTERVAL);
                             } catch (InterruptedException e) {
                                 throw new RuntimeException(
-                                    "Interrupted while waiting for the python process to start.",
-                                    e);
+                                        "Interrupted while waiting for the python process to start.",
+                                        e);
                             }
                             i++;
                             if (i > TIMEOUT_MILLIS / CHECK_INTERVAL) {
@@ -153,13 +154,13 @@ public interface PythonFunctionFactory {
                         throw e;
                     }
                     Runtime.getRuntime()
-                        .addShutdownHook(new PythonProcessShutdownHook(pythonProcess));
+                            .addShutdownHook(new PythonProcessShutdownHook(pythonProcess));
                 } else {
                     entryPoint =
-                        (Map<String, Object>) getGatewayServer().getGateway().getEntryPoint();
+                            (Map<String, Object>) getGatewayServer().getGateway().getEntryPoint();
                 }
                 PythonFunctionFactory pythonFunctionFactory =
-                    (PythonFunctionFactory) entryPoint.get("PythonFunctionFactory");
+                        (PythonFunctionFactory) entryPoint.get("PythonFunctionFactory");
                 PYTHON_FUNCTION_FACTORY_REF.set(pythonFunctionFactory);
                 return pythonFunctionFactory;
             }
@@ -172,16 +173,14 @@ public interface PythonFunctionFactory {
             pythonProcess.waitFor(timeoutMillis, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {
             throw new RuntimeException(
-                "Interrupt while waiting for the python process to stop.", e);
+                    "Interrupt while waiting for the python process to stop.", e);
         }
         if (pythonProcess.isAlive()) {
             pythonProcess.destroyForcibly();
         }
     }
 
-    /**
-     * The shutdown hook used to destroy the Python process.
-     */
+    /** The shutdown hook used to destroy the Python process. */
     class PythonProcessShutdownHook extends Thread {
 
         private Process process;

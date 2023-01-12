@@ -37,31 +37,21 @@ import lombok.EqualsAndHashCode;
 public class UserRole implements Serializable {
 
     private static final long serialVersionUID = -6123386787317880485L;
-    /**
-     * id
-     */
+    /** id */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * user id
-     */
+    /** user id */
     private Integer userId;
 
-    /**
-     * role id
-     */
+    /** role id */
     private Integer roleId;
 
-    /**
-     * create time
-     */
+    /** create time */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /**
-     * update time
-     */
+    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

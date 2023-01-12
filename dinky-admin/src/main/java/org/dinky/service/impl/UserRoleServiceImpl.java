@@ -32,7 +32,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 @Service
-public class UserRoleServiceImpl extends SuperServiceImpl<UserRoleMapper, UserRole> implements UserRoleService {
+public class UserRoleServiceImpl extends SuperServiceImpl<UserRoleMapper, UserRole>
+        implements UserRoleService {
 
     @Override
     public int delete(int userId) {

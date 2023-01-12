@@ -37,43 +37,30 @@ import com.google.common.collect.Lists;
 public class SqlSegment {
 
     private static final String Crlf = "|";
+
     @SuppressWarnings("unused")
     private static final String FourSpace = "　　";
-    /**
-     * Sql语句片段类型，大写
-     **/
+    /** Sql语句片段类型，大写 */
     private String type;
-    /**
-     * Sql语句片段开头部分
-     **/
+    /** Sql语句片段开头部分 */
     private String start;
-    /**
-     * Sql语句片段中间部分
-     **/
+    /** Sql语句片段中间部分 */
     private String body;
-    /**
-     * Sql语句片段结束部分
-     **/
+    /** Sql语句片段结束部分 */
     private String end;
-    /**
-     * 用于分割中间部分的正则表达式
-     **/
+    /** 用于分割中间部分的正则表达式 */
     private String bodySplitPattern;
-    /**
-     * 表示片段的正则表达式
-     **/
+    /** 表示片段的正则表达式 */
     private String segmentRegExp;
-    /**
-     * 分割后的Body小片段
-     **/
+    /** 分割后的Body小片段 */
     private List<String> bodyPieces;
 
     /**
      * 构造函数
      *
-     * @param segmentRegExp    表示这个Sql片段的正则表达式
+     * @param segmentRegExp 表示这个Sql片段的正则表达式
      * @param bodySplitPattern 用于分割body的正则表达式
-     **/
+     */
     public SqlSegment(String segmentRegExp, String bodySplitPattern) {
         this("", segmentRegExp, bodySplitPattern);
     }
@@ -88,9 +75,7 @@ public class SqlSegment {
         this.bodyPieces = new ArrayList<String>();
     }
 
-    /**
-     * 从sql中查找符合segmentRegExp的部分，并赋值到start,body,end等三个属性中
-     **/
+    /** 从sql中查找符合segmentRegExp的部分，并赋值到start,body,end等三个属性中 */
     public void parse(String sql) {
         Pattern pattern = Pattern.compile(segmentRegExp, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sql);
@@ -105,9 +90,7 @@ public class SqlSegment {
         }
     }
 
-    /**
-     * 解析body部分
-     **/
+    /** 解析body部分 */
     private void parseBody() {
         Pattern p = Pattern.compile(bodySplitPattern, Pattern.CASE_INSENSITIVE);
         Matcher m = p.matcher(body.trim());
@@ -120,9 +103,7 @@ public class SqlSegment {
         bodyPieces = Lists.newArrayList(arr);
     }
 
-    /**
-     * 取得解析好的Sql片段
-     **/
+    /** 取得解析好的Sql片段 */
     public String getParsedSqlSegment() {
         StringBuilder sb = new StringBuilder();
         sb.append(start).append(Crlf);
@@ -187,5 +168,4 @@ public class SqlSegment {
     public void setBodyPieces(List<String> bodyPieces) {
         this.bodyPieces = bodyPieces;
     }
-
 }

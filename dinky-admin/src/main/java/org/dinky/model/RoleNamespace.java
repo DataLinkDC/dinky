@@ -38,31 +38,21 @@ public class RoleNamespace implements Serializable {
 
     private static final long serialVersionUID = 304808291890721691L;
 
-    /**
-     * id
-     */
+    /** id */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * role id
-     */
+    /** role id */
     private Integer roleId;
 
-    /**
-     * namespace id
-     */
+    /** namespace id */
     private Integer namespaceId;
 
-    /**
-     * create time
-     */
+    /** create time */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /**
-     * update time
-     */
+    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

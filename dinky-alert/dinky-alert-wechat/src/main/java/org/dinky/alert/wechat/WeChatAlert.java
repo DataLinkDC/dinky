@@ -27,7 +27,7 @@ import org.dinky.alert.AlertResult;
  *
  * @author wenmo
  * @since 2022/2/23 21:09
- **/
+ */
 public class WeChatAlert extends AbstractAlert {
 
     @Override

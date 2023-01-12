@@ -35,17 +35,17 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 public class CacheConfigure {
 
-    /**
-     * 配置Redis缓存注解的value序列化方式
-     */
+    /** 配置Redis缓存注解的value序列化方式 */
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 // 序列化为json
                 .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
+                        RedisSerializationContext.SerializationPair.fromSerializer(
+                                RedisSerializer.json()))
                 .serializeKeysWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
+                        RedisSerializationContext.SerializationPair.fromSerializer(
+                                new StringRedisSerializer()));
     }
 
     // /**

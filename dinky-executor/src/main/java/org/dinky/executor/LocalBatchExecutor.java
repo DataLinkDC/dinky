@@ -38,7 +38,8 @@ public class LocalBatchExecutor extends Executor {
         if (Asserts.isNotNull(executorSetting.getConfig())) {
             Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
             if (configuration.contains(RestOptions.PORT)) {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
+                this.environment =
+                        StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
             } else {
                 this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
             }

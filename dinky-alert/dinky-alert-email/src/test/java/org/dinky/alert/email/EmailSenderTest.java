@@ -79,7 +79,8 @@ public class EmailSenderTest {
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE, "true");
         emailConfig.put(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST, "smtp.mxhichina.com");
-        emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, "user1@qq.com,user2@163.com");
+        emailConfig.put(
+                EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, "user1@qq.com,user2@163.com");
         emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS, "user3@qq.com");
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TEXT.getValue());
         alertTemplate = new DefaultHTMLTemplate();
@@ -118,13 +119,18 @@ public class EmailSenderTest {
 
     @Test
     public void testGenTextEmail() {
-        List<LinkedHashMap> linkedHashMaps = JSONUtil.toList(alertMsg.toString(), LinkedHashMap.class);
+        List<LinkedHashMap> linkedHashMaps =
+                JSONUtil.toList(alertMsg.toString(), LinkedHashMap.class);
         if (linkedHashMaps.size() > EmailConstants.NUMBER_1000) {
             linkedHashMaps = linkedHashMaps.subList(0, EmailConstants.NUMBER_1000);
         }
         StringBuilder stringBuilder = new StringBuilder(100);
-        stringBuilder.append(EmailConstants.TR).append(EmailConstants.TH_COLSPAN).append(title)
-                .append(EmailConstants.TH_END).append(EmailConstants.TR_END);
+        stringBuilder
+                .append(EmailConstants.TR)
+                .append(EmailConstants.TH_COLSPAN)
+                .append(title)
+                .append(EmailConstants.TH_END)
+                .append(EmailConstants.TR_END);
         for (LinkedHashMap<String, Object> mapItems : linkedHashMaps) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
@@ -132,11 +138,16 @@ public class EmailSenderTest {
             while (iterator.hasNext()) {
                 Map.Entry<String, Object> entry = iterator.next();
                 stringBuilder.append(EmailConstants.TR);
-                stringBuilder.append(EmailConstants.TD).append(entry.getKey()).append(EmailConstants.TD_END);
-                stringBuilder.append(EmailConstants.TD).append(entry.getValue()).append(EmailConstants.TD_END);
+                stringBuilder
+                        .append(EmailConstants.TD)
+                        .append(entry.getKey())
+                        .append(EmailConstants.TD_END);
+                stringBuilder
+                        .append(EmailConstants.TD)
+                        .append(entry.getValue())
+                        .append(EmailConstants.TD_END);
                 stringBuilder.append(EmailConstants.TR_END);
             }
-
         }
     }
 }

@@ -24,14 +24,13 @@ package org.dinky.alert;
  *
  * @author wenmo
  * @since 2022/2/23 20:20
- **/
+ */
 public class AlertResult {
 
     private boolean success;
     private String message;
 
-    public AlertResult() {
-    }
+    public AlertResult() {}
 
     public AlertResult(boolean success, String message) {
         this.success = success;

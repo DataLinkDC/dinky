@@ -35,11 +35,7 @@ import cn.hutool.core.util.StrUtil;
  */
 public class UdfCodePool {
 
-    /**
-     * udf code pool
-     * key -> class name
-     * value -> udf
-     */
+    /** udf code pool key -> class name value -> udf */
     private static final Map<String, UDF> CODE_POOL = new ConcurrentHashMap<>();
 
     public static void registerPool(List<UDF> udfList) {
@@ -58,5 +54,4 @@ public class UdfCodePool {
         }
         return udf;
     }
-
 }
