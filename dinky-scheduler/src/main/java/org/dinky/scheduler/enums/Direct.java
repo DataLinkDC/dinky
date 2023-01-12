@@ -19,12 +19,9 @@
 
 package org.dinky.scheduler.enums;
 
-/**
- * parameter of stored procedure
- */
+/** parameter of stored procedure */
 public enum Direct {
-    /**
-     * 0 in; 1 out;
-     */
-    IN, OUT
+    /** 0 in; 1 out; */
+    IN,
+    OUT
 }

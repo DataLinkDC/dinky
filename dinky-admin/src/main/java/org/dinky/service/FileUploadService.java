@@ -24,15 +24,13 @@ import org.dinky.constant.UploadFileConstant;
 
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * File upload
- **/
+/** File upload */
 public interface FileUploadService {
 
     /**
      * Upload one file, if target file exists, will delete it first
      *
-     * @param file     {@link MultipartFile} instance
+     * @param file {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
      * @return {@link Result}
      */
@@ -41,7 +39,7 @@ public interface FileUploadService {
     /**
      * Upload multy file, if target file exists, will delete it first
      *
-     * @param files    {@link MultipartFile} instance
+     * @param files {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
      * @return {@link Result}
      */
@@ -50,8 +48,8 @@ public interface FileUploadService {
     /**
      * Upload one file, if target file exists, will delete it first
      *
-     * @param file     {@link MultipartFile} instance
-     * @param dir      Local absolute dir
+     * @param file {@link MultipartFile} instance
+     * @param dir Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
      * @return {@link Result}
      */
@@ -60,8 +58,8 @@ public interface FileUploadService {
     /**
      * Upload multy file, if target file exists, will delete it first
      *
-     * @param files    {@link MultipartFile} instance
-     * @param dir      Local absolute dir
+     * @param files {@link MultipartFile} instance
+     * @param dir Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
      * @return {@link Result}
      */
@@ -70,7 +68,7 @@ public interface FileUploadService {
     /**
      * Upload one hdfs file, if target file exists, will delete it first
      *
-     * @param file             {@link MultipartFile} instance
+     * @param file {@link MultipartFile} instance
      * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
      * @return {@link Result}
      */
@@ -79,7 +77,7 @@ public interface FileUploadService {
     /**
      * Upload multy hdfs file, if target file exists, will delete it first
      *
-     * @param files            {@link MultipartFile} instance
+     * @param files {@link MultipartFile} instance
      * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
      * @return {@link Result}
      */

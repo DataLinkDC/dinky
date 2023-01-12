@@ -54,15 +54,14 @@ import cn.hutool.core.io.FileUtil;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public class YarnApplicationGateway extends YarnGateway {
 
     public YarnApplicationGateway(GatewayConfig config) {
         super(config);
     }
 
-    public YarnApplicationGateway() {
-    }
+    public YarnApplicationGateway() {}
 
     @Override
     public GatewayType getType() {
@@ -76,39 +75,49 @@ public class YarnApplicationGateway extends YarnGateway {
         }
         YarnResult result = YarnResult.build(getType());
         AppConfig appConfig = config.getAppConfig();
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        configuration.set(
+                PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
-        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas,
-                appConfig.getUserJarMainAppClass());
-        YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient,
-                YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
+        ApplicationConfiguration applicationConfiguration =
+                new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        YarnClusterDescriptor yarnClusterDescriptor =
+                new YarnClusterDescriptor(
+                        configuration,
+                        yarnConfiguration,
+                        yarnClient,
+                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
+                        true);
 
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setMasterMemoryMB(
+                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(
+                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
+            clusterSpecificationBuilder
+                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
                     .createClusterSpecification();
         }
         if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor
-                    .addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
+            yarnClusterDescriptor.addShipFiles(
+                    Arrays.stream(config.getJarPaths())
+                            .map(FileUtil::file)
+                            .collect(Collectors.toList()));
         }
 
         try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
-                    clusterSpecificationBuilder.createClusterSpecification(),
-                    applicationConfiguration);
+            ClusterClientProvider<ApplicationId> clusterClientProvider =
+                    yarnClusterDescriptor.deployApplicationCluster(
+                            clusterSpecificationBuilder.createClusterSpecification(),
+                            applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
             int counts = SystemConfiguration.getInstances().getJobIdWait();

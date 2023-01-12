@@ -22,19 +22,13 @@ package org.dinky.service;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.UploadFileRecord;
 
-/**
- * UploadFileRecordService
- **/
+/** UploadFileRecordService */
 public interface UploadFileRecordService extends ISuperService<UploadFileRecord> {
 
-    /**
-     * Save or update base on file absolute path and file type.
-     */
-    boolean saveOrUpdateFile(String fileName, String parentPath, String absolutePath, Byte fileType, Byte target);
+    /** Save or update base on file absolute path and file type. */
+    boolean saveOrUpdateFile(
+            String fileName, String parentPath, String absolutePath, Byte fileType, Byte target);
 
-    /**
-     * Save or update base on file type.
-     */
+    /** Save or update base on file type. */
     boolean saveOrUpdateDir(String parentPath, Byte fileType, Byte target);
-
 }

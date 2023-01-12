@@ -27,7 +27,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author wenmo
  * @since 2022/2/17 15:29
- **/
+ */
 public class DriverPool {
 
     private static volatile Map<String, Driver> driverMap = new ConcurrentHashMap<>();
@@ -52,5 +52,4 @@ public class DriverPool {
     public static Driver get(String key) {
         return driverMap.get(key);
     }
-
 }

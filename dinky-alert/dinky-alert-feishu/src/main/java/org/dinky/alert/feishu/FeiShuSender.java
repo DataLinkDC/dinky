@@ -46,8 +46,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * @Author: zhumingye
- * @date: 2022/4/2
- * @Description: 飞书消息发送器
+ *
+ * @date: 2022/4/2 @Description: 飞书消息发送器
  */
 public final class FeiShuSender {
 
@@ -77,9 +77,10 @@ public final class FeiShuSender {
     FeiShuSender(Map<String, String> config) {
         url = config.get(FeiShuConstants.WEB_HOOK);
         msgType = config.get(FeiShuConstants.MSG_TYPE);
-        keyword = config.get(FeiShuConstants.KEY_WORD) != null
-                ? config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "")
-                : "";
+        keyword =
+                config.get(FeiShuConstants.KEY_WORD) != null
+                        ? config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "")
+                        : "";
         enableProxy = Boolean.valueOf(config.get(FeiShuConstants.FEI_SHU_PROXY_ENABLE));
         secret = config.get(FeiShuConstants.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {
@@ -98,15 +99,26 @@ public final class FeiShuSender {
         String jsonResult = "";
         byte[] byt = StringUtils.getBytesUtf8(formatContent(title, content));
         String contentResult = StringUtils.newStringUtf8(byt);
-        String userIdsToText = mkUserIds(org.apache.commons.lang3.StringUtils.isBlank(atUserIds) ? "all" : atUserIds);
+        String userIdsToText =
+                mkUserIds(
+                        org.apache.commons.lang3.StringUtils.isBlank(atUserIds)
+                                ? "all"
+                                : atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
-            jsonResult = FeiShuConstants.FEI_SHU_TEXT_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
-                    .replace(MSG_RESULT_REGX, contentResult).replace(FEI_SHU_USER_REGX, userIdsToText)
-                    .replaceAll("/n", "\\\\n");
+            jsonResult =
+                    FeiShuConstants.FEI_SHU_TEXT_TEMPLATE
+                            .replace(MSG_TYPE_REGX, msgType)
+                            .replace(MSG_RESULT_REGX, contentResult)
+                            .replace(FEI_SHU_USER_REGX, userIdsToText)
+                            .replaceAll("/n", "\\\\n");
         } else {
-            jsonResult = FeiShuConstants.FEI_SHU_POST_TEMPLATE.replace(MSG_TYPE_REGX, msgType)
-                    .replace(FEI_SHU_MSG_TYPE_REGX, keyword).replace(MSG_RESULT_REGX, contentResult)
-                    .replace(FEI_SHU_USER_REGX, userIdsToText).replaceAll("/n", "\\\\n");
+            jsonResult =
+                    FeiShuConstants.FEI_SHU_POST_TEMPLATE
+                            .replace(MSG_TYPE_REGX, msgType)
+                            .replace(FEI_SHU_MSG_TYPE_REGX, keyword)
+                            .replace(MSG_RESULT_REGX, contentResult)
+                            .replace(FEI_SHU_USER_REGX, userIdsToText)
+                            .replaceAll("/n", "\\\\n");
         }
         return jsonResult;
     }
@@ -140,7 +152,8 @@ public final class FeiShuSender {
             logger.info("send fei shu msg error,fei shu server resp is null");
             return alertResult;
         }
-        FeiShuSendMsgResponse sendMsgResponse = JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
+        FeiShuSendMsgResponse sendMsgResponse =
+                JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
 
         if (null == sendMsgResponse) {
             alertResult.setMessage("send fei shu msg fail");
@@ -152,8 +165,12 @@ public final class FeiShuSender {
             alertResult.setMessage("send fei shu msg success");
             return alertResult;
         }
-        alertResult.setMessage(String.format("alert send fei shu msg error : %s", sendMsgResponse.getStatusMessage()));
-        logger.info("alert send fei shu msg error : {} ,Extra : {} ", sendMsgResponse.getStatusMessage(),
+        alertResult.setMessage(
+                String.format(
+                        "alert send fei shu msg error : %s", sendMsgResponse.getStatusMessage()));
+        logger.info(
+                "alert send fei shu msg error : {} ,Extra : {} ",
+                sendMsgResponse.getStatusMessage(),
                 sendMsgResponse.getExtra());
         return alertResult;
     }
@@ -227,13 +244,14 @@ public final class FeiShuSender {
 
         @JsonProperty("Extra")
         private String extra;
+
         @JsonProperty("StatusCode")
         private Integer statusCode;
+
         @JsonProperty("StatusMessage")
         private String statusMessage;
 
-        public FeiShuSendMsgResponse() {
-        }
+        public FeiShuSendMsgResponse() {}
 
         public String getExtra() {
             return this.extra;
@@ -277,7 +295,9 @@ public final class FeiShuSender {
             }
             final Object this$statusCode = this.getStatusCode();
             final Object other$statusCode = other.getStatusCode();
-            if (this$statusCode == null ? other$statusCode != null : !this$statusCode.equals(other$statusCode)) {
+            if (this$statusCode == null
+                    ? other$statusCode != null
+                    : !this$statusCode.equals(other$statusCode)) {
                 return false;
             }
             final Object this$statusMessage = this.getStatusMessage();
@@ -303,8 +323,13 @@ public final class FeiShuSender {
         }
 
         public String toString() {
-            return "FeiShuSender.FeiShuSendMsgResponse(extra=" + this.getExtra() + ", statusCode="
-                    + this.getStatusCode() + ", statusMessage=" + this.getStatusMessage() + ")";
+            return "FeiShuSender.FeiShuSendMsgResponse(extra="
+                    + this.getExtra()
+                    + ", statusCode="
+                    + this.getStatusCode()
+                    + ", statusMessage="
+                    + this.getStatusMessage()
+                    + ")";
         }
     }
 }

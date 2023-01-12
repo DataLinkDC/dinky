@@ -24,7 +24,7 @@ package org.dinky.exception;
  *
  * @author wenmo
  * @since 2022/4/12 21:21
- **/
+ */
 public class FlinkClientException extends RuntimeException {
 
     public FlinkClientException(String message, Throwable cause) {
@@ -34,5 +34,4 @@ public class FlinkClientException extends RuntimeException {
     public FlinkClientException(String message) {
         super(message);
     }
-
 }

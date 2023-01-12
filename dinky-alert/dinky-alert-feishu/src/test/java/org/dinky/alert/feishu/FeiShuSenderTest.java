@@ -32,8 +32,8 @@ import org.junit.Test;
 
 /**
  * @Author: zhumingye
- * @date: 2022/4/2
- * @Description: 飞书消息发送 单元测试
+ *
+ * @date: 2022/4/2 @Description: 飞书消息发送 单元测试
  */
 public class FeiShuSenderTest {
 
@@ -58,7 +58,8 @@ public class FeiShuSenderTest {
         String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
 
-        feiShuConfig.put(FeiShuConstants.WEB_HOOK,
+        feiShuConfig.put(
+                FeiShuConstants.WEB_HOOK,
                 "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
         feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
         feiShuConfig.put(FeiShuConstants.MSG_TYPE, "text");
@@ -80,5 +81,4 @@ public class FeiShuSenderTest {
         AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
-
 }

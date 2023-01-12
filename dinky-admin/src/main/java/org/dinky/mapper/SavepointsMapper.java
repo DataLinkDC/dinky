@@ -29,7 +29,7 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/11/21
- **/
+ */
 @Mapper
 public interface SavepointsMapper extends SuperMapper<Savepoints> {
 

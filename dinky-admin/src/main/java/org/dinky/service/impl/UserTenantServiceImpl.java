@@ -29,7 +29,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserTenantServiceImpl extends SuperServiceImpl<UserTenantMapper, UserTenant> implements UserTenantService {
+public class UserTenantServiceImpl extends SuperServiceImpl<UserTenantMapper, UserTenant>
+        implements UserTenantService {
 
     @Override
     public List<UserTenant> getUserTenantByUserId(int userId) {

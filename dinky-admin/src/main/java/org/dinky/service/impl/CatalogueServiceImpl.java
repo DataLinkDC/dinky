@@ -60,16 +60,14 @@ import cn.hutool.core.util.ObjectUtil;
  *
  * @author wenmo
  * @since 2021/5/28 14:02
- **/
+ */
 @Service
-public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue> implements CatalogueService {
+public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue>
+        implements CatalogueService {
 
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private JobInstanceService jobInstanceService;
-    @Autowired
-    private StatementService statementService;
+    @Autowired private TaskService taskService;
+    @Autowired private JobInstanceService jobInstanceService;
+    @Autowired private StatementService statementService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -78,7 +76,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByParentIdAndName(Integer parentId, String name) {
-        return baseMapper.selectOne(Wrappers.<Catalogue>query().eq("parent_id", parentId).eq("name", name));
+        return baseMapper.selectOne(
+                Wrappers.<Catalogue>query().eq("parent_id", parentId).eq("name", name));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -179,26 +178,40 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
-        List<Catalogue> relatedList = all.stream()
-                .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
-                .collect(Collectors.toList());
-        List<Catalogue> subDirCatalogue = relatedList.stream().filter(catalogue -> catalogue.getType() == null)
-                .collect(Collectors.toList());
-        subDirCatalogue.forEach(catalogue -> {
-            if (id != catalogue.getId()) {
-                findAllCatalogueInDir(catalogue.getId(), all, del);
-            }
-        });
+        List<Catalogue> relatedList =
+                all.stream()
+                        .filter(
+                                catalogue ->
+                                        id.equals(catalogue.getId())
+                                                || id.equals(catalogue.getParentId()))
+                        .collect(Collectors.toList());
+        List<Catalogue> subDirCatalogue =
+                relatedList.stream()
+                        .filter(catalogue -> catalogue.getType() == null)
+                        .collect(Collectors.toList());
+        subDirCatalogue.forEach(
+                catalogue -> {
+                    if (id != catalogue.getId()) {
+                        findAllCatalogueInDir(catalogue.getId(), all, del);
+                    }
+                });
         del.addAll(relatedList);
     }
 
     private List<String> analysisActiveCatalogues(Set<Catalogue> del) {
-        List<Integer> actives = jobInstanceService.listJobInstanceActive().stream().map(JobInstance::getTaskId)
-                .collect(Collectors.toList());
-        List<Catalogue> activeCatalogue = del.stream()
-                .filter(catalogue -> catalogue.getTaskId() != null && actives.contains(catalogue.getTaskId()))
-                .collect(Collectors.toList());
-        return activeCatalogue.stream().map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
+        List<Integer> actives =
+                jobInstanceService.listJobInstanceActive().stream()
+                        .map(JobInstance::getTaskId)
+                        .collect(Collectors.toList());
+        List<Catalogue> activeCatalogue =
+                del.stream()
+                        .filter(
+                                catalogue ->
+                                        catalogue.getTaskId() != null
+                                                && actives.contains(catalogue.getTaskId()))
+                        .collect(Collectors.toList());
+        return activeCatalogue.stream()
+                .map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
                 .collect(Collectors.toList());
     }
 
@@ -246,8 +259,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         statement.setId(newTask.getId());
         statementService.save(statement);
 
-        Catalogue one = this
-                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+        Catalogue one =
+                this.getOne(
+                        new LambdaQueryWrapper<Catalogue>()
+                                .eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getAlias());
         catalogue.setIsLeaf(one.getIsLeaf());
@@ -256,7 +271,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogue.setParentId(one.getParentId());
 
         return this.save(catalogue);
-
     }
 
     @Override
@@ -264,8 +278,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Integer parentId = 0;
         for (int i = 0; i < catalogueNames.length - 1; i++) {
             String catalogueName = catalogueNames[i];
-            Catalogue catalogue = getOne(
-                    new QueryWrapper<Catalogue>().eq("name", catalogueName).eq("parent_id", parentId).last(" limit 1"));
+            Catalogue catalogue =
+                    getOne(
+                            new QueryWrapper<Catalogue>()
+                                    .eq("name", catalogueName)
+                                    .eq("parent_id", parentId)
+                                    .last(" limit 1"));
             if (Asserts.isNotNull(catalogue)) {
                 parentId = catalogue.getId();
                 continue;

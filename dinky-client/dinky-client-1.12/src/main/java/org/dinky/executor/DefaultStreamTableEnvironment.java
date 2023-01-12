@@ -32,16 +32,15 @@ import org.apache.flink.table.functions.AggregateFunction;
 import org.apache.flink.table.functions.TableAggregateFunction;
 import org.apache.flink.table.functions.TableFunction;
 
-/**
- *
- */
-public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, DefaultTableEnvironment, TableEnvironmentInstance {
+/** */
+public interface DefaultStreamTableEnvironment
+        extends StreamTableEnvironment, DefaultTableEnvironment, TableEnvironmentInstance {
 
     default StreamTableEnvironment getStreamTableEnvironment() {
         return (StreamTableEnvironment) getTableEnvironment();
     }
 
-    @Override// region StreamTableEnvironment interface
+    @Override // region StreamTableEnvironment interface
     default <T> void registerFunction(String s, TableFunction<T> tableFunction) {
         getStreamTableEnvironment().registerFunction(s, tableFunction);
     }
@@ -52,7 +51,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T, A> void registerFunction(String s, TableAggregateFunction<T, A> tableAggregateFunction) {
+    default <T, A> void registerFunction(
+            String s, TableAggregateFunction<T, A> tableAggregateFunction) {
         getStreamTableEnvironment().registerFunction(s, tableAggregateFunction);
     }
 
@@ -92,7 +92,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T> void createTemporaryView(String s, DataStream<T> dataStream, Expression... expressions) {
+    default <T> void createTemporaryView(
+            String s, DataStream<T> dataStream, Expression... expressions) {
         getStreamTableEnvironment().createTemporaryView(s, dataStream, expressions);
     }
 
@@ -112,7 +113,8 @@ public interface DefaultStreamTableEnvironment extends StreamTableEnvironment, D
     }
 
     @Override
-    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(Table table, TypeInformation<T> typeInformation) {
+    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(
+            Table table, TypeInformation<T> typeInformation) {
         return getStreamTableEnvironment().toRetractStream(table, typeInformation);
     }
 

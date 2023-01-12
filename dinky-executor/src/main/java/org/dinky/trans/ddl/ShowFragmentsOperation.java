@@ -30,13 +30,12 @@ import org.apache.flink.table.api.TableResult;
  *
  * @author wenmo
  * @since 2022/2/17 16:31
- **/
+ */
 public class ShowFragmentsOperation extends AbstractOperation implements Operation {
 
     private static final String KEY_WORD = "SHOW FRAGMENTS";
 
-    public ShowFragmentsOperation() {
-    }
+    public ShowFragmentsOperation() {}
 
     public ShowFragmentsOperation(String statement) {
         super(statement);

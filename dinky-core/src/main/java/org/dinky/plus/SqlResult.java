@@ -26,7 +26,7 @@ import org.apache.flink.table.api.TableResult;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class SqlResult {
 
     private TableResult tableResult;

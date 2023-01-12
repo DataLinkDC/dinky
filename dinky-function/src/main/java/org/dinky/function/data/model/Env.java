@@ -33,6 +33,7 @@ public class Env {
 
     @Value("${dinky.python.path}")
     private String path;
+
     private static String PATH;
 
     public static String getPath() {

@@ -40,8 +40,8 @@ public class JavaCompiler implements FunctionCompiler {
     /**
      * 函数代码在线动态编译
      *
-     * @param udf       udf
-     * @param conf      flink-conf
+     * @param udf udf
+     * @param conf flink-conf
      * @param missionId 任务id
      * @return 是否成功
      */

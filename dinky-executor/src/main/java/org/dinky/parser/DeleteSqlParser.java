@@ -36,5 +36,4 @@ public class DeleteSqlParser extends BaseSingleSqlParser {
         segments.add(new SqlSegment("(delete\\s+from)(.+)( where | ENDOFSQL)", "[,]"));
         segments.add(new SqlSegment("(where)(.+)( ENDOFSQL)", "(and|or)"));
     }
-
 }

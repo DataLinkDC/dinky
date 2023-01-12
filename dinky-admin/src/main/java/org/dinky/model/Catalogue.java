@@ -31,7 +31,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2021/5/28 13:51
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_catalogue")
@@ -49,8 +49,7 @@ public class Catalogue extends SuperEntity {
 
     private Boolean isLeaf;
 
-    public Catalogue() {
-    }
+    public Catalogue() {}
 
     public Catalogue(String name, Integer taskId, String type, Integer parentId, Boolean isLeaf) {
         this.setName(name);

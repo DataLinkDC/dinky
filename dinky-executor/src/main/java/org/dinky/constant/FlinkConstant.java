@@ -24,27 +24,17 @@ package org.dinky.constant;
  *
  * @author wenmo
  * @since 2021/5/25 14:39
- **/
+ */
 public interface FlinkConstant {
 
-    /**
-     * flink端口
-     */
+    /** flink端口 */
     Integer FLINK_REST_DEFAULT_PORT = 8081;
-    /**
-     * flink会话默认个数
-     */
+    /** flink会话默认个数 */
     Integer DEFAULT_SESSION_COUNT = 256;
-    /**
-     * flink加载因子
-     */
+    /** flink加载因子 */
     Double DEFAULT_FACTOR = 0.75;
-    /**
-     * 本地模式host
-     */
+    /** 本地模式host */
     String LOCAL_HOST = "localhost:8081";
-    /**
-     * changlog op
-     */
+    /** changlog op */
     String OP = "op";
 }

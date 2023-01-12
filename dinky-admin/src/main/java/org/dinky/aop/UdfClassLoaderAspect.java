@@ -42,20 +42,16 @@ import lombok.extern.slf4j.Slf4j;
 public class UdfClassLoaderAspect {
 
     @Pointcut("execution(* org.dinky.service.TaskService.*(..))")
-    public void taskServicePointcut() {
-    }
+    public void taskServicePointcut() {}
 
     @Pointcut("execution(* org.dinky.service.APIService.*(..))")
-    public void apiServicePointcut() {
-    }
+    public void apiServicePointcut() {}
 
     @Pointcut("execution(* org.dinky.service.StudioService.*(..))")
-    public void studioServicePointcut() {
-    }
+    public void studioServicePointcut() {}
 
     @Pointcut("apiServicePointcut() || taskServicePointcut() || studioServicePointcut()")
-    public void allPointcut() {
-    }
+    public void allPointcut() {}
 
     @Around("allPointcut()")
     public Object round(ProceedingJoinPoint proceedingJoinPoint) {
@@ -76,7 +72,5 @@ public class UdfClassLoaderAspect {
             }
         }
         return proceed;
-
     }
-
 }

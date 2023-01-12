@@ -74,33 +74,38 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         configuration.set(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
 
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        configuration.set(
+                PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
         String[] userJarParas = appConfig.getUserJarParas();
         if (Asserts.isNull(userJarParas)) {
             userJarParas = new String[0];
         }
-        ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration(userJarParas,
-                appConfig.getUserJarMainAppClass());
-        KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration,
-                client);
+        ApplicationConfiguration applicationConfiguration =
+                new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
+        KubernetesClusterDescriptor kubernetesClusterDescriptor =
+                new KubernetesClusterDescriptor(configuration, client);
 
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setMasterMemoryMB(
+                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(
+                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
+            clusterSpecificationBuilder
+                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
                     .createClusterSpecification();
         }
 
         try {
-            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(
-                    clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
+            ClusterClientProvider<String> clusterClientProvider =
+                    kubernetesClusterDescriptor.deployApplicationCluster(
+                            clusterSpecificationBuilder.createClusterSpecification(),
+                            applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
             int counts = SystemConfiguration.getInstances().getJobIdWait();

@@ -46,13 +46,13 @@ public class ConsolePool extends AbstractPool<StringBuilder> {
     }
 
     @Override
-    public void refresh(StringBuilder entity) {
-
-    }
+    public void refresh(StringBuilder entity) {}
 
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
-        consoleEntityMap.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:")).append(str);
+        consoleEntityMap
+                .computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:"))
+                .append(str);
     }
 
     public static void clear(Integer userId) {

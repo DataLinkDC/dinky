@@ -31,7 +31,7 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2021/5/28 13:56
- **/
+ */
 @Mapper
 public interface ClusterMapper extends SuperMapper<Cluster> {
 

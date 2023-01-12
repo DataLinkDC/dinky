@@ -40,7 +40,7 @@ import com.alibaba.druid.pool.DruidDataSource;
  *
  * @author wenmo
  * @since 2021/7/21 15:52
- **/
+ */
 public class OracleDriver extends AbstractJdbcDriver {
 
     @Override
@@ -68,24 +68,23 @@ public class OracleDriver extends AbstractJdbcDriver {
         return "Oracle数据库";
     }
 
-    /**
-     * oracel sql拼接，目前还未实现limit方法
-     */
+    /** oracel sql拼接，目前还未实现limit方法 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append("\"")
-                .append(queryData.getSchemaName())
-                .append("\"")
-                .append(".")
-                .append("\"")
-                .append(queryData.getTableName())
-                .append("\"");
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append("\"")
+                        .append(queryData.getSchemaName())
+                        .append("\"")
+                        .append(".")
+                        .append("\"")
+                        .append(queryData.getTableName())
+                        .append("\"");
 
         if (where != null && !"".equals(where)) {
             optionBuilder.append(" where ").append(where);
@@ -117,8 +116,15 @@ public class OracleDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment()
-                    + "\n");
+            sb.append(
+                    " FROM \""
+                            + table.getSchema()
+                            + "\".\""
+                            + table.getName()
+                            + "\";"
+                            + " -- "
+                            + table.getComment()
+                            + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }
@@ -136,17 +142,26 @@ public class OracleDriver extends AbstractJdbcDriver {
             if (i > 0) {
                 sb.append(",\n");
             }
-            sb.append("\"" + columns.get(i).getName() + "\" " + getTypeConvert().convertToDB(columns.get(i)));
+            sb.append(
+                    "\""
+                            + columns.get(i).getName()
+                            + "\" "
+                            + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
                 sb.append(" NOT NULL");
             }
         }
         sb.append(");");
         sb.append("\n");
-        List<Column> pks = columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
+        List<Column> pks =
+                columns.stream().filter(column -> column.isKeyFlag()).collect(Collectors.toList());
         if (Asserts.isNotNullCollection(pks)) {
             sb.append(
-                    "ALTER TABLE \"" + table.getName() + "\" ADD CONSTRAINT " + table.getName() + "_PK PRIMARY KEY (");
+                    "ALTER TABLE \""
+                            + table.getName()
+                            + "\" ADD CONSTRAINT "
+                            + table.getName()
+                            + "_PK PRIMARY KEY (");
             for (int i = 0; i < pks.size(); i++) {
                 if (i > 0) {
                     sb.append(",");
@@ -156,8 +171,14 @@ public class OracleDriver extends AbstractJdbcDriver {
             sb.append(");\n");
         }
         for (int i = 0; i < columns.size(); i++) {
-            sb.append("COMMENT ON COLUMN \"" + table.getName() + "\".\"" + columns.get(i).getName() + "\" IS '"
-                    + columns.get(i).getComment() + "';\n");
+            sb.append(
+                    "COMMENT ON COLUMN \""
+                            + table.getName()
+                            + "\".\""
+                            + columns.get(i).getName()
+                            + "\" IS '"
+                            + columns.get(i).getComment()
+                            + "';\n");
         }
         return sb.toString();
     }

@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/5/28 13:53
- **/
+ */
 @Mapper
-public interface CatalogueMapper extends SuperMapper<Catalogue> {
-}
+public interface CatalogueMapper extends SuperMapper<Catalogue> {}

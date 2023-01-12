@@ -58,27 +58,40 @@ public class FlinkStreamProgramWithoutPhysical {
                 SUBQUERY_REWRITE,
                 FlinkGroupProgramBuilder.newBuilder()
                         // rewrite QueryOperationCatalogViewTable before rewriting sub-queries
-                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
-                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                .add(FlinkStreamRuleSets.TABLE_REF_RULES())
-                                .build(), "convert table references before rewriting sub-queries to semi-join")
-                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
-                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                .add(FlinkStreamRuleSets.SEMI_JOIN_RULES())
-                                .build(), "rewrite sub-queries to semi-join")
-                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
-                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                .add(FlinkStreamRuleSets.TABLE_SUBQUERY_RULES())
-                                .build(), "sub-queries remove")
-                        // convert RelOptTableImpl (which exists in SubQuery before) to FlinkRelOptTable
-                        .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
-                                .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                .add(FlinkStreamRuleSets.TABLE_REF_RULES())
-                                .build(), "convert table references after sub-queries removed")
+                        .addProgram(
+                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                        .add(FlinkStreamRuleSets.TABLE_REF_RULES())
+                                        .build(),
+                                "convert table references before rewriting sub-queries to semi-join")
+                        .addProgram(
+                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                        .add(FlinkStreamRuleSets.SEMI_JOIN_RULES())
+                                        .build(),
+                                "rewrite sub-queries to semi-join")
+                        .addProgram(
+                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
+                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                        .add(FlinkStreamRuleSets.TABLE_SUBQUERY_RULES())
+                                        .build(),
+                                "sub-queries remove")
+                        // convert RelOptTableImpl (which exists in SubQuery before) to
+                        // FlinkRelOptTable
+                        .addProgram(
+                                FlinkHepRuleSetProgramBuilder.newBuilder()
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                        .add(FlinkStreamRuleSets.TABLE_REF_RULES())
+                                        .build(),
+                                "convert table references after sub-queries removed")
                         .build());
 
         // rewrite special temporal join plan
@@ -87,14 +100,16 @@ public class FlinkStreamProgramWithoutPhysical {
                 FlinkGroupProgramBuilder.newBuilder()
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.EXPAND_PLAN_RULES())
                                         .build(),
                                 "convert correlate to temporal table join")
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.POST_EXPAND_CLEAN_UP_RULES())
                                         .build(),
@@ -102,12 +117,14 @@ public class FlinkStreamProgramWithoutPhysical {
                         .build());
 
         // query decorrelation
-        chainedProgram.addLast(DECORRELATE,
+        chainedProgram.addLast(
+                DECORRELATE,
                 FlinkGroupProgramBuilder.newBuilder()
                         // rewrite before decorrelation
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.PRE_DECORRELATION_RULES())
                                         .build(),
@@ -132,21 +149,24 @@ public class FlinkStreamProgramWithoutPhysical {
                 FlinkGroupProgramBuilder.newBuilder()
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.FILTER_PREPARE_RULES())
                                         .build(),
                                 "filter rules")
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.FILTER_TABLESCAN_PUSHDOWN_RULES())
                                         .build(),
                                 "push predicate into table scan")
                         .addProgram(
                                 FlinkHepRuleSetProgramBuilder.newBuilder()
-                                        .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                        .setHepRulesExecutionType(
+                                                HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
                                         .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
                                         .add(FlinkStreamRuleSets.PRUNE_EMPTY_RULES())
                                         .build(),
@@ -158,16 +178,22 @@ public class FlinkStreamProgramWithoutPhysical {
             chainedProgram.addLast(
                     JOIN_REORDER,
                     FlinkGroupProgramBuilder.newBuilder()
-                            .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                    .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
-                                    .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                    .add(FlinkStreamRuleSets.JOIN_REORDER_PREPARE_RULES())
-                                    .build(), "merge join into MultiJoin")
-                            .addProgram(FlinkHepRuleSetProgramBuilder.newBuilder()
-                                    .setHepRulesExecutionType(HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
-                                    .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
-                                    .add(FlinkStreamRuleSets.JOIN_REORDER_RULES())
-                                    .build(), "do join reorder")
+                            .addProgram(
+                                    FlinkHepRuleSetProgramBuilder.newBuilder()
+                                            .setHepRulesExecutionType(
+                                                    HEP_RULES_EXECUTION_TYPE.RULE_COLLECTION())
+                                            .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                            .add(FlinkStreamRuleSets.JOIN_REORDER_PREPARE_RULES())
+                                            .build(),
+                                    "merge join into MultiJoin")
+                            .addProgram(
+                                    FlinkHepRuleSetProgramBuilder.newBuilder()
+                                            .setHepRulesExecutionType(
+                                                    HEP_RULES_EXECUTION_TYPE.RULE_SEQUENCE())
+                                            .setHepMatchOrder(HepMatchOrder.BOTTOM_UP)
+                                            .add(FlinkStreamRuleSets.JOIN_REORDER_RULES())
+                                            .build(),
+                                    "do join reorder")
                             .build());
         }
 
@@ -185,9 +211,7 @@ public class FlinkStreamProgramWithoutPhysical {
                 LOGICAL,
                 FlinkVolcanoProgramBuilder.newBuilder()
                         .add(FlinkStreamRuleSets.LOGICAL_OPT_RULES())
-                        .setRequiredOutputTraits(new Convention.Impl[]{
-                                FlinkConventions.LOGICAL()
-                        })
+                        .setRequiredOutputTraits(new Convention.Impl[] {FlinkConventions.LOGICAL()})
                         .build());
 
         // logical rewrite
@@ -201,5 +225,4 @@ public class FlinkStreamProgramWithoutPhysical {
 
         return chainedProgram;
     }
-
 }

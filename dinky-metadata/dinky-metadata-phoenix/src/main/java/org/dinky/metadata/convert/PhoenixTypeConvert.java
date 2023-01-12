@@ -33,9 +33,14 @@ public class PhoenixTypeConvert implements ITypeConvert {
         }
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char") || t.contains("varchar") || t.contains("text")
-                || t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
-                || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
+        if (t.contains("char")
+                || t.contains("varchar")
+                || t.contains("text")
+                || t.contains("nchar")
+                || t.contains("nvarchar")
+                || t.contains("ntext")
+                || t.contains("uniqueidentifier")
+                || t.contains("sql_variant")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("bigint")) {
             if (isNullable) {
@@ -43,7 +48,10 @@ public class PhoenixTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.LONG;
             }
-        } else if (t.contains("int") || t.contains("tinyint") || t.contains("smallint") || t.contains("integer")) {
+        } else if (t.contains("int")
+                || t.contains("tinyint")
+                || t.contains("smallint")
+                || t.contains("integer")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {
@@ -55,7 +63,9 @@ public class PhoenixTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.FLOAT;
             }
-        } else if (t.contains("decimal") || t.contains("money") || t.contains("smallmoney")
+        } else if (t.contains("decimal")
+                || t.contains("money")
+                || t.contains("smallmoney")
                 || t.contains("numeric")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("double")) {
@@ -72,7 +82,10 @@ public class PhoenixTypeConvert implements ITypeConvert {
             }
         } else if (t.contains("smalldatetime") || t.contains("datetime")) {
             columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("timestamp") || t.contains("binary") || t.contains("varbinary") || t.contains("image")) {
+        } else if (t.contains("timestamp")
+                || t.contains("binary")
+                || t.contains("varbinary")
+                || t.contains("image")) {
             columnType = ColumnType.BYTES;
         } else if (t.contains("time")) {
             columnType = ColumnType.TIME;

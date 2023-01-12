@@ -39,26 +39,31 @@ import java.util.function.Supplier;
  *
  * @author wenmo
  * @since 2022/4/12 21:12
- **/
+ */
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
-        {
-            put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
-            put(KafkaSinkJsonBuilder.KEY_WORD, () -> new KafkaSinkJsonBuilder());
-            put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
-            put(StarrocksSinkBuilder.KEY_WORD, () -> new StarrocksSinkBuilder());
-            put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
-            put(DorisExtendSinkBuilder.KEY_WORD, () -> new DorisExtendSinkBuilder());
-            put(DorisSchemaEvolutionSinkBuilder.KEY_WORD, () -> new DorisSchemaEvolutionSinkBuilder());
-        }
-    };
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
+            new HashMap<String, Supplier<SinkBuilder>>() {
+                {
+                    put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
+                    put(KafkaSinkJsonBuilder.KEY_WORD, () -> new KafkaSinkJsonBuilder());
+                    put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
+                    put(StarrocksSinkBuilder.KEY_WORD, () -> new StarrocksSinkBuilder());
+                    put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
+                    put(DorisExtendSinkBuilder.KEY_WORD, () -> new DorisExtendSinkBuilder());
+                    put(
+                            DorisSchemaEvolutionSinkBuilder.KEY_WORD,
+                            () -> new DorisSchemaEvolutionSinkBuilder());
+                }
+            };
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
-        return SINK_BUILDER_MAP.getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder()).get()
-            .create(config);
+        return SINK_BUILDER_MAP
+                .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
+                .get()
+                .create(config);
     }
 }

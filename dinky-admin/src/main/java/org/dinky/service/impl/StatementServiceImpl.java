@@ -31,9 +31,10 @@ import org.springframework.stereotype.Service;
  *
  * @author wenmo
  * @since 2021/5/28 13:45
- **/
+ */
 @Service
-public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Statement> implements StatementService {
+public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Statement>
+        implements StatementService {
 
     @Override
     public boolean insert(Statement statement) {

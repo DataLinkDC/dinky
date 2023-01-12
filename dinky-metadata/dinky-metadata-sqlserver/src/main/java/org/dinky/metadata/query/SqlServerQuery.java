@@ -88,5 +88,4 @@ public class SqlServerQuery extends AbstractDBQuery {
     public String isNullable() {
         return "NULLVALUE";
     }
-
 }

@@ -54,14 +54,13 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/5/28 14:03
- **/
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/catalogue")
 public class CatalogueController {
 
-    @Autowired
-    private CatalogueService catalogueService;
+    @Autowired private CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
@@ -103,14 +102,23 @@ public class CatalogueController {
         }
         for (File fl : fs) {
             if (fl.isFile()) {
-                CatalogueTaskDTO dto = getCatalogueTaskDTO(fl.getName(),
-                        catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId());
+                CatalogueTaskDTO dto =
+                        getCatalogueTaskDTO(
+                                fl.getName(),
+                                catalogueService
+                                        .findByParentIdAndName(
+                                                catalog.getParentId(), catalog.getName())
+                                        .getId());
                 String fileText = getFileText(fl);
                 catalogueService.createCatalogAndFileTask(dto, fileText);
             } else {
-                Catalogue newCata = getCatalogue(
-                        catalogueService.findByParentIdAndName(catalog.getParentId(), catalog.getName()).getId(),
-                        fl.getName());
+                Catalogue newCata =
+                        getCatalogue(
+                                catalogueService
+                                        .findByParentIdAndName(
+                                                catalog.getParentId(), catalog.getName())
+                                        .getId(),
+                                fl.getName());
                 traverseFile(fl.getPath(), newCata);
             }
         }
@@ -118,9 +126,8 @@ public class CatalogueController {
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        try (
-                InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
-                BufferedReader br = new BufferedReader(isr);) {
+        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
+                BufferedReader br = new BufferedReader(isr); ) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 
                 String lineText = null;
@@ -156,9 +163,7 @@ public class CatalogueController {
         return catalogueTaskDTO;
     }
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.saveOrUpdate(catalogue)) {
@@ -168,17 +173,13 @@ public class CatalogueController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<Catalogue> listCatalogues(@RequestBody JsonNode para) {
         return catalogueService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -201,27 +202,21 @@ public class CatalogueController {
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Catalogue catalogue) throws Exception {
         catalogue = catalogueService.getById(catalogue.getId());
         return Result.succeed(catalogue, "获取成功");
     }
 
-    /**
-     * 获取所有目录
-     */
+    /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
     public Result getCatalogueTreeData() throws Exception {
         List<Catalogue> catalogues = catalogueService.getAllData();
         return Result.succeed(catalogues, "获取成功");
     }
 
-    /**
-     * 创建节点和作业
-     */
+    /** 创建节点和作业 */
     @PutMapping("/createTask")
     public Result createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) throws Exception {
         Catalogue catalogue = catalogueService.createCatalogueAndTask(catalogueTaskDTO);
@@ -232,9 +227,7 @@ public class CatalogueController {
         }
     }
 
-    /**
-     * 重命名节点和作业
-     */
+    /** 重命名节点和作业 */
     @PutMapping("/toRename")
     public Result toRename(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.toRename(catalogue)) {
@@ -244,9 +237,7 @@ public class CatalogueController {
         }
     }
 
-    /**
-     * 重命名节点和作业
-     */
+    /** 重命名节点和作业 */
     @PutMapping("/moveCatalogue")
     public Result moveCatalogue(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {

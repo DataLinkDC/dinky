@@ -57,8 +57,23 @@ public class APIExecuteSqlDTO extends AbstractStatementDTO {
         int savePointStrategy = Asserts.isNotNullString(savePointPath) ? 3 : 0;
 
         return new JobConfig(
-                type, useResult, useChangeLog, useAutoCancel, false, null, true, address, jobName,
-                isFragment(), useStatementSet, maxRowNum, checkPoint, parallelism, savePointStrategy,
-                savePointPath, configuration, gatewayConfig);
+                type,
+                useResult,
+                useChangeLog,
+                useAutoCancel,
+                false,
+                null,
+                true,
+                address,
+                jobName,
+                isFragment(),
+                useStatementSet,
+                maxRowNum,
+                checkPoint,
+                parallelism,
+                savePointStrategy,
+                savePointPath,
+                configuration,
+                gatewayConfig);
     }
 }

@@ -24,7 +24,7 @@ package org.dinky.metadata.query;
  *
  * @author wenmo
  * @since 2021/7/21 17:15
- **/
+ */
 public class ClickHouseQuery extends AbstractDBQuery {
 
     @Override
@@ -47,12 +47,15 @@ public class ClickHouseQuery extends AbstractDBQuery {
      * 从元数据表中获取表字段信息
      *
      * @param schemaName 模式名称
-     * @param tableName  表名
+     * @param tableName 表名
      * @return String
      */
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return "select  * from system.columns where 1=1 and database='" + schemaName + "' and table='" + tableName
+        return "select  * from system.columns where 1=1 and database='"
+                + schemaName
+                + "' and table='"
+                + tableName
                 + "'";
     }
 

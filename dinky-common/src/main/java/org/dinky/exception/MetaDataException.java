@@ -24,7 +24,7 @@ package org.dinky.exception;
  *
  * @author wenmo
  * @since 2021/6/27
- **/
+ */
 public class MetaDataException extends RuntimeException {
 
     public MetaDataException(String message, Throwable cause) {

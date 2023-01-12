@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class NodeRel {
 
     private Integer preId;
@@ -62,8 +62,7 @@ public class NodeRel {
             return false;
         }
         NodeRel nodeRel = (NodeRel) o;
-        return Objects.equals(preId, nodeRel.preId)
-                && Objects.equals(sufId, nodeRel.sufId);
+        return Objects.equals(preId, nodeRel.preId) && Objects.equals(sufId, nodeRel.sufId);
     }
 
     @Override

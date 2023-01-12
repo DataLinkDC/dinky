@@ -37,15 +37,19 @@ public class ProcessStep {
     private StringBuilder error = new StringBuilder();
     private boolean isError = false;
 
-    public ProcessStep() {
-    }
+    public ProcessStep() {}
 
     public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime) {
         this(stepStatus, startTime, null, 0, new StringBuilder(), new StringBuilder());
     }
 
-    public ProcessStep(ProcessStatus stepStatus, LocalDateTime startTime, LocalDateTime endTime, long time,
-            StringBuilder info, StringBuilder error) {
+    public ProcessStep(
+            ProcessStatus stepStatus,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            long time,
+            StringBuilder info,
+            StringBuilder error) {
         this.stepStatus = stepStatus;
         this.startTime = startTime;
         this.endTime = endTime;

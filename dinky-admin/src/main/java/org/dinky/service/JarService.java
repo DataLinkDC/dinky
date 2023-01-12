@@ -29,7 +29,7 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2021/11/13
- **/
+ */
 public interface JarService extends ISuperService<Jar> {
 
     List<Jar> listEnabledAll();

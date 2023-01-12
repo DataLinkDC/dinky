@@ -42,15 +42,15 @@ public class JdbcSelectResult extends AbstractResult implements IResult {
     private Integer limit;
 
     private static final String STATUS = "status";
-    private static final List<String> STATUS_COLUMN = new ArrayList<String>() {
+    private static final List<String> STATUS_COLUMN =
+            new ArrayList<String>() {
 
-        {
-            add("status");
-        }
-    };
+                {
+                    add("status");
+                }
+            };
 
-    public JdbcSelectResult() {
-    }
+    public JdbcSelectResult() {}
 
     public static JdbcSelectResult buildResult() {
         JdbcSelectResult result = new JdbcSelectResult();

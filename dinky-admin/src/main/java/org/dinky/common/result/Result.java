@@ -101,7 +101,7 @@ public class Result<T> implements Serializable {
      * Call this function if there is any error
      *
      * @param status status
-     * @param args   args
+     * @param args args
      * @return result
      */
     public static <T> Result<T> errorWithArgs(Status status, Object... args) {

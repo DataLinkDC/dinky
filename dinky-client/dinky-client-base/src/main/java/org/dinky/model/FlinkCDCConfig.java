@@ -50,14 +50,25 @@ public class FlinkCDCConfig {
     private List<Schema> schemaList;
     private String schemaFieldName;
 
-    public FlinkCDCConfig() {
-    }
+    public FlinkCDCConfig() {}
 
-    public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password,
-            Integer checkpoint, Integer parallelism, String database, String schema, String table,
+    public FlinkCDCConfig(
+            String type,
+            String hostname,
+            Integer port,
+            String username,
+            String password,
+            Integer checkpoint,
+            Integer parallelism,
+            String database,
+            String schema,
+            String table,
             String startupMode,
-            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
-            Map<String, String> sink, Map<String, String> jdbc) {
+            Map<String, String> split,
+            Map<String, String> debezium,
+            Map<String, String> source,
+            Map<String, String> sink,
+            Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -76,11 +87,23 @@ public class FlinkCDCConfig {
         this.jdbc = jdbc;
     }
 
-    public void init(String type, String hostname, Integer port, String username, String password, Integer checkpoint,
-            Integer parallelism, String database, String schema, String table,
+    public void init(
+            String type,
+            String hostname,
+            Integer port,
+            String username,
+            String password,
+            Integer checkpoint,
+            Integer parallelism,
+            String database,
+            String schema,
+            String table,
             String startupMode,
-            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
-            Map<String, String> sink, Map<String, String> jdbc) {
+            Map<String, String> split,
+            Map<String, String> debezium,
+            Map<String, String> source,
+            Map<String, String> sink,
+            Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;

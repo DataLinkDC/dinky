@@ -19,9 +19,7 @@
 
 package org.dinky.context;
 
-/**
- * TenantContextHolder
- */
+/** TenantContextHolder */
 public class TenantContextHolder {
 
     private static final ThreadLocal<Object> TENANT_CONTEXT = new ThreadLocal<>();

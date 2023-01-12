@@ -39,8 +39,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author wenmo
  * @since 2021/5/25
- **/
-public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T> implements ISuperService<T> {
+ */
+public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T>
+        implements ISuperService<T> {
 
     @Override
     public ProTableResult<T> selectForProTable(JsonNode para) {
@@ -52,8 +53,13 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
-                .pageSize(pageSize).build();
+        return ProTableResult.<T>builder()
+                .success(true)
+                .data(list)
+                .total(page.getTotal())
+                .current(current)
+                .pageSize(pageSize)
+                .build();
     }
 
     @Override
@@ -66,8 +72,13 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
-                .pageSize(pageSize).build();
+        return ProTableResult.<T>builder()
+                .success(true)
+                .data(list)
+                .total(page.getTotal())
+                .current(current)
+                .pageSize(pageSize)
+                .build();
     }
 
     @Override
@@ -85,8 +96,12 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
         }
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder().success(true).data(list).total(page.getTotal()).current(current)
-                .pageSize(pageSize).build();
+        return ProTableResult.<T>builder()
+                .success(true)
+                .data(list)
+                .total(page.getTotal())
+                .current(current)
+                .pageSize(pageSize)
+                .build();
     }
-
 }

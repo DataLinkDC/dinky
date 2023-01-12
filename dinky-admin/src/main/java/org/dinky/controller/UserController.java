@@ -59,15 +59,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/user")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
-    @Autowired
-    private UserTenantService userTenantService;
+    @Autowired private UserTenantService userTenantService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody User user) {
         if (Asserts.isNull(user.getId())) {
@@ -78,17 +74,13 @@ public class UserController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<User> listClusterConfigs(@RequestBody JsonNode para) {
         return userService.selectForProTable(para, true);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -106,7 +98,8 @@ public class UserController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -117,9 +110,7 @@ public class UserController {
         return id == 0;
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
@@ -127,12 +118,12 @@ public class UserController {
         return Result.succeed(user, "获取成功");
     }
 
-    /**
-     * 修改密码
-     */
+    /** 修改密码 */
     @PostMapping("/modifyPassword")
     public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
-        return userService.modifyPassword(modifyPasswordDTO.getUsername(), modifyPasswordDTO.getPassword(),
+        return userService.modifyPassword(
+                modifyPasswordDTO.getUsername(),
+                modifyPasswordDTO.getPassword(),
                 modifyPasswordDTO.getNewPassword());
     }
 
@@ -151,8 +142,10 @@ public class UserController {
         List<User> userList = userService.list();
         Map result = new HashMap();
         result.put("users", userList);
-        List<UserTenant> userTenants = userTenantService.getBaseMapper()
-                .selectList(new QueryWrapper<UserTenant>().eq("tenant_id", id));
+        List<UserTenant> userTenants =
+                userTenantService
+                        .getBaseMapper()
+                        .selectList(new QueryWrapper<UserTenant>().eq("tenant_id", id));
         List<Integer> userIds = new ArrayList<>();
         for (UserTenant userTenant : userTenants) {
             userIds.add(userTenant.getUserId());

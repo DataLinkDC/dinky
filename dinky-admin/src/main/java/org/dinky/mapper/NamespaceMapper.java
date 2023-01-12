@@ -24,10 +24,6 @@ import org.dinky.model.Namespace;
 
 import org.apache.ibatis.annotations.Mapper;
 
-/**
- * namespace mapper interface
- */
+/** namespace mapper interface */
 @Mapper
-public interface NamespaceMapper extends SuperMapper<Namespace> {
-
-}
+public interface NamespaceMapper extends SuperMapper<Namespace> {}

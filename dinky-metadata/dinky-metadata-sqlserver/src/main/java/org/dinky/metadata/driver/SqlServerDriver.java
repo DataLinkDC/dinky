@@ -61,20 +61,19 @@ public class SqlServerDriver extends AbstractJdbcDriver {
         return "SqlServer数据库";
     }
 
-    /**
-     *  sql拼接，目前还未实现limit方法
-     * */
+    /** sql拼接，目前还未实现limit方法 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append(queryData.getSchemaName())
+                        .append(".")
+                        .append(queryData.getTableName());
 
         if (where != null && !"".equals(where)) {
             optionBuilder.append(" where ").append(where);
@@ -106,8 +105,15 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];" + " -- " + table.getComment()
-                    + "\n");
+            sb.append(
+                    " FROM ["
+                            + table.getSchema()
+                            + "].["
+                            + table.getName()
+                            + "];"
+                            + " -- "
+                            + table.getComment()
+                            + "\n");
         } else {
             sb.append(" FROM [" + table.getSchema() + "].[" + table.getName() + "];\n");
         }
@@ -124,7 +130,11 @@ public class SqlServerDriver extends AbstractJdbcDriver {
             if (i > 0) {
                 sb.append(",\n");
             }
-            sb.append("[" + columns.get(i).getName() + "]" + getTypeConvert().convertToDB(columns.get(i)));
+            sb.append(
+                    "["
+                            + columns.get(i).getName()
+                            + "]"
+                            + getTypeConvert().convertToDB(columns.get(i)));
             if (columns.get(i).isNullable()) {
                 sb.append(" NULL");
             } else {
@@ -151,9 +161,16 @@ public class SqlServerDriver extends AbstractJdbcDriver {
         for (Column column : columns) {
             String comment = column.getComment();
             if (comment != null && !comment.isEmpty()) {
-                sb.append(String.format(SqlServerConstant.COMMENT_SQL, comment,
-                        table.getSchema() == null || table.getSchema().isEmpty() ? "dbo" : table.getSchema(),
-                        table.getName(), column.getName()) + " \nGO ");
+                sb.append(
+                        String.format(
+                                        SqlServerConstant.COMMENT_SQL,
+                                        comment,
+                                        table.getSchema() == null || table.getSchema().isEmpty()
+                                                ? "dbo"
+                                                : table.getSchema(),
+                                        table.getName(),
+                                        column.getName())
+                                + " \nGO ");
             }
         }
         return sb.toString();

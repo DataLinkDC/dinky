@@ -63,7 +63,8 @@ public class Docker {
                 .registryPassword(configMap.getOrDefault("docker.registry.password", "").toString())
                 .imageNamespace(configMap.getOrDefault("docker.image.namespace", "").toString())
                 .imageStorehouse(configMap.getOrDefault("docker.image.storehouse", "").toString())
-                .imageDinkyVersion(configMap.getOrDefault("docker.image.dinkyVersion", "").toString())
+                .imageDinkyVersion(
+                        configMap.getOrDefault("docker.image.dinkyVersion", "").toString())
                 .build();
     }
 }

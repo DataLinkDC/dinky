@@ -153,8 +153,25 @@ public class Task extends SuperEntity {
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNull(fragment) ? false : fragment;
         boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
-        return new JobConfig(type, step, false, false, useRemote, clusterId, clusterConfigurationId, jid, getId(),
-                alias, fg, sts, batchModel, checkPoint, parallelism, savePointStrategy, savePointPath, map);
+        return new JobConfig(
+                type,
+                step,
+                false,
+                false,
+                useRemote,
+                clusterId,
+                clusterConfigurationId,
+                jid,
+                getId(),
+                alias,
+                fg,
+                sts,
+                batchModel,
+                checkPoint,
+                parallelism,
+                savePointStrategy,
+                savePointPath,
+                map);
     }
 
     public JsonNode parseJsonNode() {
@@ -183,5 +200,4 @@ public class Task extends SuperEntity {
         ((ObjectNode) jsonNode).put("enabled", this.getEnabled());
         return jsonNode;
     }
-
 }

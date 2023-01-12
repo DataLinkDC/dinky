@@ -55,21 +55,17 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/11/13
- **/
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/jar")
 public class JarController {
 
-    @Autowired
-    private JarService jarService;
+    @Autowired private JarService jarService;
 
-    @Autowired
-    private TaskService taskService;
+    @Autowired private TaskService taskService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Jar jar) throws Exception {
         if (jarService.saveOrUpdate(jar)) {
@@ -79,17 +75,13 @@ public class JarController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<Jar> listJars(@RequestBody JsonNode para) {
         return jarService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -103,25 +95,22 @@ public class JarController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Jar jar) throws Exception {
         jar = jarService.getById(jar.getId());
         return Result.succeed(jar, "获取成功");
     }
 
-    /**
-     * 获取可用的jar列表
-     */
+    /** 获取可用的jar列表 */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
@@ -131,13 +120,26 @@ public class JarController {
     @PostMapping("/udf/generateJar")
     public Result<Map<String, List<String>>> generateJar() {
         List<Task> allUDF = taskService.getAllUDF();
-        List<UDF> udfCodes = allUDF.stream().map(task -> {
-            return UDF.builder().code(task.getStatement()).className(task.getSavePointPath())
-                    .functionLanguage(FunctionLanguage.valueOf(task.getDialect().toUpperCase())).build();
-        }).collect(Collectors.toList());
+        List<UDF> udfCodes =
+                allUDF.stream()
+                        .map(
+                                task -> {
+                                    return UDF.builder()
+                                            .code(task.getStatement())
+                                            .className(task.getSavePointPath())
+                                            .functionLanguage(
+                                                    FunctionLanguage.valueOf(
+                                                            task.getDialect().toUpperCase()))
+                                            .build();
+                                })
+                        .collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
-        String msg = StrUtil.format("udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}", PathConstant.UDF_JAR_TMP_PATH,
-                resultMap.get("success"), resultMap.get("failed"));
+        String msg =
+                StrUtil.format(
+                        "udf jar生成成功，jar文件在{}；\n本次成功 class:{}。\n失败 class:{}",
+                        PathConstant.UDF_JAR_TMP_PATH,
+                        resultMap.get("success"),
+                        resultMap.get("failed"));
         return Result.succeed(resultMap, msg);
     }
 }

@@ -24,9 +24,7 @@ import org.dinky.metadata.constant.StarRocksConstant;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-/**
- * StarRocksQuery
- **/
+/** StarRocksQuery */
 public class StarRocksQuery extends AbstractDBQuery {
 
     @Override
@@ -41,7 +39,8 @@ public class StarRocksQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return String.format(StarRocksConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
+        return String.format(
+                StarRocksConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
     }
 
     @Override

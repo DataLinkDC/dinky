@@ -38,13 +38,12 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/10/21 19:56
- **/
+ */
 public class SetOperation extends AbstractOperation implements Operation {
 
     private static final String KEY_WORD = "SET";
 
-    public SetOperation() {
-    }
+    public SetOperation() {}
 
     public SetOperation(String statement) {
         super(statement);
@@ -74,7 +73,9 @@ public class SetOperation extends AbstractOperation implements Operation {
         if (Asserts.isNotNullMap(map) && map.size() == 2) {
             Map<String, String> confMap = new HashMap<>();
             confMap.put(StringUtils.join(map.get("SET"), "."), StringUtils.join(map.get("="), ","));
-            executor.getCustomTableEnvironment().getConfig().addConfiguration(Configuration.fromMap(confMap));
+            executor.getCustomTableEnvironment()
+                    .getConfig()
+                    .addConfiguration(Configuration.fromMap(confMap));
             Configuration configuration = Configuration.fromMap(confMap);
             executor.getExecutionConfig().configure(configuration, null);
             executor.getCustomTableEnvironment().getConfig().addConfiguration(configuration);

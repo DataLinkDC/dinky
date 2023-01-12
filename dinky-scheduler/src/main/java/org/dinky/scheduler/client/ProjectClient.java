@@ -47,8 +47,7 @@ public class ProjectClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
-    @Autowired
-    private DolphinSchedulerProperties dolphinSchedulerProperties;
+    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
 
     /**
      * 创建项目
@@ -62,13 +61,15 @@ public class ProjectClient {
         map.put("projectName", dolphinSchedulerProperties.getProjectName());
         map.put("description", "自动创建");
 
-        String content = HttpRequest.post(dolphinSchedulerProperties.getUrl() + "/projects")
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(map)
-                .timeout(5000)
-                .execute().body();
-        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {
-        }));
+        String content =
+                HttpRequest.post(dolphinSchedulerProperties.getUrl() + "/projects")
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(map)
+                        .timeout(5000)
+                        .execute()
+                        .body();
+        return MyJSONUtil.verifyResult(
+                MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {}));
     }
 
     /**
@@ -80,12 +81,15 @@ public class ProjectClient {
      */
     public Project getDinkyProject() {
 
-        String content = HttpRequest.get(dolphinSchedulerProperties.getUrl() + "/projects")
-                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
-                .form(ParamUtil.getPageParams(dolphinSchedulerProperties.getProjectName()))
-                .timeout(5000)
-                .execute().body();
+        String content =
+                HttpRequest.get(dolphinSchedulerProperties.getUrl() + "/projects")
+                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .form(ParamUtil.getPageParams(dolphinSchedulerProperties.getProjectName()))
+                        .timeout(5000)
+                        .execute()
+                        .body();
 
-        return MyJSONUtil.toPageBeanAndFindByName(content, dolphinSchedulerProperties.getProjectName(), Project.class);
+        return MyJSONUtil.toPageBeanAndFindByName(
+                content, dolphinSchedulerProperties.getProjectName(), Project.class);
     }
 }

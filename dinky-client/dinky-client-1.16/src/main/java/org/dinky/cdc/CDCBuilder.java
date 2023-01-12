@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2022/11/04
- **/
+ */
 public interface CDCBuilder {
 
     String getHandle();

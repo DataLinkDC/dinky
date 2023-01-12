@@ -66,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/11/17
- **/
+ */
 @Slf4j
 public abstract class Executor {
 
@@ -85,7 +85,8 @@ public abstract class Executor {
         return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
     }
 
-    public static Executor build(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public static Executor build(
+            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         if (environmentSetting.isUseRemote()) {
             return buildRemoteExecutor(environmentSetting, executorSetting);
         } else {
@@ -109,7 +110,8 @@ public abstract class Executor {
         }
     }
 
-    public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public static Executor buildRemoteExecutor(
+            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         environmentSetting.setUseRemote(true);
         if (executorSetting.isUseBatchModel()) {
             return new RemoteBatchExecutor(environmentSetting, executorSetting);
@@ -199,10 +201,15 @@ public abstract class Executor {
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {
-                stEnvironment.getCatalog(catalog).ifPresent(t -> {
-                    newestEnvironment.getCatalogManager().unregisterCatalog(catalog, true);
-                    newestEnvironment.registerCatalog(catalog, t);
-                });
+                stEnvironment
+                        .getCatalog(catalog)
+                        .ifPresent(
+                                t -> {
+                                    newestEnvironment
+                                            .getCatalogManager()
+                                            .unregisterCatalog(catalog, true);
+                                    newestEnvironment.registerCatalog(catalog, t);
+                                });
             }
         }
         stEnvironment = newestEnvironment;
@@ -299,7 +306,9 @@ public abstract class Executor {
         UserGroupInformation.setConfiguration(config);
         try {
             UserGroupInformation.loginUserFromKeytab(principal, keytabPath);
-            log.error("Kerberos [{}] authentication success.", UserGroupInformation.getLoginUser().getUserName());
+            log.error(
+                    "Kerberos [{}] authentication success.",
+                    UserGroupInformation.getLoginUser().getUserName());
         } catch (IOException e) {
             log.error("Kerberos authentication failed.");
             e.printStackTrace();

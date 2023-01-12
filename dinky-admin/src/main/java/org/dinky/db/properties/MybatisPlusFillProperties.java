@@ -29,7 +29,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/5/25
- **/
+ */
 @Setter
 @Getter
 @ConfigurationProperties(prefix = "dinky.mybatis-plus.fill")

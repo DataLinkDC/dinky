@@ -26,7 +26,7 @@ import java.time.LocalDateTime;
  *
  * @author wenmo
  * @since 2021/6/7 22:06
- **/
+ */
 public class SqlExplainResult {
 
     private Integer index;
@@ -39,11 +39,18 @@ public class SqlExplainResult {
     private boolean explainTrue;
     private LocalDateTime explainTime;
 
-    public SqlExplainResult() {
-    }
+    public SqlExplainResult() {}
 
-    public SqlExplainResult(Integer index, String type, String sql, String parse, String explain, String error,
-            boolean parseTrue, boolean explainTrue, LocalDateTime explainTime) {
+    public SqlExplainResult(
+            Integer index,
+            String type,
+            String sql,
+            String parse,
+            String explain,
+            String error,
+            boolean parseTrue,
+            boolean explainTrue,
+            LocalDateTime explainTime) {
         this.index = index;
         this.type = type;
         this.sql = sql;
@@ -56,11 +63,13 @@ public class SqlExplainResult {
     }
 
     public static SqlExplainResult success(String type, String sql, String explain) {
-        return new SqlExplainResult(1, type, sql, null, explain, null, true, true, LocalDateTime.now());
+        return new SqlExplainResult(
+                1, type, sql, null, explain, null, true, true, LocalDateTime.now());
     }
 
     public static SqlExplainResult fail(String sql, String error) {
-        return new SqlExplainResult(1, null, sql, null, null, error, false, false, LocalDateTime.now());
+        return new SqlExplainResult(
+                1, null, sql, null, null, error, false, false, LocalDateTime.now());
     }
 
     public Integer getIndex() {
@@ -138,15 +147,29 @@ public class SqlExplainResult {
     @Override
     public String toString() {
         return "SqlExplainRecord{"
-                + "index=" + index
-                + ", type='" + type + '\''
-                + ", sql='" + sql + '\''
-                + ", parse='" + parse + '\''
-                + ", explain='" + explain + '\''
-                + ", error='" + error + '\''
-                + ", parseTrue=" + parseTrue
-                + ", explainTrue=" + explainTrue
-                + ", explainTime=" + explainTime
+                + "index="
+                + index
+                + ", type='"
+                + type
+                + '\''
+                + ", sql='"
+                + sql
+                + '\''
+                + ", parse='"
+                + parse
+                + '\''
+                + ", explain='"
+                + explain
+                + '\''
+                + ", error='"
+                + error
+                + '\''
+                + ", parseTrue="
+                + parseTrue
+                + ", explainTrue="
+                + explainTrue
+                + ", explainTime="
+                + explainTime
                 + '}';
     }
 }

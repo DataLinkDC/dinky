@@ -44,10 +44,13 @@ public class ProcessServiceImpl implements ProcessService {
     public List<ProcessEntity> listAllProcess(boolean active) {
         Map<String, ProcessEntity> processEntityMap = ProcessPool.getInstance().getMap();
         if (active) {
-            return processEntityMap.values().stream().filter(x -> x.isActiveProcess())
-                    .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed()).collect(Collectors.toList());
+            return processEntityMap.values().stream()
+                    .filter(x -> x.isActiveProcess())
+                    .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
+                    .collect(Collectors.toList());
         }
-        return processEntityMap.values().stream().sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
+        return processEntityMap.values().stream()
+                .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
                 .collect(Collectors.toList());
     }
 

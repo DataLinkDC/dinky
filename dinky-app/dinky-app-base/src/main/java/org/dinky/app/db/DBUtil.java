@@ -35,14 +35,16 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/10/27
- **/
+ */
 public class DBUtil {
 
     private static Connection getConnection(DBConfig config) throws IOException {
         Connection conn = null;
         try {
             Class.forName(config.getDriver());
-            conn = DriverManager.getConnection(config.getUrl(), config.getUsername(), config.getPassword());
+            conn =
+                    DriverManager.getConnection(
+                            config.getUrl(), config.getUsername(), config.getPassword());
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
             close(conn);
@@ -77,7 +79,8 @@ public class DBUtil {
         return result;
     }
 
-    public static Map<String, String> getMapByID(String sql, DBConfig config) throws SQLException, IOException {
+    public static Map<String, String> getMapByID(String sql, DBConfig config)
+            throws SQLException, IOException {
         Connection conn = getConnection(config);
         HashMap<String, String> map = new HashMap();
         try (Statement stmt = conn.createStatement();
@@ -97,15 +100,15 @@ public class DBUtil {
     }
     /**
      * 获取数据源的连接信息，作为全局变量
+     *
      * @param sql 查询SQL，必须只有两列的结果，第一个为数据库名称，第二个为配置信息
      * @param config 核心数据库配置
-     * */
-
-    public static String getDbSourceSQLStatement(String sql, DBConfig config) throws SQLException, IOException {
+     */
+    public static String getDbSourceSQLStatement(String sql, DBConfig config)
+            throws SQLException, IOException {
         Connection conn = getConnection(config);
         String sqlStatements = "";
-        try (
-                Statement stmt = conn.createStatement();
+        try (Statement stmt = conn.createStatement();
                 ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 sqlStatements = sqlStatements + rs.getString(1) + ":=" + rs.getString(2) + "\n;\n";
@@ -115,7 +118,8 @@ public class DBUtil {
         return sqlStatements;
     }
 
-    public static List<Map<String, String>> getListByID(String sql, DBConfig config) throws SQLException, IOException {
+    public static List<Map<String, String>> getListByID(String sql, DBConfig config)
+            throws SQLException, IOException {
         Connection conn = getConnection(config);
         List<Map<String, String>> list = new ArrayList<>();
         try (Statement stmt = conn.createStatement();

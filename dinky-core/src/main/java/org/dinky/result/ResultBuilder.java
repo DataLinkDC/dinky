@@ -28,10 +28,14 @@ import org.apache.flink.table.api.TableResult;
  *
  * @author wenmo
  * @since 2021/5/25 15:59
- **/
+ */
 public interface ResultBuilder {
 
-    static ResultBuilder build(SqlType operationType, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
+    static ResultBuilder build(
+            SqlType operationType,
+            Integer maxRowNum,
+            boolean isChangeLog,
+            boolean isAutoCancel,
             String timeZone) {
         switch (operationType) {
             case SELECT:

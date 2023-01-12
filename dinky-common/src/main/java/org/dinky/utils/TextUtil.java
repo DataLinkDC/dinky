@@ -25,9 +25,7 @@ import java.util.regex.Pattern;
 
 public class TextUtil {
 
-    /**
-     * 判断字符串是否为空
-     */
+    /** 判断字符串是否为空 */
     public static boolean isEmpty(CharSequence s) {
         if (s == null) {
             return true;
@@ -102,5 +100,4 @@ public class TextUtil {
         }
         return buf.toString();
     }
-
 }

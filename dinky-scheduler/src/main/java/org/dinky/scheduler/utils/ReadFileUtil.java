@@ -30,9 +30,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @author 郑文豪
- */
+/** @author 郑文豪 */
 public class ReadFileUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadFileUtil.class);
@@ -64,9 +62,7 @@ public class ReadFileUtil {
         return StrUtil.format(readFile, maps);
     }
 
-    /**
-     * 读取文件
-     */
+    /** 读取文件 */
     public static String readFile(InputStream inputStream) {
         try {
             BufferedReader reader = IoUtil.getUtf8Reader(inputStream);
@@ -82,5 +78,4 @@ public class ReadFileUtil {
             return null;
         }
     }
-
 }

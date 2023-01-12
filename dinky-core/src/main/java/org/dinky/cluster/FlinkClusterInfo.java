@@ -27,7 +27,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/10/20 9:10
- **/
+ */
 @Getter
 @Setter
 public class FlinkClusterInfo {

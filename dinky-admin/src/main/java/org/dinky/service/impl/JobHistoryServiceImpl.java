@@ -41,9 +41,10 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author wenmo
  * @since 2022/3/2 20:00
- **/
+ */
 @Service
-public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory> implements JobHistoryService {
+public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, JobHistory>
+        implements JobHistoryService {
 
     private static final Logger log = LoggerFactory.getLogger(JobHistoryServiceImpl.class);
 
@@ -73,7 +74,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
                 jobHistory.setCheckpointsJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getCheckpointsConfigJson())) {
-                jobHistory.setCheckpointsConfig(JSONUtil.parseObject(jobHistory.getCheckpointsConfigJson()));
+                jobHistory.setCheckpointsConfig(
+                        JSONUtil.parseObject(jobHistory.getCheckpointsConfigJson()));
                 jobHistory.setCheckpointsConfigJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getConfigJson())) {
@@ -89,7 +91,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
                 jobHistory.setClusterJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getClusterConfigurationJson())) {
-                jobHistory.setClusterConfiguration(JSONUtil.parseObject(jobHistory.getClusterConfigurationJson()));
+                jobHistory.setClusterConfiguration(
+                        JSONUtil.parseObject(jobHistory.getClusterConfigurationJson()));
                 jobHistory.setClusterConfigurationJson(null);
             }
         }
@@ -97,7 +100,8 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
     }
 
     @Override
-    public JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave) {
+    public JobHistory refreshJobHistory(
+            Integer id, String jobManagerHost, String jobId, boolean needSave) {
         JobHistory jobHistory = new JobHistory();
         jobHistory.setId(id);
         try {
@@ -126,8 +130,11 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
                  */
             }
         } catch (Exception e) {
-            log.error("Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is :{}",
-                    id, jobManagerHost, jobId);
+            log.error(
+                    "Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is :{}",
+                    id,
+                    jobManagerHost,
+                    jobId);
             e.printStackTrace();
         }
         return jobHistory;

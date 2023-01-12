@@ -39,7 +39,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 @Getter
 @Setter
 public class TableCA implements ICA {
@@ -59,8 +59,7 @@ public class TableCA implements ICA {
 
     private static final TableCA EMPTY = new TableCA();
 
-    public TableCA() {
-    }
+    public TableCA() {}
 
     public TableCA(SourceTrans trans) {
         this.id = trans.getId();
@@ -141,15 +140,28 @@ public class TableCA implements ICA {
     @Override
     public String toString() {
         return "TableCA{"
-                + "id=" + id
-                + ", parentId=" + parentId
-                + ", name='" + name + '\''
-                + ", catalog='" + catalog + '\''
-                + ", database='" + database + '\''
-                + ", table='" + table + '\''
-                + ", fields=" + fields
-                + ", useFields=" + useFields
-                + ", parallelism=" + parallelism
+                + "id="
+                + id
+                + ", parentId="
+                + parentId
+                + ", name='"
+                + name
+                + '\''
+                + ", catalog='"
+                + catalog
+                + '\''
+                + ", database='"
+                + database
+                + '\''
+                + ", table='"
+                + table
+                + '\''
+                + ", fields="
+                + fields
+                + ", useFields="
+                + useFields
+                + ", parallelism="
+                + parallelism
                 + '}';
     }
 

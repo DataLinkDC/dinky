@@ -33,14 +33,13 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
  * @author ZackYoung
- * @since 0.6.8
- * udf 模板mapper
+ * @since 0.6.8 udf 模板mapper
  */
 @Mapper
 public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {
 
     @Override
     @Select("select * from dinky_udf_template")
-    List<UDFTemplate> selectForProTable(Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper,
-            Map<String, Object> param);
+    List<UDFTemplate> selectForProTable(
+            Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper, Map<String, Object> param);
 }

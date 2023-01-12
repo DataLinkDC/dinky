@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class OperatorTrans extends AbstractTrans implements Trans {
 
     private List<Field> select;
@@ -119,8 +119,10 @@ public class OperatorTrans extends AbstractTrans implements Trans {
                         for (int j = 0; j < fieldNames.length - 1; j++) {
                             fieldNameList.add(fieldNames[j]);
                         }
-                        select.add(new Field(StringUtils.join(fieldNameList, FIELD_AS).trim(),
-                                fieldNames[fieldNames.length - 1].trim()));
+                        select.add(
+                                new Field(
+                                        StringUtils.join(fieldNameList, FIELD_AS).trim(),
+                                        fieldNames[fieldNames.length - 1].trim()));
                     }
                 } else {
                     select.add(new Field(fieldStr));

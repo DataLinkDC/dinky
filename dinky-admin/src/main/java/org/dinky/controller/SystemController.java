@@ -39,8 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/system")
 public class SystemController {
 
-    @Autowired
-    private SystemService systemService;
+    @Autowired private SystemService systemService;
 
     @GetMapping("/listLogDir")
     public Result listLogDir() {

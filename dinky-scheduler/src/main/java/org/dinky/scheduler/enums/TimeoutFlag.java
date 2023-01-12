@@ -19,16 +19,12 @@
 
 package org.dinky.scheduler.enums;
 
-/**
- * timeout flag
- */
+/** timeout flag */
 public enum TimeoutFlag {
 
-    /**
-     * 0 close
-     * 1 open
-     */
-    CLOSE(0, "close"), OPEN(1, "open");
+    /** 0 close 1 open */
+    CLOSE(0, "close"),
+    OPEN(1, "open");
 
     TimeoutFlag(int code, String desc) {
         this.code = code;

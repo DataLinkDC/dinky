@@ -40,27 +40,33 @@ import cn.hutool.core.util.StrUtil;
 public class AddJarSqlParser {
 
     private static final String ADD_JAR = "(add\\s+jar)\\s+'(.*.jar)'";
-    private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
+    private static final Pattern ADD_JAR_PATTERN =
+            Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
 
     protected static List<String> patternStatements(String[] statements) {
-        return Stream.of(statements).filter(s -> ReUtil.isMatch(ADD_JAR_PATTERN, s))
-                .map(x -> ReUtil.findAllGroup0(ADD_JAR_PATTERN, x).get(0)).collect(Collectors.toList());
+        return Stream.of(statements)
+                .filter(s -> ReUtil.isMatch(ADD_JAR_PATTERN, s))
+                .map(x -> ReUtil.findAllGroup0(ADD_JAR_PATTERN, x).get(0))
+                .collect(Collectors.toList());
     }
 
     public static Set<File> getAllFilePath(String[] statements) {
         Set<File> fileSet = new HashSet<>();
-        patternStatements(statements).stream().map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
-                .distinct().forEach(path -> {
-                    if (!FileUtil.exist(path)) {
-                        throw new DinkyException(StrUtil.format("file : {} not exists!", path));
-                    }
-                    fileSet.add(FileUtil.file(path));
-                });
+        patternStatements(statements).stream()
+                .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
+                .distinct()
+                .forEach(
+                        path -> {
+                            if (!FileUtil.exist(path)) {
+                                throw new DinkyException(
+                                        StrUtil.format("file : {} not exists!", path));
+                            }
+                            fileSet.add(FileUtil.file(path));
+                        });
         return fileSet;
     }
 
     public static Set<File> getAllFilePath(String statements) {
-        return getAllFilePath(new String[]{statements});
+        return getAllFilePath(new String[] {statements});
     }
-
 }

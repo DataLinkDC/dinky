@@ -31,29 +31,16 @@ import lombok.Data;
 @Data
 public class PageInfo<T> {
 
-    /**
-     * totalList
-     */
+    /** totalList */
     private List<T> totalList;
-    /**
-     * total
-     */
+    /** total */
     private Integer total = 0;
-    /**
-     * total Page
-     */
+    /** total Page */
     private Integer totalPage;
-    /**
-     * page size
-     */
+    /** page size */
     private Integer pageSize = 20;
-    /**
-     * current page
-     */
+    /** current page */
     private Integer currentPage = 0;
-    /**
-     * pageNo
-     */
+    /** pageNo */
     private Integer pageNo;
-
 }

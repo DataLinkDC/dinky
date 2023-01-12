@@ -72,14 +72,14 @@ public class TreeNodeIterator<T> implements Iterator<TreeNode<T>> {
         return this.next;
     }
 
-    /**
-     * 目前不支持删除节点
-     */
+    /** 目前不支持删除节点 */
     public void remove() {
         throw new UnsupportedOperationException();
     }
 
     enum ProcessStages {
-        ProcessParent, ProcessChildCurNode, ProcessChildSubNode
+        ProcessParent,
+        ProcessChildCurNode,
+        ProcessChildSubNode
     }
 }

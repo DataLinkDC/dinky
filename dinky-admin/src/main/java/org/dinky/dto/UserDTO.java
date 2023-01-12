@@ -38,5 +38,4 @@ public class UserDTO {
     private List<Role> roleList;
     private List<Tenant> tenantList;
     private Tenant currentTenant;
-
 }

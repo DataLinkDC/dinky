@@ -34,8 +34,7 @@ import java.util.Objects;
  */
 public class Asserts {
 
-    private Asserts() {
-    }
+    private Asserts() {}
 
     public static boolean isNotNull(Object object) {
         return object != null;

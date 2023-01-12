@@ -22,9 +22,10 @@ package org.dinky.scheduler.enums;
 import java.util.HashMap;
 
 public enum ProcessExecutionTypeEnum {
-
-    PARALLEL(0, "parallel"), SERIAL_WAIT(1, "serial wait"), SERIAL_DISCARD(2, "serial discard"), SERIAL_PRIORITY(3,
-            "serial priority");
+    PARALLEL(0, "parallel"),
+    SERIAL_WAIT(1, "serial wait"),
+    SERIAL_DISCARD(2, "serial discard"),
+    SERIAL_PRIORITY(3, "serial priority");
 
     ProcessExecutionTypeEnum(int code, String descp) {
         this.code = code;
@@ -34,7 +35,8 @@ public enum ProcessExecutionTypeEnum {
     private final int code;
     private final String descp;
 
-    private static HashMap<Integer, ProcessExecutionTypeEnum> EXECUTION_STATUS_MAP = new HashMap<>();
+    private static HashMap<Integer, ProcessExecutionTypeEnum> EXECUTION_STATUS_MAP =
+            new HashMap<>();
 
     static {
         for (ProcessExecutionTypeEnum executionType : ProcessExecutionTypeEnum.values()) {
@@ -72,5 +74,4 @@ public enum ProcessExecutionTypeEnum {
         }
         throw new IllegalArgumentException("invalid status : " + executionType);
     }
-
 }

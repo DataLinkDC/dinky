@@ -31,5 +31,4 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2021/7/20 23:43
  */
 @Mapper
-public interface DataBaseMapper extends SuperMapper<DataBase> {
-}
+public interface DataBaseMapper extends SuperMapper<DataBase> {}

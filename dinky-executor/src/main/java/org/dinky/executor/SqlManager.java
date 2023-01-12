@@ -52,7 +52,7 @@ import java.util.regex.Pattern;
  *
  * @author wenmo
  * @since 2021/6/7 22:06
- **/
+ */
 public final class SqlManager {
 
     public static final String FRAGMENT = "fragment";
@@ -76,17 +76,19 @@ public final class SqlManager {
      * Registers a fragment of sql under the given name. The sql fragment name must be unique.
      *
      * @param sqlFragmentName name under which to register the given sql fragment
-     * @param sqlFragment     a fragment of sql to register
+     * @param sqlFragment a fragment of sql to register
      * @throws CatalogException if the registration of the sql fragment under the given name failed.
-     *                          But at the moment, with CatalogException, not SqlException
+     *     But at the moment, with CatalogException, not SqlException
      */
     public void registerSqlFragment(String sqlFragmentName, String sqlFragment) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
                 "sql fragment name cannot be null or empty.");
         checkNotNull(sqlFragment, "sql fragment cannot be null");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
-            throw new CatalogException(format("The fragment of sql %s already exists.", sqlFragmentName));
+            throw new CatalogException(
+                    format("The fragment of sql %s already exists.", sqlFragmentName));
         }
 
         sqlFragments.put(sqlFragmentName, sqlFragment);
@@ -97,7 +99,7 @@ public final class SqlManager {
      *
      * @param sqlFragmentMap a fragment map of sql to register
      * @throws CatalogException if the registration of the sql fragment under the given name failed.
-     *                          But at the moment, with CatalogException, not SqlException
+     *     But at the moment, with CatalogException, not SqlException
      */
     public void registerSqlFragment(Map<String, String> sqlFragmentMap) {
         if (Asserts.isNotNull(sqlFragmentMap)) {
@@ -108,20 +110,22 @@ public final class SqlManager {
     /**
      * Unregisters a fragment of sql under the given name. The sql fragment name must be existed.
      *
-     * @param sqlFragmentName   name under which to unregister the given sql fragment.
+     * @param sqlFragmentName name under which to unregister the given sql fragment.
      * @param ignoreIfNotExists If false exception will be thrown if the fragment of sql to be
-     *                          altered does not exist.
+     *     altered does not exist.
      * @throws CatalogException if the unregistration of the sql fragment under the given name
-     *                          failed. But at the moment, with CatalogException, not SqlException
+     *     failed. But at the moment, with CatalogException, not SqlException
      */
     public void unregisterSqlFragment(String sqlFragmentName, boolean ignoreIfNotExists) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
                 "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             sqlFragments.remove(sqlFragmentName);
         } else if (!ignoreIfNotExists) {
-            throw new CatalogException(format("The fragment of sql %s does not exist.", sqlFragmentName));
+            throw new CatalogException(
+                    format("The fragment of sql %s does not exist.", sqlFragmentName));
         }
     }
 
@@ -130,10 +134,11 @@ public final class SqlManager {
      *
      * @param sqlFragmentName name under which to unregister the given sql fragment.
      * @throws CatalogException if the unregistration of the sql fragment under the given name
-     *                          failed. But at the moment, with CatalogException, not SqlException
+     *     failed. But at the moment, with CatalogException, not SqlException
      */
     public String getSqlFragment(String sqlFragmentName) {
-        checkArgument(!StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
+        checkArgument(
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
                 "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
@@ -144,13 +149,15 @@ public final class SqlManager {
             return parseDateVar(sqlFragmentName);
         }
 
-        throw new CatalogException(format("The fragment of sql %s does not exist.", sqlFragmentName));
+        throw new CatalogException(
+                format("The fragment of sql %s does not exist.", sqlFragmentName));
     }
 
     public TableResult getSqlFragmentResult(String sqlFragmentName) {
         if (Asserts.isNullString(sqlFragmentName)) {
             return CustomTableResultImpl.buildTableResult(
-                    Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())), new ArrayList<>());
+                    Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())),
+                    new ArrayList<>());
         }
 
         String sqlFragment = getSqlFragment(sqlFragmentName);
@@ -163,7 +170,7 @@ public final class SqlManager {
      * Get a fragment of sql under the given name. The sql fragment name must be existed.
      *
      * @throws CatalogException if the unregistration of the sql fragment under the given name
-     *                          failed. But at the moment, with CatalogException, not SqlException
+     *     failed. But at the moment, with CatalogException, not SqlException
      */
     public Map<String, String> getSqlFragment() {
         return sqlFragments;
@@ -175,7 +182,8 @@ public final class SqlManager {
             rows.add(Row.of(key));
         }
         return CustomTableResultImpl.buildTableResult(
-                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())), rows);
+                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())),
+                rows);
     }
 
     public Iterator getSqlFragmentsIterator() {
@@ -248,6 +256,7 @@ public final class SqlManager {
 
     /**
      * verify if key is inner variable
+     *
      * @param key
      * @return
      */
@@ -257,6 +266,7 @@ public final class SqlManager {
 
     /**
      * parse datetime var
+     *
      * @param key
      * @return
      */

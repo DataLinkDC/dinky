@@ -34,21 +34,22 @@ public class LineageTest {
 
     @Test
     public void sumTest() {
-        String sql = "CREATE TABLE ST (\n"
-                + "    a STRING,\n"
-                + "    b STRING,\n"
-                + "    c STRING\n"
-                + ") WITH (\n"
-                + "  'connector' = 'datagen',\n"
-                + "  'rows-per-second' = '1'\n"
-                + ");\n"
-                + "CREATE TABLE TT (\n"
-                + "  A STRING,\n"
-                + "  B STRING\n"
-                + ") WITH (\n"
-                + " 'connector' = 'print'\n"
-                + ");\n"
-                + "insert into TT select a||c A ,b||c B from ST";
+        String sql =
+                "CREATE TABLE ST (\n"
+                        + "    a STRING,\n"
+                        + "    b STRING,\n"
+                        + "    c STRING\n"
+                        + ") WITH (\n"
+                        + "  'connector' = 'datagen',\n"
+                        + "  'rows-per-second' = '1'\n"
+                        + ");\n"
+                        + "CREATE TABLE TT (\n"
+                        + "  A STRING,\n"
+                        + "  B STRING\n"
+                        + ") WITH (\n"
+                        + " 'connector' = 'print'\n"
+                        + ");\n"
+                        + "insert into TT select a||c A ,b||c B from ST";
         LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql);
         System.out.println("end");
     }

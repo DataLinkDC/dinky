@@ -42,14 +42,13 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  *
  * @author mengyejiang
  * @since 2022/8/21 10:00
- **/
+ */
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     public static final String KEY_WORD = "postgres-cdc";
     private static final String METADATA_TYPE = "PostgreSql";
 
-    public PostgresCDCBuilder() {
-    }
+    public PostgresCDCBuilder() {}
 
     public PostgresCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -73,17 +72,19 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
 
         Properties debeziumProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
-        PostgreSQLSource.Builder<String> sourceBuilder = PostgreSQLSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .database(config.getDatabase())
-                .username(config.getUsername())
-                .password(config.getPassword());
+        PostgreSQLSource.Builder<String> sourceBuilder =
+                PostgreSQLSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .database(config.getDatabase())
+                        .username(config.getUsername())
+                        .password(config.getPassword());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
@@ -93,7 +94,8 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }

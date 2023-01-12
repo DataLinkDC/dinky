@@ -21,8 +21,8 @@ package org.dinky.alert.feishu;
 
 /**
  * @Author: zhumingye
- * @date: 2022/4/2
- * @Description: 参数常量
+ *
+ * @date: 2022/4/2 @Description: 参数常量
  */
 public final class FeiShuConstants {
 
@@ -40,11 +40,14 @@ public final class FeiShuConstants {
     static final String MSG_TYPE = "msgtype";
     static final String AT_ALL = "isAtAll";
     static final String AT_USERS = "users";
-    static final String FEI_SHU_TEXT_TEMPLATE = "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
-    static final String FEI_SHU_POST_TEMPLATE = "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
-            + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
+    static final String FEI_SHU_TEXT_TEMPLATE =
+            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
+    static final String FEI_SHU_POST_TEMPLATE =
+            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
+                    + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
 
     private FeiShuConstants() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException(
+                "This is a utility class and cannot be instantiated");
     }
 }

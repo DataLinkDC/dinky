@@ -26,15 +26,14 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2022/2/23 19:09
- **/
+ */
 public class AlertConfig {
 
     private String name;
     private String type;
     private Map<String, String> param;
 
-    public AlertConfig() {
-    }
+    public AlertConfig() {}
 
     public AlertConfig(String name, String type, Map<String, String> param) {
         this.name = name;

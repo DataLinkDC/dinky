@@ -38,7 +38,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/7/20 14:06
- **/
+ */
 public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
@@ -102,14 +102,13 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 .append(" (\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
-            sb.append("  `")
-                    .append(column.getName()).append("`  ")
-                    .append(column.getType());
+            sb.append("  `").append(column.getName()).append("`  ").append(column.getType());
             // 处理浮点类型
             if (column.getPrecision() > 0 && column.getScale() > 0) {
                 sb.append("(")
                         .append(column.getLength())
-                        .append(",").append(column.getScale())
+                        .append(",")
+                        .append(column.getScale())
                         .append(")");
             } else if (null != column.getLength()) { // 处理字符串类型和数值型
                 sb.append("(").append(column.getLength()).append(")");
@@ -167,15 +166,16 @@ public class MySqlDriver extends AbstractJdbcDriver {
         String limitStart = queryData.getOption().getLimitStart();
         String limitEnd = queryData.getOption().getLimitEnd();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append("`")
-                .append(queryData.getSchemaName())
-                .append("`")
-                .append(".")
-                .append("`")
-                .append(queryData.getTableName())
-                .append("`");
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append("`")
+                        .append(queryData.getSchemaName())
+                        .append("`")
+                        .append(".")
+                        .append("`")
+                        .append(queryData.getTableName())
+                        .append("`");
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -190,10 +190,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
         if (TextUtil.isEmpty(limitEnd)) {
             limitEnd = "100";
         }
-        optionBuilder.append(" limit ")
-                .append(limitStart)
-                .append(",")
-                .append(limitEnd);
+        optionBuilder.append(" limit ").append(limitStart).append(",").append(limitEnd);
 
         return optionBuilder;
     }
@@ -212,16 +209,30 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 if (columnComment.contains("\'") | columnComment.contains("\"")) {
                     columnComment = columnComment.replaceAll("\"|'", "");
                 }
-                sb.append("`").append(columns.get(i).getName()).append("`  --  ").append(columnComment).append(" \n");
+                sb.append("`")
+                        .append(columns.get(i).getName())
+                        .append("`  --  ")
+                        .append(columnComment)
+                        .append(" \n");
             } else {
                 sb.append("`").append(columns.get(i).getName()).append("` \n");
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;")
-                    .append(" -- ").append(table.getComment()).append("\n");
+            sb.append(" FROM `")
+                    .append(table.getSchema())
+                    .append("`.`")
+                    .append(table.getName())
+                    .append("`;")
+                    .append(" -- ")
+                    .append(table.getComment())
+                    .append("\n");
         } else {
-            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;\n");
+            sb.append(" FROM `")
+                    .append(table.getSchema())
+                    .append("`.`")
+                    .append(table.getName())
+                    .append("`;\n");
         }
         return sb.toString();
     }

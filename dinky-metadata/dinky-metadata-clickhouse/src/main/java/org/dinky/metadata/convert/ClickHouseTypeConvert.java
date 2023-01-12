@@ -28,7 +28,7 @@ import org.dinky.model.ColumnType;
  *
  * @author wenmo
  * @since 2021/7/21 17:15
- **/
+ */
 public class ClickHouseTypeConvert implements ITypeConvert {
 
     // Use mysql now,and welcome to fix it.
@@ -48,7 +48,9 @@ public class ClickHouseTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.SHORT;
             }
-        } else if (t.contains("bigint unsigned") || t.contains("numeric") || t.contains("decimal")) {
+        } else if (t.contains("bigint unsigned")
+                || t.contains("numeric")
+                || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint") || t.contains("int unsigned")) {
             if (isNullable) {
@@ -84,7 +86,9 @@ public class ClickHouseTypeConvert implements ITypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
             columnType = ColumnType.BYTES;
-        } else if (t.contains("int") || t.contains("mediumint") || t.contains("smallint unsigned")) {
+        } else if (t.contains("int")
+                || t.contains("mediumint")
+                || t.contains("smallint unsigned")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {

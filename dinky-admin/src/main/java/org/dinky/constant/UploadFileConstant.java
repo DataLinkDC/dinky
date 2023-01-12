@@ -21,17 +21,14 @@ package org.dinky.constant;
 
 import org.springframework.boot.system.ApplicationHome;
 
-/**
- * Upload file's some constant.
- **/
+/** Upload file's some constant. */
 public class UploadFileConstant {
 
     // Upload file's type
     // constant----------------------------------------------------------------------------------------
-    /**
-     * Not internal upload file type, this value represent upload the file to the specific dir.
-     */
+    /** Not internal upload file type, this value represent upload the file to the specific dir. */
     public static final byte TYPE_OTHER = -1;
+
     public static final byte HADOOP_CONF_ID = 1;
     public static final String HADOOP_CONF_NAME = "hadoop-conf";
     public static final byte FLINK_CONF_ID = 2;
@@ -47,7 +44,8 @@ public class UploadFileConstant {
     // constant----------------------------------------------------------------------------------------
     static {
         // Get admin jar's parent absolute path
-        DINKY_HOME_DIR = new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
+        DINKY_HOME_DIR =
+                new ApplicationHome(UploadFileConstant.class).getSource().getParent() + "/../";
     }
 
     public static final String DINKY_HOME_DIR;
@@ -60,9 +58,7 @@ public class UploadFileConstant {
 
     // Upload file's target
     // constant----------------------------------------------------------------------------------------
-    /**
-     * An unidentified upload file type
-     */
+    /** An unidentified upload file type */
     public static final byte TARGET_OTHER = -1;
 
     public static final byte TARGET_LOCAL = 1;
@@ -133,5 +129,4 @@ public class UploadFileConstant {
                 return TARGET_OTHER;
         }
     }
-
 }

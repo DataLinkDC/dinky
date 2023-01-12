@@ -29,9 +29,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * task main info
- */
+/** task main info */
 @Data
 public class TaskMainInfo {
 

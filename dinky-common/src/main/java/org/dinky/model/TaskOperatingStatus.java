@@ -22,9 +22,8 @@ package org.dinky.model;
 /**
  * @author mydq
  * @version 1.0
- **/
+ */
 public enum TaskOperatingStatus {
-
     INIT(1, "init", "初始化"),
 
     OPERATING_BEFORE(4, "operatingBefore", "操作前准备"),
@@ -35,7 +34,8 @@ public enum TaskOperatingStatus {
 
     EXCEPTION(13, "exception", "异常"),
 
-    SUCCESS(16, "success", "成功"), FAIL(20, "fail", "失败");
+    SUCCESS(16, "success", "成功"),
+    FAIL(20, "fail", "失败");
 
     private Integer code;
 
@@ -60,5 +60,4 @@ public enum TaskOperatingStatus {
     public String getMessage() {
         return message;
     }
-
 }

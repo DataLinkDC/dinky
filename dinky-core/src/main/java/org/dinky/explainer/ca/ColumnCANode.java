@@ -30,7 +30,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/6/23 11:03
- **/
+ */
 @Getter
 @Setter
 public class ColumnCANode implements Serializable {
@@ -45,7 +45,5 @@ public class ColumnCANode implements Serializable {
     private String operation;
     private List<ColumnCANode> children;
 
-    public ColumnCANode() {
-    }
-
+    public ColumnCANode() {}
 }

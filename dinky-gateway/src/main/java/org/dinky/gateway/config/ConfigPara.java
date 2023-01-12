@@ -24,14 +24,13 @@ package org.dinky.gateway.config;
  *
  * @author wenmo
  * @since 2021/11/2
- **/
+ */
 public class ConfigPara {
 
     private String key;
     private String value;
 
-    public ConfigPara() {
-    }
+    public ConfigPara() {}
 
     public ConfigPara(String key, String value) {
         this.key = key;

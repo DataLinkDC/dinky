@@ -24,7 +24,7 @@ package org.dinky.exception;
  *
  * @author wenmo
  * @since 2021/10/22 11:13
- **/
+ */
 public class FlinkException extends RuntimeException {
 
     public FlinkException(String message, Throwable cause) {

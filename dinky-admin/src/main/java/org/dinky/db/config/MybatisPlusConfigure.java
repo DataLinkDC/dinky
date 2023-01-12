@@ -36,12 +36,11 @@ import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerIntercept
  *
  * @author wenmo
  * @since 2021/5/25
- **/
+ */
 @EnableConfigurationProperties(MybatisPlusFillProperties.class)
 public class MybatisPlusConfigure {
 
-    @Autowired
-    private MybatisPlusFillProperties autoFillProperties;
+    @Autowired private MybatisPlusFillProperties autoFillProperties;
 
     @Bean
     public PaginationInnerInterceptor paginationInterceptor() {
@@ -51,7 +50,11 @@ public class MybatisPlusConfigure {
 
     @Bean
     @ConditionalOnMissingBean
-    @ConditionalOnProperty(prefix = "dinky.mybatis-plus.fill", name = "enabled", havingValue = "true", matchIfMissing = true)
+    @ConditionalOnProperty(
+            prefix = "dinky.mybatis-plus.fill",
+            name = "enabled",
+            havingValue = "true",
+            matchIfMissing = true)
     public MetaObjectHandler metaObjectHandler() {
         return new DateMetaObjectHandler(autoFillProperties);
     }

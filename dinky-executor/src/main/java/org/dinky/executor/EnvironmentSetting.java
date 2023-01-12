@@ -30,7 +30,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/5/25 13:45
- **/
+ */
 @Getter
 @Setter
 public class EnvironmentSetting {
@@ -76,5 +76,4 @@ public class EnvironmentSetting {
             return "";
         }
     }
-
 }

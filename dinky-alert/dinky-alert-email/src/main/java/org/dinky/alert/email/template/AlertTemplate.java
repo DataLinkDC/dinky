@@ -23,8 +23,8 @@ import org.dinky.alert.ShowType;
 
 /**
  * @Author: zhumingye
- * @date: 2022/4/3
- * @Description: 邮件告警模板接口
+ *
+ * @date: 2022/4/3 @Description: 邮件告警模板接口
  */
 public interface AlertTemplate {
 
@@ -32,6 +32,7 @@ public interface AlertTemplate {
 
     /**
      * default showAll is true
+     *
      * @param content alert message content
      * @param showType show type
      * @return a message from a specified alert template

@@ -38,7 +38,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/7/22 9:28
- **/
+ */
 public class PostgreSqlDriver extends AbstractJdbcDriver {
 
     @Override
@@ -98,8 +98,15 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment()
-                    + "\n");
+            sb.append(
+                    " FROM \""
+                            + table.getSchema()
+                            + "\".\""
+                            + table.getName()
+                            + "\";"
+                            + " -- "
+                            + table.getComment()
+                            + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }
@@ -112,7 +119,10 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         StringBuilder sb = new StringBuilder();
         StringBuilder comments = new StringBuilder();
 
-        sb.append("CREATE TABLE \"").append(table.getSchema()).append("\".\"").append(table.getName())
+        sb.append("CREATE TABLE \"")
+                .append(table.getSchema())
+                .append("\".\"")
+                .append(table.getName())
                 .append("\" (\n");
 
         for (Column column : table.getColumns()) {
@@ -121,7 +131,8 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             if (column.getPrecision() > 0 && column.getScale() > 0) {
                 sb.append("(")
                         .append(column.getLength())
-                        .append(",").append(column.getScale())
+                        .append(",")
+                        .append(column.getScale())
                         .append(")");
             } else if (null != column.getLength()) { // 处理字符串类型
                 sb.append("(").append(column.getLength()).append(")");
@@ -129,23 +140,35 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             if (column.isNullable() == true) {
                 sb.append(" NOT NULL");
             }
-            if (Asserts.isNotNullString(column.getDefaultValue()) && !column.getDefaultValue().contains("nextval")) {
+            if (Asserts.isNotNullString(column.getDefaultValue())
+                    && !column.getDefaultValue().contains("nextval")) {
                 sb.append(" DEFAULT ").append(column.getDefaultValue());
             }
             sb.append(",\n");
 
             // 注释
             if (Asserts.isNotNullString(column.getComment())) {
-                comments.append("COMMENT ON COLUMN \"").append(table.getSchema()).append("\".\"")
-                        .append(table.getName()).append("\".\"")
-                        .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\n");
+                comments.append("COMMENT ON COLUMN \"")
+                        .append(table.getSchema())
+                        .append("\".\"")
+                        .append(table.getName())
+                        .append("\".\"")
+                        .append(column.getName())
+                        .append("\" IS '")
+                        .append(column.getComment())
+                        .append("';\n");
             }
         }
         sb.deleteCharAt(sb.length() - 3);
 
         if (Asserts.isNotNullString(table.getComment())) {
-            comments.append("COMMENT ON TABLE \"").append(table.getSchema()).append("\".\"")
-                    .append(table.getName()).append("\" IS '").append(table.getComment()).append("';");
+            comments.append("COMMENT ON TABLE \"")
+                    .append(table.getSchema())
+                    .append("\".\"")
+                    .append(table.getName())
+                    .append("\" IS '")
+                    .append(table.getComment())
+                    .append("';");
         }
         sb.append(");\n\n").append(comments);
 
@@ -160,11 +183,12 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         String limitStart = queryData.getOption().getLimitStart();
         String limitEnd = queryData.getOption().getLimitEnd();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append(queryData.getSchemaName())
+                        .append(".")
+                        .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -179,8 +203,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         if (TextUtil.isEmpty(limitEnd)) {
             limitEnd = "100";
         }
-        optionBuilder.append(" limit ")
-                .append(limitEnd);
+        optionBuilder.append(" limit ").append(limitEnd);
 
         return optionBuilder;
     }

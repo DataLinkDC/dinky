@@ -24,7 +24,7 @@ package org.dinky.metadata.query;
  *
  * @author wenmo
  * @since 2021/7/21 15:54
- **/
+ */
 public class OracleQuery extends AbstractDBQuery {
 
     @Override
@@ -52,12 +52,19 @@ public class OracleQuery extends AbstractDBQuery {
                 + "  and pcc.table_name = upper(A.TABLE_NAME)),0,'','PRI') KEY "
                 + "FROM ALL_TAB_COLUMNS A "
                 + " INNER JOIN ALL_COL_COMMENTS B ON A.TABLE_NAME = B.TABLE_NAME AND A.COLUMN_NAME = B.COLUMN_NAME AND B.OWNER = '"
-                + schemaName + "'"
+                + schemaName
+                + "'"
                 + " LEFT JOIN ALL_CONSTRAINTS D ON D.TABLE_NAME = A.TABLE_NAME AND D.CONSTRAINT_TYPE = 'P' AND D.OWNER = '"
-                + schemaName + "'"
+                + schemaName
+                + "'"
                 + " LEFT JOIN ALL_CONS_COLUMNS C ON C.CONSTRAINT_NAME = D.CONSTRAINT_NAME AND C.COLUMN_NAME=A.COLUMN_NAME AND C.OWNER = '"
-                + schemaName + "'"
-                + "WHERE A.OWNER = '" + schemaName + "' AND A.TABLE_NAME = '" + tableName + "' ORDER BY A.COLUMN_ID ";
+                + schemaName
+                + "'"
+                + "WHERE A.OWNER = '"
+                + schemaName
+                + "' AND A.TABLE_NAME = '"
+                + tableName
+                + "' ORDER BY A.COLUMN_ID ";
     }
 
     @Override

@@ -64,7 +64,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2022/2/23 19:34
- **/
+ */
 public class DingTalkSender {
 
     private static final Logger logger = LoggerFactory.getLogger(DingTalkSender.class);
@@ -126,7 +126,8 @@ public class DingTalkSender {
         if (Boolean.TRUE.equals(enableProxy)) {
             HttpHost httpProxy = new HttpHost(proxy, port);
             CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+            provider.setCredentials(
+                    new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
             httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
             RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
             httpPost.setConfig(rcf);
@@ -184,18 +185,22 @@ public class DingTalkSender {
         }
         builder.append("\n\n");
         if (Asserts.isNotNullString(atMobiles)) {
-            Arrays.stream(atMobiles.split(",")).forEach(value -> {
-                builder.append("@");
-                builder.append(value);
-                builder.append(" ");
-            });
+            Arrays.stream(atMobiles.split(","))
+                    .forEach(
+                            value -> {
+                                builder.append("@");
+                                builder.append(value);
+                                builder.append(" ");
+                            });
         }
         if (Asserts.isNotNullString(atUserIds)) {
-            Arrays.stream(atUserIds.split(",")).forEach(value -> {
-                builder.append("@");
-                builder.append(value);
-                builder.append(" ");
-            });
+            Arrays.stream(atUserIds.split(","))
+                    .forEach(
+                            value -> {
+                                builder.append("@");
+                                builder.append(value);
+                                builder.append(" ");
+                            });
         }
         builder.append("\n\n");
         String txt = genrateResultMsg(title, content, builder);
@@ -206,7 +211,7 @@ public class DingTalkSender {
     /**
      * 公共生成 markdown 和 text 消息
      *
-     * @param title   标题
+     * @param title 标题
      * @param content 内容
      * @param builder 拼接字符串
      * @return
@@ -220,7 +225,9 @@ public class DingTalkSender {
         for (LinkedHashMap mapItems : mapSendResultItemsList) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-            StringBuilder t = new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER));
+            StringBuilder t =
+                    new StringBuilder(
+                            String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER));
 
             while (iterator.hasNext()) {
 
@@ -253,8 +260,10 @@ public class DingTalkSender {
 
     private void setMsgAt(Map<String, Object> items) {
         Map<String, Object> at = new HashMap<>();
-        String[] atMobileArray = Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
-        String[] atUserArray = Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
+        String[] atMobileArray =
+                Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
+        String[] atUserArray =
+                Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
         at.put("isAtAll", isAtAll);
         if (atMobileArray.length > 0) {
@@ -286,7 +295,8 @@ public class DingTalkSender {
             alertResult.setMessage("send ding talk msg success");
             return alertResult;
         }
-        alertResult.setMessage(String.format("alert send ding talk msg error : %s", response.getErrmsg()));
+        alertResult.setMessage(
+                String.format("alert send ding talk msg error : %s", response.getErrmsg()));
         logger.info("alert send ding talk msg error : {}", response.getErrmsg());
         return alertResult;
     }

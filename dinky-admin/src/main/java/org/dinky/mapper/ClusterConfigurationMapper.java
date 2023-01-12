@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/5/28 13:56
- **/
+ */
 @Mapper
-public interface ClusterConfigurationMapper extends SuperMapper<ClusterConfiguration> {
-}
+public interface ClusterConfigurationMapper extends SuperMapper<ClusterConfiguration> {}

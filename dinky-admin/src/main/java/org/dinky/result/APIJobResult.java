@@ -45,8 +45,14 @@ public class APIJobResult {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public APIJobResult(String jobManagerAddress, Job.JobStatus status, boolean success, String jobId, String error,
-            LocalDateTime startTime, LocalDateTime endTime) {
+    public APIJobResult(
+            String jobManagerAddress,
+            Job.JobStatus status,
+            boolean success,
+            String jobId,
+            String error,
+            LocalDateTime startTime,
+            LocalDateTime endTime) {
         this.jobManagerAddress = jobManagerAddress;
         this.status = status;
         this.success = success;
@@ -57,7 +63,13 @@ public class APIJobResult {
     }
 
     public static APIJobResult build(JobResult jobResult) {
-        return new APIJobResult(jobResult.getJobManagerAddress(), jobResult.getStatus(), jobResult.isSuccess(),
-                jobResult.getJobId(), jobResult.getError(), jobResult.getStartTime(), jobResult.getEndTime());
+        return new APIJobResult(
+                jobResult.getJobManagerAddress(),
+                jobResult.getStatus(),
+                jobResult.isSuccess(),
+                jobResult.getJobId(),
+                jobResult.getError(),
+                jobResult.getStartTime(),
+                jobResult.getEndTime());
     }
 }

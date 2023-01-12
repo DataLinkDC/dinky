@@ -83,7 +83,8 @@ public class JobConfig {
     }
 
     public void setAddress(String address) {
-        if (GatewayType.LOCAL.equalsValue(type) && Asserts.isNotNull(config)
+        if (GatewayType.LOCAL.equalsValue(type)
+                && Asserts.isNotNull(config)
                 && config.containsKey(RestOptions.PORT.key())) {
             this.address = address + NetConstant.COLON + config.get(RestOptions.PORT.key());
         } else {
@@ -91,8 +92,14 @@ public class JobConfig {
         }
     }
 
-    public JobConfig(String type, boolean useSession, boolean useRemote, boolean useSqlFragment,
-            boolean useStatementSet, Integer parallelism, Map<String, String> config) {
+    public JobConfig(
+            String type,
+            boolean useSession,
+            boolean useRemote,
+            boolean useSqlFragment,
+            boolean useStatementSet,
+            Integer parallelism,
+            Map<String, String> config) {
         this.type = type;
         this.useSession = useSession;
         this.useRemote = useRemote;
@@ -102,13 +109,27 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession,
-            String session, Integer clusterId,
-            Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName,
+    public JobConfig(
+            String type,
+            boolean useResult,
+            boolean useChangeLog,
+            boolean useAutoCancel,
+            boolean useSession,
+            String session,
+            Integer clusterId,
+            Integer clusterConfigurationId,
+            Integer jarId,
+            Integer taskId,
+            String jobName,
             boolean useSqlFragment,
-            boolean useStatementSet, boolean useBatchModel, Integer maxRowNum, Integer checkpoint,
+            boolean useStatementSet,
+            boolean useBatchModel,
+            Integer maxRowNum,
+            Integer checkpoint,
             Integer parallelism,
-            Integer savePointStrategyValue, String savePointPath, Map<String, String> variables,
+            Integer savePointStrategyValue,
+            String savePointPath,
+            Map<String, String> variables,
             Map<String, String> config) {
         this.type = type;
         this.useResult = useResult;
@@ -134,11 +155,24 @@ public class JobConfig {
         this.config = config;
     }
 
-    public JobConfig(String type, boolean useResult, boolean useChangeLog, boolean useAutoCancel, boolean useSession,
-            String session, boolean useRemote, String address,
-            String jobName, boolean useSqlFragment,
-            boolean useStatementSet, Integer maxRowNum, Integer checkpoint, Integer parallelism,
-            Integer savePointStrategyValue, String savePointPath, Map<String, String> config,
+    public JobConfig(
+            String type,
+            boolean useResult,
+            boolean useChangeLog,
+            boolean useAutoCancel,
+            boolean useSession,
+            String session,
+            boolean useRemote,
+            String address,
+            String jobName,
+            boolean useSqlFragment,
+            boolean useStatementSet,
+            Integer maxRowNum,
+            Integer checkpoint,
+            Integer parallelism,
+            Integer savePointStrategyValue,
+            String savePointPath,
+            Map<String, String> config,
             GatewayConfig gatewayConfig) {
         this.type = type;
         this.useResult = useResult;
@@ -160,8 +194,14 @@ public class JobConfig {
         setAddress(address);
     }
 
-    public JobConfig(String type, boolean useResult, boolean useSession, String session, boolean useRemote,
-            Integer clusterId, Integer maxRowNum) {
+    public JobConfig(
+            String type,
+            boolean useResult,
+            boolean useSession,
+            String session,
+            boolean useRemote,
+            Integer clusterId,
+            Integer maxRowNum) {
         this.type = type;
         this.useResult = useResult;
         this.useSession = useSession;
@@ -171,13 +211,25 @@ public class JobConfig {
         this.maxRowNum = maxRowNum;
     }
 
-    public JobConfig(String type, Integer step, boolean useResult, boolean useSession, boolean useRemote,
+    public JobConfig(
+            String type,
+            Integer step,
+            boolean useResult,
+            boolean useSession,
+            boolean useRemote,
             Integer clusterId,
-            Integer clusterConfigurationId, Integer jarId, Integer taskId, String jobName,
+            Integer clusterConfigurationId,
+            Integer jarId,
+            Integer taskId,
+            String jobName,
             boolean useSqlFragment,
-            boolean useStatementSet, boolean useBatchModel, Integer checkpoint, Integer parallelism,
+            boolean useStatementSet,
+            boolean useBatchModel,
+            Integer checkpoint,
+            Integer parallelism,
             Integer savePointStrategyValue,
-            String savePointPath, Map<String, String> config) {
+            String savePointPath,
+            Map<String, String> config) {
         this.type = type;
         this.step = step;
         this.useResult = useResult;
@@ -199,8 +251,15 @@ public class JobConfig {
     }
 
     public ExecutorSetting getExecutorSetting() {
-        return new ExecutorSetting(checkpoint, parallelism, useSqlFragment, useStatementSet, useBatchModel,
-                savePointPath, jobName, config);
+        return new ExecutorSetting(
+                checkpoint,
+                parallelism,
+                useSqlFragment,
+                useStatementSet,
+                useBatchModel,
+                savePointPath,
+                jobName,
+                config);
     }
 
     public void setSessionConfig(SessionConfig sessionConfig) {
@@ -215,8 +274,10 @@ public class JobConfig {
         gatewayConfig = GatewayConfig.build(config);
         if (config.containsKey("flinkConfig")
                 && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(),
-                    String.valueOf(parallelism));
+            gatewayConfig
+                    .getFlinkConfig()
+                    .getConfiguration()
+                    .put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
         }
     }
 
@@ -226,7 +287,10 @@ public class JobConfig {
         }
         for (Map<String, String> item : configList) {
             if (Asserts.isNotNull(item)) {
-                gatewayConfig.getFlinkConfig().getConfiguration().put(item.get("key"), item.get("value"));
+                gatewayConfig
+                        .getFlinkConfig()
+                        .getConfiguration()
+                        .put(item.get("key"), item.get("value"));
             }
         }
     }
@@ -236,7 +300,10 @@ public class JobConfig {
             gatewayConfig = new GatewayConfig();
         }
         for (Map.Entry<String, Object> entry : config.entrySet()) {
-            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
+            gatewayConfig
+                    .getFlinkConfig()
+                    .getConfiguration()
+                    .put(entry.getKey(), (String) entry.getValue());
         }
     }
 

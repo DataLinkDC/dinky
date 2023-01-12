@@ -28,7 +28,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/10/27
- **/
+ */
 public class DBConfig {
 
     private String driver;
@@ -48,7 +48,8 @@ public class DBConfig {
     }
 
     public static DBConfig build(Map<String, String> params) {
-        return new DBConfig(params.get(FlinkParamConstant.DRIVER),
+        return new DBConfig(
+                params.get(FlinkParamConstant.DRIVER),
                 params.get(FlinkParamConstant.URL),
                 params.get(FlinkParamConstant.USERNAME),
                 params.get(FlinkParamConstant.PASSWORD));
@@ -73,10 +74,18 @@ public class DBConfig {
     @Override
     public String toString() {
         return "DBConfig{"
-                + "driver='" + driver + '\''
-                + ", url='" + url + '\''
-                + ", username='" + username + '\''
-                + ", password='" + password + '\''
+                + "driver='"
+                + driver
+                + '\''
+                + ", url='"
+                + url
+                + '\''
+                + ", username='"
+                + username
+                + '\''
+                + ", password='"
+                + password
+                + '\''
                 + '}';
     }
 }

@@ -92,5 +92,4 @@ public class PhoenixQuery extends AbstractDBQuery {
     public String rows() {
         return "ROWSNUM";
     }
-
 }

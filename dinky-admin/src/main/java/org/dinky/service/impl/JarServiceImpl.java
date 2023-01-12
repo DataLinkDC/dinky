@@ -35,7 +35,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  *
  * @author wenmo
  * @since 2021/11/13
- **/
+ */
 @Service
 public class JarServiceImpl extends SuperServiceImpl<JarMapper, Jar> implements JarService {
 

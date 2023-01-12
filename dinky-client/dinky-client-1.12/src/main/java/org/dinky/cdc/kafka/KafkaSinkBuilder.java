@@ -55,13 +55,12 @@ import java.util.Properties;
  *
  * @author wenmo
  * @since 2022/4/12 21:29
- **/
+ */
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {
 
     public static final String KEY_WORD = "datastream-kafka";
 
-    public KafkaSinkBuilder() {
-    }
+    public KafkaSinkBuilder() {}
 
     public KafkaSinkBuilder(FlinkCDCConfig config) {
         super(config);
@@ -73,9 +72,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList) {
-
-    }
+            List<LogicalType> columnTypeList) {}
 
     @Override
     public String getHandle() {
@@ -96,17 +93,20 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
         Properties kafkaProducerConfig = getProperties();
         getPropertiesFromBrokerList(kafkaProducerConfig, config.getSink().get("brokers"));
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
-            dataStreamSource.addSink(new FlinkKafkaProducer<>(
-                    config.getSink().get("topic"),
-                    new SimpleStringSchema(),
-                    kafkaProducerConfig));
+            dataStreamSource.addSink(
+                    new FlinkKafkaProducer<>(
+                            config.getSink().get("topic"),
+                            new SimpleStringSchema(),
+                            kafkaProducerConfig));
         } else {
 
             Map<Table, OutputTag<String>> tagMap = new HashMap<>();
             Map<String, Table> tableMap = new HashMap<>();
             ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator = dataStreamSource
-                    .map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
+            SingleOutputStreamOperator<Map> mapOperator =
+                    dataStreamSource
+                            .map(x -> objectMapper.readValue(x, Map.class))
+                            .returns(Map.class);
             final List<Schema> schemaList = config.getSchemaList();
             final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
@@ -114,35 +114,50 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder
                 for (Schema schema : schemaList) {
                     for (Table table : schema.getTables()) {
                         String sinkTableName = getSinkTableName(table);
-                        OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {
-                        };
+                        OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {};
                         tagMap.put(table, outputTag);
                         tableMap.put(table.getSchemaTableName(), table);
                     }
                 }
 
-                SingleOutputStreamOperator<String> process = mapOperator.process(new ProcessFunction<Map, String>() {
+                SingleOutputStreamOperator<String> process =
+                        mapOperator.process(
+                                new ProcessFunction<Map, String>() {
 
-                    @Override
-                    public void processElement(Map map, ProcessFunction<Map, String>.Context ctx, Collector<String> out)
-                            throws Exception {
-                        LinkedHashMap source = (LinkedHashMap) map.get("source");
-                        try {
-                            String result = objectMapper.writeValueAsString(map);
-                            Table table = tableMap
-                                    .get(source.get(schemaFieldName).toString() + "." + source.get("table").toString());
-                            OutputTag<String> outputTag = tagMap.get(table);
-                            ctx.output(outputTag, result);
-                        } catch (Exception e) {
-                            out.collect(objectMapper.writeValueAsString(map));
-                        }
-                    }
-                });
-                tagMap.forEach((k, v) -> {
-                    String topic = getSinkTableName(k);
-                    process.getSideOutput(v).rebalance().addSink(new FlinkKafkaProducer<>(
-                            topic, new SimpleStringSchema(), kafkaProducerConfig)).name(topic);
-                });
+                                    @Override
+                                    public void processElement(
+                                            Map map,
+                                            ProcessFunction<Map, String>.Context ctx,
+                                            Collector<String> out)
+                                            throws Exception {
+                                        LinkedHashMap source = (LinkedHashMap) map.get("source");
+                                        try {
+                                            String result = objectMapper.writeValueAsString(map);
+                                            Table table =
+                                                    tableMap.get(
+                                                            source.get(schemaFieldName).toString()
+                                                                    + "."
+                                                                    + source.get("table")
+                                                                            .toString());
+                                            OutputTag<String> outputTag = tagMap.get(table);
+                                            ctx.output(outputTag, result);
+                                        } catch (Exception e) {
+                                            out.collect(objectMapper.writeValueAsString(map));
+                                        }
+                                    }
+                                });
+                tagMap.forEach(
+                        (k, v) -> {
+                            String topic = getSinkTableName(k);
+                            process.getSideOutput(v)
+                                    .rebalance()
+                                    .addSink(
+                                            new FlinkKafkaProducer<>(
+                                                    topic,
+                                                    new SimpleStringSchema(),
+                                                    kafkaProducerConfig))
+                                    .name(topic);
+                        });
             }
         }
         return dataStreamSource;

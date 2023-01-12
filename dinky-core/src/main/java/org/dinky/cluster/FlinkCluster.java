@@ -32,7 +32,7 @@ import cn.hutool.core.io.IORuntimeException;
  *
  * @author wenmo
  * @since 2021/5/25 15:08
- **/
+ */
 public class FlinkCluster {
 
     private static Logger logger = LoggerFactory.getLogger(FlinkCluster.class);
@@ -67,5 +67,4 @@ public class FlinkCluster {
         }
         return FlinkClusterInfo.INEFFECTIVE;
     }
-
 }

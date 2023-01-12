@@ -45,14 +45,13 @@ import com.ververica.cdc.connectors.mysql.table.StartupOptions;
  *
  * @author wenmo
  * @since 2022/4/12 21:29
- **/
+ */
 public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     public static final String KEY_WORD = "mysql-cdc";
     private static final String METADATA_TYPE = "MySql";
 
-    public MysqlCDCBuilder() {
-    }
+    public MysqlCDCBuilder() {}
 
     public MysqlCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -85,7 +84,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
@@ -93,16 +93,18 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getJdbc().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 jdbcProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
-        MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+        MySqlSourceBuilder<String> sourceBuilder =
+                MySqlSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .username(config.getUsername())
+                        .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -113,7 +115,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }
@@ -164,7 +167,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
         }
 
-        return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
+        return env.fromSource(
+                sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
     public Map<String, Map<String, String>> parseMetaDataConfigs() {

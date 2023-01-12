@@ -24,11 +24,9 @@ package org.dinky.constant;
  *
  * @author wenmo
  * @since 2021/5/28 9:35
- **/
+ */
 public interface CommonConstant {
 
-    /**
-     * 实例健康
-     */
+    /** 实例健康 */
     String HEALTHY = "1";
 }

@@ -52,8 +52,7 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
     public static final String KEY_WORD = "sqlserver-cdc";
     private static final String METADATA_TYPE = "SqlServer";
 
-    public SqlServerCDCBuilder() {
-    }
+    public SqlServerCDCBuilder() {}
 
     public SqlServerCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -77,22 +76,25 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getJdbc().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 jdbcProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        final SqlServerSource.Builder<String> sourceBuilder = SqlServerSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+        final SqlServerSource.Builder<String> sourceBuilder =
+                SqlServerSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .username(config.getUsername())
+                        .password(config.getPassword());
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
             sourceBuilder.database(databases[0]);
@@ -101,7 +103,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }
@@ -121,8 +124,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
             sourceBuilder.startupOptions(StartupOptions.latest());
         }
         sourceBuilder.debeziumProperties(debeziumProperties);
-        final DataStreamSource<String> sqlServer_cdc_source = env.addSource(sourceBuilder.build(),
-                "SqlServer CDC Source");
+        final DataStreamSource<String> sqlServer_cdc_source =
+                env.addSource(sourceBuilder.build(), "SqlServer CDC Source");
         return sqlServer_cdc_source;
     }
 

@@ -63,9 +63,7 @@ import java.util.stream.Stream;
 
 import javax.annotation.Nullable;
 
-/**
- * Utilities for performing reflection tasks.
- */
+/** Utilities for performing reflection tasks. */
 @Internal
 public final class ExtractionUtils {
 
@@ -73,9 +71,7 @@ public final class ExtractionUtils {
     // Methods shared across packages
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Collects methods of the given name.
-     */
+    /** Collects methods of the given name. */
     public static List<Method> collectMethods(Class<?> function, String methodName) {
         return Arrays.stream(function.getMethods())
                 .filter(method -> method.getName().equals(methodName))
@@ -113,12 +109,12 @@ public final class ExtractionUtils {
                 if (classCount - currentClass > 1) {
                     while (currentClass < classCount
                             && ExtractionUtils.isAssignable(
-                            classes[currentClass], paramComponent, true)) {
+                                    classes[currentClass], paramComponent, true)) {
                         currentClass++;
                     }
                 } else if (currentClass < classCount
                         && (parameterMatches(classes[currentClass], param)
-                        || parameterMatches(classes[currentClass], paramComponent))) {
+                                || parameterMatches(classes[currentClass], paramComponent))) {
                     currentClass++;
                 }
             }
@@ -135,9 +131,7 @@ public final class ExtractionUtils {
         return clz == null || ExtractionUtils.isAssignable(clz, param, true);
     }
 
-    /**
-     * Creates a method signature string like {@code int eval(Integer, String)}.
-     */
+    /** Creates a method signature string like {@code int eval(Integer, String)}. */
     public static String createMethodSignatureString(
             String methodName, Class<?>[] parameters, @Nullable Class<?> returnType) {
         final StringBuilder builder = new StringBuilder();
@@ -278,8 +272,8 @@ public final class ExtractionUtils {
             final boolean hasParameter =
                     method.getParameterCount() == 1
                             && (method.getGenericParameterTypes()[0].equals(field.getGenericType())
-                            || primitiveToWrapper(method.getGenericParameterTypes()[0])
-                            .equals(field.getGenericType()));
+                                    || primitiveToWrapper(method.getGenericParameterTypes()[0])
+                                            .equals(field.getGenericType()));
             if (!hasParameter) {
                 continue;
             }
@@ -306,9 +300,7 @@ public final class ExtractionUtils {
         return false;
     }
 
-    /**
-     * Checks whether a field is directly readable without a getter.
-     */
+    /** Checks whether a field is directly readable without a getter. */
     public static boolean isStructuredFieldDirectlyReadable(Field field) {
         final int m = field.getModifiers();
 
@@ -316,9 +308,7 @@ public final class ExtractionUtils {
         return Modifier.isPublic(m);
     }
 
-    /**
-     * Checks whether a field is directly writable without a setter or constructor.
-     */
+    /** Checks whether a field is directly writable without a setter or constructor. */
     public static boolean isStructuredFieldDirectlyWritable(Field field) {
         final int m = field.getModifiers();
 
@@ -335,16 +325,12 @@ public final class ExtractionUtils {
     // Methods intended for this package
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Helper method for creating consistent exceptions during extraction.
-     */
+    /** Helper method for creating consistent exceptions during extraction. */
     static ValidationException extractionError(String message, Object... args) {
         return extractionError(null, message, args);
     }
 
-    /**
-     * Helper method for creating consistent exceptions during extraction.
-     */
+    /** Helper method for creating consistent exceptions during extraction. */
     static ValidationException extractionError(Throwable cause, String message, Object... args) {
         return new ValidationException(String.format(message, args), cause);
     }
@@ -373,9 +359,7 @@ public final class ExtractionUtils {
         return typeHierarchy;
     }
 
-    /**
-     * Converts a {@link Type} to {@link Class} if possible, {@code null} otherwise.
-     */
+    /** Converts a {@link Type} to {@link Class} if possible, {@code null} otherwise. */
     static @Nullable Class<?> toClass(Type type) {
         if (type instanceof Class) {
             return (Class<?>) type;
@@ -387,9 +371,7 @@ public final class ExtractionUtils {
         return null;
     }
 
-    /**
-     * Creates a raw data type.
-     */
+    /** Creates a raw data type. */
     @SuppressWarnings({"unchecked", "rawtypes"})
     static DataType createRawType(
             DataTypeFactory typeFactory,
@@ -423,9 +405,7 @@ public final class ExtractionUtils {
         }
     }
 
-    /**
-     * Resolves a {@link TypeVariable} using the given type hierarchy if possible.
-     */
+    /** Resolves a {@link TypeVariable} using the given type hierarchy if possible. */
     static Type resolveVariable(List<Type> typeHierarchy, TypeVariable<?> variable) {
         // iterate through hierarchy from top to bottom until type variable gets a non-variable
         // assigned
@@ -486,9 +466,7 @@ public final class ExtractionUtils {
         }
     }
 
-    /**
-     * Returns the fields of a class for a {@link StructuredType}.
-     */
+    /** Returns the fields of a class for a {@link StructuredType}. */
     static List<Field> collectStructuredFields(Class<?> clazz) {
         final List<Field> fields = new ArrayList<>();
         while (clazz != Object.class) {
@@ -505,9 +483,7 @@ public final class ExtractionUtils {
         return fields;
     }
 
-    /**
-     * Validates if a field is properly readable either directly or through a getter.
-     */
+    /** Validates if a field is properly readable either directly or through a getter. */
     static void validateStructuredFieldReadability(Class<?> clazz, Field field) {
         // field is accessible
         if (isStructuredFieldDirectlyReadable(field)) {
@@ -550,9 +526,7 @@ public final class ExtractionUtils {
                 field.getName(), clazz.getName());
     }
 
-    /**
-     * Returns the boxed type of a primitive type.
-     */
+    /** Returns the boxed type of a primitive type. */
     static Type primitiveToWrapper(Type type) {
         if (type instanceof Class) {
             return primitiveToWrapper((Class<?>) type);
@@ -560,9 +534,7 @@ public final class ExtractionUtils {
         return type;
     }
 
-    /**
-     * Collects all methods that qualify as methods of a {@link StructuredType}.
-     */
+    /** Collects all methods that qualify as methods of a {@link StructuredType}. */
     static List<Method> collectStructuredMethods(Class<?> clazz) {
         final List<Method> methods = new ArrayList<>();
         while (clazz != Object.class) {
@@ -613,9 +585,7 @@ public final class ExtractionUtils {
     // Parameter Extraction Utilities
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Result of the extraction in {@link #extractAssigningConstructor(Class, List)}.
-     */
+    /** Result of the extraction in {@link #extractAssigningConstructor(Class, List)}. */
     static class AssigningConstructor {
         public final Constructor<?> constructor;
         public final List<String> parameterNames;
@@ -654,9 +624,7 @@ public final class ExtractionUtils {
         return foundConstructor;
     }
 
-    /**
-     * Extracts the parameter names of a method if possible.
-     */
+    /** Extracts the parameter names of a method if possible. */
     static @Nullable List<String> extractMethodParameterNames(Method method) {
         return extractExecutableNames(method);
     }
@@ -831,8 +799,8 @@ public final class ExtractionUtils {
      * href="http://docs.oracle.com/javase/specs/">The Java Language Specification</a></em>,
      * sections 5.1.1, 5.1.2 and 5.1.4 for details.
      *
-     * @param cls        the Class to check, may be null
-     * @param toClass    the Class to try to assign into, returns false if null
+     * @param cls the Class to check, may be null
+     * @param toClass the Class to try to assign into, returns false if null
      * @param autoboxing whether to use implicit autoboxing/unboxing between primitives and wrappers
      * @return {@code true} if assignment possible
      */
@@ -909,9 +877,7 @@ public final class ExtractionUtils {
         return toClass.isAssignableFrom(cls);
     }
 
-    /**
-     * Maps primitive {@code Class}es to their corresponding wrapper {@code Class}.
-     */
+    /** Maps primitive {@code Class}es to their corresponding wrapper {@code Class}. */
     private static final Map<Class<?>, Class<?>> primitiveWrapperMap = new HashMap<>();
 
     static {
@@ -926,9 +892,7 @@ public final class ExtractionUtils {
         primitiveWrapperMap.put(Void.TYPE, Void.TYPE);
     }
 
-    /**
-     * Maps wrapper {@code Class}es to their corresponding primitive types.
-     */
+    /** Maps wrapper {@code Class}es to their corresponding primitive types. */
     private static final Map<Class<?>, Class<?>> wrapperPrimitiveMap = new HashMap<>();
 
     static {
@@ -947,7 +911,7 @@ public final class ExtractionUtils {
      *
      * @param cls the class to convert, may be null
      * @return the wrapper class for {@code cls} or {@code cls} if {@code cls} is not a primitive.
-     * {@code null} if null input.
+     *     {@code null} if null input.
      * @since 2.1
      */
     public static Class<?> primitiveToWrapper(final Class<?> cls) {
@@ -968,7 +932,7 @@ public final class ExtractionUtils {
      *
      * @param cls the class to convert, may be <b>null</b>
      * @return the corresponding primitive type if {@code cls} is a wrapper class, <b>null</b>
-     * otherwise
+     *     otherwise
      * @see #primitiveToWrapper(Class)
      * @since 2.4
      */

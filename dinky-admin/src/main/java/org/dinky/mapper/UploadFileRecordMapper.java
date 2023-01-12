@@ -24,9 +24,6 @@ import org.dinky.model.UploadFileRecord;
 
 import org.apache.ibatis.annotations.Mapper;
 
-/**
- * UploadFileRecordMapper
- **/
+/** UploadFileRecordMapper */
 @Mapper
-public interface UploadFileRecordMapper extends SuperMapper<UploadFileRecord> {
-}
+public interface UploadFileRecordMapper extends SuperMapper<UploadFileRecord> {}

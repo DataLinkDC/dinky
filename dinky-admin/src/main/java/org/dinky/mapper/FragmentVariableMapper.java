@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author zhumingye
  * @since 2022/08/18
- **/
+ */
 @Mapper
-public interface FragmentVariableMapper extends SuperMapper<FragmentVariable> {
-}
+public interface FragmentVariableMapper extends SuperMapper<FragmentVariable> {}

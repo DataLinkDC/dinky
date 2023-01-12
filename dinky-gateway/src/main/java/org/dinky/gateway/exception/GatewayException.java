@@ -24,7 +24,7 @@ package org.dinky.gateway.exception;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public class GatewayException extends RuntimeException {
 
     public GatewayException(String message, Throwable cause) {

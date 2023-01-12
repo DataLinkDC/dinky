@@ -26,11 +26,24 @@ package org.dinky.parser;
  * @since 2021/7/3 11:11
  */
 public enum SqlType {
-
-    SELECT("SELECT"), CREATE("CREATE"), DROP("DROP"), ALTER("ALTER"), INSERT("INSERT"), DESC("DESC"), DESCRIBE(
-            "DESCRIBE"), EXPLAIN("EXPLAIN"), USE("USE"), SHOW("SHOW"), LOAD("LOAD"), UNLOAD(
-                    "UNLOAD"), SET("SET"), RESET("RESET"), EXECUTE("EXECUTE"), ADD("ADD"), UNKNOWN("UNKNOWN"),
-                    ;
+    SELECT("SELECT"),
+    CREATE("CREATE"),
+    DROP("DROP"),
+    ALTER("ALTER"),
+    INSERT("INSERT"),
+    DESC("DESC"),
+    DESCRIBE("DESCRIBE"),
+    EXPLAIN("EXPLAIN"),
+    USE("USE"),
+    SHOW("SHOW"),
+    LOAD("LOAD"),
+    UNLOAD("UNLOAD"),
+    SET("SET"),
+    RESET("RESET"),
+    EXECUTE("EXECUTE"),
+    ADD("ADD"),
+    UNKNOWN("UNKNOWN"),
+    ;
 
     private String type;
 
@@ -53,5 +66,4 @@ public enum SqlType {
     public boolean isInsert() {
         return type.equals("INSERT");
     }
-
 }

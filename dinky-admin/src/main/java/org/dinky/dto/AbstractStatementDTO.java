@@ -26,7 +26,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/12/29
- **/
+ */
 public class AbstractStatementDTO {
 
     private String statement;

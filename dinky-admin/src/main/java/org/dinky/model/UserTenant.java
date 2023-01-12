@@ -57,31 +57,21 @@ public class UserTenant implements Serializable {
 
     private static final long serialVersionUID = -6123386787317880405L;
 
-    /**
-     * id
-     */
+    /** id */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * user id
-     */
+    /** user id */
     private Integer userId;
 
-    /**
-     * tenant id
-     */
+    /** tenant id */
     private Integer tenantId;
 
-    /**
-     * create time
-     */
+    /** create time */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /**
-     * update time
-     */
+    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 }

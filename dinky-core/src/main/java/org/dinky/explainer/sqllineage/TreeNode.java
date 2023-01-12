@@ -27,24 +27,16 @@ import java.util.Set;
 
 public class TreeNode<T> implements Iterable<TreeNode<T>> {
 
-    /**
-     * 树节点
-     */
+    /** 树节点 */
     public T data;
 
-    /**
-     * 父节点，根没有父节点
-     */
+    /** 父节点，根没有父节点 */
     public TreeNode<T> parent;
 
-    /**
-     * 子节点，叶子节点没有子节点
-     */
+    /** 子节点，叶子节点没有子节点 */
     public List<TreeNode<T>> children;
 
-    /**
-     * 保存了当前节点及其所有子节点，方便查询
-     */
+    /** 保存了当前节点及其所有子节点，方便查询 */
     private List<TreeNode<T>> elementsIndex;
 
     /**

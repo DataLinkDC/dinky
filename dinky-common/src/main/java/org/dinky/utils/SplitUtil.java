@@ -93,5 +93,4 @@ public class SplitUtil {
     public static boolean isEnabled(Map<String, String> split) {
         return Boolean.parseBoolean(split.get("enable"));
     }
-
 }

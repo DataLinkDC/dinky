@@ -40,23 +40,17 @@ public abstract class BaseSingleSqlParser {
     // Sql语句片段
     protected List<SqlSegment> segments;
 
-    /**
-     * 构造函数，传入原始Sql语句，进行劈分。
-     **/
+    /** 构造函数，传入原始Sql语句，进行劈分。 */
     public BaseSingleSqlParser(String originalSql) {
         this.originalSql = originalSql;
         segments = new ArrayList<SqlSegment>();
         initializeSegments();
     }
 
-    /**
-     * 初始化segments，强制子类实现
-     **/
+    /** 初始化segments，强制子类实现 */
     protected abstract void initializeSegments();
 
-    /**
-     * 将originalSql劈分成一个个片段
-     **/
+    /** 将originalSql劈分成一个个片段 */
     protected Map<String, List<String>> splitSql2Segment() {
         Map<String, List<String>> map = new HashMap<>();
         for (SqlSegment sqlSegment : segments) {
@@ -68,9 +62,7 @@ public abstract class BaseSingleSqlParser {
         return map;
     }
 
-    /**
-     * 得到解析完毕的Sql语句
-     **/
+    /** 得到解析完毕的Sql语句 */
     public String getParsedSql() {
         StringBuilder sb = new StringBuilder();
         for (SqlSegment sqlSegment : segments) {
@@ -79,5 +71,4 @@ public abstract class BaseSingleSqlParser {
 
         return sb.toString().replaceAll("\n+", "\n");
     }
-
 }

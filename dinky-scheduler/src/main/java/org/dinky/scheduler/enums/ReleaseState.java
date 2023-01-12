@@ -19,16 +19,12 @@
 
 package org.dinky.scheduler.enums;
 
-/**
- * process define release state
- */
+/** process define release state */
 public enum ReleaseState {
 
-    /**
-     * 0 offline
-     * 1 online
-     */
-    OFFLINE(0, "offline"), ONLINE(1, "online");
+    /** 0 offline 1 online */
+    OFFLINE(0, "offline"),
+    ONLINE(1, "online");
 
     ReleaseState(int code, String descp) {
         this.code = code;

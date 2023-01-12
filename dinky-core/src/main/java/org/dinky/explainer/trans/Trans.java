@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public interface Trans {
 
     String getHandle();

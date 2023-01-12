@@ -31,9 +31,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-/**
- * namespace used to control permissions
- */
+/** namespace used to control permissions */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_namespace")
@@ -41,48 +39,31 @@ public class Namespace implements Serializable {
 
     private static final long serialVersionUID = -5960332046748903443L;
 
-    /**
-     * id
-     */
+    /** id */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    /**
-     * tenant id
-     */
+    /** tenant id */
     private Integer tenantId;
 
-    /**
-     * namespace code
-     */
+    /** namespace code */
     private String namespaceCode;
 
-    /**
-     * is enabled
-     */
+    /** is enabled */
     private Boolean enabled;
 
-    /**
-     * note
-     */
+    /** note */
     private String note;
 
-    /**
-     * create time
-     */
+    /** create time */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    /**
-     * update time
-     */
+    /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    /**
-     * tenant
-     */
+    /** tenant */
     @TableField(exist = false)
     private Tenant tenant;
-
 }

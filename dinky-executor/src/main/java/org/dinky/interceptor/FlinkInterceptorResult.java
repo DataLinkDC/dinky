@@ -26,14 +26,13 @@ import org.apache.flink.table.api.TableResult;
  *
  * @author wenmo
  * @since 2022/2/17 16:36
- **/
+ */
 public class FlinkInterceptorResult {
 
     private boolean noExecute;
     private TableResult tableResult;
 
-    public FlinkInterceptorResult() {
-    }
+    public FlinkInterceptorResult() {}
 
     public FlinkInterceptorResult(boolean noExecute, TableResult tableResult) {
         this.noExecute = noExecute;

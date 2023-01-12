@@ -24,7 +24,7 @@ package org.dinky.metadata.query;
  *
  * @author wenmo
  * @since 2021/7/20 13:50
- **/
+ */
 public abstract class AbstractDBQuery implements IDBQuery {
 
     @Override

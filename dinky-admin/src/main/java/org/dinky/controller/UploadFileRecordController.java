@@ -37,24 +37,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import cn.hutool.json.JSONUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * FileUploadController
- */
+/** FileUploadController */
 @Slf4j
 @RestController
 @RequestMapping("/api/uploadFileRecord")
 public class UploadFileRecordController {
 
-    @Resource
-    private UploadFileRecordService uploadFileRecordService;
+    @Resource private UploadFileRecordService uploadFileRecordService;
 
-    /**
-     * @param record {@link UploadFileRecord}
-     */
+    /** @param record {@link UploadFileRecord} */
     @PostMapping("/list")
     public Result get(@RequestBody UploadFileRecord record) {
         List<UploadFileRecord> records = uploadFileRecordService.list(new QueryWrapper<>(record));
         return Result.succeed(JSONUtil.toJsonStr(records), "");
     }
-
 }

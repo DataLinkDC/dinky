@@ -27,7 +27,7 @@ import org.dinky.alert.AlertResult;
  *
  * @author wenmo
  * @since 2022/2/23 19:28
- **/
+ */
 public class DingTalkAlert extends AbstractAlert {
 
     @Override

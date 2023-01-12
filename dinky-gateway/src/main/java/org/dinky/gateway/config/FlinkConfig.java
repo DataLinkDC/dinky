@@ -53,14 +53,18 @@ public class FlinkConfig {
 
     public static final String DEFAULT_SAVEPOINT_PREFIX = "hdfs:///flink/savepoints/";
 
-    public FlinkConfig() {
-    }
+    public FlinkConfig() {}
 
     public FlinkConfig(Map<String, String> configuration) {
         this.configuration = configuration;
     }
 
-    public FlinkConfig(String jobName, String jobId, ActionType action, SavePointType savePointType, String savePoint,
+    public FlinkConfig(
+            String jobName,
+            String jobId,
+            ActionType action,
+            SavePointType savePointType,
+            String savePoint,
             Map<String, String> configuration) {
         this.jobName = jobName;
         this.jobId = jobId;
@@ -78,8 +82,13 @@ public class FlinkConfig {
         return new FlinkConfig(paras);
     }
 
-    public static FlinkConfig build(String jobName, String jobId, String actionStr, String savePointTypeStr,
-            String savePoint, String configParasStr) {
+    public static FlinkConfig build(
+            String jobName,
+            String jobId,
+            String actionStr,
+            String savePointTypeStr,
+            String savePoint,
+            String configParasStr) {
         // List<ConfigPara> configParasList = new ArrayList<>();
         Map<String, String> configMap = new HashMap<>();
         JsonNode paras = null;
@@ -89,16 +98,28 @@ public class FlinkConfig {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            paras.forEach((JsonNode node) -> {
-                configMap.put(node.get("key").asText(), node.get("value").asText());
-            });
+            paras.forEach(
+                    (JsonNode node) -> {
+                        configMap.put(node.get("key").asText(), node.get("value").asText());
+                    });
         }
-        return new FlinkConfig(jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr),
-                savePoint, configMap);
+        return new FlinkConfig(
+                jobName,
+                jobId,
+                ActionType.get(actionStr),
+                SavePointType.get(savePointTypeStr),
+                savePoint,
+                configMap);
     }
 
-    public static FlinkConfig build(String jobId, String actionStr, String savePointTypeStr, String savePoint) {
-        return new FlinkConfig(null, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint,
+    public static FlinkConfig build(
+            String jobId, String actionStr, String savePointTypeStr, String savePoint) {
+        return new FlinkConfig(
+                null,
+                jobId,
+                ActionType.get(actionStr),
+                SavePointType.get(savePointTypeStr),
+                savePoint,
                 null);
     }
 }

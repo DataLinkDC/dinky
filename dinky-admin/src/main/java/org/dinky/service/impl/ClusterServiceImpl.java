@@ -51,12 +51,12 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  *
  * @author wenmo
  * @since 2021/5/28 14:02
- **/
+ */
 @Service
-public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster> implements ClusterService {
+public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
+        implements ClusterService {
 
-    @Autowired
-    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired private ClusterConfigurationService clusterConfigurationService;
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {
@@ -66,7 +66,8 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
     @Override
     public String getJobManagerAddress(Cluster cluster) {
         Assert.check(cluster);
-        FlinkClusterInfo info = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+        FlinkClusterInfo info =
+                FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
@@ -157,8 +158,8 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
             throw new GatewayException("The cluster has been killed.");
         }
         Integer clusterConfigurationId = cluster.getClusterConfigurationId();
-        ClusterConfiguration clusterConfiguration = clusterConfigurationService
-                .getClusterConfigById(clusterConfigurationId);
+        ClusterConfiguration clusterConfiguration =
+                clusterConfigurationService.getClusterConfigById(clusterConfigurationId);
         if (Asserts.isNull(clusterConfiguration)) {
             throw new GatewayException("The cluster configuration does not exist.");
         }
@@ -169,20 +170,22 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public Cluster deploySessionCluster(Integer id) {
-        ClusterConfiguration clusterConfiguration = clusterConfigurationService.getClusterConfigById(id);
+        ClusterConfiguration clusterConfiguration =
+                clusterConfigurationService.getClusterConfigById(id);
         if (Asserts.isNull(clusterConfiguration)) {
             throw new GatewayException("The cluster configuration does not exist.");
         }
         GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
         gatewayConfig.setType(GatewayType.getSessionType(clusterConfiguration.getType()));
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
-        return registersCluster(Cluster.autoRegistersCluster(
-                gatewayResult.getWebURL().replace("http://", ""),
-                gatewayResult.getAppId(),
-                clusterConfiguration.getName() + LocalDateTime.now(),
-                gatewayConfig.getType().getLongValue(),
-                id,
-                null));
+        return registersCluster(
+                Cluster.autoRegistersCluster(
+                        gatewayResult.getWebURL().replace("http://", ""),
+                        gatewayResult.getAppId(),
+                        clusterConfiguration.getName() + LocalDateTime.now(),
+                        gatewayConfig.getType().getLongValue(),
+                        id,
+                        null));
     }
 
     private boolean checkHealth(Cluster cluster) {

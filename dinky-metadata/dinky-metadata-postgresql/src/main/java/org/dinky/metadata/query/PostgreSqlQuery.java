@@ -24,7 +24,7 @@ package org.dinky.metadata.query;
  *
  * @author wenmo
  * @since 2021/7/22 9:29
- **/
+ */
 public class PostgreSqlQuery extends AbstractDBQuery {
 
     @Override
@@ -41,7 +41,9 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "FROM pg_class c\n"
                 + "         LEFT JOIN pg_namespace n ON n.oid = c.relnamespace\n"
                 + "WHERE ((c.relkind = 'r'::\"char\") OR (c.relkind = 'f'::\"char\") OR (c.relkind = 'p'::\"char\"))\n"
-                + "  AND n.nspname = '" + schemaName + "'\n"
+                + "  AND n.nspname = '"
+                + schemaName
+                + "'\n"
                 + "ORDER BY n.nspname, tablename";
     }
 
@@ -65,8 +67,12 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "         LEFT JOIN pg_namespace ns ON ns.nspname = col.table_schema\n"
                 + "         LEFT JOIN pg_class c ON col.table_name = c.relname AND c.relnamespace = ns.oid\n"
                 + "         LEFT JOIN pg_attribute b ON b.attrelid = c.oid AND b.attname = col.column_name\n"
-                + "WHERE col.table_schema = '" + schemaName + "'\n"
-                + "  AND col.table_name = '" + tableName + "'\n"
+                + "WHERE col.table_schema = '"
+                + schemaName
+                + "'\n"
+                + "  AND col.table_name = '"
+                + tableName
+                + "'\n"
                 + "ORDER BY col.table_schema, col.table_name, col.ordinal_position";
     }
 

@@ -54,24 +54,18 @@ import org.springframework.stereotype.Component;
  *
  * @author wenmo
  * @since 2021/11/18
- **/
+ */
 @Component
 @Order(value = 1)
 public class SystemInit implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
-    @Autowired
-    private ProjectClient projectClient;
-    @Autowired
-    private SysConfigService sysConfigService;
-    @Autowired
-    private JobInstanceService jobInstanceService;
-    @Autowired
-    private TaskService taskService;
-    @Autowired
-    private TenantService tenantService;
-    @Autowired
-    private DolphinSchedulerProperties dolphinSchedulerProperties;
+    @Autowired private ProjectClient projectClient;
+    @Autowired private SysConfigService sysConfigService;
+    @Autowired private JobInstanceService jobInstanceService;
+    @Autowired private TaskService taskService;
+    @Autowired private TenantService tenantService;
+    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
     private static Project project;
 
     @Override
@@ -86,9 +80,7 @@ public class SystemInit implements ApplicationRunner {
         registerUDF();
     }
 
-    /**
-     * init task monitor
-     */
+    /** init task monitor */
     private void initTaskMonitor() {
         List<JobInstance> jobInstances = jobInstanceService.listJobInstanceActive();
         List<DaemonTaskConfig> configList = new ArrayList<>();
@@ -99,9 +91,7 @@ public class SystemInit implements ApplicationRunner {
         DaemonFactory.start(configList);
     }
 
-    /**
-     * init DolphinScheduler
-     */
+    /** init DolphinScheduler */
     private void initDolphinScheduler() {
         if (dolphinSchedulerProperties.isEnabled()) {
             try {
@@ -130,8 +120,10 @@ public class SystemInit implements ApplicationRunner {
     public void registerUDF() {
         // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
         TenantContextHolder.set(1);
-        UdfCodePool
-                .registerPool(taskService.getAllUDF().stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+        UdfCodePool.registerPool(
+                taskService.getAllUDF().stream()
+                        .map(UDFUtils::taskToUDF)
+                        .collect(Collectors.toList()));
         TenantContextHolder.set(null);
     }
 }

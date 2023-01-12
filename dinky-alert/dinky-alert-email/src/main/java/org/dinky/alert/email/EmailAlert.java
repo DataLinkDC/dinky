@@ -24,9 +24,10 @@ import org.dinky.alert.AlertResult;
 
 /**
  * EmailAlert
+ *
  * @author zhumingye
  * @date: 2022/4/2
- **/
+ */
 public class EmailAlert extends AbstractAlert {
 
     @Override

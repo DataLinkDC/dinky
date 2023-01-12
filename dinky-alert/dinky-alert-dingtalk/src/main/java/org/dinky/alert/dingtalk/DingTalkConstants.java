@@ -24,7 +24,7 @@ package org.dinky.alert.dingtalk;
  *
  * @author wenmo
  * @since 2022/2/23 19:37
- **/
+ */
 public final class DingTalkConstants {
 
     static final String TYPE = "DingTalk";
@@ -56,5 +56,4 @@ public final class DingTalkConstants {
     static final String USER = "user";
 
     static final String PASSWORD = "password";
-
 }

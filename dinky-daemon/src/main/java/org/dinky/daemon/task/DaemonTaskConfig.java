@@ -24,8 +24,7 @@ public class DaemonTaskConfig {
     private String type;
     private Integer id;
 
-    public DaemonTaskConfig() {
-    }
+    public DaemonTaskConfig() {}
 
     public DaemonTaskConfig(String type, Integer id) {
         this.type = type;

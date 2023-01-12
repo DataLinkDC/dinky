@@ -41,18 +41,15 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/5/28 15:52
- **/
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api")
 public class AdminController {
 
-    @Autowired
-    private UserService userService;
+    @Autowired private UserService userService;
 
-    /**
-     * 登录
-     */
+    /** 登录 */
     @PostMapping("/login")
     public Result login(@RequestBody LoginUTO loginUTO) {
         if (Asserts.isNull(loginUTO.isAutoLogin())) {
@@ -61,18 +58,14 @@ public class AdminController {
         return userService.loginUser(loginUTO);
     }
 
-    /**
-     * 退出
-     */
+    /** 退出 */
     @DeleteMapping("/outLogin")
     public Result outLogin() {
         StpUtil.logout();
         return Result.succeed("退出成功");
     }
 
-    /**
-     * 获取当前用户信息
-     */
+    /** 获取当前用户信息 */
     @GetMapping("/current")
     public Result current() throws Exception {
         try {
@@ -82,9 +75,7 @@ public class AdminController {
         }
     }
 
-    /**
-     * get tenant
-     */
+    /** get tenant */
     @RequestMapping("/geTenants")
     public Result getTenants(@RequestParam("username") String username) {
         return userService.getTenants(username);

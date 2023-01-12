@@ -22,9 +22,7 @@ package org.dinky.scheduler.utils;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * @author 郑文豪
- */
+/** @author 郑文豪 */
 public class ParamUtil {
 
     /**
