@@ -195,3 +195,7 @@ CREATE TABLE IF NOT EXISTS `dlink_udf_template` (
 
 alter table `dlink_task_statement` modify column `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set';
 alter table `dlink_history` modify column `statement` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'statement set';
+
+alter table dlink_fragment add column `tenant_id` int not null DEFAULT '1' comment 'tenant id' after alias;
+DROP INDEX un_idx1 ON `dlink_fragment`;
+ALTER TABLE `dlink_fragment` ADD UNIQUE un_idx1 ( `name`,`tenant_id` );
