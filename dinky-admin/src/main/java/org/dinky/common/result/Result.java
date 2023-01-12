@@ -44,6 +44,7 @@ public class Result<T> implements Serializable {
     private Integer code;
     private String msg;
     private String time;
+
     public Result(Integer code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -98,10 +99,10 @@ public class Result<T> implements Serializable {
      * Call this function if there is any error
      *
      * @param status status
-     * @param args args
+     * @param args   args
      * @return result
      */
     public static <T> Result<T> errorWithArgs(Status status, Object... args) {
-        return  new Result<>(status.getCode(), MessageFormat.format(status.getMsg(), args));
+        return new Result<>(status.getCode(), MessageFormat.format(status.getMsg(), args));
     }
 }
