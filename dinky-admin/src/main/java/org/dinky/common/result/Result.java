@@ -19,15 +19,16 @@
 
 package org.dinky.common.result;
 
-import cn.hutool.core.date.DateTime;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.dinky.enums.Status;
 import org.dinky.model.CodeEnum;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
+
+import cn.hutool.core.date.DateTime;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 返回对象
@@ -43,6 +44,7 @@ public class Result<T> implements Serializable {
     private T datas;
     private Integer code;
     private String msg;
+
     private String time;
 
     public Result(Integer code, String msg) {
