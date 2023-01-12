@@ -75,7 +75,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             return false;
         }
         if (Asserts.isNull(dataBase.getId())) {
-            checkHeartBeat(dataBase);
+            try {
+                checkHeartBeat(dataBase);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             return save(dataBase);
         } else {
             DataBase dataBaseInfo = getById(dataBase.getId());
@@ -88,7 +92,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             if (Asserts.isNull(dataBase.getPassword())) {
                 dataBase.setPassword(dataBaseInfo.getPassword());
             }
-            checkHeartBeat(dataBase);
+            try {
+                checkHeartBeat(dataBase);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             return updateById(dataBase);
         }
     }
