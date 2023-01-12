@@ -221,7 +221,7 @@
             <version>0.16.1</version>
         </dependency>
 
-        <!-- expand -->
+        <!-- expand metadata -->
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-clickhouse</artifactId>
@@ -270,6 +270,28 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-starrocks</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+
+        <!-- expand alert -->
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-dingtalk</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-email</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-feishu</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-wechat</artifactId>
             <scope>${expand.scope}</scope>
         </dependency>
     </dependencies>
