@@ -68,13 +68,6 @@
         <!--</fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.11</outputDirectory>
-            <includes>
-                <include>dinky-client-1.11-${project.version}.jar</include>
-            </includes>
-        </fileSet>
-        <fileSet>
-            <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>plugins/flink1.12</outputDirectory>
             <includes>
                 <include>dinky-client-1.12-${project.version}.jar</include>
