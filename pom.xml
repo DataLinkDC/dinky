@@ -294,11 +294,6 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-client-1.11</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
                 <artifactId>dinky-client-1.15</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -325,11 +320,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.16</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-connector-jdbc-1.11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -465,11 +455,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-app-base</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-flink-1.11</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -826,19 +811,6 @@
             <properties>
                 <scala.binary.version>2.12</scala.binary.version>
                 <scala.version>2.12.10</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>flink-1.11</id>
-            <activation>
-                <property>
-                    <name>flink-1.11</name>
-                </property>
-            </activation>
-            <properties>
-                <!--  modify flink version  -->
-                <dinky.flink.version>1.11</dinky.flink.version>
             </properties>
         </profile>
 
