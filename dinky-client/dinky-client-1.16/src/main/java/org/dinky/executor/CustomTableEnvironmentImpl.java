@@ -27,10 +27,8 @@ import org.dinky.result.SqlExplainResult;
 import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
-import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.ExecutionOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.jsonplan.JsonPlanGenerator;
@@ -123,10 +121,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl createBatch(
             StreamExecutionEnvironment executionEnvironment) {
-        Configuration configuration = new Configuration();
-        configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
-        TableConfig tableConfig = new TableConfig();
-        tableConfig.addConfiguration(configuration);
         return create(
                 executionEnvironment, EnvironmentSettings.newInstance().inBatchMode().build());
     }
@@ -196,21 +190,18 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
         JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
-        String json = jsonGenerator.getJSON();
-        ObjectNode objectNode = mapper.createObjectNode();
         try {
-            objectNode = (ObjectNode) mapper.readTree(json);
+            return (ObjectNode) mapper.readTree(jsonGenerator.getJSON());
         } catch (JsonProcessingException e) {
             log.error("read streamGraph configure error: ", e);
-        } finally {
-            return objectNode;
+            return mapper.createObjectNode();
         }
     }
 
     private StreamGraph transOperatoinsToStreamGraph(List<ModifyOperation> modifyOperations) {
         List<Transformation<?>> trans = getPlanner().translate(modifyOperations);
         final StreamExecutionEnvironment environment = getStreamExecutionEnvironment();
-        trans.forEach(transformation -> environment.addOperator(transformation));
+        trans.forEach(environment::addOperator);
 
         StreamGraph streamGraph = environment.getStreamGraph();
         final Configuration configuration = getConfig().getConfiguration();
