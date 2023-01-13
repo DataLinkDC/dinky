@@ -21,8 +21,10 @@ package org.dinky.model;
 
 import org.dinky.assertion.Asserts;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * JobState
@@ -85,12 +87,10 @@ public enum JobStatus {
     }
 
     public static JobStatus get(String value) {
-        for (JobStatus type : JobStatus.values()) {
-            if (Asserts.isEqualsIgnoreCase(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return JobStatus.UNKNOWN;
+        return Arrays.stream(JobStatus.values())
+                .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
+                .findFirst()
+                .orElse(JobStatus.UNKNOWN);
     }
 
     public static boolean isDone(String value) {
@@ -118,11 +118,6 @@ public enum JobStatus {
     }
 
     public static List<JobStatus> getAllDoneStatus() {
-        final List<JobStatus> list = new ArrayList<>(4);
-        list.add(FAILED);
-        list.add(CANCELED);
-        list.add(FINISHED);
-        list.add(UNKNOWN);
-        return list;
+        return Lists.newArrayList(FAILED, CANCELED, FINISHED, UNKNOWN);
     }
 }

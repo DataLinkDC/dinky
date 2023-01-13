@@ -86,7 +86,7 @@ public class SqlServerTypeConvert implements ITypeConvert {
             // 这里应该是纳秒
             columnType = ColumnType.TIMESTAMP;
         } else if (t.equalsIgnoreCase("date")) {
-            columnType = ColumnType.LOCALDATE;
+            columnType = ColumnType.LOCAL_DATE;
         } else if (t.equalsIgnoreCase("time")) {
             columnType = ColumnType.LOCALTIME;
         } else if (t.contains("timestamp")

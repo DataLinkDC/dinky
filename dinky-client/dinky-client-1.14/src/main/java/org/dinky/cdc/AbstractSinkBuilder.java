@@ -317,9 +317,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             case INTEGER:
                 return new IntType();
             case DATE:
-            case LOCALDATE:
+            case LOCAL_DATE:
                 return new DateType();
-            case LOCALDATETIME:
+            case LOCAL_DATETIME:
             case TIMESTAMP:
                 return new TimestampType();
             case BYTES:

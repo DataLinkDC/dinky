@@ -19,6 +19,8 @@
 
 package org.dinky.model;
 
+import java.util.Arrays;
+
 /**
  * @author csz
  * @version 1.0
@@ -53,11 +55,9 @@ public enum TaskOperatingSavepointSelect {
     }
 
     public static TaskOperatingSavepointSelect valueByCode(Integer code) {
-        for (TaskOperatingSavepointSelect savepointSelect : TaskOperatingSavepointSelect.values()) {
-            if (savepointSelect.getCode().equals(code)) {
-                return savepointSelect;
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(savepointSelect -> savepointSelect.getCode().equals(code))
+                .findFirst()
+                .orElse(null);
     }
 }
