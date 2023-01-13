@@ -67,6 +67,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -296,7 +297,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             SetOperation setOperation,
             StreamExecutionEnvironment environment,
             Map<String, Object> setMap) {
-        if (setOperation.getKey().isPresent() || setOperation.getValue().isPresent()) {
+        if (!setOperation.getKey().isPresent() || !setOperation.getValue().isPresent()) {
             return;
         }
 
@@ -314,18 +315,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             ResetOperation resetOperation,
             StreamExecutionEnvironment environment,
             Map<String, Object> setMap) {
-        resetOperation
-                .getKey()
-                .ifPresentOrElse(
-                        t -> {
-                            String key = t.trim();
-                            if (Asserts.isNullString(key)) {
-                                return;
-                            }
-                            setMap.remove(key);
-                            setConfiguration(environment, Collections.singletonMap(key, null));
-                        },
-                        setMap::clear);
+        final Optional<String> keyOptional = resetOperation.getKey();
+        if (!keyOptional.isPresent()) {
+            setMap.clear();
+            return;
+        }
+
+        String key = keyOptional.get().trim();
+        if (Asserts.isNullString(key)) {
+            return;
+        }
+
+        setMap.remove(key);
+        setConfiguration(environment, Collections.singletonMap(key, null));
     }
 
     private void setConfiguration(
