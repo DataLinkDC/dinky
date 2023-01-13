@@ -19,12 +19,13 @@
 
 package org.dinky.model;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 
 import java.util.List;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 
 /**
  * SystemConfiguration
@@ -41,13 +42,13 @@ public class SystemConfiguration {
     }
 
     private static final List<Configuration> CONFIGURATION_LIST =
-            Lists.newArrayList(systemConfiguration.sqlSubmitJarPath,
+            Lists.newArrayList(
+                    systemConfiguration.sqlSubmitJarPath,
                     systemConfiguration.sqlSubmitJarParas,
                     systemConfiguration.sqlSubmitJarMainAppClass,
                     systemConfiguration.useRestAPI,
                     systemConfiguration.sqlSeparator,
                     systemConfiguration.jobIdWait);
-
 
     private Configuration sqlSubmitJarPath =
             new Configuration(
@@ -91,19 +92,20 @@ public class SystemConfiguration {
     public void setConfiguration(JsonNode jsonNode) {
         CONFIGURATION_LIST.stream()
                 .filter(t -> jsonNode.has(t.getName()))
-                .forEach(item -> {
-                    final JsonNode value = jsonNode.get(item.getName());
-                    switch (item.getType()) {
-                        case BOOLEAN:
-                            item.setValue(value.asBoolean());
-                            break;
-                        case INT:
-                            item.setValue(value.asInt());
-                            break;
-                        default:
-                            item.setValue(value.asText());
-                    }
-                });
+                .forEach(
+                        item -> {
+                            final JsonNode value = jsonNode.get(item.getName());
+                            switch (item.getType()) {
+                                case BOOLEAN:
+                                    item.setValue(value.asBoolean());
+                                    break;
+                                case INT:
+                                    item.setValue(value.asInt());
+                                    break;
+                                default:
+                                    item.setValue(value.asText());
+                            }
+                        });
     }
 
     public void addConfiguration(Map<String, Object> map) {
@@ -115,7 +117,7 @@ public class SystemConfiguration {
             }
 
             if (item.getType().equals(ValueType.BOOLEAN)) {
-                map.put(name,Asserts.isEqualsIgnoreCase("true", map.get(name).toString()));
+                map.put(name, Asserts.isEqualsIgnoreCase("true", map.get(name).toString()));
             }
         }
     }
