@@ -19,13 +19,12 @@
 
 package org.dinky.model;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.google.common.collect.Lists;
 import org.dinky.assertion.Asserts;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * SystemConfiguration
@@ -42,17 +41,13 @@ public class SystemConfiguration {
     }
 
     private static final List<Configuration> CONFIGURATION_LIST =
-            new ArrayList<Configuration>() {
+            Lists.newArrayList(systemConfiguration.sqlSubmitJarPath,
+                    systemConfiguration.sqlSubmitJarParas,
+                    systemConfiguration.sqlSubmitJarMainAppClass,
+                    systemConfiguration.useRestAPI,
+                    systemConfiguration.sqlSeparator,
+                    systemConfiguration.jobIdWait);
 
-                {
-                    add(systemConfiguration.sqlSubmitJarPath);
-                    add(systemConfiguration.sqlSubmitJarParas);
-                    add(systemConfiguration.sqlSubmitJarMainAppClass);
-                    add(systemConfiguration.useRestAPI);
-                    add(systemConfiguration.sqlSeparator);
-                    add(systemConfiguration.jobIdWait);
-                }
-            };
 
     private Configuration sqlSubmitJarPath =
             new Configuration(
@@ -94,32 +89,33 @@ public class SystemConfiguration {
                     "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
 
     public void setConfiguration(JsonNode jsonNode) {
-        for (Configuration item : CONFIGURATION_LIST) {
-            if (!jsonNode.has(item.getName())) {
-                continue;
-            }
-            switch (item.getType()) {
-                case BOOLEAN:
-                    item.setValue(jsonNode.get(item.getName()).asBoolean());
-                    break;
-                case INT:
-                    item.setValue(jsonNode.get(item.getName()).asInt());
-                    break;
-                default:
-                    item.setValue(jsonNode.get(item.getName()).asText());
-            }
-        }
+        CONFIGURATION_LIST.stream()
+                .filter(t -> jsonNode.has(t.getName()))
+                .forEach(item -> {
+                    final JsonNode value = jsonNode.get(item.getName());
+                    switch (item.getType()) {
+                        case BOOLEAN:
+                            item.setValue(value.asBoolean());
+                            break;
+                        case INT:
+                            item.setValue(value.asInt());
+                            break;
+                        default:
+                            item.setValue(value.asText());
+                    }
+                });
     }
 
     public void addConfiguration(Map<String, Object> map) {
         for (Configuration item : CONFIGURATION_LIST) {
-            if (map.containsKey(item.getName()) && item.getType().equals(ValueType.BOOLEAN)) {
-                map.put(
-                        item.getName(),
-                        Asserts.isEqualsIgnoreCase("true", map.get(item.getName()).toString()));
+            final String name = item.getName();
+            if (!map.containsKey(name)) {
+                map.put(name, item.getValue());
+                continue;
             }
-            if (!map.containsKey(item.getName())) {
-                map.put(item.getName(), item.getValue());
+
+            if (item.getType().equals(ValueType.BOOLEAN)) {
+                map.put(name,Asserts.isEqualsIgnoreCase("true", map.get(name).toString()));
             }
         }
     }
@@ -183,12 +179,13 @@ public class SystemConfiguration {
 
     public class Configuration {
 
+        private final String label;
+        private final Object defaultValue;
+        private final String note;
+
         private String name;
-        private String label;
         private ValueType type;
-        private Object defaultValue;
         private Object value;
-        private String note;
 
         public Configuration(
                 String name, String label, ValueType type, Object defaultValue, String note) {

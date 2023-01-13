@@ -36,12 +36,15 @@ public enum TableType {
         if (splitDatabase && splitTable) {
             return TableType.SPLIT_DATABASE_AND_TABLE;
         }
+
         if (splitTable) {
             return TableType.SINGLE_DATABASE_AND_SPLIT_TABLE;
         }
-        if (!splitDatabase) {
-            return TableType.SINGLE_DATABASE_AND_TABLE;
+
+        if (splitDatabase) {
+            return TableType.SPLIT_DATABASE_AND_SINGLE_TABLE;
         }
-        return TableType.SPLIT_DATABASE_AND_SINGLE_TABLE;
+
+        return TableType.SINGLE_DATABASE_AND_TABLE;
     }
 }

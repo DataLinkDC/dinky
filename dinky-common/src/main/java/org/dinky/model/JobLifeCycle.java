@@ -19,6 +19,8 @@
 
 package org.dinky.model;
 
+import java.util.Arrays;
+
 /**
  * JobLifeCycle
  *
@@ -51,18 +53,13 @@ public enum JobLifeCycle {
     }
 
     public static JobLifeCycle get(Integer value) {
-        for (JobLifeCycle item : JobLifeCycle.values()) {
-            if (item.getValue().equals(value)) {
-                return item;
-            }
-        }
-        return JobLifeCycle.UNKNOWN;
+        return Arrays.stream(values())
+                .filter(item -> item.getValue().equals(value))
+                .findFirst()
+                .orElse(JobLifeCycle.UNKNOWN);
     }
 
     public boolean equalsValue(Integer step) {
-        if (value.equals(step)) {
-            return true;
-        }
-        return false;
+        return value.equals(step);
     }
 }

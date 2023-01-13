@@ -42,7 +42,7 @@ public class OracleTypeConvert implements ITypeConvert {
         if (t.contains("char")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("date")) {
-            columnType = ColumnType.LOCALDATETIME;
+            columnType = ColumnType.LOCAL_DATETIME;
         } else if (t.contains("timestamp")) {
             columnType = ColumnType.TIMESTAMP;
         } else if (t.contains("number")) {
