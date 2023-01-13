@@ -296,7 +296,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             SetOperation setOperation,
             StreamExecutionEnvironment environment,
             Map<String, Object> setMap) {
-        if (setOperation.getKey().isEmpty() || setOperation.getValue().isEmpty()) {
+        if (setOperation.getKey().isPresent() || setOperation.getValue().isPresent()) {
             return;
         }
 
