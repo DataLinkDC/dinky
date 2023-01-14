@@ -146,7 +146,7 @@ public class ExecutorSetting {
 
         Map<String, String> config = new HashMap<>();
         for (Map<String, String> item : configList) {
-            if (Asserts.isNotNull(item)) {
+            if (Asserts.isNotNull(item) && Asserts.isAllNotNullString(item.get("key"), item.get("value"))) {
                 config.put(item.get("key"), item.get("value"));
             }
         }
