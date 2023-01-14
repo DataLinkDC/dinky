@@ -53,26 +53,20 @@ public class AdminController {
 
     private final UserService userService;
 
-    /**
-     * 登录
-     */
+    /** 登录 */
     @PostMapping("/login")
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
     }
 
-    /**
-     * 退出
-     */
+    /** 退出 */
     @DeleteMapping("/outLogin")
     public Result<Void> outLogin() {
         StpUtil.logout();
         return Result.succeed("退出成功");
     }
 
-    /**
-     * 获取当前用户信息
-     */
+    /** 获取当前用户信息 */
     @GetMapping("/current")
     public Result<Object> current() {
         try {
@@ -82,9 +76,7 @@ public class AdminController {
         }
     }
 
-    /**
-     * get tenant
-     */
+    /** get tenant */
     @RequestMapping("/geTenants")
     public Result<List<Tenant>> getTenants(@RequestParam("username") String username) {
         return userService.getTenants(username);
