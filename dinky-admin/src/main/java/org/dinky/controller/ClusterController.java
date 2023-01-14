@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -55,13 +55,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/cluster")
+@RequiredArgsConstructor
 public class ClusterController {
 
-    @Autowired private ClusterService clusterService;
-    @Autowired private JobInstanceService jobInstanceService;
+    private final ClusterService clusterService;
+    private final JobInstanceService jobInstanceService;
+
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         Integer id = cluster.getId();
         clusterService.registersCluster(cluster);
@@ -70,7 +72,7 @@ public class ClusterController {
 
     /** 启用和禁用 */
     @PutMapping("/enable")
-    public Result enableCluster(@RequestBody Cluster cluster) throws Exception {
+    public Result<Void> enableCluster(@RequestBody Cluster cluster) {
         clusterService.enableCluster(cluster);
         return Result.succeed("修改成功");
     }
@@ -83,7 +85,7 @@ public class ClusterController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<JobInstance> instances = jobInstanceService.listJobInstanceActive();
             Set<Integer> ids =
@@ -101,13 +103,13 @@ public class ClusterController {
                 if (para.size() > error.size()) {
                     return Result.succeed(
                             "删除部分成功，但"
-                                    + error.toString()
+                                    + error
                                     + "删除失败，共"
                                     + error.size()
                                     + "次失败。\n请检查集群实例是否已被集群使用！");
                 } else {
                     return Result.succeed(
-                            error.toString() + "删除失败，共" + error.size() + "次失败。\n请检查集群实例是否已被集群使用！");
+                            error + "删除失败，共" + error.size() + "次失败。\n请检查集群实例是否已被集群使用！");
                 }
             }
         } else {
@@ -117,31 +119,30 @@ public class ClusterController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Cluster cluster) throws Exception {
+    public Result<Cluster> getOneById(@RequestBody Cluster cluster) throws Exception {
         cluster = clusterService.getById(cluster.getId());
         return Result.succeed(cluster, "获取成功");
     }
 
     /** 获取可用的集群列表 */
     @GetMapping("/listEnabledAll")
-    public Result listEnabledAll() {
+    public Result<List<Cluster>> listEnabledAll() {
         List<Cluster> clusters = clusterService.listEnabledAll();
         return Result.succeed(clusters, "获取成功");
     }
 
     /** 获取可用的集群列表 */
     @GetMapping("/listSessionEnable")
-    public Result listSessionEnable() {
+    public Result<List<Cluster>> listSessionEnable() {
         List<Cluster> clusters = clusterService.listSessionEnable();
         return Result.succeed(clusters, "获取成功");
     }
 
     /** 全部心跳监测 */
     @PostMapping("/heartbeats")
-    public Result heartbeat(@RequestBody JsonNode para) {
+    public Result<Void> heartbeat() {
         List<Cluster> clusters = clusterService.listEnabledAll();
-        for (int i = 0; i < clusters.size(); i++) {
-            Cluster cluster = clusters.get(i);
+        for (Cluster cluster : clusters) {
             clusterService.registersCluster(cluster);
         }
         return Result.succeed("状态刷新完成");
@@ -149,20 +150,20 @@ public class ClusterController {
 
     /** 回收过期集群 */
     @GetMapping("/clear")
-    public Result clear() {
+    public Result<Integer> clear() {
         return Result.succeed(clusterService.clearCluster(), "回收完成");
     }
 
     /** 停止集群 */
     @GetMapping("/killCluster")
-    public Result killCluster(@RequestParam("id") Integer id) {
+    public Result<Void> killCluster(@RequestParam("id") Integer id) {
         clusterService.killCluster(id);
         return Result.succeed("Kill Cluster Succeed.");
     }
 
     /** 批量停止 */
     @DeleteMapping("/killMulCluster")
-    public Result killMulCluster(@RequestBody JsonNode para) {
+    public Result<Void> killMulCluster(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             for (final JsonNode item : para) {
                 clusterService.killCluster(item.asInt());
@@ -173,7 +174,7 @@ public class ClusterController {
 
     /** 启动 Session 集群 */
     @GetMapping("/deploySessionCluster")
-    public Result deploySessionCluster(@RequestParam("id") Integer id) {
+    public Result<Cluster> deploySessionCluster(@RequestParam("id") Integer id) {
         return Result.succeed(
                 clusterService.deploySessionCluster(id), "Deploy session cluster succeed.");
     }

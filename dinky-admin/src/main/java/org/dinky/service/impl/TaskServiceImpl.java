@@ -740,7 +740,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result onLineTask(Integer id) {
+    public Result<JobResult> onLineTask(Integer id) {
         final Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
@@ -766,7 +766,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result reOnLineTask(Integer id, String savePointPath) {
+    public Result<JobResult> reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
@@ -791,7 +791,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result offLineTask(Integer id, String type) {
+    public Result<Void> offLineTask(Integer id, String type) {
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (Asserts.isNullString(type)) {

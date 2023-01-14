@@ -113,7 +113,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     }
 
     @Override
-    public Result deleteAlertInstance(JsonNode para) {
+    public Result<Void> deleteAlertInstance(JsonNode para) {
         if (para.size() > 0) {
             final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
             final List<Integer> error = new ArrayList<>();

@@ -73,11 +73,11 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean developTask(Integer id);
 
-    Result onLineTask(Integer id);
+    Result<JobResult> onLineTask(Integer id);
 
-    Result reOnLineTask(Integer id, String savePointPath);
+    Result<JobResult> reOnLineTask(Integer id, String savePointPath);
 
-    Result offLineTask(Integer id, String type);
+    Result<Void> offLineTask(Integer id, String type);
 
     Result cancelTask(Integer id);
 

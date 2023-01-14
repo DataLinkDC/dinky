@@ -23,7 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.dto.LoginUTO;
+import org.dinky.dto.LoginDTO;
 import org.dinky.dto.UserDTO;
 import org.dinky.mapper.UserMapper;
 import org.dinky.model.Role;
@@ -44,7 +44,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,6 +52,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * UserServiceImpl
@@ -61,20 +61,21 @@ import cn.dev33.satoken.stp.StpUtil;
  * @since 2021/11/28 13:39
  */
 @Service
+@RequiredArgsConstructor
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
 
-    @Autowired private UserRoleService userRoleService;
+    private final UserRoleService userRoleService;
 
-    @Autowired private UserTenantService userTenantService;
+    private final UserTenantService userTenantService;
 
-    @Autowired private RoleService roleService;
+    private final RoleService roleService;
 
-    @Autowired private TenantService tenantService;
+    private final TenantService tenantService;
 
     @Override
-    public Result registerUser(User user) {
+    public Result<Void> registerUser(User user) {
         User userByUsername = getUserByUsername(user.getUsername());
         if (Asserts.isNotNull(userByUsername)) {
             return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
@@ -101,7 +102,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result modifyPassword(String username, String password, String newPassword) {
+    public Result<Void> modifyPassword(String username, String password, String newPassword) {
         User user = getUserByUsername(username);
         if (Asserts.isNull(user)) {
             return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
@@ -125,16 +126,16 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result loginUser(LoginUTO loginUTO) {
-        User user = getUserByUsername(loginUTO.getUsername());
+    public Result<UserDTO> loginUser(LoginDTO loginDTO) {
+        User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
         String userPassword = user.getPassword();
-        if (Asserts.isNullString(loginUTO.getPassword())) {
+        if (Asserts.isNullString(loginDTO.getPassword())) {
             return Result.failed(MessageResolverUtils.getMessage("login.password.notnull"));
         }
-        if (Asserts.isEquals(SaSecureUtil.md5(loginUTO.getPassword()), userPassword)) {
+        if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
             if (user.getIsDelete()) {
                 return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
             }
@@ -143,12 +144,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             }
 
             // 将前端入参 租户id 放入上下文
-            TenantContextHolder.set(loginUTO.getTenantId());
+            TenantContextHolder.set(loginDTO.getTenantId());
 
             // get user tenants and roles
-            UserDTO userDTO = getUserALLBaseInfo(loginUTO, user);
+            UserDTO userDTO = getUserAllBaseInfo(loginDTO, user);
 
-            StpUtil.login(user.getId(), loginUTO.isAutoLogin());
+            StpUtil.login(user.getId(), loginDTO.isAutoLogin());
             StpUtil.getSession().set("user", userDTO);
             return Result.succeed(userDTO, MessageResolverUtils.getMessage("login.success"));
         } else {
@@ -156,7 +157,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
     }
 
-    private UserDTO getUserALLBaseInfo(LoginUTO loginUTO, User user) {
+    private UserDTO getUserAllBaseInfo(LoginDTO loginDTO, User user) {
         UserDTO userDTO = new UserDTO();
         List<Role> roleList = new LinkedList<>();
         List<Tenant> tenantList = new LinkedList<>();
@@ -164,7 +165,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
+        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginDTO.getTenantId());
 
         userRoles.forEach(
                 userRole -> {
@@ -205,12 +206,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result grantRole(JsonNode para) {
-        if (para.size() > 0) {
+    public Result<Void> grantRole(JsonNode param) {
+        if (param.size() > 0) {
             List<UserRole> userRoleList = new ArrayList<>();
-            Integer userId = para.get("userId").asInt();
+            Integer userId = param.get("userId").asInt();
             userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
-            JsonNode userRoleJsonNode = para.get("roles");
+            JsonNode userRoleJsonNode = param.get("roles");
             for (JsonNode ids : userRoleJsonNode) {
                 UserRole userRole = new UserRole();
                 userRole.setUserId(userId);
@@ -233,7 +234,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result getTenants(String username) {
+    public Result<List<Tenant>> getTenants(String username) {
         User user = getUserByUsername(username);
         if (Asserts.isNull(user)) {
             return Result.failed("该账号不存在,获取租户失败");

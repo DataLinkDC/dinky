@@ -40,5 +40,5 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
 
     AlertResult testAlert(AlertInstance alertInstance);
 
-    Result deleteAlertInstance(JsonNode para);
+    Result<Void> deleteAlertInstance(JsonNode para);
 }
