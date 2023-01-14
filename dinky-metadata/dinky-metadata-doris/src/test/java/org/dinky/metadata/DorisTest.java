@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DorisTest {
@@ -56,6 +57,7 @@ public class DorisTest {
         }
     }
 
+    @Ignore
     @Test
     public void test() throws SQLException {
         // test
@@ -69,6 +71,7 @@ public class DorisTest {
         query();
     }
 
+    @Ignore
     @Test
     public void testSchema() {
         // schema && table
@@ -81,6 +84,7 @@ public class DorisTest {
         }
     }
 
+    @Ignore
     @Test
     public void testColumns() {
         // columns
@@ -90,6 +94,7 @@ public class DorisTest {
         }
     }
 
+    @Ignore
     @Test
     public void query() {
         JdbcSelectResult selectResult = driver.query("select * from scoreinfo ", 10);

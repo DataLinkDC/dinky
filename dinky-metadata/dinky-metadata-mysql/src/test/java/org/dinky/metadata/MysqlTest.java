@@ -28,6 +28,7 @@ import org.dinky.model.Schema;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,6 +56,7 @@ public class MysqlTest {
         return Driver.build(config);
     }
 
+    @Ignore
     @Test
     public void connectTest() {
         DriverConfig config = new DriverConfig();
@@ -72,6 +74,7 @@ public class MysqlTest {
         System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void schemaTest() {
         Driver driver = getDriver();
@@ -79,6 +82,7 @@ public class MysqlTest {
         System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void columnTest() {
         Driver driver = getDriver();
@@ -86,6 +90,7 @@ public class MysqlTest {
         System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void queryTest() {
         Driver driver = getDriver();

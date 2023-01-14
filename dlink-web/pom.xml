@@ -11,6 +11,8 @@
     <artifactId>dlink-web</artifactId>
     <packaging>pom</packaging>
 
+    <name>Dinky : Dlink-Web</name>
+
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
         <plugins>

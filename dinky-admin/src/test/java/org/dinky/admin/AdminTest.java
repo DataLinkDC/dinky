@@ -19,6 +19,7 @@
 
 package org.dinky.admin;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
@@ -34,5 +35,6 @@ public class AdminTest {
     @Test
     public void adminTest() {
         String admin = SaSecureUtil.md5("admin");
+        Assert.assertEquals("21232f297a57a5a743894a0e4a801fc3", admin);
     }
 }

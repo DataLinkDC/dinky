@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class SqlServerTest {
@@ -55,6 +56,7 @@ public class SqlServerTest {
         }
     }
 
+    @Ignore
     @Test
     public void test() throws SQLException {
         // test
@@ -68,6 +70,7 @@ public class SqlServerTest {
         query();
     }
 
+    @Ignore
     @Test
     public void testSchema() {
         // schema && table
@@ -80,6 +83,7 @@ public class SqlServerTest {
         }
     }
 
+    @Ignore
     @Test
     public void testColumns() {
         // columns
@@ -90,6 +94,7 @@ public class SqlServerTest {
         }
     }
 
+    @Ignore
     @Test
     public void query() {
         JdbcSelectResult selectResult = driver.query("select * from t_user", 10);

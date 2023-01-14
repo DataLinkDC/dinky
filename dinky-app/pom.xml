@@ -54,7 +54,7 @@
         </profile>
 
         <profile>
-            <id>all</id>
+            <id>flink-all</id>
             <modules>
                 <module>dinky-app-1.12</module>
                 <module>dinky-app-1.13</module>

@@ -41,7 +41,7 @@ jobs:
           fetch-depth: 0
       - name: Check Style
         run: |
-          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check -P all
+          ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check -P flink-all
   build_npm:
     name: Build_NPM
     runs-on: ubuntu-latest
@@ -126,7 +126,6 @@ jobs:
         run: |
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
-                 -Dcheckstyle.skip=true \
                  -Dspotless.check.skip=true \
                  -P prod,scala-2.12,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates

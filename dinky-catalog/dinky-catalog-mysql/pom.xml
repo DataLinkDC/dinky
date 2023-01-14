@@ -60,7 +60,7 @@
         </profile>
 
         <profile>
-            <id>all</id>
+            <id>flink-all</id>
             <modules>
                 <module>dinky-catalog-mysql-1.13</module>
                 <module>dinky-catalog-mysql-1.14</module>
