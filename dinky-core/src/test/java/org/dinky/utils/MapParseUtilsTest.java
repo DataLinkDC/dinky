@@ -17,15 +17,18 @@
  *
  */
 
-package org.dinky.executor;
+package org.dinky.utils;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /** */
-class SqlManagerTest {
+class MapParseUtilsTest {
 
-    @Test
-    void getSqlFragment() {
-        SqlManager sqlManager = new SqlManager();
+    @ParameterizedTest
+    @CsvSource({"[3], false", "[[2], true", "[1]], false"})
+    void getStrIsNest(String in, boolean result) {
+        Assertions.assertEquals(MapParseUtils.getStrIsNest(in), result);
     }
 }
