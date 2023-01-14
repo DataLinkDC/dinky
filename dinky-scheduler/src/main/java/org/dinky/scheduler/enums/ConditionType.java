@@ -22,17 +22,13 @@ package org.dinky.scheduler.enums;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * condition type
- */
+/** condition type */
 public enum ConditionType {
 
-    /**
-     * 0 none
-     * 1 judge
-     * 2 delay
-     */
-    NONE(0, "none"), JUDGE(1, "judge"), DELAY(2, "delay");
+    /** 0 none 1 judge 2 delay */
+    NONE(0, "none"),
+    JUDGE(1, "judge"),
+    DELAY(2, "delay");
 
     ConditionType(int code, String desc) {
         this.code = code;

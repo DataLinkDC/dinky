@@ -34,7 +34,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class TransGenerator {
 
     private ObjectNode plan;

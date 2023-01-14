@@ -49,11 +49,13 @@ public class FlinkBaseUtil {
         params.put(FlinkParamConstant.URL, parameters.get(FlinkParamConstant.URL, null));
         params.put(FlinkParamConstant.USERNAME, parameters.get(FlinkParamConstant.USERNAME, null));
         params.put(FlinkParamConstant.PASSWORD, parameters.get(FlinkParamConstant.PASSWORD, null));
-        params.put(FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
+        params.put(
+                FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
         return params;
     }
 
-    public static String getCDCSqlInsert(Table table, String targetName, String sourceName, FlinkCDCConfig config) {
+    public static String getCDCSqlInsert(
+            Table table, String targetName, String sourceName, FlinkCDCConfig config) {
         StringBuilder sb = new StringBuilder("INSERT INTO `");
         sb.append(targetName);
         sb.append("` SELECT\n");
@@ -70,8 +72,13 @@ public class FlinkBaseUtil {
         return sb.toString();
     }
 
-    public static String getFlinkDDL(Table table, String tableName, FlinkCDCConfig config, String sinkSchemaName,
-            String sinkTableName, String pkList) {
+    public static String getFlinkDDL(
+            Table table,
+            String tableName,
+            FlinkCDCConfig config,
+            String sinkSchemaName,
+            String sinkTableName,
+            String pkList) {
         StringBuilder sb = new StringBuilder();
         if (Integer.parseInt(EnvironmentInformation.getVersion().split("\\.")[1]) < 13) {
             sb.append("CREATE TABLE  `");
@@ -116,11 +123,17 @@ public class FlinkBaseUtil {
         return sb.toString();
     }
 
-    public static String getSinkConfigurationString(Table table, FlinkCDCConfig config, String sinkSchemaName,
-            String sinkTableName, String pkList) {
-        String configurationString = SqlUtil.replaceAllParam(config.getSinkConfigurationString(), "schemaName",
-                sinkSchemaName);
-        configurationString = SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
+    public static String getSinkConfigurationString(
+            Table table,
+            FlinkCDCConfig config,
+            String sinkSchemaName,
+            String sinkTableName,
+            String pkList) {
+        String configurationString =
+                SqlUtil.replaceAllParam(
+                        config.getSinkConfigurationString(), "schemaName", sinkSchemaName);
+        configurationString =
+                SqlUtil.replaceAllParam(configurationString, "tableName", sinkTableName);
         if (configurationString.contains("${pkList}")) {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
         }
@@ -139,7 +152,11 @@ public class FlinkBaseUtil {
     public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
         if ("true".equals(config.getSink().get("column.replace.line-break"))
                 && ColumnType.STRING.equals(column.getJavaType())) {
-            return "REGEXP_REPLACE(`" + column.getName() + "`, '\\n', '') AS `" + column.getName() + "`";
+            return "REGEXP_REPLACE(`"
+                    + column.getName()
+                    + "`, '\\n', '') AS `"
+                    + column.getName()
+                    + "`";
         } else {
             return "`" + column.getName() + "`";
         }

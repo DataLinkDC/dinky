@@ -39,9 +39,7 @@ import org.apache.flink.table.types.AbstractDataType;
 
 import java.util.Optional;
 
-/**
- *
- */
+/** */
 public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironmentInstance {
     @Override
     default Table fromValues(org.apache.flink.table.expressions.Expression... expressions) {
@@ -94,7 +92,8 @@ public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironm
     }
 
     @Override
-    default void createTemporarySystemFunction(String s, Class<? extends UserDefinedFunction> aClass) {
+    default void createTemporarySystemFunction(
+            String s, Class<? extends UserDefinedFunction> aClass) {
         getTableEnvironment().createTemporarySystemFunction(s, aClass);
     }
 

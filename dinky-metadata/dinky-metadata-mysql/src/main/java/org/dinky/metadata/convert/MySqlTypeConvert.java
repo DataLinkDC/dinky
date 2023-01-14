@@ -28,7 +28,7 @@ import org.dinky.model.ColumnType;
  *
  * @author wenmo
  * @since 2021/7/20 15:21
- **/
+ */
 public class MySqlTypeConvert implements ITypeConvert {
 
     @Override
@@ -59,7 +59,9 @@ public class MySqlTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.DOUBLE;
             }
-        } else if (t.contains("boolean") || (t.contains("tinyint") && column.getLength() == 1) || t.contains("bit")) {
+        } else if (t.contains("boolean")
+                || (t.contains("tinyint") && column.getLength() == 1)
+                || t.contains("bit")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
             } else {
@@ -77,7 +79,10 @@ public class MySqlTypeConvert implements ITypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
             columnType = ColumnType.BYTES;
-        } else if (t.contains("tinyint") || t.contains("mediumint") || t.contains("smallint") || t.contains("int")) {
+        } else if (t.contains("tinyint")
+                || t.contains("mediumint")
+                || t.contains("smallint")
+                || t.contains("int")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {

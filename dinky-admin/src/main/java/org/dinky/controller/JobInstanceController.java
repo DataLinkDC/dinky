@@ -60,22 +60,16 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/jobInstance")
 public class JobInstanceController {
 
-    @Autowired
-    private JobInstanceService jobInstanceService;
-    @Autowired
-    private TaskService taskService;
+    @Autowired private JobInstanceService jobInstanceService;
+    @Autowired private TaskService taskService;
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -89,25 +83,22 @@ public class JobInstanceController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody JobInstance jobInstance) throws Exception {
         jobInstance = jobInstanceService.getById(jobInstance.getId());
         return Result.succeed(jobInstance, "获取成功");
     }
 
-    /**
-     * 获取状态统计信息
-     */
+    /** 获取状态统计信息 */
     @GetMapping("/getStatusCount")
     public Result getStatusCount() {
         HashMap<String, Object> result = new HashMap<>();
@@ -116,33 +107,25 @@ public class JobInstanceController {
         return Result.succeed(result, "获取成功");
     }
 
-    /**
-     * 获取Job实例的所有信息
-     */
+    /** 获取Job实例的所有信息 */
     @GetMapping("/getJobInfoDetail")
     public Result getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
     }
 
-    /**
-     * 刷新Job实例的所有信息
-     */
+    /** 刷新Job实例的所有信息 */
     @GetMapping("/refreshJobInfoDetail")
     public Result refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
     }
 
-    /**
-     * 获取单任务实例的血缘分析
-     */
+    /** 获取单任务实例的血缘分析 */
     @GetMapping("/getLineage")
     public Result getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
     }
 
-    /**
-     * 获取 JobManager 的信息
-     */
+    /** 获取 JobManager 的信息 */
     @GetMapping("/getJobManagerInfo")
     public Result getJobManagerInfo(@RequestParam String address) {
         JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
@@ -153,17 +136,15 @@ public class JobInstanceController {
         return Result.succeed(jobManagerConfiguration, "获取成功");
     }
 
-    /**
-     * 获取 TaskManager 的信息
-     */
+    /** 获取 TaskManager 的信息 */
     @GetMapping("/getTaskManagerInfo")
     public Result getTaskManagerInfo(@RequestParam String address) {
         Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
         if (Asserts.isNotNullString(address)) {
             FlinkAPI flinkAPI = FlinkAPI.build(address);
             JsonNode taskManagerContainers = flinkAPI.getTaskManagers();
-            BuildConfiguration.buildTaskManagerConfiguration(taskManagerConfigurationList, flinkAPI,
-                    taskManagerContainers);
+            BuildConfiguration.buildTaskManagerConfiguration(
+                    taskManagerConfigurationList, flinkAPI, taskManagerContainers);
         }
         return Result.succeed(taskManagerConfigurationList, "获取成功");
     }

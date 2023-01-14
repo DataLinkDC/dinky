@@ -30,7 +30,7 @@ import java.util.Set;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class ColumnCAResult {
 
     private List<TableCA> tableCAS;

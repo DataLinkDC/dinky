@@ -25,5 +25,4 @@ package org.dinky.daemon;
  * @author wenmo
  * @since 2022/3/2 23:31
  */
-public class DaemonTest {
-}
+public class DaemonTest {}

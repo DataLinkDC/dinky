@@ -39,7 +39,7 @@ public interface FunctionCompiler {
     /**
      * 函数代码在线动态编译
      *
-     * @param udf  udf
+     * @param udf udf
      * @param conf flink-conf
      * @param missionId 任务id
      * @return 是否成功
@@ -48,6 +48,7 @@ public interface FunctionCompiler {
 
     /**
      * 编译
+     *
      * @param udf udf实例
      * @param conf flink-conf
      * @param missionId 任务id
@@ -75,6 +76,7 @@ public interface FunctionCompiler {
 
     /**
      * 编译
+     *
      * @param udfList udf、实例列表
      * @param conf flink-conf
      * @param missionId 任务id
@@ -82,8 +84,11 @@ public interface FunctionCompiler {
     static void getCompiler(List<UDF> udfList, ReadableConfig conf, Integer missionId) {
         for (UDF udf : udfList) {
             if (!getCompiler(udf, conf, missionId)) {
-                throw new UDFCompilerException(StrUtil.format("codeLanguage:{} , className:{} 编译失败",
-                        udf.getFunctionLanguage(), udf.getClassName()));
+                throw new UDFCompilerException(
+                        StrUtil.format(
+                                "codeLanguage:{} , className:{} 编译失败",
+                                udf.getFunctionLanguage(),
+                                udf.getClassName()));
             }
         }
     }

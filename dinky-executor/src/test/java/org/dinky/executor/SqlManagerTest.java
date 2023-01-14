@@ -17,30 +17,17 @@
  *
  */
 
-package org.dinky.app;
+package org.dinky.executor;
 
-import org.dinky.app.db.DBConfig;
-import org.dinky.app.flinksql.Submiter;
-import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkParamConstant;
-import org.dinky.utils.FlinkBaseUtil;
+import static org.junit.jupiter.api.Assertions.*;
 
-import java.io.IOException;
-import java.util.Map;
+import org.junit.jupiter.api.Test;
 
-/**
- * MainApp
- *
- * @author wenmo
- * @since 2021/10/27
- **/
-public class MainApp {
+/** */
+class SqlManagerTest {
 
-    public static void main(String[] args) throws IOException {
-        Map<String, String> params = FlinkBaseUtil.getParamsFromArgs(args);
-        String id = params.get(FlinkParamConstant.ID);
-        Asserts.checkNullString(id, "请配置入参 id ");
-        DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig,params.get(FlinkParamConstant.DINKY_ADDR));
+    @Test
+    void getSqlFragment() {
+        SqlManager sqlManager = new SqlManager();
     }
 }

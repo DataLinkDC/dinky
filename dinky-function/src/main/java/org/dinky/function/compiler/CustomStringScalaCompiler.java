@@ -48,7 +48,8 @@ public class CustomStringScalaCompiler {
         GenericRunnerSettings settings = new GenericRunnerSettings(new ErrorHandler());
 
         settings.usejavacp().tryToSetFromPropertyValue("true");
-        settings.Yreploutdir().tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));
+        settings.Yreploutdir()
+                .tryToSetFromPropertyValue(PathConstant.getUdfCompilerJavaPath(missionId));
         return new IMain(settings);
     }
 }

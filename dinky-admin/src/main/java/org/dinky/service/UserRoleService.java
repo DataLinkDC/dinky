@@ -43,7 +43,7 @@ public interface UserRoleService extends ISuperService<UserRole> {
     List<UserRole> getUserRoleByUserId(int userId);
 
     /**
-     * delete user role relation by userId  and roleId
+     * delete user role relation by userId and roleId
      *
      * @param userRoleList
      * @return
@@ -57,5 +57,4 @@ public interface UserRoleService extends ISuperService<UserRole> {
      * @return
      */
     boolean deleteByRoleIds(List<Integer> roleIds);
-
 }

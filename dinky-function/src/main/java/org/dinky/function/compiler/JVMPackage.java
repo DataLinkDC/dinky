@@ -46,11 +46,15 @@ public class JVMPackage implements FunctionPackage {
         if (CollUtil.isEmpty(udfList)) {
             return new String[0];
         }
-        List<String> classNameList = udfList.stream()
-                .filter(udf -> udf.getFunctionLanguage() == FunctionLanguage.JAVA
-                        || udf.getFunctionLanguage() == FunctionLanguage.SCALA)
-                .map(UDF::getClassName)
-                .collect(Collectors.toList());
+        List<String> classNameList =
+                udfList.stream()
+                        .filter(
+                                udf ->
+                                        udf.getFunctionLanguage() == FunctionLanguage.JAVA
+                                                || udf.getFunctionLanguage()
+                                                        == FunctionLanguage.SCALA)
+                        .map(UDF::getClassName)
+                        .collect(Collectors.toList());
         String[] clazzs = new String[classNameList.size()];
         InputStream[] fileInputStreams = new InputStream[classNameList.size()];
         if (CollUtil.isEmpty(classNameList)) {
@@ -73,6 +77,6 @@ public class JVMPackage implements FunctionPackage {
         try (ZipWriter zipWriter = new ZipWriter(file, Charset.defaultCharset())) {
             zipWriter.add(clazzs, fileInputStreams);
         }
-        return new String[]{jarPath};
+        return new String[] {jarPath};
     }
 }

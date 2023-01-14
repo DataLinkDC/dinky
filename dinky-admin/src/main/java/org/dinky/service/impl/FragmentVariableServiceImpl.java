@@ -39,9 +39,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2022/8/18
  */
 @Service
-public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
-        implements
-            FragmentVariableService {
+public class FragmentVariableServiceImpl
+        extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
+        implements FragmentVariableService {
 
     @Override
     public List<FragmentVariable> listEnabledAll() {

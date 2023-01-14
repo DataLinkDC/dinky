@@ -40,7 +40,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2021/5/28 15:57
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_user")
@@ -51,7 +51,9 @@ public class User implements Serializable {
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @NotNull(message = "用户名不能为空", groups = {Save.class})
+    @NotNull(
+            message = "用户名不能为空",
+            groups = {Save.class})
     private String username;
 
     private String password;

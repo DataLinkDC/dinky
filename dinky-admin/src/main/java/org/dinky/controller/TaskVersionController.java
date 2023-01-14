@@ -49,36 +49,38 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/task/version")
 public class TaskVersionController {
 
-    @Autowired
-    private TaskVersionService versionService;
+    @Autowired private TaskVersionService versionService;
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<TaskVersionHistoryDTO> listTasks(@RequestBody JsonNode para) {
-        ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult = new ProTableResult<>();
+        ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult =
+                new ProTableResult<>();
 
         ProTableResult<TaskVersion> versionProTableResult = versionService.selectForProTable(para);
 
         BeanUtil.copyProperties(versionProTableResult, versionHistoryDTOProTableResult);
-        List<TaskVersionHistoryDTO> collect = versionProTableResult.getData().stream().map(t -> {
-            TaskVersionHistoryDTO versionHistoryDTO = new TaskVersionHistoryDTO();
-            versionHistoryDTO.setId(t.getId());
-            versionHistoryDTO.setTaskId(t.getTaskId());
-            versionHistoryDTO.setName(t.getName());
-            versionHistoryDTO.setAlias(t.getAlias());
-            versionHistoryDTO.setDialect(t.getDialect());
-            versionHistoryDTO.setType(t.getType());
-            versionHistoryDTO.setStatement(t.getStatement());
-            versionHistoryDTO.setVersionId(t.getVersionId());
-            versionHistoryDTO.setCreateTime(t.getCreateTime());
-            return versionHistoryDTO;
-        }).collect(Collectors.toList());
+        List<TaskVersionHistoryDTO> collect =
+                versionProTableResult.getData().stream()
+                        .map(
+                                t -> {
+                                    TaskVersionHistoryDTO versionHistoryDTO =
+                                            new TaskVersionHistoryDTO();
+                                    versionHistoryDTO.setId(t.getId());
+                                    versionHistoryDTO.setTaskId(t.getTaskId());
+                                    versionHistoryDTO.setName(t.getName());
+                                    versionHistoryDTO.setAlias(t.getAlias());
+                                    versionHistoryDTO.setDialect(t.getDialect());
+                                    versionHistoryDTO.setType(t.getType());
+                                    versionHistoryDTO.setStatement(t.getStatement());
+                                    versionHistoryDTO.setVersionId(t.getVersionId());
+                                    versionHistoryDTO.setCreateTime(t.getCreateTime());
+                                    return versionHistoryDTO;
+                                })
+                        .collect(Collectors.toList());
 
         versionHistoryDTOProTableResult.setData(collect);
 
         return versionHistoryDTOProTableResult;
     }
-
 }

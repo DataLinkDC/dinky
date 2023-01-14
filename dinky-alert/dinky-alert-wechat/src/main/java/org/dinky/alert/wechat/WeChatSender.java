@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2022/2/23 21:11
- **/
+ */
 public class WeChatSender {
 
     private static final Logger logger = LoggerFactory.getLogger(WeChatSender.class);
@@ -79,14 +79,27 @@ public class WeChatSender {
 
     WeChatSender(Map<String, String> config) {
         sendType = config.get(WeChatConstants.SEND_TYPE);
-        weChatAgentId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.AGENT_ID);
+        weChatAgentId =
+                sendType.equals(WeChatType.CHAT.getValue())
+                        ? ""
+                        : config.get(WeChatConstants.AGENT_ID);
         atAll = Boolean.valueOf(config.get(WeChatConstants.AT_ALL));
-        weChatUsers = sendType.equals(WeChatType.CHAT.getValue())
-                ? (atAll && config.get(WeChatConstants.USERS) == null ? "" : config.get(WeChatConstants.USERS))
-                : config.get(WeChatConstants.USERS);
-        String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.CORP_ID);
-        String weChatSecret = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.SECRET);
-        String weChatTokenUrl = sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.TOKEN_URL;
+        weChatUsers =
+                sendType.equals(WeChatType.CHAT.getValue())
+                        ? (atAll && config.get(WeChatConstants.USERS) == null
+                                ? ""
+                                : config.get(WeChatConstants.USERS))
+                        : config.get(WeChatConstants.USERS);
+        String weChatCorpId =
+                sendType.equals(WeChatType.CHAT.getValue())
+                        ? ""
+                        : config.get(WeChatConstants.CORP_ID);
+        String weChatSecret =
+                sendType.equals(WeChatType.CHAT.getValue())
+                        ? ""
+                        : config.get(WeChatConstants.SECRET);
+        String weChatTokenUrl =
+                sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.TOKEN_URL;
         weChatUserSendMsg = WeChatConstants.USER_SEND_MSG;
         showType = config.get(WeChatConstants.SHOW_TYPE);
         requireNonNull(showType, WeChatConstants.SHOW_TYPE + " must not null");
@@ -95,9 +108,10 @@ public class WeChatSender {
         if (sendType.equals(WeChatType.CHAT.getValue())) {
             requireNonNull(webhookUrl, WeChatConstants.WEBHOOK + " must not null");
         }
-        weChatTokenUrlReplace = weChatTokenUrl
-                .replace(CORP_ID_REGEX, weChatCorpId)
-                .replace(SECRET_REGEX, weChatSecret);
+        weChatTokenUrlReplace =
+                weChatTokenUrl
+                        .replace(CORP_ID_REGEX, weChatCorpId)
+                        .replace(SECRET_REGEX, weChatSecret);
         weChatToken = getToken();
     }
 
@@ -119,12 +133,17 @@ public class WeChatSender {
         }
         String msg = "";
         if (sendType.equals(WeChatType.APP.getValue())) {
-            msg = weChatUserSendMsg.replace(USER_REG_EXP, mkUserString(userList))
-                    .replace(AGENT_ID_REG_EXP, weChatAgentId).replace(MSG_REG_EXP, data)
-                    .replace(SHOW_TYPE_REGEX, showType);
+            msg =
+                    weChatUserSendMsg
+                            .replace(USER_REG_EXP, mkUserString(userList))
+                            .replace(AGENT_ID_REG_EXP, weChatAgentId)
+                            .replace(MSG_REG_EXP, data)
+                            .replace(SHOW_TYPE_REGEX, showType);
         } else {
-            msg = WeChatConstants.WEBHOOK_TEMPLATE.replace(SHOW_TYPE_REGEX, showType)
-                    .replace(MSG_REG_EXP, data);
+            msg =
+                    WeChatConstants.WEBHOOK_TEMPLATE
+                            .replace(SHOW_TYPE_REGEX, showType)
+                            .replace(MSG_REG_EXP, data);
         }
 
         if (sendType.equals(WeChatType.APP.getValue()) && Asserts.isNullString(weChatToken)) {
@@ -134,7 +153,8 @@ public class WeChatSender {
         }
         String enterpriseWeChatPushUrlReplace = "";
         if (sendType.equals(WeChatType.APP.getValue())) {
-            enterpriseWeChatPushUrlReplace = WeChatConstants.PUSH_URL.replace(TOKEN_REGEX, weChatToken);
+            enterpriseWeChatPushUrlReplace =
+                    WeChatConstants.PUSH_URL.replace(TOKEN_REGEX, weChatToken);
         } else if (sendType.equals(WeChatType.CHAT.getValue())) {
             enterpriseWeChatPushUrlReplace = webhookUrl;
         }
@@ -194,9 +214,9 @@ public class WeChatSender {
     }
 
     /**
-     *@Author: zhumingye
-     *@date: 2022/3/26
-     *@Description: 将用户列表转换为 <@用户名> 的格式
+     * @Author: zhumingye
+     *
+     * @date: 2022/3/26 @Description: 将用户列表转换为 <@用户名> 的格式
      * @param userList
      * @return java.lang.String
      */
@@ -204,13 +224,14 @@ public class WeChatSender {
 
         StringBuilder builder = new StringBuilder("\n");
         if (Asserts.isNotNull(userList)) {
-            userList.forEach(value -> {
-                if (value.equals("所有人") && showType.equals(ShowType.TEXT.getValue())) {
-                    builder.append("@所有人 ");
-                } else {
-                    builder.append("<@").append(value).append("> ");
-                }
-            });
+            userList.forEach(
+                    value -> {
+                        if (value.equals("所有人") && showType.equals(ShowType.TEXT.getValue())) {
+                            builder.append("@所有人 ");
+                        } else {
+                            builder.append("<@").append(value).append("> ");
+                        }
+                    });
         }
         return builder.toString();
     }
@@ -225,25 +246,28 @@ public class WeChatSender {
         return result;
     }
 
-    private static String markdownTable(String title, String content, List<String> userList, String sendType) {
+    private static String markdownTable(
+            String title, String content, List<String> userList, String sendType) {
         return getMsgResult(title, content, userList, sendType);
     }
 
-    private static String markdownText(String title, String content, List<String> userList, String sendType) {
+    private static String markdownText(
+            String title, String content, List<String> userList, String sendType) {
         return getMsgResult(title, content, userList, sendType);
     }
 
     /**
-     *@Author: zhumingye
-     *@date: 2022/3/25
-     *@Description: 创建公共方法 用于创建发送消息文本
+     * @Author: zhumingye
+     *
+     * @date: 2022/3/25 @Description: 创建公共方法 用于创建发送消息文本
      * @param title 发送标题
      * @param content 发送内容
      * @param sendType
      * @return java.lang.String
-     *@throws
+     * @throws
      */
-    private static String getMsgResult(String title, String content, List<String> userList, String sendType) {
+    private static String getMsgResult(
+            String title, String content, List<String> userList, String sendType) {
 
         List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
         if (null == mapItemsList || mapItemsList.isEmpty()) {
@@ -255,7 +279,9 @@ public class WeChatSender {
         for (LinkedHashMap mapItems : mapItemsList) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-            StringBuilder t = new StringBuilder(String.format("`%s`%s", title, WeChatConstants.MARKDOWN_ENTER));
+            StringBuilder t =
+                    new StringBuilder(
+                            String.format("`%s`%s", title, WeChatConstants.MARKDOWN_ENTER));
 
             while (iterator.hasNext()) {
 

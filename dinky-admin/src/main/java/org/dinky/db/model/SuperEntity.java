@@ -49,16 +49,18 @@ import lombok.Setter;
 @Getter
 public class SuperEntity<T extends Model<?>> extends Model<T> implements Serializable {
 
-    /**
-     * 主键ID
-     */
+    /** 主键ID */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
-    @NotNull(message = "名称不能为空", groups = {Save.class})
+    @NotNull(
+            message = "名称不能为空",
+            groups = {Save.class})
     private String name;
 
-    @NotNull(message = "是否启用不能为空", groups = {Save.class})
+    @NotNull(
+            message = "是否启用不能为空",
+            groups = {Save.class})
     private Boolean enabled;
 
     @TableField(fill = FieldFill.INSERT)

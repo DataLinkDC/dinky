@@ -38,7 +38,7 @@ import java.util.ServiceLoader;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public interface Gateway {
 
     static Optional<Gateway> get(GatewayConfig config) {
@@ -59,7 +59,8 @@ public interface Gateway {
     static Gateway build(GatewayConfig config) {
         Optional<Gateway> optionalGateway = Gateway.get(config);
         if (!optionalGateway.isPresent()) {
-            throw new GatewayException("不支持 Flink Gateway 类型【" + config.getType().getLongValue() + "】,请添加扩展包");
+            throw new GatewayException(
+                    "不支持 Flink Gateway 类型【" + config.getType().getLongValue() + "】,请添加扩展包");
         }
         return optionalGateway.get();
     }

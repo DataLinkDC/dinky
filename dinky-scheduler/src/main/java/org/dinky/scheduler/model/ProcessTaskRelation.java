@@ -67,5 +67,4 @@ public class ProcessTaskRelation {
 
     @ApiModelProperty(value = "更新时间")
     private Date updateTime;
-
 }

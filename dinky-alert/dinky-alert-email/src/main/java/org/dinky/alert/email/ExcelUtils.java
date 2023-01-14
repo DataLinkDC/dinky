@@ -42,16 +42,18 @@ import org.slf4j.LoggerFactory;
 
 /**
  * ExcelUtils excel工具类
+ *
  * @author zhumingye
  * @date: 2022/4/3
- **/
+ */
 public final class ExcelUtils {
 
     private static final int XLSX_WINDOW_ROW = 10000;
     private static final Logger logger = LoggerFactory.getLogger(ExcelUtils.class);
 
     private ExcelUtils() {
-        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException(
+                "This is a utility class and cannot be instantiated");
     }
 
     /**
@@ -83,7 +85,8 @@ public final class ExcelUtils {
             headerList.add(en.getKey());
         }
         try (SXSSFWorkbook wb = new SXSSFWorkbook(XLSX_WINDOW_ROW);
-                FileOutputStream fos = new FileOutputStream(String.format("%s/%s.xlsx", xlsFilePath, title))) {
+                FileOutputStream fos =
+                        new FileOutputStream(String.format("%s/%s.xlsx", xlsFilePath, title))) {
             // declare a workbook
             // generate a table
             Sheet sheet = wb.createSheet();
@@ -132,5 +135,4 @@ public final class ExcelUtils {
             throw new AlertException("generate excel error", e);
         }
     }
-
 }

@@ -31,8 +31,7 @@ public class SqlGeneration {
     private String sqlSelect;
     private String sqlCreate;
 
-    public SqlGeneration() {
-    }
+    public SqlGeneration() {}
 
     public SqlGeneration(String flinkSqlCreate, String sqlSelect, String sqlCreate) {
         this.flinkSqlCreate = flinkSqlCreate;

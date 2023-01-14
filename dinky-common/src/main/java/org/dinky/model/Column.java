@@ -54,14 +54,14 @@ public class Column implements Serializable {
 
     public String getFlinkType() {
         String flinkType = javaType.getFlinkType();
-        if (flinkType.equals("DECIMAL")) {
-            if (precision == null || precision == 0) {
-                return flinkType + "(" + 38 + "," + scale + ")";
-            } else {
-                return flinkType + "(" + precision + "," + scale + ")";
-            }
-        } else {
+        if (!flinkType.equals("DECIMAL")) {
             return flinkType;
         }
+
+        if (precision == null || precision == 0) {
+            return String.format("%s(%d,%d)", flinkType, 38, scale);
+        }
+
+        return String.format("%s(%d,%d)", flinkType, precision, scale);
     }
 }

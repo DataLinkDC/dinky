@@ -43,14 +43,13 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
  *
  * @author wenmo
  * @since 2022/4/12 21:29
- **/
+ */
 public class OracleCDCBuilder extends AbstractCDCBuilder {
 
     public static final String KEY_WORD = "oracle-cdc";
     private static final String METADATA_TYPE = "Oracle";
 
-    public OracleCDCBuilder() {
-    }
+    public OracleCDCBuilder() {}
 
     public OracleCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -70,16 +69,18 @@ public class OracleCDCBuilder extends AbstractCDCBuilder {
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
         Properties properties = new Properties();
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        OracleSource.Builder<String> sourceBuilder = OracleSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword())
-                .database(config.getDatabase());
+        OracleSource.Builder<String> sourceBuilder =
+                OracleSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .username(config.getUsername())
+                        .password(config.getPassword())
+                        .database(config.getDatabase());
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
@@ -89,7 +90,8 @@ public class OracleCDCBuilder extends AbstractCDCBuilder {
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }

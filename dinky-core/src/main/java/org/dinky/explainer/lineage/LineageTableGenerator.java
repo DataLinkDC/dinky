@@ -36,14 +36,13 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2022/3/16 19:56
- **/
+ */
 public class LineageTableGenerator {
 
     private Map<Integer, Trans> transMaps;
     private List<TableCA> tables = new ArrayList<>();
 
-    public LineageTableGenerator() {
-    }
+    public LineageTableGenerator() {}
 
     public static LineageTableGenerator build(List<Trans> transList) {
         LineageTableGenerator generator = new LineageTableGenerator();

@@ -50,10 +50,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/role")
 public class RoleController {
 
-    @Autowired
-    private RoleService roleService;
-    @Autowired
-    private UserRoleService userRoleService;
+    @Autowired private RoleService roleService;
+    @Autowired private UserRoleService userRoleService;
 
     /**
      * create or update role
@@ -75,17 +73,13 @@ public class RoleController {
         return roleService.deleteRoles(para);
     }
 
-    /**
-     * query role list
-     */
+    /** query role list */
     @PostMapping
     public ProTableResult<Role> listRoles(@RequestBody JsonNode para) {
         return roleService.selectForProTable(para, true);
     }
 
-    /**
-     * 获取所有的角色列表以及当前用户的角色 ids
-     */
+    /** 获取所有的角色列表以及当前用户的角色 ids */
     @GetMapping(value = "/getRolesAndIdsByUserId")
     public Result getRolesAndIdsByUserId(@RequestParam Integer id) {
         List<Role> roleList = roleService.list();

@@ -30,8 +30,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ResultPool {
 
-    private ResultPool() {
-    }
+    private ResultPool() {}
 
     private static final Map<String, SelectResult> results = new ConcurrentHashMap<>();
 
@@ -58,5 +57,4 @@ public final class ResultPool {
     public static void clear() {
         results.clear();
     }
-
 }

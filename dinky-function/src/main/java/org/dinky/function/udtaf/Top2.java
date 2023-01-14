@@ -29,7 +29,6 @@ import org.apache.flink.util.Collector;
  * @author wenmo
  * @since 2021/6/14 20:44
  */
-
 public class Top2 extends TableAggregateFunction<Tuple2<Integer, Integer>, Top2.Top2Accumulator> {
 
     public static class Top2Accumulator {
@@ -71,5 +70,4 @@ public class Top2 extends TableAggregateFunction<Tuple2<Integer, Integer>, Top2.
             out.collect(Tuple2.of(acc.second, 2));
         }
     }
-
 }

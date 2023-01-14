@@ -38,7 +38,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 @Getter
 @Setter
 public class GatewayConfig {
@@ -61,20 +61,25 @@ public class GatewayConfig {
     public static GatewayConfig build(Map<String, Object> config) {
         GatewayConfig gatewayConfig = new GatewayConfig();
         if (config.containsKey("hadoopConfigPath")) {
-            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString(),
-                    config.get("flinkLibPath").toString(),
-                    config.get("hadoopConfigPath").toString()));
+            gatewayConfig.setClusterConfig(
+                    ClusterConfig.build(
+                            config.get("flinkConfigPath").toString(),
+                            config.get("flinkLibPath").toString(),
+                            config.get("hadoopConfigPath").toString()));
         } else {
-            gatewayConfig.setClusterConfig(ClusterConfig.build(config.get("flinkConfigPath").toString()));
+            gatewayConfig.setClusterConfig(
+                    ClusterConfig.build(config.get("flinkConfigPath").toString()));
         }
         AppConfig appConfig = new AppConfig();
-        if (config.containsKey("userJarPath") && Asserts.isNotNullString((String) config.get("userJarPath"))) {
+        if (config.containsKey("userJarPath")
+                && Asserts.isNotNullString((String) config.get("userJarPath"))) {
             appConfig.setUserJarPath(config.get("userJarPath").toString());
             if (config.containsKey("userJarMainAppClass")
                     && Asserts.isNotNullString((String) config.get("userJarMainAppClass"))) {
                 appConfig.setUserJarMainAppClass(config.get("userJarMainAppClass").toString());
             }
-            if (config.containsKey("userJarParas") && Asserts.isNotNullString((String) config.get("userJarParas"))) {
+            if (config.containsKey("userJarParas")
+                    && Asserts.isNotNullString((String) config.get("userJarParas"))) {
                 // There may be multiple spaces between the parameter and value during user input,
                 // which will directly lead to a parameter passing error and needs to be eliminated
                 String[] temp = config.get("userJarParas").toString().split(" ");
@@ -90,21 +95,29 @@ public class GatewayConfig {
         }
         if (config.containsKey("flinkConfig")
                 && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
-            gatewayConfig.setFlinkConfig(FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
+            gatewayConfig.setFlinkConfig(
+                    FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
         }
         if (config.containsKey("kubernetesConfig")) {
-            Map<String, String> kubernetesConfig = (Map<String, String>) config.get("kubernetesConfig");
+            Map<String, String> kubernetesConfig =
+                    (Map<String, String>) config.get("kubernetesConfig");
             gatewayConfig.getFlinkConfig().getConfiguration().putAll(kubernetesConfig);
         }
         // at present only k8s task have this
         if (config.containsKey("taskCustomConfig")) {
-            Map<String, Map<String, String>> taskCustomConfig = (Map<String, Map<String, String>>) config
-                    .get("taskCustomConfig");
+            Map<String, Map<String, String>> taskCustomConfig =
+                    (Map<String, Map<String, String>>) config.get("taskCustomConfig");
             if (taskCustomConfig.containsKey("kubernetesConfig")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("kubernetesConfig"));
+                gatewayConfig
+                        .getFlinkConfig()
+                        .getConfiguration()
+                        .putAll(taskCustomConfig.get("kubernetesConfig"));
             }
             if (taskCustomConfig.containsKey("flinkConfig")) {
-                gatewayConfig.getFlinkConfig().getConfiguration().putAll(taskCustomConfig.get("flinkConfig"));
+                gatewayConfig
+                        .getFlinkConfig()
+                        .getConfiguration()
+                        .putAll(taskCustomConfig.get("flinkConfig"));
             }
         }
         if (config.containsKey("taskId")) {
@@ -113,5 +126,4 @@ public class GatewayConfig {
         // config.setType(GatewayType.get(para.get("type").asText()));
         return gatewayConfig;
     }
-
 }

@@ -37,13 +37,6 @@
 
     <profiles>
         <profile>
-            <id>flink-1.11</id>
-            <modules>
-                <module>dinky-client-1.11</module>
-            </modules>
-        </profile>
-
-        <profile>
             <id>flink-1.12</id>
             <modules>
                 <module>dinky-client-1.12</module>
@@ -81,7 +74,6 @@
         <profile>
             <id>all</id>
             <modules>
-                <module>dinky-client-1.11</module>
                 <module>dinky-client-1.12</module>
                 <module>dinky-client-1.13</module>
                 <module>dinky-client-1.14</module>

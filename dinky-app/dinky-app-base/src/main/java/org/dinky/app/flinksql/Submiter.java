@@ -66,7 +66,7 @@ import cn.hutool.core.util.URLUtil;
  *
  * @author wenmo
  * @since 2021/10/27
- **/
+ */
 public class Submiter {
 
     private static final Logger logger = LoggerFactory.getLogger(Submiter.class);
@@ -85,7 +85,8 @@ public class Submiter {
         }
         return "select id, name, alias as jobName, type,check_point as checkpoint,"
                 + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
-                + " env_id as envId,batch_model AS useBatchModel from dinky_task where id = " + id;
+                + " env_id as envId,batch_model AS useBatchModel from dinky_task where id = "
+                + id;
     }
 
     private static String getFlinkSQLStatement(Integer id, DBConfig config) {
@@ -93,8 +94,13 @@ public class Submiter {
         try {
             statement = DBUtil.getOneByID(getQuerySQL(id), config);
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
-                    config.toString(), e.getMessage(), e);
+            logger.error(
+                    "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
+                    LocalDateTime.now(),
+                    id,
+                    config.toString(),
+                    e.getMessage(),
+                    e);
         }
         return statement;
     }
@@ -104,8 +110,13 @@ public class Submiter {
         try {
             task = DBUtil.getMapByID(getTaskInfo(id), config);
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ", LocalDateTime.now(), id,
-                    config.toString(), e.getMessage(), e);
+            logger.error(
+                    "{} --> 获取 FlinkSQL 配置异常，ID 为 {}, 连接信息为：{} ,异常信息为：{} ",
+                    LocalDateTime.now(),
+                    id,
+                    config.toString(),
+                    e.getMessage(),
+                    e);
         }
         return task;
     }
@@ -128,8 +139,12 @@ public class Submiter {
                 return "";
             }
         } catch (IOException | SQLException e) {
-            logger.error("{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}", LocalDateTime.now(),
-                    dbConfig.toString(), e.getMessage(), e);
+            logger.error(
+                    "{} --> 获取 数据源信息异常，请检查数据库连接，连接信息为：{} ,异常信息为：{}",
+                    LocalDateTime.now(),
+                    dbConfig.toString(),
+                    e.getMessage(),
+                    e);
         }
 
         return "";
@@ -161,13 +176,31 @@ public class Submiter {
         loadDep(taskConfig.get("type"), id, dinkyAddr, executorSetting);
 
         String uuid = UUID.randomUUID().toString().replace("-", "");
-        if (executorSetting.getConfig().containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
-            executorSetting.getConfig().put(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key()) + "/" + uuid);
+        if (executorSetting
+                .getConfig()
+                .containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
+            executorSetting
+                    .getConfig()
+                    .put(
+                            CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
+                            executorSetting
+                                            .getConfig()
+                                            .get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())
+                                    + "/"
+                                    + uuid);
         }
-        if (executorSetting.getConfig().containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
-            executorSetting.getConfig().put(CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
-                    executorSetting.getConfig().get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key()) + "/" + uuid);
+        if (executorSetting
+                .getConfig()
+                .containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
+            executorSetting
+                    .getConfig()
+                    .put(
+                            CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
+                            executorSetting
+                                            .getConfig()
+                                            .get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())
+                                    + "/"
+                                    + uuid);
         }
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
@@ -207,7 +240,8 @@ public class Submiter {
                         inserts.add(item.getValue());
                     }
                 }
-                logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                logger.info(
+                        "正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
                 executor.submitStatementSet(inserts);
                 logger.info("执行成功");
             } else {
@@ -239,7 +273,8 @@ public class Submiter {
         logger.info("{}任务提交成功", LocalDateTime.now());
     }
 
-    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
+    private static void loadDep(
+            String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
@@ -257,19 +292,31 @@ public class Submiter {
                 String depPath = flinkHome + "/dep";
                 ZipUtils.unzip(depZip, depPath);
                 // move all jar
-                FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
-                    FileUtil.moveContent(FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
-                });
-                URL[] jarUrls = FileUtil.listFileNames(usrlib)
-                        .stream().map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                        .toArray(URL[]::new);
+                FileUtil.listFileNames(depPath + "/jar")
+                        .forEach(
+                                f -> {
+                                    FileUtil.moveContent(
+                                            FileUtil.file(depPath + "/jar/" + f),
+                                            FileUtil.file(usrlib + "/" + f),
+                                            true);
+                                });
+                URL[] jarUrls =
+                        FileUtil.listFileNames(usrlib).stream()
+                                .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                                .toArray(URL[]::new);
 
                 addURLs(jarUrls);
-                executorSetting.getConfig().put(PipelineOptions.JARS.key(),
-                        Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
+                executorSetting
+                        .getConfig()
+                        .put(
+                                PipelineOptions.JARS.key(),
+                                Arrays.stream(jarUrls)
+                                        .map(URL::toString)
+                                        .collect(Collectors.joining(";")));
 
                 // download python_udf.zip
-                String httpPythonZip = "http://" + dinkyAddr + "/download/downloadPythonUDF/" + taskId;
+                String httpPythonZip =
+                        "http://" + dinkyAddr + "/download/downloadPythonUDF/" + taskId;
                 downloadFile(httpPythonZip, flinkHome + "/python_udf.zip");
             } catch (IOException e) {
                 logger.error("");

@@ -35,7 +35,7 @@ import org.junit.Test;
  *
  * @author wenmo
  * @since 2021/7/21 16:14
- **/
+ */
 public class OracleTest {
 
     private static final String IP = "127.0.0.1";
@@ -83,7 +83,8 @@ public class OracleTest {
     @Test
     public void queryTest() {
         Driver driver = getDriver();
-        JdbcSelectResult selectResult = driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
+        JdbcSelectResult selectResult =
+                driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
         System.out.println("end...");
     }
 }

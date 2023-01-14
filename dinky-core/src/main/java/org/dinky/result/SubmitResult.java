@@ -27,7 +27,7 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2021/5/25 19:04
- **/
+ */
 public class SubmitResult {
 
     private String sessionId;
@@ -42,8 +42,7 @@ public class SubmitResult {
     private String error;
     private IResult result;
 
-    public SubmitResult() {
-    }
+    public SubmitResult() {}
 
     public static SubmitResult error(String error) {
         return new SubmitResult(false, error);
@@ -54,7 +53,8 @@ public class SubmitResult {
         this.error = error;
     }
 
-    public SubmitResult(String sessionId, List<String> statements, String flinkHost, String jobName) {
+    public SubmitResult(
+            String sessionId, List<String> statements, String flinkHost, String jobName) {
         this.sessionId = sessionId;
         this.statements = statements;
         this.flinkHost = flinkHost;

@@ -24,7 +24,7 @@ package org.dinky.constant;
  *
  * @author wenmo
  * @since 2021/6/24 14:04
- **/
+ */
 public final class FlinkRestAPIConstant {
 
     public static final String OVERVIEW = "overview";
@@ -64,5 +64,4 @@ public final class FlinkRestAPIConstant {
     public static final String THREAD_DUMP = "/thread-dump";
 
     public static final String GET = "?get=";
-
 }

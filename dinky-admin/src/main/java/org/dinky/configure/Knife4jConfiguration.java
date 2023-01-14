@@ -36,13 +36,14 @@ public class Knife4jConfiguration {
 
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {
-        Docket docket = new Docket(DocumentationType.SWAGGER_2)
-                .apiInfo(apiInfo())
-                .groupName("V1.0")
-                .select()
-                .apis(RequestHandlerSelectors.basePackage("org.dinky.controller"))
-                .paths(PathSelectors.any())
-                .build();
+        Docket docket =
+                new Docket(DocumentationType.SWAGGER_2)
+                        .apiInfo(apiInfo())
+                        .groupName("V1.0")
+                        .select()
+                        .apis(RequestHandlerSelectors.basePackage("org.dinky.controller"))
+                        .paths(PathSelectors.any())
+                        .build();
 
         return docket;
     }
@@ -54,5 +55,4 @@ public class Knife4jConfiguration {
                 .version("1.0")
                 .build();
     }
-
 }

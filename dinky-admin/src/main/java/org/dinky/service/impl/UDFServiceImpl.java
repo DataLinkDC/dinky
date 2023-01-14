@@ -28,6 +28,4 @@ import org.springframework.stereotype.Service;
  * @since 0.6.8
  */
 @Service
-public class UDFServiceImpl implements UDFService {
-
-}
+public class UDFServiceImpl implements UDFService {}

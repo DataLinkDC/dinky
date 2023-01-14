@@ -74,19 +74,38 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
         if (Asserts.isNotNullString(configJson)) {
             try {
                 JsonNode paras = mapper.readTree(configJson);
-                paras.forEach((JsonNode node) -> {
-                    if (!node.isNull()) {
-                        config.put(node.get("key").asText(), node.get("value").asText());
-                    }
-                });
+                paras.forEach(
+                        (JsonNode node) -> {
+                            if (!node.isNull()) {
+                                config.put(node.get("key").asText(), node.get("value").asText());
+                            }
+                        });
             } catch (JsonProcessingException e) {
                 log.error(e.getMessage());
             }
         }
         return new JobConfig(
-                type, useResult, useChangeLog, useAutoCancel, useSession, session, clusterId,
-                clusterConfigurationId, jarId, taskId, jobName, isFragment(), statementSet, batchModel,
-                maxRowNum, checkPoint, parallelism, savePointStrategy, savePointPath, getVariables(), config);
+                type,
+                useResult,
+                useChangeLog,
+                useAutoCancel,
+                useSession,
+                session,
+                clusterId,
+                clusterConfigurationId,
+                jarId,
+                taskId,
+                jobName,
+                isFragment(),
+                statementSet,
+                batchModel,
+                maxRowNum,
+                checkPoint,
+                parallelism,
+                savePointStrategy,
+                savePointPath,
+                getVariables(),
+                config);
     }
 
     public Integer getTaskId() {

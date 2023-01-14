@@ -28,9 +28,13 @@ import org.dinky.assertion.Asserts;
  * @since 2022/10/16 16:33
  */
 public enum ProcessType {
-
-    FLINKEXPLAIN("FlinkExplain"), FLINKEXECUTE("FlinkExecute"), FLINKSUBMIT("FlinkSubmit"), SQLEXPLAIN(
-            "SQLExplain"), SQLEXECUTE("SQLExecute"), SQKSUBMIT("SQLSubmit"), UNKNOWN("Unknown");
+    FLINKEXPLAIN("FlinkExplain"),
+    FLINKEXECUTE("FlinkExecute"),
+    FLINKSUBMIT("FlinkSubmit"),
+    SQLEXPLAIN("SQLExplain"),
+    SQLEXECUTE("SQLExecute"),
+    SQKSUBMIT("SQLSubmit"),
+    UNKNOWN("Unknown");
 
     private String value;
 

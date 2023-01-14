@@ -24,14 +24,13 @@ package org.dinky.alert;
  *
  * @author wenmo
  * @since 2022/2/23 20:23
- **/
+ */
 public class AlertSendResponse {
 
     private Integer errcode;
     private String errmsg;
 
-    public AlertSendResponse() {
-    }
+    public AlertSendResponse() {}
 
     public Integer getErrcode() {
         return errcode;

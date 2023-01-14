@@ -42,9 +42,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  * @author wenmo
  * @since 2021/11/18
- **/
+ */
 @Service
-public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig> implements SysConfigService {
+public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig>
+        implements SysConfigService {
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

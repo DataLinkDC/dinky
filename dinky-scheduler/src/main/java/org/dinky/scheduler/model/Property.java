@@ -31,20 +31,16 @@ import lombok.Data;
 public class Property implements Serializable {
 
     private static final long serialVersionUID = -4045513703397452451L;
+
     @ApiModelProperty(value = "key")
     private String prop;
 
-    /**
-     * input/output
-     */
+    /** input/output */
     private Direct direct;
 
-    /**
-     * data type
-     */
+    /** data type */
     private DataType type;
 
     @ApiModelProperty(value = "value")
     private String value;
-
 }

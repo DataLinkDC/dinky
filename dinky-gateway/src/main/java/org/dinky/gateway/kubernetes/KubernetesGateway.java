@@ -60,8 +60,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     protected FlinkKubeClient client;
 
-    public KubernetesGateway() {
-    }
+    public KubernetesGateway() {}
 
     public KubernetesGateway(GatewayConfig config) {
         super(config);
@@ -73,26 +72,36 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     private void initConfig() {
-        configuration = GlobalConfiguration.loadConfiguration(config.getClusterConfig().getFlinkConfigPath());
+        configuration =
+                GlobalConfiguration.loadConfiguration(
+                        config.getClusterConfig().getFlinkConfigPath());
         if (Asserts.isNotNull(config.getFlinkConfig().getConfiguration())) {
             addConfigParas(config.getFlinkConfig().getConfiguration());
         }
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
         if (Asserts.isNotNullString(config.getFlinkConfig().getSavePoint())) {
-            configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
+            configuration.setString(
+                    SavepointConfigOptions.SAVEPOINT_PATH, config.getFlinkConfig().getSavePoint());
         }
         if (Asserts.isNotNullString(config.getFlinkConfig().getJobName())) {
-            configuration.set(KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
+            configuration.set(
+                    KubernetesConfigOptions.CLUSTER_ID, config.getFlinkConfig().getJobName());
         }
         if (getType().isApplicationMode()) {
             String uuid = UUID.randomUUID().toString().replace("-", "");
             if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.CHECKPOINTS_DIRECTORY,
-                        configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
+                configuration.set(
+                        CheckpointingOptions.CHECKPOINTS_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY)
+                                + "/"
+                                + uuid);
             }
             if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
-                configuration.set(CheckpointingOptions.SAVEPOINT_DIRECTORY,
-                        configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
+                configuration.set(
+                        CheckpointingOptions.SAVEPOINT_DIRECTORY,
+                        configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY)
+                                + "/"
+                                + uuid);
             }
         }
     }
@@ -127,11 +136,13 @@ public abstract class KubernetesGateway extends AbstractGateway {
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
-        KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
-        try (ClusterClient<String> clusterClient = clusterDescriptor.retrieve(
-                clusterId).getClusterClient()) {
+        KubernetesClusterDescriptor clusterDescriptor =
+                clusterClientFactory.createClusterDescriptor(configuration);
+        try (ClusterClient<String> clusterClient =
+                clusterDescriptor.retrieve(clusterId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
-            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
+            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture =
+                    clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
                 JobInfo jobInfo = new JobInfo(jobStatusMessage.getJobId().toHexString());
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
@@ -165,8 +176,10 @@ public abstract class KubernetesGateway extends AbstractGateway {
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
-        KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
-        try (ClusterClient<String> clusterClient = clusterDescriptor.retrieve(clusterId).getClusterClient()) {
+        KubernetesClusterDescriptor clusterDescriptor =
+                clusterClientFactory.createClusterDescriptor(configuration);
+        try (ClusterClient<String> clusterClient =
+                clusterDescriptor.retrieve(clusterId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
             jobInfos.add(new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
@@ -177,7 +190,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
         return result;
     }
 
-    private void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<String> clusterClient, String savePoint)
+    private void runSavePointJob(
+            List<JobInfo> jobInfos, ClusterClient<String> clusterClient, String savePoint)
             throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
@@ -187,14 +201,20 @@ public abstract class KubernetesGateway extends AbstractGateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.triggerSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     break;
                 case STOP:
-                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.stopWithSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
                     break;
                 case CANCEL:
-                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(
+                            FlinkUtil.cancelWithSavepoint(
+                                    clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                     break;
                 default:
@@ -231,7 +251,8 @@ public abstract class KubernetesGateway extends AbstractGateway {
             throw new GatewayException(
                     "No cluster id was specified. Please specify a cluster to which you would like to connect.");
         }
-        KubernetesClusterDescriptor clusterDescriptor = clusterClientFactory.createClusterDescriptor(configuration);
+        KubernetesClusterDescriptor clusterDescriptor =
+                clusterClientFactory.createClusterDescriptor(configuration);
         try {
             clusterDescriptor.killCluster(clusterId);
         } catch (Exception e) {

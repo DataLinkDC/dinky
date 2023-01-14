@@ -34,8 +34,7 @@ public class AbstractOperation {
 
     protected String statement;
 
-    public AbstractOperation() {
-    }
+    public AbstractOperation() {}
 
     public AbstractOperation(String statement) {
         this.statement = statement;

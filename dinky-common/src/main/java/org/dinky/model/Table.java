@@ -53,19 +53,14 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     private Long rows;
     private Date createTime;
     private Date updateTime;
-    /**
-     * 表类型
-     */
+    /** 表类型 */
     private TableType tableType = TableType.SINGLE_DATABASE_AND_TABLE;
-    /**
-     * 分库或分表对应的表名
-     */
+    /** 分库或分表对应的表名 */
     private List<String> schemaTableNameList;
 
     private List<Column> columns;
 
-    public Table() {
-    }
+    public Table() {}
 
     public Table(String name, String schema, List<Column> columns) {
         this.name = name;
@@ -128,8 +123,12 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
             }
             sb.append("`" + columns.get(i).getName() + "` " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if (columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
-                    sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'", "") + "'");
+                if (columns.get(i).getComment().contains("\'")
+                        | columns.get(i).getComment().contains("\"")) {
+                    sb.append(
+                            " COMMENT '"
+                                    + columns.get(i).getComment().replaceAll("\"|'", "")
+                                    + "'");
                 } else {
                     sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
                 }
@@ -180,8 +179,12 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
             }
             sb.append("`" + columns.get(i).getName() + "` " + type);
             if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if (columns.get(i).getComment().contains("\'") | columns.get(i).getComment().contains("\"")) {
-                    sb.append(" COMMENT '" + columns.get(i).getComment().replaceAll("\"|'", "") + "'");
+                if (columns.get(i).getComment().contains("\'")
+                        | columns.get(i).getComment().contains("\"")) {
+                    sb.append(
+                            " COMMENT '"
+                                    + columns.get(i).getComment().replaceAll("\"|'", "")
+                                    + "'");
                 } else {
                     sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
                 }

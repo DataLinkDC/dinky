@@ -58,17 +58,27 @@ public class DockerClientUtils {
     public DockerClientUtils(Docker docker, File dockerfile) {
         this.docker = docker;
         this.dockerfile = dockerfile;
-        this.image = String.join("/",
-                Arrays.asList(docker.getRegistryUrl(), docker.getImageNamespace(), docker.getImageStorehouse())) + ":"
-                + docker.getImageDinkyVersion();
-        dockerClient = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
-                .withDockerHost(docker.getInstance())
-                .withRegistryUrl(docker.getRegistryUrl()).withRegistryUsername(docker.getRegistryUsername())
-                .withRegistryPassword(docker.getRegistryPassword())
-                .build())
-                .build();
+        this.image =
+                String.join(
+                                "/",
+                                Arrays.asList(
+                                        docker.getRegistryUrl(),
+                                        docker.getImageNamespace(),
+                                        docker.getImageStorehouse()))
+                        + ":"
+                        + docker.getImageDinkyVersion();
+        dockerClient =
+                DockerClientBuilder.getInstance(
+                                DefaultDockerClientConfig.createDefaultConfigBuilder()
+                                        .withDockerHost(docker.getInstance())
+                                        .withRegistryUrl(docker.getRegistryUrl())
+                                        .withRegistryUsername(docker.getRegistryUsername())
+                                        .withRegistryPassword(docker.getRegistryPassword())
+                                        .build())
+                        .build();
         try {
-            log.info("===============================  Initializing docker  ===============================");
+            log.info(
+                    "===============================  Initializing docker  ===============================");
             Info info = dockerClient.infoCmd().exec();
             log.info(
                     "===============================  The docker connection is successful, the relevant information is as follows  ===============================");
@@ -83,7 +93,8 @@ public class DockerClientUtils {
 
     public void initImage() throws URISyntaxException, InterruptedException {
         BuildImageResultCallback resultCallback = new BuildImageResultCallback();
-        dockerClient.buildImageCmd()
+        dockerClient
+                .buildImageCmd()
                 .withRemove(true)
                 .withDockerfile(dockerfile)
                 .withTag(image)
@@ -105,19 +116,19 @@ public class DockerClientUtils {
         log.info("push-image finish: {}", tag);
     }
 
-    /**
-     * 清除空容器
-     */
+    /** 清除空容器 */
     public void cleanNoneImage() {
         dockerClient.listImagesCmd().exec().stream()
-                .filter(x -> x.getRepoTags() == null || "<none>:<none>".equals(x.getRepoTags()[0])).map(Image::getId)
-                .forEach(id -> {
-                    try {
-                        dockerClient.removeImageCmd(id).exec();
-                    } catch (Exception ignored) {
-                        log.warn("容器删除失败，id:{}", id);
-                    }
-                });
+                .filter(x -> x.getRepoTags() == null || "<none>:<none>".equals(x.getRepoTags()[0]))
+                .map(Image::getId)
+                .forEach(
+                        id -> {
+                            try {
+                                dockerClient.removeImageCmd(id).exec();
+                            } catch (Exception ignored) {
+                                log.warn("容器删除失败，id:{}", id);
+                            }
+                        });
     }
 
     /**
@@ -126,10 +137,10 @@ public class DockerClientUtils {
      * @param client
      * @return
      */
-    public CreateContainerResponse createContainers(DockerClient client, String containerName, String imageName) {
-        CreateContainerResponse container = client.createContainerCmd(imageName)
-                .withName(containerName)
-                .exec();
+    public CreateContainerResponse createContainers(
+            DockerClient client, String containerName, String imageName) {
+        CreateContainerResponse container =
+                client.createContainerCmd(imageName).withName(containerName).exec();
         return container;
     }
 

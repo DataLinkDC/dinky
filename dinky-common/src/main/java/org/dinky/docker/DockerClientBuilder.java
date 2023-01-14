@@ -53,11 +53,10 @@ public class DockerClientBuilder {
                 DefaultDockerClientConfig.createDefaultConfigBuilder().build());
     }
 
-    /**
-     * @deprecated use {@link #getInstance(DockerClientConfig)}
-     */
+    /** @deprecated use {@link #getInstance(DockerClientConfig)} */
     @Deprecated
-    public static DockerClientBuilder getInstance(DefaultDockerClientConfig.Builder dockerClientConfigBuilder) {
+    public static DockerClientBuilder getInstance(
+            DefaultDockerClientConfig.Builder dockerClientConfigBuilder) {
         return getInstance(dockerClientConfigBuilder.build());
     }
 
@@ -65,9 +64,7 @@ public class DockerClientBuilder {
         return new DockerClientBuilder(dockerClientConfig);
     }
 
-    /**
-     * @deprecated use {@link DefaultDockerClientConfig.Builder#withDockerHost(String)}
-     */
+    /** @deprecated use {@link DefaultDockerClientConfig.Builder#withDockerHost(String)} */
     @Deprecated
     public static DockerClientBuilder getInstance(String serverUrl) {
         return new DockerClientBuilder(
@@ -76,9 +73,7 @@ public class DockerClientBuilder {
                         .build());
     }
 
-    /**
-     * @deprecated no replacement, use one of {@link DockerHttpClient}
-     */
+    /** @deprecated no replacement, use one of {@link DockerHttpClient} */
     @Deprecated
     public static DockerCmdExecFactory getDefaultDockerCmdExecFactory() {
         return new DefaultDockerCmdExecFactory(getInstance().dockerHttpClient, new ObjectMapper());
@@ -96,9 +91,7 @@ public class DockerClientBuilder {
         return this;
     }
 
-    /**
-     * Note that this method overrides {@link DockerCmdExecFactory} if it was previously set
-     */
+    /** Note that this method overrides {@link DockerCmdExecFactory} if it was previously set */
     public DockerClientBuilder withDockerHttpClient(DockerHttpClient dockerHttpClient) {
         this.dockerCmdExecFactory = null;
         this.dockerHttpClient = dockerHttpClient;
@@ -107,9 +100,7 @@ public class DockerClientBuilder {
 
     public DockerClient build() {
         if (dockerHttpClient != null) {
-            return DockerClientImpl.getInstance(
-                    dockerClientConfig,
-                    dockerHttpClient);
+            return DockerClientImpl.getInstance(dockerClientConfig, dockerHttpClient);
         } else if (dockerCmdExecFactory != null) {
             return DockerClientImpl.getInstance(dockerClientConfig)
                     .withDockerCmdExecFactory(dockerCmdExecFactory);

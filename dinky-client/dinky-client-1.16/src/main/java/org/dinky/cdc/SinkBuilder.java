@@ -31,15 +31,18 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  *
  * @author wenmo
  * @since 2022/11/04
- **/
+ */
 public interface SinkBuilder {
 
     String getHandle();
 
     SinkBuilder create(FlinkCDCConfig config);
 
-    DataStreamSource build(CDCBuilder cdcBuilder, StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment, DataStreamSource<String> dataStreamSource);
+    DataStreamSource build(
+            CDCBuilder cdcBuilder,
+            StreamExecutionEnvironment env,
+            CustomTableEnvironment customTableEnvironment,
+            DataStreamSource<String> dataStreamSource);
 
     String getSinkSchemaName(Table table);
 

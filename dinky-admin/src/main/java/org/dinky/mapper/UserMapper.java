@@ -31,5 +31,4 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2021/11/28 13:36
  */
 @Mapper
-public interface UserMapper extends SuperMapper<User> {
-}
+public interface UserMapper extends SuperMapper<User> {}

@@ -27,6 +27,5 @@ import org.dinky.model.AlertHistory;
  *
  * @author wenmo
  * @since 2022/2/24 20:42
- **/
-public interface AlertHistoryService extends ISuperService<AlertHistory> {
-}
+ */
+public interface AlertHistoryService extends ISuperService<AlertHistory> {}

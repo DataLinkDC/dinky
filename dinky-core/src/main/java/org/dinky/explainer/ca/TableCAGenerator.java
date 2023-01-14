@@ -43,7 +43,7 @@ import java.util.regex.Pattern;
  *
  * @author wenmo
  * @since 2021/6/22
- **/
+ */
 public class TableCAGenerator implements CAGenerator {
 
     private List<Trans> transList;

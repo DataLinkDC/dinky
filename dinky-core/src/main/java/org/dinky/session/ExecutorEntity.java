@@ -31,7 +31,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/5/25 14:45
- **/
+ */
 @Setter
 @Getter
 public class ExecutorEntity {
@@ -47,7 +47,11 @@ public class ExecutorEntity {
         this.executor = executor;
     }
 
-    public ExecutorEntity(String sessionId, SessionConfig sessionConfig, String createUser, LocalDateTime createTime,
+    public ExecutorEntity(
+            String sessionId,
+            SessionConfig sessionConfig,
+            String createUser,
+            LocalDateTime createTime,
             Executor executor) {
         this.sessionId = sessionId;
         this.sessionConfig = sessionConfig;

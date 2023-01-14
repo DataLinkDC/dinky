@@ -50,6 +50,7 @@ public interface JobHandler {
         for (JobHandler jobHandler : jobHandlers) {
             return jobHandler;
         }
-        throw new JobException("There is no corresponding implementation class for this interface!");
+        throw new JobException(
+                "There is no corresponding implementation class for this interface!");
     }
 }

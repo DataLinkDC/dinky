@@ -32,7 +32,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/5/25 16:01
- **/
+ */
 @Setter
 @Getter
 public class SelectResult extends AbstractResult implements IResult {
@@ -44,8 +44,13 @@ public class SelectResult extends AbstractResult implements IResult {
     private Set<String> columns;
     private boolean isDestroyed;
 
-    public SelectResult(List<Map<String, Object>> rowData, Integer total, Integer currentCount, Set<String> columns,
-            String jobID, boolean success) {
+    public SelectResult(
+            List<Map<String, Object>> rowData,
+            Integer total,
+            Integer currentCount,
+            Set<String> columns,
+            String jobID,
+            boolean success) {
         this.rowData = rowData;
         this.total = total;
         this.currentCount = currentCount;

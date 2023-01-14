@@ -30,14 +30,13 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * tenant interceptor
- */
+/** tenant interceptor */
 @Slf4j
 public class TenantInterceptor implements HandlerInterceptor {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+    public boolean preHandle(
+            HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         Arrays.stream(request.getCookies())
                 .filter(t -> "tenantId".equals(t.getName()))
@@ -46,5 +45,4 @@ public class TenantInterceptor implements HandlerInterceptor {
 
         return HandlerInterceptor.super.preHandle(request, response, handler);
     }
-
 }

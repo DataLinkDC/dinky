@@ -47,30 +47,28 @@ public class DinkyMysqlCatalogFactoryTest {
 
     @BeforeClass
     public static void setup() throws SQLException {
-        url = "jdbc:mysql://10.1.51.25:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url =
+                "jdbc:mysql://10.1.51.25:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
 
-        catalog =
-            new DinkyMysqlCatalog(
-                TEST_CATALOG_NAME,
-                url,
-                TEST_USERNAME,
-                TEST_PWD);
+        catalog = new DinkyMysqlCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
     }
 
     @Test
     public void test() {
         final Map<String, String> options = new HashMap<>();
-        options.put(CommonCatalogOptions.CATALOG_TYPE.key(), DinkyMysqlCatalogFactoryOptions.IDENTIFIER);
+        options.put(
+                CommonCatalogOptions.CATALOG_TYPE.key(),
+                DinkyMysqlCatalogFactoryOptions.IDENTIFIER);
         options.put(DinkyMysqlCatalogFactoryOptions.USERNAME.key(), TEST_USERNAME);
         options.put(DinkyMysqlCatalogFactoryOptions.PASSWORD.key(), TEST_PWD);
         options.put(DinkyMysqlCatalogFactoryOptions.URL.key(), url);
 
         final Catalog actualCatalog =
-            FactoryUtil.createCatalog(
-                TEST_CATALOG_NAME,
-                options,
-                null,
-                Thread.currentThread().getContextClassLoader());
+                FactoryUtil.createCatalog(
+                        TEST_CATALOG_NAME,
+                        options,
+                        null,
+                        Thread.currentThread().getContextClassLoader());
 
         checkEquals(catalog, (DinkyMysqlCatalog) actualCatalog);
 

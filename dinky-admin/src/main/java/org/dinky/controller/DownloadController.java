@@ -66,10 +66,15 @@ public class DownloadController {
         JSONObject jsonObject = new JSONObject(FileUtil.readUtf8String(depManifestFile));
         JSONArray jars = jsonObject.getJSONArray("jars");
         List<String> filePath = jars.stream().map(Convert::toStr).collect(Collectors.toList());
-        String[] jarNameList = filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
+        String[] jarNameList =
+                filePath.stream()
+                        .map(FileUtil::getName)
+                        .map(x -> "jar/" + x)
+                        .toArray(String[]::new);
 
         File zipFile = FileUtil.file(udfPackagePath + PathConstant.DEP_ZIP);
-        InputStream[] inputStreams = filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
+        InputStream[] inputStreams =
+                filePath.stream().map(FileUtil::getInputStream).toArray(InputStream[]::new);
         try (ZipWriter zip = new ZipWriter(zipFile, Charset.defaultCharset())) {
             zip.add(jarNameList, inputStreams);
             zip.add(depManifestFile.getName(), FileUtil.getInputStream(depManifestFile));
@@ -80,6 +85,9 @@ public class DownloadController {
 
     @GetMapping("downloadPythonUDF/{taskId}")
     public void downloadPythonUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
-        ServletUtil.write(resp, FileUtil.file(PathConstant.getUdfPackagePath(taskId) + PathConstant.UDF_PYTHON_NAME));
+        ServletUtil.write(
+                resp,
+                FileUtil.file(
+                        PathConstant.getUdfPackagePath(taskId) + PathConstant.UDF_PYTHON_NAME));
     }
 }

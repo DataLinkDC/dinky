@@ -25,5 +25,4 @@ package org.dinky.db.annotation;
  * @author wenmo
  * @since 2021/5/3 20:57
  */
-public interface Save {
-}
+public interface Save {}

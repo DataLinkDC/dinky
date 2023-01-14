@@ -46,18 +46,15 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2021/6/3
- **/
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/document")
 public class DocumentController {
 
-    @Autowired
-    private DocumentService documentService;
+    @Autowired private DocumentService documentService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
@@ -67,17 +64,13 @@ public class DocumentController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<Document> listDocuments(@RequestBody JsonNode para) {
         return documentService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -91,25 +84,22 @@ public class DocumentController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody Document document) throws Exception {
         document = documentService.getById(document.getId());
         return Result.succeed(document, "获取成功");
     }
 
-    /**
-     * 根据版本号获取自动补全内容
-     */
+    /** 根据版本号获取自动补全内容 */
     @GetMapping("/getFillAllByVersion")
     public Result getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version), "获取成功");

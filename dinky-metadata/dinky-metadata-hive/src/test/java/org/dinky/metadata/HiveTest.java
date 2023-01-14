@@ -38,7 +38,7 @@ import org.junit.Test;
  *
  * @author wenmo
  * @since 2021/7/20 15:32
- **/
+ */
 public class HiveTest {
 
     private static final String IP = "cdh1";
@@ -81,9 +81,10 @@ public class HiveTest {
     public void getDBSTest() {
         Driver driver = getDriver();
         List<Schema> schemasAndTables = driver.listSchemas();
-        schemasAndTables.forEach(schema -> {
-            System.out.println(schema.getName() + "\t\t" + schema.getTables().toString());
-        });
+        schemasAndTables.forEach(
+                schema -> {
+                    System.out.println(schema.getName() + "\t\t" + schema.getTables().toString());
+                });
         System.err.println("end...");
     }
 
@@ -92,18 +93,21 @@ public class HiveTest {
         Driver driver = getDriver();
         driver.execute("use odsp ");
         List<Table> tableList = driver.listTables(hiveDB);
-        tableList.forEach(schema -> {
-            System.out.println(schema.getName());
-        });
+        tableList.forEach(
+                schema -> {
+                    System.out.println(schema.getName());
+                });
         System.err.println("end...");
     }
 
     @Test
     public void getColumnsByTableTest() {
         Driver driver = getDriver();
-        List<Column> columns = driver.listColumns(hiveDB, "biz_college_planner_mysql_language_score_item");
+        List<Column> columns =
+                driver.listColumns(hiveDB, "biz_college_planner_mysql_language_score_item");
         for (Column column : columns) {
-            System.out.println(column.getName() + " \t " + column.getType() + " \t " + column.getComment());
+            System.out.println(
+                    column.getName() + " \t " + column.getType() + " \t " + column.getComment());
         }
         System.err.println("end...");
     }
@@ -111,7 +115,8 @@ public class HiveTest {
     @Test
     public void getCreateTableTest() throws Exception {
         Driver driver = getDriver();
-        Table driverTable = driver.getTable(hiveDB, "biz_college_planner_mysql_language_score_item");
+        Table driverTable =
+                driver.getTable(hiveDB, "biz_college_planner_mysql_language_score_item");
         String createTableSql = driver.getCreateTableSql(driverTable);
         System.out.println(createTableSql);
         System.err.println("end...");
@@ -122,37 +127,38 @@ public class HiveTest {
         Driver driver = getDriver();
         Table driverTable = driver.getTable(hiveDB, "employees");
         for (Column column : driverTable.getColumns()) {
-            System.out.println(column.getName() + "\t\t" + column.getType() + "\t\t" + column.getComment());
+            System.out.println(
+                    column.getName() + "\t\t" + column.getType() + "\t\t" + column.getComment());
         }
     }
 
     /**
      * @Author: zhumingye
-     * @date: 202/3/23
-     * @Description: 测试hive多条SQL执行
-     * @Param:
+     *
+     * @date: 202/3/23 @Description: 测试hive多条SQL执行 @Param:
      * @return:
      */
     @Test
     public void multipleSQLTest() throws Exception {
         Driver driver = getDriver();
-        String sql = "select\n"
-                + "   date_format(create_time,'yyyy-MM') as  pay_success_time,\n"
-                + "   sum(pay_amount)/100 as amount\n"
-                + "from\n"
-                + "    odsp.pub_pay_mysql_pay_order\n"
-                + "    group by date_format(create_time,'yyyy-MM') ;\n"
-                + "select\n"
-                + "   *\n"
-                + "from\n"
-                + "    odsp.pub_pay_mysql_pay_order ;";
+        String sql =
+                "select\n"
+                        + "   date_format(create_time,'yyyy-MM') as  pay_success_time,\n"
+                        + "   sum(pay_amount)/100 as amount\n"
+                        + "from\n"
+                        + "    odsp.pub_pay_mysql_pay_order\n"
+                        + "    group by date_format(create_time,'yyyy-MM') ;\n"
+                        + "select\n"
+                        + "   *\n"
+                        + "from\n"
+                        + "    odsp.pub_pay_mysql_pay_order ;";
         JdbcSelectResult selectResult = driver.executeSql(sql, 100);
         for (LinkedHashMap<String, Object> rowDatum : selectResult.getRowData()) {
             Set<Map.Entry<String, Object>> entrySet = rowDatum.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : entrySet) {
-                System.out.println(stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
+                System.out.println(
+                        stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
             }
         }
     }
-
 }

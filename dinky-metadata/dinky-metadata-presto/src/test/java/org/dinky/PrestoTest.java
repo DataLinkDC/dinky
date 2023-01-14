@@ -83,7 +83,8 @@ public class PrestoTest {
         // columns
         List<Column> columns = driver.listColumns("hive.lake", "test");
         for (Column column : columns) {
-            System.out.println(column.getName() + " " + column.getType() + " " + column.getComment());
+            System.out.println(
+                    column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
 

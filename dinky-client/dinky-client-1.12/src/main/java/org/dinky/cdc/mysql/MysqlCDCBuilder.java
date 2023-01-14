@@ -42,14 +42,13 @@ import com.alibaba.ververica.cdc.connectors.mysql.table.StartupOptions;
  *
  * @author wenmo
  * @since 2022/4/12 21:29
- **/
+ */
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     public static final String KEY_WORD = "mysql-cdc";
     private static final String METADATA_TYPE = "MySql";
 
-    public MysqlCDCBuilder() {
-    }
+    public MysqlCDCBuilder() {}
 
     public MysqlCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -69,15 +68,17 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
         Properties properties = new Properties();
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 properties.setProperty(entry.getKey(), entry.getValue());
             }
         }
-        MySQLSource.Builder<String> sourceBuilder = MySQLSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+        MySQLSource.Builder<String> sourceBuilder =
+                MySQLSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .username(config.getUsername())
+                        .password(config.getPassword());
         String database = config.getDatabase();
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -87,7 +88,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }

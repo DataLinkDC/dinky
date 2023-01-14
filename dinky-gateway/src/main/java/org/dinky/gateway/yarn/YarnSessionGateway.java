@@ -58,32 +58,41 @@ public class YarnSessionGateway extends YarnGateway {
             init();
         }
         YarnResult result = YarnResult.build(getType());
-        YarnClusterDescriptor yarnClusterDescriptor = new YarnClusterDescriptor(
-                configuration, yarnConfiguration, yarnClient,
-                YarnClientYarnClusterInformationRetriever.create(yarnClient), true);
+        YarnClusterDescriptor yarnClusterDescriptor =
+                new YarnClusterDescriptor(
+                        configuration,
+                        yarnConfiguration,
+                        yarnClient,
+                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
+                        true);
 
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder = new ClusterSpecification.ClusterSpecificationBuilder();
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                new ClusterSpecification.ClusterSpecificationBuilder();
         if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setMasterMemoryMB(configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setMasterMemoryMB(
+                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder
-                    .setTaskManagerMemoryMB(configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
+            clusterSpecificationBuilder.setTaskManagerMemoryMB(
+                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
         }
         if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder.setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
+            clusterSpecificationBuilder
+                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
                     .createClusterSpecification();
         }
 
         if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor
-                    .addShipFiles(Arrays.stream(config.getJarPaths()).map(FileUtil::file).collect(Collectors.toList()));
+            yarnClusterDescriptor.addShipFiles(
+                    Arrays.stream(config.getJarPaths())
+                            .map(FileUtil::file)
+                            .collect(Collectors.toList()));
         }
 
         try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(
-                    clusterSpecificationBuilder.createClusterSpecification());
+            ClusterClientProvider<ApplicationId> clusterClientProvider =
+                    yarnClusterDescriptor.deploySessionCluster(
+                            clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setAppId(applicationId.toString());

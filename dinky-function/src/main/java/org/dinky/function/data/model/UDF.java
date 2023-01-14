@@ -34,20 +34,12 @@ import lombok.Setter;
 @Builder
 public class UDF {
 
-    /**
-     * 函数名
-     */
+    /** 函数名 */
     String name;
-    /**
-     * 类名
-     */
+    /** 类名 */
     String className;
-    /**
-     * udf 代码语言
-     */
+    /** udf 代码语言 */
     FunctionLanguage functionLanguage;
-    /**
-     * udf源代码
-     */
+    /** udf源代码 */
     String code;
 }

@@ -17,27 +17,17 @@
  *
  */
 
-package org.apache.flink.connector.jdbc.internal.converter;
+package org.dinky.utils;
 
-import org.apache.flink.table.types.logical.RowType;
+/** */
+public class LogicUtil {
 
-/**
- * Runtime converter that responsible to convert between JDBC object and Flink internal object for
- * ClickHouse.
- *
- * @author wenmo
- * @since 2021/6/7 21:49
- */
-public class ClickHouseRowConverter extends AbstractJdbcRowConverter {
-
-    private static final long serialVersionUID = 1L;
-
-    @Override
-    public String converterName() {
-        return "ClickHouse";
-    }
-
-    public ClickHouseRowConverter(RowType rowType) {
-        super(rowType);
+    public static <T> boolean IfThenRun(T object, Class<?> clazz, Runnable action) {
+        if (object.getClass() == clazz) {
+            action.run();
+            return true;
+        } else {
+            return false;
+        }
     }
 }

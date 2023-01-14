@@ -23,9 +23,7 @@ import org.dinky.constant.UploadFileConstant;
 
 import org.apache.commons.lang3.StringUtils;
 
-/**
- * File path handle
- **/
+/** File path handle */
 public class FilePathUtil {
 
     /**
@@ -77,5 +75,4 @@ public class FilePathUtil {
             return UploadFileConstant.TARGET_LOCAL;
         }
     }
-
 }

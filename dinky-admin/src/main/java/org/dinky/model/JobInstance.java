@@ -89,5 +89,4 @@ public class JobInstance implements Serializable {
 
     @TableField(exist = false)
     private String jobManagerAddress;
-
 }

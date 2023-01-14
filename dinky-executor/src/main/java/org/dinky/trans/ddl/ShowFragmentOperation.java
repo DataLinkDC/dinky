@@ -36,13 +36,12 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2022/2/17 17:08
- **/
+ */
 public class ShowFragmentOperation extends AbstractOperation implements Operation {
 
     private static final String KEY_WORD = "SHOW FRAGMENT ";
 
-    public ShowFragmentOperation() {
-    }
+    public ShowFragmentOperation() {}
 
     public ShowFragmentOperation(String statement) {
         super(statement);
@@ -63,7 +62,8 @@ public class ShowFragmentOperation extends AbstractOperation implements Operatio
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         if (Asserts.isNotNullMap(map)) {
             if (map.containsKey("FRAGMENT")) {
-                return executor.getSqlManager().getSqlFragmentResult(StringUtils.join(map.get("FRAGMENT"), ""));
+                return executor.getSqlManager()
+                        .getSqlFragmentResult(StringUtils.join(map.get("FRAGMENT"), ""));
             }
         }
         return executor.getSqlManager().getSqlFragmentResult(null);

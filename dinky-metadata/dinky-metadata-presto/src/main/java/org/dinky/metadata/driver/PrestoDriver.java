@@ -127,9 +127,14 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
             while (results.next()) {
                 String schemaName = results.getString(getDBQuery().schemaName());
                 // !PrestoConstant.EXTRA_SCHEMA.equals(schemaName) filter system catalog
-                if (Asserts.isNotNullString(schemaName) && !PrestoConstant.EXTRA_SCHEMA.equals(schemaName)) {
-                    ps = conn.get()
-                            .prepareStatement(String.format(PrestoConstant.QUERY_TABLE_COLUMNS_ONLY, schemaName));
+                if (Asserts.isNotNullString(schemaName)
+                        && !PrestoConstant.EXTRA_SCHEMA.equals(schemaName)) {
+                    ps =
+                            conn.get()
+                                    .prepareStatement(
+                                            String.format(
+                                                    PrestoConstant.QUERY_TABLE_COLUMNS_ONLY,
+                                                    schemaName));
                     rs = ps.executeQuery();
                     while (rs.next()) {
                         String db = rs.getString(PrestoConstant.SCHEMA);
@@ -182,7 +187,8 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
                     }
                     if (columnList.contains(dbQuery.columnComment())
                             && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
-                        String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
+                        String columnComment =
+                                results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
                         field.setComment(columnComment);
                     }
                     field.setPosition(positionId++);
@@ -266,8 +272,13 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
             while (results.next()) {
                 LinkedHashMap<String, Object> data = new LinkedHashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
-                    data.put(columns.get(i).getName(),
-                            getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
+                    data.put(
+                            columns.get(i).getName(),
+                            getTypeConvert()
+                                    .convertValue(
+                                            results,
+                                            columns.get(i).getName(),
+                                            columns.get(i).getType()));
                 }
                 datas.add(data);
                 count++;
@@ -286,20 +297,19 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
         }
     }
 
-    /**
-     *  sql拼接 未实现分页
-     * */
+    /** sql拼接 未实现分页 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append(queryData.getSchemaName())
+                        .append(".")
+                        .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);

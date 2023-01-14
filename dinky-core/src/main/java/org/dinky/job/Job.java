@@ -58,11 +58,21 @@ public class Job {
     private List<String> jids;
 
     public enum JobStatus {
-        INITIALIZE, RUNNING, SUCCESS, FAILED, CANCEL
+        INITIALIZE,
+        RUNNING,
+        SUCCESS,
+        FAILED,
+        CANCEL
     }
 
-    public Job(JobConfig jobConfig, GatewayType type, JobStatus status, String statement,
-            ExecutorSetting executorSetting, Executor executor, boolean useGateway) {
+    public Job(
+            JobConfig jobConfig,
+            GatewayType type,
+            JobStatus status,
+            String statement,
+            ExecutorSetting executorSetting,
+            Executor executor,
+            boolean useGateway) {
         this.jobConfig = jobConfig;
         this.type = type;
         this.status = status;
@@ -73,13 +83,35 @@ public class Job {
         this.useGateway = useGateway;
     }
 
-    public static Job init(GatewayType type, JobConfig jobConfig, ExecutorSetting executorSetting, Executor executor,
-            String statement, boolean useGateway) {
-        return new Job(jobConfig, type, JobStatus.INITIALIZE, statement, executorSetting, executor, useGateway);
+    public static Job init(
+            GatewayType type,
+            JobConfig jobConfig,
+            ExecutorSetting executorSetting,
+            Executor executor,
+            String statement,
+            boolean useGateway) {
+        return new Job(
+                jobConfig,
+                type,
+                JobStatus.INITIALIZE,
+                statement,
+                executorSetting,
+                executor,
+                useGateway);
     }
 
     public JobResult getJobResult() {
-        return new JobResult(id, jobInstanceId, jobConfig, jobManagerAddress, status, statement, jobId, error, result,
-                startTime, endTime);
+        return new JobResult(
+                id,
+                jobInstanceId,
+                jobConfig,
+                jobManagerAddress,
+                status,
+                statement,
+                jobId,
+                error,
+                result,
+                startTime,
+                endTime);
     }
 }

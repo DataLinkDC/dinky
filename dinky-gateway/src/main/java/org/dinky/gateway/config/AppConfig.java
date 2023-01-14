@@ -38,8 +38,7 @@ public class AppConfig {
     private String[] userJarParas;
     private String userJarMainAppClass;
 
-    public AppConfig() {
-    }
+    public AppConfig() {}
 
     public AppConfig(String userJarPath, String[] userJarParas, String userJarMainAppClass) {
         this.userJarPath = userJarPath;
@@ -47,12 +46,12 @@ public class AppConfig {
         this.userJarMainAppClass = userJarMainAppClass;
     }
 
-    public static AppConfig build(String userJarPath, String userJarParasStr, String userJarMainAppClass) {
+    public static AppConfig build(
+            String userJarPath, String userJarParasStr, String userJarMainAppClass) {
         if (Asserts.isNotNullString(userJarParasStr)) {
             return new AppConfig(userJarPath, userJarParasStr.split(" "), userJarMainAppClass);
         } else {
-            return new AppConfig(userJarPath, new String[]{}, userJarMainAppClass);
-
+            return new AppConfig(userJarPath, new String[] {}, userJarMainAppClass);
         }
     }
 }

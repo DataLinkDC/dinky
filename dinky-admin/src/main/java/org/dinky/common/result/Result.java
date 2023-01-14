@@ -19,9 +19,11 @@
 
 package org.dinky.common.result;
 
+import org.dinky.enums.Status;
 import org.dinky.model.CodeEnum;
 
 import java.io.Serializable;
+import java.text.MessageFormat;
 
 import cn.hutool.core.date.DateTime;
 import lombok.AllArgsConstructor;
@@ -42,7 +44,26 @@ public class Result<T> implements Serializable {
     private T datas;
     private Integer code;
     private String msg;
+
     private String time;
+
+    public Result(Integer code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public Result(Status status) {
+        if (status != null) {
+            this.code = status.getCode();
+            this.msg = status.getMsg();
+        }
+    }
+
+    public Result(Integer code, String msg, T datas) {
+        this.code = code;
+        this.msg = msg;
+        this.datas = datas;
+    }
 
     public static <T> Result<T> succeed(String msg) {
         return of(null, CodeEnum.SUCCESS.getCode(), msg);
@@ -74,5 +95,16 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> failed(T model, String msg) {
         return of(model, CodeEnum.ERROR.getCode(), msg);
+    }
+
+    /**
+     * Call this function if there is any error
+     *
+     * @param status status
+     * @param args args
+     * @return result
+     */
+    public static <T> Result<T> errorWithArgs(Status status, Object... args) {
+        return new Result<>(status.getCode(), MessageFormat.format(status.getMsg(), args));
     }
 }

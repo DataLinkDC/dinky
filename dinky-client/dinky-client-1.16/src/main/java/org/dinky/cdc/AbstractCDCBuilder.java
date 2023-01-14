@@ -32,13 +32,12 @@ import java.util.List;
  *
  * @author wenmo
  * @since 2022/11/04
- **/
+ */
 public abstract class AbstractCDCBuilder implements CDCBuilder {
 
     protected FlinkCDCConfig config;
 
-    public AbstractCDCBuilder() {
-    }
+    public AbstractCDCBuilder() {}
 
     public AbstractCDCBuilder(FlinkCDCConfig config) {
         this.config = config;

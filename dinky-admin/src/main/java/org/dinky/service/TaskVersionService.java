@@ -24,9 +24,7 @@ import org.dinky.model.TaskVersion;
 
 import java.util.List;
 
-/**
- * @author huang
- */
+/** @author huang */
 public interface TaskVersionService extends ISuperService<TaskVersion> {
 
     /**
@@ -37,5 +35,4 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
      * @date 2022/6/22 17:17
      */
     List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
-
 }

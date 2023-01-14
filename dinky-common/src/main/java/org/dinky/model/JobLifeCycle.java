@@ -19,6 +19,8 @@
 
 package org.dinky.model;
 
+import java.util.Arrays;
+
 /**
  * JobLifeCycle
  *
@@ -26,9 +28,13 @@ package org.dinky.model;
  * @since 2022/2/1 16:37
  */
 public enum JobLifeCycle {
-
-    UNKNOWN(0, "未知"), CREATE(1, "创建"), DEVELOP(2, "开发"), DEBUG(3, "调试"), RELEASE(4, "发布"), ONLINE(5, "上线"), CANCEL(6,
-            "注销");
+    UNKNOWN(0, "未知"),
+    CREATE(1, "创建"),
+    DEVELOP(2, "开发"),
+    DEBUG(3, "调试"),
+    RELEASE(4, "发布"),
+    ONLINE(5, "上线"),
+    CANCEL(6, "注销");
 
     private Integer value;
     private String label;
@@ -47,18 +53,13 @@ public enum JobLifeCycle {
     }
 
     public static JobLifeCycle get(Integer value) {
-        for (JobLifeCycle item : JobLifeCycle.values()) {
-            if (item.getValue().equals(value)) {
-                return item;
-            }
-        }
-        return JobLifeCycle.UNKNOWN;
+        return Arrays.stream(values())
+                .filter(item -> item.getValue().equals(value))
+                .findFirst()
+                .orElse(JobLifeCycle.UNKNOWN);
     }
 
     public boolean equalsValue(Integer step) {
-        if (value.equals(step)) {
-            return true;
-        }
-        return false;
+        return value.equals(step);
     }
 }

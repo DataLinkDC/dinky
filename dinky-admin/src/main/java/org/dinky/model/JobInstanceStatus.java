@@ -41,8 +41,7 @@ public class JobInstanceStatus {
     private Integer reconciling = 0;
     private Integer unknown = 0;
 
-    public JobInstanceStatus() {
-    }
+    public JobInstanceStatus() {}
 
     public Integer getAll() {
         return all;

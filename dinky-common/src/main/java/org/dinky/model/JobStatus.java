@@ -21,15 +21,17 @@ package org.dinky.model;
 
 import org.dinky.assertion.Asserts;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import com.google.common.collect.Lists;
 
 /**
  * JobState
  *
  * @author wenmo
  * @since 2022/2/22 14:29
- **/
+ */
 public enum JobStatus {
 
     /**
@@ -38,44 +40,28 @@ public enum JobStatus {
      */
     INITIALIZING("INITIALIZING"),
 
-    /**
-     * Job is newly created, no task has started to run.
-     */
+    /** Job is newly created, no task has started to run. */
     CREATED("CREATED"),
 
-    /**
-     * Some tasks are scheduled or running, some may be pending, some may be finished.
-     */
+    /** Some tasks are scheduled or running, some may be pending, some may be finished. */
     RUNNING("RUNNING"),
 
-    /**
-     * The job has failed and is currently waiting for the cleanup to complete.
-     */
+    /** The job has failed and is currently waiting for the cleanup to complete. */
     FAILING("FAILING"),
 
-    /**
-     * The job has failed with a non-recoverable task failure.
-     */
+    /** The job has failed with a non-recoverable task failure. */
     FAILED("FAILED"),
 
-    /**
-     * Job is being cancelled.
-     */
+    /** Job is being cancelled. */
     CANCELLING("CANCELLING"),
 
-    /**
-     * Job has been cancelled.
-     */
+    /** Job has been cancelled. */
     CANCELED("CANCELED"),
 
-    /**
-     * All of the job's tasks have successfully finished.
-     */
+    /** All of the job's tasks have successfully finished. */
     FINISHED("FINISHED"),
 
-    /**
-     * The job is currently undergoing a reset and total restart.
-     */
+    /** The job is currently undergoing a reset and total restart. */
     RESTARTING("RESTARTING"),
 
     /**
@@ -84,14 +70,10 @@ public enum JobStatus {
      */
     SUSPENDED("SUSPENDED"),
 
-    /**
-     * The job is currently reconciling and waits for task execution report to recover state.
-     */
+    /** The job is currently reconciling and waits for task execution report to recover state. */
     RECONCILING("RECONCILING"),
 
-    /**
-     * The job can't get any info.
-     */
+    /** The job can't get any info. */
     UNKNOWN("UNKNOWN");
 
     private String value;
@@ -105,12 +87,10 @@ public enum JobStatus {
     }
 
     public static JobStatus get(String value) {
-        for (JobStatus type : JobStatus.values()) {
-            if (Asserts.isEqualsIgnoreCase(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return JobStatus.UNKNOWN;
+        return Arrays.stream(JobStatus.values())
+                .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
+                .findFirst()
+                .orElse(JobStatus.UNKNOWN);
     }
 
     public static boolean isDone(String value) {
@@ -138,12 +118,6 @@ public enum JobStatus {
     }
 
     public static List<JobStatus> getAllDoneStatus() {
-        final List<JobStatus> list = new ArrayList<>(4);
-        list.add(FAILED);
-        list.add(CANCELED);
-        list.add(FINISHED);
-        list.add(UNKNOWN);
-        return list;
+        return Lists.newArrayList(FAILED, CANCELED, FINISHED, UNKNOWN);
     }
-
 }

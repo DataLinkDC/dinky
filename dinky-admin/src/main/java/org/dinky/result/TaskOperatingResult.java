@@ -30,7 +30,7 @@ import lombok.Data;
 /**
  * @author mydq
  * @version 1.0
- **/
+ */
 @Data
 public class TaskOperatingResult {
 
@@ -50,7 +50,8 @@ public class TaskOperatingResult {
         this.taskOperatingSavepointSelect = TaskOperatingSavepointSelect.DEFAULT_CONFIG;
     }
 
-    public TaskOperatingResult(Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
+    public TaskOperatingResult(
+            Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         this.task = task;
         this.status = TaskOperatingStatus.INIT;
         this.taskOperatingSavepointSelect = taskOperatingSavepointSelect;

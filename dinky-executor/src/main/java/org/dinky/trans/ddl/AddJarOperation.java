@@ -39,8 +39,7 @@ public class AddJarOperation extends AbstractOperation implements Operation {
         super(statement);
     }
 
-    public AddJarOperation() {
-    }
+    public AddJarOperation() {}
 
     @Override
     public String getHandle() {
@@ -59,6 +58,5 @@ public class AddJarOperation extends AbstractOperation implements Operation {
 
     public void init() {
         AddJarSqlParser.getAllFilePath(statement).forEach(JarPathContextHolder::addOtherPlugins);
-
     }
 }

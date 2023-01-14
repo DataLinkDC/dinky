@@ -33,8 +33,7 @@ import java.time.ZoneId;
 import javax.xml.bind.DatatypeConverter;
 
 /**
- * @className: org.dinky.utils.ObjectConvertUtil
- * @Description:
+ * @className: org.dinky.utils.ObjectConvertUtil @Description:
  * @author: jack zhong
  */
 public class ObjectConvertUtil {
@@ -52,15 +51,23 @@ public class ObjectConvertUtil {
         }
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDate();
+                return Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDate();
             } else {
-                return Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate();
+                return Instant.ofEpochMilli((long) value)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate();
             }
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
+                return Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime();
             } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(ZoneId.systemDefault()).toLocalDateTime();
+                return Instant.parse((String) value)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDateTime();
             } else {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }

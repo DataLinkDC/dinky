@@ -31,7 +31,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/10/29 15:44
- **/
+ */
 @Setter
 @Getter
 public abstract class AbstractGatewayResult implements GatewayResult {
@@ -47,7 +47,10 @@ public abstract class AbstractGatewayResult implements GatewayResult {
         this.startTime = startTime;
     }
 
-    public AbstractGatewayResult(LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess,
+    public AbstractGatewayResult(
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            boolean isSuccess,
             String exceptionMsg) {
         this.startTime = startTime;
         this.endTime = endTime;

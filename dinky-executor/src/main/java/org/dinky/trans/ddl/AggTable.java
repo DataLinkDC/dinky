@@ -42,7 +42,13 @@ public class AggTable {
     private String groupBy;
     private String aggBy;
 
-    public AggTable(String statement, String name, String columns, String table, List<String> wheres, String groupBy,
+    public AggTable(
+            String statement,
+            String name,
+            String columns,
+            String table,
+            List<String> wheres,
+            String groupBy,
             String aggBy) {
         this.statement = statement;
         this.name = name;
@@ -55,7 +61,8 @@ public class AggTable {
 
     public static AggTable build(String statement) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
-        return new AggTable(statement,
+        return new AggTable(
+                statement,
                 getString(map, "CREATE AGGTABLE"),
                 getString(map, "SELECT"),
                 getString(map, "FROM"),

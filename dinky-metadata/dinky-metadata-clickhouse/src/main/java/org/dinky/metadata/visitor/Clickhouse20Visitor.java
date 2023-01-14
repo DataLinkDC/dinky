@@ -29,6 +29,5 @@ public interface Clickhouse20Visitor extends SQLASTVisitor {
         return true;
     }
 
-    default void endVisit(Clickhouse20CreateTableStatement x) {
-    }
+    default void endVisit(Clickhouse20CreateTableStatement x) {}
 }

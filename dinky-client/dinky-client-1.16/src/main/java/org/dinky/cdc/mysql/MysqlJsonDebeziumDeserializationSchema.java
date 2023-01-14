@@ -34,11 +34,11 @@ import com.ververica.cdc.debezium.DebeziumDeserializationSchema;
 
 /**
  * @version 1.0
- * @className: org.dinky.cdc.mysql.MysqlJsonDebeziumDeserializationSchema
- * @Description:
+ * @className: org.dinky.cdc.mysql.MysqlJsonDebeziumDeserializationSchema @Description:
  * @author: jack zhong
  */
-public class MysqlJsonDebeziumDeserializationSchema implements DebeziumDeserializationSchema<String> {
+public class MysqlJsonDebeziumDeserializationSchema
+        implements DebeziumDeserializationSchema<String> {
 
     private static final long serialVersionUID = 1L;
     private transient JsonConverter jsonConverter;
@@ -53,7 +53,8 @@ public class MysqlJsonDebeziumDeserializationSchema implements DebeziumDeseriali
         this.includeSchema = includeSchema;
     }
 
-    public MysqlJsonDebeziumDeserializationSchema(Boolean includeSchema, Map<String, Object> customConverterConfigs) {
+    public MysqlJsonDebeziumDeserializationSchema(
+            Boolean includeSchema, Map<String, Object> customConverterConfigs) {
         this.includeSchema = includeSchema;
         this.customConverterConfigs = customConverterConfigs;
     }
@@ -62,7 +63,9 @@ public class MysqlJsonDebeziumDeserializationSchema implements DebeziumDeseriali
         if (this.jsonConverter == null) {
             this.initializeJsonConverter();
         }
-        byte[] bytes = this.jsonConverter.fromConnectData(record.topic(), record.valueSchema(), record.value());
+        byte[] bytes =
+                this.jsonConverter.fromConnectData(
+                        record.topic(), record.valueSchema(), record.value());
         out.collect(new String(bytes, StandardCharsets.UTF_8));
     }
 

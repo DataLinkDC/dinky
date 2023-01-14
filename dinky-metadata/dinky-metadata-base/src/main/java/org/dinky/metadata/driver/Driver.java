@@ -62,7 +62,8 @@ public interface Driver extends AutoCloseable {
         synchronized (Driver.class) {
             Optional<Driver> optionalDriver = Driver.get(config);
             if (!optionalDriver.isPresent()) {
-                throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+                throw new MetaDataException(
+                        "缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
             }
             Driver driver = optionalDriver.get().connect();
             DriverPool.push(key, driver);
@@ -167,11 +168,11 @@ public interface Driver extends AutoCloseable {
 
     /*
      * boolean insert(Table table, JsonNode data);
-     * 
+     *
      * boolean update(Table table, JsonNode data);
-     * 
+     *
      * boolean delete(Table table, JsonNode data);
-     * 
+     *
      * SelectResult select(String sql);
      */
 
@@ -193,14 +194,12 @@ public interface Driver extends AutoCloseable {
      * 得到分割表
      *
      * @param tableRegList 表正则列表
-     * @param splitConfig  分库配置
+     * @param splitConfig 分库配置
      * @return {@link Set}<{@link Table}>
      */
     default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
         throw new SplitTableException("目前此数据源不支持分库分表");
-    }
-
-    ;
+    };
 
     List<Map<String, String>> getSplitSchemaList();
 }

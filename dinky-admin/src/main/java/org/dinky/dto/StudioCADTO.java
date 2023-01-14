@@ -27,7 +27,7 @@ import lombok.Setter;
  *
  * @author wenmo
  * @since 2021/6/23 14:00
- **/
+ */
 @Getter
 @Setter
 public class StudioCADTO extends AbstractStatementDTO {

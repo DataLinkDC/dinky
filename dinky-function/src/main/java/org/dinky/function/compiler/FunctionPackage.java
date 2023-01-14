@@ -34,7 +34,7 @@ public interface FunctionPackage {
     /**
      * 打包
      *
-     * @param udfList   udf列表
+     * @param udfList udf列表
      * @param missionId 任务id
      * @return 文件绝对路径
      */
@@ -43,7 +43,7 @@ public interface FunctionPackage {
     /**
      * 打包
      *
-     * @param udfList   udf 列表
+     * @param udfList udf 列表
      * @param missionId 任务id
      * @return 打包结果
      */

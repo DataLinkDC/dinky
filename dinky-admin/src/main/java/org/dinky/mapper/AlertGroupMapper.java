@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2022/2/24 19:59
- **/
+ */
 @Mapper
-public interface AlertGroupMapper extends SuperMapper<AlertGroup> {
-}
+public interface AlertGroupMapper extends SuperMapper<AlertGroup> {}

@@ -27,7 +27,6 @@ import lombok.Data;
  * @author: zhumingye
  * @create: 2022-06-27 11:18
  */
-
 @Data
 public class TaskManagerConfiguration {
 
@@ -45,5 +44,4 @@ public class TaskManagerConfiguration {
     private String memoryConfiguration;
 
     private TaskContainerConfigInfo taskContainerConfigInfo;
-
 }

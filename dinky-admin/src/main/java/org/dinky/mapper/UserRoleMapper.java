@@ -27,9 +27,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * user role mapper interface
- */
+/** user role mapper interface */
 @Mapper
 public interface UserRoleMapper extends SuperMapper<UserRole> {
 

@@ -74,7 +74,7 @@ public class SingleSqlParserFactory {
      * @param sql:要解析的sql语句
      * @param regExp:正则表达式
      * @return
-     **/
+     */
     private static boolean contains(String sql, String regExp) {
         Pattern pattern = Pattern.compile(regExp, Pattern.CASE_INSENSITIVE);
         Matcher matcher = pattern.matcher(sql);

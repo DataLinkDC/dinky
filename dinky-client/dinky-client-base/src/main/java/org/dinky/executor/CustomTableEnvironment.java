@@ -43,10 +43,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * @since 2022/2/5 10:35
  */
 public interface CustomTableEnvironment
-        extends
-            StreamTableEnvironment,
-            TableEnvironmentInternal,
-            TableEnvironmentInstance {
+        extends StreamTableEnvironment, TableEnvironmentInternal, TableEnvironmentInstance {
 
     ObjectNode getStreamGraph(String statement);
 
@@ -58,7 +55,8 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
+    boolean parseAndLoadConfiguration(
+            String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 

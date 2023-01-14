@@ -85,7 +85,8 @@ public class SqlServerTest {
         // columns
         List<Column> columns = driver.listColumns("dbo", "t_user");
         for (Column column : columns) {
-            System.out.println(column.getName() + " " + column.getType() + " " + column.getComment());
+            System.out.println(
+                    column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
 
@@ -97,5 +98,4 @@ public class SqlServerTest {
             System.out.println(rowDatum);
         }
     }
-
 }

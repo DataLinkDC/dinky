@@ -47,8 +47,7 @@ public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
             if (lexer.token() == Token.EQ) {
                 lexer.nextToken();
             }
-            stmt.setEngine(
-                    this.exprParser.expr());
+            stmt.setEngine(this.exprParser.expr());
         }
 
         if (lexer.identifierEquals("PARTITION")) {
@@ -79,7 +78,7 @@ public class Clickhouse20CreateTableParser extends SQLCreateTableParser {
 
         if (lexer.identifierEquals("SETTINGS")) {
             lexer.nextToken();
-            for (;;) {
+            for (; ; ) {
                 SQLAssignItem item = this.exprParser.parseAssignItem();
                 item.setParent(ckStmt);
                 ckStmt.getSettings().add(item);

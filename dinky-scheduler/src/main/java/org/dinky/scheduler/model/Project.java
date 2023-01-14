@@ -26,9 +26,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * project
- */
+/** project */
 @Data
 public class Project {
 
@@ -66,5 +64,4 @@ public class Project {
 
     @ApiModelProperty(value = "流程实例运行计数")
     private Integer instRunningCount;
-
 }

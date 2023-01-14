@@ -47,12 +47,15 @@ public class SecurityAspect {
     // 敏感信息屏蔽码
     public static final String MASK = "'password'='******'";
 
-    @AfterReturning(pointcut = "execution(* org.dinky.controller..*.*(..))", returning = "returnValue")
+    @AfterReturning(
+            pointcut = "execution(* org.dinky.controller..*.*(..))",
+            returning = "returnValue")
     public void afterReturning(JoinPoint joinPoint, Object returnValue) {
 
         // mask sql for explain
         // openapi/explainSql
-        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof ExplainResult) {
+        if (returnValue instanceof Result<?>
+                && ((Result<?>) returnValue).getDatas() instanceof ExplainResult) {
             ExplainResult exp = ((ExplainResult) ((Result<?>) returnValue).getDatas());
             List<SqlExplainResult> sqlExplainResults = exp.getSqlExplainResults();
             if (CollectionUtils.isEmpty(sqlExplainResults)) {
@@ -65,12 +68,14 @@ public class SecurityAspect {
         }
 
         // /api/studio/explainSql
-        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof List<?>) {
+        if (returnValue instanceof Result<?>
+                && ((Result<?>) returnValue).getDatas() instanceof List<?>) {
             List<?> list = (List<?>) ((Result<?>) returnValue).getDatas();
             if (list.isEmpty() || !(list.get(0) instanceof SqlExplainResult)) {
                 return;
             }
-            List<SqlExplainResult> exp = ((List<SqlExplainResult>) ((Result<?>) returnValue).getDatas());
+            List<SqlExplainResult> exp =
+                    ((List<SqlExplainResult>) ((Result<?>) returnValue).getDatas());
             List<SqlExplainResult> sqlExplainResults = exp;
             if (CollectionUtils.isEmpty(sqlExplainResults)) {
                 return;
@@ -96,7 +101,8 @@ public class SecurityAspect {
         }
 
         // mask statement for history
-        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof History) {
+        if (returnValue instanceof Result<?>
+                && ((Result<?>) returnValue).getDatas() instanceof History) {
             History history = ((History) ((Result<?>) returnValue).getDatas());
             if (null != history) {
                 String statement = history.getStatement();
@@ -105,7 +111,8 @@ public class SecurityAspect {
         }
 
         // /getJobInfoDetail
-        if (returnValue instanceof Result<?> && ((Result<?>) returnValue).getDatas() instanceof JobInfoDetail) {
+        if (returnValue instanceof Result<?>
+                && ((Result<?>) returnValue).getDatas() instanceof JobInfoDetail) {
             JobInfoDetail jobInfoDetail = ((JobInfoDetail) ((Result<?>) returnValue).getDatas());
             History history = jobInfoDetail.getHistory();
             if (null != history) {
@@ -118,9 +125,9 @@ public class SecurityAspect {
     /**
      * 将info中的敏感信息中打码
      *
-     * @param info            包含敏感信息的字符串
+     * @param info 包含敏感信息的字符串
      * @param passwordPattern 敏感信息的regex
-     * @param mask            屏蔽码
+     * @param mask 屏蔽码
      * @return
      */
     public static String mask(String info, String passwordPattern, String mask) {
@@ -137,5 +144,4 @@ public class SecurityAspect {
 
         return sb.toString();
     }
-
 }

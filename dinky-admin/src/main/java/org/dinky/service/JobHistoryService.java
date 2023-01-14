@@ -27,7 +27,7 @@ import org.dinky.model.JobHistory;
  *
  * @author wenmo
  * @since 2022/3/2 19:55
- **/
+ */
 public interface JobHistoryService extends ISuperService<JobHistory> {
 
     JobHistory getByIdWithoutTenant(Integer id);
@@ -37,5 +37,4 @@ public interface JobHistoryService extends ISuperService<JobHistory> {
     JobHistory getJobHistoryInfo(JobHistory jobHistory);
 
     JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave);
-
 }

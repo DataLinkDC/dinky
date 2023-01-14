@@ -45,14 +45,13 @@ import com.ververica.cdc.connectors.mysql.table.StartupOptions;
  *
  * @author wenmo
  * @since 2022/4/12 21:29
- **/
+ */
 public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     public static final String KEY_WORD = "mysql-cdc";
     private static final String METADATA_TYPE = "MySql";
 
-    public MysqlCDCBuilder() {
-    }
+    public MysqlCDCBuilder() {}
 
     public MysqlCDCBuilder(FlinkCDCConfig config) {
         super(config);
@@ -79,9 +78,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
         String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
-        String distributionFactorLower = config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
-        String distributionFactorUpper = config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
-        String scanNewlyAddedTableEnabled = config.getSource().get("scan.newly-added-table.enabled");
+        String distributionFactorLower =
+                config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
+        String distributionFactorUpper =
+                config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
+        String scanNewlyAddedTableEnabled =
+                config.getSource().get("scan.newly-added-table.enabled");
         String schemaChanges = config.getSource().get("schema.changes");
 
         Properties debeziumProperties = new Properties();
@@ -90,7 +92,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
         for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 debeziumProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
@@ -98,16 +101,18 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
         for (Map.Entry<String, String> entry : config.getJdbc().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey()) && Asserts.isNotNullString(entry.getValue())) {
+            if (Asserts.isNotNullString(entry.getKey())
+                    && Asserts.isNotNullString(entry.getValue())) {
                 jdbcProperties.setProperty(entry.getKey(), entry.getValue());
             }
         }
 
-        MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
-                .hostname(config.getHostname())
-                .port(config.getPort())
-                .username(config.getUsername())
-                .password(config.getPassword());
+        MySqlSourceBuilder<String> sourceBuilder =
+                MySqlSource.<String>builder()
+                        .hostname(config.getHostname())
+                        .port(config.getPort())
+                        .username(config.getUsername())
+                        .password(config.getPassword());
 
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
@@ -118,7 +123,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(
+                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
         } else {
             sourceBuilder.tableList(new String[0]);
         }
@@ -189,7 +195,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sourceBuilder.includeSchemaChanges(true);
         }
 
-        return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
+        return env.fromSource(
+                sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
     @Override

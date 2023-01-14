@@ -65,17 +65,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     private static final String DEFAULT_PASSWORD = "123456";
 
-    @Autowired
-    private UserRoleService userRoleService;
+    @Autowired private UserRoleService userRoleService;
 
-    @Autowired
-    private UserTenantService userTenantService;
+    @Autowired private UserTenantService userTenantService;
 
-    @Autowired
-    private RoleService roleService;
+    @Autowired private RoleService roleService;
 
-    @Autowired
-    private TenantService tenantService;
+    @Autowired private TenantService tenantService;
 
     @Override
     public Result registerUser(User user) {
@@ -170,20 +166,26 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         Tenant currentTenant = tenantService.getBaseMapper().selectById(loginUTO.getTenantId());
 
-        userRoles.forEach(userRole -> {
-            Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-            if (Asserts.isNotNull(role)) {
-                roleList.add(role);
-            }
-        });
+        userRoles.forEach(
+                userRole -> {
+                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+                    if (Asserts.isNotNull(role)) {
+                        roleList.add(role);
+                    }
+                });
 
-        userTenants.forEach(userTenant -> {
-            Tenant tenant = tenantService.getBaseMapper()
-                    .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
-            if (Asserts.isNotNull(tenant)) {
-                tenantList.add(tenant);
-            }
-        });
+        userTenants.forEach(
+                userTenant -> {
+                    Tenant tenant =
+                            tenantService
+                                    .getBaseMapper()
+                                    .selectOne(
+                                            new QueryWrapper<Tenant>()
+                                                    .eq("id", userTenant.getTenantId()));
+                    if (Asserts.isNotNull(tenant)) {
+                        tenantList.add(tenant);
+                    }
+                });
 
         userDTO.setUser(user);
         userDTO.setRoleList(roleList);
@@ -247,5 +249,4 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
         return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.success"));
     }
-
 }

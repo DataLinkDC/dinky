@@ -28,8 +28,10 @@ import org.dinky.assertion.Asserts;
  * @since 2021/11/3 21:58
  */
 public enum SavePointType {
-
-    TRIGGER("trigger"), DISPOSE("dispose"), STOP("stop"), CANCEL("cancel");
+    TRIGGER("trigger"),
+    DISPOSE("dispose"),
+    STOP("stop"),
+    CANCEL("cancel");
 
     private String value;
 

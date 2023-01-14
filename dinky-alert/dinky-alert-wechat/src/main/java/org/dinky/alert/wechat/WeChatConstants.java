@@ -24,7 +24,7 @@ package org.dinky.alert.wechat;
  *
  * @author wenmo
  * @since 2022/2/23 21:10
- **/
+ */
 public class WeChatConstants {
 
     static final String TYPE = "WeChat";
@@ -35,15 +35,19 @@ public class WeChatConstants {
 
     static final String CHARSET = "UTF-8";
 
-    static final String PUSH_URL = "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={token}";
+    static final String PUSH_URL =
+            "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={token}";
 
-    static final String APP_CHAT_PUSH_URL = "https://qyapi.weixin.qq.com/cgi-bin/appchat/send?access_token={token}";
+    static final String APP_CHAT_PUSH_URL =
+            "https://qyapi.weixin.qq.com/cgi-bin/appchat/send?access_token={token}";
 
-    static final String TOKEN_URL = "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
+    static final String TOKEN_URL =
+            "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
 
     static final String WEBHOOK = "webhook";
 
-    static final String WEBHOOK_TEMPLATE = "{\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg} \"}}";
+    static final String WEBHOOK_TEMPLATE =
+            "{\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg} \"}}";
 
     static final String KEYWORD = "keyword";
 
@@ -55,7 +59,8 @@ public class WeChatConstants {
 
     static final String TEAM_SEND_MSG = "teamSendMsg";
 
-    static final String USER_SEND_MSG = "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg}\"}}";
+    static final String USER_SEND_MSG =
+            "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg}\"}}";
 
     static final String AGENT_ID = "agentId";
 
@@ -64,5 +69,4 @@ public class WeChatConstants {
     static final String SEND_TYPE = "sendType";
 
     static final String SHOW_TYPE = "msgtype";
-
 }

@@ -35,15 +35,14 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
+ */
 public abstract class AbstractGateway implements Gateway {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractGateway.class);
     protected GatewayConfig config;
     protected Configuration configuration;
 
-    public AbstractGateway() {
-    }
+    public AbstractGateway() {}
 
     public AbstractGateway(GatewayConfig config) {
         this.config = config;

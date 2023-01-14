@@ -39,5 +39,4 @@ public class TaskContainerConfigInfo {
     private String taskManagerStdout;
 
     private String taskManagerThreadDump;
-
 }

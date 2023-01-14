@@ -36,14 +36,16 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  *
  * @author wenmo
  * @since 2021/6/3 14:36
- **/
+ */
 @Service
-public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Document> implements DocumentService {
+public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Document>
+        implements DocumentService {
 
     @Override
     public List<Document> getFillAllByVersion(String version) {
         if (Asserts.isNotNullString(version)) {
-            return baseMapper.selectList(new QueryWrapper<Document>().eq("version", version).eq("enabled", 1));
+            return baseMapper.selectList(
+                    new QueryWrapper<Document>().eq("version", version).eq("enabled", 1));
         } else {
             return baseMapper.selectList(new QueryWrapper<Document>().eq("enabled", 1));
         }

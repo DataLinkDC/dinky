@@ -29,8 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/5/28 13:41
- **/
+ */
 @Mapper
-public interface StatementMapper extends SuperMapper<Statement> {
-
-}
+public interface StatementMapper extends SuperMapper<Statement> {}

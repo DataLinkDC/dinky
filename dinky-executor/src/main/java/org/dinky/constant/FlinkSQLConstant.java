@@ -24,39 +24,23 @@ package org.dinky.constant;
  *
  * @author wenmo
  * @since 2021/5/25 15:51
- **/
+ */
 public interface FlinkSQLConstant {
 
-    /**
-     * 分隔符
-     */
+    /** 分隔符 */
     String SEPARATOR = ";\n";
-    /**
-     * DDL 类型
-     */
+    /** DDL 类型 */
     String DDL = "DDL";
-    /**
-     * DML 类型
-     */
+    /** DML 类型 */
     String DML = "DML";
-    /**
-     * DATASTREAM 类型
-     */
+    /** DATASTREAM 类型 */
     String DATASTREAM = "DATASTREAM";
-    /**
-     * 片段 Fragments 标识
-     */
+    /** 片段 Fragments 标识 */
     String FRAGMENTS = ":=";
 
-    /**
-     * 内置日期变量前缀
-     */
+    /** 内置日期变量前缀 */
     String INNER_DATETIME_KEY = "_CURRENT_DATE_";
 
-    /**
-     * 内置日期变量格式
-     * 确定后不能修改
-     */
+    /** 内置日期变量格式 确定后不能修改 */
     String INNER_DATETIME_FORMAT = "yyyyMMdd";
-
 }

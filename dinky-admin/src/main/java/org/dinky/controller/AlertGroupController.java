@@ -47,20 +47,16 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author wenmo
  * @since 2022/2/24 20:02
- **/
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api/alertGroup")
 public class AlertGroupController {
 
-    @Autowired
-    private AlertGroupService alertGroupService;
-    @Autowired
-    private AlertHistoryService alertHistoryService;
+    @Autowired private AlertGroupService alertGroupService;
+    @Autowired private AlertHistoryService alertHistoryService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
@@ -70,17 +66,13 @@ public class AlertGroupController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -94,33 +86,28 @@ public class AlertGroupController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody AlertGroup alertGroup) throws Exception {
         alertGroup = alertGroupService.getById(alertGroup.getId());
         return Result.succeed(alertGroup, "获取成功");
     }
 
-    /**
-     * 获取可用的报警组
-     */
+    /** 获取可用的报警组 */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         return Result.succeed(alertGroupService.listEnabledAll(), "获取成功");
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping("/history")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);

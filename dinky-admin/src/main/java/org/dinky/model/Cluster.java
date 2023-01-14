@@ -33,7 +33,7 @@ import lombok.EqualsAndHashCode;
  *
  * @author wenmo
  * @since 2021/5/28 13:53
- **/
+ */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_cluster")
@@ -64,8 +64,13 @@ public class Cluster extends SuperEntity {
 
     private Integer taskId;
 
-    public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type,
-            Integer clusterConfigurationId, Integer taskId) {
+    public static Cluster autoRegistersCluster(
+            String hosts,
+            String name,
+            String alias,
+            String type,
+            Integer clusterConfigurationId,
+            Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
         cluster.setAlias(alias);

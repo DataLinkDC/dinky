@@ -27,9 +27,7 @@ import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-/**
- * role namespace mapper interface
- */
+/** role namespace mapper interface */
 @Mapper
 public interface RoleNamespaceMapper extends SuperMapper<RoleNamespace> {
 

@@ -19,11 +19,10 @@
 
 package org.dinky.flink.catalog.factory;
 
+import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
 import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.PASSWORD;
 import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.URL;
 import static org.dinky.flink.catalog.factory.DinkyMysqlCatalogFactoryOptions.USERNAME;
-
-import static org.apache.flink.table.factories.FactoryUtil.PROPERTY_VERSION;
 
 import org.dinky.flink.catalog.DinkyMysqlCatalog;
 
@@ -35,9 +34,7 @@ import org.apache.flink.table.factories.FactoryUtil;
 import java.util.HashSet;
 import java.util.Set;
 
-/**
- * Factory for {@link DinkyMysqlCatalog}.
- */
+/** Factory for {@link DinkyMysqlCatalog}. */
 public class DinkyMysqlCatalogFactory implements CatalogFactory {
 
     @Override
@@ -64,13 +61,13 @@ public class DinkyMysqlCatalogFactory implements CatalogFactory {
     @Override
     public Catalog createCatalog(Context context) {
         final FactoryUtil.CatalogFactoryHelper helper =
-            FactoryUtil.createCatalogFactoryHelper(this, context);
+                FactoryUtil.createCatalogFactoryHelper(this, context);
         helper.validate();
 
         return new DinkyMysqlCatalog(
-            context.getName(),
-            helper.getOptions().get(URL),
-            helper.getOptions().get(USERNAME),
-            helper.getOptions().get(PASSWORD));
+                context.getName(),
+                helper.getOptions().get(URL),
+                helper.getOptions().get(USERNAME),
+                helper.getOptions().get(PASSWORD));
     }
 }

@@ -59,21 +59,19 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         return "Phoenix";
     }
 
-    /**
-     *  sql拼接，目前还未实现limit方法
-     * */
-
+    /** sql拼接，目前还未实现limit方法 */
     @Override
     public StringBuilder genQueryOption(QueryData queryData) {
 
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder = new StringBuilder()
-                .append("select * from ")
-                .append(queryData.getSchemaName())
-                .append(".")
-                .append(queryData.getTableName());
+        StringBuilder optionBuilder =
+                new StringBuilder()
+                        .append("select * from ")
+                        .append(queryData.getSchemaName())
+                        .append(".")
+                        .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -99,8 +97,13 @@ public class PhoenixDriver extends AbstractJdbcDriver {
         PhoenixTypeConvert phoenixTypeConvert = new PhoenixTypeConvert();
         if (columns != null) {
             for (Column column : columns) {
-                sql.append(", \"" + column.getColumnFamily() + "\".\"" + column.getName() + "\"  "
-                        + phoenixTypeConvert.convertToDB(column));
+                sql.append(
+                        ", \""
+                                + column.getColumnFamily()
+                                + "\".\""
+                                + column.getName()
+                                + "\"  "
+                                + phoenixTypeConvert.convertToDB(column));
             }
         }
         sql.append(" ) ");
@@ -126,8 +129,7 @@ public class PhoenixDriver extends AbstractJdbcDriver {
     }
 
     /**
-     * 解决phoenix SQL多语句执行问题
-     * phoenix SQL中不能执行带;语句
+     * 解决phoenix SQL多语句执行问题 phoenix SQL中不能执行带;语句
      *
      * @param sql
      * @return

@@ -28,7 +28,7 @@ import org.dinky.model.ColumnType;
  *
  * @author wenmo
  * @since 2021/7/22 9:33
- **/
+ */
 public class PostgreSqlTypeConvert implements ITypeConvert {
 
     @Override
@@ -39,7 +39,10 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
         }
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("smallint") || t.contains("int2") || t.contains("smallserial") || t.contains("serial2")) {
+        if (t.contains("smallint")
+                || t.contains("int2")
+                || t.contains("smallserial")
+                || t.contains("serial2")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_SHORT;
             } else {

@@ -30,8 +30,7 @@ public class JobInstanceCount {
     private String status;
     private Integer counts;
 
-    public JobInstanceCount() {
-    }
+    public JobInstanceCount() {}
 
     public JobInstanceCount(String status, Integer counts) {
         this.status = status;

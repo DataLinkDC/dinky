@@ -46,5 +46,4 @@ public class StudioDDLDTO {
     public JobConfig getJobConfig() {
         return new JobConfig(type, useResult, useSession, session, useRemote, clusterId, maxRowNum);
     }
-
 }

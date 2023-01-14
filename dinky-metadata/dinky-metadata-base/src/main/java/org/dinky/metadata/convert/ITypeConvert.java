@@ -31,7 +31,7 @@ import java.sql.SQLException;
  *
  * @author wenmo
  * @since 2021/7/20 14:39
- **/
+ */
 public interface ITypeConvert {
 
     default String convertToDB(Column column) {
@@ -42,7 +42,8 @@ public interface ITypeConvert {
 
     String convertToDB(ColumnType columnType);
 
-    default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
+    default Object convertValue(ResultSet results, String columnName, String javaType)
+            throws SQLException {
         if (Asserts.isNull(javaType)) {
             return results.getString(columnName);
         }

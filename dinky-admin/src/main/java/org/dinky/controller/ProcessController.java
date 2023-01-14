@@ -44,8 +44,7 @@ import cn.dev33.satoken.stp.StpUtil;
 @RequestMapping("/api/process")
 public class ProcessController {
 
-    @Autowired
-    private ProcessService processService;
+    @Autowired private ProcessService processService;
 
     @GetMapping("/listAllProcess")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {

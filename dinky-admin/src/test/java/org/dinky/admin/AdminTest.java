@@ -35,5 +35,4 @@ public class AdminTest {
     public void adminTest() {
         String admin = SaSecureUtil.md5("admin");
     }
-
 }

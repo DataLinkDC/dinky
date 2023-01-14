@@ -38,10 +38,11 @@ public class FunctionFactory {
      * udf编译 & 打包 初始化
      *
      * @param udfClassList udf列表
-     * @param missionId    当前任务id
+     * @param missionId 当前任务id
      * @return 打包过后的路径
      */
-    public static UDFPath initUDF(List<UDF> udfClassList, Integer missionId, Configuration configuration) {
+    public static UDFPath initUDF(
+            List<UDF> udfClassList, Integer missionId, Configuration configuration) {
 
         // 编译
         FunctionCompiler.getCompiler(udfClassList, configuration, missionId);

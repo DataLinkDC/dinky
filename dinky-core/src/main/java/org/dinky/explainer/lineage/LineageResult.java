@@ -32,8 +32,7 @@ public class LineageResult {
     private List<LineageTable> tables;
     private List<LineageRelation> relations;
 
-    public LineageResult() {
-    }
+    public LineageResult() {}
 
     public LineageResult(List<LineageTable> tables, List<LineageRelation> relations) {
         this.tables = tables;

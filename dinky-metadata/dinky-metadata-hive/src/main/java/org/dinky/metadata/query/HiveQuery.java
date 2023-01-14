@@ -72,5 +72,4 @@ public class HiveQuery extends AbstractDBQuery {
     public String columnComment() {
         return "comment";
     }
-
 }

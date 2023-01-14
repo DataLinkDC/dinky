@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @author wenmo
  * @since 2022/2/11 15:46
- **/
+ */
 public class LogUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(LogUtil.class);

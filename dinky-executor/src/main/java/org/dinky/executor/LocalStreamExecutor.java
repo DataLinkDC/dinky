@@ -30,7 +30,7 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
  *
  * @author wenmo
  * @since 2021/5/25 13:48
- **/
+ */
 public class LocalStreamExecutor extends Executor {
 
     public LocalStreamExecutor(ExecutorSetting executorSetting) {
@@ -38,7 +38,8 @@ public class LocalStreamExecutor extends Executor {
         if (Asserts.isNotNull(executorSetting.getConfig())) {
             Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
             if (configuration.contains(RestOptions.PORT)) {
-                this.environment = StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
+                this.environment =
+                        StreamExecutionEnvironment.createLocalEnvironmentWithWebUI(configuration);
             } else {
                 this.environment = StreamExecutionEnvironment.createLocalEnvironment(configuration);
             }

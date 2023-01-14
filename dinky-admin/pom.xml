@@ -30,6 +30,10 @@
 
     <name>Dinky : Admin</name>
 
+    <properties>
+        <expand.scope>provided</expand.scope>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -216,6 +220,80 @@
             <artifactId>jmx_prometheus_javaagent</artifactId>
             <version>0.16.1</version>
         </dependency>
+
+        <!-- expand metadata -->
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-clickhouse</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-doris</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-hive</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-mysql</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-oracle</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-phoenix</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-postgresql</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-presto</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-sqlserver</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-metadata-starrocks</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+
+        <!-- expand alert -->
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-dingtalk</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-email</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-feishu</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-wechat</artifactId>
+            <scope>${expand.scope}</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -340,6 +418,20 @@
                     <artifactId>netty-resolver-dns-native-macos</artifactId>
                 </dependency>
             </dependencies>
+        </profile>
+
+        <profile>
+            <id>dev</id>
+            <properties>
+                <expand.scope>compile</expand.scope>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>prod</id>
+            <properties>
+                <expand.scope>provided</expand.scope>
+            </properties>
         </profile>
     </profiles>
 </project>

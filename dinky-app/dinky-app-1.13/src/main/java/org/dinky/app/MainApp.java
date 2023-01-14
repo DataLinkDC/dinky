@@ -33,7 +33,7 @@ import java.util.Map;
  *
  * @author wenmo
  * @since 2021/10/27
- **/
+ */
 public class MainApp {
 
     public static void main(String[] args) throws IOException {
@@ -41,6 +41,6 @@ public class MainApp {
         String id = params.get(FlinkParamConstant.ID);
         Asserts.checkNullString(id, "请配置入参 id ");
         DBConfig dbConfig = DBConfig.build(params);
-        Submiter.submit(Integer.valueOf(id), dbConfig,params.get(FlinkParamConstant.DINKY_ADDR));
+        Submiter.submit(Integer.valueOf(id), dbConfig, params.get(FlinkParamConstant.DINKY_ADDR));
     }
 }

@@ -24,7 +24,5 @@ package org.dinky.gateway;
  *
  * @author wenmo
  * @since 2021/10/29
- **/
-public class GatewayTest {
-
-}
+ */
+public class GatewayTest {}

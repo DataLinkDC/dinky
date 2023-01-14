@@ -24,9 +24,7 @@ import java.util.List;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
-/**
- * @author 郑文豪
- */
+/** @author 郑文豪 */
 @Data
 public class DinkyTaskParams {
 

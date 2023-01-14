@@ -24,7 +24,7 @@ package org.dinky.parser;
  *
  * @author wenmo
  * @since 2022/2/17 16:19
- **/
+ */
 public class ShowFragmentParser extends BaseSingleSqlParser {
 
     public ShowFragmentParser(String originalSql) {

@@ -47,12 +47,15 @@ import lombok.EqualsAndHashCode;
 public class Savepoints implements Serializable {
 
     private static final long serialVersionUID = 115345627846554078L;
+
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     private Integer tenantId;
 
-    @NotNull(message = "作业ID不能为空", groups = {Save.class})
+    @NotNull(
+            message = "作业ID不能为空",
+            groups = {Save.class})
     private Integer taskId;
 
     private String name;

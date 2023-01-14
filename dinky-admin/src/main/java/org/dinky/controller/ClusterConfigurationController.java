@@ -53,12 +53,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/clusterConfiguration")
 public class ClusterConfigurationController {
 
-    @Autowired
-    private ClusterConfigurationService clusterConfigurationService;
+    @Autowired private ClusterConfigurationService clusterConfigurationService;
 
-    /**
-     * 新增或者更新
-     */
+    /** 新增或者更新 */
     @PutMapping
     public Result saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
         Integer id = clusterConfiguration.getId();
@@ -71,17 +68,13 @@ public class ClusterConfigurationController {
         }
     }
 
-    /**
-     * 动态查询列表
-     */
+    /** 动态查询列表 */
     @PostMapping
     public ProTableResult<ClusterConfiguration> listClusterConfigs(@RequestBody JsonNode para) {
         return clusterConfigurationService.selectForProTable(para);
     }
 
-    /**
-     * 批量删除
-     */
+    /** 批量删除 */
     @DeleteMapping
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
@@ -95,34 +88,29 @@ public class ClusterConfigurationController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed(
+                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
         }
     }
 
-    /**
-     * 获取指定ID的信息
-     */
+    /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result getOneById(@RequestBody ClusterConfiguration clusterConfiguration) {
         clusterConfiguration = clusterConfigurationService.getById(clusterConfiguration.getId());
         return Result.succeed(clusterConfiguration, "获取成功");
     }
 
-    /**
-     * 获取可用的集群列表
-     */
+    /** 获取可用的集群列表 */
     @GetMapping("/listEnabledAll")
     public Result listEnabledAll() {
         List<ClusterConfiguration> clusters = clusterConfigurationService.listEnabledAll();
         return Result.succeed(clusters, "获取成功");
     }
 
-    /**
-     * 测试
-     */
+    /** 测试 */
     @PostMapping("/testConnect")
     public Result testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);

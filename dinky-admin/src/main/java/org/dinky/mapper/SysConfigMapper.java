@@ -29,7 +29,6 @@ import org.apache.ibatis.annotations.Mapper;
  *
  * @author wenmo
  * @since 2021/11/18
- **/
+ */
 @Mapper
-public interface SysConfigMapper extends SuperMapper<SysConfig> {
-}
+public interface SysConfigMapper extends SuperMapper<SysConfig> {}

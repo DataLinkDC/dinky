@@ -45,16 +45,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
-public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
+public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
+        implements TenantService {
 
-    @Autowired
-    private RoleService roleService;
+    @Autowired private RoleService roleService;
 
-    @Autowired
-    private NamespaceService namespaceService;
+    @Autowired private NamespaceService namespaceService;
 
-    @Autowired
-    private UserTenantService userTenantService;
+    @Autowired private UserTenantService userTenantService;
 
     @Override
     public Result saveOrUpdateTenant(Tenant tenant) {
@@ -101,14 +99,18 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
                 return Result.failed("租户不存在");
             }
 
-            Long tenantRoleCount = roleService.getBaseMapper()
-                    .selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+            Long tenantRoleCount =
+                    roleService
+                            .getBaseMapper()
+                            .selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
             if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            Long tenantNamespaceCount = namespaceService.getBaseMapper()
-                    .selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
+            Long tenantNamespaceCount =
+                    namespaceService
+                            .getBaseMapper()
+                            .selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
             if (tenantNamespaceCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定名称空间");
             }
@@ -175,5 +177,4 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> im
             return Result.failed("无法切换租户,获取不到租户信息");
         }
     }
-
 }

@@ -46,8 +46,10 @@ public class JobInfo {
     }
 
     public enum JobStatus {
-
-        RUN("run"), STOP("stop"), CANCEL("cancel"), FAIL("fail");
+        RUN("run"),
+        STOP("stop"),
+        CANCEL("cancel"),
+        FAIL("fail");
 
         private String value;
 

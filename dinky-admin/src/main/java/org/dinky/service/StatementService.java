@@ -27,7 +27,7 @@ import org.dinky.model.Statement;
  *
  * @author wenmo
  * @since 2021/5/28 13:45
- **/
+ */
 public interface StatementService extends ISuperService<Statement> {
 
     boolean insert(Statement statement);

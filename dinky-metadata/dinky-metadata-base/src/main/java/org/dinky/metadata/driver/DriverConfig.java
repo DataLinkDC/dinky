@@ -44,8 +44,7 @@ public class DriverConfig {
     private String username;
     private String password;
 
-    public DriverConfig() {
-    }
+    public DriverConfig() {}
 
     public DriverConfig(String name, String type, String url, String username, String password) {
         this.name = name;
@@ -57,7 +56,11 @@ public class DriverConfig {
 
     public static DriverConfig build(Map<String, String> confMap) {
         Asserts.checkNull(confMap, "数据源配置不能为空");
-        return new DriverConfig(confMap.get("name"), confMap.get("type"), confMap.get("url"), confMap.get("username"),
+        return new DriverConfig(
+                confMap.get("name"),
+                confMap.get("type"),
+                confMap.get("url"),
+                confMap.get("username"),
                 confMap.get("password"));
     }
 }

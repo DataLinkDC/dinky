@@ -49,12 +49,19 @@ public class JobResult {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
 
-    public JobResult() {
-    }
+    public JobResult() {}
 
-    public JobResult(Integer id, Integer jobInstanceId, JobConfig jobConfig, String jobManagerAddress,
+    public JobResult(
+            Integer id,
+            Integer jobInstanceId,
+            JobConfig jobConfig,
+            String jobManagerAddress,
             Job.JobStatus status,
-            String statement, String jobId, String error, IResult result, LocalDateTime startTime,
+            String statement,
+            String jobId,
+            String error,
+            IResult result,
+            LocalDateTime startTime,
             LocalDateTime endTime) {
         this.id = id;
         this.jobInstanceId = jobInstanceId;
