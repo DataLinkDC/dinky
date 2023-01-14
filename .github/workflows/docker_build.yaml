@@ -53,9 +53,8 @@ jobs:
         run: |
           ./mvnw -B clean install \
                  -Dmaven.test.skip=true \
-                 -Dcheckstyle.skip=true \
                  -Dspotless.check.skip=true \
-                 -P prod,scala-2.12,all,web,maven-central,fast \
+                 -P prod,scala-2.12,flink-all,web,maven-central,fast \
                  --no-snapshot-updates
       - name: Upload release file
         uses: actions/upload-artifact@v3

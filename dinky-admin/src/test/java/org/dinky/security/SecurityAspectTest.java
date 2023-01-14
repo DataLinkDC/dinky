@@ -17,14 +17,18 @@
  *
  */
 
-package org.dinky.admin;
-
-import org.dinky.security.SecurityAspect;
+package org.dinky.security;
 
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SecurityTest {
+/**
+ * SecurityAspectTest
+ *
+ * @author wenmo
+ * @since 2023/1/14 15:59
+ */
+public class SecurityAspectTest {
 
     @Test
     public void testMask() {

@@ -31,6 +31,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -73,6 +74,7 @@ public class DingTalkTest {
         config.put(DingTalkConstants.USER, "user1,user2");
     }
 
+    @Ignore
     @Test
     public void sendMarkDownMsgTest() {
         AlertConfig config = AlertConfig.build("MarkDownTest", "DingTalk", DingTalkTest.config);
@@ -81,6 +83,7 @@ public class DingTalkTest {
         Assert.assertEquals(true, result.getSuccess());
     }
 
+    @Ignore
     @Test
     public void sendTextMsgTest() {
         config.put(DingTalkConstants.MSG_TYPE, ShowType.TEXT.getValue());

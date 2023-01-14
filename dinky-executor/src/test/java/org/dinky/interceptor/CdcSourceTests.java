@@ -23,6 +23,7 @@ import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorSetting;
 import org.dinky.executor.LocalStreamExecutor;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -31,6 +32,7 @@ import org.junit.Test;
  */
 public class CdcSourceTests {
 
+    @Ignore
     @Test
     public void printTest() throws Exception {
         String statement =

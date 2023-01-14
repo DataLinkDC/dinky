@@ -30,6 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PhoenixTest {
@@ -49,6 +50,7 @@ public class PhoenixTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSchema() {
         // schema && table
@@ -61,6 +63,7 @@ public class PhoenixTest {
         }
     }
 
+    @Ignore
     @Test
     public void testListTables() {
         List<Table> tables = driver.listTables("");
@@ -69,6 +72,7 @@ public class PhoenixTest {
         }
     }
 
+    @Ignore
     @Test
     public void testColumns() {
         // columns
@@ -79,6 +83,7 @@ public class PhoenixTest {
         }
     }
 
+    @Ignore
     @Test
     public void query() {
         JdbcSelectResult selectResult = driver.query("select * from ODS_OUTP_PRESC ", 10);

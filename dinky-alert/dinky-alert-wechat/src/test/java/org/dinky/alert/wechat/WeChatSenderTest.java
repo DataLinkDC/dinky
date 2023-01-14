@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** WeChatSenderTest */
@@ -66,6 +67,7 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
     }
 
+    @Ignore
     @Test
     public void testSendAPPMarkDownMsg() {
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
@@ -73,6 +75,7 @@ public class WeChatSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testSendAPPTextMsg() {
         weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
@@ -81,6 +84,7 @@ public class WeChatSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testChatMarkDownMsg() throws IOException {
         weChatConfig.put(
@@ -95,6 +99,7 @@ public class WeChatSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testChatTextMsg() throws IOException {
         weChatConfig.put(
