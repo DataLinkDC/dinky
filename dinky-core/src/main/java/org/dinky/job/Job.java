@@ -114,4 +114,8 @@ public class Job {
                 startTime,
                 endTime);
     }
+
+    public boolean isFailed() {
+        return status.equals(JobStatus.FAILED);
+    }
 }

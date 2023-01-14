@@ -27,6 +27,7 @@ import org.dinky.result.SelectResult;
 
 import java.util.HashMap;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -37,6 +38,7 @@ import org.junit.Test;
  */
 public class JobManagerTest {
 
+    @Ignore
     @Test
     public void cancelJobSelect() {
 

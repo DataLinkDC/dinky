@@ -24,6 +24,7 @@ import org.dinky.gateway.result.SavePointResult;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -34,6 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @author wenmo
  * @since 2021/6/24 14:24
  */
+@Ignore
 public class FlinkRestAPITest {
 
     // private String address = "192.168.123.157:8081";

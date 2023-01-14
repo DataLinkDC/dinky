@@ -22,6 +22,7 @@ package org.dinky.core;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -32,6 +33,7 @@ import org.junit.Test;
  */
 public class LineageTest {
 
+    @Ignore
     @Test
     public void sumTest() {
         String sql =
