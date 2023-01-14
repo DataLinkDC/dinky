@@ -21,8 +21,6 @@ package com.dlink.model;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.utils.SqlUtil;
-import lombok.Getter;
-import lombok.Setter;
 
 import java.beans.Transient;
 import java.io.Serializable;
@@ -30,7 +28,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Table
@@ -63,7 +62,6 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
      */
     private List<String> schemaTableNameList;
 
-
     private List<Column> columns;
 
     public Table() {
@@ -77,12 +75,16 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getSchemaTableName() {
-        return Asserts.isNullString(replaceSchemaMiddleLine(schema)) ? name : replaceSchemaMiddleLine(schema) + "." + name;
+        return Asserts.isNullString(replaceSchemaMiddleLine(schema))
+                ? name
+                : replaceSchemaMiddleLine(schema) + "." + name;
     }
 
     @Transient
     public String getSchemaTableNameWithUnderline() {
-        return Asserts.isNullString(replaceSchemaMiddleLine(schema)) ? name : replaceSchemaMiddleLine(schema) + "_" + name;
+        return Asserts.isNullString(replaceSchemaMiddleLine(schema))
+                ? name
+                : replaceSchemaMiddleLine(schema) + "_" + name;
     }
 
     @Override
@@ -274,8 +276,8 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     }
 
     private String replaceSchemaMiddleLine(String schema) {
-        if (schema.contains("-")){
-            return schema.replaceAll("-","_");
+        if (schema.contains("-")) {
+            return schema.replaceAll("-", "_");
         }
         return schema;
     }
