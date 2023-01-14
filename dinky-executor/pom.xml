@@ -39,11 +39,6 @@
             <artifactId>dinky-common</artifactId>
         </dependency>
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-base</artifactId>
             <scope>provided</scope>

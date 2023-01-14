@@ -146,30 +146,9 @@ public class SqlExplainResult {
 
     @Override
     public String toString() {
-        return "SqlExplainRecord{"
-                + "index="
-                + index
-                + ", type='"
-                + type
-                + '\''
-                + ", sql='"
-                + sql
-                + '\''
-                + ", parse='"
-                + parse
-                + '\''
-                + ", explain='"
-                + explain
-                + '\''
-                + ", error='"
-                + error
-                + '\''
-                + ", parseTrue="
-                + parseTrue
-                + ", explainTrue="
-                + explainTrue
-                + ", explainTime="
-                + explainTime
-                + '}';
+        return String.format(
+                "SqlExplainRecord{index=%d, type='%s', sql='%s', parse='%s', explain='%s', error='%s', "
+                        + "parseTrue=%s, explainTrue=%s, explainTime=%s}",
+                index, type, sql, parse, explain, error, parseTrue, explainTrue, explainTime);
     }
 }
