@@ -33,13 +33,11 @@ import org.dinky.utils.TaskOneClickOperatingUtil;
 import org.dinky.utils.UDFUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -52,6 +50,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.tree.Tree;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -63,13 +64,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/task")
+@RequiredArgsConstructor
 public class TaskController {
 
-    @Autowired private TaskService taskService;
+    private final TaskService taskService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Task task) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Task task) throws Exception {
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed("操作成功");
         } else {
@@ -85,7 +87,7 @@ public class TaskController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             boolean isAdmin = false;
             List<Integer> error = new ArrayList<>();
@@ -104,8 +106,7 @@ public class TaskController {
             if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -114,7 +115,7 @@ public class TaskController {
 
     /** 批量执行 */
     @PostMapping(value = "/submit")
-    public Result submit(@RequestBody JsonNode para) throws Exception {
+    public Result<List<JobResult>> submit(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<JobResult> results = new ArrayList<>();
             List<Integer> error = new ArrayList<>();
@@ -130,7 +131,7 @@ public class TaskController {
                 return Result.succeed(results, "执行成功");
             } else {
                 return Result.succeed(
-                        results, "执行部分成功，但" + error.toString() + "执行失败，共" + error.size() + "次失败。");
+                        results, "执行部分成功，但" + error + "执行失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要执行的记录");
@@ -139,68 +140,68 @@ public class TaskController {
 
     /** 获取指定ID的信息 */
     @GetMapping
-    public Result getOneById(@RequestParam Integer id) {
+    public Result<Task> getOneById(@RequestParam Integer id) {
         Task task = taskService.getTaskInfoById(id);
         return Result.succeed(task, "获取成功");
     }
 
     /** 获取所有可用的 FlinkSQLEnv */
     @GetMapping(value = "/listFlinkSQLEnv")
-    public Result listFlinkSQLEnv() {
+    public Result<List<Task>> listFlinkSQLEnv() {
         return Result.succeed(taskService.listFlinkSQLEnv(), "获取成功");
     }
 
     /** 导出 sql */
     @GetMapping(value = "/exportSql")
-    public Result exportSql(@RequestParam Integer id) {
+    public Result<String> exportSql(@RequestParam Integer id) {
         return Result.succeed(taskService.exportSql(id), "获取成功");
     }
 
     /** 发布任务 */
     @GetMapping(value = "/releaseTask")
-    public Result releaseTask(@RequestParam Integer id) {
+    public Result<Void> releaseTask(@RequestParam Integer id) {
         return taskService.releaseTask(id);
     }
 
     @PostMapping("/rollbackTask")
-    public Result rollbackTask(@RequestBody TaskRollbackVersionDTO dto) throws Exception {
+    public Result<Void> rollbackTask(@RequestBody TaskRollbackVersionDTO dto) {
 
         return taskService.rollbackTask(dto);
     }
 
     /** 维护任务 */
     @GetMapping(value = "/developTask")
-    public Result developTask(@RequestParam Integer id) {
+    public Result<Boolean> developTask(@RequestParam Integer id) {
         return Result.succeed(taskService.developTask(id), "操作成功");
     }
 
     /** 上线任务 */
     @GetMapping(value = "/onLineTask")
-    public Result onLineTask(@RequestParam Integer id) {
+    public Result<JobResult> onLineTask(@RequestParam Integer id) {
         return taskService.onLineTask(id);
     }
 
     /** 下线任务 */
     @GetMapping(value = "/offLineTask")
-    public Result offLineTask(@RequestParam Integer id, @RequestParam String type) {
+    public Result<Void> offLineTask(@RequestParam Integer id, @RequestParam String type) {
         return taskService.offLineTask(id, type);
     }
 
     /** 注销任务 */
     @GetMapping(value = "/cancelTask")
-    public Result cancelTask(@RequestParam Integer id) {
+    public Result<Void> cancelTask(@RequestParam Integer id) {
         return taskService.cancelTask(id);
     }
 
     /** 恢复任务 */
     @GetMapping(value = "/recoveryTask")
-    public Result recoveryTask(@RequestParam Integer id) {
+    public Result<Boolean> recoveryTask(@RequestParam Integer id) {
         return Result.succeed(taskService.recoveryTask(id), "操作成功");
     }
 
     /** 重启任务 */
     @GetMapping(value = "/restartTask")
-    public Result restartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine) {
+    public Result<JobResult> restartTask(@RequestParam Integer id, @RequestParam Boolean isOnLine) {
         if (isOnLine) {
             return taskService.reOnLineTask(id, null);
         } else {
@@ -210,7 +211,7 @@ public class TaskController {
 
     /** 选择保存点重启任务 */
     @GetMapping(value = "/selectSavePointRestartTask")
-    public Result selectSavePointRestartTask(
+    public Result<JobResult> selectSavePointRestartTask(
             @RequestParam Integer id,
             @RequestParam Boolean isOnLine,
             @RequestParam String savePointPath) {
@@ -223,43 +224,44 @@ public class TaskController {
 
     /** 获取当前的 API 的地址 */
     @GetMapping(value = "/getTaskAPIAddress")
-    public Result getTaskAPIAddress() {
+    public Result<String> getTaskAPIAddress() {
         return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
     }
 
     /** 导出json */
     @GetMapping(value = "/exportJsonByTaskId")
-    public Result exportJsonByTaskId(@RequestParam Integer id) {
+    public Result<String> exportJsonByTaskId(@RequestParam Integer id) {
         return Result.succeed(taskService.exportJsonByTaskId(id), "获取成功");
     }
 
     /** 导出json数组 */
     @PostMapping(value = "/exportJsonByTaskIds")
-    public Result exportJsonByTaskIds(@RequestBody JsonNode para) {
+    public Result<String> exportJsonByTaskIds(@RequestBody JsonNode para) {
         return Result.succeed(taskService.exportJsonByTaskIds(para), "获取成功");
     }
 
     /** json文件上传 导入task */
     @PostMapping(value = "/uploadTaskJson")
-    public Result uploadTaskJson(@RequestParam("file") MultipartFile file) throws Exception {
+    public Result<Void> uploadTaskJson(@RequestParam("file") MultipartFile file) throws Exception {
         return taskService.uploadTaskJson(file);
     }
 
     /**
      * 查询所有目录
      *
-     * @return
+     * @return {@link Result}<{@link Tree}<{@link Integer}>>
      */
     @GetMapping("/queryAllCatalogue")
-    public Result queryAllCatalogue() {
+    public Result<Tree<Integer>> queryAllCatalogue() {
         return taskService.queryAllCatalogue();
     }
 
     /**
      * 查询对应操作的任务列表
      *
-     * @param operating
-     * @return
+     * @param operating 操作
+     * @param catalogueId 目录id
+     * @return {@link Result}<{@link List}<{@link Task}>>
      */
     @GetMapping("/queryOnClickOperatingTask")
     public Result<List<Task>> queryOnClickOperatingTask(
@@ -271,13 +273,13 @@ public class TaskController {
         switch (operating) {
             case 1:
                 return taskService.queryOnLineTaskByDoneStatus(
-                        Arrays.asList(JobLifeCycle.RELEASE),
+                        Collections.singletonList(JobLifeCycle.RELEASE),
                         JobStatus.getAllDoneStatus(),
                         true,
                         catalogueId);
             case 2:
                 return taskService.queryOnLineTaskByDoneStatus(
-                        Arrays.asList(JobLifeCycle.ONLINE),
+                        Collections.singletonList(JobLifeCycle.ONLINE),
                         Collections.singletonList(JobStatus.RUNNING),
                         false,
                         catalogueId);
@@ -289,11 +291,11 @@ public class TaskController {
     /**
      * 一键操作任务
      *
-     * @param operating
-     * @return
+     * @param operating 操作
+     * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/onClickOperatingTask")
-    public Result onClickOperatingTask(@RequestBody JsonNode operating) {
+    public Result<Void> onClickOperatingTask(@RequestBody JsonNode operating) {
         if (operating == null || operating.get("operating") == null) {
             return Result.failed("操作不正确");
         }
@@ -315,10 +317,10 @@ public class TaskController {
     /**
      * 查询一键操作任务状态
      *
-     * @return
+     * @return {@link Result}<{@link Dict}>
      */
     @GetMapping("/queryOneClickOperatingTaskStatus")
-    public Result queryOneClickOperatingTaskStatus() {
+    public Result<Dict> queryOneClickOperatingTaskStatus() {
         return TaskOneClickOperatingUtil.queryOneClickOperatingTaskStatus();
     }
 }

@@ -26,8 +26,8 @@ import org.dinky.service.SysConfigService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -49,13 +50,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/sysConfig")
+@RequiredArgsConstructor
 public class SysConfigController {
 
-    @Autowired private SysConfigService sysConfigService;
+    private final SysConfigService sysConfigService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody SysConfig sysConfig) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody SysConfig sysConfig) throws Exception {
         if (sysConfigService.saveOrUpdate(sysConfig)) {
             return Result.succeed("新增成功");
         } else {
@@ -71,7 +73,7 @@ public class SysConfigController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -83,8 +85,7 @@ public class SysConfigController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -93,20 +94,20 @@ public class SysConfigController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody SysConfig sysConfig) throws Exception {
+    public Result<SysConfig> getOneById(@RequestBody SysConfig sysConfig) throws Exception {
         sysConfig = sysConfigService.getById(sysConfig.getId());
         return Result.succeed(sysConfig, "获取成功");
     }
 
     /** 获取所有配置 */
     @GetMapping("/getAll")
-    public Result getAll() {
+    public Result<Map<String, Object>> getAll() {
         return Result.succeed(sysConfigService.getAll(), "获取成功");
     }
 
     /** 批量更新配置 */
     @PostMapping("/updateSysConfigByJson")
-    public Result updateSysConfigByJson(@RequestBody JsonNode para) throws Exception {
+    public Result<Void> updateSysConfigByJson(@RequestBody JsonNode para) {
         sysConfigService.updateSysConfigByJson(para);
         return Result.succeed("更新配置成功");
     }

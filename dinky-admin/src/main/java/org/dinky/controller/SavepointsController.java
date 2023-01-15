@@ -27,7 +27,6 @@ import org.dinky.service.SavepointsService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -50,13 +50,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/savepoints")
+@RequiredArgsConstructor
 public class SavepointsController {
 
-    @Autowired private SavepointsService savepointsService;
+    private final SavepointsService savepointsService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Savepoints savepoints) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Savepoints savepoints) throws Exception {
         if (savepointsService.saveOrUpdate(savepoints)) {
             return Result.succeed("新增成功");
         } else {
@@ -66,13 +67,13 @@ public class SavepointsController {
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<Savepoints> listSavepointss(@RequestBody JsonNode para) {
+    public ProTableResult<Savepoints> listSavepoints(@RequestBody JsonNode para) {
         return savepointsService.selectForProTable(para);
     }
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -84,8 +85,7 @@ public class SavepointsController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -94,14 +94,14 @@ public class SavepointsController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Savepoints savepoints) throws Exception {
+    public Result<Savepoints> getOneById(@RequestBody Savepoints savepoints) throws Exception {
         savepoints = savepointsService.getById(savepoints.getId());
         return Result.succeed(savepoints, "获取成功");
     }
 
     /** 获取指定作业ID的所有savepoint */
     @GetMapping("/listSavepointsByTaskId")
-    public Result listSavepointsByTaskId(@RequestParam Integer taskID) throws Exception {
+    public Result<List<Savepoints>> listSavepointsByTaskId(@RequestParam Integer taskID) {
         return Result.succeed(savepointsService.listSavepointsByTaskId(taskID), "获取成功");
     }
 }

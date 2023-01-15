@@ -26,13 +26,13 @@ import org.dinky.service.ProcessService;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * ProcessController
@@ -42,9 +42,10 @@ import cn.dev33.satoken.stp.StpUtil;
  */
 @RestController
 @RequestMapping("/api/process")
+@RequiredArgsConstructor
 public class ProcessController {
 
-    @Autowired private ProcessService processService;
+    private final ProcessService processService;
 
     @GetMapping("/listAllProcess")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {

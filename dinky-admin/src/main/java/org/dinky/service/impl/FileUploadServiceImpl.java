@@ -40,6 +40,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /** FileUploadServiceImpl */
@@ -50,10 +51,10 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Resource private UploadFileRecordService uploadFileRecordService;
 
     @Override
-    public Result upload(MultipartFile file, String dir, Byte fileType) {
+    public Result<Void> upload(MultipartFile file, String dir, Byte fileType) {
         byte target = getTarget(dir, fileType);
         if (Objects.equals(target, UploadFileConstant.TARGET_LOCAL)) {
-            new File(dir).mkdirs();
+            FileUtil.mkdir(dir);
         }
 
         String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();

@@ -41,10 +41,11 @@ import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * ClusterServiceImpl
@@ -53,10 +54,11 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/5/28 14:02
  */
 @Service
+@RequiredArgsConstructor
 public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         implements ClusterService {
 
-    @Autowired private ClusterConfigurationService clusterConfigurationService;
+    private final ClusterConfigurationService clusterConfigurationService;
 
     @Override
     public FlinkClusterInfo checkHeartBeat(String hosts, String host) {

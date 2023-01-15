@@ -101,7 +101,6 @@ import org.dinky.service.SavepointsService;
 import org.dinky.service.StatementService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
-import org.dinky.service.UDFService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.utils.DockerClientUtils;
 import org.dinky.utils.JSONUtil;
@@ -131,8 +130,9 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceProperties;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -152,6 +152,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * 任务 服务实现类
@@ -160,40 +161,45 @@ import cn.hutool.core.util.StrUtil;
  * @since 2021-05-24
  */
 @Service
+@RequiredArgsConstructor
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
 
-    @Autowired private StatementService statementService;
-    @Autowired private ClusterService clusterService;
-    @Autowired private ClusterConfigurationService clusterConfigurationService;
-    @Autowired private SavepointsService savepointsService;
-    @Autowired private JarService jarService;
-    @Autowired private DataBaseService dataBaseService;
-    @Autowired private JobInstanceService jobInstanceService;
-    @Autowired private JobHistoryService jobHistoryService;
-    @Autowired private AlertGroupService alertGroupService;
-    @Autowired private AlertHistoryService alertHistoryService;
-    @Autowired private HistoryService historyService;
-    @Resource private TaskVersionService taskVersionService;
-    @Autowired private CatalogueService catalogueService;
-    @Autowired private FragmentVariableService fragmentVariableService;
-    @Autowired private UDFTemplateService udfTemplateService;
+    private final StatementService statementService;
+    private final ClusterService clusterService;
+    private final ClusterConfigurationService clusterConfigurationService;
+    private final SavepointsService savepointsService;
+    private final JarService jarService;
+    private final DataBaseService dataBaseService;
+    private final JobInstanceService jobInstanceService;
+    private final JobHistoryService jobHistoryService;
+    private final AlertGroupService alertGroupService;
+    private final AlertHistoryService alertHistoryService;
+    private final HistoryService historyService;
+    private final TaskVersionService taskVersionService;
+    private final FragmentVariableService fragmentVariableService;
+    private final UDFTemplateService udfTemplateService;
+    private final DataSourceProperties dataSourceProperties;
 
-    @Value("${spring.datasource.driver-class-name}")
-    private String driver;
+    @Resource @Lazy private CatalogueService catalogueService;
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    private String driver() {
+        return dataSourceProperties.getDriverClassName();
+    }
 
-    @Value("${spring.datasource.username}")
-    private String username;
+    private String url() {
+        return dataSourceProperties.getUrl();
+    }
 
-    @Value("${spring.datasource.password}")
-    private String password;
+    private String username() {
+        return dataSourceProperties.getUsername();
+    }
 
-    @Value("${server.port}")
+    private String password() {
+        return dataSourceProperties.getPassword();
+    }
+
+    @Value("server.port")
     private String serverPort;
-
-    @Autowired private UDFService udfService;
 
     private String buildParas(Integer id) {
         return buildParas(id, StrUtil.NULL);
@@ -203,13 +209,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return "--id "
                 + id
                 + " --driver "
-                + driver
+                + driver()
                 + " --url "
-                + url
+                + url()
                 + " --username "
-                + username
+                + username()
                 + " --password "
-                + password
+                + password()
                 + " --dinkyAddr "
                 + dinkyAddr;
     }
@@ -221,7 +227,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Dialect.notFlinkSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
         }
-        ProcessEntity process = null;
+        ProcessEntity process;
         if (StpUtil.isLogin()) {
             process =
                     ProcessContextHolder.registerProcess(
@@ -532,13 +538,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         sb.append("create catalog my_catalog with(\n");
         sb.append("    'type' = 'dinky_mysql',\n");
         sb.append("    'username' = '");
-        sb.append(username);
+        sb.append(username());
         sb.append("',\n");
         sb.append("    'password' = '");
-        sb.append(password);
+        sb.append(password());
         sb.append("',\n");
         sb.append("    'url' = '");
-        sb.append(url);
+        sb.append(url());
         sb.append("'\n");
         sb.append(")");
         sb.append(separator);
@@ -630,7 +636,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result releaseTask(Integer id) {
+    public Result<Void> releaseTask(Integer id) {
 
         Task task = getTaskInfoById(id);
         Assert.check(task);
@@ -692,7 +698,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result rollbackTask(TaskRollbackVersionDTO dto) {
+    public Result<Void> rollbackTask(TaskRollbackVersionDTO dto) {
         if (Asserts.isNull(dto.getVersionId()) || Asserts.isNull(dto.getId())) {
             return Result.failed("版本指定失败");
         }
@@ -740,7 +746,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result onLineTask(Integer id) {
+    public Result<JobResult> onLineTask(Integer id) {
         final Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.RELEASE.equalsValue(task.getStep())) {
@@ -766,7 +772,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result reOnLineTask(Integer id, String savePointPath) {
+    public Result<JobResult> reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
@@ -791,7 +797,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result offLineTask(Integer id, String type) {
+    public Result<Void> offLineTask(Integer id, String type) {
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (Asserts.isNullString(type)) {
@@ -807,7 +813,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result cancelTask(Integer id) {
+    public Result<Void> cancelTask(Integer id) {
         Task task = getTaskInfoById(id);
         Assert.check(task);
         if (JobLifeCycle.ONLINE != JobLifeCycle.get(task.getStep())) {
@@ -1179,7 +1185,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result uploadTaskJson(MultipartFile file) throws Exception {
+    public Result<Void> uploadTaskJson(MultipartFile file) throws Exception {
         if (file == null || file.getSize() == 0) {
             return Result.failed("上传失败，找不到文件");
         }
@@ -1192,7 +1198,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return buildTaskByJsonNode(jsonNode, mapper);
     }
 
-    public Result buildTaskByJsonNode(JsonNode jsonNode, ObjectMapper mapper)
+    public Result<Void> buildTaskByJsonNode(JsonNode jsonNode, ObjectMapper mapper)
             throws JsonProcessingException {
         List<JsonNode> jsonNodes = new ArrayList<>();
         if (jsonNode.isArray()) {
@@ -1459,7 +1465,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
-    public Result queryAllCatalogue() {
+    public Result<Tree<Integer>> queryAllCatalogue() {
         final LambdaQueryWrapper<Catalogue> queryWrapper =
                 new LambdaQueryWrapper<Catalogue>()
                         .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)

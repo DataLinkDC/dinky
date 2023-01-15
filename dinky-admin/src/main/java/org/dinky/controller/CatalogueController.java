@@ -22,18 +22,18 @@ package org.dinky.controller;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.dto.CatalogueTaskDTO;
+import org.dinky.function.constant.PathConstant;
 import org.dinky.model.Catalogue;
 import org.dinky.service.CatalogueService;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -58,18 +59,19 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/catalogue")
+@RequiredArgsConstructor
 public class CatalogueController {
 
-    @Autowired private CatalogueService catalogueService;
+    private final CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
         // 获取上传的路径
-        String filePath = System.getProperty("user.dir");
+        String filePath = PathConstant.WORK_DIR;
         // 获取源文件的名称
         String fileName = file.getOriginalFilename();
         String zipPath = filePath + File.separator + fileName;
-        String unzipFileName = fileName.substring(0, fileName.lastIndexOf("."));
+        String unzipFileName = FileUtil.mainName(fileName);
         String unzipPath = filePath + File.separator + unzipFileName;
         File unzipFile = new File(unzipPath);
         File zipFile = new File(zipPath);
@@ -94,7 +96,7 @@ public class CatalogueController {
         return Result.succeed("上传zip包并创建工程成功");
     }
 
-    private void traverseFile(String sourcePath, Catalogue catalog) throws Exception {
+    private void traverseFile(String sourcePath, Catalogue catalog) {
         File file = new File(sourcePath);
         File[] fs = file.listFiles();
         if (fs == null) {
@@ -126,11 +128,12 @@ public class CatalogueController {
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        try (InputStreamReader isr = new InputStreamReader(new FileInputStream(sourceFile));
-                BufferedReader br = new BufferedReader(isr); ) {
+        try (InputStreamReader isr =
+                        new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
+                BufferedReader br = new BufferedReader(isr)) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 
-                String lineText = null;
+                String lineText;
                 while ((lineText = br.readLine()) != null) {
                     sb.append(lineText).append("\n");
                 }
@@ -159,13 +162,12 @@ public class CatalogueController {
         catalogueTaskDTO.setId(null);
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);
-        // catalogueTaskDTO.setDialect("FlinkSql");
         return catalogueTaskDTO;
     }
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.saveOrUpdate(catalogue)) {
             return Result.succeed("创建成功");
         } else {
@@ -181,7 +183,7 @@ public class CatalogueController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             boolean isAdmin = false;
             List<String> error = new ArrayList<>();
@@ -195,7 +197,7 @@ public class CatalogueController {
             if (error.size() == 0 && !isAdmin) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed("删除失败，请检查作业" + error.toString() + "状态。");
+                return Result.succeed("删除失败，请检查作业" + error + "状态。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -204,21 +206,21 @@ public class CatalogueController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Catalogue catalogue) throws Exception {
+    public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
         catalogue = catalogueService.getById(catalogue.getId());
         return Result.succeed(catalogue, "获取成功");
     }
 
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
-    public Result getCatalogueTreeData() throws Exception {
+    public Result<List<Catalogue>> getCatalogueTreeData() {
         List<Catalogue> catalogues = catalogueService.getAllData();
         return Result.succeed(catalogues, "获取成功");
     }
 
     /** 创建节点和作业 */
     @PutMapping("/createTask")
-    public Result createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) throws Exception {
+    public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         Catalogue catalogue = catalogueService.createCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
             return Result.succeed(catalogue, "创建成功");
@@ -229,7 +231,7 @@ public class CatalogueController {
 
     /** 重命名节点和作业 */
     @PutMapping("/toRename")
-    public Result toRename(@RequestBody Catalogue catalogue) throws Exception {
+    public Result<Void> toRename(@RequestBody Catalogue catalogue) {
         if (catalogueService.toRename(catalogue)) {
             return Result.succeed("重命名成功");
         } else {
@@ -239,7 +241,7 @@ public class CatalogueController {
 
     /** 重命名节点和作业 */
     @PutMapping("/moveCatalogue")
-    public Result moveCatalogue(@RequestBody Catalogue catalogue) throws Exception {
+    public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
             return Result.succeed(true, "移动成功");
         } else {
@@ -248,8 +250,7 @@ public class CatalogueController {
     }
 
     @PostMapping("/copyTask")
-    public Result copyTask(@RequestBody Catalogue catalogue) throws Exception {
-
+    public Result<Catalogue> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed("复制作业成功");
         } else {

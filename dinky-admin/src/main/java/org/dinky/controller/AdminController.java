@@ -19,12 +19,14 @@
 
 package org.dinky.controller;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
-import org.dinky.dto.LoginUTO;
+import org.dinky.dto.LoginDTO;
+import org.dinky.dto.UserDTO;
+import org.dinky.model.Tenant;
 import org.dinky.service.UserService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -45,29 +48,27 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class AdminController {
 
-    @Autowired private UserService userService;
+    private final UserService userService;
 
     /** 登录 */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginUTO loginUTO) {
-        if (Asserts.isNull(loginUTO.isAutoLogin())) {
-            loginUTO.setAutoLogin(false);
-        }
-        return userService.loginUser(loginUTO);
+    public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
+        return userService.loginUser(loginDTO);
     }
 
     /** 退出 */
     @DeleteMapping("/outLogin")
-    public Result outLogin() {
+    public Result<Void> outLogin() {
         StpUtil.logout();
         return Result.succeed("退出成功");
     }
 
     /** 获取当前用户信息 */
     @GetMapping("/current")
-    public Result current() throws Exception {
+    public Result<Object> current() {
         try {
             return Result.succeed(StpUtil.getSession().get("user"), "获取成功");
         } catch (Exception e) {
@@ -77,7 +78,7 @@ public class AdminController {
 
     /** get tenant */
     @RequestMapping("/geTenants")
-    public Result getTenants(@RequestParam("username") String username) {
+    public Result<List<Tenant>> getTenants(@RequestParam("username") String username) {
         return userService.getTenants(username);
     }
 }

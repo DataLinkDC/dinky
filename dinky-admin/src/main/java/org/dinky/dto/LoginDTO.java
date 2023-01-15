@@ -30,7 +30,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class LoginUTO {
+public class LoginDTO {
 
     private String username;
     private String password;

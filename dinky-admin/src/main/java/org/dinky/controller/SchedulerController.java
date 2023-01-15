@@ -43,9 +43,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -63,19 +60,19 @@ import cn.hutool.json.JSONUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
+import lombok.RequiredArgsConstructor;
 
 /** @author 郑文豪 */
 @RestController
 @RequestMapping("/api/scheduler")
 @Api(value = "海豚调度", tags = "海豚调度")
+@RequiredArgsConstructor
 public class SchedulerController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SchedulerController.class);
-
-    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
-    @Autowired private ProcessClient processClient;
-    @Autowired private TaskClient taskClient;
-    @Autowired private CatalogueService catalogueService;
+    private final DolphinSchedulerProperties dolphinSchedulerProperties;
+    private final ProcessClient processClient;
+    private final TaskClient taskClient;
+    private final CatalogueService catalogueService;
 
     /** 获取任务定义 */
     @GetMapping("/task")

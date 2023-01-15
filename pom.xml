@@ -62,7 +62,7 @@
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
         <hutool.version>5.8.11</hutool.version>
-        <jackjson.version>2.14.0-rc2</jackjson.version>
+        <jackjson.version>2.14.1</jackjson.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
@@ -81,7 +81,7 @@
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <maven.resource.version>3.2.0</maven.resource.version>
         <mockito.version>2.21.0</mockito.version>
-        <mybatis-plus-boot-starter.version>3.5.1</mybatis-plus-boot-starter.version>
+        <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
         <poi.version>5.2.3</poi.version>
@@ -97,6 +97,7 @@
         <scala.version>2.12.10</scala.version>
         <!--  `provided` for product environment ,`compile` for dev environment  -->
         <scope.runtime>provided</scope.runtime>
+        <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
@@ -214,6 +215,12 @@
                 <groupId>com.alibaba</groupId>
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-starter}</version>
+            </dependency>
+            <!-- snakeyaml -->
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
             <!-- mybatis-plus start -->
             <dependency>

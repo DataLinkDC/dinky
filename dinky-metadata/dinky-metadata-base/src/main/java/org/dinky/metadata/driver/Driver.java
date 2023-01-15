@@ -124,6 +124,7 @@ public interface Driver extends AutoCloseable {
 
     Driver connect();
 
+    @Override
     void close();
 
     List<Schema> listSchemas();
@@ -199,7 +200,7 @@ public interface Driver extends AutoCloseable {
      */
     default Set<Table> getSplitTables(List<String> tableRegList, Map<String, String> splitConfig) {
         throw new SplitTableException("目前此数据源不支持分库分表");
-    };
+    }
 
     List<Map<String, String>> getSplitSchemaList();
 }

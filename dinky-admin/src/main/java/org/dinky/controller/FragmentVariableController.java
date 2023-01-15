@@ -27,7 +27,6 @@ import org.dinky.service.FragmentVariableService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -37,6 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -48,13 +48,15 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/fragment")
+@RequiredArgsConstructor
 public class FragmentVariableController {
 
-    @Autowired private FragmentVariableService fragmentVariableService;
+    private final FragmentVariableService fragmentVariableService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody FragmentVariable fragmentVariable) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody FragmentVariable fragmentVariable)
+            throws Exception {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
             return Result.succeed("保存成功");
         } else {
@@ -70,7 +72,7 @@ public class FragmentVariableController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -82,8 +84,7 @@ public class FragmentVariableController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");

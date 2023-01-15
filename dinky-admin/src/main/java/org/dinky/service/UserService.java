@@ -21,8 +21,12 @@ package org.dinky.service;
 
 import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
-import org.dinky.dto.LoginUTO;
+import org.dinky.dto.LoginDTO;
+import org.dinky.dto.UserDTO;
+import org.dinky.model.Tenant;
 import org.dinky.model.User;
+
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -34,19 +38,69 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface UserService extends ISuperService<User> {
 
-    Result registerUser(User user);
+    /**
+     * registerUser
+     *
+     * @param user user
+     * @return {@link Result}<{@link Void}>
+     */
+    Result<Void> registerUser(User user);
 
+    /**
+     * modifyUser
+     *
+     * @param user user
+     * @return boolean
+     */
     boolean modifyUser(User user);
 
-    Result modifyPassword(String username, String password, String newPassword);
+    /**
+     * modifyPassword
+     *
+     * @param username username
+     * @param password password
+     * @param newPassword newPassword
+     * @return {@link Result}<{@link Void}>
+     */
+    Result<Void> modifyPassword(String username, String password, String newPassword);
 
+    /**
+     * removeUser
+     *
+     * @param id id
+     * @return boolean
+     */
     boolean removeUser(Integer id);
 
-    Result loginUser(LoginUTO loginUTO);
+    /**
+     * loginUser
+     *
+     * @param loginDTO loginDTO
+     * @return {@link Result}<{@link UserDTO}>
+     */
+    Result<UserDTO> loginUser(LoginDTO loginDTO);
 
+    /**
+     * getUserByUsername
+     *
+     * @param username username
+     * @return {@link User}
+     */
     User getUserByUsername(String username);
 
-    Result grantRole(JsonNode para);
+    /**
+     * grantRole
+     *
+     * @param param param
+     * @return {@link Result}<{@link Void}>
+     */
+    Result<Void> grantRole(JsonNode param);
 
-    Result getTenants(String username);
+    /**
+     * getTenants
+     *
+     * @param username username
+     * @return {@link Result}<{@link List}<{@link Tenant}>>
+     */
+    Result<List<Tenant>> getTenants(String username);
 }

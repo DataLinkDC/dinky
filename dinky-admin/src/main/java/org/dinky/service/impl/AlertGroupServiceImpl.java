@@ -30,7 +30,9 @@ import org.dinky.service.AlertInstanceService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -45,7 +47,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
         implements AlertGroupService {
 
-    @Autowired private AlertInstanceService alertInstanceService;
+    @Lazy @Resource private AlertInstanceService alertInstanceService;
 
     @Override
     public List<AlertGroup> listEnabledAll() {
@@ -61,7 +63,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
         String[] alertInstanceIds = alertGroup.getAlertInstanceIds().split(",");
         List<AlertInstance> alertInstanceList = new ArrayList<>();
         for (String alertInstanceId : alertInstanceIds) {
-            if (Asserts.isNullString(alertInstanceId) || alertInstanceId.equals("0")) {
+            if (Asserts.isNullString(alertInstanceId) || "0".equals(alertInstanceId)) {
                 continue;
             }
             alertInstanceList.add(alertInstanceService.getById(Integer.valueOf(alertInstanceId)));

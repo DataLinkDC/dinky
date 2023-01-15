@@ -37,25 +37,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
         implements TenantService {
 
-    @Autowired private RoleService roleService;
+    @Resource @Lazy private RoleService roleService;
 
-    @Autowired private NamespaceService namespaceService;
+    @Resource @Lazy private NamespaceService namespaceService;
 
-    @Autowired private UserTenantService userTenantService;
+    private final UserTenantService userTenantService;
 
     @Override
-    public Result saveOrUpdateTenant(Tenant tenant) {
+    public Result<Void> saveOrUpdateTenant(Tenant tenant) {
         Integer tenantId = tenant.getId();
         if (Asserts.isNull(tenantId)) {
             Tenant tenantByTenantCode = getTenantByTenantCode(tenant.getTenantCode());
@@ -91,7 +96,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<String> deleteTenantById(JsonNode para) {
+    public Result<Void> deleteTenantById(JsonNode para) {
         for (JsonNode item : para) {
             Integer id = item.asInt();
             Tenant tenant = getById(id);
@@ -138,7 +143,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result distributeUsers(JsonNode para) {
+    public Result<Void> distributeUsers(JsonNode para) {
         if (para.size() > 0) {
             List<UserTenant> tenantUserList = new ArrayList<>();
             Integer tenantId = para.get("tenantId").asInt();
@@ -167,7 +172,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     }
 
     @Override
-    public Result switchTenant(JsonNode para) {
+    public Result<Void> switchTenant(JsonNode para) {
         if (para.size() > 0) {
             Integer tenantId = para.get("tenantId").asInt();
             TenantContextHolder.clear();

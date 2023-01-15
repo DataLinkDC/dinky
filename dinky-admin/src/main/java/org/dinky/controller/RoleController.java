@@ -27,11 +27,8 @@ import org.dinky.service.RoleService;
 import org.dinky.service.UserRoleService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,15 +40,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/role")
+@RequiredArgsConstructor
 public class RoleController {
 
-    @Autowired private RoleService roleService;
-    @Autowired private UserRoleService userRoleService;
+    private final RoleService roleService;
+    private final UserRoleService userRoleService;
 
     /**
      * create or update role
@@ -59,7 +59,7 @@ public class RoleController {
      * @return delete result code
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody Role role) {
+    public Result<Void> saveOrUpdateRole(@RequestBody Role role) {
         return roleService.saveOrUpdateRole(role);
     }
 
@@ -69,7 +69,7 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         return roleService.deleteRoles(para);
     }
 
@@ -81,16 +81,15 @@ public class RoleController {
 
     /** 获取所有的角色列表以及当前用户的角色 ids */
     @GetMapping(value = "/getRolesAndIdsByUserId")
-    public Result getRolesAndIdsByUserId(@RequestParam Integer id) {
+    public Result<Dict> getRolesAndIdsByUserId(@RequestParam Integer id) {
         List<Role> roleList = roleService.list();
-        Map result = new HashMap();
-        result.put("roles", roleList);
+
         List<UserRole> userRoleList = userRoleService.getUserRoleByUserId(id);
         List<Integer> userRoleIds = new ArrayList<>();
         for (UserRole userRole : userRoleList) {
             userRoleIds.add(userRole.getRoleId());
         }
-        result.put("roleIds", userRoleIds);
+        Dict result = Dict.create().set("roles", roleList).set("roleIds", userRoleIds);
         return Result.succeed(result, "获取成功");
     }
 }

@@ -38,10 +38,6 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
 
     @Override
     public boolean insert(Statement statement) {
-        if (baseMapper.insert(statement) > 0) {
-            return true;
-        } else {
-            return false;
-        }
+        return baseMapper.insert(statement) > 0;
     }
 }
