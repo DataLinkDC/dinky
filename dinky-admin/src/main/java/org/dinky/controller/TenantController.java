@@ -73,7 +73,7 @@ public class TenantController {
     /**
      * give tenant grant user
      *
-     * @param para 帕拉
+     * @param para para
      * @return {@link Result}
      */
     @PutMapping(value = "/grantTenantToUser")
