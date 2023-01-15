@@ -214,7 +214,7 @@ for k8s commit tasks-->
         </profile>
 
         <profile>
-            <id>all</id>
+            <id>flink-all</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>

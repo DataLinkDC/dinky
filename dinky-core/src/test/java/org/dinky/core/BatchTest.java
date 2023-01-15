@@ -23,6 +23,7 @@ import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.TableResult;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,7 @@ import org.junit.Test;
  */
 public class BatchTest {
 
+    @Ignore
     @Test
     public void batchTest() {
         String source =

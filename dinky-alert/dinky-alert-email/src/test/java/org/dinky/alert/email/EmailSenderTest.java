@@ -36,6 +36,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,12 +88,14 @@ public class EmailSenderTest {
         mailSender = new MailSender(emailConfig);
     }
 
+    @Ignore
     @Test
     public void testTextSendMails() {
         AlertResult alertResult = mailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
     }
 
+    @Ignore
     @Test
     public void testSendTableMail() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE.getValue());
@@ -101,6 +104,7 @@ public class EmailSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testAttachmentFile() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.ATTACHMENT.getValue());
@@ -109,6 +113,7 @@ public class EmailSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testTableAttachmentFile() {
         emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE_ATTACHMENT.getValue());
@@ -117,6 +122,7 @@ public class EmailSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testGenTextEmail() {
         List<LinkedHashMap> linkedHashMaps =

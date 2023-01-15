@@ -1,11 +1,11 @@
 ## Purpose of the pull request
 
-<!--(For example: This pull request adds checkstyle plugin).-->
+<!--(For example: This pull request adds spotless plugin).-->
 
 ## Brief change log
 
 <!--*(for example:)*
-  - *Add maven-checkstyle-plugin to root pom.xml*
+  - *Add spotless-maven-plugin to root pom.xml*
 -->
 ## Verify this pull request
 

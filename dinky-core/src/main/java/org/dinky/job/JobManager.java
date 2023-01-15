@@ -463,6 +463,12 @@ public class JobManager {
                     job.setJobId(gatewayResult.getAppId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+                    if (gatewayResult.isSucess()) {
+                        job.setStatus(Job.JobStatus.SUCCESS);
+                    } else {
+                        job.setStatus(Job.JobStatus.FAILED);
+                        job.setError(gatewayResult.getError());
+                    }
                 } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
@@ -510,6 +516,12 @@ public class JobManager {
                     job.setJobId(gatewayResult.getAppId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
+                    if (gatewayResult.isSucess()) {
+                        job.setStatus(Job.JobStatus.SUCCESS);
+                    } else {
+                        job.setStatus(Job.JobStatus.FAILED);
+                        job.setError(gatewayResult.getError());
+                    }
                 } else {
                     for (StatementParam item : jobParam.getTrans()) {
                         currentSql = item.getValue();
@@ -627,13 +639,13 @@ public class JobManager {
                                         .getResult(null);
                         job.setResult(result);
                     }
-                    job.setStatus(Job.JobStatus.SUCCESS);
                 }
             }
             job.setEndTime(LocalDateTime.now());
-            if (job.getStatus().name().equals(Job.JobStatus.FAILED.name())) {
+            if (job.isFailed()) {
                 failed();
             } else {
+                job.setStatus(Job.JobStatus.SUCCESS);
                 success();
             }
         } catch (Exception e) {

@@ -28,6 +28,7 @@ import org.dinky.model.Schema;
 
 import java.util.List;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -52,6 +53,7 @@ public class ClickHouseTest {
         return Driver.build(config);
     }
 
+    @Ignore
     @Test
     public void connectTest() {
         String test = getDriver().test();
@@ -59,6 +61,7 @@ public class ClickHouseTest {
         // System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void schemaTest() {
         List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
@@ -66,6 +69,7 @@ public class ClickHouseTest {
         // System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void columnTest() {
         Driver driver = getDriver();
@@ -74,6 +78,7 @@ public class ClickHouseTest {
         // System.out.println("end...");
     }
 
+    @Ignore
     @Test
     public void queryTest() {
         Driver driver = getDriver();

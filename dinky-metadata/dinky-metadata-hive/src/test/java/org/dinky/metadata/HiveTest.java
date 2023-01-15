@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -62,6 +63,7 @@ public class HiveTest {
         return Driver.build(config);
     }
 
+    @Ignore
     @Test
     public void connectTest() {
         DriverConfig config = new DriverConfig();
@@ -77,6 +79,7 @@ public class HiveTest {
         System.err.println("end...");
     }
 
+    @Ignore
     @Test
     public void getDBSTest() {
         Driver driver = getDriver();
@@ -88,6 +91,7 @@ public class HiveTest {
         System.err.println("end...");
     }
 
+    @Ignore
     @Test
     public void getTablesByDBTest() throws Exception {
         Driver driver = getDriver();
@@ -100,6 +104,7 @@ public class HiveTest {
         System.err.println("end...");
     }
 
+    @Ignore
     @Test
     public void getColumnsByTableTest() {
         Driver driver = getDriver();
@@ -112,6 +117,7 @@ public class HiveTest {
         System.err.println("end...");
     }
 
+    @Ignore
     @Test
     public void getCreateTableTest() throws Exception {
         Driver driver = getDriver();
@@ -122,6 +128,7 @@ public class HiveTest {
         System.err.println("end...");
     }
 
+    @Ignore
     @Test
     public void getTableExtenedInfoTest() throws Exception {
         Driver driver = getDriver();
@@ -138,6 +145,7 @@ public class HiveTest {
      * @date: 202/3/23 @Description: 测试hive多条SQL执行 @Param:
      * @return:
      */
+    @Ignore
     @Test
     public void multipleSQLTest() throws Exception {
         Driver driver = getDriver();

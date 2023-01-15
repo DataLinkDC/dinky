@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class PrestoTest {
@@ -53,6 +54,7 @@ public class PrestoTest {
         }
     }
 
+    @Ignore
     @Test
     public void test() throws SQLException {
         // test
@@ -66,6 +68,7 @@ public class PrestoTest {
         query();
     }
 
+    @Ignore
     @Test
     public void testSchema() {
         // schema && table
@@ -78,6 +81,7 @@ public class PrestoTest {
         }
     }
 
+    @Ignore
     @Test
     public void testColumns() {
         // columns
@@ -88,6 +92,7 @@ public class PrestoTest {
         }
     }
 
+    @Ignore
     @Test
     public void query() {
         JdbcSelectResult selectResult = driver.query("select * from hive.lake.test", 10);

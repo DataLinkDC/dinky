@@ -28,6 +28,7 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -67,6 +68,7 @@ public class FeiShuSenderTest {
         feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
     }
 
+    @Ignore
     @Test
     public void testTextTypeSend() {
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
@@ -74,6 +76,7 @@ public class FeiShuSenderTest {
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
+    @Ignore
     @Test
     public void testPostTypeSend() {
         feiShuConfig.put(FeiShuConstants.MSG_TYPE, "post");

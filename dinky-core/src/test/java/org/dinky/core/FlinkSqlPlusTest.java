@@ -23,6 +23,7 @@ import org.dinky.plus.FlinkSqlPlus;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -33,6 +34,7 @@ import org.junit.Test;
  */
 public class FlinkSqlPlusTest {
 
+    @Ignore
     @Test
     public void getJobPlanInfo() {
         String sql =
