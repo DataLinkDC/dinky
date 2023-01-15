@@ -45,13 +45,14 @@ import org.dinky.utils.JSONUtil;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * JobInstanceServiceImpl
@@ -60,13 +61,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * @since 2022/2/2 13:52
  */
 @Service
+@RequiredArgsConstructor
 public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, JobInstance>
         implements JobInstanceService {
 
-    @Autowired private HistoryService historyService;
-    @Autowired private ClusterService clusterService;
-    @Autowired private ClusterConfigurationService clusterConfigurationService;
-    @Autowired private JobHistoryService jobHistoryService;
+    private final HistoryService historyService;
+    private final ClusterService clusterService;
+    private final ClusterConfigurationService clusterConfigurationService;
+    private final JobHistoryService jobHistoryService;
 
     @Override
     public JobInstance getByIdWithoutTenant(Integer id) {
@@ -75,14 +77,14 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInstanceStatus getStatusCount(boolean isHistory) {
-        List<JobInstanceCount> jobInstanceCounts = null;
+        List<JobInstanceCount> jobInstanceCounts;
         if (isHistory) {
             jobInstanceCounts = baseMapper.countHistoryStatus();
         } else {
             jobInstanceCounts = baseMapper.countStatus();
         }
         JobInstanceStatus jobInstanceStatus = new JobInstanceStatus();
-        Integer total = 0;
+        int total = 0;
         for (JobInstanceCount item : jobInstanceCounts) {
             Integer counts = Asserts.isNull(item.getCounts()) ? 0 : item.getCounts();
             total += counts;
@@ -97,6 +99,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     jobInstanceStatus.setFinished(counts);
                     break;
                 case FAILED:
+                case FAILING:
                     jobInstanceStatus.setFailed(counts);
                     break;
                 case CANCELED:
@@ -107,9 +110,6 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     break;
                 case CREATED:
                     jobInstanceStatus.setCreated(counts);
-                    break;
-                case FAILING:
-                    jobInstanceStatus.setFailed(counts);
                     break;
                 case CANCELLING:
                     jobInstanceStatus.setCancelling(counts);
@@ -176,9 +176,11 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
         jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
         History history = historyService.getById(jobInstance.getHistoryId());
-        history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
-        jobInfoDetail.setHistory(history);
+
         if (Asserts.isNotNull(history) && Asserts.isNotNull(history.getClusterConfigurationId())) {
+            history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
+            jobInfoDetail.setHistory(history);
+
             jobInfoDetail.setClusterConfiguration(
                     clusterConfigurationService.getClusterConfigById(
                             history.getClusterConfigurationId()));
@@ -204,8 +206,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public ProTableResult<JobInstance> listJobInstances(JsonNode para) {
-        Integer current = para.has("current") ? para.get("current").asInt() : 1;
-        Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
+        int current = para.has("current") ? para.get("current").asInt() : 1;
+        int pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
         QueryWrapper<JobInstance> queryWrapper = new QueryWrapper<>();
         ProTableUtil.autoQueryDefalut(para, queryWrapper);
         ObjectMapper mapper = new ObjectMapper();
@@ -213,29 +215,18 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Page<JobInstance> page = new Page<>(current, pageSize);
         List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
         FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
-        for (int i = 0; i < list.size(); i++) {
-            if (pool.exist(list.get(i).getId().toString())) {
-                list.get(i)
-                        .setStatus(
-                                pool.get(list.get(i).getId().toString()).getInstance().getStatus());
-                list.get(i)
-                        .setUpdateTime(
-                                pool.get(list.get(i).getId().toString())
-                                        .getInstance()
-                                        .getUpdateTime());
-                list.get(i)
-                        .setFinishTime(
-                                pool.get(list.get(i).getId().toString())
-                                        .getInstance()
-                                        .getFinishTime());
-                list.get(i)
-                        .setError(
-                                pool.get(list.get(i).getId().toString()).getInstance().getError());
-                list.get(i)
-                        .setDuration(
-                                pool.get(list.get(i).getId().toString())
-                                        .getInstance()
-                                        .getDuration());
+        for (JobInstance jobInstance : list) {
+            if (pool.exist(jobInstance.getId().toString())) {
+                jobInstance.setStatus(
+                        pool.get(jobInstance.getId().toString()).getInstance().getStatus());
+                jobInstance.setUpdateTime(
+                        pool.get(jobInstance.getId().toString()).getInstance().getUpdateTime());
+                jobInstance.setFinishTime(
+                        pool.get(jobInstance.getId().toString()).getInstance().getFinishTime());
+                jobInstance.setError(
+                        pool.get(jobInstance.getId().toString()).getInstance().getError());
+                jobInstance.setDuration(
+                        pool.get(jobInstance.getId().toString()).getInstance().getDuration());
             }
         }
         return ProTableResult.<JobInstance>builder()

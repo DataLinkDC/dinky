@@ -44,7 +44,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,6 +53,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * CatalogueServiceImpl
@@ -62,12 +62,13 @@ import cn.hutool.core.util.ObjectUtil;
  * @since 2021/5/28 14:02
  */
 @Service
+@RequiredArgsConstructor
 public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue>
         implements CatalogueService {
 
-    @Autowired private TaskService taskService;
-    @Autowired private JobInstanceService jobInstanceService;
-    @Autowired private StatementService statementService;
+    private final TaskService taskService;
+    private final JobInstanceService jobInstanceService;
+    private final StatementService statementService;
 
     @Override
     public List<Catalogue> getAllData() {

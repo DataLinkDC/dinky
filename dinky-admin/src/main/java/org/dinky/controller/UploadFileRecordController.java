@@ -47,7 +47,7 @@ public class UploadFileRecordController {
 
     /** @param record {@link UploadFileRecord} */
     @PostMapping("/list")
-    public Result get(@RequestBody UploadFileRecord record) {
+    public Result<String> get(@RequestBody UploadFileRecord record) {
         List<UploadFileRecord> records = uploadFileRecordService.list(new QueryWrapper<>(record));
         return Result.succeed(JSONUtil.toJsonStr(records), "");
     }

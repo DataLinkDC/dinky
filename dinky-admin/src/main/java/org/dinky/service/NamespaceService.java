@@ -34,7 +34,7 @@ public interface NamespaceService extends ISuperService<Namespace> {
      * @param para namespace id
      * @return delete result code
      */
-    Result deleteNamespaceById(JsonNode para);
+    Result<Void> deleteNamespaceById(JsonNode para);
 
     @Override
     ProTableResult<Namespace> selectForProTable(JsonNode para);

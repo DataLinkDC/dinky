@@ -37,6 +37,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.tree.Tree;
+
 /**
  * 作业 服务类
  *
@@ -69,7 +71,7 @@ public interface TaskService extends ISuperService<Task> {
 
     List<Task> getAllUDF();
 
-    Result releaseTask(Integer id);
+    Result<Void> releaseTask(Integer id);
 
     boolean developTask(Integer id);
 
@@ -79,7 +81,7 @@ public interface TaskService extends ISuperService<Task> {
 
     Result<Void> offLineTask(Integer id, String type);
 
-    Result cancelTask(Integer id);
+    Result<Void> cancelTask(Integer id);
 
     boolean recoveryTask(Integer id);
 
@@ -91,7 +93,7 @@ public interface TaskService extends ISuperService<Task> {
 
     String getTaskAPIAddress();
 
-    Result rollbackTask(TaskRollbackVersionDTO dto);
+    Result<Void> rollbackTask(TaskRollbackVersionDTO dto);
 
     Integer queryAllSizeByName(String name);
 
@@ -99,11 +101,11 @@ public interface TaskService extends ISuperService<Task> {
 
     String exportJsonByTaskIds(JsonNode para);
 
-    Result uploadTaskJson(MultipartFile file) throws Exception;
+    Result<Void> uploadTaskJson(MultipartFile file) throws Exception;
 
     void handleJobDone(JobInstance jobInstance);
 
-    Result queryAllCatalogue();
+    Result<Tree<Integer>> queryAllCatalogue();
 
     Result<List<Task>> queryOnLineTaskByDoneStatus(
             List<JobLifeCycle> jobLifeCycle,

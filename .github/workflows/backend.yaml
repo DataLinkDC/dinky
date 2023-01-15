@@ -27,6 +27,7 @@ on:
       - '**/*.md'
       - '**/*.yml'
       - '**/*.yaml'
+      - '**/*.sql'
 
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}

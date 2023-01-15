@@ -31,20 +31,22 @@ import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleNamespaceService;
 import org.dinky.service.TenantService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
+
 @Service
+@RequiredArgsConstructor
 public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Namespace>
         implements NamespaceService {
 
-    @Autowired private RoleNamespaceService roleNamespaceService;
+    private final RoleNamespaceService roleNamespaceService;
 
-    @Autowired private TenantService tenantService;
+    private final TenantService tenantService;
 
     @Override
     public ProTableResult<Namespace> selectForProTable(JsonNode para) {
@@ -64,7 +66,7 @@ public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Name
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result deleteNamespaceById(JsonNode para) {
+    public Result<Void> deleteNamespaceById(JsonNode para) {
         for (JsonNode item : para) {
             Integer id = item.asInt();
             Namespace namespace = getById(id);

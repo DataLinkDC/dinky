@@ -24,7 +24,6 @@ import org.dinky.common.result.Result;
 import org.dinky.model.Tenant;
 import org.dinky.service.TenantService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,14 +33,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/tenant")
+@RequiredArgsConstructor
 public class TenantController {
 
-    @Autowired private TenantService tenantService;
+    private final TenantService tenantService;
 
     /**
      * create or update tenant
@@ -49,7 +50,7 @@ public class TenantController {
      * @return delete result code
      */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Tenant tenant) {
+    public Result<Void> saveOrUpdate(@RequestBody Tenant tenant) {
         return tenantService.saveOrUpdateTenant(tenant);
     }
 
@@ -59,7 +60,7 @@ public class TenantController {
      * @return delete result code
      */
     @DeleteMapping()
-    public Result deleteTenantById(@RequestBody JsonNode para) {
+    public Result<Void> deleteTenantById(@RequestBody JsonNode para) {
         return tenantService.deleteTenantById(para);
     }
 
@@ -72,15 +73,16 @@ public class TenantController {
     /**
      * give tenant grant user
      *
-     * @return
+     * @param para 帕拉
+     * @return {@link Result}
      */
     @PutMapping(value = "/grantTenantToUser")
-    public Result distributeUser(@RequestBody JsonNode para) {
+    public Result<Void> distributeUser(@RequestBody JsonNode para) {
         return tenantService.distributeUsers(para);
     }
 
     @PostMapping(value = "/switchTenant")
-    public Result switchTenant(@RequestBody JsonNode para) {
+    public Result<Void> switchTenant(@RequestBody JsonNode para) {
         return tenantService.switchTenant(para);
     }
 }

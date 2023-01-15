@@ -27,7 +27,6 @@ import org.dinky.service.TaskVersionService;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.bean.BeanUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,9 +47,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/task/version")
+@RequiredArgsConstructor
 public class TaskVersionController {
 
-    @Autowired private TaskVersionService versionService;
+    private final TaskVersionService versionService;
 
     /** 动态查询列表 */
     @PostMapping

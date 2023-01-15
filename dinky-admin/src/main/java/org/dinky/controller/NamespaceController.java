@@ -25,7 +25,6 @@ import org.dinky.common.result.Result;
 import org.dinky.model.Namespace;
 import org.dinky.service.NamespaceService;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -35,14 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
 @RequestMapping("/api/namespace")
+@RequiredArgsConstructor
 public class NamespaceController {
 
-    @Autowired private NamespaceService namespaceService;
+    private final NamespaceService namespaceService;
 
     /**
      * create or update namespace
@@ -50,7 +51,7 @@ public class NamespaceController {
      * @return delete result code
      */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Namespace namespace) {
+    public Result<Void> saveOrUpdate(@RequestBody Namespace namespace) {
         Integer id = namespace.getId();
         if (namespaceService.saveOrUpdate(namespace)) {
             return Result.succeed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
@@ -65,7 +66,7 @@ public class NamespaceController {
      * @return delete result code
      */
     @DeleteMapping()
-    public Result deleteNamespaceById(@RequestBody JsonNode para) {
+    public Result<Void> deleteNamespaceById(@RequestBody JsonNode para) {
         return namespaceService.deleteNamespaceById(para);
     }
 

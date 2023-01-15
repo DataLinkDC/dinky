@@ -65,16 +65,16 @@ public class AlertHistoryController {
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode param) {
-        return alertHistoryService.selectForProTable(param);
+    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
+        return alertHistoryService.selectForProTable(para);
     }
 
     /** 批量删除 */
     @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode param) {
-        if (param.size() > 0) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
+        if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : param) {
+            for (final JsonNode item : para) {
                 Integer id = item.asInt();
                 if (!alertHistoryService.removeById(id)) {
                     error.add(id);

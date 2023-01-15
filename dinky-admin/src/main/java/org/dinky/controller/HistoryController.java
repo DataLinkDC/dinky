@@ -27,7 +27,6 @@ import org.dinky.service.HistoryService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -47,19 +47,20 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/history")
+@RequiredArgsConstructor
 public class HistoryController {
 
-    @Autowired private HistoryService historyService;
+    private final HistoryService historyService;
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<History> listHistorys(@RequestBody JsonNode para) {
+    public ProTableResult<History> listHistory(@RequestBody JsonNode para) {
         return historyService.selectForProTable(para);
     }
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -81,7 +82,7 @@ public class HistoryController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody History history) throws Exception {
+    public Result<History> getOneById(@RequestBody History history) throws Exception {
         history = historyService.getById(history.getId());
         return Result.succeed(history, "获取成功");
     }

@@ -21,13 +21,17 @@ package org.dinky.controller;
 
 import org.dinky.common.result.Result;
 import org.dinky.constant.DirConstant;
+import org.dinky.model.FileNode;
 import org.dinky.service.SystemService;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * SystemController
@@ -37,27 +41,28 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/system")
+@RequiredArgsConstructor
 public class SystemController {
 
-    @Autowired private SystemService systemService;
+    private final SystemService systemService;
 
     @GetMapping("/listLogDir")
-    public Result listLogDir() {
+    public Result<List<FileNode>> listLogDir() {
         return Result.data(systemService.listLogDir());
     }
 
     @GetMapping("/getRootLog")
-    public Result getRootLog() {
+    public Result<String> getRootLog() {
         return Result.data(systemService.readFile(DirConstant.ROOT_LOG_PATH));
     }
 
     @GetMapping("/listDirByPath")
-    public Result listDirByPath(@RequestParam String path) {
+    public Result<List<FileNode>> listDirByPath(@RequestParam String path) {
         return Result.data(systemService.listDirByPath(path));
     }
 
     @GetMapping("/readFile")
-    public Result readFile(@RequestParam String path) {
+    public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }
 }

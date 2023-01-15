@@ -29,11 +29,8 @@ import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -46,6 +43,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -57,15 +56,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/user")
+@RequiredArgsConstructor
 public class UserController {
 
-    @Autowired private UserService userService;
+    private final UserService userService;
 
-    @Autowired private UserTenantService userTenantService;
+    private final UserTenantService userTenantService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody User user) {
+    public Result<Void> saveOrUpdate(@RequestBody User user) {
         if (Asserts.isNull(user.getId())) {
             return userService.registerUser(user);
         } else {
@@ -82,7 +82,7 @@ public class UserController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -98,8 +98,7 @@ public class UserController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -112,7 +111,7 @@ public class UserController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody User user) {
+    public Result<User> getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
         user.setPassword(null);
         return Result.succeed(user, "获取成功");
@@ -120,7 +119,7 @@ public class UserController {
 
     /** 修改密码 */
     @PostMapping("/modifyPassword")
-    public Result modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
+    public Result<Void> modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(
                 modifyPasswordDTO.getUsername(),
                 modifyPasswordDTO.getPassword(),
@@ -130,18 +129,18 @@ public class UserController {
     /**
      * give user grant role
      *
-     * @return
+     * @param para param
+     * @return {@link Result}
      */
     @PutMapping(value = "/grantRole")
-    public Result grantRole(@RequestBody JsonNode para) {
+    public Result<Void> grantRole(@RequestBody JsonNode para) {
         return userService.grantRole(para);
     }
 
     @GetMapping("/getUserListByTenantId")
-    public Result getUserListByTenantId(@RequestParam("id") Integer id) {
+    public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
-        Map result = new HashMap();
-        result.put("users", userList);
+
         List<UserTenant> userTenants =
                 userTenantService
                         .getBaseMapper()
@@ -150,7 +149,7 @@ public class UserController {
         for (UserTenant userTenant : userTenants) {
             userIds.add(userTenant.getUserId());
         }
-        result.put("userIds", userIds);
+        Dict result = Dict.create().set("users", userList).set("userIds", userIds);
         return Result.succeed(result, "获取成功");
     }
 }

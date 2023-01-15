@@ -51,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -62,13 +63,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/studio")
+@RequiredArgsConstructor
 public class StudioController {
 
     private final StudioService studioService;
-
-    public StudioController(StudioService studioService) {
-        this.studioService = studioService;
-    }
 
     /** 执行Sql */
     @PostMapping("/executeSql")

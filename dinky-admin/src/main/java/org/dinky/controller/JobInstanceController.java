@@ -23,7 +23,9 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
+import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.BuildConfiguration;
+import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobManagerConfiguration;
 import org.dinky.model.TaskManagerConfiguration;
@@ -31,12 +33,10 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -47,6 +47,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -58,10 +60,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/jobInstance")
+@RequiredArgsConstructor
 public class JobInstanceController {
 
-    @Autowired private JobInstanceService jobInstanceService;
-    @Autowired private TaskService taskService;
+    private final JobInstanceService jobInstanceService;
+    private final TaskService taskService;
 
     /** 动态查询列表 */
     @PostMapping
@@ -71,7 +74,7 @@ public class JobInstanceController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -83,8 +86,7 @@ public class JobInstanceController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -93,52 +95,53 @@ public class JobInstanceController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody JobInstance jobInstance) throws Exception {
+    public Result<JobInstance> getOneById(@RequestBody JobInstance jobInstance) throws Exception {
         jobInstance = jobInstanceService.getById(jobInstance.getId());
         return Result.succeed(jobInstance, "获取成功");
     }
 
     /** 获取状态统计信息 */
     @GetMapping("/getStatusCount")
-    public Result getStatusCount() {
-        HashMap<String, Object> result = new HashMap<>();
-        result.put("history", jobInstanceService.getStatusCount(true));
-        result.put("instance", jobInstanceService.getStatusCount(false));
+    public Result<Dict> getStatusCount() {
+        Dict result =
+                Dict.create()
+                        .set("history", jobInstanceService.getStatusCount(true))
+                        .set("instance", jobInstanceService.getStatusCount(false));
         return Result.succeed(result, "获取成功");
     }
 
     /** 获取Job实例的所有信息 */
     @GetMapping("/getJobInfoDetail")
-    public Result getJobInfoDetail(@RequestParam Integer id) {
+    public Result<JobInfoDetail> getJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
     }
 
     /** 刷新Job实例的所有信息 */
     @GetMapping("/refreshJobInfoDetail")
-    public Result refreshJobInfoDetail(@RequestParam Integer id) {
+    public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
         return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
     }
 
     /** 获取单任务实例的血缘分析 */
     @GetMapping("/getLineage")
-    public Result getLineage(@RequestParam Integer id) {
+    public Result<LineageResult> getLineage(@RequestParam Integer id) {
         return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
     }
 
     /** 获取 JobManager 的信息 */
     @GetMapping("/getJobManagerInfo")
-    public Result getJobManagerInfo(@RequestParam String address) {
+    public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
         JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
         if (Asserts.isNotNullString(address)) {
-            FlinkAPI flinkAPI = FlinkAPI.build(address);
-            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, flinkAPI);
+            BuildConfiguration.buildJobManagerConfiguration(
+                    jobManagerConfiguration, FlinkAPI.build(address));
         }
         return Result.succeed(jobManagerConfiguration, "获取成功");
     }
 
     /** 获取 TaskManager 的信息 */
     @GetMapping("/getTaskManagerInfo")
-    public Result getTaskManagerInfo(@RequestParam String address) {
+    public Result<Set<TaskManagerConfiguration>> getTaskManagerInfo(@RequestParam String address) {
         Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
         if (Asserts.isNotNullString(address)) {
             FlinkAPI flinkAPI = FlinkAPI.build(address);

@@ -33,11 +33,8 @@ import org.dinky.service.TaskService;
 import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -48,6 +45,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.lang.Dict;
 
 /**
  * @author mydq
@@ -63,7 +61,7 @@ public class TaskOneClickOperatingUtil {
 
     private static final AtomicBoolean oneClickOfflineThreadStatus = new AtomicBoolean(false);
 
-    public static synchronized Result oneClickOnline(
+    public static synchronized Result<Void> oneClickOnline(
             List<Task> tasks, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         if (oneClickOnlineThreadStatus.get() || oneClickOfflineThreadStatus.get()) {
             return Result.failed("存在一键上线或者下线操作，请稍后重试");
@@ -72,7 +70,7 @@ public class TaskOneClickOperatingUtil {
         if (CollectionUtils.isEmpty(tasks)) {
             final Result<List<Task>> listResult =
                     taskService.queryOnLineTaskByDoneStatus(
-                            Arrays.asList(JobLifeCycle.RELEASE),
+                            Collections.singletonList(JobLifeCycle.RELEASE),
                             JobStatus.getAllDoneStatus(),
                             true,
                             0);
@@ -94,7 +92,7 @@ public class TaskOneClickOperatingUtil {
         return Result.succeed("success");
     }
 
-    public static synchronized Result onClickOffline(List<Task> tasks) {
+    public static synchronized Result<Void> onClickOffline(List<Task> tasks) {
         if (oneClickOnlineThreadStatus.get() || oneClickOfflineThreadStatus.get()) {
             return Result.failed("存在一键上线或者下线操作，请稍后重试");
         }
@@ -102,7 +100,7 @@ public class TaskOneClickOperatingUtil {
         if (CollectionUtils.isEmpty(tasks)) {
             final Result<List<Task>> listResult =
                     taskService.queryOnLineTaskByDoneStatus(
-                            Arrays.asList(JobLifeCycle.ONLINE),
+                            Collections.singletonList(JobLifeCycle.ONLINE),
                             Collections.singletonList(JobStatus.RUNNING),
                             false,
                             0);
@@ -122,13 +120,15 @@ public class TaskOneClickOperatingUtil {
         return Result.succeed("success");
     }
 
-    public static Result<Map<String, Object>> queryOneClickOperatingTaskStatus() {
-        final Map<String, Object> map = new HashMap<>(4);
-        map.put("online", oneClickOnlineCache);
-        map.put("onlineStatus", oneClickOnlineThreadStatus.get());
-        map.put("offline", oneClickOfflineCache);
-        map.put("offlineStatus", oneClickOfflineThreadStatus.get());
-        return Result.succeed(map);
+    public static Result<Dict> queryOneClickOperatingTaskStatus() {
+        Dict dict =
+                Dict.create()
+                        .set("online", oneClickOnlineCache)
+                        .set("onlineStatus", oneClickOnlineThreadStatus.get())
+                        .set("offline", oneClickOfflineCache)
+                        .set("offlineStatus", oneClickOfflineThreadStatus.get());
+
+        return Result.succeed(dict);
     }
 
     public static List<Task> parseJsonNode(JsonNode operating) {

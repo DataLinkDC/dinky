@@ -27,7 +27,6 @@ import org.dinky.service.DocumentService;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -50,13 +50,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/document")
+@RequiredArgsConstructor
 public class DocumentController {
 
-    @Autowired private DocumentService documentService;
+    private final DocumentService documentService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Document document) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed("新增成功");
         } else {
@@ -72,7 +73,7 @@ public class DocumentController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -84,8 +85,7 @@ public class DocumentController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -94,14 +94,14 @@ public class DocumentController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Document document) throws Exception {
+    public Result<Document> getOneById(@RequestBody Document document) throws Exception {
         document = documentService.getById(document.getId());
         return Result.succeed(document, "获取成功");
     }
 
     /** 根据版本号获取自动补全内容 */
     @GetMapping("/getFillAllByVersion")
-    public Result getFillAllByVersion(@RequestParam String version) {
+    public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version), "获取成功");
     }
 }

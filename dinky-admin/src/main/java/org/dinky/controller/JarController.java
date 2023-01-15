@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -59,15 +59,16 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequestMapping("/api/jar")
+@RequiredArgsConstructor
 public class JarController {
 
-    @Autowired private JarService jarService;
+    private final JarService jarService;
 
-    @Autowired private TaskService taskService;
+    private final TaskService taskService;
 
     /** 新增或者更新 */
     @PutMapping
-    public Result saveOrUpdate(@RequestBody Jar jar) throws Exception {
+    public Result<Void> saveOrUpdate(@RequestBody Jar jar) throws Exception {
         if (jarService.saveOrUpdate(jar)) {
             return Result.succeed("新增成功");
         } else {
@@ -83,7 +84,7 @@ public class JarController {
 
     /** 批量删除 */
     @DeleteMapping
-    public Result deleteMul(@RequestBody JsonNode para) {
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -95,8 +96,7 @@ public class JarController {
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -105,14 +105,14 @@ public class JarController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
-    public Result getOneById(@RequestBody Jar jar) throws Exception {
+    public Result<Jar> getOneById(@RequestBody Jar jar) throws Exception {
         jar = jarService.getById(jar.getId());
         return Result.succeed(jar, "获取成功");
     }
 
     /** 获取可用的jar列表 */
     @GetMapping("/listEnabledAll")
-    public Result listEnabledAll() {
+    public Result<List<Jar>> listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
         return Result.succeed(jars, "获取成功");
     }
@@ -123,15 +123,14 @@ public class JarController {
         List<UDF> udfCodes =
                 allUDF.stream()
                         .map(
-                                task -> {
-                                    return UDF.builder()
-                                            .code(task.getStatement())
-                                            .className(task.getSavePointPath())
-                                            .functionLanguage(
-                                                    FunctionLanguage.valueOf(
-                                                            task.getDialect().toUpperCase()))
-                                            .build();
-                                })
+                                task ->
+                                        UDF.builder()
+                                                .code(task.getStatement())
+                                                .className(task.getSavePointPath())
+                                                .functionLanguage(
+                                                        FunctionLanguage.valueOf(
+                                                                task.getDialect().toUpperCase()))
+                                                .build())
                         .collect(Collectors.toList());
         Map<String, List<String>> resultMap = UDFUtil.buildJar(udfCodes);
         String msg =

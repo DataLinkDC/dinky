@@ -68,14 +68,14 @@ public class AlertInstanceController {
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<AlertInstance> listAlertInstances(@RequestBody JsonNode param) {
-        return alertInstanceService.selectForProTable(param);
+    public ProTableResult<AlertInstance> listAlertInstances(@RequestBody JsonNode para) {
+        return alertInstanceService.selectForProTable(para);
     }
 
     /** 批量删除 */
     @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode param) {
-        return alertInstanceService.deleteAlertInstance(param);
+    public Result<Void> deleteMul(@RequestBody JsonNode para) {
+        return alertInstanceService.deleteAlertInstance(para);
     }
 
     /** 获取指定ID的信息 */

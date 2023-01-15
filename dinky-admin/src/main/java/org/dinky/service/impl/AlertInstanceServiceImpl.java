@@ -50,12 +50,14 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * AlertInstanceServiceImpl
@@ -64,10 +66,11 @@ import com.fasterxml.jackson.databind.JsonNode;
  * @since 2022/2/24 19:53
  */
 @Service
+@RequiredArgsConstructor
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance>
         implements AlertInstanceService {
 
-    @Autowired private AlertGroupService alertGroupService;
+    private final AlertGroupService alertGroupService;
 
     @Override
     public List<AlertInstance> listEnabledAll() {
@@ -128,8 +131,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
@@ -199,7 +201,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         if (StringUtils.isBlank(alertGroup.getAlertInstanceIds())) {
             return;
         }
-        for (String instanceId : alertGroup.getAlertInstanceIds().split(",")) {
+
+        for (String instanceId : alertGroup.getAlertInstanceIds().split(StrUtil.COMMA)) {
             if (StringUtils.isBlank(instanceId)) {
                 continue;
             }

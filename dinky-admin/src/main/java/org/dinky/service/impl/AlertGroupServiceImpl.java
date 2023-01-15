@@ -30,11 +30,12 @@ import org.dinky.service.AlertInstanceService;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-
-import lombok.RequiredArgsConstructor;
 
 /**
  * AlertGroupServiceImpl
@@ -43,11 +44,10 @@ import lombok.RequiredArgsConstructor;
  * @since 2022/2/24 20:01
  */
 @Service
-@RequiredArgsConstructor
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
         implements AlertGroupService {
 
-    private final AlertInstanceService alertInstanceService;
+    @Lazy @Resource private AlertInstanceService alertInstanceService;
 
     @Override
     public List<AlertGroup> listEnabledAll() {

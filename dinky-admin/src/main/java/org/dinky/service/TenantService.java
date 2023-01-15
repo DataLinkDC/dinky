@@ -36,7 +36,7 @@ public interface TenantService extends ISuperService<Tenant> {
      * @param para tenant id
      * @return delete result code
      */
-    Result deleteTenantById(JsonNode para);
+    Result<Void> deleteTenantById(JsonNode para);
 
     /**
      * add or update tenant
@@ -44,7 +44,7 @@ public interface TenantService extends ISuperService<Tenant> {
      * @param tenant tenant info
      * @return add or update code
      */
-    Result saveOrUpdateTenant(Tenant tenant);
+    Result<Void> saveOrUpdateTenant(Tenant tenant);
 
     /**
      * @param tenantCode tenant code
@@ -60,7 +60,7 @@ public interface TenantService extends ISuperService<Tenant> {
 
     List<Tenant> getTenantByIds(Set<Integer> tenantIds);
 
-    Result distributeUsers(JsonNode para);
+    Result<Void> distributeUsers(JsonNode para);
 
-    Result switchTenant(JsonNode para);
+    Result<Void> switchTenant(JsonNode para);
 }

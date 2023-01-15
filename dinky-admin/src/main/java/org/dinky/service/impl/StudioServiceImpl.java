@@ -60,7 +60,6 @@ import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.service.UDFService;
 import org.dinky.session.SessionConfig;
 import org.dinky.session.SessionInfo;
 import org.dinky.session.SessionPool;
@@ -82,6 +81,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
+import lombok.RequiredArgsConstructor;
 
 /**
  * StudioServiceImpl
@@ -90,6 +90,7 @@ import cn.dev33.satoken.stp.StpUtil;
  * @since 2021/5/30 11:08
  */
 @Service
+@RequiredArgsConstructor
 public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
@@ -100,24 +101,6 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
     private final FragmentVariableService fragmentVariableService;
-    private final UDFService udfService;
-
-    public StudioServiceImpl(
-            ClusterService clusterService,
-            ClusterConfigurationService clusterConfigurationService,
-            SavepointsService savepointsService,
-            DataBaseService dataBaseService,
-            TaskService taskService,
-            FragmentVariableService fragmentVariableService,
-            UDFService udfService) {
-        this.clusterService = clusterService;
-        this.clusterConfigurationService = clusterConfigurationService;
-        this.savepointsService = savepointsService;
-        this.dataBaseService = dataBaseService;
-        this.taskService = taskService;
-        this.fragmentVariableService = fragmentVariableService;
-        this.udfService = udfService;
-    }
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -390,7 +373,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
+                && !Dialect.FLINKSQL.equalsVal(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 return null;
             }
@@ -398,7 +381,7 @@ public class StudioServiceImpl implements StudioService {
             if (Asserts.isNull(dataBase)) {
                 return null;
             }
-            if (studioCADTO.getDialect().equalsIgnoreCase("doris")) {
+            if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
                 return org.dinky.explainer.sqllineage.LineageBuilder.getSqlLineage(
                         studioCADTO.getStatement(), "mysql", dataBase.getDriverConfig());
             } else {

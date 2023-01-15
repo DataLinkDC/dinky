@@ -75,7 +75,7 @@ public class ClusterConfigurationServiceImpl
     }
 
     @Override
-    public Map getGatewayConfig(Integer id) {
+    public Map<String, Object> getGatewayConfig(Integer id) {
         ClusterConfiguration clusterConfiguration = this.getClusterConfigById(id);
         return clusterConfiguration.getConfig();
     }
@@ -138,7 +138,7 @@ public class ClusterConfigurationServiceImpl
                     FileUtil.isDirectory(PathConstant.WORK_DIR + "/dinky-doc")
                             ? PathConstant.WORK_DIR + "/dinky-doc"
                             : PathConstant.WORK_DIR;
-            File dockerFile = null;
+            File dockerFile;
             try {
                 dockerFile =
                         FileUtil.writeUtf8String(

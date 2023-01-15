@@ -40,32 +40,31 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import javax.annotation.Resource;
+
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import lombok.RequiredArgsConstructor;
+
 /** role service impl */
 @Service
+@RequiredArgsConstructor
 public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implements RoleService {
 
-    private static final Logger LOG = LoggerFactory.getLogger(RoleServiceImpl.class);
-    @Autowired private RoleNamespaceService roleNamespaceService;
-
-    @Autowired private UserRoleService userRoleService;
-
-    @Autowired private RoleService roleService;
-
-    @Autowired private TenantService tenantService;
-    @Autowired private NamespaceService namespaceService;
+    private final RoleNamespaceService roleNamespaceService;
+    private final UserRoleService userRoleService;
+    private final TenantService tenantService;
+    private final NamespaceService namespaceService;
+    @Lazy @Resource private RoleService roleService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result saveOrUpdateRole(Role role) {
+    public Result<Void> saveOrUpdateRole(Role role) {
         if (Asserts.isNull(role.getId())) {
             Role roleCode =
                     roleService.getOne(
@@ -105,7 +104,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result deleteRoles(JsonNode para) {
+    public Result<Void> deleteRoles(JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
@@ -125,8 +124,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             if (error.size() == 0) {
                 return Result.succeed("删除成功");
             } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
+                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要删除的记录");
