@@ -37,7 +37,8 @@ public class MySqlTypeConvert implements ITypeConvert {
         if (Asserts.isNull(column)) {
             return columnType;
         }
-        String t = column.getType().toLowerCase();
+        Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
+        String t = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
@@ -60,7 +61,7 @@ public class MySqlTypeConvert implements ITypeConvert {
                 columnType = ColumnType.DOUBLE;
             }
         } else if (t.contains("boolean")
-                || (t.contains("tinyint") && column.getLength() == 1)
+                || (t.contains("tinyint") && length.equals(1))
                 || t.contains("bit")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
