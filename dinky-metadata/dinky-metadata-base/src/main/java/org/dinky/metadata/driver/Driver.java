@@ -71,6 +71,18 @@ public interface Driver extends AutoCloseable {
         }
     }
 
+    static Driver buildUnconnected(DriverConfig config) {
+        String key = config.getName();
+        synchronized (Driver.class) {
+            Optional<Driver> optionalDriver = Driver.get(config);
+            if (!optionalDriver.isPresent()) {
+                throw new MetaDataException(
+                        "缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+            }
+            return optionalDriver.get();
+        }
+    }
+
     static Driver getHealthDriver(String key) {
         Driver driver = DriverPool.get(key);
         if (driver.isHealth()) {

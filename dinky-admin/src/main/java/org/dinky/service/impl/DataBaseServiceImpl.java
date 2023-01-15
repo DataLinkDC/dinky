@@ -56,7 +56,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public String testConnect(DataBase dataBase) {
-        return Driver.build(dataBase.getDriverConfig()).test();
+        return Driver.buildUnconnected(dataBase.getDriverConfig()).test();
     }
 
     @Override
@@ -67,7 +67,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             isHealthy =
                     Asserts.isEquals(
                             CommonConstant.HEALTHY,
-                            Driver.build(dataBase.getDriverConfig()).test());
+                            Driver.buildUnconnected(dataBase.getDriverConfig()).test());
             if (isHealthy) {
                 dataBase.setHealthTime(LocalDateTime.now());
             }
