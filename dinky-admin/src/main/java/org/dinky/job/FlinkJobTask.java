@@ -32,14 +32,10 @@ import org.dinky.service.TaskService;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
 
 @DependsOn("springContextUtils")
 public class FlinkJobTask implements DaemonTask {
-
-    private static final Logger log = LoggerFactory.getLogger(FlinkJobTask.class);
 
     private DaemonTaskConfig config;
     public static final String TYPE = "jobInstance";

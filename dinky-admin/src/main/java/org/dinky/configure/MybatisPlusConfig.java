@@ -20,18 +20,26 @@
 package org.dinky.configure;
 
 import org.dinky.context.TenantContextHolder;
+import org.dinky.db.handler.DateMetaObjectHandler;
+import org.dinky.db.properties.MybatisPlusFillProperties;
 
 import java.util.List;
 
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import com.google.common.collect.Lists;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.LongValue;
@@ -40,8 +48,12 @@ import net.sf.jsqlparser.expression.NullValue;
 /** mybatisPlus config class */
 @Configuration
 @MapperScan("org.dinky.mapper")
+@EnableConfigurationProperties(MybatisPlusFillProperties.class)
 @Slf4j
+@RequiredArgsConstructor
 public class MybatisPlusConfig {
+
+    private final MybatisPlusFillProperties autoFillProperties;
 
     private static final List<String> IGNORE_TABLE_NAMES =
             Lists.newArrayList(
@@ -76,7 +88,6 @@ public class MybatisPlusConfig {
                             public Expression getTenantId() {
                                 Integer tenantId = (Integer) TenantContextHolder.get();
                                 if (tenantId == null) {
-                                    // log.warn("request context tenant id is null");
                                     return new NullValue();
                                 }
                                 return new LongValue(tenantId);
@@ -89,5 +100,21 @@ public class MybatisPlusConfig {
                         }));
 
         return interceptor;
+    }
+
+    @Bean
+    public PaginationInnerInterceptor paginationInterceptor() {
+        return new PaginationInnerInterceptor();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    @ConditionalOnProperty(
+            prefix = "dinky.mybatis-plus.fill",
+            name = "enabled",
+            havingValue = "true",
+            matchIfMissing = true)
+    public MetaObjectHandler metaObjectHandler() {
+        return new DateMetaObjectHandler(autoFillProperties);
     }
 }

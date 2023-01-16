@@ -57,7 +57,7 @@ public class TaskOperatingResult {
         this.taskOperatingSavepointSelect = taskOperatingSavepointSelect;
     }
 
-    public void parseResult(Result result) {
+    public void parseResult(Result<Void> result) {
         if (result == null) {
             return;
         }

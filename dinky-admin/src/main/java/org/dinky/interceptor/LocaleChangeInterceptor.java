@@ -31,10 +31,10 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 import org.springframework.web.util.WebUtils;
 
-public class LocaleChangeInterceptor extends HandlerInterceptorAdapter {
+public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(

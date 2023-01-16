@@ -926,7 +926,7 @@ export default {
   'pages.devops.jobinfo.canceljob.failed': 'Normal stop failed',
   'pages.devops.jobinfo.job.key':'{key} Job',
   'pages.devops.jobinfo.job.key.success':'{key} Success',
-  'pages.devops.jobinfo.job.key.failed':'{key} Failed',
+  'pages.devops.jobinfo.job.key.failed':'{key} Failed , reason: {msg}',
   'pages.devops.jobinfo.job.keyConfirm': 'Are you sure {key} this job?',
 
   'pages.devops.baseinfo.taskid': 'Task Id',

@@ -32,7 +32,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 
-import cn.dev33.satoken.interceptor.SaRouteInterceptor;
+import cn.dev33.satoken.interceptor.SaInterceptor;
 
 /**
  * AppConfiguration
@@ -64,12 +64,17 @@ public class AppConfiguration implements WebMvcConfigurer {
         return new LocaleChangeInterceptor();
     }
 
-    // 注册拦截器
+    /**
+     * 注册拦截器
+     *
+     * @param registry 注册表
+     */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(localeChangeInterceptor());
         // 注册Sa-Token的路由拦截器
-        registry.addInterceptor(new SaRouteInterceptor())
+
+        registry.addInterceptor(new SaInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login")
                 .excludePathPatterns("/api/geTenants")

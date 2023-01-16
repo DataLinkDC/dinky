@@ -40,11 +40,10 @@ import org.springframework.util.CollectionUtils;
 @Component
 public class SecurityAspect {
 
-    // 敏感信息的pattern :
-    // 'password' = 'wwz@test'
+    /** 敏感信息的pattern : 'password' = 'wwz@test' */
     public static final String SENSITIVE = "'password'\\s*=\\s*'.+?'";
 
-    // 敏感信息屏蔽码
+    /** 敏感信息屏蔽码 */
     public static final String MASK = "'password'='******'";
 
     @AfterReturning(
@@ -74,9 +73,8 @@ public class SecurityAspect {
             if (list.isEmpty() || !(list.get(0) instanceof SqlExplainResult)) {
                 return;
             }
-            List<SqlExplainResult> exp =
-                    ((List<SqlExplainResult>) ((Result<?>) returnValue).getDatas());
-            List<SqlExplainResult> sqlExplainResults = exp;
+            List<SqlExplainResult> sqlExplainResults =
+                    ((Result<List<SqlExplainResult>>) returnValue).getDatas();
             if (CollectionUtils.isEmpty(sqlExplainResults)) {
                 return;
             }
@@ -88,7 +86,7 @@ public class SecurityAspect {
 
         // mask statement for histories
         if (returnValue instanceof ProTableResult<?>
-                && ((ProTableResult<?>) returnValue).getData() instanceof List<?>) {
+                && ((ProTableResult<?>) returnValue).getData() != null) {
             List<?> list = ((ProTableResult<?>) returnValue).getData();
             if (CollectionUtils.isEmpty(list) || !(list.get(0) instanceof History)) {
                 return;
@@ -128,7 +126,7 @@ public class SecurityAspect {
      * @param info 包含敏感信息的字符串
      * @param passwordPattern 敏感信息的regex
      * @param mask 屏蔽码
-     * @return
+     * @return {@link String}
      */
     public static String mask(String info, String passwordPattern, String mask) {
         if (null == info || null == passwordPattern || null == mask) {

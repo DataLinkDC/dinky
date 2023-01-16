@@ -39,6 +39,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 
@@ -48,11 +49,13 @@ import cn.hutool.http.Method;
  * @author wenmo
  * @since 2021/6/24 13:56
  */
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 public class FlinkAPI {
 
     private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
 
     public static final String REST_TARGET_DIRECTORY = "rest.target-directory";
+    public static final String ERRORS = "errors";
     public static final String CANCEL_JOB = "cancel-job";
     public static final String DRAIN = "drain";
     public static final String REQUEST_ID = "request-id";
@@ -97,8 +100,8 @@ public class FlinkAPI {
     /**
      * get请求获取jobManger/TaskManager的日志 (结果为字符串并不是json格式)
      *
-     * @param route
-     * @return
+     * @param route route
+     * @return {@link String}
      */
     private String getResult(String route) {
         return HttpUtil.get(
@@ -139,11 +142,12 @@ public class FlinkAPI {
         return true;
     }
 
+    @SuppressWarnings("checkstyle:Indentation")
     public SavePointResult savepoints(
             String jobId, String savePointType, Map<String, String> taskConfig) {
         SavePointType type = SavePointType.get(savePointType);
         JobInfo jobInfo = new JobInfo(jobId);
-        Map<String, Object> paramMap = new HashMap<>();
+        Map<String, Object> paramMap = new HashMap<>(8);
         String paramType = null;
         switch (type) {
             case CANCEL:
@@ -158,7 +162,6 @@ public class FlinkAPI {
                 break;
             case TRIGGER:
                 paramMap.put(CANCEL_JOB, false);
-                // paramMap.put("target-directory","hdfs:///flink13/ss1");
                 paramType = FlinkRestAPIConstant.SAVEPOINTS;
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
                 break;
@@ -201,6 +204,14 @@ public class FlinkAPI {
         while (true) {
             try {
                 Thread.sleep(1000);
+                JsonNode errNode = json.get(ERRORS);
+                if (Asserts.isNotNull(errNode)
+                        && Asserts.isNotNullString(json.get(ERRORS).get(0).asText())) {
+                    // 打印的可能是 堆栈 信息， 截取第一行关键信息即可
+                    String errMsg =
+                            StrUtil.subBefore(json.get(ERRORS).get(0).asText(), "\n", false);
+                    throw new Exception(errMsg);
+                }
                 node =
                         get(
                                 FlinkRestAPIConstant.JOBS
@@ -213,9 +224,7 @@ public class FlinkAPI {
                     break;
                 }
             } catch (Exception e) {
-                logger.error("", e);
-                result.fail(e.getMessage());
-                return result;
+                throw new RuntimeException(e.getMessage());
             }
         }
 

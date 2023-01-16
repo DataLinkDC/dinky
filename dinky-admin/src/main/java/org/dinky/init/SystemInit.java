@@ -43,11 +43,12 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+
+import lombok.RequiredArgsConstructor;
 
 /**
  * SystemInit
@@ -57,19 +58,20 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @Order(value = 1)
+@RequiredArgsConstructor
 public class SystemInit implements ApplicationRunner {
 
     private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
-    @Autowired private ProjectClient projectClient;
-    @Autowired private SysConfigService sysConfigService;
-    @Autowired private JobInstanceService jobInstanceService;
-    @Autowired private TaskService taskService;
-    @Autowired private TenantService tenantService;
-    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
+    private final ProjectClient projectClient;
+    private final SysConfigService sysConfigService;
+    private final JobInstanceService jobInstanceService;
+    private final TaskService taskService;
+    private final TenantService tenantService;
+    private final DolphinSchedulerProperties dolphinSchedulerProperties;
     private static Project project;
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
@@ -100,7 +102,7 @@ public class SystemInit implements ApplicationRunner {
                     project = projectClient.createDinkyProject();
                 }
             } catch (Exception e) {
-                log.error("Error in DolphinScheduler: {}", e);
+                log.error("Error in DolphinScheduler: ", e);
             }
         }
     }
@@ -108,7 +110,7 @@ public class SystemInit implements ApplicationRunner {
     /**
      * get dolphinscheduler's project
      *
-     * @return: org.dinky.scheduler.model.Project
+     * @return {@link Project}
      */
     public static Project getProject() {
         if (Asserts.isNull(project)) {
