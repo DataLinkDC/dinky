@@ -930,7 +930,7 @@ export default {
   'pages.devops.jobinfo.canceljob.failed':'普通停止失败',
   'pages.devops.jobinfo.job.key':'{key} 任务',
   'pages.devops.jobinfo.job.key.success':'{key} 成功',
-  'pages.devops.jobinfo.job.key.failed':'{key} 失败',
+  'pages.devops.jobinfo.job.key.failed':'{key} 失败，原因：{msg}',
   'pages.devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
 
   'pages.devops.baseinfo.taskid': '任务ID',

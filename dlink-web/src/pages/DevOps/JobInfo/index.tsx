@@ -118,7 +118,7 @@ const JobInfo = (props: any) => {
             message.success(l('pages.devops.jobinfo.job.key.success','',{key: key}));
             handleGetJobInfoDetail();
           } else {
-            message.error(l('pages.devops.jobinfo.job.key.failed','',{key: key}));
+            message.error(l('pages.devops.jobinfo.job.key.failed','',{key: key,msg:result.msg}));
           }
         });
       }
