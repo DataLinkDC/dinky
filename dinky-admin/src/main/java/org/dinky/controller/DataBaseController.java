@@ -134,20 +134,31 @@ public class DataBaseController {
     public Result<Void> checkHeartBeats() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         for (DataBase dataBase : dataBases) {
-            databaseService.checkHeartBeat(dataBase);
-            databaseService.updateById(dataBase);
+            try {
+                databaseService.checkHeartBeat(dataBase);
+            } finally {
+                databaseService.updateById(dataBase);
+            }
         }
         return Result.succeed("状态刷新完成");
     }
 
     /** 心跳检测指定ID */
     @GetMapping("/checkHeartBeatById")
-    public Result<DataBase> checkHeartBeatById(@RequestParam Integer id) {
+    public Result<Void> checkHeartBeatById(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
-        databaseService.checkHeartBeat(dataBase);
+        String error = "";
+        try {
+            databaseService.checkHeartBeat(dataBase);
+        } catch (Exception e) {
+            error = e.getMessage();
+        }
         databaseService.updateById(dataBase);
-        return Result.succeed(dataBase, "状态刷新完成");
+        if (Asserts.isNotNullString(error)) {
+            return Result.failed(error);
+        }
+        return Result.succeed("数据源连接正常");
     }
 
     /** 获取元数据的表 */

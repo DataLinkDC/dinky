@@ -30,9 +30,9 @@ export async function createOrModifyDatabase(databse: DataBaseItem) {
 export async function testDatabaseConnect(databse: DataBaseItem) {
   const hide = message.loading(l('app.request.test.connection'));
   try {
-    const {code,msg} = await postAll('/api/database/testConnect',databse);
+    const {code, msg} = await postAll('/api/database/testConnect', databse);
     hide();
-    code==0?message.success(msg):message.error(msg);
+    code == 0 ? message.success(msg) : message.error(msg);
   } catch (error) {
     hide();
     message.error(l('app.request.failed'));
@@ -42,12 +42,12 @@ export async function testDatabaseConnect(databse: DataBaseItem) {
 export async function checkHeartBeat(id: number) {
   const hide = message.loading(l('app.request.heartbeat.connection'));
   try {
-    const {datas} = await getInfoById('/api/database/checkHeartBeatById',id);
+    const {code, msg} = await getInfoById('/api/database/checkHeartBeatById', id);
     hide();
-    datas.status==1?message.success(
-        l('app.request.heartbeat.connection.success','',{time :datas.heartbeatTime }))
+    code == 0 ? message.success(
+        l('app.request.heartbeat.connection.success', ''))
       :
-      message.error(l('app.request.heartbeat.connection.failed','',{time :datas.heartbeatTime }));
+      message.error(l('app.request.heartbeat.connection.failed', '', {error: msg}));
   } catch (error) {
     hide();
     message.error(l('app.request.failed'));
