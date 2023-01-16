@@ -33,18 +33,18 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
 
-    private static volatile Map<String, JobInfoDetail> flinkJobTaskEntityMap =
+    private static final Map<String, JobInfoDetail> FLINK_JOB_TASK_ENTITY_MAP =
             new ConcurrentHashMap<>();
 
-    private static FlinkJobTaskPool instance = new FlinkJobTaskPool();
+    private static final FlinkJobTaskPool INSTANCE = new FlinkJobTaskPool();
 
     public static FlinkJobTaskPool getInstance() {
-        return instance;
+        return INSTANCE;
     }
 
     @Override
     public Map<String, JobInfoDetail> getMap() {
-        return flinkJobTaskEntityMap;
+        return FLINK_JOB_TASK_ENTITY_MAP;
     }
 
     @Override

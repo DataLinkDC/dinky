@@ -34,24 +34,14 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-/**
- * @program: dinky
- * @description:
- * @author: zhumingye
- * @create: 2022-06-28 19:00
- */
+/** @author zhumingye */
 public class BuildConfiguration {
 
-    /**
-     * @return void @Author: zhumingye
-     * @date: 2022/6/27 @Description: buildJobManagerConfiguration @Params:
-     *     [jobManagerConfiguration, flinkAPI]
-     */
     public static void buildJobManagerConfiguration(
             JobManagerConfiguration jobManagerConfiguration, FlinkAPI flinkAPI) {
 
-        Map<String, String> jobManagerMetricsMap =
-                new HashMap<String, String>(); // 获取jobManager metrics
+        // 获取jobManager metrics
+        Map<String, String> jobManagerMetricsMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerMetricsItemsList =
                 JSONUtil.toList(
                         JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()),
@@ -65,7 +55,8 @@ public class BuildConfiguration {
                         jobManagerMetricsMap.put(configKey, configValue);
                     }
                 });
-        Map<String, String> jobManagerConfigMap = new HashMap<String, String>(); // 获取jobManager配置信息
+        // 获取jobManager配置信息
+        Map<String, String> jobManagerConfigMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerConfigMapItemsList =
                 JSONUtil.toList(
                         JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
@@ -78,8 +69,10 @@ public class BuildConfiguration {
                         jobManagerConfigMap.put(configKey, configValue);
                     }
                 });
-        String jobMangerLog = flinkAPI.getJobManagerLog(); // 获取jobManager日志
-        String jobManagerStdOut = flinkAPI.getJobManagerStdOut(); // 获取jobManager标准输出日志
+        // 获取jobManager日志
+        String jobMangerLog = flinkAPI.getJobManagerLog();
+        // 获取jobManager标准输出日志
+        String jobManagerStdOut = flinkAPI.getJobManagerStdOut();
 
         jobManagerConfiguration.setMetrics(jobManagerMetricsMap);
         jobManagerConfiguration.setJobManagerConfig(jobManagerConfigMap);
@@ -87,13 +80,6 @@ public class BuildConfiguration {
         jobManagerConfiguration.setJobManagerStdout(jobManagerStdOut);
     }
 
-    /**
-     * @Author: zhumingye
-     *
-     * @date: 2022/6/27 @Description: buildTaskManagerConfiguration @Params:
-     *     [taskManagerConfigurationList, flinkAPI, taskManagerContainers]
-     * @return void
-     */
     public static void buildTaskManagerConfiguration(
             Set<TaskManagerConfiguration> taskManagerConfigurationList,
             FlinkAPI flinkAPI,
@@ -104,42 +90,48 @@ public class BuildConfiguration {
             for (JsonNode taskManagers : taskmanagers) {
                 TaskManagerConfiguration taskManagerConfiguration = new TaskManagerConfiguration();
 
-                /** 解析 taskManager 的配置信息 */
-                String containerId = taskManagers.get("id").asText(); // 获取container id
-                String containerPath = taskManagers.get("path").asText(); // 获取container path
-                Integer dataPort = taskManagers.get("dataPort").asInt(); // 获取container dataPort
-                Integer jmxPort = taskManagers.get("jmxPort").asInt(); // 获取container jmxPort
-                Long timeSinceLastHeartbeat =
-                        taskManagers.get("timeSinceLastHeartbeat").asLong(); // 获取container
+                // 解析 taskManager 的配置信息
+                // 获取container id
+                String containerId = taskManagers.get("id").asText();
+                // 获取container path
+                String containerPath = taskManagers.get("path").asText();
+                // 获取container dataPort
+                Integer dataPort = taskManagers.get("dataPort").asInt();
+                // 获取container jmxPort
+                Integer jmxPort = taskManagers.get("jmxPort").asInt();
+                // 获取container
+                Long timeSinceLastHeartbeat = taskManagers.get("timeSinceLastHeartbeat").asLong();
                 // timeSinceLastHeartbeat
-                Integer slotsNumber =
-                        taskManagers.get("slotsNumber").asInt(); // 获取container slotsNumber
-                Integer freeSlots = taskManagers.get("freeSlots").asInt(); // 获取container freeSlots
-                String totalResource =
-                        JSONUtil.toJsonString(taskManagers.get("totalResource")); // 获取container
+                // 获取container slotsNumber
+                Integer slotsNumber = taskManagers.get("slotsNumber").asInt();
+                // 获取container freeSlots
+                Integer freeSlots = taskManagers.get("freeSlots").asInt();
+                // 获取container
+                String totalResource = JSONUtil.toJsonString(taskManagers.get("totalResource"));
                 // totalResource
-                String freeResource =
-                        JSONUtil.toJsonString(taskManagers.get("freeResource")); // 获取container
+                // 获取container
+                String freeResource = JSONUtil.toJsonString(taskManagers.get("freeResource"));
                 // freeResource
-                String hardware =
-                        JSONUtil.toJsonString(taskManagers.get("hardware")); // 获取container hardware
+                // 获取container hardware
+                String hardware = JSONUtil.toJsonString(taskManagers.get("hardware"));
+                // 获取container
                 String memoryConfiguration =
-                        JSONUtil.toJsonString(
-                                taskManagers.get("memoryConfiguration")); // 获取container
+                        JSONUtil.toJsonString(taskManagers.get("memoryConfiguration"));
                 // memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
-                JsonNode taskManagerMetrics =
-                        flinkAPI.getTaskManagerMetrics(containerId); // 获取taskManager metrics
-                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId); // 获取taskManager日志
+                // 获取taskManager metrics
+                JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);
+                // 获取taskManager日志
+                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);
+                // 获取taskManager线程dumps
                 String taskManagerThreadDumps =
                         JSONUtil.toJsonString(
-                                flinkAPI.getTaskManagerThreadDump(containerId)
-                                        .get("threadInfos")); // 获取taskManager线程dumps
-                String taskManagerStdOut =
-                        flinkAPI.getTaskManagerStdOut(containerId); // 获取taskManager标准输出日志
+                                flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
+                // 获取taskManager标准输出日志
+                String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);
 
-                Map<String, String> taskManagerMetricsMap =
-                        new HashMap<String, String>(); // 获取taskManager metrics
+                // 获取taskManager metrics
+                Map<String, String> taskManagerMetricsMap = new HashMap<>(8);
                 List<LinkedHashMap> taskManagerMetricsItemsList =
                         JSONUtil.toList(
                                 JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
@@ -153,7 +145,7 @@ public class BuildConfiguration {
                             }
                         });
 
-                /** TaskManagerConfiguration 赋值 */
+                /* TaskManagerConfiguration 赋值 */
                 taskManagerConfiguration.setContainerId(containerId);
                 taskManagerConfiguration.setContainerPath(containerPath);
                 taskManagerConfiguration.setDataPort(dataPort);
@@ -166,7 +158,7 @@ public class BuildConfiguration {
                 taskManagerConfiguration.setHardware(hardware);
                 taskManagerConfiguration.setMemoryConfiguration(memoryConfiguration);
 
-                /** TaskContainerConfigInfo 赋值 */
+                /* TaskContainerConfigInfo 赋值 */
                 TaskContainerConfigInfo taskContainerConfigInfo = new TaskContainerConfigInfo();
                 taskContainerConfigInfo.setMetrics(taskManagerMetricsMap);
                 taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);

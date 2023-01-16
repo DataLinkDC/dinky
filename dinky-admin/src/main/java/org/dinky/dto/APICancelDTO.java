@@ -31,6 +31,7 @@ import lombok.Setter;
  * @author wenmo
  * @since 2021/12/12 18:53
  */
+@SuppressWarnings("AlibabaClassNamingShouldBeCamel")
 @Getter
 @Setter
 public class APICancelDTO {

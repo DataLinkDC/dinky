@@ -35,7 +35,6 @@ public class DirConstant {
 
     static {
         String separator = System.getProperty(FILE_SEPARATOR);
-        // String rootPath = new ApplicationHome(Dinky.class).getSource().getParent();
         String rootPath = new ApplicationHome().getDir().getPath();
         LOG_DIR_PATH = rootPath + separator + "logs";
         ROOT_LOG_PATH = LOG_DIR_PATH + separator + "dinky.log";

@@ -58,12 +58,12 @@ public class WebExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(WebExceptionHandler.class);
 
     @ExceptionHandler
-    public Result busException(BusException e) {
+    public Result<Void> busException(BusException e) {
         return Result.failed(e.getMessage());
     }
 
     @ExceptionHandler
-    public Result notLoginException(NotLoginException e) {
+    public Result<Void> notLoginException(NotLoginException e) {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
@@ -71,7 +71,13 @@ public class WebExceptionHandler {
         return Result.notLogin(MessageResolverUtils.getMessage("login.not.login"));
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST) // 设置状态码为 400
+    /**
+     * 参数异常处理程序 设置状态码为 400
+     *
+     * @param e e
+     * @return {@link Result}<{@link String}>
+     */
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public Result<String> paramExceptionHandler(MethodArgumentNotValidException e) {
         BindingResult exceptions = e.getBindingResult();
@@ -97,7 +103,7 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler
-    public Result unknownException(Exception e) {
+    public Result<Void> unknownException(Exception e) {
         logger.error("ERROR:", e);
         return Result.failed(e.getMessage());
     }

@@ -26,13 +26,13 @@ import java.util.Arrays;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import lombok.extern.slf4j.Slf4j;
 
 /** tenant interceptor */
 @Slf4j
-public class TenantInterceptor implements HandlerInterceptor {
+public class TenantInterceptor implements AsyncHandlerInterceptor {
 
     @Override
     public boolean preHandle(
@@ -43,6 +43,6 @@ public class TenantInterceptor implements HandlerInterceptor {
                 .findFirst()
                 .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
 
-        return HandlerInterceptor.super.preHandle(request, response, handler);
+        return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }
 }

@@ -92,7 +92,7 @@ public enum Status {
 
     /** alert group , alert instance */
     CREATE_ALERT_GROUP_ERROR(10027, "create alert group error", "创建告警组失败"),
-    QUERY_ALL_ALERTGROUP_ERROR(10028, "query all alertgroup error", "查询告警组失败"),
+    QUERY_ALL_ALERT_GROUP_ERROR(10028, "query all alert group error", "查询告警组失败"),
     UPDATE_ALERT_GROUP_ERROR(10030, "update alert group error", "更新告警组失败"),
     DELETE_ALERT_GROUP_ERROR(10031, "delete alert group error", "删除告警组失败"),
     ALERT_GROUP_GRANT_USER_ERROR(10032, "alert group grant user error", "告警组授权用户失败"),
