@@ -42,12 +42,12 @@ export async function testDatabaseConnect(databse: DataBaseItem) {
 export async function checkHeartBeat(id: number) {
   const hide = message.loading(l('app.request.heartbeat.connection'));
   try {
-    const {datas} = await getInfoById('/api/database/checkHeartBeatById',id);
+    const {code, msg} = await getInfoById('/api/database/checkHeartBeatById', id);
     hide();
-    datas.status==1?message.success(
-        l('app.request.heartbeat.connection.success','',{time :datas.heartbeatTime }))
+    code == 0 ? message.success(
+        l('app.request.heartbeat.connection.success',''))
       :
-      message.error(l('app.request.heartbeat.connection.failed','',{time :datas.heartbeatTime }));
+      message.error(l('app.request.heartbeat.connection.failed', '', {error: msg}));
   } catch (error) {
     hide();
     message.error(l('app.request.failed'));

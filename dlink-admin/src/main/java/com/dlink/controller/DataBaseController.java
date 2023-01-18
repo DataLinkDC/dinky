@@ -149,8 +149,11 @@ public class DataBaseController {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         for (int i = 0; i < dataBases.size(); i++) {
             DataBase dataBase = dataBases.get(i);
-            databaseService.checkHeartBeat(dataBase);
-            databaseService.updateById(dataBase);
+            try {
+                databaseService.checkHeartBeat(dataBase);
+            } finally {
+                databaseService.updateById(dataBase);
+            }
         }
         return Result.succeed("状态刷新完成");
     }
@@ -162,9 +165,17 @@ public class DataBaseController {
     public Result checkHeartBeatById(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, "该数据源不存在！");
-        databaseService.checkHeartBeat(dataBase);
+        String error = "";
+        try {
+            databaseService.checkHeartBeat(dataBase);
+        } catch (Exception e) {
+            error = e.getMessage();
+        }
         databaseService.updateById(dataBase);
-        return Result.succeed(dataBase, "状态刷新完成");
+        if (Asserts.isNotNullString(error)) {
+            return Result.failed(error);
+        }
+        return Result.succeed("数据源连接正常");
     }
 
     /**
