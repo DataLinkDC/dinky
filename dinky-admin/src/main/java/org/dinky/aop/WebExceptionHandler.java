@@ -17,9 +17,10 @@
  *
  */
 
-package org.dinky.exception;
+package org.dinky.aop;
 
 import org.dinky.common.result.Result;
+import org.dinky.exception.BusException;
 import org.dinky.model.CodeEnum;
 import org.dinky.utils.MessageResolverUtils;
 
@@ -44,6 +45,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * WebExceptionHandler
@@ -59,7 +61,10 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public Result<Void> busException(BusException e) {
-        return Result.failed(e.getMessage());
+        if (StrUtil.isNotEmpty(e.getMsg())) {
+            return Result.failed(MessageResolverUtils.getMessages(e.getCode(), e.getErrorArgs()));
+        }
+        return Result.failed(e.getMsg());
     }
 
     @ExceptionHandler

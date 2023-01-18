@@ -41,7 +41,7 @@ import cn.dev33.satoken.interceptor.SaInterceptor;
  * @since 2021/11/28 19:35
  */
 @Configuration
-public class AppConfiguration implements WebMvcConfigurer {
+public class AppConfig implements WebMvcConfigurer {
 
     /**
      * Cookie

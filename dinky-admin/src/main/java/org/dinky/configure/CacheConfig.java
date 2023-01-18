@@ -33,7 +33,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @since 2022/09/24 11:23
  */
 @Configuration
-public class CacheConfigure {
+public class CacheConfig {
 
     /** 配置Redis缓存注解的value序列化方式 */
     @Bean
