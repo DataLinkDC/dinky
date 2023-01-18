@@ -32,7 +32,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
 @EnableSwagger2
-public class Knife4jConfiguration {
+public class Knife4jConfig {
 
     @Bean(value = "defaultApi2")
     public Docket defaultApi2() {

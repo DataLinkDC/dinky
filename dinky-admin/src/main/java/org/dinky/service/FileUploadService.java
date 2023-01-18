@@ -19,7 +19,6 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.Result;
 import org.dinky.constant.UploadFileConstant;
 
 import org.springframework.web.multipart.MultipartFile;
@@ -32,18 +31,16 @@ public interface FileUploadService {
      *
      * @param file {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link Result}
      */
-    Result upload(MultipartFile file, Byte fileType);
+    void upload(MultipartFile file, Byte fileType);
 
     /**
      * Upload multy file, if target file exists, will delete it first
      *
      * @param files {@link MultipartFile} instance
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link Result}
      */
-    Result upload(MultipartFile[] files, Byte fileType);
+    void upload(MultipartFile[] files, Byte fileType);
 
     /**
      * Upload one file, if target file exists, will delete it first
@@ -51,9 +48,8 @@ public interface FileUploadService {
      * @param file {@link MultipartFile} instance
      * @param dir Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link Result}
      */
-    Result upload(MultipartFile file, String dir, Byte fileType);
+    void upload(MultipartFile file, String dir, Byte fileType);
 
     /**
      * Upload multy file, if target file exists, will delete it first
@@ -61,25 +57,24 @@ public interface FileUploadService {
      * @param files {@link MultipartFile} instance
      * @param dir Local absolute dir
      * @param fileType Upload file's type, refer ${@link UploadFileConstant}
-     * @return {@link Result}
      */
-    Result upload(MultipartFile[] files, String dir, Byte fileType);
+    void upload(MultipartFile[] files, String dir, Byte fileType);
 
     /**
      * Upload one hdfs file, if target file exists, will delete it first
      *
      * @param file {@link MultipartFile} instance
      * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
-     * @return {@link Result}
+     * @param dir dir
      */
-    Result uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath);
+    void uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath);
 
     /**
      * Upload multy hdfs file, if target file exists, will delete it first
      *
      * @param files {@link MultipartFile} instance
      * @param hadoopConfigPath core-site.xml,hdfs-site.xml,yarn-site.xml
-     * @return {@link Result}
+     * @param dir dir
      */
-    Result uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath);
+    void uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath);
 }

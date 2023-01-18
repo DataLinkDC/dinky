@@ -54,7 +54,7 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping
-    public Result upload(
+    public Result<Void> upload(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
             @RequestParam(value = "fileType", defaultValue = "-1", required = false)
@@ -66,10 +66,11 @@ public class FileUploadController {
         }
 
         if (StringUtils.isEmpty(dir)) {
-            return fileUploadService.upload(files, fileType);
+            fileUploadService.upload(files, fileType);
         } else {
-            return fileUploadService.upload(files, dir, fileType);
+            fileUploadService.upload(files, dir, fileType);
         }
+        return Result.succeed();
     }
 
     /**
@@ -82,10 +83,11 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping(value = "hdfs")
-    public Result uploadHdfs(
+    public Result<Void> uploadHdfs(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
             @RequestParam(value = "hadoopConfigPath", required = false) String hadoopConfigPath) {
-        return fileUploadService.uploadHdfs(files, dir, hadoopConfigPath);
+        fileUploadService.uploadHdfs(files, dir, hadoopConfigPath);
+        return Result.succeed();
     }
 }

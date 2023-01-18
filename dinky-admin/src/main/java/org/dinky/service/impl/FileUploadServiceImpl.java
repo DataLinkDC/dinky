@@ -20,9 +20,8 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.Result;
 import org.dinky.constant.UploadFileConstant;
-import org.dinky.model.CodeEnum;
+import org.dinky.exception.BusException;
 import org.dinky.service.FileUploadService;
 import org.dinky.service.UploadFileRecordService;
 import org.dinky.utils.FilePathUtil;
@@ -39,7 +38,6 @@ import javax.annotation.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,7 +49,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Resource private UploadFileRecordService uploadFileRecordService;
 
     @Override
-    public Result<Void> upload(MultipartFile file, String dir, Byte fileType) {
+    public void upload(MultipartFile file, String dir, Byte fileType) {
         byte target = getTarget(dir, fileType);
         if (Objects.equals(target, UploadFileConstant.TARGET_LOCAL)) {
             FileUtil.mkdir(dir);
@@ -69,118 +67,98 @@ public class FileUploadServiceImpl implements FileUploadService {
                                 filePath,
                                 fileType,
                                 UploadFileConstant.TARGET_LOCAL)) {
-                            return Result.succeed("上传成功");
+                            return;
                         } else {
-                            return Result.failed("数据库异常");
+                            throw BusException.valueOfMsg("数据库异常");
                         }
                     } catch (IOException e) {
-                        log.error(
-                                "File "
-                                        + file.getOriginalFilename()
-                                        + " upload to local dir fail, exception is:\n"
-                                        + ExceptionUtil.stacktraceToString(e));
-                        return Result.failed("上传失败");
+                        throw BusException.valueOf("file.upload.failed", e);
                     }
                 }
             case UploadFileConstant.TARGET_HDFS:
                 {
-                    Result result = HdfsUtil.uploadFile(filePath, file);
-                    if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-                        if (uploadFileRecordService.saveOrUpdateFile(
-                                file.getOriginalFilename(),
-                                dir,
-                                filePath,
-                                fileType,
-                                UploadFileConstant.TARGET_HDFS)) {
-                            return Result.succeed("上传成功");
-                        } else {
-                            return Result.failed("数据库异常");
-                        }
+                    HdfsUtil.uploadFile(filePath, file);
+                    if (uploadFileRecordService.saveOrUpdateFile(
+                            file.getOriginalFilename(),
+                            dir,
+                            filePath,
+                            fileType,
+                            UploadFileConstant.TARGET_HDFS)) {
+                        return;
                     } else {
-                        return result;
+                        throw BusException.valueOfMsg("数据库异常");
                     }
                 }
             default:
-                return Result.failed("非法的上传文件目的地");
+                throw BusException.valueOfMsg("非法的上传文件目的地");
         }
     }
 
     @Override
-    public Result upload(MultipartFile file, Byte fileType) {
+    public void upload(MultipartFile file, Byte fileType) {
         String dir = UploadFileConstant.getDirPath(fileType);
         if (StringUtils.isEmpty(dir)) {
-            return Result.failed("非法的上传文件类型");
+            throw BusException.valueOfMsg("非法的上传文件类型");
         }
-        return upload(file, dir, fileType);
+        upload(file, dir, fileType);
     }
 
     @Override
-    public Result upload(MultipartFile[] files, String dir, Byte fileType) {
+    public void upload(MultipartFile[] files, String dir, Byte fileType) {
+        if (StringUtils.isEmpty(dir)) {
+            throw BusException.valueOfMsg("非法的上传文件类型");
+        }
         if (files.length > 0) {
             for (MultipartFile file : files) {
-                Result uploadResult = upload(file, dir, fileType);
-                if (Objects.equals(uploadResult.getCode(), CodeEnum.ERROR.getCode())) {
-                    return uploadResult;
-                }
+                upload(file, dir, fileType);
             }
             if (!uploadFileRecordService.saveOrUpdateDir(dir, fileType, getTarget(dir, fileType))) {
-                return Result.failed("数据库异常");
+                throw BusException.valueOfMsg("数据库异常");
             }
-            return Result.succeed("全部上传成功");
         } else {
-            return Result.succeed("没有检测到要上传的文件");
+            throw BusException.valueOfMsg("没有检测到要上传的文件");
         }
     }
 
     @Override
-    public Result uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath) {
-        String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
-        Result result = HdfsUtil.uploadFile(filePath, file, hadoopConfigPath);
-        if (Objects.equals(result.getCode(), CodeEnum.SUCCESS.getCode())) {
-            if (uploadFileRecordService.saveOrUpdateFile(
-                    file.getOriginalFilename(),
-                    dir,
-                    filePath,
-                    UploadFileConstant.FLINK_LIB_ID,
-                    UploadFileConstant.TARGET_HDFS)) {
-                return Result.succeed("上传成功");
-            } else {
-                return Result.failed("数据库异常");
-            }
-        } else {
-            return result;
-        }
-    }
-
-    @Override
-    public Result uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath) {
+    public void uploadHdfs(MultipartFile file, String dir, String hadoopConfigPath) {
         if (Asserts.isNullString(dir)) {
             dir = UploadFileConstant.getDirPath(UploadFileConstant.FLINK_LIB_ID);
         }
-        if (files.length > 0) {
-            for (MultipartFile file : files) {
-                Result uploadResult = uploadHdfs(file, dir, hadoopConfigPath);
-                if (Objects.equals(uploadResult.getCode(), CodeEnum.ERROR.getCode())) {
-                    return uploadResult;
-                }
-            }
-            if (!uploadFileRecordService.saveOrUpdateDir(
-                    dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
-                return Result.failed("数据库异常");
-            }
-            return Result.succeed("全部上传成功");
-        } else {
-            return Result.succeed("没有检测到要上传的文件");
+        String filePath = FilePathUtil.addFileSeparator(dir) + file.getOriginalFilename();
+        HdfsUtil.uploadFile(filePath, file, hadoopConfigPath);
+
+        if (!uploadFileRecordService.saveOrUpdateFile(
+                file.getOriginalFilename(),
+                dir,
+                filePath,
+                UploadFileConstant.FLINK_LIB_ID,
+                UploadFileConstant.TARGET_HDFS)) {
+            throw BusException.valueOfMsg("数据库异常");
         }
     }
 
     @Override
-    public Result upload(MultipartFile[] files, Byte fileType) {
-        String dir = UploadFileConstant.getDirPath(fileType);
-        if (StringUtils.isEmpty(dir)) {
-            return Result.failed("非法的上传文件类型");
+    public void uploadHdfs(MultipartFile[] files, String dir, String hadoopConfigPath) {
+        if (Asserts.isNotNull(files)) {
+            try {
+                for (MultipartFile file : files) {
+                    uploadHdfs(file, dir, hadoopConfigPath);
+                }
+                if (!uploadFileRecordService.saveOrUpdateDir(
+                        dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
+                    throw BusException.valueOfMsg("数据库异常");
+                }
+            } catch (Exception e) {
+                throw BusException.valueOf("unknown.error", e);
+            }
         }
-        return upload(files, dir, fileType);
+    }
+
+    @Override
+    public void upload(MultipartFile[] files, Byte fileType) {
+        String dir = UploadFileConstant.getDirPath(fileType);
+        upload(files, dir, fileType);
     }
 
     /**

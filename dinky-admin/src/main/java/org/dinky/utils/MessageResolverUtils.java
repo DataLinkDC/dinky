@@ -21,7 +21,6 @@ package org.dinky.utils;
 
 import java.util.Arrays;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -30,7 +29,7 @@ import cn.hutool.extra.spring.SpringUtil;
 /** desc： 获取i18n资源文件 */
 public class MessageResolverUtils {
 
-    @Autowired private static MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
+    private static MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
 
     public MessageResolverUtils() {}
 
@@ -54,9 +53,7 @@ public class MessageResolverUtils {
      */
     public static String getMessages(Object code, Object... messageArgs) {
         Object[] objs = Arrays.stream(messageArgs).map(MessageResolverUtils::getMessage).toArray();
-        String message =
-                messageSource.getMessage(
-                        code.toString(), objs, code.toString(), LocaleContextHolder.getLocale());
-        return message;
+        return messageSource.getMessage(
+                code.toString(), objs, code.toString(), LocaleContextHolder.getLocale());
     }
 }

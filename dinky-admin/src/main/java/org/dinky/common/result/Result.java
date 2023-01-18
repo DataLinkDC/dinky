@@ -21,6 +21,7 @@ package org.dinky.common.result;
 
 import org.dinky.enums.Status;
 import org.dinky.model.CodeEnum;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -67,6 +68,13 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> succeed(String msg) {
         return of(null, CodeEnum.SUCCESS.getCode(), msg);
+    }
+
+    public static <T> Result<T> succeed() {
+        return of(
+                null,
+                CodeEnum.SUCCESS.getCode(),
+                MessageResolverUtils.getMessage("operate.success"));
     }
 
     public static <T> Result<T> succeed(T model, String msg) {
