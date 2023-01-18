@@ -55,16 +55,25 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
 
     @Override
     public String testConnect(DataBase dataBase) {
-        return Driver.build(dataBase.getDriverConfig()).test();
+        return Driver.buildUnconnected(dataBase.getDriverConfig()).test();
     }
 
     @Override
     public boolean checkHeartBeat(DataBase dataBase) {
-        boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, Driver.build(dataBase.getDriverConfig()).test());
-        dataBase.setStatus(isHealthy);
+        boolean isHealthy = false;
         dataBase.setHeartbeatTime(LocalDateTime.now());
-        if (isHealthy) {
-            dataBase.setHealthTime(LocalDateTime.now());
+        try {
+            isHealthy = Asserts.isEquals(
+                    CommonConstant.HEALTHY,
+                    Driver.buildUnconnected(dataBase.getDriverConfig()).test());
+            if (isHealthy) {
+                dataBase.setHealthTime(LocalDateTime.now());
+            }
+        } catch (Exception e) {
+            isHealthy = false;
+            throw e;
+        } finally {
+            dataBase.setStatus(isHealthy);
         }
         return isHealthy;
     }
@@ -75,8 +84,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             return false;
         }
         if (Asserts.isNull(dataBase.getId())) {
-            checkHeartBeat(dataBase);
-            return save(dataBase);
+            try {
+                checkHeartBeat(dataBase);
+            } finally {
+                return save(dataBase);
+            }
         } else {
             DataBase dataBaseInfo = getById(dataBase.getId());
             if (Asserts.isNull(dataBase.getUrl())) {
@@ -88,8 +100,11 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
             if (Asserts.isNull(dataBase.getPassword())) {
                 dataBase.setPassword(dataBaseInfo.getPassword());
             }
-            checkHeartBeat(dataBase);
-            return updateById(dataBase);
+            try {
+                checkHeartBeat(dataBase);
+            } finally {
+                return updateById(dataBase);
+            }
         }
     }
 
@@ -205,7 +220,8 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public boolean copyDatabase(DataBase database) {
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
-        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName()) + "_" + name);
+        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
+                + "_" + name);
         database.setCreateTime(null);
         return this.save(database);
     }
