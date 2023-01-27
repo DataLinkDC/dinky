@@ -99,7 +99,8 @@ public class DingTalkSender {
         }
     }
 
-    /** send msg of main
+    /**
+     * send msg of main
      *
      * @param title ： send msg title
      * @param content： send msg content
@@ -157,7 +158,8 @@ public class DingTalkSender {
         }
     }
 
-    /** Generate Msg of parse Json
+    /**
+     * Generate Msg of parse Json
      *
      * @param title
      * @param content
@@ -180,7 +182,8 @@ public class DingTalkSender {
         return JSONUtil.toJsonString(items);
     }
 
-    /**  Generate Text Msg
+    /**
+     * Generate Text Msg
      *
      * @param title
      * @param content
@@ -196,7 +199,8 @@ public class DingTalkSender {
         text.put("content", txt);
     }
 
-    /** Generate Markdown Msg
+    /**
+     * Generate Markdown Msg
      *
      * @param title
      * @param content
@@ -268,7 +272,8 @@ public class DingTalkSender {
         return txt;
     }
 
-    /** generate Signed Url of SHA256
+    /**
+     * generate Signed Url of SHA256
      *
      * @return String
      */
@@ -280,14 +285,17 @@ public class DingTalkSender {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), AlertBaseConstant.UTF_8);
+            sign =
+                    URLEncoder.encode(
+                            new String(Base64.encodeBase64(signData)), AlertBaseConstant.UTF_8);
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }
         return url + "&timestamp=" + timestamp + "&sign=" + sign;
     }
 
-    /** Set Msg AtUsers
+    /**
+     * Set Msg AtUsers
      *
      * @param items
      */
@@ -308,7 +316,8 @@ public class DingTalkSender {
         items.put("at", at);
     }
 
-    /** Check Msg Result
+    /**
+     * Check Msg Result
      *
      * @param result
      * @return

@@ -198,6 +198,12 @@ public class WeChatSender {
         return sb.toString();
     }
 
+    /**
+     * generate AtUser List
+     *
+     * @param list
+     * @return
+     */
     private static String generateUserList(Iterable<String> list) {
         if (Asserts.isNull(list)) {
             return null;
@@ -218,8 +224,7 @@ public class WeChatSender {
     /**
      * @Author: zhumingye
      *
-     * @date: 2022/3/26
-     * @Description: 将用户列表转换为 <@用户名> 的格式
+     * @date: 2022/3/26 @Description: 将用户列表转换为 <@用户名> 的格式
      * @param userList
      * @return java.lang.String
      */
@@ -262,8 +267,7 @@ public class WeChatSender {
     /**
      * @Author: zhumingye
      *
-     * @date: 2022/3/25
-     * @Description: 创建公共方法 用于创建发送消息文本
+     * @date: 2022/3/25 @Description: 创建公共方法 用于创建发送消息文本
      * @param title 发送标题
      * @param content 发送内容
      * @param sendType

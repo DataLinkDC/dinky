@@ -92,7 +92,8 @@ public final class FeiShuSender {
         }
     }
 
-    /** parse json to template
+    /**
+     * parse json to template
      *
      * @param title
      * @param content
@@ -126,7 +127,8 @@ public final class FeiShuSender {
         return jsonResult;
     }
 
-    /** Generate AtUsers
+    /**
+     * Generate AtUsers
      *
      * @param users
      * @return
@@ -152,7 +154,8 @@ public final class FeiShuSender {
     }
 
     /**
-     *  checkSendFeiShuSendMsgResult
+     * checkSendFeiShuSendMsgResult
+     *
      * @param result
      * @return
      */
@@ -190,6 +193,7 @@ public final class FeiShuSender {
 
     /**
      * Generate send msg
+     *
      * @param title
      * @param content
      * @return
@@ -220,7 +224,8 @@ public final class FeiShuSender {
     }
 
     /**
-     *  main send msg
+     * main send msg
+     *
      * @param title
      * @param content
      * @return AlertResult
@@ -241,6 +246,7 @@ public final class FeiShuSender {
 
     /**
      * send msg
+     *
      * @param title
      * @param content
      * @return
