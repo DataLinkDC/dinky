@@ -19,6 +19,7 @@
 
 package org.dinky.alert.feishu;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
 
@@ -60,12 +61,12 @@ public class FeiShuSenderTest {
         alertMsg.setExceptionUrl(exceptionUrl);
 
         feiShuConfig.put(
-                FeiShuConstants.WEB_HOOK,
+                AlertBaseConstant.WEB_HOOK,
                 "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
-        feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "text");
-        feiShuConfig.put(FeiShuConstants.AT_ALL, "true");
-        feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
+        feiShuConfig.put(AlertBaseConstant.KEYWORD, "Dinky 飞书WebHook 告警测试");
+        feiShuConfig.put(AlertBaseConstant.MSG_TYPE, "text");
+        feiShuConfig.put(AlertBaseConstant.AT_ALL, "true");
+        feiShuConfig.put(AlertBaseConstant.AT_USERS, "zhumingye");
     }
 
     @Ignore
@@ -79,7 +80,7 @@ public class FeiShuSenderTest {
     @Ignore
     @Test
     public void testPostTypeSend() {
-        feiShuConfig.put(FeiShuConstants.MSG_TYPE, "post");
+        feiShuConfig.put(AlertBaseConstant.MSG_TYPE, "post");
         FeiShuSender feiShuSender = new FeiShuSender(feiShuConfig);
         AlertResult alertResult = feiShuSender.send("FeiShu Alert", alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());

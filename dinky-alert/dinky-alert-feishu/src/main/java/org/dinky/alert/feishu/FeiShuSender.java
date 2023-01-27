@@ -19,8 +19,10 @@
 
 package org.dinky.alert.feishu;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
+import org.dinky.utils.HttpRequestUtil;
 import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.codec.binary.StringUtils;
@@ -52,12 +54,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public final class FeiShuSender {
 
     private static final Logger logger = LoggerFactory.getLogger(FeiShuSender.class);
-
-    static final String FEI_SHU_PROXY_ENABLE_REGX = "{isEnableProxy}";
-    static final String FEI_SHU_PROXY_REGX = "{proxy}";
-    static final String FEI_SHU_PORT_REGX = "{port}";
     static final String FEI_SHU_USER_REGX = "{users}";
-    static final String FEI_SHU_PASSWORD_REGX = "{password}";
     static final String MSG_RESULT_REGX = "{msg}";
     static final String MSG_TYPE_REGX = "{msg_type}";
     static final String FEI_SHU_MSG_TYPE_REGX = "{keyword}";
@@ -75,29 +72,35 @@ public final class FeiShuSender {
     private String atUserIds;
 
     FeiShuSender(Map<String, String> config) {
-        url = config.get(FeiShuConstants.WEB_HOOK);
-        msgType = config.get(FeiShuConstants.MSG_TYPE);
+        url = config.get(AlertBaseConstant.WEB_HOOK);
+        msgType = config.get(AlertBaseConstant.MSG_TYPE);
         keyword =
-                config.get(FeiShuConstants.KEY_WORD) != null
-                        ? config.get(FeiShuConstants.KEY_WORD).replace("\r\n", "")
+                config.get(AlertBaseConstant.KEYWORD) != null
+                        ? config.get(AlertBaseConstant.KEYWORD).replace("\r\n", "")
                         : "";
-        enableProxy = Boolean.valueOf(config.get(FeiShuConstants.FEI_SHU_PROXY_ENABLE));
-        secret = config.get(FeiShuConstants.SECRET);
+        enableProxy = Boolean.valueOf(config.get(AlertBaseConstant.PROXY_ENABLE));
+        secret = config.get(AlertBaseConstant.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {
-            proxy = config.get(FeiShuConstants.FEI_SHU_PROXY);
-            port = Integer.parseInt(config.get(FeiShuConstants.FEI_SHU_PORT));
-            user = config.get(FeiShuConstants.FEI_SHU_USER);
-            password = config.get(FeiShuConstants.FEI_SHU_PASSWORD);
+            proxy = config.get(AlertBaseConstant.PROXY);
+            port = Integer.parseInt(config.get(AlertBaseConstant.PORT));
+            user = config.get(AlertBaseConstant.USER);
+            password = config.get(AlertBaseConstant.PASSWORD);
         }
-        atAll = Boolean.valueOf(config.get(FeiShuConstants.AT_ALL));
+        atAll = Boolean.valueOf(config.get(AlertBaseConstant.AT_ALL));
         if (Boolean.FALSE.equals(atAll)) {
-            atUserIds = config.get(FeiShuConstants.AT_USERS);
+            atUserIds = config.get(AlertBaseConstant.AT_USERS);
         }
     }
 
+    /** parse json to template
+     *
+     * @param title
+     * @param content
+     * @return
+     */
     private String toJsonSendMsg(String title, String content) {
         String jsonResult = "";
-        byte[] byt = StringUtils.getBytesUtf8(formatContent(title, content));
+        byte[] byt = StringUtils.getBytesUtf8(generateSendMsg(title, content));
         String contentResult = StringUtils.newStringUtf8(byt);
         String userIdsToText =
                 mkUserIds(
@@ -106,14 +109,14 @@ public final class FeiShuSender {
                                 : atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
             jsonResult =
-                    FeiShuConstants.FEI_SHU_TEXT_TEMPLATE
+                    AlertBaseConstant.FEI_SHU_TEXT_TEMPLATE
                             .replace(MSG_TYPE_REGX, msgType)
                             .replace(MSG_RESULT_REGX, contentResult)
                             .replace(FEI_SHU_USER_REGX, userIdsToText)
                             .replaceAll("/n", "\\\\n");
         } else {
             jsonResult =
-                    FeiShuConstants.FEI_SHU_POST_TEMPLATE
+                    AlertBaseConstant.FEI_SHU_POST_TEMPLATE
                             .replace(MSG_TYPE_REGX, msgType)
                             .replace(FEI_SHU_MSG_TYPE_REGX, keyword)
                             .replace(MSG_RESULT_REGX, contentResult)
@@ -123,6 +126,11 @@ public final class FeiShuSender {
         return jsonResult;
     }
 
+    /** Generate AtUsers
+     *
+     * @param users
+     * @return
+     */
     private String mkUserIds(String users) {
         String userIdsToText = "";
         String[] userList = users.split(",");
@@ -143,7 +151,12 @@ public final class FeiShuSender {
         return userIdsToText;
     }
 
-    public static AlertResult checkSendFeiShuSendMsgResult(String result) {
+    /**
+     *  checkSendFeiShuSendMsgResult
+     * @param result
+     * @return
+     */
+    public static AlertResult checkSendMsgResult(String result) {
         AlertResult alertResult = new AlertResult();
         alertResult.setSuccess(false);
 
@@ -175,14 +188,21 @@ public final class FeiShuSender {
         return alertResult;
     }
 
-    public static String formatContent(String title, String content) {
+    /**
+     * Generate send msg
+     * @param title
+     * @param content
+     * @return
+     */
+    public static String generateSendMsg(String title, String content) {
         List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
         if (null == mapSendResultItemsList || mapSendResultItemsList.isEmpty()) {
             logger.error("itemsList is null");
             throw new RuntimeException("itemsList is null");
         }
         StringBuilder contents = new StringBuilder(100);
-        contents.append(String.format("`%s` %s", title, FeiShuConstants.MARKDOWN_ENTER));
+        contents.append(
+                String.format("`%s` %s", title, AlertBaseConstant.MARKDOWN_QUOTE_RIGHT_TAG));
         for (LinkedHashMap mapItems : mapSendResultItemsList) {
             Set<Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Entry<String, Object>> iterator = entries.iterator();
@@ -190,19 +210,26 @@ public final class FeiShuSender {
                 Map.Entry<String, Object> entry = iterator.next();
                 String key = entry.getKey();
                 String value = entry.getValue().toString();
-                contents.append(FeiShuConstants.MARKDOWN_QUOTE);
-                contents.append(key + "：" + value).append(FeiShuConstants.MARKDOWN_ENTER);
+                contents.append(AlertBaseConstant.MARKDOWN_QUOTE_RIGHT_TAG);
+                contents.append(key + "：" + value)
+                        .append(AlertBaseConstant.MARKDOWN_ENTER_BACK_SLASH);
             }
             return contents.toString();
         }
         return null;
     }
 
+    /**
+     *  main send msg
+     * @param title
+     * @param content
+     * @return AlertResult
+     */
     public AlertResult send(String title, String content) {
         AlertResult alertResult;
         try {
             String resp = sendMsg(title, content);
-            return checkSendFeiShuSendMsgResult(resp);
+            return checkSendMsgResult(resp);
         } catch (Exception e) {
             logger.info("send fei shu alert msg  exception : {}", e.getMessage());
             alertResult = new AlertResult();
@@ -212,6 +239,13 @@ public final class FeiShuSender {
         return alertResult;
     }
 
+    /**
+     * send msg
+     * @param title
+     * @param content
+     * @return
+     * @throws IOException
+     */
     private String sendMsg(String title, String content) throws IOException {
 
         String msgToJson = toJsonSendMsg(title, content);

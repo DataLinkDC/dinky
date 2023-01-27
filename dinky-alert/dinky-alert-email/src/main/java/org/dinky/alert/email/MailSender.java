@@ -21,11 +21,13 @@ package org.dinky.alert.email;
 
 import static java.util.Objects.requireNonNull;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertException;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.alert.email.template.AlertTemplate;
 import org.dinky.alert.email.template.DefaultHTMLTemplate;
+import org.dinky.utils.ExcelUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -87,48 +89,49 @@ public final class MailSender {
     private String xlsFilePath;
 
     public MailSender(Map<String, String> config) {
-        String receiversConfig = config.get(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS);
+        String receiversConfig = config.get(AlertBaseConstant.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS);
         if (receiversConfig == null || "".equals(receiversConfig)) {
             throw new AlertException(
-                    EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
+                    AlertBaseConstant.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
         }
 
         receivers = Arrays.asList(receiversConfig.split(","));
 
-        String receiverCcsConfig = config.get(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS);
+        String receiverCcsConfig =
+                config.get(AlertBaseConstant.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS);
 
         receiverCcs = new ArrayList<>();
         if (receiverCcsConfig != null && !"".equals(receiverCcsConfig)) {
             receiverCcs.addAll(Arrays.asList(receiverCcsConfig.split(",")));
         }
 
-        mailSmtpHost = config.get(EmailConstants.NAME_MAIL_SMTP_HOST);
-        requireNonNull(mailSmtpHost, EmailConstants.NAME_MAIL_SMTP_HOST + mustNotNull);
+        mailSmtpHost = config.get(AlertBaseConstant.NAME_MAIL_SMTP_HOST);
+        requireNonNull(mailSmtpHost, AlertBaseConstant.NAME_MAIL_SMTP_HOST + mustNotNull);
 
-        mailSmtpPort = config.get(EmailConstants.NAME_MAIL_SMTP_PORT);
-        requireNonNull(mailSmtpPort, EmailConstants.NAME_MAIL_SMTP_PORT + mustNotNull);
+        mailSmtpPort = config.get(AlertBaseConstant.NAME_MAIL_SMTP_PORT);
+        requireNonNull(mailSmtpPort, AlertBaseConstant.NAME_MAIL_SMTP_PORT + mustNotNull);
 
-        mailSenderNickName = config.get(EmailConstants.NAME_MAIL_SENDER);
-        requireNonNull(mailSenderNickName, EmailConstants.NAME_MAIL_SENDER + mustNotNull);
+        mailSenderNickName = config.get(AlertBaseConstant.NAME_MAIL_SENDER);
+        requireNonNull(mailSenderNickName, AlertBaseConstant.NAME_MAIL_SENDER + mustNotNull);
 
-        enableSmtpAuth = config.get(EmailConstants.NAME_MAIL_SMTP_AUTH);
+        enableSmtpAuth = config.get(AlertBaseConstant.NAME_MAIL_SMTP_AUTH);
 
-        mailUser = config.get(EmailConstants.NAME_MAIL_USER);
-        requireNonNull(mailUser, EmailConstants.NAME_MAIL_USER + mustNotNull);
+        mailUser = config.get(AlertBaseConstant.NAME_MAIL_USER);
+        requireNonNull(mailUser, AlertBaseConstant.NAME_MAIL_USER + mustNotNull);
 
-        mailPasswd = config.get(EmailConstants.NAME_MAIL_PASSWD);
-        requireNonNull(mailPasswd, EmailConstants.NAME_MAIL_PASSWD + mustNotNull);
+        mailPasswd = config.get(AlertBaseConstant.NAME_MAIL_PASSWD);
+        requireNonNull(mailPasswd, AlertBaseConstant.NAME_MAIL_PASSWD + mustNotNull);
 
-        mailUseStartTLS = config.get(EmailConstants.NAME_MAIL_SMTP_STARTTLS_ENABLE);
+        mailUseStartTLS = config.get(AlertBaseConstant.NAME_MAIL_SMTP_STARTTLS_ENABLE);
 
-        mailUseSSL = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_ENABLE);
+        mailUseSSL = config.get(AlertBaseConstant.NAME_MAIL_SMTP_SSL_ENABLE);
 
-        sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
+        sslTrust = config.get(AlertBaseConstant.NAME_MAIL_SMTP_SSL_TRUST);
 
-        showType = config.get(EmailConstants.NAME_SHOW_TYPE);
-        requireNonNull(showType, EmailConstants.NAME_SHOW_TYPE + mustNotNull);
+        showType = config.get(AlertBaseConstant.MSG_SHOW_TYPE);
+        requireNonNull(showType, AlertBaseConstant.MSG_SHOW_TYPE + mustNotNull);
 
-        xlsFilePath = config.get(EmailConstants.XLS_FILE_PATH);
+        xlsFilePath = config.get(AlertBaseConstant.XLS_FILE_PATH);
         if (StringUtils.isBlank(xlsFilePath)) {
             xlsFilePath = "/tmp/xls";
         }
@@ -176,7 +179,7 @@ public final class MailSender {
                 Session session = getSession();
                 email.setMailSession(session);
                 email.setFrom(mailUser, mailSenderNickName);
-                email.setCharset(EmailConstants.UTF_8);
+                email.setCharset(AlertBaseConstant.UTF_8);
                 if (CollectionUtils.isNotEmpty(receivers)) {
                     // receivers mail
                     for (String receiver : receivers) {
@@ -203,7 +206,7 @@ public final class MailSender {
                         (showType.equals(ShowType.ATTACHMENT.getValue())
                                 ? "Please see the attachment "
                                         + title
-                                        + EmailConstants.EXCEL_SUFFIX_XLSX
+                                        + AlertBaseConstant.EXCEL_SUFFIX_XLSX
                                 : htmlTable(title, content, false));
 
                 attachment(title, content, partContent);
@@ -292,26 +295,26 @@ public final class MailSender {
         CommandMap.setDefaultCommandMap(mc);
 
         Properties props = new Properties();
-        props.setProperty(EmailConstants.MAIL_SMTP_HOST, mailSmtpHost);
-        props.setProperty(EmailConstants.MAIL_SMTP_PORT, mailSmtpPort);
+        props.setProperty(AlertBaseConstant.MAIL_SMTP_HOST, mailSmtpHost);
+        props.setProperty(AlertBaseConstant.MAIL_SMTP_PORT, mailSmtpPort);
 
         if (StringUtils.isNotEmpty(enableSmtpAuth)) {
-            props.setProperty(EmailConstants.MAIL_SMTP_AUTH, enableSmtpAuth);
+            props.setProperty(AlertBaseConstant.MAIL_SMTP_AUTH, enableSmtpAuth);
         }
         if (StringUtils.isNotEmpty(mailProtocol)) {
-            props.setProperty(EmailConstants.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
+            props.setProperty(AlertBaseConstant.MAIL_TRANSPORT_PROTOCOL, mailProtocol);
         }
 
         if (StringUtils.isNotEmpty(mailUseSSL)) {
-            props.setProperty(EmailConstants.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
+            props.setProperty(AlertBaseConstant.MAIL_SMTP_SSL_ENABLE, mailUseSSL);
         }
 
         if (StringUtils.isNotEmpty(mailUseStartTLS)) {
-            props.setProperty(EmailConstants.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
+            props.setProperty(AlertBaseConstant.MAIL_SMTP_STARTTLS_ENABLE, mailUseStartTLS);
         }
 
         if (StringUtils.isNotEmpty(sslTrust)) {
-            props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
+            props.setProperty(AlertBaseConstant.MAIL_SMTP_SSL_TRUST, sslTrust);
         }
 
         Authenticator auth =
@@ -346,15 +349,15 @@ public final class MailSender {
         MimeMultipart partList = new MimeMultipart();
         // set signature
         MimeBodyPart part1 = new MimeBodyPart();
-        part1.setContent(partContent, EmailConstants.TEXT_HTML_CHARSET_UTF_8);
+        part1.setContent(partContent, AlertBaseConstant.TEXT_HTML_CHARSET_UTF_8);
         // set attach file
         MimeBodyPart part2 = new MimeBodyPart();
         File file =
                 new File(
                         xlsFilePath
-                                + EmailConstants.SINGLE_SLASH
+                                + AlertBaseConstant.SINGLE_SLASH
                                 + title
-                                + EmailConstants.EXCEL_SUFFIX_XLSX);
+                                + AlertBaseConstant.EXCEL_SUFFIX_XLSX);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
@@ -365,7 +368,7 @@ public final class MailSender {
         part2.attachFile(file);
         part2.setFileName(
                 MimeUtility.encodeText(
-                        title + EmailConstants.EXCEL_SUFFIX_XLSX, EmailConstants.UTF_8, "B"));
+                        title + AlertBaseConstant.EXCEL_SUFFIX_XLSX, AlertBaseConstant.UTF_8, "B"));
         // add components to collection
         partList.addBodyPart(part1);
         partList.addBodyPart(part2);

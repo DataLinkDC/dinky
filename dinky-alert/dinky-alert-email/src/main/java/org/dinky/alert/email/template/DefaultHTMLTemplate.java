@@ -21,8 +21,8 @@ package org.dinky.alert.email.template;
 
 import static java.util.Objects.requireNonNull;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.ShowType;
-import org.dinky.alert.email.EmailConstants;
 import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.lang3.StringUtils;
@@ -71,8 +71,8 @@ public class DefaultHTMLTemplate implements AlertTemplate {
 
         if (StringUtils.isNotEmpty(content)) {
             List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
-            if (!showAll && mapItemsList.size() > EmailConstants.NUMBER_1000) {
-                mapItemsList = mapItemsList.subList(0, EmailConstants.NUMBER_1000);
+            if (!showAll && mapItemsList.size() > AlertBaseConstant.NUMBER_1000) {
+                mapItemsList = mapItemsList.subList(0, AlertBaseConstant.NUMBER_1000);
             }
 
             StringBuilder contents = new StringBuilder(200);
@@ -85,20 +85,20 @@ public class DefaultHTMLTemplate implements AlertTemplate {
 
                 Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
 
-                StringBuilder t = new StringBuilder(EmailConstants.TR);
-                StringBuilder cs = new StringBuilder(EmailConstants.TR);
+                StringBuilder t = new StringBuilder(AlertBaseConstant.TR);
+                StringBuilder cs = new StringBuilder(AlertBaseConstant.TR);
                 while (iterator.hasNext()) {
 
                     Map.Entry<String, Object> entry = iterator.next();
-                    t.append(EmailConstants.TH)
+                    t.append(AlertBaseConstant.TH)
                             .append(entry.getKey())
-                            .append(EmailConstants.TH_END);
-                    cs.append(EmailConstants.TD)
+                            .append(AlertBaseConstant.TH_END);
+                    cs.append(AlertBaseConstant.TD)
                             .append(entry.getValue())
-                            .append(EmailConstants.TD_END);
+                            .append(AlertBaseConstant.TD_END);
                 }
-                t.append(EmailConstants.TR_END);
-                cs.append(EmailConstants.TR_END);
+                t.append(AlertBaseConstant.TR_END);
+                cs.append(AlertBaseConstant.TR_END);
                 if (flag) {
                     title = t.toString();
                 }
@@ -123,31 +123,31 @@ public class DefaultHTMLTemplate implements AlertTemplate {
 
         if (StringUtils.isNotEmpty(content)) {
             List<LinkedHashMap> linkedHashMaps = JSONUtil.toList(content, LinkedHashMap.class);
-            if (linkedHashMaps.size() > EmailConstants.NUMBER_1000) {
-                linkedHashMaps = linkedHashMaps.subList(0, EmailConstants.NUMBER_1000);
+            if (linkedHashMaps.size() > AlertBaseConstant.NUMBER_1000) {
+                linkedHashMaps = linkedHashMaps.subList(0, AlertBaseConstant.NUMBER_1000);
             }
             stringBuilder
-                    .append(EmailConstants.TR)
-                    .append(EmailConstants.TH_COLSPAN)
+                    .append(AlertBaseConstant.TR)
+                    .append(AlertBaseConstant.TH_COLSPAN)
                     .append(title)
-                    .append(EmailConstants.TH_END)
-                    .append(EmailConstants.TR_END);
+                    .append(AlertBaseConstant.TH_END)
+                    .append(AlertBaseConstant.TR_END);
             for (LinkedHashMap<String, Object> mapItems : linkedHashMaps) {
                 Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
                 Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
 
                 while (iterator.hasNext()) {
                     Map.Entry<String, Object> entry = iterator.next();
-                    stringBuilder.append(EmailConstants.TR);
+                    stringBuilder.append(AlertBaseConstant.TR);
                     stringBuilder
-                            .append(EmailConstants.TD)
+                            .append(AlertBaseConstant.TD)
                             .append(entry.getKey())
-                            .append(EmailConstants.TD_END);
+                            .append(AlertBaseConstant.TD_END);
                     stringBuilder
-                            .append(EmailConstants.TD)
+                            .append(AlertBaseConstant.TD)
                             .append(entry.getValue())
-                            .append(EmailConstants.TD_END);
-                    stringBuilder.append(EmailConstants.TR_END);
+                            .append(AlertBaseConstant.TD_END);
+                    stringBuilder.append(AlertBaseConstant.TR_END);
                 }
             }
             return getMessageFromHtmlTemplate(title, stringBuilder.toString());
@@ -168,9 +168,9 @@ public class DefaultHTMLTemplate implements AlertTemplate {
         String htmlTableThead =
                 StringUtils.isEmpty(title) ? "" : String.format("<thead>%s</thead>%n", title);
 
-        return EmailConstants.HTML_HEADER_PREFIX
+        return AlertBaseConstant.HTML_HEADER_PREFIX
                 + htmlTableThead
                 + content
-                + EmailConstants.TABLE_BODY_HTML_TAIL;
+                + AlertBaseConstant.TABLE_BODY_HTML_TAIL;
     }
 }

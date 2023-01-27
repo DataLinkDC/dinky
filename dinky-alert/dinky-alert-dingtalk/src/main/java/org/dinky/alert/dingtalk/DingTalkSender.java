@@ -19,6 +19,7 @@
 
 package org.dinky.alert.dingtalk;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.alert.ShowType;
@@ -82,22 +83,28 @@ public class DingTalkSender {
     private String password;
 
     DingTalkSender(Map<String, String> config) {
-        url = config.get(DingTalkConstants.WEB_HOOK);
-        keyword = config.get(DingTalkConstants.KEYWORD);
-        secret = config.get(DingTalkConstants.SECRET);
-        msgType = config.get(DingTalkConstants.MSG_TYPE);
-        atMobiles = config.get(DingTalkConstants.AT_MOBILES);
-        atUserIds = config.get(DingTalkConstants.AT_USERIDS);
-        atAll = Boolean.valueOf(config.get(DingTalkConstants.AT_ALL));
-        enableProxy = Boolean.valueOf(config.get(DingTalkConstants.PROXY_ENABLE));
+        url = config.get(AlertBaseConstant.WEB_HOOK);
+        keyword = config.get(AlertBaseConstant.KEYWORD);
+        secret = config.get(AlertBaseConstant.SECRET);
+        msgType = config.get(AlertBaseConstant.MSG_TYPE);
+        atMobiles = config.get(AlertBaseConstant.AT_MOBILES);
+        atUserIds = config.get(AlertBaseConstant.AT_USERIDS);
+        atAll = Boolean.valueOf(config.get(AlertBaseConstant.AT_ALL));
+        enableProxy = Boolean.valueOf(config.get(AlertBaseConstant.PROXY_ENABLE));
         if (Boolean.TRUE.equals(enableProxy)) {
-            port = Integer.parseInt(config.get(DingTalkConstants.PORT));
-            proxy = config.get(DingTalkConstants.PROXY);
-            user = config.get(DingTalkConstants.USER);
-            password = config.get(DingTalkConstants.PASSWORD);
+            port = Integer.parseInt(config.get(AlertBaseConstant.PORT));
+            proxy = config.get(AlertBaseConstant.PROXY);
+            user = config.get(AlertBaseConstant.USER);
+            password = config.get(AlertBaseConstant.PASSWORD);
         }
     }
 
+    /** send msg of main
+     *
+     * @param title ： send msg title
+     * @param content： send msg content
+     * @return AlertResult
+     */
     public AlertResult send(String title, String content) {
         AlertResult alertResult;
         try {
@@ -150,12 +157,18 @@ public class DingTalkSender {
         }
     }
 
+    /** Generate Msg of parse Json
+     *
+     * @param title
+     * @param content
+     * @return String
+     */
     private String generateMsgJson(String title, String content) {
         if (Asserts.isNullString(msgType)) {
             msgType = ShowType.TEXT.getValue();
         }
         Map<String, Object> items = new HashMap<>();
-        items.put("msgtype", msgType);
+        items.put(AlertBaseConstant.MSG_SHOW_TYPE, msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
         if (ShowType.MARKDOWN.getValue().equals(msgType)) {
@@ -167,6 +180,12 @@ public class DingTalkSender {
         return JSONUtil.toJsonString(items);
     }
 
+    /**  Generate Text Msg
+     *
+     * @param title
+     * @param content
+     * @param text
+     */
     private void generateTextMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
@@ -177,6 +196,12 @@ public class DingTalkSender {
         text.put("content", txt);
     }
 
+    /** Generate Markdown Msg
+     *
+     * @param title
+     * @param content
+     * @param text
+     */
     private void generateMarkdownMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder("# ");
         if (Asserts.isNotNullString(keyword)) {
@@ -209,12 +234,12 @@ public class DingTalkSender {
     }
 
     /**
-     * 公共生成 markdown 和 text 消息
+     * Generate markdown and text msg of public
      *
-     * @param title 标题
-     * @param content 内容
-     * @param builder 拼接字符串
-     * @return
+     * @param title
+     * @param content
+     * @param builder
+     * @return String
      */
     private String genrateResultMsg(String title, String content, StringBuilder builder) {
         List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
@@ -227,14 +252,14 @@ public class DingTalkSender {
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
                     new StringBuilder(
-                            String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER));
+                            String.format("`%s`%s", title, AlertBaseConstant.MARKDOWN_ENTER_WRAP));
 
             while (iterator.hasNext()) {
 
                 Map.Entry<String, Object> entry = iterator.next();
-                t.append(DingTalkConstants.MARKDOWN_QUOTE);
+                t.append(AlertBaseConstant.MARKDOWN_QUOTE_MIDDLE_LINE);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
-                t.append(DingTalkConstants.MARKDOWN_ENTER);
+                t.append(AlertBaseConstant.MARKDOWN_ENTER_WRAP);
             }
             builder.append(t);
         }
@@ -243,6 +268,10 @@ public class DingTalkSender {
         return txt;
     }
 
+    /** generate Signed Url of SHA256
+     *
+     * @return String
+     */
     private String generateSignedUrl() {
         Long timestamp = System.currentTimeMillis();
         String stringToSign = timestamp + "\n" + secret;
@@ -251,13 +280,17 @@ public class DingTalkSender {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
+            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), AlertBaseConstant.UTF_8);
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }
         return url + "&timestamp=" + timestamp + "&sign=" + sign;
     }
 
+    /** Set Msg AtUsers
+     *
+     * @param items
+     */
     private void setMsgAt(Map<String, Object> items) {
         Map<String, Object> at = new HashMap<>();
         String[] atMobileArray =
@@ -275,6 +308,11 @@ public class DingTalkSender {
         items.put("at", at);
     }
 
+    /** Check Msg Result
+     *
+     * @param result
+     * @return
+     */
     private AlertResult checkMsgResult(String result) {
         AlertResult alertResult = new AlertResult();
         alertResult.setSuccess(false);

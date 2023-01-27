@@ -17,10 +17,9 @@
  *
  */
 
-package org.dinky.alert.email;
+package org.dinky.utils;
 
 import org.dinky.alert.AlertException;
-import org.dinky.utils.JSONUtil;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.poi.ss.usermodel.Cell;

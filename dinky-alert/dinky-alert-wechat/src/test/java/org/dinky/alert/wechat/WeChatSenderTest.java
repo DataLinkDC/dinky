@@ -19,6 +19,7 @@
 
 package org.dinky.alert.wechat;
 
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 
@@ -52,19 +53,20 @@ public class WeChatSenderTest {
     @Before
     public void initWeChatConfig() {
         // Just for this test, I will delete these configurations before this PR is merged
-        weChatConfig.put(WeChatConstants.AGENT_ID, "AGENT_ID");
-        weChatConfig.put(WeChatConstants.SECRET, "SECRET");
-        weChatConfig.put(WeChatConstants.CORP_ID, "CORP_ID");
-        weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
+        weChatConfig.put(AlertBaseConstant.AGENT_ID, "AGENT_ID");
+        weChatConfig.put(AlertBaseConstant.SECRET, "SECRET");
+        weChatConfig.put(AlertBaseConstant.CORP_ID, "CORP_ID");
+        weChatConfig.put(AlertBaseConstant.CHARSET, "UTF-8");
         weChatConfig.put(
-                WeChatConstants.USER_SEND_MSG,
+                AlertBaseConstant.USER_SEND_MSG,
                 "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
                         + ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}");
-        weChatConfig.put(WeChatConstants.USERS, "all");
-        weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
+        weChatConfig.put(AlertBaseConstant.AT_USERS, "all");
+        weChatConfig.put(AlertBaseConstant.TEAM_SEND_MSG, "msg");
         weChatConfig.put(
-                WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
-        weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
+                AlertBaseConstant.MSG_SHOW_TYPE,
+                ShowType.MARKDOWN.getValue()); // default is "table"
+        weChatConfig.put(AlertBaseConstant.SEND_TYPE, WeChatType.APP.getValue());
     }
 
     @Ignore
@@ -78,7 +80,7 @@ public class WeChatSenderTest {
     @Ignore
     @Test
     public void testSendAPPTextMsg() {
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
+        weChatConfig.put(AlertBaseConstant.MSG_SHOW_TYPE, ShowType.TEXT.getValue());
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("Dinky企微APP TEXT方式 告警测试", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
@@ -88,12 +90,13 @@ public class WeChatSenderTest {
     @Test
     public void testChatMarkDownMsg() throws IOException {
         weChatConfig.put(
-                WeChatConstants.WEBHOOK,
+                AlertBaseConstant.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
-        weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());
-        weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  MarkDown方式 告警测试");
+        weChatConfig.put(AlertBaseConstant.SEND_TYPE, WeChatType.CHAT.getValue());
+        weChatConfig.put(
+                AlertBaseConstant.USER_SEND_MSG, AlertBaseConstant.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(AlertBaseConstant.MSG_SHOW_TYPE, ShowType.MARKDOWN.getValue());
+        weChatConfig.put(AlertBaseConstant.KEYWORD, "Dinky企微WEBHOOK  MarkDown方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
@@ -103,12 +106,13 @@ public class WeChatSenderTest {
     @Test
     public void testChatTextMsg() throws IOException {
         weChatConfig.put(
-                WeChatConstants.WEBHOOK,
+                AlertBaseConstant.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=822d17a1-d6e5-43c2-a566-4846fe13396c");
-        weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
-        weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  TEXT方式 告警测试");
+        weChatConfig.put(AlertBaseConstant.SEND_TYPE, WeChatType.CHAT.getValue());
+        weChatConfig.put(
+                AlertBaseConstant.USER_SEND_MSG, AlertBaseConstant.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(AlertBaseConstant.MSG_SHOW_TYPE, ShowType.TEXT.getValue());
+        weChatConfig.put(AlertBaseConstant.KEYWORD, "Dinky企微WEBHOOK  TEXT方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());

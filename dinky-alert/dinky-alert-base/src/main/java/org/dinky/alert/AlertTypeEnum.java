@@ -19,39 +19,23 @@
 
 package org.dinky.alert;
 
-/**
- * ShowType
- *
- * @author wenmo
- * @since 2022/2/23 21:32
- */
-public enum ShowType {
-    /** markdown */
-    MARKDOWN(0, "markdown"),
-    /** text */
-    TEXT(1, "text"),
-    /** post of feishu */
-    POST(2, "post"),
-    /** table */
-    TABLE(0, "table"),
-    /** attachment */
-    ATTACHMENT(3, "attachment"),
-    /** table and attachment */
-    TABLE_ATTACHMENT(4, "table attachment");
+public enum AlertTypeEnum {
+    /** DingTalk */
+    DINGTALK("DingTalk"),
+    /** FeiShu */
+    FEISHU("FeiShu"),
+    /** Email */
+    EMAIL("Email"),
+    /** FeiShu */
+    WECHAT("FeiShu");
 
-    private int code;
-    private String value;
+    private String typeName;
 
-    ShowType(int code, String value) {
-        this.code = code;
-        this.value = value;
+    AlertTypeEnum(String typeName) {
+        this.typeName = typeName;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getValue() {
-        return value;
+    public String getTypeName() {
+        return typeName;
     }
 }

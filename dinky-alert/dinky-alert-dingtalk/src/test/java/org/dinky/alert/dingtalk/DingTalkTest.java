@@ -20,6 +20,7 @@
 package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.Alert;
+import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
@@ -63,15 +64,15 @@ public class DingTalkTest {
         String exceptionUrl = "[点击查看该任务的异常日志](http://cdh1:8081/#/job/" + uuid + "/exceptions)";
         alertMsg.setExceptionUrl(exceptionUrl);
 
-        config.put(DingTalkConstants.KEYWORD, "Dinky-Fink 钉钉告警测试");
-        config.put(DingTalkConstants.WEB_HOOK, "url");
-        config.put(DingTalkConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
-        config.put(DingTalkConstants.AT_ALL, "true");
+        config.put(AlertBaseConstant.KEYWORD, "Dinky-Fink 钉钉告警测试");
+        config.put(AlertBaseConstant.WEB_HOOK, "url");
+        config.put(AlertBaseConstant.MSG_TYPE, ShowType.MARKDOWN.getValue());
+        config.put(AlertBaseConstant.AT_ALL, "true");
 
-        config.put(DingTalkConstants.PROXY_ENABLE, "false");
-        config.put(DingTalkConstants.PASSWORD, "password");
-        config.put(DingTalkConstants.PORT, "9988");
-        config.put(DingTalkConstants.USER, "user1,user2");
+        config.put(AlertBaseConstant.PROXY_ENABLE, "false");
+        config.put(AlertBaseConstant.PASSWORD, "password");
+        config.put(AlertBaseConstant.PORT, "9988");
+        config.put(AlertBaseConstant.USER, "user1,user2");
     }
 
     @Ignore
@@ -86,7 +87,7 @@ public class DingTalkTest {
     @Ignore
     @Test
     public void sendTextMsgTest() {
-        config.put(DingTalkConstants.MSG_TYPE, ShowType.TEXT.getValue());
+        config.put(AlertBaseConstant.MSG_TYPE, ShowType.TEXT.getValue());
         AlertConfig config = AlertConfig.build("TextMsgTest", "DingTalk", DingTalkTest.config);
         Alert alert = Alert.build(config);
         AlertResult result = alert.send("Dinky钉钉告警测试", alertMsg.toString());
