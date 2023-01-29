@@ -251,11 +251,11 @@ public class DingTalkSender {
             throw new RuntimeException("itemsList is null");
         }
         for (LinkedHashMap mapItems : mapSendResultItemsList) {
+
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
-                    new StringBuilder(
-                            String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
+                    new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 

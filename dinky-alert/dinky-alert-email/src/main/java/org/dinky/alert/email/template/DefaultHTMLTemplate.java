@@ -36,10 +36,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @Author: zhumingye
- *
- */
+/** DefaultHTMLTemplate */
 public class DefaultHTMLTemplate implements AlertTemplate {
 
     public static final Logger logger = LoggerFactory.getLogger(DefaultHTMLTemplate.class);
