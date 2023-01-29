@@ -21,7 +21,6 @@ package org.dinky.alert.email;
 
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
 
 /**
  * EmailAlert
@@ -33,7 +32,7 @@ public class EmailAlert extends AbstractAlert {
 
     @Override
     public String getType() {
-        return AlertTypeEnum.EMAIL.getTypeName();
+        return EmailConstants.TYPE;
     }
 
     @Override

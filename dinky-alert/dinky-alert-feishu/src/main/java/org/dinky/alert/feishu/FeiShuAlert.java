@@ -21,7 +21,6 @@ package org.dinky.alert.feishu;
 
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
 
 /**
  * FeiShuAlert
@@ -33,7 +32,7 @@ public class FeiShuAlert extends AbstractAlert {
 
     @Override
     public String getType() {
-        return AlertTypeEnum.FEISHU.getTypeName();
+        return FeiShuConstants.TYPE;
     }
 
     @Override

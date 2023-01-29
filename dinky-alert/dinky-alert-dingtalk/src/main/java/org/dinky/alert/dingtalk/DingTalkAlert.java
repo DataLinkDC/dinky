@@ -21,7 +21,6 @@ package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
 
 /**
  * DingTalkAlert
@@ -33,7 +32,7 @@ public class DingTalkAlert extends AbstractAlert {
 
     @Override
     public String getType() {
-        return AlertTypeEnum.DINGTALK.getTypeName();
+        return DingTalkConstants.TYPE;
     }
 
     @Override

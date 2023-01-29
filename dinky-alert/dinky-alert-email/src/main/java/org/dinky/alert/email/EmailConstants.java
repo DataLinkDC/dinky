@@ -23,6 +23,8 @@ import org.dinky.alert.AlertBaseConstant;
 
 /** EmailConstants */
 public class EmailConstants extends AlertBaseConstant {
+    public static final String TYPE = "Email";
+
     /** Email base constant */
     public static final String PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receiver.name";
 

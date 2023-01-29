@@ -27,28 +27,22 @@ package org.dinky.alert;
  */
 public enum ShowType {
     /** markdown */
-    MARKDOWN(0, "markdown"),
+    MARKDOWN("markdown"),
     /** text */
-    TEXT(1, "text"),
+    TEXT("text"),
     /** post of feishu */
-    POST(2, "post"),
+    POST("post"),
     /** table */
-    TABLE(0, "table"),
+    TABLE("table"),
     /** attachment */
-    ATTACHMENT(3, "attachment"),
+    ATTACHMENT("attachment"),
     /** table and attachment */
-    TABLE_ATTACHMENT(4, "table attachment");
+    TABLE_ATTACHMENT("table attachment");
 
-    private int code;
     private String value;
 
-    ShowType(int code, String value) {
-        this.code = code;
+    ShowType(String value) {
         this.value = value;
-    }
-
-    public int getCode() {
-        return code;
     }
 
     public String getValue() {

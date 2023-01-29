@@ -23,6 +23,7 @@ import org.dinky.alert.AlertBaseConstant;
 
 /** WeChatConstants */
 public class WeChatConstants extends AlertBaseConstant {
+    public static final String TYPE = "WeChat";
     /** WeChat alert baseconstant */
     public static final String WECHAT_PUSH_URL =
             "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={token}";

@@ -21,7 +21,6 @@ package org.dinky.alert.wechat;
 
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
 
 /**
  * WeChatAlert
@@ -33,7 +32,7 @@ public class WeChatAlert extends AbstractAlert {
 
     @Override
     public String getType() {
-        return AlertTypeEnum.WECHAT.getTypeName();
+        return WeChatConstants.TYPE;
     }
 
     @Override

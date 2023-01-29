@@ -23,6 +23,8 @@ import org.dinky.alert.AlertBaseConstant;
 
 /** FeiShuConstants */
 public class FeiShuConstants extends AlertBaseConstant {
+    public static final String TYPE = "FeiShu";
+
     /** FeiShu alert baseconstant */
     public static final String FEI_SHU_TEXT_TEMPLATE =
             "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
