@@ -17,28 +17,19 @@
  *
  */
 
-package org.dinky.alert.email;
+package org.dinky.alert.feishu;
 
-import org.dinky.alert.AbstractAlert;
-import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
+import org.dinky.alert.AlertBaseConstant;
 
 /**
- * EmailAlert
- *
- * @author zhumingye
- * @date: 2022/4/2
+ * FeiShuConstants
  */
-public class EmailAlert extends AbstractAlert {
+public class FeiShuConstants extends AlertBaseConstant {
+    /** FeiShu alert baseconstant */
+    public static final String FEI_SHU_TEXT_TEMPLATE =
+            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
 
-    @Override
-    public String getType() {
-        return AlertTypeEnum.EMAIL.getTypeName();
-    }
-
-    @Override
-    public AlertResult send(String title, String content) {
-        EmailSender emailSender = new EmailSender(getConfig().getParam());
-        return emailSender.send(title, content);
-    }
+    public static final String FEI_SHU_POST_TEMPLATE =
+            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
+                    + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
 }

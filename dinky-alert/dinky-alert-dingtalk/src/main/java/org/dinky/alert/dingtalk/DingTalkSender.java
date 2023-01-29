@@ -19,7 +19,6 @@
 
 package org.dinky.alert.dingtalk;
 
-import org.dinky.alert.AlertBaseConstant;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.alert.ShowType;
@@ -83,19 +82,19 @@ public class DingTalkSender {
     private String password;
 
     DingTalkSender(Map<String, String> config) {
-        url = config.get(AlertBaseConstant.WEB_HOOK);
-        keyword = config.get(AlertBaseConstant.KEYWORD);
-        secret = config.get(AlertBaseConstant.SECRET);
-        msgType = config.get(AlertBaseConstant.MSG_TYPE);
-        atMobiles = config.get(AlertBaseConstant.AT_MOBILES);
-        atUserIds = config.get(AlertBaseConstant.AT_USERIDS);
-        atAll = Boolean.valueOf(config.get(AlertBaseConstant.AT_ALL));
-        enableProxy = Boolean.valueOf(config.get(AlertBaseConstant.PROXY_ENABLE));
+        url = config.get(DingTalkConstants.WEB_HOOK);
+        keyword = config.get(DingTalkConstants.KEYWORD);
+        secret = config.get(DingTalkConstants.SECRET);
+        msgType = config.get(DingTalkConstants.MSG_TYPE);
+        atMobiles = config.get(DingTalkConstants.AT_MOBILES);
+        atUserIds = config.get(DingTalkConstants.AT_USERIDS);
+        atAll = Boolean.valueOf(config.get(DingTalkConstants.AT_ALL));
+        enableProxy = Boolean.valueOf(config.get(DingTalkConstants.PROXY_ENABLE));
         if (Boolean.TRUE.equals(enableProxy)) {
-            port = Integer.parseInt(config.get(AlertBaseConstant.PORT));
-            proxy = config.get(AlertBaseConstant.PROXY);
-            user = config.get(AlertBaseConstant.USER);
-            password = config.get(AlertBaseConstant.PASSWORD);
+            port = Integer.parseInt(config.get(DingTalkConstants.PORT));
+            proxy = config.get(DingTalkConstants.PROXY);
+            user = config.get(DingTalkConstants.USER);
+            password = config.get(DingTalkConstants.PASSWORD);
         }
     }
 
@@ -147,7 +146,7 @@ public class DingTalkSender {
             String resp;
             try {
                 HttpEntity httpEntity = response.getEntity();
-                resp = EntityUtils.toString(httpEntity, "UTF-8");
+                resp = EntityUtils.toString(httpEntity, DingTalkConstants.CHARSET);
                 EntityUtils.consume(httpEntity);
             } finally {
                 response.close();
@@ -170,7 +169,7 @@ public class DingTalkSender {
             msgType = ShowType.TEXT.getValue();
         }
         Map<String, Object> items = new HashMap<>();
-        items.put(AlertBaseConstant.MSG_SHOW_TYPE, msgType);
+        items.put(DingTalkConstants.MSG_TYPE, msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
         if (ShowType.MARKDOWN.getValue().equals(msgType)) {
@@ -193,7 +192,7 @@ public class DingTalkSender {
         StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
             builder.append(keyword);
-            builder.append("\n");
+            builder.append(DingTalkConstants.MARKDOWN_ENTER_WRAP);
         }
         String txt = genrateResultMsg(title, content, builder);
         text.put("content", txt);
@@ -256,14 +255,14 @@ public class DingTalkSender {
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
                     new StringBuilder(
-                            String.format("`%s`%s", title, AlertBaseConstant.MARKDOWN_ENTER_WRAP));
+                            String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER_WRAP));
 
             while (iterator.hasNext()) {
 
                 Map.Entry<String, Object> entry = iterator.next();
-                t.append(AlertBaseConstant.MARKDOWN_QUOTE_MIDDLE_LINE);
+                t.append(DingTalkConstants.MARKDOWN_QUOTE_MIDDLE_LINE);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
-                t.append(AlertBaseConstant.MARKDOWN_ENTER_WRAP);
+                t.append(DingTalkConstants.MARKDOWN_ENTER_WRAP);
             }
             builder.append(t);
         }
@@ -279,15 +278,15 @@ public class DingTalkSender {
      */
     private String generateSignedUrl() {
         Long timestamp = System.currentTimeMillis();
-        String stringToSign = timestamp + "\n" + secret;
+        String stringToSign = timestamp + DingTalkConstants.MARKDOWN_ENTER_WRAP + secret;
         String sign = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
-            byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
+            mac.init(new SecretKeySpec(secret.getBytes(DingTalkConstants.CHARSET), "HmacSHA256"));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(DingTalkConstants.CHARSET));
             sign =
                     URLEncoder.encode(
-                            new String(Base64.encodeBase64(signData)), AlertBaseConstant.UTF_8);
+                            new String(Base64.encodeBase64(signData)), DingTalkConstants.CHARSET);
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }
@@ -306,12 +305,12 @@ public class DingTalkSender {
         String[] atUserArray =
                 Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
-        at.put("isAtAll", isAtAll);
+        at.put(DingTalkConstants.AT_ALL, isAtAll);
         if (atMobileArray.length > 0) {
-            at.put("atMobiles", atMobileArray);
+            at.put(DingTalkConstants.AT_MOBILES, atMobileArray);
         }
         if (atMobileArray.length > 0) {
-            at.put("atUserIds", atUserArray);
+            at.put(DingTalkConstants.AT_USERIDS, atUserArray);
         }
         items.put("at", at);
     }

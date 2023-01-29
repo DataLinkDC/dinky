@@ -17,28 +17,11 @@
  *
  */
 
-package org.dinky.alert.email;
+package org.dinky.alert.dingtalk;
 
-import org.dinky.alert.AbstractAlert;
-import org.dinky.alert.AlertResult;
-import org.dinky.alert.AlertTypeEnum;
+import org.dinky.alert.AlertBaseConstant;
 
 /**
- * EmailAlert
- *
- * @author zhumingye
- * @date: 2022/4/2
+ * DingTalkConstants
  */
-public class EmailAlert extends AbstractAlert {
-
-    @Override
-    public String getType() {
-        return AlertTypeEnum.EMAIL.getTypeName();
-    }
-
-    @Override
-    public AlertResult send(String title, String content) {
-        EmailSender emailSender = new EmailSender(getConfig().getParam());
-        return emailSender.send(title, content);
-    }
-}
+public class DingTalkConstants extends AlertBaseConstant {}

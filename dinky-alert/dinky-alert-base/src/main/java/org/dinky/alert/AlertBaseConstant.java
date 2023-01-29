@@ -22,13 +22,13 @@ package org.dinky.alert;
 /**
  * AlertBaseConstant
  *
- * @author zhumingye
  */
-public final class AlertBaseConstant {
+public class AlertBaseConstant {
 
     /** base constant */
     public static final String MARKDOWN_QUOTE_MIDDLE_LINE = "- ";
 
+    public static final String TAB = "\t";
     public static final String MARKDOWN_ENTER_WRAP = "\n";
     public static final String MARKDOWN_QUOTE_RIGHT_TAG = "> ";
     public static final String MARKDOWN_ENTER_BACK_SLASH = "/n";
@@ -47,104 +47,7 @@ public final class AlertBaseConstant {
     public static final String AT_USERS = "users";
     public static final String PASSWORD = "password";
 
-    /** Email base constant */
-    public static final String PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receiver.name";
-
-    public static final String NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receivers";
-    public static final String PLUGIN_DEFAULT_EMAIL_RECEIVERCCS = "receiverCcs";
-    public static final String NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS = "receiverCcs";
-    public static final String NAME_MAIL_PROTOCOL = "mail.protocol";
-    public static final String MAIL_SMTP_HOST = "mail.smtp.host";
-    public static final String NAME_MAIL_SMTP_HOST = "serverHost";
-    public static final String MAIL_SMTP_PORT = "mail.smtp.port";
-    public static final String NAME_MAIL_SMTP_PORT = "serverPort";
-    public static final String MAIL_SENDER = "sender.name";
-    public static final String NAME_MAIL_SENDER = "sender";
-    public static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
-    public static final String NAME_MAIL_SMTP_AUTH = "enableSmtpAuth";
-    public static final String MAIL_USER = "mail.smtp.user";
-    public static final String NAME_MAIL_USER = "User";
-    public static final String MAIL_PASSWD = "mail.smtp.passwd";
-    public static final String NAME_MAIL_PASSWD = "Password";
-    public static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
-    public static final String NAME_MAIL_SMTP_STARTTLS_ENABLE = "starttlsEnable";
-    public static final String MAIL_SMTP_SSL_ENABLE = "mail.smtp.ssl.enable";
-    public static final String NAME_MAIL_SMTP_SSL_ENABLE = "sslEnable";
-    public static final String MAIL_SMTP_SSL_TRUST = "mail.smtp.ssl.trust";
-    public static final String NAME_MAIL_SMTP_SSL_TRUST = "smtpSslTrust";
-    public static final String XLS_FILE_PATH = "xls.file.path";
-    public static final String MSG_SHOW_TYPE = "msgtype";
-    public static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
-    public static final String TEXT_HTML_CHARSET_UTF_8 = "text/html;charset=utf-8";
-    public static final int NUMBER_1000 = 1000;
-    public static final String TR = "<tr>";
-    public static final String TD = "<td>";
-    public static final String TD_END = "</td>";
-
-    public static final String TR_END = "</tr>";
-
-    public static final String TH = "<th>";
-
-    public static final String TH_COLSPAN = "<th  colspan=2 >";
-
-    public static final String TH_END = "</th>";
-
-    public static final String TAB = "\t";
-
-    public static final String LINE = "\n";
-
-    public static final String LEFT = ">";
-
-    public static final String HTML_HEADER_PREFIX =
-            "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>"
-                    + "<html>"
-                    + "<head>"
-                    + "<title>Dinky</title>"
-                    + "<meta name='Keywords' content=''>"
-                    + "<meta name='Description' content=''>"
-                    + "<style type=\"text/css\">"
-                    + "table {margin-top:0px;padding-top:0px;border:1px solid;font-size: 14px;color: #333333;border-width: 1px;border-color: #666666;border-collapse: collapse;}"
-                    + "table th {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #dedede;text-align: left;}"
-                    + "table td {border-width: 1px;padding: 8px;border-style: solid;border-color: #666666;background-color: #ffffff;text-align: left;}"
-                    + "</style>"
-                    + "</head>"
-                    + "<body style=\"margin:0;padding:0\"><table border=\"1px\" cellpadding=\"5px\" cellspacing=\"-10px\"> ";
-
-    public static final String TABLE_BODY_HTML_TAIL = "</table></body></html>";
-
-    public static final String UTF_8 = "UTF-8";
-
-    public static final String EXCEL_SUFFIX_XLSX = ".xlsx";
-
-    public static final String SINGLE_SLASH = "/";
-
-    /** FeiShu alert baseconstant */
-    public static final String FEI_SHU_TEXT_TEMPLATE =
-            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":\"{msg} {users} \" }}";
-
-    public static final String FEI_SHU_POST_TEMPLATE =
-            "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
-                    + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
-
-    /** WeChat alert baseconstant */
-    public static final String WECHAT_PUSH_URL =
-            "https://qyapi.weixin.qq.com/cgi-bin/message/send?access_token={token}";
-
-    public static final String WECHAT_APP_PUSH_URL =
-            "https://qyapi.weixin.qq.com/cgi-bin/appchat/send?access_token={token}";
-    public static final String WECHAT_TOKEN_URL =
-            "https://qyapi.weixin.qq.com/cgi-bin/gettoken?corpid={corpId}&corpsecret={secret}";
-    public static final String WECHAT_WEBHOOK_TEMPLATE =
-            "{\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg} \"}}";
-    public static final String CORP_ID = "corpId";
-    public static final String TEAM_SEND_MSG = "teamSendMsg";
-    public static final String USER_SEND_MSG =
-            "{\"touser\":\"{toUser}\",\"agentid\":{agentId},\"msgtype\":\"{msgtype}\",\"{msgtype}\":{\"content\":\"{msg}\"}}";
-    public static final String AGENT_ID = "agentId";
-    public static final String SEND_TYPE = "sendType";
-    public static final String ACCESS_TOKEN = "access_token";
-
-    private AlertBaseConstant() {
+    public AlertBaseConstant() {
         throw new UnsupportedOperationException(
                 "This is a utility class and cannot be instantiated");
     }
