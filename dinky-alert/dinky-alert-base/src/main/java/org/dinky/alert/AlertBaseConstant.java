@@ -28,6 +28,7 @@ public class AlertBaseConstant {
     public static final String TAB = "\t";
     public static final String ENTER_LINE = "\n";
     public static final String MARKDOWN_QUOTE_RIGHT_TAG = "> ";
+    public static final String MARKDOWN_QUOTE_RIGHT_TAG_WITH_SPACE = ">";
     public static final String MARKDOWN_ENTER_BACK_SLASH = "/n";
     public static final String CHARSET = "UTF-8";
     public static final String PROXY_ENABLE = "isEnableProxy";

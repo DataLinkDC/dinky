@@ -32,4 +32,6 @@ public class FeiShuConstants extends AlertBaseConstant {
     public static final String FEI_SHU_POST_TEMPLATE =
             "{\"msg_type\":\"{msg_type}\",\"content\":{\"{msg_type}\":{\"zh_cn\":{\"title\":\"{keyword}\","
                     + "\"content\":[[{\"tag\":\"text\",\"un_escape\": true,\"text\":\"{msg}\"},{users}]]}}}}";
+    public static final String SIGN_TMESTAMP = "timestamp";
+    public static final String SIGN = "sign";
 }

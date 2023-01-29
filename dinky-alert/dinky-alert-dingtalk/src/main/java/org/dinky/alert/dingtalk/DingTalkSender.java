@@ -19,6 +19,8 @@
 
 package org.dinky.alert.dingtalk;
 
+import static java.util.Objects.requireNonNull;
+
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.alert.ShowType;
@@ -85,7 +87,10 @@ public class DingTalkSender {
         url = config.get(DingTalkConstants.WEB_HOOK);
         keyword = config.get(DingTalkConstants.KEYWORD);
         secret = config.get(DingTalkConstants.SECRET);
+
         msgType = config.get(DingTalkConstants.MSG_TYPE);
+        requireNonNull(msgType, DingTalkConstants.MSG_TYPE + " must not null");
+
         atMobiles = config.get(DingTalkConstants.AT_MOBILES);
         atUserIds = config.get(DingTalkConstants.AT_USERIDS);
         atAll = Boolean.valueOf(config.get(DingTalkConstants.AT_ALL));
@@ -108,8 +113,8 @@ public class DingTalkSender {
     public AlertResult send(String title, String content) {
         AlertResult alertResult;
         try {
-            String resp = sendMsg(title, content);
-            return checkMsgResult(resp);
+            String sendMsgOfResult = buildSendMsgAndSendOfResult(title, content);
+            return checkMsgResult(sendMsgOfResult);
         } catch (Exception e) {
             logger.info("send ding talk alert msg  exception : {}", e.getMessage());
             alertResult = new AlertResult();
@@ -119,25 +124,24 @@ public class DingTalkSender {
         return alertResult;
     }
 
-    private String sendMsg(String title, String content) throws IOException {
-        String msg = generateMsgJson(title, content);
-        String httpUrl = url;
-        if (Asserts.isNotNullString(secret)) {
-            httpUrl = generateSignedUrl();
-        }
-        HttpPost httpPost = new HttpPost(httpUrl);
-        StringEntity stringEntity = new StringEntity(msg, StandardCharsets.UTF_8);
-        httpPost.setEntity(stringEntity);
-        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
+    /**
+     * 1. budild send msg 2. request send 3. return response msg
+     *
+     * @param title
+     * @param content
+     * @return
+     * @throws IOException
+     */
+    private String buildSendMsgAndSendOfResult(String title, String content) throws IOException {
+        String msg = generateMsgBody(title, content);
+
+        String httpUrl = Asserts.isNotNullString(secret) ? generateSignedUrl() : url;
+
+        HttpPost httpPost = buildHttpPost(httpUrl, msg);
+
         CloseableHttpClient httpClient;
         if (Boolean.TRUE.equals(enableProxy)) {
-            HttpHost httpProxy = new HttpHost(proxy, port);
-            CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(
-                    new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
-            httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
-            RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
-            httpPost.setConfig(rcf);
+            httpClient = getCloseableHttpClientOfProxy(httpPost);
         } else {
             httpClient = HttpClients.createDefault();
         }
@@ -158,26 +162,57 @@ public class DingTalkSender {
     }
 
     /**
-     * Generate Msg of parse Json
+     * build httpPost
+     *
+     * @param httpUrl
+     * @param msg
+     * @return HttpPost
+     */
+    private static HttpPost buildHttpPost(String httpUrl, String msg) {
+        HttpPost httpPost = new HttpPost(httpUrl);
+        StringEntity stringEntity = new StringEntity(msg, StandardCharsets.UTF_8);
+        httpPost.setEntity(stringEntity);
+        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
+        return httpPost;
+    }
+
+    /**
+     * get CloseableHttpClient Of Proxy
+     *
+     * @param httpPost
+     * @return
+     */
+    private CloseableHttpClient getCloseableHttpClientOfProxy(HttpPost httpPost) {
+        CloseableHttpClient httpClient;
+        HttpHost httpProxy = new HttpHost(proxy, port);
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(
+                new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+        httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
+        RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
+        httpPost.setConfig(rcf);
+        return httpClient;
+    }
+
+    /**
+     * Generate Msg of parse Json 1. put the msg type 2. build the msg body of send type 3. build
+     * the At User list
      *
      * @param title
      * @param content
      * @return String
      */
-    private String generateMsgJson(String title, String content) {
-        if (Asserts.isNullString(msgType)) {
-            msgType = ShowType.TEXT.getValue();
-        }
+    private String generateMsgBody(String title, String content) {
         Map<String, Object> items = new HashMap<>();
         items.put(DingTalkConstants.MSG_TYPE, msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
         if (ShowType.MARKDOWN.getValue().equals(msgType)) {
-            generateMarkdownMsg(title, content, text);
+            buildMarkdownMsg(title, content, text);
         } else {
-            generateTextMsg(title, content, text);
+            buildTextMsg(title, content, text);
         }
-        setMsgAt(items);
+        buildAtUserList(items);
         return JSONUtil.toJsonString(items);
     }
 
@@ -188,14 +223,14 @@ public class DingTalkSender {
      * @param content
      * @param text
      */
-    private void generateTextMsg(String title, String content, Map<String, Object> text) {
+    private void buildTextMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
             builder.append(keyword);
             builder.append(DingTalkConstants.ENTER_LINE);
         }
-        String txt = genrateResultMsg(title, content, builder);
-        text.put("content", txt);
+        String finalResultMsgBody = buildFinalResultMsgBody(title, content, builder);
+        text.put("content", finalResultMsgBody);
     }
 
     /**
@@ -205,7 +240,7 @@ public class DingTalkSender {
      * @param content
      * @param text
      */
-    private void generateMarkdownMsg(String title, String content, Map<String, Object> text) {
+    private void buildMarkdownMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder("# ");
         if (Asserts.isNotNullString(keyword)) {
             builder.append(" ");
@@ -231,9 +266,9 @@ public class DingTalkSender {
                             });
         }
         builder.append("\n\n");
-        String txt = genrateResultMsg(title, content, builder);
+        String finalResultMsgBody = buildFinalResultMsgBody(title, content, builder);
         text.put("title", title);
-        text.put("text", txt);
+        text.put("text", finalResultMsgBody);
     }
 
     /**
@@ -244,7 +279,7 @@ public class DingTalkSender {
      * @param builder
      * @return String
      */
-    private String genrateResultMsg(String title, String content, StringBuilder builder) {
+    private String buildFinalResultMsgBody(String title, String content, StringBuilder builder) {
         List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
         if (null == mapSendResultItemsList || mapSendResultItemsList.isEmpty()) {
             logger.error("itemsList is null");
@@ -266,9 +301,9 @@ public class DingTalkSender {
             }
             builder.append(t);
         }
-        byte[] byt = StringUtils.getBytesUtf8(builder.toString());
-        String txt = StringUtils.newStringUtf8(byt);
-        return txt;
+        byte[] msgOfBytes = StringUtils.getBytesUtf8(builder.toString());
+        String finalContent = StringUtils.newStringUtf8(msgOfBytes);
+        return finalContent;
     }
 
     /**
@@ -298,7 +333,7 @@ public class DingTalkSender {
      *
      * @param items
      */
-    private void setMsgAt(Map<String, Object> items) {
+    private void buildAtUserList(Map<String, Object> items) {
         Map<String, Object> at = new HashMap<>();
         String[] atMobileArray =
                 Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];

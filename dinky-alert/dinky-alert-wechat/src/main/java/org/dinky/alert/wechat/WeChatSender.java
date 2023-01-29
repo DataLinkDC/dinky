@@ -72,7 +72,7 @@ public class WeChatSender {
     private final String weChatTokenUrlReplace;
     private final String weChatToken;
     private final String sendType;
-    private static String showType;
+    private static String msgType;
     private final String webhookUrl;
     private final String keyWord;
     private final Boolean atAll;
@@ -101,8 +101,10 @@ public class WeChatSender {
         String weChatTokenUrl =
                 sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.WECHAT_TOKEN_URL;
         weChatUserSendMsg = WeChatConstants.WECHAT_APP_TEMPLATE;
-        showType = config.get(WeChatConstants.MSG_TYPE);
-        requireNonNull(showType, WeChatConstants.MSG_TYPE + " must not null");
+
+        msgType = config.get(WeChatConstants.MSG_TYPE);
+        requireNonNull(msgType, WeChatConstants.MSG_TYPE + " must not null");
+
         webhookUrl = config.get(WeChatConstants.WEB_HOOK);
         keyWord = config.get(WeChatConstants.KEYWORD);
         if (sendType.equals(WeChatType.CHAT.getValue())) {
@@ -117,43 +119,19 @@ public class WeChatSender {
 
     public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
-        List<String> userList = new ArrayList<>();
-        if (Asserts.isNotNullString(weChatUsers)) {
-            userList = Arrays.asList(weChatUsers.split(","));
-        }
-        if (atAll) {
-            userList.add("all");
-        }
 
-        String data = markdownByAlert(title, content, userList);
+        List<String> userList = getUserList();
 
-        String msg = "";
-        if (sendType.equals(WeChatType.APP.getValue())) {
-            msg =
-                    weChatUserSendMsg
-                            .replace(USER_REG_EXP, generateUserList(userList))
-                            .replace(AGENT_ID_REG_EXP, weChatAgentId)
-                            .replace(MSG_REG_EXP, data)
-                            .replace(SHOW_TYPE_REGEX, showType);
-        } else {
-            msg =
-                    WeChatConstants.WECHAT_WEBHOOK_TEMPLATE
-                            .replace(SHOW_TYPE_REGEX, showType)
-                            .replace(MSG_REG_EXP, data);
-        }
+        String sendMsgOfResult = buildFinalResultMsgBody(title, content, userList, sendType);
+
+        String msg = replaceParamsToBuildSendMsgTemplate(userList, sendMsgOfResult);
 
         if (sendType.equals(WeChatType.APP.getValue()) && Asserts.isNullString(weChatToken)) {
             alertResult.setMessage("send we chat alert fail,get weChat token error");
             alertResult.setSuccess(false);
             return alertResult;
         }
-        String enterpriseWeChatPushUrlReplace = "";
-        if (sendType.equals(WeChatType.APP.getValue())) {
-            enterpriseWeChatPushUrlReplace =
-                    WeChatConstants.WECHAT_PUSH_URL.replace(TOKEN_REGEX, weChatToken);
-        } else if (sendType.equals(WeChatType.CHAT.getValue())) {
-            enterpriseWeChatPushUrlReplace = webhookUrl;
-        }
+        String enterpriseWeChatPushUrlReplace = buildPushUrl();
         try {
             return checkWeChatSendMsgResult(post(enterpriseWeChatPushUrlReplace, msg));
         } catch (Exception e) {
@@ -162,6 +140,52 @@ public class WeChatSender {
             alertResult.setSuccess(false);
         }
         return alertResult;
+    }
+
+    /**
+     * build wechat push url to send msg template
+     *
+     * @return
+     */
+    private String buildPushUrl() {
+        if (sendType.equals(WeChatType.APP.getValue())) {
+            return WeChatConstants.WECHAT_PUSH_URL.replace(TOKEN_REGEX, weChatToken);
+        } else {
+            return webhookUrl;
+        }
+    }
+
+    /**
+     * replace params to build send msg template
+     *
+     * @param userList
+     * @param sendMsgOfResult
+     * @return
+     */
+    private String replaceParamsToBuildSendMsgTemplate(
+            List<String> userList, String sendMsgOfResult) {
+        if (sendType.equals(WeChatType.APP.getValue())) {
+            return weChatUserSendMsg
+                    .replace(USER_REG_EXP, buildAtUserList(userList))
+                    .replace(AGENT_ID_REG_EXP, weChatAgentId)
+                    .replace(MSG_REG_EXP, sendMsgOfResult)
+                    .replace(SHOW_TYPE_REGEX, msgType);
+        } else {
+            return WeChatConstants.WECHAT_WEBHOOK_TEMPLATE
+                    .replace(SHOW_TYPE_REGEX, msgType)
+                    .replace(MSG_REG_EXP, sendMsgOfResult);
+        }
+    }
+
+    private List<String> getUserList() {
+        List<String> userList = new ArrayList<>();
+        if (Asserts.isNotNullString(weChatUsers)) {
+            userList = Arrays.asList(weChatUsers.split(","));
+        }
+        if (atAll) {
+            userList.add("all");
+        }
+        return userList;
     }
 
     private static String post(String url, String data) throws IOException {
@@ -181,6 +205,7 @@ public class WeChatSender {
         }
     }
 
+    @Deprecated
     private static String mkUserList(Iterable<String> list) {
         StringBuilder sb = new StringBuilder("[");
         for (String name : list) {
@@ -197,7 +222,7 @@ public class WeChatSender {
      * @param list
      * @return
      */
-    private static String generateUserList(Iterable<String> list) {
+    private static String buildAtUserList(Iterable<String> list) {
         if (Asserts.isNull(list)) {
             return null;
         }
@@ -227,7 +252,7 @@ public class WeChatSender {
         if (Asserts.isNotNull(userList)) {
             userList.forEach(
                     value -> {
-                        if ("all".equals(value) && showType.equals(ShowType.TEXT.getValue())) {
+                        if ("all".equals(value) && msgType.equals(ShowType.TEXT.getValue())) {
                             builder.append("@all ");
                         } else {
                             builder.append("<@").append(value).append("> ");
@@ -235,26 +260,6 @@ public class WeChatSender {
                     });
         }
         return builder.toString();
-    }
-
-    private String markdownByAlert(String title, String content, List<String> userList) {
-        String result = "";
-        if (showType.equals(ShowType.MARKDOWN.getValue())) {
-            result = markdownTable(title, content, userList, sendType);
-        } else if (showType.equals(ShowType.TEXT.getValue())) {
-            result = markdownText(title, content, userList, sendType);
-        }
-        return result;
-    }
-
-    private static String markdownTable(
-            String title, String content, List<String> userList, String sendType) {
-        return getMsgResult(title, content, userList, sendType);
-    }
-
-    private static String markdownText(
-            String title, String content, List<String> userList, String sendType) {
-        return getMsgResult(title, content, userList, sendType);
     }
 
     /**
@@ -267,7 +272,7 @@ public class WeChatSender {
      * @return java.lang.String
      * @throws
      */
-    private static String getMsgResult(
+    private static String buildFinalResultMsgBody(
             String title, String content, List<String> userList, String sendType) {
 
         List<LinkedHashMap> mapItemsList = JSONUtil.toList(content, LinkedHashMap.class);
@@ -281,14 +286,12 @@ public class WeChatSender {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
-                    new StringBuilder(
-                            String.format(
-                                    "`%s`%s", title, WeChatConstants.MARKDOWN_QUOTE_RIGHT_TAG));
+                    new StringBuilder(String.format("`%s`%s", title, WeChatConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 
                 Map.Entry<String, Object> entry = iterator.next();
-                t.append(WeChatConstants.MARKDOWN_QUOTE_RIGHT_TAG);
+                t.append(WeChatConstants.MARKDOWN_QUOTE_RIGHT_TAG_WITH_SPACE);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
                 t.append(WeChatConstants.ENTER_LINE);
             }
