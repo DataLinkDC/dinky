@@ -19,10 +19,7 @@
 
 package org.dinky.alert;
 
-/**
- * AlertBaseConstant
- *
- */
+/** AlertBaseConstant */
 public class AlertBaseConstant {
 
     /** base constant */
