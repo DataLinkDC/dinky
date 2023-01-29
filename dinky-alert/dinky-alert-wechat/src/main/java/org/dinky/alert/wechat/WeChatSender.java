@@ -290,7 +290,7 @@ public class WeChatSender {
                 Map.Entry<String, Object> entry = iterator.next();
                 t.append(WeChatConstants.MARKDOWN_QUOTE_RIGHT_TAG);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
-                t.append(WeChatConstants.MARKDOWN_ENTER_WRAP);
+                t.append(WeChatConstants.ENTER_LINE);
             }
             contents.append(t);
         }

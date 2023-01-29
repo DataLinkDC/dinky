@@ -29,7 +29,7 @@ public class AlertBaseConstant {
     public static final String MARKDOWN_QUOTE_MIDDLE_LINE = "- ";
 
     public static final String TAB = "\t";
-    public static final String MARKDOWN_ENTER_WRAP = "\n";
+    public static final String ENTER_LINE = "\n";
     public static final String MARKDOWN_QUOTE_RIGHT_TAG = "> ";
     public static final String MARKDOWN_ENTER_BACK_SLASH = "/n";
     public static final String CHARSET = "UTF-8";

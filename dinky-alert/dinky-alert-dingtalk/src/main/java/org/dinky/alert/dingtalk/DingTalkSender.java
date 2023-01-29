@@ -192,7 +192,7 @@ public class DingTalkSender {
         StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
             builder.append(keyword);
-            builder.append(DingTalkConstants.MARKDOWN_ENTER_WRAP);
+            builder.append(DingTalkConstants.ENTER_LINE);
         }
         String txt = genrateResultMsg(title, content, builder);
         text.put("content", txt);
@@ -255,14 +255,14 @@ public class DingTalkSender {
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
                     new StringBuilder(
-                            String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER_WRAP));
+                            String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 
                 Map.Entry<String, Object> entry = iterator.next();
                 t.append(DingTalkConstants.MARKDOWN_QUOTE_MIDDLE_LINE);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
-                t.append(DingTalkConstants.MARKDOWN_ENTER_WRAP);
+                t.append(DingTalkConstants.ENTER_LINE);
             }
             builder.append(t);
         }
@@ -278,7 +278,7 @@ public class DingTalkSender {
      */
     private String generateSignedUrl() {
         Long timestamp = System.currentTimeMillis();
-        String stringToSign = timestamp + DingTalkConstants.MARKDOWN_ENTER_WRAP + secret;
+        String stringToSign = timestamp + DingTalkConstants.ENTER_LINE + secret;
         String sign = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
