@@ -21,17 +21,14 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
     - 详见 [开发者本地调试手册](../../developer_guide/local_debug)
 
 ## 后端开发
-- 在 dinky-alert 新建子模块 , 命名规则为 `dinky-alert-{报警类型}` 在子模块中实现 `dinky-alert-{报警类型}` 的报警机制
-
-## 后端开发
-- 在 **dinky-alert** 模块中， 右键**新建子模块**, 命名规则: **dinky-alert-{报警类型}**
+- 在 **dinky-alert** 新建子模块 , 命名规则为 `dinky-alert-{报警类型}` 在子模块中实现 `dinky-alert-{报警类型}` 的报警机制
 - **代码层面** 根据告警场景自行实现报警逻辑 
     - 注意事项:
         - 不可在父类的基础上修改代码，可以在子类中进行扩展 ,或者重写父类方法
         - 注意告警所使用到的常量需要继承**AlertBaseConstant** 其他差异的特殊常量在新建的模块中定义，参考其他告警类型代码
         - 扩展告警类型需要同时提交**测试用例**
-        - 告警类型需要在 ``alert-base``  模块下的 ``AlertTypeEnum`` 枚举类中之增加
-- 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``org.dinky.alert.Alert`` 内容如下:
+        - 告警类型需要在 ``dinky-alert-base``  模块下的 ``AlertTypeEnum`` 枚举类中之增加
+- 需要在新建的此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``org.dinky.alert.Alert`` 内容如下:
     - ``org.dinky.alert.{报警类型}.{报警类型Alert}`` 参考其他告警类型的此文件
 - 打包相关配置 修改如下:
     - 在 **dinky-core** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
@@ -122,7 +119,7 @@ export const EmailSvg = () => (
   - 修改 `dlink-web/src/pages/RegistrationCenter/AlertManage/AlertInstance/components/AlertInstanceChooseForm.tsx` 
  
   追加如下  eg: 
-```
+```typescript
       {(values?.type == ALERT_TYPE.EMAIL || alertType == ALERT_TYPE.EMAIL)?
         <EmailForm
           onCancel={() => {
