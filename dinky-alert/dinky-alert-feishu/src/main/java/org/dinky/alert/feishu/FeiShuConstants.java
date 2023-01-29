@@ -21,9 +21,7 @@ package org.dinky.alert.feishu;
 
 import org.dinky.alert.AlertBaseConstant;
 
-/**
- * FeiShuConstants
- */
+/** FeiShuConstants */
 public class FeiShuConstants extends AlertBaseConstant {
     /** FeiShu alert baseconstant */
     public static final String FEI_SHU_TEXT_TEMPLATE =

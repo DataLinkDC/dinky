@@ -21,9 +21,7 @@ package org.dinky.alert.wechat;
 
 import org.dinky.alert.AlertBaseConstant;
 
-/**
- * WeChatConstants
- */
+/** WeChatConstants */
 public class WeChatConstants extends AlertBaseConstant {
     /** WeChat alert baseconstant */
     public static final String WECHAT_PUSH_URL =

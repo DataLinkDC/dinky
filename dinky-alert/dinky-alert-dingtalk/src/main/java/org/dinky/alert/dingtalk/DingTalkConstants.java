@@ -21,7 +21,5 @@ package org.dinky.alert.dingtalk;
 
 import org.dinky.alert.AlertBaseConstant;
 
-/**
- * DingTalkConstants
- */
+/** DingTalkConstants */
 public class DingTalkConstants extends AlertBaseConstant {}
