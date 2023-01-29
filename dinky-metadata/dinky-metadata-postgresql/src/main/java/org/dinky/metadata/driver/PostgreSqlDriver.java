@@ -203,7 +203,7 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         if (TextUtil.isEmpty(limitEnd)) {
             limitEnd = "100";
         }
-        optionBuilder.append(" limit ").append(limitEnd);
+        optionBuilder.append(" offset ").append(limitStart).append(" limit ").append(limitEnd);
 
         return optionBuilder;
     }
