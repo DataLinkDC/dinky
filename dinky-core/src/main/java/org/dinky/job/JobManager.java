@@ -25,7 +25,6 @@ import static org.dinky.function.util.UDFUtil.YARN;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.classloader.DinkyClassLoader;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
@@ -418,13 +417,11 @@ public class JobManager {
             }
         }
 
-        DinkyClassLoader classLoader =
-                new DinkyClassLoader(
+        DinkyClassLoaderContextHolder.get()
+                .addURL(
                         CollUtil.addAll(
                                 JarPathContextHolder.getUdfFile(),
-                                JarPathContextHolder.getOtherPluginsFiles()),
-                        Thread.currentThread().getContextClassLoader());
-        DinkyClassLoaderContextHolder.set(classLoader);
+                                JarPathContextHolder.getOtherPluginsFiles()));
     }
 
     public JobResult executeSql(String statement) {

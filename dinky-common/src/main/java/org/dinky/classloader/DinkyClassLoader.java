@@ -44,18 +44,7 @@ public class DinkyClassLoader extends URLClassLoader {
 
     public DinkyClassLoader(Collection<File> fileSet, ClassLoader parent) {
         super(new URL[] {}, parent);
-        URL[] urls =
-                fileSet.stream()
-                        .map(
-                                x -> {
-                                    try {
-                                        return x.toURI().toURL();
-                                    } catch (MalformedURLException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
-                        .toArray(URL[]::new);
-        addURL(urls);
+        addURL(fileSet);
     }
 
     public DinkyClassLoader(URL[] urls) {
@@ -70,6 +59,21 @@ public class DinkyClassLoader extends URLClassLoader {
         for (URL url : urls) {
             super.addURL(url);
         }
+    }
+
+    public void addURL(Collection<File> fileSet) {
+        URL[] urls =
+                fileSet.stream()
+                        .map(
+                                x -> {
+                                    try {
+                                        return x.toURI().toURL();
+                                    } catch (MalformedURLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                })
+                        .toArray(URL[]::new);
+        addURL(urls);
     }
 
     public void addURL(String[] paths, List<String> notExistsFiles) {
