@@ -27,7 +27,7 @@ public enum AlertTypeEnum {
     /** Email */
     EMAIL("Email"),
     /** FeiShu */
-    WECHAT("FeiShu");
+    WECHAT("WeChat");
 
     private String typeName;
 
