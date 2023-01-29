@@ -7,7 +7,7 @@ title: 扩展报警插件
 
 
 
-Dinky 告警机制遵循 SPI,可随意扩展所需要的告警机制。如需扩展可在 dlink-alert 模块中进行可插拔式扩展。现已经支持的告警机制包括如下：
+Dinky 告警机制遵循 SPI,可随意扩展所需要的告警机制。如需扩展可在 dinky-alert 模块中进行可插拔式扩展。现已经支持的告警机制包括如下：
 
 - DingDingTalk
 - 企业微信: 同时支持**APP** 和 **WeChat 群聊** 方式
@@ -21,40 +21,50 @@ Dinky 学习了 ``Apache Dolphinscheduler`` 的插件扩展机制，可以在 Di
     - 详见 [开发者本地调试手册](../../developer_guide/local_debug)
 
 ## 后端开发
-- 在 dlink-alert 新建子模块 , 命名规则为 `dlink-alert-{报警类型}` 在子模块中实现 `dlink-alert-{报警类型}` 的报警机制
+- 在 dinky-alert 新建子模块 , 命名规则为 `dinky-alert-{报警类型}` 在子模块中实现 `dinky-alert-{报警类型}` 的报警机制
 
 ## 后端开发
-- 在 **dlink-alert** 模块中， 右键**新建子模块**, 命名规则: **dlink-alert-{报警类型}**
+- 在 **dinky-alert** 模块中， 右键**新建子模块**, 命名规则: **dinky-alert-{报警类型}**
 - **代码层面** 根据告警场景自行实现报警逻辑 
     - 注意事项:
         - 不可在父类的基础上修改代码，可以在子类中进行扩展 ,或者重写父类方法
         - 注意告警所使用到的常量需要继承**AlertBaseConstant** 其他差异的特殊常量在新建的模块中定义，参考其他告警类型代码
         - 扩展告警类型需要同时提交**测试用例**
         - 告警类型需要在 ``alert-base``  模块下的 ``AlertTypeEnum`` 枚举类中之增加
-- 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``com.dlink.alert.Alert`` 内容如下:
-    - ``com.dlink.alert.{报警类型}.{报警类型Alert}`` 参考其他告警类型的此文件
+- 需要在此模块的 **resource** 下 新建包 ``META-INF.services`` , 在此包中新建文件 ``org.dinky.alert.Alert`` 内容如下:
+    - ``org.dinky.alert.{报警类型}.{报警类型Alert}`` 参考其他告警类型的此文件
 - 打包相关配置 修改如下:
-    - 在 **dlink-core** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
-```xml
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>模块名称</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-``` 
-- 在 **dlink** 根下 **pom.xml** 中 ,新增如下内容:
-```xml
-        <dependency>
-            <groupId>com.dlink</groupId>
-            <artifactId>模块名称</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-```
+    - 在 **dinky-core** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
+    ```xml
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>模块名称</artifactId>
+                <scope>${scope.runtime}</scope>
+            </dependency>
+    ``` 
 
-- 在 **dlink-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dlink-assembly/src/main/assembly/package.xml** , 新增如下内容:
+    - 在 **dinky-admin** 模块的 **pom.xml** 下 , 找到扩展告警相关的依赖 `放在一起方便管理` 并且新增如下内容:
+    ```xml
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>模块名称</artifactId>
+                <scope>${expand.scope}</scope>
+            </dependency>
+    ```
+
+- 在 **dinky** 根下 **pom.xml** 中 ,新增如下内容:
+    ```xml
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>模块名称</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+    ```
+
+- 在 **dinky-assembly** 模块中 , 找到 ``package.xml`` 路径: **/dinky-assembly/src/main/assembly/package.xml** , 新增如下内容:
 ```xml
         <fileSet>
-            <directory>${project.parent.basedir}/dlink-alert/模块名称/target
+            <directory>${project.parent.basedir}/dinky-alert/模块名称/target
             </directory>
             <outputDirectory>lib</outputDirectory>
             <includes>
