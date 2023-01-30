@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
 public class EmailSenderTest {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailSenderTest.class);
-    static MailSender mailSender;
+    static EmailSender emailSender;
     private static Map<String, String> emailConfig = new HashMap<>();
     private static AlertTemplate alertTemplate;
 
@@ -83,42 +83,42 @@ public class EmailSenderTest {
         emailConfig.put(
                 EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS, "user1@qq.com,user2@163.com");
         emailConfig.put(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS, "user3@qq.com");
-        emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TEXT.getValue());
+        emailConfig.put(EmailConstants.MSG_TYPE, ShowType.TEXT.getValue());
         alertTemplate = new DefaultHTMLTemplate();
-        mailSender = new MailSender(emailConfig);
+        emailSender = new EmailSender(emailConfig);
     }
 
     @Ignore
     @Test
     public void testTextSendMails() {
-        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
+        AlertResult alertResult = emailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess()); // 格式需要调整
     }
 
     @Ignore
     @Test
     public void testSendTableMail() {
-        emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE.getValue());
-        mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
+        emailConfig.put(EmailConstants.MSG_TYPE, ShowType.TABLE.getValue());
+        emailSender = new EmailSender(emailConfig);
+        AlertResult alertResult = emailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
     @Ignore
     @Test
     public void testAttachmentFile() {
-        emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.ATTACHMENT.getValue());
-        mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
+        emailConfig.put(EmailConstants.MSG_TYPE, ShowType.ATTACHMENT.getValue());
+        emailSender = new EmailSender(emailConfig);
+        AlertResult alertResult = emailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 
     @Ignore
     @Test
     public void testTableAttachmentFile() {
-        emailConfig.put(EmailConstants.NAME_SHOW_TYPE, ShowType.TABLE_ATTACHMENT.getValue());
-        mailSender = new MailSender(emailConfig);
-        AlertResult alertResult = mailSender.send(title, alertMsg.toString());
+        emailConfig.put(EmailConstants.MSG_TYPE, ShowType.TABLE_ATTACHMENT.getValue());
+        emailSender = new EmailSender(emailConfig);
+        AlertResult alertResult = emailSender.send(title, alertMsg.toString());
         Assert.assertEquals(true, alertResult.getSuccess());
     }
 

@@ -21,11 +21,7 @@ package org.dinky.alert.email.template;
 
 import org.dinky.alert.ShowType;
 
-/**
- * @Author: zhumingye
- *
- * @date: 2022/4/3 @Description: 邮件告警模板接口
- */
+/** AlertTemplate */
 public interface AlertTemplate {
 
     String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll);

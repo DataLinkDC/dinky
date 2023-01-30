@@ -26,6 +26,7 @@ import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.alert.email.template.AlertTemplate;
 import org.dinky.alert.email.template.DefaultHTMLTemplate;
+import org.dinky.utils.ExcelUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -60,14 +61,14 @@ import org.slf4j.LoggerFactory;
 import com.sun.mail.smtp.SMTPProvider;
 
 /**
- * MailSender 邮件发送器
+ * EmailSender 邮件发送器
  *
  * @author zhumingye
  * @date: 2022/4/3
  */
-public final class MailSender {
+public final class EmailSender {
 
-    private static final Logger logger = LoggerFactory.getLogger(MailSender.class);
+    private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
 
     private final List<String> receivers;
     private final List<String> receiverCcs;
@@ -86,7 +87,7 @@ public final class MailSender {
     private final String mustNotNull = " must not be null";
     private String xlsFilePath;
 
-    public MailSender(Map<String, String> config) {
+    public EmailSender(Map<String, String> config) {
         String receiversConfig = config.get(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS);
         if (receiversConfig == null || "".equals(receiversConfig)) {
             throw new AlertException(
@@ -125,12 +126,12 @@ public final class MailSender {
 
         sslTrust = config.get(EmailConstants.NAME_MAIL_SMTP_SSL_TRUST);
 
-        showType = config.get(EmailConstants.NAME_SHOW_TYPE);
-        requireNonNull(showType, EmailConstants.NAME_SHOW_TYPE + mustNotNull);
+        showType = config.get(EmailConstants.MSG_TYPE);
+        requireNonNull(showType, EmailConstants.MSG_TYPE + mustNotNull);
 
         xlsFilePath = config.get(EmailConstants.XLS_FILE_PATH);
         if (StringUtils.isBlank(xlsFilePath)) {
-            xlsFilePath = "/tmp/xls";
+            xlsFilePath = EmailConstants.XLS_FILE_DEFAULT_PATH;
         }
 
         alertTemplate = new DefaultHTMLTemplate();
@@ -176,7 +177,7 @@ public final class MailSender {
                 Session session = getSession();
                 email.setMailSession(session);
                 email.setFrom(mailUser, mailSenderNickName);
-                email.setCharset(EmailConstants.UTF_8);
+                email.setCharset(EmailConstants.CHARSET);
                 if (CollectionUtils.isNotEmpty(receivers)) {
                     // receivers mail
                     for (String receiver : receivers) {
@@ -365,7 +366,7 @@ public final class MailSender {
         part2.attachFile(file);
         part2.setFileName(
                 MimeUtility.encodeText(
-                        title + EmailConstants.EXCEL_SUFFIX_XLSX, EmailConstants.UTF_8, "B"));
+                        title + EmailConstants.EXCEL_SUFFIX_XLSX, EmailConstants.CHARSET, "B"));
         // add components to collection
         partList.addBodyPart(part1);
         partList.addBodyPart(part2);

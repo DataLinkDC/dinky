@@ -57,13 +57,13 @@ public class WeChatSenderTest {
         weChatConfig.put(WeChatConstants.CORP_ID, "CORP_ID");
         weChatConfig.put(WeChatConstants.CHARSET, "UTF-8");
         weChatConfig.put(
-                WeChatConstants.USER_SEND_MSG,
+                WeChatConstants.WECHAT_APP_TEMPLATE,
                 "{\"touser\":\"{toUser}\",\"agentid\":{agentId}"
                         + ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}");
-        weChatConfig.put(WeChatConstants.USERS, "all");
+        weChatConfig.put(WeChatConstants.AT_USERS, "all");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
         weChatConfig.put(
-                WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
+                WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
     }
 
@@ -78,7 +78,7 @@ public class WeChatSenderTest {
     @Ignore
     @Test
     public void testSendAPPTextMsg() {
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
+        weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.TEXT.getValue());
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("Dinky企微APP TEXT方式 告警测试", contentTest);
         Assert.assertEquals(true, alertResult.getSuccess());
@@ -88,11 +88,12 @@ public class WeChatSenderTest {
     @Test
     public void testChatMarkDownMsg() throws IOException {
         weChatConfig.put(
-                WeChatConstants.WEBHOOK,
+                WeChatConstants.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.MARKDOWN.getValue());
+        weChatConfig.put(
+                WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
         weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  MarkDown方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);
@@ -103,11 +104,12 @@ public class WeChatSenderTest {
     @Test
     public void testChatTextMsg() throws IOException {
         weChatConfig.put(
-                WeChatConstants.WEBHOOK,
+                WeChatConstants.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=822d17a1-d6e5-43c2-a566-4846fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(WeChatConstants.USER_SEND_MSG, WeChatConstants.WEBHOOK_TEMPLATE);
-        weChatConfig.put(WeChatConstants.SHOW_TYPE, ShowType.TEXT.getValue());
+        weChatConfig.put(
+                WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.TEXT.getValue());
         weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  TEXT方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
         AlertResult alertResult = weChatSender.send("TEXT-TEST", contentTest);

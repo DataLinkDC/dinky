@@ -19,65 +19,43 @@
 
 package org.dinky.alert.email;
 
-/**
- * EmailConstants 邮件常量
- *
- * @author zhumingye
- * @date: 2022/4/3
- */
-public final class EmailConstants {
+import org.dinky.alert.AlertBaseConstant;
 
+/** EmailConstants */
+public class EmailConstants extends AlertBaseConstant {
     public static final String TYPE = "Email";
 
+    /** Email base constant */
     public static final String PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receiver.name";
-    public static final String NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receivers";
 
+    public static final String NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS = "receivers";
     public static final String PLUGIN_DEFAULT_EMAIL_RECEIVERCCS = "receiverCcs";
     public static final String NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERCCS = "receiverCcs";
-
     public static final String NAME_MAIL_PROTOCOL = "mail.protocol";
-
     public static final String MAIL_SMTP_HOST = "mail.smtp.host";
     public static final String NAME_MAIL_SMTP_HOST = "serverHost";
-
     public static final String MAIL_SMTP_PORT = "mail.smtp.port";
     public static final String NAME_MAIL_SMTP_PORT = "serverPort";
-
     public static final String MAIL_SENDER = "sender.name";
     public static final String NAME_MAIL_SENDER = "sender";
-
     public static final String MAIL_SMTP_AUTH = "mail.smtp.auth";
     public static final String NAME_MAIL_SMTP_AUTH = "enableSmtpAuth";
-
     public static final String MAIL_USER = "mail.smtp.user";
     public static final String NAME_MAIL_USER = "User";
-
     public static final String MAIL_PASSWD = "mail.smtp.passwd";
     public static final String NAME_MAIL_PASSWD = "Password";
-
     public static final String MAIL_SMTP_STARTTLS_ENABLE = "mail.smtp.starttls.enable";
     public static final String NAME_MAIL_SMTP_STARTTLS_ENABLE = "starttlsEnable";
-
     public static final String MAIL_SMTP_SSL_ENABLE = "mail.smtp.ssl.enable";
     public static final String NAME_MAIL_SMTP_SSL_ENABLE = "sslEnable";
-
     public static final String MAIL_SMTP_SSL_TRUST = "mail.smtp.ssl.trust";
     public static final String NAME_MAIL_SMTP_SSL_TRUST = "smtpSslTrust";
-
     public static final String XLS_FILE_PATH = "xls.file.path";
-
-    public static final String NAME_SHOW_TYPE = "msgtype";
-
     public static final String MAIL_TRANSPORT_PROTOCOL = "mail.transport.protocol";
-
     public static final String TEXT_HTML_CHARSET_UTF_8 = "text/html;charset=utf-8";
-
     public static final int NUMBER_1000 = 1000;
-
     public static final String TR = "<tr>";
-
     public static final String TD = "<td>";
-
     public static final String TD_END = "</td>";
 
     public static final String TR_END = "</tr>";
@@ -87,12 +65,6 @@ public final class EmailConstants {
     public static final String TH_COLSPAN = "<th  colspan=2 >";
 
     public static final String TH_END = "</th>";
-
-    public static final String TAB = "\t";
-
-    public static final String LINE = "\n";
-
-    public static final String LEFT = ">";
 
     public static final String HTML_HEADER_PREFIX =
             "<!DOCTYPE HTML PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'>"
@@ -111,14 +83,9 @@ public final class EmailConstants {
 
     public static final String TABLE_BODY_HTML_TAIL = "</table></body></html>";
 
-    public static final String UTF_8 = "UTF-8";
-
     public static final String EXCEL_SUFFIX_XLSX = ".xlsx";
 
     public static final String SINGLE_SLASH = "/";
 
-    private EmailConstants() {
-        throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
-    }
+    public static final String XLS_FILE_DEFAULT_PATH = "/tmp/xls";
 }

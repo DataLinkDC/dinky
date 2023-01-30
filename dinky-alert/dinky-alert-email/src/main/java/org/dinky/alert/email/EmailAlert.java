@@ -37,7 +37,7 @@ public class EmailAlert extends AbstractAlert {
 
     @Override
     public AlertResult send(String title, String content) {
-        MailSender mailSender = new MailSender(getConfig().getParam());
-        return mailSender.send(title, content);
+        EmailSender emailSender = new EmailSender(getConfig().getParam());
+        return emailSender.send(title, content);
     }
 }

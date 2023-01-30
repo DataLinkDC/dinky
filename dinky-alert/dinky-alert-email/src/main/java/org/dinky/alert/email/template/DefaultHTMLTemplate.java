@@ -36,11 +36,7 @@ import java.util.Set;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @Author: zhumingye
- *
- * @date: 2022/4/3 @Description: 邮件告警Html模板
- */
+/** DefaultHTMLTemplate */
 public class DefaultHTMLTemplate implements AlertTemplate {
 
     public static final Logger logger = LoggerFactory.getLogger(DefaultHTMLTemplate.class);

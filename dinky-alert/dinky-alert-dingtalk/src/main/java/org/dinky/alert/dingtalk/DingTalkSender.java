@@ -19,6 +19,8 @@
 
 package org.dinky.alert.dingtalk;
 
+import static java.util.Objects.requireNonNull;
+
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.AlertSendResponse;
 import org.dinky.alert.ShowType;
@@ -85,7 +87,10 @@ public class DingTalkSender {
         url = config.get(DingTalkConstants.WEB_HOOK);
         keyword = config.get(DingTalkConstants.KEYWORD);
         secret = config.get(DingTalkConstants.SECRET);
+
         msgType = config.get(DingTalkConstants.MSG_TYPE);
+        requireNonNull(msgType, DingTalkConstants.MSG_TYPE + " must not null");
+
         atMobiles = config.get(DingTalkConstants.AT_MOBILES);
         atUserIds = config.get(DingTalkConstants.AT_USERIDS);
         atAll = Boolean.valueOf(config.get(DingTalkConstants.AT_ALL));
@@ -98,11 +103,18 @@ public class DingTalkSender {
         }
     }
 
+    /**
+     * send msg of main
+     *
+     * @param title ： send msg title
+     * @param content： send msg content
+     * @return AlertResult
+     */
     public AlertResult send(String title, String content) {
         AlertResult alertResult;
         try {
-            String resp = sendMsg(title, content);
-            return checkMsgResult(resp);
+            String sendMsgOfResult = buildSendMsgAndSendOfResult(title, content);
+            return checkMsgResult(sendMsgOfResult);
         } catch (Exception e) {
             logger.info("send ding talk alert msg  exception : {}", e.getMessage());
             alertResult = new AlertResult();
@@ -112,25 +124,24 @@ public class DingTalkSender {
         return alertResult;
     }
 
-    private String sendMsg(String title, String content) throws IOException {
-        String msg = generateMsgJson(title, content);
-        String httpUrl = url;
-        if (Asserts.isNotNullString(secret)) {
-            httpUrl = generateSignedUrl();
-        }
-        HttpPost httpPost = new HttpPost(httpUrl);
-        StringEntity stringEntity = new StringEntity(msg, StandardCharsets.UTF_8);
-        httpPost.setEntity(stringEntity);
-        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
+    /**
+     * 1. budild send msg 2. request send 3. return response msg
+     *
+     * @param title
+     * @param content
+     * @return
+     * @throws IOException
+     */
+    private String buildSendMsgAndSendOfResult(String title, String content) throws IOException {
+        String msg = generateMsgBody(title, content);
+
+        String httpUrl = Asserts.isNotNullString(secret) ? generateSignedUrl() : url;
+
+        HttpPost httpPost = buildHttpPost(httpUrl, msg);
+
         CloseableHttpClient httpClient;
         if (Boolean.TRUE.equals(enableProxy)) {
-            HttpHost httpProxy = new HttpHost(proxy, port);
-            CredentialsProvider provider = new BasicCredentialsProvider();
-            provider.setCredentials(
-                    new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
-            httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
-            RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
-            httpPost.setConfig(rcf);
+            httpClient = getCloseableHttpClientOfProxy(httpPost);
         } else {
             httpClient = HttpClients.createDefault();
         }
@@ -139,7 +150,7 @@ public class DingTalkSender {
             String resp;
             try {
                 HttpEntity httpEntity = response.getEntity();
-                resp = EntityUtils.toString(httpEntity, "UTF-8");
+                resp = EntityUtils.toString(httpEntity, DingTalkConstants.CHARSET);
                 EntityUtils.consume(httpEntity);
             } finally {
                 response.close();
@@ -150,34 +161,86 @@ public class DingTalkSender {
         }
     }
 
-    private String generateMsgJson(String title, String content) {
-        if (Asserts.isNullString(msgType)) {
-            msgType = ShowType.TEXT.getValue();
-        }
+    /**
+     * build httpPost
+     *
+     * @param httpUrl
+     * @param msg
+     * @return HttpPost
+     */
+    private static HttpPost buildHttpPost(String httpUrl, String msg) {
+        HttpPost httpPost = new HttpPost(httpUrl);
+        StringEntity stringEntity = new StringEntity(msg, StandardCharsets.UTF_8);
+        httpPost.setEntity(stringEntity);
+        httpPost.addHeader("Content-Type", "application/json; charset=utf-8");
+        return httpPost;
+    }
+
+    /**
+     * get CloseableHttpClient Of Proxy
+     *
+     * @param httpPost
+     * @return
+     */
+    private CloseableHttpClient getCloseableHttpClientOfProxy(HttpPost httpPost) {
+        CloseableHttpClient httpClient;
+        HttpHost httpProxy = new HttpHost(proxy, port);
+        CredentialsProvider provider = new BasicCredentialsProvider();
+        provider.setCredentials(
+                new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+        httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
+        RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
+        httpPost.setConfig(rcf);
+        return httpClient;
+    }
+
+    /**
+     * Generate Msg of parse Json 1. put the msg type 2. build the msg body of send type 3. build
+     * the At User list
+     *
+     * @param title
+     * @param content
+     * @return String
+     */
+    private String generateMsgBody(String title, String content) {
         Map<String, Object> items = new HashMap<>();
-        items.put("msgtype", msgType);
+        items.put(DingTalkConstants.MSG_TYPE, msgType);
         Map<String, Object> text = new HashMap<>();
         items.put(msgType, text);
         if (ShowType.MARKDOWN.getValue().equals(msgType)) {
-            generateMarkdownMsg(title, content, text);
+            buildMarkdownMsg(title, content, text);
         } else {
-            generateTextMsg(title, content, text);
+            buildTextMsg(title, content, text);
         }
-        setMsgAt(items);
+        buildAtUserList(items);
         return JSONUtil.toJsonString(items);
     }
 
-    private void generateTextMsg(String title, String content, Map<String, Object> text) {
+    /**
+     * Generate Text Msg
+     *
+     * @param title
+     * @param content
+     * @param text
+     */
+    private void buildTextMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder();
         if (Asserts.isNotNullString(keyword)) {
             builder.append(keyword);
-            builder.append("\n");
+            builder.append(DingTalkConstants.ENTER_LINE);
         }
-        String txt = genrateResultMsg(title, content, builder);
-        text.put("content", txt);
+        String finalResultMsgBody = buildFinalResultMsgBody(title, content, builder);
+        text.put("content", finalResultMsgBody);
     }
 
-    private void generateMarkdownMsg(String title, String content, Map<String, Object> text) {
+    /**
+     * Generate Markdown Msg
+     *
+     * @param title
+     * @param content
+     * @param text
+     */
+    private void buildMarkdownMsg(String title, String content, Map<String, Object> text) {
         StringBuilder builder = new StringBuilder("# ");
         if (Asserts.isNotNullString(keyword)) {
             builder.append(" ");
@@ -203,78 +266,96 @@ public class DingTalkSender {
                             });
         }
         builder.append("\n\n");
-        String txt = genrateResultMsg(title, content, builder);
+        String finalResultMsgBody = buildFinalResultMsgBody(title, content, builder);
         text.put("title", title);
-        text.put("text", txt);
+        text.put("text", finalResultMsgBody);
     }
 
     /**
-     * 公共生成 markdown 和 text 消息
+     * Generate markdown and text msg of public
      *
-     * @param title 标题
-     * @param content 内容
-     * @param builder 拼接字符串
-     * @return
+     * @param title
+     * @param content
+     * @param builder
+     * @return String
      */
-    private String genrateResultMsg(String title, String content, StringBuilder builder) {
+    private String buildFinalResultMsgBody(String title, String content, StringBuilder builder) {
         List<LinkedHashMap> mapSendResultItemsList = JSONUtil.toList(content, LinkedHashMap.class);
         if (null == mapSendResultItemsList || mapSendResultItemsList.isEmpty()) {
             logger.error("itemsList is null");
             throw new RuntimeException("itemsList is null");
         }
         for (LinkedHashMap mapItems : mapSendResultItemsList) {
+
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
             StringBuilder t =
-                    new StringBuilder(
-                            String.format("`%s`%s", title, DingTalkConstants.MARKDOWN_ENTER));
+                    new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 
                 Map.Entry<String, Object> entry = iterator.next();
-                t.append(DingTalkConstants.MARKDOWN_QUOTE);
+                t.append(DingTalkConstants.MARKDOWN_QUOTE_MIDDLE_LINE);
                 t.append(entry.getKey()).append("：").append(entry.getValue());
-                t.append(DingTalkConstants.MARKDOWN_ENTER);
+                t.append(DingTalkConstants.ENTER_LINE);
             }
             builder.append(t);
         }
-        byte[] byt = StringUtils.getBytesUtf8(builder.toString());
-        String txt = StringUtils.newStringUtf8(byt);
-        return txt;
+        byte[] msgOfBytes = StringUtils.getBytesUtf8(builder.toString());
+        String finalContent = StringUtils.newStringUtf8(msgOfBytes);
+        return finalContent;
     }
 
+    /**
+     * generate Signed Url of SHA256
+     *
+     * @return String
+     */
     private String generateSignedUrl() {
         Long timestamp = System.currentTimeMillis();
-        String stringToSign = timestamp + "\n" + secret;
+        String stringToSign = timestamp + DingTalkConstants.ENTER_LINE + secret;
         String sign = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(new SecretKeySpec(secret.getBytes("UTF-8"), "HmacSHA256"));
-            byte[] signData = mac.doFinal(stringToSign.getBytes("UTF-8"));
-            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), "UTF-8");
+            mac.init(new SecretKeySpec(secret.getBytes(DingTalkConstants.CHARSET), "HmacSHA256"));
+            byte[] signData = mac.doFinal(stringToSign.getBytes(DingTalkConstants.CHARSET));
+            sign =
+                    URLEncoder.encode(
+                            new String(Base64.encodeBase64(signData)), DingTalkConstants.CHARSET);
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }
         return url + "&timestamp=" + timestamp + "&sign=" + sign;
     }
 
-    private void setMsgAt(Map<String, Object> items) {
+    /**
+     * Set Msg AtUsers
+     *
+     * @param items
+     */
+    private void buildAtUserList(Map<String, Object> items) {
         Map<String, Object> at = new HashMap<>();
         String[] atMobileArray =
                 Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
         String[] atUserArray =
                 Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
-        at.put("isAtAll", isAtAll);
+        at.put(DingTalkConstants.AT_ALL, isAtAll);
         if (atMobileArray.length > 0) {
-            at.put("atMobiles", atMobileArray);
+            at.put(DingTalkConstants.AT_MOBILES, atMobileArray);
         }
         if (atMobileArray.length > 0) {
-            at.put("atUserIds", atUserArray);
+            at.put(DingTalkConstants.AT_USERIDS, atUserArray);
         }
         items.put("at", at);
     }
 
+    /**
+     * Check Msg Result
+     *
+     * @param result
+     * @return
+     */
     private AlertResult checkMsgResult(String result) {
         AlertResult alertResult = new AlertResult();
         alertResult.setSuccess(false);

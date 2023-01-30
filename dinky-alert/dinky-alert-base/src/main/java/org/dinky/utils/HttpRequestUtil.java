@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.alert.feishu;
+package org.dinky.utils;
 
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;

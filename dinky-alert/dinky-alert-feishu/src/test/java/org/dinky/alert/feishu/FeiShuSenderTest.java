@@ -62,7 +62,7 @@ public class FeiShuSenderTest {
         feiShuConfig.put(
                 FeiShuConstants.WEB_HOOK,
                 "https://open.feishu.cn/open-apis/bot/v2/hook/aea3cd7f-75b4-45cd-abea-2c0dc808f2a9");
-        feiShuConfig.put(FeiShuConstants.KEY_WORD, "Dinky 飞书WebHook 告警测试");
+        feiShuConfig.put(FeiShuConstants.KEYWORD, "Dinky 飞书WebHook 告警测试");
         feiShuConfig.put(FeiShuConstants.MSG_TYPE, "text");
         feiShuConfig.put(FeiShuConstants.AT_ALL, "true");
         feiShuConfig.put(FeiShuConstants.AT_USERS, "zhumingye");
