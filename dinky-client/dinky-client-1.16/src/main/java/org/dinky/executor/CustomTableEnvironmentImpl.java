@@ -22,6 +22,7 @@ package org.dinky.executor;
 import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvironmentImpl.lookupExecutor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.model.LineageRel;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
@@ -129,7 +130,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
         final MutableURLClassLoader userClassLoader =
                 FlinkUserCodeClassLoaders.create(
-                        new URL[0], settings.getUserClassLoader(), settings.getConfiguration());
+                        new URL[0],
+                        DinkyClassLoaderContextHolder.get(),
+                        settings.getConfiguration());
         final Executor executor = lookupExecutor(userClassLoader, executionEnvironment);
 
         final TableConfig tableConfig = TableConfig.getDefault();
