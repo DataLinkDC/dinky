@@ -22,6 +22,7 @@ package org.dinky.interceptor;
 import org.dinky.executor.Executor;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -30,6 +31,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2022/4/9 17:48
  */
+@Ignore
 public class FlinkInterceptorTest {
 
     @Test

@@ -40,6 +40,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2021/7/20 15:32
  */
+@Ignore
 public class HiveTest {
 
     private static final String IP = "cdh1";

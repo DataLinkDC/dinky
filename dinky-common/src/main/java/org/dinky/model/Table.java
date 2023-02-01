@@ -24,9 +24,12 @@ import org.dinky.utils.SqlUtil;
 
 import java.beans.Transient;
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -97,127 +100,71 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getFlinkTableWith(String flinkConfig) {
-        String tableWithSql = "";
         if (Asserts.isNotNullString(flinkConfig)) {
-            tableWithSql = SqlUtil.replaceAllParam(flinkConfig, "schemaName", schema);
-            tableWithSql = SqlUtil.replaceAllParam(tableWithSql, "tableName", name);
+            Map<String, String> replacements = new HashMap<>();
+            replacements.put("schemaName", schema);
+            replacements.put("tableName", name);
+
+            return SqlUtil.replaceAllParam(flinkConfig, replacements);
         }
-        return tableWithSql;
+        return "";
+    }
+
+    @Transient
+    public String getFlinkDDL(String flinkConfig, String tableName) {
+        String columnStrs =
+                columns.stream()
+                        .map(
+                                column -> {
+                                    String comment = "";
+                                    if (Asserts.isNotNullString(column.getComment())) {
+                                        comment =
+                                                String.format(
+                                                        " COMMENT '%s'",
+                                                        column.getComment().replaceAll("\"|'", ""));
+                                    }
+                                    return String.format(
+                                            "    `%s` %s%s",
+                                            column.getName(), column.getFlinkType(), comment);
+                                })
+                        .collect(Collectors.joining(",\n"));
+
+        String primaryKeyStr =
+                columns.stream()
+                        .filter(Column::isKeyFlag)
+                        .map(Column::getName)
+                        .map(t -> String.format("`%s`", t))
+                        .collect(
+                                Collectors.joining(
+                                        ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
+
+        String result =
+                MessageFormat.format(
+                        "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
+                        tableName, columnStrs, primaryKeyStr, flinkConfig);
+        return result;
+    }
+
+    @Transient
+    public String getFlinkTableSql(String catalogName, String flinkConfig) {
+        String createSql = getFlinkDDL(getFlinkTableWith(flinkConfig), name);
+        return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
+    }
+
+    @Override
+    public Object clone() {
+        Table table = null;
+        try {
+            table = (Table) super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return table;
     }
 
     @Transient
     public String getFlinkTableSql(String flinkConfig) {
         return getFlinkDDL(flinkConfig, name);
-    }
-
-    @Transient
-    public String getFlinkDDL(String flinkConfig, String tableName) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("CREATE TABLE IF NOT EXISTS " + tableName + " (\n");
-        List<String> pks = new ArrayList<>();
-        for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getFlinkType();
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + columns.get(i).getName() + "` " + type);
-            if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if (columns.get(i).getComment().contains("\'")
-                        | columns.get(i).getComment().contains("\"")) {
-                    sb.append(
-                            " COMMENT '"
-                                    + columns.get(i).getComment().replaceAll("\"|'", "")
-                                    + "'");
-                } else {
-                    sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
-                }
-            }
-            sb.append("\n");
-            if (columns.get(i).isKeyFlag()) {
-                pks.add(columns.get(i).getName());
-            }
-        }
-        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
-        for (int i = 0; i < pks.size(); i++) {
-            if (i > 0) {
-                pksb.append(",");
-            }
-            pksb.append("`" + pks.get(i) + "`");
-        }
-        pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
-            sb.append("    ,");
-            sb.append(pksb);
-        }
-        sb.append(")");
-        if (Asserts.isNotNullString(comment)) {
-            if (comment.contains("\'") | comment.contains("\"")) {
-                sb.append(" COMMENT '" + comment.replaceAll("\"|'", "") + "'\n");
-            } else {
-                sb.append(" COMMENT '" + comment + "'\n");
-            }
-        }
-        sb.append(" WITH (\n");
-        sb.append(flinkConfig);
-        sb.append(")\n");
-        return sb.toString();
-    }
-
-    @Transient
-    public String getFlinkTableSql(String catalogName, String flinkConfig) {
-        StringBuilder sb = new StringBuilder("DROP TABLE IF EXISTS ");
-        String fullSchemaName = catalogName + "." + schema + "." + name;
-        sb.append(name + ";\n");
-        sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
-        List<String> pks = new ArrayList<>();
-        for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getFlinkType();
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + columns.get(i).getName() + "` " + type);
-            if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if (columns.get(i).getComment().contains("\'")
-                        | columns.get(i).getComment().contains("\"")) {
-                    sb.append(
-                            " COMMENT '"
-                                    + columns.get(i).getComment().replaceAll("\"|'", "")
-                                    + "'");
-                } else {
-                    sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
-                }
-            }
-            sb.append("\n");
-            if (columns.get(i).isKeyFlag()) {
-                pks.add(columns.get(i).getName());
-            }
-        }
-        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
-        for (int i = 0; i < pks.size(); i++) {
-            if (i > 0) {
-                pksb.append(",");
-            }
-            pksb.append("`" + pks.get(i) + "`");
-        }
-        pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
-            sb.append("    ,");
-            sb.append(pksb);
-        }
-        sb.append(")");
-        if (Asserts.isNotNullString(comment)) {
-            if (comment.contains("\'") | comment.contains("\"")) {
-                sb.append(" COMMENT '" + comment.replaceAll("\"|'", "") + "'\n");
-            } else {
-                sb.append(" COMMENT '" + comment + "'\n");
-            }
-        }
-        sb.append(" WITH (\n");
-        sb.append(getFlinkTableWith(flinkConfig));
-        sb.append("\n);\n");
-        return sb.toString();
     }
 
     @Transient
@@ -261,16 +208,5 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
         sb.append(" FROM ");
         sb.append(sourceName);
         return sb.toString();
-    }
-
-    @Override
-    public Object clone() {
-        Table table = null;
-        try {
-            table = (Table) super.clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
-        }
-        return table;
     }
 }

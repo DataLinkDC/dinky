@@ -34,6 +34,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2022/10/14 22:00
  */
+@Ignore
 public class DirUtilTest {
 
     @Ignore

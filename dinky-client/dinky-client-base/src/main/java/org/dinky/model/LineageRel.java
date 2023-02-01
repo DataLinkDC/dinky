@@ -27,21 +27,21 @@ package org.dinky.model;
  */
 public class LineageRel {
 
-    private String sourceCatalog;
+    private final String sourceCatalog;
 
-    private String sourceDatabase;
+    private final String sourceDatabase;
 
-    private String sourceTable;
+    private final String sourceTable;
 
-    private String sourceColumn;
+    private final String sourceColumn;
 
-    private String targetCatalog;
+    private final String targetCatalog;
 
-    private String targetDatabase;
+    private final String targetDatabase;
 
-    private String targetTable;
+    private final String targetTable;
 
-    private String targetColumn;
+    private final String targetColumn;
 
     private static final String DELIMITER = ".";
 

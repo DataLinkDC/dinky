@@ -21,7 +21,11 @@ package org.dinky.model;
 
 import java.io.Serializable;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
@@ -32,6 +36,9 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PACKAGE)
+@NoArgsConstructor
 public class Column implements Serializable {
 
     private static final long serialVersionUID = 6438514547501611599L;
@@ -58,10 +65,11 @@ public class Column implements Serializable {
             return flinkType;
         }
 
+        Integer defaultPrecision = precision;
         if (precision == null || precision == 0) {
-            return String.format("%s(%d,%d)", flinkType, 38, scale);
+            defaultPrecision = 38;
         }
 
-        return String.format("%s(%d,%d)", flinkType, precision, scale);
+        return String.format("%s(%d,%d)", flinkType, defaultPrecision, scale);
     }
 }

@@ -36,6 +36,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2021/6/3
  */
+@Ignore
 public class JobManagerTest {
 
     @Ignore

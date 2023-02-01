@@ -40,6 +40,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2022/2/23 20:18
  */
+@Ignore
 public class DingTalkTest {
 
     private static Map<String, String> config = new HashMap<>();

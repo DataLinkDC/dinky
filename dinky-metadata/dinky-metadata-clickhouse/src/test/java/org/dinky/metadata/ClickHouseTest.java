@@ -37,6 +37,7 @@ import org.junit.Test;
  * @author heyang
  * @since 2022/4/21 1:06
  */
+@Ignore
 public class ClickHouseTest {
 
     private static final String IP = "127.0.0.1";

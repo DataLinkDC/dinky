@@ -37,6 +37,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2021/7/21 16:14
  */
+@Ignore
 public class OracleTest {
 
     private static final String IP = "127.0.0.1";

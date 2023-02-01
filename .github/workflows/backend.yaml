@@ -114,9 +114,11 @@ jobs:
       - name: Build and Package
         run: |
           ./mvnw -B clean install \
-                 -Dmaven.test.skip=true \
+                  -Dmaven.test.skip=false \
                  -Dspotless.check.skip=true \
-                 -P prod,scala-2.12,flink-all,maven-central,fast \
+                 -Denforcer.skip=true \
+                 -Dmaven.javadoc.skip=true \
+                 -P prod,scala-2.12,flink-all,maven-central \
                  --no-snapshot-updates
 
       # 检查打包的大小

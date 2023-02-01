@@ -17,26 +17,32 @@
  *
  */
 
-package org.dinky.admin;
+package org.dinky.utils;
 
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-import cn.dev33.satoken.secure.SaSecureUtil;
+import org.junit.jupiter.api.Test;
 
-/**
- * SqlParserTest
- *
- * @author wenmo
- * @since 2021/6/14 17:03
- */
-@Ignore
-public class AdminTest {
+/** */
+class FlinkBaseUtilTest {
 
     @Test
-    public void adminTest() {
-        String admin = SaSecureUtil.md5("admin");
-        Assert.assertEquals("21232f297a57a5a743894a0e4a801fc3", admin);
+    void getParamsFromArgs() {}
+
+    @Test
+    void getCDCSqlInsert() {
+        //        FlinkBaseUtil.getCDCSqlInsert("TableName", "SourceName", "")
     }
+
+    @Test
+    void getFlinkDDL() {}
+
+    @Test
+    void getSinkConfigurationString() {}
+
+    @Test
+    void convertSinkColumnType() {}
+
+    @Test
+    void getColumnProcessing() {}
 }

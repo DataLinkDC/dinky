@@ -17,12 +17,20 @@
  *
  */
 
-package org.dinky.daemon;
+package org.dinky.gateway.config;
 
-/**
- * DeamonTest
- *
- * @author wenmo
- * @since 2022/3/2 23:31
- */
-public class DaemonTest {}
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+/** */
+class ActionTypeTest {
+
+    @ParameterizedTest
+    @CsvSource({"savepoint, SAVEPOINT", "cancel, CANCEL"})
+    void get(String value, ActionType actionType) {
+        assertThat(ActionType.get(value), equalTo(actionType));
+    }
+}

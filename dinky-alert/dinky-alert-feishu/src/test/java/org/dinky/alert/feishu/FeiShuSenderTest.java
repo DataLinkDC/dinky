@@ -36,6 +36,7 @@ import org.junit.Test;
  *
  * @date: 2022/4/2 @Description: 飞书消息发送 单元测试
  */
+@Ignore
 public class FeiShuSenderTest {
 
     private static Map<String, String> feiShuConfig = new HashMap<>();

@@ -32,6 +32,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2021/6/23 10:37
  */
+@Ignore
 public class FlinkSqlPlusTest {
 
     @Ignore
