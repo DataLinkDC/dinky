@@ -150,15 +150,11 @@ public class FlinkBaseUtil {
     }
 
     public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
-        if ("true".equals(config.getSink().get("column.replace.line-break"))
+        if ("true".equals(config.getSink().get(FlinkCDCConfig.COLUMN_REPLACE_LINE_BREAK))
                 && ColumnType.STRING.equals(column.getJavaType())) {
-            return "REGEXP_REPLACE(`"
-                    + column.getName()
-                    + "`, '\\n', '') AS `"
-                    + column.getName()
-                    + "`";
+            return String.format("REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
         } else {
-            return "`" + column.getName() + "`";
+            return String.format("`%s`", column.getName());
         }
     }
 }

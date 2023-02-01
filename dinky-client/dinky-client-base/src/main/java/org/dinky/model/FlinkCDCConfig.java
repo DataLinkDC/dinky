@@ -21,6 +21,7 @@ package org.dinky.model;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * FlinkCDCConfig
@@ -30,6 +31,14 @@ import java.util.Map;
  */
 public class FlinkCDCConfig {
 
+    public static final String SINK_DB = "sink.db";
+    public static final String AUTO_CREATE = "auto.create";
+    public static final String TABLE_PREFIX = "table.prefix";
+    public static final String TABLE_SUFFIX = "table.suffix";
+    public static final String TABLE_UPPER = "table.upper";
+    public static final String TABLE_LOWER = "table.lower";
+    public static final String COLUMN_REPLACE_LINE_BREAK = "column.replace.line-break";
+    public static final String TIMEZONE = "timezone";
     private String type;
     private String hostname;
     private Integer port;
@@ -50,8 +59,6 @@ public class FlinkCDCConfig {
     private List<Schema> schemaList;
     private String schemaFieldName;
 
-    public FlinkCDCConfig() {}
-
     public FlinkCDCConfig(
             String type,
             String hostname,
@@ -69,22 +76,21 @@ public class FlinkCDCConfig {
             Map<String, String> source,
             Map<String, String> sink,
             Map<String, String> jdbc) {
-        this.type = type;
-        this.hostname = hostname;
-        this.port = port;
-        this.username = username;
-        this.password = password;
-        this.checkpoint = checkpoint;
-        this.parallelism = parallelism;
-        this.database = database;
-        this.schema = schema;
-        this.table = table;
-        this.startupMode = startupMode;
-        this.split = split;
-        this.debezium = debezium;
-        this.source = source;
-        this.sink = sink;
-        this.jdbc = jdbc;
+        init(type,
+                hostname,
+                port,
+                username,
+                password,
+                checkpoint,
+                parallelism,
+                database,
+                schema,
+                table,
+                startupMode, split,
+                debezium,
+                source,
+                sink,
+                jdbc);
     }
 
     public void init(
@@ -122,7 +128,32 @@ public class FlinkCDCConfig {
         this.jdbc = jdbc;
     }
 
-    public String getType() {
+    private boolean isSkip(String key) {
+        switch (key) {
+            case SINK_DB:
+            case AUTO_CREATE:
+            case TABLE_PREFIX:
+            case TABLE_SUFFIX:
+            case TABLE_UPPER:
+            case TABLE_LOWER:
+            case COLUMN_REPLACE_LINE_BREAK:
+            case TIMEZONE:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public String getSinkConfigurationString() {
+        List<String> sinkConfiguration = sink.entrySet().stream()
+                .filter(t -> !isSkip(t.getKey()))
+                .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
+                .collect(Collectors.toList());
+
+        return String.join(",\n", sinkConfiguration);
+    }
+
+        public String getType() {
         return type;
     }
 
@@ -220,42 +251,6 @@ public class FlinkCDCConfig {
 
     public void setSchemaTableNameList(List<String> schemaTableNameList) {
         this.schemaTableNameList = schemaTableNameList;
-    }
-
-    private boolean skip(String key) {
-        switch (key) {
-            case "sink.db":
-            case "auto.create":
-            case "table.prefix":
-            case "table.suffix":
-            case "table.upper":
-            case "table.lower":
-            case "column.replace.line-break":
-            case "timezone":
-                return true;
-            default:
-                return false;
-        }
-    }
-
-    public String getSinkConfigurationString() {
-        StringBuilder sb = new StringBuilder();
-        int index = 0;
-        for (Map.Entry<String, String> entry : sink.entrySet()) {
-            if (skip(entry.getKey())) {
-                continue;
-            }
-            if (index > 0) {
-                sb.append(",");
-            }
-            sb.append("'");
-            sb.append(entry.getKey());
-            sb.append("' = '");
-            sb.append(entry.getValue());
-            sb.append("'\n");
-            index++;
-        }
-        return sb.toString();
     }
 
     public void setSink(Map<String, String> sink) {

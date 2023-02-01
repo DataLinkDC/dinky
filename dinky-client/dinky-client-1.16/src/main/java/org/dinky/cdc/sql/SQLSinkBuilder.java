@@ -237,8 +237,8 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
-        final String timeZone = config.getSink().get("timezone");
-        config.getSink().remove("timezone");
+        final String timeZone = config.getSink().get(FlinkCDCConfig.TIMEZONE);
+        config.getSink().remove(FlinkCDCConfig.TIMEZONE);
         if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
         }
