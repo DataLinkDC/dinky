@@ -147,13 +147,10 @@ public class FlinkCDCConfig {
     }
 
     public String getSinkConfigurationString() {
-        List<String> sinkConfiguration =
-                sink.entrySet().stream()
-                        .filter(t -> !isSkip(t.getKey()))
-                        .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
-                        .collect(Collectors.toList());
-
-        return String.join(",\n", sinkConfiguration);
+        return sink.entrySet().stream()
+                .filter(t -> !isSkip(t.getKey()))
+                .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
+                .collect(Collectors.joining(",\n"));
     }
 
     public String getType() {
