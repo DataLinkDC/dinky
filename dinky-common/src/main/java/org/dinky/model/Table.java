@@ -25,7 +25,6 @@ import org.dinky.utils.SqlUtil;
 import java.beans.Transient;
 import java.io.Serializable;
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -144,58 +143,8 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
-        StringBuilder sb = new StringBuilder("DROP TABLE IF EXISTS ");
-        String fullSchemaName = catalogName + "." + schema + "." + name;
-        sb.append(name + ";\n");
-        sb.append("CREATE TABLE IF NOT EXISTS " + name + " (\n");
-        List<String> pks = new ArrayList<>();
-        for (int i = 0; i < columns.size(); i++) {
-            String type = columns.get(i).getFlinkType();
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + columns.get(i).getName() + "` " + type);
-            if (Asserts.isNotNullString(columns.get(i).getComment())) {
-                if (columns.get(i).getComment().contains("\'")
-                        | columns.get(i).getComment().contains("\"")) {
-                    sb.append(
-                            " COMMENT '"
-                                    + columns.get(i).getComment().replaceAll("\"|'", "")
-                                    + "'");
-                } else {
-                    sb.append(" COMMENT '" + columns.get(i).getComment() + "'");
-                }
-            }
-            sb.append("\n");
-            if (columns.get(i).isKeyFlag()) {
-                pks.add(columns.get(i).getName());
-            }
-        }
-        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
-        for (int i = 0; i < pks.size(); i++) {
-            if (i > 0) {
-                pksb.append(",");
-            }
-            pksb.append("`" + pks.get(i) + "`");
-        }
-        pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
-            sb.append("    ,");
-            sb.append(pksb);
-        }
-        sb.append(")");
-        if (Asserts.isNotNullString(comment)) {
-            if (comment.contains("\'") | comment.contains("\"")) {
-                sb.append(" COMMENT '" + comment.replaceAll("\"|'", "") + "'\n");
-            } else {
-                sb.append(" COMMENT '" + comment + "'\n");
-            }
-        }
-        sb.append(" WITH (\n");
-        sb.append(getFlinkTableWith(flinkConfig));
-        sb.append("\n);\n");
-        return sb.toString();
+        String createSql = getFlinkDDL(getFlinkTableWith(flinkConfig), name);
+        return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
     }
 
     @Override
