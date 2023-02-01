@@ -152,7 +152,8 @@ public class FlinkBaseUtil {
     public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
         if ("true".equals(config.getSink().get(FlinkCDCConfig.COLUMN_REPLACE_LINE_BREAK))
                 && ColumnType.STRING.equals(column.getJavaType())) {
-            return String.format("REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
+            return String.format(
+                    "REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
         } else {
             return String.format("`%s`", column.getName());
         }

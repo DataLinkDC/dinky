@@ -233,7 +233,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             return null;
         }
         String url = sink.get("url");
-        String schema = SqlUtil.replaceAllParam(sink.get(FlinkCDCConfig.SINK_DB), "schemaName", schemaName);
+        String schema =
+                SqlUtil.replaceAllParam(sink.get(FlinkCDCConfig.SINK_DB), "schemaName", schemaName);
         Driver driver =
                 Driver.build(
                         sink.get("connector"), url, sink.get("username"), sink.get("password"));

@@ -68,13 +68,13 @@ public class SqlUtil {
     }
 
     /**
-     * replace sql context with values params, map's key is origin variable express by `${key}`, value is
-     * replacement.
-     * for example, if key="name", value="replacement", and sql is "${name}", the result will be "replacement".
+     * replace sql context with values params, map's key is origin variable express by `${key}`,
+     * value is replacement. for example, if key="name", value="replacement", and sql is "${name}",
+     * the result will be "replacement".
      *
      * @param sql sql context
      * @param values replacement
-     * @return  replace variable result
+     * @return replace variable result
      */
     public static String replaceAllParam(String sql, Map<String, String> values) {
         for (Map.Entry<String, String> entry : values.entrySet()) {

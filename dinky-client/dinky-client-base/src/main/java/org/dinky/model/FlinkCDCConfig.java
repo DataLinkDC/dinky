@@ -76,7 +76,8 @@ public class FlinkCDCConfig {
             Map<String, String> source,
             Map<String, String> sink,
             Map<String, String> jdbc) {
-        init(type,
+        init(
+                type,
                 hostname,
                 port,
                 username,
@@ -86,7 +87,8 @@ public class FlinkCDCConfig {
                 database,
                 schema,
                 table,
-                startupMode, split,
+                startupMode,
+                split,
                 debezium,
                 source,
                 sink,
@@ -145,15 +147,16 @@ public class FlinkCDCConfig {
     }
 
     public String getSinkConfigurationString() {
-        List<String> sinkConfiguration = sink.entrySet().stream()
-                .filter(t -> !isSkip(t.getKey()))
-                .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
-                .collect(Collectors.toList());
+        List<String> sinkConfiguration =
+                sink.entrySet().stream()
+                        .filter(t -> !isSkip(t.getKey()))
+                        .map(t -> String.format("'%s' = '%s'", t.getKey(), t.getValue()))
+                        .collect(Collectors.toList());
 
         return String.join(",\n", sinkConfiguration);
     }
 
-        public String getType() {
+    public String getType() {
         return type;
     }
 
