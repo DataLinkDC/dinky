@@ -36,16 +36,11 @@ import java.util.function.Supplier;
  */
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
-            new HashMap<String, Supplier<SinkBuilder>>() {
-
-                {
-                }
-            };
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<>();
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
-            throw new FlinkClientException("请指定 Sink connector。");
+            throw new FlinkClientException("please assign Sink connector。");
         }
         return SINK_BUILDER_MAP
                 .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
