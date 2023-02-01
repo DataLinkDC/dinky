@@ -67,9 +67,9 @@ import cn.hutool.core.util.URLUtil;
  * @author wenmo
  * @since 2021/10/27
  */
-public class Submiter {
+public class Submitter {
 
-    private static final Logger logger = LoggerFactory.getLogger(Submiter.class);
+    private static final Logger logger = LoggerFactory.getLogger(Submitter.class);
     private static final String NULL = "null";
 
     private static String getQuerySQL(Integer id) throws SQLException {
@@ -156,7 +156,7 @@ public class Submiter {
             dinkyAddr = "";
         }
         StringBuilder sb = new StringBuilder();
-        Map<String, String> taskConfig = Submiter.getTaskConfig(id, dbConfig);
+        Map<String, String> taskConfig = Submitter.getTaskConfig(id, dbConfig);
 
         if (Asserts.isNotNull(taskConfig.get("envId"))) {
             String envId = getFlinkSQLStatement(Integer.valueOf(taskConfig.get("envId")), dbConfig);
@@ -169,7 +169,7 @@ public class Submiter {
         sb.append(getDbSourceSqlStatements(dbConfig, id));
         // 添加自定义全局变量信息
         sb.append(getFlinkSQLStatement(id, dbConfig));
-        List<String> statements = Submiter.getStatements(sb.toString());
+        List<String> statements = Submitter.getStatements(sb.toString());
         ExecutorSetting executorSetting = ExecutorSetting.build(taskConfig);
 
         // 加载第三方jar
