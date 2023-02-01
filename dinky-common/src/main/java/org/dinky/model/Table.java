@@ -26,6 +26,7 @@ import java.beans.Transient;
 import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -100,8 +101,11 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     @Transient
     public String getFlinkTableWith(String flinkConfig) {
         if (Asserts.isNotNullString(flinkConfig)) {
-            return SqlUtil.replaceAllParam(
-                    flinkConfig, Map.of("schemaName", schema, "tableName", name));
+            Map<String, String> replacements = new HashMap<>();
+            replacements.put("schemaName", schema);
+            replacements.put("tableName", name);
+
+            return SqlUtil.replaceAllParam(flinkConfig, replacements);
         }
         return "";
     }
