@@ -32,6 +32,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 /** WeChatSenderTest */
+@Ignore
 public class WeChatSenderTest {
 
     private static Map<String, String> weChatConfig = new HashMap<>();

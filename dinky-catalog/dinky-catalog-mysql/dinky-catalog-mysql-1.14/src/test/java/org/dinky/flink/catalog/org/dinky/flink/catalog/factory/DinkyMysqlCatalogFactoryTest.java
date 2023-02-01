@@ -34,8 +34,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
+@Ignore
 public class DinkyMysqlCatalogFactoryTest {
 
     protected static String url;

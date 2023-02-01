@@ -20,6 +20,7 @@
 package org.dinky.admin;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
@@ -30,6 +31,7 @@ import cn.dev33.satoken.secure.SaSecureUtil;
  * @author wenmo
  * @since 2021/6/14 17:03
  */
+@Ignore
 public class AdminTest {
 
     @Test

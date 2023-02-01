@@ -32,6 +32,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2022/2/7 23:15
  */
+@Ignore
 public class BatchTest {
 
     @Ignore

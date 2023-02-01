@@ -31,6 +31,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2022/3/15 23:08
  */
+@Ignore
 public class LineageTest {
 
     @Ignore

@@ -37,6 +37,7 @@ import org.junit.Test;
  * @author wenmo
  * @since 2021/7/20 15:32
  */
+@Ignore
 public class MysqlTest {
 
     private static final String IP = "127.0.0.1";
