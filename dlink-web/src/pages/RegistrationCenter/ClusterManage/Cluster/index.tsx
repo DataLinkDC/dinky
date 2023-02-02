@@ -111,7 +111,7 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
     <Dropdown
       overlay={
         <Menu onClick={({key}) => editAndDelete(key, item)}>
-          {item.autoRegisters == 1 ? (<Menu.Item key="stop">{l('button.stop')}</Menu.Item>) : undefined}
+          {item.autoRegisters === true ? (<Menu.Item key="stop">{l('button.stop')}</Menu.Item>) : undefined}
           <Menu.Item key="edit">{l('button.edit')}</Menu.Item>
           <Menu.Item key="delete">{l('button.delete')}</Menu.Item>
         </Menu>
@@ -138,12 +138,6 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       hideInTable: true,
       hideInForm: true,
       hideInSearch: true,
-    },
-    {
-      title: l('pages.rc.cluster.alias'),
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
     },
     {
       title: l('pages.rc.cluster.type'),

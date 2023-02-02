@@ -46,9 +46,6 @@ const StudioLeftTool = (props: any) => {
       <TabPane tab={<span><MessageOutlined/> {l('pages.datastudio.label.session')}</span>} key="Connectors">
         <StudioConnector/>
       </TabPane>
-      {/*<TabPane tab={<span><ClusterOutlined/> {l('pages.datastudio.label.cluster')}</span>} key="Cluster">*/}
-      {/*  <StudioCluster/>*/}
-      {/*</TabPane>*/}
       {/*<TabPane tab={<span><DatabaseOutlined/> {l('pages.datastudio.label.datasource')}</span>}*/}
       {/*         key="DataSource">*/}
       {/*  <StudioDataBase/>*/}

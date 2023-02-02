@@ -21,8 +21,6 @@ package org.dinky.model;
 
 import org.dinky.db.model.SuperEntity;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -42,9 +40,6 @@ public class Cluster extends SuperEntity {
     private static final long serialVersionUID = 3104721227014487321L;
 
     private Integer tenantId;
-
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
 
     private String type;
 
@@ -67,13 +62,11 @@ public class Cluster extends SuperEntity {
     public static Cluster autoRegistersCluster(
             String hosts,
             String name,
-            String alias,
             String type,
             Integer clusterConfigurationId,
             Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
-        cluster.setAlias(alias);
         cluster.setHosts(hosts);
         cluster.setType(type);
         cluster.setClusterConfigurationId(clusterConfigurationId);

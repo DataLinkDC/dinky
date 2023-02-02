@@ -6,7 +6,6 @@
     <resultMap id="BaseResultMap" type="org.dinky.model.Cluster">
         <id column="id" property="id" />
         <result column="name" property="name" />
-        <result column="alias" property="alias" />
         <result column="type" property="type" />
         <result column="hosts" property="hosts" />
         <result column="job_manager_host" property="jobManagerHost" />
@@ -23,7 +22,7 @@
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, name, alias, type,hosts,job_manager_host,version, status,note,auto_registers,cluster_configuration_id,task_id, enabled, create_time, update_time
+        id, name, type,hosts,job_manager_host,version, status,note,auto_registers,cluster_configuration_id,task_id, enabled, create_time, update_time
     </sql>
 
 
@@ -36,9 +35,6 @@
             1=1
             <if test='param.name!=null and param.name!=""'>
                 and a.name like "%${param.name}%"
-            </if>
-            <if test='param.alias!=null and param.alias!=""'>
-                and a.alias like "%${param.alias}%"
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')

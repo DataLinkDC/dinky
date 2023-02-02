@@ -415,7 +415,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (task.getClusterId() != null) {
                 Cluster cluster = clusterService.getById(task.getClusterId());
                 if (cluster != null) {
-                    task.setClusterName(cluster.getAlias());
+                    task.setClusterName(cluster.getName());
                 }
             }
             if (statement != null) {
