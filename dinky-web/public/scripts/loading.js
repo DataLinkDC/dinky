@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 /**
  * loading 占位
  * 解决首次加载时白屏的问题
@@ -191,10 +208,10 @@
           </div>
         </div>
         <div class="loading-title">
-          正在加载资源
+          Loading...
         </div>
         <div class="loading-sub-title">
-          初次加载资源可能需要较多时间 请耐心等待
+          It may take a long time to load resources for the first time, please be patient
         </div>
       </div>
     `;

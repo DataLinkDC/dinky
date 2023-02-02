@@ -1,8 +1,25 @@
-import { useIntl } from '@umijs/max';
-import { Button, message, notification } from 'antd';
-import defaultSettings from '../config/defaultSettings';
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-const { pwa } = defaultSettings;
+import {Button, message, notification} from 'antd';
+import defaultSettings from '../config/defaultSettings';
+import {l} from "@/utils/intl";
+
+const {pwa} = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
 
 const clearCache = () => {
@@ -23,7 +40,7 @@ const clearCache = () => {
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {
-    message.warning(useIntl().formatMessage({ id: 'app.pwa.offline' }));
+    message.warning(l('app.pwa.offline'));
   });
 
   // Pop up a prompt on the page asking the user if they want to use the latest version
@@ -46,7 +63,7 @@ if (pwa) {
             resolve(msgEvent.data);
           }
         };
-        worker.postMessage({ type: 'skip-waiting' }, [channel.port2]);
+        worker.postMessage({type: 'skip-waiting'}, [channel.port2]);
       });
 
       clearCache();
@@ -62,12 +79,12 @@ if (pwa) {
           reloadSW();
         }}
       >
-        {useIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.ok' })}
+        {l('app.pwa.serviceworker.updated.ok')}
       </Button>
     );
     notification.open({
-      message: useIntl().formatMessage({ id: 'app.pwa.serviceworker.updated' }),
-      description: useIntl().formatMessage({ id: 'app.pwa.serviceworker.updated.hint' }),
+      message: l('app.pwa.serviceworker.updated'),
+      description: l('app.pwa.serviceworker.updated.hint'),
       btn,
       key,
       onClose: async () => null,
@@ -75,7 +92,7 @@ if (pwa) {
   });
 } else if ('serviceWorker' in navigator && isHttps) {
   // unregister service worker
-  const { serviceWorker } = navigator;
+  const {serviceWorker} = navigator;
   if (serviceWorker.getRegistrations) {
     serviceWorker.getRegistrations().then((sws) => {
       sws.forEach((sw) => {

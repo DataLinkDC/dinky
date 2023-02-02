@@ -1,40 +1,44 @@
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
-import { useIntl } from '@umijs/max';
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {l} from '@/utils/intl';
+import {GithubOutlined} from '@ant-design/icons';
+import {DefaultFooter} from '@ant-design/pro-components';
 import React from 'react';
 
 const Footer: React.FC = () => {
-  const intl = useIntl();
-  const defaultMessage = intl.formatMessage({
-    id: 'app.copyright.produced',
-    defaultMessage: '蚂蚁集团体验技术部出品',
-  });
-
   const currentYear = new Date().getFullYear();
-
   return (
     <DefaultFooter
       style={{
         background: 'none',
       }}
-      copyright={`${currentYear} ${defaultMessage}`}
+      copyright={`${currentYear} `+ l('app.copyright.produced')}
       links={[
         {
-          key: 'Ant Design Pro',
-          title: 'Ant Design Pro',
-          href: 'https://pro.ant.design',
+          key: 'Dinky',
+          title: 'Dinky',
+          href: 'https://github.com/DataLinkDC/dlink',
           blankTarget: true,
         },
         {
           key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/ant-design/ant-design-pro',
-          blankTarget: true,
-        },
-        {
-          key: 'Ant Design',
-          title: 'Ant Design',
-          href: 'https://ant.design',
+          title: <GithubOutlined/>,
+          href: 'https://github.com/DataLinkDC/dlink',
           blankTarget: true,
         },
       ]}

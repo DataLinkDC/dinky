@@ -1,57 +1,43 @@
-# Ant Design Pro
+# Dinky-web
 
-This project is initialized with [Ant Design Pro](https://pro.ant.design). Follow is the quick guide for how to use.
+This project uses [Ant Design Pro](https://pro.ant.design) for initialization. Here's a quick guide on how to use it.
 
-## Environment Prepare
+[![CN doc](https://img.shields.io/badge/文档-中文版-blue.svg)](README_zh_CN.md)
+[![EN doc](https://img.shields.io/badge/document-English-blue.svg)](README.md)
 
-Install `node_modules`:
 
-```bash
-npm install
-```
+## Environment preparation
 
-or
 
-```bash
-yarn
-```
+| Environment | Version  | Remarks |
+| ----------- | -------- | ------- |
+| node        | 14.19.0+ |         |
+| npm         | 7.19.0+  |         |
 
-## Provided Scripts
+> Configure related environment variables by yourself
 
-Ant Design Pro provides some useful script to help you quick start and build with web project, code style check and test.
-
-Scripts provided in `package.json`. It's safe to modify or add additional script:
-
-### Start project
+## StartUp
 
 ```bash
-npm start
+# Note: You need to enter the directory of this module to execute
+
+npm i --force && npm start
 ```
 
-### Build project
+### Build
 
 ```bash
 npm run build
 ```
 
-### Check code style
+### Code Style Check
 
 ```bash
 npm run lint
 ```
 
-You can also use script to auto fix some lint error:
+You can also automatically fix some lint errors with a script:
 
 ```bash
 npm run lint:fix
 ```
-
-### Test code
-
-```bash
-npm test
-```
-
-## More
-
-You can view full document on our [official website](https://pro.ant.design). And welcome any feedback in our [github](https://github.com/ant-design/ant-design-pro).

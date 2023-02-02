@@ -1,8 +1,8 @@
 {
-  "name": "ant-design-pro",
+  "name": "Dinky",
   "version": "6.0.0",
   "private": true,
-  "description": "An out-of-box UI solution for enterprise applications",
+  "description": "Dinky is an out of the box one-stop real-time computing platform dedicated to the construction and practice of Unified Batch & Streaming and Unified Data Lake & Data Warehouse. Based on Apache Flink, Dinky provides the ability to connect many big data frameworks including OLAP and Data Lake.",
   "scripts": {
     "analyze": "cross-env ANALYZE=1 max build",
     "build": "max build",
@@ -19,7 +19,6 @@
     "lint:js": "eslint --cache --ext .js,.jsx,.ts,.tsx --format=pretty ./src",
     "lint:prettier": "prettier -c --write \"**/**.{js,jsx,tsx,ts,less,md,json}\" --end-of-line auto",
     "openapi": "max openapi",
-    "prepare": "husky install",
     "prettier": "prettier -c --write \"**/**.{js,jsx,tsx,ts,less,md,json}\"",
     "preview": "npm run build && max preview --port 8000",
     "record": "cross-env NODE_ENV=development REACT_APP_ENV=test max record --scene=login",
@@ -40,8 +39,8 @@
   },
   "browserslist": ["> 1%", "last 2 versions", "not ie <= 10"],
   "dependencies": {
-    "@ant-design/icons": "^4.7.0",
-    "@ant-design/pro-components": "^2.3.37",
+    "@ant-design/icons": "^5.0.1",
+    "@ant-design/pro-components": "^2.3.52",
     "@ant-design/use-emotion-css": "1.0.4",
     "@umijs/route-utils": "^2.1.3",
     "antd": "^5.0.0",
