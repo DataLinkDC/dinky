@@ -50,9 +50,7 @@ import cn.hutool.http.Method;
  * @since 2021/6/24 13:56
  */
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")
-public class FlinkAPI {
-
-    private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
+public class FlinkAPI { private static final Logger logger = LoggerFactory.getLogger(FlinkAPI.class);
 
     public static final String REST_TARGET_DIRECTORY = "rest.target-directory";
     public static final String ERRORS = "errors";
