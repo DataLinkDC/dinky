@@ -70,5 +70,6 @@ ALTER TABLE dinky_user_tenant RENAME INDEX `dlink_user_role_un` TO `user_tenant_
 ALTER TABLE dinky_catalogue RENAME INDEX `dlink_catalogue_un` TO `catalogue_un_idx1`;
 ALTER TABLE dinky_schema_history RENAME INDEX `dlink_schema_history_s_idx` TO `schema_history_idx`;
 
+ALTER TABLE dinky_cluster DROP COLUMN `alias`;
 ALTER TABLE dinky_fragment DROP COLUMN `alias`;
 ALTER TABLE dinky_database DROP COLUMN `alias`;

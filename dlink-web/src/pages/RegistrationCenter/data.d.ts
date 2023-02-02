@@ -44,10 +44,10 @@ export type AlertInstanceTableListItem = {
 export type ClusterTableListItem = {
   id: number,
   name: string,
-  alias: string,
   type: string,
   hosts: string,
   jobManagerHost: string,
+  autoRegisters: boolean,
   version: string,
   status: number,
   note: string,

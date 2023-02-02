@@ -44,7 +44,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<ClusterTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type,
     hosts: props.values.hosts,
     note: props.values.note,
@@ -84,12 +83,6 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
           <Input placeholder={l('pages.rc.cluster.namePlaceholder') }/>
         </Form.Item>
 
-        <Form.Item
-          name="alias"
-          label={l('pages.rc.cluster.alias')}
-        >
-          <Input placeholder={l('pages.rc.cluster.aliasPlaceholder') }/>
-        </Form.Item>
         <Form.Item
           name="type"
           label={l('pages.rc.cluster.type')}

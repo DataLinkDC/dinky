@@ -490,7 +490,6 @@ export default {
 
   'pages.rc.clusterManagement': 'Cluster Instance Management',
   'pages.rc.cluster.instanceName': 'Instance name',
-  'pages.rc.cluster.alias': 'Alias',
   'pages.rc.cluster.type': 'Type',
   'pages.rc.cluster.jobManagerAddress': 'JobManger Address',
   'pages.rc.cluster.version': 'Version',
@@ -513,7 +512,6 @@ export default {
   'pages.rc.cluster.jobManagerHaAddressPlaceholderText': 'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'pages.rc.cluster.jobManagerHaAddressPlaceholder': 'Please enter the JobManager HA address!',
   'pages.rc.cluster.typePlaceholder': 'Please select cluster type!',
-  'pages.rc.cluster.aliasPlaceholder': 'Please enter alias!',
   'pages.rc.cluster.namePlaceholder': 'Please enter name!',
 
   'pages.rc.clusterConfigManagement': 'Cluster Config Management',

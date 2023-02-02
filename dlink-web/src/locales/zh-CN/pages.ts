@@ -494,7 +494,6 @@ export default {
 
   'pages.rc.clusterManagement': '集群实例管理',
   'pages.rc.cluster.instanceName': '实例名称',
-  'pages.rc.cluster.alias': '别名',
   'pages.rc.cluster.type': '类型',
   'pages.rc.cluster.jobManagerAddress': 'JobManger 地址',
   'pages.rc.cluster.version': '版本',
@@ -519,7 +518,6 @@ export default {
   'pages.rc.cluster.jobManagerHaAddressPlaceholderText': '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'pages.rc.cluster.jobManagerHaAddressPlaceholder': '请输入 JobManager HA 地址!',
   'pages.rc.cluster.typePlaceholder': '请选择集群类型!',
-  'pages.rc.cluster.aliasPlaceholder': '请输入别名!',
   'pages.rc.cluster.namePlaceholder': '请输入名称!',
 
   'pages.rc.clusterConfigManagement': '集群配置管理',

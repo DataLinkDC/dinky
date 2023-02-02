@@ -115,7 +115,6 @@ CREATE TABLE `dinky_cluster`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cluster instance name',
-  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'cluster instance alias',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'cluster types',
   `hosts` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'cluster hosts',
   `job_manager_host` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Job Manager Host',

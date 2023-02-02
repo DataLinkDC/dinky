@@ -154,12 +154,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 任务 服务实现类
- *
- * @author wenmo
- * @since 2021-05-24
- */
+/** TaskServiceImpl */
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
@@ -414,7 +409,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (task.getClusterId() != null) {
             Cluster cluster = clusterService.getById(task.getClusterId());
             if (cluster != null) {
-                task.setClusterName(cluster.getAlias());
+                task.setClusterName(cluster.getName());
             }
         }
 
