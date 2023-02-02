@@ -1,15 +1,14 @@
 import {VERSION} from '@/components/Version/Version';
 import {l} from '@/utils/intl';
 import {PageContainer} from '@ant-design/pro-components';
-import {FormattedMessage} from '@umijs/max';
-import {Alert, Card, Image,  Typography} from 'antd';
+import {Alert, Card, Image, Typography} from 'antd';
 import React from 'react';
 
 const { Paragraph} = Typography;
 
 const Welcome: React.FC = () => {
   return (
-    <PageContainer>
+    <PageContainer title={false} >
       <Card>
         <Alert
           message={l('pages.welcome.alertMessage', '', {version: VERSION})}
