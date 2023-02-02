@@ -13,7 +13,9 @@ concurrency:
 
 jobs:
   format:
-    if: github.repository != 'DataLinkDC/dinky'
+    env:
+      repo_token: ${{ secrets.TOKEN }}
+    if: github.repository != 'DataLinkDC/dinky' and ${{ repo_token }}
     name: Format and Check Code
     runs-on: ubuntu-latest
     steps:
@@ -21,7 +23,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
-          token: ${{ secrets.TOKEN }}
+          token: ${{ repo_token }}
       - name: Run spotless apply
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
       - name: Check for modified files
