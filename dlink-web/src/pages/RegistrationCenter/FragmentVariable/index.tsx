@@ -95,13 +95,6 @@ const FragmentTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
-      title: l('pages.rc.fv.alias'),
-      dataIndex: 'alias',
-      hideInForm: false,
-      hideInSearch: false,
-      hideInTable: false,
-    },
-    {
       title: l('pages.rc.fv.fragmentValue'),
       sorter: true,
       dataIndex: 'fragmentValue',

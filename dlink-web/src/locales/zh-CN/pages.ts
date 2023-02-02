@@ -773,7 +773,6 @@ export default {
   'pages.rc.fv.Management': '全局变量管理',
   'pages.rc.fv.id': '全局变量 ID',
   'pages.rc.fv.name': '名称',
-  'pages.rc.fv.alias': '别名',
   'pages.rc.fv.fragmentValue': '全局变量值',
   'pages.rc.fv.create': '创建全局变量',
   'pages.rc.fv.modify': '修改全局变量',
@@ -785,7 +784,6 @@ export default {
   'pages.rc.fv.disableConfirm': '确定禁用选中的全局变量吗？',
   'pages.rc.fv.disableTotalOf': '被禁用的全局变量共 {total} 个',
   'pages.rc.fv.namePlaceholder': '请输入名称!',
-  'pages.rc.fv.aliasPlaceholder': '请输入别名!',
   'pages.rc.fv.fragmentValuePlaceholder': '请输入全局变量值',
   'pages.rc.fv.enabledPlaceholder': '请选择是否启用!',
 

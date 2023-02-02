@@ -770,7 +770,6 @@ export default {
   'pages.rc.fv.Management': 'Global Variable Management',
   'pages.rc.fv.id': 'Global Variable ID',
   'pages.rc.fv.name': 'Name',
-  'pages.rc.fv.alias': 'Alias',
   'pages.rc.fv.fragmentValue': 'Global Variable value',
   'pages.rc.fv.create': 'Create Global Variable',
   'pages.rc.fv.modify': 'Modify Global Variables',
@@ -782,7 +781,6 @@ export default {
   'pages.rc.fv.disableConfirm': 'Are you sure you want to disable the selected Global Variable? ',
   'pages.rc.fv.disableTotalOf': 'Total Of {total} Global Variables Is Disabled',
   'pages.rc.fv.namePlaceholder': 'Please enter a name!',
-  'pages.rc.fv.aliasPlaceholder': 'Please enter an alias!',
   'pages.rc.fv.fragmentValuePlaceholder': 'Please enter the Global Variable value',
   'pages.rc.fv.enabledPlaceholder': 'Please choose whether to enable!',
 
