@@ -75,7 +75,6 @@ export type ClusterConfigurationTableListItem = {
 export type DataBaseItem = {
   id: number,
   name: string,
-  alias: string,
   groupName: string,
   type: string,
   url: string,
@@ -143,7 +142,6 @@ export type DocumentTableListItem = {
 export type FragmentVariableTableListItem = {
   id: number,
   name: string,
-  alias: string,
   fragmentValue: string,
   note: string,
   enabled: boolean,

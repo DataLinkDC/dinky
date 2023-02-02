@@ -102,7 +102,7 @@ const DBForm: React.FC<UpdateFormProps> = (props) => {
       width={"40%"}
       bodyStyle={{padding: '32px 40px 48px' , height: '600px', overflowY: 'auto'}}
       title={values.id ? l('pages.rc.db.modify') : l('pages.rc.db.create')}
-      visible={modalVisible}
+      open={modalVisible}
       onCancel={() => {
         setDbType(undefined);
         handleChooseDBModalVisible();

@@ -46,20 +46,9 @@ const StudioLeftTool = (props: any) => {
       <TabPane tab={<span><MessageOutlined/> {l('pages.datastudio.label.session')}</span>} key="Connectors">
         <StudioConnector/>
       </TabPane>
-      {/*<TabPane tab={<span><DatabaseOutlined/> {l('pages.datastudio.label.datasource')}</span>}*/}
-      {/*         key="DataSource">*/}
-      {/*  <StudioDataBase/>*/}
-      {/*</TabPane>*/}
       <TabPane tab={<span><AppstoreOutlined/> {l('pages.datastudio.label.meta')}</span>} key="MetaData">
         <StudioMetaData/>
       </TabPane>
-      {/*<TabPane tab={<span><CloudOutlined/> {l('pages.datastudio.label.globalvariable')}</span>}*/}
-      {/*         key="fragment">*/}
-      {/*  <StudioFragment/>*/}
-      {/*</TabPane>*/}
-      {/*<TabPane tab={<span><FunctionOutlined/> {l('pages.datastudio.label.function')}</span>} key="Function">*/}
-      {/*  <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>*/}
-      {/*</TabPane>*/}
     </Tabs>
   );
 };

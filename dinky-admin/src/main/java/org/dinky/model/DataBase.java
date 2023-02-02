@@ -24,8 +24,6 @@ import org.dinky.metadata.driver.DriverConfig;
 
 import java.time.LocalDateTime;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -46,17 +44,10 @@ public class DataBase extends SuperEntity {
 
     private Integer tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-
     private String groupName;
-
     private String type;
-
     private String url;
-
     private String username;
-
     private String password;
 
     private String note;

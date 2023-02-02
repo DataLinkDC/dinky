@@ -701,7 +701,6 @@ export default {
 
   'pages.rc.db.Management': 'DataSource',
   'pages.rc.db.name': 'Name',
-  'pages.rc.db.alias': 'Alias',
   'pages.rc.db.groupName': 'Group Type',
   'pages.rc.db.url': 'Database Connection URL',
   'pages.rc.db.username': 'Username',
@@ -712,7 +711,6 @@ export default {
   'pages.rc.db.modify': 'Modify DataSource',
   'pages.rc.db.delete': 'Delete DataSource',
   'pages.rc.db.deleteConfirm': 'Are you sure you want to delete this data source {dbName}? ',
-  'pages.rc.db.aliasPlaceholder': 'Please enter alias!',
   'pages.rc.db.namePlaceholder': 'Please enter name!',
   'pages.rc.db.urlPlaceholder': 'Please enter a properly formatted url connection!',
   'pages.rc.db.flinkConfigPlaceholder': 'Please specify the default Config of Flink With!',
@@ -770,7 +768,6 @@ export default {
   'pages.rc.fv.Management': 'Global Variable Management',
   'pages.rc.fv.id': 'Global Variable ID',
   'pages.rc.fv.name': 'Name',
-  'pages.rc.fv.alias': 'Alias',
   'pages.rc.fv.fragmentValue': 'Global Variable value',
   'pages.rc.fv.create': 'Create Global Variable',
   'pages.rc.fv.modify': 'Modify Global Variables',
@@ -782,7 +779,6 @@ export default {
   'pages.rc.fv.disableConfirm': 'Are you sure you want to disable the selected Global Variable? ',
   'pages.rc.fv.disableTotalOf': 'Total Of {total} Global Variables Is Disabled',
   'pages.rc.fv.namePlaceholder': 'Please enter a name!',
-  'pages.rc.fv.aliasPlaceholder': 'Please enter an alias!',
   'pages.rc.fv.fragmentValuePlaceholder': 'Please enter the Global Variable value',
   'pages.rc.fv.enabledPlaceholder': 'Please choose whether to enable!',
 
