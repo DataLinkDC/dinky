@@ -25,6 +25,7 @@ import com.dlink.cdc.hudi.HudiSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkJsonBuilder;
 import com.dlink.cdc.sql.SQLSinkBuilder;
+import com.dlink.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import com.dlink.cdc.starrocks.StarrocksSinkBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
@@ -42,6 +43,7 @@ import java.util.function.Supplier;
 public class SinkBuilderFactory {
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
+
         {
             put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
             put(KafkaSinkJsonBuilder.KEY_WORD, () -> new KafkaSinkJsonBuilder());
@@ -49,6 +51,7 @@ public class SinkBuilderFactory {
             put(StarrocksSinkBuilder.KEY_WORD, () -> new StarrocksSinkBuilder());
             put(HudiSinkBuilder.KEY_WORD, () -> new HudiSinkBuilder());
             put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
+            put(SQLCatalogSinkBuilder.KEY_WORD, () -> new SQLCatalogSinkBuilder());
         }
     };
 
