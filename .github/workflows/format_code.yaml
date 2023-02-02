@@ -15,7 +15,7 @@ env:
   repo_token: ${{ secrets.TOKEN }}
 jobs:
   format:
-    if: github.repository != 'DataLinkDC/dinky' && ${{ env.repo_token }}
+    if: github.repository != 'DataLinkDC/dinky'
     name: Format and Check Code
     runs-on: ubuntu-latest
     steps:
