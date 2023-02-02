@@ -12,9 +12,9 @@ concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
 
 jobs:
+  env:
+    repo_token: ${{ secrets.TOKEN }}
   format:
-    env:
-      repo_token: ${{ secrets.TOKEN }}
     if: github.repository != 'DataLinkDC/dinky' && ${{ env.repo_token }}
     name: Format and Check Code
     runs-on: ubuntu-latest
