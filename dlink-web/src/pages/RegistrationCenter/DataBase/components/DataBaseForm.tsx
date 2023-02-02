@@ -47,7 +47,6 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<DataBaseItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     groupName: props.values.groupName,
     url: props.values.url,
     username: props.values.username,
@@ -85,7 +84,7 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
     form.resetFields();
   };
 
-  const renderContent = (formVals) => {
+  const renderContent = (formVals: Partial<DataBaseItem>) => {
     return (
       <>
         <Divider>{type}</Divider>
@@ -94,12 +93,6 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
           label={l('pages.rc.db.name')}
           rules={[{required: true, message: l('pages.rc.db.namePlaceholder')}]}>
           <Input placeholder={l('pages.rc.db.namePlaceholder')}/>
-        </Form.Item>
-        <Form.Item
-          name="alias"
-          label={l('pages.rc.db.alias')}
-        >
-          <Input placeholder={l('pages.rc.db.aliasPlaceholder')}/>
         </Form.Item>
         <Form.Item
           name="groupName"
@@ -176,7 +169,6 @@ const DataBaseForm: React.FC<ClickHouseFormProps> = (props) => {
             initialValues={{
               id: formVals.id,
               name: formVals.name,
-              alias: formVals.alias,
               type: formVals.type,
               groupName: formVals.groupName,
               url: formVals.url,

@@ -24,9 +24,9 @@ import org.dinky.db.model.SuperEntity;
 import org.dinky.job.JobConfig;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -38,6 +38,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 任务
@@ -48,7 +49,8 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_task")
-public class Task extends SuperEntity {
+@Slf4j
+public class Task extends SuperEntity<Task> {
 
     private static final long serialVersionUID = 5988972129893667154L;
 
@@ -127,32 +129,36 @@ public class Task extends SuperEntity {
     @TableField(exist = false)
     private String alertGroupName;
 
+    public static final ObjectMapper objectMapper = new ObjectMapper();
+
+    @SuppressWarnings("unchecked")
     public List<Map<String, String>> parseConfig() {
-        ObjectMapper objectMapper = new ObjectMapper();
+        if (Asserts.isNullString(configJson)) {
+            return config;
+        }
+
         try {
-            if (Asserts.isNotNullString(configJson)) {
-                config = objectMapper.readValue(configJson, ArrayList.class);
-            }
+            config = objectMapper.readValue(configJson, ArrayList.class);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            log.error(e.getMessage());
         }
         return config;
     }
 
     public JobConfig buildSubmitConfig() {
-        boolean useRemote = true;
-        if (clusterId == null || clusterId == 0) {
-            useRemote = false;
-        }
-        Map<String, String> map = new HashMap<>();
-        for (Map<String, String> item : config) {
-            if (Asserts.isNotNull(item)) {
-                map.put(item.get("key"), item.get("value"));
-            }
-        }
+        boolean useRemote = clusterId != null && clusterId != 0;
+        Map<String, String> map =
+                config.stream()
+                        .filter(Asserts::isNotNull)
+                        .collect(
+                                Collectors.toMap(
+                                        item -> item.get("key"),
+                                        item -> item.get("value"),
+                                        (a, b) -> b));
+
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
-        boolean fg = Asserts.isNull(fragment) ? false : fragment;
-        boolean sts = Asserts.isNull(statementSet) ? false : statementSet;
+        boolean fg = Asserts.isNotNull(fragment) && fragment;
+        boolean sts = Asserts.isNotNull(statementSet) && statementSet;
         return new JobConfig(
                 type,
                 step,
@@ -174,30 +180,25 @@ public class Task extends SuperEntity {
                 map);
     }
 
-    public JsonNode parseJsonNode() {
-        ObjectMapper mapper = new ObjectMapper();
-        return parseJsonNode(mapper);
-    }
-
     public JsonNode parseJsonNode(ObjectMapper mapper) {
-        JsonNode jsonNode = mapper.createObjectNode();
-        ((ObjectNode) jsonNode).put("name", this.getName());
-        ((ObjectNode) jsonNode).put("alias", this.alias);
-        ((ObjectNode) jsonNode).put("dialect", this.dialect);
-        ((ObjectNode) jsonNode).put("type", this.type);
-        ((ObjectNode) jsonNode).put("statement", this.statement);
-        ((ObjectNode) jsonNode).put("checkPoint", this.checkPoint);
-        ((ObjectNode) jsonNode).put("savePointStrategy", this.savePointStrategy);
-        ((ObjectNode) jsonNode).put("savePointPath", this.savePointPath);
-        ((ObjectNode) jsonNode).put("parallelism", this.parallelism);
-        ((ObjectNode) jsonNode).put("fragment", this.fragment);
-        ((ObjectNode) jsonNode).put("statementSet", this.statementSet);
-        ((ObjectNode) jsonNode).put("batchModel", this.batchModel);
-        ((ObjectNode) jsonNode).put("clusterName", this.clusterName);
-        ((ObjectNode) jsonNode).put("configJson", this.configJson);
-        ((ObjectNode) jsonNode).put("note", this.note);
-        ((ObjectNode) jsonNode).put("step", this.step);
-        ((ObjectNode) jsonNode).put("enabled", this.getEnabled());
+        ObjectNode jsonNode = mapper.createObjectNode();
+        jsonNode.put("name", this.getName());
+        jsonNode.put("alias", this.alias);
+        jsonNode.put("dialect", this.dialect);
+        jsonNode.put("type", this.type);
+        jsonNode.put("statement", this.statement);
+        jsonNode.put("checkPoint", this.checkPoint);
+        jsonNode.put("savePointStrategy", this.savePointStrategy);
+        jsonNode.put("savePointPath", this.savePointPath);
+        jsonNode.put("parallelism", this.parallelism);
+        jsonNode.put("fragment", this.fragment);
+        jsonNode.put("statementSet", this.statementSet);
+        jsonNode.put("batchModel", this.batchModel);
+        jsonNode.put("clusterName", this.clusterName);
+        jsonNode.put("configJson", this.configJson);
+        jsonNode.put("note", this.note);
+        jsonNode.put("step", this.step);
+        jsonNode.put("enabled", this.getEnabled());
         return jsonNode;
     }
 }
