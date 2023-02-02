@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   format:
-    if: github.repository != 'DataLinkDC/dinky' && ${{ vars.FORMAT == 'true' }}
+    if: (github.repository != 'DataLinkDC/dinky') && (vars.FORMAT == 'true')
     name: Format Code
     runs-on: ubuntu-latest
     steps:
