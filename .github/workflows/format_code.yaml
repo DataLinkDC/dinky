@@ -33,5 +33,3 @@ jobs:
         if: steps.git-check.outputs.modified == 'true'
         with:
           commit_message: Spotless Apply
-          commit_user_name: Spotless
-          commit_user_email: spotless@dinky.org
