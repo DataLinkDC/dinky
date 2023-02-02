@@ -19,12 +19,14 @@
 
 package org.dinky.model;
 
+import org.dinky.db.model.SuperEntity;
+
 import com.baomidou.mybatisplus.annotation.TableName;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import org.dinky.db.model.SuperEntity;
 
 /**
  * FragmentVariable
@@ -38,6 +40,7 @@ import org.dinky.db.model.SuperEntity;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_fragment")
 public class FragmentVariable extends SuperEntity {
+
     private Integer tenantId;
     private String fragmentValue;
     private String note;
