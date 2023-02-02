@@ -71,4 +71,4 @@ ALTER TABLE dinky_catalogue RENAME INDEX `dlink_catalogue_un` TO `catalogue_un_i
 ALTER TABLE dinky_schema_history RENAME INDEX `dlink_schema_history_s_idx` TO `schema_history_idx`;
 
 
-
+ALTER TABLE dinky_database DROP COLUMN `alias`;

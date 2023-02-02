@@ -703,7 +703,6 @@ export default {
 
   'pages.rc.db.Management': 'DataSource',
   'pages.rc.db.name': 'Name',
-  'pages.rc.db.alias': 'Alias',
   'pages.rc.db.groupName': 'Group Type',
   'pages.rc.db.url': 'Database Connection URL',
   'pages.rc.db.username': 'Username',
@@ -714,7 +713,6 @@ export default {
   'pages.rc.db.modify': 'Modify DataSource',
   'pages.rc.db.delete': 'Delete DataSource',
   'pages.rc.db.deleteConfirm': 'Are you sure you want to delete this data source {dbName}? ',
-  'pages.rc.db.aliasPlaceholder': 'Please enter alias!',
   'pages.rc.db.namePlaceholder': 'Please enter name!',
   'pages.rc.db.urlPlaceholder': 'Please enter a properly formatted url connection!',
   'pages.rc.db.flinkConfigPlaceholder': 'Please specify the default Config of Flink With!',
