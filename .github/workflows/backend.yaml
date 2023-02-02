@@ -32,7 +32,7 @@ concurrency:
 
 jobs:
   check:
-    name: Format and Check Code
+    name: Check Code
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3

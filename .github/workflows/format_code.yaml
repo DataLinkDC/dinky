@@ -11,8 +11,6 @@ on:
 concurrency:
   group: backend-${{ github.event.pull_request.number || github.ref }}
 
-env:
-  repo_token: ${{ secrets.TOKEN }}
 jobs:
   format:
     if: github.repository != 'DataLinkDC/dinky'
@@ -23,7 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
-          token: ${{ env.repo_token }}
+          token: ${{ secrets.TOKEN }}
       - name: Run spotless apply
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
       - name: Check for modified files
