@@ -21,6 +21,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
+          token: ${{ secrets.TOKEN }}
       - name: Run spotless apply
         run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
       - name: Check for modified files
