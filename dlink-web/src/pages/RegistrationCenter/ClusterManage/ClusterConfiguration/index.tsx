@@ -105,12 +105,6 @@ const ClusterConfigurationTableList: React.FC<{}> = (props: any) => {
       hideInSearch: true,
     },
     {
-      title: l('pages.rc.clusterConfig.alias'),
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
-    },
-    {
       title: l('pages.rc.clusterConfig.type'),
       sorter: true,
       dataIndex: 'type',

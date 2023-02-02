@@ -522,7 +522,6 @@ export default {
 
   'pages.rc.clusterConfigManagement': '集群配置管理',
   'pages.rc.clusterConfig.name': '集群配置名称',
-  'pages.rc.clusterConfig.alias': '别名',
   'pages.rc.clusterConfig.id': '集群配置ID',
   'pages.rc.clusterConfig.type': '类型',
   'pages.rc.clusterConfig.hadoopConfigPath': 'Hadoop 配置文件路径',

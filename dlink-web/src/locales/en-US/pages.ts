@@ -516,7 +516,6 @@ export default {
 
   'pages.rc.clusterConfigManagement': 'Cluster Config Management',
   'pages.rc.clusterConfig.name': 'Cluster Config Name',
-  'pages.rc.clusterConfig.alias': 'Alias',
   'pages.rc.clusterConfig.id': 'Cluster Config ID',
   'pages.rc.clusterConfig.type': 'Type',
   'pages.rc.clusterConfig.hadoopConfigPath': 'Hadoop Config file path',

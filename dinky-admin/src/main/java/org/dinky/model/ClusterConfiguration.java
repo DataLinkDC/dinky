@@ -25,7 +25,6 @@ import org.dinky.db.model.SuperEntity;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -49,11 +48,7 @@ public class ClusterConfiguration extends SuperEntity {
 
     private Integer tenantId;
 
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-
     private String type;
-
     private String configJson;
 
     private Boolean isAvailable;

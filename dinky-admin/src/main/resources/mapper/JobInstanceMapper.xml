@@ -13,7 +13,7 @@
         select
         a.*,
         dh.type as type,
-        (select dc.alias FROM dinky_cluster dc where dc.id=a.cluster_id) as clusterAlias
+        (select dc.name FROM dinky_cluster dc where dc.id=a.cluster_id) as clusterName
         from
         dinky_job_instance a
         <if test='!(param.isHistory!=null and param.isHistory==true)'>

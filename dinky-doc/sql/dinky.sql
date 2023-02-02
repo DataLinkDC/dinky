@@ -143,7 +143,6 @@ CREATE TABLE `dinky_cluster_configuration`  (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `tenant_id` int(11) NOT NULL DEFAULT 1 COMMENT 'tenant id',
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'cluster configuration name',
-  `alias` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'cluster configuration alias',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'cluster type',
   `config_json` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'json of configuration',
   `is_available` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is available',

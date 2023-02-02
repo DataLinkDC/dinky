@@ -73,3 +73,4 @@ ALTER TABLE dinky_schema_history RENAME INDEX `dlink_schema_history_s_idx` TO `s
 ALTER TABLE dinky_cluster DROP COLUMN `alias`;
 ALTER TABLE dinky_fragment DROP COLUMN `alias`;
 ALTER TABLE dinky_database DROP COLUMN `alias`;
+ALTER TABLE dinky_cluster_configuration DROP COLUMN `alias`;
