@@ -38,16 +38,9 @@ jobs:
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
-      - name: Run spotless apply
-        run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
       - name: Check Style
         run: |
           ./mvnw -T 4C -B --no-snapshot-updates clean spotless:check -P flink-all
-      - uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Spotless Apply
-          commit_user_name: Spotless
-          commit_user_email: spotless@dinky.org
   build_npm:
     name: Build_NPM
     runs-on: ubuntu-latest

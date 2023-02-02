@@ -1,0 +1,37 @@
+
+name: Format Code in fork repo
+
+on:
+  push:
+  pull_request:
+    branches:
+      - dev
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '**/*.sql'
+
+concurrency:
+  group: backend-${{ github.event.pull_request.number || github.ref }}
+
+jobs:
+  format:
+    if: github.repository != 'DataLinkDC/dinky'
+    name: Format and Check Code
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+      - name: Run spotless apply
+        run : ./mvnw -T 4C -B --no-snapshot-updates clean spotless:apply -P flink-all
+      - name: Check for modified files
+        id: git-check
+        run: echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        if: steps.git-check.outputs.modified == 'true'
+        with:
+          commit_message: Spotless Apply
+          commit_user_name: Spotless
+          commit_user_email: spotless@dinky.org
