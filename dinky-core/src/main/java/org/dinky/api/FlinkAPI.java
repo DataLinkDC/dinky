@@ -78,7 +78,8 @@ public class FlinkAPI {
         return new FlinkAPI(address);
     }
 
-    private JsonNode parse(String res) {        try {
+    private JsonNode parse(String res) {
+        try {
             return mapper.readTree(res);
         } catch (JsonProcessingException e) {
             logger.error("json parser error: ", e);
