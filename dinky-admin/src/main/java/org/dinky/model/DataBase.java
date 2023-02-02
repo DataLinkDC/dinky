@@ -43,13 +43,11 @@ public class DataBase extends SuperEntity {
     private Integer tenantId;
 
     private String groupName;
-
     private String type;
 
     private String url;
 
     private String username;
-
     private String password;
 
     private String note;
