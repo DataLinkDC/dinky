@@ -154,12 +154,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/**
- * 任务 服务实现类
- *
- * @author wenmo
- * @since 2021-05-24
- */
+/** TaskServiceImpl */
 @Service
 @RequiredArgsConstructor
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
