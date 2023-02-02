@@ -27,8 +27,7 @@ jobs:
       - name: Check for modified files
         id: git-check
         run: |
-          echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >>
-        $GITHUB_OUTPUT
+          echo "modified=$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)" >> $GITHUB_OUTPUT
       - uses: stefanzweifel/git-auto-commit-action@v4
         if: steps.git-check.outputs.modified == 'true'
         with:
