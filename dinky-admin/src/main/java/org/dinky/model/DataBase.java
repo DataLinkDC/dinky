@@ -19,13 +19,15 @@
 
 package org.dinky.model;
 
-import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dinky.db.model.SuperEntity;
 import org.dinky.metadata.driver.DriverConfig;
 
 import java.time.LocalDateTime;
+
+import com.baomidou.mybatisplus.annotation.TableName;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * DataBase
@@ -37,6 +39,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_database")
 public class DataBase extends SuperEntity {
+
     private static final long serialVersionUID = -5002272138861566408L;
 
     private Integer tenantId;
