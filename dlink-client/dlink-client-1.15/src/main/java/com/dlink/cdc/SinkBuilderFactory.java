@@ -26,6 +26,7 @@ import com.dlink.cdc.doris.DorisSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkBuilder;
 import com.dlink.cdc.kafka.KafkaSinkJsonBuilder;
 import com.dlink.cdc.sql.SQLSinkBuilder;
+import com.dlink.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -42,11 +43,13 @@ import java.util.function.Supplier;
 public class SinkBuilderFactory {
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
+
         {
             put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
             put(KafkaSinkJsonBuilder.KEY_WORD, () -> new KafkaSinkJsonBuilder());
             put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
             put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
+            put(SQLCatalogSinkBuilder.KEY_WORD, () -> new SQLCatalogSinkBuilder());
             put(DorisExtendSinkBuilder.KEY_WORD, () -> new DorisExtendSinkBuilder());
             put(DorisSchemaEvolutionSinkBuilder.KEY_WORD, () -> new DorisSchemaEvolutionSinkBuilder());
         }

@@ -21,6 +21,7 @@ package com.dlink.cdc;
 
 import com.dlink.assertion.Asserts;
 import com.dlink.cdc.sql.SQLSinkBuilder;
+import com.dlink.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import com.dlink.exception.FlinkClientException;
 import com.dlink.model.FlinkCDCConfig;
 
@@ -38,6 +39,8 @@ public class SinkBuilderFactory {
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = new HashMap<String, Supplier<SinkBuilder>>() {
         {
+            put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
+            put(SQLCatalogSinkBuilder.KEY_WORD, () -> new SQLCatalogSinkBuilder());
         }
     };
 
