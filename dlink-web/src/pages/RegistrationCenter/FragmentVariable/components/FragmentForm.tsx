@@ -46,7 +46,6 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
   const [formVals, setFormVals] = useState<Partial<FragmentVariableTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     fragmentValue: props.values.fragmentValue,
     note: props.values.note,
     enabled: props.values.enabled,
@@ -76,12 +75,6 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
           label={l('pages.rc.fv.name')}
           rules={[{required: true, message: l('pages.rc.fv.namePlaceholder')}]}>
           <Input placeholder={l('pages.rc.fv.namePlaceholder')}/>
-        </FormItem>
-        <FormItem
-          name="alias"
-          label={l('pages.rc.fv.alias')}
-          rules={[{required: true, message: l('pages.rc.fv.aliasPlaceholder')}]}>
-          <Input placeholder={l('pages.rc.fv.aliasPlaceholder')}/>
         </FormItem>
         <FormItem
           name="note"
@@ -124,7 +117,7 @@ const FragmentForm: React.FC<FragmentFormProps> = (props: any) => {
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={formVals.id ? l('pages.rc.fv.modify') : l('pages.rc.fv.create')}
-      visible={modalVisible}
+      open={modalVisible}
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
     >
