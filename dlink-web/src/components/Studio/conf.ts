@@ -43,7 +43,7 @@ export const DIALECT = {
   PHOENIX: 'Phoenix',
   STARROCKS: 'StarRocks',
   PRESTO: 'Presto',
-  KUBERNETES_APPLICATION: 'KubernetesApplaction',
+  KUBERNETES_APPLICATION: 'KubernetesApplication',
   JAVA: 'Java',
   SCALA: 'Scala',
   PYTHON: 'Python',
