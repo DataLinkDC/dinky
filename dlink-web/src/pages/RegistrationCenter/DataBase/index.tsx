@@ -142,14 +142,11 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
               ]}
             >
               <Card.Meta
-                title={<Tag color="gray" key={row.alias}>
-                  {row.alias}
+                title={<Tag color="gray" key={row.name}>
+                  {row.name}
                 </Tag>}
                 description={(
                   <Space size={0}>
-                    <Tag key={row.name}>
-                      {row.name}
-                    </Tag>
                     <Tag color="blue" key={row.groupName}>
                       {row.groupName}
                     </Tag>
