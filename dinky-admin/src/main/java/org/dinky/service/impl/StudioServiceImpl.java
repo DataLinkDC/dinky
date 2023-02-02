@@ -373,7 +373,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect())
-                && !Dialect.FLINKSQL.equalsVal(studioCADTO.getDialect())) {
+                && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
                 return null;
             }

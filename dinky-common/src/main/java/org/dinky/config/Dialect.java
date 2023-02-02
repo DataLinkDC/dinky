@@ -28,9 +28,9 @@ import org.dinky.assertion.Asserts;
  * @since 2021/12/13
  */
 public enum Dialect {
-    FLINKSQL("FlinkSql"),
-    FLINKJAR("FlinkJar"),
-    FLINKSQLENV("FlinkSqlEnv"),
+    FLINK_SQL("FlinkSql"),
+    FLINK_JAR("FlinkJar"),
+    FLINK_SQL_ENV("FlinkSqlEnv"),
     SQL("Sql"),
     JAVA("Java"),
     PYTHON("Python"),
@@ -43,13 +43,13 @@ public enum Dialect {
     DORIS("Doris"),
     PHOENIX("Phoenix"),
     HIVE("Hive"),
-    STARROCKS("StarRocks"),
+    STAR_ROCKS("StarRocks"),
     PRESTO("Presto"),
-    KUBERNETES_APPLICATION("KubernetesApplaction");
+    KUBERNETES_APPLICATION("KubernetesApplication");
 
     private String value;
 
-    public static final Dialect DEFAULT = Dialect.FLINKSQL;
+    public static final Dialect DEFAULT = Dialect.FLINK_SQL;
 
     Dialect(String value) {
         this.value = value;
@@ -69,7 +69,7 @@ public enum Dialect {
                 return type;
             }
         }
-        return Dialect.FLINKSQL;
+        return Dialect.FLINK_SQL;
     }
 
     /**
@@ -90,7 +90,7 @@ public enum Dialect {
             case DORIS:
             case PHOENIX:
             case HIVE:
-            case STARROCKS:
+            case STAR_ROCKS:
             case PRESTO:
                 return true;
             default:

@@ -19,18 +19,18 @@
 
 package org.dinky.constant;
 
-public interface NetConstant {
+public final class NetConstant {
 
     /** http:// */
-    String HTTP = "http://";
+    public static final String HTTP = "http://";
     /** 冒号: */
-    String COLON = ":";
+    public static final String COLON = ":";
     /** 斜杠/ */
-    String SLASH = "/";
+    public static final String SLASH = "/";
     /** 连接运行服务器超时时间 1000 */
-    Integer SERVER_TIME_OUT_ACTIVE = 1000;
+    public static final Integer SERVER_TIME_OUT_ACTIVE = 1000;
     /** 读取服务器超时时间 3000 */
-    Integer READ_TIME_OUT = 3000;
+    public static final Integer READ_TIME_OUT = 3000;
     /** 连接FLINK历史服务器超时时间 2000 */
-    Integer SERVER_TIME_OUT_HISTORY = 3000;
+    public static final Integer SERVER_TIME_OUT_HISTORY = 3000;
 }
