@@ -38,8 +38,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Job {
-    private Integer id;
+public class Job {private Integer id;
     private Integer jobInstanceId;
     private JobConfig jobConfig;
     private String jobManagerAddress;
