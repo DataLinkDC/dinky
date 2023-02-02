@@ -29,7 +29,7 @@ export type JobInstanceTableListItem = {
   taskId: number,
   step: number,
   clusterId: number,
-  clusterAlias: string,
+  clusterName: string,
   type: string,
   jobManagerAddress: string,
   jid: string,

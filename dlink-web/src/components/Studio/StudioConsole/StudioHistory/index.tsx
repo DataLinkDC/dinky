@@ -159,11 +159,11 @@ const StudioHistory = (props: any) => {
                       <MessageOutlined/> {row.session}
                     </Tag>
                   ) : ''}
-                  {row.clusterAlias ? (
-                    <Tag color="green" key={row.clusterAlias}>
-                      <ClusterOutlined/> {row.clusterAlias}
+                  {row.clusterName ? (
+                    <Tag color="green" key={row.clusterName}>
+                      <ClusterOutlined/> {row.clusterName}
                     </Tag>
-                  ) : (<Tag color="green" key={row.clusterAlias}>
+                  ) : (<Tag color="green" key={row.clusterName}>
                     <ClusterOutlined/> {l('pages.devops.jobinfo.localenv')}
                   </Tag>)}
                   {row.type ? (
@@ -275,7 +275,7 @@ const StudioHistory = (props: any) => {
       />
       <Modal
         width={'80%'}
-        visible={modalVisit}
+        open={modalVisit}
         destroyOnClose
         centered
         footer={false}
