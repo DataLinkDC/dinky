@@ -29,9 +29,9 @@ const About: React.FC = () => {
     <PageContainer title={false}>
       <Card>
         <Alert
-          message={l('pages.about.alertMessage', '', {version: VERSION})}
+          message={l('pages.about.Community', '', {version: VERSION})}
           type="success"
-          icon={<SmileOutlined height={20} width={20}/>}
+          icon={<SmileOutlined height={30} width={30}/>}
           showIcon
           banner
           style={{
@@ -39,10 +39,6 @@ const About: React.FC = () => {
             marginBottom: 24,
           }}
         />
-        <Typography.Text strong>
-          {l('pages.about.Community')}
-        </Typography.Text>
-        <br/><br/>
         <Paragraph style={{marginRight: 30}}>
           <Typography.Text title={l('pages.about.QQcode')} style={{marginRight: 80}} strong ellipsis={true}>
             <Image title={l('pages.about.QQcode')} height={300} width={250} src="community/qq.png"/>
