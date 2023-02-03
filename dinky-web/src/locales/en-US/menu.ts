@@ -60,4 +60,5 @@ export default {
   'menu.settings.systemInfo': 'System Info',
   'menu.settings.processList': 'Process List',
   'menu.about': 'About',
+  'menu.version': 'Version: {version}',
 };

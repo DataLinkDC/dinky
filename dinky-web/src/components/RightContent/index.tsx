@@ -20,6 +20,9 @@ import {useEmotionCss} from '@ant-design/use-emotion-css';
 import {SelectLang, useModel} from '@umijs/max';
 import React from 'react';
 import Avatar from './AvatarDropdown';
+import {VERSION} from "@/components/Version/Version";
+import { l } from '@/utils/intl';
+import {Space} from "antd";
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -61,6 +64,7 @@ const GlobalHeaderRight: React.FC = () => {
     <div className={className}>
       <Avatar />
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName} />
+      <Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>
     </div>
   );
 };
