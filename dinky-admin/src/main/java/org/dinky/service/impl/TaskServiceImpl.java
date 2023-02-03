@@ -511,7 +511,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<Task> listFlinkSQLEnv() {
         return this.list(
-                new QueryWrapper<Task>().eq("dialect", Dialect.FLINK_SQL_ENV).eq("enabled", 1));
+                new QueryWrapper<Task>().eq("dialect", Dialect.FLINK_SQL_ENV.getValue()).eq("enabled", 1));
     }
 
     @Override
