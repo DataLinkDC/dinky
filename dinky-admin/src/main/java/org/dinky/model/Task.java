@@ -106,7 +106,7 @@ public class Task extends SuperEntity<Task> {
     private String clusterName;
 
     @TableField(exist = false)
-    private List<Savepoints> savepoints;
+    private List<Savepoints> savePoints;
 
     @TableField(exist = false)
     private List<Map<String, String>> config = new ArrayList<>();
