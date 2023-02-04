@@ -183,10 +183,6 @@ export default {
 
   'pages.settings.UserManagement': 'User Management',
   'pages.settings.Flink': 'Flink Setting',
-  'pages.settings.FlinkURL': 'Submit the Jar file path to FlinkSQL',
-
-  'pages.settings.FlinkSQLJarMainParameter': 'Submit The Main Class entry To the Jar For FlinkSQL',
-  'pages.settings.FlinkSQLJarMainClass': 'The Main Class Of The Jar That Submitted FlinkSQL',
   'pages.settings.FlinkRestAPI': 'Using Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL Statement Separator',
   'pages.settings.FlinkJobID': 'Maximum Waiting Time For Getting A Job ID (seconds)',
@@ -521,6 +517,10 @@ export default {
   'pages.rc.clusterConfig.hadoopConfigPath': 'Hadoop Config file path',
   'pages.rc.clusterConfig.flinkConfigPath': 'Flink Config file path',
   'pages.rc.clusterConfig.libPath': 'lib path',
+  'pages.rc.clusterConfig.sqlSubmitJarPath': 'Jar FilePath',
+  'pages.rc.clusterConfig.FlinkSQLJarMainParameter': "Jar's  Input Params",
+  'pages.rc.clusterConfig.FlinkSQLJarMainClass': "Jar's Mian Class",
+
   'pages.rc.clusterConfig.isAvailable': 'Is Available',
   'pages.rc.clusterConfig.available': 'Available',
   'pages.rc.clusterConfig.notAvailable': 'Not Available',
@@ -545,6 +545,7 @@ export default {
   'pages.rc.clusterConfig.hadoopConfigPathHelp': 'Specify the Config file path (without / at the end), the following files need to be included: core-site.xml, hdfs-site.xml, yarn-site.xml! ',
   'pages.rc.clusterConfig.defineConfig.highPriority': 'Custom Config (high priority)',
   'pages.rc.clusterConfig.flinkConfig': 'Flink Config',
+  'pages.rc.clusterConfig.submitSqlConfig': 'Submit FlinkSQL Config (Required in Application mode)',
   'pages.rc.clusterConfig.hadoopConfig': 'Hadoop Config',
   'pages.rc.clusterConfig.k8sConfig': 'Kubernetes Config',
   'pages.rc.clusterConfig.libPathPlaceholder': 'Please enter the hdfs path of lib! Values such as hdfs:///flink/lib',

@@ -287,6 +287,32 @@ const ClusterConfigurationForm: React.FC<ClusterConfigurationFormProps> = (props
               </Upload>
             </Form.Item>}/>
         </Form.Item>
+
+        <Divider>{l('pages.rc.clusterConfig.submitSqlConfig')}</Divider>
+        <Form.Item
+          name="sqlSubmitJarPath"
+          label={l('pages.rc.clusterConfig.sqlSubmitJarPath')}
+          help={l('pages.rc.clusterConfig.sqlSubmitJarPath')+' eg: hdfs:///dlink/jar/dlink-app.jar'}
+        >
+          <Input placeholder={l('pages.rc.clusterConfig.sqlSubmitJarPath')} />
+        </Form.Item>
+
+        <Form.Item
+          name="sqlSubmitJarParas"
+          label={l('pages.rc.clusterConfig.FlinkSQLJarMainParameter')}
+        >
+          <Input.TextArea placeholder={l('pages.rc.clusterConfig.FlinkSQLJarMainParameter')} />
+        </Form.Item>
+
+        <Form.Item
+          name="sqlSubmitJarMainAppClass"
+          label={l('pages.rc.clusterConfig.FlinkSQLJarMainClass')}
+          help={l('pages.rc.clusterConfig.FlinkSQLJarMainClass')+' eg: org.dinky.app.MainApp'}
+        >
+          <Input defaultValue={'org.dinky.app.MainApp'} placeholder={l('pages.rc.clusterConfig.FlinkSQLJarMainClass')} />
+        </Form.Item>
+
+
       </>
     )
   }

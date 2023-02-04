@@ -184,10 +184,6 @@ export default {
 
   'pages.settings.UserManagement': '用户管理',
   'pages.settings.Flink': 'Flink 设置',
-  'pages.settings.FlinkURL': '提交 FlinkSQL 的 Jar 文件路径',
-
-  'pages.settings.FlinkSQLJarMainParameter': '提交 FlinkSQL 的 Jar 的主类入参',
-  'pages.settings.FlinkSQLJarMainClass': '提交 FlinkSQL 的 Jar 的主类',
   'pages.settings.FlinkRestAPI': '使用 Rest API',
   'pages.settings.FlinkURLSplit': 'FlinkSQL 语句分隔符',
   'pages.settings.FlinkJobID': '获取 Job ID 的最大等待时间（秒）',
@@ -527,6 +523,10 @@ export default {
   'pages.rc.clusterConfig.hadoopConfigPath': 'Hadoop 配置文件路径',
   'pages.rc.clusterConfig.flinkConfigPath': 'Flink 配置文件路径',
   'pages.rc.clusterConfig.libPath': 'lib 路径',
+  'pages.rc.clusterConfig.sqlSubmitJarPath': 'Jar 文件路径',
+  'pages.rc.clusterConfig.FlinkSQLJarMainParameter': 'Jar 的主类入参',
+  'pages.rc.clusterConfig.FlinkSQLJarMainClass': 'Jar 的主类',
+
   'pages.rc.clusterConfig.isAvailable': '是否可用',
   'pages.rc.clusterConfig.available': '可用',
   'pages.rc.clusterConfig.notAvailable': '不可用',
@@ -551,6 +551,7 @@ export default {
   'pages.rc.clusterConfig.hadoopConfigPathHelp': '指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml ！',
   'pages.rc.clusterConfig.defineConfig.highPriority': '自定义配置（高优先级）',
   'pages.rc.clusterConfig.flinkConfig': 'Flink 配置',
+  'pages.rc.clusterConfig.submitSqlConfig': '提交 FlinkSQL 配置项 (Application 模式必填)',
   'pages.rc.clusterConfig.hadoopConfig': 'Hadoop 配置',
   'pages.rc.clusterConfig.k8sConfig': 'Kubernetes 配置',
   'pages.rc.clusterConfig.libPathPlaceholder': '请输入 lib 的 hdfs 路径！值如 hdfs:///flink/lib',
