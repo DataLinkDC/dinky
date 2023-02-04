@@ -25,9 +25,6 @@ import {saveSettings} from "@/pages/SettingCenter/FlinkSettings/function";
 import {l} from "@/utils/intl";
 
 type FlinkConfigProps = {
-  sqlSubmitJarPath: SettingsStateType['sqlSubmitJarPath'];
-  sqlSubmitJarParas: SettingsStateType['sqlSubmitJarParas'];
-  sqlSubmitJarMainAppClass: SettingsStateType['sqlSubmitJarMainAppClass'];
   useRestAPI: SettingsStateType['useRestAPI'];
   sqlSeparator: SettingsStateType['sqlSeparator'];
   jobIdWait: SettingsStateType['jobIdWait'];
@@ -37,9 +34,6 @@ type FlinkConfigProps = {
 const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
 
   const {
-    sqlSubmitJarPath,
-    sqlSubmitJarParas,
-    sqlSubmitJarMainAppClass,
     useRestAPI,
     sqlSeparator,
     jobIdWait,
@@ -54,49 +48,7 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
   }, [props]);
 
   const getData = () => [
-    {
-      title: l('pages.settings.FlinkURL'),
-      description: (
-        editName != 'sqlSubmitJarPath' ?
-          (sqlSubmitJarPath ? sqlSubmitJarPath : l('pages.settings.FlinkNoSetting')) : (
-            <Input
-              id='sqlSubmitJarPath'
-              defaultValue={sqlSubmitJarPath}
-              onChange={onChange}
-              placeholder="hdfs:///dlink/jar/dlink-app.jar"/>)),
-      actions: editName != 'sqlSubmitJarPath' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarPath')}>{l('button.edit')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarPath')}>{l('button.save')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
-    },
-    {
-      title: l('pages.settings.FlinkSQLJarMainParameter'),
-      description: (
-        editName != 'sqlSubmitJarParas' ?
-          (sqlSubmitJarParas ? sqlSubmitJarParas : l('pages.settings.FlinkNoSetting')) : (<Input
-            id='sqlSubmitJarParas'
-            defaultValue={sqlSubmitJarParas}
-            onChange={onChange}
-            placeholder=""/>)),
-      actions: editName != 'sqlSubmitJarParas' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarParas')}>{l('button.edit')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarParas')}>{l('button.save')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
-    },
-    {
-      title: l('pages.settings.FlinkSQLJarMainClass'),
-      description: (
-        editName != 'sqlSubmitJarMainAppClass' ?
-          (sqlSubmitJarMainAppClass ? sqlSubmitJarMainAppClass : l('pages.settings.FlinkNoSetting')) : (<Input
-            id='sqlSubmitJarMainAppClass'
-            defaultValue={sqlSubmitJarMainAppClass}
-            onChange={onChange}
-            placeholder="com.dlink.app.MainApp"/>)),
-      actions: editName != 'sqlSubmitJarMainAppClass' ? [<a
-          onClick={({}) => handleEditClick('sqlSubmitJarMainAppClass')}>{l('button.edit')}</a>] :
-        [<a onClick={({}) => handleSaveClick('sqlSubmitJarMainAppClass')}>{l('button.save')}</a>,
-          <a onClick={({}) => handleCancelClick()}>{l('button.cancel')}</a>],
-    }, {
+     {
       title: l('pages.settings.FlinkRestAPI'),
       description: l('pages.settings.FlinkNoUseSetting'),
       actions: [
@@ -192,9 +144,6 @@ const FlinkConfigView: React.FC<FlinkConfigProps> = (props) => {
   );
 };
 export default connect(({Settings}: { Settings: SettingsStateType }) => ({
-  sqlSubmitJarPath: Settings.sqlSubmitJarPath,
-  sqlSubmitJarParas: Settings.sqlSubmitJarParas,
-  sqlSubmitJarMainAppClass: Settings.sqlSubmitJarMainAppClass,
   useRestAPI: Settings.useRestAPI,
   sqlSeparator: Settings.sqlSeparator,
   jobIdWait: Settings.jobIdWait,
