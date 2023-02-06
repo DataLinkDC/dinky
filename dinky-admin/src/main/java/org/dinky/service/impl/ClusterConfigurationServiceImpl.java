@@ -35,7 +35,6 @@ import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.io.File;
 import java.util.HashMap;
