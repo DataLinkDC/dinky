@@ -85,6 +85,7 @@ public class ClusterConfigurationServiceImpl
         clusterConfiguration.parseConfig();
         Map<String, Object> config = clusterConfiguration.getConfig();
         GatewayConfig gatewayConfig = new GatewayConfig();
+
         if (config.containsKey("hadoopConfigPath")) {
             gatewayConfig.setClusterConfig(
                     ClusterConfig.build(

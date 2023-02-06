@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.With;
 
 /**
  * AppConfig
@@ -32,6 +33,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
+@With
 public class AppConfig {
 
     private String userJarPath;
