@@ -26,6 +26,7 @@ import com.dlink.dto.APIExecuteSqlDTO;
 import com.dlink.dto.APIExplainSqlDTO;
 import com.dlink.dto.APISavePointDTO;
 import com.dlink.dto.APISavePointTaskDTO;
+import com.dlink.job.JobResult;
 import com.dlink.service.APIService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.StudioService;
@@ -64,7 +65,12 @@ public class APIController {
     @GetMapping("/submitTask")
     public Result submitTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.submitTask(id), "执行成功");
+        JobResult jobResult = taskService.submitTask(id);
+        if (jobResult.isSuccess()) {
+            return Result.succeed(jobResult, "执行成功");
+        } else {
+            return Result.failed(jobResult, jobResult.getError());
+        }
     }
 
     @PostMapping("/executeSql")
