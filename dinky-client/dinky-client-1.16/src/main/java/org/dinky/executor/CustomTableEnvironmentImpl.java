@@ -19,11 +19,6 @@
 
 package org.dinky.executor;
 
-import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvironmentImpl.lookupExecutor;
-
-import org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvironmentImpl;
-import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.model.LineageRel;
@@ -42,17 +37,9 @@ import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
-import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.catalog.GenericInMemoryCatalog;
-import org.apache.flink.table.delegation.Executor;
-import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.factories.PlannerFactoryUtil;
-import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -60,11 +47,7 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.resource.ResourceManager;
-import org.apache.flink.util.FlinkUserCodeClassLoaders;
-import org.apache.flink.util.MutableURLClassLoader;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -101,7 +84,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().withClassLoader(DinkyClassLoaderContextHolder.get()).build());
+        return create(
+                executionEnvironment,
+                EnvironmentSettings.newInstance()
+                        .withClassLoader(DinkyClassLoaderContextHolder.get())
+                        .build());
     }
 
     public static CustomTableEnvironmentImpl createBatch(
@@ -112,7 +99,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
-        StreamTableEnvironment streamTableEnvironment=
+        StreamTableEnvironment streamTableEnvironment =
                 StreamTableEnvironment.create(executionEnvironment, settings);
         return new CustomTableEnvironmentImpl(streamTableEnvironment);
     }
