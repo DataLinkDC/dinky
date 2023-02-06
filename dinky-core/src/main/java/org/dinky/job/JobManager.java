@@ -456,8 +456,8 @@ public class JobManager {
                     currentSql = String.join(sqlSeparator, inserts);
                     GatewayResult gatewayResult = submitByGateway(inserts);
                     // Use statement set only has one jid.
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
+                    job.setResult(InsertResult.success(gatewayResult.getId()));
+                    job.setJobId(gatewayResult.getId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
                     if (gatewayResult.isSuccess()) {
@@ -509,8 +509,8 @@ public class JobManager {
                     }
                     currentSql = String.join(sqlSeparator, inserts);
                     GatewayResult gatewayResult = submitByGateway(inserts);
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
+                    job.setResult(InsertResult.success(gatewayResult.getId()));
+                    job.setJobId(gatewayResult.getId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
                     if (gatewayResult.isSuccess()) {
@@ -596,8 +596,8 @@ public class JobManager {
                         gatewayResult =
                                 Gateway.build(config.getGatewayConfig()).submitJobGraph(jobGraph);
                     }
-                    job.setResult(InsertResult.success(gatewayResult.getAppId()));
-                    job.setJobId(gatewayResult.getAppId());
+                    job.setResult(InsertResult.success(gatewayResult.getId()));
+                    job.setJobId(gatewayResult.getId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
 
@@ -814,8 +814,8 @@ public class JobManager {
         ready();
         try {
             GatewayResult gatewayResult = Gateway.build(config.getGatewayConfig()).submitJar();
-            job.setResult(InsertResult.success(gatewayResult.getAppId()));
-            job.setJobId(gatewayResult.getAppId());
+            job.setResult(InsertResult.success(gatewayResult.getId()));
+            job.setJobId(gatewayResult.getId());
             job.setJids(gatewayResult.getJids());
             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
             job.setEndTime(LocalDateTime.now());

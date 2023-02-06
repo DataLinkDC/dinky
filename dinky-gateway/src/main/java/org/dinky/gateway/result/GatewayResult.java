@@ -29,7 +29,9 @@ import java.util.List;
  */
 public interface GatewayResult {
 
-    String getAppId();
+    String getId();
+
+    void setId(String id);
 
     String getWebURL();
 

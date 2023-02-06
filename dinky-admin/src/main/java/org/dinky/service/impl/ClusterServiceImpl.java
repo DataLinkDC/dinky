@@ -183,7 +183,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         return registersCluster(
                 Cluster.autoRegistersCluster(
                         gatewayResult.getWebURL().replace("http://", ""),
-                        gatewayResult.getAppId()
+                        gatewayResult.getId()
                                 + "_"
                                 + clusterConfiguration.getName()
                                 + "_"
