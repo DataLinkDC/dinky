@@ -19,12 +19,13 @@
 
 package org.dinky.utils;
 
+import org.dinky.model.LineageRel;
+
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.commons.collections.CollectionUtils;
-
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
@@ -35,15 +36,13 @@ import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 
-import org.dinky.model.LineageRel;
-
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
 /**
  * LineageContext
@@ -98,7 +97,8 @@ public class LineageContext {
 
     /** Calling each program's optimize method in sequence. */
     private RelNode optimize(RelNode relNode) {
-        return ((PlannerBase) tableEnv.getPlanner()).getOptimizer()
+        return ((PlannerBase) tableEnv.getPlanner())
+                .getOptimizer()
                 .optimize(convertListToSeq(Collections.singletonList(relNode)))
                 .head();
     }
