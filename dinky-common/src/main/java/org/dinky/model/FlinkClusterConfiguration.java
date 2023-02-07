@@ -17,13 +17,32 @@
  *
  */
 
+package org.dinky.model;
 
-delete from `dinky_task_statement` where id in (select id from `dinky_task` where `name` = 'dlink_default_catalog');
+import java.util.Map;
 
-delete from `dinky_task` where `name` = 'dlink_default_catalog';
+import lombok.Getter;
+import lombok.Setter;
 
-update dinky_udf_template set template_code= 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:str):\n    return \'\''  where id = 5;
+/**
+ * @author ZackYoung
+ * @since
+ */
+@Getter
+@Setter
+public class FlinkClusterConfiguration {
+    private Type type;
+    private String hadoopConfigPath;
+    private String flinkConfigPath;
+    private String flinkLibPath;
+    private String userJarPath;
 
---  update flinkClusterConfiguration
-SET @userJarPath = ( SELECT VALUE FROM dinky_sys_config WHERE `name` = 'sqlSubmitJarPath' LIMIT 1 );
-UPDATE dinky_cluster_configuration SET config_json =( SELECT JSON_SET( config_json, '$.userJarPath', @userJarPath));
+    Map<String, String> flinkConfig;
+    Map<String, Object> kubernetesConfig;
+
+    public static enum Type {
+        //
+        Yarn,
+        Kubernetes;
+    }
+}

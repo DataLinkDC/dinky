@@ -82,6 +82,7 @@ import org.dinky.model.TaskOperatingStatus;
 import org.dinky.model.TaskVersion;
 import org.dinky.model.UDFTemplate;
 import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.process.model.ProcessType;
 import org.dinky.result.SqlExplainResult;
@@ -148,6 +149,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
@@ -258,10 +260,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         String params =
-                SystemConfiguration.getInstances().getSqlSubmitJarParas()
-                        + buildParas(
-                                taskId,
-                                dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
+                buildParas(taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
 
         gatewayConfig.getAppConfig().setUserJarParas(params.split(" "));
 
@@ -962,15 +961,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     gatewayConfig.put("userJarParas", jar.getParas());
                     gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
                 } else {
-                    SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-                    gatewayConfig.put("userJarPath", systemConfiguration.getSqlSubmitJarPath());
-                    gatewayConfig.put(
-                            "userJarParas",
-                            systemConfiguration.getSqlSubmitJarParas()
-                                    + buildParas(config.getTaskId()));
-                    gatewayConfig.put(
-                            "userJarMainAppClass",
-                            systemConfiguration.getSqlSubmitJarMainAppClass());
+                    Opt.ofBlankAble(gatewayConfig.get("userJarPath"))
+                            .orElseThrow(
+                                    () ->
+                                            new DinkyException(
+                                                    "application 模式支持需要在 注册中心->集群管理->集群配置管理 填写jar路径。"));
+                    gatewayConfig.put("userJarParas", buildParas(config.getTaskId()));
+                    gatewayConfig.put("userJarMainAppClass", "org.dinky.app.MainApp");
                 }
             }
             config.buildGatewayConfig(gatewayConfig);

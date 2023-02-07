@@ -36,6 +36,7 @@ export function getConfig(values: any) {
       hadoopConfigPath: values.hadoopConfigPath,
       flinkLibPath: values.flinkLibPath,
       flinkConfigPath: values.flinkConfigPath,
+      userJarPath: values.userJarPath,
       hadoopConfig,
       flinkConfig,
     };
@@ -49,7 +50,7 @@ export function getConfig(values: any) {
       flinkConfigPath: values.flinkConfigPath,
       kubernetesConfig,
       dockerConfig,
-
+      userJarPath: values.userJarPath,
       flinkConfig,
     };
   } else {
@@ -103,6 +104,7 @@ export function getConfigFormValues(values: any) {
     'flinkConfigPath',
   ]);
   let hadoopConfig = addValueToMap(config.hadoopConfig, HADOOP_CONFIG_NAME_LIST());
+  let userJarPath = config.userJarPath;
   let kubernetesConfig = addValueToMap(config.kubernetesConfig, KUBERNETES_CONFIG_NAME_LIST());
   let dockerConfig = addValueToMap(config.dockerConfig, DOCKER_CONFIG_NAME_LIST());
   let flinkConfig = addValueToMap(config.flinkConfig, FLINK_CONFIG_NAME_LIST());
@@ -119,6 +121,7 @@ export function getConfigFormValues(values: any) {
     hadoopConfigList,
     kubernetesConfigList,
     dockerConfigList,
+    userJarPath,
     ...flinkConfig,
     flinkConfigList
   }
