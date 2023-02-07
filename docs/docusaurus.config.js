@@ -155,14 +155,14 @@ const config = {
                 items: [
                     {
                         to: '/',
-                        position: 'right',
+                        position: 'left',
                         label: '主页',
                         title: '主页',
                         activeBaseRegex: `^/$`,
                     },
                     {
                         type: 'docsVersionDropdown',
-                        position: 'right',
+                        position: 'left',
                         dropdownActiveClassDisabled: true,
                     },
                     {
