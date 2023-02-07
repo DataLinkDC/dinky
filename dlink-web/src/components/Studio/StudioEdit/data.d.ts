@@ -78,4 +78,5 @@ export type CAParam = {
   type: number,
   dialect?: string,
   databaseId?: number,
+  envId?: number,
 }
