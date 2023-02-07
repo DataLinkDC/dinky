@@ -19,8 +19,6 @@
 
 package org.dinky.executor;
 
-import static org.apache.flink.table.api.bridge.internal.AbstractStreamTableEnvironmentImpl.lookupExecutor;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.model.LineageRel;
@@ -39,17 +37,9 @@ import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
-import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
-import org.apache.flink.table.api.bridge.java.internal.StreamTableEnvironmentImpl;
+import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.catalog.GenericInMemoryCatalog;
-import org.apache.flink.table.delegation.Executor;
-import org.apache.flink.table.delegation.Planner;
-import org.apache.flink.table.factories.PlannerFactoryUtil;
-import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.ExplainOperation;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -57,11 +47,7 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.resource.ResourceManager;
-import org.apache.flink.util.FlinkUserCodeClassLoaders;
-import org.apache.flink.util.MutableURLClassLoader;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -89,35 +75,20 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     private final FlinkChainedProgram flinkChainedProgram;
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public CustomTableEnvironmentImpl(
-            CatalogManager catalogManager,
-            ModuleManager moduleManager,
-            ResourceManager resourceManager,
-            FunctionCatalog functionCatalog,
-            TableConfig tableConfig,
-            StreamExecutionEnvironment executionEnvironment,
-            Planner planner,
-            Executor executor,
-            boolean isStreamingMode) {
-        super(
-                new StreamTableEnvironmentImpl(
-                        catalogManager,
-                        moduleManager,
-                        resourceManager,
-                        functionCatalog,
-                        tableConfig,
-                        executionEnvironment,
-                        planner,
-                        executor,
-                        isStreamingMode));
+    public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
+        super(streamTableEnvironment);
         this.flinkChainedProgram =
                 FlinkStreamProgramWithoutPhysical.buildProgram(
-                        (Configuration) executionEnvironment.getConfiguration());
+                        (Configuration) getStreamExecutionEnvironment().getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment) {
-        return create(executionEnvironment, EnvironmentSettings.newInstance().build());
+        return create(
+                executionEnvironment,
+                EnvironmentSettings.newInstance()
+                        .withClassLoader(DinkyClassLoaderContextHolder.get())
+                        .build());
     }
 
     public static CustomTableEnvironmentImpl createBatch(
@@ -128,54 +99,9 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
-        final MutableURLClassLoader userClassLoader =
-                FlinkUserCodeClassLoaders.create(
-                        new URL[0],
-                        DinkyClassLoaderContextHolder.get(),
-                        settings.getConfiguration());
-        final Executor executor = lookupExecutor(userClassLoader, executionEnvironment);
-
-        final TableConfig tableConfig = TableConfig.getDefault();
-        tableConfig.setRootConfiguration(executor.getConfiguration());
-        tableConfig.addConfiguration(settings.getConfiguration());
-
-        final CatalogManager catalogManager =
-                CatalogManager.newBuilder()
-                        .classLoader(userClassLoader)
-                        .config(tableConfig)
-                        .defaultCatalog(
-                                settings.getBuiltInCatalogName(),
-                                new GenericInMemoryCatalog(
-                                        settings.getBuiltInCatalogName(),
-                                        settings.getBuiltInDatabaseName()))
-                        .executionConfig(executionEnvironment.getConfig())
-                        .build();
-
-        final ModuleManager moduleManager = new ModuleManager();
-        final ResourceManager resourceManager =
-                new ResourceManager(settings.getConfiguration(), userClassLoader);
-        final FunctionCatalog functionCatalog =
-                new FunctionCatalog(tableConfig, resourceManager, catalogManager, moduleManager);
-
-        final Planner planner =
-                PlannerFactoryUtil.createPlanner(
-                        executor,
-                        tableConfig,
-                        userClassLoader,
-                        moduleManager,
-                        catalogManager,
-                        functionCatalog);
-
-        return new CustomTableEnvironmentImpl(
-                catalogManager,
-                moduleManager,
-                resourceManager,
-                functionCatalog,
-                tableConfig,
-                executionEnvironment,
-                planner,
-                executor,
-                settings.isStreamingMode());
+        StreamTableEnvironment streamTableEnvironment =
+                StreamTableEnvironment.create(executionEnvironment, settings);
+        return new CustomTableEnvironmentImpl(streamTableEnvironment);
     }
 
     public ObjectNode getStreamGraph(String statement) {
