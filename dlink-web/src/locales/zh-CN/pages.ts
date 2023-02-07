@@ -346,7 +346,7 @@ export default {
   'pages.datastudio.label.history.result': '预览数据',
   'pages.datastudio.label.history.error': '异常信息',
   'pages.datastudio.label.history.jobId': '作业ID',
-  'pages.datastudio.label.history.jobName': '作业名',
+  'pages.datastudio.label.history.jobName': '任务名名',
   'pages.datastudio.label.history.runningCluster': '运行集群',
   'pages.datastudio.label.history.session': '共享会话',
   'pages.datastudio.label.history.taskType': '任务类型',
@@ -490,6 +490,8 @@ export default {
 
   'pages.rc.clusterManagement': '集群实例管理',
   'pages.rc.cluster.instanceName': '实例名称',
+  'pages.rc.cluster.alias': '实例别名',
+  'pages.rc.cluster.aliasPlaceholder': '请输入别名!',
   'pages.rc.cluster.type': '类型',
   'pages.rc.cluster.jobManagerAddress': 'JobManger 地址',
   'pages.rc.cluster.version': '版本',
@@ -673,9 +675,8 @@ export default {
   'pages.rc.alert.group.disableTotalOf': '被禁用的报警组共 {total} 个',
 
   'pages.rc.jar.Management': 'Jar 管理',
-  'pages.rc.jar.name': '名称',
+  'pages.rc.jar.name': '任务名称',
   'pages.rc.jar.id': 'Jar ID',
-  'pages.rc.jar.alias': '别名',
   'pages.rc.jar.type': '类型',
   'pages.rc.jar.filePath': '文件路径',
   'pages.rc.jar.mainClass': '启动类',
@@ -697,7 +698,6 @@ export default {
   'pages.rc.jar.execParamsHelp': '指定可执行 Jar 的启动类入参，（可选）',
   'pages.rc.jar.execParamsPleaseHolder': '--id 1,2',
   'pages.rc.jar.baseConfig': '基本配置',
-  'pages.rc.jar.aliasPlaceholder': '请输入别名!',
   'pages.rc.jar.namePlaceholder': '请输入名称!',
 
 
@@ -928,7 +928,7 @@ export default {
   'pages.devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
 
   'pages.devops.baseinfo.taskid': '任务ID',
-  'pages.devops.baseinfo.name': '名称',
+  'pages.devops.baseinfo.name': '任务名称',
   'pages.devops.baseinfo.status': '状态',
   'pages.devops.baseinfo.readbytes': '接收字节',
   'pages.devops.baseinfo.readrecords': '接收记录',

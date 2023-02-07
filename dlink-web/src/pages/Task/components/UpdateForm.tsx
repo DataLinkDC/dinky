@@ -44,7 +44,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
     type: props.values.type,
     checkPoint: props.values.checkPoint,
     savePointPath: props.values.savePointPath,
@@ -77,12 +76,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
           name="name"
           label={l('pages.task.name')}
           rules={[{required: true, message: l('pages.task.namePlaceHolder')}]}>
-          <Input placeholder={l('pages.task.placeHolder')}/>
-        </FormItem>
-        <FormItem
-          name="alias"
-          label={l('pages.task.alias')}
-        >
           <Input placeholder={l('pages.task.placeHolder')}/>
         </FormItem>
         <FormItem
@@ -158,7 +151,6 @@ const UpdateForm: React.FC<UpdateFormProps> = (props) => {
         initialValues={{
           id: formVals.id,
           name: formVals.name,
-          alias: formVals.alias,
           type: formVals.type,
           note: formVals.note,
           checkPoint: formVals.checkPoint,

@@ -183,11 +183,8 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         return registersCluster(
                 Cluster.autoRegistersCluster(
                         gatewayResult.getWebURL().replace("http://", ""),
-                        gatewayResult.getAppId()
-                                + "_"
-                                + clusterConfiguration.getName()
-                                + "_"
-                                + LocalDateTime.now(),
+                        gatewayResult.getAppId(),
+                        clusterConfiguration.getName() + "_" + LocalDateTime.now(),
                         clusterConfiguration.getName() + LocalDateTime.now(),
                         id,
                         null));

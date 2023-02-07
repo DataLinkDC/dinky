@@ -69,7 +69,7 @@ const StudioHistory = (props: any) => {
 
     return (
       <>
-        <Modal title={l('pages.datastudio.label.version.diff')} visible={versionDiffVisible} destroyOnClose={true} width={"85%"}
+        <Modal title={l('pages.datastudio.label.version.diff')} open={versionDiffVisible} destroyOnClose={true} width={"85%"}
                bodyStyle={{height: "700px"}}
                onCancel={() => {
                  cancelHandle();

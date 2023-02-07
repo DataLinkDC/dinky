@@ -21,7 +21,6 @@
 export type AlertGroupTableListItem = {
   id: number,
   name: string,
-  alias: string,
   alertInstanceIds: string,
   note: string,
   enabled: boolean,
@@ -44,6 +43,7 @@ export type AlertInstanceTableListItem = {
 export type ClusterTableListItem = {
   id: number,
   name: string,
+  alias: string,
   type: string,
   hosts: string,
   jobManagerHost: string,
@@ -152,7 +152,6 @@ export type FragmentVariableTableListItem = {
 export type JarTableListItem = {
   id: number,
   name: string,
-  alias: string,
   type: string,
   path: string,
   mainClass: string,

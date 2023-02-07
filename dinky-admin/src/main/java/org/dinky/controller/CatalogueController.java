@@ -155,10 +155,9 @@ public class CatalogueController {
         return subcata;
     }
 
-    private CatalogueTaskDTO getCatalogueTaskDTO(String alias, Integer parentId) {
+    private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {
         CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
-        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + alias);
-        catalogueTaskDTO.setAlias(alias);
+        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + name);
         catalogueTaskDTO.setId(null);
         catalogueTaskDTO.setParentId(parentId);
         catalogueTaskDTO.setLeaf(true);
@@ -221,11 +220,11 @@ public class CatalogueController {
     /** 创建节点和作业 */
     @PutMapping("/createTask")
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
-        Catalogue catalogue = catalogueService.createCatalogueAndTask(catalogueTaskDTO);
+        Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
-            return Result.succeed(catalogue, "创建成功");
+            return Result.succeed(catalogue, "保存成功");
         } else {
-            return Result.failed("创建失败");
+            return Result.failed("保存失败");
         }
     }
 

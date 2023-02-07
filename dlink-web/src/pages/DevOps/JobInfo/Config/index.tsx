@@ -43,7 +43,7 @@ const Config = (props: any) => {
           {job?.cluster?.alias ? <Link>{job?.cluster?.alias}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.devops.config.clusterConfiguration')}>
-          {job?.clusterConfiguration?.alias ? <Link>{job?.clusterConfiguration?.alias}</Link> : '-'}
+          {job?.clusterConfiguration?.name ? <Link>{job?.clusterConfiguration?.name}</Link> : '-'}
         </Descriptions.Item>
         <Descriptions.Item label={l('pages.devops.config.session')}>
           {job?.history?.session ? <Link>{job?.history?.session}</Link> : l('button.disable')}
