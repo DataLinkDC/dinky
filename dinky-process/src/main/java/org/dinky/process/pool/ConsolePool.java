@@ -37,8 +37,7 @@ public class ConsolePool extends AbstractPool<String, StringBuilder> {
 
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
-        INSTANCE.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:"))
-                .append(str);
+        INSTANCE.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:")).append(str);
     }
 
     public static void clear(Integer userId) {

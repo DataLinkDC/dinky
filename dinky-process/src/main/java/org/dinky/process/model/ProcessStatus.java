@@ -48,8 +48,7 @@ public enum ProcessStatus {
     }
 
     public static ProcessStatus get(String value) {
-        return Arrays
-                .stream(ProcessStatus.values())
+        return Arrays.stream(ProcessStatus.values())
                 .filter(type -> Asserts.isEquals(type.getValue(), value))
                 .findFirst()
                 .orElse(ProcessStatus.UNKNOWN);

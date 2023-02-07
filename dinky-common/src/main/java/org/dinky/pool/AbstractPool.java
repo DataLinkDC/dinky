@@ -19,7 +19,6 @@
 
 package org.dinky.pool;
 
-import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,6 +29,5 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public abstract class AbstractPool<K, V> extends ConcurrentHashMap<K, V> {
 
-    public void refresh(V entity) {
-    }
+    public void refresh(V entity) {}
 }

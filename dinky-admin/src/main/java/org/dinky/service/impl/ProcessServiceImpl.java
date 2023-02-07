@@ -26,7 +26,6 @@ import org.dinky.service.ProcessService;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class ProcessServiceImpl implements ProcessService {
         return ProcessPool.INSTANCE.values().stream()
                 .filter(t -> active ? t.isActiveProcess() : true)
                 .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
-                    .collect(Collectors.toList());
+                .collect(Collectors.toList());
     }
 
     @Override
