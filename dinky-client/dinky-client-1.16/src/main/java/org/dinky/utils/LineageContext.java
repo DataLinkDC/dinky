@@ -36,13 +36,13 @@ import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 
-import scala.collection.JavaConverters;
-import scala.collection.Seq;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
 /**
  * LineageContext
@@ -97,7 +97,8 @@ public class LineageContext {
 
     /** Calling each program's optimize method in sequence. */
     private RelNode optimize(RelNode relNode) {
-        return ((PlannerBase) tableEnv.getPlanner()).getOptimizer()
+        return ((PlannerBase) tableEnv.getPlanner())
+                .getOptimizer()
                 .optimize(convertListToSeq(Collections.singletonList(relNode)))
                 .head();
     }
