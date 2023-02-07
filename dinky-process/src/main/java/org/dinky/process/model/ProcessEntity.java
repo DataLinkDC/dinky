@@ -55,7 +55,7 @@ public class ProcessEntity {
 
     public ProcessEntity(
             String pid, String name, Integer taskId, ProcessType type, Integer userId) {
-        this(null, name, taskId, type, null, null, null, 0, null, userId);
+        this(pid, name, taskId, type, null, null, null, 0, null, userId);
     }
 
     public ProcessEntity(
