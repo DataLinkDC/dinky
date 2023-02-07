@@ -21,6 +21,8 @@ package org.dinky.process.model;
 
 import org.dinky.assertion.Asserts;
 
+import java.util.Arrays;
+
 /**
  * ProcessStatus
  *
@@ -46,12 +48,11 @@ public enum ProcessStatus {
     }
 
     public static ProcessStatus get(String value) {
-        for (ProcessStatus type : ProcessStatus.values()) {
-            if (Asserts.isEquals(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return ProcessStatus.UNKNOWN;
+        return Arrays
+                .stream(ProcessStatus.values())
+                .filter(type -> Asserts.isEquals(type.getValue(), value))
+                .findFirst()
+                .orElse(ProcessStatus.UNKNOWN);
     }
 
     public boolean equalsValue(String type) {

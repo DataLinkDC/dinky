@@ -20,6 +20,7 @@
 package org.dinky.pool;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * AbstractPool
@@ -27,27 +28,8 @@ import java.util.Map;
  * @author wenmo
  * @since 2022/5/28 19:40
  */
-public abstract class AbstractPool<T> {
+public abstract class AbstractPool<K, V> extends ConcurrentHashMap<K, V> {
 
-    public abstract Map<String, T> getMap();
-
-    public boolean exist(String key) {
-        return getMap().containsKey(key);
+    public void refresh(V entity) {
     }
-
-    public int push(String key, T entity) {
-        getMap().put(key, entity);
-        return getMap().size();
-    }
-
-    public int remove(String key) {
-        getMap().remove(key);
-        return getMap().size();
-    }
-
-    public T get(String key) {
-        return getMap().get(key);
-    }
-
-    public abstract void refresh(T entity);
 }

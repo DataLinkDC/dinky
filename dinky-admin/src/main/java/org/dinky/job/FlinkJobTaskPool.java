@@ -22,30 +22,15 @@ package org.dinky.job;
 import org.dinky.model.JobInfoDetail;
 import org.dinky.pool.AbstractPool;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * FlinkJobTaskPool
  *
  * @author wenmo
  * @since 2022/5/28 16:39
  */
-public class FlinkJobTaskPool extends AbstractPool<JobInfoDetail> {
+public class FlinkJobTaskPool extends AbstractPool<String, JobInfoDetail> {
 
-    private static final Map<String, JobInfoDetail> FLINK_JOB_TASK_ENTITY_MAP =
-            new ConcurrentHashMap<>();
-
-    private static final FlinkJobTaskPool INSTANCE = new FlinkJobTaskPool();
-
-    public static FlinkJobTaskPool getInstance() {
-        return INSTANCE;
-    }
-
-    @Override
-    public Map<String, JobInfoDetail> getMap() {
-        return FLINK_JOB_TASK_ENTITY_MAP;
-    }
+    public static final FlinkJobTaskPool INSTANCE = new FlinkJobTaskPool();
 
     @Override
     public void refresh(JobInfoDetail entity) {
