@@ -31,10 +31,6 @@ public class ConsolePool extends AbstractPool<String, StringBuilder> {
 
     public static final ConsolePool INSTANCE = new ConsolePool();
 
-    public static ConsolePool getInstance() {
-        return INSTANCE;
-    }
-
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
         INSTANCE.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:")).append(str);
