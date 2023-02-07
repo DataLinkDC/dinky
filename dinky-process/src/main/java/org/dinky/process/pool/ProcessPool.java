@@ -22,29 +22,15 @@ package org.dinky.process.pool;
 import org.dinky.pool.AbstractPool;
 import org.dinky.process.model.ProcessEntity;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * ProcessPool
  *
  * @author wenmo
  * @since 2022/10/16 17:00
  */
-public class ProcessPool extends AbstractPool<ProcessEntity> {
+public class ProcessPool extends AbstractPool<String, ProcessEntity> {
 
-    private static final Map<String, ProcessEntity> processEntityMap = new ConcurrentHashMap<>();
-
-    private static final ProcessPool instance = new ProcessPool();
-
-    public static ProcessPool getInstance() {
-        return instance;
-    }
-
-    @Override
-    public Map<String, ProcessEntity> getMap() {
-        return processEntityMap;
-    }
+    public static final ProcessPool INSTANCE = new ProcessPool();
 
     @Override
     public void refresh(ProcessEntity entity) {}

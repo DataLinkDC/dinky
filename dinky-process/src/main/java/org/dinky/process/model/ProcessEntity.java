@@ -55,11 +55,7 @@ public class ProcessEntity {
 
     public ProcessEntity(
             String pid, String name, Integer taskId, ProcessType type, Integer userId) {
-        this.pid = pid;
-        this.name = name;
-        this.taskId = taskId;
-        this.type = type;
-        this.userId = userId;
+        this(pid, name, taskId, type, null, null, null, 0, null, userId);
     }
 
     public ProcessEntity(
@@ -72,6 +68,21 @@ public class ProcessEntity {
             long time,
             List<ProcessStep> steps,
             Integer userId) {
+        this(null, name, taskId, type, status, startTime, endTime, time, steps, userId);
+    }
+
+    public ProcessEntity(
+            String pid,
+            String name,
+            Integer taskId,
+            ProcessType type,
+            ProcessStatus status,
+            LocalDateTime startTime,
+            LocalDateTime endTime,
+            long time,
+            List<ProcessStep> steps,
+            Integer userId) {
+        this.pid = pid;
         this.name = name;
         this.taskId = taskId;
         this.type = type;

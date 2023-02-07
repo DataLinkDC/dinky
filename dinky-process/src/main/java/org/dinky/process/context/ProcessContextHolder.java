@@ -51,7 +51,7 @@ public class ProcessContextHolder {
     public static ProcessEntity registerProcess(ProcessEntity process) {
         Asserts.checkNull(process, "Process can not be null.");
         setProcess(process);
-        ProcessPool.getInstance().push(process.getName(), process);
+        ProcessPool.INSTANCE.put(process.getName(), process);
         return process;
     }
 }

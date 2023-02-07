@@ -26,7 +26,6 @@ import org.dinky.service.ProcessService;
 
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -42,14 +41,8 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public List<ProcessEntity> listAllProcess(boolean active) {
-        Map<String, ProcessEntity> processEntityMap = ProcessPool.getInstance().getMap();
-        if (active) {
-            return processEntityMap.values().stream()
-                    .filter(ProcessEntity::isActiveProcess)
-                    .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
-                    .collect(Collectors.toList());
-        }
-        return processEntityMap.values().stream()
+        return ProcessPool.INSTANCE.values().stream()
+                .filter(t -> active ? t.isActiveProcess() : true)
                 .sorted(Comparator.comparing(ProcessEntity::getStartTime).reversed())
                 .collect(Collectors.toList());
     }
@@ -57,11 +50,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public String getConsoleByUserId(Integer userId) {
         String user = userId.toString();
-        if (ConsolePool.getInstance().exist(user)) {
-            return ConsolePool.getInstance().get(user).toString();
-        } else {
-            return "";
-        }
+        return ConsolePool.INSTANCE.getOrDefault(user, new StringBuilder("")).toString();
     }
 
     @Override
