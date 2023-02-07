@@ -71,7 +71,7 @@ public class ProcessEntity {
         this(null, name, taskId, type, status, startTime, endTime, time, steps, userId);
     }
 
-        public ProcessEntity(
+    public ProcessEntity(
             String pid,
             String name,
             Integer taskId,
@@ -93,6 +93,7 @@ public class ProcessEntity {
         this.steps = steps;
         this.userId = userId;
     }
+
     public static ProcessEntity init(ProcessType type, Integer userId) {
         return init(type.getValue() + "_TEMP", null, type, userId);
     }
