@@ -13,7 +13,7 @@ SET 语句中字符串类型的配置项和参数值可以不用半角单引号�
 ```sql
 SET key = value;
 #或者
-SET `key` = `value`;
+SET 'key' = 'value';
 ```
 
 各个版本的参数配置详见Flink开源社区:
