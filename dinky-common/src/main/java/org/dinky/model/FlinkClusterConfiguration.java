@@ -31,11 +31,11 @@ import lombok.Setter;
 @Getter
 @Setter
 public class FlinkClusterConfiguration {
-    Type type;
-    String hadoopConfigPath;
-    String flinkConfigPath;
-    String flinkLibPath;
-    String userJarPath;
+    private Type type;
+    private String hadoopConfigPath;
+    private String flinkConfigPath;
+    private String flinkLibPath;
+    private String userJarPath;
 
     Map<String, String> flinkConfig;
     Map<String, Object> kubernetesConfig;
