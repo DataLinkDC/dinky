@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.config.Docker;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.function.constant.PathConstant;
@@ -31,12 +30,14 @@ import org.dinky.gateway.result.TestResult;
 import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterConfigurationMapper;
 import org.dinky.model.ClusterConfiguration;
+import org.dinky.model.FlinkClusterConfiguration;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -46,7 +47,10 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.Opt;
 
 /**
  * ClusterConfigServiceImpl
@@ -82,58 +86,48 @@ public class ClusterConfigurationServiceImpl
 
     @Override
     public TestResult testGateway(ClusterConfiguration clusterConfiguration) {
-        clusterConfiguration.parseConfig();
-        Map<String, Object> config = clusterConfiguration.getConfig();
+        FlinkClusterConfiguration config = clusterConfiguration.parse();
         GatewayConfig gatewayConfig = new GatewayConfig();
-        if (config.containsKey("hadoopConfigPath")) {
-            gatewayConfig.setClusterConfig(
-                    ClusterConfig.build(
-                            config.get("flinkConfigPath").toString(),
-                            config.get("flinkLibPath").toString(),
-                            config.get("hadoopConfigPath").toString()));
-        } else {
-            gatewayConfig.setClusterConfig(
-                    ClusterConfig.build(config.get("flinkConfigPath").toString()));
-        }
-        if (config.containsKey("flinkConfig")) {
-            gatewayConfig.setFlinkConfig(
-                    FlinkConfig.build((Map<String, String>) config.get("flinkConfig")));
-        }
-        if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Yarn")) {
+
+        Opt.ofBlankAble(config.getHadoopConfigPath())
+                .ifPresentOrElse(
+                        hadoopConfigPath ->
+                                gatewayConfig.setClusterConfig(
+                                        ClusterConfig.build(
+                                                config.getFlinkConfigPath(),
+                                                config.getFlinkLibPath(),
+                                                hadoopConfigPath)),
+                        () ->
+                                gatewayConfig.setClusterConfig(
+                                        ClusterConfig.build(config.getFlinkConfigPath())));
+
+        FlinkConfig flinkConfig =
+                CollUtil.isEmpty(config.getFlinkConfig())
+                        ? FlinkConfig.build(new HashMap<>(8))
+                        : FlinkConfig.build(config.getFlinkConfig());
+        Map<String, String> flinkConfigMap = flinkConfig.getConfiguration();
+        gatewayConfig.setFlinkConfig(flinkConfig);
+
+        if (config.getType() == FlinkClusterConfiguration.Type.Yarn) {
             gatewayConfig.setType(GatewayType.YARN_APPLICATION);
-        } else if (Asserts.isEqualsIgnoreCase(clusterConfiguration.getType(), "Kubernetes")) {
+        } else if (config.getType() == FlinkClusterConfiguration.Type.Kubernetes) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
-            Map kubernetesConfig = (Map) config.get("kubernetesConfig");
-            if (kubernetesConfig.containsKey("kubernetes.namespace")) {
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put(
-                                "kubernetes.namespace",
-                                kubernetesConfig.get("kubernetes.namespace").toString());
-            }
-            if (kubernetesConfig.containsKey("kubernetes.cluster-id")) {
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put(
-                                "kubernetes.cluster-id",
-                                kubernetesConfig.get("kubernetes.cluster-id").toString());
-            } else {
-                // 初始化FlinkKubeClient需要CLUSTER_ID,先用UUID代替，后面使用job名称来作为CLUSTER_ID
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put("kubernetes.cluster-id", UUID.randomUUID().toString());
-            }
-            if (kubernetesConfig.containsKey("kubernetes.container.image")) {
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put(
-                                "kubernetes.container.image",
-                                kubernetesConfig.get("kubernetes.container.image").toString());
-            }
+
+            Dict kubernetesConfig = Dict.of(config.getKubernetesConfig());
+
+            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.namespace"))
+                    .ifPresent(v -> flinkConfigMap.put("kubernetes.namespace", v));
+
+            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.cluster-id"))
+                    .ifPresentOrElse(
+                            v -> flinkConfigMap.put("kubernetes.cluster-id", v),
+                            () ->
+                                    flinkConfigMap.put(
+                                            "kubernetes.cluster-id", UUID.randomUUID().toString()));
+
+            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.container.image"))
+                    .ifPresent(v -> flinkConfigMap.put("kubernetes.container.image", v));
+
             String fileDir =
                     FileUtil.isDirectory(PathConstant.WORK_DIR + "/dinky-doc")
                             ? PathConstant.WORK_DIR + "/dinky-doc"
@@ -155,6 +149,7 @@ public class ClusterConfigurationServiceImpl
                 throw new RuntimeException(e);
             }
         }
+
         return JobManager.testGateway(gatewayConfig);
     }
 }
