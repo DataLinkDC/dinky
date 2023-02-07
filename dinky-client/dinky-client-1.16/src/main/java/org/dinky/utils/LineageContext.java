@@ -27,25 +27,20 @@ import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.SinkModifyOperation;
-import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
-import org.apache.flink.table.planner.calcite.RexFactory;
 import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
-import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
+
+import scala.collection.JavaConverters;
+import scala.collection.Seq;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -57,11 +52,9 @@ import java.util.Set;
  */
 public class LineageContext {
 
-    private final FlinkChainedProgram flinkChainedProgram;
     private final TableEnvironmentImpl tableEnv;
 
-    public LineageContext(FlinkChainedProgram flinkChainedProgram, TableEnvironmentImpl tableEnv) {
-        this.flinkChainedProgram = flinkChainedProgram;
+    public LineageContext(TableEnvironmentImpl tableEnv) {
         this.tableEnv = tableEnv;
     }
 
@@ -98,71 +91,15 @@ public class LineageContext {
         }
     }
 
+    public Seq<RelNode> convertListToSeq(List<RelNode> inputList) {
+        return JavaConverters.asScalaIteratorConverter(inputList.iterator()).asScala().toSeq();
+    }
+
     /** Calling each program's optimize method in sequence. */
     private RelNode optimize(RelNode relNode) {
-        return flinkChainedProgram.optimize(
-                relNode,
-                new StreamOptimizeContext() {
-
-                    @Override
-                    public boolean isBatchMode() {
-                        return false;
-                    }
-
-                    @Override
-                    public TableConfig getTableConfig() {
-                        return tableEnv.getConfig();
-                    }
-
-                    @Override
-                    public FunctionCatalog getFunctionCatalog() {
-                        return getPlanner().getFlinkContext().getFunctionCatalog();
-                    }
-
-                    @Override
-                    public CatalogManager getCatalogManager() {
-                        return tableEnv.getCatalogManager();
-                    }
-
-                    @Override
-                    public ModuleManager getModuleManager() {
-                        return getPlanner().getFlinkContext().getModuleManager();
-                    }
-
-                    @Override
-                    public RexFactory getRexFactory() {
-                        return getPlanner().getFlinkContext().getRexFactory();
-                    }
-
-                    @Override
-                    public FlinkRelBuilder getFlinkRelBuilder() {
-                        return getPlanner().createRelBuilder();
-                    }
-
-                    @Override
-                    public boolean isUpdateBeforeRequired() {
-                        return false;
-                    }
-
-                    @Override
-                    public MiniBatchInterval getMiniBatchInterval() {
-                        return MiniBatchInterval.NONE;
-                    }
-
-                    @Override
-                    public boolean needFinalTimeIndicatorConversion() {
-                        return true;
-                    }
-
-                    @Override
-                    public ClassLoader getClassLoader() {
-                        return getPlanner().getFlinkContext().getClassLoader();
-                    }
-
-                    private PlannerBase getPlanner() {
-                        return (PlannerBase) tableEnv.getPlanner();
-                    }
-                });
+        return ((PlannerBase) tableEnv.getPlanner()).getOptimizer()
+                .optimize(convertListToSeq(Collections.singletonList(relNode)))
+                .head();
     }
 
     /** Check the size of query and sink fields match */

@@ -25,7 +25,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.model.LineageRel;
 import org.dinky.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 
 import org.apache.flink.api.dag.Transformation;
@@ -56,7 +55,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.resource.ResourceManager;
 import org.apache.flink.util.FlinkUserCodeClassLoaders;
 import org.apache.flink.util.MutableURLClassLoader;
@@ -86,7 +84,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     private static final Logger log = LoggerFactory.getLogger(CustomTableEnvironmentImpl.class);
 
-    private final FlinkChainedProgram flinkChainedProgram;
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public CustomTableEnvironmentImpl(
@@ -110,9 +107,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                         planner,
                         executor,
                         isStreamingMode));
-        this.flinkChainedProgram =
-                FlinkStreamProgramWithoutPhysical.buildProgram(
-                        (Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(
@@ -334,8 +328,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
     @Override
     public List<LineageRel> getLineage(String statement) {
         LineageContext lineageContext =
-                new LineageContext(
-                        flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
+                new LineageContext((TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
     }
 }
