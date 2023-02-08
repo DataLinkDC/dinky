@@ -45,10 +45,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.resource.ResourceManager;
-import org.apache.flink.util.FlinkUserCodeClassLoaders;
-import org.apache.flink.util.MutableURLClassLoader;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -78,7 +74,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
     public CustomTableEnvironmentImpl(StreamTableEnvironment streamTableEnvironment) {
         super(streamTableEnvironment);
-   }
+    }
 
     public static CustomTableEnvironmentImpl create(
             StreamExecutionEnvironment executionEnvironment) {
