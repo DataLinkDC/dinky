@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,7 +47,6 @@ public class FlinkConfig {
     private ActionType action;
     private SavePointType savePointType;
     private String savePoint;
-    // private List<ConfigPara> configParas;
     private Map<String, String> configuration = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
@@ -75,10 +75,6 @@ public class FlinkConfig {
     }
 
     public static FlinkConfig build(Map<String, String> paras) {
-        /*
-         * List<ConfigPara> configParasList = new ArrayList<>(); for (Map.Entry<String, String> entry :
-         * paras.entrySet()) { configParasList.add(new ConfigPara(entry.getKey(),entry.getValue())); }
-         */
         return new FlinkConfig(paras);
     }
 
@@ -89,7 +85,6 @@ public class FlinkConfig {
             String savePointTypeStr,
             String savePoint,
             String configParasStr) {
-        // List<ConfigPara> configParasList = new ArrayList<>();
         Map<String, String> configMap = new HashMap<>();
         JsonNode paras = null;
         if (Asserts.isNotNullString(configParasStr)) {
@@ -98,10 +93,8 @@ public class FlinkConfig {
             } catch (JsonProcessingException e) {
                 e.printStackTrace();
             }
-            paras.forEach(
-                    (JsonNode node) -> {
-                        configMap.put(node.get("key").asText(), node.get("value").asText());
-                    });
+            Objects.requireNonNull(paras).forEach(
+                    node -> configMap.put(node.get("key").asText(), node.get("value").asText()));
         }
         return new FlinkConfig(
                 jobName,

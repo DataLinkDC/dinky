@@ -31,7 +31,7 @@ public enum ActionType {
     SAVEPOINT("savepoint"),
     CANCEL("cancel");
 
-    private String value;
+    private final String value;
 
     ActionType(String value) {
         this.value = value;

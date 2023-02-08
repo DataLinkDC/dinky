@@ -37,5 +37,5 @@ public interface GatewayResult {
 
     String getError();
 
-    boolean isSucess();
+    boolean isSuccess();
 }

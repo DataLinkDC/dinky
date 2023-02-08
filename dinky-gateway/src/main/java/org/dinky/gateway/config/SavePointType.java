@@ -21,6 +21,8 @@ package org.dinky.gateway.config;
 
 import org.dinky.assertion.Asserts;
 
+import java.util.Arrays;
+
 /**
  * SavePointType
  *
@@ -44,11 +46,10 @@ public enum SavePointType {
     }
 
     public static SavePointType get(String value) {
-        for (SavePointType type : SavePointType.values()) {
-            if (Asserts.isEqualsIgnoreCase(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return SavePointType.TRIGGER;
+        return Arrays
+                .stream(SavePointType.values())
+                .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
+                .findFirst()
+                .orElse(SavePointType.TRIGGER);
     }
 }

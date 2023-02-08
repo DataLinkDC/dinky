@@ -460,7 +460,7 @@ public class JobManager {
                     job.setJobId(gatewayResult.getAppId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                    if (gatewayResult.isSucess()) {
+                    if (gatewayResult.isSuccess()) {
                         job.setStatus(Job.JobStatus.SUCCESS);
                     } else {
                         job.setStatus(Job.JobStatus.FAILED);
@@ -513,7 +513,7 @@ public class JobManager {
                     job.setJobId(gatewayResult.getAppId());
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
-                    if (gatewayResult.isSucess()) {
+                    if (gatewayResult.isSuccess()) {
                         job.setStatus(Job.JobStatus.SUCCESS);
                     } else {
                         job.setStatus(Job.JobStatus.FAILED);
@@ -601,7 +601,7 @@ public class JobManager {
                     job.setJids(gatewayResult.getJids());
                     job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
 
-                    if (gatewayResult.isSucess()) {
+                    if (gatewayResult.isSuccess()) {
                         job.setStatus(Job.JobStatus.SUCCESS);
                     } else {
                         job.setStatus(Job.JobStatus.FAILED);
@@ -820,7 +820,7 @@ public class JobManager {
             job.setJobManagerAddress(formatAddress(gatewayResult.getWebURL()));
             job.setEndTime(LocalDateTime.now());
 
-            if (gatewayResult.isSucess()) {
+            if (gatewayResult.isSuccess()) {
                 job.setStatus(Job.JobStatus.SUCCESS);
                 success();
             } else {
