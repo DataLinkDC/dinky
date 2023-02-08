@@ -223,7 +223,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 StpUtil.isLogin()
                         ? ProcessContextHolder.registerProcess(
                                 ProcessEntity.init(
-                                        ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()))
+                                        ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
                         : ProcessEntity.NULL_PROCESS;
 
         process.info("Initializing Flink job config...");
@@ -1006,10 +1006,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
         JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         String key = id.toString();
 
-        if (pool.exist(key)) {
+        if (pool.containsKey(key)) {
             jobInfoDetail = pool.get(key);
         } else {
             jobInfoDetail = new JobInfoDetail(id);
@@ -1028,7 +1028,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             jobInfoDetail.setHistory(history);
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
-            pool.push(key, jobInfoDetail);
+            pool.put(key, jobInfoDetail);
         }
 
         if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {

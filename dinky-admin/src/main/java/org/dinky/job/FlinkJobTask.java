@@ -77,7 +77,7 @@ public class FlinkJobTask implements DaemonTask {
             DefaultThreadPool.getInstance().execute(this);
         } else {
             taskService.handleJobDone(jobInstance);
-            FlinkJobTaskPool.getInstance().remove(config.getId().toString());
+            FlinkJobTaskPool.INSTANCE.remove(config.getId().toString());
         }
     }
 }
