@@ -71,6 +71,7 @@
             <outputDirectory>plugins/flink1.11</outputDirectory>
             <includes>
                 <include>dlink-client-1.11-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.11-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -78,6 +79,7 @@
             <outputDirectory>plugins/flink1.12</outputDirectory>
             <includes>
                 <include>dlink-client-1.12-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -86,6 +88,7 @@
             <includes>
                 <include>dlink-catalog-mysql-1.13-${project.version}.jar</include>
                 <include>dlink-client-1.13-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.13-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
@@ -94,6 +97,7 @@
             <includes>
                 <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
                 <include>dlink-client-1.14-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.14-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>
