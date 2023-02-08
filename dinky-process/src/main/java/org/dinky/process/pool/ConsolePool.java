@@ -21,42 +21,23 @@ package org.dinky.process.pool;
 
 import org.dinky.pool.AbstractPool;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * ConsolePool
  *
  * @author wenmo
  * @since 2022/10/18 22:51
  */
-public class ConsolePool extends AbstractPool<StringBuilder> {
+public class ConsolePool extends AbstractPool<String, StringBuilder> {
 
-    private static final Map<String, StringBuilder> consoleEntityMap = new ConcurrentHashMap<>();
-
-    private static final ConsolePool instance = new ConsolePool();
-
-    public static ConsolePool getInstance() {
-        return instance;
-    }
-
-    @Override
-    public Map<String, StringBuilder> getMap() {
-        return consoleEntityMap;
-    }
-
-    @Override
-    public void refresh(StringBuilder entity) {}
+    public static final ConsolePool INSTANCE = new ConsolePool();
 
     public static void write(String str, Integer userId) {
         String user = String.valueOf(userId);
-        consoleEntityMap
-                .computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:"))
-                .append(str);
+        INSTANCE.computeIfAbsent(user, k -> new StringBuilder("Dinky User Console:")).append(str);
     }
 
     public static void clear(Integer userId) {
         String user = String.valueOf(userId);
-        consoleEntityMap.put(user, new StringBuilder("Dinky User Console:"));
+        INSTANCE.put(user, new StringBuilder("Dinky User Console:"));
     }
 }

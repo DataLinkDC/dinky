@@ -30,6 +30,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.hutool.json.JSONObject;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -68,5 +69,14 @@ public class ClusterConfiguration extends SuperEntity {
             e.printStackTrace();
         }
         return config;
+    }
+
+    public FlinkClusterConfiguration parse() {
+        JSONObject json = new JSONObject(getConfigJson());
+        config = json;
+        FlinkClusterConfiguration flinkClusterConfiguration =
+                json.toBean(FlinkClusterConfiguration.class);
+        flinkClusterConfiguration.setType(FlinkClusterConfiguration.Type.valueOf(type));
+        return flinkClusterConfiguration;
     }
 }

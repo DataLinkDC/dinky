@@ -43,34 +43,10 @@ public class SystemConfiguration {
 
     private static final List<Configuration> CONFIGURATION_LIST =
             Lists.newArrayList(
-                    systemConfiguration.sqlSubmitJarPath,
-                    systemConfiguration.sqlSubmitJarParas,
-                    systemConfiguration.sqlSubmitJarMainAppClass,
                     systemConfiguration.useRestAPI,
                     systemConfiguration.sqlSeparator,
                     systemConfiguration.jobIdWait);
 
-    private Configuration sqlSubmitJarPath =
-            new Configuration(
-                    "sqlSubmitJarPath",
-                    "FlinkSQL提交Jar路径",
-                    ValueType.STRING,
-                    "hdfs:///dinky/jar/dinky-app.jar",
-                    "用于指定Applcation模式提交FlinkSQL的Jar的路径");
-    private Configuration sqlSubmitJarParas =
-            new Configuration(
-                    "sqlSubmitJarParas",
-                    "FlinkSQL提交Jar参数",
-                    ValueType.STRING,
-                    "",
-                    "用于指定Applcation模式提交FlinkSQL的Jar的参数");
-    private Configuration sqlSubmitJarMainAppClass =
-            new Configuration(
-                    "sqlSubmitJarMainAppClass",
-                    "FlinkSQL提交Jar主类",
-                    ValueType.STRING,
-                    "org.dinky.app.MainApp",
-                    "用于指定Applcation模式提交FlinkSQL的Jar的主类");
     private Configuration useRestAPI =
             new Configuration(
                     "useRestAPI",
@@ -120,30 +96,6 @@ public class SystemConfiguration {
                 map.put(name, Asserts.isEqualsIgnoreCase("true", map.get(name).toString()));
             }
         }
-    }
-
-    public String getSqlSubmitJarParas() {
-        return sqlSubmitJarParas.getValue().toString();
-    }
-
-    public void setSqlSubmitJarParas(String sqlSubmitJarParas) {
-        this.sqlSubmitJarParas.setValue(sqlSubmitJarParas);
-    }
-
-    public String getSqlSubmitJarPath() {
-        return sqlSubmitJarPath.getValue().toString();
-    }
-
-    public void setSqlSubmitJarPath(String sqlSubmitJarPath) {
-        this.sqlSubmitJarPath.setValue(sqlSubmitJarPath);
-    }
-
-    public String getSqlSubmitJarMainAppClass() {
-        return sqlSubmitJarMainAppClass.getValue().toString();
-    }
-
-    public void setSqlSubmitJarMainAppClass(String sqlSubmitJarMainAppClass) {
-        this.sqlSubmitJarMainAppClass.setValue(sqlSubmitJarMainAppClass);
     }
 
     public boolean isUseRestAPI() {

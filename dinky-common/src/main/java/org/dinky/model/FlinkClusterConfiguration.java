@@ -17,21 +17,32 @@
  *
  */
 
-package org.dinky.process.pool;
+package org.dinky.model;
 
-import org.dinky.pool.AbstractPool;
-import org.dinky.process.model.ProcessEntity;
+import java.util.Map;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * ProcessPool
- *
- * @author wenmo
- * @since 2022/10/16 17:00
+ * @author ZackYoung
+ * @since
  */
-public class ProcessPool extends AbstractPool<String, ProcessEntity> {
+@Getter
+@Setter
+public class FlinkClusterConfiguration {
+    private Type type;
+    private String hadoopConfigPath;
+    private String flinkConfigPath;
+    private String flinkLibPath;
+    private String userJarPath;
 
-    public static final ProcessPool INSTANCE = new ProcessPool();
+    Map<String, String> flinkConfig;
+    Map<String, Object> kubernetesConfig;
 
-    @Override
-    public void refresh(ProcessEntity entity) {}
+    public static enum Type {
+        //
+        Yarn,
+        Kubernetes;
+    }
 }
