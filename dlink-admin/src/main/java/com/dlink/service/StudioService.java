@@ -21,9 +21,9 @@ package com.dlink.service;
 
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
-import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.StudioLineageDTO;
 import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
@@ -68,7 +68,7 @@ public interface StudioService {
 
     List<SessionInfo> listSession(String createUser);
 
-    LineageResult getLineage(StudioCADTO studioCADTO);
+    LineageResult getLineage(StudioLineageDTO studioCADTO);
 
     List<JsonNode> listJobs(Integer clusterId);
 

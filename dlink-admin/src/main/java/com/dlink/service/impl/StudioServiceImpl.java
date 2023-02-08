@@ -25,9 +25,9 @@ import com.dlink.config.Dialect;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
-import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.StudioLineageDTO;
 import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageBuilder;
 import com.dlink.explainer.lineage.LineageResult;
@@ -367,7 +367,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public LineageResult getLineage(StudioCADTO studioCADTO) {
+    public LineageResult getLineage(StudioLineageDTO studioCADTO) {
         if (Asserts.isNotNullString(studioCADTO.getDialect())
                 && !studioCADTO.getDialect().equalsIgnoreCase("flinksql")) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {

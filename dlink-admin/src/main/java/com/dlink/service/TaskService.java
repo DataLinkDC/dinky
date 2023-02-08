@@ -22,6 +22,7 @@ package com.dlink.service;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.TaskRollbackVersionDTO;
+import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
 import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
@@ -115,4 +116,6 @@ public interface TaskService extends ISuperService<Task> {
     Task getTaskByNameAndTenantId(String name, Integer tenantId);
 
     JobStatus checkJobStatus(JobInfoDetail jobInfoDetail);
+
+    LineageResult getTaskLineage(Integer id);
 }
