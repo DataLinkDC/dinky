@@ -17,19 +17,19 @@
 
 import Footer from '@/components/Footer';
 
-import {LockOutlined, UserOutlined,} from '@ant-design/icons';
-import {LoginForm, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
-import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {Helmet, history, SelectLang, useModel} from '@umijs/max';
-import {Alert, message} from 'antd';
+import { LockOutlined, UserOutlined, } from '@ant-design/icons';
+import { LoginForm, ProFormCheckbox, ProFormText, } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Helmet, history, SelectLang, useModel } from '@umijs/max';
+import { Alert, message } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React, {useState} from 'react';
-import {flushSync} from 'react-dom';
-import {login} from "@/services/api";
-import {l} from '@/utils/intl';
+import React, { useState } from 'react';
+import { flushSync } from 'react-dom';
+import { login } from "@/services/api";
+import { l } from '@/utils/intl';
 
 const Lang = () => {
-  const langClassName = useEmotionCss(({ token }) => {
+  const langClassName = useEmotionCss(({token}) => {
     return {
       width: 42,
       height: 42,
@@ -52,7 +52,7 @@ const Lang = () => {
 
 const LoginMessage: React.FC<{
   content: string;
-}> = ({ content }) => {
+}> = ({content}) => {
   return (
     <Alert
       style={{
@@ -67,7 +67,7 @@ const LoginMessage: React.FC<{
 
 const Login: React.FC = () => {
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const { initialState, setInitialState } = useModel('@@initialState');
+  const {initialState, setInitialState} = useModel('@@initialState');
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -96,22 +96,22 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values });
-      if (msg.status === 'ok') {
+      const msg = await login({...values, type: 'password', tenantId: 1});
+      console.log('msg',msg);
+      if (msg.code === 0) {
         message.success(l('pages.login.success'));
         await fetchUserInfo();
         const urlParams = new URL(window.location.href).searchParams;
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(msg);
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
       message.error(l('pages.login.failure'));
     }
   };
-  const { status, type: loginType } = userLoginState;
+  // const {code, type: loginType} = userLoginState;
 
   return (
     <div className={containerClassName}>
@@ -135,7 +135,7 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src={Settings.logo} />}
           title="Dinky"
-          subTitle={l('pages.layouts.userLayout.title' )}
+          subTitle={l('pages.layouts.userLayout.title')}
           initialValues={{
             autoLogin: true,
           }}
@@ -143,41 +143,39 @@ const Login: React.FC = () => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-
-            <LoginMessage
-              content={l( 'pages.login.accountLogin.errorMessage')}
+          {/*<LoginMessage*/}
+          {/*  content={l('pages.login.accountLogin.errorMessage')}*/}
+          {/*/>*/}
+          <>
+            <ProFormText
+              name="username"
+              fieldProps={{
+                size: 'large',
+                prefix: <UserOutlined />,
+              }}
+              placeholder={l('pages.login.username.placeholder')}
+              rules={[
+                {
+                  required: true,
+                  message: l('pages.login.username.required')
+                },
+              ]}
             />
-          )
-            <>
-              <ProFormText
-                name="username"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined />,
-                }}
-                placeholder={l('pages.login.username.placeholder')}
-                rules={[
-                  {
-                    required: true,
-                    message: l('pages.login.username.required')
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="password"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined />,
-                }}
-                placeholder={ l('pages.login.password.placeholder')}
-                rules={[
-                  {
-                    required: true,
-                    message: l('pages.login.password.required')
-                  },
-                ]}
-              />
-            </>
+            <ProFormText.Password
+              name="password"
+              fieldProps={{
+                size: 'large',
+                prefix: <LockOutlined />,
+              }}
+              placeholder={l('pages.login.password.placeholder')}
+              rules={[
+                {
+                  required: true,
+                  message: l('pages.login.password.required')
+                },
+              ]}
+            />
+          </>
           <div
             style={{
               marginBottom: 24,

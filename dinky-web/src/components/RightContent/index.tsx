@@ -56,13 +56,15 @@ const GlobalHeaderRight: React.FC = () => {
 
   const { initialState } = useModel('@@initialState');
 
+  console.log(initialState)
+
   if (!initialState || !initialState.settings) {
     return null;
   }
 
   return (
     <div className={className}>
-      <Avatar />
+      <Avatar menu={true}/>
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName} />
       <Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>
     </div>
