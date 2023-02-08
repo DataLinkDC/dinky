@@ -57,7 +57,8 @@ import TaskAPI from "@/pages/API/TaskAPI";
 import StudioHelp from "./StudioHelp";
 import StudioGraph from "./StudioGraph";
 import {
-  cancelTask, clearConsole,
+  cancelTask,
+  clearConsole,
   developTask,
   offLineTask,
   onLineTask,
@@ -177,7 +178,7 @@ const StudioMenu = (props: any) => {
     const taskKey = (Math.random() * 1000) + '';
     Modal.confirm({
       title: l('pages.datastudio.editor.async.submit'),
-      content: l('pages.datastudio.editor.async.submitConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.async.submitConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -185,7 +186,7 @@ const StudioMenu = (props: any) => {
           id: current.task.id,
         };
         notification.success({
-          message: l('pages.datastudio.editor.async.submiting','',{jobName: current.task.alias}),
+          message: l('pages.datastudio.editor.async.submiting','',{jobName: current.task.jobName}),
           description: current.task.statement,
           duration: null,
           key: taskKey,
@@ -338,7 +339,7 @@ const StudioMenu = (props: any) => {
   const toReleaseTask = () => {
     Modal.confirm({
       title: l('pages.datastudio.editor.release.job'),
-      content: l('pages.datastudio.editor.release.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.release.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -346,9 +347,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code == CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
-            message.success(l('pages.datastudio.editor.release.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.release.job.success','',{jobName: current.task.jobName}))
           } else {
-            message.error(l('pages.datastudio.editor.release.job.error','',{jobName: current.task.alias}));
+            message.error(l('pages.datastudio.editor.release.job.error','',{jobName: current.task.jobName}));
           }
         });
       }
@@ -358,7 +359,7 @@ const StudioMenu = (props: any) => {
   const toDevelopTask = () => {
     Modal.confirm({
       title: l('pages.datastudio.editor.edit.job'),
-      content: l('pages.datastudio.editor.edit.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.edit.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -366,7 +367,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(l('pages.datastudio.editor.edit.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.edit.job.success','',{jobName: current.task.jobName}))
           }
         });
       }
@@ -376,7 +377,7 @@ const StudioMenu = (props: any) => {
   const toOnLineTask = () => {
     Modal.confirm({
       title: l('pages.datastudio.editor.online.job'),
-      content: l('pages.datastudio.editor.online.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.online.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -385,9 +386,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.ONLINE);
             result.datas?.jobInstanceId && props.changeTaskJobInstance(current.task.id, result.datas?.jobInstanceId);
-            message.success(l('pages.datastudio.editor.online.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.online.job.success','',{jobName: current.task.jobName}))
           } else {
-            message.error(l('pages.datastudio.editor.online.job.error','',{jobName: current.task.alias,msg: result.msg}));
+            message.error(l('pages.datastudio.editor.online.job.error','',{jobName: current.task.jobName,msg: result.msg}));
           }
         });
       }
@@ -397,7 +398,7 @@ const StudioMenu = (props: any) => {
   const handleCancelTask = (type: string) => {
     Modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
-      content: l('pages.datastudio.editor.stop.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.stop.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -408,9 +409,9 @@ const StudioMenu = (props: any) => {
               props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             }
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(l('pages.datastudio.editor.stop.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.stop.job.success','',{jobName: current.task.jobName}))
           } else {
-            message.error(l('pages.datastudio.editor.stop.job.error','',{jobName: current.task.alias,msg: result.msg}));
+            message.error(l('pages.datastudio.editor.stop.job.error','',{jobName: current.task.jobName,msg: result.msg}));
           }
         });
       }
@@ -420,7 +421,7 @@ const StudioMenu = (props: any) => {
   const toOffLineTask = (type: string) => {
     Modal.confirm({
       title: l('pages.datastudio.editor.offline.job'),
-      content: l('pages.datastudio.editor.offline.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.offline.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -429,9 +430,9 @@ const StudioMenu = (props: any) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.RELEASE);
             props.changeTaskJobInstance(current.task.id, 0);
-            message.success(l('pages.datastudio.editor.offline.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.offline.job.success','',{jobName: current.task.jobName}))
           } else {
-            message.error(l('pages.datastudio.editor.offline.job.error','',{jobName: current.task.alias,msg: result.msg}));
+            message.error(l('pages.datastudio.editor.offline.job.error','',{jobName: current.task.jobName,msg: result.msg}));
           }
         });
       }
@@ -441,7 +442,7 @@ const StudioMenu = (props: any) => {
   const toCancelTask = () => {
     Modal.confirm({
       title: l('pages.datastudio.editor.delete.job'),
-      content: l('pages.datastudio.editor.delete.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.delete.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -449,9 +450,9 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           if (result.code === CODE.SUCCESS) {
             props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.CANCEL);
-            message.success(l('pages.datastudio.editor.delete.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.delete.job.success','',{jobName: current.task.jobName}))
           } else {
-            message.error(l('pages.datastudio.editor.delete.job.error','',{jobName: current.task.alias,msg: result.msg}));
+            message.error(l('pages.datastudio.editor.delete.job.error','',{jobName: current.task.jobName,msg: result.msg}));
           }
         });
       }
@@ -461,7 +462,7 @@ const StudioMenu = (props: any) => {
   const toRecoveryTask = () => {
     Modal.confirm({
       title: l('pages.datastudio.editor.recovery.job'),
-      content: l('pages.datastudio.editor.recovery.jobConfirm','',{jobName: current.task.alias}),
+      content: l('pages.datastudio.editor.recovery.jobConfirm','',{jobName: current.task.jobName}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -469,7 +470,7 @@ const StudioMenu = (props: any) => {
         res.then((result) => {
           result.datas && props.changeTaskStep(current.task.id, JOB_LIFE_CYCLE.DEVELOP);
           if (result.code == CODE.SUCCESS) {
-            message.success(l('pages.datastudio.editor.recovery.job.success','',{jobName: current.task.alias}))
+            message.success(l('pages.datastudio.editor.recovery.job.success','',{jobName: current.task.jobName}))
           }
         });
       }
@@ -509,7 +510,7 @@ const StudioMenu = (props: any) => {
 
   const showAPI = () => {
     Modal.info({
-      title: current.task.alias + l('pages.datastudio.editor.api.doc'),
+      title: current.task.jobName + l('pages.datastudio.editor.api.doc'),
       width: 1000,
       content: (
         <TaskAPI task={current.task}/>
@@ -775,7 +776,7 @@ const StudioMenu = (props: any) => {
       </Modal>
       {current?.task ?
         <ModalForm
-          title={`${current.task.alias} 的 ${current.task.dialect} 导出`}
+          title={`${current.task.jobName} 的 ${current.task.dialect} 导出`}
           visible={exportModalVisible}
           width={1000}
           modalProps={{

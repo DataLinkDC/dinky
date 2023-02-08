@@ -86,7 +86,7 @@ const StudioSetting = (props: any) => {
     </Option>];
     for (const item of env) {
       const tag = (<>{item.enabled ? <Badge status="success"/> : <Badge status="error"/>}
-        {item.fragment ? <PaperClipOutlined/> : undefined}{item.alias}</>);
+        {item.fragment ? <PaperClipOutlined/> : undefined}{item.name}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)

@@ -37,7 +37,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     Catalogue findByParentIdAndName(Integer parentId, String name);
 
-    Catalogue createCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
+    Catalogue saveOrUpdateCatalogueAndTask(CatalogueTaskDTO catalogueTaskDTO);
 
     Catalogue createCatalogAndFileTask(CatalogueTaskDTO catalogueTaskDTO, String ment);
 

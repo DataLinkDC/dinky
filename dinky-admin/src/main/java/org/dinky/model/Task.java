@@ -28,7 +28,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -53,10 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 public class Task extends SuperEntity<Task> {
 
     private static final long serialVersionUID = 5988972129893667154L;
-
-    @TableField(fill = FieldFill.INSERT)
-    private String alias;
-
     private String dialect;
 
     private Integer tenantId;
@@ -169,7 +164,7 @@ public class Task extends SuperEntity<Task> {
                 clusterConfigurationId,
                 jid,
                 getId(),
-                alias,
+                getName(),
                 fg,
                 sts,
                 batchModel,
@@ -183,7 +178,6 @@ public class Task extends SuperEntity<Task> {
     public JsonNode parseJsonNode(ObjectMapper mapper) {
         ObjectNode jsonNode = mapper.createObjectNode();
         jsonNode.put("name", this.getName());
-        jsonNode.put("alias", this.alias);
         jsonNode.put("dialect", this.dialect);
         jsonNode.put("type", this.type);
         jsonNode.put("statement", this.statement);

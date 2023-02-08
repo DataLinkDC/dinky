@@ -12,9 +12,6 @@
             <if test='param.name!=null and param.name!=""'>
                 and a.name like "%${param.name}%"
             </if>
-            <if test='param.alias!=null and param.alias!=""'>
-                and a.alias like "%${param.alias}%"
-            </if>
             <if test='param.path!=null and param.path!=""'>
                 and a.path like "%${param.path}%"
             </if>

@@ -37,5 +37,4 @@ export type HistoryItem = {
   startTime: string;
   endTime: string;
   taskId: number;
-  taskAlias: string;
 };

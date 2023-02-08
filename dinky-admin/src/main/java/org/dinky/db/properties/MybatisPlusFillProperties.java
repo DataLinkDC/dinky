@@ -46,6 +46,4 @@ public class MybatisPlusFillProperties {
     private String updateTimeField = "updateTime";
 
     private String name = "name";
-
-    private String alias = "alias";
 }

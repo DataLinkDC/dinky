@@ -45,7 +45,7 @@ const VersionList = (props: any) => {
   const handleShowStatement = (item: any) => {
     return (
       <div style={{width: "1100px"}}>
-        <Modal title={l('pages.devops.jobinfo.version.sql.title')} visible={modalVisible} destroyOnClose={true} width={"60%"}
+        <Modal title={l('pages.devops.jobinfo.version.sql.title')} open={modalVisible} destroyOnClose={true} width={"60%"}
                onCancel={() => {
                  cancelHandle();
                }}
@@ -76,12 +76,6 @@ const VersionList = (props: any) => {
       align: 'center',
       sorter: true,
       dataIndex: 'name',
-    },
-    {
-      title: l('pages.devops.jobinfo.version.alias'),
-      align: 'center',
-      sorter: true,
-      dataIndex: 'alias',
     },
     {
       title: l('pages.devops.jobinfo.version.dialect'),

@@ -139,11 +139,8 @@ public class Job2MysqlHandler implements JobHandler {
                     clusterService.registersCluster(
                             Cluster.autoRegistersCluster(
                                     job.getJobManagerAddress(),
-                                    job.getJobId()
-                                            + "_"
-                                            + job.getJobConfig().getJobName()
-                                            + "_"
-                                            + LocalDateTime.now(),
+                                    job.getJobId(),
+                                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
                                     job.getType().getLongValue(),
                                     clusterConfigurationId,
                                     taskId));
@@ -156,11 +153,8 @@ public class Job2MysqlHandler implements JobHandler {
                     clusterService.registersCluster(
                             Cluster.autoRegistersCluster(
                                     job.getJobManagerAddress(),
-                                    job.getJobId()
-                                            + "_"
-                                            + job.getJobConfig().getJobName()
-                                            + "_"
-                                            + LocalDateTime.now(),
+                                    job.getJobId(),
+                                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
                                     job.getType().getLongValue(),
                                     null,
                                     taskId));
