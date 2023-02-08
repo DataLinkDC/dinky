@@ -27,7 +27,9 @@ import {ProColumns} from "@ant-design/pro-table/lib/typing";
 import * as _monaco from "monaco-editor";
 import {l} from "@/utils/intl";
 import {CompletionItemInsertTextRule, CompletionItemKind} from "monaco-editor";
-import {getClickhouseKeyWord, getDorisKeyWord, getMysqlKeyWord} from "@/pages/DataCenter/MetaData/Console/function";
+import {
+  getKeyWordByType,
+} from "@/pages/DataCenter/MetaData/Console/function";
 
 let provider = {
   dispose: () => {
@@ -64,7 +66,6 @@ const Console = (props: any) => {
       for (let db of database) {
         if (db.id == dbId) {
           currentDatabase = {type: db.type}
-          console.log(currentDatabase)
         }
       }
       loadDatabaseMeta()
@@ -79,21 +80,7 @@ const Console = (props: any) => {
 
     const loadDatabaseMeta = () => {
       //根据数据库不同加载对应数据库的关键字
-      let keyWords: string[];
-      console.log(currentDatabase)
-      switch (currentDatabase.type.toLowerCase()) {
-        case "doris":
-          keyWords = getDorisKeyWord()
-          break
-        case "mysql":
-          keyWords = getMysqlKeyWord()
-          break
-        case "clickhouse":
-          keyWords = getClickhouseKeyWord()
-          break
-        default:
-          keyWords = getMysqlKeyWord()
-      }
+      let keyWords: string[] = getKeyWordByType(currentDatabase.type.toLowerCase());
       //由于自定义sql提示会覆盖原本的sql提示功能，所以需要重新填写
       for (let key of keyWords) {
         metas.push({name: key, kind: _monaco.languages.CompletionItemKind.Keyword})
