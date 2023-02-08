@@ -93,6 +93,12 @@ public class APIController {
         return Result.succeed(apiService.getStreamGraph(apiExecuteSqlDTO), "执行成功");
     }
 
+    @GetMapping("/getTaskLineage")
+    public Result getTaskLineage(@RequestParam Integer id) {
+        taskService.initTenantByTaskId(id);
+        return Result.succeed(taskService.getTaskLineage(id), "获取成功");
+    }
+
     @GetMapping("/getJobData")
     public Result getJobData(@RequestParam String jobId) {
         return Result.succeed(studioService.getJobData(jobId), "获取成功");

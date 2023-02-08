@@ -40,6 +40,8 @@ import com.dlink.dto.SqlDTO;
 import com.dlink.dto.TaskRollbackVersionDTO;
 import com.dlink.dto.TaskVersionConfigureDTO;
 import com.dlink.exception.BusException;
+import com.dlink.explainer.lineage.LineageBuilder;
+import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.function.compiler.CustomStringJavaCompiler;
 import com.dlink.function.pool.UdfCodePool;
 import com.dlink.function.util.UDFUtil;
@@ -564,6 +566,29 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         gatewayConfig.getClusterConfig().setAppId(jobInfoDetail.getCluster().getName());
         Gateway gateway = Gateway.build(gatewayConfig);
         return gateway.getJobStatusById(jobInfoDetail.getCluster().getName());
+    }
+
+    @Override
+    public LineageResult getTaskLineage(Integer id) {
+        Task task = getTaskInfoById(id);
+        if (Dialect.notFlinkSql(task.getDialect())) {
+            if (Asserts.isNull(task.getDatabaseId())) {
+                return null;
+            }
+            DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
+            if (Asserts.isNull(dataBase)) {
+                return null;
+            }
+            if (task.getDialect().equalsIgnoreCase("doris")) {
+                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(task.getStatement(), "mysql",
+                        dataBase.getDriverConfig());
+            } else {
+                return com.dlink.explainer.sqllineage.LineageBuilder.getSqlLineage(task.getStatement(),
+                        task.getDialect().toLowerCase(), dataBase.getDriverConfig());
+            }
+        } else {
+            return LineageBuilder.getColumnLineageByLogicalPlan(buildFlinkSQL(task));
+        }
     }
 
     @Override
@@ -1469,5 +1494,34 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
         final Result result = offLineTask(taskOperatingResult.getTask().getId(), SavePointType.CANCEL.getValue());
         taskOperatingResult.parseResult(result);
+    }
+
+    private String buildFlinkSQL(Task task) {
+        StringBuilder sb = new StringBuilder();
+        if (task.getFragment()) {
+            // initialize global variables
+            Map<String, String> variables = fragmentVariableService.listEnabledVariables();
+            for (Map.Entry entry : variables.entrySet()) {
+                sb.append(entry.getKey());
+                sb.append(":=");
+                sb.append(entry.getValue());
+                sb.append(";\n");
+            }
+            // initialize database variables
+            String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
+            if (Asserts.isNotNullString(flinkWithSql)) {
+                sb.append(flinkWithSql);
+            }
+        }
+
+        // initialize flinksql environment, such as flink catalog
+        if (Asserts.isNotNull(task.getEnvId()) && !task.getEnvId().equals(0)) {
+            Task envTask = getTaskInfoById(task.getEnvId());
+            if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
+                sb.append(task.getStatement());
+            }
+        }
+        sb.append(task.getStatement());
+        return sb.toString();
     }
 }

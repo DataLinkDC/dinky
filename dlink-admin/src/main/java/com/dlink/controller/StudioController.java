@@ -21,9 +21,9 @@ package com.dlink.controller;
 
 import com.dlink.common.result.Result;
 import com.dlink.dto.SessionDTO;
-import com.dlink.dto.StudioCADTO;
 import com.dlink.dto.StudioDDLDTO;
 import com.dlink.dto.StudioExecuteDTO;
+import com.dlink.dto.StudioLineageDTO;
 import com.dlink.dto.StudioMetaStoreDTO;
 import com.dlink.explainer.lineage.LineageResult;
 import com.dlink.job.JobResult;
@@ -129,7 +129,7 @@ public class StudioController {
      * 获取单任务实例的血缘分析
      */
     @PostMapping("/getLineage")
-    public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
+    public Result<LineageResult> getLineage(@RequestBody StudioLineageDTO studioCADTO) {
         return Result.succeed(studioService.getLineage(studioCADTO), "刷新成功");
     }
 
@@ -194,7 +194,8 @@ public class StudioController {
      * savepoint
      */
     @GetMapping("/savepoint")
-    public Result<Boolean> savepoint(@RequestParam Integer clusterId, @RequestParam String jobId, @RequestParam String savePointType, @RequestParam String name, @RequestParam Integer taskId) {
+    public Result<Boolean> savepoint(@RequestParam Integer clusterId, @RequestParam String jobId,
+            @RequestParam String savePointType, @RequestParam String name, @RequestParam Integer taskId) {
         return Result.succeed(studioService.savepoint(taskId, clusterId, jobId, savePointType, name), "savepoint 成功");
     }
 
@@ -218,7 +219,8 @@ public class StudioController {
      * 获取 Meta Store Flink Column 信息
      */
     @GetMapping("/getMSFlinkColumns")
-    public Result<List<FlinkColumn>> getMSFlinkColumns(@RequestParam Integer envId, @RequestParam String catalog, @RequestParam String database, @RequestParam String table) {
+    public Result<List<FlinkColumn>> getMSFlinkColumns(@RequestParam Integer envId, @RequestParam String catalog,
+            @RequestParam String database, @RequestParam String table) {
         StudioMetaStoreDTO studioMetaStoreDTO = new StudioMetaStoreDTO();
         studioMetaStoreDTO.setEnvId(envId);
         studioMetaStoreDTO.setCatalog(catalog);
