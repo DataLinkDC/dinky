@@ -67,10 +67,6 @@ public class TaskVersion implements Serializable {
     @TableField(value = "`name`")
     private String name;
 
-    /** 别名 */
-    @TableField(value = "`alias`")
-    private String alias;
-
     /** 方言 */
     @TableField(value = "dialect")
     private String dialect;

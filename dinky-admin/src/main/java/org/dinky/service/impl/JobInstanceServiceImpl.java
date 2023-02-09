@@ -144,8 +144,8 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
         String key = jobInstance.getId().toString();
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
-        if (pool.exist(key)) {
+        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
+        if (pool.containsKey(key)) {
             return pool.get(key);
         } else {
             JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
@@ -168,7 +168,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
         Asserts.checkNull(jobInstance, "该任务实例不存在");
         JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         String key = jobInstance.getId().toString();
 
         jobInfoDetail = new JobInfoDetail(jobInstance.getId());
@@ -185,10 +185,10 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
                     clusterConfigurationService.getClusterConfigById(
                             history.getClusterConfigurationId()));
         }
-        if (pool.exist(key)) {
+        if (pool.containsKey(key)) {
             pool.refresh(jobInfoDetail);
         } else {
-            pool.push(key, jobInfoDetail);
+            pool.put(key, jobInfoDetail);
         }
         return jobInfoDetail;
     }
@@ -214,9 +214,9 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         Map<String, Object> param = mapper.convertValue(para, Map.class);
         Page<JobInstance> page = new Page<>(current, pageSize);
         List<JobInstance> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         for (JobInstance jobInstance : list) {
-            if (pool.exist(jobInstance.getId().toString())) {
+            if (pool.containsKey(jobInstance.getId().toString())) {
                 jobInstance.setStatus(
                         pool.get(jobInstance.getId().toString()).getInstance().getStatus());
                 jobInstance.setUpdateTime(

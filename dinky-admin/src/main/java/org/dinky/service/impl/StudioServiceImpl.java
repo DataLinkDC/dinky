@@ -164,7 +164,7 @@ public class StudioServiceImpl implements StudioService {
     private JobResult executeFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         ProcessEntity process =
                 ProcessContextHolder.registerProcess(
-                        ProcessEntity.init(ProcessType.FLINKEXECUTE, StpUtil.getLoginIdAsInt()));
+                        ProcessEntity.init(ProcessType.FLINK_EXECUTE, StpUtil.getLoginIdAsInt()));
         addFlinkSQLEnv(studioExecuteDTO);
         process.info("Initializing Flink job config...");
         JobConfig config = studioExecuteDTO.getJobConfig();
@@ -190,7 +190,7 @@ public class StudioServiceImpl implements StudioService {
     public JobResult executeCommonSql(SqlDTO sqlDTO) {
         ProcessEntity process =
                 ProcessContextHolder.registerProcess(
-                        ProcessEntity.init(ProcessType.SQLEXECUTE, StpUtil.getLoginIdAsInt()));
+                        ProcessEntity.init(ProcessType.SQL_EXECUTE, StpUtil.getLoginIdAsInt()));
         JobResult result = new JobResult();
         result.setStatement(sqlDTO.getStatement());
         result.setStartTimeNow();
@@ -251,7 +251,7 @@ public class StudioServiceImpl implements StudioService {
     private List<SqlExplainResult> explainFlinkSql(StudioExecuteDTO studioExecuteDTO) {
         ProcessEntity process =
                 ProcessContextHolder.registerProcess(
-                        ProcessEntity.init(ProcessType.FLINKEXPLAIN, StpUtil.getLoginIdAsInt()));
+                        ProcessEntity.init(ProcessType.FLINK_EXPLAIN, StpUtil.getLoginIdAsInt()));
         addFlinkSQLEnv(studioExecuteDTO);
         process.info("Initializing Flink job config...");
         JobConfig config = studioExecuteDTO.getJobConfig();
@@ -270,7 +270,7 @@ public class StudioServiceImpl implements StudioService {
     private List<SqlExplainResult> explainCommonSql(StudioExecuteDTO studioExecuteDTO) {
         ProcessEntity process =
                 ProcessContextHolder.registerProcess(
-                        ProcessEntity.init(ProcessType.SQLEXPLAIN, StpUtil.getLoginIdAsInt()));
+                        ProcessEntity.init(ProcessType.SQL_EXPLAIN, StpUtil.getLoginIdAsInt()));
         process.info("Initializing database connection...");
         if (Asserts.isNull(studioExecuteDTO.getDatabaseId())) {
             process.error("The database does not exist.");
@@ -344,7 +344,7 @@ public class StudioServiceImpl implements StudioService {
                             sessionDTO.getType(),
                             true,
                             cluster.getId(),
-                            cluster.getName(),
+                            cluster.getAlias(),
                             clusterService.buildEnvironmentAddress(
                                     true, sessionDTO.getClusterId()));
             return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);

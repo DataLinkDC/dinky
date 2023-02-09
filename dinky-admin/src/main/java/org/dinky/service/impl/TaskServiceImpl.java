@@ -223,7 +223,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 StpUtil.isLogin()
                         ? ProcessContextHolder.registerProcess(
                                 ProcessEntity.init(
-                                        ProcessType.FLINKSUBMIT, StpUtil.getLoginIdAsInt()))
+                                        ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
                         : ProcessEntity.NULL_PROCESS;
 
         process.info("Initializing Flink job config...");
@@ -408,7 +408,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (task.getClusterId() != null) {
             Cluster cluster = clusterService.getById(task.getClusterId());
             if (cluster != null) {
-                task.setClusterName(cluster.getName());
+                task.setClusterName(cluster.getAlias());
             }
         }
 
@@ -519,7 +519,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public Task initDefaultFlinkSQLEnv(Integer tenantId) {
         String separator = SystemConfiguration.getInstances().getSqlSeparator();
         separator = separator.replace("\\r", "\r").replace("\\n", "\n");
-        String name = "dinky_default_catalog";
+        String name = "DefaultCatalog";
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
         if (null != defaultFlinkSQLEnvTask) {
@@ -538,8 +538,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         username(), password(), url(), separator, separator);
 
         defaultFlinkSQLEnvTask = new Task();
-        defaultFlinkSQLEnvTask.setName(name);
-        defaultFlinkSQLEnvTask.setAlias("DefaultCatalog");
+        defaultFlinkSQLEnvTask.setName("DefaultCatalog");
         defaultFlinkSQLEnvTask.setDialect(Dialect.FLINK_SQL_ENV.getValue());
         defaultFlinkSQLEnvTask.setStatement(sql);
         defaultFlinkSQLEnvTask.setFragment(true);
@@ -1006,10 +1005,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
         JobInfoDetail jobInfoDetail;
-        FlinkJobTaskPool pool = FlinkJobTaskPool.getInstance();
+        FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         String key = id.toString();
 
-        if (pool.exist(key)) {
+        if (pool.containsKey(key)) {
             jobInfoDetail = pool.get(key);
         } else {
             jobInfoDetail = new JobInfoDetail(id);
@@ -1028,7 +1027,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             jobInfoDetail.setHistory(history);
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
-            pool.push(key, jobInfoDetail);
+            pool.put(key, jobInfoDetail);
         }
 
         if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
@@ -1288,7 +1287,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 tasks.add(task);
             }
             Catalogue catalogue =
-                    new Catalogue(task.getAlias(), task.getId(), task.getDialect(), parentId, true);
+                    new Catalogue(task.getName(), task.getId(), task.getDialect(), parentId, true);
             catalogueService.saveOrUpdate(catalogue);
         }
 
@@ -1334,7 +1333,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     public String getTaskPathByTaskId(Integer taskId) {
         StringBuilder path = new StringBuilder();
-        path.append(getById(taskId).getAlias());
+        path.append(getById(taskId).getName());
         Catalogue catalogue =
                 catalogueService.getOne(new QueryWrapper<Catalogue>().eq("task_id", taskId));
         if (Asserts.isNull(catalogue)) {
@@ -1466,7 +1465,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                         alertInstance.getType(),
                         JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
-        String title = "Task[" + task.getAlias() + "]: " + jobInstance.getStatus();
+        String title = "Task[" + task.getName() + "]: " + jobInstance.getStatus();
         String content = alertMsg.toString();
         AlertResult alertResult = alert.send(title, content);
 

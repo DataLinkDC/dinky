@@ -94,7 +94,7 @@ const UpdateCatalogueForm: React.FC<UpdateFormProps> = (props) => {
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={isCreate ? '创建新目录' : ('重命名目录-' + formVals.name)}
-      visible={updateModalVisible}
+      open={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
     >

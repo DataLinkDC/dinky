@@ -122,7 +122,8 @@ const JobInstanceTable = (props: any) => {
   }
 
   const getColumns = () => {
-    const columns: ProColumns<JobInstanceTableListItem>[] = [{
+    const columns: ProColumns<JobInstanceTableListItem>[] = [
+      {
       title: l('global.table.jobname'),
       dataIndex: "name",
       sorter: true,

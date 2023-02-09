@@ -133,6 +133,12 @@ const ClusterTableList: React.FC<{}> = (props: any) => {
       },
     },
     {
+      title: l('pages.rc.cluster.alias'),
+      sorter: true,
+      dataIndex: 'alias',
+      hideInTable: false,
+    },
+    {
       title: l('pages.rc.cluster.instanceId'),
       dataIndex: 'id',
       hideInTable: true,

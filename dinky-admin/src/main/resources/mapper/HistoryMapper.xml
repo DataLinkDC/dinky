@@ -6,7 +6,7 @@
         select
         a.*,
         (select b.name FROM dinky_cluster b where b.id=a.cluster_id) as clusterName,
-        (select c.alias FROM dinky_task c where c.id=a.task_id) as taskAlias
+        (select c.name FROM dinky_task c where c.id=a.task_id) as jobName
         from
         dinky_history a
         <where>

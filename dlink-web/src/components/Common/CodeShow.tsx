@@ -27,7 +27,7 @@ export type CodeShowFormProps = {
   theme?: string;
   options?: any;
   code: string;
-  editorDidMountHandle: any;
+  editorDidMountHandle?: any;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
