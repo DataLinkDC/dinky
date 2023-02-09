@@ -35,6 +35,7 @@ import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 
 import java.io.File;
 import java.util.HashMap;
@@ -49,8 +50,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * ClusterConfigServiceImpl
@@ -113,20 +115,17 @@ public class ClusterConfigurationServiceImpl
         } else if (config.getType() == FlinkClusterConfiguration.Type.Kubernetes) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
 
-            Dict kubernetesConfig = Dict.of(config.getKubernetesConfig());
+            Map<String, String> kubernetesConfig = config.getKubernetesConfig();
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.namespace"))
-                    .ifPresent(v -> flinkConfigMap.put("kubernetes.namespace", v));
+            // filter str blank value
+            kubernetesConfig =
+                    MapUtil.filter(kubernetesConfig, entry -> !StrUtil.isBlank(entry.getValue()));
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.cluster-id"))
-                    .ifPresentOrElse(
-                            v -> flinkConfigMap.put("kubernetes.cluster-id", v),
-                            () ->
-                                    flinkConfigMap.put(
-                                            "kubernetes.cluster-id", UUID.randomUUID().toString()));
+            // set default value
+            kubernetesConfig.putIfAbsent(
+                    KubernetesConfigOptions.CLUSTER_ID.key(), UUID.randomUUID().toString());
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.container.image"))
-                    .ifPresent(v -> flinkConfigMap.put("kubernetes.container.image", v));
+            flinkConfigMap.putAll(kubernetesConfig);
 
             String fileDir =
                     FileUtil.isDirectory(PathConstant.WORK_DIR + "/dinky-doc")

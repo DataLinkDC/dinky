@@ -38,6 +38,7 @@ import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.kubernetes.KubernetesClusterClientFactory;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
+import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
 import org.apache.flink.runtime.client.JobStatusMessage;
@@ -49,6 +50,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.util.ReflectUtil;
+import io.fabric8.kubernetes.client.NamespacedKubernetesClient;
+import io.fabric8.kubernetes.client.VersionInfo;
 
 /**
  * KubernetesGateway
@@ -231,11 +237,21 @@ public abstract class KubernetesGateway extends AbstractGateway {
         }
         try {
             initKubeClient();
+            if (client instanceof Fabric8FlinkKubeClient) {
+                VersionInfo kubernetesVersion =
+                        ((NamespacedKubernetesClient)
+                                        ReflectUtil.getFieldValue(client, "internalClient"))
+                                .getKubernetesVersion();
+                logger.info(
+                        "k8s cluster link successful ; k8s version: {} ; platform: {}",
+                        kubernetesVersion.getGitVersion(),
+                        kubernetesVersion.getPlatform());
+            }
             logger.info("配置连接测试成功");
             return TestResult.success();
         } catch (Exception e) {
-            logger.error("测试 Kubernetes 配置失败：" + e.getMessage());
-            return TestResult.fail("测试 Kubernetes 配置失败：" + e.getMessage());
+            logger.error("测试 Kubernetes 配置失败：", e);
+            return TestResult.fail("测试 Kubernetes 配置失败：" + ExceptionUtil.getRootCauseMessage(e));
         }
     }
 
