@@ -31,7 +31,6 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
@@ -63,13 +62,7 @@ public class YarnPerJobGateway extends YarnGateway {
             init();
         }
 
-        YarnClusterDescriptor yarnClusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
+        YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();

@@ -53,7 +53,7 @@ public class YarnSessionGateway extends YarnGateway {
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
 
-        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptor();
+        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar();
 
         YarnResult result = YarnResult.build(getType());
         try {

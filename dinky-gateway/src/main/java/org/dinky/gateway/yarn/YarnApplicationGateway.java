@@ -72,7 +72,7 @@ public class YarnApplicationGateway extends YarnGateway {
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
-        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptor();
+        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar();
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
         YarnResult result = YarnResult.build(getType());

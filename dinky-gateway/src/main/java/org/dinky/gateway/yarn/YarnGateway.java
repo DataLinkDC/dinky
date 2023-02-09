@@ -155,15 +155,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         ApplicationId applicationId = getApplicationId();
-
-        YarnClusterDescriptor clusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
-
+        YarnClusterDescriptor clusterDescriptor = createInitYarnClusterDescriptor();
         return runClusterSavePointResult(savePoint, applicationId, clusterDescriptor);
     }
 
@@ -178,15 +170,7 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         ApplicationId applicationId = getApplicationId();
-
-        YarnClusterDescriptor clusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
-
+        YarnClusterDescriptor clusterDescriptor = createInitYarnClusterDescriptor();
         SavePointResult result = runSavePointResult(savePoint, applicationId, clusterDescriptor);
 
         if (ActionType.CANCEL == config.getFlinkConfig().getAction()
@@ -302,14 +286,8 @@ public abstract class YarnGateway extends AbstractGateway {
         }
     }
 
-    protected YarnClusterDescriptor createYarnClusterDescriptor() {
-        YarnClusterDescriptor yarnClusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
+    protected YarnClusterDescriptor createYarnClusterDescriptorWithJar() {
+        YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor();
 
         if (Asserts.isNotNull(config.getJarPaths())) {
             yarnClusterDescriptor.addShipFiles(
@@ -317,6 +295,17 @@ public abstract class YarnGateway extends AbstractGateway {
                             .map(FileUtil::file)
                             .collect(Collectors.toList()));
         }
+        return yarnClusterDescriptor;
+    }
+
+    protected YarnClusterDescriptor createInitYarnClusterDescriptor() {
+        YarnClusterDescriptor yarnClusterDescriptor =
+                new YarnClusterDescriptor(
+                        configuration,
+                        yarnConfiguration,
+                        yarnClient,
+                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
+                        true);
         return yarnClusterDescriptor;
     }
 }

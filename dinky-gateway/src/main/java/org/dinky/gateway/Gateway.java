@@ -45,9 +45,7 @@ public interface Gateway {
         Asserts.checkNotNull(config, "配置不能为空");
         Asserts.checkNotNull(config.getType(), "配置类型不能为空");
         ServiceLoader<Gateway> loader = ServiceLoader.load(Gateway.class);
-        Iterator<Gateway> iterator = loader.iterator();
-        while (iterator.hasNext()) {
-            Gateway gateway = iterator.next();
+        for (Gateway gateway : loader) {
             if (gateway.canHandle(config.getType())) {
                 gateway.setGatewayConfig(config);
                 return Optional.of(gateway);
