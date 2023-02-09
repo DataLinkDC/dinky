@@ -24,9 +24,7 @@ import org.dinky.gateway.GatewayType;
 
 import org.apache.http.util.TextUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -85,7 +83,7 @@ public class GatewayConfig {
         FlinkConfig fc = new FlinkConfig();
         if (config.containsKey(FLINK_CONFIG)
                 && Asserts.isNotNullMap((Map<String, String>) config.get(FLINK_CONFIG))) {
-                    fc = FlinkConfig.build((Map<String, String>) config.get(FLINK_CONFIG));
+            fc = FlinkConfig.build((Map<String, String>) config.get(FLINK_CONFIG));
         }
 
         final Map<String, String> configuration = fc.getConfiguration();
@@ -124,10 +122,10 @@ public class GatewayConfig {
                 // There may be multiple spaces between the parameter and value during user input,
                 // which will directly lead to a parameter passing error and needs to be eliminated
                 String[] temp = config.get(USER_JAR_PARAS).toString().split(" ");
-                appConfig.setUserJarParas(Arrays
-                        .stream(temp)
-                        .filter(s -> !TextUtils.isEmpty(s.trim()))
-                        .toArray(String[]::new));
+                appConfig.setUserJarParas(
+                        Arrays.stream(temp)
+                                .filter(s -> !TextUtils.isEmpty(s.trim()))
+                                .toArray(String[]::new));
             }
         }
         return appConfig;

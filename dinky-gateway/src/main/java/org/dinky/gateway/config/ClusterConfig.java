@@ -63,9 +63,6 @@ public class ClusterConfig {
         return String.format(
                 "ClusterConfig{flinkConfigPath='%s', flinkLibPath='%s', yarnConfigPath='%s', "
                         + "appId='%s'}",
-                flinkConfigPath,
-                flinkLibPath,
-                yarnConfigPath,
-                appId);
+                flinkConfigPath, flinkLibPath, yarnConfigPath, appId);
     }
 }

@@ -46,8 +46,7 @@ public enum SavePointType {
     }
 
     public static SavePointType get(String value) {
-        return Arrays
-                .stream(SavePointType.values())
+        return Arrays.stream(SavePointType.values())
                 .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
                 .findFirst()
                 .orElse(SavePointType.TRIGGER);

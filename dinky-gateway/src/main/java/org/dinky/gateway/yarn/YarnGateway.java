@@ -19,7 +19,6 @@
 
 package org.dinky.gateway.yarn;
 
-import cn.hutool.core.io.FileUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ActionType;
@@ -63,6 +62,8 @@ import java.util.Collections;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.io.FileUtil;
+
 /**
  * YarnSubmiter
  *
@@ -89,8 +90,7 @@ public abstract class YarnGateway extends AbstractGateway {
 
     private void initConfig() {
         final ClusterConfig clusterConfig = config.getClusterConfig();
-        configuration = GlobalConfiguration.loadConfiguration(
-                clusterConfig.getFlinkConfigPath());
+        configuration = GlobalConfiguration.loadConfiguration(clusterConfig.getFlinkConfigPath());
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
         if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
@@ -130,7 +130,8 @@ public abstract class YarnGateway extends AbstractGateway {
             resetCheckpointInApplicationMode();
         }
 
-        YarnLogConfigUtil.setLogConfigFileInConfig(configuration, clusterConfig.getFlinkConfigPath());
+        YarnLogConfigUtil.setLogConfigFileInConfig(
+                configuration, clusterConfig.getFlinkConfigPath());
     }
 
     private void initYarnClient() {
@@ -145,9 +146,7 @@ public abstract class YarnGateway extends AbstractGateway {
     }
 
     private Path getYanConfigFilePath(String path) {
-        return new Path(
-                URI.create(
-                        config.getClusterConfig().getYarnConfigPath() + "/" + path));
+        return new Path(URI.create(config.getClusterConfig().getYarnConfigPath() + "/" + path));
     }
 
     public SavePointResult savepointCluster(String savePoint) {

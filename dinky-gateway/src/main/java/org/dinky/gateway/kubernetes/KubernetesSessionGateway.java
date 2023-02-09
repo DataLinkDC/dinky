@@ -21,7 +21,6 @@ package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.GatewayType;
-import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
@@ -29,10 +28,7 @@ import org.dinky.utils.LogUtil;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
-
-import java.util.Collections;
 
 /**
  * KubernetesSessionGateway
@@ -75,5 +71,4 @@ public class KubernetesSessionGateway extends KubernetesGateway {
         }
         return result;
     }
-
 }

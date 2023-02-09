@@ -19,16 +19,6 @@
 
 package org.dinky.gateway;
 
-import org.apache.flink.api.common.JobID;
-import org.apache.flink.client.deployment.ClusterDescriptor;
-import org.apache.flink.client.deployment.ClusterSpecification;
-import org.apache.flink.client.program.ClusterClient;
-import org.apache.flink.configuration.CheckpointingOptions;
-
-import org.apache.flink.configuration.JobManagerOptions;
-import org.apache.flink.configuration.TaskManagerOptions;
-import org.apache.flink.runtime.client.JobStatusMessage;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.config.ActionType;
 import org.dinky.gateway.config.GatewayConfig;
@@ -37,14 +27,19 @@ import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.model.JobStatus;
-
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.runtime.jobgraph.JobGraph;
-
 import org.dinky.utils.FlinkUtil;
 import org.dinky.utils.LogUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.flink.api.common.JobID;
+import org.apache.flink.client.deployment.ClusterDescriptor;
+import org.apache.flink.client.deployment.ClusterSpecification;
+import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.configuration.CheckpointingOptions;
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.configuration.JobManagerOptions;
+import org.apache.flink.configuration.TaskManagerOptions;
+import org.apache.flink.runtime.client.JobStatusMessage;
+import org.apache.flink.runtime.jobgraph.JobGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -53,6 +48,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * AbstractGateway
@@ -86,13 +84,11 @@ public abstract class AbstractGateway implements Gateway {
 
     protected void addConfigParas(Map<String, String> configMap) {
         if (Asserts.isNotNull(configMap)) {
-            configMap
-                    .entrySet()
-                    .stream()
+            configMap.entrySet().stream()
                     .filter(entry -> Asserts.isAllNotNullString(entry.getKey(), entry.getValue()))
-                    .forEach(entry -> this.configuration.setString(
-                            entry.getKey(),
-                            entry.getValue()));
+                    .forEach(
+                            entry ->
+                                    this.configuration.setString(entry.getKey(), entry.getValue()));
         }
     }
 
@@ -137,14 +133,14 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     protected <T> SavePointResult runSavePointResult(
-            String savePoint,
-            T applicationId,
-            ClusterDescriptor<T> clusterDescriptor) {
+            String savePoint, T applicationId, ClusterDescriptor<T> clusterDescriptor) {
         SavePointResult result = SavePointResult.build(getType());
         try (ClusterClient<T> clusterClient =
-                     clusterDescriptor.retrieve(applicationId).getClusterClient()) {
-            List<JobInfo> jobInfos = Collections.singletonList(
-                    new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
+                clusterDescriptor.retrieve(applicationId).getClusterClient()) {
+            List<JobInfo> jobInfos =
+                    Collections.singletonList(
+                            new JobInfo(
+                                    config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
             result.setJobInfos(jobInfos);
         } catch (Exception e) {
@@ -154,9 +150,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     protected <T> SavePointResult runClusterSavePointResult(
-            String savePoint,
-            T applicationId,
-            ClusterDescriptor<T> clusterDescriptor) {
+            String savePoint, T applicationId, ClusterDescriptor<T> clusterDescriptor) {
         SavePointResult result = SavePointResult.build(getType());
         try (ClusterClient<T> clusterClient =
                 clusterDescriptor.retrieve(applicationId).getClusterClient()) {
@@ -204,9 +198,7 @@ public abstract class AbstractGateway implements Gateway {
         if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {
             configuration.set(
                     CheckpointingOptions.SAVEPOINT_DIRECTORY,
-                    configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY)
-                            + "/"
-                            + uuid);
+                    configuration.getString(CheckpointingOptions.SAVEPOINT_DIRECTORY) + "/" + uuid);
         }
     }
 

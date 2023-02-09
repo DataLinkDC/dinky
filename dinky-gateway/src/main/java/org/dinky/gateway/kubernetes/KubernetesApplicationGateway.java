@@ -31,14 +31,12 @@ import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.http.util.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -62,8 +60,10 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
 
         combineFlinkConfig();
         AppConfig appConfig = config.getAppConfig();
-        String[] userJarParas = Asserts.isNotNull(appConfig.getUserJarParas()) ?
-                appConfig.getUserJarParas() : new String[0];
+        String[] userJarParas =
+                Asserts.isNotNull(appConfig.getUserJarParas())
+                        ? appConfig.getUserJarParas()
+                        : new String[0];
 
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
@@ -120,5 +120,4 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         }
         return result;
     }
-
 }

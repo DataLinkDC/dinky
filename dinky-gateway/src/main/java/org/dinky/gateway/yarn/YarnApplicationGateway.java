@@ -64,8 +64,10 @@ public class YarnApplicationGateway extends YarnGateway {
         configuration.set(
                 PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
 
-        String[] userJarParas = Asserts.isNotNull(appConfig.getUserJarParas()) ?
-                appConfig.getUserJarParas() : new String[0];
+        String[] userJarParas =
+                Asserts.isNotNull(appConfig.getUserJarParas())
+                        ? appConfig.getUserJarParas()
+                        : new String[0];
 
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
@@ -111,5 +113,4 @@ public class YarnApplicationGateway extends YarnGateway {
         }
         return result;
     }
-
 }
