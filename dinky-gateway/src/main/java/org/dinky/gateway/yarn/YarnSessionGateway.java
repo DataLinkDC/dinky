@@ -19,17 +19,17 @@
 
 package org.dinky.gateway.yarn;
 
+import org.apache.flink.client.deployment.ClusterSpecification;
+import org.apache.flink.client.program.ClusterClient;
+import org.apache.flink.client.program.ClusterClientProvider;
+import org.apache.flink.yarn.YarnClusterDescriptor;
+
+import org.apache.hadoop.yarn.api.records.ApplicationId;
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.utils.LogUtil;
-
-import org.apache.flink.client.deployment.ClusterSpecification;
-import org.apache.flink.client.program.ClusterClient;
-import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.yarn.YarnClusterDescriptor;
-import org.apache.hadoop.yarn.api.records.ApplicationId;
 
 /**
  * YarnSessionGateway
@@ -53,10 +53,8 @@ public class YarnSessionGateway extends YarnGateway {
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
 
-        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar();
-
         YarnResult result = YarnResult.build(getType());
-        try {
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
             ClusterClientProvider<ApplicationId> clusterClientProvider =
                     yarnClusterDescriptor.deploySessionCluster(
                             clusterSpecificationBuilder.createClusterSpecification());
@@ -67,8 +65,6 @@ public class YarnSessionGateway extends YarnGateway {
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        } finally {
-            yarnClusterDescriptor.close();
         }
         return result;
     }

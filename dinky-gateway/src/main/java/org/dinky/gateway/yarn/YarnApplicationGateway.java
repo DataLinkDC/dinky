@@ -69,47 +69,44 @@ public class YarnApplicationGateway extends YarnGateway {
                         ? appConfig.getUserJarParas()
                         : new String[0];
 
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                createClusterSpecificationBuilder();
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
-        YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar();
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                createClusterSpecificationBuilder();
         YarnResult result = YarnResult.build(getType());
-        try {
-            ClusterClientProvider<ApplicationId> clusterClientProvider =
-                    yarnClusterDescriptor.deployApplicationCluster(
-                            clusterSpecificationBuilder.createClusterSpecification(),
-                            applicationConfiguration);
-            ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
+                ClusterClientProvider<ApplicationId> clusterClientProvider =
+                        yarnClusterDescriptor.deployApplicationCluster(
+                                clusterSpecificationBuilder.createClusterSpecification(),
+                                applicationConfiguration);
+                ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
+                Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
 
-            int counts = SystemConfiguration.getInstances().getJobIdWait();
-            while (jobStatusMessages.size() == 0 && counts > 0) {
-                Thread.sleep(1000);
-                counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
+                int counts = SystemConfiguration.getInstances().getJobIdWait();
+                while (jobStatusMessages.size() == 0 && counts > 0) {
+                    Thread.sleep(1000);
+                    counts--;
+                    jobStatusMessages = clusterClient.listJobs().get();
+                    if (jobStatusMessages.size() > 0) {
+                        break;
+                    }
+                }
+
                 if (jobStatusMessages.size() > 0) {
-                    break;
+                    List<String> jobIds = new ArrayList<>();
+                    for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                        jobIds.add(jobStatusMessage.getJobId().toHexString());
+                    }
+                    result.setJids(jobIds);
                 }
-            }
 
-            if (jobStatusMessages.size() > 0) {
-                List<String> jobIds = new ArrayList<>();
-                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jobIds.add(jobStatusMessage.getJobId().toHexString());
-                }
-                result.setJids(jobIds);
-            }
-
-            ApplicationId applicationId = clusterClient.getClusterId();
-            result.setId(applicationId.toString());
-            result.setWebURL(clusterClient.getWebInterfaceURL());
-            result.success();
+                ApplicationId applicationId = clusterClient.getClusterId();
+                result.setId(applicationId.toString());
+                result.setWebURL(clusterClient.getWebInterfaceURL());
+                result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        } finally {
-            yarnClusterDescriptor.close();
         }
         return result;
     }
