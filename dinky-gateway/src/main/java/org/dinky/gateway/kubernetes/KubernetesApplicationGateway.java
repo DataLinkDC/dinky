@@ -70,47 +70,48 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         ApplicationConfiguration applicationConfiguration =
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
-        KubernetesResult result = KubernetesResult.build(getType());;
+        KubernetesResult result = KubernetesResult.build(getType());
+        ;
         try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                     new KubernetesClusterDescriptor(configuration,client)) {
-                ClusterClientProvider<String> clusterClientProvider =
-                        kubernetesClusterDescriptor.deployApplicationCluster(
-                                clusterSpecificationBuilder.createClusterSpecification(),
-                                applicationConfiguration);
-                ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
-                Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+                new KubernetesClusterDescriptor(configuration, client)) {
+            ClusterClientProvider<String> clusterClientProvider =
+                    kubernetesClusterDescriptor.deployApplicationCluster(
+                            clusterSpecificationBuilder.createClusterSpecification(),
+                            applicationConfiguration);
+            ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
+            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
 
-                int counts = SystemConfiguration.getInstances().getJobIdWait();
-                while (jobStatusMessages.size() == 0 && counts > 0) {
-                    Thread.sleep(1000);
-                    counts--;
-                    jobStatusMessages = clusterClient.listJobs().get();
-                    if (jobStatusMessages.size() > 0) {
-                        break;
-                    }
-                }
-
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
+            while (jobStatusMessages.size() == 0 && counts > 0) {
+                Thread.sleep(1000);
+                counts--;
+                jobStatusMessages = clusterClient.listJobs().get();
                 if (jobStatusMessages.size() > 0) {
-                    List<String> jids = new ArrayList<>();
-                    for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                        jids.add(jobStatusMessage.getJobId().toHexString());
-                    }
-                    result.setJids(jids);
+                    break;
                 }
+            }
 
-                String jobId = "";
-                // application mode only have one job, so we can get any one to be jobId
+            if (jobStatusMessages.size() > 0) {
+                List<String> jids = new ArrayList<>();
                 for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                    jobId = jobStatusMessage.getJobId().toHexString();
+                    jids.add(jobStatusMessage.getJobId().toHexString());
                 }
-                // if JobStatusMessage not have job id, use timestamp
-                // and... it`s maybe wrong with submit
-                if (TextUtils.isEmpty(jobId)) {
-                    jobId = "unknown" + System.currentTimeMillis();
-                }
-                result.setId(jobId);
-                result.setWebURL(clusterClient.getWebInterfaceURL());
-                result.success();
+                result.setJids(jids);
+            }
+
+            String jobId = "";
+            // application mode only have one job, so we can get any one to be jobId
+            for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                jobId = jobStatusMessage.getJobId().toHexString();
+            }
+            // if JobStatusMessage not have job id, use timestamp
+            // and... it`s maybe wrong with submit
+            if (TextUtils.isEmpty(jobId)) {
+                jobId = "unknown" + System.currentTimeMillis();
+            }
+            result.setId(jobId);
+            result.setWebURL(clusterClient.getWebInterfaceURL());
+            result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
         }

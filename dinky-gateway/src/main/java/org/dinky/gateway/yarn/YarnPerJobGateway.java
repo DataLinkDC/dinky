@@ -74,33 +74,33 @@ public class YarnPerJobGateway extends YarnGateway {
 
         YarnResult result = YarnResult.build(getType());
         try (YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor()) {
-                ClusterClientProvider<ApplicationId> clusterClientProvider =
-                        yarnClusterDescriptor.deployJobCluster(
-                                clusterSpecificationBuilder.createClusterSpecification(),
-                                jobGraph,
-                                true);
-                ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-                ApplicationId applicationId = clusterClient.getClusterId();
-                result.setId(applicationId.toString());
-                result.setWebURL(clusterClient.getWebInterfaceURL());
-                Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
-                int counts = SystemConfiguration.getInstances().getJobIdWait();
-                while (jobStatusMessages.size() == 0 && counts > 0) {
-                    Thread.sleep(1000);
-                    counts--;
-                    jobStatusMessages = clusterClient.listJobs().get();
-                    if (jobStatusMessages.size() > 0) {
-                        break;
-                    }
-                }
+            ClusterClientProvider<ApplicationId> clusterClientProvider =
+                    yarnClusterDescriptor.deployJobCluster(
+                            clusterSpecificationBuilder.createClusterSpecification(),
+                            jobGraph,
+                            true);
+            ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
+            ApplicationId applicationId = clusterClient.getClusterId();
+            result.setId(applicationId.toString());
+            result.setWebURL(clusterClient.getWebInterfaceURL());
+            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+            int counts = SystemConfiguration.getInstances().getJobIdWait();
+            while (jobStatusMessages.size() == 0 && counts > 0) {
+                Thread.sleep(1000);
+                counts--;
+                jobStatusMessages = clusterClient.listJobs().get();
                 if (jobStatusMessages.size() > 0) {
-                    List<String> jids = new ArrayList<>();
-                    for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
-                        jids.add(jobStatusMessage.getJobId().toHexString());
-                    }
-                    result.setJids(jids);
+                    break;
                 }
-                result.success();
+            }
+            if (jobStatusMessages.size() > 0) {
+                List<String> jids = new ArrayList<>();
+                for (JobStatusMessage jobStatusMessage : jobStatusMessages) {
+                    jids.add(jobStatusMessage.getJobId().toHexString());
+                }
+                result.setJids(jids);
+            }
+            result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
         }

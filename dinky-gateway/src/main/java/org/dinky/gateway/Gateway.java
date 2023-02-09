@@ -29,7 +29,6 @@ import org.dinky.model.JobStatus;
 
 import org.apache.flink.runtime.jobgraph.JobGraph;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.ServiceLoader;
 
