@@ -129,8 +129,8 @@ public class ClusterConfigurationServiceImpl
                     .ifPresent(v -> flinkConfigMap.put("kubernetes.container.image", v));
 
             String fileDir =
-                    FileUtil.isDirectory(PathConstant.WORK_DIR + "/dinky-doc")
-                            ? PathConstant.WORK_DIR + "/dinky-doc"
+                    FileUtil.isDirectory(PathConstant.WORK_DIR + "/docker")
+                            ? PathConstant.WORK_DIR + "/docker"
                             : PathConstant.WORK_DIR;
             File dockerFile;
             try {
