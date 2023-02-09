@@ -567,6 +567,7 @@ export default {
   'pages.rc.clusterConfig.help.kubernets.image': 'Flink image',
   'pages.rc.clusterConfig.help.kubernets.jmcpu': 'jobmanager cpu config',
   'pages.rc.clusterConfig.help.kubernets.tmcpu': 'taskmanager cpu config',
+  'pages.rc.clusterConfig.help.kubernetes.configfile': 'The default ~/.kube/config, fill in the kube file path, which can be used as a remote connection',
   'pages.rc.clusterConfig.help.kubernets.account': 'kubernets account，default is default',
   'pages.rc.clusterConfig.help.kubernets.defaultTemplate': 'Optional，default JobManager，TaskManager template conf!',
   'pages.rc.clusterConfig.help.kubernets.jobManagerTemplate': 'Optional，JobManager template ',

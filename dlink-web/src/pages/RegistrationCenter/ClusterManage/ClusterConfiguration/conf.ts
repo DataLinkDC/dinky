@@ -105,6 +105,11 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [
     lable: 'kubernetes.taskmanager.cpu',
     showType: 'input',
     placeholder: l('pages.rc.clusterConfig.help.kubernets.tmcpu'),
+  }, {
+    name: 'kubernetes.config.file',
+    lable: 'kubernetes.config.file',
+    showType: 'input',
+    placeholder: l('pages.rc.clusterConfig.help.kubernetes.configfile'),
   }
 ];
 export const FLINK_CONFIG_LIST: Config[] = [
