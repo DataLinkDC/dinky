@@ -74,7 +74,7 @@ const SessionForm: React.FC<UpdateFormProps> = (props) => {
     </Option>)];
     for (let item of cluster) {
       let tag = (<><Tag
-        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}</>);
       itemList.push(<Option value={item.id} label={tag}>
         {tag}
       </Option>)

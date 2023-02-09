@@ -71,7 +71,7 @@ const StudioTaskInfo = (props: any) => {
             <Paragraph copyable>{current.task.id}</Paragraph>
           </Descriptions.Item>
           <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
-            {current.task.alias}
+            {current.task.jobName}
           </Descriptions.Item>
           <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
             {current.task.dialect}

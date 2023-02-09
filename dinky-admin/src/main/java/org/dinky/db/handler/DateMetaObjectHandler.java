@@ -28,7 +28,7 @@ import java.time.LocalDateTime;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 
 /**
- * DateMetaObjectHandler
+ * DateMeta Object Handler
  *
  * @author wenmo
  * @since 2021/5/25
@@ -57,7 +57,6 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
                 getFieldValByName(mybatisPlusFillProperties.getCreateTimeField(), metaObject);
         Object updateTime =
                 getFieldValByName(mybatisPlusFillProperties.getUpdateTimeField(), metaObject);
-        Object alias = getFieldValByName(mybatisPlusFillProperties.getAlias(), metaObject);
         Object name = getFieldValByName(mybatisPlusFillProperties.getName(), metaObject);
         if (createTime == null) {
             setFieldValByName(
@@ -70,9 +69,6 @@ public class DateMetaObjectHandler implements MetaObjectHandler {
                     mybatisPlusFillProperties.getUpdateTimeField(),
                     LocalDateTime.now(),
                     metaObject);
-        }
-        if (alias == null) {
-            setFieldValByName(mybatisPlusFillProperties.getAlias(), name, metaObject);
         }
     }
 

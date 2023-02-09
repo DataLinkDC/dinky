@@ -19,8 +19,6 @@
 
 package org.dinky.dto;
 
-import org.dinky.config.Dialect;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,9 +38,10 @@ public class CatalogueTaskDTO {
     private Integer id;
     private Integer tenantId;
     private Integer parentId;
+    private Integer taskId;
     private boolean isLeaf;
     private String name;
-    private String alias;
-    private String dialect = Dialect.DEFAULT.getValue();
+    private String type;
+    private String dialect;
     private Map<String, String> config = new HashMap<>();
 }

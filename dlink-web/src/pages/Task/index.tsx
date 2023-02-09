@@ -109,12 +109,6 @@ const TaskTableList: React.FC<{}> = () => {
       hideInSearch: true,
     },
     {
-      title: l('pages.task.alias'),
-      sorter: true,
-      dataIndex: 'alias',
-      hideInTable: false,
-    },
-    {
       title: l('pages.task.type'),
       sorter: true,
       dataIndex: 'type',

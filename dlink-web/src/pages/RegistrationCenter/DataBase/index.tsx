@@ -75,7 +75,7 @@ const DataBaseTableList: React.FC<{}> = (props: any) => {
   const onDeleteDataBase = (row: DataBaseItem) => {
     Modal.confirm({
       title: l('pages.rc.db.delete'),
-      content: l('pages.rc.db.deleteConfirm','',{dbName: (row.alias === "" ? row.name : row.alias)}),
+      content: l('pages.rc.db.deleteConfirm','',{dbName: row.name}),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {

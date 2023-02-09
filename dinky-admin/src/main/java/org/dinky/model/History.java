@@ -53,7 +53,6 @@ public class History implements Serializable {
     private String session;
 
     private String jobId;
-
     private String jobName;
 
     private String jobManagerAddress;
@@ -84,9 +83,6 @@ public class History implements Serializable {
 
     @TableField(exist = false)
     private String clusterName;
-
-    @TableField(exist = false)
-    private String taskAlias;
 
     public JobInstance buildJobInstance() {
         JobInstance jobInstance = new JobInstance();
