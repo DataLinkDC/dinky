@@ -73,9 +73,9 @@ public class TaskController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Task task) throws Exception {
         if (taskService.saveOrUpdateTask(task)) {
-            return Result.succeed("操作成功");
+            return Result.succeed("保存成功");
         } else {
-            return Result.failed("操作失败");
+            return Result.failed("保存失败");
         }
     }
 

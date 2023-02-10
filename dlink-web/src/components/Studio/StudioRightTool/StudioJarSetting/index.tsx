@@ -63,7 +63,7 @@ const StudioJarSetting = (props: any) => {
     const itemList = [];
     for (const item of jars) {
       const tag = (<><Tag
-        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.alias === "" ? item.name : item.alias}</>);
+        color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}</>);
       itemList.push(<Option key={item.id} value={item.id} label={tag}>
         {tag}
       </Option>)

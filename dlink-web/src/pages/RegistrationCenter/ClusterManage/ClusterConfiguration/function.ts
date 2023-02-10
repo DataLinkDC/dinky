@@ -91,7 +91,6 @@ export function getConfigFormValues(values: any) {
   let formValues = addValueToMap(values, [
     'id',
     'name',
-    'alias',
     'type',
     'note',
     'enabled',

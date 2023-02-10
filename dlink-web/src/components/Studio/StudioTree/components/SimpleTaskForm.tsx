@@ -33,7 +33,7 @@ export type UpdateFormProps = {
   onSubmit: (values: Partial<TaskTableListItem>) => void;
   updateModalVisible: boolean;
   isCreate: boolean;
-  dialect: string;
+  dialect?: string;
   values: Partial<TaskTableListItem>;
 };
 
@@ -48,16 +48,15 @@ const isUDF = (dialect: string) => {
 
 const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
 
-
   const [formVals, setFormVals] = useState<Partial<TaskTableListItem>>({
     id: props.values.id,
     name: props.values.name,
-    alias: props.values.alias,
+    dialect: DIALECT.FLINKSQL,
     parentId: props.values.parentId,
     config: props.values.config,
   });
 
-  const [dialect, setDialect] = useState<string>('')
+  const [dialect, setDialect] = useState<string>(DIALECT.FLINKSQL)
   const [isShowUDFClassName, setShowUDFClassName] = useState<boolean>(true)
   const [templateTree, setTemplateTree] = useState<Object[]>([])
   const [templateData, setTemplateData] = useState<Object[]>([])
@@ -97,7 +96,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const handlerChangeUdf = (value: any[]) => {
     if (value[1] == 0) {
       setShowUDFClassName(false)
-    }else{
+    } else {
       setShowUDFClassName(true)
     }
   }
@@ -120,11 +119,14 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
   const renderContent = () => {
     return (
       <>
-        {isCreate ? (<Form.Item
+        <Form.Item
           label="作业类型" name="dialect"
-          tooltip='指定作业类型，默认为 FlinkSql'
+          tooltip='指定作业类型，默认为 FlinkSql,创建后类型不可修改'
+          rules={[{required: true, message: '必选！'}]}
         >
-          <Select defaultValue={DIALECT.FLINKSQL} value={DIALECT.FLINKSQL} onChange={handlerSetDialect}>
+          <Select disabled={!isCreate} defaultValue={DIALECT.FLINKSQL}
+                  value={DIALECT.FLINKSQL}
+                  onChange={handlerSetDialect}>
             <Option value={DIALECT.FLINKSQL}>{DIALECT.FLINKSQL}</Option>
             <Option value={DIALECT.KUBERNETES_APPLICATION}>{DIALECT.KUBERNETES_APPLICATION}</Option>
             <Option value={DIALECT.FLINKJAR}>{DIALECT.FLINKJAR}</Option>
@@ -144,23 +146,18 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
             <Option key={DIALECT.PYTHON} value={DIALECT.PYTHON}>{DIALECT.PYTHON}</Option>
             <Option value={DIALECT.SQL}>{DIALECT.SQL}</Option>
           </Select>
-        </Form.Item>) : undefined}
-        <Form.Item
-          name="name"
-          label="名称"
-          rules={[{required: true, message: '请输入唯一名称！'}]}>
-          <Input placeholder="请输入"/>
         </Form.Item>
         <Form.Item
-          name="alias"
-          label="别名"
-          rules={[{required: true, message: '请输入别名！'}]}>
-          <Input placeholder="请输入"/>
+          name="name"
+          label="作业名称"
+          tooltip={"此处为提交的任务的 Pipeline 名称"}
+          rules={[{required: true, message: '请输入任务的 Pipeline 名称！'}]}>
+          <Input placeholder="任务的 Pipeline 名称！"/>
         </Form.Item>
         {isUDF(dialect) ? (<>
           <Form.Item
             name="config.templateId"
-            label="udf 模板"
+            label="UDF 模板"
             rules={[{required: true, message: '请选择udf模板!'}]}>
             {<Cascader
               displayRender={(label: string[]) => label.slice(0, 2).join(" / ")}
@@ -196,7 +193,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={isCreate ? '创建新作业' : ('重命名作业-' + formVals.name)}
-      visible={updateModalVisible}
+      open={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
     >
@@ -206,7 +203,6 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
         initialValues={{
           id: formVals.id,
           name: formVals.name,
-          alias: formVals.alias,
           dialect: formVals.dialect,
           parentId: formVals.parentId,
         }}

@@ -21,7 +21,6 @@
 export type TaskTableListItem = {
   id: number,
   name: string,
-  alias: string,
   dialect: string,
   type: string,
   checkPoint: number,

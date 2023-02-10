@@ -18,69 +18,66 @@ Its main feature are as follows:
 - Immersive Flink SQL Data Development: Automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, etc.
 - Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes Session,Yarn Per-Job,Yarn/Kubernetes Application.
 - Support Apache Flink ecology: Connector,FlinkCDC,Table Store,etc.
-- Support FlinkSQL syntax enhancement: Table-valued aggregate functions, global variables, execution environments, statement merging, database synchronization, shared sessions, etc.
+- Support FlinkSQL syntax enhancement: Database synchronization, execution environments, global variables, statement merging, table-valued aggregate functions, etc.
 - Supports real-time warehousing and lake entry of the entire FlinkCDC database, multi-database output, and automatic table creation.
-- Support SQL job development: ClickHouse,Doris,Hive,Mysql,Oracle,Phoenix,PostgreSql,SqlServer,StarRocks,etc.
+- Support SQL job development: ClickHouse, Doris, Hive, Mysql, Oracle, Phoenix, PostgreSql, Presto, SqlServer, StarRocks, etc.
 - Support real-time online debugging preview Table, ChangeLog, statistical chart and UDF.
 - Support Flink Catalog, data source metadata online query and management.
 - Support real-time task operation and maintenance: Online and offline, job information, cluster information, job snapshot, exception information, data map, data exploration, historical version, alarm record, etc.
 - Support as multi-version FlinkSQL Server and OpenApi capability.
 - Support real-time job alarm and alarm group: DingTalk, WeChat, Feishu, E-mail, etc.
 - Support automatically managed SavePoint/CheckPoint recovery and triggering mechanisms: latest, earliest, specified, etc.
-- Support resource management: Cluster instance, cluster configuration, Jar, data source, alarm group, alarm instance, document, user, system configuration, etc.
+- Support resource management: Cluster instance, cluster configuration, jar, data source, alarm group, alarm instance, document, global variable, system configuration, etc.
+- Support enterprise-level management: multi-tenant, user, role, project space.
 - More hidden features are waiting for friends to explore.
 
 ## Principle
 
-![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/dinky_principle.png)
+![dinky_principle](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/dinky_principle.png)
 
 ## Run the Screenshot
 
 > FlinkSQL Studio
 
-![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/datastudio.png)
+![datastudio](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/datastudio.png)
 
 > Grammar Check
 
-![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/checksql.png)
+![checksql](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/checksql.png)
 
 > Version Management
 
-![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/versiondiff.png)
+![versiondiff](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/versiondiff.png)
 
 > lineage
 
-![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/lineage.png)
+![lineage](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/lineage.png)
 
 > BI Charts
 
-![charts](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/charts.png)
+![charts](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/charts.png)
 
 > Metadata Query
 
-![metadata](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/metadata.png)
+![metadata](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/metadata.png)
 
 > Task Monitoring
 
-![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/monitor.png)
+![monitor](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/monitor.png)
 
 > Job Information
 
-![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/070/jobinfo.png)
-
-## Near-term Plans
-
-- [ ] Multi-tenancy and Namespaces
-- [ ] Global lineage and influence analysis
-- [ ] Unified Metadata Management
-- [x] Flink Metadata Store
-- [x] Real-time warehouse entry into the lake
+![jobinfo](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/070/jobinfo.png)
 
 ## Participate in Contributions
 
 Welcome to join the community, build a win-win situation, please refer to the contribution process： [How to contribute](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/developer_guide/contribution/how_contribute.md).
 
 ## How to Deploy
+
+- The dev branch is the 0.8 reconstructed version, which is still unstable.
+
+- The 0.7 branch is the current stable version. Please use this branch for compilation and debugging.
 
 See [source code compilation](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/build.md) and [installation and deployment](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/deploy.md) for details.
 
@@ -122,19 +119,19 @@ A partial list of acknowledgements follows:
 
 [SpringBoot]()
 
-Thanks to [JetBrains](https://www.jetbrains.com/?from=dinky) for sponsoring a free open source license.
+Thanks to [JetBrains](https://www.jetbrains.com/?from=dlink) for sponsoring a free open source license.
 
-[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dinky)
+[![JetBrains](https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/jetbrains.svg)](https://www.jetbrains.com/?from=dlink)
 
 ## Get Help
 
-1.Submit an issue.
+1.Create an issue and describe it clearly.
 
-2.Visit the [official website](http://www.dinky.top/#/) website to read the latest documentation manual.
+2.Visit the [official website](http://www.dlink.top/#/) website to read the latest documentation manual.
 
 3.It is recommended to scan the code to enter the DingTalk group.
 
-<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/dinky-doc/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
+<img src="https://raw.githubusercontent.com/DataLinkDC/dinky/dev/images/main/dinkydingding.jpg" alt="dinkydingding" style="zoom:30%;" />
 
 4.Enter the WeChat user community group (recommended, add WeChat `wenmo_ai` to invite into the group) and QQ user community group (**543709668**) to communicate, and apply for the remarks "Dinky + company name + position".
 
