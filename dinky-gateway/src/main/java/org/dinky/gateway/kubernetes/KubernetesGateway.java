@@ -241,7 +241,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
                 VersionInfo kubernetesVersion =
                         ((NamespacedKubernetesClient)
                                         ReflectUtil.getFieldValue(client, "internalClient"))
-                                .getKubernetesVersion();
+                                .getVersion();
                 logger.info(
                         "k8s cluster link successful ; k8s version: {} ; platform: {}",
                         kubernetesVersion.getGitVersion(),
