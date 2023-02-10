@@ -33,8 +33,6 @@ import org.dinky.model.FlinkClusterConfiguration;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
-import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -119,7 +117,7 @@ public class ClusterConfigurationServiceImpl
 
             // set default value
             kubernetesConfig.putIfAbsent(
-                    KubernetesConfigOptions.CLUSTER_ID.key(), UUID.randomUUID().toString());
+                    "kubernetes.cluster-id", UUID.randomUUID().toString());
 
             flinkConfigMap.putAll(kubernetesConfig);
 
