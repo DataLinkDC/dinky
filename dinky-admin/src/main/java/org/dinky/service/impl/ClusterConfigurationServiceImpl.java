@@ -116,8 +116,7 @@ public class ClusterConfigurationServiceImpl
                     MapUtil.filter(kubernetesConfig, entry -> !StrUtil.isBlank(entry.getValue()));
 
             // set default value
-            kubernetesConfig.putIfAbsent(
-                    "kubernetes.cluster-id", UUID.randomUUID().toString());
+            kubernetesConfig.putIfAbsent("kubernetes.cluster-id", UUID.randomUUID().toString());
 
             flinkConfigMap.putAll(kubernetesConfig);
 
