@@ -70,7 +70,7 @@ kubectl create clusterrolebinding flink-role-binding-default --clusterrole=edit 
 
 ![docker_images.png](http://www.aiwenmo.com/dinky/dev/docs/k8s/docker_images.png)
 #### 参数详解
-* instance:  容器实例，本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375
+* instance:  容器实例，本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375（目前远程不支持使用 **COPY** 指令，请合理规避）
 * registry.url: hub容器地址，如：(阿里云，docker.io，harbor)
 * （registry-username  registry-password）: hub登录凭证
 * image-namespace: 镜像命名空间

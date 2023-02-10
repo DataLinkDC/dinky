@@ -34,7 +34,15 @@ export const HADOOP_CONFIG_LIST: Config[] = [{
   lable: 'ha.zookeeper.quorum',
   placeholder: '192.168.123.1:2181,192.168.123.2:2181,192.168.123.3:2181',
 }];
-export const DOCKER_CONFIG_LIST: Config[] = [{
+export const DOCKER_CONFIG_LIST: Config[] = [
+  {
+    name: 'dinky.remote.addr',
+    lable: 'dinky远程地址',
+    placeholder: '127.0.0.1:8888',
+    defaultValue: '127.0.0.1:8888',
+    showType: 'input'
+  },
+  {
   name: 'docker.instance',
   lable: 'instance',
   placeholder: '容器实例，本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375',
@@ -55,27 +63,16 @@ export const DOCKER_CONFIG_LIST: Config[] = [{
   placeholder: 'hub容器密码',
   showType: 'input'
 },{
-  name: 'docker.image.namespace',
-  lable: 'image-namespace',
-  placeholder: '镜像命名空间',
+  name: 'docker.image.tag',
+  lable: 'image-tag',
+  placeholder: '镜像tag',
   showType: 'input'
 },{
-  name: 'docker.image.storehouse',
-  lable: 'image-storehouse',
-  placeholder: '镜像仓库',
-  showType: 'input'
-},{
-  name: 'docker.image.dinkyVersion',
-  lable: 'image-dinkyVersion',
-  placeholder: '镜像版本',
-  showType: 'input'
-},{
-  name: 'dinky.remote.addr',
-  lable: 'dinky远程地址',
-  placeholder: '127.0.0.1:8888',
-  defaultValue: '127.0.0.1:8888',
-  showType: 'input'
-}];
+    name: 'docker.image.dockerfile',
+    lable: 'image-dockerfile',
+    placeholder: 'dockerfile',
+    showType: ''
+  }];
 export const KUBERNETES_CONFIG_LIST: Config[] = [
   {
     name: 'kubernetes.namespace',

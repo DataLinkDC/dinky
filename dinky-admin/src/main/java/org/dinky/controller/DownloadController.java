@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -89,5 +90,22 @@ public class DownloadController {
                 resp,
                 FileUtil.file(
                         PathConstant.getUdfPackagePath(taskId) + PathConstant.UDF_PYTHON_NAME));
+    }
+
+    /**
+     * 提供docker通过http下载dinky-app.jar
+     *
+     * @param version 版本
+     * @param resp resp
+     */
+    @GetMapping("downloadAppJar/{version}")
+    public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
+        List<File> files =
+                FileUtil.loopFiles(
+                        PathConstant.WORK_DIR + "/jar",
+                        pathname -> pathname.getName().contains("dinky-app-" + version));
+        if (CollUtil.isNotEmpty(files)) {
+            ServletUtil.write(resp, files.get(0));
+        }
     }
 }
