@@ -38,7 +38,7 @@ public class FlinkClusterConfiguration {
     private String userJarPath;
 
     Map<String, String> flinkConfig;
-    Map<String, Object> kubernetesConfig;
+    Map<String, String> kubernetesConfig;
 
     public static enum Type {
         //

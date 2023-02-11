@@ -1,8 +1,11 @@
 # 用来构建dinky环境
 ARG FLINK_VERSION=1.14.5
+ARG FLINK_BIG_VERSION=1.14
+
 FROM flink:${FLINK_VERSION}
 
 ARG FLINK_VERSION
+ARG FLINK_BIG_VERSION
 ENV PYTHON_HOME /opt/miniconda3
 
 USER root
@@ -16,4 +19,4 @@ RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simpl
 
 RUN cp /opt/flink/opt/flink-python_* /opt/flink/lib/
 
-COPY jar/dinky-app-@dinky.flink.version@-@project.version@-jar-with-dependencies.jar plugins/* $FLINK_HOME/lib/
+RUN wget -O dinky-app-${FLINK_BIG_VERSION}.jar - ${DINKY_HTTP}/downloadAppJar/${FLINK_BIG_VERSION} | mv dinky-app-${FLINK_BIG_VERSION}.jar

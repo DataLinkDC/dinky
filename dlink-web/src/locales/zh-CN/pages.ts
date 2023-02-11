@@ -574,6 +574,7 @@ export default {
   'pages.rc.clusterConfig.help.kubernets.image': 'Flink镜像地址',
   'pages.rc.clusterConfig.help.kubernets.jmcpu': 'jobmanager cpu配置',
   'pages.rc.clusterConfig.help.kubernets.tmcpu': 'taskmanager cpu配置',
+  'pages.rc.clusterConfig.help.kubernetes.configfile': '默认~/.kube/config， 填写kube文件路径，可用作远程连接',
   'pages.rc.clusterConfig.help.kubernets.account': 'kubernets 提交使用的账号，默认default',
   'pages.rc.clusterConfig.help.kubernets.defaultTemplate': '可选，默认JobManager，TaskManager 的template配置!',
   'pages.rc.clusterConfig.help.kubernets.jobManagerTemplate': '可选，JobManager 的template配置! 会覆盖kubernetes.pod-template配置',

@@ -23,8 +23,6 @@ import org.dinky.config.Docker;
 import org.dinky.docker.DockerClientBuilder;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.util.Arrays;
 
 import com.github.dockerjava.api.DockerClient;
 import com.github.dockerjava.api.async.ResultCallback;
@@ -35,6 +33,8 @@ import com.github.dockerjava.api.model.Info;
 import com.github.dockerjava.api.model.PushResponseItem;
 import com.github.dockerjava.core.DefaultDockerClientConfig;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,24 +49,13 @@ public class DockerClientUtils {
     private final DockerClient dockerClient;
     private final Docker docker;
     private final File dockerfile;
-    private final String image;
 
     public DockerClientUtils(Docker docker) {
-        this(docker, null);
-    }
-
-    public DockerClientUtils(Docker docker, File dockerfile) {
         this.docker = docker;
-        this.dockerfile = dockerfile;
-        this.image =
-                String.join(
-                                "/",
-                                Arrays.asList(
-                                        docker.getRegistryUrl(),
-                                        docker.getImageNamespace(),
-                                        docker.getImageStorehouse()))
-                        + ":"
-                        + docker.getImageDinkyVersion();
+        this.dockerfile =
+                FileUtil.writeUtf8String(
+                        docker.getDockerfile(),
+                        System.getProperty("user.dir") + "/tmp/dockerfile/" + UUID.randomUUID());
         dockerClient =
                 DockerClientBuilder.getInstance(
                                 DefaultDockerClientConfig.createDefaultConfigBuilder()
@@ -91,17 +80,24 @@ public class DockerClientUtils {
         }
     }
 
-    public void initImage() throws URISyntaxException, InterruptedException {
-        BuildImageResultCallback resultCallback = new BuildImageResultCallback();
-        dockerClient
-                .buildImageCmd()
-                .withRemove(true)
-                .withDockerfile(dockerfile)
-                .withTag(image)
-                .exec(resultCallback);
-        resultCallback.awaitImageId();
-        pushImage(image);
-        cleanNoneImage();
+    public void initImage() throws InterruptedException {
+        try {
+            BuildImageResultCallback resultCallback = new BuildImageResultCallback();
+
+            if (FileUtil.readUtf8String(dockerfile).length() > 0) {
+                dockerClient
+                        .buildImageCmd()
+                        .withRemove(true)
+                        .withDockerfile(dockerfile)
+                        .withTag(docker.getTag())
+                        .exec(resultCallback);
+                resultCallback.awaitCompletion().onError(new RuntimeException());
+            }
+            pushImage(docker.getTag());
+            cleanNoneImage();
+        } finally {
+            FileUtil.del(dockerfile);
+        }
     }
 
     public void pushImage(String tag) throws InterruptedException {
@@ -109,11 +105,12 @@ public class DockerClientUtils {
         dockerClient.pushImageCmd(tag).exec(resultCallback1);
         try {
             log.info("start push-image: {}", tag);
+            resultCallback1.awaitCompletion().onError(new RuntimeException());
+            log.info("push-image finish: {}", tag);
         } catch (Exception e) {
             log.error("push-image failed: {} , reason: {}", tag, e.getMessage());
+            throw e;
         }
-        resultCallback1.awaitCompletion();
-        log.info("push-image finish: {}", tag);
     }
 
     /** 清除空容器 */
@@ -134,14 +131,12 @@ public class DockerClientUtils {
     /**
      * 创建容器
      *
-     * @param client
-     * @return
+     * @param client client
+     * @return 创建容器
      */
     public CreateContainerResponse createContainers(
             DockerClient client, String containerName, String imageName) {
-        CreateContainerResponse container =
-                client.createContainerCmd(imageName).withName(containerName).exec();
-        return container;
+        return client.createContainerCmd(imageName).withName(containerName).exec();
     }
 
     /**
