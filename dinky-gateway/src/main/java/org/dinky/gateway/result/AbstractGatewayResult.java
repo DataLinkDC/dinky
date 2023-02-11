@@ -70,7 +70,7 @@ public abstract class AbstractGatewayResult implements GatewayResult {
     }
 
     @Override
-    public boolean isSucess() {
+    public boolean isSuccess() {
         return isSuccess;
     }
 
