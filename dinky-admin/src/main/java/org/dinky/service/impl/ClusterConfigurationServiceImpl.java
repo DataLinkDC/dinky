@@ -21,7 +21,6 @@ package org.dinky.service.impl;
 
 import org.dinky.config.Docker;
 import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.function.constant.PathConstant;
 import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
@@ -34,9 +33,6 @@ import org.dinky.model.FlinkClusterConfiguration;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
-import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,9 +44,9 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * ClusterConfigServiceImpl
@@ -113,37 +109,24 @@ public class ClusterConfigurationServiceImpl
         } else if (config.getType() == FlinkClusterConfiguration.Type.Kubernetes) {
             gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION);
 
-            Dict kubernetesConfig = Dict.of(config.getKubernetesConfig());
+            Map<String, String> kubernetesConfig = config.getKubernetesConfig();
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.namespace"))
-                    .ifPresent(v -> flinkConfigMap.put("kubernetes.namespace", v));
+            // filter str blank value
+            kubernetesConfig =
+                    MapUtil.filter(kubernetesConfig, entry -> !StrUtil.isBlank(entry.getValue()));
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.cluster-id"))
-                    .ifPresentOrElse(
-                            v -> flinkConfigMap.put("kubernetes.cluster-id", v),
-                            () ->
-                                    flinkConfigMap.put(
-                                            "kubernetes.cluster-id", UUID.randomUUID().toString()));
+            // set default value
+            kubernetesConfig.putIfAbsent("kubernetes.cluster-id", UUID.randomUUID().toString());
 
-            Opt.ofBlankAble(kubernetesConfig.getStr("kubernetes.container.image"))
-                    .ifPresent(v -> flinkConfigMap.put("kubernetes.container.image", v));
+            flinkConfigMap.putAll(kubernetesConfig);
 
-            String fileDir =
-                    FileUtil.isDirectory(PathConstant.WORK_DIR + "/docker")
-                            ? PathConstant.WORK_DIR + "/docker"
-                            : PathConstant.WORK_DIR;
-            File dockerFile;
             try {
-                dockerFile =
-                        FileUtil.writeUtf8String(
-                                FileUtil.readUtf8String(dockerfileResource.getFile()),
-                                fileDir + "/DinkyFlinkDockerfile");
                 Docker docker =
-                        Docker.build((Map) clusterConfiguration.getConfig().get("dockerConfig"));
-                if (docker != null
-                        && StringUtils.isNotBlank(docker.getInstance())
-                        && clusterConfiguration.getId() != null) {
-                    new DockerClientUtils(docker, dockerFile).initImage();
+                        Docker.build(
+                                (Map<String, Object>)
+                                        clusterConfiguration.getConfig().get("dockerConfig"));
+                if (docker != null && clusterConfiguration.getId() != null) {
+                    new DockerClientUtils(docker).initImage();
                 }
             } catch (Exception e) {
                 throw new RuntimeException(e);

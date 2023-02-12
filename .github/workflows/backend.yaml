@@ -89,6 +89,10 @@ jobs:
       fail-fast: true
       matrix:
         jdk: [8, 11]
+        flink: [ 1.12, 1.13, 1.14, 1.15, 1.16 ]
+        exclude:
+          - jdk: 11
+            flink: 1.12
 
     timeout-minutes: 30
     env:
@@ -106,9 +110,17 @@ jobs:
         with:
           path: |
             ~/.m2/repository/*/*/*
+            !~/.m2/repository/org/apache/flink
           key: ${{ runner.os }}-maven-${{ hashFiles('pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+      - name: Cache local Flink repository
+        uses: actions/cache@v3
+        with:
+          path: ~/.m2/repository/org/apache/flink
+          key: ${{ runner.os }}-${{ matrix.flink }}-maven-${{ hashFiles('pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.flink }}-maven-
       - name: Build and Package
         run: |
           ./mvnw -B clean install \
@@ -116,7 +128,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=true \
                  -Dmaven.javadoc.skip=true \
-                 -P prod,scala-2.12,flink-all,maven-central \
+                 -P prod,scala-2.12,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
 
       # 检查打包的大小

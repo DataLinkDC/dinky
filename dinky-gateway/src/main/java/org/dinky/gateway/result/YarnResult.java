@@ -50,8 +50,13 @@ public class YarnResult extends AbstractGatewayResult {
         this.appId = appId;
     }
 
-    public String getAppId() {
+    public String getId() {
         return appId;
+    }
+
+    @Override
+    public void setId(String id) {
+        this.appId = id;
     }
 
     public String getWebURL() {
