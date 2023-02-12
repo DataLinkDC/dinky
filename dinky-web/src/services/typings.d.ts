@@ -19,33 +19,38 @@
 /* eslint-disable */
 
 declare namespace API {
+
+  type Result = {
+    code: number;
+    datas: any;
+    msg: string;
+  };
+
   type CurrentUser = {
-    user?: {
-      avatar?: string;
-      createTime?: string;
-      id?: number;
-      isDelete?: boolean;
-      isAdmin?: boolean;
-      nickname?: string;
-      username?: string;
-    },
-    name?: string;
-    userid?: string;
-    email?: string;
-    signature?: string;
-    title?: string;
-    group?: string;
-    tags?: { key?: string; label?: string }[];
-    notifyCount?: number;
-    unreadCount?: number;
-    country?: string;
-    access?: string;
-    geographic?: {
-      province?: { label?: string; key?: string };
-      city?: { label?: string; key?: string };
-    };
-    address?: string;
-    phone?: string;
+    id?: number;
+    username?: string;
+    password?: string;
+    nickname?: string;
+    worknum?: string;
+    avatar?: string;
+    mobile?: string;
+    enabled?: boolean;
+    isDelete?: boolean;
+    isAdmin?: boolean;
+    createTime?: Date;
+    updateTime?: Date;
+    roleList?: Role[];
+    tenantList?: Tenant[];
+    currentTenant?: Tenant;
+  };
+
+  type tenantListItem = {
+    id?: number,
+    tenantCode?: string,
+    note?: string,
+    isDelete?: boolean,
+    createTime?: string,
+    updateTime?: string;
   };
 
   type LoginResult = {
@@ -123,5 +128,24 @@ declare namespace API {
     datetime?: string;
     description?: string;
     type?: NoticeIconItemType;
+  };
+
+  type TenantRequest = {
+    username?: string;
+  };
+
+  type TenantListItem = {
+    id?: number;
+    createTime?: string;
+    updateTime?: string;
+    isDelete?: boolean;
+    note?: string;
+    tenantCode?: string;
+  };
+
+  type TenantResult = {
+    code?: number;
+    msg?: string;
+    datas?: TenantListItem[];
   };
 }

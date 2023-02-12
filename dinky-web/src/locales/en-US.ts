@@ -18,6 +18,7 @@
 import menu from './en-US/menu';
 import pages from './en-US/pages';
 import pwa from './en-US/pwa';
+import globalHeader from './en-US/global';
 
 export default {
   'navBar.lang': 'Languages',
@@ -25,6 +26,7 @@ export default {
   'layout.user.link.privacy': 'Privacy',
   'layout.user.link.terms': 'Terms',
   'app.copyright.produced': 'Produced by Dinky Community',
+  ...globalHeader,
   ...menu,
   ...pwa,
   ...pages,

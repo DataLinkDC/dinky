@@ -21,9 +21,7 @@ import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<{
-    datas: API.CurrentUser;
-  }>('/api/current', {
+  return request<API.Result>('/api/current', {
     method: 'GET',
     ...(options || {}),
   });
@@ -98,5 +96,15 @@ export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/rule', {
     method: 'DELETE',
     ...(options || {}),
+  });
+}
+
+/**获取租户 */
+export async function getTenants(params: API.TenantRequest) {
+  return request<API.TenantResult>('/api/geTenants', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
   });
 }

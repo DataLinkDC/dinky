@@ -66,7 +66,7 @@ const GlobalHeaderRight: React.FC = () => {
     <div className={className}>
       <Avatar menu={true}/>
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName} />
-      <Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>
+      {/*<Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>*/}
     </div>
   );
 };
