@@ -176,6 +176,12 @@ export default [
         component: './AuthenticationCenter/RoleManager',
       },
       {
+        path: '/authenticationCenter/roleSelectPermissions',
+        name: 'roleSelectPermissions',
+        icon: 'FundViewOutlined',
+        component: './AuthenticationCenter/RoleSelectPermissions',
+      },
+      {
         path: '/authenticationCenter/namespaceManager',
         name: 'namespaceManager',
         icon: 'BulbOutlined',

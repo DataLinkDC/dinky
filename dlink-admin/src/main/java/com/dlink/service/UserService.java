@@ -22,7 +22,11 @@ package com.dlink.service;
 import com.dlink.common.result.Result;
 import com.dlink.db.service.ISuperService;
 import com.dlink.dto.LoginUTO;
+import com.dlink.model.Role;
+import com.dlink.model.RoleSelectPermissions;
 import com.dlink.model.User;
+
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -49,4 +53,8 @@ public interface UserService extends ISuperService<User> {
     Result grantRole(JsonNode para);
 
     Result getTenants(String username);
+
+    List<Role> getCurrentRole();
+
+    List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
 }

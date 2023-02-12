@@ -32,6 +32,7 @@ import com.dlink.config.Dialect;
 import com.dlink.config.Docker;
 import com.dlink.constant.FlinkRestResultConstant;
 import com.dlink.constant.NetConstant;
+import com.dlink.context.RowLevelPermissionsContext;
 import com.dlink.context.TenantContextHolder;
 import com.dlink.daemon.task.DaemonFactory;
 import com.dlink.daemon.task.DaemonTaskConfig;
@@ -75,6 +76,7 @@ import com.dlink.model.JobInfoDetail;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
+import com.dlink.model.RoleSelectPermissions;
 import com.dlink.model.Savepoints;
 import com.dlink.model.Statement;
 import com.dlink.model.SystemConfiguration;
@@ -105,6 +107,7 @@ import com.dlink.service.TaskService;
 import com.dlink.service.TaskVersionService;
 import com.dlink.service.UDFService;
 import com.dlink.service.UDFTemplateService;
+import com.dlink.service.UserService;
 import com.dlink.utils.DockerClientUtils;
 import com.dlink.utils.JSONUtil;
 import com.dlink.utils.UDFUtils;
@@ -129,6 +132,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -194,6 +198,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private FragmentVariableService fragmentVariableService;
     @Autowired
     private UDFTemplateService udfTemplateService;
+    @Autowired
+    private UserService userService;
 
     @Value("${spring.datasource.driver-class-name}")
     private String driver;
@@ -963,6 +969,17 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
+        List<RoleSelectPermissions> currentRoleSelectPermissions = userService.getCurrentRoleSelectPermissions();
+        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
+            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
+            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+                if (Asserts.isAllNotNullString(roleSelectPermissions.getTableName(),
+                        roleSelectPermissions.getExpression())) {
+                    permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
+                }
+            }
+            RowLevelPermissionsContext.set(permission);
+        }
         return config;
     }
 

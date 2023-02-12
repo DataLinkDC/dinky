@@ -265,6 +265,7 @@ export default {
   'pages.role.update': '修改角色',
   'pages.role.EnterRoleCode': '请输入角色编码!',
   'pages.role.EnterRoleName': '请输入角色名称!',
+  'pages.role.selectRole': '请选择角色!',
   'pages.role.selectNameSpace': '请选择命名空间!',
   'pages.role.EnterNote': '请输入角色的备注/描述信息!',
   'pages.role.delete': '删除角色',
@@ -274,6 +275,14 @@ export default {
   'pages.role.disable': '禁用角色',
   'pages.role.disableConfirm': '您确定要禁用此角色吗？',
 
+  'pages.roleSelectPermissions.roleSelectPermissionsManagement': '角色数据权限管理',
+  'pages.roleSelectPermissions.roleId': '角色 ID',
+  'pages.roleSelectPermissions.tableName': '表名',
+  'pages.roleSelectPermissions.expression': '表达式',
+  'pages.roleSelectPermissions.EnterTableName': '请输入表名称!',
+  'pages.roleSelectPermissions.EnterExpression': '请输入表达式!',
+  'pages.roleSelectPermissions.delete': '删除角色数据权限',
+  'pages.roleSelectPermissions.deleteConfirm': '您确定要删除此角色数据权限吗？',
 
   'pages.regist.openAPI': 'OpenAPI 文档',
   'pages.regist.BusinessComponent': '业务组件文档',
