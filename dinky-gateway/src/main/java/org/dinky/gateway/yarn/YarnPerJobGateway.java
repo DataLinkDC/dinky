@@ -21,7 +21,6 @@ package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.GatewayType;
-import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
 import org.dinky.model.SystemConfiguration;
@@ -30,11 +29,8 @@ import org.dinky.utils.LogUtil;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.JobManagerOptions;
-import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.runtime.jobgraph.JobGraph;
-import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
@@ -55,12 +51,6 @@ import cn.hutool.core.util.URLUtil;
  */
 public class YarnPerJobGateway extends YarnGateway {
 
-    public YarnPerJobGateway(GatewayConfig config) {
-        super(config);
-    }
-
-    public YarnPerJobGateway() {}
-
     @Override
     public GatewayType getType() {
         return GatewayType.YARN_PER_JOB;
@@ -71,30 +61,6 @@ public class YarnPerJobGateway extends YarnGateway {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
-        YarnResult result = YarnResult.build(getType());
-        YarnClusterDescriptor yarnClusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
-
-        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
-        if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setMasterMemoryMB(
-                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(
-                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder
-                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
-                    .createClusterSpecification();
-        }
 
         if (Asserts.isNotNull(config.getJarPaths())) {
             jobGraph.addJars(
@@ -103,7 +69,11 @@ public class YarnPerJobGateway extends YarnGateway {
                             .collect(Collectors.toList()));
         }
 
-        try {
+        ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
+                createClusterSpecificationBuilder();
+
+        YarnResult result = YarnResult.build(getType());
+        try (YarnClusterDescriptor yarnClusterDescriptor = createInitYarnClusterDescriptor()) {
             ClusterClientProvider<ApplicationId> clusterClientProvider =
                     yarnClusterDescriptor.deployJobCluster(
                             clusterSpecificationBuilder.createClusterSpecification(),
@@ -111,7 +81,7 @@ public class YarnPerJobGateway extends YarnGateway {
                             true);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
-            result.setAppId(applicationId.toString());
+            result.setId(applicationId.toString());
             result.setWebURL(clusterClient.getWebInterfaceURL());
             Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
             int counts = SystemConfiguration.getInstances().getJobIdWait();
@@ -133,8 +103,6 @@ public class YarnPerJobGateway extends YarnGateway {
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        } finally {
-            yarnClusterDescriptor.close();
         }
         return result;
     }

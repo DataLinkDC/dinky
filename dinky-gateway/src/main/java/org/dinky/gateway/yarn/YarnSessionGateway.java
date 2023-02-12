@@ -28,16 +28,8 @@ import org.dinky.utils.LogUtil;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.JobManagerOptions;
-import org.apache.flink.configuration.TaskManagerOptions;
-import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
-
-import cn.hutool.core.io.FileUtil;
 
 /**
  * YarnSessionGateway
@@ -57,51 +49,22 @@ public class YarnSessionGateway extends YarnGateway {
         if (Asserts.isNull(yarnClient)) {
             init();
         }
-        YarnResult result = YarnResult.build(getType());
-        YarnClusterDescriptor yarnClusterDescriptor =
-                new YarnClusterDescriptor(
-                        configuration,
-                        yarnConfiguration,
-                        yarnClient,
-                        YarnClientYarnClusterInformationRetriever.create(yarnClient),
-                        true);
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
-        if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setMasterMemoryMB(
-                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(
-                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder
-                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
-                    .createClusterSpecification();
-        }
+                createClusterSpecificationBuilder();
 
-        if (Asserts.isNotNull(config.getJarPaths())) {
-            yarnClusterDescriptor.addShipFiles(
-                    Arrays.stream(config.getJarPaths())
-                            .map(FileUtil::file)
-                            .collect(Collectors.toList()));
-        }
-
-        try {
+        YarnResult result = YarnResult.build(getType());
+        try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
             ClusterClientProvider<ApplicationId> clusterClientProvider =
                     yarnClusterDescriptor.deploySessionCluster(
                             clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
-            result.setAppId(applicationId.toString());
+            result.setId(applicationId.toString());
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        } finally {
-            yarnClusterDescriptor.close();
         }
         return result;
     }

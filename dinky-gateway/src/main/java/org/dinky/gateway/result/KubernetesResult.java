@@ -50,17 +50,14 @@ public class KubernetesResult extends AbstractGatewayResult {
         this.clusterId = clusterId;
     }
 
-    public String getClusterId() {
+    @Override
+    public String getId() {
         return clusterId;
     }
 
     @Override
-    public String getAppId() {
-        return clusterId;
-    }
-
-    public void setClusterId(String clusterId) {
-        this.clusterId = clusterId;
+    public void setId(String id) {
+        this.clusterId = id;
     }
 
     public void setWebURL(String webURL) {

@@ -21,7 +21,6 @@ package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.gateway.GatewayType;
-import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
@@ -29,15 +28,7 @@ import org.dinky.utils.LogUtil;
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.client.program.ClusterClientProvider;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.configuration.DeploymentOptionsInternal;
-import org.apache.flink.configuration.GlobalConfiguration;
-import org.apache.flink.configuration.JobManagerOptions;
-import org.apache.flink.configuration.PipelineOptions;
-import org.apache.flink.configuration.TaskManagerOptions;
 import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
-
-import java.util.Collections;
 
 /**
  * KubernetesSessionGateway
@@ -57,50 +48,23 @@ public class KubernetesSessionGateway extends KubernetesGateway {
         if (Asserts.isNull(client)) {
             init();
         }
-        KubernetesResult result = KubernetesResult.build(getType());
-        AppConfig appConfig = config.getAppConfig();
-        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
-        Configuration loadConfiguration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
-        if (loadConfiguration != null) {
-            loadConfiguration.addAll(configuration);
-            configuration = loadConfiguration;
-        }
-        configuration.set(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
 
-        configuration.set(
-                PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
-
-        KubernetesClusterDescriptor kubernetesClusterDescriptor =
-                new KubernetesClusterDescriptor(configuration, client);
-
+        combineFlinkConfig();
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
-                new ClusterSpecification.ClusterSpecificationBuilder();
-        if (configuration.contains(JobManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setMasterMemoryMB(
-                    configuration.get(JobManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.TOTAL_PROCESS_MEMORY)) {
-            clusterSpecificationBuilder.setTaskManagerMemoryMB(
-                    configuration.get(TaskManagerOptions.TOTAL_PROCESS_MEMORY).getMebiBytes());
-        }
-        if (configuration.contains(TaskManagerOptions.NUM_TASK_SLOTS)) {
-            clusterSpecificationBuilder
-                    .setSlotsPerTaskManager(configuration.get(TaskManagerOptions.NUM_TASK_SLOTS))
-                    .createClusterSpecification();
-        }
+                createClusterSpecificationBuilder();
 
-        try {
+        KubernetesResult result = KubernetesResult.build(getType());
+        try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
+                new KubernetesClusterDescriptor(configuration, client)) {
             ClusterClientProvider<String> clusterClientProvider =
                     kubernetesClusterDescriptor.deploySessionCluster(
                             clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
-            result.setClusterId(clusterClient.getClusterId());
+            result.setId(clusterClient.getClusterId());
             result.setWebURL(clusterClient.getWebInterfaceURL());
             result.success();
         } catch (Exception e) {
             result.fail(LogUtil.getError(e));
-        } finally {
-            kubernetesClusterDescriptor.close();
         }
         return result;
     }
