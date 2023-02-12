@@ -28,7 +28,6 @@ export default {
   dev: {
     '/api': {
       // target: 'http://127.0.0.1:8888',
-      target: 'http://www.dlink.top:8888/',
       changeOrigin: true,
       pathRewrite: { '^': '' },
     },
