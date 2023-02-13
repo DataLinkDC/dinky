@@ -81,7 +81,7 @@ public class HiveTest {
         config.setUrl(url);
         String test = Driver.build(config).test();
         LOGGER.info(test);
-        LOGGER.error("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -93,7 +93,7 @@ public class HiveTest {
                 schema -> {
                     LOGGER.info(schema.getName() + "\t\t" + schema.getTables().toString());
                 });
-        LOGGER.error("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -106,7 +106,7 @@ public class HiveTest {
                 schema -> {
                     LOGGER.info(schema.getName());
                 });
-        LOGGER.error("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -119,7 +119,7 @@ public class HiveTest {
             LOGGER.info(
                     column.getName() + " \t " + column.getType() + " \t " + column.getComment());
         }
-        LOGGER.error("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -130,7 +130,7 @@ public class HiveTest {
                 driver.getTable(hiveDB, "biz_college_planner_mysql_language_score_item");
         String createTableSql = driver.getCreateTableSql(driverTable);
         LOGGER.info(createTableSql);
-        LOGGER.error("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
