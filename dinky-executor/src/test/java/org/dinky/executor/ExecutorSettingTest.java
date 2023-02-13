@@ -19,10 +19,11 @@
 
 package org.dinky.executor;
 
+import static org.dinky.executor.ExecutorSetting.CHECKPOINT_CONST;
+import static org.dinky.executor.ExecutorSetting.PARALLELISM_CONST;
 import static org.junit.jupiter.api.Assertions.*;
 
-import org.apache.commons.lang3.math.NumberUtils;
-
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,10 +35,15 @@ class ExecutorSettingTest {
     @Test
     void build() {
         Map<String, String> maps = new HashMap<>();
-        maps.put("123", "123");
-        maps.put("456", null);
-        assertEquals(123, (int) NumberUtils.createInteger(maps.get("123")));
-        assertNull(NumberUtils.createInteger(maps.get("456")));
-        assertNull(NumberUtils.createInteger(maps.get("789")));
+        maps.put(CHECKPOINT_CONST, "123");
+        maps.put(PARALLELISM_CONST, "456");
+
+        ExecutorSetting es = ExecutorSetting.build(maps);
+        assertEquals(123, es.getCheckpoint());
+        assertEquals(456, es.getParallelism());
+
+        ExecutorSetting esNull = ExecutorSetting.build(Collections.emptyMap());
+        assertNull(esNull.getCheckpoint());
+        assertNull(esNull.getParallelism());
     }
 }
