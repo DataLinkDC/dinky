@@ -959,7 +959,7 @@ INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `t
 VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:string):\n  return \'\'', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
 -- ----------------------------
--- Table structure for dlink_udf_template
+-- Table structure for dlink_role_select_permissions
 -- ----------------------------
 CREATE TABLE dlink_role_select_permissions
 (
