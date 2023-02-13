@@ -19,8 +19,9 @@
 
 package org.dinky.executor;
 
-import org.apache.commons.lang3.math.NumberUtils;
 import org.dinky.assertion.Asserts;
+
+import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
