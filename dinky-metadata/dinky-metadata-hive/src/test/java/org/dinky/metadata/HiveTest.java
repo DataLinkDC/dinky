@@ -169,8 +169,7 @@ public class HiveTest {
         for (LinkedHashMap<String, Object> rowDatum : selectResult.getRowData()) {
             Set<Map.Entry<String, Object>> entrySet = rowDatum.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : entrySet) {
-                LOGGER.info(
-                        stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
+                LOGGER.info(stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
             }
         }
     }

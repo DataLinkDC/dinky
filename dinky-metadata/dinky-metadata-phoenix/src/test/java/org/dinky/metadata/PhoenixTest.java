@@ -83,8 +83,7 @@ public class PhoenixTest {
         // columns
         List<Column> columns = driver.listColumns(null, "ODS_OUTP_PRESC");
         for (Column column : columns) {
-            LOGGER.info(
-                    column.getName() + " " + column.getType() + " " + column.getComment());
+            LOGGER.info(column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
 

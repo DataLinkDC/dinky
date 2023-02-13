@@ -94,8 +94,7 @@ public class SqlServerTest {
         // columns
         List<Column> columns = driver.listColumns("dbo", "t_user");
         for (Column column : columns) {
-            LOGGER.info(
-                    column.getName() + " " + column.getType() + " " + column.getComment());
+            LOGGER.info(column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
 
