@@ -26,6 +26,8 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -38,6 +40,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 @Ignore
 public class FlinkRestAPITest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlinkRestAPITest.class);
+
     // private String address = "192.168.123.157:8081";
     private String address = "cdh1:8081";
 
@@ -48,13 +52,13 @@ public class FlinkRestAPITest {
         SavePointResult savepoints =
                 FlinkAPI.build(address)
                         .savepoints("243b97597448edbd2e635fc3d25b1064", "trigger", null);
-        System.out.println(savepoints.toString());
+        LOGGER.info(savepoints.toString());
     }
 
     @Test
     public void selectTest() {
         List<JsonNode> jobs = FlinkAPI.build(address).listJobs();
-        System.out.println(jobs.toString());
+        LOGGER.info(jobs.toString());
     }
 
     @Test
@@ -66,64 +70,64 @@ public class FlinkRestAPITest {
     public void getCheckPointsDetailInfoTest() {
         JsonNode checkPointsDetailInfo =
                 FlinkAPI.build(address).getCheckPointsConfig("9b0910c865874430b98d3817a248eb24");
-        System.out.println(checkPointsDetailInfo.toString());
+        LOGGER.info(checkPointsDetailInfo.toString());
     }
 
     @Test
     public void getConfigurationsDetailsInfoTest() {
         JsonNode configurationsDetailsInfo =
                 FlinkAPI.build(address).getJobsConfig("9b0910c865874430b98d3817a248eb24");
-        System.out.println(configurationsDetailsInfo.toString());
+        LOGGER.info(configurationsDetailsInfo.toString());
     }
 
     @Test
     public void getExectionsInfoTest() {
         JsonNode exectionsDetailInfo =
                 FlinkAPI.build(address).getException("9b0910c865874430b98d3817a248eb24");
-        System.out.println(exectionsDetailInfo.toString());
+        LOGGER.info(exectionsDetailInfo.toString());
     }
 
     @Test
     public void getJobManagerMetricsTest() {
         JsonNode jobManagerMetrics = FlinkAPI.build(address).getJobManagerMetrics();
-        System.out.println(jobManagerMetrics.toString());
+        LOGGER.info(jobManagerMetrics.toString());
     }
 
     @Test
     public void getJobManagerConfigTest() {
         JsonNode jobManagerConfig = FlinkAPI.build(address).getJobManagerConfig();
-        System.out.println(jobManagerConfig.toString());
+        LOGGER.info(jobManagerConfig.toString());
     }
 
     @Test
     public void getJobManagerLogTest() {
         String jobManagerLog = FlinkAPI.build(address).getJobManagerLog();
-        System.out.println(jobManagerLog);
+        LOGGER.info(jobManagerLog);
     }
 
     @Test
     public void getJobManagerStdOutTest() {
         String jobManagerLogs = FlinkAPI.build(address).getJobManagerStdOut();
-        System.out.println(jobManagerLogs);
+        LOGGER.info(jobManagerLogs);
     }
 
     @Test
     public void getJobManagerLogListTest() {
         JsonNode jobManagerLogList = FlinkAPI.build(address).getJobManagerLogList();
-        System.out.println(jobManagerLogList.toString());
+        LOGGER.info(jobManagerLogList.toString());
     }
 
     @Test
     public void getJobManagerLogListToDetailTest() {
         String jobManagerLogList =
                 FlinkAPI.build(address).getJobManagerLogFileDetail("jobmanager.log");
-        System.out.println(jobManagerLogList.toString());
+        LOGGER.info(jobManagerLogList.toString());
     }
 
     @Test
     public void getTaskManagersTest() {
         JsonNode taskManagers = FlinkAPI.build(address).getTaskManagers();
-        System.out.println(taskManagers.toString());
+        LOGGER.info(taskManagers.toString());
     }
 
     @Test
@@ -131,7 +135,7 @@ public class FlinkRestAPITest {
         JsonNode taskManagerMetrics =
                 FlinkAPI.build(address)
                         .getTaskManagerMetrics("container_e46_1655948912029_0061_01_000002");
-        System.out.println(taskManagerMetrics.toString());
+        LOGGER.info(taskManagerMetrics.toString());
     }
 
     @Test
@@ -139,7 +143,7 @@ public class FlinkRestAPITest {
         String taskManagerLog =
                 FlinkAPI.build(address)
                         .getTaskManagerLog("container_e46_1655948912029_0061_01_000002");
-        System.out.println(taskManagerLog);
+        LOGGER.info(taskManagerLog);
     }
 
     @Test
@@ -147,7 +151,7 @@ public class FlinkRestAPITest {
         String taskManagerStdOut =
                 FlinkAPI.build(address)
                         .getTaskManagerStdOut("container_e46_1655948912029_0061_01_000002");
-        System.out.println(taskManagerStdOut);
+        LOGGER.info(taskManagerStdOut);
     }
 
     @Test
@@ -155,7 +159,7 @@ public class FlinkRestAPITest {
         JsonNode taskManagerLogList =
                 FlinkAPI.build(address)
                         .getTaskManagerLogList("container_e46_1655948912029_0061_01_000002");
-        System.out.println(taskManagerLogList.toString());
+        LOGGER.info(taskManagerLogList.toString());
     }
 
     @Test
@@ -164,7 +168,7 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerLogFileDeatil(
                                 "container_e46_1655948912029_0061_01_000002", "taskmanager.log");
-        System.out.println(taskManagerLogDetail);
+        LOGGER.info(taskManagerLogDetail);
     }
 
     @Test
@@ -172,6 +176,6 @@ public class FlinkRestAPITest {
         JsonNode taskManagerThreadDump =
                 FlinkAPI.build(address)
                         .getTaskManagerThreadDump("container_e46_1655948912029_0061_01_000002");
-        System.out.println(taskManagerThreadDump.toString());
+        LOGGER.info(taskManagerThreadDump.toString());
     }
 }

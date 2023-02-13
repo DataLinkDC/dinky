@@ -34,9 +34,13 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Ignore
 public class PrestoTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PrestoTest.class);
 
     private Driver driver;
 
@@ -51,7 +55,7 @@ public class PrestoTest {
         try {
             driver = Driver.build(config);
         } catch (Exception e) {
-            System.err.println("连接创建失败:" + e.getMessage());
+            LOGGER.error("连接创建失败:" + e.getMessage());
         }
     }
 
@@ -60,12 +64,12 @@ public class PrestoTest {
     public void test() throws SQLException {
         // test
         String test = driver.test();
-        System.out.println(test);
-        System.out.println("schema && table...");
+        LOGGER.info(test);
+        LOGGER.info("schema && table...");
         testSchema();
-        System.out.println("columns...");
+        LOGGER.info("columns...");
         testColumns();
-        System.out.println("query...");
+        LOGGER.info("query...");
         query();
     }
 
@@ -77,7 +81,7 @@ public class PrestoTest {
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();
             for (Table table : tables) {
-                System.out.println(table.getName() + "  " + table.getSchema());
+                LOGGER.info(table.getName() + "  " + table.getSchema());
             }
         }
     }
@@ -88,7 +92,7 @@ public class PrestoTest {
         // columns
         List<Column> columns = driver.listColumns("hive.lake", "test");
         for (Column column : columns) {
-            System.out.println(
+            LOGGER.info(
                     column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
@@ -99,7 +103,7 @@ public class PrestoTest {
         JdbcSelectResult selectResult = driver.query("select * from hive.lake.test", 10);
         List<LinkedHashMap<String, Object>> rowData = selectResult.getRowData();
         for (LinkedHashMap<String, Object> rowDatum : rowData) {
-            System.out.println(rowDatum);
+            LOGGER.info(String.valueOf(rowDatum));
         }
     }
 }

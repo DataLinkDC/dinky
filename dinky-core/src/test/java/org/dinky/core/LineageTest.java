@@ -24,6 +24,8 @@ import org.dinky.explainer.lineage.LineageResult;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LineageTest
@@ -33,6 +35,8 @@ import org.junit.Test;
  */
 @Ignore
 public class LineageTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LineageTest.class);
 
     @Ignore
     @Test
@@ -54,6 +58,6 @@ public class LineageTest {
                         + ");\n"
                         + "insert into TT select a||c A ,b||c B from ST";
         LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql);
-        System.out.println("end");
+        LOGGER.info("end");
     }
 }

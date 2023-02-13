@@ -34,9 +34,13 @@ import java.util.UUID;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Ignore
 public class SqlServerTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SqlServerTest.class);
 
     private Driver driver;
 
@@ -53,7 +57,7 @@ public class SqlServerTest {
         try {
             driver = Driver.build(config);
         } catch (Exception e) {
-            System.err.println("连接创建失败:" + e.getMessage());
+            LOGGER.error("连接创建失败:" + e.getMessage());
         }
     }
 
@@ -62,12 +66,12 @@ public class SqlServerTest {
     public void test() throws SQLException {
         // test
         String test = driver.test();
-        System.out.println(test);
-        System.out.println("schema && table...");
+        LOGGER.info(test);
+        LOGGER.info("schema && table...");
         testSchema();
-        System.out.println("columns...");
+        LOGGER.info("columns...");
         testColumns();
-        System.out.println("query...");
+        LOGGER.info("query...");
         query();
     }
 
@@ -79,7 +83,7 @@ public class SqlServerTest {
         for (Schema schemasAndTable : schemasAndTables) {
             List<Table> tables = schemasAndTable.getTables();
             for (Table table : tables) {
-                System.out.println(table.getName() + "  " + table.getSchema());
+                LOGGER.info(table.getName() + "  " + table.getSchema());
             }
         }
     }
@@ -90,7 +94,7 @@ public class SqlServerTest {
         // columns
         List<Column> columns = driver.listColumns("dbo", "t_user");
         for (Column column : columns) {
-            System.out.println(
+            LOGGER.info(
                     column.getName() + " " + column.getType() + " " + column.getComment());
         }
     }
@@ -101,7 +105,7 @@ public class SqlServerTest {
         JdbcSelectResult selectResult = driver.query("select * from t_user", 10);
         List<LinkedHashMap<String, Object>> rowData = selectResult.getRowData();
         for (LinkedHashMap<String, Object> rowDatum : rowData) {
-            System.out.println(rowDatum);
+            LOGGER.info(String.valueOf(rowDatum));
         }
     }
 }
