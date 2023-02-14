@@ -123,9 +123,39 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public Cluster registersCluster(Cluster cluster) {
-        checkHealth(cluster);
+        if (cluster.getType().equals("yarn-session")){
+            if (StrUtil.isBlank(cluster.getResourceManagerAddr())
+                || StrUtil.isBlank(cluster.getApplicationId())){
+                checkHealth(cluster);
+            } else {
+                checkYarnSessionHealth(cluster);
+            }
+        } else {
+            checkHealth(cluster);
+        }
         saveOrUpdate(cluster);
         return cluster;
+    }
+    
+    private boolean checkYarnSessionHealth(Cluster cluster) {
+        cluster.setJobManagerHost("");
+        ObjectNode applicationInstants = YarnUtils.getApplicationInstants(
+            cluster.getResourceManagerAddr(), cluster.getApplicationId());
+        String applicationStatus = YarnUtils.getApplicationStatus(applicationInstants);
+        if (!applicationStatus.equals("RUNNING")){
+            cluster.setStatus(0);
+            return false;
+        } else {
+            String addr = YarnUtils.getApplicationAddress(applicationInstants);
+            FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), addr);
+            if (info.isEffective()){
+                cluster.setStatus(1);
+                cluster.setVersion(info.getVersion());
+                return true;
+            }
+            cluster.setStatus(0);
+            return false;
+        }
     }
 
     @Override
