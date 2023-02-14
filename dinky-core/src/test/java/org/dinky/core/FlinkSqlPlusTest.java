@@ -25,6 +25,8 @@ import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * FlinkSqlPlusTest
@@ -34,6 +36,8 @@ import org.junit.Test;
  */
 @Ignore
 public class FlinkSqlPlusTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(FlinkSqlPlusTest.class);
 
     @Ignore
     @Test
@@ -84,6 +88,6 @@ public class FlinkSqlPlusTest {
 
         FlinkSqlPlus plus = FlinkSqlPlus.build();
         JobPlanInfo jobPlanInfo = plus.getJobPlanInfo(sql);
-        System.out.println(jobPlanInfo.getJsonPlan());
+        LOGGER.info(jobPlanInfo.getJsonPlan());
     }
 }

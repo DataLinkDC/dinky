@@ -29,6 +29,8 @@ import java.util.HashMap;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * JobManagerTest
@@ -38,6 +40,8 @@ import org.junit.Test;
  */
 @Ignore
 public class JobManagerTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(JobManagerTest.class);
 
     @Ignore
     @Test
@@ -83,6 +87,6 @@ public class JobManagerTest {
         String sql = sql1 + sql3;
         JobResult result = jobManager.executeSql(sql);
         SelectResult selectResult = ResultPool.get(result.getJobId());
-        System.out.println(result.isSuccess());
+        LOGGER.info("sql:{}, execute result:{}", sql, result.isSuccess());
     }
 }

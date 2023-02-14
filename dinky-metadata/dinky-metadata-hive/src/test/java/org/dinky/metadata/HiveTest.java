@@ -33,6 +33,8 @@ import java.util.Set;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MysqlTest
@@ -42,6 +44,8 @@ import org.junit.Test;
  */
 @Ignore
 public class HiveTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HiveTest.class);
 
     private static final String IP = "cdh1";
     private static final Integer PORT = 10000;
@@ -76,8 +80,8 @@ public class HiveTest {
         config.setPassword(passwd);
         config.setUrl(url);
         String test = Driver.build(config).test();
-        System.out.println(test);
-        System.err.println("end...");
+        LOGGER.info(test);
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -87,9 +91,9 @@ public class HiveTest {
         List<Schema> schemasAndTables = driver.listSchemas();
         schemasAndTables.forEach(
                 schema -> {
-                    System.out.println(schema.getName() + "\t\t" + schema.getTables().toString());
+                    LOGGER.info(schema.getName() + "\t\t" + schema.getTables().toString());
                 });
-        System.err.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -100,9 +104,9 @@ public class HiveTest {
         List<Table> tableList = driver.listTables(hiveDB);
         tableList.forEach(
                 schema -> {
-                    System.out.println(schema.getName());
+                    LOGGER.info(schema.getName());
                 });
-        System.err.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -112,10 +116,10 @@ public class HiveTest {
         List<Column> columns =
                 driver.listColumns(hiveDB, "biz_college_planner_mysql_language_score_item");
         for (Column column : columns) {
-            System.out.println(
+            LOGGER.info(
                     column.getName() + " \t " + column.getType() + " \t " + column.getComment());
         }
-        System.err.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -125,8 +129,8 @@ public class HiveTest {
         Table driverTable =
                 driver.getTable(hiveDB, "biz_college_planner_mysql_language_score_item");
         String createTableSql = driver.getCreateTableSql(driverTable);
-        System.out.println(createTableSql);
-        System.err.println("end...");
+        LOGGER.info(createTableSql);
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -135,7 +139,7 @@ public class HiveTest {
         Driver driver = getDriver();
         Table driverTable = driver.getTable(hiveDB, "employees");
         for (Column column : driverTable.getColumns()) {
-            System.out.println(
+            LOGGER.info(
                     column.getName() + "\t\t" + column.getType() + "\t\t" + column.getComment());
         }
     }
@@ -165,8 +169,7 @@ public class HiveTest {
         for (LinkedHashMap<String, Object> rowDatum : selectResult.getRowData()) {
             Set<Map.Entry<String, Object>> entrySet = rowDatum.entrySet();
             for (Map.Entry<String, Object> stringObjectEntry : entrySet) {
-                System.out.println(
-                        stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
+                LOGGER.info(stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
             }
         }
     }

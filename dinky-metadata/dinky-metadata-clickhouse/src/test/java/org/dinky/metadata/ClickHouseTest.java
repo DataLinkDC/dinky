@@ -30,6 +30,8 @@ import java.util.List;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * ClickhouseTest
@@ -39,6 +41,8 @@ import org.junit.Test;
  */
 @Ignore
 public class ClickHouseTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
 
     private static final String IP = "127.0.0.1";
     private static String url = "jdbc:clickhouse://" + IP + ":8123/default";
@@ -58,16 +62,16 @@ public class ClickHouseTest {
     @Test
     public void connectTest() {
         String test = getDriver().test();
-        // System.out.println(test);
-        // System.out.println("end...");
+        // LOGGER.info(test);
+        // LOGGER.info("end...");
     }
 
     @Ignore
     @Test
     public void schemaTest() {
         List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
-        // System.out.println(JSONUtil.toJsonString(schemasAndTables));
-        // System.out.println("end...");
+        // LOGGER.info(JSONUtil.toJsonString(schemasAndTables));
+        // LOGGER.info("end...");
     }
 
     @Ignore
@@ -75,8 +79,8 @@ public class ClickHouseTest {
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("xxx", "xxx");
-        // System.out.println(JSONUtil.toJsonString(columns));
-        // System.out.println("end...");
+        // LOGGER.info(JSONUtil.toJsonString(columns));
+        // LOGGER.info("end...");
     }
 
     @Ignore
@@ -84,7 +88,7 @@ public class ClickHouseTest {
     public void queryTest() {
         Driver driver = getDriver();
         JdbcSelectResult query = driver.query("select * from xxx", 10);
-        // System.out.println(JSONUtil.toJsonString(query));
-        // System.out.println("end...");
+        // LOGGER.info(JSONUtil.toJsonString(query));
+        // LOGGER.info("end...");
     }
 }

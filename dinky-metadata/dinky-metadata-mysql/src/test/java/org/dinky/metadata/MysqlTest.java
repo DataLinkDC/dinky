@@ -30,6 +30,8 @@ import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * MysqlTest
@@ -39,6 +41,8 @@ import org.junit.Test;
  */
 @Ignore
 public class MysqlTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(MysqlTest.class);
 
     private static final String IP = "127.0.0.1";
 
@@ -71,8 +75,8 @@ public class MysqlTest {
                         + IP
                         + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
         String test = Driver.build(config).test();
-        System.out.println(test);
-        System.out.println("end...");
+        LOGGER.info(test);
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -80,7 +84,7 @@ public class MysqlTest {
     public void schemaTest() {
         Driver driver = getDriver();
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -88,7 +92,7 @@ public class MysqlTest {
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("dca", "MENU");
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -96,6 +100,6 @@ public class MysqlTest {
     public void queryTest() {
         Driver driver = getDriver();
         JdbcSelectResult query = driver.query("select * from MENU", 10);
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 }
