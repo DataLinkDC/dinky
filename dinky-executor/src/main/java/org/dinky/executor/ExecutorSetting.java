@@ -21,6 +21,8 @@ package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -163,9 +165,8 @@ public class ExecutorSetting {
     }
 
     public static ExecutorSetting build(Map<String, String> settingMap) {
-        Integer checkpoint = Integer.valueOf(settingMap.get(CHECKPOINT_CONST));
-        Integer parallelism = Integer.valueOf(settingMap.get(PARALLELISM_CONST));
-
+        Integer checkpoint = NumberUtils.createInteger(settingMap.get(CHECKPOINT_CONST));
+        Integer parallelism = NumberUtils.createInteger(settingMap.get(PARALLELISM_CONST));
         return build(
                 checkpoint,
                 parallelism,
