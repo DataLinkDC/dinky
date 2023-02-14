@@ -63,7 +63,7 @@ public class Cluster extends SuperEntity {
     private Integer clusterConfigurationId;
 
     private Integer taskId;
-
+    
     public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
@@ -76,4 +76,21 @@ public class Cluster extends SuperEntity {
         cluster.setEnabled(true);
         return cluster;
     }
+    public String getJobManagerHost() {
+        if (type.equals("yarn-session")) {
+            if (StrUtil.isBlank(resourceManagerAddr) || StrUtil.isBlank(applicationId))
+                return jobManagerHost;
+            ObjectNode applicationInstants = YarnUtils.
+                    getApplicationInstants(resourceManagerAddr, applicationId);
+            if (YarnUtils.getApplicationStatus(applicationInstants).equals("RUNNING")) {
+                this.status = 1;
+                return YarnUtils.getApplicationAddress(applicationInstants);
+            } else {
+                this.status = 0;
+                return YarnUtils.getApplicationStatus(applicationInstants);
+            }
+        }
+        return jobManagerHost;
+    }
+
 }
