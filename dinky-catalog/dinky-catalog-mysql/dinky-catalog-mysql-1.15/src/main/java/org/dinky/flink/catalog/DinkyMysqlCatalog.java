@@ -275,7 +275,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
                     while (prs.next()) {
-                        map.put(rs.getString("key"), rs.getString("value"));
+                        map.put(prs.getString("key"), prs.getString("value"));
                     }
                 } catch (SQLException e) {
                     sqlExceptionHappened = true;
