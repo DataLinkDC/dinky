@@ -17,21 +17,19 @@
 
 // @ts-ignore
 /* eslint-disable */
-import {request} from '@umijs/max';
+import { request } from '@umijs/max';
 
 /** 获取当前的用户 GET /api/currentUser */
 export async function currentUser(options?: { [key: string]: any }) {
-  return request<{
-    data: API.CurrentUser;
-  }>('/api/currentUser', {
+  return request<API.Result>('/api/current', {
     method: 'GET',
     ...(options || {}),
   });
 }
 
-/** 退出登录接口 POST /api/login/outLogin */
+/** 退出登录接口 POST /api/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/api/outLogin', {
     method: 'POST',
     ...(options || {}),
   });
@@ -39,7 +37,7 @@ export async function outLogin(options?: { [key: string]: any }) {
 
 /** 登录接口 POST /api/login/account */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.LoginResult>('/api/login/account', {
+  return request<API.LoginResult>('/api/login', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -98,5 +96,15 @@ export async function removeRule(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/rule', {
     method: 'DELETE',
     ...(options || {}),
+  });
+}
+
+/**获取租户 */
+export async function getTenants(params: API.TenantRequest) {
+  return request<API.TenantResult>('/api/geTenants', {
+    method: 'GET',
+    params: {
+      ...params,
+    },
   });
 }
