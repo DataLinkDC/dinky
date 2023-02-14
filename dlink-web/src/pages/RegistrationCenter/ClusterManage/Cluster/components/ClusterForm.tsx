@@ -45,6 +45,8 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
     id: props.values.id,
     name: props.values.name,
     alias: props.values.alias,
+    resourceManagerAddr: props.values.resourceManagerAddr,
+    applicationId: props.values.applicationId,
     type: props.values.type,
     hosts: props.values.hosts,
     note: props.values.note,
