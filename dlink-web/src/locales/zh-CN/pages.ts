@@ -505,6 +505,8 @@ export default {
   'pages.rc.cluster.instanceName': '实例名称',
   'pages.rc.cluster.alias': '别名',
   'pages.rc.cluster.type': '类型',
+  'pages.rc.cluster.resourceManagerAddr': 'ResourceManger 地址',
+  'pages.rc.cluster.applicationId': 'applicationId',
   'pages.rc.cluster.jobManagerAddress': 'JobManger 地址',
   'pages.rc.cluster.version': '版本',
   'pages.rc.cluster.jobManagerHaAddress': 'JobManger 高可用地址',
