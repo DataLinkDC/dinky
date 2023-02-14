@@ -21,6 +21,7 @@ package com.dlink.service.impl;
 
 import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.mapper.UserRoleMapper;
+import com.dlink.model.Role;
 import com.dlink.model.UserRole;
 import com.dlink.service.UserRoleService;
 
@@ -54,5 +55,10 @@ public class UserRoleServiceImpl extends SuperServiceImpl<UserRoleMapper, UserRo
     @Override
     public boolean deleteByRoleIds(List<Integer> roleIds) {
         return baseMapper.deleteByRoleIds(roleIds) > 0;
+    }
+
+    @Override
+    public List<Role> getRoleByUserId(int userId) {
+        return baseMapper.getRoleByUserId(userId);
     }
 }

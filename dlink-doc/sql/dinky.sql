@@ -958,4 +958,18 @@ VALUES (4, 'python_udf_1', 'Python', 'UDF', 'from pyflink.table import ScalarFun
 INSERT INTO `dlink_udf_template` (`id`, `name`, `code_type`, `function_type`, `template_code`, `enabled`, `create_time`, `update_time`)
 VALUES (5, 'python_udf_2', 'Python', 'UDF', 'from pyflink.table import DataTypes\nfrom pyflink.table.udf import udf\n\n@udf(result_type=DataTypes.STRING())\ndef ${className}(variable1:string):\n  return \'\'', NULL, '2022-10-25 09:25:13', '2022-10-25 09:34:47');
 
+-- ----------------------------
+-- Table structure for dlink_role_select_permissions
+-- ----------------------------
+CREATE TABLE dlink_role_select_permissions
+(
+    id           int auto_increment comment 'ID'
+        primary key,
+    role_id      int      not null comment '角色ID',
+    table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表名',
+    expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表达式',
+    create_time  datetime null comment '创建时间',
+    update_time  datetime null comment '更新时间'
+)
+    COMMENT '角色数据查询权限' COLLATE = utf8mb4_general_ci;
 SET FOREIGN_KEY_CHECKS = 1;

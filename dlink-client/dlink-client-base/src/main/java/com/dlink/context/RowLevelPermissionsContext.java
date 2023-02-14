@@ -17,29 +17,29 @@
  *
  */
 
+package com.dlink.context;
 
-import {queryData} from "@/components/Common/crud";
+import java.util.concurrent.ConcurrentHashMap;
 
-/*--- 刷新 NameSpace ---*/
-export function getNameSpaceList(dispatch: any) {
-  const res = queryData('/api/namespace');
-  res.then((result) => {
-    result.data && dispatch && dispatch({
-      type: "NameSpace/saveNameSpace",
-      payload: result.data,
-    });
-  });
+/**
+ * CustomTableEnvironmentContext
+ *
+ * @author wenmo
+ * @since 2023/2/9
+ */
+public class RowLevelPermissionsContext {
+
+    private static final ThreadLocal<ConcurrentHashMap<String, String>> ROW_LEVEL_PERMISSIONS_CONTEXT = new ThreadLocal<>();
+
+    public static void set(ConcurrentHashMap<String, String> value) {
+        ROW_LEVEL_PERMISSIONS_CONTEXT.set(value);
+    }
+
+    public static ConcurrentHashMap<String, String> get() {
+        return ROW_LEVEL_PERMISSIONS_CONTEXT.get();
+    }
+
+    public static void clear() {
+        ROW_LEVEL_PERMISSIONS_CONTEXT.remove();
+    }
 }
-
-
-/*--- 获取角色 ---*/
-export function getRoleList(dispatch: any) {
-  const res = queryData('/api/role');
-  res.then((result) => {
-    result.data && dispatch && dispatch({
-      type: "NameSpace/saveRole",
-      payload: result.data,
-    });
-  });
-}
-

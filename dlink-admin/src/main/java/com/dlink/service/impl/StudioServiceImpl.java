@@ -22,6 +22,7 @@ package com.dlink.service.impl;
 import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.config.Dialect;
+import com.dlink.context.RowLevelPermissionsContext;
 import com.dlink.dto.AbstractStatementDTO;
 import com.dlink.dto.SessionDTO;
 import com.dlink.dto.SqlDTO;
@@ -42,6 +43,7 @@ import com.dlink.model.Catalog;
 import com.dlink.model.Cluster;
 import com.dlink.model.DataBase;
 import com.dlink.model.FlinkColumn;
+import com.dlink.model.RoleSelectPermissions;
 import com.dlink.model.Savepoints;
 import com.dlink.model.Schema;
 import com.dlink.model.Table;
@@ -60,7 +62,7 @@ import com.dlink.service.FragmentVariableService;
 import com.dlink.service.SavepointsService;
 import com.dlink.service.StudioService;
 import com.dlink.service.TaskService;
-import com.dlink.service.UDFService;
+import com.dlink.service.UserService;
 import com.dlink.session.SessionConfig;
 import com.dlink.session.SessionInfo;
 import com.dlink.session.SessionPool;
@@ -71,6 +73,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +103,7 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
     private final FragmentVariableService fragmentVariableService;
-    private final UDFService udfService;
+    private final UserService userService;
 
     public StudioServiceImpl(ClusterService clusterService,
             ClusterConfigurationService clusterConfigurationService,
@@ -108,14 +111,14 @@ public class StudioServiceImpl implements StudioService {
             DataBaseService dataBaseService,
             TaskService taskService,
             FragmentVariableService fragmentVariableService,
-            UDFService udfService) {
+            UserService userService) {
         this.clusterService = clusterService;
         this.clusterConfigurationService = clusterConfigurationService;
         this.savepointsService = savepointsService;
         this.dataBaseService = dataBaseService;
         this.taskService = taskService;
         this.fragmentVariableService = fragmentVariableService;
-        this.udfService = udfService;
+        this.userService = userService;
     }
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
@@ -151,6 +154,19 @@ public class StudioServiceImpl implements StudioService {
             } else {
                 process.info("No FlinkSQLEnv are loaded.");
             }
+        }
+
+        process.info("Initializing data permissions...");
+        List<RoleSelectPermissions> currentRoleSelectPermissions = userService.getCurrentRoleSelectPermissions();
+        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
+            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
+            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+                if (Asserts.isAllNotNullString(roleSelectPermissions.getTableName(),
+                        roleSelectPermissions.getExpression())) {
+                    permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
+                }
+            }
+            RowLevelPermissionsContext.set(permission);
         }
         process.info("Finish initialize FlinkSQLEnv.");
     }

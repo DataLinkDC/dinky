@@ -20,8 +20,7 @@
 package com.dlink.mapper;
 
 import com.dlink.db.mapper.SuperMapper;
-import com.dlink.model.Role;
-import com.dlink.model.UserRole;
+import com.dlink.model.RoleSelectPermissions;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,35 +28,23 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 /**
- * user role mapper interface
+ * role select permissions mapper interface
  */
 @Mapper
-public interface UserRoleMapper extends SuperMapper<UserRole> {
+public interface RoleSelectPermissionsMapper extends SuperMapper<RoleSelectPermissions> {
 
     /**
-     * @param userId userId
-     * @return user role relation
-     */
-    List<UserRole> getUserRoleByUserId(@Param("userId") int userId);
-
-    /**
-     * delete user role relation
-     *
-     * @param userRoleList list
-     * @return int
-     */
-    int deleteBathRelation(@Param("userRoleList") List<UserRole> userRoleList);
-
-    /**
-     * delete user role relation by role id
+     * delete user role select permissions by role id
      *
      * @param roleIds role id
-     * @return delete status
+     * @return
      */
     int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
     /**
-     * @param userId userId
-     * @return role list
+     * select user role data permissions by role ids
+     *
+     * @param roleIds role ids
+     * @return List<RoleSelectPermissions>
      */
-    List<Role> getRoleByUserId(Integer userId);
+    List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(@Param("roleIds") List<Integer> roleIds);
 }

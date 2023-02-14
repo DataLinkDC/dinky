@@ -20,6 +20,7 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.CustomTableEnvironmentContext;
 import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.interceptor.FlinkInterceptor;
 import com.dlink.interceptor.FlinkInterceptorResult;
@@ -197,6 +198,7 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
 
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
+        CustomTableEnvironmentContext.set(newestEnvironment);
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {
                 stEnvironment.getCatalog(catalog).ifPresent(t -> {

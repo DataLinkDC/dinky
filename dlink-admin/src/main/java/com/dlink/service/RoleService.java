@@ -30,6 +30,7 @@ import java.util.Set;
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface RoleService extends ISuperService<Role> {
+
     /**
      * delete role
      *
@@ -48,4 +49,6 @@ public interface RoleService extends ISuperService<Role> {
 
     @Override
     ProTableResult<Role> selectForProTable(JsonNode para);
+
+    List<Role> getRoleByUserId(Integer userId);
 }

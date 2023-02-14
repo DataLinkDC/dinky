@@ -27,8 +27,10 @@ import com.dlink.api.FlinkAPI;
 import com.dlink.assertion.Asserts;
 import com.dlink.classloader.DinkyClassLoader;
 import com.dlink.constant.FlinkSQLConstant;
+import com.dlink.context.CustomTableEnvironmentContext;
 import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.context.JarPathContextHolder;
+import com.dlink.context.RowLevelPermissionsContext;
 import com.dlink.executor.EnvironmentSetting;
 import com.dlink.executor.Executor;
 import com.dlink.executor.ExecutorSetting;
@@ -364,6 +366,8 @@ public class JobManager {
 
     public boolean close() {
         JobContextHolder.clear();
+        CustomTableEnvironmentContext.clear();
+        RowLevelPermissionsContext.clear();
         return false;
     }
 

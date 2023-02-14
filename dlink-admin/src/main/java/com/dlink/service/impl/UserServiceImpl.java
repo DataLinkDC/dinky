@@ -27,10 +27,12 @@ import com.dlink.dto.LoginUTO;
 import com.dlink.dto.UserDTO;
 import com.dlink.mapper.UserMapper;
 import com.dlink.model.Role;
+import com.dlink.model.RoleSelectPermissions;
 import com.dlink.model.Tenant;
 import com.dlink.model.User;
 import com.dlink.model.UserRole;
 import com.dlink.model.UserTenant;
+import com.dlink.service.RoleSelectPermissionsService;
 import com.dlink.service.RoleService;
 import com.dlink.service.TenantService;
 import com.dlink.service.UserRoleService;
@@ -43,6 +45,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -76,6 +79,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Autowired
     private TenantService tenantService;
+
+    @Autowired
+    private RoleSelectPermissionsService roleSelectPermissionsService;
 
     @Override
     public Result registerUser(User user) {
@@ -179,7 +185,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         userTenants.forEach(userTenant -> {
             Tenant tenant = tenantService.getBaseMapper()
-                .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
+                    .selectOne(new QueryWrapper<Tenant>().eq("id", userTenant.getTenantId()));
             if (Asserts.isNotNull(tenant)) {
                 tenantList.add(tenant);
             }
@@ -246,6 +252,25 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
         List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
         return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.success"));
+    }
+
+    @Override
+    public List<Role> getCurrentRole() {
+        Integer userId = StpUtil.getLoginIdAsInt();
+        if (Asserts.isNull(userId)) {
+            return new ArrayList<>();
+        }
+        return roleService.getRoleByUserId(userId);
+    }
+
+    @Override
+    public List<RoleSelectPermissions> getCurrentRoleSelectPermissions() {
+        List<Role> currentRole = getCurrentRole();
+        if (Asserts.isNullCollection(currentRole)) {
+            return new ArrayList<>();
+        }
+        List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
+        return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
     }
 
 }
