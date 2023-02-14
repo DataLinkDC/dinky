@@ -443,8 +443,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         try {
             conn.setAutoCommit(false);
             // 1、名称不能改，类型不能改。只能改备注
-            String updateCommentSql =
-                    "update metadata_database set description=? where id=?";
+            String updateCommentSql = "update metadata_database set description=? where id=?";
             PreparedStatement uState = conn.prepareStatement(updateCommentSql);
             uState.setString(1, newDb.getComment());
             uState.setInt(2, id);
