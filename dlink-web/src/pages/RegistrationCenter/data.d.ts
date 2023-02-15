@@ -48,6 +48,8 @@ export type ClusterTableListItem = {
   type: string,
   hosts: string,
   jobManagerHost: string,
+  resourceManagerAddr: string,
+  applicationId: string,
   version: string,
   status: number,
   note: string,

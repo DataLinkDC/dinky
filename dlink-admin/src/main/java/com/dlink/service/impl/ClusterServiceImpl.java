@@ -35,6 +35,11 @@ import com.dlink.model.Cluster;
 import com.dlink.model.ClusterConfiguration;
 import com.dlink.service.ClusterConfigurationService;
 import com.dlink.service.ClusterService;
+import com.dlink.utils.YarnUtils;
+import com.dlink.model.JobStatus;
+import cn.hutool.core.util.StrUtil;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -123,9 +128,39 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public Cluster registersCluster(Cluster cluster) {
-        checkHealth(cluster);
+        if (cluster.getType().equals(GatewayType.YARN_SESSION.getLongValue())){
+            if (StrUtil.isBlank(cluster.getResourceManagerAddr())
+                || StrUtil.isBlank(cluster.getApplicationId())){
+                checkHealth(cluster);
+            } else {
+                checkYarnSessionHealth(cluster);
+            }
+        } else {
+            checkHealth(cluster);
+        }
         saveOrUpdate(cluster);
         return cluster;
+    }
+    
+    private boolean checkYarnSessionHealth(Cluster cluster) {
+        cluster.setJobManagerHost("");
+        ObjectNode applicationInstants = YarnUtils.getApplicationInstants(
+            cluster.getResourceManagerAddr(), cluster.getApplicationId());
+        String applicationStatus = YarnUtils.getApplicationStatus(applicationInstants);
+        if (!applicationStatus.equals(JobStatus.RUNNING.getValue())){
+            cluster.setStatus(0);
+            return false;
+        } else {
+            String addr = YarnUtils.getApplicationAddress(applicationInstants);
+            FlinkClusterInfo info = checkHeartBeat(cluster.getHosts(), addr);
+            if (info.isEffective()){
+                cluster.setStatus(1);
+                cluster.setVersion(info.getVersion());
+                return true;
+            }
+            cluster.setStatus(0);
+            return false;
+        }
     }
 
     @Override

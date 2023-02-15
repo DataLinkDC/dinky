@@ -20,10 +20,15 @@
 package com.dlink.model;
 
 import com.dlink.db.model.SuperEntity;
-
+import com.dlink.gateway.GatewayType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.dlink.utils.YarnUtils;
+import com.dlink.model.JobStatus;
+import cn.hutool.core.util.StrUtil;
+
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -51,6 +56,10 @@ public class Cluster extends SuperEntity {
     private String hosts;
 
     private String jobManagerHost;
+    
+    private String applicationId;
+    
+    private String resourceManagerAddr;
 
     private String version;
 
@@ -63,7 +72,7 @@ public class Cluster extends SuperEntity {
     private Integer clusterConfigurationId;
 
     private Integer taskId;
-
+    
     public static Cluster autoRegistersCluster(String hosts, String name, String alias, String type, Integer clusterConfigurationId, Integer taskId) {
         Cluster cluster = new Cluster();
         cluster.setName(name);
@@ -76,4 +85,21 @@ public class Cluster extends SuperEntity {
         cluster.setEnabled(true);
         return cluster;
     }
+    public String getJobManagerHost() {
+        if (type.equals(GatewayType.YARN_SESSION.getLongValue())) {
+            if (StrUtil.isBlank(resourceManagerAddr) || StrUtil.isBlank(applicationId))
+                return jobManagerHost;
+            ObjectNode applicationInstants = YarnUtils.
+                    getApplicationInstants(resourceManagerAddr, applicationId);
+            if (YarnUtils.getApplicationStatus(applicationInstants).equals(JobStatus.RUNNING.getValue())) {
+                this.status = 1;
+                return YarnUtils.getApplicationAddress(applicationInstants);
+            } else {
+                this.status = 0;
+                return YarnUtils.getApplicationStatus(applicationInstants);
+            }
+        }
+        return jobManagerHost;
+    }
+
 }
