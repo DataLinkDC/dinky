@@ -494,8 +494,8 @@ export default {
   'pages.devops.lable.line.piontConfig.default': 'Default SavePoint',
   'pages.devops.lable.line.piontConfig.last': 'Latest SavePoint',
 
-  'pages.rc.cluster.resourceManagerAddr' : 'ResourceManger Addr',
-  'pages.rc.cluster.applicationId' : 'applicationId',
+  'pages.rc.cluster.resourceManagerAddr' : 'Resource Manger Address',
+  'pages.rc.cluster.applicationId' : 'Application Id',
   'pages.rc.clusterManagement': 'Cluster Instance Management',
   'pages.rc.cluster.instanceName': 'Instance name',
   'pages.rc.cluster.alias': 'Alias',
