@@ -24,6 +24,7 @@ import com.dlink.gateway.GatewayType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.dlink.utils.YarnUtils;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
