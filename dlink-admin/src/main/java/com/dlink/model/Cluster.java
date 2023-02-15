@@ -20,7 +20,7 @@
 package com.dlink.model;
 
 import com.dlink.db.model.SuperEntity;
-
+import com.dlink.gateway.GatewayType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -77,12 +77,12 @@ public class Cluster extends SuperEntity {
         return cluster;
     }
     public String getJobManagerHost() {
-        if (type.equals("yarn-session")) {
+        if (type.equals(GatewayType.YARN_SESSION.getLongValue())) {
             if (StrUtil.isBlank(resourceManagerAddr) || StrUtil.isBlank(applicationId))
                 return jobManagerHost;
             ObjectNode applicationInstants = YarnUtils.
                     getApplicationInstants(resourceManagerAddr, applicationId);
-            if (YarnUtils.getApplicationStatus(applicationInstants).equals("RUNNING")) {
+            if (YarnUtils.getApplicationStatus(applicationInstants).equals(JobStatus.RUNNING.getValue())) {
                 this.status = 1;
                 return YarnUtils.getApplicationAddress(applicationInstants);
             } else {
