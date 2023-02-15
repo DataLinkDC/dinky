@@ -25,6 +25,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.dlink.utils.YarnUtils;
+import com.dlink.model.JobStatus;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
