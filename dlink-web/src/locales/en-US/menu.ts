@@ -37,7 +37,9 @@ export default {
 
   'menu.registration': 'Registration Center',
   'menu.registration.cluster': 'Cluster Management',
+  'menu.clusterInstance': 'Flink Instance',
   'menu.registration.cluster.clusterInstance': 'Flink Instance',
+  'menu.clusterConfiguration': 'Cluster Config',
   'menu.registration.cluster.clusterConfiguration': 'Cluster Config',
   'menu.registration.jar': 'Jar Management',
   'menu.registration.database': 'Data Source Management',
