@@ -123,7 +123,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
 
     @Override
     public Cluster registersCluster(Cluster cluster) {
-        if (cluster.getType().equals("yarn-session")){
+        if (cluster.getType().equals(GatewayType.YARN_SESSION.getLongValue())){
             if (StrUtil.isBlank(cluster.getResourceManagerAddr())
                 || StrUtil.isBlank(cluster.getApplicationId())){
                 checkHealth(cluster);
@@ -142,7 +142,7 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         ObjectNode applicationInstants = YarnUtils.getApplicationInstants(
             cluster.getResourceManagerAddr(), cluster.getApplicationId());
         String applicationStatus = YarnUtils.getApplicationStatus(applicationInstants);
-        if (!applicationStatus.equals("RUNNING")){
+        if (!applicationStatus.equals(JobStatus.RUNNING.getValue())){
             cluster.setStatus(0);
             return false;
         } else {
