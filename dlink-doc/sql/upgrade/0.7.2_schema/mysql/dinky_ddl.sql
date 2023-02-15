@@ -34,3 +34,11 @@ CREATE TABLE dlink_role_select_permissions
     update_time  datetime null comment '更新时间'
 )
     COMMENT '角色数据查询权限' COLLATE = utf8mb4_general_ci;
+    
+-- 0.7.2 2023-2-15
+-- ----------------------------
+-- ----------------------------
+-- Table structure for dlink_cluster 
+-- ----------------------------
+alter table dlink_cluster add column `resource_manager_addr`  VARCHAR(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci comment 'Resource Manger Address' after task_id;
+alter table dlink_cluster add column `application_id` VARCHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci  comment 'Application Id' after resource_manager_addr;
