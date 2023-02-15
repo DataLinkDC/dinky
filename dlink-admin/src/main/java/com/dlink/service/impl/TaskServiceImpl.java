@@ -1535,7 +1535,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNotNull(task.getEnvId()) && !task.getEnvId().equals(0)) {
             Task envTask = getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
-                sb.append(task.getStatement());
+                sb.append(envTask.getStatement());
+                sb.append("\n;\n");
             }
         }
         sb.append(task.getStatement());
