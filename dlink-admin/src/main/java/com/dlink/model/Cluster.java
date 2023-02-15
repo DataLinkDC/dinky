@@ -27,6 +27,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.dlink.utils.YarnUtils;
 import com.dlink.model.JobStatus;
+import cn.hutool.core.util.StrUtil;
+
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
