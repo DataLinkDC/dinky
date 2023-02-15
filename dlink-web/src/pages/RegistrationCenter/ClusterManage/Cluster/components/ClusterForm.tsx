@@ -106,6 +106,28 @@ const ClusterForm: React.FC<ClusterFormProps> = (props) => {
             <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
           </Select>
         </Form.Item>
+                <Form.Item
+          noStyle
+          shouldUpdate={(prevValues, currentValues) => prevValues.type !== currentValues.type}
+        >
+          {({ getFieldValue }) =>
+            getFieldValue('type') === 'yarn-session' ? (
+              <><Form.Item
+                name="resourceManagerAddr"
+                label={l('pages.rc.cluster.resourceManagerAddr')}
+              >
+                <Input placeholder={l('pages.rc.cluster.resourceManagerAddr')}/>
+              </Form.Item>
+                <Form.Item
+                name="applicationId"
+                label={l('pages.rc.cluster.applicationId')}
+              >
+                <Input placeholder={l('pages.rc.cluster.applicationId')}/>
+              </Form.Item>
+              </>
+            ) : null
+          }
+        </Form.Item>
         <Form.Item
           name="hosts"
           label={l('pages.rc.cluster.jobManagerHaAddress')}
