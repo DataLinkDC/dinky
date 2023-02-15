@@ -24,6 +24,7 @@ import com.dlink.gateway.GatewayType;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.dlink.utils.YarnUtils;
 import com.dlink.model.JobStatus;
 
@@ -53,6 +54,10 @@ public class Cluster extends SuperEntity {
     private String hosts;
 
     private String jobManagerHost;
+    
+    private String applicationId;
+    
+    private String resourceManagerAddr;
 
     private String version;
 
