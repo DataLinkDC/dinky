@@ -22,7 +22,7 @@ import {Button, message, Modal} from 'antd';
 import React, {useEffect, useState} from 'react';
 import ProForm, {ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
 import {history, Link, SelectLang, useModel} from 'umi';
-import Footer from '@/components/Footer';
+// import Footer from '@/components/Footer';
 import {login} from '@/services/ant-design-pro/api';
 import {CheckCard} from '@ant-design/pro-components';
 import styles from './index.less';
@@ -283,7 +283,7 @@ const Login: React.FC = () => {
           </ProForm>
         </div>
       </div>
-      <Footer/>
+      {/* <Footer/> */}
       {handleShowTenant()}
     </div>
 

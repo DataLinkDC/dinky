@@ -18,7 +18,7 @@
  */
 
 
-import {Tabs} from "antd";
+import {Empty, Tabs} from "antd";
 import {ContainerOutlined, ScheduleOutlined, SettingOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
@@ -140,7 +140,8 @@ const StudioRightTool = (props: any) => {
         <Tabs defaultActiveKey="1" size="small" tabPosition="right" style={{height: toolHeight}}>
           {renderContent()}
           {renderTaskInfoContent()}
-        </Tabs> : <StudioGuide toolHeight={toolHeight}/>}
+        {/* </Tabs> : <StudioGuide toolHeight={toolHeight}/>} */}
+        </Tabs> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
     </>
   );
 };

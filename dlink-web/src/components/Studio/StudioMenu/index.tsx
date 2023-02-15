@@ -730,20 +730,22 @@ const StudioMenu = (props: any) => {
                   onClick={showAPI}
                 />
               </Tooltip>
-              <Tooltip title={l('pages.datastudio.editor.help')}>
+              {/* <Tooltip title={l('pages.datastudio.editor.help')}>
                 <Button
                   type="text"
                   icon={<QuestionCircleTwoTone/>}
                   onClick={showHelp}
                 />
-              </Tooltip>
-            </Col> : <Col span={8}><Tooltip title={l('pages.datastudio.editor.help')}>
-              <Button
-                type="text"
-                icon={<QuestionCircleTwoTone/>}
-                onClick={showHelp}
-              />
-            </Tooltip></Col>}
+              </Tooltip> */}
+            </Col> : <Col span={8}>
+              {/* <Tooltip title={l('pages.datastudio.editor.help')}>
+                <Button
+                  type="text"
+                  icon={<QuestionCircleTwoTone/>}
+                  onClick={showHelp}
+                />
+              </Tooltip> */}
+            </Col>}
         </Row>
       </Col>
       <StudioExplain
