@@ -25,9 +25,8 @@
 -- ----------------------------
 CREATE TABLE dlink_role_select_permissions
 (
-    id           int auto_increment comment 'ID'
-        primary key,
-    role_id      int      not null comment '角色ID',
+    id  int auto_increment comment 'ID' primary key,
+    role_id  int not null comment '角色ID',
     table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表名',
     expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表达式',
     create_time  datetime null comment '创建时间',
