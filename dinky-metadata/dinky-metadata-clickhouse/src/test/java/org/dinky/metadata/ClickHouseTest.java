@@ -19,8 +19,6 @@
 
 package org.dinky.metadata;
 
-import cn.hutool.core.collection.CollectionUtil;
-
 import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.ClickHouseDriver;
 import org.dinky.metadata.driver.Driver;
@@ -34,6 +32,8 @@ import java.util.List;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 /**
  * ClickhouseTest

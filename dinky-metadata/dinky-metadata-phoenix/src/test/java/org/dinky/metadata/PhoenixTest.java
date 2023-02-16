@@ -19,8 +19,6 @@
 
 package org.dinky.metadata;
 
-import cn.hutool.core.collection.CollectionUtil;
-
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -37,6 +35,8 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 @Ignore
 public class PhoenixTest {
