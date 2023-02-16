@@ -1,32 +1,23 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+/**
+ * @Author: kevin
+ * @Title: index.tsx
+ * @Date: 2023-02-10 16:45:06
+ * @Description:
  */
 
 import Footer from '@/components/Footer';
 
-import {LockOutlined, UserOutlined,} from '@ant-design/icons';
-import {LoginForm, ProFormCheckbox, ProFormText,} from '@ant-design/pro-components';
-import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {Helmet, history, SelectLang, useModel} from '@umijs/max';
-import {Alert, message} from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { CheckCard, LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { Helmet, history, SelectLang, useModel } from '@umijs/max';
+import { Alert, Button, message, Modal } from 'antd';
 import Settings from '../../../../config/defaultSettings';
-import React, {useState} from 'react';
-import {flushSync} from 'react-dom';
-import {login} from "@/services/api";
-import {l} from '@/utils/intl';
+import React, { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { login, getTenants } from '@/services/api';
+import { l } from '@/utils/intl';
+import cookies from 'js-cookie';
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -50,24 +41,13 @@ const Lang = () => {
   );
 };
 
-const LoginMessage: React.FC<{
-  content: string;
-}> = ({ content }) => {
-  return (
-    <Alert
-      style={{
-        marginBottom: 24,
-      }}
-      message={content}
-      type="error"
-      showIcon
-    />
-  );
-};
-
 const Login: React.FC = () => {
+  const [submitting, setSubmitting] = useState(false);
   const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const { initialState, setInitialState } = useModel('@@initialState');
+  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
+  const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
+  const [tenant, setTenant] = useState<API.TenantListItem[]>([]);
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -93,32 +73,113 @@ const Login: React.FC = () => {
     }
   };
 
+  /**
+   * 获取租户
+   *
+   */
+  const getTenant = async () => {
+    const res = await getTenants({ username: 'admin' });
+    console.log('res', res?.datas);
+    if ((res?.datas?.length || 0) > 1) {
+      setTenant(res.datas || []);
+      setChooseTenant(true);
+    }
+  };
+
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const msg = await login({ ...values });
-      if (msg.status === 'ok') {
-        message.success(l('pages.login.success'));
+      const msg = await login({ ...values, type: 'password', tenantId: 1 });
+      if (msg.code === 0) {
+        // message.success(l('pages.login.success'));
+        // 选择租户
         await fetchUserInfo();
-        const urlParams = new URL(window.location.href).searchParams;
-        history.push(urlParams.get('redirect') || '/');
+        await getTenant();
         return;
       }
-      console.log(msg);
       // 如果失败去设置用户错误信息
       setUserLoginState(msg);
     } catch (error) {
       message.error(l('pages.login.failure'));
     }
   };
-  const { status, type: loginType } = userLoginState;
+
+  const setTenantCookie = (tenantId: number) => {
+    localStorage.setItem('dlink-tenantId', tenantId.toString()); // 放入本地存储中 request2请求时会放入header
+    cookies.set('tenantId', tenantId.toString(), { path: '/' }); // 放入cookie中
+  };
+
+  const handleShowTenant = () => {
+    return (
+      <>
+        <Modal
+          title={l('pages.login.chooseTenant')}
+          open={chooseTenant}
+          destroyOnClose={true}
+          width={'60%'}
+          onCancel={() => {
+            setChooseTenant(false);
+          }}
+          footer={[
+            <Button
+              key="back"
+              onClick={() => {
+                setChooseTenant(false);
+              }}
+            >
+              {l('button.close')}
+            </Button>,
+            <Button
+              disabled={checkDisabled}
+              type="primary"
+              key="submit"
+              loading={submitting}
+              onClick={async () => {
+                // await handleSubmit(userParamsState);
+                setChooseTenant(false);
+                const urlParams = new URL(window.location.href).searchParams;
+                history.push(urlParams.get('redirect') || '/');
+              }}
+            >
+              {l('button.confirm')}
+            </Button>,
+          ]}
+        >
+          <CheckCard.Group
+            multiple={false}
+            onChange={(value) => {
+              if (value) {
+                setCheckDisabled(false); // 如果没选择租户 ·确认按钮· 则禁用
+                // userParamsState.tenantId = value as number; // 将租户id给后端入参
+                setTenantCookie(value as number);
+              } else {
+                setCheckDisabled(true);
+              }
+            }}
+          >
+            {tenant?.map((item: any) => {
+              return (
+                <CheckCard
+                  size={'default'}
+                  key={item?.id}
+                  avatar="/icons/tenant_default.svg"
+                  title={item?.tenantCode}
+                  value={item?.id}
+                  description={item?.note}
+                />
+              );
+            })}
+          </CheckCard.Group>
+        </Modal>
+      </>
+    );
+  };
 
   return (
     <div className={containerClassName}>
       <Helmet>
         <title>
-          {l('menu.login')}
-          - {Settings.title}
+          {l('menu.login')}- {Settings.title}
         </title>
       </Helmet>
       <Lang />
@@ -135,7 +196,7 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src={Settings.logo} />}
           title="Dinky"
-          subTitle={l('pages.layouts.userLayout.title' )}
+          subTitle={l('pages.layouts.userLayout.title')}
           initialValues={{
             autoLogin: true,
           }}
@@ -143,41 +204,36 @@ const Login: React.FC = () => {
             await handleSubmit(values as API.LoginParams);
           }}
         >
-
-            <LoginMessage
-              content={l( 'pages.login.accountLogin.errorMessage')}
+          <>
+            <ProFormText
+              name="username"
+              fieldProps={{
+                size: 'large',
+                prefix: <UserOutlined />,
+              }}
+              placeholder={l('pages.login.username.placeholder')}
+              rules={[
+                {
+                  required: true,
+                  message: l('pages.login.username.required'),
+                },
+              ]}
             />
-          )
-            <>
-              <ProFormText
-                name="username"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <UserOutlined />,
-                }}
-                placeholder={l('pages.login.username.placeholder')}
-                rules={[
-                  {
-                    required: true,
-                    message: l('pages.login.username.required')
-                  },
-                ]}
-              />
-              <ProFormText.Password
-                name="password"
-                fieldProps={{
-                  size: 'large',
-                  prefix: <LockOutlined />,
-                }}
-                placeholder={ l('pages.login.password.placeholder')}
-                rules={[
-                  {
-                    required: true,
-                    message: l('pages.login.password.required')
-                  },
-                ]}
-              />
-            </>
+            <ProFormText.Password
+              name="password"
+              fieldProps={{
+                size: 'large',
+                prefix: <LockOutlined />,
+              }}
+              placeholder={l('pages.login.password.placeholder')}
+              rules={[
+                {
+                  required: true,
+                  message: l('pages.login.password.required'),
+                },
+              ]}
+            />
+          </>
           <div
             style={{
               marginBottom: 24,
@@ -190,6 +246,7 @@ const Login: React.FC = () => {
         </LoginForm>
       </div>
       <Footer />
+      {handleShowTenant()}
     </div>
   );
 };

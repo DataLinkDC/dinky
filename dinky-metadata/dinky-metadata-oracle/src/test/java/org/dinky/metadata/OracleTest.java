@@ -30,6 +30,8 @@ import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * OracleTest
@@ -39,6 +41,8 @@ import org.junit.Test;
  */
 @Ignore
 public class OracleTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(OracleTest.class);
 
     private static final String IP = "127.0.0.1";
 
@@ -65,8 +69,8 @@ public class OracleTest {
         config.setPassword("cdr");
         config.setUrl("jdbc:oracle:thin:@" + IP + ":1521:orcl");
         String test = Driver.build(config).test();
-        System.out.println(test);
-        System.out.println("end...");
+        LOGGER.info(test);
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -74,7 +78,7 @@ public class OracleTest {
     public void schemaTest() {
         Driver driver = getDriver();
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -82,7 +86,7 @@ public class OracleTest {
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("CDR", "PAT_INFO");
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 
     @Ignore
@@ -91,6 +95,6 @@ public class OracleTest {
         Driver driver = getDriver();
         JdbcSelectResult selectResult =
                 driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
-        System.out.println("end...");
+        LOGGER.info("end...");
     }
 }

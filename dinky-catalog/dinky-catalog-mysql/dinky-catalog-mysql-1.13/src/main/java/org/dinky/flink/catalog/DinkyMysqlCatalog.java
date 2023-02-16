@@ -272,7 +272,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
                     pStat.setInt(1, id);
                     ResultSet prs = pStat.executeQuery();
                     while (prs.next()) {
-                        map.put(rs.getString("key"), rs.getString("value"));
+                        map.put(prs.getString("key"), prs.getString("value"));
                     }
                 } catch (SQLException e) {
                     sqlExceptionHappened = true;
@@ -407,7 +407,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
             dStat.setInt(1, id);
             dStat.executeUpdate();
             dStat.close();
-            String deleteDbSql = "delete from metadata_database where database_id=?";
+            String deleteDbSql = "delete from metadata_database where id=?";
             dStat = conn.prepareStatement(deleteDbSql);
             dStat.setInt(1, id);
             dStat.executeUpdate();
@@ -437,8 +437,7 @@ public class DinkyMysqlCatalog extends AbstractCatalog {
         try {
             conn.setAutoCommit(false);
             // 1、名称不能改，类型不能改。只能改备注
-            String updateCommentSql =
-                    "update metadata_database set description=? where  database_id=?";
+            String updateCommentSql = "update metadata_database set description=? where id=?";
             PreparedStatement uState = conn.prepareStatement(updateCommentSql);
             uState.setString(1, newDb.getComment());
             uState.setInt(2, id);
