@@ -523,9 +523,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         String name = "DefaultCatalog";
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
-        if (null != defaultFlinkSQLEnvTask) {
-            return defaultFlinkSQLEnvTask;
-        }
 
         String sql =
                 String.format(
@@ -537,6 +534,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                                 + "    'url' = '%s'\n"
                                 + ")%suse catalog my_catalog%s",
                         username(), password(), url(), separator, separator);
+
+        if (null != defaultFlinkSQLEnvTask) {
+            statementEquals(tenantId, defaultFlinkSQLEnvTask, sql);
+            return defaultFlinkSQLEnvTask;
+        }
 
         defaultFlinkSQLEnvTask = new Task();
         defaultFlinkSQLEnvTask.setName("DefaultCatalog");
@@ -554,6 +556,30 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         statementService.saveOrUpdate(statement);
 
         return defaultFlinkSQLEnvTask;
+    }
+
+    /**
+     * 数据库信息发生修改后，catalog ddl也随之改变
+     *
+     * @param tenantId
+     * @param defaultFlinkSQLEnvTask
+     * @param sql
+     */
+    private void statementEquals(Integer tenantId, Task defaultFlinkSQLEnvTask, String sql) {
+        TenantContextHolder.set(tenantId);
+
+        // 对比catalog ddl,不相同则更新dinky_task_statement表
+        boolean equals =
+                StringUtils.equals(
+                        sql,
+                        statementService.getById(defaultFlinkSQLEnvTask.getId()).getStatement());
+        if (!equals) {
+            Statement statement = new Statement();
+            statement.setId(defaultFlinkSQLEnvTask.getId());
+            statement.setTenantId(tenantId);
+            statement.setStatement(sql);
+            statementService.saveOrUpdate(statement);
+        }
     }
 
     @Override
