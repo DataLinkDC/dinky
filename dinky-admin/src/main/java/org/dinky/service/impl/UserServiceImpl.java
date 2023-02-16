@@ -19,6 +19,10 @@
 
 package org.dinky.service.impl;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
@@ -37,11 +41,6 @@ import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 import org.dinky.utils.MessageResolverUtils;
-
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -64,9 +63,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     private static final String DEFAULT_PASSWORD = "123456";
 
-    private static UserDTO currentUserDTO = new UserDTO();
+    private UserDTO currentUserDTO = new UserDTO();
 
-    private static Tenant currentTenant = new Tenant();
+    private Tenant currentTenant = new Tenant();
 
     private final UserRoleService userRoleService;
 
@@ -153,45 +152,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         } else {
             return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
-    }
-
-    @Deprecated
-    private UserDTO getUserAllBaseInfo(LoginDTO loginDTO, User user) {
-        UserDTO userDTO = new UserDTO();
-        List<Role> roleList = new LinkedList<>();
-        List<Tenant> tenantList = new LinkedList<>();
-
-        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
-
-        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginDTO.getTenantId());
-
-        userRoles.forEach(
-                userRole -> {
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleList.add(role);
-                    }
-                });
-
-        userTenants.forEach(
-                userTenant -> {
-                    Tenant tenant =
-                            tenantService
-                                    .getBaseMapper()
-                                    .selectOne(
-                                            new QueryWrapper<Tenant>()
-                                                    .eq("id", userTenant.getTenantId()));
-                    if (Asserts.isNotNull(tenant)) {
-                        tenantList.add(tenant);
-                    }
-                });
-
-        userDTO.setUser(user);
-        userDTO.setRoleList(roleList);
-        userDTO.setTenantList(tenantList);
-        userDTO.setCurrentTenant(currentTenant);
-        return userDTO;
     }
 
     private UserDTO refreshUserInfo(User user) {
