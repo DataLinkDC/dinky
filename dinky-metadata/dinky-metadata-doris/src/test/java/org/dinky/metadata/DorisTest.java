@@ -19,6 +19,9 @@
 
 package org.dinky.metadata;
 
+import cn.hutool.core.collection.CollectionUtil;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -31,6 +34,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -67,7 +71,7 @@ public class DorisTest {
     public void test() throws SQLException {
         // test
         String test = driver.test();
-        LOGGER.info(test);
+        Assert.assertSame("Doris test connect fail!", CommonConstant.HEALTHY, test);
         LOGGER.info("schema && table -----");
         testSchema();
         LOGGER.info("columns -----");
@@ -87,6 +91,7 @@ public class DorisTest {
                 LOGGER.info(table.getName() + "  " + table.getSchema());
             }
         }
+        Assert.assertTrue(CollectionUtil.isNotEmpty(schemasAndTables));
     }
 
     @Ignore
@@ -97,6 +102,7 @@ public class DorisTest {
         for (Column column : columns) {
             LOGGER.info(column.getName() + " " + column.getType() + column.getComment());
         }
+        Assert.assertTrue(CollectionUtil.isNotEmpty(columns));
     }
 
     @Ignore
@@ -107,5 +113,6 @@ public class DorisTest {
         for (LinkedHashMap<String, Object> rowDatum : rowData) {
             LOGGER.info(String.valueOf(rowDatum));
         }
+        Assert.assertNotNull(selectResult);
     }
 }

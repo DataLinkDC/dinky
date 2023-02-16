@@ -19,6 +19,9 @@
 
 package org.dinky.metadata;
 
+import cn.hutool.core.collection.CollectionUtil;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.ClickHouseDriver;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
@@ -28,10 +31,9 @@ import org.dinky.model.Schema;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * ClickhouseTest
@@ -42,9 +44,7 @@ import org.slf4j.LoggerFactory;
 @Ignore
 public class ClickHouseTest {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ClickHouseTest.class);
-
-    private static final String IP = "127.0.0.1";
+    private static final String IP = "192.168.2.101";
     private static String url = "jdbc:clickhouse://" + IP + ":8123/default";
     private ClickHouseDriver clickHouseDriver = new ClickHouseDriver();
 
@@ -62,33 +62,29 @@ public class ClickHouseTest {
     @Test
     public void connectTest() {
         String test = getDriver().test();
-        // LOGGER.info(test);
-        // LOGGER.info("end...");
+        Assert.assertSame("ClickHouse test connect fail!", CommonConstant.HEALTHY, test);
     }
 
     @Ignore
     @Test
     public void schemaTest() {
         List<Schema> schemasAndTables = getDriver().getSchemasAndTables();
-        // LOGGER.info(JSONUtil.toJsonString(schemasAndTables));
-        // LOGGER.info("end...");
+        Assert.assertTrue(CollectionUtil.isNotEmpty(schemasAndTables));
     }
 
     @Ignore
     @Test
     public void columnTest() {
         Driver driver = getDriver();
-        List<Column> columns = driver.listColumns("xxx", "xxx");
-        // LOGGER.info(JSONUtil.toJsonString(columns));
-        // LOGGER.info("end...");
+        List<Column> columns = driver.listColumns("mym", "student");
+        Assert.assertTrue(CollectionUtil.isNotEmpty(columns));
     }
 
     @Ignore
     @Test
     public void queryTest() {
         Driver driver = getDriver();
-        JdbcSelectResult query = driver.query("select * from xxx", 10);
-        // LOGGER.info(JSONUtil.toJsonString(query));
-        // LOGGER.info("end...");
+        JdbcSelectResult selectResult = driver.query("select * from student", 10);
+        Assert.assertNotNull(selectResult);
     }
 }

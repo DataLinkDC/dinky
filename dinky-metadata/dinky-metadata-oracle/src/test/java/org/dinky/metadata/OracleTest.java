@@ -19,6 +19,9 @@
 
 package org.dinky.metadata;
 
+import cn.hutool.core.collection.CollectionUtil;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -28,6 +31,7 @@ import org.dinky.model.Schema;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -61,15 +65,8 @@ public class OracleTest {
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
-        config.setType("Oracle");
-        config.setIp(IP);
-        config.setPort(1521);
-        config.setUsername("cdr");
-        config.setPassword("cdr");
-        config.setUrl("jdbc:oracle:thin:@" + IP + ":1521:orcl");
-        String test = Driver.build(config).test();
-        LOGGER.info(test);
+        String test = getDriver().test();
+        Assert.assertSame("oracle test connect fail!", CommonConstant.HEALTHY, test);
         LOGGER.info("end...");
     }
 
@@ -78,6 +75,7 @@ public class OracleTest {
     public void schemaTest() {
         Driver driver = getDriver();
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
+        Assert.assertTrue(CollectionUtil.isNotEmpty(schemasAndTables));
         LOGGER.info("end...");
     }
 
@@ -86,6 +84,7 @@ public class OracleTest {
     public void columnTest() {
         Driver driver = getDriver();
         List<Column> columns = driver.listColumns("CDR", "PAT_INFO");
+        Assert.assertTrue(CollectionUtil.isNotEmpty(columns));
         LOGGER.info("end...");
     }
 
@@ -95,6 +94,7 @@ public class OracleTest {
         Driver driver = getDriver();
         JdbcSelectResult selectResult =
                 driver.query("select * from CDR.PAT_INFO where ROWNUM<10", 10);
+        Assert.assertNotNull(selectResult);
         LOGGER.info("end...");
     }
 }

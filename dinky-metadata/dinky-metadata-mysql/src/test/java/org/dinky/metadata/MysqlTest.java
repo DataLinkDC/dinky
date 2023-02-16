@@ -19,6 +19,9 @@
 
 package org.dinky.metadata;
 
+import cn.hutool.core.collection.CollectionUtil;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -28,6 +31,7 @@ import org.dinky.model.Schema;
 import java.util.List;
 import java.util.UUID;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -52,30 +56,21 @@ public class MysqlTest {
         config.setType("Mysql");
         config.setIp(IP);
         config.setPort(3306);
-        config.setUsername("dca");
-        config.setPassword("dca");
+        config.setUsername("dinky");
+        config.setPassword("dinky");
         config.setUrl(
                 "jdbc:mysql://"
                         + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
+                        + ":3306/dinky?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
         return Driver.build(config);
     }
 
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
-        config.setType("Mysql");
-        config.setIp(IP);
-        config.setPort(3306);
-        config.setUsername("dca");
-        config.setPassword("dca");
-        config.setUrl(
-                "jdbc:mysql://"
-                        + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
-        String test = Driver.build(config).test();
-        LOGGER.info(test);
+        Driver driver = getDriver();
+        String test = driver.test();
+        Assert.assertSame("mysql test connect fail!", CommonConstant.HEALTHY, test);
         LOGGER.info("end...");
     }
 
@@ -84,6 +79,7 @@ public class MysqlTest {
     public void schemaTest() {
         Driver driver = getDriver();
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
+        Assert.assertTrue(CollectionUtil.isNotEmpty(schemasAndTables));
         LOGGER.info("end...");
     }
 
@@ -91,7 +87,8 @@ public class MysqlTest {
     @Test
     public void columnTest() {
         Driver driver = getDriver();
-        List<Column> columns = driver.listColumns("dca", "MENU");
+        List<Column> columns = driver.listColumns("dinky", "dinky_user");
+        Assert.assertTrue(CollectionUtil.isNotEmpty(columns));
         LOGGER.info("end...");
     }
 
@@ -99,7 +96,8 @@ public class MysqlTest {
     @Test
     public void queryTest() {
         Driver driver = getDriver();
-        JdbcSelectResult query = driver.query("select * from MENU", 10);
+        JdbcSelectResult query = driver.query("select * from dinky_user", 10);
+        Assert.assertNotNull(query);
         LOGGER.info("end...");
     }
 }

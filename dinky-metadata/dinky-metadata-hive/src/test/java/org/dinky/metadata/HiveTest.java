@@ -19,6 +19,9 @@
 
 package org.dinky.metadata;
 
+import cn.hutool.core.collection.CollectionUtil;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -31,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -71,16 +75,8 @@ public class HiveTest {
     @Ignore
     @Test
     public void connectTest() {
-        DriverConfig config = new DriverConfig();
-        config.setType(hive);
-        config.setName(hive);
-        config.setIp(IP);
-        config.setPort(PORT);
-        config.setUsername(username);
-        config.setPassword(passwd);
-        config.setUrl(url);
-        String test = Driver.build(config).test();
-        LOGGER.info(test);
+        String test = getDriver().test();
+        Assert.assertSame("Hive test connect fail!", CommonConstant.HEALTHY, test);
         LOGGER.info("end...");
     }
 
@@ -93,7 +89,7 @@ public class HiveTest {
                 schema -> {
                     LOGGER.info(schema.getName() + "\t\t" + schema.getTables().toString());
                 });
-        LOGGER.info("end...");
+        Assert.assertTrue(CollectionUtil.isNotEmpty(schemasAndTables));
     }
 
     @Ignore
@@ -106,6 +102,7 @@ public class HiveTest {
                 schema -> {
                     LOGGER.info(schema.getName());
                 });
+        Assert.assertTrue(CollectionUtil.isNotEmpty(tableList));
         LOGGER.info("end...");
     }
 
@@ -119,6 +116,7 @@ public class HiveTest {
             LOGGER.info(
                     column.getName() + " \t " + column.getType() + " \t " + column.getComment());
         }
+        Assert.assertTrue(CollectionUtil.isNotEmpty(columns));
         LOGGER.info("end...");
     }
 
@@ -130,6 +128,7 @@ public class HiveTest {
                 driver.getTable(hiveDB, "biz_college_planner_mysql_language_score_item");
         String createTableSql = driver.getCreateTableSql(driverTable);
         LOGGER.info(createTableSql);
+        Assert.assertNotNull(createTableSql);
         LOGGER.info("end...");
     }
 
@@ -141,6 +140,7 @@ public class HiveTest {
         for (Column column : driverTable.getColumns()) {
             LOGGER.info(
                     column.getName() + "\t\t" + column.getType() + "\t\t" + column.getComment());
+            Assert.assertNotNull(column);
         }
     }
 
@@ -172,5 +172,6 @@ public class HiveTest {
                 LOGGER.info(stringObjectEntry.getKey() + "\t\t" + stringObjectEntry.getValue());
             }
         }
+        Assert.assertNotNull(selectResult);
     }
 }
