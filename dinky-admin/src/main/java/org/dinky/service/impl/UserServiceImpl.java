@@ -19,10 +19,6 @@
 
 package org.dinky.service.impl;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
@@ -41,6 +37,11 @@ import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 import org.dinky.utils.MessageResolverUtils;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -161,26 +162,29 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles.forEach(
-                userRole -> {
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleList.add(role);
-                    }
-                });
+        userRoles.stream()
+                .forEach(
+                        userRole -> {
+                            Role role =
+                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
+                            if (Asserts.isNotNull(role)) {
+                                roleList.add(role);
+                            }
+                        });
 
-        userTenants.forEach(
-                userTenant -> {
-                    Tenant tenant =
-                            tenantService
-                                    .getBaseMapper()
-                                    .selectOne(
-                                            new QueryWrapper<Tenant>()
-                                                    .eq("id", userTenant.getTenantId()));
-                    if (Asserts.isNotNull(tenant)) {
-                        tenantList.add(tenant);
-                    }
-                });
+        userTenants.stream()
+                .forEach(
+                        userTenant -> {
+                            Tenant tenant =
+                                    tenantService
+                                            .getBaseMapper()
+                                            .selectOne(
+                                                    new QueryWrapper<Tenant>()
+                                                            .eq("id", userTenant.getTenantId()));
+                            if (Asserts.isNotNull(tenant)) {
+                                tenantList.add(tenant);
+                            }
+                        });
 
         currentUserDTO.setUser(user);
         currentUserDTO.setRoleList(roleList);
