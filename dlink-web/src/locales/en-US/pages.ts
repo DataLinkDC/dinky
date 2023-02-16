@@ -22,9 +22,11 @@ export default {
 
   'pages.login.accountLogin.tab': 'Account Login',
   'pages.login.accountLogin.errorMessage': 'Incorrect UserName/Password（admin/ant.design)',
-  'pages.login.failure': 'Login Failed, Please Try Again!',
-  'pages.login.success': 'Login Success!',
+  'pages.login.error': 'Login failed, please try again! Reason：{msg}',
+  'pages.login.result': '{msg}\t\t{time}',
   'pages.login.chooseTenant': 'Please Choose Tenant',
+  'pages.login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
+  'pages.login.chooseTenantSuccess': '{msg}, we are about to use【 {tenantCode} 】to enter the system, please wait...',
   'pages.login.username.placeholder': 'Username: Admin Or User',
   'pages.login.username.required': 'Please Input Your UserName!',
   'pages.login.password.placeholder': 'Password: ant.design',

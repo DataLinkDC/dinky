@@ -22,21 +22,24 @@ declare namespace API {
     code: number;
     datas: any;
     msg: string;
+    time: Date;
   };
 
   type CurrentUser = {
-    id?: number;
-    username?: string;
-    password?: string;
-    nickname?: string;
-    worknum?: string;
-    avatar?: string;
-    mobile?: string;
-    enabled?: boolean;
-    isDelete?: boolean;
-    isAdmin?: boolean;
-    createTime?: Date;
-    updateTime?: Date;
+    user: {
+      id?: number;
+      username?: string;
+      password?: string;
+      nickname?: string;
+      worknum?: string;
+      avatar?: string;
+      mobile?: string;
+      enabled?: boolean;
+      isDelete?: boolean;
+      isAdmin?: boolean;
+      createTime?: Date;
+      updateTime?: Date;
+    }
     roleList?: Role[];
     tenantList?: Tenant[];
     currentTenant?: Tenant;
@@ -119,9 +122,6 @@ declare namespace API {
     username?: string;
     password?: string;
     autoLogin?: boolean;
-    tenantId?: number;
-    type?: string;
-    grant_type?: string;
   };
 
   type ErrorResponse = {

@@ -26,8 +26,6 @@ import org.dinky.dto.UserDTO;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -97,10 +95,17 @@ public interface UserService extends ISuperService<User> {
     Result<Void> grantRole(JsonNode param);
 
     /**
-     * getTenants
+     * choose tenant
      *
-     * @param username username
-     * @return {@link Result}<{@link List}<{@link Tenant}>>
+     * @param tenantId
+     * @return
      */
-    Result<List<Tenant>> getTenants(String username);
+    Result<Tenant> chooseTenant(Integer tenantId);
+
+    /**
+     * get current user base info
+     *
+     * @return
+     */
+    Result<UserDTO> queryCurrentUserInfo();
 }

@@ -129,4 +129,8 @@ export default {
   'global.savepoint.strategy.latest': '最近一次',
   'global.savepoint.strategy.earliest': '最早一次',
   'global.savepoint.strategy.custom': '指定一次',
+
+  'global.fullScreen': '全屏',
+  'global.fullScreen.exit': '退出全屏',
+
 };

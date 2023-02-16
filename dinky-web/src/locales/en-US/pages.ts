@@ -17,18 +17,16 @@
 
 export default {
   'pages.layouts.userLayout.title': 'Dinky Real-time Computing Platform',
-  'pages.login.accountLogin.tab': 'Account Login',
-  'pages.login.accountLogin.errorMessage': 'Incorrect username/password',
-  'pages.login.failure': 'Login failed, please try again!',
-  'pages.login.success': 'Login successful!',
+  'pages.login.error': 'Login failed, please try again! Reason：{msg}',
+  'pages.login.result': '{msg}\t\t{time}',
   'pages.login.username.placeholder': 'Username',
   'pages.login.username.required': 'Please input your username!',
   'pages.login.chooseTenant': 'Please Choose Tenant',
+  'pages.login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
+  'pages.login.chooseTenantSuccess': '{msg}, we are about to use【 {tenantCode} 】to enter the system, please wait...',
   'pages.login.password.placeholder': 'Password',
   'pages.login.password.required': 'Please input your password!',
   'pages.login.rememberMe': 'Remember me',
-  'pages.about.alertMessage':
-    'The real-time computing platform Dinky will be released soon, and it is currently a trial version with version number {version}.',
   'pages.about.Community':
     'Welcome to join the Dinky Official Community, Build a win-win situation',
   'pages.about.QQcode': 'QQ Official Community Group',

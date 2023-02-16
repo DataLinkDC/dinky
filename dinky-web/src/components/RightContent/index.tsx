@@ -23,6 +23,7 @@ import Avatar from './AvatarDropdown';
 import {VERSION} from "@/components/Version/Version";
 import { l } from '@/utils/intl';
 import {Space} from "antd";
+import FullScreen from "@/components/FullScreen";
 
 export type SiderTheme = 'light' | 'dark';
 
@@ -56,17 +57,16 @@ const GlobalHeaderRight: React.FC = () => {
 
   const { initialState } = useModel('@@initialState');
 
-  console.log(initialState)
-
   if (!initialState || !initialState.settings) {
     return null;
   }
 
   return (
     <div className={className}>
+      <FullScreen />
       <Avatar menu={true}/>
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName} />
-      {/*<Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>*/}
+      <Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>
     </div>
   );
 };

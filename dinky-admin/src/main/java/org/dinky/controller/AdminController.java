@@ -25,8 +25,6 @@ import org.dinky.dto.UserDTO;
 import org.dinky.model.Tenant;
 import org.dinky.service.UserService;
 
-import java.util.List;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,17 +66,13 @@ public class AdminController {
 
     /** 获取当前用户信息 */
     @GetMapping("/current")
-    public Result<Object> current() {
-        try {
-            return Result.succeed(StpUtil.getSession().get("user"), "获取成功");
-        } catch (Exception e) {
-            return Result.failed("获取失败");
-        }
+    public Result<UserDTO> current() {
+        return userService.queryCurrentUserInfo();
     }
 
-    /** get tenant */
-    @RequestMapping("/geTenants")
-    public Result<List<Tenant>> getTenants(@RequestParam("username") String username) {
-        return userService.getTenants(username);
+    /** choose tenant */
+    @GetMapping("/chooseTenant")
+    public Result<Tenant> chooseTenant(@RequestParam("tenantId") Integer tenantId) {
+        return userService.chooseTenant(tenantId);
     }
 }

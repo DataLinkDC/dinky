@@ -17,14 +17,14 @@
 
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
-import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
-import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
+import {LinkOutlined} from '@ant-design/icons';
+import type {Settings as LayoutSettings} from '@ant-design/pro-components';
+import {SettingDrawer} from '@ant-design/pro-components';
+import type {RunTimeLayoutConfig} from '@umijs/max';
+import {history, Link} from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser } from './services/api';
+import {errorConfig} from './requestErrorConfig';
+import {currentUser as queryCurrentUser} from './services/api';
 import React from 'react';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -42,19 +42,22 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const result = await queryCurrentUser();
+      const user = result.datas.user;
       const currentUser: API.CurrentUser = {
-        id: result.datas.user.id,
-        username: result.datas.user.username,
-        password: result.datas.user.password,
-        nickname: result.datas.user.nickname,
-        worknum: result.datas.user.worknum,
-        avatar: result.datas.user.avatar ? result.datas.user.avatar : '/icons/user_avatar.png',
-        mobile: result.datas.user.mobile,
-        enabled: result.datas.user.enabled,
-        isDelete: result.datas.user.isDelete,
-        createTime: result.datas.user.createTime,
-        updateTime: result.datas.user.updateTime,
-        isAdmin: result.datas.user.isAdmin,
+        user: {
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          nickname: user.nickname,
+          worknum: user.worknum,
+          avatar: user.avatar ? user.avatar : '/icons/user_avatar.png',
+          mobile: user.mobile,
+          enabled: user.enabled,
+          isDelete: user.isDelete,
+          createTime: user.createTime,
+          updateTime: user.updateTime,
+          isAdmin: user.isAdmin
+        },
         roleList: result.datas.roleList,
         tenantList: result.datas.tenantList,
         currentTenant: result.datas.currentTenant,
@@ -69,6 +72,7 @@ export async function getInitialState(): Promise<{
   const {location} = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
+    console.log(currentUser,'------------------');
     return {
       fetchUserInfo,
       currentUser,
@@ -84,8 +88,8 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
   return {
-    rightContentRender: () => <RightContent />,
-    footerRender: () => <Footer />,
+    rightContentRender: () => <RightContent/>,
+    footerRender: () => <Footer/>,
     onPageChange: () => {
       const {location} = history;
       // 如果没有登录，重定向到 login
@@ -116,7 +120,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     links: isDev
       ? [
         <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
+          <LinkOutlined/>
           <span>OpenAPI 文档</span>
         </Link>,
       ]
@@ -135,7 +139,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
             enableDarkTheme
             settings={initialState?.settings}
             onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
+            setInitialState((preInitialState) => ({
                 ...preInitialState,
                 settings,
               }));

@@ -141,7 +141,7 @@ export default [
         name: 'document',
         icon: 'container',
         // component: './RegistrationCenter/Document',
-      },{
+      }, {
         path: '/registration/fragment',
         name: 'fragment',
         icon: "cloud",
