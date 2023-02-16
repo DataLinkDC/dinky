@@ -15,30 +15,23 @@
  * limitations under the License.
  */
 
-import {GlobalOutlined} from '@ant-design/icons';
+import {GlobalOutlined, FullscreenExitOutlined, FullscreenOutlined} from '@ant-design/icons';
 import {useEmotionCss} from '@ant-design/use-emotion-css';
 import {SelectLang, useModel} from '@umijs/max';
-import React from 'react';
+import screenfull from 'screenfull';
+import React, {useState} from 'react';
 import Avatar from './AvatarDropdown';
 import {VERSION} from "@/components/Version/Version";
-import { l } from '@/utils/intl';
-import {Space} from "antd";
-import FullScreen from "@/components/FullScreen";
+import {l} from '@/utils/intl';
+import {Space, Tooltip} from "antd";
 
 export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
-  const className = useEmotionCss(() => {
-    return {
-      display: 'flex',
-      height: '48px',
-      marginLeft: 'auto',
-      overflow: 'hidden',
-      gap: 8,
-    };
-  });
 
-  const actionClassName = useEmotionCss(({ token }) => {
+  const [fullScreen, setFullScreen] = useState(false);
+
+  const actionClassName = useEmotionCss(({token}) => {
     return {
       display: 'flex',
       float: 'right',
@@ -55,19 +48,49 @@ const GlobalHeaderRight: React.FC = () => {
     };
   });
 
-  const { initialState } = useModel('@@initialState');
+  const fullScreenClassName = useEmotionCss(({token}) => {
+    return {
+      display: 'flex',
+      float: 'right',
+      height: '48px',
+      marginLeft: 'auto',
+      overflow: 'hidden',
+      cursor: 'pointer',
+      padding: '0 12px',
+      borderRadius: token.borderRadius,
+      color: 'red',
+      '&:hover': {
+        backgroundColor: token.colorPrimary,
+      },
+    };
+  });
+
+  const {initialState} = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
     return null;
   }
 
-  return (
-    <div className={className}>
-      <FullScreen />
+  const screenFull = () => {
+    setFullScreen(screenfull.isFullscreen);
+    if (screenfull.isEnabled) {
+      screenfull.toggle();
+    }
+  };
+
+
+  return (<>
+      <Tooltip
+        placement="bottom"
+        title={<span>{fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}</span>}
+      >
+        <FullscreenOutlined style={{color: 'white'}} className={fullScreenClassName} onClick={screenFull}/>
+      </Tooltip>
       <Avatar menu={true}/>
-      <SelectLang icon={<GlobalOutlined/>} className={actionClassName} />
-      <Space className={actionClassName}>{l('menu.version','',{version: VERSION})}</Space>
-    </div>
+      <SelectLang icon={<GlobalOutlined/>} className={actionClassName}/>
+      <Space className={actionClassName}>{l('menu.version', '', {version: VERSION})}</Space>
+    </>
+
   );
 };
 export default GlobalHeaderRight;
