@@ -17,11 +17,10 @@
  *
  */
 
-
-import React, { useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
-import { l } from "@/utils/intl";
 import { PasswordItem } from '@/types/User/data';
+import { l } from '@/utils/intl';
+import { Button, Form, Input, Modal } from 'antd';
+import React, { useState } from 'react';
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -36,18 +35,12 @@ const formLayout = {
 };
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
-
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<PasswordItem>>({
     username: props.values.username,
   });
 
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-  } = props;
-
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible } = props;
 
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
@@ -62,14 +55,16 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
           name="password"
           label={l('pages.user.UserOldPassword')}
           hasFeedback
-          rules={[{ required: true, message: l('pages.user.UserEnterOldPassword') }]}>
+          rules={[{ required: true, message: l('pages.user.UserEnterOldPassword') }]}
+        >
           <Input.Password placeholder={l('pages.user.UserEnterOldPassword')} />
         </Form.Item>
         <Form.Item
           name="newPassword"
           label={l('pages.user.UserNewPassword')}
           hasFeedback
-          rules={[{ required: true, message: l('pages.user.UserEnterNewPassword') }]}>
+          rules={[{ required: true, message: l('pages.user.UserEnterNewPassword') }]}
+        >
           <Input.Password placeholder={l('pages.user.UserEnterNewPassword')} />
         </Form.Item>
         <Form.Item
@@ -90,7 +85,8 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
                 return Promise.reject(new Error(l('pages.user.UserNewPasswordNotMatch')));
               },
             }),
-          ]}>
+          ]}
+        >
           <Input.Password placeholder={l('pages.user.UserEnterRepeatNewPassword')} />
         </Form.Item>
       </>
@@ -110,7 +106,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
   return (
     <Modal
-      width={"40%"}
+      width={'40%'}
       bodyStyle={{ padding: '32px 40px 48px' }}
       destroyOnClose
       title={l('button.changePassword')}
@@ -118,11 +114,7 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
       footer={renderFooter()}
       onCancel={() => handleModalVisible()}
     >
-      <Form
-        {...formLayout}
-        form={form}
-        initialValues={formVals}
-      >
+      <Form {...formLayout} form={form} initialValues={formVals}>
         {renderContent()}
       </Form>
     </Modal>

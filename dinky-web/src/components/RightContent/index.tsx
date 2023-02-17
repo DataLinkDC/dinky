@@ -15,23 +15,22 @@
  * limitations under the License.
  */
 
-import {GlobalOutlined, FullscreenExitOutlined, FullscreenOutlined} from '@ant-design/icons';
-import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {SelectLang, useModel} from '@umijs/max';
+import { VERSION } from '@/components/Version/Version';
+import { l } from '@/utils/intl';
+import { FullscreenOutlined, GlobalOutlined } from '@ant-design/icons';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { SelectLang, useModel } from '@umijs/max';
+import { Space, Tooltip } from 'antd';
+import React, { useState } from 'react';
 import screenfull from 'screenfull';
-import React, {useState} from 'react';
 import Avatar from './AvatarDropdown';
-import {VERSION} from "@/components/Version/Version";
-import {l} from '@/utils/intl';
-import {Space, Tooltip} from "antd";
 
 export type SiderTheme = 'light' | 'dark';
 
 const GlobalHeaderRight: React.FC = () => {
-
   const [fullScreen, setFullScreen] = useState(false);
 
-  const actionClassName = useEmotionCss(({token}) => {
+  const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
       float: 'right',
@@ -48,7 +47,7 @@ const GlobalHeaderRight: React.FC = () => {
     };
   });
 
-  const fullScreenClassName = useEmotionCss(({token}) => {
+  const fullScreenClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
       float: 'right',
@@ -65,7 +64,7 @@ const GlobalHeaderRight: React.FC = () => {
     };
   });
 
-  const {initialState} = useModel('@@initialState');
+  const { initialState } = useModel('@@initialState');
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -78,19 +77,22 @@ const GlobalHeaderRight: React.FC = () => {
     }
   };
 
-
-  return (<>
+  return (
+    <>
       <Tooltip
         placement="bottom"
         title={<span>{fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}</span>}
       >
-        <FullscreenOutlined style={{color: 'white'}} className={fullScreenClassName} onClick={screenFull}/>
+        <FullscreenOutlined
+          style={{ color: 'white' }}
+          className={fullScreenClassName}
+          onClick={screenFull}
+        />
       </Tooltip>
-      <Avatar menu={true}/>
-      <SelectLang icon={<GlobalOutlined/>} className={actionClassName}/>
-      <Space className={actionClassName}>{l('menu.version', '', {version: VERSION})}</Space>
+      <Avatar menu={true} />
+      <SelectLang icon={<GlobalOutlined />} className={actionClassName} />
+      <Space className={actionClassName}>{l('menu.version', '', { version: VERSION })}</Space>
     </>
-
   );
 };
 export default GlobalHeaderRight;

@@ -16,7 +16,6 @@
  */
 
 declare namespace API {
-
   type Result = {
     code: number;
     datas: any;
@@ -30,7 +29,6 @@ declare namespace API {
     tenantList?: UserBaseInfo.Tenant[];
     currentTenant?: UserBaseInfo.Tenant;
   };
-
 
   type PageParams = {
     current?: number;
@@ -55,5 +53,4 @@ declare namespace API {
   type TenantRequest = {
     username?: string;
   };
-
 }

@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
+import globalHeader from './en-US/global';
 import menu from './en-US/menu';
 import pages from './en-US/pages';
 import pwa from './en-US/pwa';
-import globalHeader from './en-US/global';
 
 export default {
   'navBar.lang': 'Languages',

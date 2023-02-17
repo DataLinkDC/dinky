@@ -136,17 +136,19 @@ export default [
             // component: './RegistrationCenter/AlertManage/AlertGroup',
           },
         ],
-      }, {
+      },
+      {
         path: '/registration/document',
         name: 'document',
         icon: 'container',
         // component: './RegistrationCenter/Document',
-      }, {
+      },
+      {
         path: '/registration/fragment',
         name: 'fragment',
-        icon: "cloud",
+        icon: 'cloud',
         // component: './RegistrationCenter/FragmentVariable',
-      }
+      },
     ],
   },
   {

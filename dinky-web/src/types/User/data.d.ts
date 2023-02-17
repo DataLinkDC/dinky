@@ -16,7 +16,6 @@
  */
 
 declare namespace UserBaseInfo {
-
   export type User = {
     id?: number;
     username?: string;
@@ -39,7 +38,6 @@ declare namespace UserBaseInfo {
     newPasswordCheck?: string;
   };
 
-
   export type Tenant = {
     id?: number;
     tenantCode?: string;
@@ -48,7 +46,6 @@ declare namespace UserBaseInfo {
     createTime?: Date;
     updateTime?: Date;
   };
-
 
   export type Role = {
     id?: number;
@@ -63,7 +60,6 @@ declare namespace UserBaseInfo {
     updateTime?: Date;
   };
 
-
   export type NameSpace = {
     id?: number;
     tenantId?: number;
@@ -74,5 +70,4 @@ declare namespace UserBaseInfo {
     createTime?: Date;
     updateTime?: Date;
   };
-
 }

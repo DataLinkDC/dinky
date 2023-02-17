@@ -16,8 +16,8 @@
  */
 
 // https://umijs.org/config/
-import {defineConfig} from '@umijs/max';
-import {join} from 'path';
+import { defineConfig } from '@umijs/max';
+import { join } from 'path';
 import defaultSettings from './defaultSettings';
 import proxy from './proxy';
 import routes from './routes';
@@ -32,7 +32,7 @@ export default defineConfig({
    */
   hash: true,
   history: {
-    type: 'hash'
+    type: 'hash',
   },
   /**
    * @name 兼容性设置

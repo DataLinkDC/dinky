@@ -15,11 +15,11 @@
  * limitations under the License.
  */
 
-import {Button, message, notification} from 'antd';
+import { l } from '@/utils/intl';
+import { Button, message, notification } from 'antd';
 import defaultSettings from '../config/defaultSettings';
-import {l} from "@/utils/intl";
 
-const {pwa} = defaultSettings;
+const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
 
 const clearCache = () => {
@@ -63,7 +63,7 @@ if (pwa) {
             resolve(msgEvent.data);
           }
         };
-        worker.postMessage({type: 'skip-waiting'}, [channel.port2]);
+        worker.postMessage({ type: 'skip-waiting' }, [channel.port2]);
       });
 
       clearCache();
@@ -92,7 +92,7 @@ if (pwa) {
   });
 } else if ('serviceWorker' in navigator && isHttps) {
   // unregister service worker
-  const {serviceWorker} = navigator;
+  const { serviceWorker } = navigator;
   if (serviceWorker.getRegistrations) {
     serviceWorker.getRegistrations().then((sws) => {
       sws.forEach((sw) => {

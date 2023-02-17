@@ -132,5 +132,4 @@ export default {
 
   'global.fullScreen': '全屏',
   'global.fullScreen.exit': '退出全屏',
-
 };
