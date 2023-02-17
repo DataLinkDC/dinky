@@ -38,3 +38,9 @@ You can also automatically fix some lint errors with a script:
 ```bash
 npm run lint:fix
 ```
+
+### Code Format
+
+```bash
+npm run prettier
+```
