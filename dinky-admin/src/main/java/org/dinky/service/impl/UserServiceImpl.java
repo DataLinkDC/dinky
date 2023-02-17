@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.context.UserInfoContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.LoginDTO;
 import org.dinky.dto.UserDTO;
@@ -63,10 +64,6 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implements UserService {
 
     private static final String DEFAULT_PASSWORD = "123456";
-
-    private UserDTO currentUserDTO = new UserDTO();
-
-    private Tenant currentTenant = new Tenant();
 
     private final UserRoleService userRoleService;
 
@@ -145,11 +142,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 return Result.failed(MessageResolverUtils.getMessage("login.user.disabled"));
             }
             // get user tenants and roles
-            currentUserDTO = refreshUserInfo(user);
+            UserDTO userInfo = refreshUserInfo(user);
 
             StpUtil.login(user.getId(), loginDTO.isAutoLogin());
-
-            return Result.succeed(currentUserDTO, MessageResolverUtils.getMessage("login.success"));
+            return Result.succeed(userInfo, MessageResolverUtils.getMessage("login.success"));
         } else {
             return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
@@ -175,21 +171,18 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userTenants.stream()
                 .forEach(
                         userTenant -> {
-                            Tenant tenant =
-                                    tenantService
-                                            .getBaseMapper()
-                                            .selectOne(
-                                                    new QueryWrapper<Tenant>()
-                                                            .eq("id", userTenant.getTenantId()));
+                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
                             if (Asserts.isNotNull(tenant)) {
                                 tenantList.add(tenant);
                             }
                         });
 
-        currentUserDTO.setUser(user);
-        currentUserDTO.setRoleList(roleList);
-        currentUserDTO.setTenantList(tenantList);
-        return currentUserDTO;
+        UserDTO userInfo = new UserDTO();
+        userInfo.setUser(user);
+        userInfo.setRoleList(roleList);
+        userInfo.setTenantList(tenantList);
+        UserInfoContextHolder.set(userInfo);
+        return userInfo;
     }
 
     @Override
@@ -232,28 +225,31 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public Result<Tenant> chooseTenant(Integer tenantId) {
-        currentTenant = tenantService.getById(tenantId);
+        Tenant currentTenant = tenantService.getById(tenantId);
         if (Asserts.isNull(currentTenant)) {
             return Result.failed("Failed to obtain tenant information");
         } else {
-            currentUserDTO.setCurrentTenant(currentTenant);
+            UserDTO userInfo = UserInfoContextHolder.get();
+            userInfo.setCurrentTenant(currentTenant);
             TenantContextHolder.set(currentTenant.getId());
+            UserInfoContextHolder.refresh(userInfo);
             return Result.succeed(currentTenant, "Tenant selected successfully");
         }
     }
 
     @Override
     public Result<UserDTO> queryCurrentUserInfo() {
-        if (Asserts.isNotNull(currentUserDTO.getUser())
-                && Asserts.isNotNull(currentUserDTO.getRoleList())
-                && Asserts.isNotNull(currentUserDTO.getTenantList())
-                && Asserts.isNotNull(currentUserDTO.getCurrentTenant())) {
-            StpUtil.getSession().set("user", currentUserDTO);
+        UserDTO userInfo = UserInfoContextHolder.get();
+        if (Asserts.isNotNull(userInfo)
+                && Asserts.isNotNull(userInfo.getUser())
+                && Asserts.isNotNull(userInfo.getRoleList())
+                && Asserts.isNotNull(userInfo.getTenantList())
+                && Asserts.isNotNull(userInfo.getCurrentTenant())) {
+            StpUtil.getSession().set("user", userInfo);
             return Result.succeed(
-                    currentUserDTO, MessageResolverUtils.getMessage("response.get.success"));
+                    userInfo, MessageResolverUtils.getMessage("response.get.success"));
         } else {
-            return Result.failed(
-                    currentUserDTO, MessageResolverUtils.getMessage("response.get.failed"));
+            return Result.failed(userInfo, MessageResolverUtils.getMessage("response.get.failed"));
         }
     }
 }
