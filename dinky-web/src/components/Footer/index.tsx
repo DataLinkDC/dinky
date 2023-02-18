@@ -32,13 +32,13 @@ const Footer: React.FC = () => {
         {
           key: 'Dinky',
           title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dlink',
+          href: 'https://github.com/DataLinkDC/dinky',
           blankTarget: true,
         },
         {
           key: 'github',
           title: <GithubOutlined />,
-          href: 'https://github.com/DataLinkDC/dlink',
+          href: 'https://github.com/DataLinkDC/dinky',
           blankTarget: true,
         },
       ]}
