@@ -181,7 +181,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userInfo.setUser(user);
         userInfo.setRoleList(roleList);
         userInfo.setTenantList(tenantList);
-        UserInfoContextHolder.set(userInfo);
+        UserInfoContextHolder.set(user.getId(), userInfo);
         return userInfo;
     }
 
@@ -229,17 +229,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNull(currentTenant)) {
             return Result.failed("Failed to obtain tenant information");
         } else {
-            UserDTO userInfo = UserInfoContextHolder.get();
+            UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
             userInfo.setCurrentTenant(currentTenant);
+            UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfo);
             TenantContextHolder.set(currentTenant.getId());
-            UserInfoContextHolder.refresh(userInfo);
             return Result.succeed(currentTenant, "Tenant selected successfully");
         }
     }
 
     @Override
     public Result<UserDTO> queryCurrentUserInfo() {
-        UserDTO userInfo = UserInfoContextHolder.get();
+        UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
         if (Asserts.isNotNull(userInfo)
                 && Asserts.isNotNull(userInfo.getUser())
                 && Asserts.isNotNull(userInfo.getRoleList())

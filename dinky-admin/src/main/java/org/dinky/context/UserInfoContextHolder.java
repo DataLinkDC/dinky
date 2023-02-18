@@ -21,22 +21,23 @@ package org.dinky.context;
 
 import org.dinky.dto.UserDTO;
 
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /** UserInfoContextHolder */
 public class UserInfoContextHolder {
 
-    private static AtomicReference<UserDTO> USER_INFO_CONTEXT = new AtomicReference<>();
+    private static final Map<Integer, UserDTO> USER_INFO = new ConcurrentHashMap<>();
 
-    public static void set(UserDTO value) {
-        USER_INFO_CONTEXT.set(value);
+    public static void set(Integer userId, UserDTO userInfo) {
+        USER_INFO.put(userId, userInfo);
     }
 
-    public static UserDTO get() {
-        return USER_INFO_CONTEXT.get();
+    public static UserDTO get(Integer userId) {
+        return USER_INFO.get(userId);
     }
 
-    public static void refresh(UserDTO value) {
-        USER_INFO_CONTEXT.getAndUpdate(v -> value);
+    public static void refresh(Integer userId, UserDTO userInfo) {
+        set(userId, userInfo);
     }
 }
