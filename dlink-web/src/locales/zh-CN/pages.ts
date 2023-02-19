@@ -178,6 +178,7 @@ export default {
   'pages.devops.jobstatus.CANCELED': '停止',
   'pages.devops.jobstatus.RESTARTING': '重启中',
   'pages.devops.jobstatus.UNKNOWN': '未知',
+  'pages.devops.jobstatus.RECONNECTING': '重新连接',
   'pages.devops.jobstatus.ALL': '所有',
 
   'pages.devops.LastUpdateTime': '最后更新时间',

@@ -122,7 +122,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -991,9 +990,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (pool.exist(key)) {
             jobInfoDetail = pool.get(key);
         } else {
+            // Build an old job info detail. JobInfoDetailId = JobInstanceId.
             jobInfoDetail = new JobInfoDetail(id);
             JobInstance jobInstance = jobInstanceService.getByIdWithoutTenant(id);
-            Asserts.checkNull(jobInstance, "该任务实例不存在");
+            Asserts.checkNull(jobInstance, "The job instance does not exist.");
             TenantContextHolder.set(jobInstance.getTenantId());
             jobInfoDetail.setInstance(jobInstance);
             Cluster cluster = clusterService.getById(jobInstance.getClusterId());
@@ -1008,31 +1008,24 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
             pool.push(key, jobInfoDetail);
         }
+        // isCoercive = true: Force update job info by refresh button.
+        // inRefreshPlan = true: The job info need to auto refresh.
         if (!isCoercive && !inRefreshPlan(jobInfoDetail.getInstance())) {
             return jobInfoDetail.getInstance();
         }
-        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(id,
+        JobHistory jobHistory = jobHistoryService.refreshJobHistory(jobInfoDetail.getJobHistory(), id,
                 jobInfoDetail.getCluster().getJobManagerHost(),
                 jobInfoDetail.getInstance().getJid(), jobInfoDetail.isNeedSave());
-        JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
+        jobHistoryService.getJobHistoryInfo(jobHistory);
         jobInfoDetail.setJobHistory(jobHistory);
+
+        String oldStatus = jobInfoDetail.getInstance().getStatus();
         JobStatus checkStatus = null;
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-                && (Asserts.isNull(jobHistory.getJob()) || jobHistory.isError())) {
+        if (jobHistory.isError()) {
+            // Get yarn per-job and application job status.
             checkStatus = checkJobStatus(jobInfoDetail);
-            if (checkStatus.isDone()) {
-                jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
-                jobInstanceService.updateById(jobInfoDetail.getInstance());
-                return jobInfoDetail.getInstance();
-            }
-        }
-        String status = jobInfoDetail.getInstance().getStatus();
-        boolean jobStatusChanged = false;
-        if (Asserts.isNull(jobInfoDetail.getJobHistory().getJob()) || jobInfoDetail.getJobHistory().isError()) {
             if (Asserts.isNotNull(checkStatus)) {
                 jobInfoDetail.getInstance().setStatus(checkStatus.getValue());
-            } else {
-                jobInfoDetail.getInstance().setStatus(JobStatus.UNKNOWN.getValue());
             }
         } else {
             jobInfoDetail.getInstance().setDuration(
@@ -1040,28 +1033,28 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInfoDetail.getInstance()
                     .setStatus(jobInfoDetail.getJobHistory().getJob().get(FlinkRestResultConstant.JOB_STATE).asText());
         }
-        if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
-                && !status.equals(jobInfoDetail.getInstance().getStatus())) {
-            jobStatusChanged = true;
-            jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
+
+        // Job status has changed.
+        String newStatus = jobInfoDetail.getInstance().getStatus();
+        if (!oldStatus.equals(newStatus)) {
+            if ((JobStatus.isTransition(newStatus) || JobStatus.isDone(newStatus))) {
+                jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
+            }
+            jobInstanceService.updateById(jobInfoDetail.getInstance());
+            jobHistoryService.updateById(jobHistory);
         }
+        pool.refresh(jobInfoDetail);
         if (isCoercive) {
             DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
         }
-        if (jobStatusChanged || jobInfoDetail.isNeedSave()) {
-            jobInstanceService.updateById(jobInfoDetail.getInstance());
-        }
-        pool.refresh(jobInfoDetail);
         return jobInfoDetail.getInstance();
     }
 
     private boolean inRefreshPlan(JobInstance jobInstance) {
-        if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
+        if (JobStatus.isTransition(jobInstance.getStatus())) {
             return true;
-        } else {
-            return false;
         }
+        return !JobStatus.isDone(jobInstance.getStatus());
     }
 
     @Override

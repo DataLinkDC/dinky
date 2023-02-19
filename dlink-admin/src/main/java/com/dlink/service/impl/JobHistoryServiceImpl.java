@@ -28,8 +28,6 @@ import com.dlink.model.JobHistory;
 import com.dlink.service.JobHistoryService;
 import com.dlink.utils.JSONUtil;
 
-import java.util.Objects;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -62,50 +60,43 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
         if (Asserts.isNotNull(jobHistory)) {
             if (Asserts.isNotNullString(jobHistory.getJobJson())) {
                 jobHistory.setJob(JSONUtil.parseObject(jobHistory.getJobJson()));
-                jobHistory.setJobJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getExceptionsJson())) {
                 jobHistory.setExceptions(JSONUtil.parseObject(jobHistory.getExceptionsJson()));
-                jobHistory.setExceptionsJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getCheckpointsJson())) {
                 jobHistory.setCheckpoints(JSONUtil.parseObject(jobHistory.getCheckpointsJson()));
-                jobHistory.setCheckpointsJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getCheckpointsConfigJson())) {
                 jobHistory.setCheckpointsConfig(JSONUtil.parseObject(jobHistory.getCheckpointsConfigJson()));
-                jobHistory.setCheckpointsConfigJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getConfigJson())) {
                 jobHistory.setConfig(JSONUtil.parseObject(jobHistory.getConfigJson()));
-                jobHistory.setConfigJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getJarJson())) {
                 jobHistory.setJar(JSONUtil.parseObject(jobHistory.getJarJson()));
-                jobHistory.setJarJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getClusterJson())) {
                 jobHistory.setCluster(JSONUtil.parseObject(jobHistory.getClusterJson()));
-                jobHistory.setClusterJson(null);
             }
             if (Asserts.isNotNullString(jobHistory.getClusterConfigurationJson())) {
                 jobHistory.setClusterConfiguration(JSONUtil.parseObject(jobHistory.getClusterConfigurationJson()));
-                jobHistory.setClusterConfigurationJson(null);
             }
         }
         return jobHistory;
     }
 
     @Override
-    public JobHistory refreshJobHistory(Integer id, String jobManagerHost, String jobId, boolean needSave) {
+    public JobHistory refreshJobHistory(JobHistory oldHistory, Integer id, String jobManagerHost, String jobId,
+            boolean needSave) {
         JobHistory jobHistory = new JobHistory();
         jobHistory.setId(id);
         try {
             JsonNode jobInfo = FlinkAPI.build(jobManagerHost).getJobInfo(jobId);
+            // Http connects failed.
             if (Asserts.isNull(jobInfo) || jobInfo.has(FlinkRestResultConstant.ERRORS)) {
-                final JobHistory dbHistory = getById(id);
-                if (Objects.nonNull(dbHistory)) {
-                    jobHistory = dbHistory;
+                if (Asserts.isNotNull(oldHistory)) {
+                    jobHistory = oldHistory;
                 }
                 jobHistory.setError(true);
                 return jobHistory;
@@ -119,11 +110,9 @@ public class JobHistoryServiceImpl extends SuperServiceImpl<JobHistoryMapper, Jo
             jobHistory.setCheckpointsJson(JSONUtil.toJsonString(checkPoints));
             jobHistory.setCheckpointsConfigJson(JSONUtil.toJsonString(checkPointsConfig));
             jobHistory.setConfigJson(JSONUtil.toJsonString(jobsConfig));
+            jobHistory.setError(false);
             if (needSave) {
                 updateById(jobHistory);
-                /*
-                 * if (Asserts.isNotNull(getById(id))) { updateById(jobHistory); } else { save(jobHistory); }
-                 */
             }
         } catch (Exception e) {
             log.error("Get flink job info failed !! historyId is {}, jobManagerHost is :{}, jobId is :{}",

@@ -177,6 +177,7 @@ export default {
   'pages.devops.jobstatus.CANCELED': 'Canceled',
   'pages.devops.jobstatus.RESTARTING': 'Restarting',
   'pages.devops.jobstatus.UNKNOWN': 'Unknown',
+  'pages.devops.jobstatus.RECONNECTING': 'Reconnecting',
   'pages.devops.jobstatus.ALL': 'ALL',
 
   'pages.devops.LastUpdateTime': 'LastUpdateTime',
