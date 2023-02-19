@@ -353,16 +353,17 @@ public abstract class YarnGateway extends AbstractGateway {
                 case KILLED:
                     return JobStatus.CANCELED;
                 case SUBMITTED:
+                case ACCEPTED:
+                case NEW:
+                case NEW_SAVING:
                     return JobStatus.CREATED;
                 default:
-                    return JobStatus.INITIALIZING;
+                    return JobStatus.UNKNOWN;
             }
-        } catch (YarnException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (YarnException | IOException e) {
+            logger.error(e.getMessage());
+            return JobStatus.UNKNOWN;
         }
-        return JobStatus.UNKNOWN;
     }
 
     @Override

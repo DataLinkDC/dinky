@@ -44,6 +44,7 @@ export const JOB_STATUS = {
   FAILING: 'FAILING',
   SUSPENDED: 'SUSPENDED',
   CANCELLING: 'CANCELLING',
+  RECONNECTING: 'RECONNECTING',
   UNKNOWN: 'UNKNOWN',
 };
 
@@ -88,10 +89,13 @@ const JobStatus = (props: JobStatusFormProps) => {
                 </Tag>) : (status === 'CREATED') ?
                   (<Tag icon={<ClockCircleOutlined/>} color="default">
                     {l('pages.devops.jobstatus.CREATED')}
+                  </Tag>) : (status === 'RECONNECTING') ?
+                  (<Tag icon={<ClockCircleOutlined/>} color="default">
+                    {l('pages.devops.jobstatus.RESTARTING')}
                   </Tag>) :
-                  (<Tag icon={<QuestionCircleOutlined/>} color="default">
-                    {l('pages.devops.jobstatus.UNKNOWN')}
-                  </Tag>)
+                    (<Tag icon={<QuestionCircleOutlined/>} color="default">
+                      {l('pages.devops.jobstatus.UNKNOWN')}
+                    </Tag>)
     }
   </>)
 };

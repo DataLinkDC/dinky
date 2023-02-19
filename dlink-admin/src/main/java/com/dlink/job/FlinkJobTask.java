@@ -73,12 +73,14 @@ public class FlinkJobTask implements DaemonTask {
         }
         preDealTime = System.currentTimeMillis();
         JobInstance jobInstance = taskService.refreshJobInstance(config.getId(), false);
-        if ((!JobStatus.isDone(jobInstance.getStatus())) || (Asserts.isNotNull(jobInstance.getFinishTime())
+        if (JobStatus.isTransition(jobInstance.getStatus()) && (Asserts.isNotNull(jobInstance.getFinishTime())
                 && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now()).toMinutes() < 1)) {
             DefaultThreadPool.getInstance().execute(this);
-        } else {
+        } else if (JobStatus.isDone(jobInstance.getStatus())) {
             taskService.handleJobDone(jobInstance);
             FlinkJobTaskPool.getInstance().remove(config.getId().toString());
+        } else {
+            DefaultThreadPool.getInstance().execute(this);
         }
     }
 }
