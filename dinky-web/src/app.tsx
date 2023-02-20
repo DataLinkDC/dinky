@@ -25,7 +25,6 @@ import { history, Link } from '@umijs/max';
 import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 import { currentUser as queryCurrentUser } from './services/api';
-import React from 'react';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -42,19 +41,22 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () => {
     try {
       const result = await queryCurrentUser();
+      const user = result.datas.user;
       const currentUser: API.CurrentUser = {
-        id: result.datas.user.id,
-        username: result.datas.user.username,
-        password: result.datas.user.password,
-        nickname: result.datas.user.nickname,
-        worknum: result.datas.user.worknum,
-        avatar: result.datas.user.avatar ? result.datas.user.avatar : '/icons/user_avatar.png',
-        mobile: result.datas.user.mobile,
-        enabled: result.datas.user.enabled,
-        isDelete: result.datas.user.isDelete,
-        createTime: result.datas.user.createTime,
-        updateTime: result.datas.user.updateTime,
-        isAdmin: result.datas.user.isAdmin,
+        user: {
+          id: user.id,
+          username: user.username,
+          password: user.password,
+          nickname: user.nickname,
+          worknum: user.worknum,
+          avatar: user.avatar ? user.avatar : '/icons/user_avatar.png',
+          mobile: user.mobile,
+          enabled: user.enabled,
+          isDelete: user.isDelete,
+          createTime: user.createTime,
+          updateTime: user.updateTime,
+          isAdmin: user.isAdmin,
+        },
         roleList: result.datas.roleList,
         tenantList: result.datas.tenantList,
         currentTenant: result.datas.currentTenant,
@@ -66,7 +68,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果不是登录页面，执行
-  const {location} = history;
+  const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
@@ -82,12 +84,12 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     onPageChange: () => {
-      const {location} = history;
+      const { location } = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
@@ -115,11 +117,11 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     ],
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined />
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面

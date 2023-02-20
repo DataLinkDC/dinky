@@ -24,7 +24,7 @@
 export default function access(initialState: { currentUser?: API.CurrentUser | undefined }) {
   const {currentUser} = initialState || {};
   return {
-    canAdmin: currentUser && currentUser.isAdmin,
+    canAdmin: currentUser && currentUser.user.isAdmin,
     // canAdd: true,
     // canDelete: true,
     // canUpdate: true,

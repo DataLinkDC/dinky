@@ -77,10 +77,11 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SaInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login")
-                .excludePathPatterns("/api/geTenants")
                 .excludePathPatterns("/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())
+                .addPathPatterns("/api/**")
+                .excludePathPatterns("/api/login")
                 .addPathPatterns("/api/alertGroup/**")
                 .addPathPatterns("/api/alertHistory/**")
                 .addPathPatterns("/api/alertInstance/**")

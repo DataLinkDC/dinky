@@ -15,9 +15,9 @@
  * limitations under the License.
  */
 
-import {l} from '@/utils/intl';
-import {GithubOutlined} from '@ant-design/icons';
-import {DefaultFooter} from '@ant-design/pro-components';
+import { l } from '@/utils/intl';
+import { GithubOutlined } from '@ant-design/icons';
+import { DefaultFooter } from '@ant-design/pro-components';
 import React from 'react';
 
 const Footer: React.FC = () => {
@@ -27,18 +27,18 @@ const Footer: React.FC = () => {
       style={{
         background: 'none',
       }}
-      copyright={`${currentYear} `+ l('app.copyright.produced')}
+      copyright={`${currentYear} ` + l('app.copyright.produced')}
       links={[
         {
           key: 'Dinky',
           title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dlink',
+          href: 'https://github.com/DataLinkDC/dinky',
           blankTarget: true,
         },
         {
           key: 'github',
-          title: <GithubOutlined/>,
-          href: 'https://github.com/DataLinkDC/dlink',
+          title: <GithubOutlined />,
+          href: 'https://github.com/DataLinkDC/dinky',
           blankTarget: true,
         },
       ]}

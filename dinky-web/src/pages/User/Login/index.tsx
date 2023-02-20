@@ -1,23 +1,42 @@
-/**
- * @Author: kevin
- * @Title: index.tsx
- * @Date: 2023-02-10 16:45:06
- * @Description:
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 import Footer from '@/components/Footer';
 
+import { chooseTenantSubmit, login } from '@/services/api';
+import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { CheckCard, LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, SelectLang, useModel } from '@umijs/max';
-import { Alert, Button, message, Modal } from 'antd';
-import Settings from '../../../../config/defaultSettings';
-import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
-import { login, getTenants } from '@/services/api';
-import { l } from '@/utils/intl';
+import { Button, message, Modal } from 'antd';
 import cookies from 'js-cookie';
+import React, { useState } from 'react';
+import { flushSync } from 'react-dom';
+import Settings from '../../../../config/defaultSettings';
+
+/** 此方法会跳转到 redirect 参数所在的位置 */
+const gotoRedirectUrl = () => {
+  if (!history) return;
+  setTimeout(() => {
+    const urlParams = new URL(window.location.href).searchParams;
+    history.push(urlParams.get('redirect') || '/');
+  }, 10);
+};
 
 const Lang = () => {
   const langClassName = useEmotionCss(({ token }) => {
@@ -43,11 +62,11 @@ const Lang = () => {
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
   const { initialState, setInitialState } = useModel('@@initialState');
-  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
+  const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
-  const [tenant, setTenant] = useState<API.TenantListItem[]>([]);
+  const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
+  const [tenantIdParams, setTenantIdParams] = useState<number>();
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -73,34 +92,72 @@ const Login: React.FC = () => {
     }
   };
 
-  /**
-   * 获取租户
-   *
-   */
-  const getTenant = async () => {
-    const res = await getTenants({ username: 'admin' });
-    console.log('res', res?.datas);
-    if ((res?.datas?.length || 0) > 1) {
-      setTenant(res.datas || []);
-      setChooseTenant(true);
+  const handleChooseTenant = async (chooseTenantResult: API.Result) => {
+    if (chooseTenantResult.code === 0) {
+      message.success(
+        l('pages.login.chooseTenantSuccess', '', {
+          msg: chooseTenantResult.msg,
+          tenantCode: chooseTenantResult.datas.tenantCode,
+        }),
+      );
+
+      /**
+       * After the selection is complete, refresh all user information
+       */
+      await fetchUserInfo();
+
+      /**
+       * Redirect to home page
+       */
+      gotoRedirectUrl();
+    } else {
+      message.error(l('pages.login.chooseTenantFailed'));
+      return;
     }
   };
 
   const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // 登录
-      const msg = await login({ ...values, type: 'password', tenantId: 1 });
-      if (msg.code === 0) {
-        // message.success(l('pages.login.success'));
-        // 选择租户
-        await fetchUserInfo();
-        await getTenant();
+      // login
+      const result = await login({ ...values });
+      if (result.code === 0) {
+        message.success(l('pages.login.result', '', { msg: result.msg, time: result.time }));
+        /**
+         * After successful login, set the tenant list
+         */
+        const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
+        if (tenantList === null || tenantList.length === 0) {
+          message.error('该用户未绑定租户');
+          return;
+        } else {
+          setTenant(tenantList);
+        }
+
+        /**
+         * Determine whether the current tenant list is multiple
+         * 1. If there are multiple execution pop-up modals, the user selects a specific tenant to enter the system
+         * 2. If it is a single, only use the unique tenant id to enter the system directly
+         */
+
+        if (tenantList && tenantList.length > 1) {
+          handleTenantVisible(true);
+        } else {
+          setTenantIdParams(tenantList[0].id as number);
+          setTenantCookie(tenantList[0].id as number);
+          const chooseTenantResult: API.Result = await chooseTenantSubmit({
+            tenantId: tenantList[0].id as number,
+          });
+          await handleChooseTenant(chooseTenantResult);
+        }
         return;
+      } else {
+        /**
+         * If it fails to set the user error message
+         */
+        message.error(l('pages.login.result', '', { msg: result.msg, time: result.time }));
       }
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg);
     } catch (error) {
-      message.error(l('pages.login.failure'));
+      message.error(l('pages.login.error', '', { msg: error }));
     }
   };
 
@@ -114,17 +171,17 @@ const Login: React.FC = () => {
       <>
         <Modal
           title={l('pages.login.chooseTenant')}
-          open={chooseTenant}
+          open={tenantVisible}
           destroyOnClose={true}
           width={'60%'}
           onCancel={() => {
-            setChooseTenant(false);
+            handleTenantVisible(false);
           }}
           footer={[
             <Button
               key="back"
               onClick={() => {
-                setChooseTenant(false);
+                handleTenantVisible(false);
               }}
             >
               {l('button.close')}
@@ -135,10 +192,10 @@ const Login: React.FC = () => {
               key="submit"
               loading={submitting}
               onClick={async () => {
-                // await handleSubmit(userParamsState);
-                setChooseTenant(false);
-                const urlParams = new URL(window.location.href).searchParams;
-                history.push(urlParams.get('redirect') || '/');
+                setSubmitting(true);
+                const result = await chooseTenantSubmit({ tenantId: tenantIdParams as number });
+                await handleChooseTenant(result);
+                handleTenantVisible(false);
               }}
             >
               {l('button.confirm')}
@@ -150,8 +207,8 @@ const Login: React.FC = () => {
             onChange={(value) => {
               if (value) {
                 setCheckDisabled(false); // 如果没选择租户 ·确认按钮· 则禁用
-                // userParamsState.tenantId = value as number; // 将租户id给后端入参
                 setTenantCookie(value as number);
+                setTenantIdParams(value as number);
               } else {
                 setCheckDisabled(true);
               }

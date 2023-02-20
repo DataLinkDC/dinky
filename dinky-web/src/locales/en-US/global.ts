@@ -134,4 +134,7 @@ export default {
   'global.savepoint.strategy.latest': 'Latest',
   'global.savepoint.strategy.earliest': 'Earliest',
   'global.savepoint.strategy.custom': 'Custom',
+
+  'global.fullScreen': 'FullScreen',
+  'global.fullScreen.exit': 'Exit FullScreen',
 };

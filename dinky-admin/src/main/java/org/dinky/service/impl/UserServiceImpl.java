@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.context.UserInfoContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.LoginDTO;
 import org.dinky.dto.UserDTO;
@@ -39,10 +40,8 @@ import org.dinky.service.UserTenantService;
 import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -142,57 +141,48 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!user.getEnabled()) {
                 return Result.failed(MessageResolverUtils.getMessage("login.user.disabled"));
             }
-
-            // 将前端入参 租户id 放入上下文
-            TenantContextHolder.set(loginDTO.getTenantId());
-
             // get user tenants and roles
-            UserDTO userDTO = getUserAllBaseInfo(loginDTO, user);
+            UserDTO userInfo = refreshUserInfo(user);
 
             StpUtil.login(user.getId(), loginDTO.isAutoLogin());
-            StpUtil.getSession().set("user", userDTO);
-            return Result.succeed(userDTO, MessageResolverUtils.getMessage("login.success"));
+            return Result.succeed(userInfo, MessageResolverUtils.getMessage("login.success"));
         } else {
             return Result.failed(MessageResolverUtils.getMessage("login.fail"));
         }
     }
 
-    private UserDTO getUserAllBaseInfo(LoginDTO loginDTO, User user) {
-        UserDTO userDTO = new UserDTO();
+    private UserDTO refreshUserInfo(User user) {
         List<Role> roleList = new LinkedList<>();
         List<Tenant> tenantList = new LinkedList<>();
 
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        Tenant currentTenant = tenantService.getBaseMapper().selectById(loginDTO.getTenantId());
+        userRoles.stream()
+                .forEach(
+                        userRole -> {
+                            Role role =
+                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
+                            if (Asserts.isNotNull(role)) {
+                                roleList.add(role);
+                            }
+                        });
 
-        userRoles.forEach(
-                userRole -> {
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleList.add(role);
-                    }
-                });
+        userTenants.stream()
+                .forEach(
+                        userTenant -> {
+                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
+                            if (Asserts.isNotNull(tenant)) {
+                                tenantList.add(tenant);
+                            }
+                        });
 
-        userTenants.forEach(
-                userTenant -> {
-                    Tenant tenant =
-                            tenantService
-                                    .getBaseMapper()
-                                    .selectOne(
-                                            new QueryWrapper<Tenant>()
-                                                    .eq("id", userTenant.getTenantId()));
-                    if (Asserts.isNotNull(tenant)) {
-                        tenantList.add(tenant);
-                    }
-                });
-
-        userDTO.setUser(user);
-        userDTO.setRoleList(roleList);
-        userDTO.setTenantList(tenantList);
-        userDTO.setCurrentTenant(currentTenant);
-        return userDTO;
+        UserDTO userInfo = new UserDTO();
+        userInfo.setUser(user);
+        userInfo.setRoleList(roleList);
+        userInfo.setTenantList(tenantList);
+        UserInfoContextHolder.set(user.getId(), userInfo);
+        return userInfo;
     }
 
     @Override
@@ -234,20 +224,32 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<List<Tenant>> getTenants(String username) {
-        User user = getUserByUsername(username);
-        if (Asserts.isNull(user)) {
-            return Result.failed("该账号不存在,获取租户失败");
+    public Result<Tenant> chooseTenant(Integer tenantId) {
+        Tenant currentTenant = tenantService.getById(tenantId);
+        if (Asserts.isNull(currentTenant)) {
+            return Result.failed("Failed to obtain tenant information");
+        } else {
+            UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
+            userInfo.setCurrentTenant(currentTenant);
+            UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfo);
+            TenantContextHolder.set(currentTenant.getId());
+            return Result.succeed(currentTenant, "Tenant selected successfully");
         }
+    }
 
-        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
-        if (userTenants.size() == 0) {
-            return Result.failed("用户未绑定租户,获取租户失败");
+    @Override
+    public Result<UserDTO> queryCurrentUserInfo() {
+        UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
+        if (Asserts.isNotNull(userInfo)
+                && Asserts.isNotNull(userInfo.getUser())
+                && Asserts.isNotNull(userInfo.getRoleList())
+                && Asserts.isNotNull(userInfo.getTenantList())
+                && Asserts.isNotNull(userInfo.getCurrentTenant())) {
+            StpUtil.getSession().set("user", userInfo);
+            return Result.succeed(
+                    userInfo, MessageResolverUtils.getMessage("response.get.success"));
+        } else {
+            return Result.failed(userInfo, MessageResolverUtils.getMessage("response.get.failed"));
         }
-
-        Set<Integer> tenantIds = new HashSet<>();
-        userTenants.forEach(userTenant -> tenantIds.add(userTenant.getTenantId()));
-        List<Tenant> tenants = tenantService.getTenantByIds(tenantIds);
-        return Result.succeed(tenants, MessageResolverUtils.getMessage("response.get.success"));
     }
 }
