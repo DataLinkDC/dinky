@@ -27,6 +27,7 @@ import org.dinky.result.SelectResult;
 
 import java.util.HashMap;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -88,5 +89,6 @@ public class JobManagerTest {
         JobResult result = jobManager.executeSql(sql);
         SelectResult selectResult = ResultPool.get(result.getJobId());
         LOGGER.info("sql:{}, execute result:{}", sql, result.isSuccess());
+        Assert.assertNotNull(selectResult);
     }
 }

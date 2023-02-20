@@ -23,6 +23,7 @@ import org.dinky.plus.FlinkSqlPlus;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -89,5 +90,6 @@ public class FlinkSqlPlusTest {
         FlinkSqlPlus plus = FlinkSqlPlus.build();
         JobPlanInfo jobPlanInfo = plus.getJobPlanInfo(sql);
         LOGGER.info(jobPlanInfo.getJsonPlan());
+        Assert.assertNotNull(jobPlanInfo);
     }
 }

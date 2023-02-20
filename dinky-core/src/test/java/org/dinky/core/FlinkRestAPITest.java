@@ -24,12 +24,15 @@ import org.dinky.gateway.result.SavePointResult;
 
 import java.util.List;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
+
+import cn.hutool.core.collection.CollectionUtil;
 
 /**
  * FlinkRestAPITest
@@ -53,12 +56,14 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .savepoints("243b97597448edbd2e635fc3d25b1064", "trigger", null);
         LOGGER.info(savepoints.toString());
+        Assert.assertNotNull(savepoints);
     }
 
     @Test
     public void selectTest() {
         List<JsonNode> jobs = FlinkAPI.build(address).listJobs();
         LOGGER.info(jobs.toString());
+        Assert.assertTrue(CollectionUtil.isNotEmpty(jobs));
     }
 
     @Test
@@ -71,6 +76,7 @@ public class FlinkRestAPITest {
         JsonNode checkPointsDetailInfo =
                 FlinkAPI.build(address).getCheckPointsConfig("9b0910c865874430b98d3817a248eb24");
         LOGGER.info(checkPointsDetailInfo.toString());
+        Assert.assertNotNull(checkPointsDetailInfo);
     }
 
     @Test
@@ -78,6 +84,7 @@ public class FlinkRestAPITest {
         JsonNode configurationsDetailsInfo =
                 FlinkAPI.build(address).getJobsConfig("9b0910c865874430b98d3817a248eb24");
         LOGGER.info(configurationsDetailsInfo.toString());
+        Assert.assertNotNull(configurationsDetailsInfo);
     }
 
     @Test
@@ -85,36 +92,42 @@ public class FlinkRestAPITest {
         JsonNode exectionsDetailInfo =
                 FlinkAPI.build(address).getException("9b0910c865874430b98d3817a248eb24");
         LOGGER.info(exectionsDetailInfo.toString());
+        Assert.assertNotNull(exectionsDetailInfo);
     }
 
     @Test
     public void getJobManagerMetricsTest() {
         JsonNode jobManagerMetrics = FlinkAPI.build(address).getJobManagerMetrics();
         LOGGER.info(jobManagerMetrics.toString());
+        Assert.assertNotNull(jobManagerMetrics);
     }
 
     @Test
     public void getJobManagerConfigTest() {
         JsonNode jobManagerConfig = FlinkAPI.build(address).getJobManagerConfig();
         LOGGER.info(jobManagerConfig.toString());
+        Assert.assertNotNull(jobManagerConfig);
     }
 
     @Test
     public void getJobManagerLogTest() {
         String jobManagerLog = FlinkAPI.build(address).getJobManagerLog();
         LOGGER.info(jobManagerLog);
+        Assert.assertNotNull(jobManagerLog);
     }
 
     @Test
     public void getJobManagerStdOutTest() {
         String jobManagerLogs = FlinkAPI.build(address).getJobManagerStdOut();
         LOGGER.info(jobManagerLogs);
+        Assert.assertNotNull(jobManagerLogs);
     }
 
     @Test
     public void getJobManagerLogListTest() {
         JsonNode jobManagerLogList = FlinkAPI.build(address).getJobManagerLogList();
         LOGGER.info(jobManagerLogList.toString());
+        Assert.assertNotNull(jobManagerLogList);
     }
 
     @Test
@@ -122,12 +135,14 @@ public class FlinkRestAPITest {
         String jobManagerLogList =
                 FlinkAPI.build(address).getJobManagerLogFileDetail("jobmanager.log");
         LOGGER.info(jobManagerLogList.toString());
+        Assert.assertNotNull(jobManagerLogList);
     }
 
     @Test
     public void getTaskManagersTest() {
         JsonNode taskManagers = FlinkAPI.build(address).getTaskManagers();
         LOGGER.info(taskManagers.toString());
+        Assert.assertNotNull(taskManagers);
     }
 
     @Test
@@ -136,6 +151,7 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerMetrics("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerMetrics.toString());
+        Assert.assertNotNull(taskManagerMetrics);
     }
 
     @Test
@@ -144,6 +160,7 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerLog("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerLog);
+        Assert.assertNotNull(taskManagerLog);
     }
 
     @Test
@@ -152,6 +169,7 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerStdOut("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerStdOut);
+        Assert.assertNotNull(taskManagerStdOut);
     }
 
     @Test
@@ -160,6 +178,7 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerLogList("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerLogList.toString());
+        Assert.assertNotNull(taskManagerLogList);
     }
 
     @Test
@@ -169,6 +188,7 @@ public class FlinkRestAPITest {
                         .getTaskManagerLogFileDeatil(
                                 "container_e46_1655948912029_0061_01_000002", "taskmanager.log");
         LOGGER.info(taskManagerLogDetail);
+        Assert.assertNotNull(taskManagerLogDetail);
     }
 
     @Test
@@ -177,5 +197,6 @@ public class FlinkRestAPITest {
                 FlinkAPI.build(address)
                         .getTaskManagerThreadDump("container_e46_1655948912029_0061_01_000002");
         LOGGER.info(taskManagerThreadDump.toString());
+        Assert.assertNotNull(taskManagerThreadDump);
     }
 }

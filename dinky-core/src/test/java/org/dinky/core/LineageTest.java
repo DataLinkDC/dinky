@@ -22,6 +22,7 @@ package org.dinky.core;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -59,5 +60,6 @@ public class LineageTest {
                         + "insert into TT select a||c A ,b||c B from ST";
         LineageResult result = LineageBuilder.getColumnLineageByLogicalPlan(sql);
         LOGGER.info("end");
+        Assert.assertNotNull(result);
     }
 }
