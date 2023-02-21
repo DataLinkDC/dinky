@@ -60,14 +60,18 @@ public interface Driver extends AutoCloseable {
             return getHealthDriver(key);
         }
         synchronized (Driver.class) {
-            Optional<Driver> optionalDriver = Driver.get(config);
-            if (!optionalDriver.isPresent()) {
-                throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
-            }
-            Driver driver = optionalDriver.get().connect();
+            Driver driver = buildNewConnection(config);
             DriverPool.push(key, driver);
             return driver;
         }
+    }
+
+    static Driver buildNewConnection(DriverConfig config) {
+        Optional<Driver> optionalDriver = Driver.get(config);
+        if (!optionalDriver.isPresent()) {
+            throw new MetaDataException("缺少数据源类型【" + config.getType() + "】的依赖，请在 lib 下添加对应的扩展依赖");
+        }
+        return optionalDriver.get().connect();
     }
 
     static Driver buildUnconnected(DriverConfig config) {
@@ -91,7 +95,7 @@ public interface Driver extends AutoCloseable {
         }
     }
 
-    static Driver build(String connector, String url, String username, String password) {
+    static Driver buildNewConnection(String connector, String url, String username, String password) {
         String type = null;
         if (Asserts.isEqualsIgnoreCase(connector, "doris")) {
             type = "Doris";
@@ -118,7 +122,7 @@ public interface Driver extends AutoCloseable {
             throw new MetaDataException("缺少数据源类型:【" + connector + "】");
         }
         DriverConfig driverConfig = new DriverConfig(url, type, url, username, password);
-        return build(driverConfig);
+        return buildNewConnection(driverConfig);
     }
 
     Driver setDriverConfig(DriverConfig config);
