@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-import {getIntl} from "@umijs/max";
+import { getIntl } from '@umijs/max';
 
 export const l = (id: string, defaultMessage?: string, value?: {}) => {
-  return getIntl().formatMessage({id, defaultMessage}, value);
-}
-
+  return getIntl().formatMessage({ id, defaultMessage }, value);
+};

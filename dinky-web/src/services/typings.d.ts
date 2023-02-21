@@ -15,48 +15,19 @@
  * limitations under the License.
  */
 
-// @ts-ignore
-/* eslint-disable */
-
 declare namespace API {
-
   type Result = {
     code: number;
     datas: any;
     msg: string;
+    time: Date;
   };
 
   type CurrentUser = {
-    id?: number;
-    username?: string;
-    password?: string;
-    nickname?: string;
-    worknum?: string;
-    avatar?: string;
-    mobile?: string;
-    enabled?: boolean;
-    isDelete?: boolean;
-    isAdmin?: boolean;
-    createTime?: Date;
-    updateTime?: Date;
-    roleList?: Role[];
-    tenantList?: Tenant[];
-    currentTenant?: Tenant;
-  };
-
-  type tenantListItem = {
-    id?: number,
-    tenantCode?: string,
-    note?: string,
-    isDelete?: boolean,
-    createTime?: string,
-    updateTime?: string;
-  };
-
-  type LoginResult = {
-    code?: number;
-    type?: string;
-    currentAuthority?: string;
+    user: UserBaseInfo.User;
+    roleList?: UserBaseInfo.Role[];
+    tenantList?: UserBaseInfo.Tenant[];
+    currentTenant?: UserBaseInfo.Tenant;
   };
 
   type PageParams = {
@@ -64,39 +35,10 @@ declare namespace API {
     pageSize?: number;
   };
 
-  type RuleListItem = {
-    key?: number;
-    disabled?: boolean;
-    href?: string;
-    avatar?: string;
-    name?: string;
-    owner?: string;
-    desc?: string;
-    callNo?: number;
-    status?: number;
-    updatedAt?: string;
-    createdAt?: string;
-    progress?: number;
-  };
-
-  type RuleList = {
-    data?: RuleListItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
-  };
-
-  type FakeCaptcha = {
-    code?: number;
-    status?: string;
-  };
-
   type LoginParams = {
     username?: string;
     password?: string;
     autoLogin?: boolean;
-    type?: string;
-    tenantId?: number;
   };
 
   type ErrorResponse = {
@@ -108,44 +50,7 @@ declare namespace API {
     success?: boolean;
   };
 
-  type NoticeIconList = {
-    data?: NoticeIconItem[];
-    /** 列表的内容总数 */
-    total?: number;
-    success?: boolean;
-  };
-
-  type NoticeIconItemType = 'notification' | 'message' | 'event';
-
-  type NoticeIconItem = {
-    id?: string;
-    extra?: string;
-    key?: string;
-    read?: boolean;
-    avatar?: string;
-    title?: string;
-    status?: string;
-    datetime?: string;
-    description?: string;
-    type?: NoticeIconItemType;
-  };
-
   type TenantRequest = {
     username?: string;
-  };
-
-  type TenantListItem = {
-    id?: number;
-    createTime?: string;
-    updateTime?: string;
-    isDelete?: boolean;
-    note?: string;
-    tenantCode?: string;
-  };
-
-  type TenantResult = {
-    code?: number;
-    msg?: string;
-    datas?: TenantListItem[];
   };
 }

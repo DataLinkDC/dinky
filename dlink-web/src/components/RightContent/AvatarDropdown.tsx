@@ -84,7 +84,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
         return;
       } else if (key === 'changePassWord') {
         handlePasswordModalVisible(true);
-        setFormValues({ username: initialState?.currentUser?.username })
+        setFormValues({ username: initialState?.currentUser?.user.username })
       } else {
 
       }
@@ -111,7 +111,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
 
   const { currentUser } = initialState;
 
-  if (!currentUser || !currentUser.username) {
+  if (!currentUser || !currentUser.user.username) {
     return loading;
   }
 
@@ -198,8 +198,8 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     <div>
       <HeaderDropdown overlay={menuHeaderDropdown}>
         <span className={`${styles.action} ${styles.account}`}>
-          <Avatar size="small" className={styles.avatar} src={currentUser.avatar} alt="avatar" />
-          <span className={`${styles.name} anticon`}>{currentUser.username}</span>
+          <Avatar size="small" className={styles.avatar} src={currentUser.user.avatar} alt="avatar" />
+          <span className={`${styles.name} anticon`}>{currentUser.user.username}</span>
         </span>
       </HeaderDropdown>
       {formValues && Object.keys(formValues).length ? (

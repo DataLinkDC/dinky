@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Request, Response} from 'express';
+import { Request, Response } from 'express';
 
 const waitTime = (time: number = 100) => {
   return new Promise((resolve) => {

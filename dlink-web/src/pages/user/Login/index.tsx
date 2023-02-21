@@ -17,20 +17,18 @@
  *
  */
 
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Button, message, Modal } from 'antd';
-import React, { useEffect, useState } from 'react';
-import ProForm, { ProFormCheckbox, ProFormText } from '@ant-design/pro-form';
-import { history, Link, SelectLang, useModel } from 'umi';
+import {LockOutlined, UserOutlined} from '@ant-design/icons';
+import {Button, message, Modal} from 'antd';
+import React, {useState} from 'react';
+import {LoginForm, ProFormCheckbox, ProFormText} from '@ant-design/pro-form';
+import {history, Link, SelectLang, useModel} from 'umi';
 import Footer from '@/components/Footer';
-import { login } from '@/services/ant-design-pro/api';
-import { CheckCard } from '@ant-design/pro-components';
+import {chooseTenantSubmit, login} from '@/services/ant-design-pro/api';
+import {CheckCard} from '@ant-design/pro-components';
 import styles from './index.less';
-import { getData } from '@/components/Common/crud';
-import type { TenantTableListItem } from '@/pages/AuthenticationCenter/data.d';
-import { l } from '@/utils/intl';
+import {l} from '@/utils/intl';
 import cookies from 'js-cookie';
-import { setLocale } from '@@/plugin-locale/localeExports';
+import {setLocale} from '@@/plugin-locale/localeExports';
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 const goto = () => {
@@ -44,15 +42,12 @@ const goto = () => {
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const [userLoginState, setUserLoginState] = useState<API.LoginResult>({});
-  const [userParamsState, setUserParamsState] = useState<API.LoginParams>({});
-  const [type, setType] = useState<string>('password');
-  const { initialState, setInitialState } = useModel('@@initialState');
-  const [isLogin, setIsLogin] = useState<boolean>(true);
-  const [chooseTenant, setChooseTenant] = useState<boolean>(false);
-  const [tenant, setTenant] = useState<TenantTableListItem[]>([]);
-
+  const {initialState, setInitialState} = useModel('@@initialState');
+  const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [checkDisabled, setCheckDisabled] = useState<boolean>(true);
+  const [tenant, setTenant] = useState<API.Tenant[]>([]);
+  const [tenantIdParams, setTenantIdParams] = useState<number>();
+
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
@@ -64,68 +59,92 @@ const Login: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    // 调用接口
-    const { username } = userParamsState;
-    if (!username) {
-      return;
-    }
-    getData('/api/geTenants', { username }).then((result) => {
-      console.log('result', result);
-      setTenant(result?.datas);
-    });
-  }, [userParamsState?.username]);
 
   const setTenantCookie = (tenantId: number) => {
     localStorage.setItem('dlink-tenantId', tenantId.toString()); // 放入本地存储中 request2请求时会放入header
-    cookies.set('tenantId', tenantId.toString(), { path: '/' }); // 放入cookie中
+    cookies.set('tenantId', tenantId.toString(), {path: '/'}); // 放入cookie中
   };
 
-  const handleSubmit = async (values: API.LoginParams) => {
-    if (!isLogin) {
+  const handleChooseTenant = async (chooseTenantResult: API.Result) => {
+    if (chooseTenantResult.code === 0) {
+      message.success(l('pages.login.chooseTenantSuccess', '', {
+        msg: chooseTenantResult.msg,
+        tenantCode: chooseTenantResult.datas.tenantCode
+      }));
+
+      /**
+       * After the selection is complete, refresh all user information
+       */
+      await fetchUserInfo();
+
+      goto()
+
+    } else {
+      message.error(l('pages.login.chooseTenantFailed'))
       return;
     }
-    setIsLogin(false);
-    setTimeout(() => {
-      setIsLogin(true);
-    }, 200);
-    setSubmitting(true);
+  }
+
+  const handleSubmit = async (values: API.LoginParams) => {
     try {
-      // 登录
-      const msg = await login({ ...values, type });
-      if (msg.code === 0 && msg.datas != undefined) {
-        message.success(l('pages.login.success'));
-        await fetchUserInfo();
-        goto();
+      // login
+      const result = await login({...values});
+      if (result.code === 0) {
+        message.success(l('pages.login.result', '', {msg: result.msg, time: result.time}));
+        /**
+         * After successful login, set the tenant list
+         */
+        const tenantList: API.Tenant[] = result.datas.tenantList
+        if (tenantList === null || tenantList.length === 0) {
+          message.error('该用户未绑定租户');
+          return;
+        } else {
+          setTenant(tenantList);
+        }
+
+        /**
+         * Determine whether the current tenant list is multiple
+         * 1. If there are multiple execution pop-up modals, the user selects a specific tenant to enter the system
+         * 2. If it is a single, only use the unique tenant id to enter the system directly
+         */
+
+        if (tenantList && tenantList.length > 1) {
+          handleTenantVisible(true);
+        } else {
+          setTenantIdParams(tenantList[0].id as number)
+          setTenantCookie(tenantList[0].id as number);
+          const chooseTenantResult: API.Result = await chooseTenantSubmit({tenantId: tenantList[0].id as number});
+          await handleChooseTenant(chooseTenantResult)
+        }
         return;
       } else {
-        message.error(l(msg.msg, msg.msg));
+        /**
+         * If it fails to set the user error message
+         */
+        message.error(l('pages.login.result', '', {msg: result.msg, time: result.time}));
       }
-      // 如果失败去设置用户错误信息
-      setUserLoginState(msg.datas);
     } catch (error) {
-      message.error(l('pages.login.failure'));
+      message.error(l('pages.login.error', '', {msg: error}));
     }
-    setSubmitting(false);
   };
-  //const {code } = userLoginState;
+
 
   const handleShowTenant = () => {
     return (
       <>
         <Modal
           title={l('pages.login.chooseTenant')}
-          visible={chooseTenant}
+          open={tenantVisible}
           destroyOnClose={true}
           width={'60%'}
           onCancel={() => {
-            setChooseTenant(false);
+            handleTenantVisible(false);
           }}
           footer={[
             <Button
               key="back"
               onClick={() => {
-                setChooseTenant(false);
+                handleTenantVisible(false);
               }}
             >
               {l('button.close')}
@@ -136,7 +155,10 @@ const Login: React.FC = () => {
               key="submit"
               loading={submitting}
               onClick={async () => {
-                await handleSubmit(userParamsState);
+                setSubmitting(true)
+                const result = await chooseTenantSubmit({tenantId: tenantIdParams as number});
+                await handleChooseTenant(result)
+                handleTenantVisible(false);
               }}
             >
               {l('button.confirm')}
@@ -148,8 +170,8 @@ const Login: React.FC = () => {
             onChange={(value) => {
               if (value) {
                 setCheckDisabled(false); // 如果没选择租户 ·确认按钮· 则禁用
-                userParamsState.tenantId = value as number; // 将租户id给后端入参
                 setTenantCookie(value as number);
+                setTenantIdParams(value as number)
               } else {
                 setCheckDisabled(true);
               }
@@ -157,16 +179,14 @@ const Login: React.FC = () => {
           >
             {tenant?.map((item: any) => {
               return (
-                <>
-                  <CheckCard
-                    size={'default'}
-                    key={item?.id}
-                    avatar="/icons/tenant_default.svg"
-                    title={item?.tenantCode}
-                    value={item?.id}
-                    description={item?.note}
-                  />
-                </>
+                <CheckCard
+                  size={'default'}
+                  key={item?.id}
+                  avatar="/icons/tenant_default.svg"
+                  title={item?.tenantCode}
+                  value={item?.id}
+                  description={item?.note}
+                />
               );
             })}
           </CheckCard.Group>
@@ -185,7 +205,7 @@ const Login: React.FC = () => {
               if (language === undefined || language === '') {
                 language = localStorage.getItem('umi_locale');
               }
-              cookies.set('language', language, { path: '/' });
+              cookies.set('language', language, {path: '/'});
               setLocale(language);
             }}
           />
@@ -195,7 +215,7 @@ const Login: React.FC = () => {
         <div className={styles.top}>
           <div className={styles.header}>
             <Link to="/">
-              <img alt="logo" className={styles.logo} src="/dinky.svg" />
+              <img alt="logo" className={styles.logo} src="/dinky.svg"/>
               <span className={styles.title}>Dinky</span>
             </Link>
           </div>
@@ -203,81 +223,48 @@ const Login: React.FC = () => {
         </div>
 
         <div className={styles.main}>
-          <ProForm
+          <LoginForm
+            contentStyle={{
+              minWidth: 280,
+              maxWidth: '75vw',
+            }}
             initialValues={{
               autoLogin: true,
             }}
-            submitter={{
-              searchConfig: {
-                submitText: l('pages.login.submit'),
-              },
-              render: (_, dom) => dom.pop(),
-              submitButtonProps: {
-                loading: submitting,
-                size: 'large',
-                style: {
-                  width: '100%',
-                },
-                htmlType: 'submit',
-              },
-            }}
-            onFinish={async (values: API.LoginParams) => {
-              setType('password');
-              const res: TenantTableListItem[] = await getData('/api/geTenants', {
-                username: values.username,
-              }).then((result) => {
-                if (!result?.datas) {
-                  message.error(result?.msg);
-                  return;
-                }
-                setTenant(result?.datas);
-                return result?.datas;
-              });
-              if (res.length === 1) {
-                const tenantValue = res.pop().id; // 进入此处说明 只有一个租户 直接pop() 拿到单个对象获取租户id
-                values.tenantId = tenantValue; // 将租户id给后端入参
-                setTenantCookie(tenantValue as number);
-                setUserParamsState(values);
-                await handleSubmit(values);
-              } else {
-                setUserParamsState(values);
-                setChooseTenant(true);
-              }
+            onFinish={async (values) => {
+              await handleSubmit(values as API.LoginParams);
             }}
           >
-            {type === 'password' && (
-              <>
-                <ProFormText
-                  name="username"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <UserOutlined className={styles.prefixIcon} />,
-                  }}
-                  placeholder={l('pages.login.username.placeholder')}
-                  rules={[
-                    {
-                      required: true,
-                      message: l('pages.login.username.required'),
-                    },
-                  ]}
-                />
-                <ProFormText.Password
-                  name="password"
-                  fieldProps={{
-                    size: 'large',
-                    prefix: <LockOutlined className={styles.prefixIcon} />,
-                  }}
-                  placeholder={l('pages.login.password.placeholder')}
-                  rules={[
-                    {
-                      required: true,
-                      message: l('pages.login.password.required'),
-                    },
-                  ]}
-                />
-              </>
-            )}
-
+            <>
+              <ProFormText
+                name="username"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <UserOutlined/>,
+                }}
+                placeholder={l('pages.login.username.placeholder')}
+                rules={[
+                  {
+                    required: true,
+                    message: l('pages.login.username.required'),
+                  },
+                ]}
+              />
+              <ProFormText.Password
+                name="password"
+                fieldProps={{
+                  size: 'large',
+                  prefix: <LockOutlined/>,
+                }}
+                placeholder={l('pages.login.password.placeholder')}
+                rules={[
+                  {
+                    required: true,
+                    message: l('pages.login.password.required'),
+                  },
+                ]}
+              />
+            </>
             <div
               style={{
                 marginBottom: 24,
@@ -286,18 +273,11 @@ const Login: React.FC = () => {
               <ProFormCheckbox noStyle name="autoLogin">
                 {l('pages.login.rememberMe')}
               </ProFormCheckbox>
-              <a
-                style={{
-                  float: 'right',
-                }}
-              >
-                {l('pages.login.forgotPassword')}
-              </a>
             </div>
-          </ProForm>
+          </LoginForm>
         </div>
       </div>
-      <Footer />
+      <Footer/>
       {handleShowTenant()}
     </div>
   );

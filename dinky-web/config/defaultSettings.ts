@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ProLayoutProps} from '@ant-design/pro-components';
+import { ProLayoutProps } from '@ant-design/pro-components';
 
 /**
  * @name
@@ -38,7 +38,7 @@ const Settings: ProLayoutProps & {
   iconfontUrl: '',
   splitMenus: true,
   menu: {
-    locale: true
+    locale: true,
   },
   token: {
     // bgLayout: '', layout 的背景颜色

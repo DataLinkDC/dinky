@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import {outLogin} from '@/services/api';
-import {LogoutOutlined, SettingOutlined, UserOutlined} from '@ant-design/icons';
-import {useEmotionCss} from '@ant-design/use-emotion-css';
-import {history, useModel} from '@umijs/max';
-import {Avatar, Spin} from 'antd';
-import {setAlpha} from '@ant-design/pro-components';
-import {stringify} from 'querystring';
-import type {MenuInfo} from 'rc-menu/lib/interface';
-import React, {useCallback} from 'react';
-import {flushSync} from 'react-dom';
+import { outLogin } from '@/services/api';
+import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { setAlpha } from '@ant-design/pro-components';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { history, useModel } from '@umijs/max';
+import { Avatar, Spin } from 'antd';
+import { stringify } from 'querystring';
+import type { MenuInfo } from 'rc-menu/lib/interface';
+import React, { useCallback } from 'react';
+import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
 
 export type GlobalHeaderRightProps = {
@@ -49,7 +49,7 @@ const Name = () => {
     };
   });
 
-  return <span className={`${nameClassName} anticon`}>{currentUser?.username}</span>;
+  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username}</span>;
 };
 
 const AvatarLogo = () => {
@@ -68,7 +68,9 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size="small" className={avatarClassName} src={currentUser?.avatar} alt="avatar" />;
+  return (
+    <Avatar size="small" className={avatarClassName} src={currentUser?.user.avatar} alt="avatar" />
+  );
 };
 
 const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
@@ -100,7 +102,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       alignItems: 'center',
       padding: '0 8px',
       cursor: 'pointer',
-      color:'white',
+      color: 'white',
       borderRadius: token.borderRadius,
       '&:hover': {
         backgroundColor: token.colorBgTextHover,
@@ -140,7 +142,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     return loading;
   }
   const { currentUser } = initialState;
-  if (!currentUser || !currentUser?.username) {
+  if (!currentUser || !currentUser.user.username) {
     return loading;
   }
 
