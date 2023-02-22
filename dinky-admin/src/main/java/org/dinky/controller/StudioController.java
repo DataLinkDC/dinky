@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
 import org.dinky.dto.SessionDTO;
 import org.dinky.dto.StudioCADTO;
@@ -115,7 +116,10 @@ public class StudioController {
     /** 获取单任务实例的血缘分析 */
     @PostMapping("/getLineage")
     public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
-        return Result.succeed(studioService.getLineage(studioCADTO), "刷新成功");
+        LineageResult lineage = studioService.getLineage(studioCADTO);
+        return Asserts.isNull(lineage)
+                ? Result.failed("血缘分析异常")
+                : Result.succeed(lineage, "血缘分析成功");
     }
 
     /** 创建session */
