@@ -24,7 +24,7 @@ export default {
   'pages.login.chooseTenant': 'Please Choose Tenant',
   'pages.login.chooseTenantFailed': 'Tenant selection failed, please check. . . ',
   'pages.login.chooseTenantSuccess':
-    '{msg}, we are about to use [{tenantCode}] to enter the system, please wait...',
+    '{msg}, Use [ {tenantCode} ] to enter the system, loading. . .',
   'pages.login.password.placeholder': 'Password',
   'pages.login.password.required': 'Please input your password!',
   'pages.login.rememberMe': 'Remember me',

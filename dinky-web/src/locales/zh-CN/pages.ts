@@ -23,7 +23,7 @@ export default {
   'pages.login.username.required': '用户名是必填项！',
   'pages.login.chooseTenant': '请选择租户',
   'pages.login.chooseTenantFailed': '租户选择失败，请检查。。。',
-  'pages.login.chooseTenantSuccess': '{msg}，即将使用【 {tenantCode} 】进入系统，请稍后。。。',
+  'pages.login.chooseTenantSuccess': '{msg}，使用【 {tenantCode} 】进入系统，加载中。。。',
   'pages.login.password.placeholder': '密码',
   'pages.login.password.required': '密码是必填项！',
   'pages.login.rememberMe': '自动登录',

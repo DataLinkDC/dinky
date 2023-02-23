@@ -42,15 +42,15 @@ export default [
 
   {
     path: '/',
-    redirect: '/dataStudio',
+    redirect: '/datastudio',
   },
 
   {
-    path: '/dataStudio',
-    name: 'dataStudio',
+    path: '/datastudio',
+    name: 'datastudio',
     icon: 'consoleSql',
     footerRender: false,
-    // component: './DataStudio',
+    component: './DataStudio',
   },
   {
     path: '/devops',
@@ -89,7 +89,7 @@ export default [
     routes: [
       {
         path: '/registration',
-        redirect: '/registration/cluster/clusterInstance',
+        redirect: '/registration/cluster/instance',
       },
       {
         path: '/registration/cluster',
@@ -97,13 +97,13 @@ export default [
         icon: 'cluster',
         routes: [
           {
-            path: '/registration/cluster/clusterInstance',
-            name: 'clusterInstance',
+            path: '/registration/cluster/instance',
+            name: 'cluster-instance',
             // component: './RegistrationCenter/ClusterManage/Cluster',
           },
           {
-            path: '/registration/cluster/clusterConfiguration',
-            name: 'clusterConfiguration',
+            path: '/registration/cluster/config',
+            name: 'cluster-config',
             // component: './RegistrationCenter/ClusterManage/ClusterConfiguration',
           },
         ],
@@ -126,13 +126,13 @@ export default [
         icon: 'alert',
         routes: [
           {
-            path: '/registration/alert/alertInstance',
-            name: 'alertInstance',
+            path: '/registration/alert/instance',
+            name: 'instance',
             // component: './RegistrationCenter/AlertManage/AlertInstance',
           },
           {
-            path: '/registration/alert/alertGroup',
-            name: 'alertGroup',
+            path: '/registration/alert/group',
+            name: 'group',
             // component: './RegistrationCenter/AlertManage/AlertGroup',
           },
         ],
@@ -152,36 +152,36 @@ export default [
     ],
   },
   {
-    name: 'authenticationCenter',
+    name: 'authentication',
     icon: 'SafetyCertificateOutlined',
-    path: '/authenticationCenter',
+    path: '/authentication',
     // access: "canAdmin",
     routes: [
       {
-        path: '/authenticationCenter',
-        redirect: '/authenticationCenter/userManager',
+        path: '/authentication',
+        redirect: '/authentication/usermanager',
       },
       {
-        path: '/authenticationCenter/userManager',
-        name: 'userManager',
+        path: '/authentication/usermanager',
+        name: 'usermanager',
         icon: 'UserOutlined',
         // component: './AuthenticationCenter/UserManager',
       },
       {
-        path: '/authenticationCenter/roleManager',
-        name: 'roleManager',
+        path: '/authentication/role',
+        name: 'role',
         icon: 'TeamOutlined',
         // component: './AuthenticationCenter/RoleManager',
       },
       {
-        path: '/authenticationCenter/namespaceManager',
-        name: 'namespaceManager',
+        path: '/authentication/namespace',
+        name: 'namespace',
         icon: 'BulbOutlined',
         // component: './AuthenticationCenter/NamespaceManager',
       },
       {
-        path: '/authenticationCenter/tenantManager',
-        name: 'tenantManager',
+        path: '/authentication/tenant',
+        name: 'tenant',
         icon: 'SecurityScanOutlined',
         // component: './AuthenticationCenter/TenantManager',
       },
@@ -191,37 +191,49 @@ export default [
   {
     name: 'settings',
     icon: 'setting',
-    path: '/settingCenter',
+    path: '/settings',
     routes: [
       {
-        path: '/settingCenter',
-        redirect: '/settingCenter/flinkSettings',
+        path: '/settings',
+        redirect: '/settings/flinksetting',
       },
       {
-        path: '/settingCenter/flinkSettings',
-        name: 'flinkConfig',
+        path: '/settings/flinksetting',
+        name: 'flinksetting',
         icon: 'setting',
         // component: './SettingCenter/FlinkSettings',
       },
       {
-        path: '/settingCenter/udfTemplate',
-        name: 'udfTemplate',
+        path: '/settings/udf',
+        name: 'udf',
         icon: 'setting',
         // component: './SettingCenter/UDFTemplate',
       },
       {
-        path: '/settingCenter/systemInfo',
-        name: 'systemInfo',
+        path: '/settings/system',
+        name: 'system',
         icon: 'desktop',
         // component: './SettingCenter/SystemInfo',
       },
       {
-        path: '/settingCenter/processList',
-        name: 'processList',
+        path: '/settings/process',
+        name: 'process',
         icon: 'desktop',
         // component: './SettingCenter/ProcessList',
       },
+      {
+        path: '/settings/shell',
+        name: 'shell',
+        icon: 'MacCommandOutlined',
+        // component: './SettingCenter/Shell',
+      },
     ],
+  },
+  {
+    path: '/metrics',
+    name: 'metrics',
+    icon: 'AreaChartOutlined',
+    // component: './Metrics',
   },
   {
     path: '/about',
