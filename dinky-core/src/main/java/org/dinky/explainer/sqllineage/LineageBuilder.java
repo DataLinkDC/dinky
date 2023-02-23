@@ -26,6 +26,8 @@ import org.dinky.explainer.lineage.LineageTable;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.model.Column;
+import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.model.ProcessEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -50,6 +52,7 @@ public class LineageBuilder {
     protected static final Logger logger = LoggerFactory.getLogger(LineageBuilder.class);
 
     public static LineageResult getSqlLineageByOne(String statement, String type) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         try {
@@ -147,7 +150,8 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
-                    logger.info("出现字段位数不相等错误");
+                    logger.error("Target table fields do not match!");
+                    process.error("Target table fields do not match!");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {
@@ -177,10 +181,12 @@ public class LineageBuilder {
                     }
                 }
             } else {
+                process.info("Does not contain an insert statement, cannot analyze the lineage.");
                 return null;
             }
         } catch (Exception e) {
             e.printStackTrace();
+            process.error("Unexpected exceptions occur! " + e.getMessage());
             return null;
         }
         return LineageResult.build(tables, relations);
@@ -188,6 +194,7 @@ public class LineageBuilder {
 
     public static LineageResult getSqlLineage(
             String statement, String type, DriverConfig driverConfig) {
+        ProcessEntity process = ProcessContextHolder.getProcess();
         List<LineageTable> tables = new ArrayList<>();
         List<LineageRelation> relations = new ArrayList<>();
         Map<Integer, List<List<TableStat.Column>>> srcMap = new HashMap<>();
@@ -214,6 +221,7 @@ public class LineageBuilder {
                     if (columns.size() <= 0 || sqls[n].contains("*")) {
                         Driver driver = Driver.build(driverConfig);
                         if (!targetTable.contains(".")) {
+                            process.error("Target table not specified database!");
                             return null;
                         }
                         List<Column> columns1 =
@@ -270,6 +278,8 @@ public class LineageBuilder {
                     srcMap.put(n, srcLists);
                     tgtMap.put(n, tgtList);
                 } else {
+                    process.info(
+                            "Does not contain an insert statement, cannot analyze the lineage.");
                     return null;
                 }
             }
@@ -320,7 +330,8 @@ public class LineageBuilder {
                 int tSize = tgtList.size();
                 int sSize = srcLists.size();
                 if (tSize != sSize && tSize * 2 != sSize) {
-                    logger.info("出现字段位数不相等错误");
+                    logger.error("Target table fields do not match!");
+                    process.error("Target table fields do not match!");
                     return null;
                 }
                 for (int i = 0; i < tSize; i++) {
@@ -352,6 +363,7 @@ public class LineageBuilder {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            process.error("Unexpected exceptions occur! " + e.getMessage());
             return null;
         }
         return LineageResult.build(tables, relations);

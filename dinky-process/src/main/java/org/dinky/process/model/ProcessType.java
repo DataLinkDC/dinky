@@ -34,6 +34,7 @@ public enum ProcessType {
     SQL_EXPLAIN("SQLExplain"),
     SQL_EXECUTE("SQLExecute"),
     SQL_SUBMIT("SQLSubmit"),
+    LINEAGE("Lineage"),
     UNKNOWN("Unknown");
 
     private String value;
