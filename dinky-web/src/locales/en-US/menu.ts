@@ -60,7 +60,7 @@ export default {
   'menu.settings.udf': 'UDF Template Settings',
   'menu.settings.system': 'System Info',
   'menu.settings.process': 'Process List',
-  'menu.settings.shell': 'Shell',
+  'menu.settings.services': 'Servers List',
   'menu.metrics': 'Dashboard',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',

@@ -222,10 +222,10 @@ export default [
         // component: './SettingCenter/ProcessList',
       },
       {
-        path: '/settings/shell',
-        name: 'shell',
+        path: '/settings/services',
+        name: 'services',
         icon: 'MacCommandOutlined',
-        // component: './SettingCenter/Shell',
+        // component: './SettingCenter/Service',
       },
     ],
   },
