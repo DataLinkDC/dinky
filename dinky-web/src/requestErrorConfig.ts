@@ -31,8 +31,8 @@ enum ErrorShowType {
 interface ResponseStructure {
   success: boolean;
   data: any;
-  errorCode?: number;
-  errorMessage?: string;
+  code?: number;
+  msg?: string;
   showType?: ErrorShowType;
 }
 
@@ -46,12 +46,11 @@ export const errorConfig: RequestConfig = {
   errorConfig: {
     // 错误抛出
     errorThrower: (res) => {
-      const { success, data, errorCode, errorMessage, showType } =
-        res as unknown as ResponseStructure;
+      const { success, data, code, msg, showType } = res as unknown as ResponseStructure;
       if (!success) {
-        const error: any = new Error(errorMessage);
+        const error: any = new Error(msg);
         error.name = 'BizError';
-        error.info = { errorCode, errorMessage, showType, data };
+        error.info = { code, msg, showType, data };
         throw error; // 抛出自制的错误
       }
     },
@@ -62,28 +61,28 @@ export const errorConfig: RequestConfig = {
       if (error.name === 'BizError') {
         const errorInfo: ResponseStructure | undefined = error.info;
         if (errorInfo) {
-          const { errorMessage, errorCode } = errorInfo;
+          const { msg, code } = errorInfo;
           switch (errorInfo.showType) {
             case ErrorShowType.SILENT:
               // do nothing
               break;
             case ErrorShowType.WARN_MESSAGE:
-              message.warning(errorMessage);
+              message.warning(msg);
               break;
             case ErrorShowType.ERROR_MESSAGE:
-              message.error(errorMessage);
+              message.error(msg);
               break;
             case ErrorShowType.NOTIFICATION:
               notification.open({
-                description: errorMessage,
-                message: errorCode,
+                description: msg,
+                message: code,
               });
               break;
             case ErrorShowType.REDIRECT:
               // TODO: redirect
               break;
             default:
-              message.error(errorMessage);
+              message.error(msg);
           }
         }
       } else if (error.response) {

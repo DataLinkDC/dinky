@@ -15,4 +15,15 @@
  * limitations under the License.
  */
 
-export const VERSION = '0.8.0';
+import { Card } from 'antd';
+
+const DataStudio = (props: any) => {
+
+  return (
+    <div style={{ margin: '-24px' }}>
+      <Card bordered={false} size="small" id="studio_card" style={{ marginBottom: 0 }}></Card>
+    </div>
+  );
+};
+
+export default DataStudio;

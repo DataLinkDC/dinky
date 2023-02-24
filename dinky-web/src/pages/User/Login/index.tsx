@@ -18,13 +18,13 @@
 import Footer from '@/components/Footer';
 
 import { chooseTenantSubmit, login } from '@/services/api';
+import { setTenantStorageAndCookie } from '@/services/function';
 import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { CheckCard, LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, SelectLang, useModel } from '@umijs/max';
 import { Button, message, Modal } from 'antd';
-import cookies from 'js-cookie';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
@@ -143,7 +143,7 @@ const Login: React.FC = () => {
           handleTenantVisible(true);
         } else {
           setTenantIdParams(tenantList[0].id as number);
-          setTenantCookie(tenantList[0].id as number);
+          setTenantStorageAndCookie(tenantList[0].id as number);
           const chooseTenantResult: API.Result = await chooseTenantSubmit({
             tenantId: tenantList[0].id as number,
           });
@@ -159,11 +159,6 @@ const Login: React.FC = () => {
     } catch (error) {
       message.error(l('pages.login.error', '', { msg: error }));
     }
-  };
-
-  const setTenantCookie = (tenantId: number) => {
-    localStorage.setItem('dlink-tenantId', tenantId.toString()); // 放入本地存储中 request2请求时会放入header
-    cookies.set('tenantId', tenantId.toString(), { path: '/' }); // 放入cookie中
   };
 
   const handleShowTenant = () => {
@@ -207,7 +202,7 @@ const Login: React.FC = () => {
             onChange={(value) => {
               if (value) {
                 setCheckDisabled(false); // 如果没选择租户 ·确认按钮· 则禁用
-                setTenantCookie(value as number);
+                setTenantStorageAndCookie(value as number);
                 setTenantIdParams(value as number);
               } else {
                 setCheckDisabled(true);

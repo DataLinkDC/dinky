@@ -17,16 +17,15 @@
  *
  */
 
-import { PasswordItem } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Button, Form, Input, Modal } from 'antd';
 import React, { useState } from 'react';
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<PasswordItem>) => void;
+  onSubmit: (values: Partial<UserBaseInfo.ChangePasswordParams>) => void;
   modalVisible: boolean;
-  values: Partial<PasswordItem>;
+  values: Partial<UserBaseInfo.ChangePasswordParams>;
 };
 
 const formLayout = {
@@ -36,7 +35,7 @@ const formLayout = {
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
   const [form] = Form.useForm();
-  const [formVals, setFormVals] = useState<Partial<PasswordItem>>({
+  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
     username: props.values.username,
   });
 

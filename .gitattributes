@@ -1,0 +1,16 @@
+# Declare files that will always have LF line endings on checkout.
+*.java text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.xml text eol=lf
+*.sh eol=lf
+*.py eol=lf
+*.md text eol=lf
+*.mdx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.json text eol=lf
+*.less text eol=lf
+*.txt  text eol=lf
+*.jpg  -text

@@ -15,42 +15,32 @@
  * limitations under the License.
  */
 
-declare namespace API {
-  type Result = {
-    code: number;
-    datas: any;
-    msg: string;
-    time: Date;
-  };
+import { TENANT_ID } from '@/services/constants';
+import cookies from 'js-cookie';
 
-  type CurrentUser = {
-    user: UserBaseInfo.User;
-    roleList?: UserBaseInfo.Role[];
-    tenantList?: UserBaseInfo.Tenant[];
-    currentTenant?: UserBaseInfo.Tenant;
-  };
+/**
+ * PUT tenantId TO localStorage & cookies
+ * @param tenantId
+ */
+export function setTenantStorageAndCookie(tenantId: number) {
+  // save as localStorage
+  localStorage.setItem(TENANT_ID, tenantId.toString());
+  // save as cookies
+  cookies.set(TENANT_ID, tenantId.toString(), { path: '/' });
+}
 
-  type PageParams = {
-    current?: number;
-    pageSize?: number;
-  };
+/**
+ * get tenant id
+ * @param tenantId
+ */
+export function getTenantByLocalStorage() {
+  return localStorage.getItem(TENANT_ID);
+}
 
-  type LoginParams = {
-    username?: string;
-    password?: string;
-    autoLogin?: boolean;
-  };
-
-  type ErrorResponse = {
-    /** 业务约定的错误码 */
-    errorCode: string;
-    /** 业务上的错误信息 */
-    errorMessage?: string;
-    /** 业务上的请求是否成功 */
-    success?: boolean;
-  };
-
-  type TenantRequest = {
-    username?: string;
-  };
+/**
+ * parseJsonStr
+ * @param jsonStr
+ */
+export function parseJsonStr(jsonStr: string) {
+  return JSON.parse(JSON.stringify(jsonStr));
 }
