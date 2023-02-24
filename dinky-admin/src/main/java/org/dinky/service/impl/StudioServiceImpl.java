@@ -372,13 +372,18 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public LineageResult getLineage(StudioCADTO studioCADTO) {
+        ProcessEntity process =
+                ProcessContextHolder.registerProcess(
+                        ProcessEntity.init(ProcessType.LINEAGE, StpUtil.getLoginIdAsInt()));
         if (Asserts.isNotNullString(studioCADTO.getDialect())
                 && !Dialect.FLINK_SQL.equalsVal(studioCADTO.getDialect())) {
             if (Asserts.isNull(studioCADTO.getDatabaseId())) {
+                process.error("Job's data source not selected!");
                 return null;
             }
             DataBase dataBase = dataBaseService.getById(studioCADTO.getDatabaseId());
             if (Asserts.isNull(dataBase)) {
+                process.error("Job's data source does not exist!");
                 return null;
             }
             if (Dialect.DORIS.equalsVal(studioCADTO.getDialect())) {
