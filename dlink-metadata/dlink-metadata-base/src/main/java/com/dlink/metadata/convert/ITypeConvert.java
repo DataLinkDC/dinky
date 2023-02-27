@@ -20,6 +20,7 @@
 package com.dlink.metadata.convert;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.metadata.driver.DriverConfig;
 import com.dlink.model.Column;
 import com.dlink.model.ColumnType;
 
@@ -40,6 +41,10 @@ public interface ITypeConvert {
 
     ColumnType convert(Column column);
 
+    default ColumnType convert(Column column, DriverConfig driverConfig) {
+        return convert(column);
+    }
+
     String convertToDB(ColumnType columnType);
 
     default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
@@ -48,6 +53,8 @@ public interface ITypeConvert {
         }
         switch (javaType.toLowerCase()) {
             case "string":
+            case "text":
+            case "varchar":
                 return results.getString(columnName);
             case "double":
                 return results.getDouble(columnName);
@@ -70,6 +77,7 @@ public interface ITypeConvert {
             case "blob":
                 return results.getBlob(columnName);
             case "boolean":
+            case "bit":
                 return results.getBoolean(columnName);
             case "byte":
                 return results.getByte(columnName);
