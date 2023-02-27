@@ -56,7 +56,7 @@ public class ResultRunnable implements Runnable {
     private final String timeZone;
 
     public ResultRunnable(TableResult tableResult, Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel,
-                          String timeZone) {
+            String timeZone) {
         this.tableResult = tableResult;
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
@@ -129,6 +129,8 @@ public class ResultRunnable implements Runnable {
                 map.put(column, nullColumn);
             } else if (field instanceof Instant) {
                 map.put(column, ((Instant) field).atZone(ZoneId.of(timeZone)).toLocalDateTime().toString());
+            } else if (field instanceof Boolean) {
+                map.put(column, field.toString());
             } else {
                 map.put(column, field);
             }
