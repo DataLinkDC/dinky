@@ -112,6 +112,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     public Map<String, Map<String, String>> parseMetaDataConfigs() {
         Map<String, Map<String, String>> allConfigMap = new HashMap<>();
         List<String> schemaList = getSchemaList();
+        boolean tinyInt1isBit = !config.getJdbc().containsKey("tinyInt1isBit")
+                || "true".equalsIgnoreCase(config.getJdbc().get("tinyInt1isBit"));
+        boolean transformedBitIsBoolean = !config.getJdbc().containsKey("transformedBitIsBoolean")
+                || "true".equalsIgnoreCase(config.getJdbc().get("transformedBitIsBoolean"));
+
         for (String schema : schemaList) {
             Map<String, String> configMap = new HashMap<>();
             configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
@@ -121,6 +126,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
             sb.append(config.getPort());
             sb.append("/");
             sb.append(schema);
+            if (tinyInt1isBit && transformedBitIsBoolean) {
+                sb.append("?tinyInt1isBit=true");
+            } else {
+                sb.append("?tinyInt1isBit=false");
+            }
             configMap.put(ClientConstant.METADATA_NAME, sb.toString());
             configMap.put(ClientConstant.METADATA_URL, sb.toString());
             configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
