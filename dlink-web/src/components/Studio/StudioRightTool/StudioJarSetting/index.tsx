@@ -38,12 +38,13 @@ import {
   getHadoopConfigPathFromClusterConfigurationsById
 } from "@/pages/RegistrationCenter/ClusterManage/ClusterConfiguration/function";
 import {l} from "@/utils/intl";
+import {AlertStateType} from "@/pages/RegistrationCenter/AlertManage/AlertInstance/model";
 
 const {Option} = Select;
 
 const StudioJarSetting = (props: any) => {
 
-  const {clusterConfiguration, current, form, dispatch, tabs, jars, toolHeight} = props;
+  const {clusterConfiguration, current, form, dispatch, tabs, jars, group, toolHeight} = props;
   const [hadoopConfigPath, setHadoopConfigPath] = useState<string | undefined>(undefined);
   const [jarPath, setJarPath] = useState<string | undefined>(undefined);
 
@@ -141,6 +142,18 @@ const StudioJarSetting = (props: any) => {
     }
   };
 
+  const getGroupOptions = () => {
+    const itemList = [<Option key={0} value={0} label={l('button.disable')}>
+      {l('button.disable')}
+    </Option>];
+    for (const item of group) {
+      itemList.push(<Option key={item.id} value={item.id} label={item.name}>
+        {item.name}
+      </Option>)
+    }
+    return itemList;
+  };
+
   return (
     <>
       <Row>
@@ -209,13 +222,6 @@ const StudioJarSetting = (props: any) => {
           </Form.Item>
           <Row>
             <Col span={12}>
-              <Form.Item label={l('pages.datastudio.label.jobConfig.checkPoint')}
-                         tooltip={l('pages.datastudio.label.jobConfig.checkPoint.tip')} name="checkPoint"
-                         className={styles.form_item}>
-                <InputNumber min={0} max={999999} defaultValue={0}/>
-              </Form.Item>
-            </Col>
-            <Col span={12}>
               <Form.Item
                 label={l('pages.datastudio.label.jobConfig.parallelism')} className={styles.form_item}
                 name="parallelism"
@@ -246,6 +252,17 @@ const StudioJarSetting = (props: any) => {
               <Input placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}/>
             </Form.Item>) : ''
           }
+          <Form.Item label={l('pages.datastudio.label.jobConfig.alertGroup')} name="alertGroupId"
+                     className={styles.form_item}>
+            <Select
+              style={{width: '100%'}}
+              placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
+              optionLabelProp="label"
+              defaultValue={0}
+            >
+              {getGroupOptions()}
+            </Select>
+          </Form.Item>
           <Form.Item
             label={l('pages.datastudio.label.jobConfig.other')} className={styles.form_item}
             tooltip={{title: l('pages.datastudio.label.jobConfig.other.tip'), icon: <InfoCircleOutlined/>}}
@@ -289,7 +306,7 @@ const StudioJarSetting = (props: any) => {
   );
 };
 
-export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType }) => ({
+export default connect(({Studio, Jar, Alert}: { Studio: StateType, Jar: JarStateType, Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
   current: Studio.current,
@@ -299,4 +316,5 @@ export default connect(({Studio, Jar}: { Studio: StateType, Jar: JarStateType })
   toolHeight: Studio.toolHeight,
   jars: Jar.jars,
   env: Studio.env,
+  group: Alert.group,
 }))(StudioJarSetting);
