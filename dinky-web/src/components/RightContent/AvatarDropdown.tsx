@@ -37,7 +37,7 @@ const Name = () => {
 
   const nameClassName = useEmotionCss(({ token }) => {
     return {
-      width: '70px',
+      width: 'auto',
       height: '48px',
       overflow: 'hidden',
       lineHeight: '48px',

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { VERSION } from '@/components/Version/Version';
+import { VERSION } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { HeartOutlined, LinkOutlined, SmileOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';

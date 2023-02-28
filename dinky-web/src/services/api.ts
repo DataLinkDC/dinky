@@ -17,7 +17,8 @@
 
 import { request } from '@umijs/max';
 
-/** 获取当前的用户 GET /api/current */
+// ================================ About Account ================================
+/**  GET /api/current */
 export async function currentUser(options?: { [key: string]: any }) {
   return request<API.Result>('/api/current', {
     method: 'GET',
@@ -25,7 +26,7 @@ export async function currentUser(options?: { [key: string]: any }) {
   });
 }
 
-/** 退出登录接口 POST /api/outLogin */
+/**  DELETE /api/outLogin */
 export async function outLogin(options?: { [key: string]: any }) {
   return request<Record<string, any>>('/api/outLogin', {
     method: 'DELETE',
@@ -33,7 +34,7 @@ export async function outLogin(options?: { [key: string]: any }) {
   });
 }
 
-/** 登录接口 POST /api/login */
+/**  POST /api/login */
 export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
   return request<API.Result>('/api/login', {
     method: 'POST',
@@ -45,7 +46,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   });
 }
 
-/** 获取当前的用户 GET /api/current */
+/**  GET /api/current */
 export function chooseTenantSubmit(params: { tenantId: number }) {
   return request<API.Result>('/api/chooseTenant', {
     method: 'GET',
@@ -54,3 +55,69 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
     },
   });
 }
+
+// ============================ CRUD REQUEST ============================
+export async function queryData(url: string, params?: PublicParams.TableParams) {
+  return request(url, {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getData(url: string, params?: any) {
+  return request(url, {
+    method: 'GET',
+    params: {
+      ...params,
+    },
+  });
+}
+
+export async function removeData(url: string, params: any[]) {
+  return request(url, {
+    method: 'DELETE',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function addOrUpdateData(url: string, params: any) {
+  return request(url, {
+    method: 'PUT',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function postDataArray(url: string, params: number[]) {
+  return request(url, {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function postAll(url: string, params?: any) {
+  return request(url, {
+    method: 'POST',
+    data: {
+      ...params,
+    },
+  });
+}
+
+export async function getInfoById(url: string, id: number) {
+  return request(url, {
+    method: 'GET',
+    params: {
+      id: id,
+    },
+  });
+}
+
+// =========================== Business ===================================
