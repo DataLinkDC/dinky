@@ -22,7 +22,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink-catalog</artifactId>
-        <version>0.7.1</version>
+        <version>0.7.2</version>
     </parent>
 
     <artifactId>dlink-catalog-mysql</artifactId>
