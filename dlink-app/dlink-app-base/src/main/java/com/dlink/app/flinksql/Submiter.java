@@ -271,12 +271,11 @@ public class Submiter {
                 // download python_udf.zip
                 String httpPythonZip = "http://" + dinkyAddr + "/download/downloadPythonUDF/" + taskId;
                 downloadFile(httpPythonZip, flinkHome + "/python_udf.zip");
-            } catch (IOException e) {
-                logger.error("");
-                throw new RuntimeException(e);
+                executorSetting.getConfig().put("python.files", "./python_udf.zip");
+            } catch (Exception e) {
+                logger.error(e.getMessage());
             }
         }
-        executorSetting.getConfig().put("python.files", "./python_udf.zip");
     }
 
     private static void addURLs(URL[] jarUrls) {
