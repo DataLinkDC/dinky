@@ -40,9 +40,9 @@ CDCSOURCE 语句用于将上游指定数据库的所有表的数据采用一个�
 ### 说明
 ```
 # 将下面 Dinky根目录下 整库同步依赖包放置 $FLINK_HOME/lib下
-jar/dlink-client-base-${version}.jar
-jar/dlink-common-${version}.jar
-lib/dlink-client-${version}.jar
+lib/dlink-client-base-${version}.jar
+lib/dlink-common-${version}.jar
+plugins/flink${flink-version}/dlink-client-${version}.jar
 ```
 
 
