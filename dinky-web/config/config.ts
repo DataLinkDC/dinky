@@ -26,6 +26,18 @@ const { REACT_APP_ENV = 'dev' } = process.env;
 
 export default defineConfig({
   /**
+   * tags router：
+   * doc description: https://juejin.cn/post/7153525746751766559
+   * issue: https://www.github.com/ant-design/ant-design-pro/issues/10550
+   */
+ /* keepalive: [/./],
+  tabsLayout: {
+     hasDropdown: true, // Whether there is a drop-down menu
+     hasCustomTabs: true, // Whether there are custom tabs
+     hasFixedHeader: true, // Whether there is a fixed header
+  },*/
+
+  /**
    * @name 开启 hash 模式
    * @description 让 build 之后的产物包含 hash 后缀。通常用于增量发布和避免浏览器加载缓存。
    * @doc https://umijs.org/docs/api/config#hash
@@ -39,9 +51,9 @@ export default defineConfig({
    * @description 设置 ie11 不一定完美兼容，需要检查自己使用的所有依赖
    * @doc https://umijs.org/docs/api/config#targets
    */
-  // targets: {
-  //   ie: 11,
-  // },
+  targets: {
+    ie: 11,
+  },
   /**
    * @name 路由的配置，不在路由中引入的文件不会编译
    * @description 只支持 path，component，routes，redirect，wrappers，title 的配置
