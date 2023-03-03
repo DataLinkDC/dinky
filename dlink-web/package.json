@@ -110,7 +110,7 @@
     "@umijs/preset-react": "^1.7.4",
     "@umijs/yorkie": "^2.0.3",
     "carlo": "^0.9.46",
-    "cross-env": "^7.0.0",
+    "cross-env": "^7.0.3",
     "cross-port-killer": "^1.1.1",
     "detect-installer": "^1.0.1",
     "enzyme": "^3.11.0",
