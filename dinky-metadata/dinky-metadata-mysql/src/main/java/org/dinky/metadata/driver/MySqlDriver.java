@@ -87,7 +87,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getCreateTableSql(Table table) {
-
         return genTable(table);
     }
 
