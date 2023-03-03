@@ -6,7 +6,7 @@ JAR_NAME="dlink-admin"
 
 # Use FLINK_HOME:
 # CLASS_PATH="./lib/*:./plugins/*:./plugins/flink${FLINK_VERSION}/*:$FLINK_HOME/lib/*"
-CLASS_PATH="./lib/*:./plugins/*:./plugins/flink${FLINK_VERSION}/*"
+CLASS_PATH="./lib/*:config:html:./plugins/*:./plugins/flink${FLINK_VERSION}/*"
 
 PID_FILE="dinky.pid"
 
