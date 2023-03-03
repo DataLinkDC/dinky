@@ -19,7 +19,14 @@
 
 package org.dinky.metadata;
 
-import com.alibaba.druid.pool.DruidDataSource;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
 import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
@@ -41,14 +48,7 @@ import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.when;
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * MysqlTest
@@ -56,7 +56,6 @@ import static org.mockito.Mockito.when;
  * @author wenmo
  * @since 2021/7/20 15:32
  */
-
 public class MysqlTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlTest.class);
@@ -74,8 +73,8 @@ public class MysqlTest {
         config.setUrl(
                 "jdbc:mysql://"
                         + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8" +
-                        "&serverTimezone=UTC&autoReconnect=true");
+                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
+                        + "&serverTimezone=UTC&autoReconnect=true");
         return Driver.build(config);
     }
 
@@ -96,9 +95,15 @@ public class MysqlTest {
         String test;
         try (MockedStatic<DriverManager> driverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection conn = mock(Connection.class);
-            driverManager.when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()).close()).thenReturn(conn);
+            driverManager
+                    .when(
+                            () ->
+                                    DriverManager.getConnection(
+                                                    anyString(), anyString(), anyString())
+                                            .close())
+                    .thenReturn(conn);
             doNothing().when(conn).close();
-            try(MockedStatic<Driver> driver = Mockito.mockStatic(Driver.class)) {
+            try (MockedStatic<Driver> driver = Mockito.mockStatic(Driver.class)) {
                 MySqlDriver sqlDriver = new MySqlDriver();
                 DruidDataSource druidDataSource = mock(DruidDataSource.class);
                 MySqlDriver spySqlDriver = spy(sqlDriver);

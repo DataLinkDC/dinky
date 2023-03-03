@@ -91,48 +91,67 @@ public class MySqlDriver extends AbstractJdbcDriver {
     }
 
     public String genTable(Table table) {
-        String columnStrs = table.getColumns().stream()
-                .map(column -> {
-                    String unit = "";
-                    if (column.getPrecision() != null && column.getScale() != null &&
-                            column.getPrecision() > 0 && column.getScale() > 0) {
-                        unit = String.format("(%s,%s)", column.getPrecision(), column.getScale());
-                    } else if (null != column.getLength()) {
-                        unit = String.format("(%s)", column.getLength());
-                    }
+        String columnStrs =
+                table.getColumns().stream()
+                        .map(
+                                column -> {
+                                    String unit = "";
+                                    if (column.getPrecision() != null
+                                            && column.getScale() != null
+                                            && column.getPrecision() > 0
+                                            && column.getScale() > 0) {
+                                        unit =
+                                                String.format(
+                                                        "(%s,%s)",
+                                                        column.getPrecision(), column.getScale());
+                                    } else if (null != column.getLength()) {
+                                        unit = String.format("(%s)", column.getLength());
+                                    }
 
-                    final String dv = column.getDefaultValue();
-                    String defaultValue = Asserts.isNotNull(dv)
-                            ? String.format(" DEFAULT %s", "".equals(dv) ? "\"\"" :dv)
-                            : String.format("%s NULL ", !column.isNullable() ? " NOT " : "");
+                                    final String dv = column.getDefaultValue();
+                                    String defaultValue =
+                                            Asserts.isNotNull(dv)
+                                                    ? String.format(
+                                                            " DEFAULT %s",
+                                                            "".equals(dv) ? "\"\"" : dv)
+                                                    : String.format(
+                                                            "%s NULL ",
+                                                            !column.isNullable() ? " NOT " : "");
 
-                    return String.format("  `%s`  %s%s%s%s%s",
-                            column.getName(),
-                            column.getType(),
-                            unit,
-                            defaultValue,
-                            column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
-                            Asserts.isNotNullString(column.getComment()) ? String.format(" COMMENT '%s'",
-                    column.getComment()) : "");
-                }).collect(Collectors.joining(",\n"));
+                                    return String.format(
+                                            "  `%s`  %s%s%s%s%s",
+                                            column.getName(),
+                                            column.getType(),
+                                            unit,
+                                            defaultValue,
+                                            column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
+                                            Asserts.isNotNullString(column.getComment())
+                                                    ? String.format(
+                                                            " COMMENT '%s'", column.getComment())
+                                                    : "");
+                                })
+                        .collect(Collectors.joining(",\n"));
 
-        String primaryKeyStr = table.getColumns().stream()
-                .filter(Column::isKeyFlag)
-                .map(Column::getName)
-                .map(t -> String.format("`%s`", t))
-                .collect(
-                        Collectors.joining(
-                                ",", ",\n  PRIMARY KEY (", ")\n"));
+        String primaryKeyStr =
+                table.getColumns().stream()
+                        .filter(Column::isKeyFlag)
+                        .map(Column::getName)
+                        .map(t -> String.format("`%s`", t))
+                        .collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
 
-        return MessageFormat.format("CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}{3})\n ENGINE={4}{5}{6};",
+        return MessageFormat.format(
+                "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}{3})\n ENGINE={4}{5}{6};",
                 table.getSchema(),
                 table.getName(),
                 columnStrs,
                 primaryKeyStr,
                 table.getEngine(),
-                Asserts.isNotNullString(table.getOptions()) ? String.format(" %s", table.getOptions()) : "",
-                Asserts.isNotNullString(table.getComment()) ? String.format(" COMMENT='%s'", table.getComment()) : ""
-                );
+                Asserts.isNotNullString(table.getOptions())
+                        ? String.format(" %s", table.getOptions())
+                        : "",
+                Asserts.isNotNullString(table.getComment())
+                        ? String.format(" COMMENT='%s'", table.getComment())
+                        : "");
     }
 
     @Override
