@@ -29,9 +29,11 @@ import org.dinky.model.QueryData;
 import org.dinky.model.Table;
 import org.dinky.utils.TextUtil;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * MysqlDriver
@@ -85,77 +87,71 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getCreateTableSql(Table table) {
-
         return genTable(table);
     }
 
     public String genTable(Table table) {
-        StringBuilder key = new StringBuilder();
-        StringBuilder sb = new StringBuilder();
+        String columnStrs =
+                table.getColumns().stream()
+                        .map(
+                                column -> {
+                                    String unit = "";
+                                    if (column.getPrecision() != null
+                                            && column.getScale() != null
+                                            && column.getPrecision() > 0
+                                            && column.getScale() > 0) {
+                                        unit =
+                                                String.format(
+                                                        "(%s,%s)",
+                                                        column.getPrecision(), column.getScale());
+                                    } else if (null != column.getLength()) {
+                                        unit = String.format("(%s)", column.getLength());
+                                    }
 
-        sb.append("CREATE TABLE IF NOT EXISTS ")
-                .append("`")
-                .append(table.getSchema())
-                .append("`.`")
-                .append(table.getName())
-                .append("`")
-                .append(" (\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            Column column = table.getColumns().get(i);
-            sb.append("  `").append(column.getName()).append("`  ").append(column.getType());
-            // 处理浮点类型
-            if (column.getPrecision() > 0 && column.getScale() > 0) {
-                sb.append("(")
-                        .append(column.getLength())
-                        .append(",")
-                        .append(column.getScale())
-                        .append(")");
-            } else if (null != column.getLength()) { // 处理字符串类型和数值型
-                sb.append("(").append(column.getLength()).append(")");
-            }
-            if (Asserts.isNotNull(column.getDefaultValue())) {
-                if ("".equals(column.getDefaultValue())) {
-                    sb.append(" DEFAULT ").append("\"\"");
-                } else {
-                    sb.append(" DEFAULT ").append(column.getDefaultValue());
-                }
-            } else {
-                if (!column.isNullable()) {
-                    sb.append(" NOT ");
-                }
-                sb.append(" NULL ");
-            }
-            if (column.isAutoIncrement()) {
-                sb.append(" AUTO_INCREMENT ");
-            }
-            if (Asserts.isNotNullString(column.getComment())) {
-                sb.append(" COMMENT '").append(column.getComment()).append("'");
-            }
-            if (column.isKeyFlag()) {
-                key.append("`").append(column.getName()).append("`,");
-            }
-            if (i < table.getColumns().size() || key.length() > 0) {
-                sb.append(",");
-            }
-            sb.append("\n");
-        }
+                                    final String dv = column.getDefaultValue();
+                                    String defaultValue =
+                                            Asserts.isNotNull(dv)
+                                                    ? String.format(
+                                                            " DEFAULT %s",
+                                                            "".equals(dv) ? "\"\"" : dv)
+                                                    : String.format(
+                                                            "%s NULL ",
+                                                            !column.isNullable() ? " NOT " : "");
 
-        if (key.length() > 0) {
-            sb.append("  PRIMARY KEY (");
-            sb.append(key.substring(0, key.length() - 1));
-            sb.append(")\n");
-        }
+                                    return String.format(
+                                            "  `%s`  %s%s%s%s%s",
+                                            column.getName(),
+                                            column.getType(),
+                                            unit,
+                                            defaultValue,
+                                            column.isAutoIncrement() ? " AUTO_INCREMENT " : "",
+                                            Asserts.isNotNullString(column.getComment())
+                                                    ? String.format(
+                                                            " COMMENT '%s'", column.getComment())
+                                                    : "");
+                                })
+                        .collect(Collectors.joining(",\n"));
 
-        sb.append(")\n ENGINE=").append(table.getEngine());
-        if (Asserts.isNotNullString(table.getOptions())) {
-            sb.append(" ").append(table.getOptions());
-        }
+        String primaryKeyStr =
+                table.getColumns().stream()
+                        .filter(Column::isKeyFlag)
+                        .map(Column::getName)
+                        .map(t -> String.format("`%s`", t))
+                        .collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
 
-        if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" COMMENT='").append(table.getComment()).append("'");
-        }
-        sb.append(";");
-        return sb.toString();
+        return MessageFormat.format(
+                "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}{3})\n ENGINE={4}{5}{6};",
+                table.getSchema(),
+                table.getName(),
+                columnStrs,
+                primaryKeyStr,
+                table.getEngine(),
+                Asserts.isNotNullString(table.getOptions())
+                        ? String.format(" %s", table.getOptions())
+                        : "",
+                Asserts.isNotNullString(table.getComment())
+                        ? String.format(" COMMENT='%s'", table.getComment())
+                        : "");
     }
 
     @Override

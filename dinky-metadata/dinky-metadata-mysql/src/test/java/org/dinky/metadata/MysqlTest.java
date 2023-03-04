@@ -19,19 +19,36 @@
 
 package org.dinky.metadata;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+
+import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.metadata.driver.MySqlDriver;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.model.Column;
 import org.dinky.model.Schema;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.UUID;
 
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.alibaba.druid.pool.DruidDataSource;
 
 /**
  * MysqlTest
@@ -39,7 +56,6 @@ import org.slf4j.LoggerFactory;
  * @author wenmo
  * @since 2021/7/20 15:32
  */
-@Ignore
 public class MysqlTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MysqlTest.class);
@@ -57,26 +73,43 @@ public class MysqlTest {
         config.setUrl(
                 "jdbc:mysql://"
                         + IP
-                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
+                        + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8"
+                        + "&serverTimezone=UTC&autoReconnect=true");
         return Driver.build(config);
     }
 
-    @Ignore
     @Test
-    public void connectTest() {
+    public void connectTest() throws SQLException {
         DriverConfig config = new DriverConfig();
         config.setType("Mysql");
+        config.setName("name");
         config.setIp(IP);
         config.setPort(3306);
-        config.setUsername("dca");
-        config.setPassword("dca");
+        config.setUsername("root");
+        config.setPassword("123456");
         config.setUrl(
                 "jdbc:mysql://"
                         + IP
                         + ":3306/dca?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&serverTimezone=UTC&autoReconnect=true");
-        String test = Driver.build(config).test();
-        LOGGER.info(test);
-        LOGGER.info("end...");
+
+        String test;
+        try (MockedStatic<DriverManager> driverManager = Mockito.mockStatic(DriverManager.class)) {
+            Connection conn = mock(Connection.class);
+            driverManager
+                    .when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
+                    .thenReturn(conn);
+            doNothing().when(conn).close();
+            try (MockedStatic<Driver> driver = Mockito.mockStatic(Driver.class)) {
+                MySqlDriver sqlDriver = new MySqlDriver();
+                DruidDataSource druidDataSource = mock(DruidDataSource.class);
+                MySqlDriver spySqlDriver = spy(sqlDriver);
+                doReturn(druidDataSource).when(spySqlDriver).createDataSource();
+                spySqlDriver.setDriverConfig(config);
+                driver.when(() -> Driver.build(config)).thenReturn(spySqlDriver);
+                test = Driver.build(config).test();
+            }
+        }
+        assertThat(test, equalTo(CommonConstant.HEALTHY));
     }
 
     @Ignore
