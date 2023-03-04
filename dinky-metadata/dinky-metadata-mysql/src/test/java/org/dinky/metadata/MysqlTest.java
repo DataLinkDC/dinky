@@ -96,10 +96,7 @@ public class MysqlTest {
         try (MockedStatic<DriverManager> driverManager = Mockito.mockStatic(DriverManager.class)) {
             Connection conn = mock(Connection.class);
             driverManager
-                    .when(
-                            () ->
-                                    DriverManager.getConnection(
-                                                    anyString(), anyString(), anyString()))
+                    .when(() -> DriverManager.getConnection(anyString(), anyString(), anyString()))
                     .thenReturn(conn);
             doNothing().when(conn).close();
             try (MockedStatic<Driver> driver = Mockito.mockStatic(Driver.class)) {
