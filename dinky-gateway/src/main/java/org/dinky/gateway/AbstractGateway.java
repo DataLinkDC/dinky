@@ -231,4 +231,9 @@ public abstract class AbstractGateway implements Gateway {
         }
         return clusterSpecificationBuilder;
     }
+
+    @Override
+    public boolean handleJobDone(String status) {
+        return true;
+    }
 }

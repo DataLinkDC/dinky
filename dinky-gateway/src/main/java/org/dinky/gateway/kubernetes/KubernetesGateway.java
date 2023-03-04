@@ -74,6 +74,9 @@ public abstract class KubernetesGateway extends AbstractGateway {
                         config.getClusterConfig().getFlinkConfigPath());
 
         final FlinkConfig flinkConfig = config.getFlinkConfig();
+        if (flinkConfig.getFlinkKubetnetsConfig() != null) {
+            flinkConfig.getConfiguration().putAll(flinkConfig.getFlinkKubetnetsConfig());
+        }
         if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
             addConfigParas(flinkConfig.getConfiguration());
         }

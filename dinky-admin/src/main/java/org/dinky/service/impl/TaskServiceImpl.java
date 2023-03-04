@@ -965,8 +965,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     clusterService.buildEnvironmentAddress(
                             config.isUseRemote(), task.getClusterId()));
         } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
-                // support custom K8s app submit, rather than clusterConfiguration
-                && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+                        // support custom K8s app submit, rather than clusterConfiguration
+                        && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
             Map<String, Object> taskConfig =
                     JSONUtil.toMap(task.getStatement(), String.class, Object.class);
             Map<String, Object> clusterConfiguration =
@@ -1048,9 +1049,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
-                jobInfoDetail.setClusterConfiguration(
+                ClusterConfiguration clusterConfigById =
                         clusterConfigurationService.getClusterConfigById(
-                                history.getClusterConfigurationId()));
+                                history.getClusterConfigurationId());
+                jobInfoDetail.setClusterConfiguration(clusterConfigById);
+                Task task = getById(jobInstance.getTaskId());
+                jobInfoDetail.getInstance().setType(task.getType());
             }
             jobInfoDetail.setHistory(history);
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(id));
@@ -1413,6 +1417,26 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Integer jobInstanceId = jobInstance.getId();
         // 获取任务历史信息
         JobHistory jobHistory = jobHistoryService.getJobHistory(jobInstanceId);
+
+        // some job need do something on Done, example flink-kubernets-operator
+        if (GatewayType.isDeployCluster(jobInstance.getType())) {
+            JobConfig jobConfig = new JobConfig();
+            Map<String, Object> clusterConfig =
+                    JSONUtil.toMap(
+                            jobHistory.getClusterConfiguration().get("configJson").asText(),
+                            String.class,
+                            Object.class);
+            jobConfig.buildGatewayConfig(clusterConfig);
+            jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
+            jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
+            Gateway.build(jobConfig.getGatewayConfig()).handleJobDone(jobInstance.getStatus());
+        }
+
+        if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
+            updateById(updateTask);
+            return;
+        }
+
         ObjectNode jsonNodes = jobHistory.getJob();
         if (jsonNodes.has("errors")) {
             return;

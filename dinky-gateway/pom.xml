@@ -130,6 +130,10 @@ for k8s commit tasks-->
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-process</artifactId>
+        </dependency>
     </dependencies>
 
     <profiles>

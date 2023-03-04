@@ -17,34 +17,29 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.gateway.kubernetes.operator.api;
 
-import java.util.Map;
+import org.apache.flink.kubernetes.shaded.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-import lombok.Getter;
-import lombok.Setter;
+import io.fabric8.kubernetes.api.model.Pod;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-/**
- * @author ZackYoung
- * @since
- */
-@Getter
-@Setter
-public class FlinkClusterConfiguration {
-    private Type type;
-    private String hadoopConfigPath;
-    private String flinkConfigPath;
-    private String flinkLibPath;
-    private String userJarPath;
-    private String flinkVersion;
+@Data
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class AbstractPodSpec {
+    private Resource resource;
+    private int replicas = 1;
+    private Pod podTemplate;
 
-    Map<String, String> flinkConfig;
-    Map<String, String> kubernetesConfig;
+    public AbstractPodSpec() {}
 
-    public enum Type {
-        //
-        Yarn,
-        Kubernetes,
-        KubernetesOperator;
+    @Data
+    @AllArgsConstructor
+    public static class Resource {
+        private Double cpu;
+        private String memory;
+
+        public Resource() {}
     }
 }

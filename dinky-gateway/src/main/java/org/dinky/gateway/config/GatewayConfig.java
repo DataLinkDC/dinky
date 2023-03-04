@@ -44,6 +44,7 @@ public class GatewayConfig {
 
     public static final String FLINK_CONFIG_PATH = "flinkConfigPath";
     public static final String FLINK_LIB_PATH = "flinkLibPath";
+    public static final String FLINK_VERSION = "flinkVersion";
     public static final String HADOOP_CONFIG_PATH = "hadoopConfigPath";
     public static final String USER_JAR_PATH = "userJarPath";
     public static final String USER_JAR_MAIN_APP_CLASS = "userJarMainAppClass";
@@ -87,10 +88,16 @@ public class GatewayConfig {
         }
 
         final Map<String, String> configuration = fc.getConfiguration();
+        final Map<String, String> k8sConfig = fc.getFlinkKubetnetsConfig();
+
         if (config.containsKey(KUBERNETES_CONFIG)) {
             Map<String, String> kubernetesConfig =
                     (Map<String, String>) config.get(KUBERNETES_CONFIG);
-            configuration.putAll(kubernetesConfig);
+            k8sConfig.putAll(kubernetesConfig);
+        }
+
+        if (config.containsKey(FLINK_VERSION)) {
+            k8sConfig.put(FLINK_VERSION, String.valueOf(config.get(FLINK_VERSION)));
         }
 
         // at present only k8s task have this
@@ -98,7 +105,7 @@ public class GatewayConfig {
             Map<String, Map<String, String>> taskCustomConfig =
                     (Map<String, Map<String, String>>) config.get(TASK_CUSTOM_CONFIG);
             if (taskCustomConfig.containsKey(KUBERNETES_CONFIG)) {
-                configuration.putAll(taskCustomConfig.get(KUBERNETES_CONFIG));
+                k8sConfig.putAll(taskCustomConfig.get(KUBERNETES_CONFIG));
             }
             if (taskCustomConfig.containsKey(FLINK_CONFIG)) {
                 configuration.putAll(taskCustomConfig.get(FLINK_CONFIG));
@@ -138,7 +145,7 @@ public class GatewayConfig {
                     config.get(FLINK_LIB_PATH).toString(),
                     config.get(HADOOP_CONFIG_PATH).toString());
         } else {
-            return ClusterConfig.build(config.get(FLINK_CONFIG_PATH).toString());
+            return ClusterConfig.build(String.valueOf(config.get(FLINK_CONFIG_PATH)));
         }
     }
 }

@@ -163,6 +163,7 @@ const StudioSetting = (props: any) => {
               <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
               <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
               <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
+              <Option value={RUN_MODE.KUBERNETES_APPLICATION_OPERATOR}>Kubernetes Operator Application</Option>
             </Select>
           </Form.Item>
           {(current.task.type === RUN_MODE.YARN_SESSION || current.task.type === RUN_MODE.KUBERNETES_SESSION || current.task.type === RUN_MODE.STANDALONE) ? (
@@ -192,7 +193,8 @@ const StudioSetting = (props: any) => {
                 </Form.Item>
               </Col>
             </Row>) : undefined}
-          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION || current.task.type === RUN_MODE.KUBERNETES_APPLICATION) ? (
+          {(current.task.type === RUN_MODE.YARN_PER_JOB || current.task.type === RUN_MODE.YARN_APPLICATION
+          || current.task.type === RUN_MODE.KUBERNETES_APPLICATION|| current.task.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) ? (
             <Row>
               <Col span={24}>
                 <Form.Item label={l('pages.datastudio.label.jobConfig.clusterConfig')}
