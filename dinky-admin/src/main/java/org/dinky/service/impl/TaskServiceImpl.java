@@ -1409,10 +1409,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
         updateTask.setJobInstanceId(0);
-        if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
-            updateById(updateTask);
-            return;
-        }
 
         Integer jobInstanceId = jobInstance.getId();
         // 获取任务历史信息
