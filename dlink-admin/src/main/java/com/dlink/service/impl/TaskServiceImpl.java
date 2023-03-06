@@ -500,6 +500,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public boolean updateJobInstance(JobInstance jobInstance) {
+        return jobInstanceService.updateById(jobInstance);
+    }
+
+    @Override
     public List<Task> listFlinkSQLEnv() {
         return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled", 1));
     }
@@ -561,7 +566,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobStatus checkJobStatus(JobInfoDetail jobInfoDetail) {
         JobConfig jobConfig = new JobConfig();
         if (Asserts.isNull(jobInfoDetail.getClusterConfiguration())) {
-            return JobStatus.UNKNOWN;
+            return JobStatus.RECONNECTING;
         }
         Map<String, Object> gatewayConfigMap = clusterConfigurationService
                 .getGatewayConfig(jobInfoDetail.getClusterConfiguration().getId());
