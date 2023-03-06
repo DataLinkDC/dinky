@@ -79,11 +79,14 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
                             .resource(flinkDeployment)
                             .waitUntilCondition(
                                     flinkDeployment1 -> {
+                                        if (Asserts.isNull(flinkDeployment1.getStatus())) {
+                                            return false;
+                                        }
                                         String status =
-                                                flinkDeployment1
-                                                        .getStatus()
-                                                        .getJobManagerDeploymentStatus()
-                                                        .toString();
+                                                String.valueOf(
+                                                        flinkDeployment1
+                                                                .getStatus()
+                                                                .getJobManagerDeploymentStatus());
                                         logger.info("deploy kubernetes , status is : {}", status);
                                         process.info(
                                                 String.format(
