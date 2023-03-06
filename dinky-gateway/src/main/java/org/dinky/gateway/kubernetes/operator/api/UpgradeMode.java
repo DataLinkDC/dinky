@@ -20,8 +20,9 @@
 package org.dinky.gateway.kubernetes.operator.api;
 
 import org.apache.flink.annotation.Experimental;
-import org.apache.flink.kubernetes.shaded.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.apache.flink.kubernetes.shaded.com.fasterxml.jackson.annotation.JsonProperty;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Experimental
 @JsonIgnoreProperties(ignoreUnknown = true)

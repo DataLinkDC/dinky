@@ -20,10 +20,11 @@
 package org.dinky.gateway.kubernetes.operator.api;
 
 import org.apache.flink.annotation.Experimental;
-import org.apache.flink.kubernetes.shaded.com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import io.fabric8.kubernetes.model.annotation.PrinterColumn;
 import lombok.AllArgsConstructor;
