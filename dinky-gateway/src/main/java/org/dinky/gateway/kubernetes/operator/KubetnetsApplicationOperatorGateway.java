@@ -28,6 +28,7 @@ import org.dinky.process.model.ProcessEntity;
 import org.dinky.utils.LogUtil;
 
 import java.util.Collections;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
@@ -64,11 +65,11 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
             KubernetesClient kubernetesClient = getKubernetesClient();
             FlinkDeployment flinkDeployment = getFlinkDeployment();
 
-            //            process.info("start delete old cluster ");
-            //            kubernetesClient.resource(flinkDeployment).delete();
-            //            kubernetesClient
-            //                    .resource(flinkDeployment)
-            //                    .waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
+            process.info("start delete old cluster ");
+            kubernetesClient.resource(flinkDeployment).delete();
+            kubernetesClient
+                    .resource(flinkDeployment)
+                    .waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
 
             process.info("start create cluster ");
 
