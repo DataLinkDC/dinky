@@ -965,9 +965,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     clusterService.buildEnvironmentAddress(
                             config.isUseRemote(), task.getClusterId()));
         } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
-                        // support custom K8s app submit, rather than clusterConfiguration
-                        && GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
-                || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
+                // support custom K8s app submit, rather than clusterConfiguration
+                && (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                        || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(
+                                config.getType()))) {
             Map<String, Object> taskConfig =
                     JSONUtil.toMap(task.getStatement(), String.class, Object.class);
             Map<String, Object> clusterConfiguration =
@@ -980,7 +981,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
             // submit application type with clusterConfiguration
             if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())
-                    || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+                    || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
+                    || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
                 if (isJarTask) {
                     Jar jar = jarService.getById(task.getJarId());
                     Assert.check(jar);
