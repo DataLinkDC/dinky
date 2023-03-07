@@ -40,12 +40,11 @@ import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
+import java.lang.reflect.Method;
 import java.util.Collections;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ReflectUtil;
-import io.fabric8.kubernetes.client.NamespacedKubernetesClient;
-import io.fabric8.kubernetes.client.VersionInfo;
 
 /**
  * KubernetesGateway
@@ -153,14 +152,13 @@ public abstract class KubernetesGateway extends AbstractGateway {
         try {
             initKubeClient();
             if (client instanceof Fabric8FlinkKubeClient) {
-                VersionInfo kubernetesVersion =
-                        ((NamespacedKubernetesClient)
-                                        ReflectUtil.getFieldValue(client, "internalClient"))
-                                .getVersion();
+                Object internalClient = ReflectUtil.getFieldValue(client, "internalClient");
+                Method method = ReflectUtil.getMethod(internalClient.getClass(), "getVersion");
+                Object versionInfo = method.invoke(internalClient);
                 logger.info(
                         "k8s cluster link successful ; k8s version: {} ; platform: {}",
-                        kubernetesVersion.getGitVersion(),
-                        kubernetesVersion.getPlatform());
+                        ReflectUtil.getFieldValue(versionInfo, "gitVersion"),
+                        ReflectUtil.getFieldValue(versionInfo, "platform"));
             }
             logger.info("配置连接测试成功");
             return TestResult.success();
