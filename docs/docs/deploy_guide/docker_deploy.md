@@ -18,20 +18,20 @@ title: Docker 部署
 
 ```shell
 # 启动 dinky mysql 镜像服务
-docker run --name dinky-mysql dinkydocker/dinky-mysql-server:0.7.0
+docker run --name dinky-mysql dinkydocker/dinky-mysql-server:0.7.2
 
 # 启动 dinky 镜像服务
-docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=dinky-mysql:3306 --name dinky --link dinky-mysql:dinky-mysql dinkydocker/dinky-standalone-server:0.7.0-flink14
+docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=dinky-mysql:3306 --name dinky --link dinky-mysql:dinky-mysql dinkydocker/dinky-standalone-server:0.7.2-flink14
 
 
 #注意：如果你有 mysql 服务，请执行对应版本的 SQL 文件。假如你的 mysql地址为 10.255.7.3 端口为33006，执行命令如下
 
-docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:33006 --name dinky dinkydocker/dinky-standalone-server:0.7.0-flink14
+docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:33006 --name dinky dinkydocker/dinky-standalone-server:0.7.2-flink14
 
 ```
 
 :::tip 说明
-如果 `docker image` 需要加速的，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
+如果 `docker image` 需要加速，请把 `dinkydocker` 替换成 `registry.cn-hangzhou.aliyuncs.com/dinky`
 :::
 
 ### 环境变量
