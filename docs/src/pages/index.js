@@ -58,7 +58,7 @@ function HomepageHeader() {
                             <Link
                                 className="button button--secondary button--lg"
                                 style={{backgroundColor: '#42b983', borderRadius: '2rem', border: '1px solid #42b983'}}
-                                to="/docs/next/get_started/docker_deploy">
+                                to="/docs/next/get_started/quick_experience">
                                 Quick Start
                             </Link>
                             &nbsp;&nbsp;
