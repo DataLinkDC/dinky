@@ -29,6 +29,7 @@ import org.dinky.model.FlinkCDCConfig;
 import org.dinky.model.Schema;
 import org.dinky.model.Table;
 import org.dinky.utils.JSONUtil;
+import org.dinky.utils.LogUtil;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
@@ -49,15 +50,19 @@ import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -95,7 +100,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
             DataStreamSource<String> dataStreamSource) {
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
-            SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
+            DataStream<Map> mapOperator = deserialize(dataStreamSource);
             String mergeFlag = config.getSink().get("sink.merge.table");
             if ("true".equalsIgnoreCase(mergeFlag)) {
                 // 取第一个table
@@ -112,26 +117,71 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
                 addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
             } else {
                 final String schemaFieldName = config.getSchemaFieldName();
-                for (Schema schema : schemaList) {
-                    for (Table table : schema.getTables()) {
-                        SingleOutputStreamOperator<Map> filterOperator =
-                                shunt(mapOperator, table, schemaFieldName);
+                Map<String, Table> tableMap =
+                        schemaList.stream()
+                                .map(Schema::getTables)
+                                .flatMap(List::stream)
+                                .collect(
+                                        Collectors.toMap(
+                                                Table::getSchemaTableName, Function.identity()));
 
-                        List<String> columnNameList = new ArrayList<>();
-                        List<LogicalType> columnTypeList = new ArrayList<>();
+                Map<Table, OutputTag<Map>> tagMap =
+                        schemaList.stream()
+                                .map(Schema::getTables)
+                                .flatMap(List::stream)
+                                .collect(
+                                        Collectors.toMap(
+                                                Function.identity(),
+                                                table ->
+                                                        new OutputTag<Map>(
+                                                                getSinkTableName(table)) {}));
 
-                        buildColumn(columnNameList, columnTypeList, table.getColumns());
+                Map<Table, List<String>> columnNameMap = new HashMap<>();
+                Map<Table, List<LogicalType>> columnTypeMap = new HashMap<>();
+                schemaList.stream()
+                        .map(Schema::getTables)
+                        .flatMap(List::stream)
+                        .forEach(
+                                table -> {
+                                    List<String> columnNameList = new ArrayList<>();
+                                    List<LogicalType> columnTypeList = new ArrayList<>();
+                                    buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-                        DataStream<RowData> rowDataDataStream =
-                                buildRowData(
-                                        filterOperator,
+                                    columnNameMap.put(table, columnNameList);
+                                    columnTypeMap.put(table, columnTypeList);
+                                });
+
+                SingleOutputStreamOperator<Map> tagOperator =
+                        tag(mapOperator, tableMap, schemaFieldName, tagMap);
+                tagMap.forEach(
+                        (table, tag) -> {
+                            final String schemaTableName = table.getSchemaTableName();
+                            List<String> columnNameList = columnNameMap.get(table);
+                            List<LogicalType> columnTypeList = columnTypeMap.get(table);
+
+                            try {
+                                DataStream<Map> filterOperator = shunt(tagOperator, tag);
+                                logger.info("Build {} shunt successful...", schemaTableName);
+                                DataStream<RowData> rowDataDataStream =
+                                        buildRowData(
+                                                        filterOperator,
+                                                        columnNameList,
+                                                        columnTypeList,
+                                                        schemaTableName)
+                                                .rebalance();
+                                logger.info("Build {} flatMap successful...", schemaTableName);
+                                addSink(
+                                        env,
+                                        rowDataDataStream,
+                                        table,
                                         columnNameList,
-                                        columnTypeList,
-                                        table.getSchemaTableName());
-
-                        addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
-                    }
-                }
+                                        columnTypeList);
+                                logger.info("Build {} sink successful..., schemaTableName");
+                            } catch (Exception e) {
+                                logger.error("Build " + schemaTableName + " cdc sync failed...");
+                                logger.error(LogUtil.getError(e));
+                            }
+                        });
             }
         }
         return dataStreamSource;
@@ -247,7 +297,7 @@ public class StarrocksSinkBuilder extends AbstractSinkBuilder implements SinkBui
     }
 
     protected DataStream<RowData> buildRowData(
-            SingleOutputStreamOperator<Map> filterOperator,
+            DataStream<Map> filterOperator,
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
