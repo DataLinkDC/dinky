@@ -18,10 +18,10 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 - 沉浸式 FlinkSQL 数据开发：自动提示补全、语法高亮、语句美化、在线调试、语法校验、执行计划、MetaStore、血缘分析、版本对比等
 - 支持 FlinkSQL 多版本开发及多种执行模式：Local、Standalone、Yarn/Kubernetes Session、Yarn Per-Job、Yarn/Kubernetes Application
 - 支持 Apache Flink 生态：Connector、FlinkCDC、Table Store 等
-- 支持 FlinkSQL 语法增强：整库同步、执行环境、全局变量、语句合并、表值聚合函数等
+- 支持 FlinkSQL 语法增强：整库同步、执行环境、全局变量、语句合并、表值聚合函数、加载依赖、行级权限等
 - 支持 FlinkCDC 整库实时入仓入湖、多库输出、自动建表
 - 支持 SQL 作业开发：ClickHouse、Doris、Hive、Mysql、Oracle、Phoenix、PostgreSql、Presto、SqlServer、StarRocks 等
-- 支持实时在线调试预览 Table、 ChangeLog、Charts 和 UDF
+- 支持实时在线调试预览 Table、ChangeLog、Charts 和 UDF
 - 支持 Flink Catalog、数据源元数据在线查询及管理
 - 支持实时任务运维：上线下线、作业信息、集群信息、作业快照、异常信息、数据地图、数据探查、历史版本、报警记录等
 - 支持作为多版本 FlinkSQL Server 以及 OpenApi 的能力
