@@ -36,12 +36,10 @@ import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -63,9 +61,10 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -245,59 +244,56 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         }
         final List<Schema> schemaList = config.getSchemaList();
         if (Asserts.isNotNullCollection(schemaList)) {
+            Map<String, Table> tableMap =
+                    schemaList.stream()
+                            .map(Schema::getTables)
+                            .flatMap(List::stream)
+                            .collect(
+                                    Collectors.toMap(
+                                            Table::getSchemaTableName, Function.identity()));
 
-            logger.info("Build deserialize successful...");
-            Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
-            Map<String, Table> tableMap = new HashMap<>();
-            for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
-                    String sinkTableName = getSinkTableName(table);
-                    OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
-                    tagMap.put(table, outputTag);
+            Map<Table, OutputTag<Map>> tagMap =
+                    schemaList.stream()
+                            .map(Schema::getTables)
+                            .flatMap(List::stream)
+                            .collect(
+                                    Collectors.toMap(
+                                            Function.identity(),
+                                            table ->
+                                                    new OutputTag<Map>(
+                                                            getSinkTableName(table)) {}));
 
-                    tableMap.put(table.getSchemaTableName(), table);
-                }
-            }
-            final String schemaFieldName = config.getSchemaFieldName();
-            ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator =
-                    dataStreamSource
-                            .map(x -> objectMapper.readValue(x, Map.class))
-                            .returns(Map.class);
+            Map<Table, List<String>> columnNameMap = new HashMap<>();
+            Map<Table, List<LogicalType>> columnTypeMap = new HashMap<>();
+            schemaList.stream()
+                    .map(Schema::getTables)
+                    .flatMap(List::stream)
+                    .forEach(
+                            table -> {
+                                List<String> columnNameList = new ArrayList<>();
+                                List<LogicalType> columnTypeList = new ArrayList<>();
+                                buildColumn(columnNameList, columnTypeList, table.getColumns());
 
-            SingleOutputStreamOperator<Map> processOperator =
-                    mapOperator.process(
-                            new ProcessFunction<Map, Map>() {
-
-                                @Override
-                                public void processElement(
-                                        Map map,
-                                        ProcessFunction<Map, Map>.Context ctx,
-                                        Collector<Map> out)
-                                        throws Exception {
-                                    LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                    try {
-                                        Table table =
-                                                tableMap.get(
-                                                        source.get(schemaFieldName).toString()
-                                                                + "."
-                                                                + source.get("table").toString());
-                                        OutputTag<Map> outputTag = tagMap.get(table);
-                                        ctx.output(outputTag, map);
-                                    } catch (Exception e) {
-                                        out.collect(map);
-                                    }
-                                }
+                                columnNameMap.put(table, columnNameList);
+                                columnTypeMap.put(table, columnTypeList);
                             });
+
+            final String schemaFieldName = config.getSchemaFieldName();
+            DataStream<Map> mapOperator = deserialize(dataStreamSource);
+            logger.info("Build deserialize successful...");
+            SingleOutputStreamOperator<Map> tagOperator =
+                    tag(mapOperator, tableMap, schemaFieldName, tagMap);
+            logger.info("Build tag successful...");
+
             tagMap.forEach(
                     (table, tag) -> {
                         final String schemaTableName = table.getSchemaTableName();
+                        List<String> columnNameList = columnNameMap.get(table);
+                        List<LogicalType> columnTypeList = columnTypeMap.get(table);
+
                         try {
-                            DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                            logger.info("Build " + schemaTableName + " shunt successful...");
-                            List<String> columnNameList = new ArrayList<>();
-                            List<LogicalType> columnTypeList = new ArrayList<>();
-                            buildColumn(columnNameList, columnTypeList, table.getColumns());
+                            DataStream<Map> filterOperator = shunt(tagOperator, tag);
+                            logger.info("Build {} shunt successful...", schemaTableName);
                             DataStream<Row> rowDataDataStream =
                                     buildRow(
                                                     filterOperator,
@@ -305,13 +301,13 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                                                     columnTypeList,
                                                     schemaTableName)
                                             .rebalance();
-                            logger.info("Build " + schemaTableName + " flatMap successful...");
-                            logger.info("Start build " + schemaTableName + " sink...");
+                            logger.info("Build {} flatMap successful...", schemaTableName);
                             addTableSink(
                                     customTableEnvironment,
                                     rowDataDataStream,
                                     table,
                                     columnNameList);
+                            logger.info("Build {} sink successful..., schemaTableName");
                         } catch (Exception e) {
                             logger.error("Build " + schemaTableName + " cdc sync failed...");
                             logger.error(LogUtil.getError(e));
