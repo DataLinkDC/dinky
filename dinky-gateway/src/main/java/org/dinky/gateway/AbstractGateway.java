@@ -233,7 +233,7 @@ public abstract class AbstractGateway implements Gateway {
     }
 
     @Override
-    public boolean handleJobDone(String status) {
+    public boolean onJobFinishCallback(String status) {
         return true;
     }
 }

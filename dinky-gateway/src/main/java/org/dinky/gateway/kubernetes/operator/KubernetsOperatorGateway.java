@@ -90,7 +90,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     }
 
     @Override
-    public boolean handleJobDone(String status) {
+    public boolean onJobFinishCallback(String status) {
 
         submitConfiguration = config.getFlinkConfig().getFlinkKubetnetsConfig();
         kubernetesClient = new DefaultKubernetesClient();
