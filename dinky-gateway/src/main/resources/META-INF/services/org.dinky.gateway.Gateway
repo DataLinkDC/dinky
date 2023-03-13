@@ -3,3 +3,4 @@ org.dinky.gateway.yarn.YarnPerJobGateway
 org.dinky.gateway.yarn.YarnSessionGateway
 org.dinky.gateway.kubernetes.KubernetesApplicationGateway
 org.dinky.gateway.kubernetes.KubernetesSessionGateway
+org.dinky.gateway.kubernetes.operator.KubetnetsApplicationOperatorGateway

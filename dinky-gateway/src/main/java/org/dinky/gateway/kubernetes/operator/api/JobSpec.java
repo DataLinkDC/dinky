@@ -17,34 +17,32 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.gateway.kubernetes.operator.api;
 
-import java.util.Map;
+import org.apache.flink.annotation.Experimental;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-/**
- * @author ZackYoung
- * @since
- */
-@Getter
-@Setter
-public class FlinkClusterConfiguration {
-    private Type type;
-    private String hadoopConfigPath;
-    private String flinkConfigPath;
-    private String flinkLibPath;
-    private String userJarPath;
-    private String flinkVersion;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
-    Map<String, String> flinkConfig;
-    Map<String, String> kubernetesConfig;
-
-    public enum Type {
-        //
-        Yarn,
-        Kubernetes,
-        KubernetesOperator;
-    }
+@Experimental
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class JobSpec {
+    private String jarURI;
+    private int parallelism;
+    private String entryClass;
+    private String[] args = new String[0];
+    private Long savepointTriggerNonce;
+    private String initialSavepointPath;
+    private UpgradeMode upgradeMode = UpgradeMode.STATELESS;
+    private Boolean allowNonRestoredState;
 }

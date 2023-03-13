@@ -48,12 +48,14 @@ const StudioKubernetesConfig = (props: any) => {
 
   const getClusterConfigurationOptions = () => {
     const itemList = [];
+
     for (const item of clusterConfiguration) {
+
       const tag = (<><Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}</>);
       //opeartor mode can not have normal application config
-      if (current.task.type == 'kubernetes-application-operator' && item.type == 'FlinkKubernetesOperator'){
+      if (current.task.type == 'kubernetes-application-operator' && item.type == 'KubernetesOperator'){
         itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
-      }else if (current.task.type != 'kubernetes-application-operator'  && item.type != 'FlinkKubernetesOperator'){
+      }else if (current.task.type != 'kubernetes-application-operator'  && item.type != 'KubernetesOperator'){
         //if not operator mode , add it normal
         itemList.push(<Option key={item.id} value={item.id} label={tag}>{tag}</Option>)
       }
@@ -122,6 +124,7 @@ const StudioKubernetesConfig = (props: any) => {
           >
             <Select defaultValue={RUN_MODE.KUBERNETES_APPLICATION} value={RUN_MODE.KUBERNETES_APPLICATION}>
               <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application Native</Option>
+              <Option value={RUN_MODE.KUBERNETES_APPLICATION_OPERATOR}>Kubernetes Application Operator</Option>
             </Select>
           </Form.Item>
 

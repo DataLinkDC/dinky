@@ -19,6 +19,8 @@
 
 package org.dinky.service.impl;
 
+import static org.dinky.gateway.config.GatewayConfig.FLINK_VERSION;
+
 import org.dinky.config.Docker;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.gateway.GatewayType;
@@ -30,6 +32,7 @@ import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterConfigurationMapper;
 import org.dinky.model.ClusterConfiguration;
 import org.dinky.model.FlinkClusterConfiguration;
+import org.dinky.model.FlinkClusterConfiguration.Type;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 
@@ -131,6 +134,10 @@ public class ClusterConfigurationServiceImpl
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+        } else if (config.getType() == Type.KubernetesOperator) {
+            gatewayConfig.setType(GatewayType.KUBERNETES_APPLICATION_OPERATOR);
+            config.getKubernetesConfig().put(FLINK_VERSION, config.getFlinkVersion());
+            flinkConfig.setFlinkKubetnetsConfig(config.getKubernetesConfig());
         }
 
         return JobManager.testGateway(gatewayConfig);
