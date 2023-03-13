@@ -1425,7 +1425,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobConfig.buildGatewayConfig(clusterConfig);
             jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
+            Gateway.build(jobConfig.getGatewayConfig())
+                    .onJobFinishCallback(jobInstance.getStatus());
         }
 
         if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
