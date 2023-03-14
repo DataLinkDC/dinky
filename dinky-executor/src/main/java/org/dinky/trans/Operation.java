@@ -29,7 +29,7 @@ import org.apache.flink.table.api.TableResult;
  * @author wenmo
  * @since 2021/6/13 19:24
  */
-public interface Operation {
+public interface Operation extends org.apache.flink.table.operations.Operation  {
 
     String getHandle();
 
@@ -38,4 +38,9 @@ public interface Operation {
     TableResult build(Executor executor);
 
     boolean noExecute();
+
+    @Override
+    default String asSummaryString() {
+        return getHandle();
+    }
 }
