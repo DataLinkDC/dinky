@@ -19,13 +19,9 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.model.LineageRel;
-import org.dinky.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
-import org.dinky.utils.LineageContext;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.PipelineOptions;
@@ -46,7 +42,16 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
+import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.model.LineageRel;
+import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
+import org.dinky.utils.LineageContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,12 +60,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import static org.dinky.utils.FlinkBaseUtil.updateObjectField;
 
 /**
  * CustomTableEnvironmentImpl
@@ -101,7 +101,18 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
         StreamTableEnvironment streamTableEnvironment =
                 StreamTableEnvironment.create(executionEnvironment, settings);
-        return new CustomTableEnvironmentImpl(streamTableEnvironment);
+        CustomTableEnvironmentImpl customTableEnvironmentImpl = new CustomTableEnvironmentImpl(streamTableEnvironment);
+
+        PlannerBase plannerBase = (PlannerBase) customTableEnvironmentImpl.getPlanner();
+
+        updateObjectField(plannerBase, PlannerBase.class, "parser",
+                new ParserWrapper(plannerBase.getParser()));
+        updateObjectField(plannerBase,
+                PlannerBase.class,
+                "extendedOperationExecutor",
+                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor()));
+
+        return customTableEnvironmentImpl;
     }
 
     public ObjectNode getStreamGraph(String statement) {

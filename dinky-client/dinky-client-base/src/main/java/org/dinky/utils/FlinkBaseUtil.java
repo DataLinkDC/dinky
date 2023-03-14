@@ -19,15 +19,17 @@
 
 package org.dinky.utils;
 
+import org.apache.flink.api.java.utils.ParameterTool;
+import org.apache.flink.runtime.util.EnvironmentInformation;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.model.Column;
 import org.dinky.model.ColumnType;
 import org.dinky.model.FlinkCDCConfig;
 import org.dinky.model.Table;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.runtime.util.EnvironmentInformation;
-
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,6 +42,7 @@ import java.util.Map;
  * @since 2022/3/9 19:15
  */
 public class FlinkBaseUtil {
+    private static final Logger logger = LoggerFactory.getLogger(FlinkBaseUtil.class);
 
     public static Map<String, String> getParamsFromArgs(String[] args) {
         Map<String, String> params = new HashMap<>();
@@ -156,6 +159,23 @@ public class FlinkBaseUtil {
                     "REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
         } else {
             return String.format("`%s`", column.getName());
+        }
+    }
+
+    public static boolean updateObjectField(Object target, Class<?> targetClass, String name, Object value) {
+        Field parser = null;
+        try {
+            parser = targetClass.getDeclaredField(name);
+            parser.setAccessible(true);
+            parser.set(target, value);
+            return true;
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            logger.error(e.toString());
+            return false;
+        } finally {
+            if (parser != null) {
+                parser.setAccessible(false);
+            }
         }
     }
 }
