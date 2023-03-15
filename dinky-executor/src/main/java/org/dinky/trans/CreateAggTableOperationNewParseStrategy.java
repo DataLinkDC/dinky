@@ -10,7 +10,7 @@ public class CreateAggTableOperationNewParseStrategy extends AbstractRegexParseS
 
     private static final String PATTERN_STR = "(CREATE NEWAGGTABLE)\\s+(.*)";
     private static final Pattern ADD_JAR_PATTERN =
-            Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE);
+            Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     public static final CreateAggTableOperationNewParseStrategy INSTANCE = new CreateAggTableOperationNewParseStrategy();
 
