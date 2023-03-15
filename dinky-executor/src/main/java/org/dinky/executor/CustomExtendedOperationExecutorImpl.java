@@ -21,6 +21,7 @@ package org.dinky.executor;
 
 import static org.apache.flink.table.api.Expressions.$;
 
+import org.apache.flink.table.api.TableResult;
 import org.dinky.trans.ddl.AggTable;
 import org.dinky.trans.ddl.NewCreateAggTableOperation;
 
@@ -40,7 +41,7 @@ public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperat
     }
 
     @Override
-    public Optional<TableResultInternal> executeOperation(Operation operation) {
+    public Optional<? extends TableResult> executeOperation(Operation operation) {
         if (operation instanceof NewCreateAggTableOperation) {
             return executeCreateAggTableOperationNew((NewCreateAggTableOperation) operation);
         }

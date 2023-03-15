@@ -40,7 +40,7 @@ public class ExtendedOperationExecutorWrapper implements ExtendedOperationExecut
 
     @Override
     public Optional<TableResultInternal> executeOperation(Operation operation) {
-        Optional<TableResultInternal> customResult =
+        Optional<TableResultInternal> customResult = (Optional<TableResultInternal>)
                 customOperationExecutor.executeOperation(operation);
         if (customResult != null) {
             return customResult;
