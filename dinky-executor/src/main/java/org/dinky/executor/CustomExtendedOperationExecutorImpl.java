@@ -19,18 +19,16 @@
 
 package org.dinky.executor;
 
-import static org.apache.flink.table.api.Expressions.$;
-
+import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.operations.Operation;
 import org.dinky.trans.ddl.AggTable;
 import org.dinky.trans.ddl.NewCreateAggTableOperation;
 
-import org.apache.flink.table.api.Table;
-import org.apache.flink.table.api.internal.TableResultInternal;
-import org.apache.flink.table.operations.Operation;
-
 import java.util.List;
 import java.util.Optional;
+
+import static org.apache.flink.table.api.Expressions.$;
 
 public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
 
@@ -50,7 +48,7 @@ public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperat
         return null;
     }
 
-    public Optional<TableResultInternal> executeCreateAggTableOperationNew(
+    public Optional<? extends TableResult> executeCreateAggTableOperationNew(
             NewCreateAggTableOperation option) {
         AggTable aggTable = AggTable.build(option.getStatement());
         Table source =
