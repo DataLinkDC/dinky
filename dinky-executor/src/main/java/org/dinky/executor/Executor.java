@@ -194,18 +194,6 @@ public abstract class Executor {
 
     abstract CustomTableEnvironment createCustomTableEnvironment();
 
-    public static void replaceParser(CustomTableEnvironment streamExecutionEnvironment, Parser parser) {
-        PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
-        ReflectUtil.setFieldValue(plannerBase, "parser",parser);
-    }
-
-    public static void replaceExtendedOperationExecutor(CustomTableEnvironment streamExecutionEnvironment,
-                                                        ExtendedOperationExecutor extendedOperationExecutor) {
-        PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
-         ReflectUtil.setFieldValue(plannerBase, "extendedOperationExecutor", extendedOperationExecutor);
-
-    }
-
     private void initStreamExecutionEnvironment() {
         updateStreamExecutionEnvironment(executorSetting);
     }
@@ -215,9 +203,8 @@ public abstract class Executor {
 
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
         PlannerBase plannerBase = (PlannerBase) newestEnvironment.getPlanner();
-        replaceParser(newestEnvironment, new ParserWrapper(plannerBase.getParser()));
-        replaceExtendedOperationExecutor(newestEnvironment,
-                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), this));
+        newestEnvironment.injectParser(new ParserWrapper(plannerBase.getParser()));
+        newestEnvironment.injectExtendedExecutor(new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), this));
 
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {
