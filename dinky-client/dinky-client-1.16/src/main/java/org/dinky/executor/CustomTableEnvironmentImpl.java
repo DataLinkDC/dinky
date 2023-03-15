@@ -42,7 +42,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
@@ -59,8 +58,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.dinky.utils.FlinkBaseUtil.updateObjectField;
 
 /**
  * CustomTableEnvironmentImpl
@@ -102,15 +99,6 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         StreamTableEnvironment streamTableEnvironment =
                 StreamTableEnvironment.create(executionEnvironment, settings);
         CustomTableEnvironmentImpl customTableEnvironmentImpl = new CustomTableEnvironmentImpl(streamTableEnvironment);
-
-        PlannerBase plannerBase = (PlannerBase) customTableEnvironmentImpl.getPlanner();
-
-        updateObjectField(plannerBase, PlannerBase.class, "parser",
-                new ParserWrapper(plannerBase.getParser()));
-        updateObjectField(plannerBase,
-                PlannerBase.class,
-                "extendedOperationExecutor",
-                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor()));
 
         return customTableEnvironmentImpl;
     }

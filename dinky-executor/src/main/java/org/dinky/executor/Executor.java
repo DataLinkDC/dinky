@@ -19,13 +19,10 @@
 
 package org.dinky.executor;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.interceptor.FlinkInterceptor;
-import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.model.LineageRel;
-import org.dinky.result.SqlExplainResult;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
 import org.apache.flink.configuration.Configuration;
@@ -43,7 +40,19 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
+import org.apache.flink.table.delegation.ExtendedOperationExecutor;
+import org.apache.flink.table.delegation.Parser;
+import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.hadoop.security.UserGroupInformation;
+import org.dinky.assertion.Asserts;
+import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.interceptor.FlinkInterceptor;
+import org.dinky.interceptor.FlinkInterceptorResult;
+import org.dinky.model.LineageRel;
+import org.dinky.parser.ParserWrapper;
+import org.dinky.result.SqlExplainResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -52,14 +61,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import lombok.extern.slf4j.Slf4j;
+import static org.dinky.utils.FlinkBaseUtil.updateObjectField;
 
 /**
  * Executor
@@ -191,6 +193,20 @@ public abstract class Executor {
 
     abstract CustomTableEnvironment createCustomTableEnvironment();
 
+    public static void replaceParser(CustomTableEnvironment streamExecutionEnvironment, Parser parser) {
+        PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
+        updateObjectField(plannerBase, PlannerBase.class, "parser", parser);
+    }
+
+    public static void replaceExtendedOperationExecutor(CustomTableEnvironment streamExecutionEnvironment,
+                                                        ExtendedOperationExecutor extendedOperationExecutor) {
+        PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
+        updateObjectField(plannerBase,
+                PlannerBase.class,
+                "extendedOperationExecutor",
+                extendedOperationExecutor);
+    }
+
     private void initStreamExecutionEnvironment() {
         updateStreamExecutionEnvironment(executorSetting);
     }
@@ -199,6 +215,11 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
 
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
+        PlannerBase plannerBase = (PlannerBase) newestEnvironment.getPlanner();
+        replaceParser(newestEnvironment, new ParserWrapper(plannerBase.getParser()));
+        replaceExtendedOperationExecutor(newestEnvironment,
+                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor()));
+
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {
                 stEnvironment

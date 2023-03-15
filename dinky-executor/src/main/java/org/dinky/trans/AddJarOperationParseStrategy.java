@@ -6,13 +6,13 @@ import org.dinky.trans.ddl.AddJarOperation;
 
 import java.util.regex.Pattern;
 
-public class AddJarOperationParseStrategy<T> extends AbstractRegexParseStrategy {
+public class AddJarOperationParseStrategy extends AbstractRegexParseStrategy {
 
     private static final String ADD_JAR = "(add\\s+jar)\\s+'(.*.jar)'";
     private static final Pattern ADD_JAR_PATTERN =
             Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
 
-    static final AddJarOperationParseStrategy INSTANCE = new AddJarOperationParseStrategy();
+    public static final AddJarOperationParseStrategy INSTANCE = new AddJarOperationParseStrategy();
 
     protected AddJarOperationParseStrategy() {
         super(ADD_JAR_PATTERN);
