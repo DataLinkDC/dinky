@@ -44,7 +44,6 @@ import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;

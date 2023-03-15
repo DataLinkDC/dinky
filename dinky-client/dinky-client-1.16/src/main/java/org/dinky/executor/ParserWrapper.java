@@ -26,8 +26,9 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
 
-import javax.annotation.Nullable;
 import java.util.List;
+
+import javax.annotation.Nullable;
 
 public class ParserWrapper implements Parser {
 
@@ -63,6 +64,4 @@ public class ParserWrapper implements Parser {
     public String[] getCompletionHints(String statement, int position) {
         return parser.getCompletionHints(statement, position);
     }
-
-
 }

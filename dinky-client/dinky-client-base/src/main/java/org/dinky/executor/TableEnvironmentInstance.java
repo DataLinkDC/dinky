@@ -20,7 +20,6 @@
 package org.dinky.executor;
 
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.delegation.Parser;
 
 /** */
 public interface TableEnvironmentInstance {

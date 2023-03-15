@@ -19,11 +19,12 @@
 
 package org.dinky.parser;
 
+import org.dinky.executor.CustomParser;
+import org.dinky.trans.CreateAggTableOperationNewParseStrategy;
+
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
-import org.dinky.executor.CustomParser;
-import org.dinky.trans.CreateAggTableOperationNewParseStrategy;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -41,7 +42,7 @@ public class CustomParserImpl implements CustomParser {
             return Collections.singletonList(command.get());
         }
 
-        //note: null represent not custom parser;
+        // note: null represent not custom parser;
         return null;
     }
 
@@ -61,5 +62,4 @@ public class CustomParserImpl implements CustomParser {
             return Optional.empty();
         }
     }
-
 }

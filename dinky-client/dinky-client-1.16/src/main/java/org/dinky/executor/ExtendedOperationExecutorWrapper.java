@@ -32,19 +32,20 @@ public class ExtendedOperationExecutorWrapper implements ExtendedOperationExecut
     private final CustomExtendedOperationExecutor customOperationExecutor;
 
     public ExtendedOperationExecutorWrapper(
-            ExtendedOperationExecutor extendedOperationExecutor, CustomExtendedOperationExecutor customOperationExecutor) {
+            ExtendedOperationExecutor extendedOperationExecutor,
+            CustomExtendedOperationExecutor customOperationExecutor) {
         this.extendedOperationExecutor = extendedOperationExecutor;
         this.customOperationExecutor = customOperationExecutor;
     }
 
     @Override
     public Optional<TableResultInternal> executeOperation(Operation operation) {
-        Optional<TableResultInternal> customResult = customOperationExecutor.executeOperation(operation);
+        Optional<TableResultInternal> customResult =
+                customOperationExecutor.executeOperation(operation);
         if (customResult != null) {
             return customResult;
         }
 
         return extendedOperationExecutor.executeOperation(operation);
     }
-
 }
