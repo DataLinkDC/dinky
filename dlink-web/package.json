@@ -160,5 +160,5 @@
   },
   "gitHooks": {
     "commit-msg": "fabric verify-commit"
-    }
+  }
 }

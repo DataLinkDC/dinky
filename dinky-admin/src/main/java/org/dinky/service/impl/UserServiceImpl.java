@@ -140,7 +140,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             }
             // get user tenants and roles
             UserDTO userInfo = refreshUserInfo(user);
-            if (Asserts.isNullCollection(userInfo.getTenantList())){
+            if (Asserts.isNullCollection(userInfo.getTenantList())) {
                 return Result.failed(MessageResolverUtils.getMessage("login.user.not.binding"));
             }
             StpUtil.login(user.getId(), loginDTO.isAutoLogin());
