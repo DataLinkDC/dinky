@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -51,17 +52,17 @@ import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.model.LineageRel;
 import org.dinky.parser.ParserWrapper;
 import org.dinky.result.SqlExplainResult;
+import org.dinky.utils.FlinkBaseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.dinky.utils.FlinkBaseUtil.updateObjectField;
 
 /**
  * Executor
@@ -195,16 +196,14 @@ public abstract class Executor {
 
     public static void replaceParser(CustomTableEnvironment streamExecutionEnvironment, Parser parser) {
         PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
-        updateObjectField(plannerBase, PlannerBase.class, "parser", parser);
+        ReflectUtil.setFieldValue(plannerBase, "parser",parser);
     }
 
     public static void replaceExtendedOperationExecutor(CustomTableEnvironment streamExecutionEnvironment,
                                                         ExtendedOperationExecutor extendedOperationExecutor) {
         PlannerBase plannerBase = (PlannerBase) streamExecutionEnvironment.getPlanner();
-        updateObjectField(plannerBase,
-                PlannerBase.class,
-                "extendedOperationExecutor",
-                extendedOperationExecutor);
+         ReflectUtil.setFieldValue(plannerBase, "extendedOperationExecutor", extendedOperationExecutor);
+
     }
 
     private void initStreamExecutionEnvironment() {

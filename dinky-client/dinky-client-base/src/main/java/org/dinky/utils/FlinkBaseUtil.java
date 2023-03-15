@@ -29,7 +29,6 @@ import org.dinky.model.Table;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -159,23 +158,6 @@ public class FlinkBaseUtil {
                     "REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
         } else {
             return String.format("`%s`", column.getName());
-        }
-    }
-
-    public static boolean updateObjectField(Object target, Class<?> targetClass, String name, Object value) {
-        Field parser = null;
-        try {
-            parser = targetClass.getDeclaredField(name);
-            parser.setAccessible(true);
-            parser.set(target, value);
-            return true;
-        } catch (NoSuchFieldException | IllegalAccessException e) {
-            logger.error(e.toString());
-            return false;
-        } finally {
-            if (parser != null) {
-                parser.setAccessible(false);
-            }
         }
     }
 }
