@@ -24,7 +24,7 @@ import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.model.LineageRel;
-import org.dinky.parser.ParserWrapper;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -201,11 +201,8 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
 
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
-        PlannerBase plannerBase = (PlannerBase) newestEnvironment.getPlanner();
-        newestEnvironment.injectParser(new ParserWrapper(plannerBase.getParser()));
-        newestEnvironment.injectExtendedExecutor(
-                new ExtendedOperationExecutorWrapper(
-                        plannerBase.getExtendedOperationExecutor(), this));
+        newestEnvironment.injectParser(new CustomParserImpl());
+        newestEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
 
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {

@@ -20,7 +20,6 @@
 package org.dinky.executor;
 
 import org.apache.flink.table.api.TableEnvironment;
-import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Parser;
 
 /** */
@@ -28,7 +27,7 @@ public interface TableEnvironmentInstance {
 
     TableEnvironment getTableEnvironment();
 
-    default void injectParser(Parser parser) {};
+    default void injectParser(CustomParser parser) {};
 
-    default void injectExtendedExecutor(ExtendedOperationExecutor extendedExecutor) {};
+    default void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {};
 }

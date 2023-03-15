@@ -19,27 +19,22 @@
 
 package org.dinky.executor;
 
-import static org.apache.flink.table.api.Expressions.$;
-
-import org.dinky.trans.ddl.AggTable;
-import org.dinky.trans.ddl.NewCreateAggTableOperation;
-
 import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.internal.TableResultInternal;
-import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.operations.Operation;
+import org.dinky.trans.ddl.AggTable;
+import org.dinky.trans.ddl.NewCreateAggTableOperation;
 
 import java.util.List;
 import java.util.Optional;
 
-public class ExtendedOperationExecutorWrapper implements ExtendedOperationExecutor {
+import static org.apache.flink.table.api.Expressions.$;
 
-    private ExtendedOperationExecutor extendedOperationExecutor;
+public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
+
     private Executor executor;
 
-    public ExtendedOperationExecutorWrapper(
-            ExtendedOperationExecutor extendedOperationExecutor, Executor executor) {
-        this.extendedOperationExecutor = extendedOperationExecutor;
+    public CustomExtendedOperationExecutorImpl(Executor executor) {
         this.executor = executor;
     }
 
@@ -47,9 +42,10 @@ public class ExtendedOperationExecutorWrapper implements ExtendedOperationExecut
     public Optional<TableResultInternal> executeOperation(Operation operation) {
         if (operation instanceof NewCreateAggTableOperation) {
             return executeCreateAggTableOperationNew((NewCreateAggTableOperation) operation);
-        } else {
-            return extendedOperationExecutor.executeOperation(operation);
         }
+
+        // note: null result represent not in custom operator,
+        return null;
     }
 
     public Optional<TableResultInternal> executeCreateAggTableOperationNew(
