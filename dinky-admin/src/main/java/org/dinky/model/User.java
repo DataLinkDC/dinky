@@ -19,6 +19,7 @@
 
 package org.dinky.model;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import org.dinky.db.annotation.Save;
 
 import java.io.Serializable;
@@ -68,6 +69,7 @@ public class User implements Serializable {
 
     private Boolean enabled;
 
+    @TableLogic
     private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
