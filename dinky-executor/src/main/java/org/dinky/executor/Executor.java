@@ -217,7 +217,7 @@ public abstract class Executor {
         PlannerBase plannerBase = (PlannerBase) newestEnvironment.getPlanner();
         replaceParser(newestEnvironment, new ParserWrapper(plannerBase.getParser()));
         replaceExtendedOperationExecutor(newestEnvironment,
-                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor()));
+                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), this));
 
         if (stEnvironment != null) {
             for (String catalog : stEnvironment.listCatalogs()) {

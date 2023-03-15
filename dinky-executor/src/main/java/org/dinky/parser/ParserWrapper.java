@@ -8,7 +8,7 @@ import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
-import org.dinky.trans.RemoveJarOperationParseStrategy;
+import org.dinky.trans.CreateAggTableOperationNewParseStrategy;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -55,7 +55,7 @@ public class ParserWrapper implements Parser {
         public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
         private static final List<ExtendedParseStrategy> PARSE_STRATEGIES =
-                Arrays.asList(RemoveJarOperationParseStrategy.INSTANCE);
+                Arrays.asList(CreateAggTableOperationNewParseStrategy.INSTANCE);
 
         @Override
         public Optional<Operation> parse(String statement) {
