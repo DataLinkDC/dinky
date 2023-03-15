@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.util.ReflectUtil;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.table.api.TableEnvironment;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
@@ -28,6 +27,8 @@ import org.apache.flink.table.delegation.ExtendedOperationExecutor;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.table.planner.delegation.PlannerBase;
+
+import cn.hutool.core.util.ReflectUtil;
 
 /** */
 public abstract class AbstractCustomTableEnvironment
@@ -58,11 +59,12 @@ public abstract class AbstractCustomTableEnvironment
 
     @Override
     public void injectParser(Parser parser) {
-        ReflectUtil.setFieldValue((PlannerBase) getPlanner(), "parser",parser);
+        ReflectUtil.setFieldValue((PlannerBase) getPlanner(), "parser", parser);
     }
 
     @Override
     public void injectExtendedExecutor(ExtendedOperationExecutor extendedExecutor) {
-         ReflectUtil.setFieldValue((PlannerBase) getPlanner(), "extendedOperationExecutor", extendedExecutor);
+        ReflectUtil.setFieldValue(
+                (PlannerBase) getPlanner(), "extendedOperationExecutor", extendedExecutor);
     }
 }

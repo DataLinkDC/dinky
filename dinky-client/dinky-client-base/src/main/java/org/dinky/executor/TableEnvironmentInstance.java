@@ -28,7 +28,7 @@ public interface TableEnvironmentInstance {
 
     TableEnvironment getTableEnvironment();
 
-    default void injectParser(Parser parser){};
+    default void injectParser(Parser parser) {};
 
-    default void injectExtendedExecutor(ExtendedOperationExecutor extendedExecutor){};
+    default void injectExtendedExecutor(ExtendedOperationExecutor extendedExecutor) {};
 }
