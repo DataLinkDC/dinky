@@ -160,12 +160,5 @@
   },
   "gitHooks": {
     "commit-msg": "fabric verify-commit"
-  },
-  "main": ".eslintrc.js",
-  "directories": {
-    "test": "tests"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+    }
 }
