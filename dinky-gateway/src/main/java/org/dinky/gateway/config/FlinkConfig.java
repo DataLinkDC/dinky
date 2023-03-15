@@ -48,6 +48,7 @@ public class FlinkConfig {
     private SavePointType savePointType;
     private String savePoint;
     private Map<String, String> configuration = new HashMap<>();
+    private Map<String, String> FlinkKubetnetsConfig = new HashMap<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
 

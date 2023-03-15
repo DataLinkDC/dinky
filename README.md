@@ -18,7 +18,7 @@ Its main feature are as follows:
 - Immersive Flink SQL Data Development: Automatic prompt completion, syntax highlighting, statement beautification, online debugging, syntax verification, execution plan, MetaStore, lineage, version comparison, etc.
 - Support FlinkSQL multi-version development and execution modes: Local,Standalone,Yarn/Kubernetes Session,Yarn Per-Job,Yarn/Kubernetes Application.
 - Support Apache Flink ecology: Connector,FlinkCDC,Table Store,etc.
-- Support FlinkSQL syntax enhancement: Database synchronization, execution environments, global variables, statement merging, table-valued aggregate functions, etc.
+- Support FlinkSQL syntax enhancement: Database synchronization, execution environments, global variables, statement merging, table-valued aggregate functions, load dependency, row-level permissions, etc.
 - Supports real-time warehousing and lake entry of the entire FlinkCDC database, multi-database output, and automatic table creation.
 - Support SQL job development: ClickHouse, Doris, Hive, Mysql, Oracle, Phoenix, PostgreSql, Presto, SqlServer, StarRocks, etc.
 - Support real-time online debugging preview Table, ChangeLog, statistical chart and UDF.

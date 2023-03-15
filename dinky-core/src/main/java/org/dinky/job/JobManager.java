@@ -211,7 +211,8 @@ public class JobManager {
     public static boolean useGateway(String type) {
         return (GatewayType.YARN_PER_JOB.equalsValue(type)
                 || GatewayType.YARN_APPLICATION.equalsValue(type)
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type));
+                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type)
+                || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(type));
     }
 
     private Executor createExecutor() {

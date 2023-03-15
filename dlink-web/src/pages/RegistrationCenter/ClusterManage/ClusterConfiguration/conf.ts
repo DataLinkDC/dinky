@@ -107,6 +107,30 @@ export const KUBERNETES_CONFIG_LIST: Config[] = [
     lable: 'kubernetes.config.file',
     showType: 'input',
     placeholder: l('pages.rc.clusterConfig.help.kubernetes.configfile'),
+  },{
+    name: 'kubernetes.service.account',
+    lable: 'kubernetes.service.account',
+    placeholder: l('pages.rc.clusterConfig.help.kubernets.account'),
+    showType: 'input',
+    showOnSubmitType: 'KubernetesOperator'
+  },{
+    name: 'kubernetes.pod-template',
+    lable: 'kubernetes.pod-template',
+    placeholder: l('pages.rc.clusterConfig.help.kubernets.defaultTemplate'),
+    showType: 'textarea',
+    showOnSubmitType: 'KubernetesOperator'
+  },{
+    name: 'kubernetes.pod-template.jobmanager',
+    lable: 'kubernetes.pod-template.jobmanager',
+    placeholder: l('pages.rc.clusterConfig.help.kubernets.jobManagerTemplate'),
+    showType: 'textarea',
+    showOnSubmitType: 'KubernetesOperator'
+  },{
+    name: 'kubernetes.pod-template.taskmanager',
+    lable: 'kubernetes.pod-template.taskmanager',
+    placeholder: l('pages.rc.clusterConfig.help.kubernets.taskManagerTemplate'),
+    showType: 'textarea',
+    showOnSubmitType: 'KubernetesOperator'
   }
 ];
 export const FLINK_CONFIG_LIST: Config[] = [

@@ -86,5 +86,7 @@ public interface Gateway {
 
     void killCluster();
 
+    boolean onJobFinishCallback(String status);
+
     GatewayResult deployCluster();
 }

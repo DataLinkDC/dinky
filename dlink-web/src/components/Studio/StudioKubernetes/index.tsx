@@ -129,8 +129,11 @@ const StudioKubernetes = (props: any) => {
     const values = getConfig(all)
     let appConfig = {}
     APP_CONFIG_LIST.forEach((value, index) => {
-      appConfig[APP_CONFIG_LIST[index].name] = all[APP_CONFIG_LIST[index].name]
+      if(all[APP_CONFIG_LIST[index].name]){
+        appConfig[APP_CONFIG_LIST[index].name] = all[APP_CONFIG_LIST[index].name]
+      }
     })
+
     setFormVals(all)
     props.saveSql(JSON.stringify({...values,"appConfig":appConfig}))
   }

@@ -17,34 +17,20 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.gateway.kubernetes.operator.api;
 
-import java.util.Map;
+import org.apache.flink.annotation.Experimental;
 
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-/**
- * @author ZackYoung
- * @since
- */
-@Getter
-@Setter
-public class FlinkClusterConfiguration {
-    private Type type;
-    private String hadoopConfigPath;
-    private String flinkConfigPath;
-    private String flinkLibPath;
-    private String userJarPath;
-    private String flinkVersion;
-
-    Map<String, String> flinkConfig;
-    Map<String, String> kubernetesConfig;
-
-    public enum Type {
-        //
-        Yarn,
-        Kubernetes,
-        KubernetesOperator;
-    }
+@Experimental
+@JsonIgnoreProperties(ignoreUnknown = true)
+public enum UpgradeMode {
+    @JsonProperty("savepoint")
+    SAVEPOINT,
+    @JsonProperty("last-state")
+    LAST_STATE,
+    @JsonProperty("stateless")
+    STATELESS
 }
