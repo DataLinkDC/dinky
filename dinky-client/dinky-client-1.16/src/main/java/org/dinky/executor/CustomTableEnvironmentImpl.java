@@ -98,9 +98,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             StreamExecutionEnvironment executionEnvironment, EnvironmentSettings settings) {
         StreamTableEnvironment streamTableEnvironment =
                 StreamTableEnvironment.create(executionEnvironment, settings);
-        CustomTableEnvironmentImpl customTableEnvironmentImpl = new CustomTableEnvironmentImpl(streamTableEnvironment);
 
-        return customTableEnvironmentImpl;
+        return new CustomTableEnvironmentImpl(streamTableEnvironment);
     }
 
     public ObjectNode getStreamGraph(String statement) {

@@ -31,24 +31,23 @@ import org.apache.flink.table.api.TableResult;
  * @author ZackYoung
  * @since 0.7.0
  */
-public class AddJarOperation extends AbstractOperation implements Operation {
+public class RemoveJarOperation extends AbstractOperation implements Operation {
 
-    private static final String KEY_WORD = "ADD JAR";
 
-    public AddJarOperation(String statement) {
+    public RemoveJarOperation(String statement) {
         super(statement);
     }
 
-    public AddJarOperation() {}
+    public RemoveJarOperation() {}
 
     @Override
     public String getHandle() {
-        return KEY_WORD;
+        return "";
     }
 
     @Override
     public Operation create(String statement) {
-        return new AddJarOperation(statement);
+        return null;
     }
 
     @Override
@@ -57,6 +56,6 @@ public class AddJarOperation extends AbstractOperation implements Operation {
     }
 
     public void init() {
-        AddJarSqlParser.getAllFilePath(statement).forEach(JarPathContextHolder::addOtherPlugins);
+        return;
     }
 }
