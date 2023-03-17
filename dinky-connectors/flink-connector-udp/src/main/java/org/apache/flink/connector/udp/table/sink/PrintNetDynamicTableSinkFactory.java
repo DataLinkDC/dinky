@@ -1,5 +1,6 @@
 package org.apache.flink.connector.udp.table.sink;
 
+import org.apache.commons.compress.utils.Sets;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
@@ -10,14 +11,13 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.factories.DynamicTableSinkFactory;
 import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.factories.SerializationFormatFactory;
-import org.apache.flink.table.types.DataType;
-
-import org.apache.commons.compress.utils.Sets;
 
 import java.util.Set;
 
-public class UdpDynamicTableSinkFactory implements DynamicTableSinkFactory {
-    public static final String IDENTIFIER = "udp";
+import static org.apache.flink.configuration.ConfigOptions.key;
+
+public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {
+    public static final String IDENTIFIER = "print_net";
 
     public static final ConfigOption<String> HOSTNAME =
             ConfigOptions.key("hostName").stringType().defaultValue("127.0.0.1");
@@ -25,25 +25,38 @@ public class UdpDynamicTableSinkFactory implements DynamicTableSinkFactory {
     public static final ConfigOption<Integer> PORT =
             ConfigOptions.key("port").intType().noDefaultValue();
 
+    public static final ConfigOption<String> PRINT_IDENTIFIER =
+            key("print-identifier")
+                    .stringType()
+                    .noDefaultValue()
+                    .withDescription(
+                            "Message that identify print and is prefixed to the output of the value.");
+
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
         final FactoryUtil.TableFactoryHelper helper =
                 FactoryUtil.createTableFactoryHelper(this, context);
 
-        final EncodingFormat<SerializationSchema<RowData>> encodingFormat =
-                helper.discoverEncodingFormat(SerializationFormatFactory.class, FactoryUtil.FORMAT);
-
         helper.validate();
 
         final ReadableConfig options = helper.getOptions();
-        final String hostname = options.get(HOSTNAME);
-        final int port = options.get(PORT);
-        final int parallelism = options.get(FactoryUtil.SINK_PARALLELISM);
 
-        final DataType produceDataType =
-                context.getCatalogTable().getResolvedSchema().toPhysicalRowDataType();
-        return new UdpDynamicTableSink(
-                hostname, port, encodingFormat, produceDataType, parallelism);
+        EncodingFormat<SerializationSchema<RowData>> serializingFormat = null;
+
+        try {
+            // TODO: 2023/3/17 maybe not right
+            serializingFormat = helper.discoverEncodingFormat(SerializationFormatFactory.class, FactoryUtil.FORMAT);
+        } catch (Exception ignored) {}
+
+        return new PrintNetDynamicTableSink(
+                context.getCatalogTable().getResolvedSchema().toPhysicalRowDataType(),
+                context.getCatalogTable().getPartitionKeys(),
+                serializingFormat,
+                options.get(HOSTNAME),
+                options.get(PORT),
+                options.get(FactoryUtil.SINK_PARALLELISM),
+                options.get(PRINT_IDENTIFIER)
+        );
     }
 
     @Override
@@ -53,11 +66,11 @@ public class UdpDynamicTableSinkFactory implements DynamicTableSinkFactory {
 
     @Override
     public Set<ConfigOption<?>> requiredOptions() {
-        return Sets.newHashSet(HOSTNAME, PORT, FactoryUtil.FORMAT);
+        return Sets.newHashSet(HOSTNAME, PORT);
     }
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return Sets.newHashSet(FactoryUtil.SINK_PARALLELISM);
+        return Sets.newHashSet(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT);
     }
 }
