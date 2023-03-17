@@ -26,6 +26,7 @@
  * @param name 配置路由的标题，默认读取国际化文件 menu.ts 中 menu.xxxx 的值，如配置 name 为 login，则读取 menu.ts 中 menu.login 的取值作为标题
  * @param icon 配置路由的图标，取值参考 https://ant.design/components/icon-cn， 注意去除风格后缀和大小写，如想要配置图标为 <StepBackwardOutlined /> 则取值应为 stepBackward 或 StepBackward，如想要配置图标为 <UserOutlined /> 则取值应为 user 或者 User
  * @doc https://umijs.org/docs/guides/routes
+ * todo: 如何引入自定义 icon
  */
 export default [
   {
@@ -48,14 +49,14 @@ export default [
   {
     path: '/datastudio',
     name: 'datastudio',
-    icon: 'consoleSql',
+    icon: 'CodeTwoTone',
     footerRender: false,
     component: './DataStudio',
   },
   {
     path: '/devops',
     name: 'devops',
-    icon: 'control',
+    icon: 'ControlTwoTone',
     // component: './DevOps',
   },
   {
@@ -67,7 +68,7 @@ export default [
   {
     path: '/datacenter',
     name: 'datacenter',
-    icon: 'database',
+    icon: 'DatabaseTwoTone',
     routes: [
       {
         path: '/datacenter',
@@ -76,7 +77,7 @@ export default [
       {
         path: '/datacenter/metadata',
         name: 'metadata',
-        icon: 'cluster',
+        icon: 'DatabaseTwoTone',
         // component: './DataCenter/MetaData',
       },
     ],
@@ -85,7 +86,7 @@ export default [
   {
     path: '/registration',
     name: 'registration',
-    icon: 'appstore',
+    icon: 'AppstoreTwoTone',
     routes: [
       {
         path: '/registration',
@@ -94,7 +95,7 @@ export default [
       {
         path: '/registration/cluster',
         name: 'cluster',
-        icon: 'cluster',
+        icon: 'GoldTwoTone',
         routes: [
           {
             path: '/registration/cluster/instance',
@@ -111,19 +112,19 @@ export default [
       {
         path: '/registration/jar',
         name: 'jar',
-        icon: 'file',
+        icon: 'FileTwoTone',
         // component: './RegistrationCenter/Jar',
       },
       {
         path: '/registration/database',
         name: 'database',
-        icon: 'database',
+        icon: 'DatabaseTwoTone',
         // component: './RegistrationCenter/DataBase',
       },
       {
         path: '/registration/alert',
         name: 'alert',
-        icon: 'alert',
+        icon: 'AlertTwoTone',
         routes: [
           {
             path: '/registration/alert/instance',
@@ -140,20 +141,20 @@ export default [
       {
         path: '/registration/document',
         name: 'document',
-        icon: 'container',
+        icon: 'BookTwoTone',
         // component: './RegistrationCenter/Document',
       },
       {
         path: '/registration/fragment',
         name: 'fragment',
-        icon: 'cloud',
+        icon: 'RocketTwoTone',
         // component: './RegistrationCenter/FragmentVariable',
       },
     ],
   },
   {
     name: 'authentication',
-    icon: 'SafetyCertificateOutlined',
+    icon: 'SafetyCertificateTwoTone',
     path: '/authentication',
     // access: "canAdmin",
     routes: [
@@ -176,13 +177,13 @@ export default [
       {
         path: '/authentication/namespace',
         name: 'namespace',
-        icon: 'BulbOutlined',
+        icon: 'BulbTwoTone',
         // component: './AuthenticationCenter/NamespaceManager',
       },
       {
         path: '/authentication/tenant',
         name: 'tenant',
-        icon: 'SecurityScanOutlined',
+        icon: 'SecurityScanTwoTone',
         // component: './AuthenticationCenter/TenantManager',
       },
     ],
@@ -190,7 +191,7 @@ export default [
 
   {
     name: 'settings',
-    icon: 'setting',
+    icon: 'SettingTwoTone',
     path: '/settings',
     routes: [
       {
@@ -200,31 +201,31 @@ export default [
       {
         path: '/settings/flinksetting',
         name: 'flinksetting',
-        icon: 'setting',
+        icon: 'SettingTwoTone',
         // component: './SettingCenter/FlinkSettings',
       },
       {
         path: '/settings/udf',
         name: 'udf',
-        icon: 'setting',
+        icon: 'ToolTwoTone',
         // component: './SettingCenter/UDFTemplate',
       },
       {
         path: '/settings/system',
         name: 'system',
-        icon: 'desktop',
+        icon: 'InfoCircleTwoTone',
         // component: './SettingCenter/SystemInfo',
       },
       {
         path: '/settings/process',
         name: 'process',
-        icon: 'desktop',
+        icon: 'ReconciliationTwoTone',
         // component: './SettingCenter/ProcessList',
       },
       {
         path: '/settings/services',
         name: 'services',
-        icon: 'MacCommandOutlined',
+        icon: 'CloudTwoTone',
         // component: './SettingCenter/Service',
       },
     ],
@@ -232,13 +233,13 @@ export default [
   {
     path: '/metrics',
     name: 'metrics',
-    icon: 'AreaChartOutlined',
+    icon: 'DashboardTwoTone',
     // component: './Metrics',
   },
   {
     path: '/about',
     name: 'about',
-    icon: 'smile',
+    icon: 'SmileTwoTone',
     component: './About',
   },
   {
