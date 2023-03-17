@@ -17,7 +17,7 @@ import java.util.Set;
 import static org.apache.flink.configuration.ConfigOptions.key;
 
 public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {
-    public static final String IDENTIFIER = "print_net";
+    public static final String IDENTIFIER = "printnet";
 
     public static final ConfigOption<String> HOSTNAME =
             ConfigOptions.key("hostName").stringType().defaultValue("127.0.0.1");

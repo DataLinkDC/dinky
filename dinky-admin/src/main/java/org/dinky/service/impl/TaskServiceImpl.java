@@ -1403,7 +1403,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public void handleJobDone(JobInstance jobInstance) {
-        if (Asserts.isNull(jobInstance.getTaskId())) {
+        if (Asserts.isNull(jobInstance.getTaskId()) || Asserts.isNull(jobInstance.getType())) {
             return;
         }
 
