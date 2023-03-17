@@ -888,7 +888,7 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.16</dinky.flink.version>
-                <flink.version>1.16.0</flink.version>
+                <flink.version>1.16.1</flink.version>
             </properties>
         </profile>
 
