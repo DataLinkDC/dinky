@@ -1,2 +1,0 @@
-org.apache.flink.connector.udp.table.sink.PrintNetDynamicTableSinkFactory
-org.apache.flink.connector.udp.table.source.UdpDynamicTableSourceFactory

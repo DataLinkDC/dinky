@@ -30,7 +30,7 @@
     <name>Dinky : Connectors</name>
 
     <modules>
-        <module>flink-connector-udp</module>
+        <module>flink-connector-printnet</module>
     </modules>
 
     <profiles>
