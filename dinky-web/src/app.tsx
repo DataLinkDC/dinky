@@ -88,6 +88,9 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
+    waterMarkProps: {
+      content: initialState?.currentUser?.user.username + ' ' + new Date().toLocaleString(),
+    },
     onPageChange: () => {
       const { location } = history;
       // 如果没有登录，重定向到 login
