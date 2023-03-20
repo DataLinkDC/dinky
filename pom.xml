@@ -835,6 +835,7 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.12</dinky.flink.version>
+                <flink.version>1.12.0</flink.version>
             </properties>
         </profile>
 
@@ -848,6 +849,7 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.13</dinky.flink.version>
+                <flink.version>1.13.0</flink.version>
             </properties>
         </profile>
 
@@ -862,6 +864,7 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.14</dinky.flink.version>
+                <flink.version>1.14.0</flink.version>
             </properties>
         </profile>
 
@@ -875,6 +878,7 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.15</dinky.flink.version>
+                <flink.version>1.15.0</flink.version>
             </properties>
         </profile>
 
