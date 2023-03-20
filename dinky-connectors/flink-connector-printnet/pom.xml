@@ -50,14 +50,7 @@
       </properties>
     </profile>
     <profile>
-      <id>define</id>
-      <activation>
-        <activeByDefault>false</activeByDefault>
-        <property>
-          <name>flink.version</name>
-          <value>flink-1.12</value>
-        </property>
-      </activation>
+      <id>flink-2.12</id>
       <dependencies>
         <dependency>
           <groupId>org.apache.flink</groupId>
@@ -69,12 +62,12 @@
       </dependencies>
     </profile>
     <profile>
-      <id>define default</id>
+      <id>default</id>
       <activation>
         <activeByDefault>false</activeByDefault>
         <property>
           <name>flink.version</name>
-          <value>!flink-1.12</value>
+          <value>flink-1.15, flink-1.16</value>
         </property>
       </activation>
       <dependencies>
