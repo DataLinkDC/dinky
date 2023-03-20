@@ -44,6 +44,7 @@ public class WatchTableOperation extends AbstractOperation implements Operation 
                     + "''port''=''{2}'', ''hostName'' = ''{1}'', ''sink.parallelism''=''{3}'')\n"
                     + "LIKE {0};";
     public static final String INSERT_SQL_TEMPLATE = "insert into print_{0} select * from {0};";
+    public static final int PORT = 7125;
 
     public WatchTableOperation() {}
 
@@ -70,7 +71,7 @@ public class WatchTableOperation extends AbstractOperation implements Operation 
         Optional<InetAddress> address = getSystemLocalIp();
         String ip = address.isPresent() ? address.get().getHostAddress() : "127.0.0.1";
 
-        String printCreateSql = MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, "7125", 1);
+        String printCreateSql = MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT, 1);
         executor.getCustomTableEnvironment().executeSql(printCreateSql);
 
         String printInsertSql = MessageFormat.format(INSERT_SQL_TEMPLATE, tableName);

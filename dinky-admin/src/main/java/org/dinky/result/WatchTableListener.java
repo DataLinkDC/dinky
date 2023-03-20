@@ -33,13 +33,14 @@ import groovy.util.logging.Slf4j;
 @Slf4j
 @Service
 public class WatchTableListener extends Thread {
+    public static final int PORT = 7125;
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[4096];
 
     public WatchTableListener() {
         try {
-            this.socket = new DatagramSocket(7125);
+            this.socket = new DatagramSocket(PORT);
             start();
         } catch (SocketException e) {
             log.error(e.getMessage());
