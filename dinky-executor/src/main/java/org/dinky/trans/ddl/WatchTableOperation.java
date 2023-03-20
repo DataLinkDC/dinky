@@ -5,7 +5,10 @@ import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.Operation;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.MessageFormat;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -44,10 +47,22 @@ public class WatchTableOperation extends AbstractOperation implements Operation 
         matcher.find();
         String tableName = matcher.group(1);
 
-        String printCreateSql = MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, "127.0.0.1", "8888", 1);
+        Optional<InetAddress> address = getSystemLocalIp();
+        String ip = address.isPresent() ? address.get().getHostAddress(): "127.0.0.1";
+
+        String printCreateSql = MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, "7125", 1);
         executor.getCustomTableEnvironment().executeSql(printCreateSql);
 
         String printInsertSql =  MessageFormat.format(INSERT_SQL_TEMPLATE, tableName);
         return executor.getCustomTableEnvironment().executeSql(printInsertSql);
+    }
+
+    private Optional<InetAddress> getSystemLocalIp() {
+        try {
+            InetAddress ip = InetAddress.getLocalHost();
+            return Optional.of(ip);
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
