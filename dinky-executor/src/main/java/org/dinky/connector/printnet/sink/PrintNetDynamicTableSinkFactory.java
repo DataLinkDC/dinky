@@ -19,6 +19,8 @@
 
 package org.dinky.connector.printnet.sink;
 
+import static org.apache.flink.configuration.ConfigOptions.key;
+
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
@@ -34,8 +36,6 @@ import org.apache.flink.table.factories.SerializationFormatFactory;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-
-import static org.apache.flink.configuration.ConfigOptions.key;
 
 public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {
     public static final String IDENTIFIER = "printnet";
@@ -97,6 +97,7 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return new HashSet<>(Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT));
+        return new HashSet<>(
+                Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT));
     }
 }
