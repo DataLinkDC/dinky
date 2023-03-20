@@ -1,3 +1,22 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.apache.flink.connector.printnet.table.sink;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
@@ -12,7 +31,6 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.Arrays;
 
 public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
     private final String hostname;
@@ -25,9 +43,12 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
     private DatagramSocket socket;
     private final InetAddress target;
 
-
-    public PrintNetSinkFunction(String hostname, int port, SerializationSchema<RowData> serializer,
-                                DynamicTableSink.DataStructureConverter converter, String printIdentifier) {
+    public PrintNetSinkFunction(
+            String hostname,
+            int port,
+            SerializationSchema<RowData> serializer,
+            DynamicTableSink.DataStructureConverter converter,
+            String printIdentifier) {
         this.hostname = hostname;
         this.port = port;
         this.serializer = serializer;
@@ -42,7 +63,6 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
         }
     }
 
-
     @Override
     public void open(Configuration parameters) throws Exception {
         super.open(parameters);
@@ -52,16 +72,16 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
 
         StreamingRuntimeContext context = (StreamingRuntimeContext) getRuntimeContext();
         socket = new DatagramSocket();
-
     }
 
     @Override
     public void invoke(RowData value, Context context) throws IOException {
 
         try {
-            byte[] buf = serializer != null ?
-                    serializer.serialize(value)
-                    : converter.toExternal(value).toString().getBytes();
+            byte[] buf =
+                    serializer != null
+                            ? serializer.serialize(value)
+                            : converter.toExternal(value).toString().getBytes();
 
             byte[] target = new byte[printHeader.length + buf.length];
             System.arraycopy(printHeader, 0, target, 0, printHeader.length);
