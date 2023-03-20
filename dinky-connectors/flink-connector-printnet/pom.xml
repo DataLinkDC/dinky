@@ -16,12 +16,6 @@
   <packaging>jar</packaging>
 
   <properties>
-    <scala.binary.version>2.12</scala.binary.version>
-    <scala-library.version>2.12.7</scala-library.version>
-    <assertj.version>3.23.1</assertj.version>
-    <postgres.version>42.5.1</postgres.version>
-    <oracle.version>21.8.0.0</oracle.version>
-    <byte-buddy.version>1.12.10</byte-buddy.version>
   </properties>
 
   <dependencies>
@@ -76,55 +70,15 @@
       <type>test-jar</type>
     </dependency>
 
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
-      <version>${flink.version}</version>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-planner_${scala.binary.version}</artifactId>
-      <version>${flink.version}</version>
-      <type>test-jar</type>
-      <scope>test</scope>
-    </dependency>
-
-    <dependency>
-      <groupId>org.apache.flink</groupId>
-      <artifactId>flink-table-api-scala-bridge_${scala.binary.version}</artifactId>
-      <version>${flink.version}</version>
-      <scope>test</scope>
-    </dependency>
-
     <!-- Test dependencies -->
 
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>${assertj.version}</version>
       <scope>test</scope>
     </dependency>
 
   </dependencies>
-
-  <dependencyManagement>
-    <dependencies>
-      <!-- For dependency convergence -->
-      <dependency>
-        <groupId>net.bytebuddy</groupId>
-        <artifactId>byte-buddy</artifactId>
-        <version>${byte-buddy.version}</version>
-      </dependency>
-      <!-- For dependency convergence -->
-      <dependency>
-        <groupId>org.scala-lang</groupId>
-        <artifactId>scala-library</artifactId>
-        <version>${scala-library.version}</version>
-      </dependency>
-    </dependencies>
-  </dependencyManagement>
 
     <build>
         <plugins>
