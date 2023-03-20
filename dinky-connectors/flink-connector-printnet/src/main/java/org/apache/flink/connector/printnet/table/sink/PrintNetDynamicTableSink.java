@@ -1,6 +1,7 @@
 package org.apache.flink.connector.printnet.table.sink;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
+import org.apache.flink.table.catalog.ObjectIdentifier;
 import org.apache.flink.table.connector.ChangelogMode;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
@@ -22,11 +23,12 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
     private final int parallelism;
     private final List<String> partitionKeys;
     private String printIdentifier;
+    private ObjectIdentifier objectIdentifier;
     private Map<String, String> staticPartitions = new LinkedHashMap<>();
 
     public PrintNetDynamicTableSink(
             DataType type, List<String> partitionKeys, EncodingFormat<SerializationSchema<RowData>> serializingFormat
-            , String hostname, int port, int parallelism, String printIdentifier) {
+            , String hostname, int port, int parallelism, String printIdentifier, ObjectIdentifier objectIdentifier) {
         this.hostname = hostname;
         this.port = port;
         this.encodingFormat = serializingFormat;
@@ -34,6 +36,7 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
         this.parallelism = parallelism;
         this.partitionKeys = partitionKeys;
         this.printIdentifier = printIdentifier;
+        this.objectIdentifier = objectIdentifier;
     }
 
     @Override
@@ -49,6 +52,10 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
 
         DataStructureConverter converter = context.createDataStructureConverter(type);
 
+        if (printIdentifier == null) {
+            printIdentifier = objectIdentifier.asSerializableString();
+        }
+
         staticPartitions.forEach(
                 (key, value) -> {
                     printIdentifier = null != printIdentifier ? printIdentifier + ":" : "";
@@ -56,14 +63,14 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
                 });
 
         return SinkFunctionProvider.of(
-                new PrintNetSinkFunction(hostname, port, serializer, converter),
+                new PrintNetSinkFunction(hostname, port, serializer, converter, printIdentifier),
                 parallelism);
     }
 
     @Override
     public DynamicTableSink copy() {
         return new PrintNetDynamicTableSink(
-                type, partitionKeys, encodingFormat, hostname, port, parallelism, printIdentifier);
+                type, partitionKeys, encodingFormat, hostname, port, parallelism, printIdentifier, objectIdentifier);
     }
 
     @Override

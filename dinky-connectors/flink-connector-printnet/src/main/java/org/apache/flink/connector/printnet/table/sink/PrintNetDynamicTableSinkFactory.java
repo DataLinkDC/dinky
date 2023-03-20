@@ -5,6 +5,7 @@ import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 import org.apache.flink.configuration.ReadableConfig;
+import org.apache.flink.table.catalog.ObjectIdentifier;
 import org.apache.flink.table.connector.format.EncodingFormat;
 import org.apache.flink.table.connector.sink.DynamicTableSink;
 import org.apache.flink.table.data.RowData;
@@ -37,6 +38,8 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
         final FactoryUtil.TableFactoryHelper helper =
                 FactoryUtil.createTableFactoryHelper(this, context);
 
+        ObjectIdentifier objectIdentifier = context.getObjectIdentifier();
+
         helper.validate();
 
         final ReadableConfig options = helper.getOptions();
@@ -55,7 +58,8 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
                 options.get(HOSTNAME),
                 options.get(PORT),
                 options.get(FactoryUtil.SINK_PARALLELISM),
-                options.get(PRINT_IDENTIFIER)
+                options.get(PRINT_IDENTIFIER),
+                objectIdentifier
         );
     }
 

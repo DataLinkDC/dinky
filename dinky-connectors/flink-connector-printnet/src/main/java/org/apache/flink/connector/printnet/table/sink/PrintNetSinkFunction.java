@@ -12,23 +12,29 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.Arrays;
 
 public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
     private final String hostname;
     private final int port;
     private final SerializationSchema<RowData> serializer;
     private DynamicTableSink.DataStructureConverter converter;
+    private String printIdentifier;
+    private byte[] printHeader;
     private volatile boolean running = true;
     private DatagramSocket socket;
     private final InetAddress target;
 
 
     public PrintNetSinkFunction(String hostname, int port, SerializationSchema<RowData> serializer,
-                                DynamicTableSink.DataStructureConverter converter) {
+                                DynamicTableSink.DataStructureConverter converter, String printIdentifier) {
         this.hostname = hostname;
         this.port = port;
         this.serializer = serializer;
         this.converter = converter;
+        this.printIdentifier = printIdentifier;
+        printHeader = (printIdentifier + "\n").getBytes();
+
         try {
             this.target = InetAddress.getByName(hostname);
         } catch (UnknownHostException e) {
@@ -51,11 +57,17 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
 
     @Override
     public void invoke(RowData value, Context context) throws IOException {
+
         try {
             byte[] buf = serializer != null ?
                     serializer.serialize(value)
                     : converter.toExternal(value).toString().getBytes();
-            DatagramPacket packet = new DatagramPacket(buf, buf.length, target, port);
+
+            byte[] target = new byte[printHeader.length + buf.length];
+            System.arraycopy(printHeader, 0, target, 0, printHeader.length);
+            System.arraycopy(buf, 0, target, printHeader.length, buf.length);
+
+            DatagramPacket packet = new DatagramPacket(target, target.length, this.target, port);
             socket.send(packet);
         } catch (Exception e) {
             throw new RuntimeException(e);
