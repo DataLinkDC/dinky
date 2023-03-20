@@ -29,10 +29,6 @@
 
     <name>Dinky : Connectors</name>
 
-    <modules>
-        <module>flink-connector-printnet</module>
-    </modules>
-
     <profiles>
         <profile>
             <id>flink-1.12</id>

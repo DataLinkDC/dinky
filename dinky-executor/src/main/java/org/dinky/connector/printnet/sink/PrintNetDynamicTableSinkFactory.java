@@ -17,11 +17,8 @@
  *
  */
 
-package org.apache.flink.connector.printnet.table.sink;
+package org.dinky.connector.printnet.sink;
 
-import static org.apache.flink.configuration.ConfigOptions.key;
-
-import org.apache.commons.compress.utils.Sets;
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
@@ -34,7 +31,11 @@ import org.apache.flink.table.factories.DynamicTableSinkFactory;
 import org.apache.flink.table.factories.FactoryUtil;
 import org.apache.flink.table.factories.SerializationFormatFactory;
 
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Set;
+
+import static org.apache.flink.configuration.ConfigOptions.key;
 
 public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory {
     public static final String IDENTIFIER = "printnet";
@@ -91,11 +92,11 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
     @Override
     public Set<ConfigOption<?>> requiredOptions() {
-        return Sets.newHashSet(HOSTNAME, PORT);
+        return new HashSet<>(Arrays.asList(HOSTNAME, PORT));
     }
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return Sets.newHashSet(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT);
+        return new HashSet<>(Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT));
     }
 }

@@ -57,7 +57,7 @@ public class WatchTableListener extends Thread {
             }
 
             String received = new String(packet.getData(), 0, packet.getLength());
-            log.debug(received);
+            System.out.println(received);
         }
 
         socket.close();

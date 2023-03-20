@@ -17,7 +17,7 @@
  *
  */
 
-package org.apache.flink.connector.printnet.table.sink;
+package org.dinky.connector.printnet.sink;
 
 import org.apache.flink.api.common.serialization.SerializationSchema;
 import org.apache.flink.configuration.Configuration;
