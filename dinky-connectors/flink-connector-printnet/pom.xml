@@ -55,7 +55,7 @@
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>flink.version</name>
-                    <value>flink-1.12,flink-1.13, flink-1.14</value>
+                    <value>flink-1.12,flink-1.13,flink-1.14</value>
                 </property>
             </activation>
             <dependencies>
@@ -74,7 +74,7 @@
                 <activeByDefault>false</activeByDefault>
                 <property>
                     <name>flink.version</name>
-                    <value>flink-1.15, flink-1.16</value>
+                    <value>flink-1.15,flink-1.16</value>
                 </property>
             </activation>
             <dependencies>
