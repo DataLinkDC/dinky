@@ -166,7 +166,7 @@ public class FlinkRestAPITest {
     public void getTaskManagerLogListToDetail() {
         String taskManagerLogDetail =
                 FlinkAPI.build(address)
-                        .getTaskManagerLogFileDeatil(
+                        .getTaskManagerLogFileDetail(
                                 "container_e46_1655948912029_0061_01_000002", "taskmanager.log");
         LOGGER.info(taskManagerLogDetail);
     }
