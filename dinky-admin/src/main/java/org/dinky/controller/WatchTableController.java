@@ -19,14 +19,16 @@
 
 package org.dinky.controller;
 
-import lombok.AllArgsConstructor;
 import org.dinky.service.WatchTableService;
+
+import java.security.Principal;
+
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.security.Principal;
+import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
