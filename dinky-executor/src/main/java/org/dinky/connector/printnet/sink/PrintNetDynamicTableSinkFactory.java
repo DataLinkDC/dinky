@@ -64,7 +64,6 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
         FactoryUtil.validateFactoryOptions(this, options);
 
-
         EncodingFormat<SerializationSchema<RowData>> serializingFormat = null;
 
         try {
