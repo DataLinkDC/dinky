@@ -19,8 +19,7 @@
 
 package org.dinky.result;
 
-import groovy.util.logging.Slf4j;
-import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +28,7 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import static org.reflections.Reflections.log;
+
 
 @Slf4j
 @Service
@@ -63,7 +62,7 @@ public class WatchTableListener extends Thread {
             }
 
             String received = new String(packet.getData(), 0, packet.getLength());
-            this.messagingTemplate.convertAndSend("/app/broadcast", received);
+            this.messagingTemplate.convertAndSend("/topic/broadcast", received);
         }
 
         socket.close();

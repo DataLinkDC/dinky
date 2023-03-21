@@ -60,9 +60,10 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
         ObjectIdentifier objectIdentifier = context.getObjectIdentifier();
 
-        helper.validate();
-
         final ReadableConfig options = helper.getOptions();
+
+        FactoryUtil.validateFactoryOptions(this, options);
+
 
         EncodingFormat<SerializationSchema<RowData>> serializingFormat = null;
 
