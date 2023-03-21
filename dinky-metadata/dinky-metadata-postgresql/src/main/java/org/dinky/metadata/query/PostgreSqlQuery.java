@@ -58,7 +58,9 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "     , col.ordinal_position                         as ordinal_position\n"
                 + "     , col.udt_name                                 as type\n"
                 + "     , (CASE\n"
-                + "            WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p' and  PC.conname like concat('"+tableName+"','_%')) > 0\n"
+                + "            WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p' and  PC.conname like concat('"
+                + tableName
+                + "','_%')) > 0\n"
                 + "                THEN 'PRI'\n"
                 + "            ELSE '' END)                            AS key\n"
                 + "     , col_description(c.oid, col.ordinal_position) AS comment\n"
