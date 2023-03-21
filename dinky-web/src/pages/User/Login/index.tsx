@@ -111,7 +111,7 @@ const Login: React.FC = () => {
        */
       gotoRedirectUrl();
     } else {
-      message.error(l('pages.login.chooseTenantFailed'));
+      message.error(l('login.chooseTenantFailed'));
       return;
     }
   };
@@ -121,7 +121,7 @@ const Login: React.FC = () => {
       // login
       const result = await login({ ...values });
       if (result.code === 0) {
-        message.success(l('pages.login.result', '', { msg: result.msg, time: result.time }));
+        message.success(l('login.result', '', { msg: result.msg, time: result.time }));
         /**
          * After successful login, set the tenant list
          */
@@ -154,10 +154,10 @@ const Login: React.FC = () => {
         /**
          * If it fails to set the user error message
          */
-        message.error(l('pages.login.result', '', { msg: result.msg, time: result.time }));
+        message.error(l('login.result', '', { msg: result.msg, time: result.time }));
       }
     } catch (error) {
-      message.error(l('pages.login.error', '', { msg: error }));
+      message.error(l('login.error', '', { msg: error }));
     }
   };
 
@@ -165,7 +165,7 @@ const Login: React.FC = () => {
     return (
       <>
         <Modal
-          title={l('pages.login.chooseTenant')}
+          title={l('login.chooseTenant')}
           open={tenantVisible}
           destroyOnClose={true}
           width={'60%'}
@@ -248,7 +248,7 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src={Settings.logo} />}
           title="Dinky"
-          subTitle={l('pages.layouts.userLayout.title')}
+          subTitle={l('layouts.userLayout.title')}
           initialValues={{
             autoLogin: true,
           }}
@@ -263,11 +263,11 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <UserOutlined />,
               }}
-              placeholder={l('pages.login.username.placeholder')}
+              placeholder={l('login.username.placeholder')}
               rules={[
                 {
                   required: true,
-                  message: l('pages.login.username.required'),
+                  message: l('login.username.required'),
                 },
               ]}
             />
@@ -277,11 +277,11 @@ const Login: React.FC = () => {
                 size: 'large',
                 prefix: <LockOutlined />,
               }}
-              placeholder={l('pages.login.password.placeholder')}
+              placeholder={l('login.password.placeholder')}
               rules={[
                 {
                   required: true,
-                  message: l('pages.login.password.required'),
+                  message: l('login.password.required'),
                 },
               ]}
             />
@@ -292,7 +292,7 @@ const Login: React.FC = () => {
             }}
           >
             <ProFormCheckbox noStyle name="autoLogin">
-              {l('pages.login.rememberMe')}
+              {l('login.rememberMe')}
             </ProFormCheckbox>
           </div>
         </LoginForm>

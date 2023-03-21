@@ -166,7 +166,7 @@ export default [
         path: '/authentication/usermanager',
         name: 'usermanager',
         icon: 'UserOutlined',
-        // component: './AuthenticationCenter/UserManager',
+        component: './AuthenticationCenter/UserManager',
       },
       {
         path: '/authentication/role',

@@ -14,11 +14,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import React from 'react';
+import {DeleteTwoTone} from "@ant-design/icons";
 
-import * as api from './api';
-import * as crud from './BusinessCrud';
+export const CustomDeleteIcon = () => {
+  return <>
+    <DeleteTwoTone twoToneColor={"red"}/>
+  </>
+}
 
-export default {
-  api,
-  crud,
-};
