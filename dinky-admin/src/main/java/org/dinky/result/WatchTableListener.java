@@ -19,26 +19,31 @@
 
 package org.dinky.result;
 
-import static org.reflections.Reflections.log;
+import groovy.util.logging.Slf4j;
+import lombok.AllArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
 
-import org.springframework.stereotype.Service;
-
-import groovy.util.logging.Slf4j;
+import static org.reflections.Reflections.log;
 
 @Slf4j
 @Service
 public class WatchTableListener extends Thread {
+
+    private final SimpMessagingTemplate messagingTemplate;
+
     public static final int PORT = 7125;
     private DatagramSocket socket;
     private boolean running;
     private byte[] buf = new byte[4096];
 
-    public WatchTableListener() {
+    public WatchTableListener(SimpMessagingTemplate messagingTemplate) {
+        this.messagingTemplate = messagingTemplate;
         try {
             this.socket = new DatagramSocket(PORT);
             start();
@@ -58,7 +63,7 @@ public class WatchTableListener extends Thread {
             }
 
             String received = new String(packet.getData(), 0, packet.getLength());
-            System.out.println(received);
+            this.messagingTemplate.convertAndSend("/app/broadcast", received);
         }
 
         socket.close();
