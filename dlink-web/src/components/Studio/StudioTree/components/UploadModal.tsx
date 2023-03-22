@@ -59,7 +59,7 @@ const UploadModal: React.FC<UploadModalProps> = (props: any) => {
   return (
     <div>
       <Modal title="上传文件"
-             open={visible}
+             visible={visible}
              onOk={handleOk}
              onCancel={onCancel}
              maskClosable={false}
