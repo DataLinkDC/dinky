@@ -22,35 +22,26 @@ package org.dinky.controller;
 import lombok.AllArgsConstructor;
 import org.dinky.service.WatchTableService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.security.Principal;
 
 @RestController
 @AllArgsConstructor
+@MessageMapping("api")
 public class WatchTableController {
 
     private final WatchTableService watchTableService;
 
-    @MessageMapping("/broadcast")
-    public String broadcast(String message) {
-        return "back" + message;
-    }
-
-    @PutMapping("/subscribe/{id}/{table}")
-    public String subscribe(@PathVariable Integer id, @PathVariable String table) {
+    @PutMapping("/subscribe/watch")
+    public String subscribe( @RequestParam Integer id, @RequestParam String table) {
         watchTableService.registerListenEntry(id, table);
         return "successful";
     }
 
-    @PutMapping("/unsubscribe/{id}/{table}")
-    public String unsubscribe(@PathVariable Integer id, @PathVariable String table) {
+    @PutMapping("/unsubscribe/watch")
+    public String unsubscribe( @RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
         return "successful";
     }
-
-    @MessageMapping("/one")
-    public void one(String message, Principal principal) {}
 }
