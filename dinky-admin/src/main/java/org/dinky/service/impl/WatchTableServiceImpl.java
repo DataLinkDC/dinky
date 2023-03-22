@@ -19,7 +19,10 @@
 
 package org.dinky.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -30,11 +33,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Slf4j
 @Service
@@ -43,6 +43,8 @@ public class WatchTableServiceImpl implements WatchTableService {
     private final SimpMessagingTemplate messagingTemplate;
 
     private final Map<String, Set<String>> registerTableMap = new ConcurrentHashMap<>();
+
+    private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`([^\\.]+)`\\.`([^\\.]+)`\\.`([^\\.]+)`$");
 
     public WatchTableServiceImpl(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -82,8 +84,19 @@ public class WatchTableServiceImpl implements WatchTableService {
         }
     }
 
-    private static String getDestination(Integer userId, String table) {
-        return String.format("/topic/table/%s/%s", userId, table);
+    public static String getDestination(Integer userId, String table) {
+        if (table == null) {
+            throw new NullPointerException("table name empty");
+        }
+
+        Matcher matcher = FULL_TABLE_NAME_PATTERN.matcher(table);
+        String result = "";
+        if (matcher.matches()) {
+            result = matcher.replaceAll("`$1`.`$2`.`print_$3`");
+        } else {
+            result = String.format("`default_catalog`.`default_database`.`print_%s`", table);
+        }
+        return String.format("/topic/table/%s/%s", userId, result);
     }
 
     public static class WatchTableListener extends Thread {

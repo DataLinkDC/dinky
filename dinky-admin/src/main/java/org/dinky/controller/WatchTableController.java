@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import lombok.AllArgsConstructor;
+import org.dinky.common.result.Result;
 import org.dinky.service.WatchTableService;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -34,14 +35,14 @@ public class WatchTableController {
     private final WatchTableService watchTableService;
 
     @PutMapping("/subscribe/watch")
-    public String subscribe( @RequestParam Integer id, @RequestParam String table) {
+    public Result subscribe( @RequestParam Integer id, @RequestParam String table) {
         watchTableService.registerListenEntry(id, table);
-        return "successful";
+        return Result.succeed();
     }
 
     @PutMapping("/unsubscribe/watch")
-    public String unsubscribe( @RequestParam Integer id, @RequestParam String table) {
+    public Result unsubscribe( @RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
-        return "successful";
+        return Result.succeed();
     }
 }
