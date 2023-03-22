@@ -19,8 +19,6 @@
 
 package org.dinky.explainer.lineage;
 
-import org.dinky.explainer.ca.TableCA;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,18 +44,6 @@ public class LineageTable {
 
     public static LineageTable build(String id, String name) {
         return new LineageTable(id, name);
-    }
-
-    public static LineageTable build(TableCA tableCA) {
-        LineageTable lineageTable = new LineageTable();
-        lineageTable.setId(tableCA.getId().toString());
-        lineageTable.setName(tableCA.getTableName());
-        List<LineageColumn> columnList = new ArrayList<>();
-        for (String columnName : tableCA.getFields()) {
-            columnList.add(LineageColumn.build(columnName, columnName));
-        }
-        lineageTable.setColumns(columnList);
-        return lineageTable;
     }
 
     public String getId() {

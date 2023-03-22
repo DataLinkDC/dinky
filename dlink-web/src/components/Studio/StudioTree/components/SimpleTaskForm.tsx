@@ -193,7 +193,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
       bodyStyle={{padding: '32px 40px 48px'}}
       destroyOnClose
       title={isCreate ? '创建新作业' : ('重命名作业-' + formVals.name)}
-      open={updateModalVisible}
+      visible={updateModalVisible}
       footer={renderFooter()}
       onCancel={() => handleUpdateModalVisible()}
     >
