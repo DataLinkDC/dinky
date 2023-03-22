@@ -312,8 +312,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         map.put("SMALLINT", "SMALLINT");
         map.put("INT", "INT");
         map.put("VARCHAR", "STRING");
-        map.put("TEXY", "STRING");
-        map.put("INT", "INT");
+        map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
     }
