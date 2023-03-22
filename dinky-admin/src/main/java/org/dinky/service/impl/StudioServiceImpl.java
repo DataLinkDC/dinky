@@ -23,7 +23,6 @@ import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.dto.AbstractStatementDTO;
-import org.dinky.dto.SessionDTO;
 import org.dinky.dto.SqlDTO;
 import org.dinky.dto.StudioCADTO;
 import org.dinky.dto.StudioDDLDTO;
@@ -60,9 +59,6 @@ import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
-import org.dinky.session.SessionConfig;
-import org.dinky.session.SessionInfo;
-import org.dinky.session.SessionPool;
 import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.RunTimeUtil;
 
@@ -333,41 +329,6 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public SelectResult getJobData(String jobId) {
         return JobManager.getJobData(jobId);
-    }
-
-    @Override
-    public SessionInfo createSession(SessionDTO sessionDTO, String createUser) {
-        if (sessionDTO.isUseRemote()) {
-            Cluster cluster = clusterService.getById(sessionDTO.getClusterId());
-            SessionConfig sessionConfig =
-                    SessionConfig.build(
-                            sessionDTO.getType(),
-                            true,
-                            cluster.getId(),
-                            cluster.getAlias(),
-                            clusterService.buildEnvironmentAddress(
-                                    true, sessionDTO.getClusterId()));
-            return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
-        } else {
-            SessionConfig sessionConfig =
-                    SessionConfig.build(
-                            sessionDTO.getType(),
-                            false,
-                            null,
-                            null,
-                            clusterService.buildEnvironmentAddress(false, null));
-            return JobManager.createSession(sessionDTO.getSession(), sessionConfig, createUser);
-        }
-    }
-
-    @Override
-    public boolean clearSession(String session) {
-        return SessionPool.remove(session) > 0;
-    }
-
-    @Override
-    public List<SessionInfo> listSession(String createUser) {
-        return JobManager.listSession(createUser);
     }
 
     @Override

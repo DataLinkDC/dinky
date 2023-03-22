@@ -19,7 +19,6 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.SessionDTO;
 import org.dinky.dto.SqlDTO;
 import org.dinky.dto.StudioCADTO;
 import org.dinky.dto.StudioDDLDTO;
@@ -33,7 +32,6 @@ import org.dinky.model.Schema;
 import org.dinky.result.IResult;
 import org.dinky.result.SelectResult;
 import org.dinky.result.SqlExplainResult;
-import org.dinky.session.SessionInfo;
 
 import java.util.List;
 
@@ -61,12 +59,6 @@ public interface StudioService {
     ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO);
 
     SelectResult getJobData(String jobId);
-
-    SessionInfo createSession(SessionDTO sessionDTO, String createUser);
-
-    boolean clearSession(String session);
-
-    List<SessionInfo> listSession(String createUser);
 
     LineageResult getLineage(StudioCADTO studioCADTO);
 
