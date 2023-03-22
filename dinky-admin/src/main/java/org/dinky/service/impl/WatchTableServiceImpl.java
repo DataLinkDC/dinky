@@ -19,10 +19,7 @@
 
 package org.dinky.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -36,6 +33,11 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
+
 @Slf4j
 @Service
 public class WatchTableServiceImpl implements WatchTableService {
@@ -44,7 +46,8 @@ public class WatchTableServiceImpl implements WatchTableService {
 
     private final Map<String, Set<String>> registerTableMap = new ConcurrentHashMap<>();
 
-    private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`([^\\.]+)`\\.`([^\\.]+)`\\.`([^\\.]+)`$");
+    private static final Pattern FULL_TABLE_NAME_PATTERN =
+            Pattern.compile("^`([^\\.]+)`\\.`([^\\.]+)`\\.`([^\\.]+)`$");
 
     public WatchTableServiceImpl(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
