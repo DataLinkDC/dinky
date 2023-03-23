@@ -19,19 +19,22 @@
 
 package org.dinky.model;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
-/** */
+/**
+ *
+ */
 class TableTest {
 
     private Table table;
+    private Table tableWithoutKey;
     private String flinkConfig;
 
     @BeforeEach
@@ -59,7 +62,29 @@ class TableTest {
                                 .comment("comment \"abc\"")
                                 .build());
 
+        List<Column> columnWithoutKey =
+                Arrays.asList(
+                        Column.builder()
+                                .name("column1")
+                                .type("int")
+                                .javaType(ColumnType.INT)
+                                .comment("comment abc")
+                                .build(),
+                        Column.builder()
+                                .name("column2")
+                                .type("varchar")
+                                .javaType(ColumnType.STRING)
+                                .comment("comment 'abc'")
+                                .build(),
+                        Column.builder()
+                                .name("column3")
+                                .type("double")
+                                .javaType(ColumnType.DOUBLE)
+                                .comment("comment \"abc\"")
+                                .build());
+
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
+        tableWithoutKey = new Table("TableNameOrigin", "SchemaOrigin", columnWithoutKey);
 
         flinkConfig =
                 "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd";
@@ -79,6 +104,14 @@ class TableTest {
                                 + ") WITH (\n"
                                 + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)"
                                 + "\n"));
+
+        result = tableWithoutKey.getFlinkDDL(flinkConfig, "NewTableNameWithoutKey");
+        assertThat(result, equalTo("CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n" +
+                "    `column1` INT NOT NULL COMMENT 'comment abc',\n" +
+                "    `column2` STRING COMMENT 'comment abc',\n" +
+                "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n" +
+                "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)\n"));
+
     }
 
     @Test
@@ -104,6 +137,7 @@ class TableTest {
                                 + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
                                 + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                                 + ") WITH (\n"
-                                + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, bcd=bcd)\n"));
+                                + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, bcd=bcd)" +
+                                "\n"));
     }
 }
