@@ -19,18 +19,16 @@
 
 package org.dinky.model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-/**
- *
- */
+/** */
 class TableTest {
 
     private Table table;
@@ -106,12 +104,14 @@ class TableTest {
                                 + "\n"));
 
         result = tableWithoutKey.getFlinkDDL(flinkConfig, "NewTableNameWithoutKey");
-        assertThat(result, equalTo("CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n" +
-                "    `column1` INT NOT NULL COMMENT 'comment abc',\n" +
-                "    `column2` STRING COMMENT 'comment abc',\n" +
-                "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n" +
-                "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)\n"));
-
+        assertThat(
+                result,
+                equalTo(
+                        "CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n"
+                                + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
+                                + "    `column2` STRING COMMENT 'comment abc',\n"
+                                + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n"
+                                + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)\n"));
     }
 
     @Test
@@ -137,7 +137,7 @@ class TableTest {
                                 + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
                                 + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
                                 + ") WITH (\n"
-                                + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, bcd=bcd)" +
-                                "\n"));
+                                + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, bcd=bcd)"
+                                + "\n"));
     }
 }

@@ -19,8 +19,6 @@
 
 package org.dinky.model;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.dinky.assertion.Asserts;
 import org.dinky.utils.SqlUtil;
 
@@ -32,6 +30,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * Table
@@ -55,19 +56,14 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     private Long rows;
     private Date createTime;
     private Date updateTime;
-    /**
-     * 表类型
-     */
+    /** 表类型 */
     private TableType tableType = TableType.SINGLE_DATABASE_AND_TABLE;
-    /**
-     * 分库或分表对应的表名
-     */
+    /** 分库或分表对应的表名 */
     private List<String> schemaTableNameList;
 
     private List<Column> columns;
 
-    public Table() {
-    }
+    public Table() {}
 
     public Table(String name, String schema, List<Column> columns) {
         this.name = name;
@@ -133,16 +129,20 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                 })
                         .collect(Collectors.joining(",\n"));
 
-        List<String> columnKeys = columns.stream()
-                .filter(Column::isKeyFlag)
-                .map(Column::getName)
-                .map(t -> String.format("`%s`", t))
-                .collect(Collectors.toList());
+        List<String> columnKeys =
+                columns.stream()
+                        .filter(Column::isKeyFlag)
+                        .map(Column::getName)
+                        .map(t -> String.format("`%s`", t))
+                        .collect(Collectors.toList());
 
-        String primaryKeyStr = columnKeys.isEmpty() ? ""
-                : columnKeys.stream()
-                .collect(Collectors.joining(
-                                ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
+        String primaryKeyStr =
+                columnKeys.isEmpty()
+                        ? ""
+                        : columnKeys.stream()
+                                .collect(
+                                        Collectors.joining(
+                                                ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
 
         String result =
                 MessageFormat.format(

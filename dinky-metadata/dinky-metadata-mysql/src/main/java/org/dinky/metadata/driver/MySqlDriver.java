@@ -132,15 +132,18 @@ public class MySqlDriver extends AbstractJdbcDriver {
                                 })
                         .collect(Collectors.joining(",\n"));
 
-        List<String> columnKeys = table.getColumns().stream()
-                .filter(Column::isKeyFlag)
-                .map(Column::getName)
-                .map(t -> String.format("`%s`", t))
-                .collect(Collectors.toList());
+        List<String> columnKeys =
+                table.getColumns().stream()
+                        .filter(Column::isKeyFlag)
+                        .map(Column::getName)
+                        .map(t -> String.format("`%s`", t))
+                        .collect(Collectors.toList());
 
-        String primaryKeyStr = columnKeys.isEmpty() ? ""
-                : columnKeys.stream()
-                .collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
+        String primaryKeyStr =
+                columnKeys.isEmpty()
+                        ? ""
+                        : columnKeys.stream()
+                                .collect(Collectors.joining(",", ",\n  PRIMARY KEY (", ")\n"));
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS `{0}`.`{1}` (\n{2}{3})\n ENGINE={4}{5}{6};",
