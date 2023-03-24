@@ -51,6 +51,7 @@ const Login: React.FC = () => {
 
   const fetchUserInfo = async () => {
     const userInfo = await initialState?.fetchUserInfo?.();
+    debugger
     if (userInfo) {
       setInitialState({
         ...initialState,

@@ -64,6 +64,11 @@ export type StudioParam = {
   savePointPath?: string,
 }
 
+export type WatchParam = {
+  id: number,
+  table: string
+}
+
 export type StudioMetaStoreParam = {
   statement?: string,
   fragment?: boolean,
