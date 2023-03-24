@@ -298,11 +298,9 @@ public abstract class Executor {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
-        Map<String, String> config = executorSetting.getConfig();
-        if (Asserts.isNotNull(config)) {
-            config.put(PythonOptions.PYTHON_FILES.key(), String.join(",", udfPyFilePath));
-            config.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
-        }
+        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
+        configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
+        configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
