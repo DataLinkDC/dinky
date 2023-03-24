@@ -28,6 +28,9 @@ import {l} from "@/utils/intl";
 const StudioMsg = (props: any) => {
 
   const {current, height, isActive} = props;
+  console.log(props);
+  
+  
   const [consoleInfo, setConsoleInfo] = useState<string>("");
 
   useEffect(() => {

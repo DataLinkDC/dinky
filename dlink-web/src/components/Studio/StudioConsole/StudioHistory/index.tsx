@@ -60,6 +60,9 @@ const url = '/api/history';
 const StudioHistory = (props: any) => {
 
   const {current, refs, dispatch} = props;
+  console.log(current,"currenthistory");
+  
+  
   const [modalVisit, setModalVisit] = useState(false);
   const [row, setRow] = useState<HistoryItem>();
   const [config, setConfig] = useState<HistoryConfig>();
