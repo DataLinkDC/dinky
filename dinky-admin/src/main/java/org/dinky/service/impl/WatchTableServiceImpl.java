@@ -26,7 +26,6 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -83,7 +82,7 @@ public class WatchTableServiceImpl implements WatchTableService {
 
     @Override
     public void unRegisterListenEntry(Integer userId, String table) {
-       String fullName = getFullTableName(table);
+        String fullName = getFullTableName(table);
         String destination = getDestination(userId, fullName);
         Set<String> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
@@ -110,6 +109,7 @@ public class WatchTableServiceImpl implements WatchTableService {
         String fn = getFullTableName(table);
         return String.format("/topic/table/%s/%s", userId, fn);
     }
+
     public static String getDestinationByFullName(Integer userId, String tableFullName) {
         return String.format("/topic/table/%s/%s", userId, tableFullName);
     }
