@@ -26,6 +26,7 @@ import java.net.DatagramSocket;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,10 +58,10 @@ public class WatchTableServiceImpl implements WatchTableService {
 
     public void send(String message) {
         try {
-            String tableFullName = message.substring(0, message.indexOf("\n"));
-            final Set<String> destinations = registerTableMap.get(tableFullName);
+            String[] data = message.split("\n", 2);
+            final Set<String> destinations = registerTableMap.get(data[0]);
             if (destinations != null) {
-                destinations.forEach(d -> this.messagingTemplate.convertAndSend(d, message));
+                destinations.forEach(d -> this.messagingTemplate.convertAndSend(d, data[1]));
             }
         } catch (Exception e) {
             log.error(e.getMessage());
@@ -68,26 +69,29 @@ public class WatchTableServiceImpl implements WatchTableService {
     }
 
     @Override
-    public void registerListenEntry(Integer userId, String table) {
-        String destination = getDestination(userId, table);
-        Set<String> destinations = registerTableMap.get(table);
+    public String registerListenEntry(Integer userId, String table) {
+        String fullName = getFullTableName(table);
+        String destination = getDestinationByFullName(userId, fullName);
+        Set<String> destinations = registerTableMap.get(fullName);
         if (destinations == null) {
-            registerTableMap.put(table, new HashSet<>(Arrays.asList(destination)));
+            registerTableMap.put(fullName, new HashSet<>(Arrays.asList(destination)));
         } else {
             destinations.add(destination);
         }
+        return destination;
     }
 
     @Override
     public void unRegisterListenEntry(Integer userId, String table) {
-        String destination = getDestination(userId, table);
-        Set<String> destinations = registerTableMap.get(table);
+       String fullName = getFullTableName(table);
+        String destination = getDestination(userId, fullName);
+        Set<String> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
             destinations.remove(destination);
         }
     }
 
-    public static String getDestination(Integer userId, String table) {
+    public static String getFullTableName(String table) {
         if (table == null) {
             throw new NullPointerException("table name empty");
         }
@@ -99,7 +103,15 @@ public class WatchTableServiceImpl implements WatchTableService {
         } else {
             result = String.format("`default_catalog`.`default_database`.`print_%s`", table);
         }
-        return String.format("/topic/table/%s/%s", userId, result);
+        return result;
+    }
+
+    public static String getDestination(Integer userId, String table) {
+        String fn = getFullTableName(table);
+        return String.format("/topic/table/%s/%s", userId, fn);
+    }
+    public static String getDestinationByFullName(Integer userId, String tableFullName) {
+        return String.format("/topic/table/%s/%s", userId, tableFullName);
     }
 
     public static class WatchTableListener extends Thread {

@@ -22,8 +22,8 @@ package org.dinky.controller;
 import org.dinky.common.result.Result;
 import org.dinky.service.WatchTableService;
 
-import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,18 +31,18 @@ import lombok.AllArgsConstructor;
 
 @RestController
 @AllArgsConstructor
-@MessageMapping("api")
+@RequestMapping("api")
 public class WatchTableController {
 
     private final WatchTableService watchTableService;
 
     @PutMapping("/subscribe/watch")
     public Result subscribe(@RequestParam Integer id, @RequestParam String table) {
-        watchTableService.registerListenEntry(id, table);
-        return Result.succeed();
+        String destination = watchTableService.registerListenEntry(id, table);
+        return Result.succeed(destination);
     }
 
-    @PutMapping("/unsubscribe/watch")
+    @PutMapping("/unSubscribe/watch")
     public Result unsubscribe(@RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
         return Result.succeed();
