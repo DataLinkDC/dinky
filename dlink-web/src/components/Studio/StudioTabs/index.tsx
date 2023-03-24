@@ -36,9 +36,6 @@ const EditorTabs = (props: any) => {
 
 
   const {tabs, current, toolHeight, width, height} = props;
-  console.log(tabs,"tabs");
-  
-
   const onChange = (activeKey: any) => {
     props.saveToolHeight(toolHeight);
     props.changeActiveKey(activeKey);

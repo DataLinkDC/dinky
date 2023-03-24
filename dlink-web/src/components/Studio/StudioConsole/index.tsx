@@ -136,7 +136,6 @@ const StudioConsole = (props: any) => {
           <StudioHistory />
         </Scrollbars>
       </TabPane>
-      {/* 表格数据展示 */}
       <TabPane
         tab={
           <span>
