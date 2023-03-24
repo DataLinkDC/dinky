@@ -38,20 +38,16 @@ import CodeShow from "@/components/Common/CodeShow";
 const StudioData = (props: any) => {
 
   const { height, isActive } = props;
-  const [consoleInfo, setConsoleInfo] = useState<string>("");//显示的code内容
+  const [consoleInfo, setConsoleInfo] = useState<string>("");
 
-  const [tableName, setTableName] = useState<string>("Orders");//传入的table名称
+  const [tableName, setTableName] = useState<string>("Orders");
   const preTableNameRef = useRef(tableName)
   const preTableName = preTableNameRef.current
   let consoleHeight = (height - 37.6);
-  const id = Number(localStorage.getItem('dlink-tenantId'));//用户id
+  const id = Number(localStorage.getItem('dlink-tenantId'));
 
 
   const onSearchName = (value: string) => {
-    //表格名称发生变化 取消上次订阅
-    console.log("test", id, preTableName);
-    console.log("test", id, value);
-    //取消上次订阅
     unRegisterWatchTable({ id, table: preTableName }).then(res => {
       setConsoleInfo("")
       stompClient.unsubscribe();
@@ -63,7 +59,7 @@ const StudioData = (props: any) => {
       })
 
     })
-   
+
     //注册订阅
 
     //修改订阅

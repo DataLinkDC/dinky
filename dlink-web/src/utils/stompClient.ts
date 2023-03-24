@@ -1,5 +1,3 @@
-//引入使用SockJS
-
 
 import { reject } from "lodash";
 import Stomp, { Subscription } from "stompjs";
@@ -15,16 +13,10 @@ interface SocketRes {
   headers?: object,
   nack?: () => {},
 }
-//请求地址
-const baseUrl = "ws://192.168.1.15:8888/stomp";
-//请求头
-//stomp客户端 
+
 export let stompClient: Stomp.Client;
-//连接状态
+
 let connetStatus = false;
-/**
- * 初始化连接
- */
 
 class MyStompClient {
   mqClient: Stomp.Client;
@@ -75,7 +67,7 @@ class MyStompClient {
   }
   unsubscribe() {
 
-    
+
     this.subObj.unsubscribe()
     this.subObj = { id: "", unsubscribe: () => { } };
   }
