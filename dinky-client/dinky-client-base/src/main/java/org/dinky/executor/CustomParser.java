@@ -17,30 +17,12 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.executor;
 
-import org.dinky.executor.Executor;
+import org.apache.flink.table.operations.Operation;
 
-import org.apache.flink.table.api.TableResult;
+import java.util.List;
 
-/**
- * Operation
- *
- * @author wenmo
- * @since 2021/6/13 19:24
- */
-public interface Operation extends org.apache.flink.table.operations.Operation {
-
-    String getHandle();
-
-    Operation create(String statement);
-
-    TableResult build(Executor executor);
-
-    boolean noExecute();
-
-    @Override
-    default String asSummaryString() {
-        return getHandle();
-    }
+public interface CustomParser {
+    List<Operation> parse(String statement);
 }

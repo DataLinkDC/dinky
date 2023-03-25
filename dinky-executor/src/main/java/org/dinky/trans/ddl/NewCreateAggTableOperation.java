@@ -17,30 +17,37 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.trans.ddl;
 
 import org.dinky.executor.Executor;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
 
 import org.apache.flink.table.api.TableResult;
 
-/**
- * Operation
- *
- * @author wenmo
- * @since 2021/6/13 19:24
- */
-public interface Operation extends org.apache.flink.table.operations.Operation {
+public class NewCreateAggTableOperation extends AbstractOperation implements Operation {
+    private static final String KEY_WORD = "CREATE AGGTABLENEW";
 
-    String getHandle();
+    public NewCreateAggTableOperation(String statement) {
+        super(statement);
+    }
 
-    Operation create(String statement);
-
-    TableResult build(Executor executor);
-
-    boolean noExecute();
+    public NewCreateAggTableOperation() {}
 
     @Override
-    default String asSummaryString() {
-        return getHandle();
+    public String getHandle() {
+        return KEY_WORD;
     }
+
+    @Override
+    public Operation create(String statement) {
+        return null;
+    }
+
+    @Override
+    public TableResult build(Executor executor) {
+        return null;
+    }
+
+    public void init() {}
 }

@@ -24,6 +24,7 @@ import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.model.LineageRel;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -183,8 +184,9 @@ public abstract class Executor {
 
     private void initExecutionEnvironment() {
         useSqlFragment = executorSetting.isUseSqlFragment();
-
         tableEnvironment = createCustomTableEnvironment();
+        tableEnvironment.injectParser(new CustomParserImpl());
+        tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorSetting.isValidJobName()) {
             configuration.setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
