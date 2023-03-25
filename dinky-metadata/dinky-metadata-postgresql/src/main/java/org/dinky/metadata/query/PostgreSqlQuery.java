@@ -57,11 +57,9 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "     , col.numeric_scale                            as numeric_scale\n"
                 + "     , col.ordinal_position                         as ordinal_position\n"
                 + "     , col.udt_name                                 as type\n"
-                + "     , (CASE\n"
-                + "            WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p' and  PC.conname like concat('"
+                + "     , (CASE  WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p' and   PC.conname ='"
                 + tableName
-                + "','_%')) > 0\n"
-                + "                THEN 'PRI'\n"
+                + "'||'_pkey') > 0   THEN 'PRI' \n"
                 + "            ELSE '' END)                            AS key\n"
                 + "     , col_description(c.oid, col.ordinal_position) AS comment\n"
                 + "     , col.column_default                           AS column_default\n"
@@ -71,8 +69,7 @@ public class PostgreSqlQuery extends AbstractDBQuery {
                 + "         LEFT JOIN pg_attribute b ON b.attrelid = c.oid AND b.attname = col.column_name\n"
                 + "WHERE col.table_schema = '"
                 + schemaName
-                + "'\n"
-                + "  AND col.table_name = '"
+                + "' AND col.table_name = '"
                 + tableName
                 + "'\n"
                 + "ORDER BY col.table_schema, col.table_name, col.ordinal_position";
