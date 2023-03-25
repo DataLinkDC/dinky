@@ -389,7 +389,7 @@ public class FlinkAPI {
      * @param logName 日志名称
      * @return String
      */
-    public String getTaskManagerLogFileDeatil(String containerId, String logName) {
+    public String getTaskManagerLogFileDetail(String containerId, String logName) {
         return getResult(
                 FlinkRestAPIConstant.TASK_MANAGER
                         + containerId

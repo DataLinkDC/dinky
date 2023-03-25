@@ -61,5 +61,18 @@
 
             </modules>
         </profile>
+
+        <profile>
+            <id>flink-all</id>
+            <modules>
+                <module>dinky-connector-jdbc-1.12</module>
+                <module>dinky-connector-jdbc-1.13</module>
+                <module>dinky-connector-phoenix-1.13</module>
+                <module>dinky-connector-doris-1.13</module>
+                <module>dinky-connector-jdbc-1.14</module>
+                <module>dinky-connector-phoenix-1.14</module>
+                <module>dinky-connector-pulsar-1.14</module>
+            </modules>
+        </profile>
     </profiles>
 </project>
