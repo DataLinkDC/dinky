@@ -22,9 +22,9 @@ package com.dlink.cdc.mysql;
 import org.apache.flink.api.common.typeinfo.BasicTypeInfo;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.util.Collector;
-import org.apache.kafka.connect.json.JsonConverter;
-import org.apache.kafka.connect.source.SourceRecord;
-import org.apache.kafka.connect.storage.ConverterType;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.json.JsonConverter;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.source.SourceRecord;
+import com.ververica.cdc.connectors.shaded.org.apache.kafka.connect.storage.ConverterType;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
