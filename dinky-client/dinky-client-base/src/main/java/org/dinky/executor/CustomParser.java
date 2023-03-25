@@ -17,15 +17,12 @@
  *
  */
 
+package org.dinky.executor;
 
+import org.apache.flink.table.operations.Operation;
 
-export type SessionItem = {
-  session: string,
-  type:string,
-  useRemote:boolean,
-  clusterId:number,
-  clusterName:string,
-  address:string,
-  createUser: string,
-  createTime: string,
-};
+import java.util.List;
+
+public interface CustomParser {
+    List<Operation> parse(String statement);
+}

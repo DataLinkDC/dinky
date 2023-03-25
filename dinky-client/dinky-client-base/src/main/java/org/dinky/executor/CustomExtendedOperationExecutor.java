@@ -17,9 +17,13 @@
  *
  */
 
+package org.dinky.executor;
 
-@import '~antd/lib/style/themes/default.less';
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.operations.Operation;
 
-.session-path{
-  line-height: 32px;
+import java.util.Optional;
+
+public interface CustomExtendedOperationExecutor {
+    Optional<? extends TableResult> executeOperation(Operation operation);
 }

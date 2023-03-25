@@ -17,42 +17,37 @@
  *
  */
 
-package org.dinky.explainer.trans;
+package org.dinky.trans.ddl;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.dinky.executor.Executor;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
 
-/**
- * Predecessor
- *
- * @author wenmo
- * @since 2021/6/22
- */
-@Getter
-@Setter
-public class Predecessor {
+import org.apache.flink.table.api.TableResult;
 
-    private Integer id;
-    private String shipStrategy;
-    private String side;
+public class NewCreateAggTableOperation extends AbstractOperation implements Operation {
+    private static final String KEY_WORD = "CREATE AGGTABLENEW";
 
-    public Predecessor(Integer id, String shipStrategy, String side) {
-        this.id = id;
-        this.shipStrategy = shipStrategy;
-        this.side = side;
+    public NewCreateAggTableOperation(String statement) {
+        super(statement);
+    }
+
+    public NewCreateAggTableOperation() {}
+
+    @Override
+    public String getHandle() {
+        return KEY_WORD;
     }
 
     @Override
-    public String toString() {
-        return "Predecessor{"
-                + "id="
-                + id
-                + ", shipStrategy='"
-                + shipStrategy
-                + '\''
-                + ", side='"
-                + side
-                + '\''
-                + '}';
+    public Operation create(String statement) {
+        return null;
     }
+
+    @Override
+    public TableResult build(Executor executor) {
+        return null;
+    }
+
+    public void init() {}
 }

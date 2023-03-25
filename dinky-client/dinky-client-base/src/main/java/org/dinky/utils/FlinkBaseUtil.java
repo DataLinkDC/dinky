@@ -33,6 +33,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * FlinkBaseUtil
  *
@@ -40,6 +43,7 @@ import java.util.Map;
  * @since 2022/3/9 19:15
  */
 public class FlinkBaseUtil {
+    private static final Logger logger = LoggerFactory.getLogger(FlinkBaseUtil.class);
 
     public static Map<String, String> getParamsFromArgs(String[] args) {
         Map<String, String> params = new HashMap<>();

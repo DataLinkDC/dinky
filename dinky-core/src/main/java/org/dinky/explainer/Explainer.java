@@ -24,16 +24,6 @@ import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
 import org.dinky.executor.Executor;
-import org.dinky.explainer.ca.ColumnCA;
-import org.dinky.explainer.ca.ColumnCAResult;
-import org.dinky.explainer.ca.NodeRel;
-import org.dinky.explainer.ca.TableCA;
-import org.dinky.explainer.ca.TableCAGenerator;
-import org.dinky.explainer.ca.TableCAResult;
-import org.dinky.explainer.lineage.LineageColumnGenerator;
-import org.dinky.explainer.lineage.LineageTableGenerator;
-import org.dinky.explainer.trans.Trans;
-import org.dinky.explainer.trans.TransGenerator;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -50,18 +40,15 @@ import org.dinky.process.model.ProcessEntity;
 import org.dinky.result.ExplainResult;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.trans.Operations;
-import org.dinky.utils.FlinkUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
-import org.apache.flink.table.catalog.CatalogManager;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -82,12 +69,6 @@ public class Explainer {
     private String sqlSeparator = FlinkSQLConstant.SEPARATOR;
     private ObjectMapper mapper = new ObjectMapper();
 
-    public Explainer(Executor executor) {
-        this.executor = executor;
-        this.useStatementSet = true;
-        init();
-    }
-
     public Explainer(Executor executor, boolean useStatementSet) {
         this.executor = executor;
         this.useStatementSet = useStatementSet;
@@ -102,10 +83,6 @@ public class Explainer {
 
     public void init() {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
-    }
-
-    public static Explainer build(Executor executor) {
-        return new Explainer(executor, false, ";");
     }
 
     public static Explainer build(Executor executor, boolean useStatementSet, String sqlSeparator) {
@@ -172,50 +149,6 @@ public class Explainer {
             }
         }
         return udfList;
-    }
-
-    public List<SqlExplainResult> explainSqlResult(String statement) {
-        String[] sqls = SqlUtil.getStatements(statement, sqlSeparator);
-        List<SqlExplainResult> sqlExplainRecords = new ArrayList<>();
-        int index = 1;
-        for (String item : sqls) {
-            SqlExplainResult record = new SqlExplainResult();
-            String sql = "";
-            try {
-                sql = FlinkInterceptor.pretreatStatement(executor, item);
-                if (Asserts.isNullString(sql)) {
-                    continue;
-                }
-                SqlType operationType = Operations.getOperationType(sql);
-                if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)) {
-                    record = executor.explainSqlRecord(sql);
-                    if (Asserts.isNull(record)) {
-                        continue;
-                    }
-                } else {
-                    record = executor.explainSqlRecord(sql);
-                    if (Asserts.isNull(record)) {
-                        continue;
-                    }
-                    executor.executeSql(sql);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                record.setError(e.getMessage());
-                record.setExplainTrue(false);
-                record.setExplainTime(LocalDateTime.now());
-                record.setSql(sql);
-                record.setIndex(index);
-                sqlExplainRecords.add(record);
-                break;
-            }
-            record.setExplainTrue(true);
-            record.setExplainTime(LocalDateTime.now());
-            record.setSql(sql);
-            record.setIndex(index++);
-            sqlExplainRecords.add(record);
-        }
-        return sqlExplainRecords;
     }
 
     public ExplainResult explainSql(String statement) {
@@ -379,231 +312,6 @@ public class Explainer {
             throw new RuntimeException(
                     "Creating job plan fails because this job doesn't contain an insert statement.");
         }
-    }
-
-    private List<TableCAResult> generateTableCA(String statement, boolean onlyTable) {
-        List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
-        List<String> strPlans = new ArrayList<>();
-        for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains(FlinkSQLConstant.DML)) {
-                strPlans.add(sqlExplainRecords.get(i).getSql());
-            }
-        }
-        List<TableCAResult> results = new ArrayList<>();
-        for (int i = 0; i < strPlans.size(); i++) {
-            List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
-            TableCAGenerator generator = TableCAGenerator.build(trans);
-            if (onlyTable) {
-                generator.translateOnlyTable();
-            } else {
-                generator.translate();
-            }
-            results.add(generator.getResult());
-        }
-        if (results.size() > 0) {
-            CatalogManager catalogManager = executor.getCatalogManager();
-            for (int i = 0; i < results.size(); i++) {
-                TableCA sinkTableCA = (TableCA) results.get(i).getSinkTableCA();
-                if (Asserts.isNotNull(sinkTableCA)) {
-                    sinkTableCA.setFields(
-                            FlinkUtil.getFieldNamesFromCatalogManager(
-                                    catalogManager,
-                                    sinkTableCA.getCatalog(),
-                                    sinkTableCA.getDatabase(),
-                                    sinkTableCA.getTable()));
-                }
-            }
-        }
-        return results;
-    }
-
-    public List<TableCAResult> generateTableCA(String statement) {
-        return generateTableCA(statement, true);
-    }
-
-    public List<TableCAResult> explainSqlTableColumnCA(String statement) {
-        return generateTableCA(statement, false);
-    }
-
-    public List<ColumnCAResult> explainSqlColumnCA(String statement) {
-        List<SqlExplainResult> sqlExplainRecords = explainSqlResult(statement);
-        List<String> strPlans = new ArrayList<>();
-        for (int i = 0; i < sqlExplainRecords.size(); i++) {
-            if (Asserts.isNotNull(sqlExplainRecords.get(i).getType())
-                    && sqlExplainRecords.get(i).getType().contains("DML")) {
-                strPlans.add(sqlExplainRecords.get(i).getSql());
-            }
-        }
-        List<ColumnCAResult> results = new ArrayList<>();
-        // statementsets
-        if (useStatementSet) {
-            List<Trans> trans = translateTrans(translateObjectNode(strPlans));
-            LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
-            LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
-            tableGenerator.translate();
-            generator.setTableCAS(tableGenerator.getTables());
-            generator.translate();
-            ColumnCAResult columnCAResult = new ColumnCAResult(generator);
-            correctColumn(columnCAResult);
-            correctSinkSets(columnCAResult);
-            results.add(columnCAResult);
-        } else {
-            for (int i = 0; i < strPlans.size(); i++) {
-                List<Trans> trans = translateTrans(translateObjectNode(strPlans.get(i)));
-                LineageColumnGenerator generator = LineageColumnGenerator.build(trans);
-                LineageTableGenerator tableGenerator = LineageTableGenerator.build(trans);
-                tableGenerator.translate();
-                generator.setTableCAS(tableGenerator.getTables());
-                generator.translate();
-                ColumnCAResult columnCAResult = new ColumnCAResult(generator);
-                correctColumn(columnCAResult);
-                results.add(columnCAResult);
-            }
-        }
-        return results;
-    }
-
-    private void correctColumn(ColumnCAResult columnCAResult) {
-        for (TableCA tableCA : columnCAResult.getTableCAS()) {
-            CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList =
-                    FlinkUtil.getFieldNamesFromCatalogManager(
-                            catalogManager,
-                            tableCA.getCatalog(),
-                            tableCA.getDatabase(),
-                            tableCA.getTable());
-            List<String> fields = tableCA.getFields();
-            List<String> oldFields = new ArrayList<>();
-            oldFields.addAll(fields);
-            if (tableCA.getType().equals("Data Sink")) {
-                for (int i = 0; i < columnList.size(); i++) {
-                    String sinkColumnName = columnList.get(i);
-                    if (!sinkColumnName.equals(oldFields.get(i))) {
-                        for (Map.Entry<Integer, ColumnCA> item :
-                                columnCAResult.getColumnCASMaps().entrySet()) {
-                            ColumnCA columnCA = item.getValue();
-                            if (columnCA.getTableId().equals(tableCA.getId())
-                                    && columnCA.getName().equals(oldFields.get(i))) {
-                                columnCA.setName(sinkColumnName);
-                                fields.set(i, sinkColumnName);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        for (TableCA tableCA : columnCAResult.getTableCAS()) {
-            CatalogManager catalogManager = executor.getCatalogManager();
-            List<String> columnList =
-                    FlinkUtil.getFieldNamesFromCatalogManager(
-                            catalogManager,
-                            tableCA.getCatalog(),
-                            tableCA.getDatabase(),
-                            tableCA.getTable());
-            List<String> fields = tableCA.getFields();
-            int i = 0;
-            List<Integer> idList = new ArrayList<>();
-            while (i < fields.size()) {
-                if (!columnList.contains(fields.get(i))) {
-                    for (Map.Entry<Integer, ColumnCA> item :
-                            columnCAResult.getColumnCASMaps().entrySet()) {
-                        if (item.getValue().getName().equals(fields.get(i))
-                                && item.getValue().getTableId().equals(tableCA.getId())) {
-                            idList.add(item.getValue().getId());
-                            break;
-                        }
-                    }
-                    fields.remove(i);
-                } else {
-                    i++;
-                }
-            }
-            for (Integer id : idList) {
-                for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
-                    if (nodeRel.getPreId().equals(id)) {
-                        columnCAResult.getColumnCASMaps().remove(id);
-                        columnCAResult.getColumnCASRelChain().remove(nodeRel);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    private void correctSinkSets(ColumnCAResult columnCAResult) {
-        for (TableCA tableCA : columnCAResult.getTableCAS()) {
-            if (tableCA.getType().equals("Data Sink")) {
-                for (Map.Entry<Integer, ColumnCA> item :
-                        columnCAResult.getColumnCASMaps().entrySet()) {
-                    if (item.getValue().getTableId().equals(tableCA.getId())) {
-                        List<NodeRel> addNodeRels = new ArrayList<>();
-                        List<NodeRel> delNodeRels = new ArrayList<>();
-                        for (NodeRel nodeRel : columnCAResult.getColumnCASRelChain()) {
-                            if (nodeRel.getPreId().equals(item.getValue().getId())) {
-                                for (NodeRel nodeRel2 : columnCAResult.getColumnCASRelChain()) {
-                                    if (columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .containsKey(nodeRel2.getSufId())
-                                            && columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .containsKey(nodeRel2.getPreId())
-                                            && columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .containsKey(nodeRel.getSufId())
-                                            && columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .get(nodeRel2.getSufId())
-                                                    .getTableId()
-                                                    .equals(
-                                                            columnCAResult
-                                                                    .getColumnCASMaps()
-                                                                    .get(nodeRel.getSufId())
-                                                                    .getTableId())
-                                            && columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .get(nodeRel2.getSufId())
-                                                    .getName()
-                                                    .equals(
-                                                            columnCAResult
-                                                                    .getColumnCASMaps()
-                                                                    .get(nodeRel.getSufId())
-                                                                    .getName())
-                                            && !columnCAResult
-                                                    .getColumnCASMaps()
-                                                    .get(nodeRel2.getPreId())
-                                                    .getType()
-                                                    .equals("Data Sink")) {
-                                        addNodeRels.add(
-                                                new NodeRel(
-                                                        nodeRel2.getPreId(), nodeRel.getPreId()));
-                                    }
-                                }
-                                delNodeRels.add(nodeRel);
-                            }
-                        }
-                        for (NodeRel nodeRel : addNodeRels) {
-                            columnCAResult.getColumnCASRelChain().add(nodeRel);
-                        }
-                        for (NodeRel nodeRel : delNodeRels) {
-                            columnCAResult.getColumnCASRelChain().remove(nodeRel);
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    private ObjectNode translateObjectNode(String statement) {
-        return executor.getStreamGraph(statement);
-    }
-
-    private ObjectNode translateObjectNode(List<String> statement) {
-        return executor.getStreamGraph(statement);
-    }
-
-    private List<Trans> translateTrans(ObjectNode plan) {
-        return new TransGenerator(plan).translateTrans();
     }
 
     public List<LineageRel> getLineage(String statement) {
