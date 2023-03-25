@@ -117,7 +117,7 @@ public class DorisDriver extends AbstractJdbcDriver {
         map.put("SMALLINT", "SMALLINT");
         map.put("INT", "INT");
         map.put("VARCHAR", "STRING");
-        map.put("TEXY", "STRING");
+        map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
     }

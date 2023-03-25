@@ -168,7 +168,8 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
                     if (columnList.contains(dbQuery.columnType())) {
                         field.setType(results.getString(dbQuery.columnType()));
                     }
-                    if (columnList.contains(dbQuery.columnComment()) && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
+                    if (columnList.contains(dbQuery.columnComment())
+                            && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
                         String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
                         field.setComment(columnComment);
                     }
@@ -252,7 +253,8 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
             while (results.next()) {
                 LinkedHashMap<String, Object> data = new LinkedHashMap<>();
                 for (int i = 0; i < columns.size(); i++) {
-                    data.put(columns.get(i).getName(), getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
+                    data.put(columns.get(i).getName(),
+                            getTypeConvert().convertValue(results, columns.get(i).getName(), columns.get(i).getType()));
                 }
                 datas.add(data);
                 count++;
@@ -268,7 +270,8 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
             close(preparedStatement, results);
             result.setRowData(datas);
             return result;
-        }    }
+        }
+    }
 
     @Override
     public IDBQuery getDBQuery() {
@@ -303,8 +306,7 @@ public class HiveDriver extends AbstractJdbcDriver implements Driver {
         map.put("SMALLINT", "SMALLINT");
         map.put("INT", "INT");
         map.put("VARCHAR", "STRING");
-        map.put("TEXY", "STRING");
-        map.put("INT", "INT");
+        map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
     }
