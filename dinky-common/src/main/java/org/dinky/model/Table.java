@@ -129,14 +129,20 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                 })
                         .collect(Collectors.joining(",\n"));
 
-        String primaryKeyStr =
+        List<String> columnKeys =
                 columns.stream()
                         .filter(Column::isKeyFlag)
                         .map(Column::getName)
                         .map(t -> String.format("`%s`", t))
-                        .collect(
-                                Collectors.joining(
-                                        ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
+                        .collect(Collectors.toList());
+
+        String primaryKeyStr =
+                columnKeys.isEmpty()
+                        ? ""
+                        : columnKeys.stream()
+                                .collect(
+                                        Collectors.joining(
+                                                ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
 
         String result =
                 MessageFormat.format(
