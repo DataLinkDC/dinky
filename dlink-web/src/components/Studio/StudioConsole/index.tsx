@@ -32,7 +32,7 @@ import { connect } from "umi";
 import StudioMsg from "./StudioMsg";
 import StudioTable from "./StudioTable";
 import StudioHistory from "./StudioHistory";
-import StudioData from "./studioData"
+import StudioData from "./StudioData"
 import StudioCA from "./StudioCA";
 import StudioProcess from "./StudioProcess";
 import { Scrollbars } from 'react-custom-scrollbars';
@@ -145,9 +145,7 @@ const StudioConsole = (props: any) => {
         }
         key="StudioData"
       >
-
         <StudioData height={consoleHeight} isActive={activeKey === "StudioData"} />
-
       </TabPane>
     </Tabs>
   );

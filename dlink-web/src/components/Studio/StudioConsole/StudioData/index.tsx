@@ -17,10 +17,7 @@
  *
  */
 
-
 import { Input, Space } from "antd";
-
-
 
 const { Search } = Input;
 
@@ -28,19 +25,17 @@ import { StateType } from "@/pages/DataStudio/model";
 import { registerWatchTable, unRegisterWatchTable } from "@/pages/DataStudio/service";
 import { connect } from "umi";
 import { useEffect, useState, useRef } from "react";
-// import { con, subscribe, close, stompClient } from "@/utils/stompClient";
 import stompClient from "@/utils/stompClient"
 import { Scrollbars } from 'react-custom-scrollbars';
 import CodeShow from "@/components/Common/CodeShow";
 
-// import {l} from "@/utils/intl";
 
 const StudioData = (props: any) => {
 
   const { height, isActive } = props;
   const [consoleInfo, setConsoleInfo] = useState<string>("");
 
-  const [tableName, setTableName] = useState<string>("Orders");
+  const [tableName, setTableName] = useState<string>("");
   const preTableNameRef = useRef(tableName)
   const preTableName = preTableNameRef.current
   let consoleHeight = (height - 37.6);
@@ -60,40 +55,11 @@ const StudioData = (props: any) => {
 
     })
 
-    //注册订阅
-
-    //修改订阅
-
-
-
-
     setTableName(value)
   };
 
-
-  // useEffect(() => {
-  //   //建立链接 切换tab关闭链接
-  //   con()
-  //   return () => {
-  //     close();
-  //   }
-  // }, [isActive])
-  // useEffect(() => {
-  //   //注册订阅
-  //   registerWatchTable({ id, table: tableName }).then(res => {
-  //    //订阅 （res.msg 返回订阅topic）
-  //     subscribe(res.msg).then(res => {
-  //       //更新info
-  //       setConsoleInfo(consoleInfo  + res as string)
-  //     })
-
-
-  //   })
-
-  // }, [tableName, consoleInfo]);
   useEffect(() => {
     stompClient.con();
-    //取消订阅
 
   }, [isActive])
   return (<div style={{ width: '100%' }}>
@@ -107,11 +73,7 @@ const StudioData = (props: any) => {
       <CodeShow code={JSON.stringify((consoleInfo ? consoleInfo : ""), null, "\t")} language='json'
         height={height} theme="vs-dark" />
     </Scrollbars>
-
-
   </div>)
-
-
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({

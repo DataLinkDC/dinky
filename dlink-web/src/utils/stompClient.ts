@@ -1,11 +1,7 @@
 
 import { reject } from "lodash";
 import Stomp, { Subscription } from "stompjs";
-interface params {
-  topicUrl: string,
-  sendTopicUrl?: string,
-  header?: object,
-}
+
 interface SocketRes {
   body: string,
   ack?: () => {},
@@ -23,7 +19,7 @@ class MyStompClient {
   connetStatus: boolean;
   subObj: Subscription;
   constructor() {
-    const baseUrl = "ws://192.168.1.15:8888/stomp";
+    const baseUrl = "ws://127.0.0.1:8888/stomp";
     let socket = new WebSocket(baseUrl);
     this.mqClient = Stomp.over(socket);
     this.connetStatus = false;
@@ -41,7 +37,6 @@ class MyStompClient {
       (err: any) => {
         console.log("error");
         console.log(err);
-
       }
     );
   }
@@ -56,18 +51,14 @@ class MyStompClient {
   subscribe(topicurl: string) {
     return new Promise<string>((resolve, reject) => {
       this.subObj = this.mqClient.subscribe(topicurl, (res: SocketRes) => {
-        debugger
         resolve(res.body)
       })
     }).catch(err => {
       console.log(err);
       reject(err)
-
     })
   }
   unsubscribe() {
-
-
     this.subObj.unsubscribe()
     this.subObj = { id: "", unsubscribe: () => { } };
   }
