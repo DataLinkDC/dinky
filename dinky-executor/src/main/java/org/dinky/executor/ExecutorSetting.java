@@ -179,11 +179,15 @@ public class ExecutorSetting {
     }
 
     public boolean isValidParallelism() {
-        return this.getParallelism() != null && this.getParallelism() > 0;
+        return Asserts.isNotNull(this.getParallelism()) && this.getParallelism() > 0;
     }
 
     public boolean isValidJobName() {
-        return this.getJobName() != null && !"".equals(this.getJobName());
+        return Asserts.isNotNullString(this.getJobName());
+    }
+
+    public boolean isValidConfig() {
+        return Asserts.isNotNullMap(this.getConfig());
     }
 
     @Override

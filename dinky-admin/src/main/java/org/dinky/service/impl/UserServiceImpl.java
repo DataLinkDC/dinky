@@ -128,22 +128,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed(MessageResolverUtils.getMessage("login.fail"));
+            return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
         }
         String userPassword = user.getPassword();
         if (Asserts.isNullString(loginDTO.getPassword())) {
             return Result.failed(MessageResolverUtils.getMessage("login.password.notnull"));
         }
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
-            if (user.getIsDelete()) {
-                return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
-            }
             if (!user.getEnabled()) {
                 return Result.failed(MessageResolverUtils.getMessage("login.user.disabled"));
             }
             // get user tenants and roles
             UserDTO userInfo = refreshUserInfo(user);
-
+            if (Asserts.isNullCollection(userInfo.getTenantList())) {
+                return Result.failed(MessageResolverUtils.getMessage("login.user.not.binding"));
+            }
             StpUtil.login(user.getId(), loginDTO.isAutoLogin());
             return Result.succeed(userInfo, MessageResolverUtils.getMessage("login.success"));
         } else {

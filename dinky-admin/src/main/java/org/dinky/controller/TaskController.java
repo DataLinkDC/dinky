@@ -165,7 +165,6 @@ public class TaskController {
 
     @PostMapping("/rollbackTask")
     public Result<Void> rollbackTask(@RequestBody TaskRollbackVersionDTO dto) {
-
         return taskService.rollbackTask(dto);
     }
 

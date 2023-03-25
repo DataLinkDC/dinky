@@ -102,7 +102,7 @@ const Studio = (props: any) => {
   };
 
   return (
-    <div onClick={onClick} style={{'margin': '-24px'}}>
+    <div onClick={onClick}>
       <StudioMenu form={form} width={size.width} height={size.height}/>
       <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>
         <DraggleVerticalLayout
