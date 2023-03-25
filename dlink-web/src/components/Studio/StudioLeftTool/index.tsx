@@ -17,13 +17,11 @@
  *
  */
 
-
 import {Tabs} from "antd";
-import {AppstoreOutlined, BarsOutlined, InsertRowAboveOutlined, MessageOutlined} from "@ant-design/icons";
+import {AppstoreOutlined, BarsOutlined, InsertRowAboveOutlined} from "@ant-design/icons";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import StudioTree from "../StudioTree";
-import StudioConnector from "./StudioConnector";
 import StudioMetaData from "./StudioMetaData";
 import StudioMetaStore from "./StudioMetaStore";
 import {l} from "@/utils/intl";
@@ -42,9 +40,6 @@ const StudioLeftTool = (props: any) => {
       <TabPane tab={<span><InsertRowAboveOutlined/> {l('pages.datastudio.label.structure')}</span>}
                key="MetaStore">
         <StudioMetaStore/>
-      </TabPane>
-      <TabPane tab={<span><MessageOutlined/> {l('pages.datastudio.label.session')}</span>} key="Connectors">
-        <StudioConnector/>
       </TabPane>
       <TabPane tab={<span><AppstoreOutlined/> {l('pages.datastudio.label.meta')}</span>} key="MetaData">
         <StudioMetaData/>
