@@ -369,6 +369,7 @@ export default {
   'pages.datastudio.label.structure': 'Structure',
   'pages.datastudio.label.cluster': 'Cluster',
   'pages.datastudio.label.datasource': 'Data Source',
+  'pages.datastudio.label.data': 'Table Data',
   'pages.datastudio.label.meta': 'Meta Data',
   'pages.datastudio.label.globalvariable': 'Global Variable',
   'pages.datastudio.label.guidepage': 'Guide Page',
