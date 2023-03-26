@@ -19,6 +19,7 @@
 
 package org.dinky.interceptor;
 
+import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 
 import java.util.Arrays;
@@ -38,11 +39,12 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        Arrays.stream(request.getCookies())
-                .filter(t -> "tenantId".equals(t.getName()))
-                .findFirst()
-                .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
-
+        if (Asserts.isNotNull(request.getCookies())) {
+            Arrays.stream(request.getCookies())
+                    .filter(t -> "tenantId".equals(t.getName()))
+                    .findFirst()
+                    .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
+        }
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }
 }
