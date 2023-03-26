@@ -27,3 +27,7 @@ update dinky_udf_template set template_code= 'from pyflink.table import DataType
 --  update flinkClusterConfiguration
 SET @userJarPath = ( SELECT VALUE FROM dinky_sys_config WHERE `name` = 'sqlSubmitJarPath' LIMIT 1 );
 UPDATE dinky_cluster_configuration SET config_json =( SELECT JSON_SET( config_json, '$.userJarPath', @userJarPath));
+
+
+-- Fix spelling error
+update dinky_task set dialect = 'KubernetesApplication' where dialect = 'KubernetesApplaction';
