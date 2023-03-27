@@ -19,6 +19,7 @@ export default {
   'layouts.userLayout.title': 'Dinky Real-time Computing Platform',
   'login.error': 'Login failed, please try again! Reason：{msg}',
   'login.result': '{msg}\t\t{time}',
+  'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
   'login.username.placeholder': 'Username',
   'login.username.required': 'Please input your username!',
   'login.chooseTenant': 'Please Choose Tenant',
@@ -161,11 +162,7 @@ export default {
   'user.UserUpdateUser': 'Update User',
   'user.AssignRole': 'Assign Role',
   'user.delete': 'Delete User',
-  'user.deleteConfirm': 'Are you sure you want to delete this User？',
-  'user.enable': 'Enable User',
-  'user.enableConfirm': 'Are you sure you want to enable this User？',
-  'user.disable': 'Disable User',
-  'user.disableConfirm': 'Are you sure you want to disable this User？',
+  'user.deleteConfirm': 'Are you sure delete this User？',
   'user.UserEnterUserName': 'Please enter user name',
   'user.UserEnterUniqueUserName': 'Please enter unique user name',
   'user.UserEnterJobNumber': 'Please enter job number',
@@ -178,7 +175,6 @@ export default {
   'user.UserEnterNewPassword': 'Please enter new password',
   'user.UserEnterRepeatNewPassword': 'Please enter repeat new password',
   'user.UserNewPasswordNotMatch': 'The new passwords do not match',
-  'user.disableTotalOf': 'Total Of {total} User Is Disabled',
 
 
   'tenant.TenantManager': 'Tenant Management',

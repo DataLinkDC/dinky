@@ -67,10 +67,3 @@ declare namespace PublicParams {
     sorter?: Record<string, any>;
   };
 }
-
-declare namespace NetWork {
-  export const RESPONSE_CODE = {
-    SUCCESS: 0,
-    ERROR: 1,
-  };
-}

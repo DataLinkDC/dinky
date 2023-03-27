@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-import {TENANT_ID} from '@/services/constants';
-import cookies from 'js-cookie';
-import {message} from "antd";
+import {TENANT_ID} from "@/services/constants";
+import cookies from "js-cookie";
 
 /**
  * PUT tenantId TO localStorage & cookies
@@ -27,7 +26,7 @@ export function setTenantStorageAndCookie(tenantId: number) {
   // save as localStorage
   localStorage.setItem(TENANT_ID, tenantId.toString());
   // save as cookies
-  cookies.set(TENANT_ID, tenantId.toString(), {path: '/'});
+  cookies.set(TENANT_ID, tenantId.toString(), {path: "/"});
 }
 
 /**
@@ -46,15 +45,3 @@ export function parseJsonStr(jsonStr: string) {
   return JSON.parse(JSON.stringify(jsonStr));
 }
 
-/**
- * show message tips of response
- * @param code
- * @param msg
- */
-export const showMsgTips = ({code, msg}: { code: number, msg: string }) => {
-  if (code === NetWork.RESPONSE_CODE.SUCCESS) {
-    message.success(msg);
-  } else {
-    message.warning(msg);
-  }
-}

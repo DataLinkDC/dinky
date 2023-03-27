@@ -14,10 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 import React from 'react';
 import {DeleteTwoTone} from "@ant-design/icons";
 
-export const CustomDeleteIcon = () => {
+/**
+ *  This is a custom icon that is used to indicate a dangerous action.{@link DeleteTwoTone}
+ * @constructor
+ */
+export const DangerDeleteIcon = () => {
   return <>
     <DeleteTwoTone twoToneColor={"red"}/>
   </>

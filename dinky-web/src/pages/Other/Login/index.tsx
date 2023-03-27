@@ -17,17 +17,21 @@
 
 import Footer from '@/components/Footer';
 
-import { chooseTenantSubmit, login } from '@/services/api';
 import { setTenantStorageAndCookie } from '@/services/function';
 import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { CheckCard, LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { Helmet, history, SelectLang, useModel } from '@umijs/max';
-import { Button, message, Modal } from 'antd';
+import { Button, Modal } from 'antd';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
 import Settings from '../../../../config/defaultSettings';
+import {chooseTenantSubmit, login} from "@/services/BusinessCrud";
+import {
+  ErrorMessage,
+  SuccessMessageAsync,
+} from "@/utils/messages";
 
 /** 此方法会跳转到 redirect 参数所在的位置 */
 const gotoRedirectUrl = () => {
@@ -94,8 +98,8 @@ const Login: React.FC = () => {
 
   const handleChooseTenant = async (chooseTenantResult: API.Result) => {
     if (chooseTenantResult.code === 0) {
-      message.success(
-        l('pages.login.chooseTenantSuccess', '', {
+    await SuccessMessageAsync(
+        l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,
           tenantCode: chooseTenantResult.datas.tenantCode,
         }),
@@ -111,7 +115,7 @@ const Login: React.FC = () => {
        */
       gotoRedirectUrl();
     } else {
-      message.error(l('login.chooseTenantFailed'));
+      ErrorMessage(l('login.chooseTenantFailed'));
       return;
     }
   };
@@ -121,13 +125,13 @@ const Login: React.FC = () => {
       // login
       const result = await login({ ...values });
       if (result.code === 0) {
-        message.success(l('login.result', '', { msg: result.msg, time: result.time }));
+       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
         /**
          * After successful login, set the tenant list
          */
         const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
         if (tenantList === null || tenantList.length === 0) {
-          message.error('该用户未绑定租户');
+          ErrorMessage(l('login.notbindtenant'));
           return;
         } else {
           setTenant(tenantList);
@@ -154,10 +158,10 @@ const Login: React.FC = () => {
         /**
          * If it fails to set the user error message
          */
-        message.error(l('login.result', '', { msg: result.msg, time: result.time }));
+        ErrorMessage(l('login.result', '', { msg: result.msg, time: result.time }));
       }
     } catch (error) {
-      message.error(l('login.error', '', { msg: error }));
+      ErrorMessage(l('login.error', '', { msg: error }));
     }
   };
 
@@ -201,7 +205,8 @@ const Login: React.FC = () => {
             multiple={false}
             onChange={(value) => {
               if (value) {
-                setCheckDisabled(false); // 如果没选择租户 ·确认按钮· 则禁用
+                //  if no tenant is selected, the confirm button is disabled
+                setCheckDisabled(false);
                 setTenantStorageAndCookie(value as number);
                 setTenantIdParams(value as number);
               } else {

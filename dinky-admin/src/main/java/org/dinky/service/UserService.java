@@ -22,9 +22,11 @@ package org.dinky.service;
 import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.dto.LoginDTO;
+import org.dinky.dto.ModifyPasswordDTO;
 import org.dinky.dto.UserDTO;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
+import org.dinky.params.AssignRoleParams;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -48,27 +50,25 @@ public interface UserService extends ISuperService<User> {
      * modifyUser
      *
      * @param user user
-     * @return boolean
+     * @return {@link Boolean}
      */
-    boolean modifyUser(User user);
+    Boolean modifyUser(User user);
 
     /**
      * modifyPassword
      *
-     * @param username username
-     * @param password password
-     * @param newPassword newPassword
+     * @param modifyPasswordDTO {@link ModifyPasswordDTO}
      * @return {@link Result}<{@link Void}>
      */
-    Result<Void> modifyPassword(String username, String password, String newPassword);
+    Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO);
 
     /**
      * removeUser
      *
      * @param id id
-     * @return boolean
+     * @return {@link Boolean}
      */
-    boolean removeUser(Integer id);
+    Boolean removeUser(Integer id);
 
     /**
      * loginUser
@@ -87,25 +87,51 @@ public interface UserService extends ISuperService<User> {
     User getUserByUsername(String username);
 
     /**
-     * grantRole
+     * grantRole will be {@link Deprecated} please use {@link
+     * UserService#assignRole(AssignRoleParams)}
      *
      * @param param param
      * @return {@link Result}<{@link Void}>
      */
+    @Deprecated
     Result<Void> grantRole(JsonNode param);
+
+    /**
+     * grantRole
+     *
+     * @param assignRoleParams {@link AssignRoleParams}
+     * @return {@link Result}<{@link Void}>
+     */
+    Result<Void> assignRole(AssignRoleParams assignRoleParams);
 
     /**
      * choose tenant
      *
      * @param tenantId
-     * @return
+     * @return {@link Result}<{@link Tenant}>
      */
     Result<Tenant> chooseTenant(Integer tenantId);
 
     /**
      * get current user base info
      *
-     * @return
+     * @return {@link Result}<{@link UserDTO}>
      */
     Result<UserDTO> queryCurrentUserInfo();
+
+    /**
+     * user enable or disable
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    Boolean enable(Integer id);
+
+    /**
+     * check user is admin
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    Boolean checkAdmin(Integer id);
 }

@@ -15,102 +15,154 @@
  * limitations under the License.
  */
 
-import {message} from "antd";
-import {addOrUpdateData, getData, postAll, postDataArray, removeData} from "@/services/api";
+import {
+  addOrUpdateData,
+  getData,
+  postAll,
+  removeById, updateDataByParams,
+} from "@/services/api";
 import {l} from "@/utils/intl";
-import {showMsgTips} from "@/services/function";
+import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from "@/services/constants";
+import {request} from "@@/exports";
+import {
+  ErrorMessage,
+  ErrorNotification,
+  LoadingMessageAsync, SuccessMessage, WarningMessage,
+} from "@/utils/messages";
 
 
-export const handleAddOrUpdate = async (url: string, fields: any) => {
-  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
-  const hide = message.loading(l('app.request.running') + tipsTitle);
+const APPLICATION_JSON = 'application/json'
+
+// ================================ About Account ================================
+/**
+ * get current user
+ * @param options
+ */
+export async function currentUser(options?: { [key: string]: any }) {
+  return request<API.Result>(API_CONSTANTS.CURRENT_USER, {
+    method: METHOD_CONSTANTS.GET,
+    ...(options || {}),
+  });
+}
+
+/**
+ * user logout
+ * @param options
+ */
+export async function outLogin(options?: { [key: string]: any }) {
+  return request<Record<string, any>>(API_CONSTANTS.LOGOUT, {
+    method: METHOD_CONSTANTS.DELETE,
+    ...(options || {}),
+  });
+}
+
+/**
+ * user login
+ * @param body
+ * @param options
+ */
+export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
+  return request<API.Result>(API_CONSTANTS.LOGIN, {
+    method: METHOD_CONSTANTS.POST,
+    headers: {
+      CONTENT_TYPE: APPLICATION_JSON,
+    },
+    data: body,
+    ...(options || {}),
+  });
+}
+
+/**
+ * choose tenant
+ * @param params
+ */
+export function chooseTenantSubmit(params: { tenantId: number }) {
+  return request<API.Result>(API_CONSTANTS.CHOOSE_TENANT, {
+    method: METHOD_CONSTANTS.GET,
+    params: {
+      ...(params || {}),
+    },
+  });
+}
+
+
+
+// ================================ About crud ================================
+/**
+ * add or update data
+ * @param url
+ * @param params
+ */
+export const handleAddOrUpdate = async (url: string, params: any) => {
+  const tipsTitle = params.id ? l("app.request.update") : l("app.request.add");
+  await LoadingMessageAsync(l("app.request.running") + tipsTitle);
   try {
-    const {code, msg} = await addOrUpdateData(url, {...fields});
-    hide();
-    showMsgTips({code, msg})
+    const {code, msg} = await addOrUpdateData(url, {...params});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg)
+    } else {
+      WarningMessage(msg);
+    }
     return true;
   } catch (error) {
-    hide();
-    message.error(l('app.request.error'));
+    ErrorNotification(l("app.request.error") + error);
     return false;
   }
 };
 
-export const handleAddOrUpdateWithResult = async (url: string, fields: any) => {
-  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
-  const hide = message.loading(l('app.request.running') + tipsTitle);
-  try {
-    const {code, msg, datas} = await addOrUpdateData(url, {...fields});
-    hide();
-    showMsgTips({code, msg})
-    return datas;
-  } catch (error) {
-    hide();
-    message.error(l('app.request.error'));
-    return null;
-  }
-};
-
-export const handleRemove = async (url: string, selectedRows: any) => {
-  const hide = message.loading(l('app.request.delete'));
-  if (!selectedRows) return true;
-  try {
-    const {code, msg} = await removeData(url, selectedRows.map((row: any) => row.id));
-    hide();
-    showMsgTips({code, msg})
-    return true;
-  } catch (error) {
-    hide();
-    message.error(l('app.request.delete.error'));
-    return false;
-  }
-};
-
+/**
+ * delete by id
+ * @param url
+ * @param id
+ */
 export const handleRemoveById = async (url: string, id: number) => {
-  const hide = message.loading(l('app.request.delete'));
+  await LoadingMessageAsync(l("app.request.delete"));
   try {
-    const {code, msg} = await removeData(url, [id]);
-    hide();
-    showMsgTips({code, msg})
+    const {code, msg} = await removeById(url, {id});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg);
+    } else {
+      WarningMessage(msg);
+    }
     return true;
   } catch (error) {
-    hide();
-    message.error(l('app.request.delete.error'));
+    ErrorMessage(l("app.request.delete.error"));
     return false;
   }
 };
-
-export const handleSubmit = async (url: string, title: string, selectedRows: any[]) => {
-  const hide = message.loading(l('app.request.running') + title);
-  if (!selectedRows) return true;
+/**
+ * update enabled status
+ * @param url
+ * @param params
+ */
+export const updateEnabled = async (url: string, params: any) => {
+  await LoadingMessageAsync(l("app.request.update"));
   try {
-    const {code, msg} = await postDataArray(url, selectedRows.map((row) => row.id));
-    hide();
-    showMsgTips({code, msg})
+    const {code, msg} = await updateDataByParams(url, {...params});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg)
+    } else {
+      WarningMessage(msg);
+    }
     return true;
   } catch (error) {
-    hide();
-    message.error(title + l('app.request.error.try'));
+   ErrorMessage(l("app.request.error.try"));
     return false;
   }
-};
-
-export const updateEnabled = (url: string, selectedRows: [], enabled: boolean) => {
-  selectedRows.forEach((item: any) => {
-    handleAddOrUpdate(url, {id: item.id, enabled: enabled})
-  })
 };
 
 export const handleOption = async (url: string, title: string, param: any) => {
-  const hide = message.loading(l('app.request.running') + title);
+  await LoadingMessageAsync(l("app.request.running") + title);
   try {
     const {code, msg} = await postAll(url, param);
-    hide();
-    showMsgTips({code, msg})
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg)
+    } else {
+      WarningMessage(msg);
+    }
     return true;
   } catch (error) {
-    hide();
-    message.error(title + l('app.request.error.try'));
+   ErrorMessage(title + l("app.request.error.try"));
     return false;
   }
 };
@@ -118,14 +170,34 @@ export const handleOption = async (url: string, title: string, param: any) => {
 export const handleData = async (url: string, id: any) => {
   try {
     const {code, datas, msg} = await getData(url, id);
-    if (code === NetWork.RESPONSE_CODE.SUCCESS) {
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg)
       return datas;
     } else {
-      message.warning(msg);
+      WarningMessage(msg);
       return false;
     }
   } catch (error) {
-    message.error(l('app.request.geterror.error'));
+    ErrorMessage(l("app.request.geterror.error"));
+    return false;
+  }
+};
+
+
+
+export const handlePutData = async (url: string, fields: any) => {
+  const tipsTitle = fields.id ? l("app.request.update") : l("app.request.add");
+  await LoadingMessageAsync(l("app.request.running") + tipsTitle);
+  try {
+    const {code, msg} = await postAll(url, {...fields});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg)
+    } else {
+      WarningMessage(msg);
+    }
+    return true;
+  } catch (error) {
+    ErrorMessage(l("app.request.error") + error);
     return false;
   }
 };

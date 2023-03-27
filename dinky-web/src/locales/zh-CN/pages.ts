@@ -19,6 +19,7 @@ export default {
   'layouts.userLayout.title': 'Dinky 实时计算平台',
   'login.error': '登录失败，请重试! 原因：{msg}',
   'login.result': '{msg}\t\t{time}',
+  'login.notbindtenant': '您还没有绑定租户，请联系管理员',
   'login.username.placeholder': '用户名',
   'login.username.required': '用户名是必填项！',
   'login.chooseTenant': '请选择租户',
@@ -158,10 +159,6 @@ export default {
   'user.AssignRole': '分配角色',
   'user.delete': '删除用户',
   'user.deleteConfirm': '您确定要删除此用户吗？',
-  'user.enable': '启用用户',
-  'user.enableConfirm': '您确定要启用此用户吗？',
-  'user.disable': '禁用用户',
-  'user.disableConfirm': '您确定要禁用此用户吗？',
   'user.UserEnterUserName': '请输入用户名',
   'user.UserEnterUniqueUserName': '请输入唯一的用户名',
   'user.UserEnterJobNumber': '请输入工号',
@@ -174,7 +171,6 @@ export default {
   'user.UserEnterNewPassword': '请输入新密码',
   'user.UserEnterRepeatNewPassword': '请重复输入新密码',
   'user.UserNewPasswordNotMatch': '两次输入的新密码不一致',
-  'user.disableTotalOf': '被禁用的用户共 {total} 个',
 
 
   'tenant.TenantManager': '租户管理',

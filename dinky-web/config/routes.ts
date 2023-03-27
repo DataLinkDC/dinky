@@ -36,11 +36,10 @@ export default [
       {
         name: 'login',
         path: '/user/login',
-        component: './User/Login',
+        component: './Other/Login',
       },
     ],
   },
-
   {
     path: '/',
     redirect: '/datastudio',
@@ -49,44 +48,50 @@ export default [
   {
     path: '/datastudio',
     name: 'datastudio',
-    icon: 'CodeTwoTone',
+    icon: 'CodeOutlined',
     footerRender: false,
     component: './DataStudio',
   },
   {
     path: '/devops',
     name: 'devops',
-    icon: 'ControlTwoTone',
-    // component: './DevOps',
-  },
-  {
-    path: '/job',
-    name: 'job',
-    // component: './DevOps/JobInfo',
-    hideInMenu: true,
-  },
-  {
-    path: '/datacenter',
-    name: 'datacenter',
-    icon: 'DatabaseTwoTone',
+    icon: 'ControlOutlined',
     routes: [
       {
-        path: '/datacenter',
-        redirect: '/datacenter/metadata',
+        path: '/devops',
+        redirect: '/devops/job',
       },
       {
-        path: '/datacenter/metadata',
-        name: 'metadata',
-        icon: 'DatabaseTwoTone',
-        // component: './DataCenter/MetaData',
+        path: '/devops/job',
+        name: 'job',
+        hideInMenu: true,
+        // component: './DevOps/JobInfo',
       },
     ],
   },
+  //todo: data center will be merge to the registration center's datasource module , it will be removed in the future
 
+  // {
+  //   path: '/datacenter',
+  //   name: 'datacenter',
+  //   icon: 'DatabaseOutlined',
+  //   routes: [
+  //     {
+  //       path: '/datacenter',
+  //       redirect: '/datacenter/metadata',
+  //     },
+  //     {
+  //       path: '/datacenter/metadata',
+  //       name: 'metadata',
+  //       icon: 'DatabaseOutlined',
+  //       // component: './DataCenter/MetaData',
+  //     },
+  //   ],
+  // },
   {
     path: '/registration',
     name: 'registration',
-    icon: 'AppstoreTwoTone',
+    icon: 'AppstoreOutlined',
     routes: [
       {
         path: '/registration',
@@ -95,7 +100,7 @@ export default [
       {
         path: '/registration/cluster',
         name: 'cluster',
-        icon: 'GoldTwoTone',
+        icon: 'GoldOutlined',
         routes: [
           {
             path: '/registration/cluster/instance',
@@ -112,19 +117,19 @@ export default [
       {
         path: '/registration/jar',
         name: 'jar',
-        icon: 'FileTwoTone',
+        icon: 'FileZipOutlined',
         // component: './RegistrationCenter/Jar',
       },
       {
         path: '/registration/database',
         name: 'database',
-        icon: 'DatabaseTwoTone',
+        icon: 'DatabaseOutlined',
         // component: './RegistrationCenter/DataBase',
       },
       {
         path: '/registration/alert',
         name: 'alert',
-        icon: 'AlertTwoTone',
+        icon: 'AlertOutlined',
         routes: [
           {
             path: '/registration/alert/instance',
@@ -141,47 +146,41 @@ export default [
       {
         path: '/registration/document',
         name: 'document',
-        icon: 'BookTwoTone',
+        icon: 'BookOutlined',
         // component: './RegistrationCenter/Document',
       },
       {
         path: '/registration/fragment',
         name: 'fragment',
-        icon: 'RocketTwoTone',
+        icon: 'RocketOutlined',
         // component: './RegistrationCenter/FragmentVariable',
       },
     ],
   },
   {
-    name: 'authentication',
-    icon: 'SafetyCertificateTwoTone',
-    path: '/authentication',
+    name: 'auth',
+    icon: 'SafetyCertificateOutlined',
+    path: '/auth',
     // access: "canAdmin",
     routes: [
       {
-        path: '/authentication',
-        redirect: '/authentication/usermanager',
+        path: '/auth',
+        redirect: '/auth/user',
       },
       {
-        path: '/authentication/usermanager',
-        name: 'usermanager',
+        path: '/auth/user',
+        name: 'user',
         icon: 'UserOutlined',
-        component: './AuthenticationCenter/UserManager',
+        component: './AuthCenter/User',
       },
       {
-        path: '/authentication/role',
+        path: '/auth/role',
         name: 'role',
         icon: 'TeamOutlined',
-        // component: './AuthenticationCenter/RoleManager',
+        // component: './AuthCenter/Role',
       },
       {
-        path: '/authentication/namespace',
-        name: 'namespace',
-        icon: 'BulbTwoTone',
-        // component: './AuthenticationCenter/NamespaceManager',
-      },
-      {
-        path: '/authentication/tenant',
+        path: '/auth/tenant',
         name: 'tenant',
         icon: 'SecurityScanTwoTone',
         // component: './AuthenticationCenter/TenantManager',
@@ -191,7 +190,7 @@ export default [
 
   {
     name: 'settings',
-    icon: 'SettingTwoTone',
+    icon: 'SettingOutlined',
     path: '/settings',
     routes: [
       {
@@ -201,31 +200,31 @@ export default [
       {
         path: '/settings/flinksetting',
         name: 'flinksetting',
-        icon: 'SettingTwoTone',
+        icon: 'SettingOutlined',
         // component: './SettingCenter/FlinkSettings',
       },
       {
         path: '/settings/udf',
         name: 'udf',
-        icon: 'ToolTwoTone',
+        icon: 'ToolOutlined',
         // component: './SettingCenter/UDFTemplate',
       },
       {
         path: '/settings/system',
         name: 'system',
-        icon: 'InfoCircleTwoTone',
+        icon: 'InfoCircleOutlined',
         // component: './SettingCenter/SystemInfo',
       },
       {
         path: '/settings/process',
         name: 'process',
-        icon: 'ReconciliationTwoTone',
+        icon: 'ReconciliationOutlined',
         // component: './SettingCenter/ProcessList',
       },
       {
         path: '/settings/services',
         name: 'services',
-        icon: 'CloudTwoTone',
+        icon: 'CloudServerOutlined',
         // component: './SettingCenter/Service',
       },
     ],
@@ -233,18 +232,18 @@ export default [
   {
     path: '/metrics',
     name: 'metrics',
-    icon: 'DashboardTwoTone',
+    icon: 'DashboardOutlined',
     // component: './Metrics',
   },
   {
     path: '/about',
     name: 'about',
-    icon: 'SmileTwoTone',
-    component: './About',
+    icon: 'SmileOutlined',
+    component: './Other/About',
   },
   {
     path: '*',
     layout: false,
-    component: './404',
+    component: './Other/404',
   },
 ];

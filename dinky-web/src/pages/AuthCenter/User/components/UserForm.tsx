@@ -19,8 +19,10 @@
 
 
 import React, {useState} from 'react';
-import {Button, Form, Input, Modal, Switch} from 'antd';
+import {Form, Modal} from 'antd';
 import {l} from "@/utils/intl";
+import {ProForm, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
+import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
 
 export type UserFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -29,13 +31,12 @@ export type UserFormProps = {
   values: Partial<UserBaseInfo.User>;
 };
 
-const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
-};
 
 const UserForm: React.FC<UserFormProps> = (props) => {
 
+  /**
+   * status
+   */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<UserBaseInfo.User>>({
     id: props.values.id,
@@ -48,6 +49,9 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     enabled: props.values.enabled,
   });
 
+  /**
+   * from props take params
+   */
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
@@ -55,83 +59,84 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   } = props;
 
 
+  /**
+   * submit form
+   */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals({...formVals, ...fieldsValue});
     handleSubmit({...formVals, ...fieldsValue});
+    form.resetFields();
   };
 
-  const renderContent = (formVals: Partial<UserBaseInfo.User>) => {
+
+  /**
+   * user form render
+   * @returns {JSX.Element}
+   */
+  const UserFormRender = () => {
     return (
       <>
-        <Form.Item
+        <ProFormText
           name="username"
           label={l('user.UserName')}
+          placeholder={l('user.UserEnterUniqueUserName')}
           rules={[{
             required: true,
             message: l('user.UserEnterUserName')
-          }]}>
-          <Input placeholder={l('user.UserEnterUniqueUserName')}/>
-        </Form.Item>
-        <Form.Item
+          }]}
+        />
+
+        <ProFormText
           name="nickname"
           label={l('user.UserNickName')}
-        >
-          <Input placeholder={l('user.UserEnterNickName')}/>
-        </Form.Item>
-        <Form.Item
+          placeholder={l('user.UserEnterNickName')}
+          rules={[{
+            required: true,
+            message: l('user.UserEnterNickName')
+          }]}
+        />
+
+        <ProFormText
           name="worknum"
           label={l('user.UserJobNumber')}
-        >
-          <Input
-            placeholder={l('user.UserEnterJobNumber')}/>
-        </Form.Item>
-        <Form.Item
+          placeholder={l('user.UserEnterJobNumber')}
+        />
+
+        <ProFormText
           name="mobile"
           label={l('user.UserPhoneNumber')}
-        >
-          <Input
-            placeholder={l('user.UserEnterPhoneNumber')}/>
-        </Form.Item>
-        <Form.Item
+          placeholder={l('user.UserEnterPhoneNumber')}
+        />
+
+        <ProFormSwitch
           name="enabled"
-          label={l('global.table.isEnable')}>
-          <Switch checkedChildren={l('button.enable')}
-                  unCheckedChildren={l('button.disable')}
-                  defaultChecked={formVals.enabled}/>
-        </Form.Item>
+          label={l('global.table.isEnable')}
+          checkedChildren={l('button.enable')}
+          unCheckedChildren={l('button.disable')}
+        />
       </>
     );
   };
 
-  const renderFooter = () => {
-    return (
-      <>
-        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
-      </>
-    );
-  };
 
   return (
     <Modal
-      width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px'}}
-      destroyOnClose
+      {...NORMAL_MODAL_OPTIONS}
       title={formVals.id ? l('user.UserUpdateUser') : l('user.UserCreateUser')}
       open={modalVisible}
-      footer={renderFooter()}
       onCancel={() => handleModalVisible()}
+      onOk={() => submitForm()}
     >
-      <Form
-        {...formLayout}
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
         form={form}
         initialValues={formVals}
+        layout={"horizontal"}
+        submitter={false}
       >
-        {renderContent(formVals)}
-      </Form>
+        {UserFormRender()}
+      </ProForm >
     </Modal>
   );
 };

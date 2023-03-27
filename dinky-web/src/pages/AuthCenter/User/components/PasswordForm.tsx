@@ -19,8 +19,10 @@
 
 
 import React, { useState } from 'react';
-import { Button, Form, Input, Modal } from 'antd';
+import { Form, Modal } from 'antd';
 import { l } from "@/utils/intl";
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
 
 export type PasswordFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -29,18 +31,21 @@ export type PasswordFormProps = {
   values: Partial<UserBaseInfo.ChangePasswordParams>;
 };
 
-const formLayout = {
-  labelCol: { span: 7 },
-  wrapperCol: { span: 13 },
-};
+
 
 const PasswordForm: React.FC<PasswordFormProps> = (props) => {
 
+  /**
+   * status
+   */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
     username: props.values.username,
   });
 
+  /**
+   * from props take params
+   */
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
@@ -48,34 +53,46 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
   } = props;
 
 
+  /**
+   * submit form
+   */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals({ ...formVals, ...fieldsValue });
     handleSubmit({ ...formVals, ...fieldsValue });
+    handleModalVisible(false)
+    form.resetFields();
   };
 
-  const renderContent = () => {
+  /**
+   * render changePassword form
+   */
+  const ChangePasswordFormRender = () => {
     return (
       <>
-        <Form.Item
+        <ProFormText.Password
+          width="md"
           name="password"
+          hasFeedback
           label={l('user.UserOldPassword')}
-          hasFeedback
-          rules={[{ required: true, message: l('user.UserEnterOldPassword') }]}>
-          <Input.Password placeholder={l('user.UserEnterOldPassword')} />
-        </Form.Item>
-        <Form.Item
+          placeholder={l('user.UserEnterOldPassword')}
+          rules={[{ required: true, message: l('user.UserEnterOldPassword') }]}
+        />
+        <ProFormText.Password
+          width="md"
           name="newPassword"
-          label={l('user.UserNewPassword')}
           hasFeedback
-          rules={[{ required: true, message: l('user.UserEnterNewPassword') }]}>
-          <Input.Password placeholder={l('user.UserEnterNewPassword')} />
-        </Form.Item>
-        <Form.Item
-          name="newPasswordCheck"
-          label={l('user.UserRepeatNewPassword')}
+          label={l('user.UserNewPassword')}
+          placeholder={l('user.UserEnterNewPassword')}
+          rules={[{ required: true, message: l('user.UserEnterNewPassword') }]}
+        />
+        <ProFormText.Password
+          width="md"
+          name="newPassword"
           hasFeedback
           dependencies={['newPassword']}
+          label={l('user.UserRepeatNewPassword')}
+          placeholder={l('user.UserRepeatNewPassword')}
           rules={[
             {
               required: true,
@@ -89,41 +106,36 @@ const PasswordForm: React.FC<PasswordFormProps> = (props) => {
                 return Promise.reject(new Error(l('user.UserNewPasswordNotMatch')));
               },
             }),
-          ]}>
-          <Input.Password placeholder={l('user.UserEnterRepeatNewPassword')} />
-        </Form.Item>
+          ]}
+
+        />
       </>
     );
   };
 
-  const renderFooter = () => {
-    return (
-      <>
-        <Button onClick={() => handleModalVisible(false)}> {l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>
-          {l('button.finish')}
-        </Button>
-      </>
-    );
-  };
-
+  /**
+   * render
+   */
   return (
     <Modal
-      width={"40%"}
-      bodyStyle={{ padding: '32px 40px 48px' }}
-      destroyOnClose
+      {...NORMAL_MODAL_OPTIONS}
       title={l('button.changePassword')}
-      visible={modalVisible}
-      footer={renderFooter()}
-      onCancel={() => handleModalVisible()}
+      open={modalVisible}
+      onCancel={() => {
+        handleModalVisible(false)
+        form.resetFields();
+      }}
+      onOk={() => submitForm()}
     >
-      <Form
-        {...formLayout}
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
         form={form}
         initialValues={formVals}
+        layout={"horizontal"}
+        submitter={false}
       >
-        {renderContent()}
-      </Form>
+        {ChangePasswordFormRender()}
+      </ProForm >
     </Modal>
   );
 };
