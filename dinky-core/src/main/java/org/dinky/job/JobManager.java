@@ -58,10 +58,6 @@ import org.dinky.result.InsertResult;
 import org.dinky.result.ResultBuilder;
 import org.dinky.result.ResultPool;
 import org.dinky.result.SelectResult;
-import org.dinky.session.ExecutorEntity;
-import org.dinky.session.SessionConfig;
-import org.dinky.session.SessionInfo;
-import org.dinky.session.SessionPool;
 import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
@@ -122,7 +118,6 @@ public class JobManager {
     private ExecutorSetting executorSetting;
     private JobConfig config;
     private Executor executor;
-    private Configuration configuration;
     private boolean useGateway = false;
     private boolean isPlanMode = false;
     private boolean useStatementSet = false;
@@ -220,7 +215,6 @@ public class JobManager {
         if (!runMode.equals(GatewayType.LOCAL) && !useGateway && config.isUseRemote()) {
             executor =
                     Executor.buildRemoteExecutor(environmentSetting, config.getExecutorSetting());
-            return executor;
         } else {
             if (ArrayUtil.isNotEmpty(config.getJarFiles())) {
                 config.getExecutorSetting()
@@ -231,26 +225,7 @@ public class JobManager {
                                         .map(FileUtil::getAbsolutePath)
                                         .collect(Collectors.joining(",")));
             }
-
             executor = Executor.buildLocalExecutor(config.getExecutorSetting());
-            return executor;
-        }
-    }
-
-    private Executor createExecutorWithSession() {
-        if (config.isUseSession()) {
-            ExecutorEntity executorEntity = SessionPool.get(config.getSession());
-            if (Asserts.isNotNull(executorEntity)) {
-                executor = executorEntity.getExecutor();
-                config.setSessionConfig(executorEntity.getSessionConfig());
-                initEnvironmentSetting();
-                executor.update(executorSetting);
-            } else {
-                createExecutor();
-                SessionPool.push(new ExecutorEntity(config.getSession(), executor));
-            }
-        } else {
-            createExecutor();
         }
         executor.getSqlManager().registerSqlFragment(config.getVariables());
         return executor;
@@ -278,8 +253,7 @@ public class JobManager {
         sqlSeparator = SystemConfiguration.getInstances().getSqlSeparator();
 
         initExecutorSetting();
-        createExecutorWithSession();
-
+        createExecutor();
         return false;
     }
 
@@ -725,31 +699,6 @@ public class JobManager {
         return ResultPool.get(jobId);
     }
 
-    public static SessionInfo createSession(
-            String session, SessionConfig sessionConfig, String createUser) {
-        if (SessionPool.exist(session)) {
-            return SessionPool.getInfo(session);
-        }
-        Executor sessionExecutor = null;
-        if (sessionConfig.isUseRemote()) {
-            sessionExecutor =
-                    Executor.buildRemoteExecutor(
-                            EnvironmentSetting.build(sessionConfig.getAddress()),
-                            ExecutorSetting.DEFAULT);
-        } else {
-            sessionExecutor = Executor.buildLocalExecutor(sessionConfig.getExecutorSetting());
-        }
-        ExecutorEntity executorEntity =
-                new ExecutorEntity(
-                        session, sessionConfig, createUser, LocalDateTime.now(), sessionExecutor);
-        SessionPool.push(executorEntity);
-        return SessionInfo.build(executorEntity);
-    }
-
-    public static List<SessionInfo> listSession(String createUser) {
-        return SessionPool.filter(createUser);
-    }
-
     public ExplainResult explainSql(String statement) {
         return Explainer.build(executor, useStatementSet, sqlSeparator)
                 .initialize(this, config, statement)
@@ -829,7 +778,6 @@ public class JobManager {
                 job.setStatus(Job.JobStatus.FAILED);
                 failed();
             }
-
         } catch (Exception e) {
             String error =
                     LogUtil.getError(

@@ -17,30 +17,27 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.trans.ddl;
 
 import org.dinky.executor.Executor;
+import org.dinky.trans.AbstractOperation;
+import org.dinky.trans.Operation;
 
 import org.apache.flink.table.api.TableResult;
 
-/**
- * Operation
- *
- * @author wenmo
- * @since 2021/6/13 19:24
- */
-public interface Operation extends org.apache.flink.table.operations.Operation {
-
-    String getHandle();
-
-    Operation create(String statement);
-
-    TableResult build(Executor executor);
-
-    boolean noExecute();
+public class PrintTableOperation extends AbstractOperation implements Operation {
+    @Override
+    public String getHandle() {
+        return "Print";
+    }
 
     @Override
-    default String asSummaryString() {
-        return getHandle();
+    public Operation create(String statement) {
+        return null;
+    }
+
+    @Override
+    public TableResult build(Executor executor) {
+        return null;
     }
 }

@@ -17,30 +17,10 @@
  *
  */
 
-package org.dinky.trans;
+package org.dinky.service;
 
-import org.dinky.executor.Executor;
+public interface WatchTableService {
+    String registerListenEntry(Integer userId, String table);
 
-import org.apache.flink.table.api.TableResult;
-
-/**
- * Operation
- *
- * @author wenmo
- * @since 2021/6/13 19:24
- */
-public interface Operation extends org.apache.flink.table.operations.Operation {
-
-    String getHandle();
-
-    Operation create(String statement);
-
-    TableResult build(Executor executor);
-
-    boolean noExecute();
-
-    @Override
-    default String asSummaryString() {
-        return getHandle();
-    }
+    void unRegisterListenEntry(Integer userId, String table);
 }

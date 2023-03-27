@@ -367,9 +367,9 @@ export default {
 
   'pages.datastudio.label.directory': '目录',
   'pages.datastudio.label.structure': '结构',
-  'pages.datastudio.label.session': '会话',
   'pages.datastudio.label.cluster': '集群',
   'pages.datastudio.label.datasource': '数据源',
+  'pages.datastudio.label.data': '表数据',
   'pages.datastudio.label.meta': '元数据',
   'pages.datastudio.label.globalvariable': '全局变量',
   'pages.datastudio.label.guidepage': '引导页',
