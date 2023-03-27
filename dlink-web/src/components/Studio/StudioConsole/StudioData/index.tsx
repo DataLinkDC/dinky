@@ -17,65 +17,61 @@
  *
  */
 
-import { Input, Space } from "antd";
-
-const { Search } = Input;
-
-import { StateType } from "@/pages/DataStudio/model";
-import { registerWatchTable, unRegisterWatchTable } from "@/pages/DataStudio/service";
-import { connect } from "umi";
-import { useEffect, useState, useRef } from "react";
-import stompClient from "@/utils/stompClient"
-import { Scrollbars } from 'react-custom-scrollbars';
+import {Input, Space} from "antd";
+import {StateType} from "@/pages/DataStudio/model";
+import {registerWatchTable, unRegisterWatchTable} from "@/pages/DataStudio/service";
+import {connect} from "umi";
+import {useEffect, useRef, useState} from "react";
+import stompClientUtil from "@/utils/stompClientUtil"
+import {Scrollbars} from 'react-custom-scrollbars';
 import CodeShow from "@/components/Common/CodeShow";
+
+const {Search} = Input;
 
 
 const StudioData = (props: any) => {
 
-  const { height, isActive } = props;
+  const {height, isActive} = props;
   const [consoleInfo, setConsoleInfo] = useState<string>("");
-
+  const preConsoleInfo = useRef(consoleInfo)
   const [tableName, setTableName] = useState<string>("");
   const preTableNameRef = useRef(tableName)
-  const preTableName = preTableNameRef.current
   let consoleHeight = (height - 37.6);
   const id = Number(localStorage.getItem('dlink-tenantId'));
 
-
   const onSearchName = (value: string) => {
-    unRegisterWatchTable({ id, table: preTableName }).then(res => {
+    unRegisterWatchTable({id, table: preTableNameRef.current}).then(res => {
       setConsoleInfo("")
-      stompClient.unsubscribe();
+      stompClientUtil.unsubscribe();
 
-      registerWatchTable({ id, table: value }).then(res => {
-        stompClient.subObj = stompClient.mqClient.subscribe(res.msg, (res) => {
-          setConsoleInfo(consoleInfo + res.body)
+      registerWatchTable({id, table: value}).then(res => {
+        stompClientUtil.subScription = stompClientUtil.stompClient.subscribe(res.msg, (res: any) => {
+          preConsoleInfo.current = preConsoleInfo.current + "\n" + res.body
+          if (preConsoleInfo.current.length > 1024 * 1024) {
+            preConsoleInfo.current = preConsoleInfo.current.substring(1024, preConsoleInfo.current.length)
+          }
+          setConsoleInfo(preConsoleInfo.current);
         })
       })
-
     })
 
     setTableName(value)
   };
 
   useEffect(() => {
-    stompClient.con();
-
+    stompClientUtil.connect();
   }, [isActive])
-  return (<div style={{ width: '100%' }}>
 
-    <Space direction="horizontal" style={{ margin: 10 }}>
-
-      <Search placeholder="请输入表名" onSearch={onSearchName} style={{ width: 200 }} />
+  return (<div style={{width: '100%'}}>
+    <Space direction="horizontal" style={{margin: 10}}>
+      <Search placeholder="table name" onSearch={onSearchName} style={{width: 200}}/>
     </Space>
-    <Scrollbars style={{ height: consoleHeight }}>
-      {/* <CodeShow code={consoleInfo} language='Markdown' height={height} theme="vs" /> */}
-      <CodeShow code={JSON.stringify((consoleInfo ? consoleInfo : ""), null, "\t")} language='json'
-        height={height} theme="vs-dark" />
+    <Scrollbars style={{height: consoleHeight}}>
+      <CodeShow code={consoleInfo} language='text' height={height} theme="vs-dark" />
     </Scrollbars>
   </div>)
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
+export default connect(({Studio}: { Studio: StateType }) => ({
   current: Studio.current,
 }))(StudioData);
