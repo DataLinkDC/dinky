@@ -85,7 +85,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getCreateTableSql(Table table) {
-
         return genTable(table);
     }
 
@@ -102,17 +101,20 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 .append(" (\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
-            sb.append("  `")
-                    .append(column.getName()).append("`  ")
-                    .append(column.getType());
-            // 处理浮点类型
-            if (column.getPrecision() > 0 && column.getScale() > 0) {
-                sb.append("(")
-                        .append(column.getLength())
-                        .append(",").append(column.getScale())
-                        .append(")");
-            } else if (null != column.getLength()) { // 处理字符串类型和数值型
-                sb.append("(").append(column.getLength()).append(")");
+            sb.append("  `").append(column.getName()).append("`  ");
+            if (Asserts.isNotNullString(column.getType())
+                    && column.getType().toLowerCase().contains("unsigned")) {
+                sb.append(column.getType().replaceAll("(?i)unsigned", "(" + column.getLength() + ") unsigned"));
+            } else {
+                // 处理浮点类型
+                if (column.getPrecision() > 0 && column.getScale() > 0) {
+                    sb.append("(")
+                            .append(column.getLength())
+                            .append(",").append(column.getScale())
+                            .append(")");
+                } else if (null != column.getLength()) { // 处理字符串类型和数值型
+                    sb.append("(").append(column.getLength()).append(")");
+                }
             }
             if (Asserts.isNotNull(column.getDefaultValue())) {
                 if ("".equals(column.getDefaultValue())) {
@@ -218,7 +220,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;").append(" -- ").append(table.getComment()).append("\n");
+            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;")
+                    .append(" -- ").append(table.getComment()).append("\n");
         } else {
             sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;\n");
         }
