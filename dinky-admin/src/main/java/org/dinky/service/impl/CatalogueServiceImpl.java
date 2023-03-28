@@ -21,29 +21,23 @@ package org.dinky.service.impl;
 
 import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
-
-import org.apache.commons.collections4.CollectionUtils;
 import org.dinky.assertion.Asserts;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.CatalogueTaskDTO;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.model.*;
 import org.dinky.service.*;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
