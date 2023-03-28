@@ -16,7 +16,7 @@
  *
  */
 
-import {notification,message} from "antd"
+import {notification,message, App} from "antd"
 import {l} from "@/utils/intl";
 
 /**

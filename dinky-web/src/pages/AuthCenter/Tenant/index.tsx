@@ -34,8 +34,10 @@ import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import TenantTransfer from "@/pages/AuthCenter/Tenant/components/TenantTransfer";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 
-const url = '/api/tenant';
-const TenantFormList: React.FC<{}> = (props: any) => {
+const TenantFormList: React.FC = () => {
+  /**
+   * status
+   */
   const [handleGrantTenant, setHandleGrantTenant] = useState<boolean>(false);
   const [tenantRelFormValues, setTenantRelFormValues] = useState({});
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -45,8 +47,12 @@ const TenantFormList: React.FC<{}> = (props: any) => {
   const [form] = Form.useForm();
 
 
-  const handleAddSubmit = async (value: UserBaseInfo.Tenant) => {
-    const success = await handleAddOrUpdate(url, value);
+  /**
+   * add tenant
+   * @param value
+   */
+  const handleAddOrUpdateSubmit = async (value: UserBaseInfo.Tenant) => {
+    const success = await handleAddOrUpdate(API_CONSTANTS.TENANT, value);
     if (success) {
       handleModalVisible(false);
       setFormValues({});
@@ -56,25 +62,24 @@ const TenantFormList: React.FC<{}> = (props: any) => {
       }
     }
   };
-  const handleEditSubmit = async (value: UserBaseInfo.Tenant) => {
-    const success = await handleAddOrUpdate(url, value);
-    if (success) {
-      handleUpdateModalVisible(false);
-      setFormValues({});
-      if (actionRef.current) {
-        actionRef.current.reload();
-      }
-    }
-  };
+
+  /**
+   * delete tenant
+   * @param id tenant id
+   */
   const handleDeleteSubmit = async (id : number) => {
-    await handleRemoveById(url, id);
+    await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
     actionRef.current?.reloadAndRest?.();
   };
+
+  /**
+   * assign user to tenant
+   */
   const handleAssignUserSubmit = async () => {
     // to save
     const success = await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
       tenantId: formValues.id as number,
-      users: tenantRelFormValues
+      userIds: tenantRelFormValues
     });
     if (success) {
       setHandleGrantTenant(false);
@@ -83,27 +88,29 @@ const TenantFormList: React.FC<{}> = (props: any) => {
         actionRef.current.reload();
       }
     }
-
   }
-  const handleGrantTenantForm = () => {
+
+  /**
+   * render add tenant form
+   */
+  const ConstructTenantForm = () => {
     return (
       <Modal
         title={l('tenant.AssignUser')}
         open={handleGrantTenant}
-        destroyOnClose={true}
+        destroyOnClose
         width={"90%"}
-        onCancel={() => {
-          setHandleGrantTenant(false);
-        }}
+        onCancel={() => {setHandleGrantTenant(false)}}
         onOk={handleAssignUserSubmit}
         >
-        <TenantTransfer tenant={formValues} onChange={(value) => {
-          setTenantRelFormValues(value);
-        }}/>
+        <TenantTransfer tenant={formValues} onChange={(value) => {setTenantRelFormValues(value)}}/>
       </Modal>
     )
   }
 
+  /**
+   * columns
+   */
   const columns: ProColumns<UserBaseInfo.Tenant>[] = [
     {
       title: l('tenant.TenantCode'),
@@ -112,17 +119,18 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     {
       title: l('global.table.note'),
       dataIndex: 'note',
-      hideInSearch: true,
       ellipsis: true,
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
+      hideInSearch: true,
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
+      hideInSearch: true,
       valueType: 'dateTime',
     },
     {
@@ -168,34 +176,39 @@ const TenantFormList: React.FC<{}> = (props: any) => {
     },
   ];
 
+  /**
+   * render
+   */
   return (
     <PageContainer title={false}>
-      {/*table*/}
       <ProTable<UserBaseInfo.Tenant>
         {...PROTABLE_OPTIONS_PUBLIC}
+        key={"tenantTable"}
         headerTitle={l('tenant.TenantManager')}
         actionRef={actionRef}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button key={"CreateTenant"} type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
-        request={(params, sorter, filter: any) => queryList(url, {...params, sorter, filter})}
+        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.TENANT, {...params, sorter, filter})}
         columns={columns}
       />
 
       {/*add tenant form*/}
       <TenantForm
-        onSubmit={(value) => {handleAddSubmit(value as UserBaseInfo.Tenant)}}
+        key={"tenantFormAdd"}
+        onSubmit={(value) => {handleAddOrUpdateSubmit(value as UserBaseInfo.Tenant)}}
         onCancel={() => {handleModalVisible(false);}}
         modalVisible={modalVisible}
         values={{}}
       />
 
-      {
-        formValues && Object.keys(formValues).length ? (
+      {/*update tenant form*/}
+      {formValues && Object.keys(formValues).length ? (
           <TenantForm
-            onSubmit={async (value) => {handleEditSubmit(value as UserBaseInfo.Tenant);}}
+            key={"tenantFormUpdate"}
+            onSubmit={async (value) => {handleAddOrUpdateSubmit(value as UserBaseInfo.Tenant);}}
             onCancel={() => {
               handleUpdateModalVisible(false);
               setFormValues({});
@@ -205,7 +218,7 @@ const TenantFormList: React.FC<{}> = (props: any) => {
           />
         ) : undefined
       }
-      {handleGrantTenantForm()}
+      {ConstructTenantForm()}
     </PageContainer>
   );
 };

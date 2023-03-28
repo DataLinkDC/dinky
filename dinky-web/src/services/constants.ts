@@ -24,6 +24,7 @@ import {l} from "@/utils/intl";
  * the  interface api constants
  */
 export const API_CONSTANTS = {
+  // --- user ---
   // login path
   LOGIN_PATH: "/user/login",
   // user login
@@ -47,10 +48,16 @@ export const API_CONSTANTS = {
   // QUERY roles by userid
   GET_ROLES_BY_USERID: "/api/role/getRolesAndIdsByUserId",
 
-  // get user list by tenantId
-  GET_USER_LIST_BY_TENANTID: "/api/user/getUserListByTenantId",
+  // --- tenant ---
+  // tenant list
+  TENANT: "/api/tenant",
   // assign user to tenant
   ASSIGN_USER_TO_TENANT: "/api/tenant/assignUserToTenant",
+  // delete tenant
+  TENANT_DELETE: "/api/tenant/delete",
+  // get user list by tenantId
+  GET_USER_LIST_BY_TENANTID: "/api/user/getUserListByTenantId",
+
 
 };
 

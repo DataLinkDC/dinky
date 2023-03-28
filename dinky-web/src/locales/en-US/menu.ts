@@ -36,7 +36,7 @@ export default {
 
   'menu.datastudio': 'Data Studio',
   'menu.devops': 'Devops',
-  'menu.job': 'Job Instance',
+  'menu.devops.job': 'Job Instance',
   'menu.datacenter': 'Meta Data Center',
   'menu.datacenter.metadata': 'Meta Data',
   'menu.registration': 'Registration Center',

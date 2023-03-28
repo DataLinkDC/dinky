@@ -18,8 +18,8 @@
  */
 
 
-import React, {useState} from 'react';
-import {Form, Modal} from 'antd';
+import React, {useState} from "react";
+import {Form, Modal} from "antd";
 import {l} from "@/utils/intl";
 import {ProForm, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
@@ -66,7 +66,6 @@ const UserForm: React.FC<UserFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     setFormVals({...formVals, ...fieldsValue});
     handleSubmit({...formVals, ...fieldsValue});
-    form.resetFields();
   };
 
 
@@ -79,41 +78,41 @@ const UserForm: React.FC<UserFormProps> = (props) => {
       <>
         <ProFormText
           name="username"
-          label={l('user.UserName')}
-          placeholder={l('user.UserEnterUniqueUserName')}
+          label={l("user.UserName")}
+          placeholder={l("user.UserEnterUniqueUserName")}
           rules={[{
             required: true,
-            message: l('user.UserEnterUserName')
+            message: l("user.UserEnterUserName")
           }]}
         />
 
         <ProFormText
           name="nickname"
-          label={l('user.UserNickName')}
-          placeholder={l('user.UserEnterNickName')}
+          label={l("user.UserNickName")}
+          placeholder={l("user.UserEnterNickName")}
           rules={[{
             required: true,
-            message: l('user.UserEnterNickName')
+            message: l("user.UserEnterNickName")
           }]}
         />
 
         <ProFormText
           name="worknum"
-          label={l('user.UserJobNumber')}
-          placeholder={l('user.UserEnterJobNumber')}
+          label={l("user.UserJobNumber")}
+          placeholder={l("user.UserEnterJobNumber")}
         />
 
         <ProFormText
           name="mobile"
-          label={l('user.UserPhoneNumber')}
-          placeholder={l('user.UserEnterPhoneNumber')}
+          label={l("user.UserPhoneNumber")}
+          placeholder={l("user.UserEnterPhoneNumber")}
         />
 
         <ProFormSwitch
           name="enabled"
-          label={l('global.table.isEnable')}
-          checkedChildren={l('button.enable')}
-          unCheckedChildren={l('button.disable')}
+          label={l("global.table.isEnable")}
+          checkedChildren={l("button.enable")}
+          unCheckedChildren={l("button.disable")}
         />
       </>
     );
@@ -123,10 +122,10 @@ const UserForm: React.FC<UserFormProps> = (props) => {
   return (
     <Modal
       {...NORMAL_MODAL_OPTIONS}
-      title={formVals.id ? l('user.UserUpdateUser') : l('user.UserCreateUser')}
+      title={formVals.id ? l("user.UserUpdateUser") : l("user.UserCreateUser")}
       open={modalVisible}
       onCancel={() => handleModalVisible()}
-      onOk={() => submitForm()}
+      onOk={submitForm}
     >
       <ProForm
         {...FORM_LAYOUT_PUBLIC}
@@ -136,7 +135,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
         submitter={false}
       >
         {UserFormRender()}
-      </ProForm >
+      </ProForm>
     </Modal>
   );
 };

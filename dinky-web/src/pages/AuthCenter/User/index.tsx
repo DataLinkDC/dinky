@@ -25,7 +25,7 @@ import {Button, Form, Modal, Popconfirm, Space, Switch} from "antd";
 import {PageContainer} from "@ant-design/pro-layout";
 import UserForm from "@/pages/AuthCenter/User/components/UserForm";
 import PasswordForm from "@/pages/AuthCenter/User/components/PasswordForm";
-import TableTransferFrom from "@/pages/AuthCenter/User/components/TableTransfer";
+import TableTransferFrom from "@/pages/AuthCenter/User/components/UserTransfer";
 import {l} from "@/utils/intl";
 import {handleAddOrUpdate, handleOption, handlePutData, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
@@ -66,8 +66,8 @@ const UserTableList: React.FC = () => {
     );
     if (success) {
       handleAssignRoleTransferOpen(false);
-      form.resetFields();
       actionRef?.current?.reloadAndRest?.();
+      form.resetFields();
     }
     setLoading(false);
 
@@ -299,7 +299,10 @@ const UserTableList: React.FC = () => {
               icon={<PlusOutlined/>}
               key={"CreateUser"}
               type="primary"
-              onClick={() => handleModalOpen(true)}>
+              onClick={() => {
+                form.resetFields();
+                handleModalOpen(true)
+              }}>
               {l("button.create")}
             </Button>
           ]}
