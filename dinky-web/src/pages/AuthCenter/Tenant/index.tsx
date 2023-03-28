@@ -159,7 +159,7 @@ const TenantFormList: React.FC = () => {
           }}
         />,
         <>
-          {record.tenantCode !== "DefaultTenant" &&
+          {record.id !== 1 &&
             <Popconfirm
               placement="topRight"
               title={l("button.delete")}
