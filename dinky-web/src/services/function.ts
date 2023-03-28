@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import { TENANT_ID } from '@/services/constants';
-import cookies from 'js-cookie';
+import {TENANT_ID} from "@/services/constants";
+import cookies from "js-cookie";
 
 /**
  * PUT tenantId TO localStorage & cookies
@@ -26,7 +26,7 @@ export function setTenantStorageAndCookie(tenantId: number) {
   // save as localStorage
   localStorage.setItem(TENANT_ID, tenantId.toString());
   // save as cookies
-  cookies.set(TENANT_ID, tenantId.toString(), { path: '/' });
+  cookies.set(TENANT_ID, tenantId.toString(), {path: "/"});
 }
 
 /**
@@ -44,3 +44,4 @@ export function getTenantByLocalStorage() {
 export function parseJsonStr(jsonStr: string) {
   return JSON.parse(JSON.stringify(jsonStr));
 }
+

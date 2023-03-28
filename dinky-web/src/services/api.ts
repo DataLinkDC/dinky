@@ -15,87 +15,93 @@
  * limitations under the License.
  */
 
-import { request } from '@umijs/max';
+import {request} from '@umijs/max';
 
-// ================================ About Account ================================
-/**  GET /api/current */
-export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.Result>('/api/current', {
-    method: 'GET',
-    ...(options || {}),
-  });
-}
+import {METHOD_CONSTANTS} from "@/services/constants";
 
-/**  DELETE /api/outLogin */
-export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/outLogin', {
-    method: 'DELETE',
-    ...(options || {}),
-  });
-}
 
-/**  POST /api/login */
-export async function login(body: API.LoginParams, options?: { [key: string]: any }) {
-  return request<API.Result>('/api/login', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    data: body,
-    ...(options || {}),
-  });
-}
-
-/**  GET /api/current */
-export function chooseTenantSubmit(params: { tenantId: number }) {
-  return request<API.Result>('/api/chooseTenant', {
-    method: 'GET',
-    params: {
-      ...(params || {}),
-    },
-  });
-}
 
 // ============================ CRUD REQUEST ============================
-export async function queryData(url: string, params?: PublicParams.TableParams) {
+
+/**
+ * query list
+ * @param url
+ * @param params
+ */
+export async function queryList(url: string, params?: PublicParams.TableParams) {
   return request(url, {
-    method: 'POST',
+    method: METHOD_CONSTANTS.POST,
     data: {
       ...params,
     },
   });
 }
+
+
+/**
+ * add or update data
+ * @param url
+ * @param params
+ */
+export async function addOrUpdateData(url: string, params: any) {
+  return request(url, {
+    method: METHOD_CONSTANTS.PUT,
+    data: {
+      ...params,
+    },
+  });
+}
+
+/**
+ * delete data by id
+ * @param url
+ * @param params
+ */
+export async function removeById(url: string, params: any) {
+  return request(url, {
+    method: METHOD_CONSTANTS.DELETE,
+    params: {
+      ...params,
+    },
+  });
+}
+
+
 
 export async function getData(url: string, params?: any) {
   return request(url, {
-    method: 'GET',
+    method: METHOD_CONSTANTS.GET,
     params: {
       ...params,
     },
   });
 }
 
-export async function removeData(url: string, params: any[]) {
+export async function removeData(url: string, params: [any]) {
   return request(url, {
-    method: 'DELETE',
+    method: METHOD_CONSTANTS.DELETE,
     data: {
       ...params,
     },
   });
 }
 
-export async function addOrUpdateData(url: string, params: any) {
+
+
+export async function putData(url: string, params: any) {
   return request(url, {
-    method: 'PUT',
-    data: {
+    method: METHOD_CONSTANTS.PUT,
+    params: {
       ...params,
     },
   });
 }
+
+
 
 export async function postDataArray(url: string, params: number[]) {
   return request(url, {
-    method: 'POST',
+    method: METHOD_CONSTANTS.POST,
     data: {
       ...params,
     },
@@ -104,7 +110,7 @@ export async function postDataArray(url: string, params: number[]) {
 
 export async function postAll(url: string, params?: any) {
   return request(url, {
-    method: 'POST',
+    method: METHOD_CONSTANTS.POST,
     data: {
       ...params,
     },
@@ -113,11 +119,20 @@ export async function postAll(url: string, params?: any) {
 
 export async function getInfoById(url: string, id: number) {
   return request(url, {
-    method: 'GET',
+    method: METHOD_CONSTANTS.GET,
     params: {
       id: id,
     },
   });
 }
 
-// =========================== Business ===================================
+
+export async function updateDataByParams(url: string, params: any) {
+  return request(url, {
+    method: METHOD_CONSTANTS.PUT,
+    params: {
+      ...params,
+    },
+  });
+}
+

@@ -131,17 +131,20 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       return (
         <>
           {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState: any) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
+          {isDev &&
+            <SettingDrawer
+              disableUrlParams
+              enableDarkTheme
+              settings={initialState?.settings}
+              onSettingChange={(settings) => {
+                setInitialState((preInitialState) => ({
+                  ...preInitialState,
+                  settings,
+                }));
+              }}
+            />
+
+          }
         </>
       );
     },

@@ -15,7 +15,6 @@
  * limitations under the License.
  */
 
-import { outLogin } from '@/services/api';
 import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -26,6 +25,7 @@ import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
+import {outLogin} from "@/services/BusinessCrud";
 
 export type GlobalHeaderRightProps = {
   menu?: boolean;

@@ -15,21 +15,16 @@
  * limitations under the License.
  */
 
-import globalHeader from './en-US/global';
-import menu from './en-US/menu';
-import pages from './en-US/pages';
-import pwa from './en-US/pwa';
-import request from './en-US/request';
+import React from 'react';
+import {DeleteTwoTone} from "@ant-design/icons";
 
-export default {
-  'navBar.lang': 'Languages',
-  'layout.user.link.help': 'Help',
-  'layout.user.link.privacy': 'Privacy',
-  'layout.user.link.terms': 'Terms',
-  'app.copyright.produced': 'Produced by Dinky Community',
-  ...globalHeader,
-  ...menu,
-  ...pwa,
-  ...pages,
-  ...request
-};
+/**
+ *  This is a custom icon that is used to indicate a dangerous action.{@link DeleteTwoTone}
+ * @constructor
+ */
+export const DangerDeleteIcon = () => {
+  return <>
+    <DeleteTwoTone twoToneColor={"red"}/>
+  </>
+}
+

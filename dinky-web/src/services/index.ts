@@ -16,7 +16,9 @@
  */
 
 import * as api from './api';
+import * as crud from './BusinessCrud';
 
 export default {
   api,
+  crud,
 };

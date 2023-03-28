@@ -29,7 +29,7 @@ const About: React.FC = () => {
     <PageContainer title={false}>
       <Card>
         <Alert
-          message={l('pages.about.Community', '', { version: VERSION })}
+          message={l('about.Community', '', { version: VERSION })}
           type="success"
           icon={<SmileOutlined height={30} width={30} />}
           showIcon
@@ -41,13 +41,13 @@ const About: React.FC = () => {
         />
         <Paragraph style={{ marginRight: 30 }}>
           <Typography.Text
-            title={l('pages.about.QQcode')}
+            title={l('about.QQcode')}
             style={{ marginRight: 80 }}
             strong
             ellipsis={true}
           >
             <Image
-              title={l('pages.about.QQcode')}
+              title={l('about.QQcode')}
               height={300}
               width={250}
               src="community/qq.png"
@@ -56,7 +56,7 @@ const About: React.FC = () => {
 
           <Typography.Text style={{ marginRight: 80 }} strong ellipsis={true}>
             <Image
-              title={l('pages.about.wechatCode')}
+              title={l('about.wechatCode')}
               height={300}
               width={250}
               src="community/wechat.jpg"
@@ -65,7 +65,7 @@ const About: React.FC = () => {
 
           <Typography.Text strong ellipsis={true}>
             <Image
-              title={l('pages.about.dingTalkCode')}
+              title={l('about.dingTalkCode')}
               height={300}
               width={250}
               src="community/dingtalk.jpg"
@@ -75,8 +75,8 @@ const About: React.FC = () => {
         <br />
 
         <Alert
-          message={l('pages.about.precautions')}
-          description={l('pages.about.wechatApply')}
+          message={l('about.precautions')}
+          description={l('about.wechatApply')}
           type="warning"
           showIcon
           banner
@@ -90,7 +90,7 @@ const About: React.FC = () => {
 
         <Typography.Text strong>
           <Alert
-            message={l('pages.about.usingHelp')}
+            message={l('about.usingHelp')}
             icon={<SmileOutlined />}
             type="info"
             showIcon
@@ -131,7 +131,7 @@ const About: React.FC = () => {
           </Paragraph>
           <br />
           <Alert
-            message={l('pages.about.communityRules')}
+            message={l('about.communityRules')}
             type="success"
             showIcon
             icon={<HeartOutlined style={{ color: 'red' }} />}
@@ -142,15 +142,15 @@ const About: React.FC = () => {
             }}
           />
           <ul>
-            <li>{l('pages.about.communityRules.1')}</li>
-            <li>{l('pages.about.communityRules.2')}</li>
-            <li>{l('pages.about.communityRules.3')}</li>
-            <li>{l('pages.about.communityRules.4')}</li>
+            <li>{l('about.communityRules.1')}</li>
+            <li>{l('about.communityRules.2')}</li>
+            <li>{l('about.communityRules.3')}</li>
+            <li>{l('about.communityRules.4')}</li>
             <li>
               <a href={'https://github.com/DataLinkDC/dinky/issues/66'} target={'_blank'}>
                 Issue
               </a>
-              {l('pages.about.communityRules.5')}
+              {l('about.communityRules.5')}
             </li>
           </ul>
         </Typography.Text>
