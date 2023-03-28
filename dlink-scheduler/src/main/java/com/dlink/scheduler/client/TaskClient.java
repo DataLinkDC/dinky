@@ -19,6 +19,7 @@
 
 package com.dlink.scheduler.client;
 
+import cn.hutool.json.JSONUtil;
 import com.dlink.scheduler.config.DolphinSchedulerProperties;
 import com.dlink.scheduler.constant.Constants;
 import com.dlink.scheduler.exception.SchedulerException;
@@ -156,6 +157,17 @@ public class TaskClient {
     public TaskDefinitionLog createTaskDefinition(Long projectCode, Long processCode, String upstreamCodes, String taskDefinitionJsonObj) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
+        // 获取task的code
+        String url = StrUtil.format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/gen-task-codes?genNum=1", map);
+        String body = HttpRequest.get(url)
+                .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                .timeout(5000)
+                .execute().body();
+        String result = MyJSONUtil.verifyResult(MyJSONUtil.toBean(body, new TypeReference<Result<String>>() {
+        }));
+        TaskDefinitionLog taskDefinitionLog = JSONUtil.toBean(taskDefinitionJsonObj, TaskDefinitionLog.class);
+        taskDefinitionLog.setCode(Long.valueOf(result.replaceAll("\\[", "").replaceAll("]", "")));
+
         String format = StrUtil.format(dolphinSchedulerProperties.getUrl() + "/projects/{projectCode}/task-definition/save-single", map);
 
         Map<String, Object> pageParams = new HashMap<>();
@@ -164,7 +176,7 @@ public class TaskClient {
             pageParams.put("upstreamCodes", upstreamCodes);
         }
 
-        pageParams.put("taskDefinitionJsonObj", taskDefinitionJsonObj);
+        pageParams.put("taskDefinitionJsonObj", JSONUtil.toJsonStr(taskDefinitionLog));
 
         String content = HttpRequest.post(format)
             .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
