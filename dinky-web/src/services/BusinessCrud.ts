@@ -78,7 +78,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
  */
 export function chooseTenantSubmit(params: { tenantId: number }) {
   return request<API.Result>(API_CONSTANTS.CHOOSE_TENANT, {
-    method: METHOD_CONSTANTS.GET,
+    method: METHOD_CONSTANTS.POST,
     params: {
       ...(params || {}),
     },

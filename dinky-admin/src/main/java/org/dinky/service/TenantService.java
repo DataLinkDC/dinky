@@ -22,21 +22,29 @@ package org.dinky.service;
 import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Tenant;
-
-import java.util.List;
-import java.util.Set;
+import org.dinky.params.AssignUserToTenantParams;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface TenantService extends ISuperService<Tenant> {
 
     /**
-     * delete tenant by id
+     * delete tenant by id, this method will be {@link Deprecated} in the future, please use {@link
+     * #removeTenantById(Integer)}
      *
      * @param para tenant id
      * @return delete result code
      */
+    @Deprecated
     Result<Void> deleteTenantById(JsonNode para);
+
+    /**
+     * remove tenant by id
+     *
+     * @param tenantId tenant id
+     * @return delete result code
+     */
+    Result<Void> removeTenantById(Integer tenantId);
 
     /**
      * add or update tenant
@@ -58,9 +66,21 @@ public interface TenantService extends ISuperService<Tenant> {
      */
     boolean modifyTenant(Tenant tenant);
 
-    List<Tenant> getTenantByIds(Set<Integer> tenantIds);
-
+    /**
+     * distribute users to tenant , this method will be {@link Deprecated} in the future, please use
+     * {@link #assignUserToTenant(AssignUserToTenantParams)}
+     *
+     * @param para {@link JsonNode}
+     * @return {@link Result} of {@link Void}
+     */
+    @Deprecated
     Result<Void> distributeUsers(JsonNode para);
 
-    Result<Void> switchTenant(JsonNode para);
+    /**
+     * assignUserToTenant users to tenant
+     *
+     * @param assignUserToTenantParams {@link AssignUserToTenantParams}
+     * @return {@link Result} of {@link Void}
+     */
+    Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams);
 }

@@ -44,60 +44,66 @@ interface TableTransferProps extends TransferProps<any> {
  * @constructor
  */
 const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
+
   <Transfer
     showSelectAll={false}
     showSearch={true}
-    {...restProps}>
-    {({
-        direction,
-        filteredItems,
-        onItemSelectAll,
-        onItemSelect,
-        selectedKeys: listSelectedKeys,
-        disabled: isDelete,
-      }) => {
-      const columns = direction === "left" ? leftColumns : rightColumns;
+    {...restProps}
+  >
+    {
+      ({
+         direction,
+         filteredItems,
+         onItemSelectAll,
+         onItemSelect,
+         selectedKeys: listSelectedKeys,
+         disabled: enableFlag,
+       }) => {
+        const columns = direction === "left" ? leftColumns : rightColumns;
+        const rowSelection: TableRowSelection<any> = {
+          getCheckboxProps: item => ({disabled: enableFlag || item.isDelete || (item.hasOwnProperty("enabled") ? !item.enabled : false)}),
+          onSelectAll: function (selected, selectedRows) {
 
-      const rowSelection: TableRowSelection<UserBaseInfo.Role> = {
-        getCheckboxProps: item => ({disabled: isDelete || item.isDelete}),
-        onSelectAll: function (selected, selectedRows) {
-          const treeSelectedKeys = selectedRows
-            .filter(item => !item.isDelete)
-            .map(({id}) => id);
-          const diffKeys = selected
-            ? difference(treeSelectedKeys, listSelectedKeys as any)
-            : difference(listSelectedKeys, treeSelectedKeys as any);
-          onItemSelectAll(diffKeys as string[], selected);
-        },
-        onSelect({id}, selected) {
-          onItemSelect(id as any, selected);
-        },
-        selectedRowKeys: listSelectedKeys,
-      };
+            const treeSelectedKeys = selectedRows
+              .filter(item => !item.isDelete || !item.enabled)
+              .map(({id}) => id);
 
-      return (<>
-          <Scrollbars {...SCROLLBAR_OPTIONS} >
-            <Table
-              {...NORMAL_TABLE_OPTIONS}
-              size="large"
-              rowSelection={rowSelection}
-              columns={columns}
-              dataSource={filteredItems}
-              style={{
-                height: "350px",
-                pointerEvents: isDelete ? "none" : undefined
-              }}
-              onRow={({id, isDelete: itemDisabled}) => ({
-                onClick: () => {
-                  if (itemDisabled || isDelete) return;
-                  onItemSelect(id as any, !listSelectedKeys.includes(id as any));
-                },
-              })}
-            />
-          </Scrollbars>
-        </>
-      );
-    }}
+            const diffKeys = selected
+              ? difference(treeSelectedKeys, listSelectedKeys as any)
+              : difference(listSelectedKeys, treeSelectedKeys as any);
+
+            onItemSelectAll(diffKeys as string[], selected);
+          },
+
+          onSelect(item, selected) {
+            onItemSelect(item.id as any, selected);
+          },
+          selectedRowKeys: listSelectedKeys,
+        };
+        return (<>
+            <Scrollbars {...SCROLLBAR_OPTIONS} >
+              <Table
+                {...NORMAL_TABLE_OPTIONS}
+                size="large"
+                rowSelection={rowSelection}
+                columns={columns}
+                dataSource={filteredItems}
+                style={{
+                  height: "350px",
+                  pointerEvents: enableFlag ? "none" : undefined
+                }}
+                onRow={(item) => ({
+                  onClick: () => {
+                    // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
+                    if ((item.hasOwnProperty("isDelete") ? item.isDelete : true) || (item.hasOwnProperty("enabled") ? !item.enabled : false)) return;
+                    onItemSelect(item.id as any, !listSelectedKeys.includes(item.id as any));
+                  },
+                })}
+              />
+            </Scrollbars>
+          </>
+        );
+      }}
   </Transfer>
 );
 

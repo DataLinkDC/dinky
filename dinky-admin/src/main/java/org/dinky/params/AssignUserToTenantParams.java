@@ -17,13 +17,15 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.params;
 
-public class BaseConstant {
+import java.util.List;
 
-    /** language cookie name */
-    public static final String LOCALE_LANGUAGE_COOKIE = "language";
+import lombok.Data;
 
-    /** default batch insert size */
-    public static final Integer DEFAULT_BATCH_INSERT_SIZE = 1000;
+/** assign role params */
+@Data
+public class AssignUserToTenantParams {
+    Integer tenantId;
+    List<Integer> userIds;
 }

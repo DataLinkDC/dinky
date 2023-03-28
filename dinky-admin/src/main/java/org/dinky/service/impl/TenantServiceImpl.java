@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
+import org.dinky.constant.BaseConstant;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.TenantMapper;
@@ -28,14 +29,15 @@ import org.dinky.model.Namespace;
 import org.dinky.model.Role;
 import org.dinky.model.Tenant;
 import org.dinky.model.UserTenant;
+import org.dinky.params.AssignUserToTenantParams;
 import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserTenantService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Resource;
 
@@ -43,9 +45,11 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.collection.CollectionUtil;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -60,30 +64,34 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     private final UserTenantService userTenantService;
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> saveOrUpdateTenant(Tenant tenant) {
         Integer tenantId = tenant.getId();
         if (Asserts.isNull(tenantId)) {
             Tenant tenantByTenantCode = getTenantByTenantCode(tenant.getTenantCode());
             if (Asserts.isNotNull(tenantByTenantCode)) {
-                return Result.failed("该租户已存在");
+                return Result.failed(MessageResolverUtils.getMessage("tenant.exists"));
             }
             tenant.setIsDelete(false);
             if (save(tenant)) {
                 TenantContextHolder.set(tenant.getId());
-                return Result.succeed("新增成功");
+                return Result.succeed(MessageResolverUtils.getMessage("create.success"));
             }
-            return Result.failed("新增失败");
+            return Result.failed(MessageResolverUtils.getMessage("create.failed"));
         } else {
             if (modifyTenant(tenant)) {
-                return Result.failed("修改成功");
+                return Result.succeed(MessageResolverUtils.getMessage("modify.success"));
             }
-            return Result.failed("新增失败");
+            return Result.failed(MessageResolverUtils.getMessage("modify.failed"));
         }
     }
 
     @Override
     public Tenant getTenantByTenantCode(String tenantCode) {
-        return getOne(new QueryWrapper<Tenant>().eq("tenant_code", tenantCode).eq("is_delete", 0));
+        return getOne(
+                new LambdaQueryWrapper<Tenant>()
+                        .eq(Tenant::getTenantCode, tenantCode)
+                        .eq(Tenant::getIsDelete, 0));
     }
 
     @Override
@@ -131,16 +139,30 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     }
 
     @Override
-    public List<Tenant> getTenantByIds(Set<Integer> tenantIds) {
-        return baseMapper.getTenantByIds(tenantIds);
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> removeTenantById(Integer tenantId) {
+        Tenant tenant = getById(tenantId);
+        if (Asserts.isNull(tenant)) {
+            return Result.failed(MessageResolverUtils.getMessage("tenant.not.exists"));
+        }
+
+        List<UserTenant> userTenants =
+                userTenantService
+                        .getBaseMapper()
+                        .selectList(
+                                new LambdaQueryWrapper<UserTenant>()
+                                        .eq(UserTenant::getTenantId, tenantId));
+        if (CollectionUtil.isNotEmpty(userTenants)) {
+            return Result.failed(MessageResolverUtils.getMessage("tenant.has.user"));
+        }
+        Integer deleteByIdResult = baseMapper.deleteById(tenantId);
+        if (deleteByIdResult > 0) {
+            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+        }
     }
 
-    /**
-     * Assign users to specified tenants
-     *
-     * @param para
-     * @return
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> distributeUsers(JsonNode para) {
@@ -172,14 +194,31 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     }
 
     @Override
-    public Result<Void> switchTenant(JsonNode para) {
-        if (para.size() > 0) {
-            Integer tenantId = para.get("tenantId").asInt();
-            TenantContextHolder.clear();
-            TenantContextHolder.set(tenantId);
-            return Result.succeed("切换租户成功");
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams) {
+        List<UserTenant> tenantUserList = new ArrayList<>();
+        Integer tenantId = assignUserToTenantParams.getTenantId();
+        userTenantService.remove(
+                new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
+        List<Integer> userIds = assignUserToTenantParams.getUserIds();
+        for (Integer userId : userIds) {
+            UserTenant userTenant = new UserTenant();
+            userTenant.setTenantId(tenantId);
+            userTenant.setUserId(userId);
+            tenantUserList.add(userTenant);
+        }
+        // save or update user role
+        boolean result =
+                userTenantService.saveOrUpdateBatch(
+                        tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
+        if (result) {
+            return Result.succeed(MessageResolverUtils.getMessage("tenant.assign.user.success"));
         } else {
-            return Result.failed("无法切换租户,获取不到租户信息");
+            if (tenantUserList.size() == 0) {
+                return Result.succeed(
+                        MessageResolverUtils.getMessage("tenant.binding.user.deleteAll"));
+            }
+            return Result.failed(MessageResolverUtils.getMessage("tenant.assign.user.failed"));
         }
     }
 }

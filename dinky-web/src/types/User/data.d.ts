@@ -50,6 +50,7 @@ declare namespace UserBaseInfo {
   export type Role = {
     id: number;
     tenantId: number;
+    tenant: Tenant;
     roleCode?: string;
     roleName?: string;
     namespaceIds?: string;

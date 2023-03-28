@@ -182,8 +182,8 @@ export default [
       {
         path: '/auth/tenant',
         name: 'tenant',
-        icon: 'SecurityScanTwoTone',
-        // component: './AuthenticationCenter/TenantManager',
+        icon: 'SecurityScanOutlined',
+        component: './AuthCenter/Tenant',
       },
     ],
   },

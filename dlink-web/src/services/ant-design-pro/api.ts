@@ -50,7 +50,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
 /** 获取当前的用户 GET /api/current */
 export function chooseTenantSubmit(params: { tenantId: number }) {
   return request<API.Result>('/api/chooseTenant', {
-    method: 'GET',
+    method: 'POST',
     params: {
       ...(params || {}),
     },

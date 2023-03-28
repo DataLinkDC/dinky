@@ -18,7 +18,7 @@
 
 
 import React, {useState} from 'react';
-import {Form, Input, Modal} from 'antd';
+import {Form, Modal} from 'antd';
 import {l} from "@/utils/intl";
 import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
@@ -34,6 +34,9 @@ export type TenantFormProps = {
 const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   const [form] = Form.useForm();
+  /**
+   * form values
+   */
   const [formVals, setFormVals] = useState<Partial<UserBaseInfo.Tenant>>({
     id: props.values.id,
     tenantCode: props.values.tenantCode,
@@ -43,12 +46,18 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
     updateTime: props.values.updateTime,
   });
 
+  /**
+   * props
+   */
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
     modalVisible,
   } = props;
 
+  /**
+   * submit
+   */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     fieldsValue.id = formVals.id;
@@ -57,6 +66,10 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
     form.resetFields();
   };
 
+  /**
+   * render form
+   * @constructor
+   */
   const TenantFormRender = () => {
     return (
       <>
@@ -78,6 +91,9 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
   };
 
 
+  /**
+   * render
+   */
   return (
     <Modal
       {...NORMAL_MODAL_OPTIONS}

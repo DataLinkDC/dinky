@@ -128,7 +128,7 @@ const GlobalHeaderRight: React.FC = () => {
       okText: l("button.confirm"),
       cancelText: l("button.cancel"),
       onOk: async () => {
-        const result = await chooseTenantSubmit({tenantId: tenantId});
+        const result = await chooseTenantSubmit({tenantId});
         setTenantStorageAndCookie(tenantId);
         if (result.code === 0) {
           SuccessNotification(result.msg);
@@ -183,6 +183,7 @@ const GlobalHeaderRight: React.FC = () => {
         <Select
           className={actionClassName}
           style={{width: "18vh"}}
+          value={currentUser?.currentTenant?.tenantCode?.toString()}
           defaultValue={currentUser?.currentTenant?.tenantCode?.toString() || ""}
           onChange={(value, option) => {
             tenantHandleChange(option as OptionType);
@@ -220,4 +221,6 @@ const GlobalHeaderRight: React.FC = () => {
     </>
   );
 };
+
+
 export default GlobalHeaderRight;
