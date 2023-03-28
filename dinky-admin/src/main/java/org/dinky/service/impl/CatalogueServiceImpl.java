@@ -21,23 +21,38 @@ package org.dinky.service.impl;
 
 import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.CatalogueTaskDTO;
 import org.dinky.mapper.CatalogueMapper;
-import org.dinky.model.*;
-import org.dinky.service.*;
+import org.dinky.model.Catalogue;
+import org.dinky.model.History;
+import org.dinky.model.JobInstance;
+import org.dinky.model.JobLifeCycle;
+import org.dinky.model.JobStatus;
+import org.dinky.model.Statement;
+import org.dinky.model.Task;
+import org.dinky.service.CatalogueService;
+import org.dinky.service.HistoryService;
+import org.dinky.service.JobInstanceService;
+import org.dinky.service.StatementService;
+import org.dinky.service.TaskService;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
@@ -56,7 +71,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
 
-    private  final HistoryService historyService;
+    private final HistoryService historyService;
 
     private final StatementService statementService;
 
@@ -147,9 +162,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);
-                }else if(job != null&&!JobStatus.RUNNING.getValue().equals(job.getStatus())) {
-                    historyService.remove(new QueryWrapper<History>().eq("task_id",taskId));
-                    jobInstanceService.remove(new QueryWrapper<JobInstance>().eq("task_id",taskId));
+                } else if (job != null && !JobStatus.RUNNING.getValue().equals(job.getStatus())) {
+                    historyService.remove(new QueryWrapper<History>().eq("task_id", taskId));
+                    jobInstanceService.remove(
+                            new QueryWrapper<JobInstance>().eq("task_id", taskId));
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);
