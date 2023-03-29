@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
@@ -35,27 +34,25 @@ import org.dinky.service.RoleNamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.dinky.utils.MessageResolverUtils;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.RequiredArgsConstructor;
 
-/**
- * role service impl
- */
+/** role service impl */
 @Service
 @RequiredArgsConstructor
 public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implements RoleService {
@@ -64,9 +61,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     private final UserRoleService userRoleService;
     private final TenantService tenantService;
     private final NamespaceService namespaceService;
-    @Lazy
-    @Resource
-    private RoleService roleService;
+    @Lazy @Resource private RoleService roleService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -114,9 +109,13 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         if (Asserts.isNull(role.getId())) {
             Role roleCode =
                     roleService.getOne(
-                            new LambdaQueryWrapper<Role>().eq(Role::getRoleCode, role.getRoleCode()));
+                            new LambdaQueryWrapper<Role>()
+                                    .eq(Role::getRoleCode, role.getRoleCode()));
             if (Asserts.isNotNull(roleCode)) {
-                return Result.failed(String.format(MessageResolverUtils.getMessage("role.code.exist"), role.getRoleCode()));
+                return Result.failed(
+                        String.format(
+                                MessageResolverUtils.getMessage("role.code.exist"),
+                                role.getRoleCode()));
             }
         }
         Boolean roleSaveOrUpdate = saveOrUpdate(role);
@@ -131,7 +130,11 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteRoleById(Integer id) {
         Role role = getById(id);
-        Long selectUserRoleCnt = userRoleService.getBaseMapper().selectCount(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
+        Long selectUserRoleCnt =
+                userRoleService
+                        .getBaseMapper()
+                        .selectCount(
+                                new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
         if (selectUserRoleCnt > 0) {
             return Result.failed(MessageResolverUtils.getMessage("role.binding.user"));
         }
@@ -141,9 +144,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         } else {
             return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
         }
-
     }
-
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -174,7 +175,6 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         }
     }
 
-
     @Override
     public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
         ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
@@ -183,20 +183,21 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                 .forEach(
                         role -> {
 
-                            // todo: namespace will be delete in the future , so next line code will be delete too
+                            // todo: namespace will be delete in the future , so next line code will
+                            // be delete too
                             List<Namespace> namespaceArrayList = new ArrayList<>();
 
                             List<Integer> idsList = new ArrayList<>();
                             Tenant tenant =
                                     tenantService.getBaseMapper().selectById(role.getTenantId());
 
-                            // todo: namespace will be delete in the future , so next some code will be delete too
+                            // todo: namespace will be delete in the future , so next some code will
+                            // be delete too
                             roleNamespaceService
                                     .list(
                                             new QueryWrapper<RoleNamespace>()
                                                     .eq("role_id", role.getId()))
                                     .forEach(
-
                                             roleNamespace -> {
                                                 Namespace namespaceServiceById =
                                                         namespaceService.getById(
@@ -207,7 +208,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
                             role.setTenant(tenant);
 
-                            // todo: namespace will be delete in the future , so next some code will be delete too
+                            // todo: namespace will be delete in the future , so next some code will
+                            // be delete too
                             role.setNamespaces(namespaceArrayList);
                             String result =
                                     idsList.stream()
@@ -215,6 +217,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                             .collect(Collectors.joining(","));
                             role.setNamespaceIds(result);
                         });
+
         return roleProTableResult;
     }
 }

@@ -29,16 +29,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 public interface RoleService extends ISuperService<Role> {
 
     /**
-     * delete role by ids , the method will be {@link Deprecated} in the future , please use {@link #deleteRoleById(Integer)}
+     * delete role by ids , the method will be {@link Deprecated} in the future , please use {@link
+     * #deleteRoleById(Integer)}
      *
      * @param para role id
      * @return delete result code
      */
-   @Deprecated
+    @Deprecated
     Result<Void> deleteRoles(JsonNode para);
 
     /**
-     * create or update role , the method will be {@link Deprecated} in the future , please use {@link #addedOrUpdateRole(Role)}
+     * create or update role , the method will be {@link Deprecated} in the future , please use
+     * {@link #addedOrUpdateRole(Role)}
+     *
      * @param role
      * @return
      */
@@ -47,10 +50,12 @@ public interface RoleService extends ISuperService<Role> {
 
     /**
      * create or update role
+     *
      * @param role {@link Role}
      * @return {@link Result} of {@link Void}
      */
     Result<Void> addedOrUpdateRole(Role role);
+
     @Override
     ProTableResult<Role> selectForProTable(JsonNode para);
 
