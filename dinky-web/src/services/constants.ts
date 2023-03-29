@@ -18,8 +18,6 @@
 
 import {l} from "@/utils/intl";
 
-
-
 /**
  * the  interface api constants
  */
@@ -58,6 +56,11 @@ export const API_CONSTANTS = {
   // get user list by tenantId
   GET_USER_LIST_BY_TENANTID: "/api/user/getUserListByTenantId",
 
+  // --- role ---
+  // role list
+  ROLE: "/api/role",
+  ROLE_ADDED_OR_UPDATE: "/api/role/addedOrUpdateRole",
+  ROLE_DELETE: "/api/role/delete",
 
 };
 

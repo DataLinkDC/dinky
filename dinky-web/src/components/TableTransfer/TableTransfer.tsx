@@ -20,7 +20,6 @@
 import {TransferProps} from "antd/es/transfer";
 import {ColumnsType, TableRowSelection} from "antd/es/table/interface";
 import {Table, Transfer} from "antd";
-// @ts-ignore
 import {Scrollbars} from "react-custom-scrollbars";
 import difference from "lodash/difference";
 import {NORMAL_TABLE_OPTIONS, SCROLLBAR_OPTIONS} from "@/services/constants";

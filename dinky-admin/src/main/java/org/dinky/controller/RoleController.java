@@ -29,6 +29,7 @@ import org.dinky.service.UserRoleService;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.dinky.utils.MessageResolverUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -54,23 +55,45 @@ public class RoleController {
     private final UserRoleService userRoleService;
 
     /**
-     * create or update role
+     * create or update role , this method will be {@link Deprecated} in the future, please use {@link #addedOrUpdateRole(Role)}
      *
      * @return delete result code
      */
     @PutMapping
+    @Deprecated
     public Result<Void> saveOrUpdateRole(@RequestBody Role role) {
         return roleService.saveOrUpdateRole(role);
     }
 
     /**
-     * delete tenant by id
+     * create or update role
+     * @param role {@link Role}
+     * @return  {@link Role} of {@link Void}
+     */
+    @PutMapping("/addedOrUpdateRole")
+    public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
+        return roleService.addedOrUpdateRole(role);
+    }
+
+
+    /**
+     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link #deleteRoleById(Integer)}
      *
      * @return delete result code
      */
     @DeleteMapping
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         return roleService.deleteRoles(para);
+    }
+
+    /**
+     * delete role by id
+     *
+     * @return delete result code
+     */
+    @DeleteMapping("/delete")
+    public Result<Void> deleteRoleById(@RequestParam Integer id) {
+        return roleService.deleteRoleById(id);
     }
 
     /** query role list */
@@ -90,6 +113,6 @@ public class RoleController {
             userRoleIds.add(userRole.getRoleId());
         }
         Dict result = Dict.create().set("roles", roleList).set("roleIds", userRoleIds);
-        return Result.succeed(result, "获取成功");
+        return Result.succeed(result, MessageResolverUtils.getMessage("response.get.success"));
     }
 }

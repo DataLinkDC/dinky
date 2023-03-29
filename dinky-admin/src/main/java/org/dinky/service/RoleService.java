@@ -24,29 +24,41 @@ import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Role;
 
-import java.util.List;
-import java.util.Set;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface RoleService extends ISuperService<Role> {
 
     /**
-     * delete role
+     * delete role by ids , the method will be {@link Deprecated} in the future , please use {@link #deleteRoleById(Integer)}
      *
      * @param para role id
      * @return delete result code
      */
+   @Deprecated
     Result<Void> deleteRoles(JsonNode para);
 
+    /**
+     * create or update role , the method will be {@link Deprecated} in the future , please use {@link #addedOrUpdateRole(Role)}
+     * @param role
+     * @return
+     */
+    @Deprecated
     Result<Void> saveOrUpdateRole(Role role);
 
-    List<Role> getRoleByIds(Set<Integer> roleIds);
-
-    List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds);
-
-    boolean deleteByIds(List<Integer> ids);
-
+    /**
+     * create or update role
+     * @param role {@link Role}
+     * @return {@link Result} of {@link Void}
+     */
+    Result<Void> addedOrUpdateRole(Role role);
     @Override
     ProTableResult<Role> selectForProTable(JsonNode para);
+
+    /**
+     * get role by id
+     *
+     * @param id role id
+     * @return {@link Result} of {@link Void}
+     */
+    Result<Void> deleteRoleById(Integer id);
 }

@@ -182,31 +182,10 @@ export default {
   'tenant.EnterTenantNote': '请输入租户备注/描述信息!',
   'tenant.delete': '删除租户',
   'tenant.deleteConfirm': '您确定要删除此租户吗？',
-  'tenant.enable': '启用租户',
-  'tenant.enableConfirm': '您确定要启用此租户吗？',
-  'tenant.disable': '禁用租户',
-  'tenant.disableConfirm': '您确定要禁用此租户吗？',
-
-
-  'nameSpace.NameSpaceManagement': '命名空间管理',
-  'nameSpace.NameSpaceCode': '命名空间编码',
-  'nameSpace.belongTenant': '所属租户',
-  'nameSpace.deleteNameSpace': '删除命名空间',
-  'nameSpace.deleteNameSpaceConfirm': '您确定要删除此命名空间吗？',
-  'nameSpace.enableNameSpace': '启用命名空间',
-  'nameSpace.enableNameSpaceConfirm': '您确定要启用此命名空间吗？',
-  'nameSpace.disableNameSpace': '禁用命名空间',
-  'nameSpace.disableNameSpaceConfirm': '您确定要禁用此命名空间吗？',
-  'nameSpace.create': '创建命名空间',
-  'nameSpace.update': '修改命名空间',
-  'nameSpace.EnterNameSpaceCode': '请输入命名空间编码!',
-  'nameSpace.EnterNameSpaceNote': '请输入命名空间的备注/描述信息!',
-  'nameSpace.disableTotalOf': '被禁用的命名空间共 {total} 个',
 
   'role.roleManagement': '角色管理',
   'role.roleCode': '角色编码',
   'role.roleName': '角色名称',
-  'role.namespaceIds': '命名空间',
   'role.belongTenant': '所属租户',
   'role.create': '创建角色',
   'role.update': '修改角色',
@@ -216,14 +195,6 @@ export default {
   'role.EnterNote': '请输入角色的备注/描述信息!',
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
-  'role.enable': '启用角色',
-  'role.enableConfirm': '您确定要启用此角色吗？',
-  'role.disable': '禁用角色',
-  'role.disableConfirm': '您确定要禁用此角色吗？',
-
-
-  'regist.openAPI': 'OpenAPI 文档',
-  'regist.BusinessComponent': '业务组件文档',
 
 
   'metadata.NoDatabaseSelected': '未选择数据源',
