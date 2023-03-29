@@ -78,6 +78,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -162,6 +163,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
         if (Asserts.isNotNullString(heartbeatInterval)) {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
+        }
+
+        if (Asserts.isAllNotNullString(chunkSize)) {
+            sourceBuilder.splitSize(Integer.parseInt(chunkSize));
         }
 
         return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
