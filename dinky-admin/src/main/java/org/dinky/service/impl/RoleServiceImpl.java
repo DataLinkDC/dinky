@@ -108,8 +108,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         }
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> addedOrUpdateRole(Role role) {
         if (Asserts.isNull(role.getId())) {
             Role roleCode =
@@ -182,15 +182,21 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                 .getData()
                 .forEach(
                         role -> {
+
+                            // todo: namespace will be delete in the future , so next line code will be delete too
                             List<Namespace> namespaceArrayList = new ArrayList<>();
+
                             List<Integer> idsList = new ArrayList<>();
                             Tenant tenant =
                                     tenantService.getBaseMapper().selectById(role.getTenantId());
+
+                            // todo: namespace will be delete in the future , so next some code will be delete too
                             roleNamespaceService
                                     .list(
                                             new QueryWrapper<RoleNamespace>()
                                                     .eq("role_id", role.getId()))
                                     .forEach(
+
                                             roleNamespace -> {
                                                 Namespace namespaceServiceById =
                                                         namespaceService.getById(
@@ -198,7 +204,10 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                                 namespaceArrayList.add(namespaceServiceById);
                                                 idsList.add(roleNamespace.getNamespaceId());
                                             });
+
                             role.setTenant(tenant);
+
+                            // todo: namespace will be delete in the future , so next some code will be delete too
                             role.setNamespaces(namespaceArrayList);
                             String result =
                                     idsList.stream()

@@ -53,8 +53,7 @@ const RoleList: React.FC = () => {
   }
 
 
-
-  const handleAddSubmit = async (value :any ) => {
+  const handleAddOrUpdateSubmit = async (value :any ) => {
     // TODO: added or update role interface is use /api/role/addedOrUpdateRole  , because of the backend interface 'saveOrUpdate' is repeat , in the future, we need to change the interface to /api/role (ROLE)
     const success = await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
     if (success) {
@@ -81,6 +80,7 @@ const RoleList: React.FC = () => {
     },
     {
       title: l('role.belongTenant'),
+      hideInSearch: true,
       render: (_, record) => {
         return <Tag color="blue">{record.tenant.tenantCode}</Tag>
       }
@@ -158,26 +158,16 @@ const RoleList: React.FC = () => {
         columns={columns}
       />
       <RoleForm
-        onSubmit={(value: any) => {handleAddSubmit(value)}}
+        onSubmit={(value: any) => {handleAddOrUpdateSubmit(value)}}
         onCancel={() => {
           handleModalVisible(false);
         }}
         modalVisible={modalVisible}
         values={{}}
       />
-      {
-        formValues && Object.keys(formValues).length ? (
+      {formValues && Object.keys(formValues).length ? (
           <RoleForm
-            onSubmit={async (value: any) => {
-              const success = await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
-              if (success) {
-                handleUpdateModalVisible(false);
-                setFormValues({});
-                if (actionRef.current) {
-                  actionRef.current.reload();
-                }
-              }
-            }}
+            onSubmit={(value: any) => {handleAddOrUpdateSubmit(value)}}
             onCancel={() => {
               handleUpdateModalVisible(false);
               setFormValues({});
