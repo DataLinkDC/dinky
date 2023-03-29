@@ -67,17 +67,12 @@ public class Role implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
-    /** this field is deprecated , it's will be delete in the future
-     * namespace list
-     *
-     */
+    /** this field is deprecated , it's will be delete in the future namespace list */
     @TableField(exist = false)
     @Deprecated
     private List<Namespace> namespaces;
 
-    /** this field is deprecated , it's will be delete in the future
-     * namespace namespaceIds
-     * */
+    /** this field is deprecated , it's will be delete in the future namespace namespaceIds */
     @Deprecated
     @TableField(exist = false)
     private String namespaceIds;
