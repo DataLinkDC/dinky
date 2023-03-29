@@ -88,6 +88,7 @@ const RoleList: React.FC = () => {
     {
       title: l('global.table.note'),
       dataIndex: 'note',
+      hideInSearch: true,
       ellipsis: true,
     },
     {
