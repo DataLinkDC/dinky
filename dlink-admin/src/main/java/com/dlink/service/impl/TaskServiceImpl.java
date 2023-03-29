@@ -685,10 +685,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             // 说明存在版本，需要判断是否 是回退后的老版本
             // 1、版本号存在
             // 2、md5值与上一个版本一致
-            TaskVersion version = versionMap.get(task.getVersionId());
-            version.setId(null);
+            TaskVersion lastTaskVersion = versionMap.get(task.getVersionId());
+            if (Asserts.isNotNull(lastTaskVersion)) {
+                lastTaskVersion.setId(null);
+            }
 
-            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(lastTaskVersion)) {
                 // || !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
                 taskVersion.setVersionId(Collections.max(versionIds) + 1);
                 task.setVersionId(Collections.max(versionIds) + 1);
