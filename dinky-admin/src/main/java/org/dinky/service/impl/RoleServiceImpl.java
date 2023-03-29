@@ -34,10 +34,10 @@ import org.dinky.service.RoleNamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -46,6 +46,7 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -102,6 +103,49 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> addedOrUpdateRole(Role role) {
+        if (Asserts.isNull(role.getId())) {
+            Role roleCode =
+                    roleService.getOne(
+                            new LambdaQueryWrapper<Role>()
+                                    .eq(Role::getRoleCode, role.getRoleCode()));
+            if (Asserts.isNotNull(roleCode)) {
+                return Result.failed(
+                        String.format(
+                                MessageResolverUtils.getMessage("role.code.exist"),
+                                role.getRoleCode()));
+            }
+        }
+        Boolean roleSaveOrUpdate = saveOrUpdate(role);
+        if (roleSaveOrUpdate) {
+            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> deleteRoleById(Integer id) {
+        Role role = getById(id);
+        Long selectUserRoleCnt =
+                userRoleService
+                        .getBaseMapper()
+                        .selectCount(
+                                new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
+        if (selectUserRoleCnt > 0) {
+            return Result.failed(MessageResolverUtils.getMessage("role.binding.user"));
+        }
+        Boolean removeById = roleService.removeById(role);
+        if (removeById) {
+            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Result<Void> deleteRoles(JsonNode para) {
@@ -132,31 +176,23 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public List<Role> getRoleByIds(Set<Integer> roleIds) {
-        return baseMapper.getRoleByIds(roleIds);
-    }
-
-    @Override
-    public List<Role> getRoleByTenantIdAndIds(String tenantId, Set<Integer> roleIds) {
-        return baseMapper.getRoleByTenantIdAndIds(tenantId, roleIds);
-    }
-
-    @Override
-    public boolean deleteByIds(List<Integer> ids) {
-        return baseMapper.deleteByIds(ids) > 0;
-    }
-
-    @Override
     public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
         ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
         roleProTableResult
                 .getData()
                 .forEach(
                         role -> {
+
+                            // todo: namespace will be delete in the future , so next line code will
+                            // be delete too
                             List<Namespace> namespaceArrayList = new ArrayList<>();
+
                             List<Integer> idsList = new ArrayList<>();
                             Tenant tenant =
                                     tenantService.getBaseMapper().selectById(role.getTenantId());
+
+                            // todo: namespace will be delete in the future , so next some code will
+                            // be delete too
                             roleNamespaceService
                                     .list(
                                             new QueryWrapper<RoleNamespace>()
@@ -169,7 +205,11 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                                 namespaceArrayList.add(namespaceServiceById);
                                                 idsList.add(roleNamespace.getNamespaceId());
                                             });
+
                             role.setTenant(tenant);
+
+                            // todo: namespace will be delete in the future , so next some code will
+                            // be delete too
                             role.setNamespaces(namespaceArrayList);
                             String result =
                                     idsList.stream()
@@ -177,6 +217,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                             .collect(Collectors.joining(","));
                             role.setNamespaceIds(result);
                         });
+
         return roleProTableResult;
     }
 }

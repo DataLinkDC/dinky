@@ -31,9 +31,11 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+/** role namespace , it's deprecated will be removed in the future */
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_role_namespace")
+@Deprecated
 public class RoleNamespace implements Serializable {
 
     private static final long serialVersionUID = 304808291890721691L;

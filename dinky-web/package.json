@@ -75,6 +75,7 @@
     "@types/history": "^5.0.0",
     "@types/jest": "^29.2.1",
     "@types/lodash": "^4.14.186",
+    "@types/react-custom-scrollbars": "^4.0.10",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@types/react-helmet": "^6.1.5",

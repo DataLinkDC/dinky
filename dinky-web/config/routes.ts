@@ -177,7 +177,7 @@ export default [
         path: '/auth/role',
         name: 'role',
         icon: 'TeamOutlined',
-        // component: './AuthCenter/Role',
+        component: './AuthCenter/Role',
       },
       {
         path: '/auth/tenant',

@@ -68,6 +68,7 @@ const TenantFormList: React.FC = () => {
    * @param id tenant id
    */
   const handleDeleteSubmit = async (id : number) => {
+    // TODO: delete tenant interface is use /api/tenant/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/tenant (TENANT)
     await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
     actionRef.current?.reloadAndRest?.();
   };
