@@ -19,11 +19,6 @@
 
 package org.dinky.explainer.watchTable;
 
-import org.apache.flink.table.api.TableResult;
-import org.dinky.executor.Executor;
-import org.dinky.trans.AbstractOperation;
-import org.dinky.trans.Operation;
-
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.MessageFormat;
@@ -48,7 +43,6 @@ public class WatchStatementExplainer {
     public WatchStatementExplainer(String statement) {
         this.statement = statement;
     }
-
 
     public String getTableName() {
         Matcher matcher = PATTERN.matcher(statement);

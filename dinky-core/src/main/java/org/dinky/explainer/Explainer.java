@@ -126,12 +126,19 @@ public class Explainer {
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
-            } else if(operationType.equals(SqlType.WATCH)){
-                WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(statement);
+            } else if (operationType.equals(SqlType.WATCH)) {
+                WatchStatementExplainer watchStatementExplainer =
+                        new WatchStatementExplainer(statement);
                 String tableName = watchStatementExplainer.getTableName();
-                ddl.add(new StatementParam(watchStatementExplainer.getCreateStatement(tableName), SqlType.CREATE));
-                trans.add(new StatementParam(watchStatementExplainer.getInsertStatement(tableName), SqlType.INSERT));
-            }else {
+                ddl.add(
+                        new StatementParam(
+                                watchStatementExplainer.getCreateStatement(tableName),
+                                SqlType.CREATE));
+                trans.add(
+                        new StatementParam(
+                                watchStatementExplainer.getInsertStatement(tableName),
+                                SqlType.INSERT));
+            } else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(UDFUtil.toUDF(statement));
