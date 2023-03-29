@@ -25,11 +25,11 @@ import org.dinky.model.Role;
 import org.dinky.model.UserRole;
 import org.dinky.service.RoleService;
 import org.dinky.service.UserRoleService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.dinky.utils.MessageResolverUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -55,7 +55,8 @@ public class RoleController {
     private final UserRoleService userRoleService;
 
     /**
-     * create or update role , this method will be {@link Deprecated} in the future, please use {@link #addedOrUpdateRole(Role)}
+     * create or update role , this method will be {@link Deprecated} in the future, please use
+     * {@link #addedOrUpdateRole(Role)}
      *
      * @return delete result code
      */
@@ -67,17 +68,18 @@ public class RoleController {
 
     /**
      * create or update role
+     *
      * @param role {@link Role}
-     * @return  {@link Role} of {@link Void}
+     * @return {@link Role} of {@link Void}
      */
     @PutMapping("/addedOrUpdateRole")
     public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
         return roleService.addedOrUpdateRole(role);
     }
 
-
     /**
-     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link #deleteRoleById(Integer)}
+     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link
+     * #deleteRoleById(Integer)}
      *
      * @return delete result code
      */
