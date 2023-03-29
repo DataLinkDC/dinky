@@ -24,6 +24,7 @@ import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
 import org.dinky.executor.Executor;
+import org.dinky.explainer.watchTable.WatchStatementExplainer;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.interceptor.FlinkInterceptor;
@@ -125,7 +126,12 @@ public class Explainer {
                 }
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
-            } else {
+            } else if(operationType.equals(SqlType.WATCH)){
+                WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(statement);
+                String tableName = watchStatementExplainer.getTableName();
+                ddl.add(new StatementParam(watchStatementExplainer.getCreateStatement(tableName), SqlType.CREATE));
+                trans.add(new StatementParam(watchStatementExplainer.getInsertStatement(tableName), SqlType.INSERT));
+            }else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {
                     udfList.add(UDFUtil.toUDF(statement));

@@ -43,6 +43,7 @@ public enum SqlType {
     EXECUTE("EXECUTE"),
     ADD("ADD"),
     UNKNOWN("UNKNOWN"),
+    WATCH("WATCH")
     ;
 
     private String type;
