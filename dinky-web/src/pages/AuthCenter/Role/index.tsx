@@ -125,7 +125,7 @@ const RoleList: React.FC = () => {
             <Popconfirm
               placement="topRight"
               title={l("button.delete")}
-              description={l("tenant.deleteConfirm")}
+              description={l("role.deleteConfirm")}
               onConfirm={() => {
                 handleDeleteSubmit(record.id);
               }}
