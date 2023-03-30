@@ -82,7 +82,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 cdcSource.getPort(), cdcSource.getUsername(), cdcSource.getPassword(), cdcSource.getCheckpoint(),
                 cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema(), cdcSource.getTable(),
                 cdcSource.getStartupMode(), cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(),
-                cdcSource.getSink(), cdcSource.getJdbc());
+                cdcSource.getSink(), cdcSource.getSinks(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -188,16 +188,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
-            if (cdcSource.getSinks() == null || cdcSource.getSinks().size() == 0) {
-                sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
-                        streamSource);
-            } else {
-                for (Map<String, String> sink : cdcSource.getSinks()) {
-                    config.setSink(sink);
-                    sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
-                            streamSource);
-                }
-            }
+            sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
+                    streamSource);
             logger.info("Build CDCSOURCE Task successful!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
