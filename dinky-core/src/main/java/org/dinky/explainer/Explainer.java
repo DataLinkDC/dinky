@@ -130,10 +130,10 @@ public class Explainer {
                 WatchStatementExplainer watchStatementExplainer =
                         new WatchStatementExplainer(statement);
                 String tableName = watchStatementExplainer.getTableName();
-                ddl.add(
+                trans.add(
                         new StatementParam(
                                 watchStatementExplainer.getCreateStatement(tableName),
-                                SqlType.CREATE));
+                                SqlType.INSERT));
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {
