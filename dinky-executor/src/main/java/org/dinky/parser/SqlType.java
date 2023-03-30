@@ -42,8 +42,9 @@ public enum SqlType {
     RESET("RESET"),
     EXECUTE("EXECUTE"),
     ADD("ADD"),
-    UNKNOWN("UNKNOWN"),
-    WATCH("WATCH");
+    WATCH("WATCH"),
+    CTAS("CTAS"),
+    UNKNOWN("UNKNOWN");
 
     private String type;
 

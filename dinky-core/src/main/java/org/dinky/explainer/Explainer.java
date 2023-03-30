@@ -133,7 +133,7 @@ public class Explainer {
                 trans.add(
                         new StatementParam(
                                 watchStatementExplainer.getCreateStatement(tableName),
-                                SqlType.INSERT));
+                                SqlType.CTAS));
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {
