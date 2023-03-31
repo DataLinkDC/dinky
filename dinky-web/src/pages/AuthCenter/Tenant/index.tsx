@@ -100,7 +100,7 @@ const TenantFormList: React.FC = () => {
         title={l('tenant.AssignUser')}
         open={handleGrantTenant}
         destroyOnClose
-        width={"90%"}
+        width={"75%"}
         onCancel={() => {setHandleGrantTenant(false)}}
         onOk={handleAssignUserSubmit}
         >

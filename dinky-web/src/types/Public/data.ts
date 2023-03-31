@@ -15,33 +15,35 @@
  * limitations under the License.
  */
 
-import {TENANT_ID} from "@/services/constants";
-import cookies from "js-cookie";
 
 /**
- * PUT tenantId TO localStorage & cookies
- * @param tenantId
+ * theme of nav
  */
-export function setTenantStorageAndCookie(tenantId: number) {
-  // save as localStorage
-  localStorage.setItem(TENANT_ID, tenantId.toString());
-  // save as cookies
-  cookies.set(TENANT_ID, tenantId.toString(), {path: "/"});
-}
+export const THEME  = {
+  NAV_THEME : "navTheme",
+  dark: "realDark",
+  light: "light",
+};
+
 
 /**
- * get tenant id
- * @param tenantId
+ * MonacoEditor of CodeEdit's theme
  */
-export function getTenantByLocalStorage() {
-  return localStorage.getItem(TENANT_ID);
-}
+export const CODE_EDIT_THEME  = {
+  VS: "vs",
+  DARK: "vs-dark",
+  HC_BLACK: "hc-black",
+  VS_CUSTOME: "vs-custom",
+};
 
-/**
- * parseJsonStr
- * @param jsonStr
- */
-export function parseJsonStr(jsonStr: string) {
-  return JSON.parse(JSON.stringify(jsonStr));
-}
 
+
+export const MonacoEditorOptions = {
+  // selectOnLineNumbers: true,
+  renderSideBySide: false, //  side by side
+  autoIndent: 'None', //  auto indent
+  fontSize: 16, //  font size
+  automaticLayout: true, //  auto layout
+  scrollBeyondLastLine:false,  //is scroll beyond the last line
+  autoDetectHighContrast: true, // auto detect high contrast
+}

@@ -115,12 +115,6 @@ export default [
         ],
       },
       {
-        path: '/registration/jar',
-        name: 'jar',
-        icon: 'FileZipOutlined',
-        // component: './RegistrationCenter/Jar',
-      },
-      {
         path: '/registration/database',
         name: 'database',
         icon: 'DatabaseOutlined',
@@ -153,7 +147,7 @@ export default [
         path: '/registration/fragment',
         name: 'fragment',
         icon: 'RocketOutlined',
-        // component: './RegistrationCenter/FragmentVariable',
+        component: './RegCenter/GlobalVar',
       },
     ],
   },

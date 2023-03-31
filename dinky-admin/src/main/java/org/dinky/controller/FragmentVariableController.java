@@ -23,6 +23,7 @@ import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.FragmentVariable;
 import org.dinky.service.FragmentVariableService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -39,12 +41,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * FragmentVariableController
- *
- * @author zhumingye
- * @since 2022/8/18
- */
+/** FragmentVariableController */
 @Slf4j
 @RestController
 @RequestMapping("/api/fragment")
@@ -53,25 +50,71 @@ public class FragmentVariableController {
 
     private final FragmentVariableService fragmentVariableService;
 
-    /** 新增或者更新 */
+    /**
+     * save or update
+     *
+     * @param fragmentVariable {@link FragmentVariable}
+     * @return {@link Result} of {@link Void}
+     */
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody FragmentVariable fragmentVariable)
             throws Exception {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
-            return Result.succeed("保存成功");
+            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
         } else {
-            return Result.failed("保存失败");
+            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
         }
     }
 
-    /** 动态查询列表 */
+    /**
+     * query list
+     *
+     * @param para {@link JsonNode}
+     * @return {@link ProTableResult} of {@link FragmentVariable}
+     */
     @PostMapping
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
         return fragmentVariableService.selectForProTable(para);
     }
 
-    /** 批量删除 */
+    /**
+     * delete by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
+    @DeleteMapping("/delete")
+    public Result<Void> deleteById(@RequestParam Integer id) {
+        if (fragmentVariableService.removeById(id)) {
+            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+        }
+    }
+
+    /**
+     * enable or disable
+     *
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
+    @PutMapping("/enable")
+    public Result<Void> enable(@RequestParam Integer id) {
+        if (fragmentVariableService.enable(id)) {
+            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+        }
+    }
+
+    /**
+     * batch delete , this method is deprecated, please use {@link #deleteById(Integer)}
+     *
+     * @param para {@link JsonNode}
+     * @return {@link Result} of {@link Void}
+     */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();

@@ -50,7 +50,7 @@ export default {
   'menu.registration.alert.group': 'Alarm Group',
   'menu.registration.document': 'Document',
   'menu.registration.fragment': 'Global Variable',
-  'menu.auth': 'Authentication Center',
+  'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
   'menu.auth.role': 'Role',
   'menu.auth.namespace': 'NameSpace',

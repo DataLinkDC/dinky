@@ -25,15 +25,28 @@ import org.dinky.model.FragmentVariable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * FragmentVariableService
- *
- * @author zhumingye
- * @since 2022/8/18
- */
+/** FragmentVariableService */
 public interface FragmentVariableService extends ISuperService<FragmentVariable> {
 
+    /**
+     * list enabled all
+     *
+     * @return {@link List<FragmentVariable>}
+     */
     List<FragmentVariable> listEnabledAll();
 
+    /**
+     * list enabled variables
+     *
+     * @return {@link Map<String, String>}
+     */
     Map<String, String> listEnabledVariables();
+
+    /**
+     * enable or disable
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    Boolean enable(Integer id);
 }

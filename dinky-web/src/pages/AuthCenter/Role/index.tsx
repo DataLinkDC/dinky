@@ -29,7 +29,7 @@ import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import RoleForm from "./components/RoleForm";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
-import {getTenantByLocalStorage} from "@/services/function";
+import {getTenantByLocalStorage} from "@/utils/function";
 
 
 const RoleList: React.FC = () => {

@@ -17,7 +17,7 @@
 
 import Footer from '@/components/Footer';
 
-import { setTenantStorageAndCookie } from '@/services/function';
+import { setTenantStorageAndCookie } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { CheckCard, LoginForm, ProFormCheckbox, ProFormText } from '@ant-design/pro-components';
