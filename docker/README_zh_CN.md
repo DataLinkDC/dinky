@@ -27,7 +27,7 @@ mvn clean install -Dmaven.test.skip=true -P pord,scala-2.12,flink-1.15,!web
 #### 不带 flink jar 包构建
 
 > **推荐**
-> 
+>
 > 此方法构建出的镜像，不包含 flink 的 jar 包，运行时，
 > 只要将此目录 `/opt/dinky-docker/plugins` 映射至主机，
 > 后续再主机上添加 flink jar 包即可
@@ -48,10 +48,10 @@ docker run \
 --restart=always \
 -p 8888:8888 \
 -p 8081:8081  \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server_flink1.14 \
@@ -92,10 +92,10 @@ docker run \
 --restart=always \
 -p 8888:8888 \
 -p 8081:8081  \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server \
@@ -112,9 +112,9 @@ dinky-server:0.8.0
 > 版本要求：
 > * nodejs: 14.17.0+
 > * npm: 7.19.0
-> 
+>
 > 升级 npm 版本 `npm install npm@7.19.0 -g`
-> 
+>
 > **在项目的 flink-web 目录下执行**
 
 npm install
@@ -137,11 +137,11 @@ docker run \
 -d \
 --restart=always \
 -p 80:80 \
--e API_ORIGIN=192.168.2.21:8888\
+-e API_ORIGIN=${YOUR_DINKY_SERVER_API}\
 --name dinky-web \
 dinky-web:0.8.0
 ```
-> `API_ORIGIN` 为 dinky-server 后端地址 
+> `API_ORIGIN` 为 dinky-server 后端地址
 
 ## 一体部署
 
@@ -170,10 +170,10 @@ docker run \
 -d \
 --restart=always \
 -p 8888:8888 \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server \

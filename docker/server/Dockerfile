@@ -1,6 +1,6 @@
 # dinky-server build dokcer(no web)
 # mvn clean install -Dmaven.test.skip=true -P !web,aliyun,prod,scala-2.12,fast,flink-1.14
-FROM openjdk:8u342-oracle as build-stage
+FROM adoptopenjdk/openjdk8
 
 # dinky version env
 ARG DINKY_VERSION=0.8.0
@@ -28,4 +28,4 @@ WORKDIR /opt/dinky/
 EXPOSE 8888
 
 
-ENTRYPOINT  java -cp ./lib/*:./config/*:./plugins/*:./plugins/flink${FLINK_VERSION}/* org.dinky.Dinky
+ENTRYPOINT  ./auto.sh restart ${FLINK_VERSION} && tail -f /opt/dinky/logs/dinky.log

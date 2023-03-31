@@ -46,10 +46,10 @@ docker run \
 --restart=always \
 -p 8888:8888 \
 -p 8081:8081  \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server_flink1.14 \
@@ -62,9 +62,9 @@ this example is `/opt/dinky-docker/plugins/flink1.14`
 
 #### flink jar deploy
 
-> This method deployment, which pulls Flink jars from the internet every time a Docker build is built, 
-> causes the Docker build to be slow, 
-> or is it recommended that Dinky deploy jars without Flink when Dinky Docker is running, 
+> This method deployment, which pulls Flink jars from the internet every time a Docker build is built,
+> causes the Docker build to be slow,
+> or is it recommended that Dinky deploy jars without Flink when Dinky Docker is running,
 > import jar packages for file mapping
 
 This location comment is removed under the `./docker/server/Dockerfile`,change the version of Flink to the version you want
@@ -91,10 +91,10 @@ docker run \
 --restart=always \
 -p 8888:8888 \
 -p 8081:8081  \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server \
@@ -131,7 +131,7 @@ docker run \
 -d \
 --restart=always \
 -p 80:80 \
--e API_ORIGIN=192.168.2.21:8888\
+-e API_ORIGIN=${YOUR_DINKY_SERVER_API}\
 --name dinky-web \
 dinky-web:0.8.0
 ```
@@ -164,10 +164,10 @@ docker run \
 -d \
 --restart=always \
 -p 8888:8888 \
--e MYSQL_ADDR=192.168.2.21:3306 \
--e MYSQL_DATABASE=dinky \
--e MYSQL_USERNAME=dinky \
--e MYSQL_PASSWORD=dinky \
+-e MYSQL_ADDR=${YOUR_MYSQL_ADDR} \
+-e MYSQL_DATABASE=${YOUR_MYSQL_DATABASE} \
+-e MYSQL_USERNAME=${YOUR_MYSQL_USERNAME} \
+-e MYSQL_PASSWORD=${YOUR_MYSQL_PASSWORD} \
 -v /opt/dinky-docker/plugins:/opt/dinky/plugins \
 -v /opt/dinky-docker/logs:/opt/dinky/logs \
 --name dinky-server \
