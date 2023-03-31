@@ -16,7 +16,7 @@
  */
 
 import {VERSION} from "@/services/constants";
-import {parseJsonStr, setTenantStorageAndCookie} from "@/services/function";
+import {parseJsonStr, setTenantStorageAndCookie} from "@/utils/function";
 import {l} from "@/utils/intl";
 import {
   FullscreenExitOutlined,
@@ -34,12 +34,8 @@ import Avatar from "./AvatarDropdown";
 import {ThemeCloud, ThemeStar} from "@/components/ThemeSvg/ThemeSvg";
 import {chooseTenantSubmit} from "@/services/BusinessCrud";
 import {ErrorNotification, SuccessNotification} from "@/utils/messages";
+import {THEME} from "@/types/Public/data";
 
-export const THEME  = {
-  NAV_THEME : "navTheme",
-  dark: "realDark",
-  light: "light",
-}
 
 const GlobalHeaderRight: React.FC = () => {
   /**

@@ -16,7 +16,7 @@
  */
 
 import Footer from "@/components/Footer";
-import RightContent, {THEME} from "@/components/RightContent";
+import RightContent from "@/components/RightContent";
 import { Settings as LayoutSettings} from "@ant-design/pro-components";
 // import {SettingDrawer} from "@ant-design/pro-components";
 import type {RunTimeLayoutConfig} from "@umijs/max";
@@ -25,6 +25,7 @@ import defaultSettings from "../config/defaultSettings";
 import {errorConfig} from "./requestErrorConfig";
 import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
+import {THEME} from "@/types/Public/data";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -91,7 +92,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
   return {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
-    siderWidth: 155,
+    siderWidth: 180,
     waterMarkProps: {
       content: initialState?.currentUser?.user.username + " " + new Date().toLocaleString(),
       fontColor: theme === THEME.light|| undefined ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)",
