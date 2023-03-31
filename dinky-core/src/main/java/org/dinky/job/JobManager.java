@@ -445,7 +445,7 @@ public class JobManager {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
                         if (item.getType().equals(SqlType.INSERT)
-                                || item.getType().equals(SqlType.CTAS)) {
+                                || item.getType().equals(SqlType.CTASS)) {
                             inserts.add(item.getValue());
                         }
                     }

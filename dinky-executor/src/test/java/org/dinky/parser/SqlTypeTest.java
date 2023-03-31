@@ -59,7 +59,7 @@ class SqlTypeTest {
                 "CREATE TABLE print_OrdersView WITH ('connector' = 'printnet', 'port'='7125', 'hostName' = '172"
                         + ".26.16.1', 'sink.parallelism'='1')\n"
                         + "AS SELECT * FROM OrdersView; ";
-        test(sql, SqlType.CTAS, true);
+        test(sql, SqlType.CTASS, true);
         test(sql, SqlType.CREATE, false);
     }
 
