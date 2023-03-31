@@ -72,7 +72,7 @@ public enum SqlType {
 
     SqlType(String type, String regrex) {
         this.type = type;
-        this.pattern = Pattern.compile(regrex);
+        this.pattern = Pattern.compile(regrex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     }
 
     public void setType(String type) {
