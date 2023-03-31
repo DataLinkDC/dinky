@@ -55,7 +55,6 @@ public class WatchStatementExplainer {
         return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT, 1);
     }
 
-
     private static Optional<InetAddress> getSystemLocalIp() {
         try {
             InetAddress ip = InetAddress.getLocalHost();
