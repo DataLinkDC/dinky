@@ -34,8 +34,7 @@ public class WatchStatementExplainer {
     public static final String CREATE_SQL_TEMPLATE =
             "CREATE TABLE print_{0} WITH (''connector'' = ''printnet'', "
                     + "''port''=''{2,number,#}'', ''hostName'' = ''{1}'', ''sink.parallelism''=''{3}'')\n"
-                    + "AS SELECT * FROM {0};";
-    public static final String INSERT_SQL_TEMPLATE = "insert into print_{0} select * from {0};";
+                    + "AS SELECT * FROM {0}";
     public static final int PORT = 7125;
 
     private final String statement;
@@ -56,9 +55,6 @@ public class WatchStatementExplainer {
         return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT, 1);
     }
 
-    public String getInsertStatement(String tableName) {
-        return MessageFormat.format(INSERT_SQL_TEMPLATE, tableName);
-    }
 
     private static Optional<InetAddress> getSystemLocalIp() {
         try {
