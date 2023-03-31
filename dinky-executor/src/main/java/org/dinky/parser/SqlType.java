@@ -28,7 +28,6 @@ import java.util.regex.Pattern;
  * @since 2021/7/3 11:11
  */
 public enum SqlType {
-
     SELECT("SELECT", "^SELECT.*"),
 
     CREATE("CREATE", "^CREATE(?!.*AS SELECT).*$"),
@@ -82,7 +81,6 @@ public enum SqlType {
     public String getType() {
         return type;
     }
-
 
     public boolean match(String statement) {
         return pattern.matcher(statement).matches();
