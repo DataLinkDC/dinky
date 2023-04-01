@@ -37,6 +37,9 @@
             <if test='param.description!=null and param.description!=""'>
                 and a.description like "%${param.description}%"
             </if>
+            <if test='param.category!=null and param.category!=""'>
+                and a.category = #{param.category}
+            </if>
             <if test='param.type!=null and param.type!=""'>
                 and a.type = #{param.type}
             </if>

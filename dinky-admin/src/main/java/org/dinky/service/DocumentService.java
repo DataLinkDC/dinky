@@ -24,13 +24,22 @@ import org.dinky.model.Document;
 
 import java.util.List;
 
-/**
- * DocumentService
- *
- * @author wenmo
- * @since 2021/6/3 14:35
- */
+/** DocumentService */
 public interface DocumentService extends ISuperService<Document> {
 
+    /**
+     * QUERY document fill value by version
+     *
+     * @param version
+     * @return
+     */
     List<Document> getFillAllByVersion(String version);
+
+    /**
+     * document enable or disable
+     *
+     * @param id
+     * @return
+     */
+    Boolean enable(Integer id);
 }

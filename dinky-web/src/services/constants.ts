@@ -69,6 +69,16 @@ export const API_CONSTANTS = {
   GLOBAL_VARIABLE_DELETE: "/api/fragment/delete",
   // global variable enable or disable
   GLOBAL_VARIABLE_ENABLE: "/api/fragment/enable",
+
+
+  // --- registries  center ---
+  // document list
+  DOCUMENT: "/api/document",
+  // delete document by id
+  DOCUMENT_DELETE: "/api/document/delete",
+  // document enable or disable
+  DOCUMENT_ENABLE: "/api/document/enable",
+
 };
 
 
@@ -147,7 +157,10 @@ export const PROTABLE_OPTIONS_PUBLIC = {
   },
   tableStyle: {height: "58vh"},
   rowKey: "id",
-  search: {labelWidth: 120}
+  search: {
+    labelWidth: 120, // must be number
+    span: 4,
+  },
 };
 
 /**
