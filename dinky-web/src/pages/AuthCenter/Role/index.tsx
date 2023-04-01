@@ -49,7 +49,7 @@ const RoleList: React.FC = () => {
   const handleDeleteSubmit = async (id: number) => {
     // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
     await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-    actionRef.current?.reloadAndRest?.();
+    actionRef.current?.reload?.();
   }
 
 

@@ -141,7 +141,7 @@ export default [
         path: '/registration/document',
         name: 'document',
         icon: 'BookOutlined',
-        // component: './RegistrationCenter/Document',
+        component: './RegCenter/Document',
       },
       {
         path: '/registration/fragment',

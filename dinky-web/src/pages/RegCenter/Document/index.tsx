@@ -17,61 +17,67 @@
  *
  */
 
+
 import {EditTwoTone, PlusOutlined} from '@ant-design/icons';
-import {Button, Drawer, Form, Popconfirm, Space, Switch} from 'antd';
+import {Button, Drawer, Popconfirm, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
+import DocumentForm from "./components/DocumentForm";
 import {l} from "@/utils/intl";
-import {GlobalVar} from "@/types/RegCenter/data";
+import {Document} from "@/types/RegCenter/data";
+import {queryList} from "@/services/api";
+import {
+  DOCUMENT_CATEGORY,
+  DOCUMENT_CATEGORY_ENUMS,
+  DOCUMENT_FUNCTION_ENUMS,
+  DOCUMENT_FUNCTION_TYPE, DOCUMENT_SUBTYPE, DOCUMENT_SUBTYPE_ENUMS
+} from "@/pages/RegCenter/Document/constans";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from "@/services/constants";
+import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
-import GlobalVarForm from "@/pages/RegCenter/GlobalVar/components/GlobalVarForm";
-import {queryList} from "@/services/api";
-import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
+import TextArea from "antd/es/input/TextArea";
 
-const GlobalVarList: React.FC = (props: any) => {
-  /**
-   * state
-   */
+const DocumentTableList: React.FC = (props: any) => {
+
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState({});
   const actionRef = useRef<ActionType>();
-  const [row, setRow] = useState<GlobalVar>();
+  const [row, setRow] = useState<Document>();
   const [loading, setLoading] = useState<boolean>(false);
 
 
   /**
-   * var enable or disable
+   * delete document by id
+   * @param id
+   */
+  const handleDeleteSubmit = async (id: number) => {
+    await handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id);
+    actionRef.current?.reload?.();
+  }
+
+  /**
+   * enable or disable document
    * @param value
    */
-  const handleChangeEnable = async (value: GlobalVar) => {
+  const handleChangeEnable = async (value: Partial<Document>) => {
     setLoading(true);
-    await updateEnabled(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
+    await updateEnabled(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
     setLoading(false);
     actionRef.current?.reload?.();
   };
 
-  /**
-   * delete role by id
-   * @param id role id
-   */
-  const handleDeleteSubmit = async (id: number) => {
-    await handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id);
-    actionRef.current?.reload?.();
-  }
-
 
   /**
-   * added global var
+   * added document var
    * @param value
    */
-  const handleAddSubmit = async (value: GlobalVar) => {
-    const success = await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
+  const handleAddSubmit = async (value: Partial<Document>) => {
+    const success = await handleAddOrUpdate(API_CONSTANTS.DOCUMENT, value);
     if (success) {
       handleModalVisible(!modalVisible);
       setFormValues({});
@@ -82,11 +88,11 @@ const GlobalVarList: React.FC = (props: any) => {
   }
 
   /**
-   * update global var
+   * update document var
    * @param value
    */
-  const handleUpdateSubmit = async (value: GlobalVar) => {
-    const success = await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
+  const handleUpdateSubmit = async (value: Partial<Document>) => {
+    const success = await handleAddOrUpdate(API_CONSTANTS.DOCUMENT, value);
     if (success) {
       handleUpdateModalVisible(!updateModalVisible);
       setFormValues({});
@@ -96,36 +102,76 @@ const GlobalVarList: React.FC = (props: any) => {
     }
   }
 
+
   /**
    * columns
    */
-  const columns: ProColumns<GlobalVar>[] = [
+  const columns: ProColumns<Document>[] = [
     {
-      title: l('rc.gv.name'),
+      title: l('rc.doc.name'),
       dataIndex: 'name',
       sorter: true,
+      width: '20vw',
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
       },
     },
     {
-      title: l('rc.gv.value'),
-      dataIndex: 'fragmentValue',
+      title: l('rc.doc.category'),
+      sorter: true,
+      dataIndex: 'category',
+      filterMultiple: false,
+      filters: DOCUMENT_CATEGORY,
+      valueEnum: DOCUMENT_CATEGORY_ENUMS,
+    },
+    {
+      title: l('rc.doc.functionType'),
+      sorter: true,
+      dataIndex: 'type',
+      filterMultiple: false,
+      filters: DOCUMENT_FUNCTION_TYPE,
+      valueEnum: DOCUMENT_FUNCTION_ENUMS
+    },
+    {
+      title: l('rc.doc.subFunctionType'),
+      sorter: true,
+      dataIndex: 'subtype',
+      filters: DOCUMENT_SUBTYPE,
+      filterMultiple: false,
+      valueEnum: DOCUMENT_SUBTYPE_ENUMS,
+    },
+    {
+      title: l('rc.doc.description'),
+      dataIndex: 'description',
+      ellipsis: true,
       hideInTable: true,
-      render: (_, record) => {
-        return <CodeShow code={record.fragmentValue} />
-      },
-    },
-    {
-      title: l('global.table.note'),
-      dataIndex: 'note',
-      valueType: 'textarea',
-    },
-    {
-      title: l("global.table.isEnable"),
-      dataIndex: "enabled",
+      renderText: (text: string) => {
+        return <TextArea value={text} autoSize readOnly />;
+      }
+    }, {
+      title: l('rc.doc.fillValue'),
+      dataIndex: 'fillValue',
+      hideInTable: true,
       hideInSearch: true,
-      width: '15vh',
+      render: (_,record) => {
+        return <CodeShow code={record.fillValue} />
+      }
+    },
+    {
+      title: l('rc.doc.version'),
+      sorter: true,
+      dataIndex: 'version',
+      hideInForm: false,
+      hideInSearch: true,
+      hideInTable: true,
+    },
+    {
+      title: l('global.table.isEnable'),
+      dataIndex: 'enabled',
+      hideInSearch: true,
+      filters: STATUS_MAPPING(),
+      filterMultiple: false,
+      valueEnum: STATUS_ENUM(),
       render: (_, record) => {
         return <>
           <Space>
@@ -138,34 +184,30 @@ const GlobalVarList: React.FC = (props: any) => {
           </Space>
         </>;
       },
-      filters: STATUS_MAPPING(),
-      filterMultiple: false,
-      valueEnum: STATUS_ENUM(),
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
-      hideInSearch: true,
-      width: '20vh',
       sorter: true,
+      hideInTable: true,
+      hideInSearch: true,
       valueType: 'dateTime',
     },
     {
       title: l('global.table.lastUpdateTime'),
       dataIndex: 'updateTime',
-      width: '20vh',
-      hideInSearch: true,
       sorter: true,
+      hideInTable: true,
+      hideInSearch: true,
       valueType: 'dateTime',
     },
     {
       title: l('global.table.operate'),
-      width: '20vh',
       valueType: 'option',
       render: (_, record) => [
         <Button
           className={"options-button"}
-          key={"GlobalVarEdit"}
+          key={"DocumentEdit"}
           icon={<EditTwoTone/>}
           title={l("button.edit")}
           onClick={() => {
@@ -176,55 +218,54 @@ const GlobalVarList: React.FC = (props: any) => {
         <Popconfirm
           placement="topRight"
           title={l("button.delete")}
-          description={l("rc.gv.deleteConfirm")}
+          description={l("rc.doc.deleteConfirm")}
           onConfirm={() => {
             handleDeleteSubmit(record.id);
           }}
           okText={l("button.confirm")}
           cancelText={l("button.cancel")}
         >
-          <Button key={'DeleteGlobalVarIcon'} icon={<DangerDeleteIcon/>}/>
+          <Button key={'deleteDocumentIcon'} icon={<DangerDeleteIcon/>}/>
         </Popconfirm>
       ],
+
     },
   ];
 
 
-  /**
-   * render
-   */
+
   return (
     <PageContainer title={false}>
-      {/*table*/}
-      <ProTable<GlobalVar>
-        headerTitle={l('rc.gv.Management')}
-        actionRef={actionRef}
-        loading={loading}
+      <ProTable<Document>
         {...PROTABLE_OPTIONS_PUBLIC}
+        loading={loading}
+        headerTitle={l('rc.doc.Management')}
+        actionRef={actionRef}
         toolBarRender={() => [
           <Button type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}
-        request={(params, sorter, filter:any) => queryList(API_CONSTANTS.GLOBAL_VARIABLE, {...params, sorter, filter})}
+        request={(params, sorter, filter:any) => queryList(API_CONSTANTS.DOCUMENT, {...params, sorter, filter})}
         columns={columns}
       />
-
-      {/*add*/}
-      <GlobalVarForm
-        onSubmit={ (value: GlobalVar) => {handleAddSubmit(value)}}
+      <DocumentForm
+        onSubmit={(value) => {
+         handleAddSubmit(value)
+        }}
         onCancel={() => {
-          handleModalVisible(!modalVisible)
+          handleModalVisible(false);
         }}
         modalVisible={modalVisible}
         values={{}}
       />
-      {/*update*/}
       {formValues && Object.keys(formValues).length ? (
-          <GlobalVarForm
-            onSubmit={ (value:GlobalVar) => {handleUpdateSubmit(value)}}
+          <DocumentForm
+            onSubmit={(value) => {
+               handleUpdateSubmit(value)
+            }}
             onCancel={() => {
-              handleUpdateModalVisible(!updateModalVisible)
+              handleUpdateModalVisible(false);
               setFormValues({});
             }}
             modalVisible={updateModalVisible}
@@ -232,17 +273,16 @@ const GlobalVarList: React.FC = (props: any) => {
           />
         ) : null
       }
-      {/*drawer render*/}
-      <Drawer extra={undefined}
-        width={600}
+      <Drawer
+        width={'50%'}
         visible={!!row}
         onClose={() => {
           setRow(undefined);
         }}
         closable={false}
       >
-        {row?.name && (
-          <ProDescriptions<GlobalVar>
+        {row?.id && (
+          <ProDescriptions<Document>
             column={1}
             title={row.name}
             request={async () => ({
@@ -256,6 +296,8 @@ const GlobalVarList: React.FC = (props: any) => {
         )}
       </Drawer>
     </PageContainer>
-  );
+  )
+    ;
 };
-export default GlobalVarList;
+
+export default DocumentTableList;
