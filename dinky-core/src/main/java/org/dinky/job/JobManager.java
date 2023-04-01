@@ -444,7 +444,8 @@ public class JobManager {
                 } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
-                        if (item.getType().isInsert() || item.getType().equals(SqlType.CTAS)) {
+                        if (item.getType().equals(SqlType.INSERT)
+                                || item.getType().equals(SqlType.CTASS)) {
                             inserts.add(item.getValue());
                         }
                     }
