@@ -19,6 +19,7 @@
 
 package org.dinky.executor;
 
+import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.catalog.UnresolvedIdentifier;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.expressions.ResolvedExpression;
@@ -63,5 +64,10 @@ public class ParserWrapper implements Parser {
     @Override
     public String[] getCompletionHints(String statement, int position) {
         return parser.getCompletionHints(statement, position);
+    }
+
+    @Override
+    public SqlNode parseExpression(String sqlExpression) {
+        return parser.parseExpression(sqlExpression);
     }
 }

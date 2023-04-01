@@ -20,6 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
@@ -185,6 +186,7 @@ public abstract class Executor {
     private void initExecutionEnvironment() {
         useSqlFragment = executorSetting.isUseSqlFragment();
         tableEnvironment = createCustomTableEnvironment();
+        CustomTableEnvironmentContext.set(tableEnvironment);
         tableEnvironment.injectParser(new CustomParserImpl());
         tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();

@@ -20,50 +20,33 @@
 package org.dinky.service;
 
 import org.dinky.db.service.ISuperService;
-import org.dinky.model.Role;
-import org.dinky.model.UserRole;
+import org.dinky.model.RoleSelectPermissions;
 
 import java.util.List;
 
-public interface UserRoleService extends ISuperService<UserRole> {
+public interface RoleSelectPermissionsService extends ISuperService<RoleSelectPermissions> {
 
     /**
-     * delete user role relation by user id
-     *
-     * @param userId user id
-     * @return delete row num
-     */
-    int delete(int userId);
-
-    /**
-     * query user role relation by userId
-     *
-     * @param userId user id
-     * @return delete row num
-     */
-    List<UserRole> getUserRoleByUserId(int userId);
-
-    /**
-     * delete user role relation by userId and roleId
-     *
-     * @param userRoleList
-     * @return
-     */
-    int deleteBathRelation(List<UserRole> userRoleList);
-
-    /**
-     * delete user role relation by role id
+     * delete user role select permissions by role id
      *
      * @param roleIds role id
-     * @return
+     * @return delete status
      */
     boolean deleteByRoleIds(List<Integer> roleIds);
 
     /**
-     * query roles by user id
+     * select user role data permissions by role id
      *
-     * @param userId user id
-     * @return role list
+     * @param roleId role id
+     * @return List<RoleSelectPermissions>
      */
-    List<Role> getRoleByUserId(Integer userId);
+    List<RoleSelectPermissions> listAllByRoleId(Integer roleId);
+
+    /**
+     * select user role data permissions by role ids
+     *
+     * @param roleIds role ids
+     * @return List<RoleSelectPermissions>
+     */
+    List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds);
 }
