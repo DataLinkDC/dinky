@@ -39,6 +39,7 @@ import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} fro
 import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import TextArea from "antd/es/input/TextArea";
 
 const DocumentTableList: React.FC = (props: any) => {
 
@@ -145,7 +146,7 @@ const DocumentTableList: React.FC = (props: any) => {
       ellipsis: true,
       hideInTable: true,
       renderText: (text: string) => {
-        return <CodeShow height={'20vh'} code={text} />;
+        return <TextArea value={text} autoSize readOnly />;
       }
     }, {
       title: l('rc.doc.fillValue'),
