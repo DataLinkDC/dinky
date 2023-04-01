@@ -27,12 +27,14 @@ import com.dlink.db.service.impl.SuperServiceImpl;
 import com.dlink.dto.CatalogueTaskDTO;
 import com.dlink.mapper.CatalogueMapper;
 import com.dlink.model.Catalogue;
+import com.dlink.model.History;
 import com.dlink.model.JobInstance;
 import com.dlink.model.JobLifeCycle;
 import com.dlink.model.JobStatus;
 import com.dlink.model.Statement;
 import com.dlink.model.Task;
 import com.dlink.service.CatalogueService;
+import com.dlink.service.HistoryService;
 import com.dlink.service.JobInstanceService;
 import com.dlink.service.StatementService;
 import com.dlink.service.TaskService;
@@ -70,6 +72,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private JobInstanceService jobInstanceService;
     @Autowired
     private StatementService statementService;
+    @Autowired
+    private HistoryService historyService;
 
     @Override
     public List<Catalogue> getAllData() {
@@ -137,6 +141,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<String> removeCatalogueAndTaskById(Integer id) {
         List<String> errors = new ArrayList<>();
@@ -147,11 +152,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (isNotNull(catalogue.getTaskId())) {
                 Integer taskId = catalogue.getTaskId();
                 JobInstance job = jobInstanceService.getJobInstanceByTaskId(taskId);
-                if (job == null
-                        || (JobStatus.FINISHED.getValue().equals(job.getStatus())
-                                || JobStatus.FAILED.getValue().equals(job.getStatus())
-                                || JobStatus.CANCELED.getValue().equals(job.getStatus())
-                                || JobStatus.UNKNOWN.getValue().equals(job.getStatus()))) {
+                if (Asserts.isNull(job)) {
+                    taskService.removeById(taskId);
+                    statementService.removeById(taskId);
+                    this.removeById(id);
+                } else if (!JobStatus.RUNNING.getValue().equals(job.getStatus())) {
+                    historyService.remove(new QueryWrapper<History>().eq("task_id", taskId));
+                    jobInstanceService.remove(
+                            new QueryWrapper<JobInstance>().eq("task_id", taskId));
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);
@@ -179,11 +187,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
-        List<Catalogue> relatedList =
-                all.stream().filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
-                        .collect(Collectors.toList());
-        List<Catalogue> subDirCatalogue =
-                relatedList.stream().filter(catalogue -> catalogue.getType() == null).collect(Collectors.toList());
+        List<Catalogue> relatedList = all.stream()
+                .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
+                .collect(Collectors.toList());
+        List<Catalogue> subDirCatalogue = relatedList.stream().filter(catalogue -> catalogue.getType() == null)
+                .collect(Collectors.toList());
         subDirCatalogue.forEach(catalogue -> {
             if (id != catalogue.getId()) {
                 findAllCatalogueInDir(catalogue.getId(), all, del);
@@ -246,8 +254,8 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         statement.setId(newTask.getId());
         statementService.save(statement);
 
-        Catalogue one =
-                this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
+        Catalogue one = this
+                .getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getAlias());
         catalogue.setIsLeaf(one.getIsLeaf());
