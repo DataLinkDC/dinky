@@ -44,8 +44,8 @@ public class SplitUtil {
         Pattern pattern = Pattern.compile(matchNumberRegex);
         Matcher matcher = pattern.matcher(value);
         if (matcher.find()) {
-            int splitNum = Integer.parseInt(matcher.group(0).replaceFirst("_", ""));
-            int maxMatchValue = Integer.parseInt(splitConfig.get("max_match_value"));
+            long splitNum = Long.parseLong(matcher.group(0).replaceFirst("_", ""));
+            long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
             return splitNum <= maxMatchValue;
         }
         return false;
@@ -62,8 +62,8 @@ public class SplitUtil {
                 if ("prefix".equalsIgnoreCase(matchWay)) {
                     if (matcher.find()) {
                         String num = matcher.group(0);
-                        int splitNum = Integer.parseInt(num.replaceFirst("_", ""));
-                        int maxMatchValue = Integer.parseInt(splitConfig.get("max_match_value"));
+                        long splitNum = Long.parseLong(num.replaceFirst("_", ""));
+                        long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
                         if (splitNum <= maxMatchValue) {
                             return value.substring(0, value.lastIndexOf(num));
                         }
@@ -76,15 +76,17 @@ public class SplitUtil {
                     if (num == null) {
                         return value;
                     }
-                    int splitNum = Integer.parseInt(num.replaceFirst("_", ""));
-                    int maxMatchValue = Integer.parseInt(splitConfig.get("max_match_value"));
+                    long splitNum = Long.parseLong(num.replaceFirst("_", ""));
+                    long maxMatchValue = Long.parseLong(splitConfig.get("max_match_value"));
                     if (splitNum <= maxMatchValue) {
                         return value.substring(0, value.lastIndexOf(num));
                     }
                 }
 
-            } catch (Exception ignored) {
-                log.warn("Unable to determine sub-database sub-table");
+            } catch (Exception exception) {
+                log.warn(
+                        "Unable to determine sub-database sub-table,reason is {}",
+                        exception.getMessage());
             }
         }
         return value;
