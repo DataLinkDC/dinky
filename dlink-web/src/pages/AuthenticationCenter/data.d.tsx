@@ -64,6 +64,16 @@ export type RoleTableListItem = {
   updateTime?: Date;
 };
 
+export type RoleSelectPermissionsTableListItem = {
+  id?: number;
+  roleId?: number;
+  roleCode?: string;
+  roleName?: string;
+  tableName?: string;
+  expression?: string;
+  createTime?: Date;
+  updateTime?: Date;
+};
 
 export type NameSpaceTableListItem = {
   id?: number;

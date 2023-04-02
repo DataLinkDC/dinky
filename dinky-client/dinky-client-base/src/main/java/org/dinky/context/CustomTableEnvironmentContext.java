@@ -17,29 +17,25 @@
  *
  */
 
+package org.dinky.context;
 
-import {queryData} from "@/components/Common/crud";
+import org.dinky.executor.CustomTableEnvironment;
 
-/*--- 刷新 NameSpace ---*/
-export function getNameSpaceList(dispatch: any) {
-  const res = queryData('/api/namespace');
-  res.then((result) => {
-    result.data && dispatch && dispatch({
-      type: "NameSpace/saveNameSpace",
-      payload: result.data,
-    });
-  });
+/** CustomTableEnvironmentContext */
+public class CustomTableEnvironmentContext {
+
+    private static final ThreadLocal<CustomTableEnvironment> CUSTOM_TABLE_ENVIRONMENT_CONTEXT =
+            new ThreadLocal<>();
+
+    public static void set(CustomTableEnvironment value) {
+        CUSTOM_TABLE_ENVIRONMENT_CONTEXT.set(value);
+    }
+
+    public static CustomTableEnvironment get() {
+        return CUSTOM_TABLE_ENVIRONMENT_CONTEXT.get();
+    }
+
+    public static void clear() {
+        CUSTOM_TABLE_ENVIRONMENT_CONTEXT.remove();
+    }
 }
-
-
-/*--- 获取角色 ---*/
-export function getRoleList(dispatch: any) {
-  const res = queryData('/api/role');
-  res.then((result) => {
-    result.data && dispatch && dispatch({
-      type: "NameSpace/saveRole",
-      payload: result.data,
-    });
-  });
-}
-

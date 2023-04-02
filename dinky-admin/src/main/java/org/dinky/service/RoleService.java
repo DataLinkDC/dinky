@@ -24,6 +24,8 @@ import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Role;
 
+import java.util.List;
+
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface RoleService extends ISuperService<Role> {
@@ -66,4 +68,12 @@ public interface RoleService extends ISuperService<Role> {
      * @return {@link Result} of {@link Void}
      */
     Result<Void> deleteRoleById(Integer id);
+
+    /**
+     * get role list by user id
+     *
+     * @param userId user id
+     * @return role list
+     */
+    List<Role> getRoleByUserId(Integer userId);
 }

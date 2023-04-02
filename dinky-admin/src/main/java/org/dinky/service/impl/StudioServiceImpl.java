@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
+import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.dto.AbstractStatementDTO;
 import org.dinky.dto.SqlDTO;
 import org.dinky.dto.StudioCADTO;
@@ -41,6 +42,7 @@ import org.dinky.model.Catalog;
 import org.dinky.model.Cluster;
 import org.dinky.model.DataBase;
 import org.dinky.model.FlinkColumn;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Savepoints;
 import org.dinky.model.Schema;
 import org.dinky.model.Table;
@@ -59,6 +61,7 @@ import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SavepointsService;
 import org.dinky.service.StudioService;
 import org.dinky.service.TaskService;
+import org.dinky.service.UserService;
 import org.dinky.sql.FlinkQuery;
 import org.dinky.utils.RunTimeUtil;
 
@@ -66,6 +69,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,12 +83,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 
-/**
- * StudioServiceImpl
- *
- * @author wenmo
- * @since 2021/5/30 11:08
- */
+/** StudioServiceImpl */
 @Service
 @RequiredArgsConstructor
 public class StudioServiceImpl implements StudioService {
@@ -97,6 +96,7 @@ public class StudioServiceImpl implements StudioService {
     private final DataBaseService dataBaseService;
     private final TaskService taskService;
     private final FragmentVariableService fragmentVariableService;
+    private final UserService userService;
 
     private void addFlinkSQLEnv(AbstractStatementDTO statementDTO) {
         ProcessEntity process = ProcessContextHolder.getProcess();
@@ -131,6 +131,23 @@ public class StudioServiceImpl implements StudioService {
             } else {
                 process.info("No FlinkSQLEnv are loaded.");
             }
+        }
+
+        process.info("Initializing data permissions...");
+        List<RoleSelectPermissions> currentRoleSelectPermissions =
+                userService.getCurrentRoleSelectPermissions();
+        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
+            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
+            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+                if (Asserts.isAllNotNullString(
+                        roleSelectPermissions.getTableName(),
+                        roleSelectPermissions.getExpression())) {
+                    permission.put(
+                            roleSelectPermissions.getTableName(),
+                            roleSelectPermissions.getExpression());
+                }
+            }
+            RowLevelPermissionsContext.set(permission);
         }
         process.info("Finish initialize FlinkSQLEnv.");
     }

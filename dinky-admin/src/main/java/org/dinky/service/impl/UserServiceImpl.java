@@ -29,11 +29,13 @@ import org.dinky.dto.ModifyPasswordDTO;
 import org.dinky.dto.UserDTO;
 import org.dinky.mapper.UserMapper;
 import org.dinky.model.Role;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
 import org.dinky.model.UserRole;
 import org.dinky.model.UserTenant;
 import org.dinky.params.AssignRoleParams;
+import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
@@ -44,6 +46,7 @@ import org.dinky.utils.MessageResolverUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,6 +78,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final RoleService roleService;
 
     private final TenantService tenantService;
+
+    private final RoleSelectPermissionsService roleSelectPermissionsService;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -292,5 +297,20 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         User user = getById(id);
         return "admin".equals(user.getUsername());
+    }
+
+    @Override
+    public List<Role> getCurrentRole() {
+        return roleService.getRoleByUserId(StpUtil.getLoginIdAsInt());
+    }
+
+    @Override
+    public List<RoleSelectPermissions> getCurrentRoleSelectPermissions() {
+        List<Role> currentRole = getCurrentRole();
+        if (Asserts.isNullCollection(currentRole)) {
+            return new ArrayList<>();
+        }
+        List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
+        return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
     }
 }

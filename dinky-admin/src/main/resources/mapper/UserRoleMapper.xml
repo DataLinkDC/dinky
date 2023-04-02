@@ -31,7 +31,7 @@
             <include refid="baseSql"/>
         from
         dinky_user_role
-        where user_id =  (#{userId})
+        where user_id =  #{userId}
     </select>
 
     <delete id="deleteBathRelation" parameterType="java.util.List">
@@ -49,4 +49,21 @@
             ${item}
         </foreach>
     </delete>
+
+    <select id="getRoleByUserId" resultType="org.dinky.model.Role">
+        select
+            distinct
+            b.id
+                   ,b.role_code
+                   ,b.role_name
+                   ,b.is_delete
+                   ,b.note
+                   ,b.create_time
+                   ,b.update_time
+        from
+            dinky_user_role a
+                inner join dinky_role b on b.id = a.role_id
+        where a.user_id =  #{userId}
+          and b.is_delete = 0
+    </select>
 </mapper>

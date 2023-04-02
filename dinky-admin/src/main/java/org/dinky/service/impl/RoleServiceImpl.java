@@ -220,4 +220,9 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
 
         return roleProTableResult;
     }
+
+    @Override
+    public List<Role> getRoleByUserId(Integer userId) {
+        return userRoleService.getRoleByUserId(userId);
+    }
 }
