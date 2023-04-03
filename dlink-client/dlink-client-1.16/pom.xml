@@ -48,6 +48,11 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-core</artifactId>
         </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>

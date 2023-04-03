@@ -22,7 +22,6 @@ package com.dlink.executor;
 import com.dlink.assertion.Asserts;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
 import com.dlink.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -65,7 +64,6 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.delegation.DefaultExecutor;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 
 import java.lang.reflect.Method;
@@ -89,29 +87,27 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements CustomTableEnvironment {
 
     private final StreamExecutionEnvironment executionEnvironment;
-    private final FlinkChainedProgram flinkChainedProgram;
 
     public CustomTableEnvironmentImpl(
-        CatalogManager catalogManager,
-        ModuleManager moduleManager,
-        FunctionCatalog functionCatalog,
-        TableConfig tableConfig,
-        StreamExecutionEnvironment executionEnvironment,
-        Planner planner,
-        Executor executor,
-        boolean isStreamingMode,
-        ClassLoader userClassLoader) {
+            CatalogManager catalogManager,
+            ModuleManager moduleManager,
+            FunctionCatalog functionCatalog,
+            TableConfig tableConfig,
+            StreamExecutionEnvironment executionEnvironment,
+            Planner planner,
+            Executor executor,
+            boolean isStreamingMode,
+            ClassLoader userClassLoader) {
         super(
-            catalogManager,
-            moduleManager,
-            tableConfig,
-            executor,
-            functionCatalog,
-            planner,
-            isStreamingMode,
-            userClassLoader);
+                catalogManager,
+                moduleManager,
+                tableConfig,
+                executor,
+                functionCatalog,
+                planner,
+                isStreamingMode,
+                userClassLoader);
         this.executionEnvironment = executionEnvironment;
-        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -123,39 +119,36 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         configuration.set(ExecutionOptions.RUNTIME_MODE, RuntimeExecutionMode.BATCH);
         TableConfig tableConfig = new TableConfig();
         tableConfig.addConfiguration(configuration);
-        return create(executionEnvironment, EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(), tableConfig);
+        return create(executionEnvironment, EnvironmentSettings.newInstance().useBlinkPlanner().inBatchMode().build(),
+                tableConfig);
     }
 
     public static CustomTableEnvironmentImpl create(
-        StreamExecutionEnvironment executionEnvironment,
-        EnvironmentSettings settings,
-        TableConfig tableConfig) {
+            StreamExecutionEnvironment executionEnvironment,
+            EnvironmentSettings settings,
+            TableConfig tableConfig) {
 
         // temporary solution until FLINK-15635 is fixed
         final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
         final ModuleManager moduleManager = new ModuleManager();
 
-        final CatalogManager catalogManager =
-            CatalogManager.newBuilder()
+        final CatalogManager catalogManager = CatalogManager.newBuilder()
                 .classLoader(classLoader)
                 .config(tableConfig.getConfiguration())
                 .defaultCatalog(
-                    settings.getBuiltInCatalogName(),
-                    new GenericInMemoryCatalog(
                         settings.getBuiltInCatalogName(),
-                        settings.getBuiltInDatabaseName()))
+                        new GenericInMemoryCatalog(
+                                settings.getBuiltInCatalogName(),
+                                settings.getBuiltInDatabaseName()))
                 .executionConfig(executionEnvironment.getConfig())
                 .build();
 
-        final FunctionCatalog functionCatalog =
-            new FunctionCatalog(tableConfig, catalogManager, moduleManager);
+        final FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, catalogManager, moduleManager);
 
-        final Executor executor =
-            lookupExecutor(classLoader, settings.getExecutor(), executionEnvironment);
+        final Executor executor = lookupExecutor(classLoader, settings.getExecutor(), executionEnvironment);
 
-        final Planner planner =
-            PlannerFactoryUtil.createPlanner(
+        final Planner planner = PlannerFactoryUtil.createPlanner(
                 settings.getPlanner(),
                 executor,
                 tableConfig,
@@ -163,35 +156,33 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
                 functionCatalog);
 
         return new CustomTableEnvironmentImpl(
-            catalogManager,
-            moduleManager,
-            functionCatalog,
-            tableConfig,
-            executionEnvironment,
-            planner,
-            executor,
-            settings.isStreamingMode(),
-            classLoader);
+                catalogManager,
+                moduleManager,
+                functionCatalog,
+                tableConfig,
+                executionEnvironment,
+                planner,
+                executor,
+                settings.isStreamingMode(),
+                classLoader);
     }
 
     private static Executor lookupExecutor(
-        ClassLoader classLoader,
-        String executorIdentifier,
-        StreamExecutionEnvironment executionEnvironment) {
+            ClassLoader classLoader,
+            String executorIdentifier,
+            StreamExecutionEnvironment executionEnvironment) {
         try {
-            final ExecutorFactory executorFactory =
-                FactoryUtil.discoverFactory(
+            final ExecutorFactory executorFactory = FactoryUtil.discoverFactory(
                     classLoader, ExecutorFactory.class, executorIdentifier);
-            final Method createMethod =
-                executorFactory
+            final Method createMethod = executorFactory
                     .getClass()
                     .getMethod("create", StreamExecutionEnvironment.class);
 
             return (Executor) createMethod.invoke(executorFactory, executionEnvironment);
         } catch (Exception e) {
             throw new TableException(
-                "Could not instantiate the executor. Make sure a planner module is on the classpath",
-                e);
+                    "Could not instantiate the executor. Make sure a planner module is on the classpath",
+                    e);
         }
     }
 
@@ -208,7 +199,8 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
             }
             List<Transformation<?>> trans = super.planner.translate(modifyOperations);
             if (execEnv instanceof DefaultExecutor) {
-                StreamGraph streamGraph = ((DefaultExecutor) execEnv).getExecutionEnvironment().generateStreamGraph(trans);
+                StreamGraph streamGraph = ((DefaultExecutor) execEnv).getExecutionEnvironment()
+                        .generateStreamGraph(trans);
                 JSONGenerator jsonGenerator = new JSONGenerator(streamGraph);
                 String json = jsonGenerator.getJSON();
                 ObjectMapper mapper = new ObjectMapper();
@@ -268,7 +260,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         record.setParseTrue(true);
         if (operations.size() != 1) {
             throw new TableException(
-                "Unsupported SQL query! explainSql() only accepts a single SQL query.");
+                    "Unsupported SQL query! explainSql() only accepts a single SQL query.");
         }
 
         Operation operation = operations.get(0);
@@ -284,14 +276,15 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
         record.setExplainTrue(true);
         if ("DDL".equals(record.getType())) {
-            //record.setExplain("DDL语句不进行解释。");
+            // record.setExplain("DDL语句不进行解释。");
             return record;
         }
         record.setExplain(planner.explain(operations, extraDetails));
         return record;
     }
 
-    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment,
+            Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
@@ -305,7 +298,8 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         return false;
     }
 
-    private void callSet(SetOperation setOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    private void callSet(SetOperation setOperation, StreamExecutionEnvironment environment,
+            Map<String, Object> setMap) {
         if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
             String key = setOperation.getKey().get().trim();
             String value = setOperation.getValue().get().trim();
@@ -321,7 +315,8 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
         }
     }
 
-    private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment, Map<String, Object> setMap) {
+    private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment,
+            Map<String, Object> setMap) {
         if (resetOperation.getKey().isPresent()) {
             String key = resetOperation.getKey().get().trim();
             if (Asserts.isNullString(key)) {
@@ -339,8 +334,8 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     }
 
     public <T> Table fromDataStream(DataStream<T> dataStream, Expression... fields) {
-        JavaDataStreamQueryOperation<T> queryOperation =
-            asQueryOperation(dataStream, Optional.of(Arrays.asList(fields)));
+        JavaDataStreamQueryOperation<T> queryOperation = asQueryOperation(dataStream,
+                Optional.of(Arrays.asList(fields)));
 
         return createTable(queryOperation);
     }
@@ -357,46 +352,43 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        LineageContext lineageContext = new LineageContext(this);
         return lineageContext.getLineage(statement);
     }
 
     @Override
     public <T> void createTemporaryView(
-        String path, DataStream<T> dataStream, Expression... fields) {
+            String path, DataStream<T> dataStream, Expression... fields) {
         createTemporaryView(path, fromDataStream(dataStream, fields));
     }
 
     private <T> JavaDataStreamQueryOperation<T> asQueryOperation(
-        DataStream<T> dataStream, Optional<List<Expression>> fields) {
+            DataStream<T> dataStream, Optional<List<Expression>> fields) {
         TypeInformation<T> streamType = dataStream.getType();
 
         // get field names and types for all non-replaced fields
-        FieldInfoUtils.TypeInfoSchema typeInfoSchema =
-            fields.map(
-                    f -> {
-                        FieldInfoUtils.TypeInfoSchema fieldsInfo =
-                            FieldInfoUtils.getFieldsInfo(
-                                streamType, f.toArray(new Expression[0]));
+        FieldInfoUtils.TypeInfoSchema typeInfoSchema = fields.map(
+                f -> {
+                    FieldInfoUtils.TypeInfoSchema fieldsInfo = FieldInfoUtils.getFieldsInfo(
+                            streamType, f.toArray(new Expression[0]));
 
-                        // check if event-time is enabled
-                        validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
-                        return fieldsInfo;
-                    })
+                    // check if event-time is enabled
+                    validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
+                    return fieldsInfo;
+                })
                 .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
 
         return new JavaDataStreamQueryOperation<>(
-            dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());
+                dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());
     }
 
     private void validateTimeCharacteristic(boolean isRowtimeDefined) {
         if (isRowtimeDefined
-            && executionEnvironment.getStreamTimeCharacteristic()
-            != TimeCharacteristic.EventTime) {
+                && executionEnvironment.getStreamTimeCharacteristic() != TimeCharacteristic.EventTime) {
             throw new ValidationException(
-                String.format(
-                    "A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s",
-                    executionEnvironment.getStreamTimeCharacteristic()));
+                    String.format(
+                            "A rowtime attribute requires an EventTime time characteristic in stream environment. But is: %s",
+                            executionEnvironment.getStreamTimeCharacteristic()));
         }
     }
 }

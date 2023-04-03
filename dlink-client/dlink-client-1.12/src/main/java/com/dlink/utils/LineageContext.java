@@ -19,37 +19,21 @@
 
 package com.dlink.utils;
 
-import static org.apache.calcite.jdbc.CalciteSchemaBuilder.asRootSchema;
-
 import com.dlink.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
-import org.apache.calcite.rel.type.RelDataType;
-import org.apache.calcite.rex.RexBuilder;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.FunctionCatalog;
-import org.apache.flink.table.module.ModuleManager;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.SqlExprToRexConverter;
-import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
-import org.apache.flink.table.planner.catalog.CatalogManagerCalciteSchema;
-import org.apache.flink.table.planner.delegation.PlannerBase;
-import org.apache.flink.table.planner.delegation.PlannerContext;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
-import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,11 +48,9 @@ import java.util.stream.Collectors;
  */
 public class LineageContext {
 
-    private final FlinkChainedProgram flinkChainedProgram;
     private final TableEnvironmentImpl tableEnv;
 
-    public LineageContext(FlinkChainedProgram flinkChainedProgram, TableEnvironmentImpl tableEnv) {
-        this.flinkChainedProgram = flinkChainedProgram;
+    public LineageContext(TableEnvironmentImpl tableEnv) {
         this.tableEnv = tableEnv;
     }
 
@@ -78,11 +60,8 @@ public class LineageContext {
         String sinkTable = parsed.getField(0);
         RelNode oriRelNode = parsed.getField(1);
 
-        // 2. Optimize original relNode to generate Optimized Logical Plan
-        RelNode optRelNode = optimize(oriRelNode);
-
-        // 3. Build lineage based from RelMetadataQuery
-        return buildFiledLineageResult(sinkTable, optRelNode);
+        // 2. Build lineage based from RelMetadataQuery
+        return buildFiledLineageResult(sinkTable, oriRelNode);
     }
 
     private Tuple2<String, RelNode> parseStatement(String sql) {
@@ -104,80 +83,6 @@ public class LineageContext {
         } else {
             throw new TableException("Only insert is supported now.");
         }
-    }
-
-    /**
-     * Calling each program's optimize method in sequence.
-     */
-    private RelNode optimize(RelNode relNode) {
-        return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
-
-            @Override
-            public TableConfig getTableConfig() {
-                return tableEnv.getConfig();
-            }
-
-            @Override
-            public FunctionCatalog getFunctionCatalog() {
-                return new FunctionCatalog(tableEnv.getConfig(), tableEnv.getCatalogManager(), new ModuleManager());
-            }
-
-            @Override
-            public CatalogManager getCatalogManager() {
-                return tableEnv.getCatalogManager();
-            }
-
-            @Override
-            public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                return new SqlExprToRexConverterFactory() {
-
-                    @Override
-                    public SqlExprToRexConverter create(RelDataType relDataType) {
-                        return new PlannerContext(
-                                tableEnv.getConfig(),
-                                new FunctionCatalog(tableEnv.getConfig(), tableEnv.getCatalogManager(),
-                                        new ModuleManager()),
-                                tableEnv.getCatalogManager(),
-                                asRootSchema(new CatalogManagerCalciteSchema(tableEnv.getCatalogManager(), true)),
-                                new ArrayList<>()).createSqlExprToRexConverter(relDataType);
-                    }
-                };
-            }
-
-            @Override
-            public <C> C unwrap(Class<C> clazz) {
-                if (clazz.isInterface()) {
-                    return clazz.cast(this);
-                } else {
-                    return null;
-                }
-            }
-
-            @Override
-            public RexBuilder getRexBuilder() {
-                return getPlanner().getRelBuilder().getRexBuilder();
-            }
-
-            @Override
-            public boolean needFinalTimeIndicatorConversion() {
-                return true;
-            }
-
-            @Override
-            public boolean isUpdateBeforeRequired() {
-                return false;
-            }
-
-            @Override
-            public MiniBatchInterval getMiniBatchInterval() {
-                return MiniBatchInterval.NONE();
-            }
-
-            private PlannerBase getPlanner() {
-                return (PlannerBase) tableEnv.getPlanner();
-            }
-
-        });
     }
 
     /**
@@ -223,7 +128,8 @@ public class LineageContext {
                     String sourceColumn = fieldNames[ordinal];
 
                     // add record
-                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
+                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn,
+                            relColumnOrigin.getTransform()));
                 }
             }
         }
