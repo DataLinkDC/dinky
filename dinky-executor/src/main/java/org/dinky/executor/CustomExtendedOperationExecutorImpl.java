@@ -19,9 +19,10 @@
 
 package org.dinky.executor;
 
+import org.dinky.trans.ExtendOperation;
+
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.operations.Operation;
-import org.dinky.trans.ExtendOperation;
 
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperat
 
     @Override
     public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if(operation instanceof ExtendOperation) {
+        if (operation instanceof ExtendOperation) {
             ExtendOperation extendOperation = (ExtendOperation) operation;
             return extendOperation.execute(executor);
         }

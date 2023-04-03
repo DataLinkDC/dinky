@@ -19,10 +19,6 @@
 
 package org.dinky.trans.ddl;
 
-import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.expressions.Expression;
-import org.apache.flink.table.expressions.ValueLiteralExpression;
-import org.apache.flink.table.functions.TemporalTableFunction;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.CustomTableEnvironmentImpl;
 import org.dinky.executor.CustomTableResultImpl;
@@ -31,12 +27,17 @@ import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 import org.dinky.trans.ExtendOperation;
 
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ValueLiteralExpression;
+import org.apache.flink.table.functions.TemporalTableFunction;
+
 import java.util.Optional;
 
-public class CreateTemporalTableFunctionOperation extends AbstractOperation implements ExtendOperation {
+public class CreateTemporalTableFunctionOperation extends AbstractOperation
+        implements ExtendOperation {
 
-    public CreateTemporalTableFunctionOperation() {
-    }
+    public CreateTemporalTableFunctionOperation() {}
 
     public CreateTemporalTableFunctionOperation(String statement) {
         super(statement);
