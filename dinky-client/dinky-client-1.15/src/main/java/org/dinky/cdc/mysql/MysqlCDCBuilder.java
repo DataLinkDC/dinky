@@ -141,9 +141,9 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 case "timestamp":
                     sourceBuilder.startupOptions(
                         StartupOptions.timestamp(
-                            Asserts.isNotNullString(timestampMillis)
-                            ? Long.valueOf(timestampMillis)
-                            : System.currentTimeMillis()));
+                                Asserts.isNotNullString(timestampMillis)
+                                        ? Long.valueOf(timestampMillis)
+                                        : System.currentTimeMillis()));
                 default:
             }
         } else {
