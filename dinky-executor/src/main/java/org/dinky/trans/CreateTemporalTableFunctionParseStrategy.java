@@ -38,8 +38,8 @@ import java.util.regex.Pattern;
 public class CreateTemporalTableFunctionParseStrategy extends AbstractRegexParseStrategy {
     private static final String PATTERN_STR =
             "^CREATE\\s+TEMPORAL(?:\\s+(TEMPORARY|TEMPORARY SYSTEM))?\\s+FUNCTION"
-                    + "(?:\\s(IF NOT EXISTS))?\\s+([.\\w]+)\\s+AS\\s+SELECT\\s+(\\w+)\\s*,\\s*(\\w+)\\s+FROM\\s+" +
-                    "(\\w+)\\s*$";
+                    + "(?:\\s(IF NOT EXISTS))?\\s+([.\\w]+)\\s+AS\\s+SELECT\\s+(\\w+)\\s*,\\s*(\\w+)\\s+FROM\\s+"
+                    + "(\\w+)\\s*$";
     private static final Pattern PATTERN =
             Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
