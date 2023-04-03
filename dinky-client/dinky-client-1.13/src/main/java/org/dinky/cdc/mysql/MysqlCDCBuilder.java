@@ -85,6 +85,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String scanNewlyAddedTableEnabled =
                 config.getSource().get("scan.newly-added-table.enabled");
         String schemaChanges = config.getSource().get("schema.changes");
+        String timestampMillis = config.getSource().get("scan.startup.timestampMillis");
+
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -147,6 +149,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                case "earliest-offset":
+                    sourceBuilder.startupOptions(StartupOptions.earliest());
+                    break;
+                case "timestamp":
+                    sourceBuilder.startupOptions(StartupOptions.timestamp(Asserts.isNotNullString(timestampMillis) ?
+                            Long.valueOf(timestampMillis) : System.currentTimeMillis()));
                 default:
             }
         } else {
