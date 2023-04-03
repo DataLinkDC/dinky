@@ -19,25 +19,20 @@
 
 package org.dinky.executor;
 
-import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.catalog.UnresolvedIdentifier;
-import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.expressions.ResolvedExpression;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.RowType;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
-import javax.annotation.Nullable;
+public class ParserWrapper implements ExtendedParser {
 
-public class ParserWrapper implements Parser {
-
-    private Parser parser;
     private CustomParser customParser;
 
-    public ParserWrapper(Parser parser, CustomParser customParser) {
-        this.parser = parser;
+    public ParserWrapper(CustomParser customParser) {
         this.customParser = customParser;
     }
 
@@ -47,27 +42,28 @@ public class ParserWrapper implements Parser {
         if (result != null) {
             return result;
         }
-        return parser.parse(statement);
+
+        return customParser.getParser().parse(statement);
     }
 
     @Override
     public UnresolvedIdentifier parseIdentifier(String identifier) {
-        return parser.parseIdentifier(identifier);
+        return customParser.getParser().parseIdentifier(identifier);
     }
 
     @Override
     public ResolvedExpression parseSqlExpression(
             String sqlExpression, RowType inputRowType, @Nullable LogicalType outputType) {
-        return parser.parseSqlExpression(sqlExpression, inputRowType, outputType);
+        return customParser.getParser().parseSqlExpression(sqlExpression, inputRowType, outputType);
     }
 
     @Override
     public String[] getCompletionHints(String statement, int position) {
-        return parser.getCompletionHints(statement, position);
+        return customParser.getParser().getCompletionHints(statement, position);
     }
 
     @Override
-    public SqlNode parseExpression(String sqlExpression) {
-        return parser.parseExpression(sqlExpression);
+    public CustomParser getCustomParser() {
+        return customParser;
     }
 }

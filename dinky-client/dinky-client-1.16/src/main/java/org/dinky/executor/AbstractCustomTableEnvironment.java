@@ -59,7 +59,7 @@ public abstract class AbstractCustomTableEnvironment
     @Override
     public void injectParser(CustomParser parser) {
         ReflectUtil.setFieldValue(
-                getPlanner(), "parser", new ParserWrapper(getPlanner().getParser(), parser));
+                getPlanner(), "parser", new ParserWrapper(parser));
     }
 
     @Override
