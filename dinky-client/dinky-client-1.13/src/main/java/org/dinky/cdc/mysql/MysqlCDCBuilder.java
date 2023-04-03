@@ -87,7 +87,6 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         String schemaChanges = config.getSource().get("schema.changes");
         String timestampMillis = config.getSource().get("scan.startup.timestampMillis");
 
-
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
