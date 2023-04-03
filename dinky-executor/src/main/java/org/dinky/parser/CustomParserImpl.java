@@ -20,11 +20,11 @@
 package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
+import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
-import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import java.util.Arrays;
 import java.util.Collections;
