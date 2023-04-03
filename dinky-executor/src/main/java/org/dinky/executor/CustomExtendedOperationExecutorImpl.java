@@ -19,16 +19,13 @@
 
 package org.dinky.executor;
 
-import static org.apache.flink.table.api.Expressions.$;
-
-import org.dinky.trans.ddl.AggTable;
-import org.dinky.trans.ddl.NewCreateAggTableOperation;
-
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ValueLiteralExpression;
+import org.apache.flink.table.functions.TemporalTableFunction;
 import org.apache.flink.table.operations.Operation;
+import org.dinky.trans.ddl.CreateTemporalTableFunctionOperation;
 
-import java.util.List;
 import java.util.Optional;
 
 public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperationExecutor {
@@ -41,31 +38,32 @@ public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperat
 
     @Override
     public Optional<? extends TableResult> executeOperation(Operation operation) {
-        if (operation instanceof NewCreateAggTableOperation) {
-            return executeCreateAggTableOperationNew((NewCreateAggTableOperation) operation);
+        if (operation instanceof CreateTemporalTableFunctionOperation) {
+            return executeCreateTemporalTableFunctionOperation((CreateTemporalTableFunctionOperation) operation);
         }
 
         // note: null result represent not in custom operator,
         return null;
     }
 
-    public Optional<? extends TableResult> executeCreateAggTableOperationNew(
-            NewCreateAggTableOperation option) {
-        AggTable aggTable = AggTable.build(option.getStatement());
-        Table source =
-                executor.getCustomTableEnvironment()
-                        .sqlQuery("select * from " + aggTable.getTable());
-        List<String> wheres = aggTable.getWheres();
-        if (wheres != null && wheres.size() > 0) {
-            for (String s : wheres) {
-                source = source.filter($(s));
-            }
+    public Optional<? extends TableResult> executeCreateTemporalTableFunctionOperation(
+            CreateTemporalTableFunctionOperation operation
+    ) {
+        String statement = operation.getStatement();
+        CreateTemporalTableFunctionOperation.TemporalTable temporalTable =
+                CreateTemporalTableFunctionOperation.TemporalTable.build(statement);
+        CustomTableEnvironment env = executor.getCustomTableEnvironment();
+        CustomTableEnvironmentImpl customTableEnvironmentImpl = ((CustomTableEnvironmentImpl) env);
+        Expression timeColumn = new ValueLiteralExpression(temporalTable.getTimeColumn());
+        Expression targetColumn = new ValueLiteralExpression(temporalTable.getTargetColumn());
+        TemporalTableFunction ttf = customTableEnvironmentImpl.from(temporalTable.getTableName())
+                .createTemporalTableFunction(timeColumn, targetColumn);
+
+        if (temporalTable.getFunctionType().equals("TEMPORARY SYSTEM")) {
+            customTableEnvironmentImpl.createTemporarySystemFunction(temporalTable.getFunctionName(), ttf);
+        }else {
+            customTableEnvironmentImpl.createTemporaryFunction(temporalTable.getFunctionName(), ttf);
         }
-        Table sink =
-                source.groupBy($(aggTable.getGroupBy()))
-                        .flatAggregate($(aggTable.getAggBy()))
-                        .select($(aggTable.getColumns()));
-        executor.getCustomTableEnvironment().registerTable(aggTable.getName(), sink);
-        return null;
+        return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
     }
 }

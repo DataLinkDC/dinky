@@ -20,11 +20,11 @@
 package org.dinky.parser;
 
 import org.dinky.executor.CustomParser;
-import org.dinky.trans.CreateAggTableOperationNewParseStrategy;
 
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
+import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -50,7 +50,7 @@ public class CustomParserImpl implements CustomParser {
         public static final DinkyExtendedParser INSTANCE = new DinkyExtendedParser();
 
         private static final List<ExtendedParseStrategy> PARSE_STRATEGIES =
-                Arrays.asList(CreateAggTableOperationNewParseStrategy.INSTANCE);
+                Arrays.asList(CreateTemporalTableFunctionParseStrategy.INSTANCE);
 
         @Override
         public Optional<Operation> parse(String statement) {
