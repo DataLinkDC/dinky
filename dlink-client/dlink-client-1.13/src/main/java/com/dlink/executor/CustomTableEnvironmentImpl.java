@@ -22,7 +22,6 @@ package com.dlink.executor;
 import com.dlink.assertion.Asserts;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
 import com.dlink.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -65,7 +64,6 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.delegation.ExecutorBase;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.utils.ExecutorUtils;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 
@@ -91,8 +89,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     private final StreamExecutionEnvironment executionEnvironment;
 
-    private final FlinkChainedProgram flinkChainedProgram;
-
     public CustomTableEnvironmentImpl(
             CatalogManager catalogManager,
             ModuleManager moduleManager,
@@ -113,7 +109,6 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
                 isStreamingMode,
                 userClassLoader);
         this.executionEnvironment = executionEnvironment;
-        this.flinkChainedProgram = FlinkStreamProgramWithoutPhysical.buildProgram(tableConfig.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -368,7 +363,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
+        LineageContext lineageContext = new LineageContext(this);
         return lineageContext.getLineage(statement);
     }
 
