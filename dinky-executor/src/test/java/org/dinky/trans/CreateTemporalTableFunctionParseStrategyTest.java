@@ -31,5 +31,11 @@ class CreateTemporalTableFunctionParseStrategyTest {
         String[] result = CreateTemporalTableFunctionParseStrategy.getInfo(statement);
         Assertions.assertArrayEquals(
                 new String[] {"temporary", "", "func", "price", "buyer", "orders"}, result);
+
+        statement =
+                "CREATE temporal temporary function abc.def.func as select price, buyer from orders";
+        result = CreateTemporalTableFunctionParseStrategy.getInfo(statement);
+        Assertions.assertArrayEquals(
+                new String[] {"temporary", "", "abc.def.func", "price", "buyer", "orders"}, result);
     }
 }

@@ -55,8 +55,8 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
                 String targetColumn,
                 String tableName) {
             this.functionType = functionType;
-            this.exists = exists.trim().equals("IF NOT EXISTS") ? true : false;
-            this.statement = statement.toUpperCase();
+            this.exists = exists.trim().toUpperCase().equals("IF NOT EXISTS") ? true : false;
+            this.statement = statement;
             this.functionName = functionName;
             this.tableName = tableName;
             this.timeColumn = timeColumn;

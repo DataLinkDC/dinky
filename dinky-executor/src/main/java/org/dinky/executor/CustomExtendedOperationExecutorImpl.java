@@ -62,7 +62,7 @@ public class CustomExtendedOperationExecutorImpl implements CustomExtendedOperat
                         .from(temporalTable.getTableName())
                         .createTemporalTableFunction(timeColumn, targetColumn);
 
-        if (temporalTable.getFunctionType().equals("TEMPORARY SYSTEM")) {
+        if (temporalTable.getFunctionType().toUpperCase().equals("TEMPORARY SYSTEM")) {
             customTableEnvironmentImpl.createTemporarySystemFunction(
                     temporalTable.getFunctionName(), ttf);
         } else {
