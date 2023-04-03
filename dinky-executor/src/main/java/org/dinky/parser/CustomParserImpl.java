@@ -19,7 +19,9 @@
 
 package org.dinky.parser;
 
-import cn.hutool.core.util.ReflectUtil;
+import org.dinky.executor.CustomParser;
+import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
+
 import org.apache.calcite.sql.SqlNode;
 import org.apache.flink.table.delegation.Parser;
 import org.apache.flink.table.operations.Operation;
@@ -27,8 +29,6 @@ import org.apache.flink.table.planner.delegation.ParserImpl;
 import org.apache.flink.table.planner.parse.CalciteParser;
 import org.apache.flink.table.planner.parse.ExtendedParseStrategy;
 import org.apache.flink.table.planner.parse.ExtendedParser;
-import org.dinky.executor.CustomParser;
-import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,12 +36,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import cn.hutool.core.util.ReflectUtil;
+
 public class CustomParserImpl implements CustomParser {
 
     private static final DinkyExtendedParser DINKY_EXTENDED_PARSER = DinkyExtendedParser.INSTANCE;
     private final Parser parser;
     private final Supplier<CalciteParser> calciteParserSupplier;
-
 
     public CustomParserImpl(Parser parser) {
         this.parser = parser;
@@ -51,9 +52,12 @@ public class CustomParserImpl implements CustomParser {
     public static Supplier<CalciteParser> getCalciteParserSupplier(Parser parser) {
         if (parser instanceof ParserImpl) {
             ParserImpl parserImpl = (ParserImpl) parser;
-            return (Supplier<CalciteParser>)ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
+            return (Supplier<CalciteParser>)
+                    ReflectUtil.getFieldValue(parserImpl, "calciteParserSupplier");
         } else {
-            throw new RuntimeException("Unsupported parser type for getCalciteParserSupplier: " + parser.getClass().getName());
+            throw new RuntimeException(
+                    "Unsupported parser type for getCalciteParserSupplier: "
+                            + parser.getClass().getName());
         }
     }
 

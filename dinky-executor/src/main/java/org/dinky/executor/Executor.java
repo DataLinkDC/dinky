@@ -187,7 +187,8 @@ public abstract class Executor {
         useSqlFragment = executorSetting.isUseSqlFragment();
         tableEnvironment = createCustomTableEnvironment();
         CustomTableEnvironmentContext.set(tableEnvironment);
-        tableEnvironment.injectParser(new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
+        tableEnvironment.injectParser(
+                new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
         tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorSetting.isValidJobName()) {
