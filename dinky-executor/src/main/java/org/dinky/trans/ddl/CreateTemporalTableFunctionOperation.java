@@ -19,14 +19,24 @@
 
 package org.dinky.trans.ddl;
 
+import org.apache.flink.table.api.TableResult;
+import org.apache.flink.table.expressions.Expression;
+import org.apache.flink.table.expressions.ValueLiteralExpression;
+import org.apache.flink.table.functions.TemporalTableFunction;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.executor.CustomTableEnvironmentImpl;
+import org.dinky.executor.CustomTableResultImpl;
+import org.dinky.executor.Executor;
 import org.dinky.trans.AbstractOperation;
 import org.dinky.trans.CreateTemporalTableFunctionParseStrategy;
+import org.dinky.trans.ExtendOperation;
 
-import org.apache.flink.table.operations.Operation;
+import java.util.Optional;
 
-public class CreateTemporalTableFunctionOperation extends AbstractOperation implements Operation {
+public class CreateTemporalTableFunctionOperation extends AbstractOperation implements ExtendOperation {
 
-    public CreateTemporalTableFunctionOperation() {}
+    public CreateTemporalTableFunctionOperation() {
+    }
 
     public CreateTemporalTableFunctionOperation(String statement) {
         super(statement);
@@ -35,6 +45,28 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
     @Override
     public String asSummaryString() {
         return statement;
+    }
+
+    @Override
+    public Optional<? extends TableResult> execute(Executor executor) {
+        TemporalTable temporalTable = TemporalTable.build(statement);
+        CustomTableEnvironment env = executor.getCustomTableEnvironment();
+        CustomTableEnvironmentImpl customTableEnvironmentImpl = ((CustomTableEnvironmentImpl) env);
+        Expression timeColumn = new ValueLiteralExpression(temporalTable.getTimeColumn());
+        Expression targetColumn = new ValueLiteralExpression(temporalTable.getTargetColumn());
+        TemporalTableFunction ttf =
+                customTableEnvironmentImpl
+                        .from(temporalTable.getTableName())
+                        .createTemporalTableFunction(timeColumn, targetColumn);
+
+        if (temporalTable.getFunctionType().toUpperCase().equals("TEMPORARY SYSTEM")) {
+            customTableEnvironmentImpl.createTemporarySystemFunction(
+                    temporalTable.getFunctionName(), ttf);
+        } else {
+            customTableEnvironmentImpl.createTemporaryFunction(
+                    temporalTable.getFunctionName(), ttf);
+        }
+        return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
     }
 
     public static class TemporalTable {
@@ -55,7 +87,7 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation impl
                 String targetColumn,
                 String tableName) {
             this.functionType = functionType;
-            this.exists = exists.trim().toUpperCase().equals("IF NOT EXISTS") ? true : false;
+            this.exists = exists.trim().toUpperCase().equals("IF NOT EXISTS");
             this.statement = statement;
             this.functionName = functionName;
             this.tableName = tableName;
