@@ -62,7 +62,7 @@ public enum SqlType {
 
     WATCH("WATCH", "^WATCH.*"),
 
-    CTASS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$"),
+    CTAS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$"),
 
     UNKNOWN("UNKNOWN", "^UNKNOWN.*");
 
