@@ -52,9 +52,6 @@ import java.util.Properties;
 
 /**
  * MysqlCDCBuilder
- *
- * @author wenmo
- * @since 2022/4/12 21:29
  **/
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
@@ -93,7 +90,6 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
             DataStreamSource<String> dataStreamSource) {
-        // 解决kafka的 properties 配置未加载问题
         Properties kafkaProducerConfig = getProperties();
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
             org.apache.flink.connector.kafka.sink.KafkaSinkBuilder<String> kafkaSinkBuilder = KafkaSink
