@@ -27,7 +27,7 @@
     <artifactId>dlink-flink-1.15</artifactId>
 
     <properties>
-        <flink.version>1.15.2</flink.version>
+        <flink.version>1.15.4</flink.version>
         <flink.guava.version>15.0</flink.guava.version>
         <flinkcdc.version>2.3.0</flinkcdc.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
