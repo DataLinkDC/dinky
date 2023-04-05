@@ -30,6 +30,7 @@
     <modules>
         <module>dlink-client-hadoop</module>
         <module>dlink-client-base</module>
+        <module>dlink-client-1.17</module>
     </modules>
 
     <profiles>
@@ -76,6 +77,13 @@
         </profile>
 
         <profile>
+            <id>flink-1.17</id>
+            <modules>
+                <module>dlink-client-1.17</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>all</id>
             <modules>
                 <module>dlink-client-1.11</module>
@@ -84,6 +92,7 @@
                 <module>dlink-client-1.14</module>
                 <module>dlink-client-1.15</module>
                 <module>dlink-client-1.16</module>
+                <module>dlink-client-1.17</module>
             </modules>
         </profile>
     </profiles>

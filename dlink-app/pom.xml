@@ -14,6 +14,7 @@
 
     <modules>
         <module>dlink-app-base</module>
+        <module>dlink-app-1.17</module>
     </modules>
 
     <properties>
@@ -65,6 +66,13 @@
         </profile>
 
         <profile>
+            <id>flink-1.17</id>
+            <modules>
+                <module>dlink-app-1.17</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>all</id>
             <modules>
                 <module>dlink-app-1.11</module>
@@ -73,6 +81,7 @@
                 <module>dlink-app-1.14</module>
                 <module>dlink-app-1.15</module>
                 <module>dlink-app-1.16</module>
+                <module>dlink-app-1.17</module>
             </modules>
         </profile>
 
