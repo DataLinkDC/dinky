@@ -27,9 +27,6 @@
 
     <artifactId>dlink-catalog-mysql</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>dlink-catalog-mysql-1.17</module>
-    </modules>
 
     <properties>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>

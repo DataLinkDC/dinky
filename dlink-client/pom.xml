@@ -30,7 +30,6 @@
     <modules>
         <module>dlink-client-hadoop</module>
         <module>dlink-client-base</module>
-        <module>dlink-client-1.17</module>
     </modules>
 
     <profiles>
