@@ -21,5 +21,9 @@ package org.dinky.constant;
 
 public class BaseConstant {
 
+    /** language cookie name */
     public static final String LOCALE_LANGUAGE_COOKIE = "language";
+
+    /** default batch insert size */
+    public static final Integer DEFAULT_BATCH_INSERT_SIZE = 1000;
 }

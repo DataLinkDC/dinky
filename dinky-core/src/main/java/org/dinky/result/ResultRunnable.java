@@ -150,6 +150,8 @@ public class ResultRunnable implements Runnable {
                 map.put(
                         column,
                         ((Instant) field).atZone(ZoneId.of(timeZone)).toLocalDateTime().toString());
+            } else if (field instanceof Boolean) {
+                map.put(column, field.toString());
             } else {
                 map.put(column, field);
             }

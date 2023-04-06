@@ -77,6 +77,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         String connectMaxRetries = config.getSource().get("connect.max-retries");
         String connectionPoolSize = config.getSource().get("connection.pool.size");
         String heartbeatInterval = config.getSource().get("heartbeat.interval");
+        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
+        String timestampMillis = config.getSource().get("scan.startup.timestampMillis");
 
         Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
@@ -133,6 +135,16 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 case "latest-offset":
                     sourceBuilder.startupOptions(StartupOptions.latest());
                     break;
+                case "earliest-offset":
+                    sourceBuilder.startupOptions(StartupOptions.earliest());
+                    break;
+                case "timestamp":
+                    sourceBuilder.startupOptions(
+                            StartupOptions.timestamp(
+                                    Asserts.isNotNullString(timestampMillis)
+                                            ? Long.valueOf(timestampMillis)
+                                            : System.currentTimeMillis()));
+                    break;
                 default:
             }
         } else {
@@ -165,6 +177,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
         if (Asserts.isNotNullString(heartbeatInterval)) {
             sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
+        }
+
+        if (Asserts.isAllNotNullString(chunkSize)) {
+            sourceBuilder.splitSize(Integer.parseInt(chunkSize));
         }
 
         return env.fromSource(

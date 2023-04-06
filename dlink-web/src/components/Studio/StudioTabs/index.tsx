@@ -35,7 +35,6 @@ const {TabPane} = Tabs;
 const EditorTabs = (props: any) => {
 
   const {tabs, current, toolHeight, width, height} = props;
-
   const onChange = (activeKey: any) => {
     props.saveToolHeight(toolHeight);
     props.changeActiveKey(activeKey);
@@ -46,9 +45,6 @@ const EditorTabs = (props: any) => {
       add();
     } else if (action === 'remove') {
       props.saveToolHeight(toolHeight - 0.0001);
-      // if (current.isModified) {
-      //   saveTask(current, dispatch);
-      // }
       remove(targetKey);
     }
   };

@@ -211,7 +211,7 @@
           Loading...
         </div>
         <div class="loading-sub-title">
-          It may take a long time to load resources for the first time, please be patient
+          Please wait a moment ，the page is loading...
         </div>
       </div>
     `;

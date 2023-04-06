@@ -17,8 +17,8 @@
 
 declare namespace UserBaseInfo {
   export type User = {
-    id?: number;
-    username?: string;
+    id: number;
+    username: string;
     nickname?: string;
     password?: string;
     avatar?: string;
@@ -26,8 +26,8 @@ declare namespace UserBaseInfo {
     mobile?: string;
     createTime?: Date;
     updateTime?: Date;
-    enabled?: boolean;
-    isDelete?: boolean;
+    enabled: boolean;
+    isDelete: boolean;
     isAdmin?: boolean;
   };
 
@@ -39,33 +39,21 @@ declare namespace UserBaseInfo {
   };
 
   export type Tenant = {
-    id?: number;
-    tenantCode?: string;
-    isDelete?: boolean;
+    id: number;
+    tenantCode: string;
+    isDelete: boolean;
     note?: string;
     createTime?: Date;
     updateTime?: Date;
   };
 
   export type Role = {
-    id?: number;
-    tenantId?: number;
+    id: number;
+    tenantId: number;
+    tenant: Tenant;
     roleCode?: string;
     roleName?: string;
-    namespaceIds?: string;
-    namespaces?: NameSpace[];
-    isDelete?: boolean;
-    note?: string;
-    createTime?: Date;
-    updateTime?: Date;
-  };
-
-  export type NameSpace = {
-    id?: number;
-    tenantId?: number;
-    tenant: Tenant;
-    namespaceCode?: string;
-    enabled?: boolean;
+    isDelete: boolean;
     note?: string;
     createTime?: Date;
     updateTime?: Date;

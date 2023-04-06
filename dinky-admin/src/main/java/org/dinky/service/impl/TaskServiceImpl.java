@@ -32,6 +32,7 @@ import org.dinky.config.Dialect;
 import org.dinky.config.Docker;
 import org.dinky.constant.FlinkRestResultConstant;
 import org.dinky.constant.NetConstant;
+import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
@@ -73,6 +74,7 @@ import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobLifeCycle;
 import org.dinky.model.JobStatus;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Savepoints;
 import org.dinky.model.Statement;
 import org.dinky.model.SystemConfiguration;
@@ -103,6 +105,7 @@ import org.dinky.service.StatementService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
+import org.dinky.service.UserService;
 import org.dinky.utils.DockerClientUtils;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
@@ -127,6 +130,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -176,6 +180,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final FragmentVariableService fragmentVariableService;
     private final UDFTemplateService udfTemplateService;
     private final DataSourceProperties dataSourceProperties;
+    private final UserService userService;
 
     @Resource @Lazy private CatalogueService catalogueService;
 
@@ -1029,6 +1034,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
+        List<RoleSelectPermissions> currentRoleSelectPermissions =
+                userService.getCurrentRoleSelectPermissions();
+        if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
+            ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
+            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+                if (Asserts.isAllNotNullString(
+                        roleSelectPermissions.getTableName(),
+                        roleSelectPermissions.getExpression())) {
+                    permission.put(
+                            roleSelectPermissions.getTableName(),
+                            roleSelectPermissions.getExpression());
+                }
+            }
+            RowLevelPermissionsContext.set(permission);
+        }
         return config;
     }
 
@@ -1403,7 +1423,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public void handleJobDone(JobInstance jobInstance) {
-        if (Asserts.isNull(jobInstance.getTaskId())) {
+        if (Asserts.isNull(jobInstance.getTaskId()) || Asserts.isNull(jobInstance.getType())) {
             return;
         }
 

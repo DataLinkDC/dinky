@@ -21,7 +21,6 @@ package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.common.result.Result;
-import org.dinky.dto.SessionDTO;
 import org.dinky.dto.StudioCADTO;
 import org.dinky.dto.StudioDDLDTO;
 import org.dinky.dto.StudioExecuteDTO;
@@ -35,15 +34,11 @@ import org.dinky.result.IResult;
 import org.dinky.result.SelectResult;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.service.StudioService;
-import org.dinky.session.SessionInfo;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -120,40 +115,6 @@ public class StudioController {
         return Asserts.isNull(lineage)
                 ? Result.failed("血缘分析异常")
                 : Result.succeed(lineage, "血缘分析成功");
-    }
-
-    /** 创建session */
-    @PutMapping("/createSession")
-    public Result<SessionInfo> createSession(@RequestBody SessionDTO sessionDTO) {
-        return Result.succeed(studioService.createSession(sessionDTO, "admin"), "创建成功");
-    }
-
-    /** 清除指定session */
-    @DeleteMapping("/clearSession")
-    public Result<String> clearSession(@RequestBody JsonNode para) {
-        if (para.size() <= 0) {
-            return Result.failed("请选择要清除的记录");
-        }
-
-        List<String> error = new ArrayList<>();
-        for (final JsonNode item : para) {
-            String session = item.asText();
-            if (!studioService.clearSession(session)) {
-                error.add(session);
-            }
-        }
-
-        if (error.isEmpty()) {
-            return Result.succeed("清除成功");
-        } else {
-            return Result.succeed(String.format("清除部分成功，但%s清除失败，共%d次失败。", error, error.size()));
-        }
-    }
-
-    /** 获取session列表 */
-    @GetMapping("/listSession")
-    public Result<List<SessionInfo>> listSession() {
-        return Result.succeed(studioService.listSession("admin"), "获取成功");
     }
 
     /** 获取flinkJobs列表 */

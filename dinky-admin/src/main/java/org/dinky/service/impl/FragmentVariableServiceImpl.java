@@ -30,14 +30,9 @@ import java.util.Map;
 
 import org.springframework.stereotype.Service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-/**
- * FragmentVariableServiceImpl
- *
- * @author zhumingye
- * @since 2022/8/18
- */
+/** FragmentVariableServiceImpl */
 @Service
 public class FragmentVariableServiceImpl
         extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
@@ -45,7 +40,7 @@ public class FragmentVariableServiceImpl
 
     @Override
     public List<FragmentVariable> listEnabledAll() {
-        return list(new QueryWrapper<FragmentVariable>().eq("enabled", 1));
+        return list(new LambdaQueryWrapper<FragmentVariable>().eq(FragmentVariable::getEnabled, 1));
     }
 
     @Override
@@ -55,5 +50,12 @@ public class FragmentVariableServiceImpl
             variables.put(fragmentVariable.getName(), fragmentVariable.getFragmentValue());
         }
         return variables;
+    }
+
+    @Override
+    public Boolean enable(Integer id) {
+        FragmentVariable fragmentVariable = getById(id);
+        fragmentVariable.setEnabled(!fragmentVariable.getEnabled());
+        return updateById(fragmentVariable);
     }
 }

@@ -51,27 +51,45 @@ public class AdminController {
 
     private final UserService userService;
 
-    /** 登录 */
+    /**
+     * user login
+     *
+     * @param loginDTO
+     * @return {@link Result}{@link UserDTO}
+     */
     @PostMapping("/login")
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
     }
 
-    /** 退出 */
+    /**
+     * user logout
+     *
+     * @return {@link Result}{@link Void}
+     */
     @DeleteMapping("/outLogin")
     public Result<Void> outLogin() {
         StpUtil.logout();
         return Result.succeed("退出成功");
     }
 
-    /** 获取当前用户信息 */
+    /**
+     * get current user info
+     *
+     * @return {@link Result}{@link UserDTO}
+     */
     @GetMapping("/current")
     public Result<UserDTO> current() {
         return userService.queryCurrentUserInfo();
     }
 
-    /** choose tenant */
-    @GetMapping("/chooseTenant")
+    /**
+     * choose tenant by tenantId
+     *
+     * @param tenantId
+     * @return {@link Result}{@link Tenant}
+     */
+    @PostMapping("/chooseTenant")
     public Result<Tenant> chooseTenant(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
     }

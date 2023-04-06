@@ -1,7 +1,7 @@
-# stage 0, build stage
-FROM sivacohan/dinky-server:lastest as build-stage
+FROM nginx:1.21.6
+COPY ./docker/web/nginx.conf  /etc/nginx/nginx.conf
+COPY ./docker/web/default.conf /etc/nginx/conf.d/default.conf
+COPY ./dlink-web/dist/ /usr/share/nginx/html/
 
-FROM nginx:1.21.6 AS production-stage
-WORKDIR /app
-COPY --from=build-stage /app/html /app
-COPY ./docker/web/dinky.conf.template /etc/nginx/templates/default.conf.template
+# repalge nginx conf 'API_ORIGIN' and run
+ENTRYPOINT sed  -i "s/API_ORIGIN/$API_ORIGIN/g" /etc/nginx/conf.d/default.conf && nginx -g "daemon off;"

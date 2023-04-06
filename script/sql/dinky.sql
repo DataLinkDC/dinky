@@ -1030,5 +1030,19 @@ CREATE TABLE `metadata_table_property`  (
 -- ----------------------------
 
 
+-- ----------------------------
+-- Table structure for dinky_role_select_permissions
+-- ----------------------------
+CREATE TABLE dinky_role_select_permissions
+(
+    id           int auto_increment comment 'ID'
+        primary key,
+    role_id      int      not null comment '角色ID',
+    table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表名',
+    expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表达式',
+    create_time  datetime null comment '创建时间',
+    update_time  datetime null comment '更新时间'
+)
+    COMMENT '角色数据查询权限' COLLATE = utf8mb4_general_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

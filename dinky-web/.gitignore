@@ -41,3 +41,5 @@ screenshot
 build
 
 pnpm-lock.yaml
+
+.husky

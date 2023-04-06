@@ -37,7 +37,7 @@ export function getRoleList(dispatch: any) {
   const res = queryData('/api/role');
   res.then((result) => {
     result.data && dispatch && dispatch({
-      type: "Role/getRoleList",
+      type: "NameSpace/saveRole",
       payload: result.data,
     });
   });

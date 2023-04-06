@@ -50,6 +50,7 @@ export default {
   'menu.authenticationCenter.userManager': '用户管理',
   'menu.authenticationCenter.namespaceManager': '命名空间管理',
   'menu.authenticationCenter.roleManager': '角色管理',
+  'menu.authenticationCenter.roleSelectPermissions': '角色数据权限',
   'menu.authenticationCenter.tenantManager': '租户管理',
 
   'menu.settings': '配置中心',

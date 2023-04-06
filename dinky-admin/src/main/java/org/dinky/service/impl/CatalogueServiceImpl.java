@@ -27,12 +27,14 @@ import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.CatalogueTaskDTO;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.model.Catalogue;
+import org.dinky.model.History;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobLifeCycle;
 import org.dinky.model.JobStatus;
 import org.dinky.model.Statement;
 import org.dinky.model.Task;
 import org.dinky.service.CatalogueService;
+import org.dinky.service.HistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.StatementService;
 import org.dinky.service.TaskService;
@@ -68,6 +70,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
+
+    private final HistoryService historyService;
+
     private final StatementService statementService;
 
     @Override
@@ -142,6 +147,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<String> removeCatalogueAndTaskById(Integer id) {
         List<String> errors = new ArrayList<>();
@@ -152,11 +158,14 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (isNotNull(catalogue.getTaskId())) {
                 Integer taskId = catalogue.getTaskId();
                 JobInstance job = jobInstanceService.getJobInstanceByTaskId(taskId);
-                if (job == null
-                        || (JobStatus.FINISHED.getValue().equals(job.getStatus())
-                                || JobStatus.FAILED.getValue().equals(job.getStatus())
-                                || JobStatus.CANCELED.getValue().equals(job.getStatus())
-                                || JobStatus.UNKNOWN.getValue().equals(job.getStatus()))) {
+                if (job == null) {
+                    taskService.removeById(taskId);
+                    statementService.removeById(taskId);
+                    this.removeById(id);
+                } else if (job != null && !JobStatus.RUNNING.getValue().equals(job.getStatus())) {
+                    historyService.remove(new QueryWrapper<History>().eq("task_id", taskId));
+                    jobInstanceService.remove(
+                            new QueryWrapper<JobInstance>().eq("task_id", taskId));
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);

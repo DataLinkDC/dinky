@@ -20,10 +20,12 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
 import org.dinky.model.LineageRel;
+import org.dinky.parser.CustomParserImpl;
 import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.api.common.ExecutionConfig;
@@ -42,7 +44,6 @@ import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.StatementSet;
 import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableResult;
-import org.apache.flink.table.catalog.CatalogManager;
 import org.apache.hadoop.security.UserGroupInformation;
 
 import java.io.IOException;
@@ -73,7 +74,7 @@ public abstract class Executor {
     private static final Logger logger = LoggerFactory.getLogger(Executor.class);
 
     protected StreamExecutionEnvironment environment;
-    protected CustomTableEnvironment stEnvironment;
+    protected CustomTableEnvironment tableEnvironment;
     protected EnvironmentSetting environmentSetting;
     protected ExecutorSetting executorSetting;
     protected Map<String, Object> setConfig = new HashMap<>();
@@ -137,7 +138,7 @@ public abstract class Executor {
     }
 
     public CustomTableEnvironment getCustomTableEnvironment() {
-        return stEnvironment;
+        return tableEnvironment;
     }
 
     public ExecutorSetting getExecutorSetting() {
@@ -157,7 +158,7 @@ public abstract class Executor {
     }
 
     public TableConfig getTableConfig() {
-        return stEnvironment.getConfig();
+        return tableEnvironment.getConfig();
     }
 
     public String getTimeZone() {
@@ -166,61 +167,35 @@ public abstract class Executor {
 
     protected void init() {
         initEnvironment();
-        initStreamExecutionEnvironment();
-    }
-
-    public void update(ExecutorSetting executorSetting) {
-        updateEnvironment(executorSetting);
-        updateStreamExecutionEnvironment(executorSetting);
+        initExecutionEnvironment();
     }
 
     public void initEnvironment() {
-        updateEnvironment(executorSetting);
-    }
-
-    public void updateEnvironment(ExecutorSetting executorSetting) {
         if (executorSetting.isValidParallelism()) {
             environment.setParallelism(executorSetting.getParallelism());
         }
-
-        if (executorSetting.getConfig() != null) {
-            Configuration configuration = Configuration.fromMap(executorSetting.getConfig());
-            environment.getConfig().configure(configuration, null);
+        if (executorSetting.isValidConfig()) {
+            environment
+                    .getConfig()
+                    .configure(Configuration.fromMap(executorSetting.getConfig()), null);
         }
     }
 
     abstract CustomTableEnvironment createCustomTableEnvironment();
 
-    private void initStreamExecutionEnvironment() {
-        updateStreamExecutionEnvironment(executorSetting);
-    }
-
-    private void updateStreamExecutionEnvironment(ExecutorSetting executorSetting) {
+    private void initExecutionEnvironment() {
         useSqlFragment = executorSetting.isUseSqlFragment();
-
-        CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
-        if (stEnvironment != null) {
-            for (String catalog : stEnvironment.listCatalogs()) {
-                stEnvironment
-                        .getCatalog(catalog)
-                        .ifPresent(
-                                t -> {
-                                    newestEnvironment
-                                            .getCatalogManager()
-                                            .unregisterCatalog(catalog, true);
-                                    newestEnvironment.registerCatalog(catalog, t);
-                                });
-            }
-        }
-        stEnvironment = newestEnvironment;
-
-        final Configuration configuration = stEnvironment.getConfig().getConfiguration();
+        tableEnvironment = createCustomTableEnvironment();
+        CustomTableEnvironmentContext.set(tableEnvironment);
+        tableEnvironment.injectParser(
+                new CustomParserImpl(tableEnvironment.getPlanner().getParser()));
+        tableEnvironment.injectExtendedExecutor(new CustomExtendedOperationExecutorImpl(this));
+        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         if (executorSetting.isValidJobName()) {
             configuration.setString(PipelineOptions.NAME.key(), executorSetting.getJobName());
+            setConfig.put(PipelineOptions.NAME.key(), executorSetting.getJobName());
         }
-
-        setConfig.put(PipelineOptions.NAME.key(), executorSetting.getJobName());
-        if (executorSetting.getConfig() != null) {
+        if (executorSetting.isValidConfig()) {
             for (Map.Entry<String, String> entry : executorSetting.getConfig().entrySet()) {
                 configuration.setString(entry.getKey(), entry.getValue());
             }
@@ -251,7 +226,7 @@ public abstract class Executor {
         }
         if (!flinkInterceptorResult.isNoExecute()) {
             this.loginFromKeytabIfNeed();
-            return stEnvironment.executeSql(statement);
+            return tableEnvironment.executeSql(statement);
         } else {
             return CustomTableResultImpl.TABLE_RESULT_OK;
         }
@@ -328,12 +303,9 @@ public abstract class Executor {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
-        Map<String, String> config = executorSetting.getConfig();
-        if (Asserts.isNotNull(config)) {
-            config.put(PythonOptions.PYTHON_FILES.key(), String.join(",", udfPyFilePath));
-            config.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
-        }
-        update(executorSetting);
+        Configuration configuration = tableEnvironment.getConfig().getConfiguration();
+        configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
+        configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
     }
 
     public String explainSql(String statement, ExplainDetail... extraDetails) {
@@ -342,29 +314,20 @@ public abstract class Executor {
             return "";
         }
 
-        return stEnvironment.explainSql(statement, extraDetails);
+        return tableEnvironment.explainSql(statement, extraDetails);
     }
 
     public SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails) {
         statement = pretreatStatement(statement);
         if (Asserts.isNotNullString(statement) && !pretreatExecute(statement).isNoExecute()) {
-            return stEnvironment.explainSqlRecord(statement, extraDetails);
+            return tableEnvironment.explainSqlRecord(statement, extraDetails);
         }
 
         return null;
     }
 
-    public ObjectNode getStreamGraph(String statement) {
-        statement = pretreatStatement(statement);
-        if (pretreatExecute(statement).isNoExecute()) {
-            return null;
-        }
-
-        return stEnvironment.getStreamGraph(statement);
-    }
-
     public ObjectNode getStreamGraph(List<String> statements) {
-        StreamGraph streamGraph = stEnvironment.getStreamGraphFromInserts(statements);
+        StreamGraph streamGraph = tableEnvironment.getStreamGraphFromInserts(statements);
         return getStreamGraphJsonNode(streamGraph);
     }
 
@@ -390,13 +353,12 @@ public abstract class Executor {
         for (String statement : statements) {
             executeSql(statement);
         }
-
         StreamGraph streamGraph = getStreamGraph();
         return getStreamGraphJsonNode(streamGraph);
     }
 
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
-        return stEnvironment.getJobPlanInfo(statements);
+        return tableEnvironment.getJobPlanInfo(statements);
     }
 
     public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements) {
@@ -407,20 +369,12 @@ public abstract class Executor {
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
 
-    public CatalogManager getCatalogManager() {
-        return stEnvironment.getCatalogManager();
-    }
-
     public JobGraph getJobGraphFromInserts(List<String> statements) {
-        return stEnvironment.getJobGraphFromInserts(statements);
-    }
-
-    public StatementSet createStatementSet() {
-        return stEnvironment.createStatementSet();
+        return tableEnvironment.getJobGraphFromInserts(statements);
     }
 
     public TableResult executeStatementSet(List<String> statements) {
-        StatementSet statementSet = stEnvironment.createStatementSet();
+        StatementSet statementSet = tableEnvironment.createStatementSet();
         for (String item : statements) {
             statementSet.addInsertSql(item);
         }
@@ -428,7 +382,7 @@ public abstract class Executor {
     }
 
     public String explainStatementSet(List<String> statements) {
-        StatementSet statementSet = stEnvironment.createStatementSet();
+        StatementSet statementSet = tableEnvironment.createStatementSet();
         for (String item : statements) {
             statementSet.addInsertSql(item);
         }
@@ -444,10 +398,10 @@ public abstract class Executor {
     }
 
     public boolean parseAndLoadConfiguration(String statement) {
-        return stEnvironment.parseAndLoadConfiguration(statement, environment, setConfig);
+        return tableEnvironment.parseAndLoadConfiguration(statement, environment, setConfig);
     }
 
     public List<LineageRel> getLineage(String statement) {
-        return stEnvironment.getLineage(statement);
+        return tableEnvironment.getLineage(statement);
     }
 }

@@ -15,19 +15,20 @@
  * limitations under the License.
  */
 
-import Footer from '@/components/Footer';
-import RightContent from '@/components/RightContent';
-import { LinkOutlined } from '@ant-design/icons';
-import type { Settings as LayoutSettings } from '@ant-design/pro-components';
-import { SettingDrawer } from '@ant-design/pro-components';
-import type { RunTimeLayoutConfig } from '@umijs/max';
-import { history, Link } from '@umijs/max';
-import defaultSettings from '../config/defaultSettings';
-import { errorConfig } from './requestErrorConfig';
-import { currentUser as queryCurrentUser } from './services/api';
+import Footer from "@/components/Footer";
+import RightContent from "@/components/RightContent";
+import { Settings as LayoutSettings} from "@ant-design/pro-components";
+// import {SettingDrawer} from "@ant-design/pro-components";
+import type {RunTimeLayoutConfig} from "@umijs/max";
+import {history} from "@umijs/max";
+import defaultSettings from "../config/defaultSettings";
+import {errorConfig} from "./requestErrorConfig";
+import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
+import {THEME} from "@/types/Public/data";
 
-const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login';
+// const isDev = process.env.NODE_ENV === "development";
+const loginPath = API_CONSTANTS.LOGIN_PATH;
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
@@ -49,7 +50,7 @@ export async function getInitialState(): Promise<{
           password: user.password,
           nickname: user.nickname,
           worknum: user.worknum,
-          avatar: user.avatar ? user.avatar : '/icons/user_avatar.png',
+          avatar: user.avatar ? user.avatar : "/icons/user_avatar.png",
           mobile: user.mobile,
           enabled: user.enabled,
           isDelete: user.isDelete,
@@ -68,7 +69,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果不是登录页面，执行
-  const { location } = history;
+  const {location} = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
@@ -84,12 +85,20 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
+export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
+
+  const theme = localStorage.getItem("navTheme");
+
   return {
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
+    siderWidth: 180,
+    waterMarkProps: {
+      content: initialState?.currentUser?.user.username + " " + new Date().toLocaleString(),
+      fontColor: theme === THEME.light|| undefined ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)",
+    },
     onPageChange: () => {
-      const { location } = history;
+      const {location} = history;
       // 如果没有登录，重定向到 login
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
@@ -97,32 +106,24 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
     },
     layoutBgImgList: [
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/D2LWSqNny4sAAAAAAAAAAAAAFl94AQBr",
         left: 85,
         bottom: 100,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/C2TWRpJpiC0AAAAAAAAAAAAAFl94AQBr",
         bottom: -68,
         right: -45,
-        height: '303px',
+        height: "303px",
       },
       {
-        src: 'https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr',
+        src: "https://mdn.alipayobjects.com/yuyan_qk0oxh/afts/img/F6vSTbj8KpYAAAAAAAAAAAAAFl94AQBr",
         bottom: 0,
         left: 0,
-        width: '331px',
+        width: "331px",
       },
     ],
-    links: isDev
-      ? [
-          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-            <LinkOutlined />
-            <span>OpenAPI 文档</span>
-          </Link>,
-        ]
-      : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
     // unAccessible: <div>unAccessible</div>,
@@ -132,17 +133,18 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
       return (
         <>
           {children}
-          <SettingDrawer
-            disableUrlParams
-            enableDarkTheme
-            settings={initialState?.settings}
-            onSettingChange={(settings) => {
-              setInitialState((preInitialState) => ({
-                ...preInitialState,
-                settings,
-              }));
-            }}
-          />
+          {/*{isDev && <SettingDrawer*/}
+          {/*  disableUrlParams*/}
+          {/*  enableDarkTheme*/}
+          {/*  settings={initialState?.settings}*/}
+          {/*  onSettingChange={(settings) => {*/}
+          {/*    setInitialState((preInitialState) => ({*/}
+          {/*      ...preInitialState,*/}
+          {/*      settings,*/}
+          {/*    }));*/}
+          {/*  }}*/}
+          {/*/>*/}
+          {/*}*/}
         </>
       );
     },

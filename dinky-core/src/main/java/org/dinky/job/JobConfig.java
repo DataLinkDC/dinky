@@ -25,7 +25,6 @@ import org.dinky.executor.ExecutorSetting;
 import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.config.SavePointStrategy;
-import org.dinky.session.SessionConfig;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
@@ -260,14 +259,6 @@ public class JobConfig {
                 savePointPath,
                 jobName,
                 config);
-    }
-
-    public void setSessionConfig(SessionConfig sessionConfig) {
-        if (sessionConfig != null) {
-            address = sessionConfig.getAddress();
-            clusterId = sessionConfig.getClusterId();
-            useRemote = sessionConfig.isUseRemote();
-        }
     }
 
     public void buildGatewayConfig(Map<String, Object> config) {

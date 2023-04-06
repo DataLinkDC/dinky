@@ -20,6 +20,7 @@
 package org.dinky.mapper;
 
 import org.dinky.db.mapper.SuperMapper;
+import org.dinky.model.Role;
 import org.dinky.model.UserRole;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -52,4 +53,12 @@ public interface UserRoleMapper extends SuperMapper<UserRole> {
      * @return delete status
      */
     int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
+
+    /**
+     * get role list by user id
+     *
+     * @param userId userId
+     * @return role list
+     */
+    List<Role> getRoleByUserId(Integer userId);
 }

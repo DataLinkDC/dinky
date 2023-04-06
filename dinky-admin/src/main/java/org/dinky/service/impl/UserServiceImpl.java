@@ -25,13 +25,17 @@ import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.LoginDTO;
+import org.dinky.dto.ModifyPasswordDTO;
 import org.dinky.dto.UserDTO;
 import org.dinky.mapper.UserMapper;
 import org.dinky.model.Role;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
 import org.dinky.model.UserRole;
 import org.dinky.model.UserTenant;
+import org.dinky.params.AssignRoleParams;
+import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
@@ -42,10 +46,12 @@ import org.dinky.utils.MessageResolverUtils;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -73,6 +79,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     private final TenantService tenantService;
 
+    private final RoleSelectPermissionsService roleSelectPermissionsService;
+
     @Override
     public Result<Void> registerUser(User user) {
         User userByUsername = getUserByUsername(user.getUsername());
@@ -86,14 +94,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         user.setEnabled(true);
         user.setIsDelete(false);
         if (save(user)) {
-            return Result.succeed(MessageResolverUtils.getMessage("user.register.success"));
+            return Result.succeed(MessageResolverUtils.getMessage("create.success"));
         } else {
             return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
         }
     }
 
     @Override
-    public boolean modifyUser(User user) {
+    public Boolean modifyUser(User user) {
         if (Asserts.isNull(user.getId())) {
             return false;
         }
@@ -101,15 +109,16 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<Void> modifyPassword(String username, String password, String newPassword) {
-        User user = getUserByUsername(username);
+    public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
+        User user = getUserByUsername(modifyPasswordDTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
         }
-        if (!Asserts.isEquals(SaSecureUtil.md5(password), user.getPassword())) {
+        if (!Asserts.isEquals(
+                SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(MessageResolverUtils.getMessage("user.oldpassword.incorrect"));
         }
-        user.setPassword(SaSecureUtil.md5(newPassword));
+        user.setPassword(SaSecureUtil.md5(modifyPasswordDTO.getNewPassword()));
         if (updateById(user)) {
             return Result.succeed(MessageResolverUtils.getMessage("user.change.password.success"));
         }
@@ -117,11 +126,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public boolean removeUser(Integer id) {
-        User user = new User();
-        user.setId(id);
-        user.setIsDelete(true);
-        return updateById(user);
+    public Boolean removeUser(Integer id) {
+        return baseMapper.deleteById(id) > 0;
     }
 
     @Override
@@ -186,7 +192,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public User getUserByUsername(String username) {
-        User user = getOne(new QueryWrapper<User>().eq("username", username));
+        User user = getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
         if (Asserts.isNotNull(user)) {
             user.setIsAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
         }
@@ -223,16 +229,43 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> assignRole(AssignRoleParams assignRoleParams) {
+        List<UserRole> userRoleList = new ArrayList<>();
+        userRoleService.remove(
+                new LambdaQueryWrapper<UserRole>()
+                        .eq(UserRole::getUserId, assignRoleParams.getUserId()));
+        for (Integer roleId : assignRoleParams.getRoleIds()) {
+            UserRole userRole = new UserRole();
+            userRole.setUserId(assignRoleParams.getUserId());
+            userRole.setRoleId(roleId);
+            userRoleList.add(userRole);
+        }
+        // save or update user role
+        boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
+        if (result) {
+            return Result.succeed(MessageResolverUtils.getMessage("user.assign.role.success"));
+        } else {
+            if (userRoleList.size() == 0) {
+                return Result.succeed(MessageResolverUtils.getMessage("user.assign.role.failed"));
+            }
+            return Result.failed(MessageResolverUtils.getMessage("user.binding.role.deleteAll"));
+        }
+    }
+
+    @Override
     public Result<Tenant> chooseTenant(Integer tenantId) {
         Tenant currentTenant = tenantService.getById(tenantId);
         if (Asserts.isNull(currentTenant)) {
-            return Result.failed("Failed to obtain tenant information");
+            return Result.failed(MessageResolverUtils.getMessage("user.get.tenant.failed"));
         } else {
             UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
             userInfo.setCurrentTenant(currentTenant);
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfo);
             TenantContextHolder.set(currentTenant.getId());
-            return Result.succeed(currentTenant, "Tenant selected successfully");
+
+            return Result.succeed(
+                    currentTenant, MessageResolverUtils.getMessage("user.select.tenant.success"));
         }
     }
 
@@ -250,5 +283,34 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         } else {
             return Result.failed(userInfo, MessageResolverUtils.getMessage("response.get.failed"));
         }
+    }
+
+    @Override
+    public Boolean enable(Integer id) {
+        User user = getById(id);
+        user.setEnabled(!user.getEnabled());
+        return updateById(user);
+    }
+
+    @Override
+    public Boolean checkAdmin(Integer id) {
+
+        User user = getById(id);
+        return "admin".equals(user.getUsername());
+    }
+
+    @Override
+    public List<Role> getCurrentRole() {
+        return roleService.getRoleByUserId(StpUtil.getLoginIdAsInt());
+    }
+
+    @Override
+    public List<RoleSelectPermissions> getCurrentRoleSelectPermissions() {
+        List<Role> currentRole = getCurrentRole();
+        if (Asserts.isNullCollection(currentRole)) {
+            return new ArrayList<>();
+        }
+        List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
+        return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
     }
 }

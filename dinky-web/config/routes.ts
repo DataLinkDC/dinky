@@ -26,6 +26,7 @@
  * @param name 配置路由的标题，默认读取国际化文件 menu.ts 中 menu.xxxx 的值，如配置 name 为 login，则读取 menu.ts 中 menu.login 的取值作为标题
  * @param icon 配置路由的图标，取值参考 https://ant.design/components/icon-cn， 注意去除风格后缀和大小写，如想要配置图标为 <StepBackwardOutlined /> 则取值应为 stepBackward 或 StepBackward，如想要配置图标为 <UserOutlined /> 则取值应为 user 或者 User
  * @doc https://umijs.org/docs/guides/routes
+ * todo: 如何引入自定义 icon
  */
 export default [
   {
@@ -35,11 +36,10 @@ export default [
       {
         name: 'login',
         path: '/user/login',
-        component: './User/Login',
+        component: './Other/Login',
       },
     ],
   },
-
   {
     path: '/',
     redirect: '/datastudio',
@@ -48,44 +48,50 @@ export default [
   {
     path: '/datastudio',
     name: 'datastudio',
-    icon: 'consoleSql',
+    icon: 'CodeOutlined',
     footerRender: false,
     component: './DataStudio',
   },
   {
     path: '/devops',
     name: 'devops',
-    icon: 'control',
-    // component: './DevOps',
-  },
-  {
-    path: '/job',
-    name: 'job',
-    // component: './DevOps/JobInfo',
-    hideInMenu: true,
-  },
-  {
-    path: '/datacenter',
-    name: 'datacenter',
-    icon: 'database',
+    icon: 'ControlOutlined',
     routes: [
       {
-        path: '/datacenter',
-        redirect: '/datacenter/metadata',
+        path: '/devops',
+        redirect: '/devops/job',
       },
       {
-        path: '/datacenter/metadata',
-        name: 'metadata',
-        icon: 'cluster',
-        // component: './DataCenter/MetaData',
+        path: '/devops/job',
+        name: 'job',
+        hideInMenu: true,
+        // component: './DevOps/JobInfo',
       },
     ],
   },
+  //todo: data center will be merge to the registration center's datasource module , it will be removed in the future
 
+  // {
+  //   path: '/datacenter',
+  //   name: 'datacenter',
+  //   icon: 'DatabaseOutlined',
+  //   routes: [
+  //     {
+  //       path: '/datacenter',
+  //       redirect: '/datacenter/metadata',
+  //     },
+  //     {
+  //       path: '/datacenter/metadata',
+  //       name: 'metadata',
+  //       icon: 'DatabaseOutlined',
+  //       // component: './DataCenter/MetaData',
+  //     },
+  //   ],
+  // },
   {
     path: '/registration',
     name: 'registration',
-    icon: 'appstore',
+    icon: 'AppstoreOutlined',
     routes: [
       {
         path: '/registration',
@@ -94,7 +100,7 @@ export default [
       {
         path: '/registration/cluster',
         name: 'cluster',
-        icon: 'cluster',
+        icon: 'GoldOutlined',
         routes: [
           {
             path: '/registration/cluster/instance',
@@ -109,21 +115,15 @@ export default [
         ],
       },
       {
-        path: '/registration/jar',
-        name: 'jar',
-        icon: 'file',
-        // component: './RegistrationCenter/Jar',
-      },
-      {
         path: '/registration/database',
         name: 'database',
-        icon: 'database',
+        icon: 'DatabaseOutlined',
         // component: './RegistrationCenter/DataBase',
       },
       {
         path: '/registration/alert',
         name: 'alert',
-        icon: 'alert',
+        icon: 'AlertOutlined',
         routes: [
           {
             path: '/registration/alert/instance',
@@ -140,57 +140,51 @@ export default [
       {
         path: '/registration/document',
         name: 'document',
-        icon: 'container',
-        // component: './RegistrationCenter/Document',
+        icon: 'BookOutlined',
+        component: './RegCenter/Document',
       },
       {
         path: '/registration/fragment',
         name: 'fragment',
-        icon: 'cloud',
-        // component: './RegistrationCenter/FragmentVariable',
+        icon: 'RocketOutlined',
+        component: './RegCenter/GlobalVar',
       },
     ],
   },
   {
-    name: 'authentication',
+    name: 'auth',
     icon: 'SafetyCertificateOutlined',
-    path: '/authentication',
+    path: '/auth',
     // access: "canAdmin",
     routes: [
       {
-        path: '/authentication',
-        redirect: '/authentication/usermanager',
+        path: '/auth',
+        redirect: '/auth/user',
       },
       {
-        path: '/authentication/usermanager',
-        name: 'usermanager',
+        path: '/auth/user',
+        name: 'user',
         icon: 'UserOutlined',
-        // component: './AuthenticationCenter/UserManager',
+        component: './AuthCenter/User',
       },
       {
-        path: '/authentication/role',
+        path: '/auth/role',
         name: 'role',
         icon: 'TeamOutlined',
-        // component: './AuthenticationCenter/RoleManager',
+        component: './AuthCenter/Role',
       },
       {
-        path: '/authentication/namespace',
-        name: 'namespace',
-        icon: 'BulbOutlined',
-        // component: './AuthenticationCenter/NamespaceManager',
-      },
-      {
-        path: '/authentication/tenant',
+        path: '/auth/tenant',
         name: 'tenant',
         icon: 'SecurityScanOutlined',
-        // component: './AuthenticationCenter/TenantManager',
+        component: './AuthCenter/Tenant',
       },
     ],
   },
 
   {
     name: 'settings',
-    icon: 'setting',
+    icon: 'SettingOutlined',
     path: '/settings',
     routes: [
       {
@@ -200,31 +194,31 @@ export default [
       {
         path: '/settings/flinksetting',
         name: 'flinksetting',
-        icon: 'setting',
+        icon: 'SettingOutlined',
         // component: './SettingCenter/FlinkSettings',
       },
       {
         path: '/settings/udf',
         name: 'udf',
-        icon: 'setting',
+        icon: 'ToolOutlined',
         // component: './SettingCenter/UDFTemplate',
       },
       {
         path: '/settings/system',
         name: 'system',
-        icon: 'desktop',
+        icon: 'InfoCircleOutlined',
         // component: './SettingCenter/SystemInfo',
       },
       {
         path: '/settings/process',
         name: 'process',
-        icon: 'desktop',
+        icon: 'ReconciliationOutlined',
         // component: './SettingCenter/ProcessList',
       },
       {
         path: '/settings/services',
         name: 'services',
-        icon: 'MacCommandOutlined',
+        icon: 'CloudServerOutlined',
         // component: './SettingCenter/Service',
       },
     ],
@@ -232,18 +226,18 @@ export default [
   {
     path: '/metrics',
     name: 'metrics',
-    icon: 'AreaChartOutlined',
+    icon: 'DashboardOutlined',
     // component: './Metrics',
   },
   {
     path: '/about',
     name: 'about',
-    icon: 'smile',
-    component: './About',
+    icon: 'SmileOutlined',
+    component: './Other/About',
   },
   {
     path: '*',
     layout: false,
-    component: './404',
+    component: './Other/404',
   },
 ];

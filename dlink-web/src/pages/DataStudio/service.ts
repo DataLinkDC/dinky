@@ -18,7 +18,7 @@
  */
 
 
-import {CAParam, StudioMetaStoreParam, StudioParam} from "@/components/Studio/StudioEdit/data";
+import {CAParam, StudioMetaStoreParam, StudioParam, WatchParam} from "@/components/Studio/StudioEdit/data";
 import {request2} from "@/components/Common/crud";
 import {request} from "umi";
 
@@ -74,6 +74,24 @@ export async function getJobData(jobId: string) {
       jobId,
     },
   });
+}
+
+export async function registerWatchTable(params?: WatchParam) {
+  return request2<API.Result>('/api/subscribe/watch', {
+    method : 'PUT',
+    params : {
+      ...params,
+    }
+  })
+}
+
+export async function unRegisterWatchTable(params?: WatchParam) {
+  return request2<API.Result>('/api/unSubscribe/watch', {
+    method : 'PUT',
+    params : {
+      ...params,
+    }
+  })
 }
 
 export async function getCatalogueTreeData(params?: StudioParam) {

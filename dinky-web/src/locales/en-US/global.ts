@@ -137,4 +137,9 @@ export default {
 
   'global.fullScreen': 'FullScreen',
   'global.fullScreen.exit': 'Exit FullScreen',
+
+  'global.info': 'Info',
+  'global.error': 'Error',
+  'global.warning': 'Warning',
+  'global.success': 'Success',
 };

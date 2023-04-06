@@ -76,7 +76,7 @@ public class Operations {
     public static SqlType getOperationType(String sql) {
         String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, "").trim().toUpperCase();
         return Arrays.stream(SqlType.values())
-                .filter(sqlType -> sqlTrim.startsWith(sqlType.getType()))
+                .filter(sqlType -> sqlType.match(sqlTrim))
                 .findFirst()
                 .orElse(SqlType.UNKNOWN);
     }
@@ -85,7 +85,7 @@ public class Operations {
         String sql = statement.replace("\n", " ").replaceAll("\\s+", " ").trim().toUpperCase();
 
         return Arrays.stream(ALL_OPERATIONS)
-                .filter(p -> sql.startsWith(p.getHandle()))
+                .filter(p -> p.getHandle() != null && sql.startsWith(p.getHandle()))
                 .findFirst()
                 .map(p -> p.create(statement))
                 .orElse(null);

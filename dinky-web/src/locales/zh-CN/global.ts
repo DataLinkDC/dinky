@@ -132,4 +132,9 @@ export default {
 
   'global.fullScreen': '全屏',
   'global.fullScreen.exit': '退出全屏',
+
+  'global.info': '信息',
+  'global.error': '错误',
+  'global.warning': '警告',
+  'global.success': '成功',
 };

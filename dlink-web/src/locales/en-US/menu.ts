@@ -51,6 +51,7 @@ export default {
   'menu.authenticationCenter.userManager': 'User Management',
   'menu.authenticationCenter.namespaceManager': 'NameSpace Management',
   'menu.authenticationCenter.roleManager': 'Role Management',
+  'menu.authenticationCenter.roleSelectPermissions': 'Role Data Permissions',
   'menu.authenticationCenter.tenantManager': 'Tenant Management',
 
   'menu.settings': 'Setting Center',

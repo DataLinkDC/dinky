@@ -67,7 +67,6 @@
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
-        <jedis.version>2.9.0</jedis.version>
         <junit5.version>5.9.1</junit5.version>
         <knife4j.version>3.0.3</knife4j.version>
         <log4j.version>2.19.0</log4j.version>
@@ -888,7 +887,6 @@
             <properties>
                 <!--  modify flink version  -->
                 <dinky.flink.version>1.16</dinky.flink.version>
-                <flink.version>1.16.0</flink.version>
             </properties>
         </profile>
 

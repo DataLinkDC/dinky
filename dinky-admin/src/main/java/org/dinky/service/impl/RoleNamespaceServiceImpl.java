@@ -28,7 +28,9 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+/** role namespace service impl , it's will be deprecated in the future */
 @Service
+@Deprecated
 public class RoleNamespaceServiceImpl extends SuperServiceImpl<RoleNamespaceMapper, RoleNamespace>
         implements RoleNamespaceService {
 
