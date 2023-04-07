@@ -62,6 +62,23 @@ export const API_CONSTANTS = {
   ROLE_ADDED_OR_UPDATE: "/api/role/addedOrUpdateRole",
   ROLE_DELETE: "/api/role/delete",
 
+  // --- global variable ---
+  // global variable list
+  GLOBAL_VARIABLE: "/api/fragment",
+  // delete global variable  by id
+  GLOBAL_VARIABLE_DELETE: "/api/fragment/delete",
+  // global variable enable or disable
+  GLOBAL_VARIABLE_ENABLE: "/api/fragment/enable",
+
+
+  // --- registries  center ---
+  // document list
+  DOCUMENT: "/api/document",
+  // delete document by id
+  DOCUMENT_DELETE: "/api/document/delete",
+  // document enable or disable
+  DOCUMENT_ENABLE: "/api/document/enable",
+
 };
 
 
@@ -126,8 +143,8 @@ export const RESPONSE_CODE = {
  * the form layout of public
  */
 export const FORM_LAYOUT_PUBLIC = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
+  labelCol: {span: 5},
+  wrapperCol: {span: 15},
 };
 
 /**
@@ -140,7 +157,10 @@ export const PROTABLE_OPTIONS_PUBLIC = {
   },
   tableStyle: {height: "58vh"},
   rowKey: "id",
-  search: {labelWidth: 120}
+  search: {
+    labelWidth: 120, // must be number
+    span: 4,
+  },
 };
 
 /**
@@ -148,7 +168,7 @@ export const PROTABLE_OPTIONS_PUBLIC = {
  */
 export const NORMAL_MODAL_OPTIONS = {
   width: "40%",
-  bodyStyle: {padding: "32px 40px 48px"},
+  bodyStyle: {padding: "20px 10px 10px"},
   destroyOnClose: true,
 };
 

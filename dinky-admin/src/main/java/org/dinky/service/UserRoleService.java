@@ -20,6 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.db.service.ISuperService;
+import org.dinky.model.Role;
 import org.dinky.model.UserRole;
 
 import java.util.List;
@@ -57,4 +58,12 @@ public interface UserRoleService extends ISuperService<UserRole> {
      * @return
      */
     boolean deleteByRoleIds(List<Integer> roleIds);
+
+    /**
+     * query roles by user id
+     *
+     * @param userId user id
+     * @return role list
+     */
+    List<Role> getRoleByUserId(Integer userId);
 }

@@ -66,7 +66,7 @@ const UserTableList: React.FC = () => {
     );
     if (success) {
       handleAssignRoleTransferOpen(false);
-      actionRef?.current?.reloadAndRest?.();
+      actionRef.current?.reload?.();
       form.resetFields();
     }
     setLoading(false);

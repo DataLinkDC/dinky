@@ -24,9 +24,13 @@ import org.dinky.db.service.ISuperService;
 import org.dinky.dto.LoginDTO;
 import org.dinky.dto.ModifyPasswordDTO;
 import org.dinky.dto.UserDTO;
+import org.dinky.model.Role;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
 import org.dinky.params.AssignRoleParams;
+
+import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -134,4 +138,18 @@ public interface UserService extends ISuperService<User> {
      * @return {@link Boolean}
      */
     Boolean checkAdmin(Integer id);
+
+    /**
+     * get role by current user
+     *
+     * @return role list
+     */
+    List<Role> getCurrentRole();
+
+    /**
+     * get role select permissions by current user
+     *
+     * @return role select permissions list
+     */
+    List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
 }

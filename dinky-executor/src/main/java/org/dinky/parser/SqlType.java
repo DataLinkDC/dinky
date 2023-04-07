@@ -19,6 +19,8 @@
 
 package org.dinky.parser;
 
+import java.util.regex.Pattern;
+
 /**
  * SqlType
  *
@@ -26,30 +28,50 @@ package org.dinky.parser;
  * @since 2021/7/3 11:11
  */
 public enum SqlType {
-    SELECT("SELECT"),
-    CREATE("CREATE"),
-    DROP("DROP"),
-    ALTER("ALTER"),
-    INSERT("INSERT"),
-    DESC("DESC"),
-    DESCRIBE("DESCRIBE"),
-    EXPLAIN("EXPLAIN"),
-    USE("USE"),
-    SHOW("SHOW"),
-    LOAD("LOAD"),
-    UNLOAD("UNLOAD"),
-    SET("SET"),
-    RESET("RESET"),
-    EXECUTE("EXECUTE"),
-    ADD("ADD"),
-    WATCH("WATCH"),
-    CTAS("CTAS"),
-    UNKNOWN("UNKNOWN");
+    SELECT("SELECT", "^SELECT.*"),
+
+    CREATE("CREATE", "^CREATE(?!.*AS SELECT).*$"),
+
+    DROP("DROP", "^DROP.*"),
+
+    ALTER("ALTER", "^ALTER.*"),
+
+    INSERT("INSERT", "^INSERT.*"),
+
+    DESC("DESC", "^DESC.*"),
+
+    DESCRIBE("DESCRIBE", "^DESCRIBE.*"),
+
+    EXPLAIN("EXPLAIN", "^EXPLAIN.*"),
+
+    USE("USE", "^USE.*"),
+
+    SHOW("SHOW", "^SHOW.*"),
+
+    LOAD("LOAD", "^LOAD.*"),
+
+    UNLOAD("UNLOAD", "^UNLOAD.*"),
+
+    SET("SET", "^SET.*"),
+
+    RESET("RESET", "^RESET.*"),
+
+    EXECUTE("EXECUTE", "^EXECUTE.*"),
+
+    ADD("ADD", "^ADD.*"),
+
+    WATCH("WATCH", "^WATCH.*"),
+
+    CTAS("CTAS", "^CREATE\\s.*AS\\sSELECT.*$"),
+
+    UNKNOWN("UNKNOWN", "^UNKNOWN.*");
 
     private String type;
+    private Pattern pattern;
 
-    SqlType(String type) {
+    SqlType(String type, String regrex) {
         this.type = type;
+        this.pattern = Pattern.compile(regrex, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     }
 
     public void setType(String type) {
@@ -60,11 +82,7 @@ public enum SqlType {
         return type;
     }
 
-    public boolean equalsValue(String value) {
-        return type.equalsIgnoreCase(value);
-    }
-
-    public boolean isInsert() {
-        return type.equals("INSERT");
+    public boolean match(String statement) {
+        return pattern.matcher(statement).matches();
     }
 }

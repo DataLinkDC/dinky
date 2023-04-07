@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.UserRoleMapper;
+import org.dinky.model.Role;
 import org.dinky.model.UserRole;
 import org.dinky.service.UserRoleService;
 
@@ -55,5 +56,10 @@ public class UserRoleServiceImpl extends SuperServiceImpl<UserRoleMapper, UserRo
     @Override
     public boolean deleteByRoleIds(List<Integer> roleIds) {
         return baseMapper.deleteByRoleIds(roleIds) > 0;
+    }
+
+    @Override
+    public List<Role> getRoleByUserId(Integer userId) {
+        return baseMapper.getRoleByUserId(userId);
     }
 }

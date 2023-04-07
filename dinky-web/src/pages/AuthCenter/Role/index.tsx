@@ -29,7 +29,7 @@ import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import RoleForm from "./components/RoleForm";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
-import {getTenantByLocalStorage} from "@/services/function";
+import {getTenantByLocalStorage} from "@/utils/function";
 
 
 const RoleList: React.FC = () => {
@@ -49,7 +49,7 @@ const RoleList: React.FC = () => {
   const handleDeleteSubmit = async (id: number) => {
     // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
     await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-    actionRef.current?.reloadAndRest?.();
+    actionRef.current?.reload?.();
   }
 
 

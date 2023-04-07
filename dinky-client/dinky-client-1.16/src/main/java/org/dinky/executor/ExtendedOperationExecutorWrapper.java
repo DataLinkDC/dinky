@@ -42,7 +42,7 @@ public class ExtendedOperationExecutorWrapper implements ExtendedOperationExecut
     public Optional<TableResultInternal> executeOperation(Operation operation) {
         Optional<TableResultInternal> customResult =
                 (Optional<TableResultInternal>) customOperationExecutor.executeOperation(operation);
-        if (customResult != null) {
+        if (customResult.isPresent()) {
             return customResult;
         }
 

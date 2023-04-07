@@ -26,8 +26,10 @@ import static org.dinky.function.util.UDFUtil.YARN;
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
+import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.executor.EnvironmentSetting;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorSetting;
@@ -361,6 +363,8 @@ public class JobManager {
 
     public boolean close() {
         JobContextHolder.clear();
+        CustomTableEnvironmentContext.clear();
+        RowLevelPermissionsContext.clear();
         return false;
     }
 
@@ -444,7 +448,8 @@ public class JobManager {
                 } else if (useStatementSet && !useGateway) {
                     List<String> inserts = new ArrayList<>();
                     for (StatementParam item : jobParam.getTrans()) {
-                        if (item.getType().isInsert() || item.getType().equals(SqlType.CTAS)) {
+                        if (item.getType().equals(SqlType.INSERT)
+                                || item.getType().equals(SqlType.CTAS)) {
                             inserts.add(item.getValue());
                         }
                     }
