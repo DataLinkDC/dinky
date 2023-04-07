@@ -26,6 +26,7 @@ import org.dinky.service.StatementService;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -52,6 +54,7 @@ import lombok.extern.slf4j.Slf4j;
 public class StatementController {
 
     private final StatementService statementService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /** 新增或者更新 */
     @PutMapping
@@ -96,5 +99,17 @@ public class StatementController {
     public Result<Statement> getOneById(@RequestBody Statement statement) throws Exception {
         statement = statementService.getById(statement.getId());
         return Result.succeed(statement, "获取成功");
+    }
+
+    @PostMapping("/getWatchTables")
+    @SuppressWarnings("unchecked")
+    public Result<List<String>> getWatchTables(@RequestBody String statement) {
+        try {
+            Map<String, String> data = objectMapper.readValue(statement, Map.class);
+            String ss = data.get("statement");
+            return Result.succeed(statementService.getWatchTables(ss));
+        } catch (Exception e) {
+            return Result.failed(e.getMessage());
+        }
     }
 }

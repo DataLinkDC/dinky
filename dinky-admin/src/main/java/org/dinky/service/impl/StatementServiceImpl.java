@@ -22,7 +22,14 @@ package org.dinky.service.impl;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.StatementMapper;
 import org.dinky.model.Statement;
+import org.dinky.parser.SqlType;
 import org.dinky.service.StatementService;
+import org.dinky.trans.Operations;
+import org.dinky.utils.SqlUtil;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -39,5 +46,17 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
     @Override
     public boolean insert(Statement statement) {
         return baseMapper.insert(statement) > 0;
+    }
+
+    @Override
+    public List<String> getWatchTables(String statement) {
+        // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
+        // couple function
+        //  and status and task execute.
+        final String[] statements = SqlUtil.getStatements(statement);
+        return Arrays.stream(statements)
+                .filter(t -> SqlType.WATCH.equals(Operations.getOperationType(t)))
+                .map(t -> t.substring(t.lastIndexOf(" ")).trim())
+                .collect(Collectors.toList());
     }
 }
