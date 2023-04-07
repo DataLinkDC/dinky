@@ -85,7 +85,13 @@ public class JobConfig {
         if (GatewayType.LOCAL.equalsValue(type)
                 && Asserts.isNotNull(config)
                 && config.containsKey(RestOptions.PORT.key())) {
-            this.address = address + NetConstant.COLON + config.get(RestOptions.PORT.key());
+            int colonIndex = address.indexOf(':');
+            if (colonIndex == -1) {
+                this.address = address + NetConstant.COLON + config.get(RestOptions.PORT.key());
+            } else {
+                this.address =
+                        address.replaceAll("(?<=:)\\d{0,6}$", config.get(RestOptions.PORT.key()));
+            }
         } else {
             this.address = address;
         }
