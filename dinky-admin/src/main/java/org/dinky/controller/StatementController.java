@@ -19,12 +19,12 @@
 
 package org.dinky.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.Statement;
 import org.dinky.service.StatementService;
 
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
