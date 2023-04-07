@@ -22,6 +22,8 @@ package org.dinky.service;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Statement;
 
+import java.util.List;
+
 /**
  * StatementService
  *
@@ -31,4 +33,6 @@ import org.dinky.model.Statement;
 public interface StatementService extends ISuperService<Statement> {
 
     boolean insert(Statement statement);
+
+    List<String> getWatchTables(String statement);
 }

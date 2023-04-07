@@ -74,7 +74,7 @@ public class Operations {
     }
 
     public static SqlType getOperationType(String sql) {
-        String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, "").trim().toUpperCase();
+        String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, " ").trim().toUpperCase();
         return Arrays.stream(SqlType.values())
                 .filter(sqlType -> sqlType.match(sqlTrim))
                 .findFirst()

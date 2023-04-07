@@ -342,6 +342,10 @@ export async function showMetaStoreCatalogs(task: TaskType, dispatch: any) {
   })
 }
 
+export async function getWatchTables(statement: string) {
+ return postAll('api/statement/getWatchTables', {statement});
+}
+
 /*--- Clear Console ---*/
 export function clearConsole() {
   return getData('api/process/clearConsole', {});
