@@ -19,12 +19,10 @@
 
 package org.dinky.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.Statement;
 import org.dinky.service.StatementService;
-
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
