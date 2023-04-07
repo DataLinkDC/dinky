@@ -19,11 +19,12 @@
 
 package org.dinky.controller;
 
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.Statement;
 import org.dinky.service.StatementService;
+
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -103,7 +104,7 @@ public class StatementController {
 
     @PostMapping("/getWatchTables")
     @SuppressWarnings("unchecked")
-    public Result<List<String>>  getWatchTables(@RequestBody String statement) {
+    public Result<List<String>> getWatchTables(@RequestBody String statement) {
         try {
             Map<String, String> data = objectMapper.readValue(statement, Map.class);
             String ss = data.get("statement");

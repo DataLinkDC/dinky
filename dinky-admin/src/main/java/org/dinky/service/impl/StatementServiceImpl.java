@@ -26,11 +26,12 @@ import org.dinky.parser.SqlType;
 import org.dinky.service.StatementService;
 import org.dinky.trans.Operations;
 import org.dinky.utils.SqlUtil;
-import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
 
 /**
  * StatementServiceImpl
@@ -49,7 +50,8 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
 
     @Override
     public List<String> getWatchTables(String statement) {
-        // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor couple function
+        // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
+        // couple function
         //  and status and task execute.
         final String[] statements = SqlUtil.getStatements(statement);
         return Arrays.stream(statements)
