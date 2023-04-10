@@ -80,7 +80,6 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
                 serializingFormat,
                 options.get(HOSTNAME),
                 options.get(PORT),
-                options.get(FactoryUtil.SINK_PARALLELISM),
                 options.get(PRINT_IDENTIFIER),
                 objectIdentifier);
     }
@@ -97,7 +96,6 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return new HashSet<>(
-                Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.SINK_PARALLELISM, FactoryUtil.FORMAT));
+        return new HashSet<>(Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.FORMAT));
     }
 }

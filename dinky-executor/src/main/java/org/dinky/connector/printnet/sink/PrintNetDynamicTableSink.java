@@ -39,7 +39,6 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
     private final int port;
     private final EncodingFormat<SerializationSchema<RowData>> encodingFormat;
     private final DataType type;
-    private final int parallelism;
     private final List<String> partitionKeys;
     private String printIdentifier;
     private ObjectIdentifier objectIdentifier;
@@ -51,14 +50,12 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
             EncodingFormat<SerializationSchema<RowData>> serializingFormat,
             String hostname,
             int port,
-            int parallelism,
             String printIdentifier,
             ObjectIdentifier objectIdentifier) {
         this.hostname = hostname;
         this.port = port;
         this.encodingFormat = serializingFormat;
         this.type = type;
-        this.parallelism = parallelism;
         this.partitionKeys = partitionKeys;
         this.printIdentifier = printIdentifier;
         this.objectIdentifier = objectIdentifier;
@@ -88,8 +85,7 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
                 });
 
         return SinkFunctionProvider.of(
-                new PrintNetSinkFunction(hostname, port, serializer, converter, printIdentifier),
-                parallelism);
+                new PrintNetSinkFunction(hostname, port, serializer, converter, printIdentifier));
     }
 
     @Override
@@ -100,7 +96,6 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
                 encodingFormat,
                 hostname,
                 port,
-                parallelism,
                 printIdentifier,
                 objectIdentifier);
     }
