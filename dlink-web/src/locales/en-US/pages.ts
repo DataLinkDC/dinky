@@ -400,7 +400,7 @@ export default {
   'pages.datastudio.label.jobConfig.insert': 'Insert StatementSet',
   'pages.datastudio.label.jobConfig.insert.tip': '[Enhanced Features] Enable the statement set mechanism, multiple Insert statements will be combined into one JobGraph before submission, and the Select statement is invalid',
   'pages.datastudio.label.jobConfig.fragment': 'Global variables',
-  'pages.datastudio.label.jobConfig.fragment.tip': '[Enhanced Features] Enable FlinkSql global variables, use ":=" to define (end with ";"), "${}" to call',
+  'pages.datastudio.label.jobConfig.fragment.tip': '[Enhanced Features] Enable FlinkSql global variables, use ":=" to define (end with ";"), to call',
   'pages.datastudio.label.jobConfig.batchmode': 'Batch Mode',
   'pages.datastudio.label.jobConfig.batchmode.tip': 'Use batch mode',
   'pages.datastudio.label.jobConfig.checkPoint': 'Checkpoint interval',
