@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 /**
  * Ant Design Pro ProTable Query Result
  *
- * @author wenmo
  * @since 2021/5/18 21:54
  */
 @Data

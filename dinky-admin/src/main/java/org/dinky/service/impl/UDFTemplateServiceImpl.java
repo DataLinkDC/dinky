@@ -31,7 +31,6 @@ import org.springframework.stereotype.Service;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 @Service

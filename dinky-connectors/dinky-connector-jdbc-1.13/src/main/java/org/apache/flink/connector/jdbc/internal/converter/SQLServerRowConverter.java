@@ -24,7 +24,6 @@ import org.apache.flink.table.types.logical.RowType;
 /**
  * SQLServerRowConverter
  *
- * @author wenmo
  * @since 2021/12/9
  **/
 public class SQLServerRowConverter extends AbstractJdbcRowConverter {

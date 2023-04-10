@@ -31,7 +31,6 @@ import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 public interface FunctionCompiler {

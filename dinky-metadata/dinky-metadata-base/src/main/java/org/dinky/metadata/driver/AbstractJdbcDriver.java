@@ -72,7 +72,6 @@ import cn.hutool.core.text.CharSequenceUtil;
 /**
  * AbstractJdbcDriver
  *
- * @author wenmo
  * @since 2021/7/20 14:09
  */
 public abstract class AbstractJdbcDriver extends AbstractDriver {

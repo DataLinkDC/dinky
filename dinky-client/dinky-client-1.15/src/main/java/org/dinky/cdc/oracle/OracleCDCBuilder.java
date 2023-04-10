@@ -41,7 +41,6 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 /**
  * MysqlCDCBuilder
  *
- * @author wenmo
  * @since 2022/4/12 21:29
  */
 public class OracleCDCBuilder extends AbstractCDCBuilder {

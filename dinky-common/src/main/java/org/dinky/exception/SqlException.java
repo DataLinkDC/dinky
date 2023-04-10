@@ -22,7 +22,6 @@ package org.dinky.exception;
 /**
  * SqlException
  *
- * @author wenmo
  * @since 2021/6/22
  */
 public class SqlException extends RuntimeException {

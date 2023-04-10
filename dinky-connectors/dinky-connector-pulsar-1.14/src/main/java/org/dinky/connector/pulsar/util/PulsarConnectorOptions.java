@@ -29,7 +29,6 @@ import org.apache.flink.configuration.description.InlineElement;
 import org.apache.pulsar.client.api.SubscriptionType;
 
 /**
- * @author DarrenDa
  * * @version 1.0
  * * @Desc:
  **/

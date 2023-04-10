@@ -24,7 +24,6 @@ import java.time.LocalDateTime;
 /**
  * 解释结果
  *
- * @author wenmo
  * @since 2021/6/7 22:06
  */
 public class SqlExplainResult {

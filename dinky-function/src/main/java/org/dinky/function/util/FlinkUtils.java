@@ -25,7 +25,6 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 public class FlinkUtils {

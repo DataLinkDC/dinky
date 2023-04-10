@@ -22,7 +22,6 @@ package org.dinky.parser;
 /**
  * CreateCDCSourceSqlParser
  *
- * @author wenmo
  * @since 2022/1/29 23:39
  */
 public class CreateCDCSourceSqlParser extends BaseSingleSqlParser {

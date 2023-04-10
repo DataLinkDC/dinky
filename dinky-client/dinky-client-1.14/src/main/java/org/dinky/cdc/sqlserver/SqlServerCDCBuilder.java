@@ -43,7 +43,6 @@ import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
 /**
  * sql server CDC
  *
- * @author 郑文豪
  */
 public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 

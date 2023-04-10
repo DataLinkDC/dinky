@@ -32,7 +32,6 @@ import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author ZackYoung
  * @since 0.7.0
  */
 @Slf4j

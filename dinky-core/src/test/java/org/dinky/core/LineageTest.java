@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 /**
  * LineageTest
  *
- * @author wenmo
  * @since 2022/3/15 23:08
  */
 @Ignore

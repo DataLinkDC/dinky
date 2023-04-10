@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * ClusterConfigService
  *
- * @author wenmo
  * @since 2021/11/6 20:52
  */
 public interface ClusterConfigurationService extends ISuperService<ClusterConfiguration> {

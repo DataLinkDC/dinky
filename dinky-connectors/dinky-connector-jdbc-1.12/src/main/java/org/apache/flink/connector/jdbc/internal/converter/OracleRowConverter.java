@@ -48,7 +48,6 @@ import oracle.sql.TIMESTAMPTZ;
  * Runtime converter that responsible to convert between JDBC object and Flink internal object for
  * Oracle.
  *
- * @author wenmo
  * @since 2021/9/19 20:28
  */
 public class OracleRowConverter extends AbstractJdbcRowConverter {

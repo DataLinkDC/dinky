@@ -27,7 +27,6 @@ import java.util.ServiceLoader;
 /**
  * Alert
  *
- * @author wenmo
  * @since 2022/2/23 19:05
  */
 public interface Alert {

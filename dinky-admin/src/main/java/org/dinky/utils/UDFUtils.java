@@ -49,7 +49,6 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 public class UDFUtils extends UDFUtil {

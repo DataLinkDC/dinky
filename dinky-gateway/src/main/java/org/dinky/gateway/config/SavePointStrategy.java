@@ -22,7 +22,6 @@ package org.dinky.gateway.config;
 /**
  * SavePointStrategy
  *
- * @author wenmo
  * @since 2021/11/23 10:28
  */
 public enum SavePointStrategy {

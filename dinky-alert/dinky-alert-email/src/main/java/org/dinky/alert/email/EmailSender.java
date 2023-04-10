@@ -63,8 +63,6 @@ import com.sun.mail.smtp.SMTPProvider;
 /**
  * EmailSender 邮件发送器
  *
- * @author zhumingye
- * @date: 2022/4/3
  */
 public final class EmailSender {
 

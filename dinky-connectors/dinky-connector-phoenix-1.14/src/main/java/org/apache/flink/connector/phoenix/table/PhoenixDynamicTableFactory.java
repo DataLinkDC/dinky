@@ -47,7 +47,6 @@ import java.util.Set;
 /**
  * PhoenixDynamicTableFactory
  *
- * @author gy
  * @since 2022/3/17 9:44
  **/
 public class PhoenixDynamicTableFactory implements DynamicTableSourceFactory, DynamicTableSinkFactory {

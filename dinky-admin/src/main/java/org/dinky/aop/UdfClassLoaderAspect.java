@@ -33,7 +33,6 @@ import org.springframework.stereotype.Component;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * @author ZackYoung
  * @since 0.7.0
  */
 @Aspect

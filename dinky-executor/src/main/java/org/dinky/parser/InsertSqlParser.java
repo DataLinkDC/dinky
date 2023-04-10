@@ -22,7 +22,6 @@ package org.dinky.parser;
 /**
  * InsertSqlParser
  *
- * @author wenmo
  * @since 2021/6/14 16:54
  */
 public class InsertSqlParser extends BaseSingleSqlParser {

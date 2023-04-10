@@ -50,7 +50,6 @@ import java.util.regex.Pattern;
 /**
  * Flink Sql Fragment Manager
  *
- * @author wenmo
  * @since 2021/6/7 22:06
  */
 public final class SqlManager {

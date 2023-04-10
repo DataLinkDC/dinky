@@ -25,7 +25,6 @@ import java.util.Date;
 import lombok.Data;
 
 /**
- * @author huang
  * @description: 任务版本记录
  */
 @Data

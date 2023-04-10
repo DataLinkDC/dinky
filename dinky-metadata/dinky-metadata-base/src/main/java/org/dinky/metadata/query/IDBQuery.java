@@ -22,7 +22,6 @@ package org.dinky.metadata.query;
 /**
  * IDBQuery
  *
- * @author wenmo
  * @since 2021/7/20 13:44
  */
 public interface IDBQuery {

@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * StatementController
  *
- * @author wenmo
  * @since 2021/5/28 13:48
  */
 @Slf4j

@@ -26,7 +26,6 @@ import org.dinky.model.ColumnType;
 /**
  * MySqlTypeConvert
  *
- * @author wenmo
  * @since 2021/7/20 15:21
  */
 public class MySqlTypeConvert implements ITypeConvert {

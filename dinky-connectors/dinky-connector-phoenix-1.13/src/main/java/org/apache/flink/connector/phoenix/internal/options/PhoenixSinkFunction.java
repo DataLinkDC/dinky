@@ -21,7 +21,6 @@
 /**
  * PhoenixSinkFunction
  *
- * @author gy
  * @since 2022/3/22 16:27
  **//*
 

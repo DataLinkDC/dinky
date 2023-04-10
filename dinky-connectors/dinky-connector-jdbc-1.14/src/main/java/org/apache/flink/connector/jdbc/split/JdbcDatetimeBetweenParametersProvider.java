@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 /**
  * JdbcDatetimeBetweenParametersProvider
  *
- * @author 金鑫
  * @since 2022/11/18 11:05
  */
 public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValuesProvider {

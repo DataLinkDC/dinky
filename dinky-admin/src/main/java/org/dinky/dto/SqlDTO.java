@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * SqlDTO
  *
- * @author wenmo
  * @since 2021/12/29 19:42
  */
 @Getter

@@ -27,7 +27,6 @@ import org.apache.flink.streaming.api.environment.RemoteStreamEnvironment;
 /**
  * RemoteStreamExecutor
  *
- * @author wenmo
  * @since 2021/5/25 14:05
  */
 public class RemoteStreamExecutor extends Executor {

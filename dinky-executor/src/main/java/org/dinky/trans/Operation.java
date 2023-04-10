@@ -26,7 +26,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * Operation
  *
- * @author wenmo
  * @since 2021/6/13 19:24
  */
 public interface Operation extends org.apache.flink.table.operations.Operation {

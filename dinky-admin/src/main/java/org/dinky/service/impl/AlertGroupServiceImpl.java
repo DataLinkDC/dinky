@@ -40,7 +40,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 /**
  * AlertGroupServiceImpl
  *
- * @author wenmo
  * @since 2022/2/24 20:01
  */
 @Service

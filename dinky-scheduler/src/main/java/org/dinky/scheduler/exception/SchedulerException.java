@@ -19,7 +19,6 @@
 
 package org.dinky.scheduler.exception;
 
-/** @author 郑文豪 */
 public class SchedulerException extends RuntimeException {
 
     public SchedulerException(String message) {

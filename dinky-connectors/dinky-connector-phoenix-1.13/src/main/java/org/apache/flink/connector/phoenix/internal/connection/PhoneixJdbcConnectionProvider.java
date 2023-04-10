@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 /**
  * PhoneixJdbcConnectionProvider
  *
- * @author gy
  * @since 2022/3/17 9:04
  **/
 public class PhoneixJdbcConnectionProvider implements JdbcConnectionProvider, Serializable {

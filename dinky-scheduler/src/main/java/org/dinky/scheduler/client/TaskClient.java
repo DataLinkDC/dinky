@@ -50,7 +50,6 @@ import cn.hutool.json.JSONObject;
 /**
  * 任务定义
  *
- * @author 郑文豪
  */
 @Component
 public class TaskClient {
@@ -66,8 +65,6 @@ public class TaskClient {
      * @param processName 工作流定义名称
      * @param taskName 任务定义名称
      * @return {@link TaskMainInfo}
-     * @author 郑文豪
-     * @date 2022/9/7 17:16
      */
     public TaskMainInfo getTaskMainInfo(Long projectCode, String processName, String taskName) {
         List<TaskMainInfo> lists = getTaskMainInfos(projectCode, processName, taskName);
@@ -86,8 +83,6 @@ public class TaskClient {
      * @param processName 工作流定义名称
      * @param taskName 任务定义名称
      * @return {@link List<TaskMainInfo>}
-     * @author 郑文豪
-     * @date 2022/9/7 17:16
      */
     public List<TaskMainInfo> getTaskMainInfos(
             Long projectCode, String processName, String taskName) {
@@ -132,8 +127,6 @@ public class TaskClient {
      * @param projectCode 项目编号
      * @param taskCode 任务编号
      * @return {@link TaskDefinition}
-     * @author 郑文豪
-     * @date 2022/9/13 10:52
      */
     public TaskDefinition getTaskDefinition(Long projectCode, Long taskCode) {
         Map<String, Object> map = new HashMap<>();
@@ -162,8 +155,6 @@ public class TaskClient {
      * @param projectCode 项目编号
      * @param processCode 工作流定义编号
      * @return {@link TaskDefinitionLog}
-     * @author 郑文豪
-     * @date 2022/9/7 17:05
      */
     public TaskDefinitionLog createTaskDefinition(
             Long projectCode,
@@ -205,8 +196,6 @@ public class TaskClient {
      * @param taskCode 任务定义编号
      * @param taskDefinitionJsonObj 修改参数
      * @return {@link Long}
-     * @author 郑文豪
-     * @date 2022/9/13 8:59
      */
     public Long updateTaskDefinition(
             long projectCode, long taskCode, String upstreamCodes, String taskDefinitionJsonObj) {
@@ -240,8 +229,6 @@ public class TaskClient {
      * @param projectCode 项目编号
      * @param genNum 生成个数
      * @return {@link List}
-     * @author 郑文豪
-     * @date 2022/9/8 18:00
      */
     public List<Long> genTaskCodes(Long projectCode, int genNum) {
         Map<String, Object> map = new HashMap<>();
@@ -270,8 +257,6 @@ public class TaskClient {
      *
      * @param projectCode 项目编号
      * @return {@link Long}
-     * @author 郑文豪
-     * @date 2022/9/8 18:02
      */
     public Long genTaskCode(Long projectCode) {
         List<Long> codes = genTaskCodes(projectCode, 1);

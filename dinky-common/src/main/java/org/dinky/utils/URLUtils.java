@@ -27,7 +27,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * @author ZackYoung
  * @since 0.7.0
  */
 public class URLUtils {

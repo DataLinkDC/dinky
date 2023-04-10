@@ -30,7 +30,6 @@ import lombok.Setter;
 /**
  * APIJobResult
  *
- * @author wenmo
  * @since 2021/12/11 22:49
  */
 @Getter

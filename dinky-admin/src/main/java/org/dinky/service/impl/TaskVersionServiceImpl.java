@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-/** @author huang */
 @Service
 public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
         implements TaskVersionService {

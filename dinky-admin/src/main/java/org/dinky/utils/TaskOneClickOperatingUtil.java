@@ -48,7 +48,6 @@ import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.lang.Dict;
 
 /**
- * @author mydq
  * @version 1.0
  */
 public class TaskOneClickOperatingUtil {

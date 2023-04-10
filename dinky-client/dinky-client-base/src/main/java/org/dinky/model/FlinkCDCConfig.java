@@ -26,7 +26,6 @@ import java.util.stream.Collectors;
 /**
  * FlinkCDCConfig
  *
- * @author wenmo
  * @since 2022/1/29 22:50
  */
 public class FlinkCDCConfig {

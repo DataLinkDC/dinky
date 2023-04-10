@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 /**
  * OracleTest
  *
- * @author wenmo
  * @since 2021/7/21 16:14
  */
 @Ignore

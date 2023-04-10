@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 /**
  * SQLServerDialect
  *
- * @author wenmo
  * @since 2021/12/9
  **/
 public class SQLServerDialect extends AbstractDialect {

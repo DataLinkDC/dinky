@@ -32,7 +32,6 @@ import java.util.stream.Collectors;
 /**
  * PhoenixDialect
  *
- * @author gy
  * @since 2022/3/16 11:19
  **/
 public class PhoenixDialect extends AbstractDialect {

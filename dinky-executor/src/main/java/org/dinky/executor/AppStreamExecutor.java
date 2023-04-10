@@ -27,7 +27,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 /**
  * AppStreamExecutor
  *
- * @author wenmo
  * @since 2021/11/18
  */
 public class AppStreamExecutor extends Executor {

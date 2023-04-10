@@ -22,7 +22,6 @@ package org.dinky.alert;
 /**
  * AlertSendResponse
  *
- * @author wenmo
  * @since 2022/2/23 20:23
  */
 public class AlertSendResponse {

@@ -42,7 +42,6 @@ import lombok.Setter;
 /**
  * SuperEntity
  *
- * @author wenmo
  * @since 2021/5/28
  */
 @Setter

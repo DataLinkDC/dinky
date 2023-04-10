@@ -24,7 +24,6 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
- * @author ZackYoung
  * @since 0.7.0
  */
 public class JarPathContextHolder {

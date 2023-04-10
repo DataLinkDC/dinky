@@ -71,7 +71,6 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory for creating configured instances of {@link PulsarDynamicSource} and {
  *
- * @author DarrenDa
  * * @version 1.0
  * * @Desc:
  * @link PulsarDynamicSink}.

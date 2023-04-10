@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * Catalog
  *
- * @author wenmo
  * @since 2022/7/17 21:37
  */
 @Getter

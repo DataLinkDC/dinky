@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
 /**
  * WeChatSender
  *
- * @author wenmo
  * @since 2022/2/23 21:11
  */
 public class WeChatSender {
@@ -242,7 +241,6 @@ public class WeChatSender {
     /**
      * @Author: zhumingye
      *
-     * @date: 2022/3/26 @Description: 将用户列表转换为 <@用户名> 的格式
      * @param userList
      * @return java.lang.String
      */
@@ -265,7 +263,6 @@ public class WeChatSender {
     /**
      * @Author: zhumingye
      *
-     * @date: 2022/3/25 @Description: 创建公共方法 用于创建发送消息文本
      * @param title 发送标题
      * @param content 发送内容
      * @param sendType

@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * AggTable
  *
- * @author wenmo
  * @since 2021/6/13 20:32
  */
 public class AggTable {

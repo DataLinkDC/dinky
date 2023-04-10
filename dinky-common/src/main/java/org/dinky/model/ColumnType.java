@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * ColumnType
  *
- * @author wenmo
  * @since 2022/2/17 10:59
  */
 public enum ColumnType {

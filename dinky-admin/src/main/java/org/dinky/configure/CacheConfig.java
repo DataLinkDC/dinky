@@ -29,7 +29,6 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 /**
  * CacheCoonfigure
  *
- * @author ikiler
  * @since 2022/09/24 11:23
  */
 @Configuration

@@ -28,7 +28,6 @@ import org.apache.flink.configuration.ReadableConfig;
 /**
  * scala编译
  *
- * @author ZackYoung
  * @since 0.6.8
  */
 public class ScalaCompiler implements FunctionCompiler {

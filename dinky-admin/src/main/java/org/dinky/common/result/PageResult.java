@@ -30,7 +30,6 @@ import lombok.NoArgsConstructor;
 /**
  * 分页结果
  *
- * @author wenmo
  * @since 2021/5/3 20:03
  */
 @Data

@@ -54,7 +54,6 @@ import org.slf4j.LoggerFactory;
 /**
  * PhoenixJdbcRowDataInputFormat
  *
- * @author gy
  * @since 2022/3/17 10:53
  **/
 public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, InputSplit> implements ResultTypeQueryable<RowData> {

@@ -37,7 +37,6 @@ import java.util.Objects;
 /**
  * PhoenixDynamicTableSink
  *
- * @author gy
  * @since 2022/3/17 11:39
  **/
 public class PhoenixDynamicTableSink implements DynamicTableSink  {

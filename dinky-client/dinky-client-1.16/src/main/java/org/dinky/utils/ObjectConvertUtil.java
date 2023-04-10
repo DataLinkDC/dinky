@@ -34,7 +34,6 @@ import javax.xml.bind.DatatypeConverter;
 
 /**
  * @className: org.dinky.utils.ObjectConvertUtil @Description:
- * @author: jack zhong
  */
 public class ObjectConvertUtil {
 

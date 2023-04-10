@@ -26,7 +26,6 @@ import org.apache.flink.table.api.TableResult;
 import org.junit.Test;
 
 /**
- * @author DarrenDa
  * @version 1.0
  * @Desc: Test case
  */

@@ -25,7 +25,6 @@ import org.dinky.pool.AbstractPool;
 /**
  * FlinkJobTaskPool
  *
- * @author wenmo
  * @since 2022/5/28 16:39
  */
 public class FlinkJobTaskPool extends AbstractPool<String, JobInfoDetail> {

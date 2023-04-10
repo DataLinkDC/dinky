@@ -60,7 +60,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * Explainer
  *
- * @author wenmo
  * @since 2021/6/22
  */
 public class Explainer {

@@ -42,7 +42,6 @@ import java.util.Objects;
 /**
  * PhoenixDynamicTableSource
  *
- * @author gy
  * @since 2022/3/17 10:40
  **/
 public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSource, SupportsProjectionPushDown,

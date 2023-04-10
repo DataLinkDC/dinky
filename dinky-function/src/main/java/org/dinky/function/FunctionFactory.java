@@ -29,7 +29,6 @@ import org.apache.flink.configuration.Configuration;
 import java.util.List;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 public class FunctionFactory {

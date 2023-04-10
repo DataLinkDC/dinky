@@ -40,7 +40,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * AdminController
  *
- * @author wenmo
  * @since 2021/5/28 15:52
  */
 @Slf4j

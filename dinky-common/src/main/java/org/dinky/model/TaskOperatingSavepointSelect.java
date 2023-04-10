@@ -22,7 +22,6 @@ package org.dinky.model;
 import java.util.Arrays;
 
 /**
- * @author csz
  * @version 1.0
  */
 public enum TaskOperatingSavepointSelect {

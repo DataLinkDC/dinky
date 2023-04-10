@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 /**
  * HistoryServiceImpl
  *
- * @author wenmo
  * @since 2021/6/26 23:08
  */
 @Service

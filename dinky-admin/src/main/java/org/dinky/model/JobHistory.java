@@ -33,7 +33,6 @@ import lombok.EqualsAndHashCode;
 /**
  * JobHistory
  *
- * @author wenmo
  * @since 2022/3/2 19:48
  */
 @Data

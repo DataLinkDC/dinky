@@ -24,7 +24,6 @@ import java.util.Map;
 /**
  * AlertConfig
  *
- * @author wenmo
  * @since 2022/2/23 19:09
  */
 public class AlertConfig {

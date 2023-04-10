@@ -35,7 +35,6 @@ import org.apache.flink.table.planner.plan.rules.FlinkStreamRuleSets;
 /**
  * FlinkStreamProgramWithoutPhysical
  *
- * @author wenmo
  * @since 2022/11/22
  */
 public class FlinkStreamProgramWithoutPhysical {

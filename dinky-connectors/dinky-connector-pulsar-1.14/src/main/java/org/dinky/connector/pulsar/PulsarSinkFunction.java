@@ -59,7 +59,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * The sink function for Pulsar.
  *
- * @author DarrenDa
  * * @version 1.0
  * * @Desc:
  */

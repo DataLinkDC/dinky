@@ -32,7 +32,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 /**
  * SuperMapper
  *
- * @author wenmo
  * @since 2021/5/25
  */
 public interface SuperMapper<T> extends BaseMapper<T> {

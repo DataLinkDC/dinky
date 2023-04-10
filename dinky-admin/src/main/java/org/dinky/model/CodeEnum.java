@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * 状态码
  *
- * @author wenmo
  * @since 2021/5/28 19:58
  */
 public enum CodeEnum {

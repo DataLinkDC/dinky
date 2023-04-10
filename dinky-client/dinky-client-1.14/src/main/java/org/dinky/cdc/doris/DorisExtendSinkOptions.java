@@ -23,7 +23,6 @@ import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.ConfigOptions;
 
 /**
- * @author BillyXing
  * @since 2022/11/10 19:37
  */
 public class DorisExtendSinkOptions extends DorisSinkOptions {

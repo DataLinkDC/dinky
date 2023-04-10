@@ -29,7 +29,6 @@ import java.util.Map;
 /**
  * BaseSingleSqlParser
  *
- * @author wenmo
  * @since 2021/6/14 16:43
  */
 public abstract class BaseSingleSqlParser {

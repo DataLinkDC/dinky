@@ -20,7 +20,6 @@
 package org.dinky.model;
 
 /**
- * @author mydq
  * @version 1.0
  */
 public enum TaskOperatingStatus {

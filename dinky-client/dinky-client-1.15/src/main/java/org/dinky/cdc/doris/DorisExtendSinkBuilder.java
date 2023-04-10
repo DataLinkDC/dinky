@@ -55,7 +55,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author BillyXing
  * @since 2022/11/10 19:37
  */
 public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializable {

@@ -32,7 +32,6 @@ import javax.annotation.Nullable;
 /**
  * PhoenixJdbcOptions
  *
- * @author gy
  * @since 2022/3/17 9:57
  **/
 public class PhoenixJdbcOptions extends JdbcConnectionOptions {

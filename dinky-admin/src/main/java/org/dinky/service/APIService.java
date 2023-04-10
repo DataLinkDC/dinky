@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * APIService
  *
- * @author wenmo
  * @since 2021/12/11 21:45
  */
 public interface APIService {

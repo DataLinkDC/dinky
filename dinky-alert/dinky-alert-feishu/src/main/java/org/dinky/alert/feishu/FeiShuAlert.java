@@ -25,8 +25,6 @@ import org.dinky.alert.AlertResult;
 /**
  * FeiShuAlert
  *
- * @author zhumingye
- * @date: 2022/4/2
  */
 public class FeiShuAlert extends AbstractAlert {
 

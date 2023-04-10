@@ -72,7 +72,6 @@ import javax.xml.bind.DatatypeConverter;
 /**
  * SQLSinkBuilder
  *
- * @author wenmo
  * @since 2022/4/25 23:02
  */
 public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {

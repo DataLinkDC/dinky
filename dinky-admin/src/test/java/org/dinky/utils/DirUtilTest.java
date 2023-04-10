@@ -31,7 +31,6 @@ import org.junit.Test;
 /**
  * DirUtilTest
  *
- * @author wenmo
  * @since 2022/10/14 22:00
  */
 @Ignore

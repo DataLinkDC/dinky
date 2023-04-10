@@ -34,7 +34,6 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
- * @author ZackYoung
  * @since 0.7.0
  */
 public class AddJarSqlParser {

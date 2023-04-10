@@ -64,7 +64,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * @Author: zhumingye
  *
- * @date: 2022/4/2 @Description: 飞书消息发送器
  */
 public final class FeiShuSender {
 

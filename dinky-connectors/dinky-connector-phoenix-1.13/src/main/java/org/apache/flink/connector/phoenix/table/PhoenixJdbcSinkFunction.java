@@ -27,7 +27,6 @@ import org.apache.flink.streaming.api.functions.sink.RichSinkFunction;
 /**
  * PhoenixJdbcSinkFunction
  *
- * @author gy
  * @since 2022/3/17 17:41
  **/
 public class PhoenixJdbcSinkFunction<T>  extends RichSinkFunction<T> implements CheckpointedFunction {

@@ -20,7 +20,6 @@
 package org.dinky.service;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 public interface UDFService {}

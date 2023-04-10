@@ -26,7 +26,6 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 @Getter

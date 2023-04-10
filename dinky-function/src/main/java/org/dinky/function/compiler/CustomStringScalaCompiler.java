@@ -28,7 +28,6 @@ import scala.tools.nsc.GenericRunnerSettings;
 import scala.tools.nsc.interpreter.IMain;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 @Slf4j

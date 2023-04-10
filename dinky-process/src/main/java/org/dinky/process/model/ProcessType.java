@@ -24,7 +24,6 @@ import org.dinky.assertion.Asserts;
 /**
  * ProcessType
  *
- * @author wenmo
  * @since 2022/10/16 16:33
  */
 public enum ProcessType {

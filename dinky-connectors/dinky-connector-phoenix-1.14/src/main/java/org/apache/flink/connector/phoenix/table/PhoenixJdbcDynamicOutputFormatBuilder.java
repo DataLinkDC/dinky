@@ -52,7 +52,6 @@ import java.util.function.Function;
 /**
  *  PhoenixJdbcDynamicOutputFormatBuilder
  *
- * @author gy
  * @since 2022/3/17 11:43J
  **/
 public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {

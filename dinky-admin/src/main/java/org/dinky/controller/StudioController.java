@@ -53,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * StudioController
  *
- * @author wenmo
  * @since 2021/5/30 11:05
  */
 @Slf4j

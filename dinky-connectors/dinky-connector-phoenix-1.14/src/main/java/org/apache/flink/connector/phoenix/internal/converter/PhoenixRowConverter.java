@@ -24,7 +24,6 @@ import org.apache.flink.table.types.logical.RowType;
 /**
  * PhoenixRowConverter
  *
- * @author gy
  * @since 2022/3/16 11:21
  **/
 public class PhoenixRowConverter extends AbstractJdbcRowConverter {

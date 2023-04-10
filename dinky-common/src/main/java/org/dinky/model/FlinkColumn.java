@@ -27,7 +27,6 @@ import lombok.Setter;
 /**
  * FlinkColumn
  *
- * @author wenmo
  * @since 2022/7/18 19:55
  */
 @Getter

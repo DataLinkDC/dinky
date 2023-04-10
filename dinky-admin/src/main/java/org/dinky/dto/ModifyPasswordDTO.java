@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * ModifyPasswordDTO
  *
- * @author wenmo
  * @since 2022/2/22 23:27
  */
 @Getter

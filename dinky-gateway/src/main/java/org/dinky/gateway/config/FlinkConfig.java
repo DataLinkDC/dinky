@@ -35,7 +35,6 @@ import lombok.Setter;
 /**
  * FlinkConfig
  *
- * @author wenmo
  * @since 2021/11/3 21:56
  */
 @Getter

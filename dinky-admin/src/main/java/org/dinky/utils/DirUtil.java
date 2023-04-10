@@ -36,7 +36,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * DirUtil
  *
- * @author wenmo
  * @since 2022/10/14 21:43
  */
 public class DirUtil {

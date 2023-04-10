@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * StatementService
  *
- * @author wenmo
  * @since 2021/5/28 13:45
  */
 public interface StatementService extends ISuperService<Statement> {

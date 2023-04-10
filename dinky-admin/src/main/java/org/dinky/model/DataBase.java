@@ -32,7 +32,6 @@ import lombok.EqualsAndHashCode;
 /**
  * DataBase
  *
- * @author wenmo
  * @since 2021/7/20 20:53
  */
 @Data

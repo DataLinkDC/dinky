@@ -26,7 +26,6 @@ import java.util.Optional;
 /**
  * JdbcDialects
  *
- * @author wenmo
  * @since 2021/6/7 19:29
  */
 public final class JdbcDialects {

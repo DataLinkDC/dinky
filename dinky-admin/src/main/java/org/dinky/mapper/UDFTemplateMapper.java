@@ -32,7 +32,6 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
- * @author ZackYoung
  * @since 0.6.8 udf 模板mapper
  */
 @Mapper

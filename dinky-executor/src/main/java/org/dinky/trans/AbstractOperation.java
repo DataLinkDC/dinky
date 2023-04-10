@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 /**
  * AbstractOperation
  *
- * @author wenmo
  * @since 2021/6/14 18:18
  */
 public class AbstractOperation {

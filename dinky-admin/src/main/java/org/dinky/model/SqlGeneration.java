@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * SqlGeneration
  *
- * @author wenmo
  * @since 2022/1/29 16:13
  */
 public class SqlGeneration {

@@ -46,7 +46,6 @@ import cn.hutool.core.util.URLUtil;
 /**
  * YarnApplicationGateway
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public class YarnPerJobGateway extends YarnGateway {

@@ -24,7 +24,6 @@ import java.io.Serializable;
 import lombok.Data;
 
 /**
- * @author huang
  * @description: 任务回滚DTO
  */
 @Data

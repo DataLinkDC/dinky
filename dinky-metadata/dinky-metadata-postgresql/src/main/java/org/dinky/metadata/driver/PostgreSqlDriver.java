@@ -36,7 +36,6 @@ import java.util.Map;
 /**
  * PostgreSqlDriver
  *
- * @author wenmo
  * @since 2021/7/22 9:28
  */
 public class PostgreSqlDriver extends AbstractJdbcDriver {

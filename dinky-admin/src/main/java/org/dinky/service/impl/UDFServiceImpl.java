@@ -24,7 +24,6 @@ import org.dinky.service.UDFService;
 import org.springframework.stereotype.Service;
 
 /**
- * @author ZackYoung
  * @since 0.6.8
  */
 @Service

@@ -31,7 +31,6 @@ import java.util.Map;
 /**
  * LineageBuilder
  *
- * @author wenmo
  * @since 2022/3/15 22:58
  */
 public class LineageBuilder {

@@ -62,7 +62,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * UserServiceImpl
  *
- * @author wenmo
  * @since 2021/11/28 13:39
  */
 @Service

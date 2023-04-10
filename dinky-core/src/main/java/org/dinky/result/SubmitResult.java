@@ -25,7 +25,6 @@ import java.util.List;
 /**
  * SubmitResult
  *
- * @author wenmo
  * @since 2021/5/25 19:04
  */
 public class SubmitResult {

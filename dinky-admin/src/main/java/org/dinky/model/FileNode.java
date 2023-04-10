@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * FileNode
  *
- * @author wenmo
  * @since 2022/10/15 18:41
  */
 public class FileNode {
