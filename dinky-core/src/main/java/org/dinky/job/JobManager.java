@@ -626,7 +626,9 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
-            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + addLineNumber(currentSql), e);
+            String error =
+                    LogUtil.getError(
+                            "Exception in executing FlinkSQL:\n" + addLineNumber(currentSql), e);
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
