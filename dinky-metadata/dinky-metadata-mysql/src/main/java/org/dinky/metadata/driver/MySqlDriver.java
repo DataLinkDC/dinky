@@ -113,11 +113,13 @@ public class MySqlDriver extends AbstractJdbcDriver {
                                             Asserts.isNotNull(dv)
                                                     ? String.format(
                                                             " DEFAULT %s",
-                                                            "".equals(dv) ? "\"\"" : dv)
+                                                            "".equals(dv) ? "''" : dv)
                                                     : String.format(
                                                             "%s NULL ",
                                                             !column.isNullable() ? " NOT " : "");
-
+                                    if (!"CURRENT_TIMESTAMP".equals(defaultValue)){
+                                        defaultValue="'"+defaultValue+"'";
+                                    }
                                     return String.format(
                                             "  `%s`  %s%s%s%s%s",
                                             column.getName(),
