@@ -92,6 +92,8 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             columnType = ColumnType.BYTES;
         } else if (t.contains("array")) {
             columnType = ColumnType.T;
+        } else if (t.contains("jsonb") | t.contains("json")) {
+            columnType = ColumnType.STRING;
         }
         return columnType;
     }
