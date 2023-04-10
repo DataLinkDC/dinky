@@ -71,81 +71,96 @@ public class OracleRowConverter extends AbstractJdbcRowConverter {
             case BOOLEAN:
                 return val -> val instanceof NUMBER ? ((NUMBER) val).booleanValue() : val;
             case FLOAT:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).floatValue()
-                        : val instanceof BINARY_FLOAT
-                                ? ((BINARY_FLOAT) val).floatValue()
-                                : val instanceof BigDecimal
-                                        ? ((BigDecimal) val).floatValue()
-                                        : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).floatValue()
+                                : val instanceof BINARY_FLOAT
+                                        ? ((BINARY_FLOAT) val).floatValue()
+                                        : val instanceof BigDecimal
+                                                ? ((BigDecimal) val).floatValue()
+                                                : val;
             case DOUBLE:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).doubleValue()
-                        : val instanceof BINARY_DOUBLE
-                                ? ((BINARY_DOUBLE) val).doubleValue()
-                                : val instanceof BigDecimal
-                                        ? ((BigDecimal) val).doubleValue()
-                                        : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).doubleValue()
+                                : val instanceof BINARY_DOUBLE
+                                        ? ((BINARY_DOUBLE) val).doubleValue()
+                                        : val instanceof BigDecimal
+                                                ? ((BigDecimal) val).doubleValue()
+                                                : val;
             case TINYINT:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).byteValue()
-                        : val instanceof BigDecimal ? ((BigDecimal) val).byteValue() : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).byteValue()
+                                : val instanceof BigDecimal ? ((BigDecimal) val).byteValue() : val;
             case SMALLINT:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).shortValue()
-                        : val instanceof BigDecimal ? ((BigDecimal) val).shortValue() : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).shortValue()
+                                : val instanceof BigDecimal ? ((BigDecimal) val).shortValue() : val;
             case INTEGER:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).intValue()
-                        : val instanceof BigDecimal ? ((BigDecimal) val).intValue() : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).intValue()
+                                : val instanceof BigDecimal ? ((BigDecimal) val).intValue() : val;
             case BIGINT:
-                return val -> val instanceof NUMBER
-                        ? ((NUMBER) val).longValue()
-                        : val instanceof BigDecimal ? ((BigDecimal) val).longValue() : val;
+                return val ->
+                        val instanceof NUMBER
+                                ? ((NUMBER) val).longValue()
+                                : val instanceof BigDecimal ? ((BigDecimal) val).longValue() : val;
             case DECIMAL:
                 final int precision = ((DecimalType) type).getPrecision();
                 final int scale = ((DecimalType) type).getScale();
-                return val -> val instanceof BigInteger
-                        ? DecimalData.fromBigDecimal(new BigDecimal((BigInteger) val, 0), precision, scale)
-                        : DecimalData.fromBigDecimal((BigDecimal) val, precision, scale);
+                return val ->
+                        val instanceof BigInteger
+                                ? DecimalData.fromBigDecimal(
+                                        new BigDecimal((BigInteger) val, 0), precision, scale)
+                                : DecimalData.fromBigDecimal((BigDecimal) val, precision, scale);
             case CHAR:
             case VARCHAR:
-                return val -> (val instanceof CHAR)
-                        ? StringData.fromString(((CHAR) val).getString())
-                        : (val instanceof OracleClob)
-                                ? StringData.fromString(((OracleClob) val).stringValue())
-                                : StringData.fromString((String) val);
+                return val ->
+                        (val instanceof CHAR)
+                                ? StringData.fromString(((CHAR) val).getString())
+                                : (val instanceof OracleClob)
+                                        ? StringData.fromString(((OracleClob) val).stringValue())
+                                        : StringData.fromString((String) val);
             case BINARY:
             case VARBINARY:
             case RAW:
-                return val -> val instanceof RAW
-                        ? ((RAW) val).getBytes()
-                        : val instanceof OracleBlob
-                                ? ((OracleBlob) val)
-                                        .getBytes(1, (int) ((OracleBlob) val).length())
-                                : val.toString().getBytes();
+                return val ->
+                        val instanceof RAW
+                                ? ((RAW) val).getBytes()
+                                : val instanceof OracleBlob
+                                        ? ((OracleBlob) val)
+                                                .getBytes(1, (int) ((OracleBlob) val).length())
+                                        : val.toString().getBytes();
 
             case INTERVAL_YEAR_MONTH:
             case INTERVAL_DAY_TIME:
                 return val -> val instanceof NUMBER ? ((NUMBER) val).intValue() : val;
             case DATE:
-                return val -> val instanceof DATE
-                        ? (int) (((DATE) val).dateValue().toLocalDate().toEpochDay())
-                        : val instanceof Timestamp
-                                ? (int) (((Timestamp) val)
-                                        .toLocalDateTime()
-                                        .toLocalDate()
-                                        .toEpochDay())
-                                : (int) (((Date) val).toLocalDate().toEpochDay());
+                return val ->
+                        val instanceof DATE
+                                ? (int) (((DATE) val).dateValue().toLocalDate().toEpochDay())
+                                : val instanceof Timestamp
+                                        ? (int)
+                                                (((Timestamp) val)
+                                                        .toLocalDateTime()
+                                                        .toLocalDate()
+                                                        .toEpochDay())
+                                        : (int) (((Date) val).toLocalDate().toEpochDay());
             case TIME_WITHOUT_TIME_ZONE:
-                return val -> val instanceof DATE
-                        ? (int) (((DATE) val).timeValue().toLocalTime().toNanoOfDay()
-                                / 1_000_000L)
-                        : (int) (((Time) val).toLocalTime().toNanoOfDay() / 1_000_000L);
+                return val ->
+                        val instanceof DATE
+                                ? (int)
+                                        (((DATE) val).timeValue().toLocalTime().toNanoOfDay()
+                                                / 1_000_000L)
+                                : (int) (((Time) val).toLocalTime().toNanoOfDay() / 1_000_000L);
             case TIMESTAMP_WITHOUT_TIME_ZONE:
-                return val -> val instanceof TIMESTAMP
-                        ? TimestampData.fromTimestamp(((TIMESTAMP) val).timestampValue())
-                        : TimestampData.fromTimestamp((Timestamp) val);
+                return val ->
+                        val instanceof TIMESTAMP
+                                ? TimestampData.fromTimestamp(((TIMESTAMP) val).timestampValue())
+                                : TimestampData.fromTimestamp((Timestamp) val);
             case TIMESTAMP_WITH_TIME_ZONE:
                 return val -> {
                     if (val instanceof TIMESTAMPTZ) {

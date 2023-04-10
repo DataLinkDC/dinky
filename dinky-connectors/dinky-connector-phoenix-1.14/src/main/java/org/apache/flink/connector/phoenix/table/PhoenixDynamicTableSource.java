@@ -43,9 +43,12 @@ import java.util.Objects;
  * PhoenixDynamicTableSource
  *
  * @since 2022/3/17 10:40
- **/
-public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSource, SupportsProjectionPushDown,
-        SupportsLimitPushDown {
+ */
+public class PhoenixDynamicTableSource
+        implements ScanTableSource,
+                LookupTableSource,
+                SupportsProjectionPushDown,
+                SupportsLimitPushDown {
 
     private final PhoenixJdbcOptions options;
     private final JdbcReadOptions readOptions;
@@ -54,13 +57,16 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
     private final String dialectName;
     private long limit = -1L;
 
-    public PhoenixDynamicTableSource(PhoenixJdbcOptions options, JdbcReadOptions readOptions, JdbcLookupOptions lookupOptions, TableSchema physicalSchema) {
+    public PhoenixDynamicTableSource(
+            PhoenixJdbcOptions options,
+            JdbcReadOptions readOptions,
+            JdbcLookupOptions lookupOptions,
+            TableSchema physicalSchema) {
         this.options = options;
         this.readOptions = readOptions;
         this.lookupOptions = lookupOptions;
         this.physicalSchema = physicalSchema;
         this.dialectName = options.getDialect().dialectName();
-
     }
 
     @Override
@@ -87,29 +93,41 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
 
     @Override
     public ScanRuntimeProvider getScanRuntimeProvider(ScanContext runtimeProviderContext) {
-        PhoenixJdbcRowDataInputFormat.Builder builder = PhoenixJdbcRowDataInputFormat.builder()
-                .setDrivername(this.options.getDriverName())
-                .setDBUrl(this.options.getDbURL())
-                .setUsername((String)this.options.getUsername().orElse((String) null))
-                .setPassword((String)this.options.getPassword().orElse((String) null))
-                .setAutoCommit(this.readOptions.getAutoCommit())
-                //setting phoenix schema
-                .setNamespaceMappingEnabled(this.options.getNamespaceMappingEnabled())
-                .setMapSystemTablesToNamespace(this.options.getMapSystemTablesToNamespace())
-                ;
+        PhoenixJdbcRowDataInputFormat.Builder builder =
+                PhoenixJdbcRowDataInputFormat.builder()
+                        .setDrivername(this.options.getDriverName())
+                        .setDBUrl(this.options.getDbURL())
+                        .setUsername((String) this.options.getUsername().orElse((String) null))
+                        .setPassword((String) this.options.getPassword().orElse((String) null))
+                        .setAutoCommit(this.readOptions.getAutoCommit())
+                        // setting phoenix schema
+                        .setNamespaceMappingEnabled(this.options.getNamespaceMappingEnabled())
+                        .setMapSystemTablesToNamespace(
+                                this.options.getMapSystemTablesToNamespace());
 
         if (this.readOptions.getFetchSize() != 0) {
             builder.setFetchSize(this.readOptions.getFetchSize());
         }
 
         JdbcDialect dialect = this.options.getDialect();
-        String query = dialect.getSelectFromStatement(this.options.getTableName(), this.physicalSchema.getFieldNames(), new String[0]);
+        String query =
+                dialect.getSelectFromStatement(
+                        this.options.getTableName(),
+                        this.physicalSchema.getFieldNames(),
+                        new String[0]);
         if (this.readOptions.getPartitionColumnName().isPresent()) {
-            long lowerBound = (Long)this.readOptions.getPartitionLowerBound().get();
-            long upperBound = (Long)this.readOptions.getPartitionUpperBound().get();
-            int numPartitions = (Integer)this.readOptions.getNumPartitions().get();
-            builder.setParametersProvider((new JdbcNumericBetweenParametersProvider(lowerBound, upperBound)).ofBatchNum(numPartitions));
-            query = query + " WHERE " + dialect.quoteIdentifier((String)this.readOptions.getPartitionColumnName().get()) + " BETWEEN ? AND ?";
+            long lowerBound = (Long) this.readOptions.getPartitionLowerBound().get();
+            long upperBound = (Long) this.readOptions.getPartitionUpperBound().get();
+            int numPartitions = (Integer) this.readOptions.getNumPartitions().get();
+            builder.setParametersProvider(
+                    (new JdbcNumericBetweenParametersProvider(lowerBound, upperBound))
+                            .ofBatchNum(numPartitions));
+            query =
+                    query
+                            + " WHERE "
+                            + dialect.quoteIdentifier(
+                                    (String) this.readOptions.getPartitionColumnName().get())
+                            + " BETWEEN ? AND ?";
         }
 
         if (this.limit >= 0L) {
@@ -117,9 +135,10 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
         }
 
         builder.setQuery(query);
-        RowType rowType = (RowType)this.physicalSchema.toRowDataType().getLogicalType();
+        RowType rowType = (RowType) this.physicalSchema.toRowDataType().getLogicalType();
         builder.setRowConverter(dialect.getRowConverter(rowType));
-        builder.setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(this.physicalSchema.toRowDataType()));
+        builder.setRowDataTypeInfo(
+                runtimeProviderContext.createTypeInformation(this.physicalSchema.toRowDataType()));
         return InputFormatProvider.of(builder.build());
     }
 
@@ -139,7 +158,8 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
     }
 
     public DynamicTableSource copy() {
-        return new PhoenixDynamicTableSource(this.options, this.readOptions, this.lookupOptions, this.physicalSchema);
+        return new PhoenixDynamicTableSource(
+                this.options, this.readOptions, this.lookupOptions, this.physicalSchema);
     }
 
     public String asSummaryString() {
@@ -152,7 +172,7 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
         } else if (!(o instanceof PhoenixDynamicTableSource)) {
             return false;
         } else {
-            PhoenixDynamicTableSource that = (PhoenixDynamicTableSource)o;
+            PhoenixDynamicTableSource that = (PhoenixDynamicTableSource) o;
             return Objects.equals(this.options, that.options)
                     && Objects.equals(this.physicalSchema, that.physicalSchema)
                     && Objects.equals(this.dialectName, that.dialectName)
@@ -161,7 +181,15 @@ public class PhoenixDynamicTableSource implements ScanTableSource, LookupTableSo
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[]{this.options, this.readOptions, this.lookupOptions, this.physicalSchema, this.dialectName, this.limit});
+        return Objects.hash(
+                new Object[] {
+                    this.options,
+                    this.readOptions,
+                    this.lookupOptions,
+                    this.physicalSchema,
+                    this.dialectName,
+                    this.limit
+                });
     }
 
     public void applyLimit(long limit) {

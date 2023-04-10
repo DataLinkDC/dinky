@@ -25,7 +25,7 @@ import org.apache.flink.table.types.logical.RowType;
  * PhoenixRowConverter
  *
  * @since 2022/3/16 11:21
- **/
+ */
 public class PhoenixRowConverter extends AbstractJdbcRowConverter {
 
     private static final long serialVersionUID = 1L;

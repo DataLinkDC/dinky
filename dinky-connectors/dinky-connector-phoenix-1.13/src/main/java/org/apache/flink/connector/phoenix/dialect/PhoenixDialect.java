@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * PhoenixDialect
  *
  * @since 2022/3/16 11:19
- **/
+ */
 public class PhoenixDialect extends AbstractDialect {
     private static final long serialVersionUID = 1L;
 
@@ -44,7 +44,8 @@ public class PhoenixDialect extends AbstractDialect {
     private static final int MIN_DECIMAL_PRECISION = 1;
 
     @Override
-    public String getSelectFromStatement(String tableName, String[] selectFields, String[] conditionFields) {
+    public String getSelectFromStatement(
+            String tableName, String[] selectFields, String[] conditionFields) {
 
         return null;
     }
@@ -70,31 +71,48 @@ public class PhoenixDialect extends AbstractDialect {
     }
 
     /**
-     * phoenix不支持  ` 号
-     * 不加任何 " ` 号 在列名以及表名上，否则会导致phoenix解析错误
+     * phoenix不支持 ` 号 不加任何 " ` 号 在列名以及表名上，否则会导致phoenix解析错误
+     *
      * @param identifier
      * @return
      */
     @Override
     public String quoteIdentifier(String identifier) {
-        //return "`" + identifier + "`";
-        //return super.quoteIdentifier(identifier);
+        // return "`" + identifier + "`";
+        // return super.quoteIdentifier(identifier);
         return identifier;
     }
 
     @Override
-    public Optional<String> getUpsertStatement(String tableName, String[] fieldNames, String[] uniqueKeyFields) {
-        String columns = (String) Arrays.stream(fieldNames).map(this::quoteIdentifier).collect(Collectors.joining(", "));
-        String placeholders = (String) Arrays.stream(fieldNames).map((f) -> {
-            return ":" + f;
-        }).collect(Collectors.joining(", "));
-        String sql = "UPSERT INTO " + this.quoteIdentifier(tableName) + "(" + columns + ") VALUES (" + placeholders + ")";
+    public Optional<String> getUpsertStatement(
+            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+        String columns =
+                (String)
+                        Arrays.stream(fieldNames)
+                                .map(this::quoteIdentifier)
+                                .collect(Collectors.joining(", "));
+        String placeholders =
+                (String)
+                        Arrays.stream(fieldNames)
+                                .map(
+                                        (f) -> {
+                                            return ":" + f;
+                                        })
+                                .collect(Collectors.joining(", "));
+        String sql =
+                "UPSERT INTO "
+                        + this.quoteIdentifier(tableName)
+                        + "("
+                        + columns
+                        + ") VALUES ("
+                        + placeholders
+                        + ")";
         return Optional.of(sql);
     }
 
     @Override
     public String getInsertIntoStatement(String tableName, String[] fieldNames) {
-        return this.getUpsertStatement(tableName,fieldNames,null).get();
+        return this.getUpsertStatement(tableName, fieldNames, null).get();
     }
 
     @Override

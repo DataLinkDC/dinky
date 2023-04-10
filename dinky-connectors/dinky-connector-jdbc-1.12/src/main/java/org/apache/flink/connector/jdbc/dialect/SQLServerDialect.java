@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * SQLServerDialect
  *
  * @since 2021/12/9
- **/
+ */
 public class SQLServerDialect extends AbstractDialect {
     private static final long serialVersionUID = 1L;
 
@@ -93,9 +93,18 @@ public class SQLServerDialect extends AbstractDialect {
                         .map(f -> quoteIdentifier(f) + " = :" + quoteIdentifier(f))
                         .collect(Collectors.joining(" AND "));
         String sql =
-                "IF EXISTS ( SELECT * FROM " + tableName + " WHERE " + onClause + " ) "
+                "IF EXISTS ( SELECT * FROM "
+                        + tableName
+                        + " WHERE "
+                        + onClause
+                        + " ) "
                         + " BEGIN "
-                        + " UPDATE " + tableName + " SET " + updateClause + " WHERE " + onClause
+                        + " UPDATE "
+                        + tableName
+                        + " SET "
+                        + updateClause
+                        + " WHERE "
+                        + onClause
                         + " END "
                         + " ELSE "
                         + " BEGIN "

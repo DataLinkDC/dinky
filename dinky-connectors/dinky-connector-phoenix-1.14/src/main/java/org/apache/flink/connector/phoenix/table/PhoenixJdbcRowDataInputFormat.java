@@ -55,8 +55,9 @@ import org.slf4j.LoggerFactory;
  * PhoenixJdbcRowDataInputFormat
  *
  * @since 2022/3/17 10:53
- **/
-public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, InputSplit> implements ResultTypeQueryable<RowData> {
+ */
+public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, InputSplit>
+        implements ResultTypeQueryable<RowData> {
     private static final long serialVersionUID = 2L;
     private static final Logger LOG = LoggerFactory.getLogger(PhoenixJdbcRowDataInputFormat.class);
     private JdbcConnectionProvider connectionProvider;
@@ -76,10 +77,16 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
 
     private PhoenixJdbcRowDataInputFormat(
             JdbcConnectionProvider connectionProvider,
-            int fetchSize, Boolean autoCommit, Object[][] parameterValues,
-            String queryTemplate, int resultSetType, int resultSetConcurrency,
-            JdbcRowConverter rowConverter, TypeInformation<RowData> rowDataTypeInfo,
-            boolean namespaceMappingEnabled,boolean mapSystemTablesEnabled) {
+            int fetchSize,
+            Boolean autoCommit,
+            Object[][] parameterValues,
+            String queryTemplate,
+            int resultSetType,
+            int resultSetConcurrency,
+            JdbcRowConverter rowConverter,
+            TypeInformation<RowData> rowDataTypeInfo,
+            boolean namespaceMappingEnabled,
+            boolean mapSystemTablesEnabled) {
         this.connectionProvider = connectionProvider;
         this.fetchSize = fetchSize;
         this.autoCommit = autoCommit;
@@ -93,8 +100,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         this.mapSystemTablesEnabled = mapSystemTablesEnabled;
     }
 
-    public void configure(Configuration parameters) {
-    }
+    public void configure(Configuration parameters) {}
 
     public void openInputFormat() {
         try {
@@ -103,7 +109,9 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                 dbConn.setAutoCommit(this.autoCommit);
             }
 
-            this.statement = dbConn.prepareStatement(this.queryTemplate, this.resultSetType, this.resultSetConcurrency);
+            this.statement =
+                    dbConn.prepareStatement(
+                            this.queryTemplate, this.resultSetType, this.resultSetConcurrency);
             if (this.fetchSize == -2147483648 || this.fetchSize > 0) {
                 this.statement.setFetchSize(this.fetchSize);
             }
@@ -111,7 +119,8 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         } catch (SQLException var2) {
             throw new IllegalArgumentException("open() failed." + var2.getMessage(), var2);
         } catch (ClassNotFoundException var3) {
-            throw new IllegalArgumentException("JDBC-Class not found. - " + var3.getMessage(), var3);
+            throw new IllegalArgumentException(
+                    "JDBC-Class not found. - " + var3.getMessage(), var3);
         }
     }
 
@@ -127,7 +136,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         }
 
         this.connectionProvider.closeConnection();
-        this.parameterValues = (Object[][])null;
+        this.parameterValues = (Object[][]) null;
     }
 
     public void open(InputSplit inputSplit) throws IOException {
@@ -136,40 +145,50 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                 for (int i = 0; i < this.parameterValues[inputSplit.getSplitNumber()].length; ++i) {
                     Object param = this.parameterValues[inputSplit.getSplitNumber()][i];
                     if (param instanceof String) {
-                        this.statement.setString(i + 1, (String)param);
+                        this.statement.setString(i + 1, (String) param);
                     } else if (param instanceof Long) {
-                        this.statement.setLong(i + 1, (Long)param);
+                        this.statement.setLong(i + 1, (Long) param);
                     } else if (param instanceof Integer) {
-                        this.statement.setInt(i + 1, (Integer)param);
+                        this.statement.setInt(i + 1, (Integer) param);
                     } else if (param instanceof Double) {
-                        this.statement.setDouble(i + 1, (Double)param);
+                        this.statement.setDouble(i + 1, (Double) param);
                     } else if (param instanceof Boolean) {
-                        this.statement.setBoolean(i + 1, (Boolean)param);
+                        this.statement.setBoolean(i + 1, (Boolean) param);
                     } else if (param instanceof Float) {
-                        this.statement.setFloat(i + 1, (Float)param);
+                        this.statement.setFloat(i + 1, (Float) param);
                     } else if (param instanceof BigDecimal) {
-                        this.statement.setBigDecimal(i + 1, (BigDecimal)param);
+                        this.statement.setBigDecimal(i + 1, (BigDecimal) param);
                     } else if (param instanceof Byte) {
-                        this.statement.setByte(i + 1, (Byte)param);
+                        this.statement.setByte(i + 1, (Byte) param);
                     } else if (param instanceof Short) {
-                        this.statement.setShort(i + 1, (Short)param);
+                        this.statement.setShort(i + 1, (Short) param);
                     } else if (param instanceof Date) {
-                        this.statement.setDate(i + 1, (Date)param);
+                        this.statement.setDate(i + 1, (Date) param);
                     } else if (param instanceof Time) {
-                        this.statement.setTime(i + 1, (Time)param);
+                        this.statement.setTime(i + 1, (Time) param);
                     } else if (param instanceof Timestamp) {
-                        this.statement.setTimestamp(i + 1, (Timestamp)param);
+                        this.statement.setTimestamp(i + 1, (Timestamp) param);
                     } else {
                         if (!(param instanceof Array)) {
-                            throw new IllegalArgumentException("open() failed. Parameter " + i + " of type " + param.getClass() + " is not handled (yet).");
+                            throw new IllegalArgumentException(
+                                    "open() failed. Parameter "
+                                            + i
+                                            + " of type "
+                                            + param.getClass()
+                                            + " is not handled (yet).");
                         }
 
-                        this.statement.setArray(i + 1, (Array)param);
+                        this.statement.setArray(i + 1, (Array) param);
                     }
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(String.format("Executing '%s' with parameters %s", this.queryTemplate, Arrays.deepToString(this.parameterValues[inputSplit.getSplitNumber()])));
+                    LOG.debug(
+                            String.format(
+                                    "Executing '%s' with parameters %s",
+                                    this.queryTemplate,
+                                    Arrays.deepToString(
+                                            this.parameterValues[inputSplit.getSplitNumber()])));
                 }
             }
 
@@ -187,7 +206,6 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
             } catch (SQLException var2) {
                 LOG.info("Inputformat ResultSet couldn't be closed - " + var2.getMessage());
             }
-
         }
     }
 
@@ -221,7 +239,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
 
     public InputSplit[] createInputSplits(int minNumSplits) throws IOException {
         if (this.parameterValues == null) {
-            return new GenericInputSplit[]{new GenericInputSplit(0, 1)};
+            return new GenericInputSplit[] {new GenericInputSplit(0, 1)};
         } else {
             GenericInputSplit[] ret = new GenericInputSplit[this.parameterValues.length];
 
@@ -242,7 +260,8 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
     }
 
     public static class Builder {
-        private JdbcConnectionOptions.JdbcConnectionOptionsBuilder connOptionsBuilder = new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
+        private JdbcConnectionOptions.JdbcConnectionOptionsBuilder connOptionsBuilder =
+                new JdbcConnectionOptions.JdbcConnectionOptionsBuilder();
         private int fetchSize;
         private Boolean autoCommit;
         private Object[][] parameterValues;
@@ -254,8 +273,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         private boolean namespaceMappingEnabled;
         private boolean mapSystemTablesEnabled;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public Builder setDrivername(String drivername) {
             this.connOptionsBuilder.withDriverName(drivername);
@@ -298,7 +316,10 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         }
 
         public Builder setFetchSize(int fetchSize) {
-            Preconditions.checkArgument(fetchSize == -2147483648 || fetchSize > 0, "Illegal value %s for fetchSize, has to be positive or Integer.MIN_VALUE.", new Object[]{fetchSize});
+            Preconditions.checkArgument(
+                    fetchSize == -2147483648 || fetchSize > 0,
+                    "Illegal value %s for fetchSize, has to be positive or Integer.MIN_VALUE.",
+                    new Object[] {fetchSize});
             this.fetchSize = fetchSize;
             return this;
         }
@@ -335,14 +356,26 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                 throw new NullPointerException("No row converter supplied");
             } else {
                 if (this.parameterValues == null) {
-                    PhoenixJdbcRowDataInputFormat.LOG.debug("No input splitting configured (data will be read with parallelism 1).");
+                    PhoenixJdbcRowDataInputFormat.LOG.debug(
+                            "No input splitting configured (data will be read with parallelism 1).");
                 }
 
-                return new PhoenixJdbcRowDataInputFormat(new PhoneixJdbcConnectionProvider(this.connOptionsBuilder.build(),this.namespaceMappingEnabled,this.mapSystemTablesEnabled),
-                        this.fetchSize, this.autoCommit, this.parameterValues, this.queryTemplate, this.resultSetType, this.resultSetConcurrency, this.rowConverter,
-                        this.rowDataTypeInfo,this.namespaceMappingEnabled,this.mapSystemTablesEnabled);
+                return new PhoenixJdbcRowDataInputFormat(
+                        new PhoneixJdbcConnectionProvider(
+                                this.connOptionsBuilder.build(),
+                                this.namespaceMappingEnabled,
+                                this.mapSystemTablesEnabled),
+                        this.fetchSize,
+                        this.autoCommit,
+                        this.parameterValues,
+                        this.queryTemplate,
+                        this.resultSetType,
+                        this.resultSetConcurrency,
+                        this.rowConverter,
+                        this.rowDataTypeInfo,
+                        this.namespaceMappingEnabled,
+                        this.mapSystemTablesEnabled);
             }
         }
-
     }
 }

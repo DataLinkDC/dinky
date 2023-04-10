@@ -25,7 +25,7 @@ import org.apache.flink.table.types.logical.RowType;
  * SQLServerRowConverter
  *
  * @since 2021/12/9
- **/
+ */
 public class SQLServerRowConverter extends AbstractJdbcRowConverter {
 
     private static final long serialVersionUID = 1L;

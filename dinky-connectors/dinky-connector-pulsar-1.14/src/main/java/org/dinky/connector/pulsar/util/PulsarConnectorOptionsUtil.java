@@ -24,10 +24,7 @@ import org.apache.flink.annotation.PublicEvolving;
 import java.util.Map;
 import java.util.Properties;
 
-/**
- * * @version 1.0
- * * @Desc:
- **/
+/** * @version 1.0 * @Desc: */
 
 /** Utilities for {@link PulsarConnectorOptions}. */
 @PublicEvolving
@@ -61,6 +58,5 @@ public class PulsarConnectorOptionsUtil {
         return tableOptions.keySet().stream().anyMatch(k -> k.startsWith(PROPERTIES_PREFIX));
     }
 
-    private PulsarConnectorOptionsUtil() {
-    }
+    private PulsarConnectorOptionsUtil() {}
 }

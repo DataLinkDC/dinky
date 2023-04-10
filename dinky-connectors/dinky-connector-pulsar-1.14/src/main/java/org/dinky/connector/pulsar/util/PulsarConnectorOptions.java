@@ -28,10 +28,7 @@ import org.apache.flink.configuration.DescribedEnum;
 import org.apache.flink.configuration.description.InlineElement;
 import org.apache.pulsar.client.api.SubscriptionType;
 
-/**
- * * @version 1.0
- * * @Desc:
- **/
+/** * @version 1.0 * @Desc: */
 
 /** Options for the Pulsar connector. */
 @PublicEvolving
@@ -44,36 +41,31 @@ public class PulsarConnectorOptions {
             ConfigOptions.key("connector.service-url")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar service url. ");
+                    .withDescription("Defines pulsar service url. ");
 
     public static final ConfigOption<String> ADMIN_URL =
             ConfigOptions.key("connector.admin-url")
                     .stringType()
                     .defaultValue("http://pulsar-dinky-qa.dinky.com:8080")
-                    .withDescription(
-                            "Defines pulsar admin url. ");
+                    .withDescription("Defines pulsar admin url. ");
 
     public static final ConfigOption<String> TOPIC =
             ConfigOptions.key("connector.topic")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar topic. ");
+                    .withDescription("Defines pulsar topic. ");
 
     public static final ConfigOption<String> SUBSCRIPTION_NAME =
             ConfigOptions.key("connector.subscription-name")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar subscription name. ");
+                    .withDescription("Defines pulsar subscription name. ");
 
     public static final ConfigOption<SubscriptionType> SUBSCRIPTION_TYPE =
             ConfigOptions.key("connector.subscription-type")
                     .enumType(SubscriptionType.class)
                     .defaultValue(SubscriptionType.Shared)
-                    .withDescription(
-                            "Defines pulsar subscription type. ");
+                    .withDescription("Defines pulsar subscription type. ");
 
     public static final ConfigOption<ScanStartupMode> SUBSCRIPTION_INITIAL_POSITION =
             ConfigOptions.key("connector.subscription-initial-position")
@@ -85,42 +77,38 @@ public class PulsarConnectorOptions {
             ConfigOptions.key("connector.subscription-initial-position.timestamp")
                     .longType()
                     .noDefaultValue()
-                    .withDescription("Start from the specified message time by Message<byte[]>.getPublishTime().");
+                    .withDescription(
+                            "Start from the specified message time by Message<byte[]>.getPublishTime().");
 
     public static final ConfigOption<String> UPDATE_MODE =
             ConfigOptions.key("update-mode")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar update mode. ");
+                    .withDescription("Defines pulsar update mode. ");
     public static final ConfigOption<Integer> SOURCE_PARALLELISM =
             ConfigOptions.key("source-parallelism")
                     .intType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar sink parallelism. ");
+                    .withDescription("Defines pulsar sink parallelism. ");
     public static final ConfigOption<Integer> SINK_PARALLELISM =
             ConfigOptions.key("sink-parallelism")
                     .intType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar sink parallelism. ");
+                    .withDescription("Defines pulsar sink parallelism. ");
 
-    //与老平台 1.14.3之前版本的sql进行兼容，但是并未使用的参数
+    // 与老平台 1.14.3之前版本的sql进行兼容，但是并未使用的参数
     public static final ConfigOption<String> VERSION =
             ConfigOptions.key("connector.version")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar version. ");
+                    .withDescription("Defines pulsar version. ");
 
-    //与老平台 1.14.3之前版本的sql进行兼容，但是并未使用的参数
+    // 与老平台 1.14.3之前版本的sql进行兼容，但是并未使用的参数
     public static final ConfigOption<String> DERIVE_SCHEMA =
             ConfigOptions.key("format.derive-schema")
                     .stringType()
                     .noDefaultValue()
-                    .withDescription(
-                            "Defines pulsar derive schema. ");
+                    .withDescription("Defines pulsar derive schema. ");
 
     // --------------------------------------------------------------------------------------------
     // Enums
@@ -130,7 +118,9 @@ public class PulsarConnectorOptions {
     public enum ScanStartupMode implements DescribedEnum {
         EARLIEST("Earliest", text("Start from the earliest available message in the topic..")),
         LATEST("Latest", text("Start from the latest available message in the topic.")),
-        TIMESTAMP("Timestamp", text("Start from the specified message time by Message<byte[]>.getPublishTime()."));
+        TIMESTAMP(
+                "Timestamp",
+                text("Start from the specified message time by Message<byte[]>.getPublishTime()."));
 
         private final String value;
         private final InlineElement description;
@@ -151,6 +141,5 @@ public class PulsarConnectorOptions {
         }
     }
 
-    private PulsarConnectorOptions() {
-    }
+    private PulsarConnectorOptions() {}
 }

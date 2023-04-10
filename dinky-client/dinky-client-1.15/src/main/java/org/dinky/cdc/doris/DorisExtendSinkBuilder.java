@@ -54,9 +54,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @since 2022/11/10 19:37
- */
+/** @since 2022/11/10 19:37 */
 public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "datastream-doris-ext";

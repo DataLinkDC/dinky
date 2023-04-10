@@ -50,10 +50,10 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 /**
- *  PhoenixJdbcDynamicOutputFormatBuilder
+ * PhoenixJdbcDynamicOutputFormatBuilder
  *
  * @since 2022/3/17 11:43J
- **/
+ */
 public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
     private static final long serialVersionUID = 1L;
 
@@ -104,7 +104,10 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
         if (dmlOptions.getKeyFields().isPresent() && dmlOptions.getKeyFields().get().length > 0) {
             // upsert query
             return new JdbcBatchingOutputFormat<>(
-                    new PhoneixJdbcConnectionProvider(jdbcOptions,jdbcOptions.getNamespaceMappingEnabled(),jdbcOptions.getMapSystemTablesToNamespace()),
+                    new PhoneixJdbcConnectionProvider(
+                            jdbcOptions,
+                            jdbcOptions.getNamespaceMappingEnabled(),
+                            jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
                     ctx ->
                             createBufferReduceExecutor(
@@ -118,7 +121,10 @@ public class PhoenixJdbcDynamicOutputFormatBuilder implements Serializable {
                             .getInsertIntoStatement(
                                     dmlOptions.getTableName(), dmlOptions.getFieldNames());
             return new JdbcBatchingOutputFormat<>(
-                    new PhoneixJdbcConnectionProvider(jdbcOptions,jdbcOptions.getNamespaceMappingEnabled(),jdbcOptions.getMapSystemTablesToNamespace()),
+                    new PhoneixJdbcConnectionProvider(
+                            jdbcOptions,
+                            jdbcOptions.getNamespaceMappingEnabled(),
+                            jdbcOptions.getMapSystemTablesToNamespace()),
                     executionOptions,
                     ctx ->
                             createSimpleBufferedExecutor(

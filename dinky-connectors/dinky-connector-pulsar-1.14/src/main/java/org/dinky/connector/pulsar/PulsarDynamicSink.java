@@ -35,14 +35,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 
-/**
- * * @version 1.0
- * * @Desc:
- **/
+/** * @version 1.0 * @Desc: */
 
-/**
- * A version-agnostic Pulsar {@link DynamicTableSink}.
- */
+/** A version-agnostic Pulsar {@link DynamicTableSink}. */
 @Internal
 public class PulsarDynamicSink implements DynamicTableSink {
 
@@ -50,63 +45,42 @@ public class PulsarDynamicSink implements DynamicTableSink {
     // Mutable attributes
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Metadata that is appended at the end of a physical sink row.
-     */
+    /** Metadata that is appended at the end of a physical sink row. */
     protected List<String> metadataKeys;
 
     // --------------------------------------------------------------------------------------------
     // Format attributes
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * Data type of consumed data type.
-     */
+    /** Data type of consumed data type. */
     protected DataType consumedDataType;
 
-    /**
-     * Data type to configure the formats.
-     */
+    /** Data type to configure the formats. */
     protected final DataType physicalDataType;
 
-    /**
-     * Optional format for encoding to Pulsar.
-     */
+    /** Optional format for encoding to Pulsar. */
     protected final EncodingFormat<SerializationSchema<RowData>> encodingFormat;
 
     // --------------------------------------------------------------------------------------------
     // Pulsar-specific attributes
     // --------------------------------------------------------------------------------------------
 
-    /**
-     * The Pulsar topic to write to.
-     */
+    /** The Pulsar topic to write to. */
     protected final String topic;
 
-    /**
-     * The Pulsar service url config.
-     */
+    /** The Pulsar service url config. */
     protected final String serviceUrl;
 
-    /**
-     * The Pulsar update mode to.
-     */
+    /** The Pulsar update mode to. */
     protected final String updateMode;
 
-
-    /**
-     * Properties for the Pulsar producer.
-     */
+    /** Properties for the Pulsar producer. */
     protected final Properties pulsarProducerProperties;
 
-    /**
-     * Properties for the Pulsar producer.
-     */
+    /** Properties for the Pulsar producer. */
     protected final Properties pulsarClientProperties;
 
-    /**
-     * Properties for the Pulsar producer parallelism.
-     */
+    /** Properties for the Pulsar producer parallelism. */
     protected final Integer sinkParallelism;
 
     public PulsarDynamicSink(
@@ -128,17 +102,18 @@ public class PulsarDynamicSink implements DynamicTableSink {
         this.topic = checkNotNull(topic, "Topic must not be null.");
         this.serviceUrl = checkNotNull(serviceUrl, "Service url must not be null.");
         this.updateMode = checkNotNull(updateMode, "Update mode must not be null.");
-        this.pulsarProducerProperties = checkNotNull(pulsarProducerProperties, "pulsarProducerProperties must not be null.");
-        this.pulsarClientProperties = checkNotNull(pulsarClientProperties, "pulsarClientProperties must not be null.");
+        this.pulsarProducerProperties =
+                checkNotNull(
+                        pulsarProducerProperties, "pulsarProducerProperties must not be null.");
+        this.pulsarClientProperties =
+                checkNotNull(pulsarClientProperties, "pulsarClientProperties must not be null.");
         this.sinkParallelism = sinkParallelism;
     }
 
     @Override
     public ChangelogMode getChangelogMode(ChangelogMode requestedMode) {
         if (updateMode.equals("append")) {
-            return ChangelogMode.newBuilder()
-                    .addContainedKind(RowKind.INSERT)
-                    .build();
+            return ChangelogMode.newBuilder().addContainedKind(RowKind.INSERT).build();
         } else {
             return ChangelogMode.newBuilder()
                     .addContainedKind(RowKind.INSERT)
@@ -149,7 +124,8 @@ public class PulsarDynamicSink implements DynamicTableSink {
 
     @Override
     public SinkRuntimeProvider getSinkRuntimeProvider(Context context) {
-        SerializationSchema<RowData> runtimeEncoder = encodingFormat.createRuntimeEncoder(context, physicalDataType);
+        SerializationSchema<RowData> runtimeEncoder =
+                encodingFormat.createRuntimeEncoder(context, physicalDataType);
 
         PulsarSinkFunction<RowData> sinkFunction =
                 new PulsarSinkFunction<>(
@@ -158,13 +134,12 @@ public class PulsarDynamicSink implements DynamicTableSink {
                         pulsarProducerProperties,
                         pulsarClientProperties,
                         runtimeEncoder);
-        //sink的并行度设置
+        // sink的并行度设置
         if (sinkParallelism != null) {
             return SinkFunctionProvider.of(sinkFunction, sinkParallelism);
         } else {
             return SinkFunctionProvider.of(sinkFunction);
         }
-
     }
 
     @Override
@@ -187,5 +162,4 @@ public class PulsarDynamicSink implements DynamicTableSink {
     public String asSummaryString() {
         return "Pulsar table sink";
     }
-
 }
