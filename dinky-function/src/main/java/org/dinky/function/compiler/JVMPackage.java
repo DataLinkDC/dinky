@@ -35,9 +35,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public class JVMPackage implements FunctionPackage {
 
     @Override

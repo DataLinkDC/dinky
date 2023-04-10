@@ -33,9 +33,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 public class AddJarSqlParser {
 
     private static final String ADD_JAR = "(add\\s+jar)\\s+'(.*.jar)'";

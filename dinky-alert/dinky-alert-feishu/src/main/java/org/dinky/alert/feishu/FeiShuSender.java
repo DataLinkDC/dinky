@@ -61,10 +61,7 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
-/**
- * @Author: zhumingye
- *
- */
+/** @Author: zhumingye */
 public final class FeiShuSender {
 
     private static final Logger logger = LoggerFactory.getLogger(FeiShuSender.class);

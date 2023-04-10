@@ -21,9 +21,7 @@ package org.dinky.model;
 
 import java.util.Arrays;
 
-/**
- * @version 1.0
- */
+/** @version 1.0 */
 public enum TaskOperatingSavepointSelect {
     DEFAULT_CONFIG(0, "defaultConfig", "默认保存点"),
 

@@ -23,9 +23,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 
-/**
- * @description: 任务回滚DTO
- */
+/** @description: 任务回滚DTO */
 @Data
 public class TaskRollbackVersionDTO implements Serializable {
 

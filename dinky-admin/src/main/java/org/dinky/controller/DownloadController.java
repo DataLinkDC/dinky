@@ -45,9 +45,7 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 @Slf4j
 @RestController
 @RequestMapping("/download")

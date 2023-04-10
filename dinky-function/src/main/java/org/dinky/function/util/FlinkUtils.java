@@ -24,9 +24,7 @@ import org.apache.flink.runtime.util.EnvironmentInformation;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public class FlinkUtils {
 
     public static String getFlinkVersion() {

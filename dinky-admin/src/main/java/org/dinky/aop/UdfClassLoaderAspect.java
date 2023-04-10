@@ -32,9 +32,7 @@ import org.springframework.stereotype.Component;
 
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 @Aspect
 @Component
 @Slf4j

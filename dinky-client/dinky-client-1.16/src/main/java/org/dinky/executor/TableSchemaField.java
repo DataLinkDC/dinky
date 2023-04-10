@@ -21,9 +21,7 @@ package org.dinky.executor;
 
 import org.apache.flink.table.types.DataType;
 
-/**
- * @since 2022/11/04
- */
+/** @since 2022/11/04 */
 public class TableSchemaField {
 
     private String name;

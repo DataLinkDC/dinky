@@ -32,9 +32,7 @@ import java.time.ZoneId;
 
 import javax.xml.bind.DatatypeConverter;
 
-/**
- * @className: org.dinky.utils.ObjectConvertUtil @Description:
- */
+/** @className: org.dinky.utils.ObjectConvertUtil @Description: */
 public class ObjectConvertUtil {
 
     public static Object convertValue(Object value, LogicalType logicalType) {

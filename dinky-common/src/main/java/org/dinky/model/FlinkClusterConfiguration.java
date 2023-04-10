@@ -24,9 +24,7 @@ import java.util.Map;
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @since
- */
+/** @since */
 @Getter
 @Setter
 public class FlinkClusterConfiguration {

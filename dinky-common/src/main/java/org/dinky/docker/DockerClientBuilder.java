@@ -32,9 +32,7 @@ import com.github.dockerjava.core.DockerClientImpl;
 import com.github.dockerjava.httpclient5.ApacheDockerHttpClient;
 import com.github.dockerjava.transport.DockerHttpClient;
 
-/**
- * @since
- */
+/** @since */
 public class DockerClientBuilder {
 
     private final DockerClientConfig dockerClientConfig;

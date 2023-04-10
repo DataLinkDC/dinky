@@ -30,9 +30,7 @@ import java.util.List;
 import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public interface FunctionCompiler {
 
     /**

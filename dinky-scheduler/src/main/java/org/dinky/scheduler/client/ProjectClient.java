@@ -37,10 +37,7 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpRequest;
 
-/**
- * 项目
- *
- */
+/** 项目 */
 @Component
 public class ProjectClient {
 

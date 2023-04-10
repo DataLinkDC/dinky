@@ -23,8 +23,6 @@ import org.dinky.service.UDFService;
 
 import org.springframework.stereotype.Service;
 
-/**
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 @Service
 public class UDFServiceImpl implements UDFService {}

@@ -23,9 +23,7 @@ import java.io.File;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-/**
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 public class JarPathContextHolder {
 
     private static final ThreadLocal<Set<File>> UDF_PATH_CONTEXT = new ThreadLocal<>();

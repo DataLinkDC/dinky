@@ -47,10 +47,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
 
-/**
- * 任务定义
- *
- */
+/** 任务定义 */
 @Component
 public class TaskClient {
 

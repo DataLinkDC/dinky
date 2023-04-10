@@ -22,10 +22,7 @@ package org.dinky.alert.email;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
-/**
- * EmailAlert
- *
- */
+/** EmailAlert */
 public class EmailAlert extends AbstractAlert {
 
     @Override

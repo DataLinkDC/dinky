@@ -24,9 +24,7 @@ import java.util.Date;
 
 import lombok.Data;
 
-/**
- * @description: 任务版本记录
- */
+/** @description: 任务版本记录 */
 @Data
 public class TaskVersionHistoryDTO implements Serializable {
 

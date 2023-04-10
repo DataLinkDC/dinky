@@ -31,10 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @Author: zhumingye
- *
- */
+/** @Author: zhumingye */
 @Ignore
 public class FeiShuSenderTest {
 

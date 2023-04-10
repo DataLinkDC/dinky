@@ -48,9 +48,7 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
 
-/**
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public class UDFUtils extends UDFUtil {
 
     public static List<UDF> getUDF(String statement) {

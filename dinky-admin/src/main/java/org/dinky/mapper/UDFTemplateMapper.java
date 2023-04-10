@@ -31,9 +31,7 @@ import java.util.Map;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-/**
- * @since 0.6.8 udf 模板mapper
- */
+/** @since 0.6.8 udf 模板mapper */
 @Mapper
 public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {
 

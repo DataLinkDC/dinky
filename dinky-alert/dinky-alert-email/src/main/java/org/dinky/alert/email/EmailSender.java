@@ -60,10 +60,7 @@ import org.slf4j.LoggerFactory;
 
 import com.sun.mail.smtp.SMTPProvider;
 
-/**
- * EmailSender 邮件发送器
- *
- */
+/** EmailSender 邮件发送器 */
 public final class EmailSender {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailSender.class);
