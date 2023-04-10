@@ -626,7 +626,7 @@ public class JobManager {
                 success();
             }
         } catch (Exception e) {
-            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + currentSql, e);
+            String error = LogUtil.getError("Exception in executing FlinkSQL:\n" + addLineNumber(currentSql), e);
             job.setEndTime(LocalDateTime.now());
             job.setStatus(Job.JobStatus.FAILED);
             job.setError(error);
@@ -636,6 +636,18 @@ public class JobManager {
             close();
         }
         return job.getJobResult();
+    }
+
+    public String addLineNumber(String input) {
+        String[] lines = input.split("\n");
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < lines.length; i++) {
+            sb.append(String.format("%-4d", i + 1));
+            sb.append("  ");
+            sb.append(lines[i]);
+            sb.append("\n");
+        }
+        return sb.toString();
     }
 
     private GatewayResult submitByGateway(List<String> inserts) {
