@@ -96,7 +96,6 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return new HashSet<>(
-                Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.FORMAT));
+        return new HashSet<>(Arrays.asList(PRINT_IDENTIFIER, FactoryUtil.FORMAT));
     }
 }
