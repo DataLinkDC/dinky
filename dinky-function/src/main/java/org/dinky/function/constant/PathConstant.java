@@ -26,7 +26,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * 文件路径常量
  *
- * @author ZackYoung
  * @since 0.6.8
  */
 public class PathConstant {

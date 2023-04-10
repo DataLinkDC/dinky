@@ -31,7 +31,6 @@ import java.util.Map;
 /**
  * CDCBuilder
  *
- * @author wenmo
  * @since 2022/11/04
  */
 public interface CDCBuilder {

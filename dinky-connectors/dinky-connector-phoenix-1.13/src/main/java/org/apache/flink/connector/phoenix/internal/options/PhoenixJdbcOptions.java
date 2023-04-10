@@ -32,21 +32,28 @@ import javax.annotation.Nullable;
 /**
  * PhoenixJdbcOptions
  *
- * @author gy
  * @since 2022/3/17 9:57
- **/
+ */
 public class PhoenixJdbcOptions extends JdbcConnectionOptions {
     private static final long serialVersionUID = 1L;
     private String tableName;
     private JdbcDialect dialect;
-    @Nullable
-    private final Integer parallelism;
-    //setting phoenix schema isEnabled
+    @Nullable private final Integer parallelism;
+    // setting phoenix schema isEnabled
     private Boolean isNamespaceMappingEnabled;
     private Boolean mapSystemTablesToNamespace;
 
-    private PhoenixJdbcOptions(String dbURL, String tableName, String driverName, String username, String password, JdbcDialect dialect,
-                               Integer parallelism, int connectionCheckTimeoutSeconds, boolean isNamespaceMappingEnabled, boolean mapSystemTablesToNamespace) {
+    private PhoenixJdbcOptions(
+            String dbURL,
+            String tableName,
+            String driverName,
+            String username,
+            String password,
+            JdbcDialect dialect,
+            Integer parallelism,
+            int connectionCheckTimeoutSeconds,
+            boolean isNamespaceMappingEnabled,
+            boolean mapSystemTablesToNamespace) {
         super(dbURL, driverName, username, password, connectionCheckTimeoutSeconds);
         this.tableName = tableName;
         this.dialect = dialect;
@@ -89,17 +96,33 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
                     && Objects.equals(this.driverName, options.driverName)
                     && Objects.equals(this.username, options.username)
                     && Objects.equals(this.password, options.password)
-                    && Objects.equals(this.dialect.getClass().getName(), options.dialect.getClass().getName())
+                    && Objects.equals(
+                            this.dialect.getClass().getName(), options.dialect.getClass().getName())
                     && Objects.equals(this.parallelism, options.parallelism)
-                    && Objects.equals(this.connectionCheckTimeoutSeconds, options.connectionCheckTimeoutSeconds)
-                    && Objects.equals(this.isNamespaceMappingEnabled, options.isNamespaceMappingEnabled)
-                    && Objects.equals(this.mapSystemTablesToNamespace, options.mapSystemTablesToNamespace);
+                    && Objects.equals(
+                            this.connectionCheckTimeoutSeconds,
+                            options.connectionCheckTimeoutSeconds)
+                    && Objects.equals(
+                            this.isNamespaceMappingEnabled, options.isNamespaceMappingEnabled)
+                    && Objects.equals(
+                            this.mapSystemTablesToNamespace, options.mapSystemTablesToNamespace);
         }
     }
 
     public int hashCode() {
-        return Objects.hash(new Object[] {this.url, this.tableName, this.driverName, this.username, this.password, this.dialect.getClass().getName(),
-            this.parallelism, this.connectionCheckTimeoutSeconds, this.isNamespaceMappingEnabled, this.mapSystemTablesToNamespace});
+        return Objects.hash(
+                new Object[] {
+                    this.url,
+                    this.tableName,
+                    this.driverName,
+                    this.username,
+                    this.password,
+                    this.dialect.getClass().getName(),
+                    this.parallelism,
+                    this.connectionCheckTimeoutSeconds,
+                    this.isNamespaceMappingEnabled,
+                    this.mapSystemTablesToNamespace
+                });
     }
 
     public static class Builder {
@@ -114,8 +137,7 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
         private Boolean isNamespaceMappingEnabled;
         private Boolean mapSystemTablesToNamespace;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public Builder setTableName(String tableName) {
             this.tableName = tableName;
@@ -173,20 +195,37 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
             Optional optional;
             if (this.dialect == null) {
                 optional = JdbcDialects.get(this.dbURL);
-                this.dialect = (JdbcDialect) optional.orElseGet(() -> {
-                    throw new NullPointerException("Unknown dbURL,can not find proper dialect.");
-                });
+                this.dialect =
+                        (JdbcDialect)
+                                optional.orElseGet(
+                                        () -> {
+                                            throw new NullPointerException(
+                                                    "Unknown dbURL,can not find proper dialect.");
+                                        });
             }
 
             if (this.driverName == null) {
                 optional = this.dialect.defaultDriverName();
-                this.driverName = (String) optional.orElseGet(() -> {
-                    throw new NullPointerException("No driverName supplied.");
-                });
+                this.driverName =
+                        (String)
+                                optional.orElseGet(
+                                        () -> {
+                                            throw new NullPointerException(
+                                                    "No driverName supplied.");
+                                        });
             }
 
-            return new PhoenixJdbcOptions(this.dbURL, this.tableName, this.driverName, this.username, this.password, this.dialect,
-                    this.parallelism, this.connectionCheckTimeoutSeconds, this.isNamespaceMappingEnabled, this.mapSystemTablesToNamespace);
+            return new PhoenixJdbcOptions(
+                    this.dbURL,
+                    this.tableName,
+                    this.driverName,
+                    this.username,
+                    this.password,
+                    this.dialect,
+                    this.parallelism,
+                    this.connectionCheckTimeoutSeconds,
+                    this.isNamespaceMappingEnabled,
+                    this.mapSystemTablesToNamespace);
         }
     }
 }

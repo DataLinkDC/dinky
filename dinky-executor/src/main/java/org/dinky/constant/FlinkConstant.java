@@ -22,7 +22,6 @@ package org.dinky.constant;
 /**
  * FlinkConstant
  *
- * @author wenmo
  * @since 2021/5/25 14:39
  */
 public interface FlinkConstant {

@@ -42,7 +42,6 @@ import cn.hutool.core.lang.tree.Tree;
 /**
  * 作业 服务类
  *
- * @author wenmo
  * @since 2021-05-28
  */
 public interface TaskService extends ISuperService<Task> {

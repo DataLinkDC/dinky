@@ -34,7 +34,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * FlinkRestAPITest
  *
- * @author wenmo
  * @since 2021/6/24 14:24
  */
 @Ignore

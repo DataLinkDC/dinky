@@ -46,7 +46,6 @@ import org.springframework.context.annotation.DependsOn;
 /**
  * Job2MysqlHandler
  *
- * @author wenmo
  * @since 2021/6/27 0:04
  */
 @DependsOn("springContextUtils")

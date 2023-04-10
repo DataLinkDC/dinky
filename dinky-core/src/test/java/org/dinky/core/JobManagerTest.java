@@ -35,7 +35,6 @@ import org.slf4j.LoggerFactory;
 /**
  * JobManagerTest
  *
- * @author wenmo
  * @since 2021/6/3
  */
 @Ignore

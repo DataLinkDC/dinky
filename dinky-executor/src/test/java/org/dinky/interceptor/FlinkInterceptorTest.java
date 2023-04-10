@@ -28,7 +28,6 @@ import org.junit.Test;
 /**
  * FlinkInterceptorTest
  *
- * @author wenmo
  * @since 2022/4/9 17:48
  */
 @Ignore

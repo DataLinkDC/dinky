@@ -43,7 +43,6 @@ import com.ververica.cdc.connectors.mysql.table.StartupOptions;
 /**
  * MysqlCDCBuilder
  *
- * @author wenmo
  * @since 2022/4/12 21:29
  */
 public class MysqlCDCBuilder extends AbstractCDCBuilder {

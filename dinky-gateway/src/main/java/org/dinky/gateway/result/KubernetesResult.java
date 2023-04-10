@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * KubernetesResult
  *
- * @author wenmo
  * @since 2021/12/26 15:06
  */
 public class KubernetesResult extends AbstractGatewayResult {

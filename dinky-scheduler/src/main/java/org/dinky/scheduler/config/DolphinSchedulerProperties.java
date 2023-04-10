@@ -27,7 +27,6 @@ import lombok.Data;
 /**
  * DolphinSchedulerProperties
  *
- * @author wenmo
  * @since 2022/9/25 12:57
  */
 @Data

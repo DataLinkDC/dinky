@@ -29,7 +29,6 @@ import org.junit.Test;
 /**
  * BatchTest
  *
- * @author wenmo
  * @since 2022/2/7 23:15
  */
 @Ignore

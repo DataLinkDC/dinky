@@ -39,7 +39,6 @@ import lombok.Setter;
 /**
  * JobConfig
  *
- * @author wenmo
  * @since 2021/6/27 18:45
  */
 @Getter

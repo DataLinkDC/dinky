@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * DataBaseMapper
  *
- * @author wenmo
  * @since 2021/7/20 23:43
  */
 @Mapper

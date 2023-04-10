@@ -37,11 +37,7 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.http.HttpRequest;
 
-/**
- * 项目
- *
- * @author 郑文豪
- */
+/** 项目 */
 @Component
 public class ProjectClient {
 
@@ -53,8 +49,6 @@ public class ProjectClient {
      * 创建项目
      *
      * @return {@link Project}
-     * @author 郑文豪
-     * @date 2022/9/7 16:57
      */
     public Project createDinkyProject() {
         Map<String, Object> map = new HashMap<>();
@@ -76,8 +70,6 @@ public class ProjectClient {
      * 查询项目
      *
      * @return {@link Project}
-     * @author 郑文豪
-     * @date 2022/9/7 16:57
      */
     public Project getDinkyProject() {
 

@@ -22,7 +22,6 @@ package org.dinky.metadata.query;
 /**
  * ClickHouseQuery
  *
- * @author wenmo
  * @since 2021/7/21 17:15
  */
 public class ClickHouseQuery extends AbstractDBQuery {

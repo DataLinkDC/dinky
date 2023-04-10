@@ -22,7 +22,6 @@ package org.dinky.utils;
 /**
  * RunTimeUtil
  *
- * @author wenmo
  * @since 2021/12/11
  */
 public class RunTimeUtil {

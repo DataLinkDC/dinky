@@ -29,7 +29,6 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * @author lcg
  * @operate
  * @return
  */

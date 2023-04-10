@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 /**
  * SingleSqlParserFactory
  *
- * @author wenmo
  * @since 2021/6/14 16:49
  */
 public class SingleSqlParserFactory {

@@ -31,7 +31,6 @@ import lombok.Setter;
 /**
  * Column
  *
- * @author wenmo
  * @since 2021/7/19 23:26
  */
 @Setter

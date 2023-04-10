@@ -29,7 +29,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 /**
  * JobHistoryMapper
  *
- * @author wenmo
  * @since 2022/3/2 19:50
  */
 @Mapper

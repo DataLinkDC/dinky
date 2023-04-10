@@ -27,7 +27,6 @@ import lombok.Setter;
 /**
  * InsertResult
  *
- * @author wenmo
  * @since 2021/5/25 19:08
  */
 @Getter

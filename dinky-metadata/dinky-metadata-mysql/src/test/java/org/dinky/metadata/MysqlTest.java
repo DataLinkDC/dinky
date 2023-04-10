@@ -53,7 +53,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 /**
  * MysqlTest
  *
- * @author wenmo
  * @since 2021/7/20 15:32
  */
 public class MysqlTest {

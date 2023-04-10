@@ -24,7 +24,6 @@ import org.dinky.assertion.Asserts;
 /**
  * ActionType
  *
- * @author wenmo
  * @since 2021/11/3 21:58
  */
 public enum ActionType {

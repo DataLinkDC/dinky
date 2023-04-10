@@ -33,7 +33,6 @@ import com.google.common.base.CaseFormat;
 /**
  * ProTableUtil
  *
- * @author wenmo
  * @since 2021/5/25
  */
 public class ProTableUtil {

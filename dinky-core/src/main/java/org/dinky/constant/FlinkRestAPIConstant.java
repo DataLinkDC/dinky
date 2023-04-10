@@ -22,7 +22,6 @@ package org.dinky.constant;
 /**
  * FlinkRestAPIConstant
  *
- * @author wenmo
  * @since 2021/6/24 14:04
  */
 public final class FlinkRestAPIConstant {

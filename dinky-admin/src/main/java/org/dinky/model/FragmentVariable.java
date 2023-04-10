@@ -31,7 +31,6 @@ import lombok.NoArgsConstructor;
 /**
  * FragmentVariable
  *
- * @author zhumingye
  * @since 2022/8/18
  */
 @Data

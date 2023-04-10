@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * Savepoints
  *
- * @author wenmo
  * @since 2021/11/21
  */
 public interface SavepointsService extends ISuperService<Savepoints> {

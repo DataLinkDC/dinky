@@ -31,7 +31,6 @@ import lombok.EqualsAndHashCode;
 /**
  * Cluster
  *
- * @author wenmo
  * @since 2021/5/28 13:53
  */
 @Data

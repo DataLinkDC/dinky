@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * SysConfig
  *
- * @author wenmo
  * @since 2021/11/18
  */
 @Mapper

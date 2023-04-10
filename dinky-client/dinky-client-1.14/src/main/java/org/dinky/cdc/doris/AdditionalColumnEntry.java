@@ -22,10 +22,7 @@ package org.dinky.cdc.doris;
 import java.io.Serializable;
 import java.util.Map;
 
-/**
- * @author BillyXing
- * @since 2022/11/10 19:37
- */
+/** @since 2022/11/10 19:37 */
 public class AdditionalColumnEntry<K, V> implements Map.Entry<K, V>, Serializable {
 
     private static final long serialVersionUID = 45678994131L;

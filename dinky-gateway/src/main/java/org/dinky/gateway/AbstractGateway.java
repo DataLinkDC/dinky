@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 /**
  * AbstractGateway
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public abstract class AbstractGateway implements Gateway {

@@ -55,7 +55,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 定制TableResultImpl
  *
- * @author wenmo
  * @since 2021/10/22 10:02
  */
 @Internal

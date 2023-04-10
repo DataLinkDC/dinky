@@ -38,7 +38,6 @@ import java.util.Set;
 /**
  * Driver
  *
- * @author wenmo
  * @since 2021/7/19 23:15
  */
 public interface Driver extends AutoCloseable {

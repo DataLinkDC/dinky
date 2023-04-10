@@ -31,11 +31,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @Author: zhumingye
- *
- * @date: 2022/4/2 @Description: 飞书消息发送 单元测试
- */
+/** @Author: zhumingye */
 @Ignore
 public class FeiShuSenderTest {
 

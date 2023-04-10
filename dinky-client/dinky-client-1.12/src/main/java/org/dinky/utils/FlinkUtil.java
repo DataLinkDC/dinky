@@ -34,7 +34,6 @@ import java.util.concurrent.ExecutionException;
 /**
  * FlinkUtil
  *
- * @author wenmo
  * @since 2021/9/15 22:46
  */
 public class FlinkUtil {

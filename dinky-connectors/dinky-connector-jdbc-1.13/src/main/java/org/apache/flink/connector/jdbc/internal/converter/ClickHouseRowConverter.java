@@ -25,7 +25,6 @@ import org.apache.flink.table.types.logical.RowType;
  * Runtime converter that responsible to convert between JDBC object and Flink internal object for
  * ClickHouse.
  *
- * @author wenmo
  * @since 2021/9/19 20:28
  */
 public class ClickHouseRowConverter extends AbstractJdbcRowConverter {

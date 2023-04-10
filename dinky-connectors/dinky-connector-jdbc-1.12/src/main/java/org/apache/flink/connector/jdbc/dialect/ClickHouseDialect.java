@@ -31,7 +31,6 @@ import java.util.Optional;
 /**
  * JDBC dialect for ClickHouse.
  *
- * @author wenmo
  * @since 2021/6/7 21:48
  */
 public class ClickHouseDialect extends AbstractDialect {

@@ -26,7 +26,6 @@ import org.dinky.model.ColumnType;
 /**
  * ClickHouseTypeConvert
  *
- * @author wenmo
  * @since 2021/7/21 17:15
  */
 public class ClickHouseTypeConvert implements ITypeConvert {

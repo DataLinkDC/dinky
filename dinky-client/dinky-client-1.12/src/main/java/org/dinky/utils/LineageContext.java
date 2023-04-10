@@ -59,7 +59,6 @@ import java.util.stream.Collectors;
 /**
  * LineageContext
  *
- * @author wenmo
  * @since 2022/11/21
  */
 public class LineageContext {

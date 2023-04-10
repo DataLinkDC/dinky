@@ -29,7 +29,6 @@ import java.sql.SQLException;
 /**
  * ITypeConvert
  *
- * @author wenmo
  * @since 2021/7/20 14:39
  */
 public interface ITypeConvert {

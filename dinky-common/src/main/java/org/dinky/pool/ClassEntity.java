@@ -27,7 +27,6 @@ import lombok.Setter;
 /**
  * ClassEntity
  *
- * @author wenmo
  * @since 2022/1/12 23:52
  */
 @Getter

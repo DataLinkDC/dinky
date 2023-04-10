@@ -45,7 +45,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * ClusterConfigController
  *
- * @author wenmo
  * @since 2021/11/6 21:16
  */
 @Slf4j

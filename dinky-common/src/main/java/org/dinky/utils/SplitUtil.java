@@ -28,7 +28,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 分库分表的工具类
  *
- * @author ZackYoung
  * @version 1.0
  * @since 2022/9/2
  */

@@ -33,7 +33,6 @@ import java.util.List;
 /**
  * CreateAggTableOperation
  *
- * @author wenmo
  * @since 2021/6/13 19:24
  */
 public class CreateAggTableOperation extends AbstractOperation implements Operation {

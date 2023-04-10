@@ -108,7 +108,6 @@ import cn.hutool.json.JSONObject;
 /**
  * JobManager
  *
- * @author wenmo
  * @since 2021/5/25 15:27
  */
 public class JobManager {

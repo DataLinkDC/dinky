@@ -25,7 +25,6 @@ import java.time.LocalDateTime;
 /**
  * AbstractResult
  *
- * @author wenmo
  * @since 2021/6/29 22:49
  */
 public class AbstractResult {

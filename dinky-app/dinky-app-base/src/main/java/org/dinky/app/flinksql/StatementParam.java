@@ -24,7 +24,6 @@ import org.dinky.parser.SqlType;
 /**
  * StatementParam
  *
- * @author wenmo
  * @since 2021/11/16
  */
 public class StatementParam {

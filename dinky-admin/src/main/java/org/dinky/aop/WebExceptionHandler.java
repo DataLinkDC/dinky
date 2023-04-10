@@ -50,7 +50,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * WebExceptionHandler
  *
- * @author wenmo
  * @since 2022/2/2 22:22
  */
 @ControllerAdvice

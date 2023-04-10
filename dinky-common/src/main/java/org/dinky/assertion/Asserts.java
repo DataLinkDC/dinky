@@ -29,7 +29,6 @@ import java.util.Objects;
 /**
  * Asserts
  *
- * @author wenmo
  * @since 2021/7/5 21:57
  */
 public class Asserts {

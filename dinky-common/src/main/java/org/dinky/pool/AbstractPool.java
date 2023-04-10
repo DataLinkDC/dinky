@@ -24,7 +24,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * AbstractPool
  *
- * @author wenmo
  * @since 2022/5/28 19:40
  */
 public abstract class AbstractPool<K, V> extends ConcurrentHashMap<K, V> {

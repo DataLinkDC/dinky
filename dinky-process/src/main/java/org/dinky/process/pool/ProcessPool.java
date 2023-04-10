@@ -25,7 +25,6 @@ import org.dinky.process.model.ProcessEntity;
 /**
  * ProcessPool
  *
- * @author wenmo
  * @since 2022/10/16 17:00
  */
 public class ProcessPool extends AbstractPool<String, ProcessEntity> {

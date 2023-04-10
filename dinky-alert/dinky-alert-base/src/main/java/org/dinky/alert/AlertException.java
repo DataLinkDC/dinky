@@ -22,7 +22,6 @@ package org.dinky.alert;
 /**
  * AlertException
  *
- * @author wenmo
  * @since 2022/2/23 19:19
  */
 public class AlertException extends RuntimeException {

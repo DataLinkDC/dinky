@@ -34,7 +34,6 @@ import lombok.NoArgsConstructor;
 /**
  * 返回对象
  *
- * @author wenmo
  * @since 2021/5/3 19:56
  */
 @Data

@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 /**
  * JDBC dialect for Oracle.
  *
- * @author wenmo
  * @since 2021/9/19 20:30
  */
 public class OracleDialect extends AbstractDialect {
@@ -78,7 +77,7 @@ public class OracleDialect extends AbstractDialect {
 
     @Override
     public Optional<String> getUpsertStatement(
-                                               String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
 
         String sourceFields =
                 Arrays.stream(fieldNames)

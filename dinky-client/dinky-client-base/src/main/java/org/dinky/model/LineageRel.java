@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * LineageResult
  *
- * @author wenmo
  * @since 2022/8/20 21:09
  */
 public class LineageRel {

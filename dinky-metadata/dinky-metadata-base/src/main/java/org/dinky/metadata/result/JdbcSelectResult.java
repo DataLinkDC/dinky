@@ -30,7 +30,6 @@ import java.util.List;
 /**
  * SelectResult
  *
- * @author wenmo
  * @since 2021/7/19 23:31
  */
 public class JdbcSelectResult extends AbstractResult implements IResult {

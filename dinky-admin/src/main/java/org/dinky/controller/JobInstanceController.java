@@ -54,7 +54,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * JobInstanceController
  *
- * @author wenmo
  * @since 2022/2/2 14:02
  */
 @Slf4j

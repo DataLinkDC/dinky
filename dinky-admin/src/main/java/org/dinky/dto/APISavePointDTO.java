@@ -28,7 +28,6 @@ import lombok.Setter;
 /**
  * APISavePointDTO
  *
- * @author wenmo
  * @since 2021/12/12 19:09
  */
 @Getter

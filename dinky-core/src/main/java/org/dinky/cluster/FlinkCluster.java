@@ -30,7 +30,6 @@ import cn.hutool.core.io.IORuntimeException;
 /**
  * FlinkCluster
  *
- * @author wenmo
  * @since 2021/5/25 15:08
  */
 public class FlinkCluster {

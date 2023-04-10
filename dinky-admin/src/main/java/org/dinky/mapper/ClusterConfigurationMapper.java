@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * ClusterMapper
  *
- * @author wenmo
  * @since 2021/5/28 13:56
  */
 @Mapper

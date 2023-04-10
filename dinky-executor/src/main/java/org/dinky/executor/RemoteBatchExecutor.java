@@ -27,7 +27,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 /**
  * RemoteBatchExecutor
  *
- * @author wenmo
  * @since 2022/2/7 22:10
  */
 public class RemoteBatchExecutor extends Executor {

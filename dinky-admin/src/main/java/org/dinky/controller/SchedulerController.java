@@ -62,7 +62,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 
-/** @author 郑文豪 */
 @RestController
 @RequestMapping("/api/scheduler")
 @Api(value = "海豚调度", tags = "海豚调度")

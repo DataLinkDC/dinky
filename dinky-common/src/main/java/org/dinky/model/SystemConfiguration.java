@@ -30,7 +30,6 @@ import com.google.common.collect.Lists;
 /**
  * SystemConfiguration
  *
- * @author wenmo
  * @since 2021/11/18
  */
 public class SystemConfiguration {

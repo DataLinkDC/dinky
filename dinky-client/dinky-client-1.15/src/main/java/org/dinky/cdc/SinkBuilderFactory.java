@@ -36,7 +36,6 @@ import java.util.function.Supplier;
 /**
  * SinkBuilderFactory
  *
- * @author wenmo
  * @since 2022/4/12 21:12
  */
 public class SinkBuilderFactory {

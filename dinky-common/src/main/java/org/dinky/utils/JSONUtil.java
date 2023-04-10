@@ -53,7 +53,6 @@ import com.fasterxml.jackson.databind.type.CollectionType;
 /**
  * JSONUtil
  *
- * @author wenmo
  * @since 2022/2/23 19:57
  */
 public class JSONUtil {

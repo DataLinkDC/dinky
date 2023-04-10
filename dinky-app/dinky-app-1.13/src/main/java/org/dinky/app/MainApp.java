@@ -31,7 +31,6 @@ import java.util.Map;
 /**
  * MainApp
  *
- * @author wenmo
  * @since 2021/10/27
  */
 public class MainApp {

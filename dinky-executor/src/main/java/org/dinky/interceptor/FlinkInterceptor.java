@@ -30,7 +30,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * FlinkInterceptor
  *
- * @author wenmo
  * @since 2021/6/11 22:17
  */
 public class FlinkInterceptor {

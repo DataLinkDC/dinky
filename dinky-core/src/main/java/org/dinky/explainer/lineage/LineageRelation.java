@@ -24,7 +24,6 @@ import java.util.Objects;
 /**
  * LineageRelation
  *
- * @author wenmo
  * @since 2022/3/15 23:00
  */
 public class LineageRelation {

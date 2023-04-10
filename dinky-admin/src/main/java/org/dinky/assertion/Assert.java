@@ -28,7 +28,6 @@ import org.dinky.model.Task;
 /**
  * Assert
  *
- * @author wenmo
  * @since 2021/5/30 11:13
  */
 public interface Assert {

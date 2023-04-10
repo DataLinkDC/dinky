@@ -29,7 +29,6 @@ import lombok.EqualsAndHashCode;
 /**
  * Document
  *
- * @author wenmo
  * @since 2021/6/3 14:27
  */
 @Data

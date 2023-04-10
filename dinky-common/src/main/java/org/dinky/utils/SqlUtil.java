@@ -27,7 +27,6 @@ import java.util.Map;
 /**
  * SqlUtil
  *
- * @author wenmo
  * @since 2021/7/14 21:57
  */
 public class SqlUtil {

@@ -38,10 +38,7 @@ import cn.hutool.core.lang.UUID;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author ZackYoung
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 @Getter
 @Slf4j
 public class DockerClientUtils {

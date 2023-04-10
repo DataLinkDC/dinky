@@ -28,7 +28,6 @@ import lombok.Setter;
 /**
  * StudioMetaStoreDTO
  *
- * @author wenmo
  * @since 2022/7/16 23:18
  */
 @Getter

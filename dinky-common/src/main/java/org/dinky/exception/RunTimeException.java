@@ -22,7 +22,6 @@ package org.dinky.exception;
 /**
  * RunTimeException
  *
- * @author wenmo
  * @since 2021/6/27
  */
 public class RunTimeException extends RuntimeException {
