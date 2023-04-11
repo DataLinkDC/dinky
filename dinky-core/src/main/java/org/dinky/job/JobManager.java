@@ -258,22 +258,10 @@ public class JobManager {
         return false;
     }
 
-    private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classpaths)
-            throws Exception {
-        Field configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
-        configuration.setAccessible(true);
-        Configuration o =
-                (Configuration) configuration.get(executor.getStreamExecutionEnvironment());
-
-        Field confData = Configuration.class.getDeclaredField("confData");
-        confData.setAccessible(true);
-        Map<String, Object> temp = (Map<String, Object>) confData.get(o);
-        temp.put(
-                PipelineOptions.CLASSPATHS.key(),
-                classpaths.stream().map(URL::toString).collect(Collectors.toList()));
-        temp.put(
-                PipelineOptions.JARS.key(),
-                jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classPaths){
+        Configuration c = ((Configuration)executor.getStreamExecutionEnvironment().getConfiguration());
+        c.set(PipelineOptions.CLASSPATHS, classPaths.stream().map(URL::toString).collect(Collectors.toList()));
+        c.set(PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
     public void initUDF(List<UDF> udfList) {
@@ -309,6 +297,7 @@ public class JobManager {
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
+
         try {
             List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
             writeManifest(taskId, jarList);
