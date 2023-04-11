@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * ResultPool
  *
- * @author wenmo
  * @since 2021/7/1 22:20
  */
 public final class ResultPool {

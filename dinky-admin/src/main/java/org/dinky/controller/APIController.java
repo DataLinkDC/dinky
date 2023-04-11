@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * APIController
  *
- * @author wenmo
  * @since 2021/12/11 21:44
  */
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")

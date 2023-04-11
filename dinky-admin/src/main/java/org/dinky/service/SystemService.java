@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * SystemService
  *
- * @author wenmo
  * @since 2022/10/15 19:16
  */
 public interface SystemService {

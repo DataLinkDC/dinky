@@ -24,7 +24,6 @@ import lombok.Data;
 /**
  * @program: dinky
  * @description:
- * @author: zhumingye
  * @create: 2022-06-27 11:18
  */
 @Data

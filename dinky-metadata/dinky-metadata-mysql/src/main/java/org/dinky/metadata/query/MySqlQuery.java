@@ -22,7 +22,6 @@ package org.dinky.metadata.query;
 /**
  * MySqlQuery
  *
- * @author wenmo
  * @since 2021/7/20 14:01
  */
 public class MySqlQuery extends AbstractDBQuery {

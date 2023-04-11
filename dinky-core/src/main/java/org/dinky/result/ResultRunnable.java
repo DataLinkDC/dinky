@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * ResultRunnable
  *
- * @author wenmo
  * @since 2021/7/1 22:50
  */
 @Slf4j

@@ -27,7 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * BusException
  *
- * @author wenmo
  * @since 2021/5/28 14:21
  */
 @Slf4j

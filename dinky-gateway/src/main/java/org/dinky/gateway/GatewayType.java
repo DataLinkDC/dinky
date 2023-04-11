@@ -24,7 +24,6 @@ import org.dinky.assertion.Asserts;
 /**
  * SubmitType
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public enum GatewayType {

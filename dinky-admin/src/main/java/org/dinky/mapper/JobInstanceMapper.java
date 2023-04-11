@@ -33,7 +33,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 /**
  * JobInstanceMapper
  *
- * @author wenmo
  * @since 2022/2/2 13:02
  */
 @Mapper

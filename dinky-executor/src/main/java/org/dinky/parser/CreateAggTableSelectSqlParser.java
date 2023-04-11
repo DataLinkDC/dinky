@@ -22,7 +22,6 @@ package org.dinky.parser;
 /**
  * CreateAggTableSelectSqlParser
  *
- * @author wenmo
  * @since 2021/6/14 16:56
  */
 public class CreateAggTableSelectSqlParser extends BaseSingleSqlParser {

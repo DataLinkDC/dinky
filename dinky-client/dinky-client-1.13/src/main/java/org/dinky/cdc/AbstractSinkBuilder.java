@@ -76,7 +76,6 @@ import org.slf4j.LoggerFactory;
 /**
  * AbstractCDCBuilder
  *
- * @author wenmo
  * @since 2022/4/12 21:28
  */
 public abstract class AbstractSinkBuilder implements SinkBuilder {

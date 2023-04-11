@@ -30,7 +30,6 @@ import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 /**
  * DateMeta Object Handler
  *
- * @author wenmo
  * @since 2021/5/25
  */
 public class DateMetaObjectHandler implements MetaObjectHandler {

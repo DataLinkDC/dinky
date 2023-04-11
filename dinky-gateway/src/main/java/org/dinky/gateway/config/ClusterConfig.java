@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * ClusterConfig
  *
- * @author wenmo
  * @since 2021/11/3 21:52
  */
 @Getter

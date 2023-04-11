@@ -24,7 +24,6 @@ import org.dinky.assertion.Asserts;
 /**
  * Dialect
  *
- * @author wenmo
  * @since 2021/12/13
  */
 public enum Dialect {

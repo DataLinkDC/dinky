@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 /**
  * MysqlTest
  *
- * @author wenmo
  * @since 2021/7/20 15:32
  */
 @Ignore
@@ -147,7 +146,6 @@ public class HiveTest {
     /**
      * @Author: zhumingye
      *
-     * @date: 202/3/23 @Description: 测试hive多条SQL执行 @Param:
      * @return:
      */
     @Ignore

@@ -46,10 +46,7 @@ import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 @Slf4j
 @RestController
 @RequestMapping("/api/udf")

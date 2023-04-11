@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * APIExplainSqlDTO
  *
- * @author wenmo
  * @since 2021/12/12 13:01
  */
 @Getter

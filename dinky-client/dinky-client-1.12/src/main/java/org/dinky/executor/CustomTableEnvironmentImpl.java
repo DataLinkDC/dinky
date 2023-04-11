@@ -74,7 +74,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * 定制TableEnvironmentImpl
  *
- * @author wenmo
  * @since 2021/6/7 22:06
  */
 public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {

@@ -21,10 +21,7 @@ package org.dinky.function.exception;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public class UDFCompilerException extends RuntimeException {
 
     public UDFCompilerException() {}

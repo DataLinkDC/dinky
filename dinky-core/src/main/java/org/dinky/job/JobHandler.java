@@ -26,7 +26,6 @@ import java.util.ServiceLoader;
 /**
  * jobHandler
  *
- * @author wenmo
  * @since 2021/6/26 23:22
  */
 public interface JobHandler {

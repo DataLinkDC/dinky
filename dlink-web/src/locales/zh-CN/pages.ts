@@ -401,7 +401,7 @@ export default {
   'pages.datastudio.label.jobConfig.insert': 'Insert语句集',
   'pages.datastudio.label.jobConfig.insert.tip': '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
   'pages.datastudio.label.jobConfig.fragment': '全局变量',
-  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），“${}”进行调用',
+  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），进行调用',
   'pages.datastudio.label.jobConfig.batchmode': '批模式',
   'pages.datastudio.label.jobConfig.batchmode.tip': '使用批模式',
   'pages.datastudio.label.jobConfig.checkPoint': '检查点间隔',

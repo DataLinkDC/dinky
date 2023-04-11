@@ -37,7 +37,6 @@ import org.junit.Test;
 /**
  * DingTalkTest
  *
- * @author wenmo
  * @since 2022/2/23 20:18
  */
 @Ignore

@@ -71,12 +71,10 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory for creating configured instances of {@link PulsarDynamicSource} and {
  *
- * @author DarrenDa
- * * @version 1.0
- * * @Desc:
+ * <p>* @version 1.0 * @Desc:
+ *
  * @link PulsarDynamicSink}.
  */
-
 @Internal
 public class PulsarDynamicTableFactory
         implements DynamicTableSourceFactory, DynamicTableSinkFactory {
@@ -120,8 +118,7 @@ public class PulsarDynamicTableFactory
     public DynamicTableSource createDynamicTableSource(Context context) {
         // either implement your custom validation logic here ...
         // or use the provided helper utility
-        final TableFactoryHelper helper =
-                FactoryUtil.createTableFactoryHelper(this, context);
+        final TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
 
         // discover a suitable decoding format
         final DecodingFormat<DeserializationSchema<RowData>> decodingFormat =
@@ -160,15 +157,12 @@ public class PulsarDynamicTableFactory
                 producedDataType,
                 context.getObjectIdentifier().asSummaryString(),
                 getPulsarProperties(context.getCatalogTable().getOptions(), PROPERTIES_PREFIX),
-                sourceParallelism
-        );
+                sourceParallelism);
     }
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
-        final TableFactoryHelper helper =
-                FactoryUtil.createTableFactoryHelper(
-                        this, context);
+        final TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
 
         final ReadableConfig tableOptions = helper.getOptions();
         final String update_mode = tableOptions.get(UPDATE_MODE);
@@ -177,12 +171,12 @@ public class PulsarDynamicTableFactory
         helper.validateExcept(PROPERTIES_PREFIX, PROPERTIES_CLIENT_PREFIX);
 
         final EncodingFormat<SerializationSchema<RowData>> encodingFormat =
-                helper.discoverEncodingFormat(
-                        SerializationFormatFactory.class, FactoryUtil.FORMAT);
+                helper.discoverEncodingFormat(SerializationFormatFactory.class, FactoryUtil.FORMAT);
 
-        //校验sql建表时是否指定主键约束
-        //我们一般使用flink自动推导出来的主键，不显式设置主键约束，所以这个校验方法暂时不使用
-        //validatePKConstraints(update_mode, context.getObjectIdentifier(), context.getCatalogTable(), encodingFormat);
+        // 校验sql建表时是否指定主键约束
+        // 我们一般使用flink自动推导出来的主键，不显式设置主键约束，所以这个校验方法暂时不使用
+        // validatePKConstraints(update_mode, context.getObjectIdentifier(),
+        // context.getCatalogTable(), encodingFormat);
 
         final DataType physicalDataType =
                 context.getCatalogTable().getSchema().toPhysicalRowDataType();
@@ -194,14 +188,17 @@ public class PulsarDynamicTableFactory
                 tableOptions.get(SERVICE_URL),
                 update_mode,
                 getPulsarProperties(context.getCatalogTable().getOptions(), PROPERTIES_PREFIX),
-                getPulsarProperties(context.getCatalogTable().getOptions(), PROPERTIES_CLIENT_PREFIX),
-                sinkParallelism
-        );
+                getPulsarProperties(
+                        context.getCatalogTable().getOptions(), PROPERTIES_CLIENT_PREFIX),
+                sinkParallelism);
     }
 
-    //校验sql建表时是否指定主键约束
+    // 校验sql建表时是否指定主键约束
     private static void validatePKConstraints(
-            @Nullable String updateMode, ObjectIdentifier tableName, CatalogTable catalogTable, Format format) {
+            @Nullable String updateMode,
+            ObjectIdentifier tableName,
+            CatalogTable catalogTable,
+            Format format) {
 
         if (!updateMode.equals("append") && !updateMode.equals("upsert")) {
             throw new ValidationException(
@@ -243,5 +240,4 @@ public class PulsarDynamicTableFactory
                 pulsarClientProperties,
                 sinkParallelism);
     }
-
 }

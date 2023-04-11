@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * SysConfigController
  *
- * @author wenmo
  * @since 2021/11/18
  */
 @Slf4j

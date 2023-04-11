@@ -41,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 任务版本 Controller
  *
- * @author wenmo
  * @since 2022-06-28
  */
 @Slf4j

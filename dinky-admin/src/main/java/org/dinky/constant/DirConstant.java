@@ -24,7 +24,6 @@ import org.springframework.boot.system.ApplicationHome;
 /**
  * DirConstant
  *
- * @author wenmo
  * @since 2022/10/15 18:37
  */
 public class DirConstant {

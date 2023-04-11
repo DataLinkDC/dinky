@@ -27,10 +27,7 @@ import org.dinky.model.TaskOperatingStatus;
 
 import lombok.Data;
 
-/**
- * @author mydq
- * @version 1.0
- */
+/** @version 1.0 */
 @Data
 public class TaskOperatingResult {
 

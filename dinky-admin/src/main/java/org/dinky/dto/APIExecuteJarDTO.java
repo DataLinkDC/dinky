@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * APIExecuteJarDTO
  *
- * @author wenmo
  * @since 2021/12/12 19:46
  */
 @Getter

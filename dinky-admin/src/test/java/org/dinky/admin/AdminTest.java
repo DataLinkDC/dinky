@@ -28,7 +28,6 @@ import cn.dev33.satoken.secure.SaSecureUtil;
 /**
  * SqlParserTest
  *
- * @author wenmo
  * @since 2021/6/14 17:03
  */
 @Ignore

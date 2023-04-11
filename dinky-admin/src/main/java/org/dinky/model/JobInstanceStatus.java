@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * JobInstanceStatus
  *
- * @author wenmo
  * @since 2022/2/28 22:25
  */
 public class JobInstanceStatus {

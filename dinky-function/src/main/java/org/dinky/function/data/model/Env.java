@@ -24,10 +24,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 @Component
 public class Env {
 

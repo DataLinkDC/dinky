@@ -55,7 +55,6 @@ import java.util.UUID;
 /**
  * DorisSchemaEvolutionSinkBuilder
  *
- * @author wenmo
  * @since 2022/12/6
  */
 public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder implements Serializable {

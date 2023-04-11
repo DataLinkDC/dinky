@@ -22,7 +22,6 @@ package org.dinky.constant;
 /**
  * FlinkParam
  *
- * @author wenmo
  * @since 2022/3/9 19:18
  */
 public final class FlinkParamConstant {

@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * JobHistoryServiceImpl
  *
- * @author wenmo
  * @since 2022/3/2 20:00
  */
 @Service

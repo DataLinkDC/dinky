@@ -22,7 +22,6 @@ package org.dinky.constant;
 /**
  * ClientConstant
  *
- * @author wenmo
  * @since 2022/4/14 23:23
  */
 public final class ClientConstant {

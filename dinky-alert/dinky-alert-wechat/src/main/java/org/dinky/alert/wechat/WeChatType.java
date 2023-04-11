@@ -22,7 +22,6 @@ package org.dinky.alert.wechat;
 /**
  * WeChatType
  *
- * @author wenmo
  * @since 2022/2/23 21:36
  */
 public enum WeChatType {

@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * UserService
  *
- * @author wenmo
  * @since 2021/11/28 13:39
  */
 public interface UserService extends ISuperService<User> {

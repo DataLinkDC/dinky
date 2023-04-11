@@ -42,7 +42,6 @@ import java.util.Properties;
 /**
  * DorisSinkBuilder
  *
- * @author wenmo
  * @since 2022/4/20 19:20
  */
 public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializable {

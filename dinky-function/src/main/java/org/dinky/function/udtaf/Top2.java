@@ -26,7 +26,6 @@ import org.apache.flink.util.Collector;
 /**
  * 官网Demo Top2
  *
- * @author wenmo
  * @since 2021/6/14 20:44
  */
 public class Top2 extends TableAggregateFunction<Tuple2<Integer, Integer>, Top2.Top2Accumulator> {

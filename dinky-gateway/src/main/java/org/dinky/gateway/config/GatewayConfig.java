@@ -35,7 +35,6 @@ import lombok.Setter;
 /**
  * SubmitConfig
  *
- * @author wenmo
  * @since 2021/10/29
  */
 @Getter

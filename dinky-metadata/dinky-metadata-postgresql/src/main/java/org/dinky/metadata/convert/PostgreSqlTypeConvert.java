@@ -26,7 +26,6 @@ import org.dinky.model.ColumnType;
 /**
  * PostgreSqlTypeConvert
  *
- * @author wenmo
  * @since 2021/7/22 9:33
  */
 public class PostgreSqlTypeConvert implements ITypeConvert {
@@ -74,7 +73,7 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             }
         } else if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
-        } else if (t.contains("boolean")) {
+        } else if (t.contains("boolean") || t.contains("bool")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
             } else {
@@ -92,6 +91,8 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             columnType = ColumnType.BYTES;
         } else if (t.contains("array")) {
             columnType = ColumnType.T;
+        } else if (t.contains("jsonb") | t.contains("json")) {
+            columnType = ColumnType.STRING;
         }
         return columnType;
     }

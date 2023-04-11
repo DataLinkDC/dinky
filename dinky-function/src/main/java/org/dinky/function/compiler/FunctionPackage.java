@@ -25,10 +25,7 @@ import org.dinky.function.data.model.UDFPath;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public interface FunctionPackage {
 
     /**

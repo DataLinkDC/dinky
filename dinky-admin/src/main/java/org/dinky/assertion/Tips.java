@@ -22,7 +22,6 @@ package org.dinky.assertion;
 /**
  * Tips
  *
- * @author wenmo
  * @since 2021/12/9 23:19
  */
 public class Tips {

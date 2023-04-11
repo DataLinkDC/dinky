@@ -23,10 +23,7 @@ import java.io.Serializable;
 
 import lombok.Data;
 
-/**
- * @author huang
- * @description: 版本信息配置
- */
+/** @description: 版本信息配置 */
 @Data
 public class TaskVersionConfigureDTO implements Serializable {
 

@@ -31,7 +31,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * AlertInstanceService
  *
- * @author wenmo
  * @since 2022/2/24 19:52
  */
 public interface AlertInstanceService extends ISuperService<AlertInstance> {

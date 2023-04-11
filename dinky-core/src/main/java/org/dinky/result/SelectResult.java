@@ -30,7 +30,6 @@ import lombok.Setter;
 /**
  * SelectResult
  *
- * @author wenmo
  * @since 2021/5/25 16:01
  */
 @Setter

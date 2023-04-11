@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Dinky 启动器
  *
- * @author wenmo
  * @since 2021/5/28
  */
 @EnableTransactionManagement

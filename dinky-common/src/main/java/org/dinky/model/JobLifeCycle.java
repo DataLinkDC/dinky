@@ -24,7 +24,6 @@ import java.util.Arrays;
 /**
  * JobLifeCycle
  *
- * @author wenmo
  * @since 2022/2/1 16:37
  */
 public enum JobLifeCycle {

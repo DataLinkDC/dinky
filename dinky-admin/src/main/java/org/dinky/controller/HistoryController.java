@@ -41,7 +41,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * HistoryController
  *
- * @author wenmo
  * @since 2021/6/26 23:09
  */
 @Slf4j

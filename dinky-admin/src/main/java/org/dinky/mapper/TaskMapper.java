@@ -32,7 +32,6 @@ import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 /**
  * 作业 Mapper 接口
  *
- * @author wenmo
  * @since 2021-05-28
  */
 @Mapper

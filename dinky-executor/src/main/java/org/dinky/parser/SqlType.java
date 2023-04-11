@@ -24,7 +24,6 @@ import java.util.regex.Pattern;
 /**
  * SqlType
  *
- * @author wenmo
  * @since 2021/7/3 11:11
  */
 public enum SqlType {

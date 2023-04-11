@@ -69,7 +69,6 @@ import groovy.lang.GroovyClassLoader;
 /**
  * UDFUtil
  *
- * @author wenmo
  * @since 2021/12/27 23:25
  */
 public class UDFUtil {

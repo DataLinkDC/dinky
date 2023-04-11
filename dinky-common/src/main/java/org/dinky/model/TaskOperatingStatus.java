@@ -19,10 +19,7 @@
 
 package org.dinky.model;
 
-/**
- * @author mydq
- * @version 1.0
- */
+/** @version 1.0 */
 public enum TaskOperatingStatus {
     INIT(1, "init", "初始化"),
 

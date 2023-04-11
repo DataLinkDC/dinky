@@ -25,7 +25,6 @@ import org.dinky.model.History;
 /**
  * HistoryService
  *
- * @author wenmo
  * @since 2021/6/26 23:07
  */
 public interface HistoryService extends ISuperService<History> {

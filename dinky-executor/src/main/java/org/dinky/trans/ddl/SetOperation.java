@@ -36,7 +36,6 @@ import java.util.Map;
 /**
  * SetOperation
  *
- * @author wenmo
  * @since 2021/10/21 19:56
  */
 public class SetOperation extends AbstractOperation implements Operation {

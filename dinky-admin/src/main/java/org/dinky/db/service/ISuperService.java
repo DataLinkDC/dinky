@@ -29,7 +29,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * ISuperService
  *
- * @author wenmo
  * @since 2021/5/25
  */
 public interface ISuperService<T> extends IService<T> {

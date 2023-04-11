@@ -27,7 +27,6 @@ import lombok.Setter;
 /**
  * MybatisPlusFillProperties
  *
- * @author wenmo
  * @since 2021/5/25
  */
 @Setter

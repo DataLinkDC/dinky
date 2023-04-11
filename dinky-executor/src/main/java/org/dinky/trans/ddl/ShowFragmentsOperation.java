@@ -28,7 +28,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * ShowFragmentsOperation
  *
- * @author wenmo
  * @since 2022/2/17 16:31
  */
 public class ShowFragmentsOperation extends AbstractOperation implements Operation {

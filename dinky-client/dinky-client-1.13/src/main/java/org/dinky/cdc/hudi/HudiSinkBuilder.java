@@ -46,7 +46,6 @@ import java.util.Map;
 /**
  * HudiSinkBuilder
  *
- * @author wenmo
  * @since 2022/4/22 23:50
  */
 public class HudiSinkBuilder extends AbstractSinkBuilder implements Serializable {

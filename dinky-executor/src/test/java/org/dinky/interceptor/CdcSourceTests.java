@@ -26,10 +26,7 @@ import org.dinky.executor.LocalStreamExecutor;
 import org.junit.Ignore;
 import org.junit.Test;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 public class CdcSourceTests {
 
     @Ignore

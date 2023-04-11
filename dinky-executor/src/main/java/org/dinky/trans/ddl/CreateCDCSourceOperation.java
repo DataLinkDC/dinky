@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 /**
  * CreateCDCSourceOperation
  *
- * @author wenmo
  * @since 2022/1/29 23:25
  */
 public class CreateCDCSourceOperation extends AbstractOperation implements Operation {

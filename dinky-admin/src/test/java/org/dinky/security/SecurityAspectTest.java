@@ -26,7 +26,6 @@ import org.junit.Test;
 /**
  * SecurityAspectTest
  *
- * @author wenmo
  * @since 2023/1/14 15:59
  */
 @Ignore

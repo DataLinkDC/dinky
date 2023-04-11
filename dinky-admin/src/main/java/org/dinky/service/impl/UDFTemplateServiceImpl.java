@@ -30,10 +30,7 @@ import org.springframework.stereotype.Service;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @author ZackYoung
- * @since 0.6.8
- */
+/** @since 0.6.8 */
 @Service
 public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, UDFTemplate>
         implements UDFTemplateService {

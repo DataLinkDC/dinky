@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * YarnResult
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public class YarnResult extends AbstractGatewayResult {

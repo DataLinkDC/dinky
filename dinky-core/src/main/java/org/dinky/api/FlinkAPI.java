@@ -46,7 +46,6 @@ import cn.hutool.http.Method;
 /**
  * FlinkAPI
  *
- * @author wenmo
  * @since 2021/6/24 13:56
  */
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")

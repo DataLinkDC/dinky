@@ -24,7 +24,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * FlinkInterceptorResult
  *
- * @author wenmo
  * @since 2022/2/17 16:36
  */
 public class FlinkInterceptorResult {

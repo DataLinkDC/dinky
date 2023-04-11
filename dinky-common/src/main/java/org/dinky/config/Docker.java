@@ -31,10 +31,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-/**
- * @author ZackYoung
- * @since 0.7.1
- */
+/** @since 0.7.1 */
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor

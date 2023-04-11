@@ -22,7 +22,6 @@ package org.dinky.constant;
 /**
  * CommonConstant
  *
- * @author wenmo
  * @since 2021/5/28 9:35
  */
 public final class CommonConstant {

@@ -47,7 +47,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 /**
  * DataBaseServiceImpl
  *
- * @author wenmo
  * @since 2021/7/20 23:47
  */
 @Service

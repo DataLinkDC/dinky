@@ -30,7 +30,6 @@ import java.util.Map;
 /**
  * FunctionManager
  *
- * @author wenmo
  * @since 2021/6/14 21:19
  */
 @Deprecated

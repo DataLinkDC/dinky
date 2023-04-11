@@ -28,7 +28,6 @@ import lombok.With;
 /**
  * AppConfig
  *
- * @author wenmo
  * @since 2021/11/3 21:55
  */
 @Setter

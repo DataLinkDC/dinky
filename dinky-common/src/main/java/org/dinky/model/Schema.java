@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * Schema
  *
- * @author wenmo
  * @since 2021/7/19 23:27
  */
 @Getter

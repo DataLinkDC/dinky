@@ -34,7 +34,6 @@ import org.apache.hadoop.yarn.api.records.ApplicationId;
 /**
  * YarnSessionGateway
  *
- * @author wenmo
  * @since 2022/12/25
  */
 public class YarnSessionGateway extends YarnGateway {

@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.StrUtil;
 
-/** @author 郑文豪 */
 public class ReadFileUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(ReadFileUtil.class);

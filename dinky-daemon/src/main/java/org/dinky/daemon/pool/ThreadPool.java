@@ -22,7 +22,6 @@ package org.dinky.daemon.pool;
 import org.dinky.daemon.task.DaemonTask;
 
 /**
- * @author lcg
  * @operate
  * @return
  */

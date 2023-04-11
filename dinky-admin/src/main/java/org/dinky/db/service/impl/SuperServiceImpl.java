@@ -37,7 +37,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * SuperServiceImpl
  *
- * @author wenmo
  * @since 2021/5/25
  */
 public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T>

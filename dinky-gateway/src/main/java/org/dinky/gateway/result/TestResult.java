@@ -22,7 +22,6 @@ package org.dinky.gateway.result;
 /**
  * TestResult
  *
- * @author wenmo
  * @since 2021/11/27 16:12
  */
 public class TestResult {

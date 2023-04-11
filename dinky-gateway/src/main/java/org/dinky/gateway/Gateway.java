@@ -35,7 +35,6 @@ import java.util.ServiceLoader;
 /**
  * Submiter
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public interface Gateway {

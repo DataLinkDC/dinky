@@ -24,7 +24,6 @@ import org.apache.flink.table.functions.FunctionDefinition;
 /**
  * UDFunction
  *
- * @author wenmo
  * @since 2021/6/14 22:14
  */
 @Deprecated

@@ -20,7 +20,6 @@
 package org.dinky.exception;
 
 /**
- * @author ZackYoung
  * @version 1.0
  * @since 2022/9/2
  */

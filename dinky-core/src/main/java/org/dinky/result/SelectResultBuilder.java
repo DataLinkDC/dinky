@@ -24,7 +24,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * SelectBuilder
  *
- * @author wenmo
  * @since 2021/5/25 16:03
  */
 public class SelectResultBuilder implements ResultBuilder {

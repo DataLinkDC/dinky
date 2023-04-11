@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * AlertInstanceMapper
  *
- * @author wenmo
  * @since 2022/2/24 19:48
  */
 @Mapper

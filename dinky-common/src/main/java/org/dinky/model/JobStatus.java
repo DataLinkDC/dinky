@@ -29,7 +29,6 @@ import com.google.common.collect.Lists;
 /**
  * JobState
  *
- * @author wenmo
  * @since 2022/2/22 14:29
  */
 public enum JobStatus {

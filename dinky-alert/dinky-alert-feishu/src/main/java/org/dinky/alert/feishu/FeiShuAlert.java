@@ -22,12 +22,7 @@ package org.dinky.alert.feishu;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
-/**
- * FeiShuAlert
- *
- * @author zhumingye
- * @date: 2022/4/2
- */
+/** FeiShuAlert */
 public class FeiShuAlert extends AbstractAlert {
 
     @Override

@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * LineageResult
  *
- * @author wenmo
  * @since 2022/3/15 22:59
  */
 public class LineageResult {

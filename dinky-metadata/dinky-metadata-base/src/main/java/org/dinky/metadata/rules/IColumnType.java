@@ -22,7 +22,6 @@ package org.dinky.metadata.rules;
 /**
  * IColumnType
  *
- * @author wenmo
  * @since 2021/7/20 14:43
  */
 public interface IColumnType {

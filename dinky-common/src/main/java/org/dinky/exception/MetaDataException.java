@@ -22,7 +22,6 @@ package org.dinky.exception;
 /**
  * JobException
  *
- * @author wenmo
  * @since 2021/6/27
  */
 public class MetaDataException extends RuntimeException {

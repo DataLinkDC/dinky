@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * LoginUTO
  *
- * @author wenmo
  * @since 2021/11/28 17:02
  */
 @Getter

@@ -22,7 +22,6 @@ package org.dinky.job;
 /**
  * RunTime
  *
- * @author wenmo
  * @since 2021/6/27 18:06
  */
 public abstract class RunTime {

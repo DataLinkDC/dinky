@@ -41,7 +41,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * StudioService
  *
- * @author wenmo
  * @since 2021/5/30 11:07
  */
 public interface StudioService {

@@ -35,7 +35,6 @@ import com.alibaba.ververica.cdc.debezium.DebeziumDeserializationSchema;
 /**
  * @version 1.0
  * @className: org.dinky.cdc.mysql.MysqlJsonDebeziumDeserializationSchema @Description:
- * @author: jack zhong
  */
 public class MysqlJsonDebeziumDeserializationSchema
         implements DebeziumDeserializationSchema<String> {

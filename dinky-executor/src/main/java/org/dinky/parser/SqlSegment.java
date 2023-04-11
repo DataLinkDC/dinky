@@ -31,7 +31,6 @@ import com.google.common.collect.Lists;
 /**
  * SqlSegment
  *
- * @author wenmo
  * @since 2021/6/14 16:12
  */
 public class SqlSegment {

@@ -39,7 +39,6 @@ import java.util.Optional;
  *
  * @param <K> Map key type
  * @param <V> Map value type
- * @author wenmo, lixiaoPing
  * @since 2021/5/25 15:50
  */
 public class RowsToMap<K, V> extends TableAggregateFunction<Map<K, V>, MyAccum<K, V>> {

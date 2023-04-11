@@ -22,7 +22,6 @@ package org.dinky.model;
 /**
  * JobInstanceCount
  *
- * @author wenmo
  * @since 2022/2/28 22:20
  */
 public class JobInstanceCount {

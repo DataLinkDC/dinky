@@ -22,7 +22,6 @@ package org.dinky.alert;
 /**
  * ShowType
  *
- * @author wenmo
  * @since 2022/2/23 21:32
  */
 public enum ShowType {
