@@ -128,11 +128,14 @@ public class Explainer {
             } else if (operationType.equals(SqlType.WATCH)) {
                 WatchStatementExplainer watchStatementExplainer =
                         new WatchStatementExplainer(statement);
-                String tableName = watchStatementExplainer.getTableName();
-                trans.add(
+
+                String[] tableNames = watchStatementExplainer.getTableNames();
+                for (String tableName : tableNames) {
+                     trans.add(
                         new StatementParam(
-                                watchStatementExplainer.getCreateStatement(tableName),
+                                WatchStatementExplainer.getCreateStatement(tableName),
                                 SqlType.CTAS));
+                }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {

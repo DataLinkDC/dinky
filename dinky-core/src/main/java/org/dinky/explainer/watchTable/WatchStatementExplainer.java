@@ -43,13 +43,18 @@ public class WatchStatementExplainer {
         this.statement = statement;
     }
 
-    public String getTableName() {
-        Matcher matcher = PATTERN.matcher(statement);
-        matcher.find();
-        return matcher.group(1);
+    public String[] getTableNames() {
+        return splitTableNames(statement);
     }
 
-    public String getCreateStatement(String tableName) {
+    public static String[] splitTableNames(String statement) {
+        Matcher matcher = PATTERN.matcher(statement);
+        matcher.find();
+        String tableNames = matcher.group(1);
+        return tableNames.replaceAll(" ", "").split(",");
+    }
+
+    public static String getCreateStatement(String tableName) {
         Optional<InetAddress> address = getSystemLocalIp();
         String ip = address.isPresent() ? address.get().getHostAddress() : "127.0.0.1";
         return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT);

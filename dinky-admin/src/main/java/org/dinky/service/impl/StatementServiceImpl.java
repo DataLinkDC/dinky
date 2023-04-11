@@ -20,6 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.explainer.watchTable.WatchStatementExplainer;
 import org.dinky.mapper.StatementMapper;
 import org.dinky.model.Statement;
 import org.dinky.parser.SqlType;
@@ -55,7 +56,7 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
         final String[] statements = SqlUtil.getStatements(statement);
         return Arrays.stream(statements)
                 .filter(t -> SqlType.WATCH.equals(Operations.getOperationType(t)))
-                .map(t -> t.substring(t.lastIndexOf(" ")).trim())
+                .flatMap(t -> Arrays.stream(WatchStatementExplainer.splitTableNames(t)))
                 .collect(Collectors.toList());
     }
 }
