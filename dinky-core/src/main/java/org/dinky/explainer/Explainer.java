@@ -131,10 +131,10 @@ public class Explainer {
 
                 String[] tableNames = watchStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                     trans.add(
-                        new StatementParam(
-                                WatchStatementExplainer.getCreateStatement(tableName),
-                                SqlType.CTAS));
+                    trans.add(
+                            new StatementParam(
+                                    WatchStatementExplainer.getCreateStatement(tableName),
+                                    SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
