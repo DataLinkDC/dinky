@@ -54,11 +54,10 @@ const DatePage = (props: any) => {
   useEffect(() => {
     return () => {
       unRegisterWatchTable({id, table: tableName}).then(res => {
-        console.log("unsubscribe: " + tableName)
         subScription?.unsubscribe();
       });
     }
-  }, []);
+  }, [subScription]);
 
   const editorDidMountHandle = (editor: any, monaco: any) => {
     onSearchName(title);
@@ -83,7 +82,7 @@ const DatePage = (props: any) => {
 };
 
 const StudioData = (props: any) => {
-  const {height, isActive, current} = props;
+  const {height, current} = props;
   const [panes, setPanes] = useState<[{ title: string, key: string, content: Component }]>([]);
 
   const addTab = async () => {
@@ -117,9 +116,6 @@ const StudioData = (props: any) => {
 
   useEffect(() => {
     stompClientUtil.connect();
-  }, [isActive])
-
-  useEffect(() => {
     return () => {
       stompClientUtil.disconnect();
     }
