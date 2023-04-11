@@ -340,7 +340,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             final DecimalType decimalType = ((DecimalType) logicalType);
             final int precision = decimalType.getPrecision();
             final int scale = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scale);
+            return DecimalData.fromBigDecimal(
+                    new BigDecimal(String.valueOf(value)), precision, scale);
         } else {
             return value;
         }
