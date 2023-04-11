@@ -74,13 +74,11 @@ import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.jobgraph.SavepointRestoreSettings;
 import org.apache.flink.streaming.api.environment.ExecutionCheckpointingOptions;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.yarn.configuration.YarnConfigOptions;
 
 import java.io.File;
-import java.lang.reflect.Field;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -258,10 +256,15 @@ public class JobManager {
         return false;
     }
 
-    private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classPaths){
-        Configuration c = ((Configuration)executor.getStreamExecutionEnvironment().getConfiguration());
-        c.set(PipelineOptions.CLASSPATHS, classPaths.stream().map(URL::toString).collect(Collectors.toList()));
-        c.set(PipelineOptions.JARS, jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classPaths) {
+        Configuration c =
+                ((Configuration) executor.getStreamExecutionEnvironment().getConfiguration());
+        c.set(
+                PipelineOptions.CLASSPATHS,
+                classPaths.stream().map(URL::toString).collect(Collectors.toList()));
+        c.set(
+                PipelineOptions.JARS,
+                jarList.stream().map(URL::toString).collect(Collectors.toList()));
     }
 
     public void initUDF(List<UDF> udfList) {
