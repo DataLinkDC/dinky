@@ -53,7 +53,6 @@ import java.util.Properties;
 /**
  * MysqlCDCBuilder
  *
- * @author wenmo
  * @since 2022/4/12 21:29
  */
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, Serializable {

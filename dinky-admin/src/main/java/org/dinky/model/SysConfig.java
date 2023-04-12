@@ -38,7 +38,6 @@ import lombok.EqualsAndHashCode;
 /**
  * SysConfig
  *
- * @author wenmo
  * @since 2021/11/18
  */
 @Data

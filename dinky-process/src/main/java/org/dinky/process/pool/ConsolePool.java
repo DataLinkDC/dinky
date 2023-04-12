@@ -24,7 +24,6 @@ import org.dinky.pool.AbstractPool;
 /**
  * ConsolePool
  *
- * @author wenmo
  * @since 2022/10/18 22:51
  */
 public class ConsolePool extends AbstractPool<String, StringBuilder> {

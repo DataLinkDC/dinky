@@ -40,11 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.ververica.cdc.connectors.sqlserver.SqlServerSource;
 import com.ververica.cdc.connectors.sqlserver.table.StartupOptions;
 
-/**
- * sql server CDC
- *
- * @author 郑文豪
- */
+/** sql server CDC */
 public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(SqlServerCDCBuilder.class);

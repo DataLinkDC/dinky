@@ -74,7 +74,6 @@ import org.slf4j.LoggerFactory;
 /**
  * AbstractCDCBuilder
  *
- * @author wenmo
  * @since 2022/4/12 21:28
  */
 public abstract class AbstractSinkBuilder implements SinkBuilder {
@@ -337,7 +336,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             final DecimalType decimalType = ((DecimalType) logicalType);
             final int precision = decimalType.getPrecision();
             final int scale = decimalType.getScale();
-            return DecimalData.fromBigDecimal(new BigDecimal((String) value), precision, scale);
+            return DecimalData.fromBigDecimal(
+                    new BigDecimal(String.valueOf(value)), precision, scale);
         } else {
             return value;
         }

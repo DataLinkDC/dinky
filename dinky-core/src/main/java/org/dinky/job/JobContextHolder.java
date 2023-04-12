@@ -22,7 +22,6 @@ package org.dinky.job;
 /**
  * JobContextHolder
  *
- * @author wenmo
  * @since 2021/6/26 23:29
  */
 public class JobContextHolder {

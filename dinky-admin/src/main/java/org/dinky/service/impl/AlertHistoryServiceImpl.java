@@ -29,7 +29,6 @@ import org.springframework.stereotype.Service;
 /**
  * AlertHistoryServiceImpl
  *
- * @author wenmo
  * @since 2022/2/24 20:42
  */
 @Service

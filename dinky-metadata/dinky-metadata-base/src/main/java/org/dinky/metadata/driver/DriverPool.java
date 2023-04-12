@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * DriverPool
  *
- * @author wenmo
  * @since 2022/2/17 15:29
  */
 public class DriverPool {

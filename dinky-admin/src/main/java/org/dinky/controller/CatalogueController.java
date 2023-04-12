@@ -53,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * CatalogueController
  *
- * @author wenmo
  * @since 2021/5/28 14:03
  */
 @Slf4j

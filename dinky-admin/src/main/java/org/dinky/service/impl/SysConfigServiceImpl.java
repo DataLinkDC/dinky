@@ -40,7 +40,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 /**
  * SysConfigServiceImpl
  *
- * @author wenmo
  * @since 2021/11/18
  */
 @Service

@@ -28,7 +28,6 @@ import lombok.Setter;
 /**
  * APICancelDTO
  *
- * @author wenmo
  * @since 2021/12/12 18:53
  */
 @SuppressWarnings("AlibabaClassNamingShouldBeCamel")

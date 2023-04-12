@@ -28,7 +28,6 @@ import lombok.Setter;
 /**
  * CatalogueTaskDTO
  *
- * @author wenmo
  * @since 2021/6/1 20:16
  */
 @Getter

@@ -35,7 +35,6 @@ import java.util.Set;
 /**
  * ShowResultBuilder
  *
- * @author wenmo
  * @since 2021/7/1 23:57
  */
 public class ShowResultBuilder implements ResultBuilder {

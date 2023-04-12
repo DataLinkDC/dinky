@@ -60,7 +60,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * Explainer
  *
- * @author wenmo
  * @since 2021/6/22
  */
 public class Explainer {
@@ -129,11 +128,14 @@ public class Explainer {
             } else if (operationType.equals(SqlType.WATCH)) {
                 WatchStatementExplainer watchStatementExplainer =
                         new WatchStatementExplainer(statement);
-                String tableName = watchStatementExplainer.getTableName();
-                trans.add(
-                        new StatementParam(
-                                watchStatementExplainer.getCreateStatement(tableName),
-                                SqlType.CTAS));
+
+                String[] tableNames = watchStatementExplainer.getTableNames();
+                for (String tableName : tableNames) {
+                    trans.add(
+                            new StatementParam(
+                                    WatchStatementExplainer.getCreateStatement(tableName),
+                                    SqlType.CTAS));
+                }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
                 if (Asserts.isNotNull(udf)) {

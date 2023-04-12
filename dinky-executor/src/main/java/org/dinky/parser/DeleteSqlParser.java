@@ -22,7 +22,6 @@ package org.dinky.parser;
 /**
  * DeleteSqlParser
  *
- * @author wenmo
  * @since 2021/6/14 16:51
  */
 public class DeleteSqlParser extends BaseSingleSqlParser {

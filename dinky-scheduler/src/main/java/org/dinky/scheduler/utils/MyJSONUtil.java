@@ -30,7 +30,6 @@ import cn.hutool.core.lang.TypeReference;
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 
-/** @author 郑文豪 */
 public class MyJSONUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(MyJSONUtil.class);
@@ -74,8 +73,6 @@ public class MyJSONUtil {
      *
      * @param content json字符串
      * @return {@link PageInfo}
-     * @author 郑文豪
-     * @date 2022/9/8 9:29
      */
     public static PageInfo<JSONObject> toPageBean(String content) {
         return verifyResult(
@@ -89,8 +86,6 @@ public class MyJSONUtil {
      * @param name 名称
      * @param beanClass 要转换的class
      * @return {@link T}
-     * @author 郑文豪
-     * @date 2022/9/8 9:27
      */
     public static <T> T toPageBeanAndFindByName(String content, String name, Class<T> beanClass) {
         PageInfo<JSONObject> data = toPageBean(content);

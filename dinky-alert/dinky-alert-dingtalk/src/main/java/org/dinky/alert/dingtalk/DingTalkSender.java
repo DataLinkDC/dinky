@@ -64,7 +64,6 @@ import org.slf4j.LoggerFactory;
 /**
  * DingTalkSender
  *
- * @author wenmo
  * @since 2022/2/23 19:34
  */
 public class DingTalkSender {

@@ -26,7 +26,6 @@ import org.apache.flink.util.Collector;
 /**
  * Top2WithRetract
  *
- * @author wenmo
  * @since 2021/12/17 18:55
  */
 public class Top2WithRetract

@@ -32,7 +32,6 @@ import java.util.regex.Pattern;
 /**
  * CDCSource
  *
- * @author wenmo
  * @since 2022/1/29 23:30
  */
 public class CDCSource {

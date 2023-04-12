@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * AbstractGatewayResult
  *
- * @author wenmo
  * @since 2021/10/29 15:44
  */
 @Setter

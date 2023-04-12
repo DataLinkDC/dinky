@@ -33,7 +33,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 /**
  * JobInstanceService
  *
- * @author wenmo
  * @since 2022/2/2 13:52
  */
 public interface JobInstanceService extends ISuperService<JobInstance> {

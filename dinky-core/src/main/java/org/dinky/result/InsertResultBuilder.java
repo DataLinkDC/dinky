@@ -24,7 +24,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * InsertBuilder
  *
- * @author wenmo
  * @since 2021/6/29 22:23
  */
 public class InsertResultBuilder implements ResultBuilder {

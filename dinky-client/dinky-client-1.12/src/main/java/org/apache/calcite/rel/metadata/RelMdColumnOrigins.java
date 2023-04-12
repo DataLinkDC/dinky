@@ -71,9 +71,7 @@ import java.util.Set;
  *
  * @description: RelMdColumnOrigins supplies a default implementation of {@link
  *     RelMetadataQuery#getColumnOrigins} for the standard logical algebra.
- * @author: baisong
  * @version: 1.0.0
- * @date: 2022/11/24 7:47 PM
  */
 public class RelMdColumnOrigins implements MetadataHandler<BuiltInMetadata.ColumnOrigin> {
 

@@ -36,7 +36,6 @@ import org.slf4j.LoggerFactory;
 /**
  * ClickhouseTest
  *
- * @author heyang
  * @since 2022/4/21 1:06
  */
 @Ignore

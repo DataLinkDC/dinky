@@ -44,7 +44,6 @@ import java.util.List;
 /**
  * YarnApplicationGateway
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public class YarnApplicationGateway extends YarnGateway {

@@ -38,7 +38,6 @@ import com.alibaba.druid.pool.DruidDataSource;
 /**
  * OracleDriver
  *
- * @author wenmo
  * @since 2021/7/21 15:52
  */
 public class OracleDriver extends AbstractJdbcDriver {

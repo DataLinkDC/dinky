@@ -34,7 +34,6 @@ import java.util.stream.Collectors;
 /**
  * MapParseUtils
  *
- * @author wenmo
  * @since 2021/6/22
  */
 public class MapParseUtils {
@@ -296,9 +295,7 @@ public class MapParseUtils {
 
     /**
      * @return java.util.Map
-     * @author lewnn
      * @operate
-     * @date 2021/8/20 15:03
      */
     public static Map parseForSelect(String inStr) {
         return getKeyAndValues(inStr);

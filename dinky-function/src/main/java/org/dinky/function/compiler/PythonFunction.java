@@ -50,7 +50,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * python 编译
  *
- * @author ZackYoung
  * @since 0.6.8
  */
 @Slf4j

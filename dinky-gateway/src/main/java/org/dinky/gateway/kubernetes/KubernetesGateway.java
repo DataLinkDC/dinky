@@ -49,7 +49,6 @@ import cn.hutool.core.util.ReflectUtil;
 /**
  * KubernetesGateway
  *
- * @author wenmo
  * @since 2021/12/26 14:09
  */
 public abstract class KubernetesGateway extends AbstractGateway {

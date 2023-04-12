@@ -37,7 +37,6 @@ import cn.dev33.satoken.interceptor.SaInterceptor;
 /**
  * AppConfiguration
  *
- * @author wenmo
  * @since 2021/11/28 19:35
  */
 @Configuration

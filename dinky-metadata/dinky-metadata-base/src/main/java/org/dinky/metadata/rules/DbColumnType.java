@@ -22,7 +22,6 @@ package org.dinky.metadata.rules;
 /**
  * DbColumnType
  *
- * @author wenmo
  * @since 2021/7/20 14:44
  */
 public enum DbColumnType implements IColumnType {

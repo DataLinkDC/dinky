@@ -22,10 +22,7 @@ package org.dinky.process.exception;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.utils.LogUtil;
 
-/**
- * @author ZackYoung
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 public class DinkyException extends RuntimeException {
 
     public DinkyException() {}

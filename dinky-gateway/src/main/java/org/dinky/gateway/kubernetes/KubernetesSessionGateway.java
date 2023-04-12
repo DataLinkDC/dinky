@@ -33,7 +33,6 @@ import org.apache.flink.kubernetes.KubernetesClusterDescriptor;
 /**
  * KubernetesSessionGateway
  *
- * @author wenmo
  * @since 2022/12/25 23:25
  */
 public class KubernetesSessionGateway extends KubernetesGateway {

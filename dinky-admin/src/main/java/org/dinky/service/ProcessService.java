@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * ProcessService
  *
- * @author wenmo
  * @since 2022/10/16 22:05
  */
 public interface ProcessService {

@@ -36,7 +36,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * StudioExecuteDTO
  *
- * @author wenmo
  * @since 2021/5/30 11:09
  */
 @Getter

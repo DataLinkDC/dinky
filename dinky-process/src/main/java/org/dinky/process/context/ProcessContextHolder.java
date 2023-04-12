@@ -26,7 +26,6 @@ import org.dinky.process.pool.ProcessPool;
 /**
  * ProcessContextHolder
  *
- * @author wenmo
  * @since 2022/10/16 16:57
  */
 public class ProcessContextHolder {

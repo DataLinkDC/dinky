@@ -28,7 +28,6 @@ import lombok.Setter;
 /**
  * EnvironmentSetting
  *
- * @author wenmo
  * @since 2021/5/25 13:45
  */
 @Getter

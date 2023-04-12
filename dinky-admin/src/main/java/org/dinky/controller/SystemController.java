@@ -36,7 +36,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * SystemController
  *
- * @author wenmo
  * @since 2022/10/15 19:20
  */
 @RestController

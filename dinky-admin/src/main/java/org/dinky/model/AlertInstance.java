@@ -29,7 +29,6 @@ import lombok.EqualsAndHashCode;
 /**
  * AlertInstance
  *
- * @author wenmo
  * @since 2022/2/24 19:46
  */
 @Data

@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * JobInfo
  *
- * @author wenmo
  * @since 2021/11/3 21:45
  */
 @Getter

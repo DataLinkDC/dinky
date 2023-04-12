@@ -26,7 +26,6 @@ import java.time.LocalDateTime;
 /**
  * RunResult
  *
- * @author wenmo
  * @since 2021/5/25 16:46
  */
 public class RunResult {

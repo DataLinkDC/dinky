@@ -44,7 +44,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * SavepointsController
  *
- * @author wenmo
  * @since 2021/11/21
  */
 @Slf4j

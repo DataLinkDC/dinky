@@ -27,7 +27,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 /**
  * AppBatchExecutor
  *
- * @author wenmo
  * @since 2022/2/7 22:14
  */
 public class AppBatchExecutor extends Executor {

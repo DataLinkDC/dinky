@@ -67,7 +67,6 @@ import cn.hutool.core.io.FileUtil;
 /**
  * YarnSubmiter
  *
- * @author wenmo
  * @since 2021/10/29
  */
 public abstract class YarnGateway extends AbstractGateway {

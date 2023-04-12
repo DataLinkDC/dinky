@@ -27,7 +27,6 @@ import java.util.List;
 /**
  * JobParam
  *
- * @author wenmo
  * @since 2021/11/16
  */
 public class JobParam {

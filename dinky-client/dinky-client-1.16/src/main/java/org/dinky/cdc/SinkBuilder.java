@@ -29,7 +29,6 @@ import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 /**
  * SinkBuilder
  *
- * @author wenmo
  * @since 2022/11/04
  */
 public interface SinkBuilder {

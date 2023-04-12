@@ -48,7 +48,6 @@ import com.alibaba.druid.sql.parser.Token;
 /**
  * ClickHouseDriver
  *
- * @author wenmo
  * @since 2021/7/21 17:14
  */
 public class ClickHouseDriver extends AbstractJdbcDriver {

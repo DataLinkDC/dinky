@@ -26,7 +26,6 @@ import org.apache.flink.table.api.TableResult;
 /**
  * ResultBuilder
  *
- * @author wenmo
  * @since 2021/5/25 15:59
  */
 public interface ResultBuilder {

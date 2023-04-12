@@ -24,7 +24,6 @@ import java.util.Set;
 /**
  * JobInfoDetail
  *
- * @author wenmo
  * @since 2022/3/1 19:31
  */
 public class JobInfoDetail {

@@ -30,12 +30,12 @@ import org.slf4j.LoggerFactory;
 /**
  * JdbcDatetimeBetweenParametersProvider
  *
- * @author 金鑫
  * @since 2022/11/18 11:05
  */
 public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValuesProvider {
 
-    protected static final Logger logger = LoggerFactory.getLogger(JdbcDatetimeBetweenParametersProvider.class);
+    protected static final Logger logger =
+            LoggerFactory.getLogger(JdbcDatetimeBetweenParametersProvider.class);
     private final long minVal;
     private final long maxVal;
     private long batchSize;
@@ -57,8 +57,8 @@ public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValue
      * NumericBetweenParametersProviderJdbc constructor.
      *
      * @param fetchSize the max distance between the produced from/to pairs
-     * @param minVal    the lower bound of the produced "from" values
-     * @param maxVal    the upper bound of the produced "to" values
+     * @param minVal the lower bound of the produced "from" values
+     * @param maxVal the upper bound of the produced "to" values
      */
     public JdbcDatetimeBetweenParametersProvider(long fetchSize, long minVal, long maxVal) {
         Preconditions.checkArgument(minVal <= maxVal, "minVal must not be larger than maxVal");
@@ -100,7 +100,7 @@ public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValue
         long start = minVal;
         for (int i = 0; i < batchNum; i++) {
             long end = start + batchSize - 1 - (i >= bigBatchNum ? 1 : 0);
-            parameters[i] = new Date[]{new Date(start), new Date(end)};
+            parameters[i] = new Date[] {new Date(start), new Date(end)};
             start = end + 1;
         }
         logger.error("时间范围 {}", parameters);

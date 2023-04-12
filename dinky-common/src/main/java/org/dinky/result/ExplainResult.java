@@ -24,7 +24,6 @@ import java.util.List;
 /**
  * ExplainResult
  *
- * @author wenmo
  * @since 2021/12/12 13:11
  */
 public class ExplainResult {

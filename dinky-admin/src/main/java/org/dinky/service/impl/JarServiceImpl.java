@@ -33,7 +33,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 /**
  * JarServiceImpl
  *
- * @author wenmo
  * @since 2021/11/13
  */
 @Service

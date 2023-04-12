@@ -25,7 +25,6 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * AlertPool
  *
- * @author wenmo
  * @since 2022/2/23 19:16
  */
 public class AlertPool {

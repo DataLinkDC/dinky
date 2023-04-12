@@ -37,7 +37,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * zip压缩包工具类
  *
- * @author ZackYoung
  * @since 0.6.8
  */
 public class ZipWriter extends cn.hutool.core.compress.ZipWriter {

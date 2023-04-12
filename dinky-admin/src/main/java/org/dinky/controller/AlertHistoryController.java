@@ -42,7 +42,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * AlertHistoryController
  *
- * @author wenmo
  * @since 2022/2/24 20:43
  */
 @Slf4j

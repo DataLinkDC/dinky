@@ -32,7 +32,6 @@ import java.util.List;
 /**
  * DataBaseService
  *
- * @author wenmo
  * @since 2021/7/20 23:47
  */
 public interface DataBaseService extends ISuperService<DataBase> {

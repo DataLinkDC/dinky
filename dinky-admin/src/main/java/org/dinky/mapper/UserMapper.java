@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * UserMapper
  *
- * @author wenmo
  * @since 2021/11/28 13:36
  */
 @Mapper

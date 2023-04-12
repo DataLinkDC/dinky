@@ -42,7 +42,6 @@ import java.util.List;
 /**
  * KubernetesApplicationGateway
  *
- * @author wenmo
  * @since 2021/12/26 14:59
  */
 public class KubernetesApplicationGateway extends KubernetesGateway {

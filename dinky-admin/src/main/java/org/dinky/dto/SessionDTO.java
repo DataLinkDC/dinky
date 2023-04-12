@@ -25,7 +25,6 @@ import lombok.Setter;
 /**
  * SessionDTO
  *
- * @author wenmo
  * @since 2021/7/6 22:10
  */
 @Getter

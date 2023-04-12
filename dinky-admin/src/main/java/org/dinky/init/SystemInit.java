@@ -53,7 +53,6 @@ import lombok.RequiredArgsConstructor;
 /**
  * SystemInit
  *
- * @author wenmo
  * @since 2021/11/18
  */
 @Component

@@ -27,7 +27,6 @@ import org.apache.ibatis.annotations.Mapper;
 /**
  * FragmentVariableMapper
  *
- * @author zhumingye
  * @since 2022/08/18
  */
 @Mapper

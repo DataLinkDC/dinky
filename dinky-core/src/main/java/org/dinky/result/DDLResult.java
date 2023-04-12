@@ -30,7 +30,6 @@ import lombok.Setter;
 /**
  * DDLResult
  *
- * @author wenmo
  * @since 2021/6/29 22:06
  */
 @Setter

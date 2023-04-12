@@ -17,17 +17,18 @@
  *
  */
 
-import {Input, Modal, Tabs} from "antd";
+import {Modal, Select, Tabs} from "antd";
 import {registerWatchTable, unRegisterWatchTable} from "@/pages/DataStudio/service";
 import {Component, useEffect, useState} from "react";
 import stompClientUtil from "@/utils/stompClientUtil"
 import {Scrollbars} from 'react-custom-scrollbars';
 import CodeShow from "@/components/Common/CodeShow";
 import {l} from "@/utils/intl";
-import {clearConsole} from "@/components/Studio/StudioEvent/DDL";
+import {clearConsole, getWatchTables} from "@/components/Studio/StudioEvent/DDL";
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {Subscription} from "stompjs";
+import {Option} from "antd/es/mentions";
 import TabPane = Tabs.TabPane;
 
 const DatePage = (props: any) => {
@@ -51,10 +52,11 @@ const DatePage = (props: any) => {
   };
 
   useEffect(() => {
-    return () => unRegisterWatchTable({id, table: tableName}).then(res => {
-      console.log("unsubscribe: " + tableName)
-      subScription?.unsubscribe();
-    });
+    return () => {
+      unRegisterWatchTable({id, table: tableName}).then(res => {
+        subScription?.unsubscribe();
+      });
+    }
   }, [subScription]);
 
   const editorDidMountHandle = (editor: any, monaco: any) => {
@@ -80,17 +82,28 @@ const DatePage = (props: any) => {
 };
 
 const StudioData = (props: any) => {
-  const {height, isActive} = props;
+  const {height, current} = props;
   const [panes, setPanes] = useState<[{ title: string, key: string, content: Component }]>([]);
 
-  const addTab = () => {
+  const addTab = async () => {
     let title: string
+    if (current == undefined) {
+      return
+    }
+
+    const result = await getWatchTables(current.value);
+    let tables: [string] = result.datas
     Modal.confirm({
-      title: 'Please enter table name',
-      content: <Input onChange={e => title = e.target.value}/>,
+      title: 'Please select table name',
+      content: <Select defaultValue="" style={{width: 120}} onChange={e => title = e}>
+        {tables.map(t => (
+          <Option value={t}>{t}</Option>
+        ))
+        }
+      </Select>,
       onOk() {
-        const activeKey = `${panes.length + 1}`;
-        const newPanes = [...panes];
+        const activeKey = `${panes!.length + 1}`;
+        const newPanes = [...panes!];
         newPanes.push({
           title: title,
           content: <DatePage height={height} title={title} stompClient={stompClientUtil.stompClient}/>,
@@ -103,10 +116,7 @@ const StudioData = (props: any) => {
 
   useEffect(() => {
     stompClientUtil.connect();
-  }, [isActive])
-
-  useEffect(()=>{
-    return ()=>{
+    return () => {
       stompClientUtil.disconnect();
     }
   }, [])
@@ -116,11 +126,11 @@ const StudioData = (props: any) => {
       if (action === 'add') {
         addTab();
       } else if (action === 'remove') {
-        const newPanes = panes.filter((pane) => pane.key !== targetKey);
+        const newPanes = panes!.filter((pane) => pane.key !== targetKey);
         setPanes(newPanes);
       }
     }}>
-      {panes.map((pane) => (
+      {panes!.map((pane) => (
         <TabPane tab={pane.title} key={pane.key}>
           {pane.content}
         </TabPane>

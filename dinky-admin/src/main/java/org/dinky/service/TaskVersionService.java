@@ -24,15 +24,12 @@ import org.dinky.model.TaskVersion;
 
 import java.util.List;
 
-/** @author huang */
 public interface TaskVersionService extends ISuperService<TaskVersion> {
 
     /**
      * @description 通过作业Id查询版本数据
      * @param taskId
      * @return java.util.List<org.dinky.model.TaskVersion>
-     * @author huang
-     * @date 2022/6/22 17:17
      */
     List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
 }

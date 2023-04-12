@@ -52,7 +52,6 @@ import java.util.Set;
 /**
  * LineageContext
  *
- * @author wenmo
  * @since 2022/11/22
  */
 public class LineageContext {

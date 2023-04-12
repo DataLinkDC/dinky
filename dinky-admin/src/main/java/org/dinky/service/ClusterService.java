@@ -28,7 +28,6 @@ import java.util.List;
 /**
  * ClusterService
  *
- * @author wenmo
  * @since 2021/5/28 14:01
  */
 public interface ClusterService extends ISuperService<Cluster> {

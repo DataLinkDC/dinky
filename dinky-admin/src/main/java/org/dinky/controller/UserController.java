@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * UserController
  *
- * @author wenmo
  * @since 2021/11/28 13:43
  */
 @Slf4j

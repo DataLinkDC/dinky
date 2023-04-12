@@ -53,7 +53,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * JarController
  *
- * @author wenmo
  * @since 2021/11/13
  */
 @Slf4j

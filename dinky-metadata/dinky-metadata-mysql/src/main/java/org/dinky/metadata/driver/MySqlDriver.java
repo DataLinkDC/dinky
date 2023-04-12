@@ -38,7 +38,6 @@ import java.util.stream.Collectors;
 /**
  * MysqlDriver
  *
- * @author wenmo
  * @since 2021/7/20 14:06
  */
 public class MySqlDriver extends AbstractJdbcDriver {

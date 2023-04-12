@@ -1,5 +1,5 @@
 
-import Stomp, { Subscription } from "stompjs";
+import Stomp from "stompjs";
 
 class StompClientUtil {
   stompClient: Stomp.Client;

@@ -50,7 +50,6 @@ import cn.hutool.core.util.StrUtil;
 /**
  * CustomStringJavaCompiler
  *
- * @author wenmo
  * @since 2021/12/28 22:46
  */
 public class CustomStringJavaCompiler {

@@ -22,7 +22,6 @@ package org.dinky.metadata.query;
 /**
  * OracleQuery
  *
- * @author wenmo
  * @since 2021/7/21 15:54
  */
 public class OracleQuery extends AbstractDBQuery {

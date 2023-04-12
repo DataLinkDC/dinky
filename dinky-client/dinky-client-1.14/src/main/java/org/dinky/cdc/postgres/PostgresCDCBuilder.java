@@ -40,7 +40,6 @@ import com.ververica.cdc.debezium.JsonDebeziumDeserializationSchema;
 /**
  * postgresCDCBuilder
  *
- * @author mengyejiang
  * @since 2022/8/21 10:00
  */
 public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {

@@ -26,7 +26,6 @@ import java.util.Arrays;
 /**
  * SavePointType
  *
- * @author wenmo
  * @since 2021/11/3 21:58
  */
 public enum SavePointType {

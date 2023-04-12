@@ -33,20 +33,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * @author DarrenDa
- * * @version 1.0
- * * @Desc:
- */
+/** * @version 1.0 * @Desc: */
 public class PulsarProducerHolder {
     private static final Logger LOG = LoggerFactory.getLogger(PulsarProducerHolder.class);
     private static final Map<String, Producer> PULSAR_PRODUCER_MAP = new ConcurrentHashMap<>();
 
-    public static Producer getProducer(String defaultTopicName, Properties properties, PulsarClient client) throws Exception {
+    public static Producer getProducer(
+            String defaultTopicName, Properties properties, PulsarClient client) throws Exception {
         return get(defaultTopicName, properties, client);
     }
 
-    private static Producer get(String defaultTopicName, Properties properties, PulsarClient client) throws Exception {
+    private static Producer get(String defaultTopicName, Properties properties, PulsarClient client)
+            throws Exception {
         synchronized (PulsarProducerHolder.class) {
             String pulsarProducerCacheKey = defaultTopicName;
             Producer pulsarProducer = PULSAR_PRODUCER_MAP.get(pulsarProducerCacheKey);
@@ -56,7 +54,8 @@ public class PulsarProducerHolder {
             }
 
             Producer producer = createPulsarProducer(defaultTopicName, properties, client);
-            Producer newPulsarProducer = PULSAR_PRODUCER_MAP.putIfAbsent(pulsarProducerCacheKey, producer);
+            Producer newPulsarProducer =
+                    PULSAR_PRODUCER_MAP.putIfAbsent(pulsarProducerCacheKey, producer);
             if (newPulsarProducer == null) {
                 return producer;
             }
@@ -64,18 +63,28 @@ public class PulsarProducerHolder {
         }
     }
 
-    private static Producer createPulsarProducer(String defaultTopicName, Properties properties, PulsarClient client) {
+    private static Producer createPulsarProducer(
+            String defaultTopicName, Properties properties, PulsarClient client) {
         try {
-            LOG.info("create producer, and ID is " + UUID.randomUUID() + ", and cache map size is " + PULSAR_PRODUCER_MAP.size());
-            LOG.info("now defaultTopicName is " + defaultTopicName + ", and map content is " + PULSAR_PRODUCER_MAP.get(defaultTopicName));
+            LOG.info(
+                    "create producer, and ID is "
+                            + UUID.randomUUID()
+                            + ", and cache map size is "
+                            + PULSAR_PRODUCER_MAP.size());
+            LOG.info(
+                    "now defaultTopicName is "
+                            + defaultTopicName
+                            + ", and map content is "
+                            + PULSAR_PRODUCER_MAP.get(defaultTopicName));
 
             ProducerBuilder<byte[]> producerBuilder = client.newProducer();
-            producerBuilder.
-                    blockIfQueueFull(Boolean.TRUE).
-                    compressionType(CompressionType.LZ4).
-                    topic(defaultTopicName).
-                    hashingScheme(HashingScheme.JavaStringHash).
-                    //batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS).
+            producerBuilder
+                    .blockIfQueueFull(Boolean.TRUE)
+                    .compressionType(CompressionType.LZ4)
+                    .topic(defaultTopicName)
+                    .hashingScheme(HashingScheme.JavaStringHash)
+                    .
+                    // batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS).
                     loadConf((Map) properties);
             Producer<byte[]> producer = producerBuilder.create();
             return producer;

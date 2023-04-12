@@ -31,7 +31,6 @@ import java.util.function.Supplier;
 /**
  * CDCBuilderFactory
  *
- * @author wenmo
  * @since 2022/11/04
  */
 public class CDCBuilderFactory {

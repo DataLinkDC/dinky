@@ -33,7 +33,6 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * Operations
  *
- * @author wenmo
  * @since 2021/5/25 15:50
  */
 @Slf4j
@@ -74,7 +73,7 @@ public class Operations {
     }
 
     public static SqlType getOperationType(String sql) {
-        String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, "").trim().toUpperCase();
+        String sqlTrim = sql.replaceAll(SQL_EMPTY_STR, " ").trim().toUpperCase();
         return Arrays.stream(SqlType.values())
                 .filter(sqlType -> sqlType.match(sqlTrim))
                 .findFirst()

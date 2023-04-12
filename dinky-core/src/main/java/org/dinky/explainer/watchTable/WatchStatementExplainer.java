@@ -33,7 +33,7 @@ public class WatchStatementExplainer {
 
     public static final String CREATE_SQL_TEMPLATE =
             "CREATE TABLE print_{0} WITH (''connector'' = ''printnet'', "
-                    + "''port''=''{2,number,#}'', ''hostName'' = ''{1}'', ''sink.parallelism''=''{3}'')\n"
+                    + "''port''=''{2,number,#}'', ''hostName'' = ''{1}'')\n"
                     + "AS SELECT * FROM {0}";
     public static final int PORT = 7125;
 
@@ -43,16 +43,21 @@ public class WatchStatementExplainer {
         this.statement = statement;
     }
 
-    public String getTableName() {
-        Matcher matcher = PATTERN.matcher(statement);
-        matcher.find();
-        return matcher.group(1);
+    public String[] getTableNames() {
+        return splitTableNames(statement);
     }
 
-    public String getCreateStatement(String tableName) {
+    public static String[] splitTableNames(String statement) {
+        Matcher matcher = PATTERN.matcher(statement);
+        matcher.find();
+        String tableNames = matcher.group(1);
+        return tableNames.replaceAll(" ", "").split(",");
+    }
+
+    public static String getCreateStatement(String tableName) {
         Optional<InetAddress> address = getSystemLocalIp();
         String ip = address.isPresent() ? address.get().getHostAddress() : "127.0.0.1";
-        return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT, 1);
+        return MessageFormat.format(CREATE_SQL_TEMPLATE, tableName, ip, PORT);
     }
 
     private static Optional<InetAddress> getSystemLocalIp() {

@@ -44,11 +44,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpRequest;
 import cn.hutool.json.JSONObject;
 
-/**
- * 工作流定义
- *
- * @author 郑文豪
- */
+/** 工作流定义 */
 @Component
 public class ProcessClient {
 
@@ -62,8 +58,6 @@ public class ProcessClient {
      * @param projectCode 项目编号
      * @param processName 工作流定义名
      * @return {@link List<ProcessDefinition>}
-     * @author 郑文豪
-     * @date 2022/9/7 16:59
      */
     public List<ProcessDefinition> getProcessDefinition(Long projectCode, String processName) {
         Map<String, Object> map = new HashMap<>();
@@ -99,8 +93,6 @@ public class ProcessClient {
      * @param projectCode 项目编号
      * @param processName 工作流定义名
      * @return {@link ProcessDefinition}
-     * @author 郑文豪
-     * @date 2022/9/7 16:59
      */
     public ProcessDefinition getProcessDefinitionInfo(Long projectCode, String processName) {
 
@@ -119,8 +111,6 @@ public class ProcessClient {
      * @param projectCode 项目编号
      * @param processCode 任务编号
      * @return {@link DagData}
-     * @author 郑文豪
-     * @date 2022/9/13 14:33
      */
     public DagData getProcessDefinitionInfo(Long projectCode, Long processCode) {
         Map<String, Object> map = new HashMap<>();
@@ -149,8 +139,6 @@ public class ProcessClient {
      * @param projectCode 项目编号
      * @param processName 工作流定义名称
      * @return {@link ProcessDefinition}
-     * @author 郑文豪
-     * @date 2022/9/7 17:00
      */
     public ProcessDefinition createProcessDefinition(
             Long projectCode, String processName, Long taskCode, String taskDefinitionJson) {

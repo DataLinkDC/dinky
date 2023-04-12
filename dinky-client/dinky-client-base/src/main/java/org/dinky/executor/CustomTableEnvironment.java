@@ -39,7 +39,6 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 /**
  * CustomTableEnvironment
  *
- * @author wenmo
  * @since 2022/2/5 10:35
  */
 public interface CustomTableEnvironment

@@ -32,7 +32,6 @@ import cn.hutool.core.text.CharSequenceUtil;
 /**
  * Process
  *
- * @author wenmo
  * @since 2022/10/16 16:30
  */
 public class ProcessEntity {

@@ -29,10 +29,7 @@ import java.util.stream.Collectors;
 
 import cn.hutool.core.util.StrUtil;
 
-/**
- * @author ZackYoung
- * @since 0.7.0
- */
+/** @since 0.7.0 */
 public class UdfCodePool {
 
     /** udf code pool key -> class name value -> udf */

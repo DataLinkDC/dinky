@@ -25,7 +25,6 @@ import java.util.Vector;
 /**
  * ClassPool
  *
- * @author wenmo
  * @since 2022/1/12 23:52
  */
 public class ClassPool {

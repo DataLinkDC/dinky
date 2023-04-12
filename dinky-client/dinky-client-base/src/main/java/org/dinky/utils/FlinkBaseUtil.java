@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
 /**
  * FlinkBaseUtil
  *
- * @author wenmo
  * @since 2022/3/9 19:15
  */
 public class FlinkBaseUtil {

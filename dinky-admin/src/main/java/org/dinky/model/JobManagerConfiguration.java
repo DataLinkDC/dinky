@@ -26,7 +26,6 @@ import lombok.Data;
 /**
  * @program: dinky
  * @description: JobManager 配置信息
- * @author: zhumingye
  * @create: 2022-06-26 10:53
  */
 @Data

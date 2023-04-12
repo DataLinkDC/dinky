@@ -40,7 +40,6 @@ import lombok.Setter;
 /**
  * ExecutorSetting
  *
- * @author wenmo
  * @since 2021/5/25 13:43
  */
 @Setter

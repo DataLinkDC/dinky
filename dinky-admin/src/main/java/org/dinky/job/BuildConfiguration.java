@@ -34,7 +34,6 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-/** @author zhumingye */
 public class BuildConfiguration {
 
     public static void buildJobManagerConfiguration(

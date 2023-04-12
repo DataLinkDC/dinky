@@ -22,12 +22,7 @@ package org.dinky.alert.email;
 import org.dinky.alert.AbstractAlert;
 import org.dinky.alert.AlertResult;
 
-/**
- * EmailAlert
- *
- * @author zhumingye
- * @date: 2022/4/2
- */
+/** EmailAlert */
 public class EmailAlert extends AbstractAlert {
 
     @Override

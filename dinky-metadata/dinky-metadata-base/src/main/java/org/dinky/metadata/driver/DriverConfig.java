@@ -29,7 +29,6 @@ import lombok.Setter;
 /**
  * DriverConfig
  *
- * @author wenmo
  * @since 2021/7/19 23:21
  */
 @Getter
