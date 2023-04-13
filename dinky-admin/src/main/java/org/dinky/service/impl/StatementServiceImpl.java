@@ -53,7 +53,7 @@ public class StatementServiceImpl extends SuperServiceImpl<StatementMapper, Stat
         // TODO: 2023/4/7 this function not support variable sql, because, JobManager and executor
         // couple function
         //  and status and task execute.
-        final String[] statements = SqlUtil.getStatements(statement);
+        final String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(statement));
         return Arrays.stream(statements)
                 .filter(t -> SqlType.WATCH.equals(Operations.getOperationType(t)))
                 .flatMap(t -> Arrays.stream(WatchStatementExplainer.splitTableNames(t)))
