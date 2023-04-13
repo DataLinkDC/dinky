@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.model.SystemConfiguration;
 
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * SqlUtil
@@ -53,12 +54,15 @@ public class SqlUtil {
     }
 
     public static String removeNote(String sql) {
+
         if (Asserts.isNotNullString(sql)) {
-            sql =
-                    sql.replaceAll("\u00A0", " ")
-                            .replaceAll("[\r\n]+", "\n")
-                            .replaceAll("--([^'\n]{0,}('[^'\n]{0,}'){0,1}[^'\n]{0,}){0,}", "")
-                            .trim();
+            // Remove the special-space characters
+            sql = sql.replaceAll("\u00A0", " ")
+                    .replaceAll("[\r\n]+", "\n");
+            //Remove annotations Support '--aa' , '/**aaa*/' , '//aa' , '#aaa'
+            Pattern p = Pattern.compile("(?ms)('(?:''|[^'])*')|--.*?$|//.*?$|/\\*.*?\\*/|#.*?$|");
+            String presult = p.matcher(sql).replaceAll("$1");
+            return presult.trim();
         }
         return sql;
     }
