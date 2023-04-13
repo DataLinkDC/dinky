@@ -57,9 +57,8 @@ public class SqlUtil {
 
         if (Asserts.isNotNullString(sql)) {
             // Remove the special-space characters
-            sql = sql.replaceAll("\u00A0", " ")
-                    .replaceAll("[\r\n]+", "\n");
-            //Remove annotations Support '--aa' , '/**aaa*/' , '//aa' , '#aaa'
+            sql = sql.replaceAll("\u00A0", " ").replaceAll("[\r\n]+", "\n");
+            // Remove annotations Support '--aa' , '/**aaa*/' , '//aa' , '#aaa'
             Pattern p = Pattern.compile("(?ms)('(?:''|[^'])*')|--.*?$|//.*?$|/\\*.*?\\*/|#.*?$|");
             String presult = p.matcher(sql).replaceAll("$1");
             return presult.trim();
