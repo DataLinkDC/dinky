@@ -128,12 +128,12 @@ export default [
           {
             path: '/registration/alert/instance',
             name: 'instance',
-            // component: './RegistrationCenter/AlertManage/AlertInstance',
+            component: './RegCenter/Alert/AlertInstance',
           },
           {
             path: '/registration/alert/group',
             name: 'group',
-            // component: './RegistrationCenter/AlertManage/AlertGroup',
+            // component: './RegistrationCenter/Alert/AlertGroup',
           },
         ],
       },

@@ -25,6 +25,7 @@ import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.common.result.Result;
+import org.dinky.constant.BaseConstant;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.AlertInstanceMapper;
 import org.dinky.model.AlertGroup;
@@ -73,7 +74,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public List<AlertInstance> listEnabledAll() {
-        return list(new QueryWrapper<AlertInstance>().eq("enabled", 1));
+        return list(new LambdaQueryWrapper<AlertInstance>().eq(AlertInstance::getEnabled, 1));
     }
 
     @Override
@@ -85,7 +86,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                         JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
         String currentDateTime =
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                new SimpleDateFormat(BaseConstant.YYYY_MM_DD_HH_MM_SS)
                         .format(Calendar.getInstance().getTime());
         String uuid = UUID.randomUUID().toString();
 
@@ -135,6 +136,13 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         } else {
             return Result.failed("请选择要删除的记录");
         }
+    }
+
+    @Override
+    public Boolean enable(Integer id) {
+        AlertInstance alertInstance = getById(id);
+        alertInstance.setEnabled(!alertInstance.getEnabled());
+        return updateById(alertInstance);
     }
 
     private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation) {

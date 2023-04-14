@@ -79,6 +79,17 @@ export const API_CONSTANTS = {
   // document enable or disable
   DOCUMENT_ENABLE: "/api/document/enable",
 
+  // ---- alert instance ----
+  // alert instance list
+  ALERT_INSTANCE: "/api/alertInstance",
+  // delete alert instance by id
+  ALERT_INSTANCE_DELETE: "/api/alertInstance/delete",
+  // alert instance enable or disable
+  ALERT_INSTANCE_ENABLE: "/api/alertInstance/enable",
+
+
+
+
 };
 
 
