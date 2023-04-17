@@ -82,7 +82,8 @@ const AlertInstanceChooseForm: React.FC<UpdateFormProps> = (props) => {
       maskClosable={false}
       destroyOnClose={true}
       footer={null}
-    >{
+    >
+      {
       (!alertType && !values?.id) && (<List
         grid={{
           gutter: 16,
