@@ -97,13 +97,6 @@ const StudioGuide = (props: any) => {
                 history.push('/settingCenter/systemInfo')
               }}>{l('pages.datastudio.label.systemInfo')}</Link>
             </li>
-            <li>
-              <Link href="http://www.dlink.top/"
-                    target="_blank">{l('pages.datastudio.label.officialdocumentation')}</Link>
-            </li>
-            <li>
-              <Link href="https://github.com/DataLinkDC/dlink" target="_blank">Github</Link>
-            </li>
           </ul>
         </Paragraph>
       </Typography>

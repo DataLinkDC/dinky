@@ -80,7 +80,6 @@ export default [
       },
     ],
   },
-
   {
     path: '/registration',
     name: 'registration',
@@ -230,9 +229,16 @@ export default [
     ],
   },
   {
+    path: '/dashboard',
+    name: 'dashboard',
+    icon: 'dashboard',
+    component: './Dashboard',
+  },
+  {
     path: '/about',
     name: 'about',
     icon: 'smile',
+    hideInMenu: true,
     component: './Welcome',
   },
   {

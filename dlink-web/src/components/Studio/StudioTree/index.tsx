@@ -174,6 +174,8 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
     const handleMenuClick = (key: string) => {
       if (key == 'Open') {
         toOpen(rightClickNode);
+    } else if(key == 'OpenGraph') {
+      toOpenGraph(rightClickNode);
       } else if (key == 'Submit') {
         toSubmit(rightClickNode);
       } else if (key == 'CreateCatalogue') {
@@ -283,6 +285,69 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
         })
       }
     };
+
+  const toOpenGraph = (node: TreeDataNode | undefined) => {
+    if (!available) {
+      return
+    }
+
+    setAvailable(false);
+    setTimeout(() => {
+      setAvailable(true);
+    }, 200);
+
+    if (!node?.isLeaf || !node.taskId) {
+      return;
+    }
+
+    if (checkInPans(node)) {
+      activeTabCall(node);
+      return;
+    }
+
+    const result = getInfoById('/api/task', node.taskId);
+    result.then(result => {
+      let newTabs = tabs;
+      let newPane: any = {
+        title: node.name,
+        key: node.taskId,
+        value: (result.datas.statement ? result.datas.statement : ''),
+        icon: node.icon,
+        closable: true,
+        path: node.path,
+        isGraph: true,
+        task: {
+          session: '',
+          maxRowNum: 100,
+          jobName: node.name,
+          useResult: true,
+          useChangeLog: false,
+          useAutoCancel: false,
+          useSession: false,
+          useRemote: true,
+          ...result.datas,
+        },
+        console: {
+          result: {},
+          chart: {},
+        },
+        monaco: React.createRef(),
+        metaStore: []
+      };
+      newTabs!.activeKey = node.taskId;
+      if (checkInPans(node)) {
+        return;
+      }
+
+      newTabs!.panes!.push(newPane);
+      dispatch && dispatch({
+        type: "Studio/saveTabs",
+        payload: newTabs,
+      });
+
+      showMetaStoreCatalogs(result.datas, dispatch);
+    })
+  }
 
     const createCatalogue = (node: TreeDataNode | undefined) => {
       if (!node?.isLeaf) {
@@ -473,6 +538,7 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       if (rightClickNode && rightClickNode.isLeaf) {
         menuItems = (<>
           <Menu.Item key='Open'>{l('right.menu.open')}</Menu.Item>
+        <Menu.Item key='OpenGraph'>OpenGraph</Menu.Item>
           <Menu.Item key='Submit'>{l('right.menu.submit')}</Menu.Item>
           <Menu.Item key='ExportJson'>{l('right.menu.exportJson')}</Menu.Item>
           <Menu.Item key='Rename'>{l('right.menu.rename')}</Menu.Item>

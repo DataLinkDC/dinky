@@ -58,6 +58,7 @@ export default {
   'menu.settings.flinkConfig': 'Flink Settings',
   'menu.settings.udfTemplate': 'UDF Template Settings',
   'menu.settings.systemInfo': 'System Info',
+  'menu.dashboard': 'Dashboard',
   'menu.settings.processList': 'Process List',
 
   'menu.about': 'About',

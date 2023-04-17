@@ -17,24 +17,30 @@
  *
  */
 
+<<<<<<<< HEAD:dinky-common/src/main/java/org/dinky/constant/CommonConstant.java
+package org.dinky.constant;
 
-import {l} from "@/utils/intl";
-import {GithubOutlined} from '@ant-design/icons';
-import {DefaultFooter} from '@ant-design/pro-layout';
+/**
+ * CommonConstant
+ *
+ * @since 2021/5/28 9:35
+ */
+public final class CommonConstant {
+
+    /** 实例健康 */
+    public static final String HEALTHY = "1";
+========
 
 export default () => {
-
   return (
-    <DefaultFooter
-      copyright={l('app.copyright.produced', 'Produced by ZDPX')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: '',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
-};
+    <>
+      <div className={"grafana"}>
+        <iframe src={"http://192.168.1.88:3000/d/PDv5u_KVk/cep?orgId=1&refresh=5s&kiosk"} width={"100%"} height = {"1000px" }>
+
+        </iframe>
+      </div>
+    </>
+  )
+>>>>>>>> mydinky:dlink-web/src/pages/Dashboard/index.tsx
+}
+

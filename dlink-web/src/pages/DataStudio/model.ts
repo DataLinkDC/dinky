@@ -128,6 +128,8 @@ export type TabsItemType = {
   metaStore?: MetaStoreCatalogType[]
 }
 
+
+
 export type TabsType = {
   activeKey: number;
   panes?: TabsItemType[];
@@ -210,6 +212,7 @@ export type ModelType = {
     saveToolRightWidth: Reducer<StateType>;
     saveToolLeftWidth: Reducer<StateType>;
     saveSql: Reducer<StateType>;
+    saveGraph: Reducer<StateType>;
     saveCurrentPath: Reducer<StateType>;
     // saveMonaco: Reducer<StateType>;
     saveSqlMetaData: Reducer<StateType>;
@@ -271,7 +274,11 @@ const Model: ModelType = {
     * saveTask({payload}, {call, put}) {
       const para = payload;
       para.configJson = JSON.stringify(payload.config);
-      yield call(handleAddOrUpdate, 'api/task', para);
+      if (para.dialect == "GraphSql") {
+        yield call(handleAddOrUpdate, 'api/zdpx', para);
+      } else {
+        yield call(handleAddOrUpdate, 'api/task', para);
+      }
       yield put({
         type: 'saveTaskData',
         payload,
@@ -317,6 +324,9 @@ const Model: ModelType = {
         current: {...newCurrent},
         tabs: {...newTabs},
       };
+    },
+    saveGraph(state, {payload}) {
+
     },
     saveCurrentPath(state, {payload}) {
       return {
@@ -483,12 +493,12 @@ const Model: ModelType = {
     saveTaskData(state, {payload}) {
       const newTabs = state.tabs;
       let newCurrent = state.current;
-      for (let i = 0; i < newTabs.panes.length; i++) {
-        if (newTabs.panes[i].key == payload.key) {
-          newTabs.panes[i].task = payload;
-          newTabs.panes[i].isModified = false;
+      for (const element of newTabs.panes) {
+        if (element.key == payload.key) {
+          element.task = payload;
+          element.isModified = false;
           if (newCurrent.key == payload.key) {
-            newCurrent = newTabs.panes[i];
+            newCurrent = element;
           }
         }
       }

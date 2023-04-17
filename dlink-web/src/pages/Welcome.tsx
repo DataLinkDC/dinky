@@ -67,7 +67,7 @@ export default (): React.ReactNode => {
         >
           <FormattedMessage id="pages.welcome.advancedLayout" defaultMessage="Github"/>{' '}
           <a
-            href="https://github.com/DataLinkDC/dlink"
+            href=""
             rel="noopener noreferrer"
             target="__blank"
           >
