@@ -29,11 +29,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-/**
- * AlertInstanceService
- *
- * @since 2022/2/24 19:52
- */
+/** AlertInstanceService */
 public interface AlertInstanceService extends ISuperService<AlertInstance> {
 
     /**

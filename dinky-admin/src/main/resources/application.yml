@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:dinky}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:root}
-    password: ${MYSQL_PASSWORD:123456}
+    username: ${MYSQL_USERNAME:dinky}
+    password: ${MYSQL_PASSWORD:dinky}
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dinky
@@ -99,9 +99,6 @@ sa-token:
 
 knife4j:
   enable: true
-  setting:
-    language: zh-CN
-
 
 dinky:
   dolphinscheduler:

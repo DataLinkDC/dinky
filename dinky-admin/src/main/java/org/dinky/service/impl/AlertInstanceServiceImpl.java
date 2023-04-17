@@ -58,11 +58,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/**
- * AlertInstanceServiceImpl
- *
- * @since 2022/2/24 19:53
- */
+/** AlertInstanceServiceImpl */
 @Service
 @RequiredArgsConstructor
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance>
@@ -142,7 +138,6 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     public Boolean enable(Integer id) {
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
-
         return updateById(alertInstance);
     }
 
