@@ -17,11 +17,23 @@
 
 
 import React, {useState} from 'react';
-import {Button, Divider, Form, Input, Modal, Radio, Switch} from 'antd';
+import {Button, Divider, Form, Radio, Space} from "antd";
 import {l} from "@/utils/intl";
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
 import {buildJSONData, getJSONData} from "@/pages/RegCenter/Alert/AlertInstance/function";
+import {
+  ModalForm,
+  ProForm, ProFormDigit,
+  ProFormRadio,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
+} from "@ant-design/pro-components";
+import {MODAL_FORM_STYLE} from "@/services/constants";
 
+/**
+ * props of AlertInstanceForm
+ */
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values:Partial< Alert.AlertInstance>) => void;
@@ -30,13 +42,11 @@ export type AlertInstanceFormProps = {
   values: Partial<Alert.AlertInstance>;
 };
 
-const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
-};
-
 const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
 
+  /**
+   * status of form
+   */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertInstance>>({
     id: props.values?.id,
@@ -46,6 +56,9 @@ const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
     enabled: props.values?.enabled,
   });
 
+  /**
+   * extract props
+   */
   const {
     onSubmit: handleSubmit,
     onTest: handleTest,
@@ -53,151 +66,189 @@ const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
+  /**
+   * on values change
+   * @param change
+   */
   const onValuesChange = (change: any) => {
     setFormVals({...formVals, ...change});
   };
 
+  /**
+   * submit form
+   */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals, fieldsValue));
     handleSubmit(buildJSONData(formVals, fieldsValue));
   };
 
-  const sendTestForm = async () => {
+  /**
+   * send test msg
+   */
+  const sendTestMsg = async () => {
     const fieldsValue = await form.getFieldsValue();
     setFormVals(buildJSONData(formVals, fieldsValue));
     handleTest(buildJSONData(formVals, fieldsValue));
   };
 
-  const renderContent = (vals: any) => {
+  /**
+   * render content
+   * @param vals
+   */
+  const renderFeiShuForm = (vals: any) => {
     return (
       <>
         <Divider>{l('rc.ai.feishu')}</Divider>
-        <Form.Item
-          name="name"
-          label={l('rc.ai.name')}
-          rules={[{required: true, message: l('rc.ai.namePleaseHolder')}]}
-        >
-          <Input placeholder={l('rc.ai.namePleaseHolder')}/>
-        </Form.Item>
-        <Form.Item
-          name="webhook"
-          label={l('rc.ai.webhook')}
-          rules={[{required: true, message: l('rc.ai.webhookPleaseHolder')}]}
-        >
-          <Input.TextArea placeholder={l('rc.ai.webhookPleaseHolder')} allowClear
-                          autoSize={{minRows: 1, maxRows: 5}}/>
-        </Form.Item>
-        <Form.Item
-          name="keyword"
-          label={l('rc.ai.keyword')}
-        >
-          <Input placeholder={l('rc.ai.keywordPleaseHolder')}/>
-        </Form.Item>
-        <Form.Item
-          name="secret"
-          label={l('rc.ai.secret')}
-        >
-          <Input placeholder={l('rc.ai.secretPleaseHolder')}/>
-        </Form.Item>
-        <Form.Item
-          name="isEnableProxy"
-          label={l('rc.ai.isEnableProxy')}>
-          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                   defaultChecked={vals.isEnableProxy}/>
-        </Form.Item>
-        {vals.isEnableProxy ? <>
-          <Form.Item
-            name="proxy"
-            label={l('rc.ai.proxy')}
+        <ProForm.Group>
+          <ProFormText
+            width="md"
+            name="name"
+            label={l('rc.ai.name')}
+            rules={[{required: true, message: l('rc.ai.namePleaseHolder')}]}
+            placeholder={l("rc.ai.namePleaseHolder")}
+          />
+          <ProFormText
+            width="md"
+            name="keyword"
+            label={l("rc.ai.keyword")}
+            placeholder={l("rc.ai.keywordPleaseHolder")}
+          />
+          <ProFormTextArea
+            width="md"
+            allowClear
+            name="webhook"
+            label={l("rc.ai.webhook")}
+            rules={[{required: true, message: l("rc.ai.webhookPleaseHolder")}]}
+            placeholder={l("rc.ai.webhookPleaseHolder")}
+          />
+          <ProFormText.Password
+            width="md"
+            allowClear
+            name="secret"
+            label={l("rc.ai.secret")}
+            placeholder={l("rc.ai.secretPleaseHolder")}
+          />
+        </ProForm.Group>
+
+        {/* advanced columns */}
+        <ProForm.Group>
+          <ProFormRadio.Group
+            name="msgtype"
+            width={"xs"}
+            label={l("rc.ai.msgtype")}
+            rules={[{required: true, message: l("rc.ai.msgtypePleaseHolder")}]}
           >
-            <Input placeholder={l('rc.ai.proxyPleaseHolder')}/>
-          </Form.Item>
-          <Form.Item
-            name="port"
-            label={l('rc.ai.port')}
-          >
-            <Input placeholder={l('rc.ai.portPleaseHolder')}/>
-          </Form.Item>
-          <Form.Item
-            name="user"
-            label={l('rc.ai.user')}
-          >
-            <Input placeholder={l('rc.ai.userPleaseHolder')}/>
-          </Form.Item>
-          <Form.Item
-            name="password"
-            label={l('rc.ai.password')}
-          >
-            <Input.Password placeholder={l('rc.ai.passwordPleaseHolder')}/>
-          </Form.Item></> : undefined
-        }
-        <Form.Item
-          name="isAtAll"
-          label={l('rc.ai.isAtAll')}>
-          <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                   defaultChecked={vals.isAtAll}/>
-        </Form.Item>
-        {(!vals.isAtAll) &&
-          <Form.Item
-            name="users"
-            label={l('rc.ai.atUsers')}
-            rules={[{required: true, message: l('rc.ai.atUsersPleaseHolder')}]}
-          >
-            <Input placeholder={l('rc.ai.atUsersPleaseHolder')}/>
-          </Form.Item>
-        }
-        <Form.Item
-          name="enabled"
-          label={l('global.table.isEnable')}>
-          <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  defaultChecked={vals.enabled}/>
-        </Form.Item>
-        <Form.Item
-          name="msgtype"
-          label={l('rc.ai.msgtype')}
-          rules={[{required: true, message: l('rc.ai.msgtypePleaseHolder')}]}
-        >
-          <Radio.Group>
-            <Radio value='post'>{l('rc.ai.post')}</Radio>
-            <Radio value='text'>{l('rc.ai.text')}</Radio>
-          </Radio.Group>
-        </Form.Item>
+            <Radio.Group>
+              <Radio value='post'>{l('rc.ai.post')}</Radio>
+              <Radio value='text'>{l('rc.ai.text')}</Radio>
+            </Radio.Group>
+          </ProFormRadio.Group>
+
+          <ProFormSwitch
+            width="xs"
+            name="isEnableProxy"
+            label={l("rc.ai.isEnableProxy")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          <ProFormSwitch
+            width="xs"
+            name="isAtAll"
+            label={l("rc.ai.isAtAll")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          <ProFormSwitch
+            width="xs"
+            name="enabled"
+            label={l("global.table.isEnable")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+        </ProForm.Group>
+
+        {/* if Enable Proxy this group do render */}
+        <ProForm.Group>
+          {vals.isEnableProxy && <>
+            <ProFormText
+              width="md"
+              name="proxy"
+              label={l("rc.ai.proxy")}
+              rules={[{required: true, message: l("rc.ai.proxyPleaseHolder")}]}
+              placeholder={l("rc.ai.proxyPleaseHolder")}
+            />
+
+            <ProFormDigit
+              width="md"
+              name="port"
+              label={l("rc.ai.port")}
+              rules={[{required: true, message: l("rc.ai.portPleaseHolder")}]}
+              placeholder={l("rc.ai.portPleaseHolder")}
+            />
+            <ProFormText
+              width="md"
+              name="user"
+              label={l("rc.ai.user")}
+              rules={[{required: true, message: l("rc.ai.userPleaseHolder")}]}
+              placeholder={l("rc.ai.userPleaseHolder")}
+            />
+            <ProFormText.Password
+              width={"md"}
+              name="password"
+              label={l("rc.ai.password")}
+              rules={[{required: true, message: l("rc.ai.passwordPleaseHolder")}]}
+              placeholder={l("rc.ai.passwordPleaseHolder")}
+            />
+          </>
+          }
+        </ProForm.Group>
+
+        {/* if not Enable At All this group do render */}
+        <ProForm.Group>
+          {!vals.isAtAll &&
+            <>
+              <ProFormTextArea
+                width="md"
+                name="users"
+                label={l('rc.ai.atUsers')}
+                rules={[{required: true, message: l('rc.ai.atUsersPleaseHolder')}]}
+                placeholder={l("rc.ai.atUsersPleaseHolder")}
+              />
+            </>
+          }
+        </ProForm.Group>
       </>
     );
   };
 
   const renderFooter = () => {
-    return (
-      <>
-        <Button onClick={() => handleModalVisible(false)}>{l('button.cancel')}</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>{l('button.test')}</Button>
-        <Button type="primary" onClick={() => submitForm()}>{l('button.finish')}</Button>
-
-      </>
-    );
+    return [
+      <Button key={"AlertCancel"} onClick={() => handleModalVisible(false)}>{l("button.cancel")}</Button>,
+      <Button key={"AlertTest"} type="primary" onClick={() => sendTestMsg()}>{l("button.test")}</Button>,
+      <Button key={"AlertFinish"} type="primary" onClick={() => submitForm()}>{l("button.finish")}</Button>,
+    ];
   };
 
 
   return (
-    <Modal
-      width={"40%"}
-      bodyStyle={{padding: '32px 40px 48px',height: '600px', overflowY: 'auto'}}
-      destroyOnClose
-      title={formVals.id ? l('rc.ai.modify') : l('rc.ai.create')}
-      open={modalVisible}
-      footer={renderFooter()}
-      onCancel={() => handleModalVisible()}
-    >
-      <Form
-        {...formLayout}
-        form={form}
-        initialValues={getJSONData(formVals )}
-        onValuesChange={onValuesChange}
+    <Space>
+      <ModalForm
+        {...MODAL_FORM_STYLE}
+        title={formVals.id ? l('rc.ai.modify') : l('rc.ai.create')}
+        open={modalVisible}
+        submitter={{render: () => [...renderFooter()]}}
       >
-        {renderContent(getJSONData(formVals))}
-      </Form>
-    </Modal>
+        <ProForm
+          form={form}
+          initialValues={getJSONData(formVals)}
+          onValuesChange={onValuesChange}
+          submitter={false}
+        >
+          {renderFeiShuForm(getJSONData(formVals))}
+        </ProForm>
+      </ModalForm>
+    </Space>
   );
 };
 
