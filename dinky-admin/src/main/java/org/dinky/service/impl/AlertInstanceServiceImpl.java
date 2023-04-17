@@ -54,7 +54,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
@@ -142,6 +141,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
     public Boolean enable(Integer id) {
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
+
         return updateById(alertInstance);
     }
 

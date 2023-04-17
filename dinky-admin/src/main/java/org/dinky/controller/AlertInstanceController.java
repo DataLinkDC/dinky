@@ -25,10 +25,10 @@ import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.AlertInstance;
 import org.dinky.service.AlertInstanceService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.List;
 
-import org.dinky.utils.MessageResolverUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -43,9 +43,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * AlertInstanceController
- */
+/** AlertInstanceController */
 @Slf4j
 @RestController
 @RequestMapping("/api/alertInstance")
@@ -83,7 +81,8 @@ public class AlertInstanceController {
     }
 
     /**
-     * bactchDelete AlertInstance, this method is {@link Deprecated} and will be removed in the future, please use {@link #deleteMul(JsonNode)} instead.
+     * bactchDelete AlertInstance, this method is {@link Deprecated} and will be removed in the
+     * future, please use {@link #deleteInstanceById(Integer)} instead.
      *
      * @param para
      * @return
@@ -93,7 +92,6 @@ public class AlertInstanceController {
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         return alertInstanceService.deleteAlertInstance(para);
     }
-
 
     /**
      * delete AlertInstance by id
@@ -110,7 +108,6 @@ public class AlertInstanceController {
         }
     }
 
-
     /**
      * delete AlertInstance by id
      *
@@ -126,8 +123,6 @@ public class AlertInstanceController {
         }
     }
 
-
-
     /**
      * get AlertInstance info by id
      *
@@ -139,7 +134,8 @@ public class AlertInstanceController {
     public Result<AlertInstance> getOneById(@RequestBody AlertInstance alertInstance)
             throws Exception {
         alertInstance = alertInstanceService.getById(alertInstance.getId());
-        return Result.succeed(alertInstance, MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(
+                alertInstance, MessageResolverUtils.getMessage("response.get.success"));
     }
 
     /**
@@ -149,7 +145,9 @@ public class AlertInstanceController {
      */
     @GetMapping("/listEnabledAll")
     public Result<List<AlertInstance>> listEnabledAll() {
-        return Result.succeed(alertInstanceService.listEnabledAll(), MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(
+                alertInstanceService.listEnabledAll(),
+                MessageResolverUtils.getMessage("response.get.success"));
     }
 
     /**
