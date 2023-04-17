@@ -38,10 +38,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -84,9 +83,11 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                         alertInstance.getType(),
                         JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
+
         String currentDateTime =
-                new SimpleDateFormat(BaseConstant.YYYY_MM_DD_HH_MM_SS)
-                        .format(Calendar.getInstance().getTime());
+                LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
+
         String uuid = UUID.randomUUID().toString();
 
         AlertMsg alertMsg = new AlertMsg();
