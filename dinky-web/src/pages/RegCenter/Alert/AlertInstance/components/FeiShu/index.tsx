@@ -222,6 +222,9 @@ const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
     );
   };
 
+  /**
+   * render footer button
+   */
   const renderFooter = () => {
     return [
       <Button key={"AlertCancel"} onClick={() => handleModalVisible(false)}>{l("button.cancel")}</Button>,
@@ -231,6 +234,9 @@ const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
   };
 
 
+  /**
+   * render
+   */
   return (
     <Space>
       <ModalForm
