@@ -17,11 +17,22 @@
 
 
 import React, {useState} from "react";
-import {Button, Divider, Form, Input, Modal, Radio, Switch} from "antd";
+import {Button, Divider, Form, Radio, Space} from "antd";
 import {l} from "@/utils/intl";
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
 import {buildJSONData, getJSONData} from "@/pages/RegCenter/Alert/AlertInstance/function";
+import {
+  ModalForm,
+  ProForm,
+  ProFormDigit, ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
+} from "@ant-design/pro-components";
+import {MODAL_FORM_STYLE} from "@/services/constants";
 
+/**
+ * AlertInstanceFormProps
+ */
 export type AlertInstanceFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<Alert.AlertInstance>) => void;
@@ -30,12 +41,11 @@ export type AlertInstanceFormProps = {
   values: Partial<Alert.AlertInstance>;
 };
 
-const formLayout = {
-  labelCol: {span: 7},
-  wrapperCol: {span: 13},
-};
 
 const Email: React.FC<AlertInstanceFormProps> = (props) => {
+  /**
+   * state
+   */
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertInstance>>({
     id: props.values?.id,
@@ -45,6 +55,9 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
     enabled: props.values?.enabled,
   });
 
+  /**
+   * extract props
+   */
   const {
     onSubmit: handleSubmit,
     onCancel: handleModalVisible,
@@ -52,16 +65,26 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
     modalVisible,
   } = props;
 
+  /**
+   * values change callback
+   * @param change
+   */
   const onValuesChange = (change: any) => {
     setFormVals({...formVals, ...change});
   };
 
+  /**
+   * send test email callback
+   */
   const sendTestForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals, fieldsValue));
     handleTest(buildJSONData(formVals, fieldsValue));
   };
 
+  /**
+   * submit form callback
+   */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals, fieldsValue));
@@ -69,165 +92,184 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
   };
 
 
-  const renderContent = (vals: any) => {
+  /**
+   * render email content
+   * @param vals
+   */
+  const renderEmailForm = (vals: any) => {
     return (
       <>
         <Divider>{l("rc.ai.email")}</Divider>
-        <Form.Item
-          name="name"
-          label={l("rc.ai.name")}
-          rules={[{required: true, message: l("rc.ai.namePleaseHolder")}]}
-        >
-          <Input placeholder={l("rc.ai.namePleaseHolder")}/>
-        </Form.Item>
-        <Form.Item
-          name="receivers"
-          label={l("rc.ai.receivers")}
-          rules={[{required: true, message: l("rc.ai.receiversPleaseHolder")}]}
-        >
-          <Input.TextArea placeholder={l("rc.ai.receiversPleaseHolder")} allowClear
-                          autoSize={{minRows: 1, maxRows: 5}}/>
-        </Form.Item>
-        <Form.Item
-          name="receiverCcs"
-          label={l("rc.ai.receiverCcs")}
-        >
-          <Input.TextArea placeholder={l("rc.ai.receiverCcsPleaseHolder")} allowClear
-                          autoSize={{minRows: 1, maxRows: 5}}/>
-        </Form.Item>
-        <Form.Item
-          name="serverHost"
-          label={l("rc.ai.serverHost")}
-          rules={[{required: true, message: l("rc.ai.serverHostPleaseHolder")}]}
-        >
-          <Input placeholder={l("rc.ai.serverHostPleaseHolder")}/>
-        </Form.Item>
-        <Form.Item
-          name="serverPort"
-          label={l("rc.ai.receivers")}
-          rules={[{required: true, message: l("rc.ai.serverPortPleaseHolder")}]}
-        >
-          <Input placeholder={l("rc.ai.serverPortPleaseHolder")}/>
-        </Form.Item>
-        <Form.Item
-          name="sender"
-          label={l("rc.ai.sender")}
-          rules={[{required: true, message: l("rc.ai.senderPleaseHolder")}]}
-        >
-          <Input placeholder={l("rc.ai.senderPleaseHolder")}/>
-        </Form.Item>
-        <Form.Item
-          name="enableSmtpAuth"
-          label={l("rc.ai.enableSmtpAuth")}
-        >
-          <Switch checkedChildren={l("button.enable")} unCheckedChildren={l("button.disable")}
-                  defaultChecked={vals.enableSmtpAuth}/>
-        </Form.Item>
-        {vals.enableSmtpAuth &&
-          <>
-            <Form.Item
-              name="User"
-              label={l("rc.ai.emailUser")}
-              rules={[{required: true, message: l("rc.ai.emailUserPleaseHolder")}]}
-            >
-              <Input allowClear placeholder={l("rc.ai.emailUserPleaseHolder")}/>
-            </Form.Item>
-            <Form.Item
-              name="Password"
-              label={l("rc.ai.emailPassword")}
-              rules={[{required: true, message: l("rc.ai.emailPasswordPleaseHolder")}]}
-            >
-              <Input.Password allowClear placeholder={l("rc.ai.emailPasswordPleaseHolder")}/>
-            </Form.Item>
-          </>}
-        <Form.Item
-          name="starttlsEnable"
-          label={l("rc.ai.starttlsEnable")}
-        >
-          <Switch checkedChildren={l("button.enable")} unCheckedChildren={l("button.disable")}
-                  defaultChecked={vals.starttlsEnable}/>
-        </Form.Item>
-        <Form.Item
-          name="sslEnable"
-          label={l("rc.ai.sslEnable")}
-        >
-          <Switch checkedChildren={l("button.enable")} unCheckedChildren={l("button.disable")}
-                  defaultChecked={vals.sslEnable}/>
-        </Form.Item>
-        {(vals.sslEnable) &&
+        {/* base columns */}
+        <ProForm.Group>
+          <ProFormText
+            width="md"
+            name="name"
+            label={l("rc.ai.name")}
+            rules={[{required: true, message: l("rc.ai.namePleaseHolder")}]}
+            placeholder={l("rc.ai.namePleaseHolder")}
+          />
+
+          <ProFormText
+            width="md"
+            name="serverHost"
+            label={l("rc.ai.serverHost")}
+            rules={[{required: true, message: l("rc.ai.serverHostPleaseHolder")}]}
+            placeholder={l("rc.ai.serverHostPleaseHolder")}
+          />
+
+          <ProFormDigit
+            width="md"
+            name="serverPort"
+            label={l("rc.ai.serverPort")}
+            rules={[{required: true, message: l("rc.ai.serverPortPleaseHolder")}]}
+            placeholder={l("rc.ai.serverPortPleaseHolder")}
+          />
+          <ProFormText
+            width="md"
+            name="sender"
+            label={l("rc.ai.sender")}
+            rules={[{required: true, message: l("rc.ai.senderPleaseHolder")}]}
+            placeholder={l("rc.ai.senderPleaseHolder")}
+          />
+
+          <ProFormTextArea
+            width="md"
+            name="receivers"
+            label={l("rc.ai.receivers")}
+            rules={[{required: true, message: l("rc.ai.receiversPleaseHolder")}]}
+            placeholder={l("rc.ai.receiversPleaseHolder")}
+          />
+          <ProFormTextArea
+            width="md"
+            name="receiverCcs"
+            label={l("rc.ai.receiverCcs")}
+            placeholder={l("rc.ai.receiverCcsPleaseHolder")}
+          />
+
+
+        </ProForm.Group>
+
+        {/* switch */}
+        <ProForm.Group>
+          <ProFormSwitch
+            width="xs"
+            name="enableSmtpAuth"
+            label={l("rc.ai.enableSmtpAuth")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          <ProFormSwitch
+            width="xs"
+            name="starttlsEnable"
+            label={l("rc.ai.starttlsEnable")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          <ProFormSwitch
+            width="xs"
+            name="sslEnable"
+            label={l("rc.ai.sslEnable")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          <ProFormSwitch
+            width="xs"
+            name="enabled"
+            label={l("global.table.isEnable")}
+            checkedChildren={l("button.enable")}
+            unCheckedChildren={l("button.disable")}
+          />
+          {/* ssl  */}
+          {(vals.sslEnable) &&
+            <ProFormText
+              name="smtpSslTrust"
+              width={"sm"}
+              label={l("rc.ai.smtpSslTrust")}
+              rules={[{required: true, message: l("rc.ai.smtpSslTrustPleaseHolder")}]}
+              placeholder={l("rc.ai.smtpSslTrustPleaseHolder")}
+            />
+          }
+
+          {/* msgtype */}
           <Form.Item
-            name="smtpSslTrust"
-            label={l("rc.ai.smtpSslTrust")}
-            rules={[{required: true, message: l("rc.ai.smtpSslTrustPleaseHolder")}]}
+            name="msgtype"
+            label={l("rc.ai.msgtype")}
+            rules={[{required: true, message: l("rc.ai.msgtypePleaseHolder")}]}
           >
-            <Input placeholder={l("rc.ai.smtpSslTrustPleaseHolder")}/>
+             <Radio.Group>
+               <Radio value="text">{l("rc.ai.text")}</Radio>
+               <Radio value="table">{l("rc.ai.table")}</Radio>
+               <Radio value="attachment">{l("rc.ai.attachment")}</Radio>
+               <Radio value="table attachment">{l("rc.ai.tableAttachment")}</Radio>
+             </Radio.Group>
           </Form.Item>
-        }
-        <Form.Item
-          name="enabled"
-          label={l("global.table.isEnable")}>
-          <Switch checkedChildren={l("button.enable")} unCheckedChildren={l("button.disable")}
-                  defaultChecked={vals.enabled}/>
-        </Form.Item>
-        <Form.Item
-          name="msgtype"
-          label={l("rc.ai.msgtype")}
-          rules={[{required: true, message: l("rc.ai.msgtypePleaseHolder")}]}
-        >
-          <Radio.Group>
-            <Radio value="text">{l("rc.ai.text")}</Radio>
-            <Radio value="table">{l("rc.ai.table")}</Radio>
-            <Radio value="attachment">{l("rc.ai.attachment")}</Radio>
-            <Radio value="table attachment">{l("rc.ai.tableAttachment")}</Radio>
-          </Radio.Group>
-        </Form.Item>
-        {(vals.msgtype === "attachment" || vals.msgtype === "table attachment") &&
-          <>
-            <Form.Item
+          {/* if choose attachment || table attachment , this input is render */}
+          {(vals.msgtype === "attachment" || vals.msgtype === "table attachment") &&
+            <ProFormText
               name="xls.file.path"
+              width={"md"}
               label={l("rc.ai.xls.file.path")}
-            >
-              <Input.TextArea placeholder={l("rc.ai.xls.file.pathPleaseHolder")} allowClear
-                              autoSize={{minRows: 1, maxRows: 5}}/>
-            </Form.Item>
+              placeholder={l("rc.ai.xls.file.pathPleaseHolder")} allowClear
+            />}
 
-          </>}
+        </ProForm.Group>
 
+        {/* proxy */}
+        <ProForm.Group>
+          {vals.enableSmtpAuth &&
+            <>
+              <ProFormText
+                name="User"
+                width={"md"}
+                label={l("rc.ai.emailUser")}
+                rules={[{required: true, message: l("rc.ai.emailUserPleaseHolder")}]}
+                allowClear placeholder={l("rc.ai.emailUserPleaseHolder")}
+              />
+              <ProFormText.Password
+                name="Password"
+                width={"md"}
+                label={l("rc.ai.emailPassword")}
+                rules={[{required: true, message: l("rc.ai.emailPasswordPleaseHolder")}]}
+                allowClear placeholder={l("rc.ai.emailPasswordPleaseHolder")}
+              />
+            </>}
+        </ProForm.Group>
       </>
     );
   };
 
-  const renderFooter = () => {
-    return (
-      <>
-        <Button onClick={() => handleModalVisible(false)}>{l("button.cancel")}</Button>
-        <Button type="primary" onClick={() => sendTestForm()}>{l("button.test")}</Button>
-        <Button type="primary" onClick={() => submitForm()}>{l("button.finish")}</Button>
 
-      </>
-    );
+  /**
+   * render footer button
+   */
+  const renderFooter = () => {
+    return [
+      <Button key={"AlertCancel"} onClick={() => handleModalVisible(false)}>{l("button.cancel")}</Button>,
+      <Button key={"AlertTest"} type="primary" onClick={() => sendTestForm()}>{l("button.test")}</Button>,
+      <Button key={"AlertFinish"} type="primary" onClick={() => submitForm()}>{l("button.finish")}</Button>,
+    ];
   };
 
 
   return (
-    <Modal
-      width={"40%"}
-      bodyStyle={{padding: "32px 40px 48px", height: "600px", overflowY: "auto"}}
-      destroyOnClose
-      title={formVals.id ? l("rc.ai.modify") : l("rc.ai.create")}
-      open={modalVisible}
-      footer={renderFooter()}
-      onCancel={() => handleModalVisible()}
-    >
-      <Form
-        {...formLayout}
-        form={form}
-        initialValues={getJSONData(formVals)}
-        onValuesChange={onValuesChange}
+    <Space>
+      <ModalForm
+        {...MODAL_FORM_STYLE}
+        title={formVals.id ? l("rc.ai.modify") : l("rc.ai.create")}
+        open={modalVisible}
+        submitter={{render: () => [...renderFooter()]}}
       >
-        {renderContent(getJSONData(formVals))}
-      </Form>
-    </Modal>
+        <ProForm
+          form={form}
+          initialValues={getJSONData(formVals)}
+          onValuesChange={onValuesChange}
+          submitter={false}
+        >
+          {renderEmailForm(getJSONData(formVals))}
+        </ProForm>
+      </ModalForm>
+    </Space>
   );
 };
 
