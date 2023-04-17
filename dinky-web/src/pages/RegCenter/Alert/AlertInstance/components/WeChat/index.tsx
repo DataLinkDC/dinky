@@ -110,7 +110,7 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
             </Radio.Group>
           </ProFormRadio.Group>
 
-          <ProFormRadio.Group
+          <ProForm.Item
             name="sendType"
             validateTrigger={["onChange", "onBlur"]}
             label={l("rc.ai.sendType")}
@@ -120,7 +120,7 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
               <Radio value="app">{l("rc.ai.sendType.app")}</Radio>
               <Radio value="wechat">{l("rc.ai.sendType.wechat")}</Radio>
             </Radio.Group>
-          </ProFormRadio.Group>
+          </ProForm.Item>
 
           <ProFormSwitch
             name="enabled"
@@ -168,8 +168,8 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
                   />
                 </>
               }
-            </>
-            :
+            </>:
+          (vals.sendType === "app") &&
             // if sendType is app
             <>
               <ProFormText

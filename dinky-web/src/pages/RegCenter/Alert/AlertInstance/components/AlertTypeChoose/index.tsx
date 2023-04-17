@@ -89,20 +89,21 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
   /**
    * cancel choose
    */
-  const handleCancel = () =>{
+  const handleCancel = () => {
     setAlertType(undefined);
     handleChooseModalVisible();
-  }
-
+  };
 
 
   /**
-   * render card item list
+   * render card item
    * @param item
    */
   const renderCardItem = (item: AlertConfig) => {
     return (
-      <List.Item onClick={() => chooseAlertType(item)}>
+      <List.Item onClick={() => {
+        chooseAlertType(item);
+      }}>
         <Card>{getAlertIcon(item.type)}</Card>
       </List.Item>
     );
@@ -116,16 +117,19 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     return values?.type === assertsType || alertType === assertsType;
   };
 
+  /**
+   *  card list
+   */
   const renderChooseTypesCardList = () => {
     return <>
       <List
-        grid={{gutter: 16, column: 4}}
+        grid={{gutter: 24, column: 4}}
         dataSource={ALERT_CONFIG_LIST}
         renderItem={(item: AlertConfig) => renderCardItem(item)}
       />
-    </>
+    </>;
 
-  }
+  };
 
 
   /**

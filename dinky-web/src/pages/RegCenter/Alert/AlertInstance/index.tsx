@@ -57,7 +57,6 @@ const AlertInstanceTableList: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [formValues, setFormValues] = useState<Alert.AlertInstance>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [alertInstanceList, setAlertInstanceList] = useState<Alert.AlertInstance[]>([]);
 
 
@@ -84,6 +83,7 @@ const AlertInstanceTableList: React.FC = () => {
       cancelText: l("button.cancel"),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
+        await queryAlertInstanceList();
       }
     });
   };
@@ -94,16 +94,15 @@ const AlertInstanceTableList: React.FC = () => {
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
     await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
+    await queryAlertInstanceList();
   };
 
   /**
    * query alert instance list
    */
   useEffect(() => {
-    setLoading(true);
     queryAlertInstanceList();
-    setLoading(false);
-  }, [modalVisible, alertInstanceList]);
+  }, [modalVisible]);
 
   /**
    * render alert instance sub title
@@ -219,7 +218,6 @@ const AlertInstanceTableList: React.FC = () => {
       <ProList<Alert.AlertInstance>
         {...PROTABLE_OPTIONS_PUBLIC}
         {...PRO_LIST_CARD_OPTIONS as any}
-        loading={loading}
         actionRef={actionRef}
         headerTitle={l("rc.ai.management")}
         toolBarRender={renderToolBar()}
