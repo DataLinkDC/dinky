@@ -35,7 +35,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
+const Email: React.FC<AlertInstanceFormProps> = (props) => {
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertInstance>>({
     id: props.values?.id,
@@ -231,4 +231,4 @@ const EmailForm: React.FC<AlertInstanceFormProps> = (props) => {
   );
 };
 
-export default EmailForm;
+export default Email;

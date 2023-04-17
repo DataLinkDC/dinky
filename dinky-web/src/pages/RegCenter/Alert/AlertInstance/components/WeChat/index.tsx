@@ -35,7 +35,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
+const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertInstance>>({
@@ -111,7 +111,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
               validateTrigger={['onChange', 'onBlur']}
               label={l('rc.ai.isAtAll')}>
               <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                      defaultChecked={vals.isAtAll}/>
+                       defaultChecked={vals.isAtAll}/>
             </Form.Item>
             {(!vals.isAtAll) &&
               <Form.Item
@@ -170,7 +170,7 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="enabled"
           label={l('global.table.isEnable')}>
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  defaultChecked={vals.enabled}/>
+                   defaultChecked={vals.enabled}/>
         </Form.Item>
       </>
     );
@@ -209,4 +209,4 @@ const WeChatForm: React.FC<AlertInstanceFormProps> = (props) => {
   );
 };
 
-export default WeChatForm;
+export default WeChat;

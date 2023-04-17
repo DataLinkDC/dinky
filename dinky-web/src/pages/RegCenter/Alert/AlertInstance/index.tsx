@@ -19,18 +19,18 @@
 import React, {useEffect, useRef, useState} from "react";
 import {EditTwoTone, PlusOutlined, ReloadOutlined} from "@ant-design/icons";
 import {ActionType} from "@ant-design/pro-table";
-import {Button, Descriptions, Form, Modal, Popconfirm, Space, Switch, Tag, Tooltip} from "antd";
+import {Button, Descriptions, Modal, Space, Switch, Tag, Tooltip} from "antd";
 import {PageContainer} from "@ant-design/pro-layout";
 import {l} from "@/utils/intl";
 import {Alert} from "@/types/RegCenter/data.d";
 import {queryList} from "@/services/api";
 import {handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
-import AlertInstanceChooseForm from "./components/AlertInstanceChooseForm";
 import {ProList} from "@ant-design/pro-components";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import DescriptionsItem from "antd/es/descriptions/Item";
+import AlertTypeChoose from "./components/AlertTypeChoose";
 
 
 const PRO_LIST_CARD_META = {
@@ -124,9 +124,7 @@ const AlertInstanceTableList: React.FC = () => {
     return (
       <Descriptions size={"small"} layout={"vertical"} column={1}>
         <DescriptionsItem
-          style={{
-            overflow: "hidden",
-          }}
+          className={"hidden-overflow"}
           key={item.id}>
           <Tooltip key={item.name} title={item.name}>{item.name}</Tooltip>
         </DescriptionsItem>
@@ -166,7 +164,7 @@ const AlertInstanceTableList: React.FC = () => {
    */
   const renderAlertInstanceContent = (item: Alert.AlertInstance) => {
     return (
-      <Space style={{overflow: "hidden"}}>
+      <Space className={"hidden-overflow"}>
         <Tag color="#5BD8A6">{item.type}</Tag>
         <Switch
           key={item.id}
@@ -238,12 +236,13 @@ const AlertInstanceTableList: React.FC = () => {
       />
 
       {/* render choose alert type list */}
-      <AlertInstanceChooseForm
+      <AlertTypeChoose
         onCancel={cancelHandler}
         modalVisible={modalVisible}
         onSubmit={chooseSubmitHandler}
         values={formValues}
       />
+
     </PageContainer>
   );
 };

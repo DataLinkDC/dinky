@@ -35,7 +35,7 @@ const formLayout = {
   wrapperCol: {span: 13},
 };
 
-const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
+const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
 
   const [form] = Form.useForm();
   const [formVals, setFormVals] = useState<Partial<Alert.AlertInstance>>({
@@ -104,7 +104,7 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isEnableProxy"
           label={l('rc.ai.isEnableProxy')}>
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  defaultChecked={vals.isEnableProxy}/>
+                   defaultChecked={vals.isEnableProxy}/>
         </Form.Item>
         {vals.isEnableProxy ? <>
           <Form.Item
@@ -136,7 +136,7 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
           name="isAtAll"
           label={l('rc.ai.isAtAll')}>
           <Switch  checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-                  defaultChecked={vals.isAtAll}/>
+                   defaultChecked={vals.isAtAll}/>
         </Form.Item>
         {(!vals.isAtAll) &&
           <Form.Item
@@ -201,4 +201,4 @@ const FeiShuForm: React.FC<AlertInstanceFormProps> = (props) => {
   );
 };
 
-export default FeiShuForm;
+export default FeiShu;

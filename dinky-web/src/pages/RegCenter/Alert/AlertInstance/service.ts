@@ -16,24 +16,30 @@
  */
 
 
-import {message} from "antd";
 import {l} from "@/utils/intl";
 import {handleAddOrUpdate} from "@/services/BusinessCrud";
 import {Alert} from "@/types/RegCenter/data.d";
 import {postAll} from "@/services/api";
+import {ErrorMessage, LoadingMessageAsync, SuccessMessage, WarningMessage} from "@/utils/messages";
+import {RESPONSE_CODE} from "@/services/constants";
 
 export async function createOrModifyAlertInstance(alertInstance: Alert.AlertInstance) {
   return handleAddOrUpdate("/api/alertInstance", alertInstance);
 }
 
 export async function sendTest(alertInstance: Alert.AlertInstance) {
-  const hide = message.loading(l("app.request.test.alert.msg"));
+  await LoadingMessageAsync(l("app.request.test.alert.msg"));
   try {
     const {code, msg} = await postAll("/api/alertInstance/sendTest", alertInstance);
-    hide();
-    code === 0 ? message.success(msg) : message.error(msg);
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg);
+      return true;
+    } else {
+      WarningMessage(msg);
+      return false;
+    }
   } catch (error) {
-    hide();
-    message.error(l("app.request.failed"));
+    ErrorMessage(l("app.request.failed"));
+    return false;
   }
 }
