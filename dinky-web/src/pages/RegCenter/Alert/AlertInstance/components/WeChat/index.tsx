@@ -30,17 +30,7 @@ import {
   ProFormTextArea
 } from "@ant-design/pro-components";
 import {MODAL_FORM_STYLE} from "@/services/constants";
-
-/**
- * props of AlertInstanceForm
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+import {AlertInstanceFormProps} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
 
 const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
@@ -90,7 +80,6 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals, fieldsValue));
     handleSubmit(buildJSONData(formVals, fieldsValue));
-
   };
 
   /**
@@ -151,72 +140,70 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-        {(vals.sendType === "wechat") ?
-          // if sendType is wechat
-          <>
-            <ProFormTextArea
-              width="md"
-              allowClear
-              name="webhook"
-              label={l("rc.ai.webhook")}
-              rules={[{required: true, message: l("rc.ai.webhookPleaseHolder")}]}
-              placeholder={l("rc.ai.webhookPleaseHolder")}
-            />
-            <ProFormText
-              width="md"
-              name="keyword"
-              label={l("rc.ai.keyword")}
-              placeholder={l("rc.ai.keywordPleaseHolder")}
-            />
+          {(vals.sendType === "wechat") ?
+            // if sendType is wechat
+            <>
+              <ProFormTextArea
+                width="md"
+                allowClear
+                name="webhook"
+                label={l("rc.ai.webhook")}
+                rules={[{required: true, message: l("rc.ai.webhookPleaseHolder")}]}
+                placeholder={l("rc.ai.webhookPleaseHolder")}
+              />
+              <ProFormText
+                width="md"
+                name="keyword"
+                label={l("rc.ai.keyword")}
+                placeholder={l("rc.ai.keywordPleaseHolder")}
+              />
 
-            {/* if not Enable At All this group do render */}
-            <ProForm.Group>
+              {/* if not Enable At All this group do render */}
               {!vals.isAtAll &&
                 <>
                   <ProFormTextArea
                     width="md"
                     name="users"
-                    label={l('rc.ai.atUsers')}
-                    rules={[{required: true, message: l('rc.ai.atUsersPleaseHolder')}]}
+                    label={l("rc.ai.atUsers")}
+                    rules={[{required: true, message: l("rc.ai.atUsersPleaseHolder")}]}
                     placeholder={l("rc.ai.atUsersPleaseHolder")}
                   />
                 </>
               }
-            </ProForm.Group>
-          </>
-          :
-          // if sendType is app
-          <>
-            <ProFormText
-              width="sm"
-              name="corpId"
-              label={l("rc.ai.corpId")}
-              rules={[{required: true, message: l("rc.ai.corpIdPleaseHolder")}]}
-              placeholder={l("rc.ai.corpIdPleaseHolder")}
-            />
-            <ProFormText.Password
-              width="sm"
-              name="secret"
-              label={l("rc.ai.secret")}
-              rules={[{required: true, message: l("rc.ai.secretPleaseHolder")}]}
-              placeholder={l("rc.ai.secretPleaseHolder")}
-            />
-            <ProFormDigit
-              width="sm"
-              name="agentId"
-              label={l("rc.ai.agentId")}
-              rules={[{required: true, message: l("rc.ai.agentIdPleaseHolder")}]}
-              placeholder={l("rc.ai.agentIdPleaseHolder")}
-            />
-            <ProFormTextArea
-              width="xl"
-              name="users"
-              label={l("rc.ai.user")}
-              rules={[{required: true, message: l("rc.ai.userPleaseHolder")}]}
-              placeholder={l("rc.ai.userPleaseHolder")}
-            />
-          </>
-        }
+            </>
+            :
+            // if sendType is app
+            <>
+              <ProFormText
+                width="sm"
+                name="corpId"
+                label={l("rc.ai.corpId")}
+                rules={[{required: true, message: l("rc.ai.corpIdPleaseHolder")}]}
+                placeholder={l("rc.ai.corpIdPleaseHolder")}
+              />
+              <ProFormText.Password
+                width="sm"
+                name="secret"
+                label={l("rc.ai.secret")}
+                rules={[{required: true, message: l("rc.ai.secretPleaseHolder")}]}
+                placeholder={l("rc.ai.secretPleaseHolder")}
+              />
+              <ProFormDigit
+                width="sm"
+                name="agentId"
+                label={l("rc.ai.agentId")}
+                rules={[{required: true, message: l("rc.ai.agentIdPleaseHolder")}]}
+                placeholder={l("rc.ai.agentIdPleaseHolder")}
+              />
+              <ProFormTextArea
+                width="xl"
+                name="users"
+                label={l("rc.ai.user")}
+                rules={[{required: true, message: l("rc.ai.userPleaseHolder")}]}
+                placeholder={l("rc.ai.userPleaseHolder")}
+              />
+            </>
+          }
         </ProForm.Group>
       </>
     );

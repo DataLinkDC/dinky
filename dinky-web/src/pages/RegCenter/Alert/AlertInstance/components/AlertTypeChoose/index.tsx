@@ -34,7 +34,7 @@ import Email from "../Email";
 /**
  * update form props
  */
-export type UpdateFormProps = {
+type UpdateFormProps = {
   onCancel: (flag?: boolean, formVals?: Partial<Alert.AlertInstance>) => void;
   onSubmit: (values: Partial<Alert.AlertInstance>) => void;
   modalVisible: boolean;

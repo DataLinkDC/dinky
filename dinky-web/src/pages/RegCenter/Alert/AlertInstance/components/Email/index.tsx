@@ -29,17 +29,7 @@ import {
   ProFormTextArea
 } from "@ant-design/pro-components";
 import {MODAL_FORM_STYLE} from "@/services/constants";
-
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+import {AlertInstanceFormProps} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
 
 const Email: React.FC<AlertInstanceFormProps> = (props) => {

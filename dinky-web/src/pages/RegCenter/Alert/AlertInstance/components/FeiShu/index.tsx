@@ -30,17 +30,8 @@ import {
   ProFormTextArea
 } from "@ant-design/pro-components";
 import {MODAL_FORM_STYLE} from "@/services/constants";
+import {AlertInstanceFormProps} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
-/**
- * props of AlertInstanceForm
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values:Partial< Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
 
 const FeiShu: React.FC<AlertInstanceFormProps> = (props) => {
 
