@@ -76,6 +76,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
       handleChooseModalVisible();
       setAlertType(undefined);
       handleUpdate(value);
+
     }
   };
   /**
@@ -88,7 +89,7 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
   /**
    * cancel choose
    */
-  function handleCancel() {
+  const handleCancel = () =>{
     setAlertType(undefined);
     handleChooseModalVisible();
   }
@@ -115,11 +116,22 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     return values?.type === assertsType || alertType === assertsType;
   };
 
+  const renderChooseTypesCardList = () => {
+    return <>
+      <List
+        grid={{gutter: 16, column: 4}}
+        dataSource={ALERT_CONFIG_LIST}
+        renderItem={(item: AlertConfig) => renderCardItem(item)}
+      />
+    </>
+
+  }
+
 
   /**
    * choose modal props
    */
-  const chooseProp = {
+  const chooseProps = {
     onCancel: handleCancel,
     modalVisible: modalVisible,
     values: values,
@@ -137,15 +149,13 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
         onCancel={handleCancel}
         footer={null}
       >
-        {
-          (!alertType && !values?.id) &&
-          <List grid={{gutter: 16, column: 4}} dataSource={ALERT_CONFIG_LIST}
-                renderItem={(item: AlertConfig) => renderCardItem(item)}/>
-        }
-        {getAlertType(ALERT_TYPE.DINGTALK) && <DingTalk{...chooseProp}/>}
-        {getAlertType(ALERT_TYPE.WECHAT) && <WeChat{...chooseProp}/>}
-        {getAlertType(ALERT_TYPE.FEISHU) && <FeiShu{...chooseProp}/>}
-        {getAlertType(ALERT_TYPE.EMAIL) && <Email{...chooseProp}/>}
+        {/* render card list*/}
+        {(!alertType && !values?.id) && renderChooseTypesCardList()}
+        {/* Renders the alert component form based on the selected alert type */}
+        {getAlertType(ALERT_TYPE.DINGTALK) && <DingTalk{...chooseProps}/>}
+        {getAlertType(ALERT_TYPE.WECHAT) && <WeChat{...chooseProps}/>}
+        {getAlertType(ALERT_TYPE.FEISHU) && <FeiShu{...chooseProps}/>}
+        {getAlertType(ALERT_TYPE.EMAIL) && <Email{...chooseProps}/>}
       </Modal>
     </>
 

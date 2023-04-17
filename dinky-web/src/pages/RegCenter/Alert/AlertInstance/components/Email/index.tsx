@@ -28,7 +28,7 @@ import {
   ProFormText,
   ProFormTextArea
 } from "@ant-design/pro-components";
-import {MODAL_FORM_STYLE} from "@/services/constants";
+import {MODAL_FORM_STYLE, SWITCH_OPTIONS} from "@/services/constants";
 import {AlertInstanceFormProps} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
 
@@ -66,7 +66,7 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
   /**
    * send test email callback
    */
-  const sendTestForm = async () => {
+  const sendTestMsg = async () => {
     const fieldsValue = await form.validateFields();
     setFormVals(buildJSONData(formVals, fieldsValue));
     handleTest(buildJSONData(formVals, fieldsValue));
@@ -146,29 +146,25 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
             width="xs"
             name="enableSmtpAuth"
             label={l("rc.ai.enableSmtpAuth")}
-            checkedChildren={l("button.enable")}
-            unCheckedChildren={l("button.disable")}
+            {...SWITCH_OPTIONS()}
           />
           <ProFormSwitch
             width="xs"
             name="starttlsEnable"
             label={l("rc.ai.starttlsEnable")}
-            checkedChildren={l("button.enable")}
-            unCheckedChildren={l("button.disable")}
+            {...SWITCH_OPTIONS()}
           />
           <ProFormSwitch
             width="xs"
             name="sslEnable"
             label={l("rc.ai.sslEnable")}
-            checkedChildren={l("button.enable")}
-            unCheckedChildren={l("button.disable")}
+            {...SWITCH_OPTIONS()}
           />
           <ProFormSwitch
             width="xs"
             name="enabled"
             label={l("global.table.isEnable")}
-            checkedChildren={l("button.enable")}
-            unCheckedChildren={l("button.disable")}
+            {...SWITCH_OPTIONS()}
           />
           {/* ssl  */}
           {(vals.sslEnable) &&
@@ -236,7 +232,7 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
   const renderFooter = () => {
     return [
       <Button key={"AlertCancel"} onClick={() => handleModalVisible(false)}>{l("button.cancel")}</Button>,
-      <Button key={"AlertTest"} type="primary" onClick={() => sendTestForm()}>{l("button.test")}</Button>,
+      <Button key={"AlertTest"} type="primary" onClick={() => sendTestMsg()}>{l("button.test")}</Button>,
       <Button key={"AlertFinish"} type="primary" onClick={() => submitForm()}>{l("button.finish")}</Button>,
     ];
   };
@@ -244,7 +240,7 @@ const Email: React.FC<AlertInstanceFormProps> = (props) => {
 
   return (
     <Space>
-      <ModalForm
+      <ModalForm<Alert.AlertInstance>
         {...MODAL_FORM_STYLE}
         title={formVals.id ? l("rc.ai.modify") : l("rc.ai.create")}
         open={modalVisible}

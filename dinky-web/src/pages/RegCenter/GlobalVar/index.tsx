@@ -18,7 +18,7 @@
  */
 
 import {EditTwoTone, PlusOutlined} from '@ant-design/icons';
-import {Button, Drawer, Form, Popconfirm, Space, Switch} from 'antd';
+import {Button, Drawer, Popconfirm, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
@@ -26,7 +26,13 @@ import ProTable from '@ant-design/pro-table';
 import ProDescriptions from '@ant-design/pro-descriptions';
 import {l} from "@/utils/intl";
 import {GlobalVar} from "@/types/RegCenter/data";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from "@/services/constants";
+import {
+  API_CONSTANTS,
+  PROTABLE_OPTIONS_PUBLIC,
+  STATUS_ENUM,
+  STATUS_MAPPING,
+  SWITCH_OPTIONS
+} from "@/services/constants";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import GlobalVarForm from "@/pages/RegCenter/GlobalVar/components/GlobalVarForm";
@@ -131,8 +137,7 @@ const GlobalVarList: React.FC = (props: any) => {
           <Space>
             <Switch
               key={record.id}
-              checkedChildren={l("status.enabled")}
-              unCheckedChildren={l("status.disabled")}
+              {...SWITCH_OPTIONS()}
               checked={record.enabled}
               onChange={() => handleChangeEnable(record)}/>
           </Space>
@@ -174,6 +179,7 @@ const GlobalVarList: React.FC = (props: any) => {
           }}
         />,
         <Popconfirm
+          key={'GlobalVarDelete'}
           placement="topRight"
           title={l("button.delete")}
           description={l("rc.gv.deleteConfirm")}

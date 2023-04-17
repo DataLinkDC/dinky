@@ -29,7 +29,7 @@ import {
   ProFormText,
   ProFormTextArea
 } from "@ant-design/pro-components";
-import {MODAL_FORM_STYLE} from "@/services/constants";
+import {MODAL_FORM_STYLE, SWITCH_OPTIONS} from "@/services/constants";
 import {AlertInstanceFormProps} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
 
@@ -125,16 +125,14 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
           <ProFormSwitch
             name="enabled"
             label={l("global.table.isEnable")}
-            checkedChildren={l("button.enable")}
-            unCheckedChildren={l("button.disable")}
+            {...SWITCH_OPTIONS()}
           />
           {(vals.sendType === "wechat") &&
             // if sendType is wechat render this switch group
             <ProFormSwitch
               name="isAtAll"
               label={l("rc.ai.isAtAll")}
-              checkedChildren={l("button.enable")}
-              unCheckedChildren={l("button.disable")}
+              {...SWITCH_OPTIONS()}
             />
           }
         </ProForm.Group>
@@ -226,7 +224,7 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
    */
   return (
     <Space>
-      <ModalForm
+      <ModalForm<Alert.AlertInstance>
         {...MODAL_FORM_STYLE}
         title={formVals.id ? l("rc.ai.modify") : l("rc.ai.create")}
         open={modalVisible}

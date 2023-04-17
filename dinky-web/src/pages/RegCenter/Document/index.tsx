@@ -35,7 +35,13 @@ import {
   DOCUMENT_FUNCTION_ENUMS,
   DOCUMENT_FUNCTION_TYPE, DOCUMENT_SUBTYPE, DOCUMENT_SUBTYPE_ENUMS
 } from "@/pages/RegCenter/Document/constans";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from "@/services/constants";
+import {
+  API_CONSTANTS,
+  PROTABLE_OPTIONS_PUBLIC,
+  STATUS_ENUM,
+  STATUS_MAPPING,
+  SWITCH_OPTIONS
+} from "@/services/constants";
 import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
@@ -177,8 +183,7 @@ const DocumentTableList: React.FC = (props: any) => {
           <Space>
             <Switch
               key={record.id}
-              checkedChildren={l("status.enabled")}
-              unCheckedChildren={l("status.disabled")}
+              {...SWITCH_OPTIONS()}
               checked={record.enabled}
               onChange={() => handleChangeEnable(record)}/>
           </Space>
@@ -216,6 +221,7 @@ const DocumentTableList: React.FC = (props: any) => {
           }}
         />,
         <Popconfirm
+          key={'DocumentDelete'}
           placement="topRight"
           title={l("button.delete")}
           description={l("rc.doc.deleteConfirm")}

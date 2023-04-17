@@ -17,7 +17,7 @@
 
 
 import React, {useEffect, useRef, useState} from "react";
-import {EditTwoTone, PlusOutlined, ReloadOutlined} from "@ant-design/icons";
+import {EditTwoTone, PlusOutlined} from "@ant-design/icons";
 import {ActionType} from "@ant-design/pro-table";
 import {Button, Descriptions, Modal, Space, Switch, Tag, Tooltip} from "antd";
 import {PageContainer} from "@ant-design/pro-layout";
@@ -26,7 +26,7 @@ import {Alert} from "@/types/RegCenter/data.d";
 import {queryList} from "@/services/api";
 import {handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {ProList} from "@ant-design/pro-components";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
+import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import DescriptionsItem from "antd/es/descriptions/Item";
@@ -78,13 +78,12 @@ const AlertInstanceTableList: React.FC = () => {
    */
   const handleDeleteSubmit = async (id: number) => {
     Modal.confirm({
-      title: l('rc.ai.delete'),
-      content: l('rc.ai.deleteConfirm'),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
+      title: l("rc.ai.delete"),
+      content: l("rc.ai.deleteConfirm"),
+      okText: l("button.confirm"),
+      cancelText: l("button.cancel"),
       onOk: async () => {
         await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
-        await queryAlertInstanceList();
       }
     });
   };
@@ -95,7 +94,6 @@ const AlertInstanceTableList: React.FC = () => {
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
     await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
-    await queryAlertInstanceList();
   };
 
   /**
@@ -105,16 +103,7 @@ const AlertInstanceTableList: React.FC = () => {
     setLoading(true);
     queryAlertInstanceList();
     setLoading(false);
-  }, []);
-
-
-  /**
-   * refresh alert instance list
-   */
-  const refreshAlertInstanceList = async () => {
-    await queryAlertInstanceList();
-  };
-
+  }, [modalVisible, alertInstanceList]);
 
   /**
    * render alert instance sub title
@@ -133,6 +122,15 @@ const AlertInstanceTableList: React.FC = () => {
   };
 
   /**
+   * edit click callback
+   * @param item
+   */
+  const editClick = (item: Alert.AlertInstance) => {
+    setFormValues(item);
+    handleModalVisible(!modalVisible);
+  };
+
+  /**
    * render alert instance action button
    * @param item
    */
@@ -143,10 +141,7 @@ const AlertInstanceTableList: React.FC = () => {
         key={"AlertInstanceEdit"}
         icon={<EditTwoTone/>}
         title={l("button.edit")}
-        onClick={() => {
-          setFormValues(item);
-          handleModalVisible(!modalVisible);
-        }}
+        onClick={() => editClick(item)}
       />,
       <Button
         className={"options-button"}
@@ -168,8 +163,7 @@ const AlertInstanceTableList: React.FC = () => {
         <Tag color="#5BD8A6">{item.type}</Tag>
         <Switch
           key={item.id}
-          checkedChildren={l("status.enabled")}
-          unCheckedChildren={l("status.disabled")}
+          {...SWITCH_OPTIONS()}
           checked={item.enabled}
           onChange={() => handleEnable(item)}
         />
@@ -196,9 +190,6 @@ const AlertInstanceTableList: React.FC = () => {
     return () => [
       <Button key={"CreateAlertInstance"} type="primary" onClick={() => handleModalVisible(true)}>
         <PlusOutlined/> {l("button.create")}
-      </Button>,
-      <Button key={"RefreshAlertInstance"} type="primary" onClick={refreshAlertInstanceList}>
-        <ReloadOutlined/> {l("button.refresh")}
       </Button>,
     ];
   };

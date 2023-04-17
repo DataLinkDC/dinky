@@ -19,6 +19,10 @@
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
 import {DefaultSvg, DingTalkSvg, EmailSvg, FeiShuSvg, WeChatSvg} from "@/components/Icons/AlertIcon";
 
+/**
+ * get json data to alert instance
+ * @param values
+ */
 export const getJSONData = (values: Partial<Alert.AlertInstance>) => {
   if (!values.params || values.params === "") {
     return values;
@@ -27,6 +31,11 @@ export const getJSONData = (values: Partial<Alert.AlertInstance>) => {
   return {...data, ...values};
 };
 
+/**
+ * build json data to alert instance
+ * @param values
+ * @param params
+ */
 export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any) => {
   let newValue = values;
   if (params.name) {
@@ -41,7 +50,11 @@ export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any)
   return {...newValue, params: data};
 };
 
-
+/**
+ * get alert icon
+ * @param type alert type
+ * @param size icon size
+ */
 export const getAlertIcon = (type: string, size?: number) => {
   switch (type) {
     case ALERT_TYPE.DINGTALK:

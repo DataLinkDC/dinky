@@ -211,3 +211,11 @@ export const SCROLLBAR_OPTIONS = {
     width: "100%",
   }
 };
+
+
+export const SWITCH_OPTIONS =() => {
+  return {
+    checkedChildren: l("status.enabled"),
+    unCheckedChildren: l("status.disabled"),
+  };
+}
