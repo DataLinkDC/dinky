@@ -25,6 +25,7 @@ import org.dinky.mapper.AlertGroupMapper;
 import org.dinky.model.AlertGroup;
 import org.dinky.model.AlertInstance;
 import org.dinky.service.AlertGroupService;
+import org.dinky.service.AlertHistoryService;
 import org.dinky.service.AlertInstanceService;
 
 import java.util.ArrayList;
@@ -34,23 +35,24 @@ import javax.annotation.Resource;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
-/**
- * AlertGroupServiceImpl
- *
- * @since 2022/2/24 20:01
- */
+import cn.hutool.core.util.StrUtil;
+
+/** AlertGroupServiceImpl */
 @Service
 public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
         implements AlertGroupService {
 
     @Lazy @Resource private AlertInstanceService alertInstanceService;
 
+    @Lazy @Resource private AlertHistoryService alertHistoryService;
+
     @Override
     public List<AlertGroup> listEnabledAll() {
-        return list(new QueryWrapper<AlertGroup>().eq("enabled", 1));
+        return list(new LambdaQueryWrapper<AlertGroup>().eq(AlertGroup::getEnabled, 1));
     }
 
     @Override
@@ -59,7 +61,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
         if (Asserts.isNull(alertGroup) || Asserts.isNullString(alertGroup.getAlertInstanceIds())) {
             return alertGroup;
         }
-        String[] alertInstanceIds = alertGroup.getAlertInstanceIds().split(",");
+        String[] alertInstanceIds = alertGroup.getAlertInstanceIds().split(StrUtil.COMMA);
         List<AlertInstance> alertInstanceList = new ArrayList<>();
         for (String alertInstanceId : alertInstanceIds) {
             if (Asserts.isNullString(alertInstanceId) || "0".equals(alertInstanceId)) {
@@ -76,5 +78,21 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
         AlertGroup alertGroup = getById(id);
         alertGroup.setEnabled(!alertGroup.getEnabled());
         return updateById(alertGroup);
+    }
+
+    /**
+     * delete alert group by id and cascade delete alert history
+     *
+     * @param id {@link Integer}
+     * @return {@link Boolean}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteGroupById(Integer id) {
+        if (removeById(id)) {
+            alertHistoryService.deleteByAlertGroupId(id);
+            return true;
+        }
+        return false;
     }
 }

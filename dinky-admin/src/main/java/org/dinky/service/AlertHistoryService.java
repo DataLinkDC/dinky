@@ -22,9 +22,14 @@ package org.dinky.service;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.AlertHistory;
 
-/**
- * AlertHistoryService
- *
- * @since 2022/2/24 20:42
- */
-public interface AlertHistoryService extends ISuperService<AlertHistory> {}
+/** AlertHistoryService */
+public interface AlertHistoryService extends ISuperService<AlertHistory> {
+
+    /**
+     * delete alert history by alert group id
+     *
+     * @param alertGroupId {@link Integer}
+     * @return {@link Boolean}
+     */
+    Boolean deleteByAlertGroupId(Integer alertGroupId);
+}

@@ -24,11 +24,7 @@ import org.dinky.model.AlertGroup;
 
 import java.util.List;
 
-/**
- * AlertGroupService
- *
- * @since 2022/2/24 20:00
- */
+/** AlertGroupService */
 public interface AlertGroupService extends ISuperService<AlertGroup> {
 
     /**
@@ -53,4 +49,12 @@ public interface AlertGroupService extends ISuperService<AlertGroup> {
      * @return
      */
     Boolean enable(Integer id);
+
+    /**
+     * delete alert group by id and cascade delete alert history
+     *
+     * @param id {@link Integer}
+     * @return {@link Boolean}
+     */
+    Boolean deleteGroupById(Integer id);
 }

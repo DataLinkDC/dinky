@@ -1483,25 +1483,30 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getAlertGroupInfo(task.getAlertGroupId());
             if (Asserts.isNotNull(alertGroup)) {
-                AlertMsg alertMsg = new AlertMsg();
-                alertMsg.setAlertType("Flink 实时监控");
-                alertMsg.setAlertTime(dateFormat.format(new Date()));
-                alertMsg.setJobID(jobInstance.getJid());
-                alertMsg.setJobName(task.getName());
-                alertMsg.setJobType(task.getDialect());
-                alertMsg.setJobStatus(jobInstance.getStatus());
-                alertMsg.setJobStartTime(startTime);
-                alertMsg.setJobEndTime(endTime);
-                alertMsg.setJobDuration(duration);
 
+                // build alert msg of flink job link url
                 String linkUrl =
                         String.format(
                                 "http://%s/#/job/%s/overview",
                                 jobManagerHost, jobInstance.getJid());
+
+                // build alert msg of flink job exception url
                 String exceptionUrl =
                         String.format(
                                 "http://%s/#/job/%s/exceptions",
                                 jobManagerHost, jobInstance.getJid());
+
+                AlertMsg.AlertMsgBuilder alertMsgBuilder =
+                        AlertMsg.builder()
+                                .alertType("Flink 实时监控")
+                                .alertTime(dateFormat.format(new Date()))
+                                .jobID(jobInstance.getJid())
+                                .jobName(task.getName())
+                                .jobType(task.getDialect())
+                                .jobStatus(jobInstance.getStatus())
+                                .jobStartTime(startTime)
+                                .jobEndTime(endTime)
+                                .jobDuration(duration);
 
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
                     if (alertInstance == null
@@ -1511,12 +1516,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
                     if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                        alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
-                        alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+                        alertMsgBuilder
+                                .linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")")
+                                .exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
                     } else {
-                        alertMsg.setLinkUrl(linkUrl);
-                        alertMsg.setExceptionUrl(exceptionUrl);
+                        alertMsgBuilder.linkUrl(linkUrl).exceptionUrl(exceptionUrl);
                     }
+                    AlertMsg alertMsg = alertMsgBuilder.build();
+
                     sendAlert(alertInstance, jobInstance, task, alertMsg);
                 }
             }

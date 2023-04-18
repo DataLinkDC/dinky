@@ -44,11 +44,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * AlertGroupController
- *
- * @since 2022/2/24 20:02
- */
+/** AlertGroupController */
 @Slf4j
 @RestController
 @RequestMapping("/api/alertGroup")
@@ -159,7 +155,7 @@ public class AlertGroupController {
      */
     @DeleteMapping("/delete")
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
-        if (alertGroupService.removeById(id)) {
+        if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
         } else {
             return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
