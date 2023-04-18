@@ -124,7 +124,7 @@ public class AlertGroupController {
     /**
      * get all enabled alert group
      *
-     * @return
+     * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @GetMapping("/listEnabledAll")
     public Result<List<AlertGroup>> listEnabledAll() {
@@ -136,7 +136,7 @@ public class AlertGroupController {
     /**
      * enable or disable alert group
      *
-     * @return
+     * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @PutMapping("/enable")
     public Result<List<AlertGroup>> enable(@RequestParam("id") Integer id) {
@@ -165,8 +165,8 @@ public class AlertGroupController {
     /**
      * list alert history
      *
-     * @param para
-     * @return
+     * @param para {@link JsonNode}
+     * @return {@link ProTableResult} with {@link AlertHistory}
      */
     @PostMapping("/history")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {

@@ -55,6 +55,13 @@ const AlertInstanceTableList: React.FC = () => {
   };
 
 
+  const executeAndCallbackRefresh = async (callback: () => void) => {
+    setLoading(true);
+    await callback();
+    await queryAlertInstanceList();
+    setLoading(false);
+  }
+
   /**
    * handle delete alert instance
    * @param id
@@ -66,10 +73,9 @@ const AlertInstanceTableList: React.FC = () => {
       okText: l("button.confirm"),
       cancelText: l("button.cancel"),
       onOk: async () => {
-        setLoading(true)
-        await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
-        await queryAlertInstanceList();
-        setLoading(false);
+       await executeAndCallbackRefresh(async () => {
+          await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
+        })
       }
     });
   };
@@ -79,10 +85,9 @@ const AlertInstanceTableList: React.FC = () => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
-    setLoading(true);
-    await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
-    await queryAlertInstanceList();
-    setLoading(false);
+    await executeAndCallbackRefresh(async () => {
+      await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
+    })
   };
 
   /**
@@ -185,7 +190,7 @@ const AlertInstanceTableList: React.FC = () => {
    * click cancel button callback
    */
   const cancelHandler = () => {
-    handleModalVisible(false);
+    handleModalVisible(!modalVisible);
     setFormValues(undefined);
   };
 
