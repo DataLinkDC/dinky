@@ -29,7 +29,13 @@ import TableTransferFrom from "@/pages/AuthCenter/User/components/UserTransfer";
 import {l} from "@/utils/intl";
 import {handleAddOrUpdate, handleOption, handlePutData, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from "@/services/constants";
+import {
+  API_CONSTANTS,
+  PROTABLE_OPTIONS_PUBLIC,
+  STATUS_ENUM,
+  STATUS_MAPPING,
+  SWITCH_OPTIONS
+} from "@/services/constants";
 import {useAccess} from "@@/exports";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 
@@ -202,8 +208,7 @@ const UserTableList: React.FC = () => {
           <Space>
             <Switch
               key={record.id}
-              checkedChildren={l("status.enabled")}
-              unCheckedChildren={l("status.disabled")}
+              {...SWITCH_OPTIONS()}
               checked={record.enabled}
               onChange={() => handleChangeEnable(record)}/>
           </Space>

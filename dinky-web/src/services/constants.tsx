@@ -79,6 +79,15 @@ export const API_CONSTANTS = {
   // document enable or disable
   DOCUMENT_ENABLE: "/api/document/enable",
 
+  // ---- alert instance ----
+  // alert instance list
+  ALERT_INSTANCE: "/api/alertInstance",
+  // delete alert instance by id
+  ALERT_INSTANCE_DELETE: "/api/alertInstance/delete",
+  // alert instance enable or disable
+  ALERT_INSTANCE_ENABLE: "/api/alertInstance/enable",
+
+
 };
 
 
@@ -147,6 +156,19 @@ export const FORM_LAYOUT_PUBLIC = {
   wrapperCol: {span: 15},
 };
 
+
+/**
+ * the modal form layout of public
+ */
+export const MODAL_FORM_STYLE: any = {
+  width: "40%",
+  style: {
+    maxHeight: "70vh",
+    overflowY: "auto",
+  },
+};
+
+
 /**
  * the protable layout of public
  */
@@ -185,7 +207,15 @@ export const NORMAL_TABLE_OPTIONS = {
 
 export const SCROLLBAR_OPTIONS = {
   style: {
-    height: '520px',
-    width: '100%',
+    height: "520px",
+    width: "100%",
   }
 };
+
+
+export const SWITCH_OPTIONS =() => {
+  return {
+    checkedChildren: l("status.enabled"),
+    unCheckedChildren: l("status.disabled"),
+  };
+}

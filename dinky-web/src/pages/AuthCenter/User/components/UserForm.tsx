@@ -22,7 +22,7 @@ import React, {useState} from "react";
 import {Form, Modal} from "antd";
 import {l} from "@/utils/intl";
 import {ProForm, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
-import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS, SWITCH_OPTIONS} from "@/services/constants";
 
 export type UserFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -110,9 +110,8 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
         <ProFormSwitch
           name="enabled"
+          {...SWITCH_OPTIONS()}
           label={l("global.table.isEnable")}
-          checkedChildren={l("button.enable")}
-          unCheckedChildren={l("button.disable")}
         />
       </>
     );
