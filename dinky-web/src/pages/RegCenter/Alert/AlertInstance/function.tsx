@@ -17,7 +17,7 @@
 
 
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
-import {DefaultSvg, DingTalkSvg, EmailSvg, FeiShuSvg, WeChatSvg} from "@/components/Icons/AlertIcon";
+import {AlertGroupSvg, DefaultSvg, DingTalkSvg, EmailSvg, FeiShuSvg, WeChatSvg} from "@/components/Icons/AlertIcon";
 
 /**
  * get json data to alert instance
@@ -65,6 +65,8 @@ export const getAlertIcon = (type: string, size?: number) => {
       return <FeiShuSvg size={size}/>;
     case ALERT_TYPE.EMAIL:
       return <EmailSvg size={size}/>;
+    case ALERT_TYPE.GROUP:
+      return <AlertGroupSvg size={size}/>;
     default:
       return <DefaultSvg size={size}/>;
   }

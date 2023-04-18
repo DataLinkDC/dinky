@@ -59,6 +59,14 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
     Result<Void> deleteAlertInstance(JsonNode para);
 
     /**
+     * delete alert instance
+     *
+     * @param id {@link Integer}
+     * @return {@link Result<Void>}
+     */
+    Boolean deleteAlertInstance(Integer id);
+
+    /**
      * enable or disable alert instance
      *
      * @param id {@link Integer}

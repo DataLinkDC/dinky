@@ -16,33 +16,17 @@
  */
 
 
-import {Alert} from "@/types/RegCenter/data";
+/*--- get alert instance  ---*/
+import {getData} from "@/services/api";
+import {API_CONSTANTS} from "@/services/constants";
 
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+export function showAlertInstance(dispatch: any) {
+  const res = getData(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL);
+  res.then((result) => {
+    result.datas && dispatch && dispatch({
+      type: "Alert/saveInstance",
+      payload: result.datas,
+    });
+  });
+}
 
-
-export const PRO_LIST_CARD_META = {
-  title: {},
-  subTitle: {},
-  type: {},
-  avatar: {},
-  content: {},
-  actions: {
-    cardActionProps: "actions"
-  },
-};
-
-export const PRO_LIST_CARD_OPTIONS = {
-  search: false,
-  metas: PRO_LIST_CARD_META,
-  grid: {gutter: 24, column: 6}
-};

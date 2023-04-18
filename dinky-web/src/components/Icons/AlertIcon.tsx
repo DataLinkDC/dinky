@@ -117,6 +117,39 @@ export const EmailSvg = (props: any) => {
 
 };
 
+/**
+ * random rgb color
+ */
+function randomRgbColor() {
+  let r = Math.floor(Math.random() * 256); //random generate r value less than 256
+  let g = Math.floor(Math.random() * 256); //random generate g value less than 256
+  let b = Math.floor(Math.random() * 256); //random generate b value less than 256
+  return `rgb(${r},${g},${b})`; //return rgb(r,g,b) format color
+}
+
+export const AlertGroupSvg = (props: any) => {
+
+  const size = props.size || defaultSvgSize;
+
+  return <>
+    <Icon style={style} component={
+      () => (
+        <svg className="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"
+             width={size} height={size}>
+          <path
+            d="M754.176 732.032H684.16V512a200 200 0 0 0-400 0v220.032H214.208a9.984 9.984 0 0 0-10.048 9.984v40c0 5.504 4.48 9.984 10.048 9.984h539.968c5.504 0 9.984-4.48 9.984-9.984v-40a9.984 9.984 0 0 0-9.984-9.984zM454.208 192h59.968v80h-59.968zM298.24 249.92l51.968-30.08 40 69.312-51.968 30.08zM192 377.984l30.016-51.968 69.248 40-29.952 51.968zM677.12 365.952l69.248-40 30.016 51.968-69.312 40zM578.176 289.088l40-69.248 51.904 30.016-40 69.248-51.904-30.016z"
+            fill={randomRgbColor()}></path>
+          <path
+            d="M563.392 502.016H499.84l11.904-83.136a4.992 4.992 0 0 0-8.704-3.84L401.216 533.76a4.992 4.992 0 0 0 3.776 8.192h63.488l-11.904 83.072a4.992 4.992 0 0 0 8.704 3.904l101.888-118.784a4.992 4.992 0 0 0-3.84-8.192z"
+            fill="#FFFFFF"></path>
+        </svg>
+      )
+    }/>
+  </>;
+
+};
+
+
 export const DefaultSvg = (props: any) => {
 
   const size = props.size || defaultSvgSize;

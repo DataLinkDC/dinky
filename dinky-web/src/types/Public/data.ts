@@ -19,8 +19,8 @@
 /**
  * theme of nav
  */
-export const THEME  = {
-  NAV_THEME : "navTheme",
+export const THEME = {
+  NAV_THEME: "navTheme",
   dark: "realDark",
   light: "light",
 };
@@ -29,7 +29,7 @@ export const THEME  = {
 /**
  * MonacoEditor of CodeEdit's theme
  */
-export const CODE_EDIT_THEME  = {
+export const CODE_EDIT_THEME = {
   VS: "vs",
   DARK: "vs-dark",
   HC_BLACK: "hc-black",
@@ -37,13 +37,24 @@ export const CODE_EDIT_THEME  = {
 };
 
 
-
 export const MonacoEditorOptions = {
   // selectOnLineNumbers: true,
   renderSideBySide: false, //  side by side
-  autoIndent: 'None', //  auto indent
+  autoIndent: "None", //  auto indent
   fontSize: 16, //  font size
   automaticLayout: true, //  auto layout
-  scrollBeyondLastLine:false,  //is scroll beyond the last line
+  scrollBeyondLastLine: false,  //is scroll beyond the last line
   autoDetectHighContrast: true, // auto detect high contrast
+};
+
+
+export type BaseBeanColumns = ExcludeNameAndEnableColumns & {
+  name: string,
+  enabled: boolean,
+}
+
+export type ExcludeNameAndEnableColumns = {
+  id: number,
+  createTime: Date,
+  updateTime: Date,
 }
