@@ -74,7 +74,9 @@ import groovy.lang.GroovyClassLoader;
 public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
-            "create\\s+.*function\\s+(.*)\\s+as\\s+'(.*)'(\\s+language (.*))?";
+            "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:\\s+IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)" +
+                    "\\s+AS\\s+'(\\S+)'\\s+(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*" +
+                    "(?:,\\s*JAR\\s+'(\\S+)'\\s*)*?)?";
 
     public static final String SESSION = "SESSION";
     public static final String YARN = "YARN";
