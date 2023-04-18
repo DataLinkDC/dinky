@@ -133,7 +133,7 @@ export default [
           {
             path: '/registration/alert/group',
             name: 'group',
-            // component: './RegistrationCenter/Alert/AlertGroup',
+            component: './RegCenter/Alert/AlertGroup',
           },
         ],
       },

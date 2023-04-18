@@ -15,6 +15,8 @@
  * limitations under the License.
  */
 
+import {BaseBeanColumns} from "@/types/Public/data";
+
 /**
  * about alert
  */
@@ -22,27 +24,17 @@ declare namespace Alert {
   /**
    * alert group
    */
-  export type AlertGroup = {
-    id: number,
-    name: string,
+  export type AlertGroup = BaseBeanColumns & {
     alertInstanceIds: string,
     note: string,
-    enabled: boolean,
-    createTime: Date,
-    updateTime: Date,
   };
 
   /**
    * alert instance
    */
-  export type AlertInstance = {
-    id: number,
-    name: string,
+  export type AlertInstance = BaseBeanColumns & {
     type: string,
     params: string,
-    enabled: boolean,
-    createTime: Date,
-    updateTime: Date,
   };
 }
 
@@ -56,6 +48,7 @@ export const ALERT_TYPE = {
   WECHAT: "WeChat",
   FEISHU: "FeiShu",
   EMAIL: "Email",
+  GROUP: "Group",
 };
 
 export const ALERT_CONFIG_LIST: AlertConfig[] = [{
@@ -78,9 +71,7 @@ declare namespace Cluster {
    * flink cluster instance
    * mainly used for `yarn session` `standalone`
    */
-  export type ClusterInstance = {
-    id: number,
-    name: string,
+  export type ClusterInstance = BaseBeanColumns & {
     alias: string,
     type: string,
     hosts: string,
@@ -89,26 +80,18 @@ declare namespace Cluster {
     version: string,
     status: number,
     note: string,
-    enabled: boolean,
-    createTime: Date,
-    updateTime: Date,
   };
 
   /**
    * flink cluster config
    * mainly used for `projob` `application` `k8s` and start a new session cluster
    */
-  export type ClusterConfig = {
-    id: number,
-    name: string,
+  export type ClusterConfig = BaseBeanColumns & {
     type: string,
     config: any,
     configJson: string,
     isAvailable: boolean,
     note: string,
-    enabled: boolean,
-    createTime: Date,
-    updateTime: Date,
   };
 }
 
@@ -120,9 +103,7 @@ declare namespace DataBases {
   /**
    * database info
    */
-  export type DataBase = {
-    id: number,
-    name: string,
+  export type DataBase = BaseBeanColumns & {
     groupName: string,
     type: string,
     url: string,
@@ -135,9 +116,6 @@ declare namespace DataBases {
     status: boolean,
     healthTime: Date,
     heartbeatTime: Date,
-    enabled: boolean,
-    createTime: Date,
-    updateTime: Date,
   };
 
 
@@ -183,9 +161,7 @@ declare namespace DataBases {
 /**
  * about document
  */
-export type Document = {
-  id: number,
-  name: string,
+export type Document = BaseBeanColumns & {
   category: string,
   type: string,
   subtype: string,
@@ -193,22 +169,14 @@ export type Document = {
   fillValue: string,
   version: string,
   likeNum: number,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
 };
 
 
 /**
  * global variable
  */
-export type GlobalVar = {
-  id: number,
-  name: string,
+export type GlobalVar = BaseBeanColumns & {
   fragmentValue: string,
   note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
 };
 

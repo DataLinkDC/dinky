@@ -70,4 +70,11 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
         alertGroup.setInstances(alertInstanceList);
         return alertGroup;
     }
+
+    @Override
+    public Boolean enable(Integer id) {
+        AlertGroup alertGroup = getById(id);
+        alertGroup.setEnabled(!alertGroup.getEnabled());
+        return updateById(alertGroup);
+    }
 }

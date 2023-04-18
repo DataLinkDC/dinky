@@ -17,40 +17,31 @@
  *
  */
 
-package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.AlertGroup;
-
-import java.util.List;
+import {Alert} from "@/types/RegCenter/data";
 
 /**
- * AlertGroupService
- *
- * @since 2022/2/24 20:00
+ * parse alertInstanceIds to array and rebuild form data
+ * @param values
  */
-public interface AlertGroupService extends ISuperService<AlertGroup> {
+export const getFormData = (values: Partial<Alert.AlertGroup>) => {
+  let alertInstanceIds: string [] = [];
+  if (values && values.alertInstanceIds && values.alertInstanceIds !== "") {
+    alertInstanceIds = values.alertInstanceIds.split(",");
+  }
+  return {...values, alertInstanceIds: alertInstanceIds};
+};
 
-    /**
-     * list all enabled alert group
-     *
-     * @return {@link List<AlertGroup>}
-     */
-    List<AlertGroup> listEnabledAll();
-
-    /**
-     * get alert group info by id
-     *
-     * @param id {@link Integer}
-     * @return {@link AlertGroup}
-     */
-    AlertGroup getAlertGroupInfo(Integer id);
-
-    /**
-     * alert group enable or disable by id
-     *
-     * @param id
-     * @return
-     */
-    Boolean enable(Integer id);
-}
+/**
+ * build form data
+ * @param values
+ * @param params
+ */
+export const buildFormData = (values: Partial<Alert.AlertGroup>, params: any) => {
+  let newValue = values;
+  if (params.alertInstanceIds) {
+    newValue.alertInstanceIds = params.alertInstanceIds.join(",");
+    delete params.alertInstanceIds;
+  }
+  return {...newValue, ...params};
+};

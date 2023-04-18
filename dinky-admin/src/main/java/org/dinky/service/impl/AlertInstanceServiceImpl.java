@@ -51,6 +51,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -80,38 +81,47 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                         JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
+        AlertMsg alertMsg = getAlertMsg(alertInstance);
+        String title = "任务【" + alertMsg.getJobName() + "】：" + alertMsg.getJobStatus() + "!";
+        return alert.send(title, alertMsg.toString());
+    }
+
+    private static AlertMsg getAlertMsg(AlertInstance alertInstance) {
         String currentDateTime =
                 LocalDateTime.now()
                         .format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
 
         String uuid = UUID.randomUUID().toString();
 
-        AlertMsg alertMsg = new AlertMsg();
-        alertMsg.setAlertType("实时告警监控");
-        alertMsg.setAlertTime(currentDateTime);
-        alertMsg.setJobID(uuid);
-        alertMsg.setJobName("测试任务");
-        alertMsg.setJobType("SQL");
-        alertMsg.setJobStatus("FAILED");
-        alertMsg.setJobStartTime(currentDateTime);
-        alertMsg.setJobEndTime(currentDateTime);
-        alertMsg.setJobDuration("1 Seconds");
+        AlertMsg.AlertMsgBuilder alertMsgBuilder =
+                AlertMsg.builder()
+                        .alertType("实时告警监控")
+                        .alertTime(currentDateTime)
+                        .jobID(uuid)
+                        .jobName("测试任务")
+                        .jobType("SQL")
+                        .jobStatus("FAILED")
+                        .jobStartTime(currentDateTime)
+                        .jobEndTime(currentDateTime)
+                        .jobDuration("1 Seconds");
+
         String linkUrl = "http://cdh1:8081/#/job/" + uuid + "/overview";
         String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
 
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
         if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-            alertMsg.setLinkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
-            alertMsg.setExceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+            alertMsgBuilder.linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
+            alertMsgBuilder.exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
         } else {
-            alertMsg.setLinkUrl(linkUrl);
-            alertMsg.setExceptionUrl(exceptionUrl);
+            alertMsgBuilder.linkUrl(linkUrl);
+            alertMsgBuilder.exceptionUrl(exceptionUrl);
         }
-        String title = "任务【" + alertMsg.getJobName() + "】：" + alertMsg.getJobStatus() + "!";
-        return alert.send(title, alertMsg.toString());
+        AlertMsg alertMsg = alertMsgBuilder.build();
+        return alertMsg;
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteAlertInstance(JsonNode para) {
         if (para.size() > 0) {
             final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
@@ -134,7 +144,26 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
     }
 
+    /**
+     * delete alert instance
+     *
+     * @param id {@link Integer}
+     * @return {@link Result<Void>}
+     */
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteAlertInstance(Integer id) {
+        final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
+        if (!this.removeById(id)) {
+            return false;
+        }
+        alertGroupInformation.remove(id);
+        writeBackGroupInformation(alertGroupInformation);
+        return true;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean enable(Integer id) {
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
@@ -175,7 +204,6 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                                     final String groupIds = result.get(groupId);
                                     alertGroup.setAlertInstanceIds(
                                             groupIds == null ? "" : groupIds);
-                                    alertGroup.setUpdateTime(now);
                                     return alertGroup;
                                 })
                         .collect(Collectors.toList());

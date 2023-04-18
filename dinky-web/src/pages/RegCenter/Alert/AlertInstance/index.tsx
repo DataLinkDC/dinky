@@ -31,24 +31,8 @@ import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import AlertTypeChoose from "./components/AlertTypeChoose";
+import {PRO_LIST_CARD_OPTIONS} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
-
-const PRO_LIST_CARD_META = {
-  title: {},
-  subTitle: {},
-  type: {},
-  avatar: {},
-  content: {},
-  actions: {
-    cardActionProps: "actions"
-  },
-};
-
-const PRO_LIST_CARD_OPTIONS = {
-  search: false,
-  metas: PRO_LIST_CARD_META,
-  grid: {gutter: 24, column: 6}
-};
 
 const AlertInstanceTableList: React.FC = () => {
   /**
@@ -58,7 +42,7 @@ const AlertInstanceTableList: React.FC = () => {
   const [formValues, setFormValues] = useState<Alert.AlertInstance>();
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [alertInstanceList, setAlertInstanceList] = useState<Alert.AlertInstance[]>([]);
-
+  const [loading, setLoading] = useState<boolean>(false);
 
   /**
    * execute query alert instance list
@@ -82,8 +66,10 @@ const AlertInstanceTableList: React.FC = () => {
       okText: l("button.confirm"),
       cancelText: l("button.cancel"),
       onOk: async () => {
+        setLoading(true)
         await handleRemoveById(API_CONSTANTS.ALERT_INSTANCE_DELETE, id);
         await queryAlertInstanceList();
+        setLoading(false);
       }
     });
   };
@@ -93,8 +79,10 @@ const AlertInstanceTableList: React.FC = () => {
    * @param item
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
+    setLoading(true);
     await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
     await queryAlertInstanceList();
+    setLoading(false);
   };
 
   /**
@@ -218,6 +206,7 @@ const AlertInstanceTableList: React.FC = () => {
       <ProList<Alert.AlertInstance>
         {...PROTABLE_OPTIONS_PUBLIC}
         {...PRO_LIST_CARD_OPTIONS as any}
+        loading={loading}
         actionRef={actionRef}
         headerTitle={l("rc.ai.management")}
         toolBarRender={renderToolBar()}
@@ -231,7 +220,6 @@ const AlertInstanceTableList: React.FC = () => {
         onSubmit={chooseSubmitHandler}
         values={formValues}
       />
-
     </PageContainer>
   );
 };
