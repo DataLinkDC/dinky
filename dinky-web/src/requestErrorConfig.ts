@@ -17,10 +17,10 @@
 
 import type {RequestOptions} from '@@/plugin-request/request';
 import type {RequestConfig} from '@umijs/max';
-import {notification} from 'antd';
 import {l} from "@/utils/intl";
 import {history} from "@@/core/history";
 import {API_CONSTANTS} from "@/services/constants";
+import {ErrorNotification} from "@/utils/messages";
 
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
@@ -37,7 +37,7 @@ interface ResponseStructure {
   success: boolean;
   datas?: boolean;
   code: number;
-  msg?: string;
+  msg: string;
 }
 
 /**
@@ -66,17 +66,17 @@ export const errorConfig: RequestConfig = {
         const errorInfo: ResponseStructure = error.info;
         if (errorInfo) {
           const {msg, code} = errorInfo;
-          notification.error({message: l(ErrorCode[code],"Error"), description: msg})
+          ErrorNotification(msg,l(ErrorCode[code],"Error"))
         }
       } else if (error.response) {
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        notification.error({message: l(ErrorCode[error.response.data.code],"Error"), description: error.response.data.msg})
+        ErrorNotification(error.response.data.msg,l(ErrorCode[error.response.data.code],"ResponseError"))
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
-        notification.error({message: l('app.response.noresponse'), description: error.toString()})
+        ErrorNotification(error.toString(),l('app.response.noresponse'))
       } else {
         // 发送请求时出了点问题
-        notification.error({message: l('app.request.failed'), description: error.toString()})
+        ErrorNotification(error.toString(),l('app.request.failed'))
       }
     },
   },
