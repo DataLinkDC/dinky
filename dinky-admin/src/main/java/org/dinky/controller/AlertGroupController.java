@@ -83,7 +83,7 @@ public class AlertGroupController {
 
     /**
      * batch Delete alert group , this method is {@link Deprecated} in the future , please use
-     * {@link #deleteMul(JsonNode)} instead
+     * {@link #deleteGroupById(Integer)} instead
      *
      * @param para {@link JsonNode}
      * @return {@link Result} with {@link Void}
