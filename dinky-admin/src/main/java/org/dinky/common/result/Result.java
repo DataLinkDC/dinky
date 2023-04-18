@@ -44,8 +44,8 @@ public class Result<T> implements Serializable {
     private T datas;
     private Integer code;
     private String msg;
-
     private String time;
+    private boolean success;
 
     public Result(Integer code, String msg) {
         this.code = code;
@@ -89,7 +89,7 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> of(T datas, Integer code, String msg) {
-        return new Result<>(datas, code, msg, new DateTime().toString());
+        return new Result<>(datas, code, msg, new DateTime().toString(), code == 0);
     }
 
     public static <T> Result<T> failed(String msg) {

@@ -50,4 +50,10 @@ export default {
   'app.request.update':'修改',
   'app.request.running':'正在',
   'app.request.test.alert.msg':'正在发送测试告警信息',
+
+  'app.response.response-error':'响应出错',
+  'app.response.sucess':'成功',
+  'app.response.error':'错误',
+  'app.response.exception':'服务端错误',
+  'app.response.notlogin':'未登录',
 };
