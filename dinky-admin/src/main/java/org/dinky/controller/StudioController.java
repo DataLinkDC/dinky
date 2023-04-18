@@ -66,8 +66,17 @@ public class StudioController {
     /** 执行Sql */
     @PostMapping("/executeSql")
     public Result<JobResult> executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        JobResult jobResult = studioService.executeSql(studioExecuteDTO);
-        return Result.succeed(jobResult, "执行成功");
+       try {
+            JobResult jobResult = studioService.executeSql(studioExecuteDTO);
+            return Result.succeed(jobResult, "execute successful");
+        } catch (Exception ex) {
+            JobResult jobResult = new JobResult();
+            jobResult.setJobConfig(studioExecuteDTO.getJobConfig());
+            jobResult.setSuccess(false);
+            jobResult.setStatement(studioExecuteDTO.getStatement());
+            jobResult.setError(ex.toString());
+            return Result.failed(jobResult, "execute failed");
+        }
     }
 
     /** 解释Sql */
