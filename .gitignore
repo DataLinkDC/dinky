@@ -51,3 +51,4 @@ docs/yarn.lock
 docs/*.log
 tmp/*
 extends/*
+/flink-connector/
