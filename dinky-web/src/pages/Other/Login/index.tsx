@@ -124,44 +124,37 @@ const Login: React.FC = () => {
     try {
       // login
       const result = await login({ ...values });
-      if (result.code === 0) {
-       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
-        /**
-         * After successful login, set the tenant list
-         */
-        const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
-        if (tenantList === null || tenantList.length === 0) {
-          ErrorMessage(l('login.notbindtenant'));
-          return;
-        } else {
-          setTenant(tenantList);
-        }
-
-        /**
-         * Determine whether the current tenant list is multiple
-         * 1. If there are multiple execution pop-up modals, the user selects a specific tenant to enter the system
-         * 2. If it is a single, only use the unique tenant id to enter the system directly
-         */
-
-        if (tenantList && tenantList.length > 1) {
-          handleTenantVisible(true);
-        } else {
-          setTenantIdParams(tenantList[0].id as number);
-          setTenantStorageAndCookie(tenantList[0].id as number);
-          const chooseTenantResult: API.Result = await chooseTenantSubmit({
-            tenantId: tenantList[0].id as number,
-          });
-          await handleChooseTenant(chooseTenantResult);
-        }
+      await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
+      /**
+       * After successful login, set the tenant list
+       */
+      const tenantList: UserBaseInfo.Tenant[] = result.datas.tenantList;
+      if (tenantList === null || tenantList.length === 0) {
+        ErrorMessage(l('login.notbindtenant'));
         return;
       } else {
-        /**
-         * If it fails to set the user error message
-         */
-        ErrorMessage(l('login.result', '', { msg: result.msg, time: result.time }));
+        setTenant(tenantList);
       }
-    } catch (error) {
-      ErrorMessage(l('login.error', '', { msg: error }));
+
+      /**
+       * Determine whether the current tenant list is multiple
+       * 1. If there are multiple execution pop-up modals, the user selects a specific tenant to enter the system
+       * 2. If it is a single, only use the unique tenant id to enter the system directly
+       */
+
+      if (tenantList && tenantList.length > 1) {
+        handleTenantVisible(true);
+      } else {
+        setTenantIdParams(tenantList[0].id as number);
+        setTenantStorageAndCookie(tenantList[0].id as number);
+        const chooseTenantResult: API.Result = await chooseTenantSubmit({
+          tenantId: tenantList[0].id as number,
+        });
+        await handleChooseTenant(chooseTenantResult);
+      }
+      return;
+    } catch (error:any) {
+      return;
     }
   };
 

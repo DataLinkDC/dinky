@@ -52,4 +52,10 @@ export default {
   'app.request.update': 'Modify',
   'app.request.running': 'Now is ',
   'app.request.test.alert.msg': 'Sending test alert message',
+
+  'app.response.response-error':'ResponseError',
+  'app.response.sucess':'Success',
+  'app.response.error':'Error',
+  'app.response.exception':'Server exception',
+  'app.response.notlogin':'Not Login',
 };
