@@ -69,7 +69,7 @@ public class ObjectConvertUtil {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal((String) value);
+            return new BigDecimal(String.valueOf(value));
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();

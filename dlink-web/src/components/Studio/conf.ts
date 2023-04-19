@@ -26,7 +26,6 @@ export const RUN_MODE = {
   YARN_APPLICATION: 'yarn-application',
   KUBERNETES_SESSION: 'kubernetes-session',
   KUBERNETES_APPLICATION: 'kubernetes-application',
-  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator',
 };
 
 export const DIALECT = {
@@ -45,6 +44,7 @@ export const DIALECT = {
   STARROCKS: 'StarRocks',
   PRESTO: 'Presto',
   KUBERNETES_APPLICATION: 'KubernetesApplication',
+  GRAPH_SQL: "GraphSql",
   JAVA: 'Java',
   SCALA: 'Scala',
   PYTHON: 'Python',
@@ -84,6 +84,7 @@ export const isExecuteSql = (dialect: string) => {
     case DIALECT.DORIS:
     case DIALECT.PHOENIX:
     case DIALECT.FLINKSQL:
+    case DIALECT.GRAPH_SQL:
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:
     case DIALECT.PRESTO:
@@ -107,6 +108,7 @@ export const isTask = (dialect: string) => {
     case DIALECT.DORIS:
     case DIALECT.PHOENIX:
     case DIALECT.FLINKSQL:
+    case DIALECT.GRAPH_SQL:
     case DIALECT.FLINKJAR:
     case DIALECT.HIVE:
     case DIALECT.STARROCKS:

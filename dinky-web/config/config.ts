@@ -183,4 +183,5 @@ export default defineConfig({
     strategy: 'normal',
   },
   requestRecord: {},
+  dva: {},
 });

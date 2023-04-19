@@ -129,6 +129,7 @@ const SimpleTaskForm: React.FC<UpdateFormProps> = (props) => {
                   onChange={handlerSetDialect}>
             <Option value={DIALECT.FLINKSQL}>{DIALECT.FLINKSQL}</Option>
             <Option value={DIALECT.KUBERNETES_APPLICATION}>{DIALECT.KUBERNETES_APPLICATION}</Option>
+            <Option value={DIALECT.GRAPH_SQL}>{DIALECT.GRAPH_SQL}</Option>
             <Option value={DIALECT.FLINKJAR}>{DIALECT.FLINKJAR}</Option>
             <Option value={DIALECT.FLINKSQLENV}>{DIALECT.FLINKSQLENV}</Option>
             <Option value={DIALECT.MYSQL}>{DIALECT.MYSQL}</Option>

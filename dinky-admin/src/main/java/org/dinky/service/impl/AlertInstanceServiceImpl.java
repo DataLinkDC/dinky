@@ -25,6 +25,7 @@ import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.common.result.Result;
+import org.dinky.constant.BaseConstant;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.AlertInstanceMapper;
 import org.dinky.model.AlertGroup;
@@ -37,10 +38,9 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -53,17 +53,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
-/**
- * AlertInstanceServiceImpl
- *
- * @since 2022/2/24 19:53
- */
+/** AlertInstanceServiceImpl */
 @Service
 @RequiredArgsConstructor
 public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapper, AlertInstance>
@@ -73,7 +68,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public List<AlertInstance> listEnabledAll() {
-        return list(new QueryWrapper<AlertInstance>().eq("enabled", 1));
+        return list(new LambdaQueryWrapper<AlertInstance>().eq(AlertInstance::getEnabled, 1));
     }
 
     @Override
@@ -84,9 +79,11 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                         alertInstance.getType(),
                         JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
+
         String currentDateTime =
-                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-                        .format(Calendar.getInstance().getTime());
+                LocalDateTime.now()
+                        .format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
+
         String uuid = UUID.randomUUID().toString();
 
         AlertMsg alertMsg = new AlertMsg();
@@ -135,6 +132,13 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         } else {
             return Result.failed("请选择要删除的记录");
         }
+    }
+
+    @Override
+    public Boolean enable(Integer id) {
+        AlertInstance alertInstance = getById(id);
+        alertInstance.setEnabled(!alertInstance.getEnabled());
+        return updateById(alertInstance);
     }
 
     private void writeBackGroupInformation(Map<Integer, Set<Integer>> alertGroupInformation) {
