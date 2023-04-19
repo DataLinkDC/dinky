@@ -81,7 +81,7 @@ public class AlertInstanceController {
     }
 
     /**
-     * bactchDelete AlertInstance, this method is {@link Deprecated} and will be removed in the
+     * batch Delete AlertInstance, this method is {@link Deprecated} and will be removed in the
      * future, please use {@link #deleteInstanceById(Integer)} instead.
      *
      * @param para
@@ -101,7 +101,7 @@ public class AlertInstanceController {
      */
     @DeleteMapping("/delete")
     public Result<Void> deleteInstanceById(@RequestParam("id") Integer id) {
-        if (alertInstanceService.removeById(id)) {
+        if (alertInstanceService.deleteAlertInstance(id)) {
             return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
         } else {
             return Result.failed(MessageResolverUtils.getMessage("delete.failed"));

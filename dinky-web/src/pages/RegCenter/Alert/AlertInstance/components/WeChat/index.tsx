@@ -163,8 +163,8 @@ const WeChat: React.FC<AlertInstanceFormProps> = (props) => {
                     width="md"
                     name="users"
                     label={l("rc.ai.atUsers")}
-                    rules={[{required: true, message: l("rc.ai.atUsersPleaseHolder")}]}
-                    placeholder={l("rc.ai.atUsersPleaseHolder")}
+                    rules={[{required: true, message: l("rc.ai.wechatAtUsersPleaseHolder")}]}
+                    placeholder={l("rc.ai.wechatAtUsersPleaseHolder")}
                   />
                 </>
               }

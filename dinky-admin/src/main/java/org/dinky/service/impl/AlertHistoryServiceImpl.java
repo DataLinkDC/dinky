@@ -24,13 +24,31 @@ import org.dinky.mapper.AlertHistoryMapper;
 import org.dinky.model.AlertHistory;
 import org.dinky.service.AlertHistoryService;
 
-import org.springframework.stereotype.Service;
+import java.util.List;
 
-/**
- * AlertHistoryServiceImpl
- *
- * @since 2022/2/24 20:42
- */
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+/** AlertHistoryServiceImpl */
 @Service
 public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper, AlertHistory>
-        implements AlertHistoryService {}
+        implements AlertHistoryService {
+    /**
+     * delete alert history by alert group id
+     *
+     * @param alertGroupId {@link Integer}
+     * @return {@link Boolean}
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteByAlertGroupId(Integer alertGroupId) {
+        List<AlertHistory> alertHistoryList =
+                getBaseMapper()
+                        .selectList(
+                                new LambdaQueryWrapper<AlertHistory>()
+                                        .eq(AlertHistory::getAlertGroupId, alertGroupId));
+        return baseMapper.deleteBatchIds(alertHistoryList) > 0;
+    }
+}

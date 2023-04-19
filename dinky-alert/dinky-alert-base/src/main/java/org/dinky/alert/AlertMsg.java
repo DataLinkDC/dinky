@@ -19,6 +19,7 @@
 
 package org.dinky.alert;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**
@@ -27,6 +28,7 @@ import lombok.Data;
  * @since 2022/3/7 18:30
  */
 @Data
+@Builder
 public class AlertMsg {
 
     private String alertType;

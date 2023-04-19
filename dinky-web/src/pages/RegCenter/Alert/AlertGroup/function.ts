@@ -17,19 +17,31 @@
  *
  */
 
-package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.AlertHistory;
+import {Alert} from "@/types/RegCenter/data";
 
-/** AlertHistoryService */
-public interface AlertHistoryService extends ISuperService<AlertHistory> {
+/**
+ * parse alertInstanceIds to array and rebuild form data
+ * @param values
+ */
+export const getFormData = (values: Partial<Alert.AlertGroup>) => {
+  let alertInstanceIds: string [] = [];
+  if (values && values.alertInstanceIds && values.alertInstanceIds !== "") {
+    alertInstanceIds = values.alertInstanceIds.split(",");
+  }
+  return {...values, alertInstanceIds: alertInstanceIds};
+};
 
-    /**
-     * delete alert history by alert group id
-     *
-     * @param alertGroupId {@link Integer}
-     * @return {@link Boolean}
-     */
-    Boolean deleteByAlertGroupId(Integer alertGroupId);
-}
+/**
+ * build form data
+ * @param values
+ * @param params
+ */
+export const buildFormData = (values: Partial<Alert.AlertGroup>, params: any) => {
+  let newValue = values;
+  if (params.alertInstanceIds) {
+    newValue.alertInstanceIds = params.alertInstanceIds.join(",");
+    delete params.alertInstanceIds;
+  }
+  return {...newValue, ...params};
+};

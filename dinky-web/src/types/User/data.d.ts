@@ -15,17 +15,16 @@
  * limitations under the License.
  */
 
+import {ExcludeNameAndEnableColumns} from "@/types/Public/data";
+
 declare namespace UserBaseInfo {
-  export type User = {
-    id: number;
+  export type User = ExcludeNameAndEnableColumns & {
     username: string;
     nickname?: string;
     password?: string;
     avatar?: string;
     worknum?: string;
     mobile?: string;
-    createTime?: Date;
-    updateTime?: Date;
     enabled: boolean;
     isDelete: boolean;
     isAdmin?: boolean;
@@ -38,24 +37,18 @@ declare namespace UserBaseInfo {
     newPasswordCheck?: string;
   };
 
-  export type Tenant = {
-    id: number;
+  export type Tenant = ExcludeNameAndEnableColumns & {
     tenantCode: string;
     isDelete: boolean;
     note?: string;
-    createTime?: Date;
-    updateTime?: Date;
   };
 
-  export type Role = {
-    id: number;
+  export type Role = ExcludeNameAndEnableColumns & {
     tenantId: number;
     tenant: Tenant;
     roleCode?: string;
     roleName?: string;
     isDelete: boolean;
     note?: string;
-    createTime?: Date;
-    updateTime?: Date;
   };
 }

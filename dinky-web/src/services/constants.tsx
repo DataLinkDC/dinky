@@ -86,7 +86,15 @@ export const API_CONSTANTS = {
   ALERT_INSTANCE_DELETE: "/api/alertInstance/delete",
   // alert instance enable or disable
   ALERT_INSTANCE_ENABLE: "/api/alertInstance/enable",
+  // alert instance list all
+  ALERT_INSTANCE_LIST_ENABLE_ALL: "/api/alertInstance/listEnabledAll",
 
+  // ---- alert group ----
+  ALERT_GROUP: "/api/alertGroup",
+  // delete alert group by id
+  ALERT_GROUP_DELETE: "/api/alertGroup/delete",
+  // alert group enable or disable
+  ALERT_GROUP_ENABLE: "/api/alertGroup/enable",
 
 };
 
