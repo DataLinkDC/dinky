@@ -332,7 +332,8 @@ public class UDFUtil {
             String className = groups.get(2);
 
             if (groups.size() > 3) {
-                // if statement contains using jar, using these jars, not to lookup ClassLoaderUtil pool
+                // if statement contains using jar, using these jars, not to lookup ClassLoaderUtil
+                // pool
                 return null;
             }
 
