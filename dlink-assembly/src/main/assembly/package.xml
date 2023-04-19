@@ -68,7 +68,7 @@
         <!--</fileSet>-->
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.11</outputDirectory>
+            <outputDirectory>plugins/flink1.11/dinky</outputDirectory>
             <includes>
                 <include>dlink-client-1.11-${project.version}.jar</include>
                 <include>dlink-connector-jdbc-1.11-${project.version}.jar</include>
@@ -76,7 +76,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.12</outputDirectory>
+            <outputDirectory>plugins/flink1.12/dinky</outputDirectory>
             <includes>
                 <include>dlink-client-1.12-${project.version}.jar</include>
                 <include>dlink-connector-jdbc-1.12-${project.version}.jar</include>
@@ -84,7 +84,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.13</outputDirectory>
+            <outputDirectory>plugins/flink1.13/dinky</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.13-${project.version}.jar</include>
                 <include>dlink-client-1.13-${project.version}.jar</include>
@@ -93,7 +93,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.14</outputDirectory>
+            <outputDirectory>plugins/flink1.14/dinky</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.14-${project.version}.jar</include>
                 <include>dlink-client-1.14-${project.version}.jar</include>
@@ -102,7 +102,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.15</outputDirectory>
+            <outputDirectory>plugins/flink1.15/dinky</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.15-${project.version}.jar</include>
                 <include>dlink-client-1.15-${project.version}.jar</include>
@@ -110,7 +110,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.16</outputDirectory>
+            <outputDirectory>plugins/flink1.16/dinky</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.16-${project.version}.jar</include>
                 <include>dlink-client-1.16-${project.version}.jar</include>
@@ -118,7 +118,7 @@
         </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.17</outputDirectory>
+            <outputDirectory>plugins/flink1.17/dinky</outputDirectory>
             <includes>
                 <include>dlink-catalog-mysql-1.17-${project.version}.jar</include>
                 <include>dlink-client-1.17-${project.version}.jar</include>
