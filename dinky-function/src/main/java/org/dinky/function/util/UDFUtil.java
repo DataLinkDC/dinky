@@ -75,7 +75,7 @@ public class UDFUtil {
 
     public static final String FUNCTION_SQL_REGEX =
             "^CREATE\\s+(?:(?:TEMPORARY|TEMPORARY\\s+SYSTEM)\\s+)?FUNCTION\\s+(?:\\s+IF\\s+NOT\\s+EXISTS\\s+)?(\\S+)"
-                    + "\\s+AS\\s+'(\\S+)'\\s+(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*"
+                    + "\\s+AS\\s+'(\\S+)'\\s*(?:LANGUAGE\\s+(?:JAVA|SCALA|PYTHON)\\s+)?(?:USING\\s+JAR\\s+'(\\S+)'\\s*"
                     + "(?:,\\s*JAR\\s+'(\\S+)'\\s*)*?)?";
 
     public static final String SESSION = "SESSION";
@@ -330,6 +330,12 @@ public class UDFUtil {
             List<String> groups = CollUtil.removeEmpty(ReUtil.getAllGroups(pattern, statement));
             String udfName = groups.get(1);
             String className = groups.get(2);
+
+            if (groups.size() > 3) {
+                // if statement contains using jar, using these jars, not to lookup ClassLoaderUtil pool
+                return null;
+            }
+
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
