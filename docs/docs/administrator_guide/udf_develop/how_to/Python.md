@@ -5,7 +5,7 @@ title: Python UDF
 ---
 ## 环境准备
 1. 需要把 `${FLINK_HOME}/opt/flink-python_${scala-version}-${flink-version}.jar` 放入到
-   `${FLINK_HOME}/lib/` 和 `${Dinky_HOME}/plugins/` 下面。如下：
+   `${FLINK_HOME}/lib/` 和 `${DINKY_HOME}/plugins/` 下面。如下：
 ![flink_python_intro.png](http://www.aiwenmo.com/dinky/docs/zh-CN/udf_develop/how_to/flink_python_intro.png)
 
 2. 在 Dinky 安装目录 `conf/application.yml` 下，配置 python 执行环境。例如 ：/usr/bin/python3.6
@@ -58,7 +58,14 @@ flink-conf.yml
 python.client.executable: /root/miniconda3/bin/python3.8
 python.executable: /root/miniconda3/bin/python3.8
 ```
-> 这里需要注意的是，`flink-conf.yml` 得配置 `python` 的执行路径，`python` 环境必须包含 `apache-flink` ,支持 `python3.6 - python3.8`
+
+或在sql中配置
+```sql
+set 'python.client.executable'='/root/miniconda3/bin/python3.8';
+set 'python.executable'='/root/miniconda3/bin/python3.8';
+```
+
+> 这里需要注意的是，`flink-conf.yml` 得配置 `python` 的执行路径，`python` 环境必须包含 `apache-flink`和`pyflink`, 注意根据flink版本安装相应版本的包
 > 
 > `python.executable` 是 NodeManager 环境的 python 执行路径
 > 
