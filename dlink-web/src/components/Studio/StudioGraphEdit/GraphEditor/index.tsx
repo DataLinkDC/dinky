@@ -6,8 +6,7 @@ import GraphTo from "./io";
 import './index.css';
 import 'antd/lib/button/style/index.css';
 import '@logicflow/extension/lib/style/index.css';
-import { connect } from 'dva';
-import context from "@@/plugin-access/context";
+
 
 const config = {
     stopScrollGraph: true,

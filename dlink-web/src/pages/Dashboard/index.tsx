@@ -17,20 +17,6 @@
  *
  */
 
-<<<<<<<< HEAD:dinky-common/src/main/java/org/dinky/constant/CommonConstant.java
-package org.dinky.constant;
-
-/**
- * CommonConstant
- *
- * @since 2021/5/28 9:35
- */
-public final class CommonConstant {
-
-    /** 实例健康 */
-    public static final String HEALTHY = "1";
-========
-
 export default () => {
   return (
     <>
@@ -41,6 +27,5 @@ export default () => {
       </div>
     </>
   )
->>>>>>>> mydinky:dlink-web/src/pages/Dashboard/index.tsx
 }
 
