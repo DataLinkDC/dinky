@@ -124,20 +124,20 @@ jobs:
         with:
           name: release-file
           path: ./build/
-#       - name: Log in to the Container registry,url -> ${{ matrix.url }}
-#         if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ matrix.url }}
-#           username: ${{ secrets.DOCKER_ALIYUN_USER }}
-#           password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-#       - name: Log in to the Container registry,url -> ${{ matrix.url }}
-#         if: ${{ matrix.url == 'docker.io'}}
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ matrix.url }}
-#           username: ${{ secrets.DOCKER_IO_USER }}
-#           password: ${{ secrets.DOCKER_IO_PASS }}
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_ALIYUN_USER }}
+          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'docker.io'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_IO_USER }}
+          password: ${{ secrets.DOCKER_IO_PASS }}
       - name: push docker dinky image
         uses: docker/build-push-action@v2
         with:
@@ -185,20 +185,20 @@ jobs:
         with:
           name: release-file
           path: ./build/
-#       - name: Log in to the Container registry,url -> ${{ matrix.url }}
-#         if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ matrix.url }}
-#           username: ${{ secrets.DOCKER_ALIYUN_USER }}
-#           password: ${{ secrets.DOCKER_ALIYUN_PASS }}
-#       - name: Log in to the Container registry,url -> ${{ matrix.url }}
-#         if: ${{ matrix.url == 'docker.io'}}
-#         uses: docker/login-action@v2
-#         with:
-#           registry: ${{ matrix.url }}
-#           username: ${{ secrets.DOCKER_IO_USER }}
-#           password: ${{ secrets.DOCKER_IO_PASS }}
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'registry.cn-hangzhou.aliyuncs.com'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_ALIYUN_USER }}
+          password: ${{ secrets.DOCKER_ALIYUN_PASS }}
+      - name: Log in to the Container registry,url -> ${{ matrix.url }}
+        if: ${{ matrix.url == 'docker.io'}}
+        uses: docker/login-action@v2
+        with:
+          registry: ${{ matrix.url }}
+          username: ${{ secrets.DOCKER_IO_USER }}
+          password: ${{ secrets.DOCKER_IO_PASS }}
       - name: push docker dinky image
         uses: docker/build-push-action@v2
         with:
