@@ -92,6 +92,12 @@ jobs:
           registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_IO_USER }}
           password: ${{ secrets.DOCKER_IO_PASS }}
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2.5
+      - name: Build and push
+        uses: docker/bake-action@v3.0.1
+        with:
+          push: true
       - name: push docker dinky mysql image
         uses: docker/build-push-action@v2
         with:
@@ -138,6 +144,10 @@ jobs:
           registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_IO_USER }}
           password: ${{ secrets.DOCKER_IO_PASS }}
+      name: Build and push
+        uses: docker/bake-action@v3
+        with:
+          push: true
       - name: push docker dinky image
         uses: docker/build-push-action@v2
         with:
@@ -165,22 +175,16 @@ jobs:
             namespace: dinkydocker
           - FLINK_VERSION: 1.11.6
             FLINK_BIG_VERSION: 1.11
-            FLINK_SINGLE_VERSION: 11
           - FLINK_VERSION: 1.12.7
             FLINK_BIG_VERSION: 1.12
-            FLINK_SINGLE_VERSION: 12
           - FLINK_VERSION: 1.13.6
             FLINK_BIG_VERSION: 1.13
-            FLINK_SINGLE_VERSION: 13
           - FLINK_VERSION: 1.14.6
             FLINK_BIG_VERSION: 1.14
-            FLINK_SINGLE_VERSION: 14
           - FLINK_VERSION: 1.15.2
             FLINK_BIG_VERSION: 1.15
-            FLINK_SINGLE_VERSION: 15
           - FLINK_VERSION: 1.16.0
             FLINK_BIG_VERSION: 1.16
-            FLINK_SINGLE_VERSION: 16
     steps:
       - uses: actions/checkout@v3
       - name: set the flink_big_version
@@ -215,4 +219,4 @@ jobs:
           file: DockerfileDinkyFlink
           context: .
           push: true
-          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink${{ matrix.FLINK_SINGLE_VERSION }}
+          tags: ${{ matrix.url }}/${{ matrix.namespace }}/dinky-standalone-server:${{ inputs.version }}-flink${{ matrix.FLINK_BIG_VERSION }}
