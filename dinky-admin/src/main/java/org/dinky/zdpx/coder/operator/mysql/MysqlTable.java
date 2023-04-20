@@ -59,8 +59,10 @@ public abstract class MysqlTable extends Operator {
 
     @Override
     protected Map<String, String> declareUdfFunction() {
-        return Map.of();
+//        return Map.of();
+        return new HashMap<>();
     }
+
 
     @Override
     protected boolean applies() {

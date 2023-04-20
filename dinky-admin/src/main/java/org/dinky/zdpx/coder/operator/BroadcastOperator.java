@@ -10,10 +10,7 @@ import org.dinky.zdpx.coder.graph.OutputPortObject;
 import org.dinky.zdpx.coder.utils.NameHelper;
 
 import javax.lang.model.element.Modifier;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 /**
@@ -67,7 +64,8 @@ public class BroadcastOperator extends Operator {
 
     @Override
     protected Map<String, String> declareUdfFunction() {
-        return Map.of();
+//        return Map.of();
+        return new HashMap<>();
     }
 
     @Override
@@ -216,7 +214,7 @@ public class BroadcastOperator extends Operator {
     }
 
     @SafeVarargs
-    private TypeName getStreamOutputTypeName(Map<String, String>... columns) {
+    private final TypeName getStreamOutputTypeName(Map<String, String>... columns) {
         typeNClass = getOutputClass(columns);
 
         List<ClassName> typeList = new ArrayList<>();

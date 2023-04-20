@@ -84,10 +84,12 @@ public class SceneCodeBuilder {
      */
     private void createOperatorsCode() {
         List<OperatorWrapper> sinkOperatorNodes = Scene.getSinkOperatorNodes(this.scene.getProcess());
-        List sinks =
+        List<Operator> sinks =
             sinkOperatorNodes.stream().map(OperatorWrapper::getOperator).collect(Collectors.toList());
         Deque<Operator> ops = new ArrayDeque<>();
-        bft(Set.copyOf(sinks), ops::push);
+
+        bft(new HashSet<>(sinks), ops::push);
+//        bft(Set.copyOf(sinks), ops::push);
         ops.stream().distinct().forEach(this::operate);
     }
 

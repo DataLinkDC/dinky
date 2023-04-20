@@ -5,6 +5,7 @@ import org.dinky.zdpx.coder.utils.NameHelper;
 import org.dinky.zdpx.coder.graph.OutputPortObject;
 import org.dinky.zdpx.coder.graph.PseudoData;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.dinky.zdpx.coder.Specifications.TABLE_ENV;
@@ -26,7 +27,8 @@ public class TableConvertToDataStreamOperator extends Operator {
 
     @Override
     protected Map<String, String> declareUdfFunction() {
-        return Map.of();
+//        return Map.of();
+        return new HashMap<>();
     }
 
     @Override

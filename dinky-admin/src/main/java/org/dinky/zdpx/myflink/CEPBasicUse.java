@@ -16,50 +16,50 @@ import java.time.Duration;
 
 /** */
 public class CEPBasicUse {
-  public static void main(String[] args) {
-    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
-    env.setParallelism(1);
-
-    SingleOutputStreamOperator<WaterSensor> waterSensorStream =
-        env.readTextFile("input/sensor.txt")
-            .map(
-                (MapFunction<String, WaterSensor>)
-                    value -> {
-                      String[] split = value.split(",");
-                      return new WaterSensor(
-                          split[0], Long.parseLong(split[1]) * 1000, Integer.parseInt(split[2]));
-                    })
-            .assignTimestampsAndWatermarks(
-                WatermarkStrategy.<WaterSensor>forBoundedOutOfOrderness(Duration.ofSeconds(5))
-                    .withTimestampAssigner((element, recordTimestamp) -> element.getTs())); // 指定TS字段为时间戳
-
-    // 匹配两秒内连续出现"sensor_1"和"sensor_2"的情况.
-    Pattern<WaterSensor, WaterSensor> pattern =
-        Pattern.<WaterSensor>begin("start")
-            .where(
-                    new IterativeCondition<>() {
-                        @Override
-                        public boolean filter(WaterSensor value, Context<WaterSensor> ctx) {
-                            return "sensor_1".equals(value.getId());
-                        }
-                    })
-                .next("end")
-                .where(new SimpleCondition<>() {
-                    @Override
-                    public boolean filter(WaterSensor value) {
-                        return "sensor_2".equals(value.getId());
-                    }
-                })
-                .within(Time.seconds(2));
-
-    // 打印匹配的数据
-    PatternStream<WaterSensor> waterStreamPS = CEP.pattern(waterSensorStream, pattern);
-    waterStreamPS.select((PatternSelectFunction<WaterSensor, String>) Object::toString).print();
-
-    try {
-      env.execute();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-  }
+//  public static void main(String[] args) {
+//    StreamExecutionEnvironment env = StreamExecutionEnvironment.getExecutionEnvironment();
+//    env.setParallelism(1);
+//
+//    SingleOutputStreamOperator<WaterSensor> waterSensorStream =
+//        env.readTextFile("input/sensor.txt")
+//            .map(
+//                (MapFunction<String, WaterSensor>)
+//                    value -> {
+//                      String[] split = value.split(",");
+//                      return new WaterSensor(
+//                          split[0], Long.parseLong(split[1]) * 1000, Integer.parseInt(split[2]));
+//                    })
+//            .assignTimestampsAndWatermarks(
+//                WatermarkStrategy.<WaterSensor>forBoundedOutOfOrderness(Duration.ofSeconds(5))
+//                    .withTimestampAssigner((element, recordTimestamp) -> element.getTs())); // 指定TS字段为时间戳
+//
+//    // 匹配两秒内连续出现"sensor_1"和"sensor_2"的情况.
+//    Pattern<WaterSensor, WaterSensor> pattern =
+//        Pattern.<WaterSensor>begin("start")
+//            .where(
+//                    new IterativeCondition<>() {
+//                        @Override
+//                        public boolean filter(WaterSensor value, Context<WaterSensor> ctx) {
+//                            return "sensor_1".equals(value.getId());
+//                        }
+//                    })
+//                .next("end")
+//                .where(new SimpleCondition<>() {
+//                    @Override
+//                    public boolean filter(WaterSensor value) {
+//                        return "sensor_2".equals(value.getId());
+//                    }
+//                })
+//                .within(Time.seconds(2));
+//
+//    // 打印匹配的数据
+//    PatternStream<WaterSensor> waterStreamPS = CEP.pattern(waterSensorStream, pattern);
+//    waterStreamPS.select((PatternSelectFunction<WaterSensor, String>) Object::toString).print();
+//
+//    try {
+//      env.execute();
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    }
+//  }
 }

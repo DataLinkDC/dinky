@@ -35,6 +35,10 @@ public class GbuZlDataTableSourceFactory implements DynamicTableSourceFactory {
 
     @Override
     public Set<ConfigOption<?>> optionalOptions() {
-        return Set.of(ConfigOptions.key("table-name").stringType().noDefaultValue());
+        ConfigOption<String> stringConfigOption = ConfigOptions.key("table-name").stringType().noDefaultValue();
+        Set<ConfigOption<?>> objects = new HashSet<>();
+        objects.add(stringConfigOption);
+        return objects;
+//        return Set.of(ConfigOptions.key("table-name").stringType().noDefaultValue());
     }
 }

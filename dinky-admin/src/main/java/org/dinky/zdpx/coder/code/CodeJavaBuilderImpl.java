@@ -11,9 +11,11 @@ import org.dinky.zdpx.coder.Specifications;
 import org.dinky.zdpx.coder.graph.Environment;
 
 import javax.lang.model.element.Modifier;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -21,7 +23,10 @@ import java.util.stream.Stream;
 @Slf4j
 public class CodeJavaBuilderImpl implements CodeJavaBuilder {
     public static final String SRC_MAIN_JAVA_GENERATE = "flinkGraph/src/main/java/generate";
-    private static final Path directory = Path.of(SRC_MAIN_JAVA_GENERATE);
+//    private static final Path directory = Path.of(SRC_MAIN_JAVA_GENERATE);
+
+    private static final Path directory =Paths.get(SRC_MAIN_JAVA_GENERATE);
+
     private final CodeContext codeContext;
 
     public CodeJavaBuilderImpl(CodeContext codeContext) {
@@ -94,9 +99,27 @@ public class CodeJavaBuilderImpl implements CodeJavaBuilder {
             List<Path> files = stream.filter(path -> path.toString().endsWith(".java")).collect(Collectors.toList());
             Formatter formatter = new Formatter();
             for (Path file : files) {
-                String source = Files.readString(file);
+
+                String s = String.valueOf(file.getFileName());
+                BufferedReader input = new BufferedReader(new FileReader(s));
+                String str;
+                StringBuffer stringBuffer = new StringBuffer();
+                while((str=input.readLine())!=null){
+                    stringBuffer.append(str);
+                }
+                String source = stringBuffer.toString();
                 String formatted = formatter.formatSourceAndFixImports(source);
-                Files.writeString(file, formatted);
+
+                BufferedWriter output = new BufferedWriter(new FileWriter(s));
+                output.write(formatted);
+                output.flush();
+
+                output.close();
+                input.close();
+
+//                String source = Files.readString(file);
+//                String formatted = formatter.formatSourceAndFixImports(source);
+//                Files.writeString(file, formatted);
             }
         }
     }

@@ -157,7 +157,6 @@ public class Scene {
             return null;
         }, Function.identity()));
     }
-
     public static Map<String, String> getUserDefinedFunctionMaps() {
         return getUserDefinedFunctionClassMaps().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getName()));
@@ -177,31 +176,79 @@ public class Scene {
         // process connection relation
         List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(root);
         List<ConnectionNode> connections = SceneNode.getAllConnections(process);
+
         for (ConnectionNode connection : connections) {
             final Connection<TableInfo> connectionInternal = convertConnection(connection);
             BeanUtils.copyProperties(connection, connectionInternal);
-            operatorWrappers.stream()
+
+
+//            operatorWrappers.stream()
+//                    .filter(t -> t.getId().equals(connection.getFromOp()))
+//                    .filter(t -> Objects.equals(t.getName(), connection.getFromPort()))
+//                    .flatMap(from -> from.getOperator().getOutputPorts().stream()
+//                            .filter(t -> Objects.equals(t.getName(), connection.getFromPort())))
+//                    .forEach((t)->{
+//                        if(t!=null){
+//                            connectionInternal.setFromPort(t);
+//                            t.setConnection(connectionInternal);
+//                        }else{
+//                            log.error("not find connection FromOperator: {}", connection.getFromOp());
+//                        }
+//                    });
+
+            Optional<OutputPort> outputPort = operatorWrappers.stream()
                     .filter(t -> t.getId().equals(connection.getFromOp()))
                     .findAny()
                     .flatMap(from -> from.getOperator().getOutputPorts().stream()
                             .filter(t -> Objects.equals(t.getName(), connection.getFromPort()))
-                            .findAny())
-                    .ifPresentOrElse(t -> {
-                        connectionInternal.setFromPort(t);
-                        t.setConnection(connectionInternal);
-                    }, () -> log.error("not find connection FromOperator: {}", connection.getFromOp()));
+                            .findAny());
 
-            operatorWrappers.stream()
+            if (outputPort.isPresent()) {
+                OutputPort t = outputPort.get();
+                connectionInternal.setFromPort(t);
+                t.setConnection(connectionInternal);
+            }else {
+                log.error("not find connection FromOperator: {}", connection.getFromOp());
+            }
+
+            Optional<InputPort> inputPort = operatorWrappers.stream()
                     .filter(t -> t.getId().equals(connection.getToOp()))
                     .findAny()
                     .flatMap(to -> to.getOperator().getInputPorts().stream()
                             .filter(t -> Objects.equals(t.getName(), connection.getToPort()))
-                            .findAny())
-                    .ifPresentOrElse(t -> {
-                        connectionInternal.setToPort(t);
-                        t.setConnection(connectionInternal);
-                    }, () -> log.error("not find connection ToOperator: {}, From: {}", connection.getToPort(), connection.getFromOp()));
+                            .findAny());
+
+            if (inputPort.isPresent()) {
+                InputPort t = inputPort.get();
+                connectionInternal.setToPort(t);
+                t.setConnection(connectionInternal);
+            }else{
+                log.error("not find connection ToOperator: {}, From: {}", connection.getToPort(), connection.getFromOp());
+            }
+
+//            operatorWrappers.stream()
+//                    .filter(t -> t.getId().equals(connection.getFromOp()))
+//                    .findAny()
+//                    .flatMap(from -> from.getOperator().getOutputPorts().stream()
+//                            .filter(t -> Objects.equals(t.getName(), connection.getFromPort()))
+//                            .findAny())
+//                    .ifPresentOrElse(t -> {
+//                        connectionInternal.setFromPort(t);
+//                        t.setConnection(connectionInternal);
+//                    }, () -> log.error("not find connection FromOperator: {}", connection.getFromOp()));
+//
+//            operatorWrappers.stream()
+//                    .filter(t -> t.getId().equals(connection.getToOp()))
+//                    .findAny()
+//                    .flatMap(to -> to.getOperator().getInputPorts().stream()
+//                            .filter(t -> Objects.equals(t.getName(), connection.getToPort()))
+//                            .findAny())
+//                    .ifPresentOrElse(t -> {
+//                        connectionInternal.setToPort(t);
+//                        t.setConnection(connectionInternal);
+//                    }, () -> log.error("not find connection ToOperator: {}, From: {}", connection.getToPort(), connection.getFromOp()));
         }
+
 
         return root;
     }

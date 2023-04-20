@@ -71,7 +71,7 @@ public abstract class Operator implements Runnable, Identifier {
 
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
-            parametersLocal = objectMapper.readValue(parametersStr, new TypeReference<>() {
+            parametersLocal = objectMapper.readValue(parametersStr, new TypeReference<List<Map<String, Object>>>() {
             });
         } catch (JsonProcessingException e) {
             log.error(e.toString());
@@ -314,7 +314,7 @@ public abstract class Operator implements Runnable, Identifier {
     }
 
     public static Map<String, Object> getJsonAsMap(JsonNode inputs) {
-        return new ObjectMapper().<Map<String, Object>>convertValue(inputs, new TypeReference<>() {
+        return new ObjectMapper().<Map<String, Object>>convertValue(inputs, new TypeReference<Map<String, Object>>() {
         });
     }
     public static List<Column> getColumnFromFieldFunctions(List<FieldFunction> ffs) {

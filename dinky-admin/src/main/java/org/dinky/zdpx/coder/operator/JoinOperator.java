@@ -39,7 +39,8 @@ public class JoinOperator extends Operator {
 
     @Override
     protected Map<String, String> declareUdfFunction() {
-        return Map.of();
+//        return Map.of();
+        return new HashMap<>();
     }
 
     @Override

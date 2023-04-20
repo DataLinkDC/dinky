@@ -2,7 +2,7 @@
     <@compress single_line=true>
         <#if fo.functionName??>${fo.functionName}(</#if>
         <#list fo.parameters as parameter>
-            <#if instanceOf(parameter, "com.zdpx.coder.operator.FieldFunction")>
+            <#if instanceOf(parameter, "org.dinky.zdpx.coder.operator.FieldFunction")>
                 <@fieldFunction parameter/>
             <#elseif parameter?is_number>
                 ${parameter?c}

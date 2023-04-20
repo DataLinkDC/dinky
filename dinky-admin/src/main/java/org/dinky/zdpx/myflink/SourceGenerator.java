@@ -82,7 +82,7 @@ public class SourceGenerator {
                             consumer = new KafkaProducer("user_behavior", brokers);
                             break;
                         default: {
-                            var err = "Unknown output configuration";
+                            String err = "Unknown output configuration";
                             throw new IllegalArgumentException(err);
                         }
                     }
@@ -100,7 +100,7 @@ public class SourceGenerator {
                     endLine = Long.parseLong(end);
                     break;
                 default: {
-                    var err = "Unknown parameter";
+                    String err = "Unknown parameter";
                     logger.error(err);
                     throw new IllegalArgumentException(err);
                 }

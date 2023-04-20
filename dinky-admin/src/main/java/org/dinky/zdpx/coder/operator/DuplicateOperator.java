@@ -4,6 +4,7 @@ import org.dinky.zdpx.coder.graph.InputPortObject;
 import org.dinky.zdpx.coder.graph.OutputPortObject;
 import org.dinky.zdpx.coder.graph.PseudoData;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,7 +34,8 @@ public class DuplicateOperator extends Operator {
 
     @Override
     protected Map<String, String> declareUdfFunction() {
-        return Map.of();
+//        return Map.of();
+        return new HashMap<>();
     }
 
     @Override
