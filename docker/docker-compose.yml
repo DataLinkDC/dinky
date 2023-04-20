@@ -22,39 +22,20 @@ services:
       - "8081:8081"
     networks:
       - dinky-net
-    profiles:
-      - standalone
     restart: unless-stopped
     depends_on:
       - mysql
-      - dinky
-
-  dinky-server:
-    image: "dinky-server:${DINKY_VERSION}"
-    environment:
-      - MYSQL_ADDR=mysql:3306
-    ports:
-      - "8888:8888"
-      - "8081:8081"
-    networks:
-      - dinky-net
-    profiles:
-      - ms
-    restart: unless-stopped
-    depends_on:
-      - mysql
-      - dinky
 
   web:
     image: "dinky-web:${DINKY_VERSION}"
     ports:
       - "80:80"
     depends_on:
-      - dinky-server
+      - standalone
     networks:
       - dinky-net
     profiles:
-      - ms
+      - web
     restart: unless-stopped
 
 networks:
