@@ -1,8 +1,8 @@
 spring:
   datasource:
     url: jdbc:mysql://192.168.1.51:3306/${MYSQL_DATABASE:dinky}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:dinky}
-    password: ${MYSQL_PASSWORD:dinky}
+    username: root
+    password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
   application:
     name: dinky
