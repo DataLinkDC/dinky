@@ -2,13 +2,11 @@ version: "3.9"
 
 services:
   mysql:
-    image: "dinky-mysql:${DINKY_VERSION}"
     build:
       context: ..
       dockerfile: ${PWD:-.}/DockerfileMysql
 
   dinky:
-    image: "dinky:${DINKY_VERSION}"
     build:
       context: ..
       dockerfile: ${PWD:-.}/Dockerfile
@@ -18,7 +16,6 @@ services:
       replicas: 0
 
   standalone:
-    image: "dinky-standalone:${DINKY_VERSION}"
     build:
       context: ..
       dockerfile: ${PWD:-.}/DockerfileDinkyFlink
@@ -31,10 +28,6 @@ services:
       - dinky
 
   web:
-    image: "dinky-web:${DINKY_VERSION}"
     build:
       context: ..
       dockerfile: ${PWD:-.}/DockerfileWeb
-
-networks:
-  dinky-net:
