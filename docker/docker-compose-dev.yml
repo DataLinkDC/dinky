@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: "dinky-mysql:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileMysql
+
+  dinky:
+    image: "dinky:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/Dockerfile
+      args:
+        - DINKY_VERSION
+    deploy:
+      replicas: 0
+
+  standalone:
+    image: "dinky-standalone:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
+      args:
+        - FLINK_BIG_VERSION
+        - FLINK_VERSION
+        - FLINK_HOME
+        - DINKY_IMAGE=dinky:${DINKY_VERSION}
+
+  dinky-server:
+    image: "dinky-server:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
+      args:
+        - FLINK_BIG_VERSION
+        - FLINK_VERSION
+        - FLINK_HOME
+        - DINKY_IMAGE=dinky:${DINKY_VERSION}
+
+  web:
+    image: "dinky-web:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileWeb
+
+
+networks:
+  dinky-net:
