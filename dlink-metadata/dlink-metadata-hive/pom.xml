@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink-metadata</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>dlink-metadata-hive</artifactId>
