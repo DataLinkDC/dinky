@@ -1,0 +1,91 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: "dinky-mysql:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileMysql
+    ports:
+      - "3308:3306"
+    networks:
+      - dinky-net
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+  dinky:
+    image: "dinky:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/Dockerfile
+      args:
+        - DINKY_VERSION
+    deploy:
+      replicas: 0
+
+  standalone:
+    image: "dinky-standalone:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
+      args:
+        - FLINK_BIG_VERSION
+        - FLINK_VERSION
+        - FLINK_HOME
+        - DINKY_IMAGE=dinky:${DINKY_VERSION}
+    environment:
+      - MYSQL_ADDR=mysql:3306
+    ports:
+      - "8888:8888"
+      - "8081:8081"
+    networks:
+      - dinky-net
+    profiles:
+      - standalone
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - dinky
+
+  dinky-server:
+    image: "dinky-server:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
+      args:
+        - FLINK_BIG_VERSION
+        - FLINK_VERSION
+        - FLINK_HOME
+        - DINKY_IMAGE=dinky:${DINKY_VERSION}
+    environment:
+      - MYSQL_ADDR=mysql:3306
+    ports:
+      - "8888:8888"
+      - "8081:8081"
+    networks:
+      - dinky-net
+    profiles:
+      - ms
+    restart: unless-stopped
+    depends_on:
+      - mysql
+      - dinky
+  web:
+    image: "dinky-web:${DINKY_VERSION}"
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileWeb
+    ports:
+      - "80:80"
+    depends_on:
+      - dinky-server
+    networks:
+      - dinky-net
+    profiles:
+      - ms
+    restart: unless-stopped
+
+networks:
+  dinky-net:
