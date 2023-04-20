@@ -92,12 +92,6 @@ jobs:
           registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_IO_USER }}
           password: ${{ secrets.DOCKER_IO_PASS }}
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2.5
-      - name: Build and push
-        uses: docker/bake-action@v3.0.1
-        with:
-          push: true
       - name: push docker dinky mysql image
         uses: docker/build-push-action@v2
         with:
@@ -144,10 +138,6 @@ jobs:
           registry: ${{ matrix.url }}
           username: ${{ secrets.DOCKER_IO_USER }}
           password: ${{ secrets.DOCKER_IO_PASS }}
-      name: Build and push
-        uses: docker/bake-action@v3
-        with:
-          push: true
       - name: push docker dinky image
         uses: docker/build-push-action@v2
         with:
