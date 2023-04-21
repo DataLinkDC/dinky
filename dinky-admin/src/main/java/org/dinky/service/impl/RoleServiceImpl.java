@@ -176,8 +176,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
-        ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
+    public ProTableResult<Role> selectForProTable(JsonNode params, boolean isDelete) {
+        ProTableResult<Role> roleProTableResult = super.selectForProTable(params, isDelete);
         roleProTableResult
                 .getData()
                 .forEach(

@@ -147,7 +147,8 @@ public class GitRepository {
         return CollUtil.reverse(CollUtil.sortByPinyin(branchList));
     }
 
-    private static TransportConfigCallback getTransportConfigCallback(String sshKey) {
+    private static TransportConfigCallback getTransportConfigCallback(
+            String sshKey, String password) {
         JschConfigSessionFactory jschConfigSessionFactory =
                 new JschConfigSessionFactory() {
                     @Override
@@ -159,7 +160,7 @@ public class GitRepository {
                     protected JSch createDefaultJSch(FS fs) throws JSchException {
                         JSch defaultJSch = super.createDefaultJSch(fs);
                         // 配置 ssh key
-                        defaultJSch.addIdentity(sshKey, sshKey + ".pub", null);
+                        defaultJSch.addIdentity(sshKey, sshKey + ".pub", StrUtil.bytes(password));
                         return defaultJSch;
                     }
                 };
@@ -177,7 +178,8 @@ public class GitRepository {
      */
     private <T extends TransportCommand<T, ?>> T initCommand(T command) {
         if (isSshGitUrl(url)) {
-            TransportConfigCallback sshSessionFactory = getTransportConfigCallback(privateKey);
+            TransportConfigCallback sshSessionFactory =
+                    getTransportConfigCallback(privateKey, password);
             command.setTransportConfigCallback(sshSessionFactory);
             return command;
         } else if (HttpUtil.isHttp(url) || HttpUtil.isHttps(url)) {

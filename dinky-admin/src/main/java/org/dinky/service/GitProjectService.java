@@ -19,16 +19,15 @@
 
 package org.dinky.service;
 
+import org.dinky.db.service.ISuperService;
 import org.dinky.dto.GitProjectDTO;
 import org.dinky.model.GitProject;
-
-import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
-public interface GitProjectService extends IService<GitProject> {
+public interface GitProjectService extends ISuperService<GitProject> {
     /**
      * 保存或更新
      *
@@ -42,5 +41,5 @@ public interface GitProjectService extends IService<GitProject> {
      * @param id id
      * @param state state
      */
-    void updateState(String id, boolean state);
+    void updateState(Long id, boolean state);
 }

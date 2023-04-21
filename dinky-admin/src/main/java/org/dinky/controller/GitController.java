@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.dto.GitProjectDTO;
+import org.dinky.model.GitProject;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitRepository;
 
@@ -33,6 +35,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 import lombok.AllArgsConstructor;
 
@@ -61,14 +65,24 @@ public class GitController {
     }
 
     @DeleteMapping("/deleteProject")
-    public Result<Void> deleteProject(String id) {
+    public Result<Void> deleteProject(Long id) {
         gitProjectService.removeById(id);
         return Result.succeed();
     }
 
     @PostMapping("/updateState")
-    public Result<Void> updateState(String id, boolean enable) {
+    public Result<Void> updateState(Long id, boolean enable) {
         gitProjectService.updateState(id, enable);
         return Result.succeed();
+    }
+
+    @PostMapping("/getProjectList")
+    public Result<ProTableResult<GitProject>> getAllProject(@RequestBody JsonNode params) {
+        return Result.succeed(gitProjectService.selectForProTable(params));
+    }
+
+    @PostMapping("/getOneDetails")
+    public Result<GitProject> getOneDetails(Long id) {
+        return Result.succeed(gitProjectService.getById(id));
     }
 }

@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.GitProjectDTO;
 import org.dinky.mapper.GitProjectMapper;
 import org.dinky.model.GitProject;
@@ -26,7 +27,6 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.core.bean.BeanUtil;
 
@@ -34,7 +34,7 @@ import cn.hutool.core.bean.BeanUtil;
  * @author ZackYoung
  * @since 0.8.0
  */
-public class GitProjectServiceImpl extends ServiceImpl<GitProjectMapper, GitProject>
+public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, GitProject>
         implements GitProjectService {
     @Override
     public void saveOrUpdate(GitProjectDTO gitProjectDTO) {
@@ -55,7 +55,7 @@ public class GitProjectServiceImpl extends ServiceImpl<GitProjectMapper, GitProj
     }
 
     @Override
-    public void updateState(String id, boolean state) {
+    public void updateState(Long id, boolean state) {
         GitProject gitProject = baseMapper.selectById(id);
         gitProject.setEnabled(state);
         gitProject.updateById();
