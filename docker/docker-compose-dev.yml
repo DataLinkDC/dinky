@@ -7,7 +7,7 @@ services:
       dockerfile: ${PWD:-.}/DockerfileMysql
 
   dinky:
-    image: "dinky-standalone-server:${DINKY_VERSION}"
+    image: dinky-standalone-server:${DINKY_VERSION}
     build:
       context: ..
       dockerfile: ${PWD:-.}/Dockerfile
@@ -24,9 +24,10 @@ services:
         - FLINK_BIG_VERSION
         - FLINK_VERSION
         - FLINK_HOME
-        - DINKY_IMAGE=dinky:${DINKY_VERSION}
+        - DINKY_IMAGE=dinky-standalone-server:${DINKY_VERSION}
     depends_on:
       - dinky
+      - mysql
 
   web:
     build:

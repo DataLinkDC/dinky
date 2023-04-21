@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
 
   standalone:
-    image: "dinky-standalone-server:${DINKY_VERSION}-flink${FLINK_BIG_VERSION}"
+    image: "dinky-standalone-server:${DINKY_VERSION}-flink-${FLINK_BIG_VERSION}"
     environment:
       - MYSQL_ADDR=mysql:3306
     ports:
