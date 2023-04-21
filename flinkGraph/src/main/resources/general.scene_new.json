@@ -1,0 +1,577 @@
+{
+  "environment": {
+    "mode": "streaming",
+    "resultType": "sql",
+    "parallelism": 1,
+    "name": "first"
+  },
+  "process": {
+    "operators": [
+      {
+        "activated": true,
+        "id": "addSource_1",
+        "code": "com.zdpx.coder.operator.mysql.MysqlSourceOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "add environment variable",
+        "origin": null,
+        "height": 100,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "tableName": "DT",
+            "connector": "gbuzl",
+            "columns": [
+              {
+                "name": "typ",
+                "type": "STRING"
+              },
+              {
+                "name": "taskId",
+                "type": "STRING"
+              },
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "longitude",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "latitude",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "dt",
+                "type": "TIMESTAMP(3)"
+              },
+              {
+                "name": "va",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                "type": ""
+              }
+            ]
+          }
+        ],
+        "processes": [
+          {
+            "expanded": true,
+            "operators": [
+            ],
+            "connects": [
+            ]
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "addSource_2",
+        "code": "com.zdpx.coder.operator.mysql.MysqlSourceOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "add environment variable",
+        "origin": null,
+        "height": 100,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "tableName": "TS",
+            "connector": "task",
+            "columns": [
+              {
+                "name": "typ",
+                "type": "STRING"
+              },
+              {
+                "name": "taskId",
+                "type": "STRING"
+              },
+              {
+                "name": "taskStatus",
+                "type": "INT"
+              },
+              {
+                "name": "dt",
+                "type": "TIMESTAMP(3)"
+              },
+              {
+                "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                "type": ""
+              },
+              {
+                "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                "type": ""
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "duplicateOperator_1",
+        "code": "com.zdpx.coder.operator.DuplicateOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "DuplicateOperator_1",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "outputName": "output_0"
+          },
+          {
+            "outputName": "output_1"
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "commSelectFunctionOperator_gbu",
+        "code": "com.zdpx.coder.operator.CommSelectFunctionOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "commSelectFunctionOperator_gbu",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "fieldFunctions": [
+              {
+                "outName": "typ"
+              },
+              {
+                "outName": "taskId"
+              },
+              {
+                "outName": "id"
+              },
+              {
+                "outName": "longitude"
+              },
+              {
+                "outName": "latitude"
+              },
+              {
+                "outName": "dt"
+              },
+              {
+                "outName": "va"
+              }
+            ],
+            "where": "typ='gbu'"
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "commSelectFunctionOperator_zl",
+        "code": "com.zdpx.coder.operator.CommSelectFunctionOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "commSelectFunctionOperator_zl",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "fieldFunctions": [
+              {
+                "outName": "typ"
+              },
+              {
+                "outName": "taskId"
+              },
+              {
+                "outName": "id"
+              },
+              {
+                "outName": "longitude"
+              },
+              {
+                "outName": "latitude"
+              },
+              {
+                "outName": "dt"
+              },
+              {
+                "outName": "va"
+              }
+            ],
+            "where": "typ='zl'"
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "joinOperator",
+        "code": "com.zdpx.coder.operator.JoinOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "joinOperator_1",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "primaryInput": {
+              "fieldFunctions": [
+                {
+                  "outName": "id"
+                },
+                {
+                  "outName": "taskId"
+                },
+                {
+                  "outName": "longitude"
+                },
+                {
+                  "outName": "latitude"
+                },
+                {
+                  "outName": "va",
+                  "functionName": "ntimes",
+                  "parameters": [
+                    "@va",
+                    1000
+                  ]
+                },
+                {
+                  "outName": "gbu_time",
+                  "functionName": "",
+                  "parameters": [
+                    "dt"
+                  ]
+                }
+              ]
+            },
+            "secondInput": {
+              "fieldFunctions": [
+                {
+                  "outName": "taskStatus"
+                },
+                {
+                  "outName": "task_time",
+                  "functionName": "",
+                  "parameters": [
+                    "dt"
+                  ]
+                }
+              ]
+            },
+            "join": {
+              "type": "left"
+            },
+            "systemTimeColumn": "dt",
+            "on": {
+              "leftColumn": "taskId",
+              "rightColumn": "taskId"
+            },
+            "output": {
+              "columns": [
+                {
+                  "name": "dt",
+                  "type": "TIMESTAMP(3)"
+                }
+              ]
+            }
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "cepOperator",
+        "code": "com.zdpx.coder.operator.CepOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "CepOperator",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "partition": "taskId",
+            "orderBy": "gbu_time",
+            "patterns": [
+              {
+                "variable": "A",
+                "quantifier": "{5}"
+              }
+            ],
+            "skipStrategy": {
+              "strategy": "LAST_ROW",
+              "variable": "A"
+            },
+            "measures": [
+              {
+                "outName": "startTaskStatus",
+                "functionName": "FIRST",
+                "parameters": [
+                  "A.taskStatus"
+                ]
+              },
+              {
+                "outName": "endTaskStatus",
+                "functionName": "LAST",
+                "parameters": [
+                  "A.taskStatus"
+                ]
+              },
+              {
+                "outName": "gbuStartTime",
+                "functionName": "FIRST",
+                "parameters": [
+                  "A.gbu_time"
+                ]
+              },
+              {
+                "outName": "gbuEndTime",
+                "functionName": "LAST",
+                "parameters": [
+                  "A.gbu_time"
+                ]
+              },
+              {
+                "outName": "va",
+                "functionName": "LAST",
+                "parameters": [
+                  "A.va"
+                ]
+              }
+            ],
+            "defines": [
+              {
+                "variable": "A",
+                "condition": "A.taskStatus = 0"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "mysqlSink_gbu",
+        "code": "com.zdpx.coder.operator.mysql.MysqlSinkOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "MysqlSinkOperator_gbu",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "tableName": "gbu_data",
+            "connector": "jdbc",
+            "url": "jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true",
+            "username": "root",
+            "password": "123456",
+            "columns": [
+              {
+                "name": "id",
+                "type": "STRING"
+              },
+              {
+                "name": "taskId",
+                "type": "STRING"
+              },
+              {
+                "name": "longitude",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "latitude",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "va",
+                "type": "DOUBLE"
+              },
+              {
+                "name": "gbu_time",
+                "type": "TIMESTAMP"
+              },
+              {
+                "name": "taskStatus",
+                "type": "INT"
+              },
+              {
+                "name": "task_time",
+                "type": "TIMESTAMP"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "duplicateOperator_2",
+        "code": "com.zdpx.coder.operator.DuplicateOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "DuplicateOperator_2",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "outputName": "output_0"
+          },
+          {
+            "outputName": "output_1"
+          }
+        ]
+      },
+      {
+        "activated": true,
+        "id": "mysqlSink_cep",
+        "code": "com.zdpx.coder.operator.mysql.MysqlSinkOperator",
+        "parallelism": 1,
+        "compatibility": 1.0,
+        "expanded": true,
+        "name": "mysqlSink_cep",
+        "origin": null,
+        "height": 150,
+        "width": 90,
+        "x": 1,
+        "y": 2,
+        "parameters": [
+          {
+            "tableName": "cep",
+            "connector": "jdbc",
+            "url": "jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true",
+            "username": "root",
+            "password": "123456",
+            "columns": [
+              {
+                "name": "taskId",
+                "type": "STRING"
+              },
+              {
+                "name": "startTaskStatus",
+                "type": "INT"
+              },
+              {
+                "name": "endTaskStatus",
+                "type": "INT"
+              },
+              {
+                "name": "gbuStartTime",
+                "type": "TIMESTAMP(3)"
+              },
+              {
+                "name": "gbuEndTime",
+                "type": "TIMESTAMP(3)"
+              },
+              {
+                "name": "va",
+                "type": "DOUBLE"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "connects": [
+      {
+        "fromOp": "addSource_1",
+        "toOp": "duplicateOperator_1",
+        "fromPort": "output_0",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "duplicateOperator_1",
+        "toOp": "commSelectFunctionOperator_gbu",
+        "fromPort": "output_0",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "duplicateOperator_1",
+        "toOp": "commSelectFunctionOperator_zl",
+        "fromPort": "output_1",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "commSelectFunctionOperator_gbu",
+        "toOp": "joinOperator",
+        "fromPort": "output_0",
+        "toPort": "primaryInput"
+      },
+      {
+        "fromOp": "addSource_2",
+        "toOp": "joinOperator",
+        "fromPort": "output_0",
+        "toPort": "secondInput"
+      },
+      {
+        "fromOp": "joinOperator",
+        "toOp": "duplicateOperator_2",
+        "fromPort": "output_0",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "duplicateOperator_2",
+        "toOp": "mysqlSink_gbu",
+        "fromPort": "output_0",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "duplicateOperator_2",
+        "toOp": "cepOperator",
+        "fromPort": "output_1",
+        "toPort": "input_0"
+      },
+      {
+        "fromOp": "cepOperator",
+        "toOp": "mysqlSink_cep",
+        "fromPort": "output_0",
+        "toPort": "input_0"
+      }
+    ],
+    "descriptions": [
+      {
+        "align": "Center",
+        "color": "Red",
+        "height": 264,
+        "width": 50,
+        "resized": false,
+        "x": 403,
+        "y": 188,
+        "context": "nothing"
+      }
+    ]
+  }
+}
+
+

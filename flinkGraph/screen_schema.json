@@ -1,0 +1,193 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dzpx.com/detection",
+  "title": "Process Define",
+  "description": "define the format to express process",
+  "type": "object",
+  "properties": {
+    "environment": {
+      "description": "environment variable settings",
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "description": "streaming or batch mode"
+        },
+        "parallelism": {
+          "type": "integer",
+          "description": "parallelism number",
+          "default": 1
+        },
+        "name": {
+          "type": "string",
+          "description": "the scene name, for program use"
+        }
+      },
+      "required": [
+        "mode"
+      ],
+      "additionalProperties": false
+    },
+    "process": {
+      "description": "define a process could contain multiple operation",
+      "type": "object",
+      "properties": {
+        "context": {
+          "description": "define process context",
+          "type": "object",
+          "properties": {
+            "input": {
+              "description": "input information",
+              "type": "object"
+            },
+            "output": {
+              "description": "output information",
+              "type": "object"
+            }
+          }
+        },
+        "operators": {
+          "description": "operators definition",
+          "type": "array",
+          "prefixItems": {
+            "$ref": "#/$defs/operator"
+          }
+        },
+        "connects": {
+          "description": "descript node relation",
+          "type": "array",
+          "prefixItems": {
+            "$ref": "#/$defs/connect"
+          }
+        },
+        "version": {
+          "type": "string"
+        },
+        "expanded": {
+          "type": "boolean"
+        },
+        "descriptions": {
+          "description": "custom description in process scene",
+          "type": "array",
+          "prefixItems": {
+            "$ref": "#/$defs/description"
+          }
+        }
+      },
+      "additionalProperties": false
+    }
+  },
+  "$defs": {
+    "parameter": {
+      "type": "object"
+    },
+    "operator": {
+      "description": "define operator information",
+      "type": "object",
+      "properties": {
+        "activated": {
+          "description": "define whether this operator is enabled, default is enabled",
+          "type": "boolean"
+        },
+        "id": {
+          "description": "unique represent this operator in this scene",
+          "type": "string"
+        },
+        "code": {
+          "description": "declaration the class of this operator related to",
+          "type": "string"
+        },
+        "parallelism": {
+          "description": "this operator parallelism",
+          "type": "integer",
+          "default": 1,
+          "minimum": 1
+        },
+        "compatibility": {
+          "description": "compatibility version",
+          "type": "string"
+        },
+        "expanded": {
+          "description": "whether advanced parameters expanded",
+          "type": "boolean"
+        },
+        "name": {
+          "description": "identity in this scene",
+          "type": "string"
+        },
+        "origin": {
+          "description": "where the operator come from",
+          "type": "string"
+        },
+        "height": {
+          "description": "height in screen",
+          "type": "integer"
+        },
+        "width": {
+          "description": "description in screen",
+          "type": "integer"
+        },
+        "x": {
+          "description": "x coordination in scene",
+          "type": "integer"
+        },
+        "y": {
+          "description": "y coordination in scene",
+          "type": "integer"
+        },
+        "parameters": {
+          "description": "this operator's parameters",
+          "type": "array",
+          "prefixItems": {
+            "$ref": "#/$defs/parameter"
+          }
+        },
+        "processes": {
+          "type": "array",
+          "prefixItems": {
+            "$ref": "#/properties/process"
+          }
+        }
+      }
+    },
+    "connect": {
+      "from_op": {
+        "description": "the operator's name that from",
+        "type": "string"
+      },
+      "from_port": {
+        "description": "the port of from operator, default copy if multiple output port",
+        "type": "string"
+      },
+      "to_op": {
+        "description": "the operator's name that to",
+        "type": "string"
+      },
+      "to_port": {
+        "description": "the port of to operator",
+        "type": "string"
+      }
+    },
+    "description": {
+      "type": "object",
+      "properties": {
+        "align": {
+          "enum": [
+            "Center",
+            "Left",
+            "Right"
+          ]
+        },
+        "color": {
+          "type": "string"
+        },
+        "width": {
+          "type": "integer"
+        },
+        "context": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

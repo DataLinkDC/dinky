@@ -47,7 +47,7 @@ import net.sf.jsqlparser.expression.NullValue;
 
 /** mybatisPlus config class */
 @Configuration
-@MapperScan({"org.dinky.mapper", "org.zdpx.mapper"})
+@MapperScan({"org.dinky.mapper", "com.zdpx.mapper"})
 @EnableConfigurationProperties(MybatisPlusFillProperties.class)
 @Slf4j
 @RequiredArgsConstructor

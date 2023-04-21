@@ -45,6 +45,7 @@
         <module>dinky-scheduler</module>
         <module>dinky-core</module>
         <module>dinky-app</module>
+        <module>flinkGraph</module>
         <module>dinky-admin</module>
         <module>dinky-assembly</module>
     </modules>
@@ -101,13 +102,7 @@
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
-        <!-- flinkGraph -->
-        <flink.version>1.16.0</flink.version>
-        <checker.version>3.25.0</checker.version>
-        <google-java-forma.version>1.15.0</google-java-forma.version>
-        <json-schema.version>1.0.72</json-schema.version>
-        <jackson.version>2.14.1</jackson.version>
-        <kafka.version>3.2.0</kafka.version>
+
     </properties>
 
     <dependencyManagement>
@@ -594,6 +589,11 @@
                 <artifactId>activation</artifactId>
                 <version>1.1.1</version>
             </dependency>
+          <dependency>
+            <groupId>com.zdpx</groupId>
+            <artifactId>flinkGraph</artifactId>
+            <version>${project.version}</version>
+          </dependency>
         </dependencies>
     </dependencyManagement>
 

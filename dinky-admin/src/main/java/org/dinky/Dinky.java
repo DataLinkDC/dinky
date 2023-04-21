@@ -31,7 +31,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @since 2021/5/28
  */
 @EnableTransactionManagement
-@SpringBootApplication(scanBasePackages = {"org.dinky", "org.zdpx"}, exclude = FreeMarkerAutoConfiguration.class)
+@SpringBootApplication(scanBasePackages = {"org.dinky", "com.zdpx"}, exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
 public class Dinky {
 

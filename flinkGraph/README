@@ -1,0 +1,133 @@
+### 执行环境
+
+- 所有涉及JAVA的地方都使用java11版本, 测试
+
+  - flink-1.15.0/bin/flink.bat 倒数第2行指定java执行路径
+
+    ```shell
+    "C:\Program Files\Java\jdk-11.0.2\bin\java.exe" %JVM_ARGS% -cp "%FLINK_JM_CLASSPATH%"; org.apache.flink.client.cli.CliFrontend %*
+    ```
+
+##### ip地址(如果环境ip地址可以更改为192.168.17.132,则以下配置无需更动)
+
+- flink-1.15.0/conf/flink-conf.yaml 设置为dock运行环境地址
+
+  - jobmanager.rpc.address: 192.168.17.132
+  - taskmanager.host: 192.168.17.132
+  - rest.address: 192.168.17.132
+
+- first/docker-compose.yml中的kafka服务
+
+  - ```shell
+     KAFKA_ADVERTISED_LISTENERS=INSIDE://:9094,OUTSIDE://192.168.17.132:9092
+    ```
+
+  - zdpx.SimulateGbuZl第163行
+
+```java
+	jdbc:mysql://192.168.17.132:3306/flink?allowPublicKeyRetrieval=true
+```
+
+- zdpx.SqlUdf第32行
+
+  ```
+  'properties.bootstrap.servers' = '192.168.17.132:9092'
+  ```
+
+#### 服务安装
+
+在装有docker和docker-compose服务的服务器上,分别执行以下命令
+
+- 加载docker镜像(docker/docker_images.tar路径)
+
+  ```shell
+  docker load -i docker_images.tar
+  ```
+
+- 在first目录下执行
+
+  ```shell
+  docker-compose up
+  ```
+
+
+
+### 程序编译(开发机)
+
+```shell
+mvn -o -Dmaven.repo.local=d:\flink_jar_dependencies -Dmaven.legacyLocalRepo=true clean package
+```
+
+### 提交flink执行包(开发机)
+
+- 在flink-1.15.0/bin下执行
+
+  ```shell
+  flink.bat run -t remote -c myflink.SimulateGbuZl D:/project/first/target/first-1.0-SNAPSHOT.jar
+  ```
+
+  - 其中参数c用来指定任务的主类
+
+- 程序展现
+
+  - 可以通过taskManager窗口日志输出一条符合规则的数据( 匹配任务状态变为0后,连续收到5帧状态为0的数据时触发)
+
+  - 连接数据库可以看到gbu表在持续插入数据
+
+
+
+## sql 脚本执行场景(参考first/doc/Apache....mhtml)
+
+1. 在服务器端first目录执行
+
+   - 进入sql-client容器
+
+   ```shell
+   docker-compose exec -it sql-client bash
+   ```
+
+   - 启动flink sql交互程序
+
+     ```
+     sh sql-client.sh
+     ```
+
+   - 通过sql执行提交任务(sql-client/upsert.sql),可直接复制/粘贴执行.
+
+   - 通过http://192.168.17.132:8081/#/job/running可查看任务提交情况
+
+   - 通过http://192.168.17.132:8080/可查看kafka运行情况
+
+   - 通过http://192.168.17.132:5601/进行es数据可视化
+
+2. 数据可视化(参见录屏)
+
+
+
+   1. 创建 索引模式: buy_cnt_per_hour
+
+   	` menu => Stack Management => Index Patterns => Create index pattern `
+
+   2. 创建新面板 User Behavior Analysis
+
+      `menu => Dashboard =>Create new dashboard `
+
+   3. 创建组件
+
+      `  Create visualiz`
+
+### 工程结构
+1. Application类: 示例入口类()
+2. resource/scene.scene.json, 场景配置文件
+3. zdpx/coder/operator: 宏算子类
+4. myflink: flink 示例相关
+5. SchemaUtil: 场景配置生成
+6. zdpx/coder/graph: 转化后的内部计算图
+7. zdpx/coder/json: 对应于场景配置的配置结构
+8. screen_schema.json: 配置文件resource/scene.scene.json的约束验证定义
+### 注意事项:
+1. provided 类包在Debug时是找不到的,需要在调试配置中勾选Modify options-> Add dependencies with provided scope to path
+
+### npm start Error: error:0308010c:digital envelope routines::unsupported
+- export NODE_OPTIONS=--openssl-legacy-provider
+- or reinstall Node.js version 16+

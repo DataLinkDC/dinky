@@ -1,0 +1,54 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+
+abstract AbstractStreamTableEnvironmentImpl
+interface TableEnvironment {
+te1()
+}
+
+interface StreamTableEnvironment {
+ste1()
+}
+
+interface CustomTableEnvironment {
+getStreamTableEnvironment()
+getTableEnvironment()
+default ste1()
+
+default te1()
+}
+
+interface TableEnvironmentInternal
+
+
+note left of CustomTableEnvironment::"default ste1()"
+  删除的方法, throw
+end note
+
+note left of CustomTableEnvironment::"default te1()"
+  return getStreamTableEnvironment().te1()
+end note
+
+interface CustomTableEnvironmentImpl {
+ste1()
+}
+
+note left of CustomTableEnvironmentImpl::ste1
+  版本差异实现
+end note
+
+AbstractStreamTableEnvironmentImpl -up-|> TableEnvironmentImpl
+TableEnvironmentImpl .up.|> TableEnvironmentInternal
+TableEnvironmentInternal -up-|> TableEnvironment
+
+StreamTableEnvironmentImpl -up-|> AbstractStreamTableEnvironmentImpl
+StreamTableEnvironmentImpl .up.|> StreamTableEnvironment
+
+CustomTableEnvironment -up-|> StreamTableEnvironment
+CustomTableEnvironment -up-|> TableEnvironment
+
+CustomTableEnvironmentImpl .up.|> CustomTableEnvironment
+CustomTableEnvironmentImpl .up.* StreamTableEnvironment
+
+@enduml
