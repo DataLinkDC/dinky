@@ -35,8 +35,12 @@ import org.dinky.pool.ClassPool;
 import org.dinky.process.exception.DinkyException;
 
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
+import org.apache.flink.table.functions.UserDefinedFunction;
+import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -45,6 +49,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.jar.JarFile;
 import java.util.regex.Pattern;
 
 import org.codehaus.groovy.control.CompilerConfiguration;
@@ -54,11 +60,15 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.ClassScanner;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.lang.JarClassLoader;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.ClassLoaderUtil;
+import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReUtil;
+import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
@@ -354,5 +364,36 @@ public class UDFUtil {
                     .build();
         }
         return null;
+    }
+
+    public static List<Class<?>> getUdfClassByJar(String jarPath) {
+
+        List<Class<?>> classList = new ArrayList<>();
+        try (JarClassLoader loader = new JarClassLoader()) {
+            loader.addJar(new File(jarPath));
+
+            ClassScanner classScanner =
+                    new ClassScanner(
+                            "",
+                            aClass -> ClassUtil.isAssignable(UserDefinedFunction.class, aClass));
+            classScanner.setClassLoader(loader);
+            ReflectUtil.invoke(classScanner, "scanJar", new JarFile(jarPath));
+            Set<Class<? extends UserDefinedFunction>> classes =
+                    (Set<Class<? extends UserDefinedFunction>>)
+                            ReflectUtil.getFieldValue(classScanner, "classes");
+            for (Class<? extends UserDefinedFunction> aClass : classes) {
+                try {
+                    UserDefinedFunctionHelper.validateClass(aClass);
+                    classList.add(aClass);
+                } catch (Exception ex) {
+                    throw new DinkyException();
+                }
+            }
+        } catch (ValidationException e) {
+            throw e;
+        } catch (Exception e) {
+
+        }
+        return classList;
     }
 }

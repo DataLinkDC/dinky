@@ -22,7 +22,7 @@
         <groupId>org.dinky</groupId>
         <artifactId>dinky</artifactId>
         <version>0.8.0</version>
-        <relativePath>..</relativePath>
+        <relativePath>../</relativePath>
     </parent>
     <artifactId>dinky-admin</artifactId>
 
@@ -32,6 +32,7 @@
 
     <properties>
         <expand.scope>provided</expand.scope>
+        <jgit.version>5.13.1.202206130422-r</jgit.version>
     </properties>
 
     <dependencies>
@@ -368,6 +369,28 @@
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.archive</artifactId>
+            <version>${jgit.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jgit</groupId>
+            <artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
+            <version>${jgit.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
