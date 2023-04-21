@@ -1,12 +1,30 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder.graph;
-
-
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.json.OperatorNode;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+
+import com.zdpx.coder.json.OperatorNode;
+import com.zdpx.coder.operator.Operator;
 
 /**
  * 节点包裹类, 主要对应于{@link OperatorNode} 相关信息. 包含数据流逻辑无关的节点信息. 作为内部计算图(graph)与外部场景配置(json)的连接点.
@@ -14,64 +32,39 @@ import java.util.Objects;
  * @author Licho Sun
  */
 public class OperatorWrapper {
-    /**
-     * 节点并发度
-     */
+    /** 节点并发度 */
     private int parallelism;
-    /**
-     * 节点ID
-     */
+    /** 节点ID */
     private String id;
-    /**
-     * 节点代码, 目前使用类路径作为值
-     */
+    /** 节点代码, 目前使用类路径作为值 */
     private String code;
-    /**
-     * 节点名称
-     */
+    /** 节点名称 */
     private String name;
-    /**
-     * 节点是否牌活动状态
-     */
+    /** 节点是否牌活动状态 */
     private boolean activated;
-    /**
-     * 节点是否可展开
-     */
+    /** 节点是否可展开 */
     private boolean expanded;
-    /**
-     * 版本兼容性信息
-     */
+    /** 版本兼容性信息 */
     private String compatibility;
-    /**
-     * 所在过程信息
-     */
+    /** 所在过程信息 */
     private Process parentProcess;
-    /**
-     * 节点来源
-     */
+    /** 节点来源 */
     private String origin;
-    /**
-     * 节点高度
-     */
+    /** 节点高度 */
     private int height;
-    /**
-     * 节点宽度
-     */
+    /** 节点宽度 */
     private int width;
-    /**
-     * x坐标
-     */
+    /** x坐标 */
     private int x;
-    /**
-     * y坐标
-     */
+    /** y坐标 */
     private int y;
+
     private List<Process> processes = new ArrayList<>();
     private String parameters;
 
     private Operator operator;
 
-    //region g/s
+    // region g/s
 
     public Operator getOperator() {
         return operator;
@@ -201,8 +194,7 @@ public class OperatorWrapper {
         this.processes = processes;
     }
 
-//endregion
-
+    // endregion
 
     @Override
     public boolean equals(Object o) {

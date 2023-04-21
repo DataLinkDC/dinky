@@ -1,13 +1,34 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder.json;
 
 import org.apache.commons.collections.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- *
- */
+/** */
 public class SceneNode {
 
     private EnvironmentNode environment;
@@ -30,8 +51,10 @@ public class SceneNode {
     public static List<OperatorNode> getOperatorNodes(ProcessNode process) {
         List<OperatorNode> operators = getAllOperatorNodes(process);
         return operators.stream()
-                .filter(t -> !CollectionUtils.isEmpty(t.getInputConnections()) &&
-                        !CollectionUtils.isEmpty(t.getOutputConnections()))
+                .filter(
+                        t ->
+                                !CollectionUtils.isEmpty(t.getInputConnections())
+                                        && !CollectionUtils.isEmpty(t.getOutputConnections()))
                 .collect(Collectors.toList());
     }
 
@@ -95,8 +118,7 @@ public class SceneNode {
         }
     }
 
-
-    //region getter/setter
+    // region getter/setter
 
     public EnvironmentNode getEnvironment() {
         return environment;
@@ -114,5 +136,5 @@ public class SceneNode {
         this.rootProcess = process;
     }
 
-    //endregion
+    // endregion
 }

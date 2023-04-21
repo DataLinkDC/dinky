@@ -1,4 +1,39 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder.operator;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.table.functions.UserDefinedFunction;
+
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.reflections.Reflections;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -14,17 +49,10 @@ import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.OperatorWrapper;
 import com.zdpx.coder.graph.OutputPort;
 import com.zdpx.coder.graph.OutputPortObject;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
 import com.zdpx.coder.utils.JsonSchemaValidator;
 import com.zdpx.coder.utils.Preconditions;
-import org.reflections.Reflections;
 
-import javax.annotation.Nullable;
-import java.security.InvalidParameterException;
-import java.util.*;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 宏算子抽象类
@@ -38,10 +66,13 @@ public abstract class Operator implements Runnable, Identifier {
     protected OperatorWrapper operatorWrapper;
     protected JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator();
     protected Parameters parameters = new Parameters();
+
     @SuppressWarnings("rawtypes")
     protected List<InputPort> inputPorts = new ArrayList<>();
+
     @SuppressWarnings("rawtypes")
     protected List<OutputPort> outputPorts = new ArrayList<>();
+
     protected Map<String, String> userFunctions;
 
     private SceneCodeBuilder sceneCodeBuilder;
@@ -75,11 +106,11 @@ public abstract class Operator implements Runnable, Identifier {
 
         try {
             final ObjectMapper objectMapper = new ObjectMapper();
-            parametersLocal = objectMapper.readValue(parametersStr, new TypeReference<List<Map<String, Object>>>() {
-            });
+            parametersLocal =
+                    objectMapper.readValue(
+                            parametersStr, new TypeReference<List<Map<String, Object>>>() {});
         } catch (JsonProcessingException e) {
             log.error(e.toString());
-
         }
         return parametersLocal;
     }
@@ -99,15 +130,21 @@ public abstract class Operator implements Runnable, Identifier {
     }
 
     protected void registerUdfFunctions(List<FieldFunction> fieldFunctions) {
-        fieldFunctions.stream().filter(t -> !Strings.isNullOrEmpty(t.getFunctionName()))
+        fieldFunctions.stream()
+                .filter(t -> !Strings.isNullOrEmpty(t.getFunctionName()))
                 .forEach(t -> registerUdfFunctions(t.getFunctionName()));
     }
 
     protected void registerUdfFunctions(String functionName) {
         sceneCodeBuilder.getUdfFunctionMap().entrySet().stream()
-                .filter(t -> t.getKey().equals(functionName)).findAny().ifPresent(t -> {
-                    this.getSchemaUtil().getGenerateResult().registerUdfFunction(t.getKey(), t.getValue());
-                });
+                .filter(t -> t.getKey().equals(functionName))
+                .findAny()
+                .ifPresent(
+                        t -> {
+                            this.getSchemaUtil()
+                                    .getGenerateResult()
+                                    .registerUdfFunction(t.getKey(), t.getValue());
+                        });
         sceneCodeBuilder.getUdfFunctionMap().remove(functionName);
     }
 
@@ -119,13 +156,12 @@ public abstract class Operator implements Runnable, Identifier {
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
     }
 
-    /**
-     * 校验输入参数是否正确.
-     */
+    /** 校验输入参数是否正确. */
     protected void validParameters() {
         String parametersString = getParametersString();
-        parametersString = parametersString.substring(parametersString.indexOf("[") + 1,
-                parametersString.lastIndexOf("]"));
+        parametersString =
+                parametersString.substring(
+                        parametersString.indexOf("[") + 1, parametersString.lastIndexOf("]"));
         if (jsonSchemaValidator.getSchema() == null) {
             log.warn("{} operator not parameter validation schema.", this.getName());
             return;
@@ -140,14 +176,10 @@ public abstract class Operator implements Runnable, Identifier {
         }
     }
 
-    /**
-     * 初始化信息,输出/输入端口应该在该函数中完成注册定义
-     */
+    /** 初始化信息,输出/输入端口应该在该函数中完成注册定义 */
     protected abstract void initialize();
 
-    /**
-     * 定义属性约束
-     */
+    /** 定义属性约束 */
     protected String propertySchemaDefinition() {
         return null;
     }
@@ -170,13 +202,13 @@ public abstract class Operator implements Runnable, Identifier {
         return getParameterLists().get(0);
     }
 
-    /**
-     * 逻辑执行函数
-     */
+    /** 逻辑执行函数 */
     protected abstract void execute();
 
-    protected void postOutput(OutputPortObject<TableInfo> outputPortObject, String postTableName,
-                              List<Column> columns) {
+    protected void postOutput(
+            OutputPortObject<TableInfo> outputPortObject,
+            String postTableName,
+            List<Column> columns) {
         TableInfo ti = TableInfo.newBuilder().name(postTableName).columns(columns).build();
         outputPortObject.setPseudoData(ti);
     }
@@ -217,23 +249,23 @@ public abstract class Operator implements Runnable, Identifier {
             return;
         }
 
-        parametersLocal.forEach(p -> {
-            for (Map.Entry<String, Object> entry : p.entrySet()) {
-                Parameters ps = getParameters();
-                ps.getParameterList().stream()
-                        .filter(pp -> Objects.equals(pp.getKey(), entry.getKey()))
-                        .findAny()
-                        .ifPresent(pp -> {
-                            pp.setKey(entry.getKey());
-                            pp.setValue(entry.getValue());
-                        });
-            }
-        });
+        parametersLocal.forEach(
+                p -> {
+                    for (Map.Entry<String, Object> entry : p.entrySet()) {
+                        Parameters ps = getParameters();
+                        ps.getParameterList().stream()
+                                .filter(pp -> Objects.equals(pp.getKey(), entry.getKey()))
+                                .findAny()
+                                .ifPresent(
+                                        pp -> {
+                                            pp.setKey(entry.getKey());
+                                            pp.setValue(entry.getValue());
+                                        });
+                    }
+                });
     }
 
-    /**
-     * 设置宏算子参数的校验信息.
-     */
+    /** 设置宏算子参数的校验信息. */
     protected void definePropertySchema() {
         String propertySchema = propertySchemaDefinition();
         if (Strings.isNullOrEmpty(propertySchema)) {
@@ -268,9 +300,7 @@ public abstract class Operator implements Runnable, Identifier {
         return this.getOperatorWrapper().getParameters();
     }
 
-    /**
-     * 生成内部用户自定义函数(算子)对应的注册代码, 以便在flink sql中对其进行引用调用.
-     */
+    /** 生成内部用户自定义函数(算子)对应的注册代码, 以便在flink sql中对其进行引用调用. */
     private void generateUdfFunctionByInner() {
         Map<String, String> ufs = this.getUserFunctions();
         if (ufs == null) {
@@ -278,9 +308,13 @@ public abstract class Operator implements Runnable, Identifier {
         }
 
         Map<String, String> udfFunctions = getSchemaUtil().getUdfFunctionMap();
-        Sets.difference(ufs.entrySet(), udfFunctions.entrySet()).forEach(u -> {
-            this.getSchemaUtil().getGenerateResult().registerUdfFunction(u.getKey(), u.getValue());
-        });
+        Sets.difference(ufs.entrySet(), udfFunctions.entrySet())
+                .forEach(
+                        u -> {
+                            this.getSchemaUtil()
+                                    .getGenerateResult()
+                                    .registerUdfFunction(u.getKey(), u.getValue());
+                        });
         udfFunctions.putAll(ufs);
     }
 
@@ -312,25 +346,29 @@ public abstract class Operator implements Runnable, Identifier {
     }
 
     @SuppressWarnings("unchecked")
-    static List<FieldFunction> getFieldFunctions(String primaryTableName, Map<String, Object> parameters) {
-        return FieldFunction.analyzeParameters(primaryTableName,
-                (List<Map<String, Object>>) parameters.get(FIELD_FUNCTIONS));
+    static List<FieldFunction> getFieldFunctions(
+            String primaryTableName, Map<String, Object> parameters) {
+        return FieldFunction.analyzeParameters(
+                primaryTableName, (List<Map<String, Object>>) parameters.get(FIELD_FUNCTIONS));
     }
 
     public static Map<String, Object> getJsonAsMap(JsonNode inputs) {
-        return new ObjectMapper().<Map<String, Object>>convertValue(inputs, new TypeReference<Map<String, Object>>() {
-        });
+        return new ObjectMapper()
+                .<Map<String, Object>>convertValue(
+                        inputs, new TypeReference<Map<String, Object>>() {});
     }
+
     public static List<Column> getColumnFromFieldFunctions(List<FieldFunction> ffs) {
         return ffs.stream()
-                .map(t -> new Column(getColumnName(t.getOutName()), t.getOutType())).collect(Collectors.toList());
+                .map(t -> new Column(getColumnName(t.getOutName()), t.getOutType()))
+                .collect(Collectors.toList());
     }
 
     public static String getColumnName(String fullColumnName) {
         return fullColumnName.substring(fullColumnName.lastIndexOf('.') + 1);
     }
 
-    //region g/s
+    // region g/s
 
     public Map<String, String> getUserFunctions() {
         return userFunctions;
@@ -403,5 +441,5 @@ public abstract class Operator implements Runnable, Identifier {
         this.sceneCodeBuilder = sceneCodeBuilder;
     }
 
-    //endregion
+    // endregion
 }

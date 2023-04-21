@@ -1,12 +1,23 @@
-package com.zdpx.coder.operator;
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zdpx.coder.Specifications;
-import com.zdpx.coder.graph.OutputPortObject;
-import com.zdpx.coder.utils.NameHelper;
-import com.zdpx.coder.utils.TemplateUtils;
-import com.zdpx.coder.graph.InputPortObject;
+package com.zdpx.coder.operator;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
@@ -14,35 +25,52 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdpx.coder.Specifications;
+import com.zdpx.coder.graph.InputPortObject;
+import com.zdpx.coder.graph.OutputPortObject;
+import com.zdpx.coder.utils.NameHelper;
+import com.zdpx.coder.utils.TemplateUtils;
+
 /**
- * <b>Complex Event Processing</b> operator, which allows for pattern detection in event streams. the sql statement
- * follow <I>Row Pattern Recognition</I>(ISO/IEC TR 19075-5:2016), using the <b>MATCH_RECOGNIZE</b> clause for complex
- * event processing in SQL.
- * <p>
- * A <b>MATCH_RECOGNIZE</b> clause enables the following tasks:
- *   <ul>
- *       <li>Logically partition and order the data that is used with the <i>PARTITION BY</i> and <i>ORDER BY</i>
- *       clauses.</li>
- *       <li>Define patterns of rows to seek using the <i>PATTERN</i> clause. These patterns use a syntax similar to
- *       that of regular expressions.</li>
- *       <li>The logical components of the row pattern variables are specified in the <i>DEFINE</i> clause.</li>
- *       <li>Define measures, which are expressions usable in other parts of the SQL query, in the MEASURES clause.</li>
- *   </ul>
- * <p>
- * Every <b>MATCH_RECOGNIZE</b> query consists of the following clauses:
+ * <b>Complex Event Processing</b> operator, which allows for pattern detection in event streams.
+ * the sql statement follow <I>Row Pattern Recognition</I>(ISO/IEC TR 19075-5:2016), using the
+ * <b>MATCH_RECOGNIZE</b> clause for complex event processing in SQL.
+ *
+ * <p>A <b>MATCH_RECOGNIZE</b> clause enables the following tasks:
+ *
  * <ul>
- * <li><b>PARTITION BY</b> - defines the logical partitioning of the table; similar to a GROUP BY operation.</li>
- * <li><b>ORDER BY</b> - specifies how the incoming rows should be ordered; this is essential as patterns depend on an
- * order.</li>
- * <li><b>MEASURES</b> - defines output of the clause; similar to a SELECT clause.</li>
- * <li><b>ONE ROW PER MATCH</b> - output mode which defines how many rows per match should be produced.</li>
- * <li><b>AFTER MATCH SKIP</b> - specifies where the next match should start; this is also a way to control how many
- * distinct matches a single event can belong to.</li>
- * <li><b>PATTERN</b> - allows constructing patterns that will be searched for using a regular expression-like syntax
- * .</li>
- * <li><b>DEFINE</b> - this section defines the conditions that the pattern variables must satisfy.</li>
+ *   <li>Logically partition and order the data that is used with the <i>PARTITION BY</i> and
+ *       <i>ORDER BY</i> clauses.
+ *   <li>Define patterns of rows to seek using the <i>PATTERN</i> clause. These patterns use a
+ *       syntax similar to that of regular expressions.
+ *   <li>The logical components of the row pattern variables are specified in the <i>DEFINE</i>
+ *       clause.
+ *   <li>Define measures, which are expressions usable in other parts of the SQL query, in the
+ *       MEASURES clause.
  * </ul>
+ *
+ * <p>Every <b>MATCH_RECOGNIZE</b> query consists of the following clauses:
+ *
+ * <ul>
+ *   <li><b>PARTITION BY</b> - defines the logical partitioning of the table; similar to a GROUP BY
+ *       operation.
+ *   <li><b>ORDER BY</b> - specifies how the incoming rows should be ordered; this is essential as
+ *       patterns depend on an order.
+ *   <li><b>MEASURES</b> - defines output of the clause; similar to a SELECT clause.
+ *   <li><b>ONE ROW PER MATCH</b> - output mode which defines how many rows per match should be
+ *       produced.
+ *   <li><b>AFTER MATCH SKIP</b> - specifies where the next match should start; this is also a way
+ *       to control how many distinct matches a single event can belong to.
+ *   <li><b>PATTERN</b> - allows constructing patterns that will be searched for using a regular
+ *       expression-like syntax .
+ *   <li><b>DEFINE</b> - this section defines the conditions that the pattern variables must
+ *       satisfy.
+ * </ul>
+ *
  * The following example illustrates the syntax for basic pattern recognition:
+ *
  * <pre>{@code
  * SELECT T.aid, T.bid, T.cid
  * FROM MyTable
@@ -59,9 +87,10 @@ import java.util.stream.Collectors;
  *         B AS name = 'b',
  *         C AS name = 'c'
  *     ) AS T
- * }
- * </pre>
- * <note> Currently, the MATCH_RECOGNIZE clause can only be applied to an <b>append table</b> </note>
+ * }</pre>
+ *
+ * <note> Currently, the MATCH_RECOGNIZE clause can only be applied to an <b>append table</b>
+ * </note>
  *
  * @author Licho Sun
  */
@@ -76,9 +105,10 @@ public class CepOperator extends Operator {
     private static final String SKIP_STRATEGY = "skipStrategy";
     private static final String CEP = "CEP";
 
-    private static final String TEMPLATE = MessageFormat.format(
-        "<#import \"{0}\" as e>\nCREATE VIEW $'{'{1}.{2}'}' \nAS \n<@e.cepFunction {1}/>",
-        Specifications.TEMPLATE_FILE, CEP, OUTPUT_TABLE_NAME);
+    private static final String TEMPLATE =
+            MessageFormat.format(
+                    "<#import \"{0}\" as e>\nCREATE VIEW $'{'{1}.{2}'}' \nAS \n<@e.cepFunction {1}/>",
+                    Specifications.TEMPLATE_FILE, CEP, OUTPUT_TABLE_NAME);
 
     private final ObjectMapper mapper = new ObjectMapper();
     private InputPortObject<TableInfo> inputPortObject;
@@ -109,17 +139,21 @@ public class CepOperator extends Operator {
         String orderBy = (String) parameters.get(ORDER_BY);
 
         List<Map<String, Object>> defineList = (List<Map<String, Object>>) parameters.get(DEFINES);
-        List<Define> defines = mapper.convertValue(defineList, new TypeReference<List<Define>>() {
-        });
+        List<Define> defines =
+                mapper.convertValue(defineList, new TypeReference<List<Define>>() {});
 
-        List<Map<String, Object>> patternList = (List<Map<String, Object>>) parameters.get(PATTERNS);
-        List<Pattern> patterns = mapper.convertValue(patternList, new TypeReference<List<Pattern>>() {
-        });
+        List<Map<String, Object>> patternList =
+                (List<Map<String, Object>>) parameters.get(PATTERNS);
+        List<Pattern> patterns =
+                mapper.convertValue(patternList, new TypeReference<List<Pattern>>() {});
 
-        SkipStrategy skipStrategy = mapper.convertValue(parameters.get(SKIP_STRATEGY), SkipStrategy.class);
+        SkipStrategy skipStrategy =
+                mapper.convertValue(parameters.get(SKIP_STRATEGY), SkipStrategy.class);
 
         TableInfo tableInfo = inputPortObject.getOutputPseudoData();
-        List<FieldFunction> ffs = FieldFunction.analyzeParameters(tableInfo.getName(), (List<Map<String, Object>>) parameters.get(MEASURES));
+        List<FieldFunction> ffs =
+                FieldFunction.analyzeParameters(
+                        tableInfo.getName(), (List<Map<String, Object>>) parameters.get(MEASURES));
         String outputTableName = NameHelper.generateVariableName("CepOperator");
 
         Map<String, Object> parameterMap = new HashMap<>();
@@ -129,8 +163,10 @@ public class CepOperator extends Operator {
         parameterMap.put(ORDER_BY, orderBy);
         parameterMap.put(SKIP_STRATEGY, skipStrategy);
         parameterMap.put(MEASURES, ffs);
-        parameterMap.put(DEFINES, defines.stream().map(Define::toString).collect(Collectors.toList()));
-        parameterMap.put(PATTERNS, patterns.stream().map(Pattern::toString).collect(Collectors.toList()));
+        parameterMap.put(
+                DEFINES, defines.stream().map(Define::toString).collect(Collectors.toList()));
+        parameterMap.put(
+                PATTERNS, patterns.stream().map(Pattern::toString).collect(Collectors.toList()));
 
         Map<String, Object> result = new HashMap<>();
         result.put(CEP, parameterMap);
@@ -139,40 +175,36 @@ public class CepOperator extends Operator {
 
         List<Column> columns = Specifications.convertFieldFunctionToColumns(ffs);
         tableInfo.getColumns().stream()
-            .filter(t -> t.getName().equals(partition))
-            .findFirst()
-            .ifPresent(columns::add);
+                .filter(t -> t.getName().equals(partition))
+                .findFirst()
+                .ifPresent(columns::add);
         postOutput(outputPortObject, outputTableName, columns);
     }
 
     @SuppressWarnings("unchecked")
-    private <T> List<T> getSpecialTypeList(Map<String, Object> parameters, String key, Class<T> type) {
+    private <T> List<T> getSpecialTypeList(
+            Map<String, Object> parameters, String key, Class<T> type) {
         List<Map<String, Object>> measureList = (List<Map<String, Object>>) parameters.get(key);
-        return mapper.convertValue(measureList, new TypeReference<List<T>>() {
-        });
+        return mapper.convertValue(measureList, new TypeReference<List<T>>() {});
     }
 
     /**
-     * The {@link Define DEFINE} and MEASURES keywords have similar meanings to the WHERE and SELECT clauses in a
-     * simple SQL query.
-     * <p>
-     * The MEASURES clause defines what will be included in the output of a matching pattern. It can project columns
-     * and define expressions for evaluation. The number of produced rows depends on the output mode setting.
-     * <p>
-     * The {@link Define DEFINE} clause specifies conditions that rows have to fulfill in order to be classified to a
-     * corresponding pattern variable. If a condition is not defined for a pattern variable, a default condition will
-     * be used which
-     * evaluates to true for every row.
+     * The {@link Define DEFINE} and MEASURES keywords have similar meanings to the WHERE and SELECT
+     * clauses in a simple SQL query.
+     *
+     * <p>The MEASURES clause defines what will be included in the output of a matching pattern. It
+     * can project columns and define expressions for evaluation. The number of produced rows
+     * depends on the output mode setting.
+     *
+     * <p>The {@link Define DEFINE} clause specifies conditions that rows have to fulfill in order
+     * to be classified to a corresponding pattern variable. If a condition is not defined for a
+     * pattern variable, a default condition will be used which evaluates to true for every row.
      */
     static class Define {
         private static final String AS = "AS";
-        /**
-         * Pattern Variable
-         */
+        /** Pattern Variable */
         private String variable;
-        /**
-         * condition like where sql statement.
-         */
+        /** condition like where sql statement. */
         private String condition;
 
         public Define() {
@@ -188,7 +220,7 @@ public class CepOperator extends Operator {
             return generateStatement();
         }
 
-        //region g/s
+        // region g/s
         public String getVariable() {
             return variable;
         }
@@ -204,17 +236,13 @@ public class CepOperator extends Operator {
         public void setCondition(String condition) {
             this.condition = condition;
         }
-        //endregion
+        // endregion
     }
 
     static class Pattern {
-        /**
-         * pattern variable name
-         */
+        /** pattern variable name */
         private String variable;
-        /**
-         * pattern variable quantifier
-         */
+        /** pattern variable quantifier */
         private String quantifier;
 
         public Pattern() {
@@ -230,7 +258,7 @@ public class CepOperator extends Operator {
             return variable + quantifier;
         }
 
-        //region g/s
+        // region g/s
         public String getVariable() {
             return variable;
         }
@@ -246,59 +274,59 @@ public class CepOperator extends Operator {
         public void setQuantifier(String quantifier) {
             this.quantifier = quantifier;
         }
-        //endregion
+        // endregion
 
     }
 
     /**
-     * The AFTER MATCH SKIP clause specifies where to start a new matching procedure after a complete match was found.
+     * The AFTER MATCH SKIP clause specifies where to start a new matching procedure after a
+     * complete match was found.
      */
     static class SkipStrategy {
         /**
-         * SKIP PAST LAST ROW - resumes the pattern matching at the next row after the last row of the current match.
+         * SKIP PAST LAST ROW - resumes the pattern matching at the next row after the last row of
+         * the current match.
          */
         public static final String LAST_ROW = "LAST_ROW";
         /**
-         * <b>SKIP TO NEXT ROW</b> - continues searching for a new match starting at the next row after the starting row
-         * of
-         * the match.
+         * <b>SKIP TO NEXT ROW</b> - continues searching for a new match starting at the next row
+         * after the starting row of the match.
          */
         public static final String NEXT_ROW = "NEXT_ROW";
         /**
-         * <b>SKIP TO LAST variable</b> - resumes the pattern matching at the last row that is mapped to the specified
-         * pattern variable.
+         * <b>SKIP TO LAST variable</b> - resumes the pattern matching at the last row that is
+         * mapped to the specified pattern variable.
          */
         public static final String LAST = "LAST";
         /**
-         * <b>SKIP TO FIRST variable</b> - resumes the pattern matching at the first row that is mapped to the
-         * specified
-         * pattern variable.
+         * <b>SKIP TO FIRST variable</b> - resumes the pattern matching at the first row that is
+         * mapped to the specified pattern variable.
          */
         public static final String FIRST = "FIRST";
 
-        /**
-         * strategy
-         */
+        /** strategy */
         private String strategy;
-        /**
-         * pattern variable
-         */
+        /** pattern variable */
         private String variable;
 
         public String generateStatement() {
             switch (strategy) {
-                case LAST_ROW: {
-                    return "PAST LAST ROW";
-                }
-                case NEXT_ROW: {
-                    return "TO NEXT ROW";
-                }
-                case LAST: {
-                    return "TO LAST " + variable;
-                }
-                case FIRST: {
-                    return "TO FIRST " + variable;
-                }
+                case LAST_ROW:
+                    {
+                        return "PAST LAST ROW";
+                    }
+                case NEXT_ROW:
+                    {
+                        return "TO NEXT ROW";
+                    }
+                case LAST:
+                    {
+                        return "TO LAST " + variable;
+                    }
+                case FIRST:
+                    {
+                        return "TO FIRST " + variable;
+                    }
                 default:
                     return "";
             }
@@ -309,8 +337,7 @@ public class CepOperator extends Operator {
             return generateStatement();
         }
 
-
-        //region g/s
+        // region g/s
         public String getStrategy() {
             return strategy;
         }
@@ -326,110 +353,108 @@ public class CepOperator extends Operator {
         public void setVariable(String variable) {
             this.variable = variable;
         }
-        //endregion
+        // endregion
     }
-
 
     @Override
     protected String propertySchemaDefinition() {
-        return "{\n" +
-            "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n" +
-            "  \"$id\": \"https://dzpx.com/detection\",\n" +
-            "  \"title\": \"CepOperator Define\",\n" +
-            "  \"description\": \"define the CepOperator parameter\",\n" +
-            "  \"type\": \"object\",\n" +
-            "  \"properties\": {\n" +
-            "    \"partition\": {\n" +
-            "      \"type\": \"string\",\n" +
-            "      \"description\": \"field for partition\"\n" +
-            "    },\n" +
-            "    \"orderBy\": {\n" +
-            "      \"type\": \"string\",\n" +
-            "      \"description\": \"field for order\"\n" +
-            "    },\n" +
-            "    \"patterns\": {\n" +
-            "      \"type\": \"array\",\n" +
-            "      \"description\": \"define pattern variable and case\",\n" +
-            "      \"prefixItems\": {\n" +
-            "        \"type\": \"object\",\n" +
-            "        \"properties\": {\n" +
-            "          \"variable\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"pattern variable name\"\n" +
-            "          },\n" +
-            "          \"quantifier\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"pattern variable's quantifier, * + ? {n} {n,} {n,m} {,m}\"\n" +
-            "          }\n" +
-            "        }\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"skipStrategy\": {\n" +
-            "      \"type\": \"object\",\n" +
-            "      \"description\": \"skip strategy\",\n" +
-            "      \"properties\": {\n" +
-            "        \"strategy\": {\n" +
-            "          \"type\": \"string\",\n" +
-            "          \"description\": \"strategy model\"\n" +
-            "        },\n" +
-            "        \"variable\": {\n" +
-            "          \"type\": \"string\",\n" +
-            "          \"description\": \"pattern variable\"\n" +
-            "        }\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"measures\": {\n" +
-            "      \"type\": \"array\",\n" +
-            "      \"description\": \"define measure\",\n" +
-            "      \"prefixItems\": {\n" +
-            "        \"type\": \"object\",\n" +
-            "        \"properties\": {\n" +
-            "          \"functionName\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"offsetMethod last n, first n\"\n" +
-            "          },\n" +
-            "          \"outName\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"the name after calculate pattern variable's field\"\n" +
-            "          },\n" +
-            "          \"delimiter\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"function parameter delimiter, if cast, can set AS, if +-*/ and not " +
-            "functionName, as expression\"\n" +
-            "          },\n" +
-            "          \"parameters\": {\n" +
-            "            \"type\": \"array\",\n" +
-            "            \"prefixItems\": {\n" +
-            "              \"type\": \"string\"\n" +
-            "            }\n" +
-            "          }\n" +
-            "        }\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"defines\": {\n" +
-            "      \"type\": \"array\",\n" +
-            "      \"description\": \"define defines\",\n" +
-            "      \"prefixItems\": {\n" +
-            "        \"type\": \"object\",\n" +
-            "        \"properties\": {\n" +
-            "          \"variable\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"define pattern variable\"\n" +
-            "          },\n" +
-            "          \"condition\": {\n" +
-            "            \"type\": \"string\",\n" +
-            "            \"description\": \"like sql where statement\"\n" +
-            "          }\n" +
-            "        }\n" +
-            "      }\n" +
-            "    },\n" +
-            "    \"required\": [\n" +
-            "      \"pattern\",\n" +
-            "      \"measures\",\n" +
-            "      \"defines\"\n" +
-            "    ]\n" +
-            "  }\n" +
-            "}";
+        return "{\n"
+                + "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n"
+                + "  \"$id\": \"https://dzpx.com/detection\",\n"
+                + "  \"title\": \"CepOperator Define\",\n"
+                + "  \"description\": \"define the CepOperator parameter\",\n"
+                + "  \"type\": \"object\",\n"
+                + "  \"properties\": {\n"
+                + "    \"partition\": {\n"
+                + "      \"type\": \"string\",\n"
+                + "      \"description\": \"field for partition\"\n"
+                + "    },\n"
+                + "    \"orderBy\": {\n"
+                + "      \"type\": \"string\",\n"
+                + "      \"description\": \"field for order\"\n"
+                + "    },\n"
+                + "    \"patterns\": {\n"
+                + "      \"type\": \"array\",\n"
+                + "      \"description\": \"define pattern variable and case\",\n"
+                + "      \"prefixItems\": {\n"
+                + "        \"type\": \"object\",\n"
+                + "        \"properties\": {\n"
+                + "          \"variable\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"pattern variable name\"\n"
+                + "          },\n"
+                + "          \"quantifier\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"pattern variable's quantifier, * + ? {n} {n,} {n,m} {,m}\"\n"
+                + "          }\n"
+                + "        }\n"
+                + "      }\n"
+                + "    },\n"
+                + "    \"skipStrategy\": {\n"
+                + "      \"type\": \"object\",\n"
+                + "      \"description\": \"skip strategy\",\n"
+                + "      \"properties\": {\n"
+                + "        \"strategy\": {\n"
+                + "          \"type\": \"string\",\n"
+                + "          \"description\": \"strategy model\"\n"
+                + "        },\n"
+                + "        \"variable\": {\n"
+                + "          \"type\": \"string\",\n"
+                + "          \"description\": \"pattern variable\"\n"
+                + "        }\n"
+                + "      }\n"
+                + "    },\n"
+                + "    \"measures\": {\n"
+                + "      \"type\": \"array\",\n"
+                + "      \"description\": \"define measure\",\n"
+                + "      \"prefixItems\": {\n"
+                + "        \"type\": \"object\",\n"
+                + "        \"properties\": {\n"
+                + "          \"functionName\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"offsetMethod last n, first n\"\n"
+                + "          },\n"
+                + "          \"outName\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"the name after calculate pattern variable's field\"\n"
+                + "          },\n"
+                + "          \"delimiter\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"function parameter delimiter, if cast, can set AS, if +-*/ and not "
+                + "functionName, as expression\"\n"
+                + "          },\n"
+                + "          \"parameters\": {\n"
+                + "            \"type\": \"array\",\n"
+                + "            \"prefixItems\": {\n"
+                + "              \"type\": \"string\"\n"
+                + "            }\n"
+                + "          }\n"
+                + "        }\n"
+                + "      }\n"
+                + "    },\n"
+                + "    \"defines\": {\n"
+                + "      \"type\": \"array\",\n"
+                + "      \"description\": \"define defines\",\n"
+                + "      \"prefixItems\": {\n"
+                + "        \"type\": \"object\",\n"
+                + "        \"properties\": {\n"
+                + "          \"variable\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"define pattern variable\"\n"
+                + "          },\n"
+                + "          \"condition\": {\n"
+                + "            \"type\": \"string\",\n"
+                + "            \"description\": \"like sql where statement\"\n"
+                + "          }\n"
+                + "        }\n"
+                + "      }\n"
+                + "    },\n"
+                + "    \"required\": [\n"
+                + "      \"pattern\",\n"
+                + "      \"measures\",\n"
+                + "      \"defines\"\n"
+                + "    ]\n"
+                + "  }\n"
+                + "}";
     }
-
 }

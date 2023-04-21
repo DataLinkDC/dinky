@@ -1,7 +1,41 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayDeque;
+import java.util.Comparator;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.extern.slf4j.Slf4j;
 import com.zdpx.coder.code.CodeBuilder;
 import com.zdpx.coder.code.CodeJavaBuilderImpl;
 import com.zdpx.coder.code.CodeSqlBuilderImpl;
@@ -13,13 +47,7 @@ import com.zdpx.coder.operator.Identifier;
 import com.zdpx.coder.operator.Operator;
 import com.zdpx.coder.utils.InstantiationUtil;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 配置场景生成操作类
@@ -79,13 +107,14 @@ public class SceneCodeBuilder {
         return codeBuilder.lastBuild();
     }
 
-    /**
-     * 广度优先遍历计算节点, 生成相对应的源码
-     */
+    /** 广度优先遍历计算节点, 生成相对应的源码 */
     private void createOperatorsCode() {
-        List<OperatorWrapper> sinkOperatorNodes = Scene.getSinkOperatorNodes(this.scene.getProcess());
+        List<OperatorWrapper> sinkOperatorNodes =
+                Scene.getSinkOperatorNodes(this.scene.getProcess());
         List<Operator> sinks =
-            sinkOperatorNodes.stream().map(OperatorWrapper::getOperator).collect(Collectors.toList());
+                sinkOperatorNodes.stream()
+                        .map(OperatorWrapper::getOperator)
+                        .collect(Collectors.toList());
         Deque<Operator> ops = new ArrayDeque<>();
 
         bft(new HashSet<>(sinks), ops::push);
@@ -96,23 +125,27 @@ public class SceneCodeBuilder {
      * 广度优先遍历计算节点, 执行call 函数
      *
      * @param operators 起始节点集
-     * @param call      待执行函数
+     * @param call 待执行函数
      */
     private void bft(Set<Operator> operators, Consumer<Operator> call) {
         if (operators.isEmpty()) {
             return;
         }
 
-        List<Operator> ops = operators.stream()
-                .sorted(Comparator.comparing(t -> t.getOperatorWrapper().getId(), Comparator.naturalOrder()))
-                .collect(Collectors.toList());
+        List<Operator> ops =
+                operators.stream()
+                        .sorted(
+                                Comparator.comparing(
+                                        t -> t.getOperatorWrapper().getId(),
+                                        Comparator.naturalOrder()))
+                        .collect(Collectors.toList());
         final Set preOperators = new HashSet<Operator>();
         for (Operator op : ops) {
             call.accept(op);
             op.getInputPorts().stream()
-                .filter(t -> !Objects.isNull(t.getConnection()))
-                .map(t -> t.getConnection().getFromPort())
-                .forEach(fromPort -> preOperators.add(fromPort.getParent()));
+                    .filter(t -> !Objects.isNull(t.getConnection()))
+                    .map(t -> t.getConnection().getFromPort())
+                    .forEach(fromPort -> preOperators.add(fromPort.getParent()));
         }
         bft(preOperators, call);
     }
@@ -128,21 +161,23 @@ public class SceneCodeBuilder {
     }
 
     /**
-     * 获取operator的定义, key为{@link Identifier#getCode()} 返回值, 目前为Operator类的全限定名
-     * value为类型定义.
+     * 获取operator的定义, key为{@link Identifier#getCode()} 返回值, 目前为Operator类的全限定名 value为类型定义.
      *
      * @return 返回operator集
      */
     public static Map<String, Class<? extends Operator>> getCodeClassMap(
-        Set<Class<? extends Operator>> operators) {
+            Set<Class<? extends Operator>> operators) {
         return operators.stream()
-            .filter(c -> !java.lang.reflect.Modifier.isAbstract(c.getModifiers()))
-            .collect(Collectors.toMap(t -> {
-                Operator bcg = InstantiationUtil.instantiate(t);
-                String code = bcg.getCode();
-                bcg = null;
-                return code;
-            }, t -> t));
+                .filter(c -> !java.lang.reflect.Modifier.isAbstract(c.getModifiers()))
+                .collect(
+                        Collectors.toMap(
+                                t -> {
+                                    Operator bcg = InstantiationUtil.instantiate(t);
+                                    String code = bcg.getCode();
+                                    bcg = null;
+                                    return code;
+                                },
+                                t -> t));
     }
 
     /**
@@ -221,6 +256,4 @@ public class SceneCodeBuilder {
     public static Scene convertToInternal(SceneNode sceneNode) {
         return new Scene(sceneNode);
     }
-
-
 }

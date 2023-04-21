@@ -589,11 +589,11 @@
                 <artifactId>activation</artifactId>
                 <version>1.1.1</version>
             </dependency>
-          <dependency>
-            <groupId>com.zdpx</groupId>
-            <artifactId>flinkGraph</artifactId>
-            <version>${project.version}</version>
-          </dependency>
+            <dependency>
+                <groupId>com.zdpx</groupId>
+                <artifactId>flinkGraph</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -671,9 +671,6 @@
                         <importOrder>
                             <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
-                        <licenseHeader>
-                            <file>style/license_header</file>
-                        </licenseHeader>
                         <replaceRegex>
                             <name>Remove wildcard imports</name>
                             <searchRegex>import\s+[^\*\s]+\*;(\r\n|\r|\n)</searchRegex>

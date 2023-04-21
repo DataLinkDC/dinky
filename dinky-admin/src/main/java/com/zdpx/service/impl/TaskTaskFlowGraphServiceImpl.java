@@ -1,5 +1,35 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.service.impl;
 
+import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.model.Task;
+import org.dinky.service.TaskService;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zdpx.coder.SceneCodeBuilder;
@@ -7,26 +37,15 @@ import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.SceneNode;
 import com.zdpx.mapper.FlowGraphScriptMapper;
 import com.zdpx.model.FlowGraph;
-import groovy.util.logging.Slf4j;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.model.Task;
 import com.zdpx.service.TaskFlowGraphService;
-import org.dinky.service.TaskService;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import groovy.util.logging.Slf4j;
 
-
-/**
- *
- */
+/** */
 @Slf4j
 @Service
-public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScriptMapper, FlowGraph> implements TaskFlowGraphService {
+public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScriptMapper, FlowGraph>
+        implements TaskFlowGraphService {
 
     private final TaskService taskService;
 
@@ -51,8 +70,13 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
     private String convertConfigToSource(Task task) {
         String flowGraphScript = task.getStatement();
         List<Task> tasks = taskService.list(new QueryWrapper<Task>().eq("dialect", "Java"));
-        Map<String, String> udfDatabase = tasks.stream().collect(Collectors.toMap(Task::getName, Task::getSavePointPath,
-                (existing, replacement) -> replacement));
+        Map<String, String> udfDatabase =
+                tasks.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        Task::getName,
+                                        Task::getSavePointPath,
+                                        (existing, replacement) -> replacement));
         SceneNode scene = SceneCodeBuilder.readScene(flowGraphScript);
         if (scene == null) {
             log.warn("save graph generate sql.");
@@ -71,5 +95,4 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
         this.saveOrUpdate(flowGraph);
         return su.build();
     }
-
 }

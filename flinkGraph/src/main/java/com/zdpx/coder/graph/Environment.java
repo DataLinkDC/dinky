@@ -1,37 +1,47 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.json.ResultType;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 
-/**
- * flink运行环境信息
- */
+import com.zdpx.coder.json.ResultType;
+
+/** flink运行环境信息 */
 public class Environment {
 
-    /**
-     * flink 运行模式,(流式/批处理)
-     */
+    /** flink 运行模式,(流式/批处理) */
     private RuntimeExecutionMode mode;
 
-    /**
-     * 并发数量
-     */
+    /** 并发数量 */
     private int parallelism;
-    /**
-     * 环境名称
-     */
+    /** 环境名称 */
     private String name;
 
-    /**
-     * 生成结果类型sql/java
-     */
+    /** 生成结果类型sql/java */
     private ResultType resultType;
 
     public RuntimeExecutionMode getMode() {
         return mode;
     }
 
-    //region getter/setter
+    // region getter/setter
     public void setMode(RuntimeExecutionMode mode) {
         this.mode = mode;
     }
@@ -59,5 +69,5 @@ public class Environment {
     public void setResultType(ResultType resultType) {
         this.resultType = resultType;
     }
-    //endregion
+    // endregion
 }

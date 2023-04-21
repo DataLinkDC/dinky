@@ -1,26 +1,33 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
  *
  *     http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
  */
 
 package com.zdpx.coder.utils;
 
-import lombok.extern.slf4j.Slf4j;
-
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamClass;
+import java.io.OutputStream;
+import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
@@ -30,17 +37,15 @@ import java.util.List;
 import java.util.zip.DeflaterOutputStream;
 import java.util.zip.InflaterInputStream;
 
-/**
- * Utility class to create instances from class objects and checking failure reasons.
- */
+import lombok.extern.slf4j.Slf4j;
+
+/** Utility class to create instances from class objects and checking failure reasons. */
 @Slf4j
 public final class InstantiationUtil {
 
     public static final String COULD_NOT_INSTANTIATE_TYPE = "Could not instantiate type '";
 
-    /**
-     * Private constructor to prevent instantiation.
-     */
+    /** Private constructor to prevent instantiation. */
     private InstantiationUtil() {
         throw new RuntimeException();
     }
@@ -75,10 +80,10 @@ public final class InstantiationUtil {
      * Creates a new instance of the given class name and type using the provided {@link
      * ClassLoader}.
      *
-     * @param className   of the class to load
-     * @param targetType  type of the instantiated class
+     * @param className of the class to load
+     * @param targetType type of the instantiated class
      * @param classLoader to use for loading the class
-     * @param <T>         type of the instantiated class
+     * @param <T> type of the instantiated class
      * @return Instance of the given class name
      * @throws Exception if the class could not be found
      */
@@ -91,8 +96,8 @@ public final class InstantiationUtil {
         } catch (ClassNotFoundException e) {
             throw new Exception(
                     String.format(
-                            "Could not instantiate class '%s' of type '%s'. Please make sure that this class is on " +
-                                    "your class path.",
+                            "Could not instantiate class '%s' of type '%s'. Please make sure that this class is on "
+                                    + "your class path.",
                             className, targetType.getName()),
                     e);
         }
@@ -103,13 +108,13 @@ public final class InstantiationUtil {
     /**
      * Creates a new instance of the given class.
      *
-     * @param <T>    The generic type of the class.
-     * @param clazz  The class to instantiate.
+     * @param <T> The generic type of the class.
+     * @param clazz The class to instantiate.
      * @param castTo Optional parameter, specifying the class that the given class must be a
-     *               subclass off. This argument is added to prevent class cast exceptions occurring later.
+     *     subclass off. This argument is added to prevent class cast exceptions occurring later.
      * @return An instance of the given class.
      * @throws RuntimeException Thrown, if the class could not be instantiated. The exception
-     *                          contains a detailed message about the reason why the instantiation failed.
+     *     contains a detailed message about the reason why the instantiation failed.
      */
     public static <T> T instantiate(Class<T> clazz, Class<? super T> castTo) {
         if (clazz == null) {
@@ -132,11 +137,11 @@ public final class InstantiationUtil {
     /**
      * Creates a new instance of the given class.
      *
-     * @param <T>   The generic type of the class.
+     * @param <T> The generic type of the class.
      * @param clazz The class to instantiate.
      * @return An instance of the given class.
      * @throws RuntimeException Thrown, if the class could not be instantiated. The exception
-     *                          contains a detailed message about the reason why the instantiation failed.
+     *     contains a detailed message about the reason why the instantiation failed.
      */
     public static <T> T instantiate(Class<T> clazz) {
         if (clazz == null) {
@@ -265,7 +270,7 @@ public final class InstantiationUtil {
      *
      * @param clazz The class to check.
      * @throws RuntimeException Thrown, if the class cannot be instantiated by {@code
-     *                          Class#newInstance()}.
+     *     Class#newInstance()}.
      */
     public static void checkForInstantiation(Class<?> clazz) {
         final String errorMessage = checkForInstantiationError(clazz);
@@ -280,8 +285,8 @@ public final class InstantiationUtil {
         if (!isPublic(clazz)) {
             return "The class is not public.";
         } else if (clazz.isArray()) {
-            return "The class is an array. An array cannot be simply instantiated, as with a parameterless " +
-                    "constructor.";
+            return "The class is an array. An array cannot be simply instantiated, as with a parameterless "
+                    + "constructor.";
         } else if (!isProperClass(clazz)) {
             return "The class is not a proper class. It is either abstract, an interface, or a primitive type.";
         } else if (isNonStaticInnerClass(clazz)) {
@@ -352,8 +357,8 @@ public final class InstantiationUtil {
 
     public static byte[] serializeObjectAndCompress(Object o) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             DeflaterOutputStream dos = new DeflaterOutputStream(baos);
-             ObjectOutputStream oos = new ObjectOutputStream(dos)) {
+                DeflaterOutputStream dos = new DeflaterOutputStream(baos);
+                ObjectOutputStream oos = new ObjectOutputStream(dos)) {
             oos.writeObject(o);
             oos.flush();
             dos.close();
@@ -377,9 +382,9 @@ public final class InstantiationUtil {
      * @param obj Object to clone
      * @param <T> Type of the object to clone
      * @return The cloned object
-     * @throws IOException            Thrown if the serialization or deserialization process fails.
+     * @throws IOException Thrown if the serialization or deserialization process fails.
      * @throws ClassNotFoundException Thrown if any of the classes referenced by the object cannot
-     *                                be resolved during deserialization.
+     *     be resolved during deserialization.
      */
     public static <T extends Serializable> T clone(T obj)
             throws IOException, ClassNotFoundException {
@@ -394,13 +399,13 @@ public final class InstantiationUtil {
      * Clones the given serializable object using Java serialization, using the given classloader to
      * resolve the cloned classes.
      *
-     * @param obj         Object to clone
+     * @param obj Object to clone
      * @param classLoader The classloader to resolve the classes during deserialization.
-     * @param <T>         Type of the object to clone
+     * @param <T> Type of the object to clone
      * @return Cloned object
-     * @throws IOException            Thrown if the serialization or deserialization process fails.
+     * @throws IOException Thrown if the serialization or deserialization process fails.
      * @throws ClassNotFoundException Thrown if any of the classes referenced by the object cannot
-     *                                be resolved during deserialization.
+     *     be resolved during deserialization.
      */
     public static <T extends Serializable> T clone(T obj, ClassLoader classLoader)
             throws IOException, ClassNotFoundException {
@@ -412,9 +417,7 @@ public final class InstantiationUtil {
         }
     }
 
-    /**
-     * A custom ObjectInputStream that can load classes using a specific ClassLoader.
-     */
+    /** A custom ObjectInputStream that can load classes using a specific ClassLoader. */
     public static class ClassLoaderObjectInputStream extends ObjectInputStream {
 
         private static final HashMap<String, Class<?>> primitiveClasses = new HashMap<>(9);
@@ -502,8 +505,7 @@ public final class InstantiationUtil {
 
     // --------------------------------------------------------------------------------------------
 
-    public static class FailureTolerantObjectInputStream
-            extends ClassLoaderObjectInputStream {
+    public static class FailureTolerantObjectInputStream extends ClassLoaderObjectInputStream {
 
         public FailureTolerantObjectInputStream(InputStream in, ClassLoader cl) throws IOException {
             super(in, cl);

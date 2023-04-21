@@ -1,4 +1,42 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package com.zdpx.coder.graph;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.table.functions.UserDefinedFunction;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import org.reflections.Reflections;
+import org.springframework.beans.BeanUtils;
 
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.json.ConnectionNode;
@@ -10,37 +48,19 @@ import com.zdpx.coder.json.SceneNode;
 import com.zdpx.coder.operator.Identifier;
 import com.zdpx.coder.operator.Operator;
 import com.zdpx.coder.operator.TableInfo;
-import com.zdpx.udf.IUdfDefine;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
-
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-
-
 import com.zdpx.coder.utils.InstantiationUtil;
-
-import org.reflections.Reflections;
-import org.springframework.beans.BeanUtils;
+import com.zdpx.udf.IUdfDefine;
 
 import lombok.extern.slf4j.Slf4j;
 
-
-/**
- * 场景配置类,
- */
+/** 场景配置类, */
 @Slf4j
 public class Scene {
 
-    /**
-     * 保存所有已定义算子, 类初始化时进行加载
-     */
+    /** 保存所有已定义算子, 类初始化时进行加载 */
     protected static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
-    public static final Map<String, String> USER_DEFINED_FUNCTION =
-            getUserDefinedFunctionMaps();
+
+    public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
 
     private Environment environment;
     private Process process;
@@ -87,7 +107,10 @@ public class Scene {
     public static List<OperatorWrapper> getSourceOperatorNodes(Process process) {
         List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(process);
         return operatorWrappers.stream()
-                .filter(t -> t.getOperator().getInputPorts().stream().allMatch(p -> Objects.isNull(p.getConnection())))
+                .filter(
+                        t ->
+                                t.getOperator().getInputPorts().stream()
+                                        .allMatch(p -> Objects.isNull(p.getConnection())))
                 .collect(Collectors.toList());
     }
 
@@ -101,8 +124,11 @@ public class Scene {
     public static List<OperatorWrapper> getOperatorNodes(Process process) {
         List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(process);
         return operatorWrappers.stream()
-                .filter(t -> !CollectionUtils.isEmpty(t.getOperator().getInputPorts())
-                        && !CollectionUtils.isEmpty(t.getOperator().getOutputPorts()))
+                .filter(
+                        t ->
+                                !CollectionUtils.isEmpty(t.getOperator().getInputPorts())
+                                        && !CollectionUtils.isEmpty(
+                                                t.getOperator().getOutputPorts()))
                 .collect(Collectors.toList());
     }
 
@@ -127,8 +153,7 @@ public class Scene {
     }
 
     /**
-     * 获取所有operator的定义, key为{@link Identifier#getCode()} 返回值, 目前为Operator类的全限定名
-     * value为类型定义.
+     * 获取所有operator的定义, key为{@link Identifier#getCode()} 返回值, 目前为Operator类的全限定名 value为类型定义.
      *
      * @return 返回operator集
      */
@@ -142,26 +167,36 @@ public class Scene {
      *
      * @return 算子类字典
      */
-    public static Map<String, Class<? extends UserDefinedFunction>> getUserDefinedFunctionClassMaps() {
+    public static Map<String, Class<? extends UserDefinedFunction>>
+            getUserDefinedFunctionClassMaps() {
         String iun = IUdfDefine.class.getPackage().getName();
         Reflections reflections = new Reflections(iun);
-        Set<Class<? extends UserDefinedFunction>> udfFunctions = reflections.getSubTypesOf(UserDefinedFunction.class);
-        List<Class<? extends UserDefinedFunction>> uf = udfFunctions.stream()
-                .filter(IUdfDefine.class::isAssignableFrom).collect(Collectors.toList());
-        return uf.stream().collect(Collectors.toMap(t -> {
-            try {
-                UserDefinedFunction ob = t.getDeclaredConstructor().newInstance();
-                Method method = t.getMethod("getUdfName");
-                return (String) method.invoke(ob);
-            } catch (NoSuchMethodException
-                     | InvocationTargetException
-                     | IllegalAccessException
-                     | InstantiationException ignore) {
-                //
-            }
-            return null;
-        }, Function.identity()));
+        Set<Class<? extends UserDefinedFunction>> udfFunctions =
+                reflections.getSubTypesOf(UserDefinedFunction.class);
+        List<Class<? extends UserDefinedFunction>> uf =
+                udfFunctions.stream()
+                        .filter(IUdfDefine.class::isAssignableFrom)
+                        .collect(Collectors.toList());
+        return uf.stream()
+                .collect(
+                        Collectors.toMap(
+                                t -> {
+                                    try {
+                                        UserDefinedFunction ob =
+                                                t.getDeclaredConstructor().newInstance();
+                                        Method method = t.getMethod("getUdfName");
+                                        return (String) method.invoke(ob);
+                                    } catch (NoSuchMethodException
+                                            | InvocationTargetException
+                                            | IllegalAccessException
+                                            | InstantiationException ignore) {
+                                        //
+                                    }
+                                    return null;
+                                },
+                                Function.identity()));
     }
+
     public static Map<String, String> getUserDefinedFunctionMaps() {
         return getUserDefinedFunctionClassMaps().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getName()));
@@ -186,37 +221,54 @@ public class Scene {
             final Connection<TableInfo> connectionInternal = convertConnection(connection);
             BeanUtils.copyProperties(connection, connectionInternal);
 
-            Optional<OutputPort> outputPort = operatorWrappers.stream()
-                    .filter(t -> t.getId().equals(connection.getFromOp()))
-                    .findAny()
-                    .flatMap(from -> from.getOperator().getOutputPorts().stream()
-                            .filter(t -> Objects.equals(t.getName(), connection.getFromPort()))
-                            .findAny());
+            Optional<OutputPort> outputPort =
+                    operatorWrappers.stream()
+                            .filter(t -> t.getId().equals(connection.getFromOp()))
+                            .findAny()
+                            .flatMap(
+                                    from ->
+                                            from.getOperator().getOutputPorts().stream()
+                                                    .filter(
+                                                            t ->
+                                                                    Objects.equals(
+                                                                            t.getName(),
+                                                                            connection
+                                                                                    .getFromPort()))
+                                                    .findAny());
 
             if (outputPort.isPresent()) {
                 OutputPort t = outputPort.get();
                 connectionInternal.setFromPort(t);
                 t.setConnection(connectionInternal);
-            }else {
+            } else {
                 log.error("not find connection FromOperator: {}", connection.getFromOp());
             }
 
-            Optional<InputPort> inputPort = operatorWrappers.stream()
-                    .filter(t -> t.getId().equals(connection.getToOp()))
-                    .findAny()
-                    .flatMap(to -> to.getOperator().getInputPorts().stream()
-                            .filter(t -> Objects.equals(t.getName(), connection.getToPort()))
-                            .findAny());
+            Optional<InputPort> inputPort =
+                    operatorWrappers.stream()
+                            .filter(t -> t.getId().equals(connection.getToOp()))
+                            .findAny()
+                            .flatMap(
+                                    to ->
+                                            to.getOperator().getInputPorts().stream()
+                                                    .filter(
+                                                            t ->
+                                                                    Objects.equals(
+                                                                            t.getName(),
+                                                                            connection.getToPort()))
+                                                    .findAny());
 
             if (inputPort.isPresent()) {
                 InputPort t = inputPort.get();
                 connectionInternal.setToPort(t);
                 t.setConnection(connectionInternal);
-            }else{
-                log.error("not find connection ToOperator: {}, From: {}", connection.getToPort(), connection.getFromOp());
+            } else {
+                log.error(
+                        "not find connection ToOperator: {}, From: {}",
+                        connection.getToPort(),
+                        connection.getFromOp());
             }
         }
-
 
         return root;
     }
@@ -240,8 +292,9 @@ public class Scene {
             ProcessNode processNodeCurrent = unWalkProcesses.iterator().next();
             BeanUtils.copyProperties(processNodeCurrent, processCurrent);
             if (processNodeCurrent.getParent() != null) {
-                //add inner parentProcess
-                operatorCodeWrapperMap.get(processNodeCurrent.getParent().getCode())
+                // add inner parentProcess
+                operatorCodeWrapperMap
+                        .get(processNodeCurrent.getParent().getCode())
                         .getProcesses()
                         .add(processCurrent);
             }
@@ -324,7 +377,7 @@ public class Scene {
         return descriptionInternal;
     }
 
-    //region g/s
+    // region g/s
     public Environment getEnvironment() {
         return environment;
     }
@@ -340,5 +393,5 @@ public class Scene {
     public void setProcess(Process process) {
         this.process = process;
     }
-    //endregion
+    // endregion
 }

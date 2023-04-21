@@ -1,9 +1,28 @@
-package com.zdpx.coder.json;
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
 
-import com.fasterxml.jackson.databind.JsonNode;
+package com.zdpx.coder.json;
 
 import java.util.List;
 import java.util.Objects;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * 节点配置信息,对应于json配置文件
@@ -11,77 +30,42 @@ import java.util.Objects;
  * @author Licho Sun
  */
 public class OperatorNode {
-    /**
-     * 节点并发度
-     */
+    /** 节点并发度 */
     private int parallelism;
-    /**
-     * 节点ID
-     */
+    /** 节点ID */
     private String id;
-    /**
-     * 节点代码, 目前使用类路径作为值
-     */
+    /** 节点代码, 目前使用类路径作为值 */
     private String code;
-    /**
-     * 节点名称
-     */
+    /** 节点名称 */
     private String name;
-    /**
-     * 节点是否牌活动状态
-     */
+    /** 节点是否牌活动状态 */
     private boolean activated;
-    /**
-     * 节点是否可展开
-     */
+    /** 节点是否可展开 */
     private boolean expanded;
-    /**
-     * 版本兼容性信息
-     */
+    /** 版本兼容性信息 */
     private String compatibility;
-    /**
-     * 所在过程信息
-     */
+    /** 所在过程信息 */
     private ProcessNode parentProcess;
-    /**
-     * 节点来源
-     */
+    /** 节点来源 */
     private String origin;
-    /**
-     * 节点高度
-     */
+    /** 节点高度 */
     private int height;
-    /**
-     * 节点宽度
-     */
+    /** 节点宽度 */
     private int width;
-    /**
-     * x坐标
-     */
+    /** x坐标 */
     private int x;
-    /**
-     * y坐标
-     */
+    /** y坐标 */
     private int y;
-    /**
-     * 包含的过程信息
-     */
+    /** 包含的过程信息 */
     private List<ProcessNode> processes;
-    /**
-     * 节点所需参数
-     */
-
+    /** 节点所需参数 */
     private JsonNode parameters;
-    /**
-     * 输入连接信息
-     */
+    /** 输入连接信息 */
     private List<ConnectionNode> inputConnections;
-    /**
-     * 输出连接信息
-     */
+    /** 输出连接信息 */
     private List<ConnectionNode> outputConnections;
 
-    //region getter/setter
+    // region getter/setter
 
     public String getId() {
         return id;
@@ -219,7 +203,7 @@ public class OperatorNode {
         this.processes = processes;
     }
 
-//endregion
+    // endregion
 
     @Override
     public boolean equals(Object o) {
@@ -230,15 +214,26 @@ public class OperatorNode {
             return false;
         }
         OperatorNode operator = (OperatorNode) o;
-        return parallelism == operator.parallelism && activated == operator.activated && expanded == operator.expanded && height == operator.height && width == operator.width && x == operator.x &&
-            y == operator.y && code.equals(operator.code) && name.equals(operator.name) && Objects.equals(compatibility, operator.compatibility) &&
-            Objects.equals(parentProcess, operator.parentProcess) && Objects.equals(origin, operator.origin) && Objects.equals(processes, operator.processes) &&
-            Objects.equals(parameters, operator.parameters) && Objects.equals(inputConnections, operator.inputConnections) && Objects.equals(outputConnections, operator.outputConnections);
+        return parallelism == operator.parallelism
+                && activated == operator.activated
+                && expanded == operator.expanded
+                && height == operator.height
+                && width == operator.width
+                && x == operator.x
+                && y == operator.y
+                && code.equals(operator.code)
+                && name.equals(operator.name)
+                && Objects.equals(compatibility, operator.compatibility)
+                && Objects.equals(parentProcess, operator.parentProcess)
+                && Objects.equals(origin, operator.origin)
+                && Objects.equals(processes, operator.processes)
+                && Objects.equals(parameters, operator.parameters)
+                && Objects.equals(inputConnections, operator.inputConnections)
+                && Objects.equals(outputConnections, operator.outputConnections);
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(code, name);
     }
-
 }
