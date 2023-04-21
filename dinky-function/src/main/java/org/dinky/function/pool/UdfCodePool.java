@@ -19,6 +19,7 @@
 
 package org.dinky.function.pool;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.function.data.model.UDF;
 import org.dinky.process.exception.DinkyException;
 
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
 import cn.hutool.core.util.StrUtil;
 
 /** @since 0.7.0 */
+@Slf4j
 public class UdfCodePool {
 
     /** udf code pool key -> class name value -> udf */
@@ -47,7 +49,9 @@ public class UdfCodePool {
     public static UDF getUDF(String className) {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
-            throw new DinkyException(StrUtil.format("class: {} is not exists!", className));
+            String error = StrUtil.format("class: {} is not exists!", className);
+            log.error(error);
+            throw new DinkyException(error);
         }
         return udf;
     }
