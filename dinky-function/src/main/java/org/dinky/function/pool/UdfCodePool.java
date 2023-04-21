@@ -19,7 +19,6 @@
 
 package org.dinky.function.pool;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.function.data.model.UDF;
 import org.dinky.process.exception.DinkyException;
 
@@ -29,6 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
 
 /** @since 0.7.0 */
 @Slf4j
