@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  mysql:
+    image: "dinky-mysql-server:${DINKY_VERSION}"
+    ports:
+      - "3308:3306"
+    networks:
+      - dinky-net
+    healthcheck:
+      test: [ "CMD", "mysqladmin" ,"ping", "-h", "localhost" ]
+      timeout: 20s
+      retries: 10
+    restart: unless-stopped
+
+  standalone:
+    image: "dinky-standalone-server:${DINKY_VERSION}-flink-${FLINK_BIG_VERSION}"
+    environment:
+      - MYSQL_ADDR=mysql:3306
+    ports:
+      - "8888:8888"
+      - "8081:8081"
+    networks:
+      - dinky-net
+    restart: unless-stopped
+    depends_on:
+      - mysql
+
+  web:
+    image: "dinky-web:${DINKY_VERSION}"
+    ports:
+      - "80:80"
+    depends_on:
+      - standalone
+    networks:
+      - dinky-net
+    profiles:
+      - web
+    restart: unless-stopped
+
+networks:
+  dinky-net:

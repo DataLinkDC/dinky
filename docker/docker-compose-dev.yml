@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  mysql:
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileMysql
+
+  dinky:
+    image: dinky-standalone-server:${DINKY_VERSION}
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/Dockerfile
+      args:
+        - DINKY_VERSION
+    deploy:
+      replicas: 0
+
+  standalone:
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileDinkyFlink
+      args:
+        - FLINK_BIG_VERSION
+        - FLINK_VERSION
+        - FLINK_HOME
+        - DINKY_IMAGE=dinky-standalone-server:${DINKY_VERSION}
+    depends_on:
+      - dinky
+      - mysql
+
+  web:
+    build:
+      context: ..
+      dockerfile: ${PWD:-.}/DockerfileWeb
