@@ -242,6 +242,15 @@
                 <include>Dockerfile</include>
             </includes>
         </fileSet>
+        <fileSet>
+            <directory>${project.parent.basedir}/flinkGraph/target/classes</directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>screen_schema.json</include>
+                <include>**/*.yaml</include>
+                <include>**/log4j2.*</include>
+            </includes>
+        </fileSet>
         <!--<fileSet>
             <directory>${project.parent.basedir}/dinky-web/dist</directory>
             <outputDirectory>html</outputDirectory>
