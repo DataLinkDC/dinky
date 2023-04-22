@@ -46,13 +46,13 @@ docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:
 #### 本地docker-compose
 在开发环境,在完成package的情况下,可使用
 ```shell
-docker compose --profile standalone -f docker-compose.yml -f docker-compose-dev.yml up
+docker compose --profile standalone -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 进行docker镜像的构建及运行(/docker/.env文件配置相关环境变量).
 
 如果需要前后端分离, 可使用
 ```shell
-docker compose --profile ms -f docker-compose.yml -f docker-compose-dev.yml up
+docker compose --profile ms -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 (适配自身nginx的docker/web/default.conf配置)
 欢迎补充
