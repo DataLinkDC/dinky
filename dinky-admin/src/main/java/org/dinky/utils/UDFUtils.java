@@ -19,106 +19,14 @@
 
 package org.dinky.utils;
 
-import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
-import org.dinky.exception.BusException;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.model.Task;
-import org.dinky.process.context.ProcessContextHolder;
-import org.dinky.process.exception.DinkyException;
-import org.dinky.process.model.ProcessEntity;
-import org.dinky.service.TaskService;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.table.catalog.FunctionLanguage;
-
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.text.CharSequenceUtil;
-import cn.hutool.core.util.ClassLoaderUtil;
-import cn.hutool.core.util.ReUtil;
-import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.spring.SpringUtil;
 
 /** @since 0.6.8 */
 public class UDFUtils extends UDFUtil {
-
-    public static List<UDF> getUDF(String statement) {
-        String[] statements =
-                SqlUtil.getStatements(SqlUtil.removeNote(statement), FlinkSQLConstant.SEPARATOR);
-        ProcessEntity process = ProcessContextHolder.getProcess();
-        process.info("Parse UDF class name:");
-        Pattern pattern = Pattern.compile(FUNCTION_SQL_REGEX, Pattern.CASE_INSENSITIVE);
-
-        List<UDF> udfList =
-                Stream.of(statements)
-                        .map(s -> ReUtil.findAll(FUNCTION_SQL_REGEX, s, 0))
-                        .filter(CollUtil::isNotEmpty)
-                        .map(x -> x.get(0))
-                        .map(
-                                sql -> {
-                                    List<String> groups =
-                                            CollUtil.removeEmpty(ReUtil.getAllGroups(pattern, sql));
-                                    String udfName = groups.get(1);
-                                    String className = groups.get(2);
-                                    if (ClassLoaderUtil.isPresent(className)) {
-                                        // 获取已经加载在java的类，对应的包路径
-                                        try {
-                                            JarPathContextHolder.addUdfPath(
-                                                    FileUtil.file(
-                                                            DinkyClassLoaderContextHolder.get()
-                                                                    .loadClass(className)
-                                                                    .getProtectionDomain()
-                                                                    .getCodeSource()
-                                                                    .getLocation()
-                                                                    .getPath()));
-                                        } catch (ClassNotFoundException e) {
-                                            throw new DinkyException(e);
-                                        }
-                                        return null;
-                                    }
-
-                                    Task task = null;
-                                    try {
-                                        task =
-                                                SpringUtil.getBean(TaskService.class)
-                                                        .getUDFByClassName(className);
-                                    } catch (Exception e) {
-                                        String errMsg =
-                                                StrUtil.format("class:{} not exists!", className);
-                                        process.error(errMsg);
-                                        throw new BusException(errMsg);
-                                    }
-                                    String code = task.getStatement();
-                                    return UDF.builder()
-                                            .name(udfName)
-                                            .className(className)
-                                            .code(code)
-                                            .functionLanguage(
-                                                    FunctionLanguage.valueOf(
-                                                            task.getDialect().toUpperCase()))
-                                            .build();
-                                })
-                        .filter(Objects::nonNull)
-                        .collect(Collectors.toList());
-        List<String> classNameList =
-                udfList.stream().map(UDF::getClassName).collect(Collectors.toList());
-        if (classNameList.size() > 0) {
-            process.info(StringUtils.join(classNameList, ","));
-        }
-        process.info(
-                CharSequenceUtil.format(
-                        "A total of {} UDF have been Parsed.", classNameList.size()));
-        return udfList;
-    }
 
     public static UDF taskToUDF(Task task) {
         return UDF.builder()
