@@ -106,6 +106,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     && column.getType().toLowerCase().contains("unsigned")) {
                 sb.append(column.getType().replaceAll("(?i)unsigned", "(" + column.getLength() + ") unsigned"));
             } else {
+                sb.append(column.getType());
                 // 处理浮点类型
                 if (column.getPrecision() > 0 && column.getScale() > 0) {
                     sb.append("(")
