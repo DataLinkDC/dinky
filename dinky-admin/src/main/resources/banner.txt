@@ -5,8 +5,3 @@
  _| |_.' / | |  | | | |  | |`\ \   \ '/ /
 |______.' [___][___||__][__|  \_][\_:  /
                                   \__.'
-
-
-Version: @project.version@
-Github:  https://github.com/DataLinkDC/dinky
-公众号:   Dinky 开源

@@ -17,6 +17,11 @@ services:
     image: "dinky-standalone-server:${DINKY_VERSION}-flink-${FLINK_BIG_VERSION}"
     environment:
       - MYSQL_ADDR=mysql:3306
+#      - MYSQL_ADDR=192.168.1.14:3306
+#      - MYSQL_USERNAME=root
+#      - MYSQL_PASSWORD=123456
+#    volumes:
+#      - ./customJar:/opt/dinky/customJar
     ports:
       - "8888:8888"
       - "8081:8081"
