@@ -68,7 +68,6 @@ export const errorConfig: RequestConfig = {
           ErrorNotification(msg,l(ErrorCode[code],"Error"))
         }
       } else if (error.response) {
-        console.log(error)
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
         //认证错误，跳转登录页面
         if (error.response.status === 401){
