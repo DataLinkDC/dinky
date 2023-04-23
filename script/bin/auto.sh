@@ -56,7 +56,7 @@ startWithJmx() {
     echo "........................................Start Dlink with Jmx Successfully.....................................
     ..."
   else
-    echo "Dlink pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
+    echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
 }
 
