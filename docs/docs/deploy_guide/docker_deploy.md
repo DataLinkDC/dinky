@@ -44,7 +44,12 @@ docker run --restart=always -p 8888:8888 -p 8081:8081  -e MYSQL_ADDR=10.255.7.3:
 ### 使用docker-compose 
 
 #### 本地docker-compose
-在开发环境,在完成package的情况下,可使用
+在开发环境,在完成mvn package的情况下
+```shell
+./mvnw -B clean package -Dmaven.test.skip=true -Dspotless.check.skip=true -P prod,scala-2.12,flink-all,web,fast
+```
+
+可使用
 ```shell
 docker compose --profile standalone -f docker-compose.yml -f docker-compose.dev.yml up
 ```
@@ -55,4 +60,8 @@ docker compose --profile standalone -f docker-compose.yml -f docker-compose.dev.
 docker compose --profile ms -f docker-compose.yml -f docker-compose.dev.yml up
 ```
 (适配自身nginx的docker/web/default.conf配置)
+对于1.15上版本,需要手动将容器中/opt/diny/plugin/flink{version}/flink-table-planner-loader*.jar移除,
+替换为相应版本的flink-table-planner_*.jar文件.
+创建容器时,可映射到容器/opt/diny/customJar文件夹,添加自定义jar包.
+
 欢迎补充

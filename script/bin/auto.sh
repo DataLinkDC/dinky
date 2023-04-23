@@ -5,8 +5,7 @@ FLINK_VERSION=${2:-1.14}
 JAR_NAME="dlink-admin"
 
 # Use FLINK_HOME:
-# CLASS_PATH="./lib/*:./plugins/*:./plugins/flink${FLINK_VERSION}/*:$FLINK_HOME/lib/*"
-CLASS_PATH="./lib/*:config:./plugins/*:./plugins/flink${FLINK_VERSION}/*"
+CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/*"
 
 PID_FILE="dinky.pid"
 
@@ -17,17 +16,17 @@ JMX="-javaagent:$APP_HOME/lib/jmx_prometheus_javaagent-0.16.1.jar=10087:$APP_HOM
 # Check whether the pid path exists
 PID_PATH="$(cd "$(dirname "$0")";pwd)/run"
 
-if [ -d ${PID_PATH} ];then
+if [ -d "${PID_PATH}" ];then
     echo "${PID_PATH} is already exist." >> /dev/null
 else
-    mkdir -p  ${PID_PATH}
+    mkdir -p  "${PID_PATH}"
 fi
 
 # Check whether the pid file exists
 if [ -f "${PID_PATH}/${PID_FILE}" ];then
     echo "${PID_PATH}/${PID_FILE} is already exist." >> /dev/null
 else
-    touch ${PID_PATH}/${PID_FILE}
+    touch "${PID_PATH}"/${PID_FILE}
 fi
 
 tips() {
@@ -38,10 +37,10 @@ tips() {
 }
 
 start() {
-  pid=$(cat ${PID_PATH}/${PID_FILE})
-  if [ -z $pid ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp ${CLASS_PATH} org.dinky.Dinky  &
-    echo $! >${PID_PATH}/${PID_FILE}
+  pid=$(cat "${PID_PATH}"/${PID_FILE})
+  if [ -z "$pid" ]; then
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
+    echo $! >"${PID_PATH}"/${PID_FILE}
     echo "FLINK VERSION : $FLINK_VERSION"
     echo "........................................Start Dinky Successfully........................................"
   else
@@ -50,10 +49,10 @@ start() {
 }
 
 startWithJmx() {
-  pid=$(cat ${PID_PATH}/${PID_FILE})
-  if [ -z $pid ]; then
-    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none ${JMX} -cp ${CLASS_PATH} org.dinky.Dinky &
-    echo $! >${PID_PATH}/${PID_FILE}
+  pid=$(cat "${PID_PATH}"/${PID_FILE})
+  if [ -z "$pid" ]; then
+    nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
+    echo $! >"${PID_PATH}"/${PID_FILE}
     echo "........................................Start Dlink with Jmx Successfully.....................................
     ..."
   else
@@ -62,19 +61,19 @@ startWithJmx() {
 }
 
 stop() {
-  pid=$(cat ${PID_PATH}/${PID_FILE})
+  pid=$(cat "${PID_PATH}"/${PID_FILE})
   if [ -z $pid ]; then
     echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE}"
   else
     kill -9 $pid
     sleep 1
     echo "........................................Stop Dinky Successfully....................................."
-    echo " " >${PID_PATH}/${PID_FILE}
+    rm -f "${PID_PATH}"/${PID_FILE}
   fi
 }
 
 status() {
-  pid=$(cat ${PID_PATH}/${PID_FILE})
+  pid=$(cat "${PID_PATH}"/${PID_FILE})
   if [ -z $pid ]; then
     echo ""
     echo "Service ${JAR_NAME} is not running!"
