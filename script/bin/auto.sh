@@ -2,7 +2,7 @@
 
 FLINK_VERSION=${2:-1.14}
 
-JAR_NAME="dlink-admin"
+JAR_NAME="dinky-admin"
 
 # Use FLINK_HOME:
 CLASS_PATH=".:./lib/*:config:./plugins/*:./customJar/*:./plugins/flink${FLINK_VERSION}/*"
@@ -53,10 +53,10 @@ startWithJmx() {
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
     echo $! >"${PID_PATH}"/${PID_FILE}
-    echo "........................................Start Dlink with Jmx Successfully.....................................
+    echo "........................................Start Dinky with Jmx Successfully.....................................
     ..."
   else
-    echo "Dlink pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
+    echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
   fi
 }
 
