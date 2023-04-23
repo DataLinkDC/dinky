@@ -20,8 +20,8 @@ services:
 #      - MYSQL_ADDR=192.168.1.14:3306
 #      - MYSQL_USERNAME=root
 #      - MYSQL_PASSWORD=123456
-#    volumes:
-#      - ./customJar:/opt/dinky/customJar
+    volumes:
+      - ./customJar:/opt/dinky/customJar
     ports:
       - "8888:8888"
       - "8081:8081"
@@ -29,7 +29,8 @@ services:
       - dinky-net
     restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   web:
     image: "dinky-web:${DINKY_VERSION}"
