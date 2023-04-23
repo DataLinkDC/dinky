@@ -22,7 +22,6 @@ import {history} from "@@/core/history";
 import {API_CONSTANTS} from "@/services/constants";
 import {ErrorNotification} from "@/utils/messages";
 
-const loginPath = API_CONSTANTS.LOGIN_PATH;
 
 // 错误处理方案： 错误类型
 enum ErrorCode {
@@ -70,7 +69,13 @@ export const errorConfig: RequestConfig = {
         }
       } else if (error.response) {
         // 请求成功发出且服务器也响应了状态码，但状态代码超出了 2xx 的范围
-        ErrorNotification(error.response.data.msg,l(ErrorCode[error.response.data.code],"ResponseError"))
+        //认证错误，跳转登录页面
+        if (error.response.status === 401){
+          history.push(API_CONSTANTS.LOGIN_PATH);
+        }else {
+          //预留，处理其他code逻辑，目前未定义的code统一发送错误通知
+          ErrorNotification(error.message,error.code)
+        }
       } else if (error.request) {
         // 请求已经成功发起，但没有收到响应
         ErrorNotification(error.toString(),l('app.response.noresponse'))
@@ -96,9 +101,6 @@ export const errorConfig: RequestConfig = {
       // 拦截响应数据，进行个性化处理
       // 不再需要异步处理读取返回体内容，可直接在data中读出，部分字段可在 config 中找到
       const {data = {} as any, config} = response;
-      if (data?.code === 401) {
-        history.push(loginPath);
-      }
       return response;
     },
   ],
