@@ -20,11 +20,13 @@ services:
     ports:
       - "8888:8888"
       - "8081:8081"
+      - "8889:8889"
     networks:
       - dinky-net
     restart: unless-stopped
     depends_on:
-      - mysql
+      mysql:
+        condition: service_healthy
 
   web:
     image: "dinky-web:${DINKY_VERSION}"
