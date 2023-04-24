@@ -118,7 +118,12 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 if ("".equals(column.getDefaultValue())) {
                     sb.append(" DEFAULT ").append("\"\"");
                 } else {
-                    sb.append(" DEFAULT ").append(column.getDefaultValue());
+                    // 处理字符串的默认值，需要加上 'value'
+                    if (column.getType().contains("varchar") || column.getType().contains("VARCHAR")) {
+                        sb.append(" DEFAULT ").append('\'').append(column.getDefaultValue()).append('\'');
+                    } else {
+                        sb.append(" DEFAULT ").append(column.getDefaultValue());
+                    }
                 }
             } else {
                 if (!column.isNullable()) {
