@@ -69,7 +69,7 @@ public class MavenStepSse extends StepSse {
                         null,
                         null,
                         getLogFile().getAbsolutePath(),
-                        CollUtil.newArrayList("package"),
+                        CollUtil.newArrayList("clean", "package"),
                         StrUtil.split(gitProject.getBuildArgs(), " "),
                         this::addMsg);
         if (!state) {
