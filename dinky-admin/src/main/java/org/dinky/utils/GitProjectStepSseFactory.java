@@ -21,6 +21,7 @@ package org.dinky.utils;
 
 import org.dinky.common.result.StepResult;
 import org.dinky.model.GitProject;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.DoneStepSse;
 import org.dinky.sse.StepSse;
 import org.dinky.sse.git.AnalysisUdfClassStepSse;
@@ -58,37 +59,46 @@ public final class GitProjectStepSseFactory {
         int sleep = 500;
         List<SseEmitter> emitterList = new ArrayList<>();
 
-        StepSse headStepSse = getHeadStepPlan(sleep, emitterList, params);
+        StepSse headStepSse = getHeadStepPlan(gitProject.getCodeType(), sleep, emitterList, params);
         cachedThreadPool.execute(headStepSse::main);
 
         sseEmitterMap.put(gitProject.getId(), emitterList);
     }
 
-    private static StepSse getHeadStepPlan(int sleep, List<SseEmitter> emitterList, Dict params) {
+    private static StepSse getHeadStepPlan(
+            Integer codeType, int sleep, List<SseEmitter> emitterList, Dict params) {
         AtomicInteger msgId = new AtomicInteger(1);
         AtomicInteger stepAtomic = new AtomicInteger(1);
 
-        HeadStepSse headStepSse =
-                new HeadStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-        GitCloneStepSse gitCloneStepSse =
-                new GitCloneStepSse(
-                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-        MavenStepSse mavenStepSse =
-                new MavenStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-        GetJarsStepSse getJarsStepSse =
-                new GetJarsStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-        AnalysisUdfClassStepSse analysisUdfClassStepSse =
-                new AnalysisUdfClassStepSse(
-                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-        DoneStepSse doneStepSse =
-                new DoneStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        if (codeType.equals(1)) {
+            HeadStepSse headStepSse =
+                    new HeadStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+            GitCloneStepSse gitCloneStepSse =
+                    new GitCloneStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+            MavenStepSse mavenStepSse =
+                    new MavenStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+            GetJarsStepSse getJarsStepSse =
+                    new GetJarsStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+            AnalysisUdfClassStepSse analysisUdfClassStepSse =
+                    new AnalysisUdfClassStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+            DoneStepSse doneStepSse =
+                    new DoneStepSse(
+                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
 
-        headStepSse.setNexStepSse(gitCloneStepSse);
-        gitCloneStepSse.setNexStepSse(mavenStepSse);
-        mavenStepSse.setNexStepSse(getJarsStepSse);
-        getJarsStepSse.setNexStepSse(analysisUdfClassStepSse);
-        analysisUdfClassStepSse.setNexStepSse(doneStepSse);
-        return headStepSse;
+            headStepSse.setNexStepSse(gitCloneStepSse);
+            gitCloneStepSse.setNexStepSse(mavenStepSse);
+            mavenStepSse.setNexStepSse(getJarsStepSse);
+            getJarsStepSse.setNexStepSse(analysisUdfClassStepSse);
+            analysisUdfClassStepSse.setNexStepSse(doneStepSse);
+            return headStepSse;
+        } else {
+            throw new DinkyException("only support java!");
+        }
     }
 
     public static void observe(SseEmitter emitter, GitProject gitProject, Dict params) {
@@ -96,7 +106,7 @@ public final class GitProjectStepSseFactory {
         List<Dict> dataList = new ArrayList<>();
         Integer state = gitProject.getExecState();
         Integer step = gitProject.getBuildStep();
-        getHeadStepPlan(0, null, params).getStatus(step, state, dataList);
+        getHeadStepPlan(gitProject.getCodeType(), 0, null, params).getStatus(step, state, dataList);
         try {
             emitter.send(SseEmitter.event().data(StepResult.getStepInfo(step, dataList)));
 

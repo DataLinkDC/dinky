@@ -10,7 +10,22 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and a.name like "%${param.name}%"
+                and a.name like CONCAT('%', #{param.name}, '%')
+            </if>
+            <if test='param.branch!=null and param.branch!=""'>
+                and a.branch = #{param.branch}
+            </if>
+            <if test='param.type!=null and param.type!=""'>
+                and a.type = #{param.type}
+            </if>
+            <if test='param.code_type!=null and param.code_type!=""'>
+                and a.code_type = #{param.code_type}
+            </if>
+            <if test='param.build_state!=null and param.build_state!=""'>
+                and a.build_state = #{param.build_state}
+            </if>
+            <if test='param.url!=null and param.url!=""'>
+                and a.url like CONCAT('%', #{param.url}, '%')
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
@@ -25,6 +40,6 @@
                 ${ew.sqlSegment}
             </if>
         </where>
-order by enable desc
+        order by enable desc
     </select>
 </mapper>
