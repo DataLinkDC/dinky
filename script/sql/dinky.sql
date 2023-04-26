@@ -1066,7 +1066,7 @@ CREATE TABLE `dinky_git_project` (
                                      `type` tinyint(4) NOT NULL COMMENT '1-http ,2-ssh',
                                      `last_build` datetime DEFAULT NULL,
                                      `description` varchar(255) DEFAULT NULL,
-                                     `build_state` tinyint(2) NOT NULL DEFAULT '1' COMMENT '1-notStart 1-process 2-faild 3-success',
+                                     `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-faild 3-success',
                                      `build_step` tinyint(2) NOT NULL DEFAULT '0',
                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
                                      `udf_class_map_list` text COMMENT 'scan udf class',
