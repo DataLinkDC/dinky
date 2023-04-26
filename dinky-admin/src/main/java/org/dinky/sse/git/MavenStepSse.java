@@ -64,7 +64,7 @@ public class MavenStepSse extends StepSse {
                                         .getAbsolutePath());
         boolean state =
                 MavenUtil.build(
-                        "/Volumes/文档及虚拟机/company/数宜信/OpenApi/settings2.xml",
+                        null,
                         pom,
                         null,
                         null,
