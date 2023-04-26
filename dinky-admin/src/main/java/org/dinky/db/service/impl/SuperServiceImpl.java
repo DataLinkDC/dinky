@@ -19,7 +19,6 @@
 
 package org.dinky.db.service.impl;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.db.mapper.SuperMapper;
 import org.dinky.db.service.ISuperService;
@@ -34,6 +33,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import cn.hutool.core.lang.Opt;
+
 /**
  * SuperServiceImpl
  *
@@ -42,14 +43,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M, T>
         implements ISuperService<T> {
 
-    @Override
-    public ProTableResult<T> selectForProTable(JsonNode para) {
-        Integer current = para.has("current") ? para.get("current").asInt() : 1;
-        Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
+    private ProTableResult<T> selectForProTable(
+            JsonNode params, boolean isDelete, Map<String, Object> paramsMap) {
+        Integer current = params.has("current") ? params.get("current").asInt() : 1;
+        Integer pageSize = params.has("pageSize") ? params.get("pageSize").asInt() : 10;
         QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        ProTableUtil.autoQueryDefalut(para, queryWrapper);
+        ProTableUtil.autoQueryDefalut(params, queryWrapper, isDelete);
         ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> param = mapper.convertValue(para, Map.class);
+        Map<String, Object> param = mapper.convertValue(params, Map.class);
+
+        Opt.ofNullable(paramsMap).ifPresent(x -> param.putAll(paramsMap));
+
         Page<T> page = new Page<>(current, pageSize);
         List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
         return ProTableResult.<T>builder()
@@ -62,45 +66,17 @@ public class SuperServiceImpl<M extends SuperMapper<T>, T> extends ServiceImpl<M
     }
 
     @Override
-    public ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete) {
-        Integer current = para.has("current") ? para.get("current").asInt() : 1;
-        Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
-        QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        ProTableUtil.autoQueryDefalut(para, queryWrapper, isDelete);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> param = mapper.convertValue(para, Map.class);
-        Page<T> page = new Page<>(current, pageSize);
-        List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder()
-                .success(true)
-                .data(list)
-                .total(page.getTotal())
-                .current(current)
-                .pageSize(pageSize)
-                .build();
+    public ProTableResult<T> selectForProTable(JsonNode params) {
+        return selectForProTable(params, false, null);
     }
 
     @Override
-    public ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap) {
-        Integer current = para.has("current") ? para.get("current").asInt() : 1;
-        Integer pageSize = para.has("pageSize") ? para.get("pageSize").asInt() : 10;
-        QueryWrapper<T> queryWrapper = new QueryWrapper<>();
-        ProTableUtil.autoQueryDefalut(para, queryWrapper);
-        ObjectMapper mapper = new ObjectMapper();
-        Map<String, Object> param = mapper.convertValue(para, Map.class);
-        if (Asserts.isNotNull(paraMap)) {
-            for (Map.Entry<String, Object> entry : paraMap.entrySet()) {
-                param.put(entry.getKey(), entry.getValue());
-            }
-        }
-        Page<T> page = new Page<>(current, pageSize);
-        List<T> list = baseMapper.selectForProTable(page, queryWrapper, param);
-        return ProTableResult.<T>builder()
-                .success(true)
-                .data(list)
-                .total(page.getTotal())
-                .current(current)
-                .pageSize(pageSize)
-                .build();
+    public ProTableResult<T> selectForProTable(JsonNode params, boolean isDelete) {
+        return selectForProTable(params, isDelete, null);
+    }
+
+    @Override
+    public ProTableResult<T> selectForProTable(JsonNode params, Map<String, Object> paramMap) {
+        return selectForProTable(params, false, paramMap);
     }
 }
