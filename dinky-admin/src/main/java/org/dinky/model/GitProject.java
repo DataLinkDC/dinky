@@ -45,8 +45,8 @@ public class GitProject extends SuperEntity<GitProject> {
     private String url;
 
     /** */
-    @TableField(value = "branches")
-    private String branches;
+    @TableField(value = "branch")
+    private String branch;
 
     /** */
     @TableField(value = "username")
@@ -69,6 +69,9 @@ public class GitProject extends SuperEntity<GitProject> {
     /** */
     @TableField(value = "code_type")
     private Integer codeType;
+    /** */
+    @TableField(value = "type")
+    private Integer type;
 
     /** */
     @TableField(value = "last_build")
@@ -82,14 +85,26 @@ public class GitProject extends SuperEntity<GitProject> {
     @TableField(value = "build_state")
     private Integer buildState;
 
-    /** */
-    @TableField(value = "enable")
-    private Integer enable;
+    @TableField(value = "build_step")
+    private Integer buildStep;
 
     /** scan udf class */
-    @TableField(value = "udf_class_list")
-    private String udfClassList;
+    @TableField(value = "udf_class_map_list")
+    private String udfClassMapList;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
+
+    public Integer getExecState() {
+        switch (getBuildState()) {
+            case 1:
+                return 1;
+            case 3:
+                return 2;
+            case 0:
+            case 2:
+            default:
+                return 0;
+        }
+    }
 }

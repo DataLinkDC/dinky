@@ -60,6 +60,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.ClassScanner;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.JarClassLoader;
@@ -366,11 +367,12 @@ public class UDFUtil {
         return null;
     }
 
-    public static List<Class<?>> getUdfClassByJar(String jarPath) {
+    public static List<Class<?>> getUdfClassByJar(File jarPath) {
+        Assert.notNull(jarPath);
 
         List<Class<?>> classList = new ArrayList<>();
         try (JarClassLoader loader = new JarClassLoader()) {
-            loader.addJar(new File(jarPath));
+            loader.addJar(jarPath);
 
             ClassScanner classScanner =
                     new ClassScanner(

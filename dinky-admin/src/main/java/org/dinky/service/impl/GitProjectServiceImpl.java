@@ -26,6 +26,8 @@ import org.dinky.model.GitProject;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
@@ -34,6 +36,7 @@ import cn.hutool.core.bean.BeanUtil;
  * @author ZackYoung
  * @since 0.8.0
  */
+@Service
 public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, GitProject>
         implements GitProjectService {
     @Override

@@ -51,12 +51,14 @@ import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
 @AllArgsConstructor
+@Slf4j
 public class GitRepository {
     private static final String BRANCH_PREFIX = "refs/heads/";
     /** 匹配 ssh格式 git 地址 */
@@ -74,7 +76,7 @@ public class GitRepository {
         this.privateKey = gitProjectDTO.getPrivateKey();
     }
 
-    public void cloneAndPull(String projectName, String branch) {
+    public File cloneAndPull(String projectName, String branch) {
 
         List<String> branchList = getBranchList();
         if (!branchList.contains(branch)) {
@@ -85,21 +87,23 @@ public class GitRepository {
                             branchList));
         }
 
-        File targetFile = new File(PathConstant.TMP_PATH + "git" + File.separator + projectName);
+        File targetFile = getProjectDir(projectName);
+        FileUtil.mkdir(targetFile);
+        File writeFile = new File(targetFile, branch);
 
         Git git;
         try {
 
             CloneCommand cloneCommand =
-                    Git.cloneRepository().setURI(url).setBranch(branch).setDirectory(targetFile);
+                    Git.cloneRepository().setURI(url).setBranch(branch).setDirectory(writeFile);
             initCommand(cloneCommand);
 
-            if (targetFile.exists()) {
+            if (writeFile.exists()) {
                 FileRepositoryBuilder builder = new FileRepositoryBuilder();
                 Repository repository =
                         builder.setGitDir(
                                         new File(
-                                                targetFile.getAbsolutePath()
+                                                writeFile.getAbsolutePath()
                                                         + File.separator
                                                         + ".git"))
                                 .readEnvironment()
@@ -107,19 +111,20 @@ public class GitRepository {
                                 .build();
                 git = new Git(repository);
 
-                if (!StrUtil.equals(repository.getBranch(), branch)) {
-                    FileUtil.del(targetFile);
-                    cloneCommand.call().close();
-                }
-
                 git.pull().call();
                 git.close();
             } else {
                 cloneCommand.call().close();
             }
+            return writeFile;
         } catch (Exception e) {
             e.printStackTrace();
+            throw new DinkyException(e);
         }
+    }
+
+    public static File getProjectDir(String projectName) {
+        return FileUtil.file(PathConstant.TMP_PATH, "git", projectName);
     }
 
     /**

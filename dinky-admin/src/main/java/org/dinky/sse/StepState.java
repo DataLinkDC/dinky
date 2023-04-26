@@ -17,27 +17,21 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.sse;
 
-import java.io.File;
-import java.util.List;
+import java.io.Serializable;
 
-import org.junit.jupiter.api.Test;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
-public class GitRepositoryTests {
-    GitRepository sshRepository =
-            new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
-    GitRepository httpRepository =
-            new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
-
-    @Test
-    public void httpTest() {
-        List<String> branchList1 = httpRepository.getBranchList();
-        System.out.println(branchList1);
-        File dinky = httpRepository.cloneAndPull("dinky", "0.7");
-    }
+@Setter
+@Getter
+public class StepState implements Serializable {
+    private Integer currentStep;
+    /** 2-success 1-process 0-failed */
+    private Integer status;
 }

@@ -17,27 +17,33 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.sse;
 
-import java.io.File;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import org.junit.jupiter.api.Test;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import cn.hutool.core.lang.Dict;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
-public class GitRepositoryTests {
-    GitRepository sshRepository =
-            new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
-    GitRepository httpRepository =
-            new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
+public class DoneStepSse extends StepSse {
+    public DoneStepSse(
+            int sleep,
+            List<SseEmitter> emitterList,
+            Dict params,
+            AtomicInteger msgId,
+            AtomicInteger stepAtomic,
+            ExecutorService cachedThreadPool) {
+        super("done", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+    }
 
-    @Test
-    public void httpTest() {
-        List<String> branchList1 = httpRepository.getBranchList();
-        System.out.println(branchList1);
-        File dinky = httpRepository.cloneAndPull("dinky", "0.7");
+    @Override
+    public void exec() {
+        addFileMsgLog("finished");
     }
 }
