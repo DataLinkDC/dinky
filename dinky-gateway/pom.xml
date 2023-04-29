@@ -212,7 +212,6 @@ for k8s commit tasks-->
         </plugins>
     </build>
 
-    <profiles>
-    </profiles>
+    <profiles />
 
 </project>
