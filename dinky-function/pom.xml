@@ -74,6 +74,16 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
@@ -128,22 +138,6 @@
     </dependencies>
 
     <profiles>
-        <profile>
-            <id>flink-${dinky.flink.version}</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-${dinky.flink.version}</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <dependencies>
