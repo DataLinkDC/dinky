@@ -472,7 +472,7 @@ EXECUTE CDCSOURCE demo WITH (
 );
 ```
 
-### 整库同步到 Flink Table Store
+### 整库同步到 Flink Table Store (Apache Paimon)
 
 ```sql
 EXECUTE CDCSOURCE demo WITH (
@@ -488,7 +488,7 @@ EXECUTE CDCSOURCE demo WITH (
   'sink.connector' = 'sql-catalog',
   'sink.catalog.name' = 'fts',
   'sink.catalog.type' = 'table-store',
-  'sink.warehouse'='file:/tmp/table_store'
+  'sink.catalog.warehouse'='file:/tmp/table_store'
 );
 ```
 
