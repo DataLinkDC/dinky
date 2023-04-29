@@ -35,18 +35,8 @@
             <artifactId>freemarker</artifactId>
         </dependency>
         <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-gateway</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-process</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -74,22 +64,8 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
+
         <!-- test dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
