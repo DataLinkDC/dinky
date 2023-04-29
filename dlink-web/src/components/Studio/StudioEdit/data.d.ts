@@ -77,6 +77,7 @@ export type CAParam = {
   statementSet: boolean,
   type: number,
   dialect?: string,
+  fragment?: boolean,
   databaseId?: number,
   envId?: number,
 }

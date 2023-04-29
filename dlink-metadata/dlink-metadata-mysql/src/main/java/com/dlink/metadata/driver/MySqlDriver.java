@@ -85,7 +85,6 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
     @Override
     public String getCreateTableSql(Table table) {
-
         return genTable(table);
     }
 
@@ -102,24 +101,29 @@ public class MySqlDriver extends AbstractJdbcDriver {
                 .append(" (\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column column = table.getColumns().get(i);
-            sb.append("  `")
-                    .append(column.getName()).append("`  ")
-                    .append(column.getType());
-            // 处理浮点类型
-            if (column.getPrecision() > 0 && column.getScale() > 0) {
-                sb.append("(")
-                        .append(column.getLength())
-                        .append(",").append(column.getScale())
-                        .append(")");
-            } else if (null != column.getLength()) { // 处理字符串类型和数值型
-                sb.append("(").append(column.getLength()).append(")");
+            sb.append("  `").append(column.getName()).append("`  ");
+            if (Asserts.isNotNullString(column.getType())
+                    && column.getType().toLowerCase().contains("unsigned")) {
+                sb.append(column.getType().replaceAll("(?i)unsigned", "(" + column.getLength() + ") unsigned"));
+            } else {
+                sb.append(column.getType());
+                // 处理浮点类型
+                if (column.getPrecision() > 0 && column.getScale() > 0) {
+                    sb.append("(")
+                            .append(column.getLength())
+                            .append(",").append(column.getScale())
+                            .append(")");
+                } else if (null != column.getLength()) { // 处理字符串类型和数值型
+                    sb.append("(").append(column.getLength()).append(")");
+                }
             }
             if (Asserts.isNotNull(column.getDefaultValue())) {
                 if ("".equals(column.getDefaultValue())) {
-                    sb.append(" DEFAULT ").append("\"\"");
+                    // 调整双引号为单引号
+                    sb.append(" DEFAULT ").append("''");
                 } else {
-                    // 处理字符串的默认值，需要加上 'value'
-                    if (column.getType().contains("varchar") || column.getType().contains("VARCHAR")) {
+                    // 数据类型不为 datetime/datetime(x)/timestamp/timestamp(x) 类型，应该使用单引号！
+                    if (!column.getType().toLowerCase().startsWith("datetime") || !column.getType().toLowerCase().startsWith("timestamp")) {
                         sb.append(" DEFAULT ").append('\'').append(column.getDefaultValue()).append('\'');
                     } else {
                         sb.append(" DEFAULT ").append(column.getDefaultValue());
@@ -223,7 +227,8 @@ public class MySqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;").append(" -- ").append(table.getComment()).append("\n");
+            sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;")
+                    .append(" -- ").append(table.getComment()).append("\n");
         } else {
             sb.append(" FROM `").append(table.getSchema()).append("`.`").append(table.getName()).append("`;\n");
         }

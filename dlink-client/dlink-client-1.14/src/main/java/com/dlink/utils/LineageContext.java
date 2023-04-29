@@ -27,40 +27,29 @@ import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
-import org.apache.flink.table.api.TableConfig;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
-import org.apache.flink.table.catalog.CatalogManager;
-import org.apache.flink.table.catalog.FunctionCatalog;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.planner.calcite.FlinkRelBuilder;
-import org.apache.flink.table.planner.calcite.SqlExprToRexConverterFactory;
-import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
-import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
-import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
 /**
- * LineageContext
+ * LineageConte
  *
  * @author baisong
  * @since 2022/8/6 11:06
  */
 public class LineageContext {
 
-    private final FlinkChainedProgram flinkChainedProgram;
     private final TableEnvironmentImpl tableEnv;
 
-    public LineageContext(FlinkChainedProgram flinkChainedProgram, TableEnvironmentImpl tableEnv) {
-        this.flinkChainedProgram = flinkChainedProgram;
+    public LineageContext(TableEnvironmentImpl tableEnv) {
         this.tableEnv = tableEnv;
     }
 
@@ -70,11 +59,8 @@ public class LineageContext {
         String sinkTable = parsed.getField(0);
         RelNode oriRelNode = parsed.getField(1);
 
-        // 2. Optimize original relNode to generate Optimized Logical Plan
-        RelNode optRelNode = optimize(oriRelNode);
-
-        // 3. Build lineage based from RelMetadataQuery
-        return buildFiledLineageResult(sinkTable, optRelNode);
+        // 2. Build lineage based from RelMetadataQuery
+        return buildFiledLineageResult(sinkTable, oriRelNode);
     }
 
     private Tuple2<String, RelNode> parseStatement(String sql) {
@@ -96,69 +82,6 @@ public class LineageContext {
         } else {
             throw new TableException("Only insert is supported now.");
         }
-    }
-
-    /**
-     * Calling each program's optimize method in sequence.
-     */
-    private RelNode optimize(RelNode relNode) {
-        return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
-
-            @Override
-            public boolean isBatchMode() {
-                return false;
-            }
-
-            @Override
-            public TableConfig getTableConfig() {
-                return tableEnv.getConfig();
-            }
-
-            @Override
-            public FunctionCatalog getFunctionCatalog() {
-                return getPlanner().getFlinkContext().getFunctionCatalog();
-            }
-
-            @Override
-            public CatalogManager getCatalogManager() {
-                return tableEnv.getCatalogManager();
-            }
-
-            @Override
-            public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                return getPlanner().getFlinkContext().getSqlExprToRexConverterFactory();
-            }
-
-            @Override
-            public <C> C unwrap(Class<C> clazz) {
-                return getPlanner().getFlinkContext().unwrap(clazz);
-            }
-
-            @Override
-            public FlinkRelBuilder getFlinkRelBuilder() {
-                return getPlanner().getRelBuilder();
-            }
-
-            @Override
-            public boolean needFinalTimeIndicatorConversion() {
-                return true;
-            }
-
-            @Override
-            public boolean isUpdateBeforeRequired() {
-                return false;
-            }
-
-            @Override
-            public MiniBatchInterval getMiniBatchInterval() {
-                return MiniBatchInterval.NONE;
-            }
-
-            private PlannerBase getPlanner() {
-                return (PlannerBase) tableEnv.getPlanner();
-            }
-
-        });
     }
 
     /**
@@ -206,7 +129,8 @@ public class LineageContext {
                     String sourceColumn = fieldNames.get(ordinal);
 
                     // add record
-                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
+                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn,
+                            relColumnOrigin.getTransform()));
                 }
             }
         }

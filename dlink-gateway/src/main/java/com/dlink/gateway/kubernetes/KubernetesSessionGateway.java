@@ -61,13 +61,13 @@ public class KubernetesSessionGateway extends KubernetesGateway {
         AppConfig appConfig = config.getAppConfig();
         String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
         Configuration loadConfiguration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
-        if (loadConfiguration != null) {
-            loadConfiguration.addAll(configuration);
-            configuration = loadConfiguration;
-        }
+        loadConfiguration.addAll(configuration);
+        configuration = loadConfiguration;
         configuration.set(DeploymentOptionsInternal.CONF_DIR, flinkConfigPath);
 
-        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        if (Asserts.isNotNullString(appConfig.getUserJarPath())) {
+            configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        }
 
         KubernetesClusterDescriptor kubernetesClusterDescriptor = new KubernetesClusterDescriptor(configuration,
                 client);

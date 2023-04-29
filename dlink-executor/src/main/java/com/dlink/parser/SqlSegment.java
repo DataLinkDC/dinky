@@ -33,7 +33,8 @@ import java.util.regex.Pattern;
  * @since 2021/6/14 16:12
  */
 public class SqlSegment {
-    private static final String Crlf = "|";
+
+    private static final String Crlf = new String(new byte[]{1});
     @SuppressWarnings("unused")
     private static final String FourSpace = "　　";
     /**
@@ -123,8 +124,8 @@ public class SqlSegment {
             result = m.find();
         }
         m.appendTail(sb);
-        //ls.add(start);
-        String[] arr = sb.toString().split("[|]");
+        // ls.add(start);
+        String[] arr = sb.toString().split("[" + Crlf + "]");
         int arrLength = arr.length;
         for (int i = 0; i < arrLength; i++) {
             ls.add(arr[i]);

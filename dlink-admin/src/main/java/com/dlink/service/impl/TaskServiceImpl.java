@@ -500,6 +500,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     @Override
+    public boolean updateJobInstance(JobInstance jobInstance) {
+        return jobInstanceService.updateById(jobInstance);
+    }
+
+    @Override
     public List<Task> listFlinkSQLEnv() {
         return this.list(new QueryWrapper<Task>().eq("dialect", Dialect.FLINKSQLENV).eq("enabled", 1));
     }
@@ -561,7 +566,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public JobStatus checkJobStatus(JobInfoDetail jobInfoDetail) {
         JobConfig jobConfig = new JobConfig();
         if (Asserts.isNull(jobInfoDetail.getClusterConfiguration())) {
-            return JobStatus.UNKNOWN;
+            return JobStatus.RECONNECTING;
         }
         Map<String, Object> gatewayConfigMap = clusterConfigurationService
                 .getGatewayConfig(jobInfoDetail.getClusterConfiguration().getId());
@@ -680,10 +685,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             // 说明存在版本，需要判断是否 是回退后的老版本
             // 1、版本号存在
             // 2、md5值与上一个版本一致
-            TaskVersion version = versionMap.get(task.getVersionId());
-            version.setId(null);
+            TaskVersion lastTaskVersion = versionMap.get(task.getVersionId());
+            if (Asserts.isNotNull(lastTaskVersion)) {
+                lastTaskVersion.setId(null);
+            }
 
-            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)) {
+            if (versionIds.contains(task.getVersionId()) && !taskVersion.equals(lastTaskVersion)) {
                 // || !versionIds.contains(task.getVersionId()) && !taskVersion.equals(version)
                 taskVersion.setVersionId(Collections.max(versionIds) + 1);
                 task.setVersionId(Collections.max(versionIds) + 1);

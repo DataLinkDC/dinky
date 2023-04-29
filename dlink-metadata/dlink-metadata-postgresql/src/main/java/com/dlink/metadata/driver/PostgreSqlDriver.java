@@ -98,7 +98,8 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment() + "\n");
+            sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";" + " -- " + table.getComment()
+                    + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }
@@ -114,39 +115,55 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         sb.append("CREATE TABLE \"").append(table.getSchema()).append("\".\"").append(table.getName())
                 .append("\" (\n");
 
-        for (Column column : table.getColumns()) {
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            Column column = table.getColumns().get(i);
+            if (i > 0) {
+                sb.append(",\n");
+            }
             sb.append("  \"").append(column.getName()).append("\" ");
             sb.append(column.getType());
             if (column.getPrecision() > 0 && column.getScale() > 0) {
                 sb.append("(")
-                        .append(column.getLength())
+                        .append(column.getPrecision())
                         .append(",").append(column.getScale())
                         .append(")");
-            } else if (null != column.getLength()) { // 处理字符串类型
+            } else if (null != column.getLength()) {
                 sb.append("(").append(column.getLength()).append(")");
             }
-            if (column.isNullable() == true) {
+            if (!column.isNullable()) {
                 sb.append(" NOT NULL");
             }
             if (Asserts.isNotNullString(column.getDefaultValue()) && !column.getDefaultValue().contains("nextval")) {
                 sb.append(" DEFAULT ").append(column.getDefaultValue());
             }
-            sb.append(",\n");
 
-            // 注释
+            if (column.isKeyFlag()) {
+                if (key.length() > 0) {
+                    key.append(",");
+                }
+                key.append(column.getName());
+            }
+
             if (Asserts.isNotNullString(column.getComment())) {
                 comments.append("COMMENT ON COLUMN \"").append(table.getSchema()).append("\".\"")
                         .append(table.getName()).append("\".\"")
                         .append(column.getName()).append("\" IS '").append(column.getComment()).append("';\n");
             }
         }
-        sb.deleteCharAt(sb.length() - 3);
 
         if (Asserts.isNotNullString(table.getComment())) {
             comments.append("COMMENT ON TABLE \"").append(table.getSchema()).append("\".\"")
                     .append(table.getName()).append("\" IS '").append(table.getComment()).append("';");
         }
-        sb.append(");\n\n").append(comments);
+        if (key.length() > 0) {
+            sb.append(",\n");
+            sb.append("CONSTRAINT ");
+            sb.append(table.getName());
+            sb.append("_pkey PRIMARY KEY (");
+            sb.append(key);
+            sb.append(")");
+        }
+        sb.append("\n);\n\n").append(comments);
 
         return sb.toString();
     }

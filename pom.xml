@@ -23,7 +23,7 @@
 
     <groupId>com.dlink</groupId>
     <artifactId>dlink</artifactId>
-    <version>0.7.2</version>
+    <version>0.7.3</version>
     <packaging>pom</packaging>
     <name>Dinky :</name>
 
@@ -38,7 +38,6 @@
         <module>dlink-metadata</module>
         <module>dlink-connectors</module>
         <module>dlink-executor</module>
-        <module>dlink-extends</module>
         <module>dlink-alert</module>
         <module>dlink-daemon</module>
         <module>dlink-scheduler</module>
@@ -306,6 +305,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-client-1.17</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-catalog-mysql-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -322,6 +326,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-catalog-mysql-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-catalog-mysql-1.17</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -492,6 +501,11 @@
             <dependency>
                 <groupId>com.dlink</groupId>
                 <artifactId>dlink-flink-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
+                <artifactId>dlink-flink-1.17</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -857,7 +871,19 @@
             <properties>
                 <!--  modify flink version  -->
                 <dlink.flink.version>1.16</dlink.flink.version>
-                <flink.version>1.16.0</flink.version>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>flink-1.17</id>
+            <activation>
+                <property>
+                    <name>flink-1.17</name>
+                </property>
+            </activation>
+            <properties>
+                <!--  modify flink version  -->
+                <dlink.flink.version>1.17</dlink.flink.version>
             </properties>
         </profile>
 

@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>dlink-connectors</artifactId>
@@ -61,9 +61,16 @@
         </profile>
 
         <profile>
-            <id>flink-1.15</id>
+            <id>all</id>
             <modules>
-
+                <module>dlink-connector-jdbc-1.11</module>
+                <module>dlink-connector-jdbc-1.12</module>
+                <module>dlink-connector-doris-1.13</module>
+                <module>dlink-connector-jdbc-1.13</module>
+                <module>dlink-connector-phoenix-1.13</module>
+                <module>dlink-connector-jdbc-1.14</module>
+                <module>dlink-connector-phoenix-1.14</module>
+                <module>dlink-connector-pulsar-1.14</module>
             </modules>
         </profile>
     </profiles>

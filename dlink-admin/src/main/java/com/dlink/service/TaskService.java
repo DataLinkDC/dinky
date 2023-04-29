@@ -60,6 +60,8 @@ public interface TaskService extends ISuperService<Task> {
 
     boolean saveOrUpdateTask(Task task);
 
+    boolean updateJobInstance(JobInstance jobInstance);
+
     List<Task> listFlinkSQLEnv();
 
     Task initDefaultFlinkSQLEnv(Integer tenantId);

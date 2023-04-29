@@ -96,16 +96,22 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
         // 解决kafka的 properties 配置未加载问题
         Properties kafkaProducerConfig = getProperties();
         if (Asserts.isNotNullString(config.getSink().get("topic"))) {
-            KafkaSink<String> kafkaSink = KafkaSink.<String>builder()
+            org.apache.flink.connector.kafka.sink.KafkaSinkBuilder<String> kafkaSinkBuilder = KafkaSink
+                    .<String>builder()
                     .setBootstrapServers(config.getSink().get("brokers"))
                     .setRecordSerializer(KafkaRecordSerializationSchema.builder()
                             .setTopic(config.getSink().get("topic"))
                             .setValueSerializationSchema(new SimpleStringSchema())
                             .build())
-                    .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
-                    .setKafkaProducerConfig(kafkaProducerConfig)
-                    .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id"))
-                    .build();
+                    .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()));
+            if (!kafkaProducerConfig.isEmpty()) {
+                kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
+            }
+            if (!kafkaProducerConfig.isEmpty() && kafkaProducerConfig.containsKey("transactional.id")
+                    && Asserts.isNotNullString(kafkaProducerConfig.getProperty("transactional.id"))) {
+                kafkaSinkBuilder.setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id"));
+            }
+            KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
             dataStreamSource.sinkTo(kafkaSink);
         } else {
             Map<Table, OutputTag<String>> tagMap = new HashMap<>();
@@ -116,7 +122,6 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
             final List<Schema> schemaList = config.getSchemaList();
             final String schemaFieldName = config.getSchemaFieldName();
             if (Asserts.isNotNullCollection(schemaList)) {
-
                 for (Schema schema : schemaList) {
                     for (Table table : schema.getTables()) {
                         String sinkTableName = getSinkTableName(table);
@@ -126,7 +131,6 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                         tableMap.put(table.getSchemaTableName(), table);
                     }
                 }
-
                 SingleOutputStreamOperator<String> process = mapOperator.process(new ProcessFunction<Map, String>() {
 
                     @Override
@@ -146,16 +150,23 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                 });
                 tagMap.forEach((k, v) -> {
                     String topic = getSinkTableName(k);
-                    KafkaSink<String> kafkaSink = KafkaSink.<String>builder()
+                    org.apache.flink.connector.kafka.sink.KafkaSinkBuilder<String> kafkaSinkBuilder = KafkaSink
+                            .<String>builder()
                             .setBootstrapServers(config.getSink().get("brokers"))
                             .setRecordSerializer(KafkaRecordSerializationSchema.builder()
                                     .setTopic(topic)
                                     .setValueSerializationSchema(new SimpleStringSchema())
                                     .build())
-                            .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()))
-                            .setKafkaProducerConfig(kafkaProducerConfig)
-                            .setTransactionalIdPrefix(kafkaProducerConfig.getProperty("transactional.id") + "-" + topic)
-                            .build();
+                            .setDeliverGuarantee(DeliveryGuarantee.valueOf(env.getCheckpointingMode().name()));
+                    if (!kafkaProducerConfig.isEmpty()) {
+                        kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
+                    }
+                    if (!kafkaProducerConfig.isEmpty() && kafkaProducerConfig.containsKey("transactional.id")
+                            && Asserts.isNotNullString(kafkaProducerConfig.getProperty("transactional.id"))) {
+                        kafkaSinkBuilder.setTransactionalIdPrefix(
+                                kafkaProducerConfig.getProperty("transactional.id") + "-" + topic);
+                    }
+                    KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
                     process.getSideOutput(v).rebalance().sinkTo(kafkaSink).name(topic);
                 });
             }

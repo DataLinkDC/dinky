@@ -135,9 +135,12 @@ public class Explainer {
                 AddJarSqlParser.getAllFilePath(statement).forEach(JarPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
-            } else if (operationType.equals(SqlType.INSERT) || operationType.equals(SqlType.SELECT)
+            } else if (operationType.equals(SqlType.INSERT)
+                    || operationType.equals(SqlType.SELECT)
+                    || operationType.equals(SqlType.WITH)
                     || operationType.equals(SqlType.SHOW)
-                    || operationType.equals(SqlType.DESCRIBE) || operationType.equals(SqlType.DESC)) {
+                    || operationType.equals(SqlType.DESCRIBE)
+                    || operationType.equals(SqlType.DESC)) {
                 trans.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
                 if (!useStatementSet) {

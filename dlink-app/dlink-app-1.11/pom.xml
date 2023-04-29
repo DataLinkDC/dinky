@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink-app</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>dlink-app-1.11</artifactId>
@@ -85,7 +85,6 @@
                             <mainClass>com.dlink.app.MainApp</mainClass>
                         </manifest>
                     </archive>
-                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>

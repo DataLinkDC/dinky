@@ -47,15 +47,18 @@ public class FlinkCDCConfig {
     private Map<String, String> source;
     private Map<String, String> jdbc;
     private Map<String, String> sink;
+    private List<Map<String, String>> sinks;
     private List<Schema> schemaList;
     private String schemaFieldName;
 
     public FlinkCDCConfig() {
     }
 
-    public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
-                          String startupMode,
-                          Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
+    public FlinkCDCConfig(String type, String hostname, Integer port, String username, String password,
+            Integer checkpoint, Integer parallelism, String database, String schema, String table,
+            String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -71,12 +74,15 @@ public class FlinkCDCConfig {
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
+        this.sinks = sinks;
         this.jdbc = jdbc;
     }
 
-    public void init(String type, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String database, String schema, String table,
-                          String startupMode,
-                          Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
+    public void init(String type, String hostname, Integer port, String username, String password, Integer checkpoint,
+            Integer parallelism, String database, String schema, String table,
+            String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
         this.type = type;
         this.hostname = hostname;
         this.port = port;
@@ -92,6 +98,7 @@ public class FlinkCDCConfig {
         this.debezium = debezium;
         this.source = source;
         this.sink = sink;
+        this.sinks = sinks;
         this.jdbc = jdbc;
     }
 
@@ -185,6 +192,10 @@ public class FlinkCDCConfig {
 
     public Map<String, String> getSink() {
         return sink;
+    }
+
+    public List<Map<String, String>> getSinks() {
+        return sinks;
     }
 
     public List<String> getSchemaTableNameList() {

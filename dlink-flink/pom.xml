@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>dlink-flink</artifactId>
@@ -76,6 +76,13 @@
         </profile>
 
         <profile>
+            <id>flink-1.17</id>
+            <modules>
+                <module>dlink-flink-1.17</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>all</id>
             <modules>
                 <module>dlink-flink-1.11</module>
@@ -84,6 +91,7 @@
                 <module>dlink-flink-1.14</module>
                 <module>dlink-flink-1.15</module>
                 <module>dlink-flink-1.16</module>
+                <module>dlink-flink-1.17</module>
             </modules>
         </profile>
     </profiles>

@@ -91,7 +91,7 @@ const JobStatus = (props: JobStatusFormProps) => {
                     {l('pages.devops.jobstatus.CREATED')}
                   </Tag>) : (status === 'RECONNECTING') ?
                   (<Tag icon={<ClockCircleOutlined/>} color="default">
-                    {l('pages.devops.jobstatus.RESTARTING')}
+                    {l('pages.devops.jobstatus.RECONNECTING')}
                   </Tag>) :
                     (<Tag icon={<QuestionCircleOutlined/>} color="default">
                       {l('pages.devops.jobstatus.UNKNOWN')}
