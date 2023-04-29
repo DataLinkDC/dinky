@@ -787,9 +787,6 @@
             <id>aliyun</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>aliyun</name>
-                </property>
             </activation>
             <repositories>
                 <repository>
@@ -809,19 +806,11 @@
             <id>web</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>web</name>
-                </property>
             </activation>
         </profile>
 
         <profile>
             <id>dev</id>
-            <activation>
-                <property>
-                    <name>dev</name>
-                </property>
-            </activation>
             <properties>
                 <scope.runtime>compile</scope.runtime>
             </properties>
@@ -842,11 +831,6 @@
 
         <profile>
             <id>scala-2.11</id>
-            <activation>
-                <property>
-                    <name>scala-2.11</name>
-                </property>
-            </activation>
             <properties>
                 <scala.binary.version>2.11</scala.binary.version>
                 <scala.version>2.11.7</scala.version>
@@ -857,9 +841,6 @@
             <id>scala-2.12</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>!scala-2.11</name>
-                </property>
             </activation>
             <properties>
                 <scala.binary.version>2.12</scala.binary.version>
@@ -869,11 +850,6 @@
 
         <profile>
             <id>flink-1.12</id>
-            <activation>
-                <property>
-                    <name>flink-1.12</name>
-                </property>
-            </activation>
             <properties>
                 <dinky.flink.version>1.12</dinky.flink.version>
             </properties>
@@ -881,11 +857,6 @@
 
         <profile>
             <id>flink-1.13</id>
-            <activation>
-                <property>
-                    <name>flink-1.13</name>
-                </property>
-            </activation>
             <properties>
                 <dinky.flink.version>1.13</dinky.flink.version>
             </properties>
@@ -895,9 +866,6 @@
             <id>flink-1.14</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
-                <property>
-                    <name>flink-1.14</name>
-                </property>
             </activation>
             <properties>
                 <dinky.flink.version>1.14</dinky.flink.version>

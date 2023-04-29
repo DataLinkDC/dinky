@@ -42,7 +42,6 @@
             <modules>
                 <module>dinky-client-1.12</module>
                 <module>dinky-client-1.13</module>
-                <module>dinky-client-1.14</module>
                 <module>dinky-client-1.15</module>
                 <module>dinky-client-1.16</module>
             </modules>

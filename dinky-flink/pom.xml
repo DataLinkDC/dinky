@@ -24,9 +24,7 @@
         <version>0.8.0</version>
     </parent>
     <artifactId>dinky-flink</artifactId>
-
     <packaging>pom</packaging>
-
     <name>Dinky : Flink</name>
     <modules>
         <module>dinky-flink-${dinky.flink.version}</module>
@@ -38,7 +36,6 @@
             <modules>
                 <module>dinky-flink-1.12</module>
                 <module>dinky-flink-1.13</module>
-                <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>
                 <module>dinky-flink-1.16</module>
             </modules>
