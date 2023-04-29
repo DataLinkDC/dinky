@@ -155,14 +155,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>cn.dev33</groupId>-->
-        <!--            <artifactId>sa-token-dao-redis-jackson</artifactId>-->
-        <!--        </dependency>-->
-        <!--        <dependency>-->
-        <!--            <groupId>redis.clients</groupId>-->
-        <!--            <artifactId>jedis</artifactId>-->
-        <!--        </dependency>-->
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -397,16 +389,10 @@
             <artifactId>maven-invoker</artifactId>
             <version>3.2.0</version>
         </dependency>
-        <!--<dependency>-->
-        <!--    <groupId>org.apache.maven</groupId>-->
-        <!--    <artifactId>maven-model</artifactId>-->
-        <!--    <version>3.9.1</version>-->
-        <!--</dependency>-->
     </dependencies>
 
     <build>
         <finalName>${project.artifactId}-${project.version}</finalName>
-
         <resources>
             <resource>
                 <filtering>true</filtering>

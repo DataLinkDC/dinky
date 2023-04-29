@@ -15,44 +15,10 @@
 
     <modules>
         <module>dinky-app-base</module>
+        <module>dinky-app-${dinky.flink.version}</module>
     </modules>
 
     <profiles>
-        <profile>
-            <id>flink-1.12</id>
-            <modules>
-                <module>dinky-app-1.12</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <modules>
-                <module>dinky-app-1.13</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <modules>
-                <module>dinky-app-1.14</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <modules>
-                <module>dinky-app-1.15</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <modules>
-                <module>dinky-app-1.16</module>
-            </modules>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <modules>
