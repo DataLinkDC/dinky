@@ -23,10 +23,9 @@
         <artifactId>dinky-catalog-mysql</artifactId>
         <version>0.8.0</version>
     </parent>
+
     <artifactId>dinky-catalog-mysql-1.13</artifactId>
-
     <packaging>jar</packaging>
-
     <name>Dinky : Catalog : Mysql 1.13</name>
 
     <dependencies>

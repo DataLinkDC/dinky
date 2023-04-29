@@ -23,10 +23,9 @@
         <artifactId>dinky</artifactId>
         <version>0.8.0</version>
     </parent>
+
     <artifactId>dinky-core</artifactId>
-
     <packaging>jar</packaging>
-
     <name>Dinky : Core</name>
 
     <dependencies>
@@ -132,6 +131,7 @@
             <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.vintage</groupId>
