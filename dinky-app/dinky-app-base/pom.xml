@@ -60,12 +60,12 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.12</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -76,12 +76,12 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -92,12 +92,12 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -108,12 +108,12 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -124,12 +124,12 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -140,56 +140,56 @@
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.12</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>

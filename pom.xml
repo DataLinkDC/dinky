@@ -614,10 +614,19 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>${maven-surefire-plugin.version}</version>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-help-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
             </plugins>
         </pluginManagement>
 
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-help-plugin</artifactId>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-clean-plugin</artifactId>
@@ -778,7 +787,6 @@
                 </property>
             </activation>
             <properties>
-                <!--  `provided` for product environment ,`compile` for dev environment  -->
                 <scope.runtime>compile</scope.runtime>
             </properties>
         </profile>
@@ -792,7 +800,6 @@
                 </property>
             </activation>
             <properties>
-                <!--  `provided` for product environment ,`compile` for dev environment  -->
                 <scope.runtime>provided</scope.runtime>
             </properties>
         </profile>
@@ -832,7 +839,6 @@
                 </property>
             </activation>
             <properties>
-                <!--  modify flink version  -->
                 <dinky.flink.version>1.12</dinky.flink.version>
             </properties>
         </profile>
@@ -845,7 +851,6 @@
                 </property>
             </activation>
             <properties>
-                <!--  modify flink version  -->
                 <dinky.flink.version>1.13</dinky.flink.version>
             </properties>
         </profile>
@@ -859,33 +864,20 @@
                 </property>
             </activation>
             <properties>
-                <!--  modify flink version  -->
                 <dinky.flink.version>1.14</dinky.flink.version>
             </properties>
         </profile>
 
         <profile>
             <id>flink-1.15</id>
-            <activation>
-                <property>
-                    <name>flink-1.15</name>
-                </property>
-            </activation>
             <properties>
-                <!--  modify flink version  -->
                 <dinky.flink.version>1.15</dinky.flink.version>
             </properties>
         </profile>
 
         <profile>
             <id>flink-1.16</id>
-            <activation>
-                <property>
-                    <name>flink-1.16</name>
-                </property>
-            </activation>
             <properties>
-                <!--  modify flink version  -->
                 <dinky.flink.version>1.16</dinky.flink.version>
             </properties>
         </profile>

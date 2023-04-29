@@ -17,63 +17,31 @@
   -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.dinky</groupId>
-        <artifactId>dinky</artifactId>
-        <version>0.8.0</version>
-    </parent>
-    <artifactId>dinky-flink</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>org.dinky</groupId>
+    <artifactId>dinky</artifactId>
+    <version>0.8.0</version>
+  </parent>
+  <artifactId>dinky-flink</artifactId>
 
-    <packaging>pom</packaging>
+  <packaging>pom</packaging>
 
-    <name>Dinky : Flink</name>
+  <name>Dinky : Flink</name>
+  <modules>
+    <module>dinky-flink-${dinky.flink.version}</module>
+  </modules>
 
-    <profiles>
-        <profile>
-            <id>flink-1.12</id>
-            <modules>
-                <module>dinky-flink-1.12</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <modules>
-                <module>dinky-flink-1.13</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <modules>
-                <module>dinky-flink-1.14</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <modules>
-                <module>dinky-flink-1.15</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <modules>
-                <module>dinky-flink-1.16</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-all</id>
-            <modules>
-                <module>dinky-flink-1.12</module>
-                <module>dinky-flink-1.13</module>
-                <module>dinky-flink-1.14</module>
-                <module>dinky-flink-1.15</module>
-                <module>dinky-flink-1.16</module>
-            </modules>
-        </profile>
-    </profiles>
+  <profiles>
+    <profile>
+      <id>flink-all</id>
+      <modules>
+        <module>dinky-flink-1.12</module>
+        <module>dinky-flink-1.13</module>
+        <module>dinky-flink-1.14</module>
+        <module>dinky-flink-1.15</module>
+        <module>dinky-flink-1.16</module>
+      </modules>
+    </profile>
+  </profiles>
 </project>
