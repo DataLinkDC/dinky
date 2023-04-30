@@ -30,11 +30,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>3.0.9</version>
@@ -112,6 +107,11 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-metadata-presto</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -195,11 +195,6 @@
         <profile>
             <id>flink-1.13</id>
             <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-catalog-mysql-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-connector-jdbc-1.13</artifactId>

@@ -200,6 +200,11 @@
             <artifactId>jmx_prometheus_javaagent</artifactId>
             <version>0.16.1</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.jsqlparser</groupId>
+            <artifactId>jsqlparser</artifactId>
+            <version>4.4</version>
+        </dependency>
 
         <!-- test dependencies -->
         <dependency>

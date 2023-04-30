@@ -53,6 +53,12 @@
             <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.github.jsqlparser</groupId>
+                    <artifactId>jsqlparser</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--        delete this dependency will result in a JcaPEMKey error
 for k8s commit tasks-->
