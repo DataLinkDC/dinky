@@ -30,6 +30,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
             <version>3.0.9</version>
@@ -125,11 +130,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
         </dependency>
 
         <!-- test dependencies -->
