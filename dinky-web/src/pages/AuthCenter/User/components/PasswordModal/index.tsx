@@ -92,7 +92,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
     /**
      * render
      */
-    return (
+    return <>
         <Modal
             {...NORMAL_MODAL_OPTIONS}
             title={l('button.changePassword')}
@@ -102,7 +102,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
         >
             <PasswordForm values={values} form={form}/>
         </Modal>
-    );
+    </>
 };
 
 export default PasswordModal;

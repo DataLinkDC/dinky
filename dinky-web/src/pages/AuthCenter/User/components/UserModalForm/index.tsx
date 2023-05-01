@@ -81,17 +81,17 @@ const UserModalForm: React.FC<UserModalFormProps> = (props) => {
     };
 
 
-
-
-    return <Modal
-        {...NORMAL_MODAL_OPTIONS}
-        title={values.id ? l("user.update") : l("user.create")}
-        open={modalVisible}
-        onCancel={() => handleCancel()}
-        onOk={() => submitForm()}
-    >
-        <UserForm values={values} form={form}/>
-    </Modal>
+    return <>
+        <Modal
+            {...NORMAL_MODAL_OPTIONS}
+            title={values.id ? l("user.update") : l("user.create")}
+            open={modalVisible}
+            onCancel={() => handleCancel()}
+            onOk={() => submitForm()}
+        >
+            <UserForm values={values} form={form}/>
+        </Modal>
+    </>
 }
 
 export default UserModalForm;

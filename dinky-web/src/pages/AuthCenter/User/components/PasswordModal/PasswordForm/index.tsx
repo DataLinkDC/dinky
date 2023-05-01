@@ -43,56 +43,53 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
      * render changePassword form
      */
     const pwdFormRender = () => {
-        return (
-            <>
-                <ProFormText.Password
-                    width="md"
-                    name="password"
-                    hasFeedback
-                    label={l('user.oldpwd')}
-                    placeholder={l('user.oldpwdPlaceholder')}
-                    rules={[{required: true, message: l('user.oldpwdPlaceholder')}]}
-                />
-                <ProFormText.Password
-                    width="md"
-                    name="newPassword"
-                    hasFeedback
-                    label={l('user.newpwd')}
-                    placeholder={l('user.newpwdPlaceholder')}
-                    rules={[{required: true, message: l('user.newpwdPlaceholder')}]}
-                />
-                <ProFormText.Password
-                    width="md"
-                    name="newPasswordCheck"
-                    hasFeedback
-                    dependencies={['newPassword']}
-                    label={l('user.repeatpwd')}
-                    placeholder={l('user.repeatpwdPlaceholder')}
-                    rules={[
-                        {
-                            required: true,
-                            message: l('user.oldNewPwdNoMatch'),
+        return <>
+            <ProFormText.Password
+                width="md"
+                name="password"
+                hasFeedback
+                label={l('user.oldpwd')}
+                placeholder={l('user.oldpwdPlaceholder')}
+                rules={[{required: true, message: l('user.oldpwdPlaceholder')}]}
+            />
+            <ProFormText.Password
+                width="md"
+                name="newPassword"
+                hasFeedback
+                label={l('user.newpwd')}
+                placeholder={l('user.newpwdPlaceholder')}
+                rules={[{required: true, message: l('user.newpwdPlaceholder')}]}
+            />
+            <ProFormText.Password
+                width="md"
+                name="newPasswordCheck"
+                hasFeedback
+                dependencies={['newPassword']}
+                label={l('user.repeatpwd')}
+                placeholder={l('user.repeatpwdPlaceholder')}
+                rules={[
+                    {
+                        required: true,
+                        message: l('user.oldNewPwdNoMatch'),
+                    },
+                    ({getFieldValue}) => ({
+                        validator(_, value) {
+                            if (!value || getFieldValue('newPassword') === value) {
+                                return Promise.resolve();
+                            }
+                            return Promise.reject(new Error(l('user.oldNewPwdNoMatch')));
                         },
-                        ({getFieldValue}) => ({
-                            validator(_, value) {
-                                if (!value || getFieldValue('newPassword') === value) {
-                                    return Promise.resolve();
-                                }
-                                return Promise.reject(new Error(l('user.oldNewPwdNoMatch')));
-                            },
-                        }),
-                    ]}
+                    }),
+                ]}
 
-                />
-            </>
-        );
+            />
+        </>
     };
 
     /**
      * render
      */
-    return (
-
+    return <>
         <ProForm
             {...FORM_LAYOUT_PUBLIC}
             form={form}
@@ -102,7 +99,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
         >
             {pwdFormRender()}
         </ProForm>
-    );
+    </>
 };
 
 export default PasswordModal;

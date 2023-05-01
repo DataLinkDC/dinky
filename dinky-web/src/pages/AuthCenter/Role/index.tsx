@@ -25,12 +25,12 @@ import RoleProTable from "@/pages/AuthCenter/Role/components/RoleProTable";
 
 export default () => {
 
-  /**
-   * render
-   */
-  return (
-    <PageContainer title={false}>
-      <RoleProTable/>
-    </PageContainer>
-  );
+    /**
+     * render
+     */
+    return <>
+        <PageContainer title={false}>
+            <RoleProTable/>
+        </PageContainer>
+    </>
 };

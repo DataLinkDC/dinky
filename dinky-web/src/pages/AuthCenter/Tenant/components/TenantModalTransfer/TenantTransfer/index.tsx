@@ -76,22 +76,21 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
     };
 
 
-    return (<>
-            <TableTransfer
-                dataSource={userTableList}
-                targetKeys={targetKeys}
-                selectedKeys={selectedKeys}
-                rowKey={item => item.id as any}
-                onChange={onChange}
-                onSelectChange={onSelectChange}
-                filterOption={(inputValue, item) =>
-                    item.username!.indexOf(inputValue) !== -1 || item.nickname!.indexOf(inputValue) !== -1 || item.worknum!.indexOf(inputValue) !== -1
-                }
-                leftColumns={columns}
-                rightColumns={columns}
-            />
-        </>
-    );
+    return <>
+        <TableTransfer
+            dataSource={userTableList}
+            targetKeys={targetKeys}
+            selectedKeys={selectedKeys}
+            rowKey={item => item.id as any}
+            onChange={onChange}
+            onSelectChange={onSelectChange}
+            filterOption={(inputValue, item) =>
+                item.username!.indexOf(inputValue) !== -1 || item.nickname!.indexOf(inputValue) !== -1 || item.worknum!.indexOf(inputValue) !== -1
+            }
+            leftColumns={columns}
+            rightColumns={columns}
+        />
+    </>
 };
 export default TenantTransfer;
 

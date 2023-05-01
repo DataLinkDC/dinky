@@ -27,58 +27,56 @@ import {FormInstance} from "antd/es/form/hooks/useForm";
 import {Values} from "async-validator";
 
 type RoleProFormProps = {
-  values: Partial<UserBaseInfo.Role>;
-  form: FormInstance<Values>;
+    values: Partial<UserBaseInfo.Role>;
+    form: FormInstance<Values>;
 };
 
 const RoleProForm: React.FC<RoleProFormProps> = (props) => {
 
-  const {values, form} = props;
+    const {values, form} = props;
 
-  /**
-   * construct role form
-   * @constructor
-   */
-  const renderRoleForm = () => {
-    return (
-      <>
-        <ProFormText
-          name="roleCode"
-          label={l('role.roleCode')}
-          placeholder={l('role.EnterRoleCode')}
-          rules={[{required: true, message: l('role.EnterRoleCode')}]}
-        />
+    /**
+     * construct role form
+     * @constructor
+     */
+    const renderRoleForm = () => {
+        return <>
+            <ProFormText
+                name="roleCode"
+                label={l('role.roleCode')}
+                placeholder={l('role.EnterRoleCode')}
+                rules={[{required: true, message: l('role.EnterRoleCode')}]}
+            />
 
-        <ProFormText
-          name="roleName"
-          label={l('role.roleName')}
-          placeholder={l('role.EnterRoleName')}
-          rules={[{required: true, message: l('role.EnterRoleName')}]}
-        />
+            <ProFormText
+                name="roleName"
+                label={l('role.roleName')}
+                placeholder={l('role.EnterRoleName')}
+                rules={[{required: true, message: l('role.EnterRoleName')}]}
+            />
 
-        <ProFormTextArea
-          name="note"
-          label={l('global.table.note')}
-          placeholder={l('role.EnterNote')}
-          allowClear
-        />
-      </>
-    );
-  };
+            <ProFormTextArea
+                name="note"
+                label={l('global.table.note')}
+                placeholder={l('role.EnterNote')}
+                allowClear
+            />
+        </>
+    };
 
-  /**
-   * render
-   */
-  return (
-    <ProForm
-      {...FORM_LAYOUT_PUBLIC}
-      form={form}
-      initialValues={values}
-      submitter={false}
-      layout={'horizontal'}
-    >
-        {renderRoleForm()}
-    </ProForm>
-  );
+    /**
+     * render
+     */
+    return <>
+        <ProForm
+            {...FORM_LAYOUT_PUBLIC}
+            form={form}
+            initialValues={values}
+            submitter={false}
+            layout={'horizontal'}
+        >
+            {renderRoleForm()}
+        </ProForm>
+    </>
 };
 export default RoleProForm;

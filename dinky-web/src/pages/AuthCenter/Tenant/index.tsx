@@ -23,14 +23,14 @@ import TenantProTable from "./components/TenantProTable";
 
 const TenantFormList: React.FC = () => {
 
-  /**
-   * render
-   */
-  return (
-    <PageContainer title={false}>
-      <TenantProTable/>
-    </PageContainer>
-  );
+    /**
+     * render
+     */
+    return <>
+        <PageContainer title={false}>
+            <TenantProTable/>
+        </PageContainer>
+    </>
 };
 
 export default TenantFormList;

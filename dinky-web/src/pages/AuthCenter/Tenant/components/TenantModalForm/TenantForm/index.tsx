@@ -43,23 +43,21 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
      * @constructor
      */
     const tenantFormRender = () => {
-        return (
-            <>
-                <ProFormText
-                    name="tenantCode"
-                    label={l('tenant.TenantCode')}
-                    placeholder={l('tenant.EnterTenantCode')}
-                    rules={[{required: true, message: l('tenant.EnterTenantCode')}]}
-                />
-                <ProFormTextArea
-                    name="note"
-                    allowClear
-                    label={l('global.table.note')}
-                    placeholder={l('tenant.EnterTenantNote')}
-                    rules={[{required: true, message: l('tenant.EnterTenantNote')}]}
-                />
-            </>
-        );
+        return <>
+            <ProFormText
+                name="tenantCode"
+                label={l('tenant.TenantCode')}
+                placeholder={l('tenant.EnterTenantCode')}
+                rules={[{required: true, message: l('tenant.EnterTenantCode')}]}
+            />
+            <ProFormTextArea
+                name="note"
+                allowClear
+                label={l('global.table.note')}
+                placeholder={l('tenant.EnterTenantNote')}
+                rules={[{required: true, message: l('tenant.EnterTenantNote')}]}
+            />
+        </>
     };
 
     return <>

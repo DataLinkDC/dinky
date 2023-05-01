@@ -82,7 +82,7 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
     /**
      * render
      */
-    return (
+    return <>
         <Modal
             {...NORMAL_MODAL_OPTIONS}
             title={values.id ? l('tenant.update') : l('tenant.create')}
@@ -92,7 +92,7 @@ const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
         >
             <TenantForm values={values} form={form}/>
         </Modal>
-    );
+    </>
 };
 
 export default TenantModalForm;

@@ -25,15 +25,13 @@ import UserProTable from "@/pages/AuthCenter/User/components/UserProTable";
 
 export default () => {
 
-  /**
-   * render
-   */
-  return (
-    <>
-      <PageContainer title={false}>
-        <UserProTable/>
-      </PageContainer>
+    /**
+     * render
+     */
+    return <>
+        <PageContainer title={false}>
+            <UserProTable/>
+        </PageContainer>
     </>
-  );
 };
 

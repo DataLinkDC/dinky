@@ -97,22 +97,21 @@ const RoleTransfer = (props: TransferFromProps) => {
     /**
      * render
      */
-    return (<>
-            <TableTransfer
-                dataSource={roleTableList}
-                targetKeys={targetKeys}
-                selectedKeys={selectedKeys}
-                rowKey={item => item.id as any}
-                onChange={onChange}
-                onSelectChange={onSelectChange}
-                filterOption={(inputValue, item) =>
-                    item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
-                }
-                leftColumns={columns}
-                rightColumns={columns}
-            />
-        </>
-    );
+    return <>
+        <TableTransfer
+            dataSource={roleTableList}
+            targetKeys={targetKeys}
+            selectedKeys={selectedKeys}
+            rowKey={item => item.id as any}
+            onChange={onChange}
+            onSelectChange={onSelectChange}
+            filterOption={(inputValue, item) =>
+                item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
+            }
+            leftColumns={columns}
+            rightColumns={columns}
+        />
+    </>
 };
 
 export default RoleTransfer;

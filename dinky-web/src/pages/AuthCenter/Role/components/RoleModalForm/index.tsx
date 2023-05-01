@@ -24,7 +24,7 @@ import {l} from "@/utils/intl";
 import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
 import {UserBaseInfo} from "@/types/User/data.d";
 import RoleProForm from "@/pages/AuthCenter/Role/components/RoleModalForm/RoleForm";
-import { FormContextValue } from '@/components/Context/FormContext';
+import {FormContextValue} from '@/components/Context/FormContext';
 
 
 type RoleModalProps = {
@@ -61,7 +61,7 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
      * when modalVisible or values changed, set form values
      */
     useEffect(() => {
-       form.setFieldsValue(values);
+        form.setFieldsValue(values);
     }, [modalVisible, values, form]);
 
     /**
@@ -84,8 +84,7 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
     /**
      * render
      */
-    return (
-
+    return <>
         <Modal
             {...NORMAL_MODAL_OPTIONS}
             title={values.id ? l('role.update') : l('role.create')}
@@ -95,6 +94,7 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
         >
             <RoleProForm form={form} values={values}/>
         </Modal>
-    );
+    </>
+
 };
 export default RoleModalForm;

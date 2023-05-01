@@ -151,7 +151,6 @@ const UserProTable = () => {
     };
 
 
-
     /**
      * table columns
      */
@@ -230,59 +229,57 @@ const UserProTable = () => {
     /**
      * render
      */
-    return (
-        <>
-            <ProTable<UserBaseInfo.User>
-                {...PROTABLE_OPTIONS_PUBLIC}
-                headerTitle={l("user.manager")}
-                actionRef={actionRef}
-                loading={loading}
-                toolBarRender={() => [<CreateButton key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
-                request={(params, sorter, filter: any) => (queryList(API_CONSTANTS.USER, {
-                    ...params,
-                    sorter,
-                    filter
-                }))}
-                columns={columns}
-            />
+    return <>
+        <ProTable<UserBaseInfo.User>
+            {...PROTABLE_OPTIONS_PUBLIC}
+            headerTitle={l("user.manager")}
+            actionRef={actionRef}
+            loading={loading}
+            toolBarRender={() => [<CreateButton key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
+            request={(params, sorter, filter: any) => (queryList(API_CONSTANTS.USER, {
+                ...params,
+                sorter,
+                filter
+            }))}
+            columns={columns}
+        />
 
-            <UserModalForm
-                key={"handleSubmitUser"}
-                onSubmit={handleSubmitUser}
-                onCancel={() => handleModalOpen(false)}
-                modalVisible={modalOpen}
-                values={{}}
-            />
-            {(formValues && Object.keys(formValues).length > 0) && (
-                <>
-                    <PasswordModal
-                        onSubmit={handlePasswordChangeSubmit}
-                        onCancel={() => handlePasswordModalOpen(false)}
-                        modalVisible={passwordModalOpen}
-                        values={formValues}
-                    />
-                    <UserModalForm
-                        key={"handleUpdateUser"}
-                        onSubmit={handleSubmitUser}
-                        onCancel={() => {
-                            handleUpdateModalOpen(false);
-                            setFormValues({});
-                        }}
-                        modalVisible={updateModalOpen}
-                        values={formValues}
-                    />
-                </>
-            )}
-            {/* assign role to user */}
-            <RoleModalTransfer
-                user={formValues}
-                modalVisible={assignRoleTransferOpen}
-                onChange={(value) => setRoleList(value)}
-                onCancel={() => handleAssignRoleTransferOpen(false)}
-                onSubmit={() => handleGrantRoleSubmit()}
-            />
-        </>
-    );
+        <UserModalForm
+            key={"handleSubmitUser"}
+            onSubmit={handleSubmitUser}
+            onCancel={() => handleModalOpen(false)}
+            modalVisible={modalOpen}
+            values={{}}
+        />
+        {(formValues && Object.keys(formValues).length > 0) && (
+            <>
+                <PasswordModal
+                    onSubmit={handlePasswordChangeSubmit}
+                    onCancel={() => handlePasswordModalOpen(false)}
+                    modalVisible={passwordModalOpen}
+                    values={formValues}
+                />
+                <UserModalForm
+                    key={"handleUpdateUser"}
+                    onSubmit={handleSubmitUser}
+                    onCancel={() => {
+                        handleUpdateModalOpen(false);
+                        setFormValues({});
+                    }}
+                    modalVisible={updateModalOpen}
+                    values={formValues}
+                />
+            </>
+        )}
+        {/* assign role to user */}
+        <RoleModalTransfer
+            user={formValues}
+            modalVisible={assignRoleTransferOpen}
+            onChange={(value) => setRoleList(value)}
+            onCancel={() => handleAssignRoleTransferOpen(false)}
+            onSubmit={() => handleGrantRoleSubmit()}
+        />
+    </>
 };
 
 export default UserProTable;
