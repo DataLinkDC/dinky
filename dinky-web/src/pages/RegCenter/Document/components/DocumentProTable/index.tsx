@@ -44,7 +44,7 @@ import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/Bus
 import TextArea from "antd/es/input/TextArea";
 import {EnableSwitch} from "@/components/CallBackButton/EnableSwitch";
 import {EditButton} from "@/components/CallBackButton/EditButton";
-import {PopconfirmButton} from "@/components/CallBackButton/PopconfirmButton";
+import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
 import {CreateButton} from "@/components/CallBackButton/CreateButton";
 import DocumentDrawer from "@/pages/RegCenter/Document/components/DocumentDrawer";
 import DocumentModalForm from "@/pages/RegCenter/Document/components/DocumentModal";
@@ -203,8 +203,8 @@ const DocumentTableList: React.FC = () => {
             width: '10vh',
             render: (_, record) => [
                 <EditButton key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                  description={l("rc.doc.deleteConfirm")}/>,
+                <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                                        description={l("rc.doc.deleteConfirm")}/>,
             ],
         },
     ];

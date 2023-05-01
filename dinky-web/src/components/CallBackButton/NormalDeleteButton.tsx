@@ -17,28 +17,23 @@
  */
 
 import {l} from "@/utils/intl";
-import {Button, Popconfirm} from "antd";
+import {Button} from "antd";
 import React from "react";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 
-type PopconfirmProps = {
-  onClick: () => void;
-  description: string;
+type NormalDeleteButtonProps = {
+    onClick: () => void;
 };
 
-export const PopconfirmButton: React.FC<PopconfirmProps> = (props) => {
-  const {onClick, description} = props;
+export const NormalDeleteButton: React.FC<NormalDeleteButtonProps> = (props) => {
+    const {onClick} = props;
 
-  return (
-    <Popconfirm
-      placement="topRight"
-      title={l("button.delete")}
-      description={description}
-      onConfirm={onClick}
-      okText={l("button.confirm")}
-      cancelText={l("button.cancel")}
-    >
-      <Button key={'DeleteIcon'} icon={<DangerDeleteIcon/>}/>
-    </Popconfirm>
-  );
+    return (
+        <Button
+            className={"options-button"}
+            icon={<DangerDeleteIcon/>}
+            title={l("button.delete")}
+            onClick={() => onClick()}
+        />
+    );
 };

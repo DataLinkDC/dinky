@@ -36,7 +36,7 @@ import {UserBaseInfo} from "@/types/User/data";
 import {EnableSwitch} from "@/components/CallBackButton/EnableSwitch";
 import {EditButton} from "@/components/CallBackButton/EditButton";
 import {AssignButton} from "@/components/CallBackButton/AssignButton";
-import {PopconfirmButton} from "@/components/CallBackButton/PopconfirmButton";
+import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
 import {CreateButton} from "@/components/CallBackButton/CreateButton";
 import PasswordModal from "@/pages/AuthCenter/User/components/PasswordModal";
 import RoleModalTransfer from "../RoleModalTransfer";
@@ -217,8 +217,8 @@ const UserProTable = () => {
                 />,
                 <>
                     {(access.canAdmin && record.username !== "admin") &&
-                        <PopconfirmButton onClick={() => handleDeleteUser(record)}
-                                          description={l("user.deleteConfirm")}/>
+                        <PopconfirmDeleteButton onClick={() => handleDeleteUser(record)}
+                                                description={l("user.deleteConfirm")}/>
                     }
                 </>
                 ,

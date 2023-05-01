@@ -25,7 +25,7 @@ import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {UserBaseInfo} from "@/types/User/data.d";
-import {PopconfirmButton} from "@/components/CallBackButton/PopconfirmButton";
+import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
 import {EditButton} from "@/components/CallBackButton/EditButton";
 import {AssignButton} from "@/components/CallBackButton/AssignButton";
 import {CreateButton} from "@/components/CallBackButton/CreateButton";
@@ -142,8 +142,8 @@ const TenantProTable: React.FC = () => {
                 <AssignButton key={record.id} onClick={() => handleAssignVisible(record)}
                               title={l('tenant.AssignUser')}/>,
                 <>{record.id !== 1 &&
-                    <PopconfirmButton onClick={() => handleDeleteSubmit(record.id)}
-                                      description={l("tenant.deleteConfirm")}/>}</>,
+                    <PopconfirmDeleteButton onClick={() => handleDeleteSubmit(record.id)}
+                                            description={l("tenant.deleteConfirm")}/>}</>,
             ],
         },
     ];

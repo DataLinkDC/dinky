@@ -29,7 +29,7 @@ import {getTenantByLocalStorage} from "@/utils/function";
 import {UserBaseInfo} from "@/types/User/data.d";
 import RoleModalForm from "../RoleModalForm";
 import {CreateButton} from "@/components/CallBackButton/CreateButton";
-import {PopconfirmButton} from "@/components/CallBackButton/PopconfirmButton";
+import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
 import {EditButton} from "@/components/CallBackButton/EditButton";
 
 
@@ -133,8 +133,8 @@ const RoleProTable: React.FC = () => {
                 width: "10vh",
                 render: (_, record) => [
                     <EditButton key={record.id} onClick={() => handleEditVisible(record)}/>,
-                    <>{record.id !== 1 && <PopconfirmButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                                            description={l("role.deleteConfirm")}/>}</>
+                    <>{record.id !== 1 && <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                                                                  description={l("role.deleteConfirm")}/>}</>
                 ],
             },
         ];

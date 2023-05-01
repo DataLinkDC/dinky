@@ -35,7 +35,7 @@ import GlobalVarModal from "@/pages/RegCenter/GlobalVar/components/GlobalVarModa
 import GlobalVarDrawer from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer";
 import {EnableSwitch} from '@/components/CallBackButton/EnableSwitch';
 import {EditButton} from "@/components/CallBackButton/EditButton";
-import {PopconfirmButton} from "@/components/CallBackButton/PopconfirmButton";
+import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
 import {CreateButton} from "@/components/CallBackButton/CreateButton";
 
 const GlobalVarProTable = () => {
@@ -174,8 +174,8 @@ const GlobalVarProTable = () => {
             valueType: 'option',
             render: (_, record) => [
                 <EditButton key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                  description={l("rc.gv.deleteConfirm")}/>,
+                <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                                        description={l("rc.gv.deleteConfirm")}/>,
             ],
         },
     ];
