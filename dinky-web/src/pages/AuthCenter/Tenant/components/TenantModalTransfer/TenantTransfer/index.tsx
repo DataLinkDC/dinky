@@ -15,6 +15,7 @@
  *  limitations under the License.
  *
  */
+
 import type {ColumnsType} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
 import {l} from "@/utils/intl";

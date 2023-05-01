@@ -15,12 +15,9 @@
  *  limitations under the License.
  *
  */
-import type {ColumnsType} from 'antd/es/table/interface';
-import React, {useEffect, useState} from 'react';
+
+import React, {useState} from 'react';
 import {l} from "@/utils/intl";
-import Index from '@/components/TableTransfer';
-import {API_CONSTANTS} from "@/services/constants";
-import {getData} from "@/services/api";
 import { UserBaseInfo } from '@/types/User/data.d';
 import {Modal} from "antd";
 import TenantTransfer from "@/pages/AuthCenter/Tenant/components/TenantModalTransfer/TenantTransfer";

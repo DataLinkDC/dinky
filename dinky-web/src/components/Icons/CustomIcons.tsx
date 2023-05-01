@@ -18,16 +18,16 @@
 import React from "react";
 import Icon, {DeleteTwoTone} from "@ant-design/icons";
 
-/**
- *  This is a custom icon that is used to indicate a dangerous action.{@link DeleteTwoTone}
- * @constructor
- */
+
 const IconStyle = {
   height: "16px",
   width: "16px",
 };
 
-
+/**
+ *  This is a custom icon that is used to indicate a dangerous action.{@link DeleteTwoTone}
+ * @constructor
+ */
 export const DangerDeleteIcon = () => {
   return <>
     <DeleteTwoTone twoToneColor={"red"}/>
@@ -35,6 +35,10 @@ export const DangerDeleteIcon = () => {
 };
 
 
+/**
+ * This is a custom icon that is used to indicate a show log action.
+ * @constructor
+ */
 export const ShowLogIcon = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -53,7 +57,10 @@ export const ShowLogIcon = () => {
   </>;
 };
 
-
+/**
+ * This is a custom icon that is used to indicate a show code tree action.
+ * @constructor
+ */
 export const ShowCodeTreeIcon = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
