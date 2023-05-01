@@ -83,17 +83,6 @@
 
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
