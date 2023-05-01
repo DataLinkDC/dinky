@@ -25,8 +25,8 @@ export default {
   'app.request.400':
     'There was an error in the request sent, and the server did not create or modify data. ',
   'app.request.401': 'The user does not have permission (token, username, password error). ',
-  'app.request.403': 'The user is authorized, but access is forbidden. ',
-  'app.request.404': 'The request sent was for a record that did not exist. ',
+  'app.request.403': 'Sorry, you are not authorized to access this page.',
+  'app.request.404': 'Sorry, the page you visited does not exist.',
   'app.request.405': 'The request method is not allowed. ',
   'app.request.406': 'The requested format is not available. ',
   'app.request.410':
@@ -52,10 +52,13 @@ export default {
   'app.request.update': 'Modify',
   'app.request.running': 'Now is ',
   'app.request.test.alert.msg': 'Sending test alert message',
+  'app.request.loading': 'Loading...',
+  'app.request.back': 'Back Home',
 
   'app.response.response-error':'ResponseError',
   'app.response.sucess':'Success',
   'app.response.error':'Error',
   'app.response.exception':'Server exception',
   'app.response.notlogin':'Not Login',
+  'app.response.notexist':'you visit the page or interface does not exist',
 };

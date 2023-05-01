@@ -20,9 +20,8 @@
 import {TransferProps} from "antd/es/transfer";
 import {ColumnsType, TableRowSelection} from "antd/es/table/interface";
 import {Table, Transfer} from "antd";
-import {Scrollbars} from "react-custom-scrollbars";
 import difference from "lodash/difference";
-import {NORMAL_TABLE_OPTIONS, SCROLLBAR_OPTIONS} from "@/services/constants";
+import {NORMAL_TABLE_OPTIONS} from "@/services/constants";
 
 
 /**
@@ -80,7 +79,6 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
           selectedRowKeys: listSelectedKeys,
         };
         return (<>
-            <Scrollbars {...SCROLLBAR_OPTIONS} >
               <Table
                 {...NORMAL_TABLE_OPTIONS}
                 size="large"
@@ -88,7 +86,7 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
                 columns={columns}
                 dataSource={filteredItems}
                 style={{
-                  height: "350px",
+                  height: "50vh",
                   pointerEvents: enableFlag ? "none" : undefined
                 }}
                 onRow={(item) => ({
@@ -99,7 +97,6 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
                   },
                 })}
               />
-            </Scrollbars>
           </>
         );
       }}

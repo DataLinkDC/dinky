@@ -18,57 +18,28 @@
  */
 
 
-import React, {useState} from 'react';
-import {Button, Form, Input, Modal, Select, Tag} from 'antd';
+import React from 'react';
 import {l} from "@/utils/intl";
-import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
+import {UserBaseInfo} from "@/types/User/data.d";
+import {FormInstance} from "antd/es/form/hooks/useForm";
+import {Values} from "async-validator";
 
-
-export type TenantFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
-  modalVisible: boolean;
+type RoleProFormProps = {
   values: Partial<UserBaseInfo.Role>;
+  form: FormInstance<Values>;
 };
 
-const RoleForm: React.FC<TenantFormProps> = (props) => {
+const RoleProForm: React.FC<RoleProFormProps> = (props) => {
 
-
-  const [form] = Form.useForm();
-  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.Role>>({
-    id: props.values?.id,
-    tenantId: props.values?.tenantId,
-    roleCode: props.values?.roleCode,
-    roleName: props.values?.roleName,
-    isDelete: props.values?.isDelete,
-    note: props.values?.note,
-    createTime: props.values?.createTime,
-    updateTime: props.values?.updateTime,
-  });
-
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-  } = props;
-
-
-  /**
-   * submit form
-   */
-  const submitForm = async () => {
-    const fieldsValue = await form.validateFields();
-    // fieldsValue.id = formVals.id;
-    setFormVals({...formVals, ...fieldsValue});
-    handleSubmit({...formVals, ...fieldsValue});
-  };
+  const {values, form} = props;
 
   /**
    * construct role form
    * @constructor
    */
-  const ConstructRoleForm = () => {
+  const renderRoleForm = () => {
     return (
       <>
         <ProFormText
@@ -91,7 +62,6 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
           placeholder={l('role.EnterNote')}
           allowClear
         />
-
       </>
     );
   };
@@ -100,23 +70,15 @@ const RoleForm: React.FC<TenantFormProps> = (props) => {
    * render
    */
   return (
-    <Modal
-      {...NORMAL_MODAL_OPTIONS}
-      title={formVals.id ? l('role.update') : l('role.create')}
-      open={modalVisible}
-      onCancel={() => handleModalVisible(false)}
-      onOk={() => submitForm()}
+    <ProForm
+      {...FORM_LAYOUT_PUBLIC}
+      form={form}
+      initialValues={values}
+      submitter={false}
+      layout={'horizontal'}
     >
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        form={form}
-        initialValues={formVals}
-        submitter={false}
-        layout={'horizontal'}
-      >
-        {ConstructRoleForm()}
-      </ProForm>
-    </Modal>
+        {renderRoleForm()}
+    </ProForm>
   );
 };
-export default RoleForm;
+export default RoleProForm;

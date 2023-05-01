@@ -42,12 +42,12 @@ import {
   STATUS_MAPPING,
   SWITCH_OPTIONS
 } from "@/services/constants";
-import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
+import CodeShow from "@/components/CustomEditor/CodeShow";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import TextArea from "antd/es/input/TextArea";
 
-const DocumentTableList: React.FC = (props: any) => {
+const DocumentTableList: React.FC = () => {
 
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
   const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);

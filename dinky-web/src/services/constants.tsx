@@ -96,6 +96,26 @@ export const API_CONSTANTS = {
   // alert group enable or disable
   ALERT_GROUP_ENABLE: "/api/alertGroup/enable",
 
+
+  // ---- get git project list----
+  GIT_PROJECT: "/api/git/getProjectList",
+  // ---- saveOrUpdate ----
+  GIT_SAVE_UPDATE: "/api/git/saveOrUpdate",
+  // ---- get git branch ----
+  GIT_BRANCH: "/api/git/getBranchList",
+  // ---- DELETE project ----
+  GIT_PROJECT_DELETE: "/api/git/deleteProject",
+  // ---- update project State  ----
+  GIT_PROJECT_ENABLE: "/api/git/updateEnable",
+  // ---- get project details by id ----
+  GIT_GET_ONE_DETAILS: "/api/git/getOneDetails",
+  // ---- get project details by id ----
+  GIT_GET_CODE_DIR_LIST: "/api/git/getCodeDirList",
+  // ---- get project build by id ----
+  GIT_PROJECT_BUILD: "/api/git/getCodeDirList",
+  // ---- get project build logs by id----
+  GIT_PROJECT_BUILD_STEP_LOGS: "/api/git/build-step-logs",
+
 };
 
 
@@ -184,8 +204,9 @@ export const PROTABLE_OPTIONS_PUBLIC = {
   pagination: {
     defaultPageSize: 8,
     hideOnSinglePage: true,
+    showQuickJumper: false,
+    showSizeChanger: false,
   },
-  tableStyle: {height: "58vh"},
   rowKey: "id",
   search: {
     labelWidth: 120, // must be number
@@ -200,6 +221,7 @@ export const NORMAL_MODAL_OPTIONS = {
   width: "40%",
   bodyStyle: {padding: "20px 10px 10px"},
   destroyOnClose: true,
+  maskClosable: false,
 };
 
 /**
@@ -211,12 +233,9 @@ export const NORMAL_TABLE_OPTIONS = {
     hideOnSinglePage: true,
   },
   rowKey: "id",
-};
-
-export const SCROLLBAR_OPTIONS = {
   style: {
-    height: "520px",
-    width: "100%",
+    scrollY: "auto",
+    scrollX: "auto",
   }
 };
 

@@ -17,11 +17,12 @@
  *
  */
 
-import MonacoEditor from "react-monaco-editor";
-import {ConvertCodeEditTheme} from "@/utils/function";
+import MonacoEditor, {monaco} from "react-monaco-editor";
 import {MonacoEditorOptions} from "@/types/Public/data";
+import {convertCodeEditTheme} from "@/utils/function";
+import React from "react";
 
-export type CodeEditFormProps = {
+ type CodeEditFormProps = {
   height?: string;
   width?: string;
   language?: string;
@@ -36,6 +37,7 @@ export type CodeEditFormProps = {
 
 const CodeEdit = (props: CodeEditFormProps) => {
 
+
   /**
    * 1. height: edit height
    * 2. width: edit width
@@ -49,8 +51,8 @@ const CodeEdit = (props: CodeEditFormProps) => {
    * 10. autoWrap: is auto wrap, value: on | off | wordWrapColumn | bounded
    */
   const {
-    height = '100%', // if null or undefined, set default value
-    width = '100%', // if null or undefined, set default value
+    height = "100%", // if null or undefined, set default value
+    width = "100%", // if null or undefined, set default value
     language, // edit language
     options = {
       ...MonacoEditorOptions, // set default options
@@ -60,8 +62,17 @@ const CodeEdit = (props: CodeEditFormProps) => {
     readOnly = false, // is readOnly
     lineNumbers, // show lineNumbers
     theme, // edit theme
-    autoWrap = 'on', // auto wrap
+    autoWrap = "on", // auto wrap
   } = props;
+
+
+  // register TypeScript language service
+  monaco.languages.register({
+    id: language || "typescript",
+  });
+
+  // get monaco editor model
+  const getModel = () => monaco.editor.getModels()[0];
 
 
   return (<>
@@ -69,17 +80,26 @@ const CodeEdit = (props: CodeEditFormProps) => {
       width={width}
       height={height}
       value={code}
+      language={language}
       options={{
         ...options,
         readOnly,
         wordWrap: autoWrap,
+        autoDetectHighContrast: true,
         lineNumbers,
-        language
+      }}
+      editorDidMount={(editor) => {
+        // 在编辑器加载完成后，设置自动布局和自动高亮显示
+        editor.layout();
+        editor.focus();
+        getModel().updateOptions({
+          tabSize: 2,
+        });
       }}
       onChange={onChange}
-      theme={theme ? theme : ConvertCodeEditTheme()}
+      theme={theme ? theme : convertCodeEditTheme()}
     />
-  </>)
+  </>);
 };
 
 export default CodeEdit;

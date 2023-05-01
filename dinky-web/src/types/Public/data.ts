@@ -41,7 +41,7 @@ export const MonacoEditorOptions = {
   // selectOnLineNumbers: true,
   renderSideBySide: false, //  side by side
   autoIndent: "None", //  auto indent
-  fontSize: 16, //  font size
+  fontSize: 14, //  font size
   automaticLayout: true, //  auto layout
   scrollBeyondLastLine: false,  //is scroll beyond the last line
   autoDetectHighContrast: true, // auto detect high contrast

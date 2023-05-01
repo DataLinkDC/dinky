@@ -25,8 +25,6 @@ import {l} from "@/utils/intl";
 import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from "@/services/constants";
 import {request} from "@@/exports";
 import {
-  ErrorMessage,
-  ErrorNotification,
   LoadingMessageAsync, SuccessMessage, WarningMessage,
 } from "@/utils/messages";
 
@@ -105,7 +103,6 @@ export const handleAddOrUpdate = async (url: string, params: any) => {
     }
     return true;
   } catch (error) {
-    ErrorNotification(l("app.request.error") + error);
     return false;
   }
 };
@@ -126,7 +123,6 @@ export const handleRemoveById = async (url: string, id: number) => {
     }
     return true;
   } catch (error) {
-    ErrorMessage(l("app.request.delete.error"));
     return false;
   }
 };
@@ -146,7 +142,6 @@ export const updateEnabled = async (url: string, params: any) => {
     }
     return true;
   } catch (error) {
-   ErrorMessage(l("app.request.error.try"));
     return false;
   }
 };
@@ -162,7 +157,6 @@ export const handleOption = async (url: string, title: string, param: any) => {
     }
     return true;
   } catch (error) {
-   ErrorMessage(title + l("app.request.error.try"));
     return false;
   }
 };
@@ -178,7 +172,6 @@ export const handleData = async (url: string, id: any) => {
       return false;
     }
   } catch (error) {
-    ErrorMessage(l("app.request.geterror.error"));
     return false;
   }
 };
@@ -197,7 +190,6 @@ export const handlePutData = async (url: string, fields: any) => {
     }
     return true;
   } catch (error) {
-    ErrorMessage(l("app.request.error") + error);
     return false;
   }
 };

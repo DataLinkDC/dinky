@@ -37,9 +37,9 @@ import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import GlobalVarForm from "@/pages/RegCenter/GlobalVar/components/GlobalVarForm";
 import {queryList} from "@/services/api";
-import CodeShow from "@/components/CustomMonacoEditor/CodeShow";
+import CodeShow from "@/components/CustomEditor/CodeShow";
 
-const GlobalVarList: React.FC = (props: any) => {
+const GlobalVarList: React.FC = () => {
   /**
    * state
    */
@@ -208,7 +208,7 @@ const GlobalVarList: React.FC = (props: any) => {
         loading={loading}
         {...PROTABLE_OPTIONS_PUBLIC}
         toolBarRender={() => [
-          <Button type="primary" onClick={() => handleModalVisible(true)}>
+          <Button key={"id"} type="primary" onClick={() => handleModalVisible(true)}>
             <PlusOutlined/> {l('button.create')}
           </Button>,
         ]}

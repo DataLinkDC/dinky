@@ -24,8 +24,8 @@ export default {
   'app.request.204': '删除数据成功。',
   'app.request.400': '发出的请求有错误，服务器没有进行新建或修改数据的操作。',
   'app.request.401': '用户没有权限（令牌、用户名、密码错误）。',
-  'app.request.403': '用户得到授权，但是访问是被禁止的。',
-  'app.request.404': '发出的请求针对的是不存在的记录，服务器没有进行操作。',
+  'app.request.403': '抱歉，您无权访问此页面。',
+  'app.request.404': '抱歉，您访问的页面不存在。',
   'app.request.405': '请求方法不被允许。',
   'app.request.406': '请求的格式不可得。',
   'app.request.410': '请求的资源被永久删除，且不会再得到的。',
@@ -50,10 +50,14 @@ export default {
   'app.request.update':'修改',
   'app.request.running':'正在',
   'app.request.test.alert.msg':'正在发送测试告警信息',
+  'app.request.loading': '加载中...',
+  'app.request.back': '返回主页',
+
 
   'app.response.response-error':'响应出错',
   'app.response.sucess':'成功',
   'app.response.error':'错误',
   'app.response.exception':'服务端错误',
   'app.response.notlogin':'未登录',
+  'app.response.notexist':'你访问的页面/接口不存在',
 };

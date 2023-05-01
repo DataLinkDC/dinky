@@ -56,6 +56,11 @@ export default {
   'button.desc': '倒序',
   'button.query': '查询',
   'button.exit': '退出',
+  'button.build': '构建',
+  'button.next': '下一步',
+  'button.prev': '前一步',
+  'button.showLog': '查看日志',
+  'button.showCode': '查看代码',
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',

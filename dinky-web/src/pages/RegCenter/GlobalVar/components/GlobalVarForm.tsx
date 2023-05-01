@@ -22,8 +22,8 @@ import {Form, Modal} from 'antd';
 import {l} from "@/utils/intl";
 import {GlobalVar} from "@/types/RegCenter/data";
 import {ProForm, ProFormItem, ProFormSwitch, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
-import CodeEdit from "@/components/CustomMonacoEditor/CodeEdit";
+import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
 
 /**
  * params
