@@ -56,7 +56,6 @@ const DocumentTableList: React.FC = () => {
     const [formValues, setFormValues] = useState<Partial<Document>>({});
     const actionRef = useRef<ActionType>();
     const [loading, setLoading] = useState<boolean>(false);
-
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
 

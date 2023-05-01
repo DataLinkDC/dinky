@@ -28,7 +28,7 @@ type DocumentDescProps = {
 const DocumentDesc: React.FC<DocumentDescProps> = (props) => {
     const {values, columns} = props;
     return <>
-        <ProDescriptions<Partial<Document>>
+        <ProDescriptions<Document>
             column={1}
             loading={values && Object.keys(values).length === 0}
             title={values.name}

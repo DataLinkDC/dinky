@@ -17,18 +17,18 @@
  *
  */
 
-import {Document} from "@/types/RegCenter/data";
+import {GlobalVar} from "@/types/RegCenter/data";
 import React from "react";
 import {Drawer} from "antd";
-import DocumentDesc from "@/pages/RegCenter/Document/components/DocumentDrawer/DocumentDesc";
+import GlobalVarDesc from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer/GlobalVarDesc";
 
-type DocumentDrawerProps = {
+type GlobalVarDrawerProps = {
     onCancel: (flag?: boolean) => void;
-    values: Partial<Document>;
+    values: Partial<GlobalVar>;
     modalVisible: boolean;
     columns: any;
 }
-const DocumentDrawer: React.FC<DocumentDrawerProps> = (props) => {
+const DocumentDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
     const {onCancel: handleCancel, values, modalVisible, columns} = props;
 
 
@@ -38,7 +38,7 @@ const DocumentDrawer: React.FC<DocumentDrawerProps> = (props) => {
             visible={modalVisible}
             onClose={() => handleCancel(false)}
         >
-            <DocumentDesc values={values} columns={columns}/>
+            <GlobalVarDesc values={values} columns={columns}/>
         </Drawer>
     </>
 

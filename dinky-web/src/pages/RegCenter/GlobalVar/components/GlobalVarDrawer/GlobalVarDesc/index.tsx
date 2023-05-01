@@ -17,31 +17,28 @@
  *
  */
 
-import {Document} from "@/types/RegCenter/data";
 import React from "react";
-import {Drawer} from "antd";
-import DocumentDesc from "@/pages/RegCenter/Document/components/DocumentDrawer/DocumentDesc";
+import ProDescriptions from "@ant-design/pro-descriptions";
+import {GlobalVar} from "@/types/RegCenter/data";
 
-type DocumentDrawerProps = {
-    onCancel: (flag?: boolean) => void;
-    values: Partial<Document>;
-    modalVisible: boolean;
+type GlobalVarDescProps = {
+    values: Partial<GlobalVar>;
     columns: any;
 }
-const DocumentDrawer: React.FC<DocumentDrawerProps> = (props) => {
-    const {onCancel: handleCancel, values, modalVisible, columns} = props;
-
-
+const DocumentDesc: React.FC<GlobalVarDescProps> = (props) => {
+    const {values, columns} = props;
     return <>
-        <Drawer
-            width={'50%'}
-            visible={modalVisible}
-            onClose={() => handleCancel(false)}
-        >
-            <DocumentDesc values={values} columns={columns}/>
-        </Drawer>
+        <ProDescriptions<GlobalVar>
+            column={1}
+            loading={values && Object.keys(values).length === 0}
+            title={values.name}
+            request={async () => ({
+                data: values,
+            })}
+            params={{id: values.id}}
+            columns={columns}
+        />
     </>
-
 }
 
-export default DocumentDrawer;
+export default DocumentDesc;
