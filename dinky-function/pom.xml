@@ -37,6 +37,10 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>

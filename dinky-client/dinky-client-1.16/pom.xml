@@ -19,6 +19,11 @@
             <artifactId>dinky-client-base</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
             <scope>provided</scope>
@@ -44,7 +49,6 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>${maven-jar-plugin.version}</version>
                 <configuration>
-                    <!-- 指定打包的jar包输出路径 -->
                     <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
                 </configuration>
             </plugin>
