@@ -102,7 +102,11 @@ public class CustomStringJavaCompiler {
         Iterable<? extends JavaFileObject> javaFileObject =
                 standardFileManager.getJavaFileObjectsFromFiles(
                         Collections.singletonList(codeFile));
-        List<String> optionList = new ArrayList<>(Arrays.asList("-classpath", "F:\\maven_repository\\dinky\\org\\apache\\flink\\flink-table-common\\1.16.0\\flink-table-common-1.16.0.jar"));
+        List<String> optionList =
+                new ArrayList<>(
+                        Arrays.asList(
+                                "-classpath",
+                                "F:\\maven_repository\\dinky\\org\\apache\\flink\\flink-table-common\\1.16.0\\flink-table-common-1.16.0.jar"));
 
         // 获取一个编译任务
         JavaCompiler.CompilationTask task =
