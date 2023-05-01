@@ -23,16 +23,18 @@ import React from "react";
 type EnableSwitchProps = {
     record: any;
     onChange: () => void;
+    disabled?: boolean;
 }
 export const EnableSwitch = (props: EnableSwitchProps) => {
 
-    const {record,onChange} = props;
+    const {record,onChange,disabled=false} = props;
 
     return <>
         <Space>
             <Switch
                 {...SWITCH_OPTIONS()}
                 checked={record.enabled}
+                disabled={disabled}
                 onChange={() => onChange()}/>
         </Space>
     </>
