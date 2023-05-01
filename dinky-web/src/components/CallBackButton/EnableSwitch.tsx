@@ -30,7 +30,7 @@ export const EnableSwitch = (props: EnableSwitchProps) => {
     const {record,onChange,disabled=false} = props;
 
     return <>
-        <Space>
+        <Space className={"hidden-overflow"}>
             <Switch
                 {...SWITCH_OPTIONS()}
                 checked={record.enabled}
