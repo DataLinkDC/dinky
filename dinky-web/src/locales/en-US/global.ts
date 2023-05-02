@@ -56,6 +56,11 @@ export default {
   'button.desc': 'DESC',
   'button.query': 'Query',
   'button.exit': 'Exit',
+  'button.build': 'Build',
+  'button.next': 'Next',
+  'button.prev': 'Previous',
+  'button.showLog': 'Show Log',
+  'button.showCode': 'Show Code',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',

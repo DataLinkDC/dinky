@@ -114,7 +114,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             if (Asserts.isNotNull(roleCode)) {
                 return Result.failed(
                         String.format(
-                                MessageResolverUtils.getMessage("role.code.exist"),
+                                MessageResolverUtils.getMessage("role.exists"),
                                 role.getRoleCode()));
             }
         }
