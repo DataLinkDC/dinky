@@ -24,8 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -102,11 +100,6 @@ public class CustomStringJavaCompiler {
         Iterable<? extends JavaFileObject> javaFileObject =
                 standardFileManager.getJavaFileObjectsFromFiles(
                         Collections.singletonList(codeFile));
-        List<String> optionList =
-                new ArrayList<>(
-                        Arrays.asList(
-                                "-classpath",
-                                "F:\\maven_repository\\dinky\\org\\apache\\flink\\flink-table-common\\1.16.0\\flink-table-common-1.16.0.jar"));
 
         // 获取一个编译任务
         JavaCompiler.CompilationTask task =
@@ -114,7 +107,7 @@ public class CustomStringJavaCompiler {
                         null,
                         standardFileManager,
                         diagnosticsCollector,
-                        optionList,
+                        null,
                         null,
                         javaFileObject);
         // 设置编译耗时
