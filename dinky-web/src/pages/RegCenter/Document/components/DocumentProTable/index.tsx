@@ -178,7 +178,7 @@ const DocumentTableList: React.FC = () => {
             filterMultiple: false,
             valueEnum: STATUS_ENUM(),
             render: (_, record) => {
-                return <EnableSwitchBtn disabled={drawerOpen} record={record} onChange={() => handleChangeEnable(record)}/>
+                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record} onChange={() => handleChangeEnable(record)}/>
             },
         },
         {
@@ -202,8 +202,8 @@ const DocumentTableList: React.FC = () => {
             valueType: 'option',
             width: '10vh',
             render: (_, record) => [
-                <EditBtn key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmDeleteBtn key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)}/>,
+                <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                      description={l("rc.doc.deleteConfirm")}/>,
             ],
         },

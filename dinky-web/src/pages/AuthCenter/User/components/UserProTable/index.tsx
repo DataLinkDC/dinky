@@ -171,7 +171,7 @@ const UserProTable = () => {
             dataIndex: "enabled",
             hideInSearch: true,
             render: (_, record) => {
-                return <EnableSwitchBtn record={record} onChange={() => handleChangeEnable(record)}/>;
+                return <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
             filterMultiple: false,
@@ -197,11 +197,11 @@ const UserProTable = () => {
             valueType: "option",
             width: "10vh",
             render: (_: any, record: UserBaseInfo.User) => [
-                <EditBtn key={record.id} onClick={() => handleEditVisible(record)}/>,
-                <AssignBtn key={record.id} onClick={() => handleAssignRole(record)} title={l('user.AssignRole')}/>,
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
+                <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)} title={l('user.assignRole')}/>,
                 <Button
                     className={"options-button"}
-                    key={"changePassword"}
+                    key={`${record.id}_change`}
                     icon={<LockTwoTone/>}
                     title={l("button.changePassword")}
                     onClick={() => {
@@ -210,7 +210,7 @@ const UserProTable = () => {
                 />,
                 <>
                     {(access.canAdmin && record.username !== "admin") &&
-                        <PopconfirmDeleteBtn onClick={() => handleDeleteUser(record)}
+                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteUser(record)}
                                              description={l("user.deleteConfirm")}/>
                     }
                 </>
@@ -248,6 +248,7 @@ const UserProTable = () => {
         {(formValues && Object.keys(formValues).length > 0) && (
             <>
                 <PasswordModal
+                    key={"handlePasswordChangeSubmit"}
                     onSubmit={handlePasswordChangeSubmit}
                     onCancel={() => handlePasswordModalOpen(false)}
                     modalVisible={passwordModalOpen}

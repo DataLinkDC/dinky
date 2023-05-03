@@ -132,9 +132,9 @@ const RoleProTable: React.FC = () => {
                 valueType: 'option',
                 width: "10vh",
                 render: (_, record) => [
-                    <EditBtn key={record.id} onClick={() => handleEditVisible(record)}/>,
+                    <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                     <>{record.id !== 1 &&
-                        <PopconfirmDeleteBtn key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                              description={l("role.deleteConfirm")}/>}</>
                 ],
             },

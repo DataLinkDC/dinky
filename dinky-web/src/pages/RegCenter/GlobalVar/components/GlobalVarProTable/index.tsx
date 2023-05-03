@@ -145,7 +145,7 @@ const GlobalVarProTable = () => {
             hideInSearch: true,
             width: '15vh',
             render: (_, record) => {
-                return <EnableSwitchBtn disabled={drawerOpen} record={record}
+                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record}
                                         onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
@@ -173,8 +173,8 @@ const GlobalVarProTable = () => {
             width: '10vh',
             valueType: 'option',
             render: (_, record) => [
-                <EditBtn key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmDeleteBtn key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)}/>,
+                <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                      description={l("rc.gv.deleteConfirm")}/>,
             ],
         },

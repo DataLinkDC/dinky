@@ -29,7 +29,6 @@ import {
 } from "@ant-design/pro-components";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import React, {useEffect, useState} from "react";
-import {Form, Select} from "antd";
 import {
     DOCUMENT_CATEGORY,
     DOCUMENT_FUNCTION_TYPE,

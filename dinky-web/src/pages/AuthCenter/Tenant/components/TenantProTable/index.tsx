@@ -138,11 +138,11 @@ const TenantProTable: React.FC = () => {
             valueType: 'option',
             width: "10vh",
             render: (_, record: UserBaseInfo.Tenant) => [
-                <EditBtn key={record.id} onClick={() => handleEditVisible(record)}/>,
-                <AssignBtn key={record.id} onClick={() => handleAssignVisible(record)}
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
+                <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
                            title={l('tenant.AssignUser')}/>,
                 <>{record.id !== 1 &&
-                    <PopconfirmDeleteBtn onClick={() => handleDeleteSubmit(record.id)}
+                    <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                          description={l("tenant.deleteConfirm")}/>}</>,
             ],
         },
