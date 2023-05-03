@@ -895,7 +895,7 @@
         </profile>
 
         <profile>
-        <id>not-all</id>
+            <id>not-all</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
