@@ -62,21 +62,21 @@ const UserProTable = () => {
     const access = useAccess(); // access control
 
 
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        actionRef.current?.reload?.();
+        setLoading(false);
+    }
+
     /**
      * user add role to submit
      */
     const handleGrantRoleSubmit = async () => {
-        setLoading(true);
-        const success = await handlePutData(
-            API_CONSTANTS.USER_ASSIGN_ROLE,
-            {userId: formValues.id, roleIds: roleList}
-        );
-        if (success) {
+        await executeAndCallbackRefresh(() => {
+            handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {userId: formValues.id, roleIds: roleList});
             handleAssignRoleTransferOpen(false);
-            actionRef.current?.reload?.();
-        }
-        setLoading(false);
-
+        })
     };
 
     /**
@@ -111,11 +111,8 @@ const UserProTable = () => {
      * @param value
      */
     const handleDeleteUser = async (value: UserBaseInfo.User) => {
-        setLoading(true);
         // TODO: delete user interface is use /api/users/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/users (USER)
-        await handleRemoveById(API_CONSTANTS.USER_DELETE, value.id);
-        setLoading(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(() => handleRemoveById(API_CONSTANTS.USER_DELETE, value.id))
     };
 
 
@@ -124,10 +121,7 @@ const UserProTable = () => {
      * @param value
      */
     const handleChangeEnable = async (value: UserBaseInfo.User) => {
-        setLoading(true);
-        await updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id});
-        setLoading(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(() => updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id}))
     };
 
     /**
@@ -144,10 +138,10 @@ const UserProTable = () => {
      * @param value
      */
     const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
-        await handleAddOrUpdate(API_CONSTANTS.USER, value);
-        await handleModalOpen(false);
-        actionRef.current?.reload?.();
-
+        await executeAndCallbackRefresh(() => {
+             handleAddOrUpdate(API_CONSTANTS.USER, value);
+             handleModalOpen(false);
+        })
     };
 
 

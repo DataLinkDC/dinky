@@ -20,8 +20,8 @@
 import {TransferProps} from "antd/es/transfer";
 import {ColumnsType, TableRowSelection} from "antd/es/table/interface";
 import {Table, Transfer} from "antd";
-import difference from "lodash/difference";
 import {NORMAL_TABLE_OPTIONS} from "@/services/constants";
+import {difference} from "lodash";
 
 
 /**
