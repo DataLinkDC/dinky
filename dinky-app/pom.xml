@@ -12,11 +12,14 @@
     <packaging>pom</packaging>
     <name>Dinky : App</name>
 
+    <modules>
+        <module>dinky-app-base</module>
+    </modules>
+
     <profiles>
         <profile>
             <id>not-all</id>
             <modules>
-                <module>dinky-app-base</module>
                 <module>dinky-app-${dinky.flink.version}</module>
             </modules>
         </profile>
