@@ -93,7 +93,7 @@ public class RowPermissionsController {
     }
 
     /**
-     * delete roleSelectPermissions by id
+     * delete rowPermissions by id
      *
      * @param id {@link Integer}
      * @return {@link Result}
