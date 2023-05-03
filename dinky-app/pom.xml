@@ -14,7 +14,7 @@
 
     <profiles>
         <profile>
-            <id>notAll</id>
+            <id>not-all</id>
             <modules>
                 <module>dinky-app-base</module>
                 <module>dinky-app-${dinky.flink.version}</module>

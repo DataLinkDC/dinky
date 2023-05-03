@@ -31,7 +31,7 @@
 
     <profiles>
         <profile>
-            <id>notAll</id>
+            <id>not-all</id>
             <modules>
                 <module>dinky-catalog-mysql-${dinky.flink.version}</module>
             </modules>

@@ -47,7 +47,7 @@
 
     <profiles>
         <profile>
-            <id>notAll</id>
+            <id>not-all</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>

@@ -37,7 +37,7 @@
 
     <profiles>
         <profile>
-            <id>notAll</id>
+            <id>not-all</id>
             <modules>
                 <module>dinky-client-${dinky.flink.version}</module>
             </modules>
