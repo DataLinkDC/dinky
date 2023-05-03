@@ -33,11 +33,11 @@ import {
 } from "@/services/constants";
 import {useAccess} from "@@/exports";
 import {UserBaseInfo} from "@/types/User/data";
-import {EnableSwitch} from "@/components/CallBackButton/EnableSwitch";
-import {EditButton} from "@/components/CallBackButton/EditButton";
-import {AssignButton} from "@/components/CallBackButton/AssignButton";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import PasswordModal from "@/pages/AuthCenter/User/components/PasswordModal";
 import RoleModalTransfer from "../RoleModalTransfer";
 import UserModalForm from "@/pages/AuthCenter/User/components/UserModalForm";
@@ -177,7 +177,7 @@ const UserProTable = () => {
             dataIndex: "enabled",
             hideInSearch: true,
             render: (_, record) => {
-                return <EnableSwitch record={record} onChange={() => handleChangeEnable(record)}/>;
+                return <EnableSwitchBtn record={record} onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
             filterMultiple: false,
@@ -203,8 +203,8 @@ const UserProTable = () => {
             valueType: "option",
             width: "10vh",
             render: (_: any, record: UserBaseInfo.User) => [
-                <EditButton key={record.id} onClick={() => handleEditVisible(record)}/>,
-                <AssignButton key={record.id} onClick={() => handleAssignRole(record)} title={l('user.AssignRole')}/>,
+                <EditBtn key={record.id} onClick={() => handleEditVisible(record)}/>,
+                <AssignBtn key={record.id} onClick={() => handleAssignRole(record)} title={l('user.AssignRole')}/>,
                 <Button
                     className={"options-button"}
                     key={"changePassword"}
@@ -216,8 +216,8 @@ const UserProTable = () => {
                 />,
                 <>
                     {(access.canAdmin && record.username !== "admin") &&
-                        <PopconfirmDeleteButton onClick={() => handleDeleteUser(record)}
-                                                description={l("user.deleteConfirm")}/>
+                        <PopconfirmDeleteBtn onClick={() => handleDeleteUser(record)}
+                                             description={l("user.deleteConfirm")}/>
                     }
                 </>
                 ,
@@ -235,7 +235,7 @@ const UserProTable = () => {
             headerTitle={l("user.manager")}
             actionRef={actionRef}
             loading={loading}
-            toolBarRender={() => [<CreateButton key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
+            toolBarRender={() => [<CreateBtn key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
             request={(params, sorter, filter: any) => (queryList(API_CONSTANTS.USER, {
                 ...params,
                 sorter,

@@ -23,6 +23,7 @@ import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.RoleSelectPermissions;
 import org.dinky.service.RoleSelectPermissionsService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -41,23 +43,35 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/roleSelectPermissions")
-public class RoleSelectPermissionsController {
+@RequestMapping("/api/rowPermissions")
+public class RowPermissionsController {
 
     @Autowired private RoleSelectPermissionsService roleSelectPermissionsService;
 
-    /** create or update roleSelectPermissions */
+    /**
+     * save or update roleSelectPermissions
+     *
+     * @param roleSelectPermissions {@link RoleSelectPermissions}
+     * @return {@link Result}
+     */
     @PutMapping
     public Result saveOrUpdateRole(@RequestBody RoleSelectPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
-            return Result.succeed("新增成功");
+            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
         } else {
-            return Result.failed("新增失败");
+            return Result.failed(MessageResolverUtils.getMessage("save.success"));
         }
     }
 
-    /** delete roleSelectPermissions by id */
+    /**
+     * delete roleSelectPermissions , this method is {@link Deprecated} in the future , please use
+     * {@link #deleteMul(JsonNode)}
+     *
+     * @param para {@link JsonNode}
+     * @return {@link Result}
+     */
     @DeleteMapping
+    @Deprecated
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
@@ -78,7 +92,27 @@ public class RoleSelectPermissionsController {
         }
     }
 
-    /** query roleSelectPermissions list */
+    /**
+     * delete roleSelectPermissions by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result}
+     */
+    @DeleteMapping("/delete")
+    public Result delete(@RequestParam("id") Integer id) {
+
+        if (roleSelectPermissionsService.removeById(id)) {
+            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+        }
+        return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+    }
+
+    /**
+     * query roleSelectPermissions list
+     *
+     * @param para {@link JsonNode}
+     * @return {@link ProTableResult} of {@link RoleSelectPermissions}
+     */
     @PostMapping
     public ProTableResult<RoleSelectPermissions> listRoles(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);

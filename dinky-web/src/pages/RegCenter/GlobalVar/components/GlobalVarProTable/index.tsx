@@ -33,10 +33,10 @@ import {queryList} from "@/services/api";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import GlobalVarModal from "@/pages/RegCenter/GlobalVar/components/GlobalVarModal";
 import GlobalVarDrawer from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer";
-import {EnableSwitch} from '@/components/CallBackButton/EnableSwitch';
-import {EditButton} from "@/components/CallBackButton/EditButton";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
+import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 
 const GlobalVarProTable = () => {
     /**
@@ -145,8 +145,8 @@ const GlobalVarProTable = () => {
             hideInSearch: true,
             width: '15vh',
             render: (_, record) => {
-                return <EnableSwitch disabled={drawerOpen} record={record}
-                                     onChange={() => handleChangeEnable(record)}/>;
+                return <EnableSwitchBtn disabled={drawerOpen} record={record}
+                                        onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
             filterMultiple: false,
@@ -173,9 +173,9 @@ const GlobalVarProTable = () => {
             width: '10vh',
             valueType: 'option',
             render: (_, record) => [
-                <EditButton key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                        description={l("rc.gv.deleteConfirm")}/>,
+                <EditBtn key={record.id} onClick={() => handleClickEdit(record)}/>,
+                <PopconfirmDeleteBtn key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                                     description={l("rc.gv.deleteConfirm")}/>,
             ],
         },
     ];
@@ -191,7 +191,7 @@ const GlobalVarProTable = () => {
             actionRef={actionRef}
             loading={loading}
             {...PROTABLE_OPTIONS_PUBLIC}
-            toolBarRender={() => [<CreateButton key={"vartable"} onClick={() => handleModalVisible(true)}/>,]}
+            toolBarRender={() => [<CreateBtn key={"vartable"} onClick={() => handleModalVisible(true)}/>,]}
             request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
                 ...params,
                 sorter,

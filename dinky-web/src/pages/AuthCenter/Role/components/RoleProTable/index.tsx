@@ -20,7 +20,7 @@
 
 import React, {useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Form, Tag} from 'antd';
+import {Tag} from 'antd';
 import {l} from "@/utils/intl";
 import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
@@ -28,9 +28,9 @@ import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {getTenantByLocalStorage} from "@/utils/function";
 import {UserBaseInfo} from "@/types/User/data.d";
 import RoleModalForm from "../RoleModalForm";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {EditButton} from "@/components/CallBackButton/EditButton";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
 
 
 const RoleProTable: React.FC = () => {
@@ -132,10 +132,10 @@ const RoleProTable: React.FC = () => {
                 valueType: 'option',
                 width: "10vh",
                 render: (_, record) => [
-                    <EditButton key={record.id} onClick={() => handleEditVisible(record)}/>,
+                    <EditBtn key={record.id} onClick={() => handleEditVisible(record)}/>,
                     <>{record.id !== 1 &&
-                        <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                                description={l("role.deleteConfirm")}/>}</>
+                        <PopconfirmDeleteBtn key={record.id} onClick={() => handleDeleteSubmit(record.id)}
+                                             description={l("role.deleteConfirm")}/>}</>
                 ],
             },
         ];
@@ -150,7 +150,7 @@ const RoleProTable: React.FC = () => {
                 headerTitle={l('role.roleManagement')}
                 actionRef={actionRef}
                 loading={loading}
-                toolBarRender={() => [<CreateButton key={"toolBarRender"} onClick={() => handleModalVisible(true)}/>,]}
+                toolBarRender={() => [<CreateBtn key={"toolBarRender"} onClick={() => handleModalVisible(true)}/>,]}
                 request={(params, sorter, filter: any) => queryList(API_CONSTANTS.ROLE, {...params, sorter, filter})}
                 columns={columns}
             />

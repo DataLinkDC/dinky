@@ -52,3 +52,13 @@ declare namespace UserBaseInfo {
     note?: string;
   };
 }
+
+
+
+export type RowPermissions = ExcludeNameAndEnableColumns & {
+  roleId: number;
+  roleCode: string;
+  roleName: string;
+  tableName: string;
+  expression: string;
+};

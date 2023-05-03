@@ -25,7 +25,7 @@ type EditButtonProps = {
   onClick: () => void;
 };
 
-export const EditButton: React.FC<EditButtonProps> = (props) => {
+export const EditBtn: React.FC<EditButtonProps> = (props) => {
   const {onClick} = props;
 
   return (
