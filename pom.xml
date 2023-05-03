@@ -106,6 +106,9 @@
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
+        <maven-shade-plugin.version>3.4.1</maven-shade-plugin.version>
+        <build-helper-maven-plugin.version>1.7</build-helper-maven-plugin.version>
+        <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
     </properties>
 
     <dependencyManagement>
@@ -164,7 +167,7 @@
             <dependency>
                 <groupId>jakarta.ws.rs</groupId>
                 <artifactId>jakarta.ws.rs-api</artifactId>
-                <version>2.1.6</version>
+                <version>${jakarta.ws.rs-api.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.docker-java</groupId>
@@ -909,38 +912,16 @@
                         <plugin>
                             <groupId>org.codehaus.mojo</groupId>
                             <artifactId>build-helper-maven-plugin</artifactId>
-                            <version>1.7</version>
+                            <version>${build-helper-maven-plugin.version}</version>
                         </plugin>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
                             <artifactId>maven-shade-plugin</artifactId>
-                            <version>3.4.1</version>
+                            <version>${maven-shade-plugin.version}</version>
                         </plugin>
                         <plugin>
                             <groupId>com.github.siom79.japicmp</groupId>
                             <artifactId>japicmp-maven-plugin</artifactId>
-                            <dependencies>
-                                <dependency>
-                                    <groupId>javax.xml.bind</groupId>
-                                    <artifactId>jaxb-api</artifactId>
-                                    <version>2.3.0</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-impl</artifactId>
-                                    <version>2.3.0</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>com.sun.xml.bind</groupId>
-                                    <artifactId>jaxb-core</artifactId>
-                                    <version>2.3.0</version>
-                                </dependency>
-                                <dependency>
-                                    <groupId>javax.activation</groupId>
-                                    <artifactId>activation</artifactId>
-                                    <version>1.1.1</version>
-                                </dependency>
-                            </dependencies>
                         </plugin>
                         <plugin>
                             <groupId>org.apache.maven.plugins</groupId>
