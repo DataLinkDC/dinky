@@ -29,7 +29,6 @@
     <packaging>pom</packaging>
     <name>Dinky : Catalog : Mysql</name>
 
-
     <profiles>
         <profile>
             <id>notAll</id>
