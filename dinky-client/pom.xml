@@ -33,15 +33,21 @@
     <modules>
         <module>dinky-client-hadoop</module>
         <module>dinky-client-base</module>
-        <module>dinky-client-${dinky.flink.version}</module>
     </modules>
 
     <profiles>
+        <profile>
+            <id>notAll</id>
+            <modules>
+                <module>dinky-client-${dinky.flink.version}</module>
+            </modules>
+        </profile>
         <profile>
             <id>flink-all</id>
             <modules>
                 <module>dinky-client-1.12</module>
                 <module>dinky-client-1.13</module>
+                <module>dinky-client-1.14</module>
                 <module>dinky-client-1.15</module>
                 <module>dinky-client-1.16</module>
             </modules>

@@ -26,16 +26,20 @@
     <artifactId>dinky-flink</artifactId>
     <packaging>pom</packaging>
     <name>Dinky : Flink</name>
-    <modules>
-        <module>dinky-flink-${dinky.flink.version}</module>
-    </modules>
 
     <profiles>
+        <profile>
+            <id>notAll</id>
+            <modules>
+                <module>dinky-flink-${dinky.flink.version}</module>
+            </modules>
+        </profile>
         <profile>
             <id>flink-all</id>
             <modules>
                 <module>dinky-flink-1.12</module>
                 <module>dinky-flink-1.13</module>
+                <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>
                 <module>dinky-flink-1.16</module>
             </modules>

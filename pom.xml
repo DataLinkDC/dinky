@@ -894,7 +894,17 @@
             </properties>
         </profile>
 
-        <profile>
+      <profile>
+        <id>notAll</id>
+        <activation>
+          <activeByDefault>true</activeByDefault>
+          <property>
+            <name>-flink-all</name>
+          </property>
+        </activation>
+      </profile>
+
+      <profile>
             <id>flink-all</id>
         </profile>
 

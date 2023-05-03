@@ -43,19 +43,24 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
     </dependencies>
 
     <profiles>
+        <profile>
+            <id>notAll</id>
+            <dependencies>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+            </dependencies>
+        </profile>
         <profile>
             <id>flink-all</id>
             <dependencies>
@@ -80,7 +85,16 @@
                     <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
-
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-client-1.14</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.14</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>

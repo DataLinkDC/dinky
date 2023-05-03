@@ -20,7 +20,7 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <artifactId>dinky-flink-1.16</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
