@@ -63,6 +63,7 @@
         <httpclient.version>4.5.13</httpclient.version>
         <hutool.version>5.8.11</hutool.version>
         <jackjson.version>2.14.1</jackjson.version>
+        <javax.activation.version>1.1.1</javax.activation.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
         <javax.mail>1.6.2</javax.mail>
         <jaxb.version>2.3.0</jaxb.version>
@@ -72,10 +73,14 @@
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.24</lombok.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
+        <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
+        <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+        <maven-help-plugin.version>3.4.0</maven-help-plugin.version>
+        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <maven-surefire-plugin.version>3.0.0-M5</maven-surefire-plugin.version>
-        <maven-clean-plugin.version>3.2.0</maven-clean-plugin.version>
         <maven.compiler.source>${target.java.version}</maven.compiler.source>
         <maven.compiler.target>${target.java.version}</maven.compiler.target>
         <maven.resource.version>3.2.0</maven.resource.version>
@@ -101,11 +106,6 @@
         <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
-        <javax.activation.version>1.1.1</javax.activation.version>
-        <maven-help-plugin.version>3.4.0</maven-help-plugin.version>
-        <maven-dependency-plugin.version>3.5.0</maven-dependency-plugin.version>
-        <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
-        <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
     </properties>
 
     <dependencyManagement>
