@@ -122,11 +122,11 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     // 调整双引号为单引号
                     sb.append(" DEFAULT ").append("''");
                 } else {
-                    // 如果存在默认值，且数据类型不为 datetime/datetime(x)/timestamp/timestamp(x) 类型，应该使用单引号！
-                    if (column.getType().toLowerCase().startsWith("datetime") || column.getType().toLowerCase().startsWith("timestamp")) {
-                        sb.append(" DEFAULT ").append(column.getDefaultValue());
+                    // 数据类型不为 datetime/datetime(x)/timestamp/timestamp(x) 类型，应该使用单引号！
+                    if (!column.getType().toLowerCase().startsWith("datetime") || !column.getType().toLowerCase().startsWith("timestamp")) {
+                        sb.append(" DEFAULT ").append('\'').append(column.getDefaultValue()).append('\'');
                     } else {
-                        sb.append(" DEFAULT ").append("'").append(column.getDefaultValue()).append("'");
+                        sb.append(" DEFAULT ").append(column.getDefaultValue());
                     }
                 }
             } else {

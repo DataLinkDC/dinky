@@ -75,9 +75,9 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
 
     @Transient
     public String getSchemaTableName() {
-        return Asserts.isNullString(replaceSchemaMiddleLine(schema))
+        return Asserts.isNullString(schema)
                 ? name
-                : replaceSchemaMiddleLine(schema) + "." + name;
+                : schema + "." + name;
     }
 
     @Transient
