@@ -65,7 +65,7 @@ public class RowPermissionsController {
 
     /**
      * delete roleSelectPermissions , this method is {@link Deprecated} in the future , please use
-     * {@link #deleteMul(JsonNode)}
+     * {@link #delete(Integer id)}
      *
      * @param para {@link JsonNode}
      * @return {@link Result}
