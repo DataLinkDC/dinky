@@ -30,7 +30,7 @@ import {getRoleList} from "@/pages/AuthenticationCenter/service";
 import {connect} from "umi";
 import {l} from "@/utils/intl";
 
-const url = '/api/roleSelectPermissions';
+const url = '/api/rowPermissions';
 
 const RoleSelectPermissionsFormList: React.FC<{}> = (props: any) => {
   const {dispatch} = props;
