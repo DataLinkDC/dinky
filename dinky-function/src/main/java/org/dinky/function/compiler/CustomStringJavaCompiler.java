@@ -24,7 +24,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -80,33 +79,6 @@ public class CustomStringJavaCompiler {
     }
 
     /**
-     * 编译字符串源代码,编译失败在 diagnosticsCollector 中获取提示信息
-     *
-     * @return true:编译成功 false:编译失败
-     */
-    public boolean compiler() {
-        long startTime = System.currentTimeMillis();
-        // 标准的内容管理器,更换成自己的实现，覆盖部分方法
-        StandardJavaFileManager standardFileManager =
-                compiler.getStandardFileManager(diagnosticsCollector, null, null);
-        JavaFileManager javaFileManager = new StringJavaFileManage(standardFileManager);
-        // 构造源代码对象
-        JavaFileObject javaFileObject = new StringJavaFileObject(fullClassName, sourceCode);
-        // 获取一个编译任务
-        JavaCompiler.CompilationTask task =
-                compiler.getTask(
-                        null,
-                        javaFileManager,
-                        diagnosticsCollector,
-                        null,
-                        null,
-                        Arrays.asList(javaFileObject));
-        // 设置编译耗时
-        compilerTakeTime = System.currentTimeMillis() - startTime;
-        return task.call();
-    }
-
-    /**
      * 编译字符串源代码,并放在缓存目录下,编译失败在 diagnosticsCollector 中获取提示信息
      *
      * @return true:编译成功 false:编译失败
@@ -128,6 +100,7 @@ public class CustomStringJavaCompiler {
         Iterable<? extends JavaFileObject> javaFileObject =
                 standardFileManager.getJavaFileObjectsFromFiles(
                         Collections.singletonList(codeFile));
+
         // 获取一个编译任务
         JavaCompiler.CompilationTask task =
                 compiler.getTask(

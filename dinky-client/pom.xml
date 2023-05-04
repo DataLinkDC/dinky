@@ -37,40 +37,11 @@
 
     <profiles>
         <profile>
-            <id>flink-1.12</id>
+            <id>not-all</id>
             <modules>
-                <module>dinky-client-1.12</module>
+                <module>dinky-client-${dinky.flink.version}</module>
             </modules>
         </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <modules>
-                <module>dinky-client-1.13</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <modules>
-                <module>dinky-client-1.14</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <modules>
-                <module>dinky-client-1.15</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <modules>
-                <module>dinky-client-1.16</module>
-            </modules>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <modules>
