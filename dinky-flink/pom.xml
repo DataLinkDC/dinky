@@ -37,7 +37,6 @@
         <profile>
             <id>flink-all</id>
             <modules>
-                <module>dinky-flink-1.12</module>
                 <module>dinky-flink-1.13</module>
                 <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>
