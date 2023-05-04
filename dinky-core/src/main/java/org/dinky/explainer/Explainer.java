@@ -102,7 +102,7 @@ public class Explainer {
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
         List<UDF> udfList = new ArrayList<>();
-                for (String item : statements) {
+        for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
