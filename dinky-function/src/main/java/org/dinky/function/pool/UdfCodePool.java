@@ -48,9 +48,8 @@ public class UdfCodePool {
     public static UDF getUDF(String className) {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
-            String error = StrUtil.format("class: {} is not exists!", className);
+            String error = StrUtil.format("class: {} is not exists!，maybe for add jar", className);
             log.warn(error);
-            //            throw new DinkyException(error);
         }
         return udf;
     }

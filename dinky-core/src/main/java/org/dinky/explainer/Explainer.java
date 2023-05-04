@@ -113,9 +113,6 @@ public class Explainer {
                         .forEach(JarPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
-            } else if (operationType.equals(SqlType.ADD_JAR)) {
-                ddl.add(new StatementParam(statement, operationType));
-                statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
                     || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
