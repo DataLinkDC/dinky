@@ -36,13 +36,16 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 import lombok.AllArgsConstructor;
@@ -57,44 +60,44 @@ import lombok.AllArgsConstructor;
 public class GitController {
     final GitProjectService gitProjectService;
 
-    @PostMapping("/saveOrUpdate")
-    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProjectDTO gitProjectDTO) {
-        gitProjectService.saveOrUpdate(gitProjectDTO);
-        GitRepository gitRepository = new GitRepository(gitProjectDTO);
-        gitRepository.cloneAndPull(gitProjectDTO.getName(), gitProjectDTO.getBranches());
+    @PutMapping("/saveOrUpdate")
+    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProject gitProject) {
+        gitProjectService.saveOrUpdate(gitProject);
+        GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
+        gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
         return Result.succeed();
     }
 
-    @GetMapping("/getBranchList")
-    public Result<List<String>> getBranchList(GitProjectDTO gitProjectDTO) {
+    @PostMapping("/getBranchList")
+    public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
     }
 
     @DeleteMapping("/deleteProject")
-    public Result<Void> deleteProject(Long id) {
+    public Result<Void> deleteProject(@RequestParam("id") Integer id) {
         gitProjectService.removeById(id);
         return Result.succeed();
     }
 
-    @PostMapping("/updateEnable")
-    public Result<Void> updateEnable(Long id, boolean enable) {
-        gitProjectService.updateState(id, enable);
+    @PutMapping("/updateEnable")
+    public Result<Void> updateEnable(@RequestParam("id") Integer id) {
+        gitProjectService.updateState(id);
         return Result.succeed();
     }
 
     @PostMapping("/getProjectList")
-    public Result<ProTableResult<GitProject>> getAllProject(@RequestBody JsonNode params) {
-        return Result.succeed(gitProjectService.selectForProTable(params));
+    public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
+        return gitProjectService.selectForProTable(params);
     }
 
     @PostMapping("/getOneDetails")
-    public Result<GitProject> getOneDetails(Long id) {
+    public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
 
     @GetMapping(path = "/build")
-    public Result<Void> build(Long id) {
+    public Result<Void> build(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
         if (gitProject.getBuildState().equals(1)) {
@@ -113,7 +116,7 @@ public class GitController {
     }
 
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public SseEmitter buildStepLogs(Long id) {
+    public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
         Dict params = new Dict();

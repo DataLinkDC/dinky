@@ -79,8 +79,12 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
      */
     const submitForm = async () => {
         const fieldsValue = await form.validateFields();
+        console.log("values", values);
+        console.log("fieldsValue", fieldsValue);
+        console.log("validateFields", form.validateFields());
+
         await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
+        handleCancel();
     };
 
 
@@ -98,6 +102,7 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
             open={modalVisible}
             form={form}
             submitter={{render: () => [...renderFooter()]}}
+            initialValues={values}
         >
             <ProjectForm values={values} form={form}/>
         </ModalForm>

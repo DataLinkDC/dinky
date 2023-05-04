@@ -19,30 +19,33 @@
 
 import React, {useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {GitProject} from "@/types/RegCenter/data";
-import {handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {Document, GitProject} from "@/types/RegCenter/data";
+import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {
     API_CONSTANTS,
     PROTABLE_OPTIONS_PUBLIC,
     STATUS_ENUM,
     STATUS_MAPPING,
-    SWITCH_OPTIONS
 } from "@/services/constants";
 import {l} from "@/utils/intl";
-import {Button, Popconfirm, Space, Switch, Tag} from "antd";
-import {BranchesOutlined, BuildTwoTone, EditTwoTone} from "@ant-design/icons";
+import {Button, Popconfirm, Tag} from "antd";
+import {BranchesOutlined, BuildTwoTone} from "@ant-design/icons";
 import {
     GIT_PROJECT_CODE_TYPE,
     GIT_PROJECT_CODE_TYPE_ENUM, GIT_PROJECT_STATUS, GIT_PROJECT_STATUS_ENUM, GIT_PROJECT_TYPE, GIT_PROJECT_TYPE_ENUM,
     renderBranchesTagColor
 } from "@/pages/RegCenter/GitProject/constans";
-import {DangerDeleteIcon, ShowCodeTreeIcon, ShowLogIcon} from "@/components/Icons/CustomIcons";
+import {ShowCodeTreeIcon} from "@/components/Icons/CustomIcons";
 import {queryList} from "@/services/api";
 import {BuildSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps";
 import {ShowLog} from "@/pages/RegCenter/GitProject/components/ShowLog";
 import {CodeTree} from "@/pages/RegCenter/GitProject/components/CodeTree";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import ProjectModal from "@/pages/RegCenter/GitProject/components/ProjectModal";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
+import {ShowLogBtn} from "@/components/CallBackButton/ShowLogBtn";
 
 const ProjectProTable: React.FC = () => {
 
@@ -56,7 +59,7 @@ const ProjectProTable: React.FC = () => {
     const [formValues, setFormValues] = useState<Partial<GitProject>>({});
 
 
-    const executeAndCallback= async (callback: () =>  void) => {
+    const executeAndCallback = async (callback: () => void) => {
         setLoading(true);
         await callback();
         setLoading(false);
@@ -83,10 +86,11 @@ const ProjectProTable: React.FC = () => {
             dataIndex: "name",
         },
         {
-            title: l("rc.gp.branches"),
+            title: l("rc.gp.branch"),
             dataIndex: "branch",
             renderText: (text, record) => {
-                return <Tag icon={<BranchesOutlined/>} color={renderBranchesTagColor(record.branch)}>{record.branch}</Tag>;
+                return <Tag icon={<BranchesOutlined/>}
+                            color={renderBranchesTagColor(record.branch)}>{record.branch}</Tag>;
             }
         },
         {
@@ -141,15 +145,7 @@ const ProjectProTable: React.FC = () => {
             filterMultiple: false,
             valueEnum: STATUS_ENUM(),
             render: (_, record) => {
-                return <>
-                    <Space>
-                        <Switch
-                            key={record.id}
-                            {...SWITCH_OPTIONS()}
-                            checked={record.enabled}
-                            onChange={() => handleChangeEnable(record)}/>
-                    </Space>
-                </>;
+                return <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)}/>;
             },
         },
         {
@@ -157,18 +153,13 @@ const ProjectProTable: React.FC = () => {
             valueType: "option",
             width: 200,
             render: (text, record) => [
+                <ShowLogBtn key={`${record.id}_showLog`} onClick={() => {
+                    setFormValues(record);
+                    handleLogVisible(true);
+                }}/>,
+
                 <Button
-                    key={record.id}
-                    className={"options-button"}
-                    title={l("button.showLog")}
-                    icon={<ShowLogIcon/>}
-                    onClick={() => {
-                        setFormValues(record);
-                        handleLogVisible(true);
-                    }}
-                />,
-                <Button
-                    key={record.id}
+                    key={`${record.id}_code`}
                     className={"options-button"}
                     title={l("button.showCode")}
                     icon={<ShowCodeTreeIcon/>}
@@ -179,7 +170,7 @@ const ProjectProTable: React.FC = () => {
                 />,
                 <Popconfirm
                     className={"options-button"}
-                    key={record.id}
+                    key={`${record.id}_build`}
                     placement="topRight"
                     title={l("button.build")}
                     description={l("rc.gp.buildConfirm")}
@@ -190,33 +181,16 @@ const ProjectProTable: React.FC = () => {
                     okText={l("button.confirm")}
                     cancelText={l("button.cancel")}
                 >
-                    <Button key={"buildGitProjectIcon"} icon={<BuildTwoTone/>}/>
+                    <Button key={`${record.id}_buildbtn`} icon={<BuildTwoTone/>}/>
                 </Popconfirm>,
 
-                <Button
-                    key={record.id}
-                    className={"options-button"}
-                    title={l("button.edit")}
-                    icon={<EditTwoTone/>}
-                    onClick={() => {
-                        setFormValues(record);
-                        handleUpdateModalVisible(true);
-                    }}
-                />,
-                <Popconfirm
-                    className={"options-button"}
-                    key={"GitProjectDelete"}
-                    placement="topRight"
-                    title={l("button.delete")}
-                    description={l("rc.gp.deleteConfirm")}
-                    onConfirm={() => {
-                        handleDeleteSubmit(record.id);
-                    }}
-                    okText={l("button.confirm")}
-                    cancelText={l("button.cancel")}
-                >
-                    <Button key={"deleteGitProjectIcon"} icon={<DangerDeleteIcon/>}/>
-                </Popconfirm>
+                <EditBtn key={`${record.id}_edit`} onClick={() => {
+                    setFormValues(record);
+                    handleUpdateModalVisible(true);
+                }}/>,
+
+                <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
+                                     description={l("rc.gp.deleteConfirm")}/>,
             ],
         },
     ];
@@ -224,7 +198,7 @@ const ProjectProTable: React.FC = () => {
     /**
      * cancel all status
      */
-    const handleAllCancel = () => {
+    const handleCancel = () => {
         setFormValues({});
         handleModalVisible(false);
         handleUpdateModalVisible(false);
@@ -237,15 +211,13 @@ const ProjectProTable: React.FC = () => {
     /**
      * submit
      */
-    const handleSubmit = () => {
-        handleAllCancel();
-    };
-    /**
-     * cancel
-     */
-    const handleCancel = () => {
-        handleAllCancel();
-    };
+
+    const handleAddOrUpdateSubmit = async (value: Partial<GitProject>) => {
+        await handleAddOrUpdate(API_CONSTANTS.GIT_SAVE_UPDATE, value);
+        handleCancel();
+        actionRef.current?.reload?.();
+    }
+
 
     /**
      * render
@@ -256,20 +228,25 @@ const ProjectProTable: React.FC = () => {
             loading={loading}
             actionRef={actionRef}
             headerTitle={l("rc.gp.management")}
-            toolBarRender={() => [<CreateBtn onClick={() => handleModalVisible(true)}/>]}
-            request={(params, sorter, filter:any) => queryList(API_CONSTANTS.GIT_PROJECT, {...params, sorter, filter})}
+            toolBarRender={() => [<CreateBtn key={"gitcreate"} onClick={() => handleModalVisible(true)}/>]}
+            request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GIT_PROJECT, {...params, sorter, filter})}
             columns={columns}
         />
         {/* added modal form */}
-        { modalVisible && <ProjectModal onCancel={handleCancel} onSubmit={handleSubmit} modalVisible={modalVisible} values={{}}/>}
+        {modalVisible &&
+            <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)} modalVisible={modalVisible} values={{}}/>}
         {/* modify modal form */}
-        { updateModalVisible && <ProjectModal onCancel={handleCancel} onSubmit={handleSubmit} modalVisible={updateModalVisible} values={formValues}/>}
+        {updateModalVisible &&
+            <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)} modalVisible={updateModalVisible}
+                          values={formValues}/>}
         {/* build steps modal */}
-        { formValues && <BuildSteps onCancel={handleCancel} onSubmit={handleSubmit} modalVisible={buildModalVisible} values={formValues}/>}
+        {formValues && <BuildSteps onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)} modalVisible={buildModalVisible}
+                                   values={formValues}/>}
         {/* show build log modal */}
         {logModalVisible && <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}
         {/* show code tree modal */}
-        {codeTreeModalVisible && <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>}
+        {codeTreeModalVisible &&
+            <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>}
     </>
 }
 export default ProjectProTable;

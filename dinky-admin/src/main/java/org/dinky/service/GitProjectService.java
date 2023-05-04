@@ -39,7 +39,6 @@ public interface GitProjectService extends ISuperService<GitProject> {
      * 更新状态
      *
      * @param id id
-     * @param state state
      */
-    void updateState(Long id, boolean state);
+    void updateState(Integer id);
 }

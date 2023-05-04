@@ -17,7 +17,7 @@
 
 import {
   addOrUpdateData,
-  getData,
+  getData, getDataByRequestBody,
   postAll,
   removeById, updateDataByParams,
 } from "@/services/api";
@@ -193,3 +193,13 @@ export const handlePutData = async (url: string, fields: any) => {
     return false;
   }
 };
+
+
+export const getDataByParams = async (url: string, params: any) => {
+    try {
+        const { datas} = await getDataByRequestBody(url, params);
+        return datas;
+    } catch (error) {
+        return false;
+    }
+}

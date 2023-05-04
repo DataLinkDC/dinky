@@ -17,26 +17,26 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Button, Form, Radio, Select} from "antd";
-import {Document, GitProject} from "@/types/RegCenter/data";
-import {getDataByParams, handleData} from "@/services/BusinessCrud";
-import {API_CONSTANTS, FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {buildFormData} from "@/pages/RegCenter/Alert/AlertGroup/function";
+import React, {useEffect, useRef, useState} from "react";
+import {Input, Radio, Select} from "antd";
+import {GitProject} from "@/types/RegCenter/data";
+import {getDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS, SWITCH_OPTIONS} from "@/services/constants";
 import {CLONE_TYPES, GIT_PROJECT_CODE_TYPE_ENUM} from "@/pages/RegCenter/GitProject/constans";
 import {
-    ProForm,
-    ProFormRadio,
-    ProFormSelect,
+    ProForm, ProFormItem, ProFormRadio,
+    ProFormSelect, ProFormSwitch,
     ProFormText,
     ProFormTextArea,
-    RequestOptionsType
+    RequestOptionsType,
 } from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {Values} from "async-validator";
 import {DefaultOptionType} from "rc-select/lib/Select";
+import {PullToRefresh} from "antd-mobile-alita";
+import { ReloadOutlined } from "@ant-design/icons";
 
 
 /**
@@ -64,46 +64,48 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
     /**
      * state
      */
-
-    const [cloneType, setCloneType] = useState<string>("http");
+    const [cloneType, setCloneType] = useState<number>(1);
     const [buildArgs, setBuildArgsValue] = useState<string>(values.buildArgs || "");
     const [branches, setBranches] = useState<string[]>([]);
 
-    const queryBranches = async (gitProject: Partial<GitProject>) => {
-        await getDataByParams(API_CONSTANTS.GIT_BRANCH, {...gitProject}).then((data) => {
-            setBranches(data || []);
-        });
+
+
+    // 获取分支列表的函数
+    const getBranchList = async (values: Values) => {
+        console.log(values, "values")
+        await getDataByParams(API_CONSTANTS.GIT_BRANCH, {...values}).then((res: any) => {
+            console.log(res.datas, "res")
+            if (res.code === 200) {
+                setBranches(res.datas)
+            }
+        })
+    };
+
+    const renderSelectOptions = () => {
+        let options: DefaultOptionType[] = [];
+        return branches.map((item: string) => {
+            options.push({label: item, value: item})
+        })
+        return options
+    };
+
+
+    const handleTypeChange = (value: number) => {
+        setCloneType(value)
+        form.setFieldsValue({type: value})
     }
 
-
-    useEffect(() => {
-        // queryBranches(form.getFieldsValue());
-    }, [form.getFieldsValue()])
-
-
-    /**
-     * build git project branches select options
-     */
-    const buildBranchesSelectOptions = () => {
-        const tagSelectList: { label: string; value: string }[] = [];
-        branches.forEach((branch) => {
-            tagSelectList.push({label: branch, value: branch});
-        });
-        return tagSelectList;
-    }
 
     /**
      * render url before select
      */
     const renderUrlBeforeSelect = () => {
-        return (
-            <Select
-                style={{width: "6vw"}}
-                defaultValue={cloneType}
-                onChange={(value) => setCloneType(value)}
-                options={CLONE_TYPES}
-            />
-        );
+        return <Select
+            style={{width: "5vw"}}
+            defaultValue={cloneType}
+            onChange={handleTypeChange}
+            options={CLONE_TYPES}
+        />
     };
 
 
@@ -112,6 +114,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
      */
     const renderGitProjectForm = () => {
         return <>
+
             <ProForm.Group>
                 <ProFormText
                     name="name"
@@ -120,20 +123,26 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
                     rules={[{required: true, message: l("rc.gp.namePlaceholder")}]}
                     placeholder={l("rc.gp.namePlaceholder")}
                 />
+                <ProFormSelect
+                    name="type"
+                    hidden
+                    shouldUpdate
+                    initialValue={cloneType}
+                />
 
                 <ProFormText
                     name="url"
-                    width={"xl"}
+                    width={"lg"}
                     label={l("rc.gp.url")}
                     rules={[{required: true, message: l("rc.gp.urlPlaceholder")}]}
                     placeholder={l("rc.gp.urlPlaceholder")}
-                    fieldProps={{addonBefore: renderUrlBeforeSelect()}}
+                    addonBefore={renderUrlBeforeSelect()}
                 />
             </ProForm.Group>
 
             <ProForm.Group>
                 {
-                    cloneType !== "ssh" ? (
+                    cloneType !== 2 ?
                         <ProFormText
                             name="username"
                             allowClear
@@ -142,7 +151,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
                             rules={[{required: true, message: l("rc.gp.usernamePlaceholder")}]}
                             placeholder={l("rc.gp.usernamePlaceholder")}
                         />
-                    ) : (
+                        :
                         <ProFormText
                             name="privateKey"
                             width={"sm"}
@@ -150,42 +159,28 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
                             rules={[{required: true, message: l("rc.gp.privateKeyPlaceholder")}]}
                             placeholder={l("rc.gp.privateKeyPlaceholder")}
                         />
-                    )
                 }
 
-                <ProFormText.Password
+                <ProForm.Item
                     name="password"
-                    allowClear
-                    width={"sm"}
                     label={l("rc.gp.password")}
                     rules={[{required: true, message: l("rc.gp.passwordPlaceholder")}]}
-                    placeholder={l("rc.gp.passwordPlaceholder")}
-                />
-                <ProFormSelect
-                    request={async () => {
-                        let branch: RequestOptionsType[] = []
-                        console.log(branch,'进来了')
-                        await getDataByParams(API_CONSTANTS.GIT_BRANCH, {...form.getFieldsValue()}).then((data) => {
-                            setBranches(data || []);
-                            data?.forEach((item: string) => {
-                                branch.push({label: item, value: item})
-                            })
-                        });
+                >
+                    <Input.Password
+                        onBlur={ ()=> getBranchList(form.getFieldsValue())} placeholder={l("rc.gp.passwordPlaceholder")}/>
+                </ProForm.Item>
 
-                        return branch
-                    }}
-                    name="branches"
-                    width={"sm"}
-                    label={l("rc.gp.branches")}
-                    placeholder={l("rc.gp.branchesPlaceholder")}
-                    rules={[{required: true, message: l("rc.gp.branchesPlaceholder")}]}
-                    mode="single"
-                    showSearch
+                <ProFormSelect
+                    options={branches}
                     shouldUpdate
-                    colon
-                    dependencies={["url", "username" || "privateKey", "password"]}
-                    // options={buildBranchesSelectOptions()}
+                    name="branch"
+                    width={"sm"}
+                    label={l("rc.gp.branch")}
+                    placeholder={l("rc.gp.branchPlaceholder")}
+                    rules={[{required: true, message: l("rc.gp.branchPlaceholder")}]}
+                    showSearch
                 />
+
             </ProForm.Group>
 
 
@@ -202,6 +197,12 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
                     />
                 </ProForm.Item>
 
+                <ProFormSwitch
+                    width="xs"
+                    name="enabled"
+                    label={l("global.table.isEnable")}
+                    {...SWITCH_OPTIONS()}
+                />
                 <ProFormRadio.Group
                     name="codeType"
                     width={"xs"}

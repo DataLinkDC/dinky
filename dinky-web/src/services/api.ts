@@ -136,3 +136,10 @@ export async function updateDataByParams(url: string, params: any) {
   });
 }
 
+
+export async function getDataByRequestBody(url: string, body: any) {
+  return request(url, {
+    method: METHOD_CONSTANTS.POST,
+    data: {...body},
+  });
+}

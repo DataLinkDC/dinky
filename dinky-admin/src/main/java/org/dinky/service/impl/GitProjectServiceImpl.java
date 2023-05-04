@@ -58,9 +58,9 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
     }
 
     @Override
-    public void updateState(Long id, boolean state) {
+    public void updateState(Integer id) {
         GitProject gitProject = baseMapper.selectById(id);
-        gitProject.setEnabled(state);
+        gitProject.setEnabled(!gitProject.getEnabled());
         gitProject.updateById();
     }
 }
