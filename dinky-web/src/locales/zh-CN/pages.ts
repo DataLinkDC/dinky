@@ -193,6 +193,18 @@ export default {
   'role.deleteConfirm': '您确定要删除此角色吗？',
 
 
+  'rowPermissions.management': '行权限管理',
+  'rowPermissions.tableName': '表名',
+  'rowPermissions.tableNamePlaceholder': '请输入表名',
+  'rowPermissions.expression': '表达式',
+  'rowPermissions.expressionPlaceholder': '请输入表达式',
+  'rowPermissions.deleteConfirm': '您确定要删除此行权限吗？',
+  'rowPermissions.roleName': '角色名称',
+  'rowPermissions.roleNamePlaceholder': '请选择角色',
+  'rowPermissions.create': '创建行权限',
+  'rowPermissions.update': '修改行权限',
+
+
   'metadata.NoDatabaseSelected': '未选择数据源',
   'metadata.Application': 'Application',
   'metadata.TableInfo': '表信息',

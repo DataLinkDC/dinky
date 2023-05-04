@@ -25,7 +25,7 @@ type AssignButtonProps = {
   title?: string;
 };
 
-export const AssignButton: React.FC<AssignButtonProps> = (props) => {
+export const AssignBtn: React.FC<AssignButtonProps> = (props) => {
   const {onClick,title} = props;
 
   return (

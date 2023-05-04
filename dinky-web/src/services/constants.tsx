@@ -62,6 +62,12 @@ export const API_CONSTANTS = {
   ROLE_ADDED_OR_UPDATE: "/api/role/addedOrUpdateRole",
   ROLE_DELETE: "/api/role/delete",
 
+  // --- row Permissions ---
+     // row permissions list
+    ROW_PERMISSIONS: "/api/rowPermissions",
+    // row permissions delete
+    ROW_PERMISSIONS_DELETE: "/api/rowPermissions/delete",
+
   // --- global variable ---
   // global variable list
   GLOBAL_VARIABLE: "/api/fragment",

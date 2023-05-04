@@ -24,11 +24,11 @@ import {l} from "@/utils/intl";
 import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
-import {UserBaseInfo} from "@/types/User/data.d";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {EditButton} from "@/components/CallBackButton/EditButton";
-import {AssignButton} from "@/components/CallBackButton/AssignButton";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
+import {UserBaseInfo} from "@/types/User/data";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import TenantModalTransfer from "@/pages/AuthCenter/Tenant/components/TenantModalTransfer";
 
 const TenantProTable: React.FC = () => {
@@ -138,12 +138,12 @@ const TenantProTable: React.FC = () => {
             valueType: 'option',
             width: "10vh",
             render: (_, record: UserBaseInfo.Tenant) => [
-                <EditButton key={record.id} onClick={() => handleEditVisible(record)}/>,
-                <AssignButton key={record.id} onClick={() => handleAssignVisible(record)}
-                              title={l('tenant.AssignUser')}/>,
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
+                <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
+                           title={l('tenant.AssignUser')}/>,
                 <>{record.id !== 1 &&
-                    <PopconfirmDeleteButton onClick={() => handleDeleteSubmit(record.id)}
-                                            description={l("tenant.deleteConfirm")}/>}</>,
+                    <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
+                                         description={l("tenant.deleteConfirm")}/>}</>,
             ],
         },
     ];
@@ -158,7 +158,7 @@ const TenantProTable: React.FC = () => {
             loading={loading}
             headerTitle={l('tenant.TenantManager')}
             actionRef={actionRef}
-            toolBarRender={() => [<CreateButton key={"tenantTable"} onClick={() => handleModalVisible(true)}/>]}
+            toolBarRender={() => [<CreateBtn key={"tenantTable"} onClick={() => handleModalVisible(true)}/>]}
             request={(params, sorter, filter: any) => queryList(API_CONSTANTS.TENANT, {...params, sorter, filter})}
             columns={columns}
         />

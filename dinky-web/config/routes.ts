@@ -174,6 +174,12 @@ export default [
         component: './AuthCenter/Role',
       },
       {
+        path: '/auth/rowpermissions',
+        name: 'rowpermissions',
+        icon: 'SafetyCertificateOutlined',
+        component: './AuthCenter/RowPermissions',
+      },
+      {
         path: '/auth/tenant',
         name: 'tenant',
         icon: 'SecurityScanOutlined',

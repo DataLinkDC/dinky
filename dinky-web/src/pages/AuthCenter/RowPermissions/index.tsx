@@ -17,31 +17,17 @@
  *
  */
 
-import {GlobalVar} from "@/types/RegCenter/data";
-import React from "react";
-import {Drawer} from "antd";
-import GlobalVarDesc from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer/GlobalVarDesc";
+import {PageContainer} from "@ant-design/pro-components";
+import PermissionsProTable from "@/pages/AuthCenter/RowPermissions/components/PermissionsProTable";
 
-type GlobalVarDrawerProps = {
-    onCancel: (flag?: boolean) => void;
-    values: Partial<GlobalVar>;
-    modalVisible: boolean;
-    columns: any;
-}
-const DocumentDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
-    const {onCancel: handleCancel, values, modalVisible, columns} = props;
+export default () => {
 
-
+    /**
+     * render
+     */
     return <>
-        <Drawer
-            width={'50%'}
-            open={modalVisible}
-            onClose={() => handleCancel(false)}
-        >
-            <GlobalVarDesc values={values} columns={columns}/>
-        </Drawer>
+    <PageContainer title={false}>
+       <PermissionsProTable />
+    </PageContainer>
     </>
-
 }
-
-export default DocumentDrawer;

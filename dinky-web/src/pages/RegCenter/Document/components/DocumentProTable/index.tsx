@@ -42,10 +42,10 @@ import {
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import TextArea from "antd/es/input/TextArea";
-import {EnableSwitch} from "@/components/CallBackButton/EnableSwitch";
-import {EditButton} from "@/components/CallBackButton/EditButton";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import DocumentDrawer from "@/pages/RegCenter/Document/components/DocumentDrawer";
 import DocumentModalForm from "@/pages/RegCenter/Document/components/DocumentModal";
 
@@ -178,7 +178,7 @@ const DocumentTableList: React.FC = () => {
             filterMultiple: false,
             valueEnum: STATUS_ENUM(),
             render: (_, record) => {
-                return <EnableSwitch disabled={drawerOpen} record={record} onChange={() => handleChangeEnable(record)}/>
+                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record} onChange={() => handleChangeEnable(record)}/>
             },
         },
         {
@@ -202,9 +202,9 @@ const DocumentTableList: React.FC = () => {
             valueType: 'option',
             width: '10vh',
             render: (_, record) => [
-                <EditButton key={record.id} onClick={() => handleClickEdit(record)}/>,
-                <PopconfirmDeleteButton key={record.id} onClick={() => handleDeleteSubmit(record.id)}
-                                        description={l("rc.doc.deleteConfirm")}/>,
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)}/>,
+                <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
+                                     description={l("rc.doc.deleteConfirm")}/>,
             ],
         },
     ];
@@ -217,7 +217,7 @@ const DocumentTableList: React.FC = () => {
             loading={loading}
             headerTitle={l('rc.doc.management')}
             actionRef={actionRef}
-            toolBarRender={() => [<CreateButton key={"doctable"} onClick={() => handleModalVisible(true)}/>,]}
+            toolBarRender={() => [<CreateBtn key={"doctable"} onClick={() => handleModalVisible(true)}/>,]}
             request={(params, sorter, filter: any) => queryList(API_CONSTANTS.DOCUMENT, {...params, sorter, filter})}
             columns={columns}
         />

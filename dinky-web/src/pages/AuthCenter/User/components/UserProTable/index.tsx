@@ -33,11 +33,11 @@ import {
 } from "@/services/constants";
 import {useAccess} from "@@/exports";
 import {UserBaseInfo} from "@/types/User/data";
-import {EnableSwitch} from "@/components/CallBackButton/EnableSwitch";
-import {EditButton} from "@/components/CallBackButton/EditButton";
-import {AssignButton} from "@/components/CallBackButton/AssignButton";
-import {PopconfirmDeleteButton} from "@/components/CallBackButton/PopconfirmDeleteButton";
-import {CreateButton} from "@/components/CallBackButton/CreateButton";
+import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
+import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
+import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
+import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import PasswordModal from "@/pages/AuthCenter/User/components/PasswordModal";
 import RoleModalTransfer from "../RoleModalTransfer";
 import UserModalForm from "@/pages/AuthCenter/User/components/UserModalForm";
@@ -62,21 +62,21 @@ const UserProTable = () => {
     const access = useAccess(); // access control
 
 
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        actionRef.current?.reload?.();
+        setLoading(false);
+    }
+
     /**
      * user add role to submit
      */
     const handleGrantRoleSubmit = async () => {
-        setLoading(true);
-        const success = await handlePutData(
-            API_CONSTANTS.USER_ASSIGN_ROLE,
-            {userId: formValues.id, roleIds: roleList}
-        );
-        if (success) {
+        await executeAndCallbackRefresh(() => {
+            handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {userId: formValues.id, roleIds: roleList});
             handleAssignRoleTransferOpen(false);
-            actionRef.current?.reload?.();
-        }
-        setLoading(false);
-
+        })
     };
 
     /**
@@ -111,11 +111,8 @@ const UserProTable = () => {
      * @param value
      */
     const handleDeleteUser = async (value: UserBaseInfo.User) => {
-        setLoading(true);
         // TODO: delete user interface is use /api/users/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/users (USER)
-        await handleRemoveById(API_CONSTANTS.USER_DELETE, value.id);
-        setLoading(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(() => handleRemoveById(API_CONSTANTS.USER_DELETE, value.id))
     };
 
 
@@ -124,10 +121,7 @@ const UserProTable = () => {
      * @param value
      */
     const handleChangeEnable = async (value: UserBaseInfo.User) => {
-        setLoading(true);
-        await updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id});
-        setLoading(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(() => updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id}))
     };
 
     /**
@@ -144,10 +138,10 @@ const UserProTable = () => {
      * @param value
      */
     const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
-        await handleAddOrUpdate(API_CONSTANTS.USER, value);
-        await handleModalOpen(false);
-        actionRef.current?.reload?.();
-
+        await executeAndCallbackRefresh(() => {
+             handleAddOrUpdate(API_CONSTANTS.USER, value);
+             handleModalOpen(false);
+        })
     };
 
 
@@ -177,7 +171,7 @@ const UserProTable = () => {
             dataIndex: "enabled",
             hideInSearch: true,
             render: (_, record) => {
-                return <EnableSwitch record={record} onChange={() => handleChangeEnable(record)}/>;
+                return <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
             filterMultiple: false,
@@ -203,11 +197,11 @@ const UserProTable = () => {
             valueType: "option",
             width: "10vh",
             render: (_: any, record: UserBaseInfo.User) => [
-                <EditButton key={record.id} onClick={() => handleEditVisible(record)}/>,
-                <AssignButton key={record.id} onClick={() => handleAssignRole(record)} title={l('user.AssignRole')}/>,
+                <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
+                <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)} title={l('user.assignRole')}/>,
                 <Button
                     className={"options-button"}
-                    key={"changePassword"}
+                    key={`${record.id}_change`}
                     icon={<LockTwoTone/>}
                     title={l("button.changePassword")}
                     onClick={() => {
@@ -216,8 +210,8 @@ const UserProTable = () => {
                 />,
                 <>
                     {(access.canAdmin && record.username !== "admin") &&
-                        <PopconfirmDeleteButton onClick={() => handleDeleteUser(record)}
-                                                description={l("user.deleteConfirm")}/>
+                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteUser(record)}
+                                             description={l("user.deleteConfirm")}/>
                     }
                 </>
                 ,
@@ -235,7 +229,7 @@ const UserProTable = () => {
             headerTitle={l("user.manager")}
             actionRef={actionRef}
             loading={loading}
-            toolBarRender={() => [<CreateButton key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
+            toolBarRender={() => [<CreateBtn key={"CreateUser"} onClick={() => handleModalOpen(true)}/>]}
             request={(params, sorter, filter: any) => (queryList(API_CONSTANTS.USER, {
                 ...params,
                 sorter,
@@ -254,6 +248,7 @@ const UserProTable = () => {
         {(formValues && Object.keys(formValues).length > 0) && (
             <>
                 <PasswordModal
+                    key={"handlePasswordChangeSubmit"}
                     onSubmit={handlePasswordChangeSubmit}
                     onCancel={() => handlePasswordModalOpen(false)}
                     modalVisible={passwordModalOpen}

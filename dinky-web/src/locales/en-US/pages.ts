@@ -201,6 +201,18 @@ export default {
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
 
 
+  'rowPermissions.management': 'Row Permissions Management',
+  'rowPermissions.tableName': 'Table name',
+  'rowPermissions.tableNamePlaceholder': 'Please enter table name',
+  'rowPermissions.expression': 'Expression',
+  'rowPermissions.expressionPlaceholder': 'Please enter expression',
+  'rowPermissions.deleteConfirm': 'Are you sure you want to delete this row permissions',
+  'rowPermissions.roleName': 'Role Name',
+  'rowPermissions.roleNamePlaceholder': 'Please select an role',
+  'rowPermissions.create': 'Create Row Permissions',
+  'rowPermissions.update': 'Update Row Permissions',
+
+
   'metadata.NoDatabaseSelected': 'No database selected',
   'metadata.Application': 'Application',
   'metadata.TableInfo': 'Table Info',

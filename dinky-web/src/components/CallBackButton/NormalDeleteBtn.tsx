@@ -16,26 +16,24 @@
  *
  */
 
-import {Space, Switch} from "antd";
-import {SWITCH_OPTIONS} from "@/services/constants";
+import {l} from "@/utils/intl";
+import {Button} from "antd";
 import React from "react";
+import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 
-type EnableSwitchProps = {
-    record: any;
-    onChange: () => void;
-    disabled?: boolean;
-}
-export const EnableSwitch = (props: EnableSwitchProps) => {
+type NormalDeleteButtonProps = {
+    onClick: () => void;
+};
 
-    const {record,onChange,disabled=false} = props;
+export const NormalDeleteBtn: React.FC<NormalDeleteButtonProps> = (props) => {
+    const {onClick} = props;
 
-    return <>
-        <Space className={"hidden-overflow"}>
-            <Switch
-                {...SWITCH_OPTIONS()}
-                checked={record.enabled}
-                disabled={disabled}
-                onChange={() => onChange()}/>
-        </Space>
-    </>
-}
+    return (
+        <Button
+            className={"options-button"}
+            icon={<DangerDeleteIcon/>}
+            title={l("button.delete")}
+            onClick={() => onClick()}
+        />
+    );
+};
