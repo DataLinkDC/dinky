@@ -137,7 +137,7 @@
     </dependencies>
 
     <profiles>
-         <profile>
+        <profile>
             <id>flink-all</id>
             <dependencies>
                 <dependency>

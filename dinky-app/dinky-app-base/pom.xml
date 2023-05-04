@@ -64,7 +64,7 @@
         <profile>
             <id>flink-all</id>
             <dependencies>
-                   <dependency>
+                <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
