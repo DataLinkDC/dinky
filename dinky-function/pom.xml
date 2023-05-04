@@ -129,22 +129,6 @@
 
     <profiles>
         <profile>
-            <id>flink-1.12</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.12</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
             <id>flink-1.13</id>
             <dependencies>
                 <dependency>
