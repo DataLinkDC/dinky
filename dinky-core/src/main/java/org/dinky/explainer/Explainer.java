@@ -102,47 +102,58 @@ public class Explainer {
         List<StatementParam> execute = new ArrayList<>();
         List<String> statementList = new ArrayList<>();
         List<UDF> udfList = new ArrayList<>();
+        label:
         for (String item : statements) {
             String statement = executor.pretreatStatement(item);
             if (statement.isEmpty()) {
                 continue;
             }
             SqlType operationType = Operations.getOperationType(statement);
-            if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement)
-                        .forEach(JarPathContextHolder::addOtherPlugins);
-                DinkyClassLoaderContextHolder.get()
-                        .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
-            } else if (operationType.equals(SqlType.INSERT)
-                    || operationType.equals(SqlType.SELECT)
-                    || operationType.equals(SqlType.SHOW)
-                    || operationType.equals(SqlType.DESCRIBE)
-                    || operationType.equals(SqlType.DESC)) {
-                trans.add(new StatementParam(statement, operationType));
-                statementList.add(statement);
-                if (!useStatementSet) {
+            switch (operationType) {
+                case ADD:
+                    AddJarSqlParser.getAllFilePath(statement)
+                            .forEach(JarPathContextHolder::addOtherPlugins);
+                    DinkyClassLoaderContextHolder.get()
+                            .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
                     break;
-                }
-            } else if (operationType.equals(SqlType.EXECUTE)) {
-                execute.add(new StatementParam(statement, operationType));
-            } else if (operationType.equals(SqlType.WATCH)) {
-                WatchStatementExplainer watchStatementExplainer =
-                        new WatchStatementExplainer(statement);
+                case ADD_JAR:
+                    ddl.add(new StatementParam(statement, operationType));
+                    statementList.add(statement);
+                    break;
+                case INSERT:
+                case SELECT:
+                case SHOW:
+                case DESCRIBE:
+                case DESC:
+                    trans.add(new StatementParam(statement, operationType));
+                    statementList.add(statement);
+                    if (!useStatementSet) {
+                        break label;
+                    }
+                    break;
+                case EXECUTE:
+                    execute.add(new StatementParam(statement, operationType));
+                    break;
+                case WATCH:
+                    WatchStatementExplainer watchStatementExplainer =
+                            new WatchStatementExplainer(statement);
 
-                String[] tableNames = watchStatementExplainer.getTableNames();
-                for (String tableName : tableNames) {
-                    trans.add(
-                            new StatementParam(
-                                    WatchStatementExplainer.getCreateStatement(tableName),
-                                    SqlType.CTAS));
-                }
-            } else {
-                UDF udf = UDFUtil.toUDF(statement);
-                if (Asserts.isNotNull(udf)) {
-                    udfList.add(udf);
-                }
-                ddl.add(new StatementParam(statement, operationType));
-                statementList.add(statement);
+                    String[] tableNames = watchStatementExplainer.getTableNames();
+                    for (String tableName : tableNames) {
+                        trans.add(
+                                new StatementParam(
+                                        WatchStatementExplainer.getCreateStatement(tableName),
+                                        SqlType.CTAS));
+                    }
+                    break;
+                default:
+                    UDF udf = UDFUtil.toUDF(statement);
+                    if (Asserts.isNotNull(udf)) {
+                        udfList.add(udf);
+                    }
+                    ddl.add(new StatementParam(statement, operationType));
+                    statementList.add(statement);
+                    break;
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
@@ -156,7 +167,7 @@ public class Explainer {
             }
             UDF udf = UDFUtil.toUDF(statement);
             if (Asserts.isNotNull(udf)) {
-                udfList.add(UDFUtil.toUDF(statement));
+                udfList.add(udf);
             }
         }
         return udfList;

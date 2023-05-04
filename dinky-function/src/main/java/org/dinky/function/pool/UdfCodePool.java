@@ -50,8 +50,8 @@ public class UdfCodePool {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
             String error = StrUtil.format("class: {} is not exists!", className);
-            log.error(error);
-            throw new DinkyException(error);
+            log.warn(error);
+//            throw new DinkyException(error);
         }
         return udf;
     }
