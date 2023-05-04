@@ -125,7 +125,7 @@ jobs:
                  -Dspotless.check.skip=true \
                  -Denforcer.skip=true \
                  -Dmaven.javadoc.skip=true \
-                 -P prod,scala-2.12,flink-${{ matrix.flink }},maven-central \
+                 -P prod,scala-2.12,not-all,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
 
       # 检查打包的大小

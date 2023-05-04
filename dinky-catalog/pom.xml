@@ -25,9 +25,7 @@
         <version>0.8.0</version>
     </parent>
     <artifactId>dinky-catalog</artifactId>
-
     <packaging>pom</packaging>
-
     <name>Dinky : Catalog</name>
 
     <modules>
