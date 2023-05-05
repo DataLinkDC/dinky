@@ -63,7 +63,7 @@
         <hibernate-validator.version>6.2.0.Final</hibernate-validator.version>
         <httpclient.version>4.5.13</httpclient.version>
         <hutool.version>5.8.11</hutool.version>
-        <jackjson.version>2.14.1</jackjson.version>
+        <jackson.version>2.14.1</jackson.version>
         <jakarta.ws.rs-api.version>2.1.6</jakarta.ws.rs-api.version>
         <javax.activation.version>1.1.1</javax.activation.version>
         <javax.annotation-api.version>1.3.2</javax.annotation-api.version>
@@ -260,12 +260,12 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${jackjson.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${jackjson.version}</version>
+                <version>${jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.google.guava</groupId>

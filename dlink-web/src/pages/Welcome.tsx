@@ -1454,7 +1454,7 @@ export default (): React.ReactNode => {
                   <Link>修复 dlink-conector-pulsar-1.14 找不到 SubscriptionType 的报错</Link>
                 </li>
                 <li>
-                  <Link>修复 flink1.14 savepoint 时的 jackjson 问题</Link>
+                  <Link>修复 flink1.14 savepoint 时的 jackson 问题</Link>
                 </li>
                 <li>
                   <Link>修复元数据字段类型转换的问题</Link>
