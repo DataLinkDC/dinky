@@ -37,7 +37,7 @@
 
     <profiles>
         <profile>
-            <id>not-all</id>
+            <id>flink-single-version</id>
             <modules>
                 <module>dinky-client-${dinky.flink.version}</module>
             </modules>

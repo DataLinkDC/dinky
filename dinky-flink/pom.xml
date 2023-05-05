@@ -29,7 +29,7 @@
 
     <profiles>
         <profile>
-            <id>not-all</id>
+            <id>flink-single-version</id>
             <modules>
                 <module>dinky-flink-${dinky.flink.version}</module>
             </modules>

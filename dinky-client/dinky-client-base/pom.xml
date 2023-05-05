@@ -121,7 +121,7 @@
 
     <profiles>
         <profile>
-            <id>not-all</id>
+            <id>flink-single-version</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>

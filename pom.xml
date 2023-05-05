@@ -873,7 +873,7 @@
         </profile>
 
         <profile>
-            <id>not-all</id>
+            <id>flink-single-version</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
