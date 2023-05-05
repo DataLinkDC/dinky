@@ -19,33 +19,45 @@
 
 package com.dlink.utils;
 
+import com.dlink.model.FunctionResult;
 import com.dlink.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
 import org.apache.calcite.rel.metadata.RelMetadataQuery;
+import org.apache.calcite.sql.SqlNode;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.api.java.tuple.Tuple2;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
+import org.apache.flink.table.catalog.FunctionCatalog;
+import org.apache.flink.table.catalog.UnresolvedIdentifier;
 import org.apache.flink.table.operations.CatalogSinkModifyOperation;
 import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.planner.delegation.ParserImpl;
+import org.apache.flink.table.planner.delegation.PlannerBase;
 import org.apache.flink.table.planner.operations.PlannerQueryOperation;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * LineageConte
  *
- * @author baisong
+ * @author HamaWhite
  * @since 2022/8/6 11:06
  */
 public class LineageContext {
+
+    private static final Logger LOG = LoggerFactory.getLogger(LineageContext.class);
 
     private final TableEnvironmentImpl tableEnv;
 
@@ -53,7 +65,7 @@ public class LineageContext {
         this.tableEnv = tableEnv;
     }
 
-    public List<LineageRel> getLineage(String statement) {
+    public List<LineageRel> analyzeLineage(String statement) {
         // 1. Generate original relNode tree
         Tuple2<String, RelNode> parsed = parseStatement(statement);
         String sinkTable = parsed.getField(0);
@@ -135,5 +147,50 @@ public class LineageContext {
             }
         }
         return resultList;
+    }
+
+    /**
+     *  Analyze custom functions from SQL, does not contain system functions.
+     *
+     * @param singleSql the SQL statement to analyze
+     * @return custom functions set
+     */
+    public Set<FunctionResult> analyzeFunction(String singleSql) {
+        LOG.info("Analyze function Sql: \n {}", singleSql);
+        ParserImpl parser = (ParserImpl) tableEnv.getParser();
+
+        // parsing sql and return the abstract syntax tree
+        SqlNode sqlNode = parser.parseSql(singleSql);
+
+        // validate the query
+        SqlNode validated = parser.validate(sqlNode);
+
+        // look for all functions
+        FunctionVisitor visitor = new FunctionVisitor();
+        validated.accept(visitor);
+        List<UnresolvedIdentifier> fullFunctionList = visitor.getFunctionList();
+
+        // filter custom functions
+        Set<FunctionResult> resultSet = new HashSet<>();
+        for (UnresolvedIdentifier unresolvedIdentifier : fullFunctionList) {
+            getFunctionCatalog()
+                    .lookupFunction(unresolvedIdentifier)
+                    // the objectIdentifier of the built-in function is null
+                    .flatMap(e -> e.getFunctionIdentifier().getIdentifier())
+                    .ifPresent(identifier -> {
+                        FunctionResult functionResult = new FunctionResult()
+                                .setCatalogName(identifier.getCatalogName())
+                                .setDatabase(identifier.getDatabaseName())
+                                .setFunctionName(identifier.getObjectName());
+                        LOG.debug("analyzed function: {}", functionResult);
+                        resultSet.add(functionResult);
+                    });
+        }
+        return resultSet;
+    }
+
+    private FunctionCatalog getFunctionCatalog() {
+        PlannerBase planner = (PlannerBase) tableEnv.getPlanner();
+        return planner.getFlinkContext().getFunctionCatalog();
     }
 }

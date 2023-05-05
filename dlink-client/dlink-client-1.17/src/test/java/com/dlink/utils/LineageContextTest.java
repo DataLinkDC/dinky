@@ -21,6 +21,7 @@ package com.dlink.utils;
 
 import static org.junit.Assert.assertEquals;
 
+import com.dlink.model.FunctionResult;
 import com.dlink.model.LineageRel;
 
 import org.apache.flink.configuration.Configuration;
@@ -30,8 +31,7 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -43,6 +43,10 @@ import org.junit.Test;
  */
 
 public class LineageContextTest {
+
+    private static final String CATALOG_NAME = "default_catalog";
+
+    private static final String DEFAULT_DATABASE = "default_database";
 
     private static TableEnvironmentImpl tableEnv;
     private static LineageContext context;
@@ -80,11 +84,16 @@ public class LineageContextTest {
                 ") WITH (                                    " +
                 "    'connector' = 'print'                   " +
                 ")");
+
+        // Create custom function my_suffix_udf
+        tableEnv.executeSql("DROP FUNCTION IF EXISTS my_suffix_udf");
+        tableEnv.executeSql("CREATE FUNCTION IF NOT EXISTS my_suffix_udf " +
+                "AS 'com.dlink.utils.MySuffixFunction'");
     }
 
     @Test
-    public void testGetLineage() {
-        List<LineageRel> actualList = context.getLineage("INSERT INTO TT select a||c A ,b||c B from ST");
+    public void testAnalyzeLineage() {
+        String sql = "INSERT INTO TT SELECT a||c A ,b||c B FROM ST";
         String[][] expectedArray = {
                 {"ST", "a", "TT", "A", "||(a, c)"},
                 {"ST", "c", "TT", "A", "||(a, c)"},
@@ -92,17 +101,32 @@ public class LineageContextTest {
                 {"ST", "c", "TT", "B", "||(b, c)"}
         };
 
-        List<LineageRel> expectedList = buildResult(expectedArray);
+        analyzeLineage(sql, expectedArray);
+    }
+
+    @Test
+    public void testAnalyzeLineageAndFunction() {
+        String sql = "INSERT INTO TT SELECT LOWER(a) , my_suffix_udf(b) FROM ST";
+
+        String[][] expectedArray = {
+                {"ST", "a", "TT", "A", "LOWER(a)"},
+                {"ST", "b", "TT", "B", "my_suffix_udf(b)"}
+        };
+
+        analyzeLineage(sql, expectedArray);
+
+        analyzeFunction(sql, new String[]{"my_suffix_udf"});
+    }
+
+    private void analyzeLineage(String sql, String[][] expectedArray) {
+        List<LineageRel> actualList = context.analyzeLineage(sql);
+        List<LineageRel> expectedList = LineageRel.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
         assertEquals(expectedList, actualList);
     }
 
-    private List<LineageRel> buildResult(String[][] expectedArray) {
-        return Stream.of(expectedArray)
-                .map(e -> {
-                    String transform = e.length == 5 ? e[4] : null;
-                    return new LineageRel("default_catalog", "default_database", e[0], e[1], "default_catalog",
-                            "default_database", e[2], e[3],
-                            transform);
-                }).collect(Collectors.toList());
+    private void analyzeFunction(String sql, String[] expectedArray) {
+        Set<FunctionResult> actualSet = context.analyzeFunction(sql);
+        Set<FunctionResult> expectedSet = FunctionResult.build(CATALOG_NAME, DEFAULT_DATABASE, expectedArray);
+        assertEquals(expectedSet, actualSet);
     }
 }

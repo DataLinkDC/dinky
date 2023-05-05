@@ -44,7 +44,7 @@ import com.google.common.collect.ImmutableList;
  *
  * @description: Modify the value method of where to addCondition() to support row-level permission
  * filtering
- * @author: baisong
+ * @author: HamaWhite
  * @version: 1.0.0
  * @date: 2022/12/14 12:24 PM
  */

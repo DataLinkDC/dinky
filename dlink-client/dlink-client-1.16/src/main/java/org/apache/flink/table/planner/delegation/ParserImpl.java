@@ -160,4 +160,21 @@ public class ParserImpl implements Parser {
     public SqlNode parseExpression(String sqlExpression) {
         return calciteParserSupplier.get().parseExpression(sqlExpression);
     }
+
+    @Override
+    public SqlNode parseSql(String statement) {
+        CalciteParser parser = calciteParserSupplier.get();
+
+        // use parseSqlList here because we need to support statement end with ';' in sql client.
+        SqlNodeList sqlNodeList = parser.parseSqlList(statement);
+        List<SqlNode> parsed = sqlNodeList.getList();
+        Preconditions.checkArgument(parsed.size() == 1, "only single statement supported");
+        return parsed.get(0);
+    }
+
+    @Override
+    public SqlNode validate(SqlNode sqlNode) {
+        FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
+        return flinkPlanner.validate(sqlNode);
+    }
 }

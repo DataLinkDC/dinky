@@ -353,7 +353,7 @@ public class CustomTableEnvironmentImpl extends TableEnvironmentImpl implements 
     @Override
     public List<LineageRel> getLineage(String statement) {
         LineageContext lineageContext = new LineageContext(this);
-        return lineageContext.getLineage(statement);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override
