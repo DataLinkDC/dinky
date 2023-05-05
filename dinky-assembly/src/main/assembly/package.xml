@@ -58,22 +58,6 @@
                 <include>upgrade/*/*/*.sql</include>
             </includes>
         </fileSet>
-        <!--<fileSet>-->
-        <!--    <directory>${project.parent.basedir}/build/extends/</directory>-->
-        <!--    <outputDirectory>plugins</outputDirectory>-->
-        <!--    <includes>-->
-        <!--        <include>%regex[dinky-catalog-mysql-1.\d+-${project.version}.jar]</include>-->
-        <!--        <include>%regex[dinky-client-1.\d+-${project.version}.jar]</include>-->
-        <!--    </includes>-->
-        <!--</fileSet>-->
-        <fileSet>
-            <directory>${project.parent.basedir}/build/extends/</directory>
-            <outputDirectory>plugins/flink1.12</outputDirectory>
-            <includes>
-                <include>dinky-client-1.12-${project.version}.jar</include>
-                <include>dinky-connector-jdbc-1.12-${project.version}.jar</include>
-            </includes>
-        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>plugins/flink1.13</outputDirectory>

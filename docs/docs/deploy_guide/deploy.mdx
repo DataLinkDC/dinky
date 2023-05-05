@@ -127,8 +127,6 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
 │   └── application.yml -- 主要程序运行配置文件
 ├── jar
 │   ├── Dockerfile
-│   ├── dlink-app-1.11-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.11.x application
-│   ├── dlink-app-1.12-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.12.x application
 │   ├── dlink-app-1.13-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.13.x application
 │   ├── dlink-app-1.14-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.14.x application
 │   ├── dlink-app-1.15-${VERSION}-jar-with-dependencies.jar -- 适配 Flink1.15.x application
@@ -161,12 +159,6 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
 │   ├── dlink-process-${VERSION}.jar
 │   ├── dlink-scheduler-${VERSION}.jar
 ├── plugins
-│   ├── flink1.11  -- 适配 Flink1.11.x
-│   │   ├── dinky-connector-jdbc-1.11-${VERSION}.jar -- dlink 的 jdbc 连接器增强实现
-│   │   └── dlink-client-1.11-${VERSION}.jar
-│   ├── flink1.12  -- 适配 Flink1.12.x
-│   ├── dinky-connector-jdbc-1.12-${VERSION}.jar -- dlink 的 jdbc 连接器增强实现
-│   │   └── dlink-client-1.12-${VERSION}.jar
 │   ├── flink1.13  -- 适配 Flink1.13.x
 │   ├── dinky-connector-jdbc-1.13-${VERSION}.jar -- dlink 的 jdbc 连接器增强实现
 │   │   ├── dlink-catalog-mysql-1.13-${VERSION}.jar -- dlink 的 catalog 实现
@@ -204,7 +196,7 @@ sh auto.sh status
 ```
 
 #### 版本适配
-启动指令的第二个参数则是版本选择，支持 【1.11, 1.12, 1.13, 1.14, 1.15, 1.16】,参考指令如下：
+启动指令的第二个参数则是版本选择，支持 【1.13, 1.14, 1.15, 1.16】,参考指令如下：
 ```shell
 #启动
 sh auto.sh start 1.14

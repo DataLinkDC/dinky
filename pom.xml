@@ -331,11 +331,6 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
-                <artifactId>dinky-client-1.12</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
                 <artifactId>dinky-client-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -372,11 +367,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-catalog-mysql-1.16</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-connector-jdbc-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -507,11 +497,6 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-app-base</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-flink-1.12</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -853,13 +838,6 @@
             <properties>
                 <scala.binary.version>2.12</scala.binary.version>
                 <scala.version>2.12.10</scala.version>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>flink-1.12</id>
-            <properties>
-                <dinky.flink.version>1.12</dinky.flink.version>
             </properties>
         </profile>
 

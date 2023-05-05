@@ -131,7 +131,6 @@ Dlink 的源码是非常简单的， Spring Boot 项目轻松上手。
 dlink -- 父项目
 |-dlink-admin -- 管理中心
 |-dlink-client -- Client 中心
-| |-dlink-client-1.12 -- Client-1.12 实现
 | |-dlink-client-1.13 -- Client-1.13 实现
 |-dlink-connectors -- Connectors 中心
 | |-dlink-connector-jdbc -- Jdbc 扩展
