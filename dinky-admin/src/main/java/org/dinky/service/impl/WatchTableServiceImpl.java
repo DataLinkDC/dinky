@@ -140,7 +140,7 @@ public class WatchTableServiceImpl implements WatchTableService {
                 if (socket == null) {
                     log.warn("WatchTableListener:socket is null, try to initial it");
                     socket = getDatagramSocket(PORT);
-                    if (socket == null) continue;
+                    if (socket == null) break;
                 }
 
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
