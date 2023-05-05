@@ -295,6 +295,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             setMap.put(key, value);
             Configuration configuration = Configuration.fromMap(confMap);
             environment.getConfig().configure(configuration, null);
+            environment.getCheckpointConfig().configure(configuration);
             getConfig().addConfiguration(configuration);
         }
     }
@@ -313,6 +314,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             setMap.remove(key);
             Configuration configuration = Configuration.fromMap(confMap);
             environment.getConfig().configure(configuration, null);
+            environment.getCheckpointConfig().configure(configuration);
             getConfig().addConfiguration(configuration);
         } else {
             setMap.clear();

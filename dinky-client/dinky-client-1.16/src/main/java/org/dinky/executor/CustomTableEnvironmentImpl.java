@@ -254,6 +254,7 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             StreamExecutionEnvironment environment, Map<String, String> config) {
         Configuration configuration = Configuration.fromMap(config);
         environment.getConfig().configure(configuration, null);
+        environment.getCheckpointConfig().configure(configuration);
         getConfig().addConfiguration(configuration);
     }
 
