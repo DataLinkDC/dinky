@@ -343,6 +343,15 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                                 .atZone(sinkTimeZone)
                                 .toLocalDateTime());
             } else if (value instanceof Long) {
+                // pgsql database timestamp is microsecond ,need transform to millisecond
+                // time is microsecond when time after 3000-01-01 00:00:00
+                // time is microsecond when time before 1000-01-01 00:00:00
+                if ((long) value > 32503651200000L || (long) value < -30610253143000L) {
+                    return TimestampData.fromLocalDateTime(
+                            Instant.ofEpochMilli((long) value / 1000)
+                                    .atZone(sinkTimeZone)
+                                    .toLocalDateTime());
+                }
                 return TimestampData.fromLocalDateTime(
                         Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
             } else {
@@ -366,6 +375,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         } else if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
+            } else {
+                return value;
+            }
+        } else if (logicalType instanceof SmallIntType) {
+            if (value instanceof Number) {
+                return ((Number) value).shortValue();
             } else {
                 return value;
             }
