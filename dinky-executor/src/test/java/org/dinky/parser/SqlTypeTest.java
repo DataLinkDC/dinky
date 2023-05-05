@@ -52,7 +52,8 @@ class SqlTypeTest {
         test("SET...", SqlType.SET, true);
         test("RESET...", SqlType.RESET, true);
         test("EXECUTE...", SqlType.EXECUTE, true);
-        test("ADD...", SqlType.ADD, true);
+        test("ADD jar ...", SqlType.ADD_JAR, true);
+        test("ADD customjar ...", SqlType.ADD, true);
         test("WATCH...", SqlType.WATCH, true);
 
         String sql =
