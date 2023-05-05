@@ -26,6 +26,7 @@ import org.dinky.cdc.doris.DorisSinkBuilder;
 import org.dinky.cdc.kafka.KafkaSinkBuilder;
 import org.dinky.cdc.kafka.KafkaSinkJsonBuilder;
 import org.dinky.cdc.sql.SQLSinkBuilder;
+import org.dinky.cdc.starrocks.StarrocksSinkBuilder;
 import org.dinky.exception.FlinkClientException;
 import org.dinky.model.FlinkCDCConfig;
 
@@ -51,6 +52,7 @@ public class SinkBuilderFactory {
                     put(
                             DorisSchemaEvolutionSinkBuilder.KEY_WORD,
                             () -> new DorisSchemaEvolutionSinkBuilder());
+                    put(StarrocksSinkBuilder.KEY_WORD, () -> new StarrocksSinkBuilder());
                 }
             };
 
