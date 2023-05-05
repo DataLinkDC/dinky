@@ -19,12 +19,15 @@
 
 package org.dinky.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketException;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -32,11 +35,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -47,7 +45,7 @@ public class WatchTableServiceImpl implements WatchTableService {
     private final Map<String, Set<String>> registerTableMap = new ConcurrentHashMap<>();
 
     private static final Pattern FULL_TABLE_NAME_PATTERN =
-            Pattern.compile("^`([^\\.]+)`\\.`([^\\.]+)`\\.`([^\\.]+)`$");
+            Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
 
     public WatchTableServiceImpl(SimpMessagingTemplate messagingTemplate) {
         this.messagingTemplate = messagingTemplate;
@@ -73,7 +71,7 @@ public class WatchTableServiceImpl implements WatchTableService {
         String destination = getDestinationByFullName(userId, fullName);
         Set<String> destinations = registerTableMap.get(fullName);
         if (destinations == null) {
-            registerTableMap.put(fullName, new HashSet<>(Arrays.asList(destination)));
+            registerTableMap.put(fullName, new HashSet<>(Collections.singletonList(destination)));
         } else {
             destinations.add(destination);
         }
@@ -120,20 +118,30 @@ public class WatchTableServiceImpl implements WatchTableService {
         public static final int PORT = 7125;
         private DatagramSocket socket;
         private boolean running;
-        private byte[] buf = new byte[4096];
+        private final byte[] buf = new byte[4096];
 
         public WatchTableListener(Consumer<String> consumer) {
             this.consumer = consumer;
+            this.socket = getDatagramSocket(PORT);
+        }
+
+        private static DatagramSocket getDatagramSocket(int port) {
             try {
-                this.socket = new DatagramSocket(PORT);
+                return new DatagramSocket(port);
             } catch (SocketException e) {
-                log.error(e.getMessage());
+                log.error("WatchTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
             }
+            return null;
         }
 
         public void run() {
             running = true;
             while (running) {
+                if (socket == null) {
+                    log.warn("WatchTableListener:socket is null, try to initial it");
+                    socket = getDatagramSocket(PORT);
+                    if (socket == null) continue;
+                }
 
                 DatagramPacket packet = new DatagramPacket(buf, buf.length);
                 try {
@@ -145,7 +153,9 @@ public class WatchTableServiceImpl implements WatchTableService {
                 }
             }
 
-            socket.close();
+            if (socket != null) {
+                socket.close();
+            }
         }
 
         public void stopThread() {
