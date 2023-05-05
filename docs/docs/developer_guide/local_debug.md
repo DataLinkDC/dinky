@@ -214,8 +214,6 @@ dlink--父项目
     |-dlink-app--Application Jar
     |-dlink-assembly--打包配置
     |-dlink-client--Client 中心
-    | |-dlink-client-1.11--Client-1.11实现
-    | |-dlink-client-1.12--Client-1.12实现
     | |-dlink-client-1.13--Client-1.13实现
     | |-dlink-client-1.14--Client-1.14实现
     |-dlink-common--通用中心

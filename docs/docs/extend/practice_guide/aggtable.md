@@ -363,7 +363,7 @@ left join aggscore2 b on a.sid=b.sid
 
 ![flink_webui](http://www.aiwenmo.com/dinky/docs/zh-CN/extend/practice_guide/aggtable/flink_webui.png)
 
-​	打开集群的 Flink UI 可以发现刚刚提交的批任务，此时可以发现集群版本号为 1.12.2 ，而 Dlink 默认版本为 1.12.4 ，所以一般大版本内可以互相兼容。
+​	打开集群的 Flink UI 可以发现刚刚提交的批任务，此时可以发现集群版本号为 1.14.0 ，而 Dlink 默认版本为 1.14.0 ，所以一般大版本内可以互相兼容。
 
 ### 查看Mysql表的数据
 

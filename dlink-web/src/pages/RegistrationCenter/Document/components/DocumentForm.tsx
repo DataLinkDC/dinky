@@ -178,8 +178,6 @@ const DocumentForm: React.FC<DocumentFormProps> = (props) => {
           rules={[{required: true, message: l('pages.rc.doc.versionPlaceholder')}]}
         >
           <Select allowClear>
-            <Option value="1.11">Flink-1.11</Option>
-            <Option value="1.12">Flink-1.12</Option>
             <Option value="1.13">Flink-1.13</Option>
             <Option value="1.14">Flink-1.14</Option>
             <Option value="1.15">Flink-1.15</Option>
