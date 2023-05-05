@@ -877,7 +877,7 @@
             <activation>
                 <activeByDefault>true</activeByDefault>
                 <property>
-                    <name>-flink-all</name>
+                    <name>!flink-all</name>
                 </property>
             </activation>
         </profile>
