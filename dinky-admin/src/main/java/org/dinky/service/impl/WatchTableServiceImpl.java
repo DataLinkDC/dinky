@@ -19,10 +19,7 @@
 
 package org.dinky.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -35,6 +32,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -129,7 +131,10 @@ public class WatchTableServiceImpl implements WatchTableService {
             try {
                 return new DatagramSocket(port);
             } catch (SocketException e) {
-                log.error("WatchTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
+                log.error(
+                        "WatchTableListener:DatagramSocket init failed, port {}: {}",
+                        PORT,
+                        e.getMessage());
             }
             return null;
         }
