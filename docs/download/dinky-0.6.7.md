@@ -55,7 +55,7 @@ Dinky 0.6.7 是一个修复的版本。
 - 修复 yarn per-job 无法自动释放资源的问题
 - 修复多租户新增角色和删除角色的问题
 - 修复 dlink-conector-pulsar-1.14 找不到 SubscriptionType 的报错
-- 修复 flink1.14 savepoint 时的 jackjson 问题
+- 修复 flink1.14 savepoint 时的 jackson 问题
 - 修复元数据字段类型转换的问题
 - 修复整库同步 KafkaSinkBuilder 未序列化导致报错
 - 修复注册中心文档管理的查询条件错误
