@@ -19,8 +19,6 @@
 
 package org.dinky.explainer;
 
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
@@ -48,6 +46,8 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import java.time.LocalDateTime;
@@ -118,7 +118,7 @@ public class Explainer {
                         .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
-                FileSystem.initialize(combinationConfig,null);
+                FileSystem.initialize(combinationConfig, null);
                 ddl.add(new StatementParam(statement, operationType));
                 statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
