@@ -19,6 +19,8 @@
 
 package org.dinky.executor;
 
+import cn.hutool.core.util.ReflectUtil;
+import java.lang.reflect.InvocationTargetException;
 import org.dinky.assertion.Asserts;
 import org.dinky.model.LineageRel;
 import org.dinky.result.SqlExplainResult;
@@ -329,6 +331,19 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
             }
         }
         return false;
+    }
+
+    @Override
+    public Configuration getRootConfiguration() {
+        Method method = ReflectUtil.getMethod(this.getStreamExecutionEnvironment().getClass(),
+            "getConfiguration");
+        ReflectUtil.setAccessible(method);
+        try {
+            Object object = method.invoke(this.getStreamExecutionEnvironment());
+            return (Configuration)object;
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private void callSet(

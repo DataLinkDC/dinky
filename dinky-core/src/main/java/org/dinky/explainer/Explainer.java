@@ -158,7 +158,7 @@ public class Explainer {
 
     private Configuration getCombinationConfig() {
         CustomTableEnvironment cte = executor.getCustomTableEnvironment();
-        Configuration rootConfig = (Configuration) cte.getConfig().getRootConfiguration();
+        Configuration rootConfig = cte.getRootConfiguration();
         Configuration config = cte.getConfig().getConfiguration();
         Configuration combinationConfig = new Configuration();
         combinationConfig.addAll(rootConfig);

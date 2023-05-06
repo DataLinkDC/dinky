@@ -22,6 +22,7 @@ package org.dinky.executor;
 import org.dinky.model.LineageRel;
 import org.dinky.result.SqlExplainResult;
 
+import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
@@ -61,6 +62,7 @@ public interface CustomTableEnvironment
 
     Planner getPlanner();
 
+    Configuration getRootConfiguration();
     default List<LineageRel> getLineage(String statement) {
         return null;
     }

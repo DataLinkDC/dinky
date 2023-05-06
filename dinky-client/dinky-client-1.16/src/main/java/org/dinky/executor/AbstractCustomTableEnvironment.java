@@ -71,4 +71,10 @@ public abstract class AbstractCustomTableEnvironment
         ReflectUtil.setFieldValue(
                 getPlanner(), "extendedOperationExecutor", extendedOperationExecutor);
     }
+
+    @Override
+    public Configuration getRootConfiguration(){
+        (Configuration) this.getConfig().getRootConfiguration();
+    }
+
 }
