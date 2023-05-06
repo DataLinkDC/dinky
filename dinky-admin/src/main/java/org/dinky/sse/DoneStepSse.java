@@ -43,7 +43,5 @@ public class DoneStepSse extends StepSse {
     }
 
     @Override
-    public void exec() {
-        addFileMsgLog("finished");
-    }
+    public void exec() {}
 }

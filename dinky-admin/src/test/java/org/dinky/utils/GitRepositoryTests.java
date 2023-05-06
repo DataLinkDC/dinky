@@ -29,6 +29,7 @@ import org.junit.jupiter.api.Test;
  * @since 0.8.0
  */
 public class GitRepositoryTests {
+    // ssh-keygen -m PEM -t ecdsa
     GitRepository sshRepository =
             new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
     GitRepository httpRepository =

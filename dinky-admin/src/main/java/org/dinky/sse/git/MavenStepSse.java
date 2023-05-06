@@ -24,6 +24,7 @@ import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
 import org.dinky.utils.MavenUtil;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -32,8 +33,8 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -55,17 +56,20 @@ public class MavenStepSse extends StepSse {
     @Override
     public void exec() {
         GitProject gitProject = (GitProject) params.get("gitProject");
-        String pom =
-                Opt.ofBlankAble(gitProject.getPom())
-                        .orElse(
-                                FileUtil.file(
-                                                GitRepository.getProjectDir(gitProject.getName()),
-                                                gitProject.getBranch())
-                                        .getAbsolutePath());
+        File pom =
+                FileUtil.file(
+                        GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
+
+        if (StrUtil.isNotBlank(gitProject.getPom())) {
+            pom = new File(pom, gitProject.getPom());
+        }
+
+        Assert.isTrue(pom.exists(), "pom not exists!");
+
         boolean state =
                 MavenUtil.build(
-                        null,
-                        pom,
+                        MavenUtil.getMavenSettingsPath(),
+                        pom.getAbsolutePath(),
                         null,
                         null,
                         getLogFile().getAbsolutePath(),

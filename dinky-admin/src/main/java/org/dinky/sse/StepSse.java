@@ -116,10 +116,15 @@ public abstract class StepSse {
         FileUtil.appendString(Convert.toStr(msg), getLogFile(), StandardCharsets.UTF_8);
     }
 
-    public synchronized void addFileMsgLog(String msg) {
-        String content = "=============    " + Convert.toStr(msg) + "   =============\n";
+    public synchronized void addFileMsgCusLog(String msg) {
+        String content = "\n=============    " + Convert.toStr(msg) + "   =============\n";
         msgList.add(content);
         FileUtil.appendString(content, getLogFile(), StandardCharsets.UTF_8);
+    }
+
+    public synchronized void addFileMsgLog(String msg) {
+        sendMsg(msg);
+        FileUtil.appendString(msg, getLogFile(), StandardCharsets.UTF_8);
     }
 
     public synchronized void addFileLog(List<?> data) {
@@ -157,10 +162,11 @@ public abstract class StepSse {
                     }
                 });
         try {
+            addFileMsgCusLog("step " + getStep() + ": " + name + " start");
             exec();
             setFinish(true);
         } catch (Exception e) {
-            addMsg(ExceptionUtil.stacktraceToString(e));
+            addFileMsgLog(ExceptionUtil.stacktraceToString(e));
             send();
             setFinish(false);
         }
@@ -168,6 +174,9 @@ public abstract class StepSse {
 
     public void setFinish(boolean status) {
         this.status = status ? 2 : 0;
+        addFileMsgCusLog(
+                "step " + getStep() + ": " + name + " " + (status ? "finished" : "failed"));
+
         sendSync();
         sendMsg(getEndLog());
 

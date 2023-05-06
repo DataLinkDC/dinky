@@ -19,42 +19,40 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.dto.GitProjectDTO;
 import org.dinky.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.util.ZipUtil;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
-public class GitCloneStepSse extends StepSse {
-    public GitCloneStepSse(
+public class PythonZipStepSse extends StepSse {
+    public PythonZipStepSse(
             int sleep,
             List<SseEmitter> emitterList,
             Dict params,
             AtomicInteger msgId,
             AtomicInteger stepAtomic,
             ExecutorService cachedThreadPool) {
-        super("git clone", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        super("build python zip", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
     }
 
     @Override
     public void exec() {
         GitProject gitProject = (GitProject) params.get("gitProject");
+        File file =
+                FileUtil.file(
+                        GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
-        GitRepository gitRepository =
-                new GitRepository(BeanUtil.toBean(gitProject, GitProjectDTO.class));
-        gitRepository.cloneAndPull(
-                gitProject.getName(), gitProject.getBranch(), getLogFile(), this::addMsg);
+        params.put("zipFile", ZipUtil.zip(file));
+        params.put("projectFile", file);
     }
 }

@@ -19,14 +19,10 @@
 
 package org.dinky.utils;
 
+import org.apache.maven.shared.invoker.*;
+import org.dinky.function.constant.PathConstant;
+import org.dinky.model.SystemConfiguration;
 import org.dinky.process.exception.DinkyException;
-
-import org.apache.maven.shared.invoker.DefaultInvocationRequest;
-import org.apache.maven.shared.invoker.DefaultInvoker;
-import org.apache.maven.shared.invoker.InvocationRequest;
-import org.apache.maven.shared.invoker.Invoker;
-import org.apache.maven.shared.invoker.MavenInvocationException;
-import org.apache.maven.shared.invoker.PrintStreamHandler;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -40,8 +36,12 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.extra.template.TemplateConfig;
+import cn.hutool.extra.template.TemplateEngine;
+import cn.hutool.extra.template.engine.freemarker.FreemarkerEngine;
 import cn.hutool.system.SystemUtil;
 
 /**
@@ -51,6 +51,9 @@ import cn.hutool.system.SystemUtil;
 public class MavenUtil {
 
     private static final List<String> COMMON_BIN_PATH = CollUtil.newArrayList("/usr", "/usr/local");
+    private static final TemplateEngine ENGINE =
+            new FreemarkerEngine(
+                    new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
 
     public static boolean build(String setting, String pom, String logFile, List<String> args) {
         return build(
@@ -134,12 +137,17 @@ public class MavenUtil {
         request.addArg("-v");
 
         List<String> msg = new LinkedList<>();
+        List<String> errMsg = new LinkedList<>();
         request.setOutputHandler(msg::add);
+        request.setErrorHandler(errMsg::add);
 
         Invoker invoker = new DefaultInvoker();
 
         try {
-            invoker.execute(request);
+            int exitCode = invoker.execute(request).getExitCode();
+            if (exitCode != 0) {
+                throw new RuntimeException(String.join("\n", errMsg));
+            }
         } catch (MavenInvocationException e) {
             throw new RuntimeException(e);
         }
@@ -190,5 +198,28 @@ public class MavenUtil {
                 getJarList(pomFile, jarFileList);
             }
         }
+    }
+
+    public static String getMavenSettingsPath() {
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        String mavenSettings = systemConfiguration.getMavenSettings();
+        if (StrUtil.isNotBlank(mavenSettings) && !FileUtil.isFile(mavenSettings)) {
+            throw new DinkyException("settings file is not exists,path: " + mavenSettings);
+        } else if (StrUtil.isBlank(mavenSettings)) {
+            Dict render =
+                    Dict.create()
+                            .set("repositoryUrl", systemConfiguration.getMavenRepository())
+                            .set("repositoryUser", systemConfiguration.getMavenRepositoryUser())
+                            .set(
+                                    "repositoryPassword",
+                                    systemConfiguration.getMavenRepositoryPassword());
+            String content = ENGINE.getTemplate("settings.xml").render(render);
+            File file =
+                    FileUtil.writeUtf8String(
+                            content,
+                            FileUtil.file(PathConstant.TMP_PATH, "maven", "conf", "settings.xml"));
+            return file.getAbsolutePath();
+        }
+        return mavenSettings;
     }
 }
