@@ -19,10 +19,13 @@
 
 package org.dinky.explainer;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.watchTable.WatchStatementExplainer;
 import org.dinky.function.data.model.UDF;
@@ -113,6 +116,11 @@ public class Explainer {
                         .forEach(JarPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
+            } else if (operationType.equals(SqlType.ADD_JAR)) {
+                Configuration combinationConfig = getCombinationConfig();
+                FileSystem.initialize(combinationConfig,null);
+                ddl.add(new StatementParam(statement, operationType));
+                statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
                     || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
@@ -146,6 +154,16 @@ public class Explainer {
             }
         }
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
+    }
+
+    private Configuration getCombinationConfig() {
+        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
+        Configuration rootConfig = (Configuration) cte.getConfig().getRootConfiguration();
+        Configuration config = cte.getConfig().getConfiguration();
+        Configuration combinationConfig = new Configuration();
+        combinationConfig.addAll(rootConfig);
+        combinationConfig.addAll(config);
+        return combinationConfig;
     }
 
     public List<UDF> parseUDFFromStatements(String[] statements) {
