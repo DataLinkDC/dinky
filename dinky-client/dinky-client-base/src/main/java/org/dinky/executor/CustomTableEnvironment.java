@@ -63,6 +63,7 @@ public interface CustomTableEnvironment
     Planner getPlanner();
 
     Configuration getRootConfiguration();
+
     default List<LineageRel> getLineage(String statement) {
         return null;
     }

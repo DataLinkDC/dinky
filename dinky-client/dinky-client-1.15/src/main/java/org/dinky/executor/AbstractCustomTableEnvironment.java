@@ -53,7 +53,7 @@ public abstract class AbstractCustomTableEnvironment
     }
 
     @Override
-    public Configuration getRootConfiguration(){
-        (Configuration) this.getConfig().getRootConfiguration();
+    public Configuration getRootConfiguration() {
+        return (Configuration) this.getConfig().getRootConfiguration();
     }
 }
