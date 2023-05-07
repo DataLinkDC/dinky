@@ -44,20 +44,34 @@ const CodeEditProps = {
 
 
 export const ShowLog: React.FC<ShowLogProps> = (props) => {
+    /**
+     * props
+     */
     const {values, modalVisible, onCancel} = props;
 
     const [log, setLog] = React.useState<string>("");
+
+    /**
+     * query all step logs
+     * @returns {Promise<void>}
+     */
     const queryAllStepLogs = async () => {
         const result = await handleData(API_CONSTANTS.GIT_PROJECT_BUILD_ALL_LOGS, values.id);
         setLog(result);
     };
 
 
+    /**
+     * effect
+     */
     useEffect(() => {
         queryAllStepLogs();
     }, [modalVisible]);
 
 
+    /**
+     *  render
+     */
     return (
         <Modal
             title={l("rc.gp.log")}

@@ -88,6 +88,11 @@ const CodeShow = (props: CodeShowFormProps) => {
     monaco.languages.register({
         id: language || "typescript",
     });
+
+    /**
+     * @description: handle sync log
+     * @returns {Promise<void>}
+     */
     const handleSyncLog = async () => {
         setLoading(true);
         setTimeout(() => {
@@ -96,12 +101,13 @@ const CodeShow = (props: CodeShowFormProps) => {
         }, 1000);
     };
 
-
+    /**
+     * @description: handle auto refresh log
+     */
     useEffect(() => {
         if (enableTimer) {
             const timerSync = setInterval(() => {
                 handleSyncLog();
-                console.log("refresh log")
             }, 5000);
             setTimer(timerSync)
             return () => {
@@ -110,6 +116,9 @@ const CodeShow = (props: CodeShowFormProps) => {
         }
     }, [])
 
+    /**
+     * @description: handle stop auto refresh log
+     */
    const handleStopAutoRefresh = () => {
        setStoping(true);
        setTimeout(() => {
@@ -120,28 +129,42 @@ const CodeShow = (props: CodeShowFormProps) => {
     }
 
 
+    /**
+     * @description: handle scroll to top
+     */
     const handleBackTop = () => {
         editor?.revealLine(1);
     }
 
+    /**
+     * @description: handle scroll to bottom
+     */
     const handleBackBottom = () => {
         // @ts-ignore
         editor?.revealLine(editor?.getModel()?.getLineCount());
     }
 
+    /**
+     * @description: handle scroll to down
+     */
     const handleDownScroll = () => {
         // @ts-ignore
         editor?.setScrollPosition({scrollTop: editor?.getScrollTop() + 500}, ScrollType.Smooth);
     }
 
+    /**
+     * @description: handle scroll to up
+     */
     const handleUpScroll = () => {
         // @ts-ignore
         editor?.setScrollPosition({scrollTop: editor?.getScrollTop() - 500}, ScrollType.Smooth);
     }
 
 
-
-
+    /**
+     * @description: editorDidMount
+     * @param {editor.IStandaloneCodeEditor} editor
+     */
     const editorDidMount = (editor: IStandaloneCodeEditor) => {
         setEditor(editor)
         // 在编辑器加载完成后，设置自动布局和自动高亮显示
@@ -150,6 +173,9 @@ const CodeShow = (props: CodeShowFormProps) => {
         editor.focus();
     }
 
+    /**
+     * @description: render
+     */
     return (<>
         <div className={"monaco-float"}>
             <MonacoEditor

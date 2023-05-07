@@ -60,17 +60,19 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
      * @returns {boolean}
      */
     const unSupportView = () => {
-        return current.name.endsWith(".jar")
-            || current.name.endsWith(".war")
-            || current.name.endsWith(".zip")
-            || current.name.endsWith(".tar.gz")
-            || current.name.endsWith(".tar")
-            || current.name.endsWith(".jpg")
-            || current.name.endsWith(".png")
-            || current.name.endsWith(".gif")
-            || current.name.endsWith(".bmp")
-            || current.name.endsWith(".jpeg")
-            || current.name.endsWith(".ico")
+        const {name} = current;
+
+        return name.endsWith(".jar")
+            || name.endsWith(".war")
+            || name.endsWith(".zip")
+            || name.endsWith(".tar.gz")
+            || name.endsWith(".tar")
+            || name.endsWith(".jpg")
+            || name.endsWith(".png")
+            || name.endsWith(".gif")
+            || name.endsWith(".bmp")
+            || name.endsWith(".jpeg")
+            || name.endsWith(".ico")
     }
 
 

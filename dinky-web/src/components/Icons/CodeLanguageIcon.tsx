@@ -23,6 +23,13 @@ const IconStyle = {
   height: "16px",
   width: "16px",
 };
+
+/**
+ *
+ * default icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const FileIcon = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -42,6 +49,11 @@ export const FileIcon = () => {
   </>;
 };
 
+/**
+ * java icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const JavaSvg = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -64,6 +76,12 @@ export const JavaSvg = () => {
   </>;
 };
 
+
+/**
+ * yaml icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const YAMLSvg = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -78,6 +96,11 @@ export const YAMLSvg = () => {
 };
 
 
+/**
+ * folder icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const FolderSvgExpand = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -94,6 +117,11 @@ export const FolderSvgExpand = () => {
   </>;
 };
 
+/**
+ * folder icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const FolderSvgExpanded = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -108,6 +136,11 @@ export const FolderSvgExpanded = () => {
 };
 
 
+/**
+ * shell icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const ShellSvg = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -121,6 +154,11 @@ export const ShellSvg = () => {
   </>;
 };
 
+/**
+ * xml icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const XMLSvg = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (
@@ -149,7 +187,11 @@ export const XMLSvg = () => {
   </>;
 };
 
-
+/**
+ * markdown icon
+ * @returns {JSX.Element}
+ * @constructor
+ */
 export const MarkDownSvg = () => {
   return <>
     <Icon style={{...IconStyle}} component={() => (

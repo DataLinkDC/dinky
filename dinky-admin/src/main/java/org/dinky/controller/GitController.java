@@ -62,6 +62,11 @@ import lombok.AllArgsConstructor;
 public class GitController {
     final GitProjectService gitProjectService;
 
+    /**
+     * save or update git project
+     * @param gitProject {@link GitProject}
+     * @return {@link Result} of {@link Void}
+     */
     @PutMapping("/saveOrUpdate")
     public Result<Void> saveOrUpdate(@Validated @RequestBody GitProject gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
@@ -71,34 +76,64 @@ public class GitController {
         return Result.succeed();
     }
 
+    /**
+     * get branch list
+     * @param gitProjectDTO {@link GitProjectDTO}
+     * @return {@link Result} of {@link List}
+     */
     @PostMapping("/getBranchList")
     public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
     }
 
+    /**
+     * delete project
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
     @DeleteMapping("/deleteProject")
     public Result<Void> deleteProject(@RequestParam("id") Integer id) {
         gitProjectService.removeProjectAndCodeCascade(id);
         return Result.succeed();
     }
 
+    /**
+     * enable or disable project
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
     @PutMapping("/updateEnable")
     public Result<Void> updateEnable(@RequestParam("id") Integer id) {
         gitProjectService.updateState(id);
         return Result.succeed();
     }
 
+    /**
+     * get project list
+     * @param params {@link JsonNode}
+     * @return {@link ProTableResult} of {@link GitProject}
+     */
     @PostMapping("/getProjectList")
     public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
         return gitProjectService.selectForProTable(params);
     }
 
+    /**
+     * get project info by id
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link GitProject}
+     */
     @PostMapping("/getOneDetails")
     public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
 
+    /**
+     * build project
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
     @PutMapping("/build")
     public Result<Void> build(@RequestParam("id") Integer id) {
 
@@ -118,6 +153,11 @@ public class GitController {
         return Result.succeed();
     }
 
+    /**
+     * build step
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
@@ -150,6 +190,11 @@ public class GitController {
         return Result.succeed(projectCode, MessageResolverUtils.getMessage("response.get.success"));
     }
 
+    /**
+     * get all build log
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
     @GetMapping("/getAllBuildLog")
     public Result<String> getAllBuildLog(@RequestParam("id") Integer id) {
 

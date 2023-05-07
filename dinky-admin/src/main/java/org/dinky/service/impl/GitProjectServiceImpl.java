@@ -43,6 +43,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author ZackYoung
@@ -97,6 +98,7 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
      * @return {@link Boolean}
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean removeProjectAndCodeCascade(Integer id) {
         GitProject gitProject = getById(id);
         File projectDir = GitRepository.getProjectDir(gitProject.getName());

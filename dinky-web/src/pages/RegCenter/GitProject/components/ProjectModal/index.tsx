@@ -26,6 +26,9 @@ import ProjectForm from "@/pages/RegCenter/GitProject/components/ProjectModal/Pr
 import {Button, Form} from "antd";
 import {FormContextValue} from "@/components/Context/FormContext";
 
+/**
+ * project modal props
+ */
 type ProjectModalProps = {
   modalVisible: boolean;
   values: Partial<GitProject>;
@@ -84,6 +87,10 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
   };
 
 
+  /**
+   * render footer
+   * @returns {[JSX.Element, JSX.Element]}
+   */
   const renderFooter = () => {
     return [
       <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
@@ -92,6 +99,9 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
     ];
   };
 
+  /**
+   * render
+   */
   return <>
     <ModalForm<GitProject>
       {...MODAL_FORM_STYLE}

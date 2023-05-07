@@ -570,8 +570,6 @@ const StudioTree: React.FC<StudioTreeProps> = (props) => {
       setAutoExpandParent(false)
     };
 
-
-
     const loop = (data: any) =>
       data?.map((item: any) => {
         const index = item.title.indexOf(searchValue);
