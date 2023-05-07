@@ -30,7 +30,7 @@ import org.apache.flink.table.api.TableResult;
 /** @since 0.7.0 */
 public class AddJarOperation extends AbstractOperation implements Operation {
 
-    private static final String KEY_WORD = "ADD JAR";
+    private static final String KEY_WORD = "ADD CUSTOMJAR";
 
     public AddJarOperation(String statement) {
         super(statement);

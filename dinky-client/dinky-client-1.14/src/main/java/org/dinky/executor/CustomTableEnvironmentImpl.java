@@ -69,6 +69,7 @@ import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +80,8 @@ import java.util.Optional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.util.ReflectUtil;
 
 /**
  * 定制TableEnvironmentImpl
@@ -182,6 +185,20 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 executor,
                 settings.isStreamingMode(),
                 classLoader);
+    }
+
+    @Override
+    public Configuration getRootConfiguration() {
+        Method method =
+                ReflectUtil.getMethod(
+                        this.getStreamExecutionEnvironment().getClass(), "getConfiguration");
+        ReflectUtil.setAccessible(method);
+        try {
+            Object object = method.invoke(this.getStreamExecutionEnvironment());
+            return (Configuration) object;
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private static Executor lookupExecutor(

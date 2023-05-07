@@ -36,7 +36,7 @@ import cn.hutool.core.util.StrUtil;
 /** @since 0.7.0 */
 public class AddJarSqlParser {
 
-    private static final String ADD_JAR = "(add\\s+jar)\\s+'(.*.jar)'";
+    private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
     private static final Pattern ADD_JAR_PATTERN =
             Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
 

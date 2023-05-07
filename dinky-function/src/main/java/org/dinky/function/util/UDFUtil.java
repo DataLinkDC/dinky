@@ -341,12 +341,14 @@ public class UDFUtil {
             }
 
             UDF udf = UdfCodePool.getUDF(className);
-            return UDF.builder()
-                    .name(udfName)
-                    .className(className)
-                    .code(udf.getCode())
-                    .functionLanguage(udf.getFunctionLanguage())
-                    .build();
+            if (udf != null) {
+                return UDF.builder()
+                        .name(udfName)
+                        .className(className)
+                        .code(udf.getCode())
+                        .functionLanguage(udf.getFunctionLanguage())
+                        .build();
+            }
         }
         return null;
     }
