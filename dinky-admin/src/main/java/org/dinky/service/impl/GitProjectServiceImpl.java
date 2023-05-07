@@ -37,13 +37,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.json.JSONUtil;
-import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author ZackYoung
@@ -139,6 +139,14 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         return sb.toString();
     }
 
+    /**
+     * get project build step logs of build result
+     *
+     * @param file {@link File}
+     * @param sb {@link StringBuilder}
+     * @param codeType {@link Integer}
+     * @throws IOException
+     */
     private void buildAllStepLogs(File file, StringBuilder sb, Integer codeType)
             throws IOException {
         Integer step = Integer.valueOf(file.getName().split("\\.")[0]);
@@ -156,6 +164,12 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         }
     }
 
+    /**
+     * build tree node data
+     *
+     * @param projectDir {@link File}
+     * @return {@link List < GitProjectTreeNodeDTO >}
+     */
     private static List<GitProjectTreeNodeDTO> treeNodeData(File projectDir) {
         List<GitProjectTreeNodeDTO> nodes = new ArrayList<>();
         if (projectDir.exists() && projectDir.isDirectory()) {
@@ -173,6 +187,12 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         return nodes;
     }
 
+    /**
+     * build tree
+     *
+     * @param file {@link File}
+     * @param parentNode {@link GitProjectTreeNodeDTO}
+     */
     private static void buildTree(File file, GitProjectTreeNodeDTO parentNode) {
         if (file.isDirectory()) {
             File[] children = file.listFiles();
@@ -201,10 +221,24 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         }
     }
 
+    /**
+     * read file
+     *
+     * @param file {@link File}
+     * @return {@link String}
+     * @throws IOException
+     */
     private static String readFile(File file) throws IOException {
         return FileUtil.readUtf8String(file);
     }
 
+    /**
+     * match step by code type
+     *
+     * @param codeType {@link Integer}
+     * @param step {@link Integer}
+     * @return {@link String}
+     */
     private String matchStepByCodeType(Integer codeType, Integer step) {
         String stepMatch = "";
         switch (codeType) {
@@ -220,6 +254,12 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         return stepMatch;
     }
 
+    /**
+     * match step by step to java type
+     *
+     * @param step {@link Integer}
+     * @return {@link String}
+     */
     private String matchStepByStepToJava(Integer step) {
         String stepMatch = "";
         switch (step) {
@@ -247,6 +287,13 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         return stepMatch;
     }
 
+    /**
+     * build step 5 logs , jar and udf class list , because jar and udf class is a list
+     *
+     * @param file
+     * @param sb
+     * @throws IOException
+     */
     private void buildStep5Logs(File file, StringBuilder sb) throws IOException {
         String step5Log = readFile(file);
         sb.append("Jar And UDF Class List:\n");

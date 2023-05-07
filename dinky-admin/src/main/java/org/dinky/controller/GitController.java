@@ -64,6 +64,7 @@ public class GitController {
 
     /**
      * save or update git project
+     *
      * @param gitProject {@link GitProject}
      * @return {@link Result} of {@link Void}
      */
@@ -78,6 +79,7 @@ public class GitController {
 
     /**
      * get branch list
+     *
      * @param gitProjectDTO {@link GitProjectDTO}
      * @return {@link Result} of {@link List}
      */
@@ -89,6 +91,7 @@ public class GitController {
 
     /**
      * delete project
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link Void}
      */
@@ -100,6 +103,7 @@ public class GitController {
 
     /**
      * enable or disable project
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link Void}
      */
@@ -111,6 +115,7 @@ public class GitController {
 
     /**
      * get project list
+     *
      * @param params {@link JsonNode}
      * @return {@link ProTableResult} of {@link GitProject}
      */
@@ -121,6 +126,7 @@ public class GitController {
 
     /**
      * get project info by id
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link GitProject}
      */
@@ -131,6 +137,7 @@ public class GitController {
 
     /**
      * build project
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link Void}
      */
@@ -155,6 +162,7 @@ public class GitController {
 
     /**
      * build step
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link Void}
      */
@@ -192,6 +200,7 @@ public class GitController {
 
     /**
      * get all build log
+     *
      * @param id {@link Integer}
      * @return {@link Result} of {@link Void}
      */
