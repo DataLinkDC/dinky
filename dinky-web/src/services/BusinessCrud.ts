@@ -16,8 +16,7 @@
  */
 
 import {
-  addOrUpdateData,
-  getData,
+  addOrUpdateData, putData, getDataByRequestBody, getInfoById,
   postAll,
   removeById, updateDataByParams,
 } from "@/services/api";
@@ -29,7 +28,7 @@ import {
 } from "@/utils/messages";
 
 
-const APPLICATION_JSON = 'application/json'
+const APPLICATION_JSON = "application/json";
 
 // ================================ About Account ================================
 /**
@@ -84,7 +83,6 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
 }
 
 
-
 // ================================ About crud ================================
 /**
  * add or update data
@@ -97,7 +95,7 @@ export const handleAddOrUpdate = async (url: string, params: any) => {
   try {
     const {code, msg} = await addOrUpdateData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg)
+      SuccessMessage(msg);
     } else {
       WarningMessage(msg);
     }
@@ -136,7 +134,7 @@ export const updateEnabled = async (url: string, params: any) => {
   try {
     const {code, msg} = await updateDataByParams(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg)
+      SuccessMessage(msg);
     } else {
       WarningMessage(msg);
     }
@@ -151,7 +149,7 @@ export const handleOption = async (url: string, title: string, param: any) => {
   try {
     const {code, msg} = await postAll(url, param);
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg)
+      SuccessMessage(msg);
     } else {
       WarningMessage(msg);
     }
@@ -163,12 +161,10 @@ export const handleOption = async (url: string, title: string, param: any) => {
 
 export const handleData = async (url: string, id: any) => {
   try {
-    const {code, datas, msg} = await getData(url, id);
+    const {code, datas} = await getInfoById(url, id);
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg)
       return datas;
     } else {
-      WarningMessage(msg);
       return false;
     }
   } catch (error) {
@@ -177,18 +173,43 @@ export const handleData = async (url: string, id: any) => {
 };
 
 
-
 export const handlePutData = async (url: string, fields: any) => {
   const tipsTitle = fields.id ? l("app.request.update") : l("app.request.add");
   await LoadingMessageAsync(l("app.request.running") + tipsTitle);
   try {
     const {code, msg} = await postAll(url, {...fields});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg)
+      SuccessMessage(msg);
     } else {
       WarningMessage(msg);
     }
     return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+
+export const getDataByParams = async (url: string, params: any) => {
+  try {
+    const {datas} = await getDataByRequestBody(url, params);
+    return datas;
+  } catch (error) {
+    return false;
+  }
+};
+
+export const handlePutDataByParams = async (url: string, title: string, params: any) => {
+  await LoadingMessageAsync(l("app.request.running") + title);
+  try {
+    const {code, msg} = await putData(url, {...params});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(msg);
+      return true;
+    } else {
+      WarningMessage(msg);
+      return false;
+    }
   } catch (error) {
     return false;
   }

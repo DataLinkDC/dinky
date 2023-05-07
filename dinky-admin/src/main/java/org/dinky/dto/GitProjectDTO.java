@@ -38,7 +38,7 @@ public class GitProjectDTO {
     @NotNull private String url;
 
     /** */
-    @NotNull private String branches;
+    @NotNull private String branch;
 
     /** */
     private String username;
@@ -57,9 +57,11 @@ public class GitProjectDTO {
     /** */
     private Integer codeType;
 
+    private Integer type;
+
     /** */
     private String description;
 
     /** */
-    @NotNull private Integer enable;
+    @NotNull private Boolean enabled;
 }

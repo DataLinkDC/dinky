@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.dinky.mapper.AlertGroupMapper">
+<mapper namespace="org.dinky.mapper.GitProjectMapper">
 
     <select id="selectForProTable" resultType="org.dinky.model.GitProject">
         select
@@ -10,7 +10,7 @@
         <where>
             1=1
             <if test='param.name!=null and param.name!=""'>
-                and a.name like CONCAT('%', #{param.name}, '%')
+                and a.name like "%${param.name}%"
             </if>
             <if test='param.branch!=null and param.branch!=""'>
                 and a.branch = #{param.branch}
@@ -25,7 +25,7 @@
                 and a.build_state = #{param.build_state}
             </if>
             <if test='param.url!=null and param.url!=""'>
-                and a.url like CONCAT('%', #{param.url}, '%')
+                and a.url like "%${param.url}%"
             </if>
             <if test='param.createTime!=null and param.createTime!=""'>
                 and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
@@ -40,6 +40,5 @@
                 ${ew.sqlSegment}
             </if>
         </where>
-        order by enable desc
     </select>
 </mapper>

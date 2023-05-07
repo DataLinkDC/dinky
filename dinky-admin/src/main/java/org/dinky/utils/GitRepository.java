@@ -24,6 +24,7 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.process.exception.DinkyException;
 
 import java.io.File;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import org.eclipse.jgit.api.TransportCommand;
 import org.eclipse.jgit.api.TransportConfigCallback;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.lib.TextProgressMonitor;
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.JschConfigSessionFactory;
 import org.eclipse.jgit.transport.OpenSshConfig;
@@ -62,7 +64,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GitRepository {
     private static final String BRANCH_PREFIX = "refs/heads/";
     /** 匹配 ssh格式 git 地址 */
-    private static final String SSH_REGEX = "^git@[\\w\\.]+:([\\w_]+)/(.*?)\\.git$";
+    private static final String SSH_REGEX = "^git@[\\w.]+:[\\w\\.||-]+/(\\w)+\\.git$";
 
     private String url;
     private String username;
@@ -111,7 +113,9 @@ public class GitRepository {
                                 .build();
                 git = new Git(repository);
 
-                git.pull().call();
+                git.pull()
+                        .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.out)))
+                        .call();
                 git.close();
             } else {
                 cloneCommand.call().close();

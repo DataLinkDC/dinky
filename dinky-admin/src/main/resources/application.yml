@@ -75,6 +75,7 @@ mybatis-plus:
       logic-delete-field: is_delete
       logic-delete-value: 1
       logic-not-delete-value: 0
+    banner: false
   configuration:
     ##### mybatis-plus打印完整sql(只适用于开发环境)
     #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
@@ -96,6 +97,7 @@ sa-token:
   token-style: uuid
   # 是否输出操作日志
   is-log: false
+  is-print: false
 
 knife4j:
   enable: true

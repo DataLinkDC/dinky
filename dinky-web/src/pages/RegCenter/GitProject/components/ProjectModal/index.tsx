@@ -17,90 +17,102 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import {GitProject} from "@/types/RegCenter/data";
 import {l} from "@/utils/intl";
-import {API_CONSTANTS, MODAL_FORM_STYLE} from "@/services/constants";
+import {MODAL_FORM_STYLE} from "@/services/constants";
 import {ModalForm} from "@ant-design/pro-components";
 import ProjectForm from "@/pages/RegCenter/GitProject/components/ProjectModal/ProjectForm";
-import {Button, Form, Space} from "antd";
+import {Button, Form} from "antd";
 import {FormContextValue} from "@/components/Context/FormContext";
-import {getDataByParams, handleData} from "@/services/BusinessCrud";
 
+/**
+ * project modal props
+ */
 type ProjectModalProps = {
-    modalVisible: boolean;
-    values: Partial<GitProject>;
-    onSubmit: (values: Partial<GitProject>) => void;
-    onCancel: () => void;
+  modalVisible: boolean;
+  values: Partial<GitProject>;
+  onSubmit: (values: Partial<GitProject>) => void;
+  onCancel: () => void;
 }
 const ProjectModal: React.FC<ProjectModalProps> = (props) => {
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(() => ({
+    resetForm: () => form.resetFields(), // 定义 resetForm 方法
+  }), [form]);
+
+  const [submitting, setSubmitting] = React.useState<boolean>(false);
+
+  /**
+   * init props
+   */
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleModalVisible,
+    modalVisible,
+    values
+  } = props;
 
 
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        modalVisible,
-        values
-    } = props;
-
-
-
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
-
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
-    };
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    setSubmitting(false);
+    formContext.resetForm();
+  };
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    setSubmitting(true);
+    await handleSubmit({...values, ...fieldsValue});
+    handleCancel();
+  };
 
 
-    const renderFooter = () => {
-        return [
-            <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
-            <Button key={"finish"} type="primary" onClick={() => submitForm()}>{l("button.finish")}</Button>,
-        ];
-    };
+  /**
+   * render footer
+   * @returns {[JSX.Element, JSX.Element]}
+   */
+  const renderFooter = () => {
+    return [
+      <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
+      <Button key={"finish"} loading={submitting} type="primary"
+              onClick={() => submitForm()}>{l("button.finish")}</Button>,
+    ];
+  };
 
-    return <>
-        <ModalForm<GitProject>
-            {...MODAL_FORM_STYLE}
-            title={values.id ? l("rc.gp.modify") : l("rc.gp.create")}
-            open={modalVisible}
-            form={form}
-            submitter={{render: () => [...renderFooter()]}}
-        >
-            <ProjectForm values={values} form={form}/>
-        </ModalForm>
-    </>
-}
+  /**
+   * render
+   */
+  return <>
+    <ModalForm<GitProject>
+      {...MODAL_FORM_STYLE}
+      title={values.id ? l("rc.gp.modify") : l("rc.gp.create")}
+      open={modalVisible}
+      form={form}
+      submitter={{render: () => [...renderFooter()]}}
+      initialValues={values}
+    >
+      <ProjectForm values={values} form={form}/>
+    </ModalForm>
+  </>;
+};
 export default ProjectModal;

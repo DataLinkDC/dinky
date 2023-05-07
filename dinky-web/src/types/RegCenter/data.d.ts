@@ -199,3 +199,14 @@ export type GitProject = BaseBeanColumns & {
   buildStep: number,
   udfClassMapList: string,
 }
+
+
+
+export type GitProjectTreeNode = {
+  name: string;
+  path: string;
+  content: string;
+  size: number;
+  leaf: boolean;
+  children: GitProjectTreeNode[];
+}
