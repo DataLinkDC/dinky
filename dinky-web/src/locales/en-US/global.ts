@@ -147,4 +147,8 @@ export default {
   'global.error': 'Error',
   'global.warning': 'Warning',
   'global.success': 'Success',
+
+  'global.notifaction.iknow': 'I understand',
+  'global.notifaction.full-error': 'Complete error message',
+
 };
