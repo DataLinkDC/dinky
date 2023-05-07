@@ -20,9 +20,18 @@
 import MonacoEditor, {monaco} from "react-monaco-editor";
 import {convertCodeEditTheme} from "@/utils/function";
 import {MonacoEditorOptions} from "@/types/Public/data";
-import {FloatButton} from "antd";
-import {SyncOutlined} from "@ant-design/icons";
-import {useState} from "react";
+import {FloatButton, Space} from "antd";
+import {
+    DownCircleFilled,
+    StopOutlined,
+    SyncOutlined,
+    UpCircleFilled
+} from "@ant-design/icons";
+import React, {useEffect, useState} from "react";
+import {editor} from "monaco-editor";
+import {l} from "@/utils/intl";
+import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
+import ScrollType = editor.ScrollType;
 
 export type CodeShowFormProps = {
     height?: string;
@@ -34,6 +43,7 @@ export type CodeShowFormProps = {
     theme?: string;
     autoWrap?: string;
     showFloatButton?: boolean;
+    enableTimer?: boolean;
     refreshLogCallback?: () => void;
 };
 
@@ -62,65 +72,146 @@ const CodeShow = (props: CodeShowFormProps) => {
         theme, // edit theme
         autoWrap = "on", //  auto wrap
         showFloatButton = false,
+        enableTimer = false,
         refreshLogCallback,
     } = props;
 
 
     const [loading, setLoading] = useState<boolean>(false);
+    const [stoping, setStoping] = useState<boolean>(false);
+    const [editor, setEditor] = useState<IStandaloneCodeEditor>();
 
+
+    const [timer, setTimer] = useState<NodeJS.Timer>();
 
     // register TypeScript language service
     monaco.languages.register({
         id: language || "typescript",
     });
-
-    // get monaco editor model
-    const getModel = () => monaco.editor.getModels()[0];
-
-
     const handleSyncLog = async () => {
         setLoading(true);
-        await refreshLogCallback?.();
-        setLoading(false);
+        setTimeout(() => {
+            refreshLogCallback?.();
+            setLoading(false);
+        }, 1000);
     };
+
+
+    useEffect(() => {
+        if (enableTimer) {
+            const timerSync = setInterval(() => {
+                handleSyncLog();
+                console.log("refresh log")
+            }, 5000);
+            setTimer(timerSync)
+            return () => {
+                clearInterval(timerSync);
+            }
+        }
+    }, [])
+
+   const handleStopAutoRefresh = () => {
+       setStoping(true);
+       setTimeout(() => {
+           clearInterval(timer);
+           setStoping(false)
+       }, 1000);
+
+    }
+
+
+    const handleBackTop = () => {
+        editor?.revealLine(1);
+    }
+
+    const handleBackBottom = () => {
+        // @ts-ignore
+        editor?.revealLine(editor?.getModel()?.getLineCount());
+    }
+
+    const handleDownScroll = () => {
+        // @ts-ignore
+        editor?.setScrollPosition({scrollTop: editor?.getScrollTop() + 500}, ScrollType.Smooth);
+    }
+
+    const handleUpScroll = () => {
+        // @ts-ignore
+        editor?.setScrollPosition({scrollTop: editor?.getScrollTop() - 500}, ScrollType.Smooth);
+    }
+
+
+
+
+    const editorDidMount = (editor: IStandaloneCodeEditor) => {
+        setEditor(editor)
+        // 在编辑器加载完成后，设置自动布局和自动高亮显示
+        editor.getBottomForLineNumber(100)
+        editor.layout();
+        editor.focus();
+    }
+
     return (<>
-        <div style={{display: "flex", justifyContent: "space-between"}}>
+        <div className={"monaco-float"}>
             <MonacoEditor
                 width={width}
                 height={height}
-                value={code}
+                value={loading ? "loading..." : code}
                 language={language}
                 options={{
                     ...options,
                     readOnly: true,
                     wordWrap: autoWrap,
                     autoDetectHighContrast: true,
+                    selectOnLineNumbers: true,
+                    fixedOverflowWidgets: true,
+                    autoClosingDelete: "always",
                     lineNumbers,
                 }}
-                editorDidMount={(editor) => {
-                    // 在编辑器加载完成后，设置自动布局和自动高亮显示
-                    editor.layout();
-                    editor.focus();
-                    getModel().updateOptions({
-                        tabSize: 2,
-                    });
-                }}
+                editorDidMount={editorDidMount}
                 theme={theme ? theme : convertCodeEditTheme()}
             />
-            {showFloatButton &&
-                <>
-                    <FloatButton.Group shape="square" style={{
-                        right: 70,
-                        top: 70,
-                        position: "relative",
-                        display: "flow-root"
-                    }}>
-                        <FloatButton icon={<SyncOutlined spin={loading}/>} onClick={() => handleSyncLog()}/>
-                        <FloatButton.BackTop visibilityHeight={0}/>
-                    </FloatButton.Group>
-                </>
-
-            }
+            <FloatButton.Group
+                open={showFloatButton} shape="square"
+                className={"float-button"}
+            >
+                <Space direction={"vertical"}>
+                    {refreshLogCallback &&
+                       <>
+                           <FloatButton
+                               tooltip={l('button.refresh')}
+                               icon={<SyncOutlined spin={loading}/>}
+                               onClick={handleSyncLog}
+                           />
+                           {enableTimer &&
+                               <FloatButton
+                                   tooltip={l('button.stopRefresh')}
+                                   icon={<StopOutlined spin={stoping}/>}
+                                   onClick={handleStopAutoRefresh}
+                               />
+                           }
+                       </>
+                    }
+                    <FloatButton.BackTop
+                        tooltip={l('button.backTop')}
+                        onClick={handleBackTop}
+                        visibilityHeight={0}/>
+                    <FloatButton.BackTop
+                        className={"back-bottom"}
+                        tooltip={l('button.backBottom')}
+                        onClick={handleBackBottom}
+                        visibilityHeight={0}/>
+                    <FloatButton
+                        icon={<UpCircleFilled/>}
+                        tooltip={l('button.upScroll')}
+                        onClick={handleUpScroll}
+                    />
+                    <FloatButton
+                        icon={<DownCircleFilled/>}
+                        tooltip={l('button.downScroll')}
+                        onClick={handleDownScroll}
+                    />
+                </Space>
+            </FloatButton.Group>
         </div>
     </>);
 };

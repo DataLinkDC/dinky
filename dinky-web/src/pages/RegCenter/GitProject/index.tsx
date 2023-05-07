@@ -21,13 +21,12 @@ import {PageContainer} from "@ant-design/pro-layout";
 import ProjectProTable from "@/pages/RegCenter/GitProject/components/ProjectProTable";
 
 
-
 export default () => {
 
   /**
    * render
    */
   return <PageContainer title={false}>
-   <ProjectProTable/>
+    <ProjectProTable/>
   </PageContainer>;
 };

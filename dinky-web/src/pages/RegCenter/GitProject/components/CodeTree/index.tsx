@@ -34,8 +34,9 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
   return <>
     <Modal
       title={l("rc.gp.codeTree")}
-      width={"75%"}
+      width={"95%"}
       open={modalVisible}
+      maskClosable={false}
       onCancel={() => onCancel()}
       cancelText={l("button.close")}
       okButtonProps={{style: {display: "none"}}}

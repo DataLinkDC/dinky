@@ -17,28 +17,42 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.dto;
 
-import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
- * @author ZackYoung
+ * GitProjectTreeNodeDTO
+ *
  * @since 0.8.0
  */
-public class GitRepositoryTests {
-    // ssh-keygen -m PEM -t ecdsa
-    GitRepository sshRepository =
-            new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
-    GitRepository httpRepository =
-            new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class GitProjectTreeNodeDTO {
+    private String name;
+    private String path;
+    private String content;
+    private Long size;
+    private boolean isLeaf;
+    private List<GitProjectTreeNodeDTO> children;
 
-    @Test
-    public void httpTest() {
-        List<String> branchList1 = httpRepository.getBranchList();
-        System.out.println(branchList1);
-        File dinky = httpRepository.cloneAndPull("dinky", "0.7");
+    public GitProjectTreeNodeDTO(
+            String name,
+            String path,
+            boolean isLeaf,
+            List<GitProjectTreeNodeDTO> children,
+            Long size) {
+        this.name = name;
+        this.path = path;
+        this.isLeaf = isLeaf;
+        this.children = children;
+        this.size = size;
     }
 }

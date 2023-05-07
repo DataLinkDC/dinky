@@ -17,28 +17,14 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.dto;
 
-import java.io.File;
 import java.util.List;
 
-import org.junit.jupiter.api.Test;
+import lombok.Data;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
-public class GitRepositoryTests {
-    // ssh-keygen -m PEM -t ecdsa
-    GitRepository sshRepository =
-            new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
-    GitRepository httpRepository =
-            new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
-
-    @Test
-    public void httpTest() {
-        List<String> branchList1 = httpRepository.getBranchList();
-        System.out.println(branchList1);
-        File dinky = httpRepository.cloneAndPull("dinky", "0.7");
-    }
+@Data
+public class JarClassesDTO {
+    private String jarPath;
+    private List<String> classList;
 }

@@ -24,19 +24,14 @@ import {CopyTwoTone} from "@ant-design/icons";
 import {BuildJarList} from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow";
 
 
-
-
 type ClassListProps = {
-  jarList: Partial<BuildJarList[]>;
+  jarAndClassesList: Partial<BuildJarList[]>;
 }
 
 
 const ClassList: React.FC<ClassListProps> = (props) => {
 
-  const {jarList} = props;
-
-
-
+  const {jarAndClassesList} = props;
 
 
   const columns: ProColumns<BuildJarList>[] = [
@@ -69,7 +64,7 @@ const ClassList: React.FC<ClassListProps> = (props) => {
   const buildExpandableList = (classList: string[]) => {
     return (
       // if enable show classes then show classes, else show empty
-      jarList ?
+        classList ?
         <>
           {classList.map((item, index) => {
             return <><List.Item key={index}>{item} <CopyTwoTone onClick={() => handleCopyClick(item)}/>
@@ -87,16 +82,16 @@ const ClassList: React.FC<ClassListProps> = (props) => {
       columns={columns}
       toolBarRender={false}
       showHeader={false}
-      dataSource={jarList}
+      dataSource={JSON.parse(JSON.stringify(jarAndClassesList)) as BuildJarList[]}
       search={false}
       rowKey="jarPath"
       pagination={false}
-      expandable={{
-        expandRowByClick: true,
-        expandedRowRender: record => {
-          return <List split className={"child-list"}>{buildExpandableList(record.classList)}</List>;
-        }
-      }}
+      // expandable={{
+      //   expandRowByClick: true,
+      //   expandedRowRender: record => {
+      //     return <List split className={"child-list"}>{buildExpandableList(record.classList)}</List>;
+      //   }
+      // }}
     />
   </>;
 };

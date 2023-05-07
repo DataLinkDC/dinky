@@ -61,6 +61,11 @@ export default {
   'button.prev': 'Previous',
   'button.showLog': 'Show Log',
   'button.showCode': 'Show Code',
+  'button.backTop': 'Back Top',
+  'button.backBottom': 'Back Bottom',
+  'button.downScroll': 'Down Scroll',
+  'button.upScroll': 'Up Scroll',
+  'button.stopRefresh': 'Stop Auto Refresh',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',

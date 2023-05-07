@@ -17,10 +17,8 @@
  *
  */
 
-import {ProColumns, ProTable} from "@ant-design/pro-table";
-import {Empty, List} from "antd";
-import React from "react";
-import {CopyTwoTone} from "@ant-design/icons";
+import {Empty} from "antd";
+import React, {useEffect} from "react";
 import JarList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList";
 import ClassList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/ClassList";
 
@@ -30,122 +28,27 @@ export type BuildJarList = {
   classList: string[];
 }
 
-const jarData: string[] = [
-  "a.jar",
-  "2.jar",
-  "a32.jar",
-  "a432.jar",
-  "a3jkahj.jar",
-];
-
-
-const jarAndClassesData: BuildJarList[] = [
-  {
-    jarPath: "55sajsa.jar",
-    classList: [
-      "org.dinky.controller.StudioController",
-      "org.dinky.controller.StudioController",
-      "org.dinky.controller.StudioController",
-      "org.dinky.controller.StudioController",
-    ],
-  },
-  {
-    jarPath: "45456.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-  {
-    jarPath: "gsdfsaad.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-  {
-    jarPath: "rwrtewqrwqewq.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-  {
-    jarPath: "tgerwtwere.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-  {
-    jarPath: "dsdffe.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-  {
-    jarPath: "sasasa.jar",
-    classList: [
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-      "org.dinky.controller.udf.UDFController",
-    ],
-  },
-
-];
-
 
 type JarShowProps = {
   step: number
-  jarClassesData?: BuildJarList[]
-  jarListData?: string[]
+  data: any
 }
 
 const JarShow: React.FC<JarShowProps> = (props) => {
 
-  const {step,jarListData,jarClassesData} = props;
+  const {step, data} = props;
+
+  const [resultData, setResultData] = React.useState<any[]>([]);
+
+  useEffect(  () => {
+    setResultData(data);
+  }, [data]);
 
   return <>
     {
       step === 4 ?
-        <JarList jarList={jarData}/> :
-        step === 5 ? <ClassList jarList={jarAndClassesData}/> : <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
+        <JarList jarList={resultData}/> :
+        step === 5 ? <ClassList jarAndClassesList={resultData}/> : <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
     }
   </>;
 };

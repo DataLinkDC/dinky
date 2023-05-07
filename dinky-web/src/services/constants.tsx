@@ -116,11 +116,15 @@ export const API_CONSTANTS = {
   // ---- get project details by id ----
   GIT_GET_ONE_DETAILS: "/api/git/getOneDetails",
   // ---- get project details by id ----
-  GIT_GET_CODE_DIR_LIST: "/api/git/getCodeDirList",
+  GIT_PROJECT_CODE_TREE: "/api/git/getProjectCode",
   // ---- get project build by id ----
-  GIT_PROJECT_BUILD: "/api/git/getCodeDirList",
+  GIT_PROJECT_BUILD: "/api/git/build",
   // ---- get project build logs by id----
   GIT_PROJECT_BUILD_STEP_LOGS: "/api/git/build-step-logs",
+  // ---- get project build steps ----
+  GIT_PROJECT_BUILD_STEPS: "/api/git/build-steps",
+  // ---- get project all build logs ----
+    GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
 
 };
 
@@ -252,3 +256,25 @@ export const SWITCH_OPTIONS =() => {
     unCheckedChildren: l("status.disabled"),
   };
 }
+
+
+
+
+export const DIALECT = {
+  JAVA: "java",
+  XML: "xml",
+  MD: "md",
+  MDX: "mdx",
+  MARKDOWN: "markdown",
+  SCALA: "scala",
+  PYTHON: "py",
+  YML: "yml",
+  YAML: "yaml",
+  SH: "sh",
+  BASH: "bash",
+  CMD: "cmd",
+  SHELL: "shell",
+  JSON: "json",
+  SQL: "sql",
+  JAVASCRIPT: "javascript",
+};

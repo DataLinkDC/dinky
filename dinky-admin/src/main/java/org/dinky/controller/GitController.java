@@ -22,10 +22,12 @@ package org.dinky.controller;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.dto.GitProjectDTO;
+import org.dinky.dto.GitProjectTreeNodeDTO;
 import org.dinky.model.GitProject;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.io.File;
 import java.util.List;
@@ -63,7 +65,8 @@ public class GitController {
     @PutMapping("/saveOrUpdate")
     public Result<Void> saveOrUpdate(@Validated @RequestBody GitProject gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
-        GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
+        GitRepository gitRepository =
+                new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
         gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
         return Result.succeed();
     }
@@ -76,7 +79,7 @@ public class GitController {
 
     @DeleteMapping("/deleteProject")
     public Result<Void> deleteProject(@RequestParam("id") Integer id) {
-        gitProjectService.removeById(id);
+        gitProjectService.removeProjectAndCodeCascade(id);
         return Result.succeed();
     }
 
@@ -96,7 +99,7 @@ public class GitController {
         return Result.succeed(gitProjectService.getById(id));
     }
 
-    @GetMapping(path = "/build")
+    @PutMapping("/build")
     public Result<Void> build(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
@@ -129,5 +132,31 @@ public class GitController {
         GitProjectStepSseFactory.observe(emitter, gitProject, params);
 
         return emitter;
+    }
+
+    /**
+     * get project code
+     *
+     * @param id {@link Integer}
+     * @return {@link Result} of {@link Void}
+     */
+    @GetMapping("/getProjectCode")
+    public Result<List<GitProjectTreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
+
+        List<GitProjectTreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
+        if (projectCode == null) {
+            return Result.failed(MessageResolverUtils.getMessage("response.get.failed"));
+        }
+        return Result.succeed(projectCode, MessageResolverUtils.getMessage("response.get.success"));
+    }
+
+    @GetMapping("/getAllBuildLog")
+    public Result<String> getAllBuildLog(@RequestParam("id") Integer id) {
+
+        String allBuildLog = gitProjectService.getAllBuildLog(id);
+        if (allBuildLog == null) {
+            return Result.failed(MessageResolverUtils.getMessage("response.get.failed"));
+        }
+        return Result.succeed(allBuildLog, MessageResolverUtils.getMessage("response.get.success"));
     }
 }

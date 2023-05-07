@@ -18,190 +18,144 @@
  */
 
 
-import {Button, List, Progress, Steps, theme} from "antd";
+import {Button, Progress, Steps, theme} from "antd";
 import React, {useEffect, useState} from "react";
 import CodeShow from "@/components/CustomEditor/CodeShow";
-import {CheckCircleTwoTone} from "@ant-design/icons";
-import {ErrorNotification, SuccessMessage, SuccessMessageAsync} from "@/utils/messages";
+import {ErrorNotification, SuccessMessageAsync} from "@/utils/messages";
 import {l} from "@/utils/intl";
-import {useUnmount} from "ahooks";
-import JarList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow";
+import {API_CONSTANTS} from "@/services/constants";
+import {GitProject} from "@/types/RegCenter/data";
+import {processColor} from "@/pages/RegCenter/GitProject/constans";
 import JarShow from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow";
-
-
+import {BuildStepsState} from "@/pages/RegCenter/GitProject/components/BuildSteps";
 
 
 export type BuildMsgData = {
-  currentStep: number; // 1:check env 2:git clone 3:maven build 4:get jars 5:analysis udf class
-  status: number; // 2:finish 1:running 0:fail
-  resultType: number; // 1:log 2: jar list or class list
-  data: any; // if resultType is 1, data is log, else data is jar list or class list
+    type: number; // //   1 是log  2是部分状态
+    currentStep: number; // 1:check env 2:git clone 3:maven build 4:get jars 5:analysis udf class
+    data: any; // if resultType is 1, data is log, else data is jar list or class list
+    status: number; // 2:finish 1:running 0:fail
+    resultType?: number; // 1:log 2: jar list or class list
 }
 
-const processColor = {
-  "0%": "#8ac1ea",
-  "20%": "#99e5d0",
-  "40%": "#9ae77b",
-  "60%": "#59b732",
-  "80%": "#47d50a",
-  "100%": "#01ad31"
-};
 
-export const AutoSteps: React.FC = () => {
+type BuildStepsProps = {
+    values: Partial<GitProject>;
+    steps: any[];
+    currentDataMsg: any;
+    percent: number;
+    currentStep: number;
+}
 
-  let es = new EventSource("http://127.0.0.1:8080/flux/flux");
+export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
 
-  /**
-   * state
-   */
-  const {token} = theme.useToken();
-  const [current, setCurrent] = useState(0);
-  const [percent, setPercent] = useState(0);
-  const [currentDataMsg, setCurrentDataMsg] = useState<BuildMsgData>({currentStep: 3, status: 2, resultType: 2, data: "asas"},);
+    const {
+        values, steps,
+        currentDataMsg, percent, currentStep
+    } = props;
 
 
-  /**
-   * steps
-   */
-  const steps = [
-    {
-      title: l('rc.gp.build.step.0'),
-      status: "finish",
-      description: new Date().toLocaleString(),
-      icon: <CheckCircleTwoTone twoToneColor="#52c41a"/>,
-    },
-    {
-      title: l('rc.gp.build.step.1'),
-      status: "finish",
-      description: new Date().toLocaleString(),
-    },
-    {
-      title: l('rc.gp.build.step.2'),
-      status: "process",
-      description: new Date().toLocaleString(),
-    },
-    {
-      title: l('rc.gp.build.step.3'),
-      status: "wait",
-      description: new Date().toLocaleString(),
-    },
-    {
-      title: l('rc.gp.build.step.4'),
-      status: "wait",
-      description: new Date().toLocaleString(),
-    },
-    {
-      title: l('rc.gp.build.step.5'),
-      status: "wait",
-      description: new Date().toLocaleString(),
-    },
-  ];
+    /**
+     * state
+     */
+    const {token} = theme.useToken();
+    const [currentStepStatus, setCurrentStepStatus] = useState<number>(currentStep);
+    const [currentPercent, seCurrenttPercent] = useState<number>(percent);
 
 
-  /**
-   * 自动完成
-   *  前提：sse发送的结果中得步骤值===当前步骤值，且sse返回数据的状态是 finish
-   */
-  const autoFinish = async () => {
-    if (currentDataMsg.currentStep === current && currentDataMsg.status === 2) {
-      await SuccessMessageAsync(l("rc.gp.buildSuccess"));
-    }
-  };
-
-  /**
-   *  next step
-   */
-  const next = () => {
-    setCurrent(current + 1);
-    setPercent(percent + 20);
-
-  };
-
-  /**
-   * prev step
-   */
-  const prev = () => {
-    setCurrent(current - 1);
-    setPercent(percent - 20);
-
-  };
-
-  /**
-   * 自动步进
-   *  前提：sse发送的结果中得步骤值===当前步骤值，且sse返回数据的状态是 finish
-   */
-  const autoIncrementSteps = () => {
-    if (currentDataMsg.currentStep === current && currentDataMsg.status === 2) {
-      next();
-    }
-  };
-
-
-  console.log("next", current);
-  console.log("prev", current);
-
-
-  useEffect(() => {
-    //创建sse对象
-
-    //sse listen event message
-    es.onmessage = e => {
-      setCurrentDataMsg(e.data);
-      // call autoIncrement to auto step
-      autoIncrementSteps();
+    /**
+     * 自动完成
+     *  前提：sse发送的结果中得步骤值===当前步骤值，且sse返回数据的状态是 finish
+     */
+    const autoFinish = async () => {
+        // status // 0是失败 1是进行中 2 完成
+        await SuccessMessageAsync(l("rc.gp.buildSuccess"));
     };
-    //sse listen event error
-    es.onerror = e => {
-      ErrorNotification(e.type);
+
+    /**
+     *  next step
+     */
+    const nextStep = () => {
+        // console.log("next step");
+        setCurrentStepStatus(currentStepStatus + 1);
+        seCurrenttPercent(currentPercent + 20);
+
     };
-   return () => {
-      es.close();
-    }
-  }, []);
+
+    /**
+     * prev step
+     */
+    const prevStep = () => {
+        setCurrentStepStatus(currentStepStatus - 1);
+
+        seCurrenttPercent(currentPercent - 20);
+
+    };
+
+    console.log("哈哈哈哈", currentStepStatus);
+
+    /**
+     * 自动步进
+     *  前提：sse发送的结果中得步骤值===当前步骤值，且sse返回数据的状态是 finish
+     */
+    const autoIncrementSteps = async () => {
+        // console.log("autoIncrementSteps", currentStepStatus, currentDataMsg?.currentStep)
+        let currentItem = steps.at(currentDataMsg?.currentStep - 1);
+
+        await SuccessMessageAsync(currentItem.title);
+        // console.log("autoIncrementSteps")
+        // status // 0是失败 1是进行中 2 完成
+        if ((currentDataMsg?.currentStep || 0) - 1 === currentStepStatus && currentDataMsg?.status === 2) {
+            await nextStep();
+            if ((currentDataMsg?.currentStep || 0) - 1 === 5 && currentStepStatus === 5 && currentDataMsg.status === 2) {
+                await autoFinish();
+            }
+        }
+    };
+
+    useEffect(() => {
+        autoIncrementSteps();
+    }, [currentStepStatus, currentDataMsg, currentPercent]);
 
 
-  const contentStyle: React.CSSProperties = {
-    lineHeight: "300px",
-    textAlign: "center",
-    color: token.colorTextTertiary,
-    backgroundColor: token.colorFillAlter,
-    borderRadius: token.borderRadiusLG,
-    border: `1px dashed ${token.colorBorder}`,
-    marginTop: 16,
-  };
-
-  const items = steps.map((item) => ({
-    key: item.title,
-    description: item.description,
-    title: item.title,
-  }));
+    const contentStyle: React.CSSProperties = {
+        lineHeight: "300px",
+        textAlign: "center",
+        color: token.colorTextTertiary,
+        backgroundColor: token.colorFillAlter,
+        borderRadius: token.borderRadiusLG,
+        border: `1px dashed ${token.colorBorder}`,
+        marginTop: 16,
+    };
 
 
-  return <>
-    <Steps current={current} items={items}/>
-    <Progress
-      percent={percent}
-      strokeColor={processColor}
-    />
-    <div style={contentStyle}>
-      {
-        // if resultType is 1, data is log, else data is jar list or class list
-        currentDataMsg.resultType === 1 ?
-          <CodeShow height={"50vh"} code={steps[current].description} language={"java"} showFloatButton/> :
-          <JarShow  step={current}  />
-      }
-    </div>
-    <div style={{marginTop: 24}}>
-      {current < steps.length - 1 && (
-        <Button type="primary" onClick={() => next()}>
-          {l('button.next')}
-        </Button>
-      )}
-      {current > 0 && (
-        <Button style={{margin: "0 8px"}} onClick={() => prev()}>
-          {l('button.prev')}
-        </Button>
-      )}
-    </div>
-  </>;
+    return <>
+        <Steps status={"wait"}
+               size={"small"}
+               onChange={(current) => setCurrentStepStatus(current)}
+               type={"navigation"} responsive={true}
+               current={currentStepStatus} items={steps} percent={currentPercent} initial={0}/>
+        <Progress percent={percent} strokeColor={processColor}/>
+        <div style={contentStyle}>
+            {
+                // if resultType is 1, data is log, else data is jar list or class list
+                // currentDataMsg?.resultType === 1 ?
+                <CodeShow height={"50vh"} code={currentDataMsg?.data || ""} language={"java"}/>
+                // :
+                // <JarShow step={currentStepStatus} data={currentDataMsg?.data}/>
+            }
+        </div>
+        {/*<div style={{marginTop: 24}}>*/}
+        {/*    {currentStepStatus < steps.length - 1 && (*/}
+        {/*        <Button type="primary" onClick={() => nextStep()}>*/}
+        {/*            {l("button.next")}*/}
+        {/*        </Button>*/}
+        {/*    )}*/}
+        {/*    {currentStepStatus > 0 && (*/}
+        {/*        <Button style={{margin: "0 8px"}} onClick={() => prevStep()}>*/}
+        {/*            {l("button.prev")}*/}
+        {/*        </Button>*/}
+        {/*    )}*/}
+        {/*</div>*/}
+    </>;
 };

@@ -23,62 +23,57 @@ import {l} from "@/utils/intl";
 import {GitProject} from "@/types/RegCenter/data";
 import React, {useEffect} from "react";
 import {getData} from "@/services/api";
+import {getDataByParams, handleData} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
 
 type ShowLogProps = {
-  onCancel: (flag?: boolean) => void;
-  modalVisible: boolean;
-  values: Partial<GitProject>;
+    onCancel: (flag?: boolean) => void;
+    modalVisible: boolean;
+    values: Partial<GitProject>;
 };
 
 /**
  * code edit props
  */
 const CodeEditProps = {
-  height: "60vh",
-  width: "100%",
-  lineNumbers: "on",
-  language: "java",
+    height: "60vh",
+    width: "100%",
+    lineNumbers: "on",
+    language: "java",
 };
 
 
 export const ShowLog: React.FC<ShowLogProps> = (props) => {
-  const {values, modalVisible, onCancel} = props;
+    const {values, modalVisible, onCancel} = props;
 
-  const [log, setLog] = React.useState<string>("2023-04-23 10:21:41 JRebel: Reconfiguring reprocessed bean 'studioController' [org.dinky.controller.StudioController]\n" +
-    "[dinky] 2023-04-23 10:48:50.014   WARN 17928 --- [nio-8888-exec-4] com.alibaba.druid.pool.DruidAbstractDataSource: discard long time none received connection. , jdbcUrl : jdbc:mysql://127.0.0.1:33061/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true, version : 1.2.8, lastPacketReceivedIdleMillis : 1660388\n" +
-    "[dinky] 2023-04-23 10:48:50.017   WARN 17928 --- [nio-8888-exec-4] com.alibaba.druid.pool.DruidAbstractDataSource: discard long time none received connection. , jdbcUrl : jdbc:mysql://127.0.0.1:33061/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true, version : 1.2.8, lastPacketReceivedIdleMillis : 1710581\n" +
-    "[dinky] 2023-04-23 10:50:19.717   WARN 17928 --- [nio-8888-exec-3] com.alibaba.druid.pool.DruidAbstractDataSource: discard long time none received connection. , jdbcUrl : jdbc:mysql://127.0.0.1:33061/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true, version : 1.2.8, lastPacketReceivedIdleMillis : 88667\n" +
-    "[dinky] 2023-04-23 10:57:38.001   WARN 17928 --- [nio-8888-exec-1] com.alibaba.druid.pool.DruidAbstractDataSource: discard long time none received connection. , jdbcUrl : jdbc:mysql://127.0.0.1:33061/dinky?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true, version : 1.2.8, lastPacketReceivedIdleMillis : 435393 ");
-
-  const queryAllStepLogs = async () => {
-    await getData('/api/git/build-step-logs', {
-       id: values.id,
-       step: -1, // -1: all steps
-     }).then((res) => {
-       setLog(res.data);
-    });
-  };
-
-  const queryStepLog = (step: number) => {
-
-  };
+    const [log, setLog] = React.useState<string>("");
+    const queryAllStepLogs = async () => {
+        const result = await handleData(API_CONSTANTS.GIT_PROJECT_BUILD_ALL_LOGS, values.id);
+        setLog(result);
+    };
 
 
-  useEffect(() => {
-    // queryAllStepLogs();
-  }, [modalVisible]);
+    useEffect(() => {
+        queryAllStepLogs();
+    }, [modalVisible]);
 
 
-  return (
-    <Modal
-      title={l("rc.gp.log")}
-      width={"75%"}
-      open={modalVisible}
-      onCancel={() => onCancel()}
-      cancelText={l("button.close")}
-      okButtonProps={{style: {display: "none"}}}
-    >
-      <CodeShow {...CodeEditProps} code={log} showFloatButton={true} />
-    </Modal>
-  );
+    return (
+        <Modal
+            title={l("rc.gp.log")}
+            width={"80%"}
+            open={modalVisible}
+            onCancel={() => onCancel()}
+            cancelText={l("button.close")}
+            okButtonProps={{style: {display: "none"}}}
+        >
+            <CodeShow
+                {...CodeEditProps}
+                code={log}
+                showFloatButton={true}
+                refreshLogCallback={queryAllStepLogs}
+                enableTimer={true}
+            />
+        </Modal>
+    );
 };
