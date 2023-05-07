@@ -54,9 +54,4 @@ public abstract class AbstractCustomTableEnvironment
     public Planner getPlanner() {
         return ((StreamTableEnvironmentImpl) streamTableEnvironment).getPlanner();
     }
-
-    @Override
-    public Configuration getRootConfiguration() {
-        return (Configuration) this.getConfig().getRootConfiguration();
-    }
 }
