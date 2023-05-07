@@ -16,9 +16,13 @@
  *
  */
 
-import {notification,message, App} from "antd"
+import {notification, message, Button} from "antd"
 import {l} from "@/utils/intl";
+import {Typography} from 'antd';
+import {InfoCircleOutlined} from "@ant-design/icons";
+import {ErrorModelWithCode} from "@/utils/modals";
 
+const {Paragraph} = Typography;
 /**
  * default params
  */
@@ -29,18 +33,46 @@ const AsyncDuration = 0.5
 // ================================ About Notification Component ================================
 
 /**
- * Error handler message
- * @param message
- * @param description
- * @param duration
- * @param placement
- * @constructor
+ * A function that displays an error notification with a short message and an option to view the full error message in a modal.
+ *
+ * @param description The short error message to display in the notification.
+ * @param message The title of the notification. This parameter is optional, and if no value is provided, it defaults to a string.
+ * @param duration The duration (in milliseconds) that the notification should be displayed for.
+ *                  This parameter is optional, and if no value is provided, it defaults to a default duration.
  */
-export const ErrorNotification = (description: string,  message = l('global.error'), duration = defaultDuration) => notification.error({
-  message,
-  description,
-  duration,
-})
+export const ErrorNotification = (description: string, message = l('global.error'), duration = defaultDuration) => {
+
+  /** The title of the notification, with an icon and the provided message. */
+  const title = (
+    <div style={{display: 'flex'}}>
+      <InfoCircleOutlined style={{marginRight: 10, color: "red"}}/>
+      <b>{message}</b>
+    </div>
+  )
+  /**
+   * A button that is displayed in the notification
+   * if the error message is longer than 40 characters, click it will create a Modal to show more information detail
+   */
+  const moreBtn = description.length > 40 ? (
+    <Button type="primary" danger onClick={() => ErrorModelWithCode(title, description)}>
+      {l('global.notifaction.full-error')}
+    </Button>
+  ) : (<></>);
+
+  /** Display the notification. */
+  notification.open({
+    /** The title of the notification. */
+    message: title,
+
+    /**
+     * The short error message to display in the notification.
+     * if the error message is longer than 40 characters,Parts beyond the length are hidden
+     */
+    description: (<Paragraph ellipsis={{rows: 2}}>{description}</Paragraph>),
+    duration: duration,
+    btn: moreBtn,
+  })
+}
 
 /**
  * Success handler message
