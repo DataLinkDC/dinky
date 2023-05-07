@@ -168,7 +168,6 @@ const CodeShow = (props: CodeShowFormProps) => {
     const editorDidMount = (editor: IStandaloneCodeEditor) => {
         setEditor(editor)
         // 在编辑器加载完成后，设置自动布局和自动高亮显示
-        editor.getBottomForLineNumber(100)
         editor.layout();
         editor.focus();
     }
