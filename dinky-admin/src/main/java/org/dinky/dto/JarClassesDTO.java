@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -16,29 +17,14 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Button, Popconfirm} from "antd";
-import React from "react";
-import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
+package org.dinky.dto;
 
-type PopconfirmProps = {
-  onClick: () => void;
-  description: string;
-};
+import java.util.List;
 
-export const PopconfirmDeleteBtn: React.FC<PopconfirmProps> = (props) => {
-  const {onClick, description} = props;
+import lombok.Data;
 
-  return (
-    <Popconfirm
-      placement="topRight"
-      title={l("button.delete")}
-      description={<div className={"needWrap"} >{description} </div>}
-      onConfirm={onClick}
-      okText={l("button.confirm")}
-      cancelText={l("button.cancel")}
-    >
-      <Button title={l("button.delete")} key={'DeleteIcon'} icon={<DangerDeleteIcon/>}/>
-    </Popconfirm>
-  );
-};
+@Data
+public class JarClassesDTO {
+    private String jarPath;
+    private List<String> classList;
+}

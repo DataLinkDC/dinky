@@ -19,49 +19,40 @@
 
 package org.dinky.dto;
 
-import javax.validation.constraints.NotNull;
+import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 /**
- * @author ZackYoung
+ * GitProjectTreeNodeDTO
+ *
  * @since 0.8.0
  */
-@Getter
-@Setter
-public class GitProjectDTO {
-    private Long id;
-    /** */
-    @NotNull private String name;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@ToString
+public class GitProjectTreeNodeDTO {
+    private String name;
+    private String path;
+    private String content;
+    private Long size;
+    private boolean isLeaf;
+    private List<GitProjectTreeNodeDTO> children;
 
-    @NotNull private String url;
-
-    /** */
-    @NotNull private String branch;
-
-    /** */
-    private String username;
-
-    /** */
-    private String password;
-
-    private String privateKey;
-
-    /** */
-    private String pom;
-
-    /** */
-    private String buildArgs;
-
-    /** */
-    private Integer codeType;
-
-    private Integer type;
-
-    /** */
-    private String description;
-
-    /** */
-    @NotNull private Boolean enabled;
+    public GitProjectTreeNodeDTO(
+            String name,
+            String path,
+            boolean isLeaf,
+            List<GitProjectTreeNodeDTO> children,
+            Long size) {
+        this.name = name;
+        this.path = path;
+        this.isLeaf = isLeaf;
+        this.children = children;
+        this.size = size;
+    }
 }

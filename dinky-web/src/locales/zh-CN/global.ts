@@ -61,6 +61,12 @@ export default {
   'button.prev': '前一步',
   'button.showLog': '查看日志',
   'button.showCode': '查看代码',
+  'button.backTop': '返回顶部',
+  'button.backBottom': '去底部',
+  'button.downScroll': '向下滚动',
+  'button.upScroll': '向上滚动',
+  'button.stopRefresh': '停止自动刷新',
+
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',

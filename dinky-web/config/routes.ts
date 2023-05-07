@@ -149,6 +149,12 @@ export default [
         icon: 'RocketOutlined',
         component: './RegCenter/GlobalVar',
       },
+      {
+        path: '/registration/gitprojects',
+        name: 'gitprojects',
+        icon: 'GithubOutlined',
+        component: './RegCenter/GitProject',
+      },
     ],
   },
   {

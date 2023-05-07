@@ -15,11 +15,14 @@
  * limitations under the License.
  */
 
-import {TENANT_ID} from "@/services/constants";
+import {DIALECT, TENANT_ID} from "@/services/constants";
 import cookies from "js-cookie";
 import {THEME, CODE_EDIT_THEME} from "@/types/Public/data";
 import {editor} from "monaco-editor";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
+import {trim} from "lodash";
+import {FileIcon, FolderSvgExpand, JavaSvg, MarkDownSvg, ShellSvg, XMLSvg, YAMLSvg} from "@/components/Icons/CodeLanguageIcon";
+import path from "path";
 
 /**
  * PUT tenantId TO localStorage & cookies
@@ -72,8 +75,8 @@ export function convertCodeEditTheme() {
       {token: "comment", foreground: "#008800", fontStyle: "italic"},
       {token: "keyword", foreground: "#064cff", fontStyle: "bold"},
       {token: "string", foreground: "#507dee"},
-      {token: "delimiter", foreground: "#c04b4b"},
-      {token: "readonly", foreground: "#fa0707", background: "#141414", fontStyle: "italic"},
+      {token: "delimiter", foreground: "#041d81"},
+      {token: "readonly", foreground: "#e73a6e", background: "#141414", fontStyle: "italic"},
       {token: "number", foreground: "#ffffff"},
 
     ],
@@ -146,3 +149,105 @@ export const useSSEBuildArrayData = (url: string) => {
 
   return data;
 };
+
+
+/**
+ * get file icon by file type
+ * @param type
+ */
+export const getLanguage = (type: string): string => {
+  switch (type) {
+    case DIALECT.JAVA:
+      return DIALECT.JAVA;
+    case DIALECT.MD:
+    case DIALECT.MDX:
+      return DIALECT.MARKDOWN;
+    case DIALECT.XML:
+      return DIALECT.XML;
+    case DIALECT.YAML:
+    case DIALECT.YML:
+      return DIALECT.YAML;
+    case DIALECT.JSON:
+      return DIALECT.JSON;
+    case DIALECT.SH:
+    case DIALECT.BASH:
+    case DIALECT.CMD:
+      return DIALECT.SHELL;
+    case DIALECT.SCALA:
+      return DIALECT.SCALA;
+    case DIALECT.PYTHON:
+      return DIALECT.PYTHON;
+    case DIALECT.SQL:
+      return DIALECT.SQL;
+    default:
+      return DIALECT.JAVASCRIPT;
+  }
+};
+
+/**
+ * get the icon according to the file suffix
+ * @param type file type
+ */
+export const getIcon = (type: string) => {
+  switch (type) {
+    case DIALECT.JAVA:
+      return <JavaSvg/>;
+    case DIALECT.MD:
+    case DIALECT.MDX:
+      return <MarkDownSvg/>;
+    case DIALECT.XML:
+      return <XMLSvg/>;
+    case DIALECT.YAML:
+    case DIALECT.YML:
+      return <YAMLSvg/>;
+    case DIALECT.SH:
+    case DIALECT.BASH:
+    case DIALECT.CMD:
+      return <ShellSvg/>;
+    default:
+      return <FileIcon/>;
+  }
+};
+
+
+/**
+ * Get the icon according to the file suffix
+ * @param type file suffix
+ * @param splitChar split character
+ * @param isLeft is left
+ */
+export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
+  if (isLeft) {
+    return <FolderSvgExpand/>;
+  } else {
+    if (trim(splitChar).length === 0) {
+      return getIcon(type);
+    }else {
+      let suffixOfType = type.toString().split(splitChar).reverse()[0];
+      return getIcon(suffixOfType);
+    }
+  }
+};
+
+
+/**
+ * Get the language according to the file suffix
+ * @param type file suffix
+ * @param splitChar split character
+ */
+export const renderLanguage = (type: string, splitChar: string) => {
+  if (trim(splitChar).length === 0) {
+    getLanguage(type);
+  } else {
+    let suffixOfType = type.toString().split(splitChar).reverse()[0];
+    return getLanguage(suffixOfType);
+  }
+};
+
+
+/**
+ * get the folder separator according to the platform
+ */
+export const folderSeparator = () => {
+  return path.sep;
+}
