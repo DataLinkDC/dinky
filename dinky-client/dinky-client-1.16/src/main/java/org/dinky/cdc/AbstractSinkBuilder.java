@@ -380,6 +380,9 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 tableName = tableName.toUpperCase();
             }
         }
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_RENAME)) {
+            tableName = config.getSink().get(FlinkCDCConfig.TABLE_RENAME);
+        }
         return tableName;
     }
 

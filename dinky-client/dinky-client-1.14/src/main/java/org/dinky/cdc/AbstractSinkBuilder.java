@@ -398,8 +398,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     public String getSinkSchemaName(Table table) {
         String schemaName = table.getSchema();
-        if (config.getSink().containsKey("sink.db")) {
-            schemaName = config.getSink().get("sink.db");
+        if (config.getSink().containsKey(FlinkCDCConfig.SINK_DB)) {
+            schemaName = config.getSink().get(FlinkCDCConfig.SINK_DB);
         }
         return schemaName;
     }
@@ -411,21 +411,24 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 tableName = table.getSchema() + "_" + tableName;
             }
         }
-        if (config.getSink().containsKey("table.prefix")) {
-            tableName = config.getSink().get("table.prefix") + tableName;
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_PREFIX)) {
+            tableName = config.getSink().get(FlinkCDCConfig.TABLE_PREFIX) + tableName;
         }
-        if (config.getSink().containsKey("table.suffix")) {
-            tableName = tableName + config.getSink().get("table.suffix");
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_SUFFIX)) {
+            tableName = tableName + config.getSink().get(FlinkCDCConfig.TABLE_SUFFIX);
         }
-        if (config.getSink().containsKey("table.lower")) {
-            if (Boolean.valueOf(config.getSink().get("table.lower"))) {
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_LOWER)) {
+            if (Boolean.valueOf(config.getSink().get(FlinkCDCConfig.TABLE_LOWER))) {
                 tableName = tableName.toLowerCase();
             }
         }
-        if (config.getSink().containsKey("table.upper")) {
-            if (Boolean.valueOf(config.getSink().get("table.upper"))) {
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_UPPER)) {
+            if (Boolean.valueOf(config.getSink().get(FlinkCDCConfig.TABLE_UPPER))) {
                 tableName = tableName.toUpperCase();
             }
+        }
+        if (config.getSink().containsKey(FlinkCDCConfig.TABLE_RENAME)) {
+            tableName = config.getSink().get(FlinkCDCConfig.TABLE_RENAME);
         }
         return tableName;
     }
