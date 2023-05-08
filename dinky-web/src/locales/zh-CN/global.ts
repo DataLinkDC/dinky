@@ -56,6 +56,17 @@ export default {
   'button.desc': '倒序',
   'button.query': '查询',
   'button.exit': '退出',
+  'button.build': '构建',
+  'button.next': '下一步',
+  'button.prev': '前一步',
+  'button.showLog': '查看日志',
+  'button.showCode': '查看代码',
+  'button.backTop': '返回顶部',
+  'button.backBottom': '去底部',
+  'button.downScroll': '向下滚动',
+  'button.upScroll': '向上滚动',
+  'button.stopRefresh': '停止自动刷新',
+
 
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
@@ -137,4 +148,8 @@ export default {
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',
+
+  'global.notifaction.iknow': '我知道了',
+  'global.notifaction.full-error': '完整错误信息',
+
 };

@@ -23,6 +23,7 @@ import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.context.JarPathContextHolder;
+import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.watchTable.WatchStatementExplainer;
 import org.dinky.function.data.model.UDF;
@@ -45,6 +46,8 @@ import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
 
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import java.time.LocalDateTime;
@@ -113,6 +116,11 @@ public class Explainer {
                         .forEach(JarPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
+            } else if (operationType.equals(SqlType.ADD_JAR)) {
+                Configuration combinationConfig = getCombinationConfig();
+                FileSystem.initialize(combinationConfig, null);
+                ddl.add(new StatementParam(statement, operationType));
+                statementList.add(statement);
             } else if (operationType.equals(SqlType.INSERT)
                     || operationType.equals(SqlType.SELECT)
                     || operationType.equals(SqlType.SHOW)
@@ -148,6 +156,16 @@ public class Explainer {
         return new JobParam(statementList, ddl, trans, execute, CollUtil.removeNull(udfList));
     }
 
+    private Configuration getCombinationConfig() {
+        CustomTableEnvironment cte = executor.getCustomTableEnvironment();
+        Configuration rootConfig = cte.getRootConfiguration();
+        Configuration config = cte.getConfig().getConfiguration();
+        Configuration combinationConfig = new Configuration();
+        combinationConfig.addAll(rootConfig);
+        combinationConfig.addAll(config);
+        return combinationConfig;
+    }
+
     public List<UDF> parseUDFFromStatements(String[] statements) {
         List<UDF> udfList = new ArrayList<>();
         for (String statement : statements) {
@@ -156,7 +174,7 @@ public class Explainer {
             }
             UDF udf = UDFUtil.toUDF(statement);
             if (Asserts.isNotNull(udf)) {
-                udfList.add(UDFUtil.toUDF(statement));
+                udfList.add(udf);
             }
         }
         return udfList;
@@ -350,7 +368,8 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!operationType.equals(SqlType.SELECT)) {
+                } else if (!operationType.equals(SqlType.SELECT)
+                        && !operationType.equals(SqlType.WATCH)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {

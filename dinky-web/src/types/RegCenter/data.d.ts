@@ -180,3 +180,33 @@ export type GlobalVar = BaseBeanColumns & {
   note: string,
 };
 
+/**
+ * git project
+ */
+export type GitProject = BaseBeanColumns & {
+  url: string,
+  branch: string,
+  username: string,
+  password: string,
+  privateKey: string,
+  pom: string,
+  buildArgs: string,
+  codeType: number,
+  type: number,
+  lastBuild: Date,
+  description: string,
+  buildState: number,
+  buildStep: number,
+  udfClassMapList: string,
+}
+
+
+
+export type GitProjectTreeNode = {
+  name: string;
+  path: string;
+  content: string;
+  size: number;
+  leaf: boolean;
+  children: GitProjectTreeNode[];
+}

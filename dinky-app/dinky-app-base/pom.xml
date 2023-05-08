@@ -36,15 +36,7 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-base</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
             <artifactId>dinky-executor</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -55,141 +47,63 @@
 
     <profiles>
         <profile>
-            <id>flink-1.12</id>
+            <id>flink-single-version</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.12</artifactId>
-                    <scope>provided</scope>
+                    <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>provided</scope>
+                    <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.13</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.13</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.14</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.15</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.15</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.16</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.16</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.12</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>provided</scope>
-                </dependency>
-
-                <dependency>
-                    <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.13</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.15</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
 
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-flink-1.16</artifactId>
-                    <scope>provided</scope>
+                    <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>

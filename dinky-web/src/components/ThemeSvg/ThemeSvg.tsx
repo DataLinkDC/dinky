@@ -18,6 +18,11 @@
 
 import React from "react";
 
+
+/**
+ * ThemeCloud is a svg icon  , it is used in the theme switcher of light mode
+ * @constructor
+ */
 export const ThemeCloud =() => {
   return (
     <>
@@ -35,6 +40,10 @@ export const ThemeCloud =() => {
   );
 }
 
+/**
+ * ThemeStar is a svg icon  , it is used in the theme switcher of dark mode
+ * @constructor
+ */
 export const ThemeStar =() => {
   return (
     <>

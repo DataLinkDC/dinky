@@ -8,14 +8,20 @@
         b.role_name
         from
         dinky_role_select_permissions a
-        left join dinky_role b on b.id = a.role_id
+        join dinky_role b on b.id = a.role_id
         <where>
             1=1
-            <if test='param.roleId!=null and param.roleId!=""'>
-                and a.role_id = #{param.roleId}
+            <if test='param.roleCode!=null and param.roleCode!=""'>
+                and b.role_code like "%${param.roleCode}%"
+            </if>
+            <if test='param.roleName!=null and param.roleName!=""'>
+                and b.role_name like "%${param.roleName}%"
             </if>
             <if test='param.tableName!=null and param.tableName!=""'>
                 and a.table_name like "%${param.tableName}%"
+            </if>
+            <if test='param.expression!=null and param.expression!=""'>
+                and a.expression like "%${param.expression}%"
             </if>
             <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
                 and

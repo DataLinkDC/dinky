@@ -56,6 +56,16 @@ export default {
   'button.desc': 'DESC',
   'button.query': 'Query',
   'button.exit': 'Exit',
+  'button.build': 'Build',
+  'button.next': 'Next',
+  'button.prev': 'Previous',
+  'button.showLog': 'Show Log',
+  'button.showCode': 'Show Code',
+  'button.backTop': 'Back Top',
+  'button.backBottom': 'Back Bottom',
+  'button.downScroll': 'Down Scroll',
+  'button.upScroll': 'Up Scroll',
+  'button.stopRefresh': 'Stop Auto Refresh',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
@@ -142,4 +152,8 @@ export default {
   'global.error': 'Error',
   'global.warning': 'Warning',
   'global.success': 'Success',
+
+  'global.notifaction.iknow': 'I understand',
+  'global.notifaction.full-error': 'Complete error message',
+
 };

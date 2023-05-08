@@ -29,7 +29,8 @@ import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
 import {Subscription} from "stompjs";
 import {Option} from "antd/es/mentions";
-import TabPane = Tabs.TabPane;
+
+const {TabPane} = Tabs;
 
 const DatePage = (props: any) => {
   const {height, title} = props;

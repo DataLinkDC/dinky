@@ -17,7 +17,7 @@
 
 import Footer from "@/components/Footer";
 import RightContent from "@/components/RightContent";
-import { Settings as LayoutSettings} from "@ant-design/pro-components";
+import {PageLoading, Settings as LayoutSettings} from "@ant-design/pro-components";
 // import {SettingDrawer} from "@ant-design/pro-components";
 import type {RunTimeLayoutConfig} from "@umijs/max";
 import {history} from "@umijs/max";
@@ -26,6 +26,7 @@ import {errorConfig} from "./requestErrorConfig";
 import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
+import {UnAccessible} from "@/pages/Other/403";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -126,10 +127,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
     ],
     menuHeaderRender: undefined,
     // 自定义 403 页面
-    // unAccessible: <div>unAccessible</div>,
+    unAccessible:<UnAccessible/>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      // if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading />;
       return (
         <>
           {children}

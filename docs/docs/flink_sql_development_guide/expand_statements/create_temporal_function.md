@@ -1,5 +1,5 @@
 ---
-sidebar_position: 
+sidebar_position: 1
 id: create_temporal_function
 title: CREATE TEMPORAL FUNCTION
 ---

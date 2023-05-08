@@ -11,11 +11,7 @@ import TabItem from '@theme/TabItem';
 **1. Flink 对应集成 k8s 文档链接**
 
 <Tabs groupId="flink-version">
-<TabItem value="1.12" label="flink-1.12" default>
 
-[https://nightlies.apache.org/flink/flink-docs-release-1.12/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
-
-</TabItem>
 <TabItem value="1.13" label="flink-1.13" default>
 
 [https://nightlies.apache.org/flink/flink-docs-release-1.13/zh/docs/deployment/resource-providers/native_kubernetes/](https://nightlies.apache.org/flink/flink-docs-release-1.16/zh/docs/deployment/resource-providers/native_kubernetes/)
@@ -125,7 +121,7 @@ RUN rm -rf ${FLINK_HOME}/lib/flink-table-planner-loader-1.15.4.jar
 ENV PATH $PYTHON_HOME/bin:$PATH
 RUN pip install "apache-flink==${FLINK_VERSION}" -i http://pypi.douban.com/simple/ --trusted-host pypi.douban.com
 ```
-app目录下文件  
+app目录下文件
 dinky-app-1.15-0.8.0-jar-with-dependencies.jar
 
 plugins目录下文件
@@ -527,7 +523,7 @@ spec:
       hostPath:
         path: /data/logs/flink/
         type: Directory
-EOF  
+EOF
 ```
 
 ## 创建k8s类型集群配置

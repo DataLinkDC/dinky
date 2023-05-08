@@ -149,6 +149,12 @@ export default [
         icon: 'RocketOutlined',
         component: './RegCenter/GlobalVar',
       },
+      {
+        path: '/registration/gitprojects',
+        name: 'gitprojects',
+        icon: 'GithubOutlined',
+        component: './RegCenter/GitProject',
+      },
     ],
   },
   {
@@ -172,6 +178,12 @@ export default [
         name: 'role',
         icon: 'TeamOutlined',
         component: './AuthCenter/Role',
+      },
+      {
+        path: '/auth/rowpermissions',
+        name: 'rowpermissions',
+        icon: 'SafetyCertificateOutlined',
+        component: './AuthCenter/RowPermissions',
       },
       {
         path: '/auth/tenant',

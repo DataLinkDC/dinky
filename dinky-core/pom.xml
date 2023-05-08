@@ -23,29 +23,12 @@
         <artifactId>dinky</artifactId>
         <version>0.8.0</version>
     </parent>
+
     <artifactId>dinky-core</artifactId>
-
     <packaging>jar</packaging>
-
     <name>Dinky : Core</name>
 
     <dependencies>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-common</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-        </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
             <artifactId>groovy</artifactId>
@@ -54,21 +37,6 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-executor</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <!--<dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-connector-jdbc-${dinky.flink.version}</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>-->
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-gateway</artifactId>
-            <scope>${scope.runtime}</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
-            <artifactId>dinky-client-hadoop</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
@@ -147,10 +115,6 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
-            <artifactId>dinky-process</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.dinky</groupId>
             <artifactId>dinky-function</artifactId>
         </dependency>
         <dependency>
@@ -162,12 +126,8 @@
             <artifactId>lombok</artifactId>
             <scope>provided</scope>
         </dependency>
+
         <!-- test dependencies -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter</artifactId>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
@@ -217,47 +177,11 @@
 
     <profiles>
         <profile>
-            <id>flink-1.12</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-connector-jdbc-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
-        <profile>
             <id>flink-1.13</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-catalog-mysql-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
                     <artifactId>dinky-connector-jdbc-1.13</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
@@ -268,83 +192,34 @@
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-catalog-mysql-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
                     <artifactId>dinky-connector-jdbc-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.14</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
             </dependencies>
         </profile>
-
         <profile>
-            <id>flink-1.15</id>
+            <id>flink-single-version</id>
             <dependencies>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.15</artifactId>
+                    <artifactId>dinky-catalog-mysql-${dinky.flink.version}</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-catalog-mysql-1.15</artifactId>
+                    <artifactId>dinky-client-${dinky.flink.version}</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.15</artifactId>
+                    <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
             </dependencies>
         </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.16</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-catalog-mysql-1.16</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.16</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-            </dependencies>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <dependencies>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-client-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-                <dependency>
-                    <groupId>org.dinky</groupId>
-                    <artifactId>dinky-flink-1.12</artifactId>
-                    <scope>${scope.runtime}</scope>
-                </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.13</artifactId>
@@ -360,7 +235,6 @@
                     <artifactId>dinky-flink-1.13</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.14</artifactId>
@@ -376,7 +250,6 @@
                     <artifactId>dinky-flink-1.14</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
-
                 <dependency>
                     <groupId>org.dinky</groupId>
                     <artifactId>dinky-client-1.15</artifactId>

@@ -157,16 +157,12 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        FLINK_VERSION: [1.11.6 , 1.12.7 , 1.13.6 , 1.14.6 , 1.15.2 , 1.16.0]
+        FLINK_VERSION: [1.13.6 , 1.14.6 , 1.15.2 , 1.16.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
           - url: docker.io
             namespace: dinkydocker
-          - FLINK_VERSION: 1.11.6
-            FLINK_BIG_VERSION: 1.11
-          - FLINK_VERSION: 1.12.7
-            FLINK_BIG_VERSION: 1.12
           - FLINK_VERSION: 1.13.6
             FLINK_BIG_VERSION: 1.13
           - FLINK_VERSION: 1.14.6

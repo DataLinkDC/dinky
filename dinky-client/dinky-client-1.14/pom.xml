@@ -41,7 +41,7 @@
         <dependency>
             <groupId>org.dinky</groupId>
             <artifactId>dinky-flink-1.14</artifactId>
-            <scope>provided</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>

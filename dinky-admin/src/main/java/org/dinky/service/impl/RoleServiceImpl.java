@@ -27,10 +27,12 @@ import org.dinky.mapper.RoleMapper;
 import org.dinky.model.Namespace;
 import org.dinky.model.Role;
 import org.dinky.model.RoleNamespace;
+import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Tenant;
 import org.dinky.model.UserRole;
 import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleNamespaceService;
+import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
@@ -61,6 +63,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     private final UserRoleService userRoleService;
     private final TenantService tenantService;
     private final NamespaceService namespaceService;
+    private final RoleSelectPermissionsService roleSelectPermissionsService;
     @Lazy @Resource private RoleService roleService;
 
     @Transactional(rollbackFor = Exception.class)
@@ -114,7 +117,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
             if (Asserts.isNotNull(roleCode)) {
                 return Result.failed(
                         String.format(
-                                MessageResolverUtils.getMessage("role.code.exist"),
+                                MessageResolverUtils.getMessage("role.exists"),
                                 role.getRoleCode()));
             }
         }
@@ -138,6 +141,16 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
         if (selectUserRoleCnt > 0) {
             return Result.failed(MessageResolverUtils.getMessage("role.binding.user"));
         }
+        Long selectedRowPermissionsCount =
+                roleSelectPermissionsService
+                        .getBaseMapper()
+                        .selectCount(
+                                new LambdaQueryWrapper<RoleSelectPermissions>()
+                                        .eq(RoleSelectPermissions::getRoleId, id));
+        if (selectedRowPermissionsCount > 0) {
+            return Result.failed(MessageResolverUtils.getMessage("role.binding.rowPermissions"));
+        }
+
         Boolean removeById = roleService.removeById(role);
         if (removeById) {
             return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
@@ -176,8 +189,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     }
 
     @Override
-    public ProTableResult<Role> selectForProTable(JsonNode para, boolean isDelete) {
-        ProTableResult<Role> roleProTableResult = super.selectForProTable(para, isDelete);
+    public ProTableResult<Role> selectForProTable(JsonNode params, boolean isDelete) {
+        ProTableResult<Role> roleProTableResult = super.selectForProTable(params, isDelete);
         roleProTableResult
                 .getData()
                 .forEach(

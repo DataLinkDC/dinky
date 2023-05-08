@@ -20,7 +20,6 @@
 package org.dinky.function.pool;
 
 import org.dinky.function.data.model.UDF;
-import org.dinky.process.exception.DinkyException;
 
 import java.util.List;
 import java.util.Map;
@@ -49,9 +48,8 @@ public class UdfCodePool {
     public static UDF getUDF(String className) {
         UDF udf = CODE_POOL.get(className);
         if (udf == null) {
-            String error = StrUtil.format("class: {} is not exists!", className);
-            log.error(error);
-            throw new DinkyException(error);
+            String error = StrUtil.format("class: {} is not exists!，maybe for add jar", className);
+            log.warn(error);
         }
         return udf;
     }

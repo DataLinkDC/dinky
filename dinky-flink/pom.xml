@@ -24,51 +24,19 @@
         <version>0.8.0</version>
     </parent>
     <artifactId>dinky-flink</artifactId>
-
     <packaging>pom</packaging>
-
     <name>Dinky : Flink</name>
 
     <profiles>
         <profile>
-            <id>flink-1.12</id>
+            <id>flink-single-version</id>
             <modules>
-                <module>dinky-flink-1.12</module>
+                <module>dinky-flink-${dinky.flink.version}</module>
             </modules>
         </profile>
-
-        <profile>
-            <id>flink-1.13</id>
-            <modules>
-                <module>dinky-flink-1.13</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.14</id>
-            <modules>
-                <module>dinky-flink-1.14</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.15</id>
-            <modules>
-                <module>dinky-flink-1.15</module>
-            </modules>
-        </profile>
-
-        <profile>
-            <id>flink-1.16</id>
-            <modules>
-                <module>dinky-flink-1.16</module>
-            </modules>
-        </profile>
-
         <profile>
             <id>flink-all</id>
             <modules>
-                <module>dinky-flink-1.12</module>
                 <module>dinky-flink-1.13</module>
                 <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>

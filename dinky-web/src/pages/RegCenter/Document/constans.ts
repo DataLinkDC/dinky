@@ -201,11 +201,6 @@ export const DOCUMENT_SUBTYPE_ENUMS = {
  * versions  select options
  */
 export const VERSIONS = [
-
-  {
-    text: 'Flink-1.12',
-    value: '1.12',
-  },
   {
     text: 'Flink-1.13',
     value: '1.13',

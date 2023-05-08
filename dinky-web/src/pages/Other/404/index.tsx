@@ -18,15 +18,16 @@
 import { history } from '@umijs/max';
 import { Button, Result } from 'antd';
 import React from 'react';
+import {l} from "@/utils/intl";
 
 const NoFoundPage: React.FC = () => (
   <Result
     status="404"
     title="404"
-    subTitle="Sorry, the page you visited does not exist."
+    subTitle={l('app.request.404')}
     extra={
       <Button type="primary" onClick={() => history.push('/')}>
-        Back Home
+        {l('app.request.back')}
       </Button>
     }
   />
