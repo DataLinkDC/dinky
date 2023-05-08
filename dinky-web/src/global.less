@@ -121,8 +121,21 @@ ol {
   overflow-y: auto;
   max-height: 70vh;
   min-height: 70vh;
+
+  .ant-tree {
+    min-width: max-content;
+
+    .ant-tree-node-content-wrapper {
+      display: flex;
+
+      :hover {
+        color: #1eef07;
+      }
+    }
+  }
 }
-.code-content-empty{
+
+.code-content-empty {
   height: 100%;
   display: flex;
   justify-content: center;
@@ -132,15 +145,17 @@ ol {
   max-height: 70vh;
 }
 
-.monaco-float{
+.monaco-float {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .float-button {
     position: absolute;
     transform: translate(5%, 15%);
-    .back-bottom{
+
+    .back-bottom {
       transform: rotate(180deg);
     }
   }

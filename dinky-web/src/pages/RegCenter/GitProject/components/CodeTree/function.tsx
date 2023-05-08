@@ -23,7 +23,7 @@ import {folderSeparator, renderIcon} from "@/utils/function";
  * @param data
  * @returns {any}
  */
-export const buildTreeData = (data: any) => data?.map((item: any) => {
+export const buildTreeData = (data: any): any => data?.map((item: any) => {
 
   // build key
   let buildKey = item.path + folderSeparator() + item.name;
@@ -34,7 +34,7 @@ export const buildTreeData = (data: any) => data?.map((item: any) => {
       isLeaf: !item.leaf,
       name: item.name,
       parentId: item.path,
-      icon: renderIcon(item, ".", item.leaf),
+      icon: renderIcon(item.name, ".", item.leaf),
       content: item.content,
       path: item.path,
       title: item.name,
@@ -46,7 +46,7 @@ export const buildTreeData = (data: any) => data?.map((item: any) => {
     isLeaf: !item.leaf,
     name: item.name,
     parentId: item.path,
-    icon: renderIcon(item, ".", item.leaf),
+    icon: renderIcon(item.name, ".", item.leaf),
     content: item.content,
     path: item.path,
     title: item.name,

@@ -262,6 +262,7 @@ export const SWITCH_OPTIONS =() => {
 
 export const DIALECT = {
   JAVA: "java",
+  LOG: "log",
   XML: "xml",
   MD: "md",
   MDX: "mdx",

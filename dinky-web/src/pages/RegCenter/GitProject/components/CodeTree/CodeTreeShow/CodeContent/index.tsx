@@ -86,7 +86,7 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
         } else if (code === "" || code === null) {
             return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.clickShow")}/>
         } else {
-            return <CodeShow {...CodeEditProps} language={getLanguage()} code={code}/>
+            return <CodeShow {...CodeEditProps} language={getLanguage()} showFloatButton code={code}/>
         }
     }
 

@@ -21,7 +21,17 @@ import {THEME, CODE_EDIT_THEME} from "@/types/Public/data";
 import {editor} from "monaco-editor";
 import React, {useEffect, useState} from "react";
 import {trim} from "lodash";
-import {FileIcon, FolderSvgExpand, JavaSvg, MarkDownSvg, ShellSvg, XMLSvg, YAMLSvg} from "@/components/Icons/CodeLanguageIcon";
+import {
+  FileIcon,
+  FolderSvgExpand,
+  JavaSvg,
+  LogSvg,
+  MarkDownSvg,
+  ScalaSvg,
+  ShellSvg,
+  XMLSvg,
+  YAMLSvg
+} from "@/components/Icons/CodeLanguageIcon";
 import path from "path";
 
 /**
@@ -158,6 +168,7 @@ export const useSSEBuildArrayData = (url: string) => {
 export const getLanguage = (type: string): string => {
   switch (type) {
     case DIALECT.JAVA:
+    case DIALECT.LOG:
       return DIALECT.JAVA;
     case DIALECT.MD:
     case DIALECT.MDX:
@@ -192,6 +203,8 @@ export const getIcon = (type: string) => {
   switch (type) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
+    case DIALECT.SCALA:
+      return <ScalaSvg/>;
     case DIALECT.MD:
     case DIALECT.MDX:
       return <MarkDownSvg/>;
@@ -204,6 +217,8 @@ export const getIcon = (type: string) => {
     case DIALECT.BASH:
     case DIALECT.CMD:
       return <ShellSvg/>;
+    case DIALECT.LOG:
+      return <LogSvg/>;
     default:
       return <FileIcon/>;
   }

@@ -19,7 +19,7 @@
 import React from "react";
 import {PageLoading} from "@ant-design/pro-components";
 import {buildTreeData} from "@/pages/RegCenter/GitProject/components/CodeTree/function";
-import {Tree} from "antd";
+import {Empty, Tree} from "antd";
 import {GitProjectTreeNode} from "@/types/RegCenter/data";
 
 /**
@@ -45,11 +45,11 @@ export const SiderTree: React.FC<SiderTreeProps> = (props) => {
    */
   return <>
     {loading ? <PageLoading/> :
-      <DirectoryTree
-        multiple
-        onSelect={(_, info) => onNodeClick(info)}
-        treeData={buildTreeData(treeData)}
-      />
+      (treeData.length > 0) ?
+        <DirectoryTree
+          onSelect={(_, info) => onNodeClick(info)}
+          treeData={buildTreeData(treeData)}
+        /> : <Empty className={"code-content-empty"}/>
     }
   </>;
 };

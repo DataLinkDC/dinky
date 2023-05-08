@@ -49,27 +49,6 @@ const GlobalVarProTable = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-
-    /**
-     * var enable or disable
-     * @param value
-     */
-    const handleChangeEnable = async (value: Partial<GlobalVar>) => {
-        setLoading(true);
-        await updateEnabled(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
-        setLoading(false);
-        actionRef.current?.reload?.();
-    };
-
-    /**
-     * delete role by id
-     * @param id role id
-     */
-    const handleDeleteSubmit = async (id: number) => {
-        await handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id);
-        actionRef.current?.reload?.();
-    }
-
     /**
      * handle cancel all
      */
@@ -78,8 +57,37 @@ const GlobalVarProTable = () => {
         handleUpdateModalVisible(false);
         setDrawerOpen(false);
         setFormValues({});
-
     }
+
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        setLoading(false);
+        handleCancel();
+        actionRef.current?.reload?.();
+    }
+
+    /**
+     * var enable or disable
+     * @param value
+     */
+    const handleChangeEnable = async (value: Partial<GlobalVar>) => {
+      await executeAndCallbackRefresh(async () => {
+            await updateEnabled(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
+        })
+    };
+
+    /**
+     * delete role by id
+     * @param id role id
+     */
+    const handleDeleteSubmit = async (id: number) => {
+        await executeAndCallbackRefresh(async () => {
+            await handleRemoveById(API_CONSTANTS.GLOBAL_VARIABLE_DELETE, id);
+        })
+    }
+
+
 
     /**
      * handle edit
@@ -106,11 +114,9 @@ const GlobalVarProTable = () => {
      * @returns {Promise<void>}
      */
     const handleAddOrUpdateSubmit = async (value: Partial<GlobalVar>) => {
-        await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
-        handleCancel();
-        if (actionRef.current) {
-            actionRef.current.reload();
-        }
+        await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.GLOBAL_VARIABLE, value);
+        })
     }
 
 
@@ -208,14 +214,12 @@ const GlobalVarProTable = () => {
             values={{}}
         />
         {/*update*/}
-        {formValues && Object.keys(formValues).length &&
-            <GlobalVarModal
-                onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
-        }
+        <GlobalVarModal
+            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+            onCancel={() => handleCancel()}
+            modalVisible={updateModalVisible}
+            values={formValues}
+        />
 
         {/*drawer render*/}
         <GlobalVarDrawer

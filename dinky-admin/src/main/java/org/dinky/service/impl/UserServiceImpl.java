@@ -246,9 +246,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             return Result.succeed(MessageResolverUtils.getMessage("user.assign.role.success"));
         } else {
             if (userRoleList.size() == 0) {
-                return Result.succeed(MessageResolverUtils.getMessage("user.assign.role.failed"));
+                return Result.succeed(
+                        MessageResolverUtils.getMessage("user.binding.role.deleteAll"));
             }
-            return Result.failed(MessageResolverUtils.getMessage("user.binding.role.deleteAll"));
+            return Result.failed(MessageResolverUtils.getMessage("user.assign.role.failed"));
         }
     }
 
