@@ -24,6 +24,12 @@ import React, {useState} from "react";
 import {editor} from "monaco-editor";
 import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
 
+/**
+ * props
+ * todo:
+ *  1. Realize full screen/exit full screen in the upper right corner of the editor (Visible after opening)
+ *  2. Callback for right-clicking to clear logs (optional, not required)
+ */
 export type CodeShowFormProps = {
   height?: string;
   width?: string;
