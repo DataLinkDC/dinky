@@ -114,8 +114,9 @@ public class SqlSelect extends SqlCall {
             // Table has an alias or comes from a subquery
             List<SqlNode> operandList = ((SqlBasicCall) from).getOperandList();
             /**
-             * If there is a subquery in the Join, row-level filtering has been appended to the subquery.
-             * What is returned here is the SqlSelect type, just return the original where directly
+             * If there is a subquery in the Join, row-level filtering has been appended to the
+             * subquery. What is returned here is the SqlSelect type, just return the original where
+             * directly
              */
             if (!(operandList.get(0) instanceof SqlIdentifier)) {
                 return where;
@@ -149,9 +150,11 @@ public class SqlSelect extends SqlCall {
 
         // add an alias
         if (permissions != null && tableAlias != null) {
-            ImmutableList<String> namesList = ImmutableList.of(tableAlias,
-                    permissions.getOperandList().get(0).toString());
-            permissions.getOperandList().set(0, new SqlIdentifier(namesList, null, new SqlParserPos(0, 0), null));
+            ImmutableList<String> namesList =
+                    ImmutableList.of(tableAlias, permissions.getOperandList().get(0).toString());
+            permissions
+                    .getOperandList()
+                    .set(0, new SqlIdentifier(namesList, null, new SqlParserPos(0, 0), null));
         }
 
         return buildWhereClause(where, permissions);

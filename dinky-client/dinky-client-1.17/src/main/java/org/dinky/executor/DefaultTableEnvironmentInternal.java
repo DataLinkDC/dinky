@@ -106,8 +106,9 @@ public interface DefaultTableEnvironmentInternal
     }
 
     @Override
-    default String explainInternal(List<Operation> operations, ExplainFormat format, ExplainDetail... extraDetails) {
-        return getTableEnvironmentInternal().explainInternal(operations,format, extraDetails);
+    default String explainInternal(
+            List<Operation> operations, ExplainFormat format, ExplainDetail... extraDetails) {
+        return getTableEnvironmentInternal().explainInternal(operations, format, extraDetails);
     }
     // endregion
 }

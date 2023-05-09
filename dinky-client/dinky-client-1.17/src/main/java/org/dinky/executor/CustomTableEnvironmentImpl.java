@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-import org.apache.flink.table.api.ExplainFormat;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
 import org.dinky.model.LineageRel;
@@ -38,6 +37,7 @@ import org.apache.flink.streaming.api.graph.JSONGenerator;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.EnvironmentSettings;
 import org.apache.flink.table.api.ExplainDetail;
+import org.apache.flink.table.api.ExplainFormat;
 import org.apache.flink.table.api.TableException;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentImpl;
