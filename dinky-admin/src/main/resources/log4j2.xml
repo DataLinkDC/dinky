@@ -48,7 +48,7 @@
           * only rolled over log files (name match)
           * only files that are 4 days old or older
         -->
-        <Delete basePath="${sys:storm.home}/logs/" maxDepth="1">
+        <Delete basePath="${LOG_PATH}/" maxDepth="1">
           <IfFileName glob="*-ws-.log"/>
           <IfLastModified age="3d"/>
         </Delete>
