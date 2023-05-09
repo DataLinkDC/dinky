@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
  */
 public class SqlSegment {
 
-    private static final String Crlf = new String(new byte[]{1});
+    private static final String Crlf = new String(new byte[] {1});
 
     @SuppressWarnings("unused")
     private static final String FourSpace = "　　";
