@@ -108,7 +108,7 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-#        FLINK_VERSION: [1.11.6 , 1.12.7 , 1.13.6 , 1.14.6 , 1.15.2 , 1.16.0]
+#        FLINK_VERSION: [1.11.6 , 1.12.7 , 1.13.6 , 1.14.6 , 1.15.2 , 1.16.0, 1.17.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
@@ -157,7 +157,7 @@ jobs:
       fail-fast: true
       matrix:
         url: [ registry.cn-hangzhou.aliyuncs.com ,docker.io ]
-        FLINK_VERSION: [1.13.6 , 1.14.6 , 1.15.2 , 1.16.0]
+        FLINK_VERSION: [1.13.6 , 1.14.6 , 1.15.2 , 1.16.0, 1.17.0]
         include:
           - url: registry.cn-hangzhou.aliyuncs.com
             namespace: dinky
@@ -171,6 +171,8 @@ jobs:
             FLINK_BIG_VERSION: 1.15
           - FLINK_VERSION: 1.16.0
             FLINK_BIG_VERSION: 1.16
+          - FLINK_VERSION : 1.17.0
+            FLINK_BIG_VERSION: 1.17
     steps:
       - uses: actions/checkout@v3
       - name: set the flink_big_version

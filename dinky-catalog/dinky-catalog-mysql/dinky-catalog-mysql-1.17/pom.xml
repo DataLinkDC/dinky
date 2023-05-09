@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-catalog-mysql</artifactId>
+        <version>0.8.0</version>
+    </parent>
+    <artifactId>dinky-catalog-mysql-1.17</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : Catalog : Mysql 1.17</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-1.17</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <!-- 指定打包的jar包输出路径 -->
+                    <outputDirectory>${project.parent.parent.parent.basedir}/build/extends</outputDirectory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
