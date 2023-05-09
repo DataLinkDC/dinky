@@ -41,7 +41,7 @@ export const CodeTree: React.FC<CodeTreeProps> = (props) => {
       cancelText={l("button.close")}
       okButtonProps={{style: {display: "none"}}}
     >
-      {modalVisible && <CodeTreeShow values={values}/>}
+      <CodeTreeShow values={values}/>
     </Modal>
   </>;
 };

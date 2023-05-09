@@ -66,6 +66,7 @@ export default {
   'button.downScroll': 'Down Scroll',
   'button.upScroll': 'Up Scroll',
   'button.stopRefresh': 'Stop Auto Refresh',
+  'button.startRefresh': 'Start Auto Refresh(5s/e)',
 
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
