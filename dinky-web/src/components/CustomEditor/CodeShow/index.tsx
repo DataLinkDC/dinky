@@ -40,7 +40,6 @@ export type CodeShowFormProps = {
   theme?: string;
   autoWrap?: string;
   showFloatButton?: boolean;
-  enableTimer?: boolean;
   refreshLogCallback?: () => void;
 };
 
