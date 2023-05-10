@@ -22,7 +22,7 @@ package org.dinky.controller;
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.GitProjectTreeNodeDTO;
+import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;
@@ -189,9 +189,9 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping("/getProjectCode")
-    public Result<List<GitProjectTreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
+    public Result<List<TreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
 
-        List<GitProjectTreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
+        List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
         if (projectCode == null) {
             return Result.failed(MessageResolverUtils.getMessage("response.get.failed"));
         }

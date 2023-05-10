@@ -124,7 +124,16 @@ export const API_CONSTANTS = {
   // ---- get project build steps ----
   GIT_PROJECT_BUILD_STEPS: "/api/git/build-steps",
   // ---- get project all build logs ----
-    GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
+  GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
+
+
+  // system config center
+  //-- system root logs
+  SYSTEM_ROOT_LOG: "/api/system/getRootLog",
+  // -- get logs list
+  SYSTEM_ROOT_LOG_LIST: "/api/system/listLogDir",
+  // -- READ LOG file
+  SYSTEM_ROOT_LOG_READ: "/api/system/readFile",
 
 };
 
