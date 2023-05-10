@@ -42,6 +42,17 @@
         <!--当app.log文件大小到达100MB的时候，就归档一次日志文件，也就是把app.log中的那前面100MB文件取出来，放到上面<RollingFile >中的filePattern后面的路径中-->
         <SizeBasedTriggeringPolicy size="100MB"/>
       </Policies>
+      <DefaultRolloverStrategy>
+        <!--
+          * only files in the log folder, no sub folders
+          * only rolled over log files (name match)
+          * only files that are 4 days old or older
+        -->
+        <Delete basePath="${LOG_PATH}/" maxDepth="1">
+          <IfFileName glob="*-ws-.log"/>
+          <IfLastModified age="3d"/>
+        </Delete>
+      </DefaultRolloverStrategy>
     </RollingFile>
   </appenders>
 
