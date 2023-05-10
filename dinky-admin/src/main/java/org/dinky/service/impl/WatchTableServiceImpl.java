@@ -33,6 +33,7 @@ import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.springframework.messaging.MessagingException;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -62,8 +63,8 @@ public class WatchTableServiceImpl implements WatchTableService {
             if (destinations != null) {
                 destinations.forEach(d -> this.messagingTemplate.convertAndSend(d, data[1]));
             }
-        } catch (Exception e) {
-            log.error(e.getMessage());
+        } catch (MessagingException e) {
+            log.error(e.toString());
         }
     }
 
