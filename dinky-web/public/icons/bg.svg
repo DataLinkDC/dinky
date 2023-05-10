@@ -1,0 +1,55 @@
+<!--
+  -
+  -   Licensed to the Apache Software Foundation (ASF) under one or more
+  -   contributor license agreements.  See the NOTICE file distributed with
+  -   this work for additional information regarding copyright ownership.
+  -   The ASF licenses this file to You under the Apache License, Version 2.0
+  -   (the "License"); you may not use this file except in compliance with
+  -   the License.  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -   Unless required by applicable law or agreed to in writing, software
+  -   distributed under the License is distributed on an "AS IS" BASIS,
+  -   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -   See the License for the specific language governing permissions and
+  -   limitations under the License.
+  -
+  -->
+
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink"
+     xmlns:svgjs="http://svgjs.dev/svgjs" viewBox="0 0 1422 800" opacity="0.71">
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="oooscillate-grad">
+      <stop stop-color="hsl(162, 100%, 58%)" stop-opacity="1" offset="0%"></stop>
+      <stop stop-color="hsl(270, 73%, 53%)" stop-opacity="1" offset="100%"></stop>
+    </linearGradient>
+  </defs>
+  <g stroke-width="2.5" stroke="url(#oooscillate-grad)" fill="none" stroke-linecap="round">
+    <path d="M 0 1118 Q 355.5 -20 711 400 Q 1066.5 820 1422 1118" stroke-dasharray="14 3" opacity="0.05"></path>
+    <path d="M 0 1075 Q 355.5 -20 711 400 Q 1066.5 820 1422 1075" stroke-dasharray="24 6" opacity="0.09"></path>
+    <path d="M 0 1032 Q 355.5 -20 711 400 Q 1066.5 820 1422 1032" stroke-dasharray="30 18" opacity="0.13"></path>
+    <path d="M 0 989 Q 355.5 -20 711 400 Q 1066.5 820 1422 989" stroke-dasharray="9 12" opacity="0.16"></path>
+    <path d="M 0 946 Q 355.5 -20 711 400 Q 1066.5 820 1422 946" stroke-dasharray="22 30" opacity="0.20"></path>
+    <path d="M 0 903 Q 355.5 -20 711 400 Q 1066.5 820 1422 903" stroke-dasharray="1 35" opacity="0.24"></path>
+    <path d="M 0 860 Q 355.5 -20 711 400 Q 1066.5 820 1422 860" stroke-dasharray="31 13" opacity="0.28"></path>
+    <path d="M 0 817 Q 355.5 -20 711 400 Q 1066.5 820 1422 817" stroke-dasharray="39 16" opacity="0.32"></path>
+    <path d="M 0 774 Q 355.5 -20 711 400 Q 1066.5 820 1422 774" stroke-dasharray="17 21" opacity="0.35"></path>
+    <path d="M 0 731 Q 355.5 -20 711 400 Q 1066.5 820 1422 731" stroke-dasharray="15 24" opacity="0.39"></path>
+    <path d="M 0 688 Q 355.5 -20 711 400 Q 1066.5 820 1422 688" stroke-dasharray="19 31" opacity="0.43"></path>
+    <path d="M 0 645 Q 355.5 -20 711 400 Q 1066.5 820 1422 645" stroke-dasharray="29 27" opacity="0.47"></path>
+    <path d="M 0 602 Q 355.5 -20 711 400 Q 1066.5 820 1422 602" stroke-dasharray="37 3" opacity="0.51"></path>
+    <path d="M 0 559 Q 355.5 -20 711 400 Q 1066.5 820 1422 559" stroke-dasharray="16 21" opacity="0.54"></path>
+    <path d="M 0 516 Q 355.5 -20 711 400 Q 1066.5 820 1422 516" stroke-dasharray="2 33" opacity="0.58"></path>
+    <path d="M 0 473 Q 355.5 -20 711 400 Q 1066.5 820 1422 473" stroke-dasharray="28 28" opacity="0.62"></path>
+    <path d="M 0 430 Q 355.5 -20 711 400 Q 1066.5 820 1422 430" stroke-dasharray="23 31" opacity="0.66"></path>
+    <path d="M 0 387 Q 355.5 -20 711 400 Q 1066.5 820 1422 387" stroke-dasharray="3 37" opacity="0.70"></path>
+    <path d="M 0 344 Q 355.5 -20 711 400 Q 1066.5 820 1422 344" stroke-dasharray="17 28" opacity="0.73"></path>
+    <path d="M 0 301 Q 355.5 -20 711 400 Q 1066.5 820 1422 301" stroke-dasharray="29 31" opacity="0.77"></path>
+    <path d="M 0 258 Q 355.5 -20 711 400 Q 1066.5 820 1422 258" stroke-dasharray="8 12" opacity="0.81"></path>
+    <path d="M 0 215 Q 355.5 -20 711 400 Q 1066.5 820 1422 215" stroke-dasharray="28 1" opacity="0.85"></path>
+    <path d="M 0 172 Q 355.5 -20 711 400 Q 1066.5 820 1422 172" stroke-dasharray="21 16" opacity="0.89"></path>
+    <path d="M 0 129 Q 355.5 -20 711 400 Q 1066.5 820 1422 129" stroke-dasharray="20 35" opacity="0.92"></path>
+    <path d="M 0 86 Q 355.5 -20 711 400 Q 1066.5 820 1422 86" stroke-dasharray="6 4" opacity="0.96"></path>
+  </g>
+</svg>

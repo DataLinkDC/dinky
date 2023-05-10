@@ -1,0 +1,46 @@
+<!--
+  -
+  -   Licensed to the Apache Software Foundation (ASF) under one or more
+  -   contributor license agreements.  See the NOTICE file distributed with
+  -   this work for additional information regarding copyright ownership.
+  -   The ASF licenses this file to You under the Apache License, Version 2.0
+  -   (the "License"); you may not use this file except in compliance with
+  -   the License.  You may obtain a copy of the License at
+  -
+  -      http://www.apache.org/licenses/LICENSE-2.0
+  -
+  -   Unless required by applicable law or agreed to in writing, software
+  -   distributed under the License is distributed on an "AS IS" BASIS,
+  -   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  -   See the License for the specific language governing permissions and
+  -   limitations under the License.
+  -
+  -->
+
+<svg viewBox="0 0 896 504" height="100%" width="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">
+  <g transform-origin="center" transform="scale(1, 1) rotate(0)">
+    <rect x="0" y="0" width="100%" height="100%" fill="#357eae00"></rect>
+    <linearGradient id="linear-gradient-r1">
+      <stop offset="0%" stop-color="#5749e1ff" stop-opacity="100%"></stop>
+      <stop offset="100%" stop-color="#ff0092ff" stop-opacity="100%"></stop>
+    </linearGradient>
+    <filter id="shadow-r1" x="0" width="100%" y="-20%" height="150%">
+      <feDropShadow dx="-8" dy="-4" stdDeviation="4" flood-color="#1f436b61"></feDropShadow>
+    </filter>
+    <path
+      d="M0 0 0,441.11840243187544 C 20.16,438.94175797342524 71.68,433.85224834103803 112,429.0259332182631 C 152.32,424.1996180954882 183.68,411.5401604399195 224,414.3055406386815 C 264.32,417.07092083744357 295.68,441.4732123322739 336,444.3891565447189 C 376.32,447.3051007571639 407.68,431.52527190608987 448,430.5052307078205 C 488.32,429.4851895095511 519.68,441.37154771125654 560,438.72226099877804 C 600.32,436.07297428629954 631.68,418.0483434740317 672,415.7869711940512 C 712.32,413.5255989140707 743.68,422.2174360813576 784,426.1590816655532 C 824.32,430.10072724974873 875.84,435.61033651803467 896,437.68500221735985 L896 504 L0 504Z"
+      fill="none" stroke-linecap="round" stroke-width="24.5"
+      style="transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s; fill: url(&quot;#linear-gradient-r1&quot;);"
+      filter="url(#shadow-r1)"></path>
+    <path
+      d="M0 0 0,464.7877649129359 C 20.16,465.25452415868114 71.68,471.90338513519146 112,467.3808718337426 C 152.32,462.8583585322938 183.68,436.7550213469569 224,439.6626910159979 C 264.32,442.5703606850389 295.68,479.298905460001 336,483.5345922173038 C 376.32,487.7702789746066 407.68,465.15496047188935 448,463.1942841121247 C 488.32,461.23360775236006 519.68,476.31636468545497 560,472.64194577416686 C 600.32,468.96752686287874 631.68,443.4579187686029 672,442.7808457160797 C 712.32,442.1037726635565 743.68,462.4199665323447 784,468.88042881570476 C 824.32,475.3408910990649 875.84,476.9097655204304 896,478.67230284585804 L896 504 L0 504Z"
+      fill="none" stroke-linecap="round" stroke-width="16.333333333333336"
+      style="transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s; fill: url(&quot;#linear-gradient-r1&quot;);"
+      filter="url(#shadow-r1)"></path>
+    <path
+      d="M0 0 0,485.24595703959466 C 20.16,486.7376877805645 71.68,495.54080963416976 112,493.5333500449825 C 152.32,491.52589045579526 183.68,476.9984197244142 224,474.0934037663322 C 264.32,471.1883878082502 295.68,478.1260336791846 336,477.39437250008245 C 376.32,476.6627113209803 407.68,469.634742805139 448,470.028619437987 C 488.32,470.422496070835 519.68,476.2038820367814 560,479.5825760159045 C 600.32,482.96126999502764 631.68,489.7163746411141 672,488.79914154422653 C 712.32,487.881908447339 743.6800000000001,471.913619872719 784,474.48683658875154 C 824.3199999999999,477.06005330478416 875.84,497.94535835861177 896,503.09478996662983 L896 504 L0 504Z"
+      fill="none" stroke-linecap="round" stroke-width="8.166666666666668"
+      style="transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0s; fill: url(&quot;#linear-gradient-r1&quot;);"
+      filter="url(#shadow-r1)"></path>
+  </g>
+</svg>
