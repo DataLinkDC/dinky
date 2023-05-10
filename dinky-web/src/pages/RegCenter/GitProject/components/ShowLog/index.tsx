@@ -65,7 +65,7 @@ export const ShowLog: React.FC<ShowLogProps> = (props) => {
      */
     useEffect(() => {
         queryAllStepLogs();
-    }, [modalVisible]);
+    }, []);
 
 
     /**
