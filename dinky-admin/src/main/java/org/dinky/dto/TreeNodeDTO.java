@@ -35,20 +35,16 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @ToString
-public class GitProjectTreeNodeDTO {
+public class TreeNodeDTO {
     private String name;
     private String path;
     private String content;
     private Long size;
     private boolean isLeaf;
-    private List<GitProjectTreeNodeDTO> children;
+    private List<TreeNodeDTO> children;
 
-    public GitProjectTreeNodeDTO(
-            String name,
-            String path,
-            boolean isLeaf,
-            List<GitProjectTreeNodeDTO> children,
-            Long size) {
+    public TreeNodeDTO(
+            String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
         this.name = name;
         this.path = path;
         this.isLeaf = isLeaf;

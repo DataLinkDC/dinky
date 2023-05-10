@@ -793,6 +793,7 @@ export default {
   'sys.process.endtime': 'End Time',
   'sys.process.duration': 'Duration',
   'sys.process.operator': 'Operator',
+  'sys.info.logList.tips': 'Click left log file to viewing',
 
   'devops.jobinfo.alert.title': 'Title',
   'devops.jobinfo.alert.content':'Body',

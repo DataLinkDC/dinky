@@ -266,3 +266,81 @@ export const renderLanguage = (type: string, splitChar: string) => {
 export const folderSeparator = () => {
   return path.sep;
 }
+
+
+
+
+/**
+ * build tree data
+ * @param data
+ * @returns {any}
+ */
+export const buildTreeData = (data: any): any => data?.map((item: any) => {
+
+  // build key
+  let buildKey = item.path + folderSeparator() + item.name;
+
+  // if has children , recursive build
+  if (item.children) {
+    return {
+      isLeaf: !item.leaf,
+      name: item.name,
+      parentId: item.path,
+      icon: renderIcon(item.name, ".", item.leaf),
+      content: item.content,
+      path: item.path,
+      title: item.name,
+      key: buildKey,
+      children: buildTreeData(item.children)
+    };
+  }
+  return {
+    isLeaf: !item.leaf,
+    name: item.name,
+    parentId: item.path,
+    icon: renderIcon(item.name, ".", item.leaf),
+    content: item.content,
+    path: item.path,
+    title: item.name,
+    key: buildKey,
+  };
+});
+
+
+
+
+/**
+ * build tree data
+ * @param data
+ * @returns {any}
+ */
+export const buildTreeData = (data: any): any => data?.map((item: any) => {
+
+  // build key
+  let buildKey = item.path + folderSeparator() + item.name;
+
+  // if has children , recursive build
+  if (item.children) {
+    return {
+      isLeaf: !item.leaf,
+      name: item.name,
+      parentId: item.path,
+      icon: renderIcon(item.name, ".", item.leaf),
+      content: item.content,
+      path: item.path,
+      title: item.name,
+      key: buildKey,
+      children: buildTreeData(item.children)
+    };
+  }
+  return {
+    isLeaf: !item.leaf,
+    name: item.name,
+    parentId: item.path,
+    icon: renderIcon(item.name, ".", item.leaf),
+    content: item.content,
+    path: item.path,
+    title: item.name,
+    key: buildKey,
+  };
+});

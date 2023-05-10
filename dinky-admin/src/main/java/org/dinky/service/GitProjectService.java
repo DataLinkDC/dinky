@@ -21,7 +21,7 @@ package org.dinky.service;
 
 import org.dinky.db.service.ISuperService;
 import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.GitProjectTreeNodeDTO;
+import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
 
 import java.util.List;
@@ -49,9 +49,9 @@ public interface GitProjectService extends ISuperService<GitProject> {
      * get project code tree
      *
      * @param id {@link Integer}
-     * @return {@link List< GitProjectTreeNodeDTO >}
+     * @return {@link List< TreeNodeDTO >}
      */
-    List<GitProjectTreeNodeDTO> getProjectCode(Integer id);
+    List<TreeNodeDTO> getProjectCode(Integer id);
 
     /**
      * remove project and code cascade by id

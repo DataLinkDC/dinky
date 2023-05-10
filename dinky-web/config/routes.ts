@@ -219,7 +219,7 @@ export default [
         path: '/settings/system',
         name: 'system',
         icon: 'InfoCircleOutlined',
-        // component: './SettingCenter/SystemInfo',
+        component: './SettingCenter/SystemInfo',
       },
       {
         path: '/settings/process',
