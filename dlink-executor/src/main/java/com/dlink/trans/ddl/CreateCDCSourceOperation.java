@@ -112,8 +112,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     String schemaTableName = table.getSchemaTableNameList().get(0);
                     // 真实的表名
                     String tableName = schemaTableName.split("\\.")[1];
-                    table.setColumns(driver.listColumnsSortByPK(schemaName, tableName));
-                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                    table.setColumns(driver.listColumns(schemaName, tableName));
+                    table.setColumns(driver.listColumns(schemaName, table.getName()));
                     schemaList.add(schema);
 
                     if (null != sinkDriver) {
@@ -143,14 +143,14 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                                 for (String tableReg : tableRegList) {
                                     if (table.getSchemaTableName().matches(tableReg.trim())
                                             && !schema.getTables().contains(Table.build(table.getName()))) {
-                                        table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                        table.setColumns(driver.listColumns(schemaName, table.getName()));
                                         schema.getTables().add(table);
                                         schemaTableNameList.add(table.getSchemaTableName());
                                         break;
                                     }
                                 }
                             } else {
-                                table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                table.setColumns(driver.listColumns(schemaName, table.getName()));
                                 schemaTableNameList.add(table.getSchemaTableName());
                                 schema.getTables().add(table);
                             }
