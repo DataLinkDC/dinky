@@ -80,7 +80,9 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
     }}
   >
     <LoginFormPage
-      title={<b>Dinky</b> as any}
+      title={<b style={{
+        fontSize:"40px",
+      }}>Dinky</b> as any}
       logo={Settings.logo}
       subTitle={l("layouts.userLayout.title")}
       backgroundImageUrl={"icons/bg.svg"}
