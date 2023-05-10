@@ -184,7 +184,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  render
    */
   return (<>
-    <div id={"monaco"} className={"monaco-float"}>
+    <div className={"monaco-float"}>
       <MonacoEditor
         width={width}
         height={height}

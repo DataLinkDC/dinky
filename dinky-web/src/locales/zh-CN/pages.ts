@@ -787,6 +787,7 @@ export default {
   'sys.process.endtime':'结束时间',
   'sys.process.duration':'耗时',
   'sys.process.operator':'操作人',
+  'sys.info.logList.tips': '点击左侧日志文件查看',
 
   'devops.jobinfo.alert.title':'标题',
   'devops.jobinfo.alert.content':'正文',

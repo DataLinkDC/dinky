@@ -20,10 +20,12 @@
 package org.dinky.service.impl;
 
 import org.dinky.constant.DirConstant;
-import org.dinky.model.FileNode;
+import org.dinky.dto.TreeNodeDTO;
 import org.dinky.service.SystemService;
 import org.dinky.utils.DirUtil;
+import org.dinky.utils.TreeUtil;
 
+import java.io.File;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -37,13 +39,9 @@ import org.springframework.stereotype.Service;
 public class SystemServiceImpl implements SystemService {
 
     @Override
-    public List<FileNode> listDirByPath(String path) {
-        return DirUtil.listDirByPath(path);
-    }
-
-    @Override
-    public List<FileNode> listLogDir() {
-        return DirUtil.listDirByPath(DirConstant.LOG_DIR_PATH);
+    public List<TreeNodeDTO> listLogDir() {
+        File systemLogFiles = TreeUtil.getFilesOfDir(DirConstant.LOG_DIR_PATH);
+        return TreeUtil.treeNodeData(systemLogFiles, false);
     }
 
     @Override
