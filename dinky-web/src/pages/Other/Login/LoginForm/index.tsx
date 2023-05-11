@@ -18,13 +18,12 @@
  */
 
 import React, {useState} from "react";
-import Settings from "../../../../../config/defaultSettings";
 import {l} from "@/utils/intl";
 import {ProForm, ProFormCheckbox, ProFormText} from "@ant-design/pro-components";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
-import {Form} from "antd";
 import MainWithStyle from "./MainWithStyle";
 import {SubmitterProps} from "@ant-design/pro-form/es/components";
+import style from "../../../../global.less";
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
@@ -97,7 +96,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   return <MainWithStyle>
     <ProForm
-      className={"login-form"}
+      className={style.loginform}
       form={form}
       onFinish={handleClickLogin}
       submitter={{...proFormSubmitter}}

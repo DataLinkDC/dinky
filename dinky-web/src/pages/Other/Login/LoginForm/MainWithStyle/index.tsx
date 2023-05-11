@@ -18,25 +18,27 @@
 
 import {l} from "@/utils/intl";
 import React from "react";
+import Settings from "../../../../../../config/defaultSettings";
+import style from "../../../../../global.less";
 
 const MainWithStyle = (props: any) => {
   const {children} = props;
 
-  return <div className={"login-form-main"}
-              style={{backgroundImage: `url('/icons/main-bg.svg')`}}
+  return <div
+    className={style.loginformMain}
+    style={{backgroundImage: `url('/icons/main-bg.svg')`}}
   >
-    <div className={"logo"}>
-      <img src={"/dinky.svg"}/>
+    <div className={style.logo}>
+      <img src={Settings.logo}/>
     </div>
-
-    <div className={"form"}  >
-      <div className={"top"}>
-        <div className={"header"}>Dinky</div>
-        <div className={"desc"}>{l('layouts.userLayout.title')}</div>
+    <div className={style.form}>
+      <div className={style.top}>
+        <div className={style.header}>Dinky</div>
+        <div className={style.desc}>{l("layouts.userLayout.title")}</div>
       </div>
-      { children }
+      {children}
     </div>
-  </div>
-}
+  </div>;
+};
 
-export default MainWithStyle
+export default MainWithStyle;
