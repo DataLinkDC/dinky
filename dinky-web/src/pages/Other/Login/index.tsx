@@ -19,7 +19,7 @@ import Footer from "@/components/Footer";
 import {setTenantStorageAndCookie} from "@/utils/function";
 import {l} from "@/utils/intl";
 import {useEmotionCss} from "@ant-design/use-emotion-css";
-import {SelectLang, useModel} from "@umijs/max";
+import {useModel} from "@umijs/max";
 import React, {useState} from "react";
 import {flushSync} from "react-dom";
 import {chooseTenantSubmit, login} from "@/services/BusinessCrud";
@@ -32,27 +32,7 @@ import LoginForm from "./LoginForm";
 import HelmetTitle from "./HelmetTitle";
 import ChooseModal from "@/pages/Other/Login/ChooseModal";
 import {gotoRedirectUrl} from "@/pages/Other/Login/function";
-
-const Lang = () => {
-  const langClassName = useEmotionCss(({token}) => {
-    return {
-      width: 42,
-      height: 42,
-      lineHeight: "42px",
-      position: "fixed",
-      right: 16,
-      borderRadius: token.borderRadius,
-      ":hover": {
-        backgroundColor: token.colorBgTextHover,
-      },
-    };
-  });
-  return (
-    <div className={langClassName} data-lang>
-      {SelectLang && <SelectLang/>}
-    </div>
-  );
-};
+import LangSwitch from "@/pages/Other/Login/LangSwitch";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -66,6 +46,7 @@ const Login: React.FC = () => {
       width: "100%",
       flexDirection: "column",
       height: "100%",
+      position: "relative",
       backgroundImage: "url(/icons/footer-bg.svg)",
       backgroundPosition: "bottom center",
       backgroundRepeat: "no-repeat",
@@ -171,7 +152,7 @@ const Login: React.FC = () => {
   return (
     <div className={containerClassName}>
       <HelmetTitle/>
-      <Lang/>
+      <LangSwitch/>
       <LoginForm onSubmit={handleSubmitLogin}/>
       <Footer/>
       <ChooseModal
