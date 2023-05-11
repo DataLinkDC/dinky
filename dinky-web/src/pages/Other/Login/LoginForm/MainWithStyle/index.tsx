@@ -20,6 +20,7 @@ import {l} from "@/utils/intl";
 import React from "react";
 import Settings from "../../../../../../config/defaultSettings";
 import style from "../../../../../global.less";
+import Scale from "@/components/Animation/Scale";
 
 const MainWithStyle = (props: any) => {
   const {children} = props;
@@ -28,9 +29,7 @@ const MainWithStyle = (props: any) => {
     className={style.loginformMain}
     style={{backgroundImage: `url('/icons/main-bg.svg')`}}
   >
-    <div className={style.logo}>
-      <img src={Settings.logo}/>
-    </div>
+    <Scale><img className={style.logo} src={Settings.logo}/></Scale>
     <div className={style.form}>
       <div className={style.top}>
         <div className={style.header}>Dinky</div>
