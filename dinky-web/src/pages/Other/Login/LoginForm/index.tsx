@@ -101,6 +101,7 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
         className={style.loginform}
         form={form}
         onFinish={handleClickLogin}
+        initialValues={{autoLogin: true}}
         submitter={{...proFormSubmitter}}
       >
         {renderLoginForm()}
