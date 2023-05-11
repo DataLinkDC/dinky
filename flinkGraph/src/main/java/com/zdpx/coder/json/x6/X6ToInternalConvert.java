@@ -1,5 +1,16 @@
 package com.zdpx.coder.json.x6;
 
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,23 +26,13 @@ import com.zdpx.coder.json.ToInternalConvert;
 import com.zdpx.coder.operator.Operator;
 import com.zdpx.coder.operator.TableInfo;
 import com.zdpx.coder.utils.InstantiationUtil;
+
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
-
 
 public final class X6ToInternalConvert implements ToInternalConvert {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @Override
     public Scene convert(String origin) {
@@ -65,16 +66,18 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                 tempNodes.put(id, tempNode);
             }
 
-            final List<TempNode> topNodes = tempNodes.values().stream()
-                    .filter(tempNode -> tempNode.getParent() == null)
-                    .collect(Collectors.toList());
+            final List<TempNode> topNodes =
+                    tempNodes.values().stream()
+                            .filter(tempNode -> tempNode.getParent() == null)
+                            .collect(Collectors.toList());
 
             List<Node> nodes = createNodesWithPackage(tempNodes, topNodes);
 
-
             Map<String, Operator> operators = processOperators(operatorMap);
-            Map<String, Connection<TableInfo>> connections = processConnections(connectionNodes, operators);
-            List<ProcessPackage> processPackages = processPackage(processNodes, operators, connections);
+            Map<String, Connection<TableInfo>> connections =
+                    processConnections(connectionNodes, operators);
+            List<ProcessPackage> processPackages =
+                    processPackage(processNodes, operators, connections);
             Scene scene = new Scene();
 
             scene.setProcessPackage(processPackages);
@@ -86,11 +89,13 @@ public final class X6ToInternalConvert implements ToInternalConvert {
 
     /**
      * 按照从顶层向下初始化垂直信息
+     *
      * @param allTempNodes
      * @param topNodes
      * @return
      */
-    private List<Node> createNodesWithPackage(Map<String, TempNode> allTempNodes, List<TempNode> topNodes) {
+    private List<Node> createNodesWithPackage(
+            Map<String, TempNode> allTempNodes, List<TempNode> topNodes) {
         List<Node> nodes = new ArrayList<>();
         for (TempNode tempNode : topNodes) {
             Node node;
@@ -103,96 +108,100 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                 case "package":
                     node = new ProcessPackage();
                     List<String> childrenId = tempNode.getChildren();
-                    List<TempNode> children = childrenId.stream()
-                            .map(allTempNodes::get)
-                            .collect(Collectors.toList());
+                    List<TempNode> children =
+                            childrenId.stream().map(allTempNodes::get).collect(Collectors.toList());
                     List<Node> childrenNode = createNodesWithPackage(allTempNodes, children);
                     node.getNodeWrapper().setChildren(childrenNode);
                     break;
-                default: {
-                    node = createOperatorByCode(cell_shape);
-                }
+                default:
+                    {
+                        node = createOperatorByCode(cell_shape);
+                    }
             }
             nodes.add(node);
         }
         return nodes;
     }
 
-    private static List<ProcessPackage> processPackage(Map<String, JsonNode> processNodes,
-                                                       Map<String, Operator> operators,
-                                                       Map<String, Connection<TableInfo>> connections) {
+    private static List<ProcessPackage> processPackage(
+            Map<String, JsonNode> processNodes,
+            Map<String, Operator> operators,
+            Map<String, Connection<TableInfo>> connections) {
         List<ProcessPackage> processPackages = new ArrayList<>();
-        processNodes.forEach((id, cell) -> {
-            ProcessPackage process = new ProcessPackage();
-            process.setNodeWrapper(new X6NodeWrapper());
-            process.setId(id);
-            String name = cell.path("attrs").path("text").path("text").asText();
-            process.setName(name);
-            ArrayNode children = (ArrayNode) cell.get("children");
-            for (JsonNode child : children) {
-                Operator operator = operators.get(child.asText());
-                if (operator != null) {
-                    process.getNodeWrapper().getChildren().add(operator);
-                    processPackages.add(process);
-                }
-//todo:                这里好像有package添加同类的问题
-            }
-        });
+        processNodes.forEach(
+                (id, cell) -> {
+                    ProcessPackage process = new ProcessPackage();
+                    process.setNodeWrapper(new X6NodeWrapper());
+                    process.setId(id);
+                    String name = cell.path("attrs").path("text").path("text").asText();
+                    process.setName(name);
+                    ArrayNode children = (ArrayNode) cell.get("children");
+                    for (JsonNode child : children) {
+                        Operator operator = operators.get(child.asText());
+                        if (operator != null) {
+                            process.getNodeWrapper().getChildren().add(operator);
+                            processPackages.add(process);
+                        }
+                        // todo:                这里好像有package添加同类的问题
+                    }
+                });
         return processPackages;
     }
 
-    private static Map<String, Connection<TableInfo>> processConnections(Map<String, JsonNode> connectionNodes,
-                                                                         Map<String, Operator> operators) {
+    private static Map<String, Connection<TableInfo>> processConnections(
+            Map<String, JsonNode> connectionNodes, Map<String, Operator> operators) {
         Map<String, Connection<TableInfo>> connections = new HashMap<>();
-        connectionNodes.forEach((id, cell) -> {
-            JsonNode source = cell.get("source");
-            String sourceCell = source.get("cell").asText();
-            String sourcePort = source.get("port").asText();
-            Operator sourceOperator = operators.get(sourceCell);
-            OutputPort<TableInfo> outputPort = sourceOperator.getOutputPorts().get(sourcePort);
+        connectionNodes.forEach(
+                (id, cell) -> {
+                    JsonNode source = cell.get("source");
+                    String sourceCell = source.get("cell").asText();
+                    String sourcePort = source.get("port").asText();
+                    Operator sourceOperator = operators.get(sourceCell);
+                    OutputPort<TableInfo> outputPort =
+                            sourceOperator.getOutputPorts().get(sourcePort);
 
-            JsonNode target = cell.get("target");
-            String targetCell = target.get("cell").asText();
-            String targetPort = target.get("port").asText();
-            Operator targetOperator = operators.get(targetCell);
-            InputPort<TableInfo> inputPort = targetOperator.getInputPorts().get(targetPort);
+                    JsonNode target = cell.get("target");
+                    String targetCell = target.get("cell").asText();
+                    String targetPort = target.get("port").asText();
+                    Operator targetOperator = operators.get(targetCell);
+                    InputPort<TableInfo> inputPort = targetOperator.getInputPorts().get(targetPort);
 
-
-            Connection<TableInfo> connection = new Connection();
-            connection.setFromPort(outputPort);
-            connection.setToPort(inputPort);
-            connection.setId(id);
-            NodeWrapper nodeWrapper = new X6NodeWrapper();
-            connection.setNodeWrapper(nodeWrapper);
-        });
+                    Connection<TableInfo> connection = new Connection();
+                    connection.setFromPort(outputPort);
+                    connection.setToPort(inputPort);
+                    connection.setId(id);
+                    NodeWrapper nodeWrapper = new X6NodeWrapper();
+                    connection.setNodeWrapper(nodeWrapper);
+                });
         return connections;
     }
 
     private Map<String, Operator> processOperators(Map<String, JsonNode> operatorMap) {
         Map<String, Operator> operators = new HashMap<>();
-        operatorMap.forEach((id, cell) -> {
-            String cell_shape = cell.get("shape").asText();
-            Operator operator = createOperatorByCode(cell_shape);
-            operator.setId(id);
-            String name = cell.path("attrs").path("text").path("text").asText();
-            operator.setName(name);
+        operatorMap.forEach(
+                (id, cell) -> {
+                    String cell_shape = cell.get("shape").asText();
+                    Operator operator = createOperatorByCode(cell_shape);
+                    operator.setId(id);
+                    String name = cell.path("attrs").path("text").path("text").asText();
+                    operator.setName(name);
 
-            final JsonNode p = cell.get("parent");
-            if (p != null) {
-                String parent = p.asText();
-            }
+                    final JsonNode p = cell.get("parent");
+                    if (p != null) {
+                        String parent = p.asText();
+                    }
 
-            NodeWrapper nodeWrapper = new X6NodeWrapper();
-            operator.setOperatorWrapper(nodeWrapper);
+                    NodeWrapper nodeWrapper = new X6NodeWrapper();
+                    operator.setOperatorWrapper(nodeWrapper);
 
-            JsonNode data = cell.get("data");
-            if (data != null) {
-                String parameters = data.get("parameters").asText();
-                nodeWrapper.setParameters(parameters);
-            }
+                    JsonNode data = cell.get("data");
+                    if (data != null) {
+                        String parameters = data.get("parameters").asText();
+                        nodeWrapper.setParameters(parameters);
+                    }
 
-            operators.put(id, operator);
-        });
+                    operators.put(id, operator);
+                });
         return operators;
     }
 

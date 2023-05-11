@@ -19,35 +19,25 @@
 
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.json.origin.Description;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
-
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * 过程类,相当于一个节点集合, 不参与计算图, 主要用于分组.
- */
+import com.zdpx.coder.json.origin.Description;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
+
+/** 过程类,相当于一个节点集合, 不参与计算图, 主要用于分组. */
 public class ProcessPackage extends Node {
-    /**
-     * 该过程在界面上是否可以展开
-     */
+    /** 该过程在界面上是否可以展开 */
     private boolean expanded;
-    /**
-     * 版本
-     */
+    /** 版本 */
     private String version;
 
-    /**
-     * 包含的节点间连接信息
-     */
+    /** 包含的节点间连接信息 */
     private Set<Connection<TableInfo>> connects = new LinkedHashSet<>();
-    /**
-     * 仓储的描述信息, 图上的注释信息
-     */
+    /** 仓储的描述信息, 图上的注释信息 */
     private Set<Description> descriptions = new LinkedHashSet<>();
 
     // region getter/setter

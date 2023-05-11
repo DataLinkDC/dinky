@@ -1,22 +1,9 @@
 package com.zdpx.coder.json.origin;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zdpx.coder.graph.Connection;
-import com.zdpx.coder.graph.Environment;
-import com.zdpx.coder.graph.InputPort;
-import com.zdpx.coder.graph.Node;
-import com.zdpx.coder.graph.OutputPort;
-import com.zdpx.coder.graph.ProcessPackage;
-import com.zdpx.coder.graph.Scene;
-import com.zdpx.coder.json.ToInternalConvert;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
-import com.zdpx.coder.utils.InstantiationUtil;
-import lombok.extern.slf4j.Slf4j;
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
+import static com.zdpx.coder.graph.Scene.getAllOperator;
+
 import org.apache.commons.collections.CollectionUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -32,14 +19,30 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
-import static com.zdpx.coder.graph.Scene.getAllOperator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdpx.coder.graph.Connection;
+import com.zdpx.coder.graph.Environment;
+import com.zdpx.coder.graph.InputPort;
+import com.zdpx.coder.graph.Node;
+import com.zdpx.coder.graph.OutputPort;
+import com.zdpx.coder.graph.ProcessPackage;
+import com.zdpx.coder.graph.Scene;
+import com.zdpx.coder.json.ToInternalConvert;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
+import com.zdpx.coder.utils.InstantiationUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class OriginToInternalConvert implements ToInternalConvert {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * 根据输入流, 生成场景节点(对应于配置)
@@ -70,7 +73,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
         return null;
     }
 
-
     /**
      * get all source nodes, source nodes is operator that not have {@link InputPort} define or all
      * {@link InputPort}'s {@link Connection} is null.
@@ -98,8 +100,11 @@ public class OriginToInternalConvert implements ToInternalConvert {
             connections.addAll(processPackageLocal.getConnects());
             if (!CollectionUtils.isEmpty(originOperatorWrappers)) {
                 for (Node originOperatorWrapper : originOperatorWrappers) {
-                    if (!Objects.isNull(((OriginNode)originOperatorWrapper.getNodeWrapper()).getProcesses())) {
-                        processPackages.addAll(((OriginNode)originOperatorWrapper.getNodeWrapper()).getProcesses());
+                    if (!Objects.isNull(
+                            ((OriginNode) originOperatorWrapper.getNodeWrapper()).getProcesses())) {
+                        processPackages.addAll(
+                                ((OriginNode) originOperatorWrapper.getNodeWrapper())
+                                        .getProcesses());
                     }
                 }
             }
@@ -135,7 +140,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
         return readSceneInternal(in);
     }
 
-
     /**
      * 将外部场景节点(对应于配置文件)转换为内部场景类
      *
@@ -145,7 +149,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
     public static Scene convertToInternal(SceneNode sceneNode) {
         return createScene(sceneNode);
     }
-
 
     /**
      * 将{@link OperatorNode} 配置信息转化为{@link OriginNode}节点包裹类
@@ -198,7 +201,8 @@ public class OriginToInternalConvert implements ToInternalConvert {
     }
 
     /**
-     * 将配置中的{@link ProcessNode}和{@link OperatorNode}转化为内部计算图的{@link ProcessPackage}和{@link Operator}.
+     * 将配置中的{@link ProcessNode}和{@link OperatorNode}转化为内部计算图的{@link ProcessPackage}和{@link
+     * Operator}.
      *
      * @param process 开始根过程节点
      * @return 计算图的根节点
@@ -250,7 +254,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
         }
         return root;
     }
-
 
     /**
      * 将配置文件结构信息转换为内部计算逻辑图(计算图)
@@ -322,7 +325,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
 
         return root;
     }
-
 
     public static Scene createScene(SceneNode sceneNode) {
         Scene scene = new Scene();

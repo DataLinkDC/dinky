@@ -19,15 +19,8 @@
 
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.SceneCodeBuilder;
-import com.zdpx.coder.operator.Identifier;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.udf.IUdfDefine;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
-import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -40,23 +33,28 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/**
- * 场景配置类,
- */
+import org.reflections.Reflections;
+
+import com.zdpx.coder.SceneCodeBuilder;
+import com.zdpx.coder.operator.Identifier;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.udf.IUdfDefine;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+/** 场景配置类, */
 @Slf4j
 @Data
 public class Scene {
 
-    /**
-     * 保存所有已定义算子, 类初始化时进行加载
-     */
+    /** 保存所有已定义算子, 类初始化时进行加载 */
     public static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
 
     public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
 
     private Environment environment;
     private ProcessPackage processPackage;
-
 
     /**
      * 获取所有operator的定义, key为{@link Identifier#getCode()} 返回值, 目前为Operator类的全限定名 value为类型定义.
@@ -96,9 +94,11 @@ public class Scene {
                 for (Node originOperator : originOperators) {
                     List<Node> children = originOperator.getNodeWrapper().getChildren();
                     if (!Objects.isNull(children)) {
-                        processPackages.addAll(children.stream().filter(t -> t instanceof ProcessPackage)
-                                .map(t -> (ProcessPackage) t)
-                                .collect(Collectors.toList()));
+                        processPackages.addAll(
+                                children.stream()
+                                        .filter(t -> t instanceof ProcessPackage)
+                                        .map(t -> (ProcessPackage) t)
+                                        .collect(Collectors.toList()));
                     }
                 }
             }
@@ -107,14 +107,13 @@ public class Scene {
         return originOperatorAllNodes;
     }
 
-
     /**
      * 获取所有算子类, key 为 {@link IUdfDefine#getUdfName()}定义
      *
      * @return 算子类字典
      */
     public static Map<String, Class<? extends UserDefinedFunction>>
-    getUserDefinedFunctionClassMaps() {
+            getUserDefinedFunctionClassMaps() {
         String iun = IUdfDefine.class.getPackage().getName();
         Reflections reflections = new Reflections(iun);
         Set<Class<? extends UserDefinedFunction>> udfFunctions =
@@ -133,9 +132,9 @@ public class Scene {
                                         Method method = t.getMethod("getUdfName");
                                         return (String) method.invoke(ob);
                                     } catch (NoSuchMethodException
-                                             | InvocationTargetException
-                                             | IllegalAccessException
-                                             | InstantiationException ignore) {
+                                            | InvocationTargetException
+                                            | IllegalAccessException
+                                            | InstantiationException ignore) {
                                     }
                                     return null;
                                 },
@@ -146,5 +145,4 @@ public class Scene {
         return getUserDefinedFunctionClassMaps().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getName()));
     }
-
 }

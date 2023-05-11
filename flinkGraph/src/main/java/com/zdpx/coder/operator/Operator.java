@@ -19,6 +19,22 @@
 
 package com.zdpx.coder.operator;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.table.functions.UserDefinedFunction;
+
+import java.security.InvalidParameterException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.reflections.Reflections;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -35,21 +51,8 @@ import com.zdpx.coder.graph.NodeWrapper;
 import com.zdpx.coder.graph.OutputPort;
 import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.utils.JsonSchemaValidator;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
-import org.reflections.Reflections;
 
-import javax.annotation.Nullable;
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 宏算子抽象类
@@ -59,11 +62,14 @@ import java.util.stream.Collectors;
 @Slf4j
 public abstract class Operator extends Node implements Runnable {
     public static final String FIELD_FUNCTIONS = "fieldFunctions";
-    private final static ObjectMapper objectMapper = new ObjectMapper();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @SuppressWarnings("rawtypes")
-    protected Map<String, InputPort> inputPorts = new HashMap<>();    @SuppressWarnings("rawtypes")
+    protected Map<String, InputPort> inputPorts = new HashMap<>();
+
+    @SuppressWarnings("rawtypes")
     protected Map<String, OutputPort> outputPorts = new HashMap<>();
+
     protected Map<String, String> userFunctions;
     private SceneCodeBuilder sceneCodeBuilder;
 
@@ -290,9 +296,10 @@ public abstract class Operator extends Node implements Runnable {
         Map<String, String> udfFunctions = getSchemaUtil().getUdfFunctionMap();
         Sets.difference(ufs.entrySet(), udfFunctions.entrySet())
                 .forEach(
-                        u -> this.getSchemaUtil()
-                                .getGenerateResult()
-                                .registerUdfFunction(u.getKey(), u.getValue()));
+                        u ->
+                                this.getSchemaUtil()
+                                        .getGenerateResult()
+                                        .registerUdfFunction(u.getKey(), u.getValue()));
         udfFunctions.putAll(ufs);
     }
 
@@ -347,7 +354,6 @@ public abstract class Operator extends Node implements Runnable {
     }
 
     // region g/s
-
 
     public Map<String, String> getUserFunctions() {
         return userFunctions;

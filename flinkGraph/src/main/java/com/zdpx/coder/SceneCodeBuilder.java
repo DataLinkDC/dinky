@@ -19,16 +19,6 @@
 
 package com.zdpx.coder;
 
-import com.zdpx.coder.code.CodeBuilder;
-import com.zdpx.coder.code.CodeJavaBuilderImpl;
-import com.zdpx.coder.code.CodeSqlBuilderImpl;
-import com.zdpx.coder.graph.Scene;
-import com.zdpx.coder.json.ResultType;
-import com.zdpx.coder.operator.Identifier;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.utils.InstantiationUtil;
-import lombok.extern.slf4j.Slf4j;
-
 import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -42,6 +32,17 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import com.zdpx.coder.code.CodeBuilder;
+import com.zdpx.coder.code.CodeJavaBuilderImpl;
+import com.zdpx.coder.code.CodeSqlBuilderImpl;
+import com.zdpx.coder.graph.Scene;
+import com.zdpx.coder.json.ResultType;
+import com.zdpx.coder.operator.Identifier;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.utils.InstantiationUtil;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 配置场景生成操作类
@@ -101,13 +102,11 @@ public class SceneCodeBuilder {
         return codeBuilder.lastBuild();
     }
 
-    /**
-     * 广度优先遍历计算节点, 生成相对应的源码
-     */
+    /** 广度优先遍历计算节点, 生成相对应的源码 */
     private void createOperatorsCode() {
         List<Operator> sinkOperatorNodes =
                 Scene.getSinkOperatorNodes(this.scene.getProcessPackage());
-        List<Operator> sinks =new ArrayList<>(sinkOperatorNodes);
+        List<Operator> sinks = new ArrayList<>(sinkOperatorNodes);
         Deque<Operator> ops = new ArrayDeque<>();
 
         bft(new HashSet<>(sinks), ops::push);
@@ -118,7 +117,7 @@ public class SceneCodeBuilder {
      * 广度优先遍历计算节点, 执行call 函数
      *
      * @param operators 起始节点集
-     * @param call      待执行函数
+     * @param call 待执行函数
      */
     private void bft(Set<Operator> operators, Consumer<Operator> call) {
         if (operators.isEmpty()) {
@@ -127,10 +126,7 @@ public class SceneCodeBuilder {
 
         List<Operator> ops =
                 operators.stream()
-                        .sorted(
-                                Comparator.comparing(
-                                        Operator::getId,
-                                        Comparator.naturalOrder()))
+                        .sorted(Comparator.comparing(Operator::getId, Comparator.naturalOrder()))
                         .collect(Collectors.toList());
         final Set preOperators = new HashSet<Operator>();
         for (Operator op : ops) {
@@ -182,7 +178,4 @@ public class SceneCodeBuilder {
     public CodeContext createCodeContext(Scene scene) {
         return CodeContext.newBuilder(scene.getEnvironment().getName()).scene(scene).build();
     }
-
-
-
 }
