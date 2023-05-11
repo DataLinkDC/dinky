@@ -89,8 +89,7 @@ public class Scene {
             ProcessPackage processPackageLocal = processPackages.iterator().next();
             List<Operator> originOperators =
                     processPackageLocal.getOperators().stream()
-                            .filter(t -> t instanceof Operator)
-                            .map(t -> (Operator) t)
+                            .filter(Objects::nonNull)
                             .collect(Collectors.toList());
             if (!CollectionUtils.isEmpty(originOperators)) {
                 originOperatorAllNodes.addAll(new ArrayList<>(originOperators));
@@ -137,7 +136,6 @@ public class Scene {
                                              | InvocationTargetException
                                              | IllegalAccessException
                                              | InstantiationException ignore) {
-                                        //
                                     }
                                     return null;
                                 },
