@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
   return (
     <DefaultFooter
       style={{
-        background: 'none',
+        backgroundImage: 'url("/icons/footer-bg.svg")',
       }}
       copyright={`${currentYear} ` + l('app.copyright.produced')}
       links={[

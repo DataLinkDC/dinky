@@ -26,6 +26,71 @@ body,
   'Noto Color Emoji';
 }
 
+
+// .login-form style --- start ----
+.content {
+  padding: 32px 0 24px;
+}
+.top {
+  text-align: center;
+}
+
+.header {
+  height: 100px;
+  line-height: 144px;
+  position: relative;
+  font-weight: 600;
+  font-size: 60px;
+  font-family: Avenir, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+
+}
+
+.logo {
+  position: absolute;
+  width: 30vw;
+  left: 20vw;
+  display: flex;
+  flex: auto ;
+  flex-flow: column-reverse;
+}
+
+
+.desc {
+  margin-bottom: 4vh;
+  margin-top: 2vh;
+  color: @text-color-secondary;
+  font-size: @font-size-base;
+}
+
+
+.login-form-main  {
+  display: flex;
+  flex: auto;
+  padding: 0vh 5vh 30vh 2vh;
+  justify-content: center ;
+  align-items: center;
+  flex-direction: column;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  left: 0;
+  .login-form {
+    padding: 0vh 5vh 30vh 2vh;
+  }
+
+  .form{
+    position: relative;
+    margin-left: 60vw;
+    margin-bottom: -15vh;
+    height: 60%;
+    min-height: 50vh;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
+  }
+}
+// .login-form style --- end ----
+
+
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
   width: 0.5vw;

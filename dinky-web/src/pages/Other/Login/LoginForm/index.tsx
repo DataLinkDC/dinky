@@ -17,11 +17,14 @@
  *
  */
 
-import React from "react";
+import React, {useState} from "react";
 import Settings from "../../../../../config/defaultSettings";
 import {l} from "@/utils/intl";
-import {LoginFormPage, ProFormCheckbox, ProFormText} from "@ant-design/pro-components";
+import {ProForm, ProFormCheckbox, ProFormText} from "@ant-design/pro-components";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
+import {Form} from "antd";
+import MainWithStyle from "./MainWithStyle";
+import {SubmitterProps} from "@ant-design/pro-form/es/components";
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
@@ -31,16 +34,27 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
   const {onSubmit} = props;
 
+  const [form] = ProForm.useForm();
+
+  const [submitting, setSubmitting] = useState(false);
+
+
+  const handleClickLogin = async () => {
+    setSubmitting(true);
+    await onSubmit({...form.getFieldsValue()});
+    setSubmitting(false);
+  };
 
   const renderLoginForm = () => {
 
     return <>
       <ProFormText
         name="username"
+        width={"lg"}
         fieldProps={{
-          size: "large",
           prefix: <UserOutlined/>,
         }}
+        required
         placeholder={l("login.username.placeholder")}
         rules={[
           {
@@ -52,7 +66,6 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       <ProFormText.Password
         name="password"
         fieldProps={{
-          size: "large",
           prefix: <LockOutlined/>,
         }}
         placeholder={l("login.password.placeholder")}
@@ -66,31 +79,32 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
       <ProFormCheckbox name="autoLogin">
         {l("login.rememberMe")}
       </ProFormCheckbox>
-    </>
-  }
+    </>;
+  };
 
 
+  const proFormSubmitter: SubmitterProps = {
+    searchConfig: {submitText: l("menu.login")},
+    resetButtonProps: false,
+    submitButtonProps: {
+      loading: submitting,
+      size: "large",
+      shape: "round",
+      style: {width: "100%"}
+    }
+  };
 
-  return <div
-    style={{
-      display: "flex",
-      flex: "auto",
-      padding: "0vh 5vh 30vh 2vh",
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexDirection: 'column',
-    }}
-  >
-    <LoginFormPage
-      title={<strong>Dinky</strong> as any}
-      logo={Settings.logo}
-      subTitle={l("layouts.userLayout.title")}
-      backgroundImageUrl={"icons/bg.svg"}
-      onFinish={onSubmit}
+
+  return <MainWithStyle>
+    <ProForm
+      className={"login-form"}
+      form={form}
+      onFinish={handleClickLogin}
+      submitter={{...proFormSubmitter}}
     >
       {renderLoginForm()}
-    </LoginFormPage>
-  </div>;
+    </ProForm>
+  </MainWithStyle>;
 };
 
 export default LoginForm;
