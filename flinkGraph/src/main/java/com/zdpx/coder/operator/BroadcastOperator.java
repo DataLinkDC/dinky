@@ -349,11 +349,7 @@ public class BroadcastOperator extends Operator {
             throw new NullPointerException(
                     String.format(
                             "can not get Output PseudoData from %s",
-                            inputPortObject
-                                    .getConnection()
-                                    .getFromPort()
-                                    .getParent()
-                                    .getName()));
+                            inputPortObject.getConnection().getFromPort().getParent().getName()));
         }
         if (primaryPseudoData.getType() == DataType.TABLE) {
             pseudoName = primaryPseudoData.getName();

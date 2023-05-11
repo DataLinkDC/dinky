@@ -44,7 +44,7 @@ public class DuplicateOperator extends Operator {
             for (Map<String, Object> oi : outputInfo) {
                 OutputPortObject<TableInfo> opi =
                         new OutputPortObject<>(this, oi.get("outputName").toString());
-                outputPorts.put(opi.getName(),opi);
+                outputPorts.put(opi.getName(), opi);
             }
         }
     }

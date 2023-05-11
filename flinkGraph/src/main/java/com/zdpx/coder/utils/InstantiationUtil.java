@@ -340,7 +340,7 @@ public final class InstantiationUtil {
 
     public static byte[] serializeObject(Object o) throws IOException {
         try (ByteArrayOutputStream baos = new ByteArrayOutputStream();
-             ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+                ObjectOutputStream oos = new ObjectOutputStream(baos)) {
             oos.writeObject(o);
             oos.flush();
             return baos.toByteArray();
