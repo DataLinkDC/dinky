@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
 /** */
 public class DescriptionNode {

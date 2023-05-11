@@ -19,10 +19,19 @@
 
 package com.zdpx.coder;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdpx.coder.code.CodeBuilder;
+import com.zdpx.coder.code.CodeJavaBuilderImpl;
+import com.zdpx.coder.code.CodeSqlBuilderImpl;
+import com.zdpx.coder.graph.OperatorWrapper;
+import com.zdpx.coder.graph.Scene;
+import com.zdpx.coder.json.ResultType;
+import com.zdpx.coder.operator.Identifier;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.utils.InstantiationUtil;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Comparator;
 import java.util.Deque;
@@ -34,20 +43,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zdpx.coder.code.CodeBuilder;
-import com.zdpx.coder.code.CodeJavaBuilderImpl;
-import com.zdpx.coder.code.CodeSqlBuilderImpl;
-import com.zdpx.coder.graph.OperatorWrapper;
-import com.zdpx.coder.graph.Scene;
-import com.zdpx.coder.json.ResultType;
-import com.zdpx.coder.json.SceneNode;
-import com.zdpx.coder.operator.Identifier;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.utils.InstantiationUtil;
-
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * 配置场景生成操作类
@@ -107,7 +102,9 @@ public class SceneCodeBuilder {
         return codeBuilder.lastBuild();
     }
 
-    /** 广度优先遍历计算节点, 生成相对应的源码 */
+    /**
+     * 广度优先遍历计算节点, 生成相对应的源码
+     */
     private void createOperatorsCode() {
         List<OperatorWrapper> sinkOperatorNodes =
                 Scene.getSinkOperatorNodes(this.scene.getProcess());
@@ -125,7 +122,7 @@ public class SceneCodeBuilder {
      * 广度优先遍历计算节点, 执行call 函数
      *
      * @param operators 起始节点集
-     * @param call 待执行函数
+     * @param call      待执行函数
      */
     private void bft(Set<Operator> operators, Consumer<Operator> call) {
         if (operators.isEmpty()) {
@@ -190,70 +187,6 @@ public class SceneCodeBuilder {
         return CodeContext.newBuilder(scene.getEnvironment().getName()).scene(scene).build();
     }
 
-    /**
-     * 读取配置文件, 生成场景节点(对应于配置)
-     *
-     * @param filePath 配置文件路径
-     * @return 场景节点
-     */
-    public static SceneNode readSceneFromFile(String filePath) {
-        FileInputStream fis;
-        try {
-            fis = new FileInputStream(filePath);
-            return readScene(fis);
-        } catch (FileNotFoundException e) {
-            log.error("readScene error, file not exists {}", e.getMessage());
-        }
-        return null;
-    }
 
-    /**
-     * 根据输入流, 生成场景节点(对应于配置)
-     *
-     * @param in 配置文件输入流
-     * @return 场景节点
-     */
-    public static SceneNode readScene(InputStream in) {
-        return readSceneInternal(in);
-    }
 
-    /**
-     * 根据输入流, 生成场景节点(对应于配置)
-     *
-     * @param in 配置文件输入流
-     * @return 场景节点
-     */
-    public static SceneNode readScene(String in) {
-        return readSceneInternal(in);
-    }
-
-    private static SceneNode readSceneInternal(Object in) {
-        final ObjectMapper objectMapper = new ObjectMapper();
-        SceneNode scene;
-        try {
-            if (in instanceof String) {
-                scene = objectMapper.readValue((String) in, SceneNode.class);
-            } else if (in instanceof InputStream) {
-                scene = objectMapper.readValue((InputStream) in, SceneNode.class);
-            } else {
-                return null;
-            }
-
-            scene.initialize();
-            return scene;
-        } catch (IOException e) {
-            log.error("readScene error, exception {}", e.getMessage());
-        }
-        return null;
-    }
-
-    /**
-     * 将外部场景节点(对应于配置文件)转换为内部场景类
-     *
-     * @param sceneNode 外部场景节点
-     * @return 内部场景类
-     */
-    public static Scene convertToInternal(SceneNode sceneNode) {
-        return new Scene(sceneNode);
-    }
 }

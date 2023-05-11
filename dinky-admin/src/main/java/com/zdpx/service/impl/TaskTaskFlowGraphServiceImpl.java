@@ -19,6 +19,8 @@
 
 package com.zdpx.service.impl;
 
+import com.zdpx.coder.json.ToInternalConvert;
+import com.zdpx.coder.json.origin.OriginToInternalConvert;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.model.Task;
 import org.dinky.service.TaskService;
@@ -34,7 +36,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.graph.Scene;
-import com.zdpx.coder.json.SceneNode;
+import com.zdpx.coder.json.origin.SceneNode;
 import com.zdpx.mapper.FlowGraphScriptMapper;
 import com.zdpx.model.FlowGraph;
 import com.zdpx.service.TaskFlowGraphService;
@@ -77,12 +79,10 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
                                         Task::getName,
                                         Task::getSavePointPath,
                                         (existing, replacement) -> replacement));
-        SceneNode scene = SceneCodeBuilder.readScene(flowGraphScript);
-        if (scene == null) {
-            log.warn("save graph generate sql.");
-            return flowGraphScript;
-        }
-        Scene sceneInternal = SceneCodeBuilder.convertToInternal(scene);
+
+        ToInternalConvert toic = new OriginToInternalConvert();
+        Scene sceneInternal = toic.convert(flowGraphScript);
+
         Map<String, String> udfAll = new HashMap<>();
         udfAll.putAll(Scene.USER_DEFINED_FUNCTION);
         udfAll.putAll(udfDatabase);

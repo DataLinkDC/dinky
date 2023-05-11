@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
 /**
  * 描述信息, 与算子业务逻辑无关, 图上的注释信息

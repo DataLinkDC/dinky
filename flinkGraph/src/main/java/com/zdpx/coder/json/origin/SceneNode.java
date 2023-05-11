@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
 import org.apache.commons.collections.CollectionUtils;
 
@@ -99,10 +99,6 @@ public class SceneNode {
     }
 
     public void initialize() {
-        initConnection();
-    }
-
-    private void initConnection() {
         List<ConnectionNode> connections = getAllConnections(rootProcess);
         List<OperatorNode> operators = getAllOperatorNodes(rootProcess);
         for (ConnectionNode connection : connections) {

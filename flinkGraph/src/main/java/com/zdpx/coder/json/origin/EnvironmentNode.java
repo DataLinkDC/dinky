@@ -17,8 +17,9 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
+import com.zdpx.coder.json.ResultType;
 import org.apache.flink.api.common.RuntimeExecutionMode;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;

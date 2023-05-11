@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
 import java.util.List;
 import java.util.Objects;

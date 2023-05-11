@@ -59,15 +59,6 @@
               }
             ]
           }
-        ],
-        "processes": [
-          {
-            "expanded": true,
-            "operators": [
-            ],
-            "connects": [
-            ]
-          }
         ]
       },
       {

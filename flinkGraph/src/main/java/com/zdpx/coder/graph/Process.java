@@ -22,7 +22,7 @@ package com.zdpx.coder.graph;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
-import com.zdpx.coder.json.Description;
+import com.zdpx.coder.json.origin.Description;
 import com.zdpx.coder.operator.TableInfo;
 
 /** 过程类,相当于一个节点集合, 不参与计算图, 主要用于分组. */

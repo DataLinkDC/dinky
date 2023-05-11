@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.json;
+package com.zdpx.coder.json.origin;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
