@@ -21,7 +21,9 @@ package com.zdpx.coder.operator;
 
 /** */
 public interface Identifier {
+    String getId();
+    String getName();
     default String getCode() {
-        return getClass().getName();
+        return getClass().getSimpleName();
     }
 }

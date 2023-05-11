@@ -19,22 +19,6 @@
 
 package com.zdpx.coder.operator;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
-
-import java.security.InvalidParameterException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import org.reflections.Reflections;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -46,13 +30,26 @@ import com.networknt.schema.ValidationMessage;
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.graph.InputPort;
 import com.zdpx.coder.graph.InputPortObject;
-import com.zdpx.coder.graph.OperatorWrapper;
+import com.zdpx.coder.graph.Node;
+import com.zdpx.coder.graph.NodeWrapper;
 import com.zdpx.coder.graph.OutputPort;
 import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.utils.JsonSchemaValidator;
-import com.zdpx.coder.utils.Preconditions;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.table.functions.UserDefinedFunction;
+import org.reflections.Reflections;
+
+import javax.annotation.Nullable;
+import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 宏算子抽象类
@@ -60,30 +57,25 @@ import lombok.extern.slf4j.Slf4j;
  * @author Licho Sun
  */
 @Slf4j
-public abstract class Operator implements Runnable, Identifier {
+public abstract class Operator extends Node implements Runnable {
     public static final String FIELD_FUNCTIONS = "fieldFunctions";
-
-    protected OperatorWrapper operatorWrapper;
-    protected JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator();
-    protected Parameters parameters = new Parameters();
+    private final static ObjectMapper objectMapper = new ObjectMapper();
 
     @SuppressWarnings("rawtypes")
-    protected List<InputPort> inputPorts = new ArrayList<>();
-
-    @SuppressWarnings("rawtypes")
-    protected List<OutputPort> outputPorts = new ArrayList<>();
-
+    protected Map<String, InputPort> inputPorts = new HashMap<>();    @SuppressWarnings("rawtypes")
+    protected Map<String, OutputPort> outputPorts = new HashMap<>();
     protected Map<String, String> userFunctions;
-
     private SceneCodeBuilder sceneCodeBuilder;
+
+    protected JsonSchemaValidator jsonSchemaValidator = new JsonSchemaValidator();
 
     @SuppressWarnings({"NullAway.Init", "PMD.UnnecessaryConstructor"})
     protected Operator() {
         this(null);
     }
 
-    protected Operator(OperatorWrapper operatorWrapper) {
-        this.operatorWrapper = operatorWrapper;
+    protected Operator(NodeWrapper nodeWrapper) {
+        this.nodeWrapper = nodeWrapper;
         initialize();
         definePropertySchema();
     }
@@ -105,7 +97,6 @@ public abstract class Operator implements Runnable, Identifier {
         }
 
         try {
-            final ObjectMapper objectMapper = new ObjectMapper();
             parametersLocal =
                     objectMapper.readValue(
                             parametersStr, new TypeReference<List<Map<String, Object>>>() {});
@@ -117,11 +108,11 @@ public abstract class Operator implements Runnable, Identifier {
 
     @Override
     public void run() {
-        if (Objects.isNull(operatorWrapper)) {
+        if (Objects.isNull(nodeWrapper)) {
             log.error("{} operator not wrapper.", this.getClass().getName());
             return;
         }
-        log.info(String.format("execute operator id %s", this.getOperatorWrapper().getId()));
+        log.info(String.format("execute operator id %s", this.getId()));
         if (applies()) {
             validParameters();
             generateUdfFunctionByInner();
@@ -221,7 +212,7 @@ public abstract class Operator implements Runnable, Identifier {
      */
     protected InputPortObject<TableInfo> registerInputPort(String name) {
         InputPortObject<TableInfo> inputPortObject = new InputPortObject<>(this, name);
-        inputPorts.add(inputPortObject);
+        inputPorts.put(name, inputPortObject);
         return inputPortObject;
     }
 
@@ -233,7 +224,7 @@ public abstract class Operator implements Runnable, Identifier {
      */
     protected OutputPortObject<TableInfo> registerOutputPort(String name) {
         OutputPortObject<TableInfo> outputPortObject = new OutputPortObject<>(this, name);
-        outputPorts.add(outputPortObject);
+        outputPorts.put(name, outputPortObject);
         return outputPortObject;
     }
 
@@ -282,18 +273,7 @@ public abstract class Operator implements Runnable, Identifier {
      * @return 非结构化参数信息
      */
     protected List<Map<String, Object>> getParameterLists() {
-        return getParameterLists(this.operatorWrapper.getParameters());
-    }
-
-    /**
-     * 获取宏算子名称信息
-     *
-     * @return 宏算子名称
-     */
-    public String getName() {
-        OperatorWrapper ow = getOperatorWrapper();
-        Preconditions.checkNotNull(ow, String.format("%s miss OperatorWrapper.", this.getCode()));
-        return ow.getName();
+        return getParameterLists(this.nodeWrapper.getParameters());
     }
 
     public String getParametersString() {
@@ -310,11 +290,9 @@ public abstract class Operator implements Runnable, Identifier {
         Map<String, String> udfFunctions = getSchemaUtil().getUdfFunctionMap();
         Sets.difference(ufs.entrySet(), udfFunctions.entrySet())
                 .forEach(
-                        u -> {
-                            this.getSchemaUtil()
-                                    .getGenerateResult()
-                                    .registerUdfFunction(u.getKey(), u.getValue());
-                        });
+                        u -> this.getSchemaUtil()
+                                .getGenerateResult()
+                                .registerUdfFunction(u.getKey(), u.getValue()));
         udfFunctions.putAll(ufs);
     }
 
@@ -370,6 +348,7 @@ public abstract class Operator implements Runnable, Identifier {
 
     // region g/s
 
+
     public Map<String, String> getUserFunctions() {
         return userFunctions;
     }
@@ -378,13 +357,16 @@ public abstract class Operator implements Runnable, Identifier {
         this.userFunctions = userFunctions;
     }
 
-    public OperatorWrapper getOperatorWrapper() {
-        return operatorWrapper;
+    public NodeWrapper getOperatorWrapper() {
+        return nodeWrapper;
     }
 
-    public void setOperatorWrapper(OperatorWrapper operatorWrapper) {
-        this.operatorWrapper = operatorWrapper;
-        handleParameters(operatorWrapper.getParameters());
+    public void setOperatorWrapper(NodeWrapper originNodeWrapper) {
+        if (originNodeWrapper == null) {
+            return;
+        }
+        super.setNodeWrapper(originNodeWrapper);
+        handleParameters(originNodeWrapper.getParameters());
         setUserFunctions(declareUdfFunction());
     }
 
@@ -397,31 +379,31 @@ public abstract class Operator implements Runnable, Identifier {
             return false;
         }
         Operator operator = (Operator) o;
-        return operatorWrapper.equals(operator.operatorWrapper);
+        return nodeWrapper.equals(operator.nodeWrapper);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(operatorWrapper);
+        return Objects.hash(nodeWrapper);
     }
 
     @SuppressWarnings("rawtypes")
-    public List<InputPort> getInputPorts() {
+    public Map<String, InputPort> getInputPorts() {
         return inputPorts;
     }
 
     @SuppressWarnings("rawtypes")
-    public void setInputPorts(List<InputPort> inputPorts) {
+    public void setInputPorts(Map<String, InputPort> inputPorts) {
         this.inputPorts = inputPorts;
     }
 
     @SuppressWarnings("rawtypes")
-    public List<OutputPort> getOutputPorts() {
+    public Map<String, OutputPort> getOutputPorts() {
         return outputPorts;
     }
 
     @SuppressWarnings("rawtypes")
-    public void setOutputPorts(List<OutputPort> outputPorts) {
+    public void setOutputPorts(Map<String, OutputPort> outputPorts) {
         this.outputPorts = outputPorts;
     }
 

@@ -40,19 +40,22 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-/** 场景配置类, */
+/**
+ * 场景配置类,
+ */
 @Slf4j
 @Data
 public class Scene {
 
-    /** 保存所有已定义算子, 类初始化时进行加载 */
+    /**
+     * 保存所有已定义算子, 类初始化时进行加载
+     */
     public static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
 
     public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
 
     private Environment environment;
-    private Process process;
-
+    private ProcessPackage processPackage;
 
 
     /**
@@ -65,37 +68,44 @@ public class Scene {
         return SceneCodeBuilder.getCodeClassMap(operators);
     }
 
-        public static List<OperatorWrapper> getSinkOperatorNodes(Process process) {
-        List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(process);
-        return operatorWrappers.stream()
-                .filter(t -> CollectionUtils.isEmpty(t.getOperator().getOutputPorts()))
+    public static List<Operator> getSinkOperatorNodes(ProcessPackage processPackage) {
+        List<Operator> originOperator = getAllOperator(processPackage);
+        return originOperator.stream()
+                .filter(t -> CollectionUtils.isEmpty(t.getOutputPorts().values()))
                 .collect(Collectors.toList());
     }
 
-        /**
+    /**
      * 获取所有节点的包裹类
      *
-     * @param process 计算图的过程信息
+     * @param processPackage 计算图的过程信息
      * @return 所有节点的包裹类
      */
-    public static List<OperatorWrapper> getAllOperatorWrappers(Process process) {
-        List<OperatorWrapper> operatorWrapperAllNodes = new ArrayList<>();
-        List<Process> processes = new LinkedList<>();
-        processes.add(process);
-        while (processes.iterator().hasNext()) {
-            Process processLocal = processes.iterator().next();
-            Set<OperatorWrapper> operatorWrappers = processLocal.getOperators();
-            if (!CollectionUtils.isEmpty(operatorWrappers)) {
-                operatorWrapperAllNodes.addAll(operatorWrappers);
-                for (OperatorWrapper operatorWrapper : operatorWrappers) {
-                    if (!Objects.isNull(operatorWrapper.getProcesses())) {
-                        processes.addAll(operatorWrapper.getProcesses());
+    public static List<Operator> getAllOperator(ProcessPackage processPackage) {
+        List<Operator> originOperatorAllNodes = new ArrayList<>();
+        List<ProcessPackage> processPackages = new LinkedList<>();
+        processPackages.add(processPackage);
+        while (processPackages.iterator().hasNext()) {
+            ProcessPackage processPackageLocal = processPackages.iterator().next();
+            List<Operator> originOperators =
+                    processPackageLocal.getOperators().stream()
+                            .filter(t -> t instanceof Operator)
+                            .map(t -> (Operator) t)
+                            .collect(Collectors.toList());
+            if (!CollectionUtils.isEmpty(originOperators)) {
+                originOperatorAllNodes.addAll(new ArrayList<>(originOperators));
+                for (Node originOperator : originOperators) {
+                    List<Node> children = originOperator.getNodeWrapper().getChildren();
+                    if (!Objects.isNull(children)) {
+                        processPackages.addAll(children.stream().filter(t -> t instanceof ProcessPackage)
+                                .map(t -> (ProcessPackage) t)
+                                .collect(Collectors.toList()));
                     }
                 }
             }
-            processes.remove(processLocal);
+            processPackages.remove(processPackageLocal);
         }
-        return operatorWrapperAllNodes;
+        return originOperatorAllNodes;
     }
 
 
@@ -105,7 +115,7 @@ public class Scene {
      * @return 算子类字典
      */
     public static Map<String, Class<? extends UserDefinedFunction>>
-            getUserDefinedFunctionClassMaps() {
+    getUserDefinedFunctionClassMaps() {
         String iun = IUdfDefine.class.getPackage().getName();
         Reflections reflections = new Reflections(iun);
         Set<Class<? extends UserDefinedFunction>> udfFunctions =
@@ -124,9 +134,9 @@ public class Scene {
                                         Method method = t.getMethod("getUdfName");
                                         return (String) method.invoke(ob);
                                     } catch (NoSuchMethodException
-                                            | InvocationTargetException
-                                            | IllegalAccessException
-                                            | InstantiationException ignore) {
+                                             | InvocationTargetException
+                                             | IllegalAccessException
+                                             | InstantiationException ignore) {
                                         //
                                     }
                                     return null;

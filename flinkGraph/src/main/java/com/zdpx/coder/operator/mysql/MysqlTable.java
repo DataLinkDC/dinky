@@ -64,7 +64,7 @@ public abstract class MysqlTable extends Operator {
     }
 
     protected String generateTableName(String tableName) {
-        return tableName + "_" + this.operatorWrapper.getId();
+        return tableName + "_" + this.getId();
     }
 
     @Override

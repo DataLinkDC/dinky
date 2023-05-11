@@ -34,7 +34,7 @@ public class MysqlSourceOperator extends MysqlTable {
     @Override
     protected void initialize() {
         outputPortObject = new OutputPortObject<>(this, "output_0");
-        outputPorts.add(outputPortObject);
+        outputPorts.put("output_0", outputPortObject);
     }
 
     @Override

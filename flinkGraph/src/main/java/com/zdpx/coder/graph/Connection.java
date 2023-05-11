@@ -28,7 +28,7 @@ import com.zdpx.coder.operator.TableInfo;
  * @param <T> 目前类型统一为{@link TableInfo TableInfo}, 将来可以为不一致类型,
  * @author Licho Sun
  */
-public class Connection<T extends PseudoData<T>> {
+public class Connection<T extends PseudoData<T>> extends Node {
 
     /** 源端口 */
     private OutputPort<T> fromPort;

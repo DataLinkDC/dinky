@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdpx.coder.graph.Connection;
 import com.zdpx.coder.graph.Environment;
 import com.zdpx.coder.graph.InputPort;
-import com.zdpx.coder.graph.OperatorWrapper;
+import com.zdpx.coder.graph.Node;
 import com.zdpx.coder.graph.OutputPort;
-import com.zdpx.coder.graph.Process;
+import com.zdpx.coder.graph.ProcessPackage;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.ToInternalConvert;
 import com.zdpx.coder.operator.Operator;
@@ -33,7 +33,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
-import static com.zdpx.coder.graph.Scene.getAllOperatorWrappers;
+import static com.zdpx.coder.graph.Scene.getAllOperator;
 
 @Slf4j
 public class OriginToInternalConvert implements ToInternalConvert {
@@ -75,46 +75,35 @@ public class OriginToInternalConvert implements ToInternalConvert {
      * get all source nodes, source nodes is operator that not have {@link InputPort} define or all
      * {@link InputPort}'s {@link Connection} is null.
      *
-     * @param process process level
+     * @param processPackage process level
      * @return List<OperatorWrapper>
      */
-    public static List<OperatorWrapper> getSourceOperatorNodes(Process process) {
-        List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(process);
-        return operatorWrappers.stream()
+    public static List<Operator> getSourceOperatorNodes(ProcessPackage processPackage) {
+        List<Operator> originOperatorWrappers = getAllOperator(processPackage);
+        return originOperatorWrappers.stream()
                 .filter(
                         t ->
-                                t.getOperator().getInputPorts().stream()
+                                t.getInputPorts().values().stream()
                                         .allMatch(p -> Objects.isNull(p.getConnection())))
                 .collect(Collectors.toList());
     }
 
-    public static List<OperatorWrapper> getOperatorNodes(Process process) {
-        List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(process);
-        return operatorWrappers.stream()
-                .filter(
-                        t ->
-                                !CollectionUtils.isEmpty(t.getOperator().getInputPorts())
-                                        && !CollectionUtils.isEmpty(
-                                        t.getOperator().getOutputPorts()))
-                .collect(Collectors.toList());
-    }
-
-    public static List<Connection<TableInfo>> getAllConnections(Process process) {
+    public static List<Connection<TableInfo>> getAllConnections(ProcessPackage processPackage) {
         List<Connection<TableInfo>> connections = new ArrayList<>();
-        List<Process> processes = new LinkedList<>();
-        processes.add(process);
-        while (processes.iterator().hasNext()) {
-            Process processLocal = processes.iterator().next();
-            Set<OperatorWrapper> operatorWrappers = processLocal.getOperators();
-            connections.addAll(processLocal.getConnects());
-            if (!CollectionUtils.isEmpty(operatorWrappers)) {
-                for (OperatorWrapper operatorWrapper : operatorWrappers) {
-                    if (!Objects.isNull(operatorWrapper.getProcesses())) {
-                        processes.addAll(operatorWrapper.getProcesses());
+        List<ProcessPackage> processPackages = new LinkedList<>();
+        processPackages.add(processPackage);
+        while (processPackages.iterator().hasNext()) {
+            ProcessPackage processPackageLocal = processPackages.iterator().next();
+            List<Node> originOperatorWrappers = processPackageLocal.getNodeWrapper().getChildren();
+            connections.addAll(processPackageLocal.getConnects());
+            if (!CollectionUtils.isEmpty(originOperatorWrappers)) {
+                for (Node originOperatorWrapper : originOperatorWrappers) {
+                    if (!Objects.isNull(((OriginNode)originOperatorWrapper.getNodeWrapper()).getProcesses())) {
+                        processPackages.addAll(((OriginNode)originOperatorWrapper.getNodeWrapper()).getProcesses());
                     }
                 }
             }
-            processes.remove(processLocal);
+            processPackages.remove(processPackageLocal);
         }
         return connections;
     }
@@ -159,15 +148,15 @@ public class OriginToInternalConvert implements ToInternalConvert {
 
 
     /**
-     * 将{@link OperatorNode} 配置信息转化为{@link OperatorWrapper}节点包裹类
+     * 将{@link OperatorNode} 配置信息转化为{@link OriginNode}节点包裹类
      *
      * @param operatorNode 外部配置信息类
-     * @return {@link OperatorWrapper}节点包裹类
+     * @return {@link OriginNode}节点包裹类
      */
-    public static OperatorWrapper convertOperator(OperatorNode operatorNode) {
-        final OperatorWrapper operatorWrapper = new OperatorWrapper();
-        BeanUtils.copyProperties(operatorNode, operatorWrapper, null, "parameters");
-        operatorWrapper.setParameters(operatorNode.getParameters().toString());
+    public static OriginNode convertOperator(OperatorNode operatorNode) {
+        final OriginNode originOperatorWrapper = new OriginNode();
+        BeanUtils.copyProperties(operatorNode, originOperatorWrapper, null, "parameters");
+        originOperatorWrapper.setParameters(operatorNode.getParameters().toString());
         Class<? extends Operator> cl = OPERATOR_MAP.get(operatorNode.getCode());
 
         if (cl == null) {
@@ -178,10 +167,10 @@ public class OriginToInternalConvert implements ToInternalConvert {
 
         Operator operator = InstantiationUtil.instantiate(cl);
         // operator.setScene(this);
-        operator.setOperatorWrapper(operatorWrapper);
-        operatorWrapper.setOperator(operator);
+        operator.setOperatorWrapper(originOperatorWrapper);
+        originOperatorWrapper.setOperator(operator);
 
-        return operatorWrapper;
+        return originOperatorWrapper;
     }
 
     /**
@@ -209,38 +198,38 @@ public class OriginToInternalConvert implements ToInternalConvert {
     }
 
     /**
-     * 将配置中的{@link ProcessNode}和{@link OperatorNode}转化为内部计算图的{@link Process}和{@link Operator}.
+     * 将配置中的{@link ProcessNode}和{@link OperatorNode}转化为内部计算图的{@link ProcessPackage}和{@link Operator}.
      *
      * @param process 开始根过程节点
      * @return 计算图的根节点
      */
-    private static Process convertNodeToInner(ProcessNode process) {
+    private static ProcessPackage convertNodeToInner(ProcessNode process) {
         List<ProcessNode> unWalkProcesses = new LinkedList<>();
         unWalkProcesses.add(process);
 
-        Process processCurrent = new Process();
-        Map<String, OperatorWrapper> operatorCodeWrapperMap = new HashMap<>();
-        Process root = processCurrent;
+        ProcessPackage processPackageCurrent = new ProcessPackage();
+        Map<String, OriginNode> operatorCodeWrapperMap = new HashMap<>();
+        ProcessPackage root = processPackageCurrent;
 
         while (unWalkProcesses.iterator().hasNext()) {
             // BFS
             ProcessNode processNodeCurrent = unWalkProcesses.iterator().next();
-            BeanUtils.copyProperties(processNodeCurrent, processCurrent);
+            BeanUtils.copyProperties(processNodeCurrent, processPackageCurrent);
             if (processNodeCurrent.getParent() != null) {
                 // add inner parentProcess
                 operatorCodeWrapperMap
                         .get(processNodeCurrent.getParent().getCode())
                         .getProcesses()
-                        .add(processCurrent);
+                        .add(processPackageCurrent);
             }
 
             Set<OperatorNode> operatorNodesInProcess = processNodeCurrent.getOperators();
             if (!CollectionUtils.isEmpty(operatorNodesInProcess)) {
                 for (OperatorNode operatorNode : operatorNodesInProcess) {
-                    OperatorWrapper operatorWrapper = convertOperator(operatorNode);
-                    operatorWrapper.setParentProcess(processCurrent);
-                    operatorCodeWrapperMap.put(operatorNode.getCode(), operatorWrapper);
-                    processCurrent.getOperators().add(operatorWrapper);
+                    OriginNode originOperatorWrapper = convertOperator(operatorNode);
+                    originOperatorWrapper.setParentProcess(processPackageCurrent);
+                    operatorCodeWrapperMap.put(operatorNode.getCode(), originOperatorWrapper);
+                    processPackageCurrent.getOperators().add(originOperatorWrapper.getOperator());
 
                     if (!Objects.isNull(operatorNode.getProcesses())) {
                         unWalkProcesses.addAll(operatorNode.getProcesses());
@@ -253,11 +242,11 @@ public class OriginToInternalConvert implements ToInternalConvert {
 
             for (DescriptionNode descriptor : processNodeCurrent.getDescriptions()) {
                 final Description description = convertDescription(descriptor);
-                processCurrent.getDescriptions().add(description);
+                processPackageCurrent.getDescriptions().add(description);
             }
 
             unWalkProcesses.remove(processNodeCurrent);
-            processCurrent = new Process();
+            processPackageCurrent = new ProcessPackage();
         }
         return root;
     }
@@ -270,12 +259,12 @@ public class OriginToInternalConvert implements ToInternalConvert {
      * @return 内部计算图的根过程节点
      */
     @SuppressWarnings("unchecked")
-    public static Process covertProcess(ProcessNode process) {
+    public static ProcessPackage covertProcess(ProcessNode process) {
 
-        Process root = convertNodeToInner(process);
+        ProcessPackage root = convertNodeToInner(process);
 
         // process connection relation
-        List<OperatorWrapper> operatorWrappers = getAllOperatorWrappers(root);
+        List<Operator> originOperatorWrappers = getAllOperator(root);
         List<ConnectionNode> connections = SceneNode.getAllConnections(process);
 
         for (ConnectionNode connection : connections) {
@@ -283,12 +272,12 @@ public class OriginToInternalConvert implements ToInternalConvert {
             BeanUtils.copyProperties(connection, connectionInternal);
 
             Optional<OutputPort> outputPort =
-                    operatorWrappers.stream()
+                    originOperatorWrappers.stream()
                             .filter(t -> t.getId().equals(connection.getFromOp()))
                             .findAny()
                             .flatMap(
                                     from ->
-                                            from.getOperator().getOutputPorts().stream()
+                                            from.getOutputPorts().values().stream()
                                                     .filter(
                                                             t ->
                                                                     Objects.equals(
@@ -306,12 +295,12 @@ public class OriginToInternalConvert implements ToInternalConvert {
             }
 
             Optional<InputPort> inputPort =
-                    operatorWrappers.stream()
+                    originOperatorWrappers.stream()
                             .filter(t -> t.getId().equals(connection.getToOp()))
                             .findAny()
                             .flatMap(
                                     to ->
-                                            to.getOperator().getInputPorts().stream()
+                                            to.getInputPorts().values().stream()
                                                     .filter(
                                                             t ->
                                                                     Objects.equals(
@@ -340,7 +329,7 @@ public class OriginToInternalConvert implements ToInternalConvert {
         Environment environment = new Environment();
         scene.setEnvironment(environment);
         BeanUtils.copyProperties(sceneNode.getEnvironment(), scene.getEnvironment());
-        scene.setProcess(covertProcess(sceneNode.getProcess()));
+        scene.setProcessPackage(covertProcess(sceneNode.getProcess()));
         return scene;
     }
 

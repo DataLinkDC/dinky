@@ -111,7 +111,7 @@ public class BroadcastOperator extends Operator {
     protected void execute() {
 
         if (outputPorts.isEmpty()
-                || this.operatorWrapper == null
+                || this.nodeWrapper == null
                 || !(this.getSchemaUtil().getGenerateResult() instanceof CodeJavaBuilder)) {
             log.error("BroadcastOperator information err.");
             return;
@@ -353,7 +353,6 @@ public class BroadcastOperator extends Operator {
                                     .getConnection()
                                     .getFromPort()
                                     .getParent()
-                                    .getOperatorWrapper()
                                     .getName()));
         }
         if (primaryPseudoData.getType() == DataType.TABLE) {

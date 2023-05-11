@@ -17,13 +17,14 @@
  *
  */
 
-package com.zdpx.coder.graph;
+package com.zdpx.coder.json.origin;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import com.zdpx.coder.json.origin.OperatorNode;
+import com.zdpx.coder.graph.NodeWrapper;
+import com.zdpx.coder.graph.ProcessPackage;
 import com.zdpx.coder.operator.Operator;
 
 /**
@@ -31,7 +32,7 @@ import com.zdpx.coder.operator.Operator;
  *
  * @author Licho Sun
  */
-public class OperatorWrapper {
+public class OriginNode extends NodeWrapper {
     /** 节点并发度 */
     private int parallelism;
     /** 节点ID */
@@ -41,9 +42,10 @@ public class OperatorWrapper {
     /** 节点名称 */
     private String name;
     /** 所在过程信息 */
-    private Process parentProcess;
+    private ProcessPackage parentProcessPackage;
 
-    private List<Process> processes = new ArrayList<>();
+    private List<ProcessPackage> processPackages = new ArrayList<>();
+
     private String parameters;
 
     private Operator operator;
@@ -90,12 +92,12 @@ public class OperatorWrapper {
         this.name = name;
     }
 
-    public Process getParentProcess() {
-        return parentProcess;
+    public ProcessPackage getParentProcess() {
+        return parentProcessPackage;
     }
 
-    public void setParentProcess(Process parentProcess) {
-        this.parentProcess = parentProcess;
+    public void setParentProcess(ProcessPackage parentProcessPackage) {
+        this.parentProcessPackage = parentProcessPackage;
     }
 
     public String getParameters() {
@@ -106,12 +108,12 @@ public class OperatorWrapper {
         this.parameters = parameters;
     }
 
-    public List<Process> getProcesses() {
-        return processes;
+    public List<ProcessPackage> getProcesses() {
+        return processPackages;
     }
 
-    public void setProcesses(List<Process> processes) {
-        this.processes = processes;
+    public void setProcesses(List<ProcessPackage> processPackages) {
+        this.processPackages = processPackages;
     }
 
     // endregion
@@ -124,7 +126,7 @@ public class OperatorWrapper {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        OperatorWrapper that = (OperatorWrapper) o;
+        OriginNode that = (OriginNode) o;
         return id.equals(that.id) && code.equals(that.code) && name.equals(that.name);
     }
 

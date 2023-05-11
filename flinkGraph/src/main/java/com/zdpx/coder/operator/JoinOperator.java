@@ -68,7 +68,7 @@ public class JoinOperator extends Operator {
 
     @Override
     protected void execute() {
-        if (outputPorts.isEmpty() || this.operatorWrapper == null) {
+        if (outputPorts.isEmpty() || this.nodeWrapper == null) {
             log.error("JoinOperator information err.");
             return;
         }

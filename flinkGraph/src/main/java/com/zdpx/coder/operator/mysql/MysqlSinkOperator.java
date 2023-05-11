@@ -37,7 +37,7 @@ public class MysqlSinkOperator extends MysqlTable {
     @Override
     protected void initialize() {
         inputPortObject = new InputPortObject<>(this, "input_0");
-        inputPorts.add(inputPortObject);
+        inputPorts.put("input_0", inputPortObject);
     }
 
     @Override

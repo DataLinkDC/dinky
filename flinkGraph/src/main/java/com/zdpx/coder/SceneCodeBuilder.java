@@ -19,11 +19,9 @@
 
 package com.zdpx.coder;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdpx.coder.code.CodeBuilder;
 import com.zdpx.coder.code.CodeJavaBuilderImpl;
 import com.zdpx.coder.code.CodeSqlBuilderImpl;
-import com.zdpx.coder.graph.OperatorWrapper;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.ResultType;
 import com.zdpx.coder.operator.Identifier;
@@ -33,6 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
@@ -106,12 +105,9 @@ public class SceneCodeBuilder {
      * 广度优先遍历计算节点, 生成相对应的源码
      */
     private void createOperatorsCode() {
-        List<OperatorWrapper> sinkOperatorNodes =
-                Scene.getSinkOperatorNodes(this.scene.getProcess());
-        List<Operator> sinks =
-                sinkOperatorNodes.stream()
-                        .map(OperatorWrapper::getOperator)
-                        .collect(Collectors.toList());
+        List<Operator> sinkOperatorNodes =
+                Scene.getSinkOperatorNodes(this.scene.getProcessPackage());
+        List<Operator> sinks =new ArrayList<>(sinkOperatorNodes);
         Deque<Operator> ops = new ArrayDeque<>();
 
         bft(new HashSet<>(sinks), ops::push);
@@ -133,13 +129,13 @@ public class SceneCodeBuilder {
                 operators.stream()
                         .sorted(
                                 Comparator.comparing(
-                                        t -> t.getOperatorWrapper().getId(),
+                                        Operator::getId,
                                         Comparator.naturalOrder()))
                         .collect(Collectors.toList());
         final Set preOperators = new HashSet<Operator>();
         for (Operator op : ops) {
             call.accept(op);
-            op.getInputPorts().stream()
+            op.getInputPorts().values().stream()
                     .filter(t -> !Objects.isNull(t.getConnection()))
                     .map(t -> t.getConnection().getFromPort())
                     .forEach(fromPort -> preOperators.add(fromPort.getParent()));
