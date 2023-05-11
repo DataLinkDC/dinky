@@ -15,33 +15,29 @@
  * limitations under the License.
  */
 
-import { l } from '@/utils/intl';
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
-import React from 'react';
+import {useEmotionCss} from "@ant-design/use-emotion-css";
+import {SelectLang} from "@@/exports";
+import React from "react";
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  return (
-    <DefaultFooter
-      style={{background: 'none'}}
-      copyright={`${currentYear} ` + l('app.copyright.produced')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
+const LangSwitch = () => {
+  const langClassName = useEmotionCss(({token}) => {
+    return {
+      width: 42,
+      lineHeight: "42px",
+      position: "absolute",
+      top: 10,
+      right: 10,
+      borderRadius: token.borderRadius,
+      zIndex: 9999,
+      ":hover": {
+        backgroundColor: token.colorBgTextHover,
+      },
+    };
+  });
+  return <div className={langClassName}>
+    {SelectLang && <SelectLang/>}
+  </div>
+    ;
 };
 
-export default Footer;
+export default LangSwitch;

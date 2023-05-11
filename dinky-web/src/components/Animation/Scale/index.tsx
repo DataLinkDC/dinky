@@ -15,33 +15,21 @@
  * limitations under the License.
  */
 
-import { l } from '@/utils/intl';
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
-import React from 'react';
+import { useSpring, animated } from 'react-spring';
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+const Scale = (props:any) => {
+  const {children} = props;
+  const scale = useSpring({
+    transform: 'scale(1)',
+    from: { transform: 'scale(0)' },
+    config: { tension: 2000, friction: 300, duration: 500 },
+  });
+
   return (
-    <DefaultFooter
-      style={{background: 'none'}}
-      copyright={`${currentYear} ` + l('app.copyright.produced')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-      ]}
-    />
+    <animated.div style={scale}>
+      {children}
+    </animated.div>
   );
-};
+}
 
-export default Footer;
+export default Scale

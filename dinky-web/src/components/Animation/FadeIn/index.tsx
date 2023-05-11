@@ -15,33 +15,20 @@
  * limitations under the License.
  */
 
-import { l } from '@/utils/intl';
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
-import React from 'react';
+import {useSpring, animated} from "react-spring";
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  return (
-    <DefaultFooter
-      style={{background: 'none'}}
-      copyright={`${currentYear} ` + l('app.copyright.produced')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
+const FadeIn = (props: any) => {
+  const {children} = props;
+  const fadeIn = useSpring({
+    opacity: 1,
+    from: {opacity: 0},
+    config: {
+      duration: 1000,
+      delay: 1000,
+    },
+  });
+
+  return <animated.div style={fadeIn}>{children}</animated.div>;
 };
 
-export default Footer;
+export default FadeIn;

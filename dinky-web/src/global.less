@@ -21,10 +21,76 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: auto;
+  overflow-y: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 }
+
+
+// .login-form style --- start ----
+.content {
+  padding: 32px 0 24px;
+}
+.top {
+  text-align: center;
+}
+
+.header {
+  height: 100px;
+  line-height: 144px;
+  position: relative;
+  font-weight: 600;
+  font-size: 4rem;
+  font-family: PMingLiU-ExtB, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+
+}
+
+.logo {
+  position: absolute;
+  width: 28vw;
+  left: -30vw;
+  top: -5vh;
+  display: flex;
+  flex: auto ;
+  flex-flow: column-reverse;
+}
+
+
+.desc {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  color: @text-color-secondary;
+  font-size: @font-size-base;
+}
+
+
+.loginformMain  {
+  display: flex;
+  flex: auto;
+  max-height: max-content;
+  padding: 0vh 6vh 30vh 2vh;
+  justify-content: center ;
+  align-items: center;
+  flex-direction: column;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  z-index: 1;
+  .form{
+    position: relative;
+    height: 100%;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
+    margin-left: 60vw;
+    margin-bottom: -15vh;
+  }
+  .loginform {
+    padding: 2vh 2vw;
+  }
+}
+// .login-form style --- end ----
+
 
 // scrollbar style --- start ----
 ::-webkit-scrollbar {

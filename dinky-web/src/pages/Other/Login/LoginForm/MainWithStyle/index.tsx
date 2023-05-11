@@ -15,33 +15,29 @@
  * limitations under the License.
  */
 
-import { l } from '@/utils/intl';
-import { GithubOutlined } from '@ant-design/icons';
-import { DefaultFooter } from '@ant-design/pro-components';
-import React from 'react';
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
-  return (
-    <DefaultFooter
-      style={{background: 'none'}}
-      copyright={`${currentYear} ` + l('app.copyright.produced')}
-      links={[
-        {
-          key: 'Dinky',
-          title: 'Dinky',
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-        {
-          key: 'github',
-          title: <GithubOutlined />,
-          href: 'https://github.com/DataLinkDC/dinky',
-          blankTarget: true,
-        },
-      ]}
-    />
-  );
+import {l} from "@/utils/intl";
+import React from "react";
+import Settings from "../../../../../../config/defaultSettings";
+import style from "../../../../../global.less";
+import Scale from "@/components/Animation/Scale";
+
+const MainWithStyle = (props: any) => {
+  const {children} = props;
+
+  return <div
+    className={style.loginformMain}
+    style={{backgroundImage: `url('/icons/main-bg.svg')`}}
+  >
+    <Scale><img className={style.logo} src={Settings.logo}/></Scale>
+    <div className={style.form}>
+      <div className={style.top}>
+        <div className={style.header}>Dinky</div>
+        <div className={style.desc}>{l("layouts.userLayout.title")}</div>
+      </div>
+      {children}
+    </div>
+  </div>;
 };
 
-export default Footer;
+export default MainWithStyle;
