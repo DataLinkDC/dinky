@@ -66,6 +66,9 @@ const Login: React.FC = () => {
       width: "100%",
       flexDirection: "column",
       height: "100%",
+      backgroundImage: "url(/icons/footer-bg.svg)",
+      backgroundPosition: "bottom center",
+      backgroundRepeat: "no-repeat",
     };
   });
 

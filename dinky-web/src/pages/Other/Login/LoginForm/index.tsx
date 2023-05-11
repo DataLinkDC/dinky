@@ -24,6 +24,7 @@ import {LockOutlined, UserOutlined} from "@ant-design/icons";
 import MainWithStyle from "./MainWithStyle";
 import {SubmitterProps} from "@ant-design/pro-form/es/components";
 import style from "../../../../global.less";
+import FadeIn from "@/components/Animation/FadeIn";
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
@@ -95,14 +96,16 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
 
 
   return <MainWithStyle>
-    <ProForm
-      className={style.loginform}
-      form={form}
-      onFinish={handleClickLogin}
-      submitter={{...proFormSubmitter}}
-    >
-      {renderLoginForm()}
-    </ProForm>
+    <FadeIn>
+      <ProForm
+        className={style.loginform}
+        form={form}
+        onFinish={handleClickLogin}
+        submitter={{...proFormSubmitter}}
+      >
+        {renderLoginForm()}
+      </ProForm>
+    </FadeIn>
   </MainWithStyle>;
 };
 
