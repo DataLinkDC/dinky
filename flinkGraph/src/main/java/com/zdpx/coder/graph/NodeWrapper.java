@@ -1,10 +1,9 @@
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.operator.Operator;
-import lombok.Data;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Data;
 
 @Data
 public abstract class NodeWrapper {

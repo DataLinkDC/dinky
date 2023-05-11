@@ -9,7 +9,6 @@ public abstract class Node implements Identifier {
     protected Parameters parameters = new Parameters();
     protected NodeWrapper nodeWrapper;
 
-
     @Override
     public String getId() {
         return id;
