@@ -38,9 +38,6 @@ public final class X6ToInternalConvert implements ToInternalConvert {
     public Scene convert(String origin) {
 
         Map<String, TempNode> tempNodeMap = new HashMap<>();
-        Map<String, JsonNode> operatorMap = new HashMap<>();
-        Map<String, JsonNode> connectionNodes = new HashMap<>();
-        Map<String, JsonNode> processNodes = new HashMap<>();
         try {
             JsonNode x6 = objectMapper.readTree(origin);
             JsonNode cells = x6.path("cells");
@@ -73,12 +70,16 @@ public final class X6ToInternalConvert implements ToInternalConvert {
             processConnections(nodes, tempNodeMap);
 
             ProcessPackage processPackage = new ProcessPackage();
+            processPackage.setNodeWrapper(new X6NodeWrapper());
             List<Node> processPackages =
                     nodes.values().stream()
                             .filter(node -> node.getNodeWrapper().getParent() == null)
                             .collect(Collectors.toList());
 
-            processPackages.forEach(t -> t.getNodeWrapper().setParent(processPackage));
+            processPackages.forEach(t -> {
+                t.getNodeWrapper().setParent(processPackage);
+                processPackage.getNodeWrapper().getChildren().add(t);
+            });
             Scene scene = new Scene();
             scene.setProcessPackage(processPackage);
         } catch (JsonProcessingException e) {
@@ -91,7 +92,6 @@ public final class X6ToInternalConvert implements ToInternalConvert {
      * 按照从顶层向下初始化垂直信息
      *
      * @param allTempNodes
-     * @param topNodes
      * @return
      */
     private Map<String, Node> createNodesWithPackage(Map<String, TempNode> allTempNodes) {
@@ -156,7 +156,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
         List<Connection<TableInfo>> connections =
                 nodes.values().stream()
                         .filter(node -> node instanceof Connection)
-                        .map(node -> (Connection) node)
+                        .map(node -> (Connection<TableInfo>) node)
                         .collect(Collectors.toList());
 
         connections.forEach(

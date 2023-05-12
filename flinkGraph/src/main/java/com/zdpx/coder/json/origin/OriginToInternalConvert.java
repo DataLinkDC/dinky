@@ -246,7 +246,7 @@ public class OriginToInternalConvert implements ToInternalConvert {
 
             for (DescriptionNode descriptor : processNodeCurrent.getDescriptions()) {
                 final Description description = convertDescription(descriptor);
-                processPackageCurrent.getDescriptions().add(description);
+//                processPackageCurrent.getDescriptions().add(description);
             }
 
             unWalkProcesses.remove(processNodeCurrent);
