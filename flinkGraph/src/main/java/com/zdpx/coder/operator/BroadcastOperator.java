@@ -110,7 +110,7 @@ public class BroadcastOperator extends Operator {
     @Override
     protected void execute() {
 
-        if (outputPorts.isEmpty()
+        if (getOutputPorts().isEmpty()
                 || this.nodeWrapper == null
                 || !(this.getSchemaUtil().getGenerateResult() instanceof CodeJavaBuilder)) {
             log.error("BroadcastOperator information err.");

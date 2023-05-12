@@ -65,10 +65,10 @@ public abstract class Operator extends Node implements Runnable {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     @SuppressWarnings("rawtypes")
-    protected Map<String, InputPort> inputPorts = new HashMap<>();
+    private Map<String, InputPort> inputPorts = new HashMap<>();
 
     @SuppressWarnings("rawtypes")
-    protected Map<String, OutputPort> outputPorts = new HashMap<>();
+    private Map<String, OutputPort> outputPorts = new HashMap<>();
 
     protected Map<String, String> userFunctions;
     private SceneCodeBuilder sceneCodeBuilder;

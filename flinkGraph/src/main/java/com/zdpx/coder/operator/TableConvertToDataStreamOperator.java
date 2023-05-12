@@ -69,7 +69,7 @@ public class TableConvertToDataStreamOperator extends Operator {
                 .addCode(System.lineSeparator());
 
         PseudoData pseudoData =
-                inputPorts.values().stream()
+                getInputPorts().values().stream()
                         .map(t -> t.getConnection().getFromPort().getPseudoData())
                         .findAny()
                         .orElse(null);

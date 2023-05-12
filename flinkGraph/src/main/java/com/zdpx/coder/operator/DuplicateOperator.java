@@ -33,18 +33,18 @@ public class DuplicateOperator extends Operator {
     @Override
     protected void initialize() {
         final InputPortObject<TableInfo> inputPortInfo = new InputPortObject<>(this, "input_0");
-        inputPorts.put("input_0", inputPortInfo);
+        getInputPorts().put("input_0", inputPortInfo);
     }
 
     @Override
     protected void handleParameters(String parameters) {
-        if (outputPorts.isEmpty() && this.nodeWrapper != null) {
+        if (getOutputPorts().isEmpty() && this.nodeWrapper != null) {
             List<Map<String, Object>> outputInfo = Operator.getParameterLists(parameters);
 
             for (Map<String, Object> oi : outputInfo) {
                 OutputPortObject<TableInfo> opi =
                         new OutputPortObject<>(this, oi.get("outputName").toString());
-                outputPorts.put(opi.getName(), opi);
+                getOutputPorts().put(opi.getName(), opi);
             }
         }
     }
@@ -63,10 +63,10 @@ public class DuplicateOperator extends Operator {
     protected void execute() {
 
         PseudoData pseudoData =
-                inputPorts.values().stream()
+                getInputPorts().values().stream()
                         .map(t -> t.getConnection().getFromPort().getPseudoData())
                         .findAny()
                         .orElse(null);
-        outputPorts.values().forEach(t -> t.setPseudoData(pseudoData));
+        getOutputPorts().values().forEach(t -> t.setPseudoData(pseudoData));
     }
 }
