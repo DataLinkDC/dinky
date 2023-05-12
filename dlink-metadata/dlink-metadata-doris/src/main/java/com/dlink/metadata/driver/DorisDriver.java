@@ -24,6 +24,7 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.Column;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.utils.LogUtil;
@@ -120,5 +121,11 @@ public class DorisDriver extends AbstractJdbcDriver {
         map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
+    }
+
+    @Override
+    public List<Column> listColumns(String schemaName, String tableName) {
+        // Doris 中声明为 Key 的列（可能是多个）必须顺序声明在建表语句头部，因此按 Key 对列重新排序
+        return listColumnsSortByPK(schemaName, tableName);
     }
 }
