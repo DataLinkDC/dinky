@@ -40,7 +40,7 @@ class X6ToInternalConvertTest {
                     "      \"size\": { \"width\": 100, \"height\": 40 },\n" +
                     "      \"attrs\": { \"text\": { \"text\": \"Child\\n(outer)\" } },\n" +
                     "      \"visible\": true,\n" +
-                    "      \"shape\": \"MysqlSourceOperator\",\n" +
+                    "      \"shape\": \"MysqlSinkOperator\",\n" +
                     "      \"id\": \"dfba19c2-3b46-4255-b524-93e26de9739d\",\n" +
                     "      \"zIndex\": 2,\n" +
                     "      \"parent\": \"da936e39-1c1f-4360-835d-ac1b76bf92a4\"\n" +

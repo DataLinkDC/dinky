@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import com.zdpx.coder.graph.InputPortObject;
+import com.zdpx.coder.graph.OutputPortObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -128,7 +130,8 @@ public final class X6ToInternalConvert implements ToInternalConvert {
 
         processPackages.forEach(
                 t -> {
-                    t.getNodeWrapper().setParent(nodes.get(t.getId()));
+                    String parentId = tempNodeMap.get(t.getId()).getParent();
+                    t.getNodeWrapper().setParent(nodes.get(parentId));
 
                     List<String> childrenId = tempNodeMap.get(t.getId()).getChildren();
                     List<Node> childrenNode =
@@ -146,6 +149,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                                                 .path("text")
                                                 .asText();
                                 node.setName(name);
+                                node.getNodeWrapper().setParent(t);
                             });
                     t.getNodeWrapper().setChildren(childrenNode);
                 });
@@ -170,12 +174,20 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     Operator sourceOperator = (Operator) nodes.get(sourceCell);
                     OutputPort<TableInfo> outputPort =
                             sourceOperator.getOutputPorts().get(sourcePort);
+                    if (outputPort == null) {
+                        sourceOperator.getOutputPorts().put(sourcePort,
+                                new OutputPortObject<>(sourceOperator, sourcePort));
+                    }
 
                     JsonNode target = cell.get("target");
                     String targetCell = target.get("cell").asText();
                     String targetPort = target.get("port").asText();
                     Operator targetOperator = (Operator) nodes.get(targetCell);
                     InputPort<TableInfo> inputPort = targetOperator.getInputPorts().get(targetPort);
+                    if (inputPort == null) {
+                        targetOperator.getInputPorts().put(targetPort, new InputPortObject(targetOperator, targetPort));
+                    }
+
 
                     t.setFromPort(outputPort);
                     t.setToPort(inputPort);
