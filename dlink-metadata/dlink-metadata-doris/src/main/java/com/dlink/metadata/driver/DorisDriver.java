@@ -24,6 +24,7 @@ import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.Column;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.utils.LogUtil;

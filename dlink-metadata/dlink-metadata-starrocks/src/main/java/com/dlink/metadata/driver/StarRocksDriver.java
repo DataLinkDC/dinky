@@ -24,6 +24,7 @@ import com.dlink.metadata.convert.StarRocksTypeConvert;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.query.StarRocksQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
+import com.dlink.model.Column;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
 
