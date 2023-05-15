@@ -25,14 +25,26 @@ import java.util.List;
 
 /**
  * ProcessService
- *
- * @since 2022/10/16 22:05
  */
 public interface ProcessService {
 
+    /**
+     * List all process
+     * @param active true: list active process, false: list inactive process {@link Boolean}
+     * @return {@link List}<{@link ProcessEntity}>
+     */
     List<ProcessEntity> listAllProcess(boolean active);
 
+    /**
+     * get log by user id
+     * @param userId user id {@link Integer}
+     * @return {@link String}
+     */
     String getConsoleByUserId(Integer userId);
 
+    /**
+     * clear log by user id
+     * @param userId user id {@link Integer}
+     */
     void clearConsoleByUserId(Integer userId);
 }

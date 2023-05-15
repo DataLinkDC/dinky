@@ -225,7 +225,7 @@ export default [
         path: '/settings/process',
         name: 'process',
         icon: 'ReconciliationOutlined',
-        // component: './SettingCenter/ProcessList',
+        component: './SettingCenter/Process',
       },
       {
         path: '/settings/services',

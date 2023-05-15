@@ -135,6 +135,9 @@ export const API_CONSTANTS = {
   // -- READ LOG file
   SYSTEM_ROOT_LOG_READ: "/api/system/readFile",
 
+  // process list
+  PROCESS_LIST: "/api/process/listAllProcess",
+
 };
 
 
