@@ -149,7 +149,7 @@ public class Scene {
 
     public static List<String> getOperatorConfigurations() {
         List<String> operatorConfigurations = OPERATOR_MAP.values().stream()
-                .map(t -> InstantiationUtil.instantiate(t).getConfiguration())
+                .map(t -> InstantiationUtil.instantiate(t).getSpecification())
                 .collect(Collectors.toList());
         return operatorConfigurations;
     }

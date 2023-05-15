@@ -44,11 +44,11 @@ public abstract class Node implements Identifier {
     }
 
     @Override
-    public String getConfiguration() {
-        Map<String, Parameters> configuration = new HashMap<>();
-        configuration.put(getName(),parameters);
+    public String getSpecification() {
+        Map<String, Parameters> specification = new HashMap<>();
+        specification.put(getName(),parameters);
         try {
-            return mapper.writeValueAsString(configuration);
+            return mapper.writeValueAsString(specification);
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }

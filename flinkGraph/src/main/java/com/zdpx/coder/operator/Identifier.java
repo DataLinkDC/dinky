@@ -29,5 +29,5 @@ public interface Identifier {
         return getClass().getSimpleName();
     }
 
-    String getConfiguration();
+    String getSpecification();
 }

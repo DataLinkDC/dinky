@@ -67,8 +67,7 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
 
     @Override
     public List<String> getOperatorConfigurations() {
-        final List<String> operatorConfigurations = Scene.getOperatorConfigurations();
-        return operatorConfigurations;
+        return Scene.getOperatorConfigurations();
     }
 
     private String convertConfigToSource(Task task) {
