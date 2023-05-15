@@ -795,6 +795,9 @@ export default {
   'sys.process.operator': 'Operator',
   'sys.process.viewInfoLog':'View Info Level Log',
   'sys.process.viewErrorLog':'View Error Level Log',
+  'sys.process.subStep.status':'Step Status',
+  'sys.process.subStep.info':'Step Status',
+  'sys.process.subStep.error':'Step Status',
   'sys.info.logList.tips': 'Click left log file to viewing',
 
   'devops.jobinfo.alert.title': 'Title',

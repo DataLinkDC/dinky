@@ -789,6 +789,9 @@ export default {
   'sys.process.operator':'操作人',
   'sys.process.viewInfoLog':'查看 Info 级别日志',
   'sys.process.viewErrorLog':'查看 Error 级别日志',
+  'sys.process.subStep.status':'步骤状态',
+  'sys.process.subStep.info':'步骤 Info 日志',
+  'sys.process.subStep.error':'步骤 Error 日志',
   'sys.info.logList.tips': '点击左侧日志文件查看',
 
   'devops.jobinfo.alert.title':'标题',

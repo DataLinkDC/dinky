@@ -65,14 +65,14 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       width: 48,
     },
     {
-      title: "步骤状态",
+      title: l('sys.process.subStep.status'),
       dataIndex: "stepStatus",
       render: (_, record) => {
         return MatchProcessStatus(record.stepStatus);
       }
     },
     {
-      title: "步骤信息",
+      title: l('sys.process.subStep.info'),
       dataIndex: "info",
       align: "center",
       render: (_, record) => {
@@ -80,7 +80,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       }
     },
     {
-      title: "步骤错误信息",
+      title: l('sys.process.subStep.error'),
       dataIndex: "error",
       align: "center",
       render: (_, record) => {
@@ -88,17 +88,17 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       }
     },
     {
-      title: "步骤开始时间",
+      title: l('sys.process.startTime'),
       dataIndex: "startTime",
       valueType: "dateTime",
     },
     {
-      title: "步骤结束时间",
+      title: l('sys.process.endTime'),
       dataIndex: "endTime",
       valueType: "dateTime",
     },
     {
-      title: "步骤运行时长",
+      title: l('sys.process.duration'),
       dataIndex: "time",
     }
   ];
