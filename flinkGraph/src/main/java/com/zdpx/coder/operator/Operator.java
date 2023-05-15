@@ -181,6 +181,11 @@ public abstract class Operator extends Node implements Runnable {
         return null;
     }
 
+    @Override
+    public String getSpecification() {
+        return propertySchemaDefinition();
+    }
+
     /**
      * 声明用到的{@link UserDefinedFunction}自定义函数, 初始化时会根据实际声明情况生成注册到flink的代码
      *

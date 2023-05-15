@@ -45,13 +45,6 @@ public abstract class Node implements Identifier {
 
     @Override
     public String getSpecification() {
-        Map<String, Parameters> specification = new HashMap<>();
-        specification.put(getName(),parameters);
-        try {
-            return mapper.writeValueAsString(specification);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-        }
         return null;
     }
 

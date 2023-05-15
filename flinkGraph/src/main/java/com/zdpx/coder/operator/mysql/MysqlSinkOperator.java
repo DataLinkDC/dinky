@@ -67,7 +67,7 @@ public class MysqlSinkOperator extends MysqlTable {
     @Override
     protected String propertySchemaDefinition() {
         return "{\n" +
-                "  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n" +
+                "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n" +
                 "  \"type\": \"object\",\n" +
                 "  \"properties\": {\n" +
                 "    \"parameters\": {\n" +
