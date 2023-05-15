@@ -148,9 +148,11 @@ public class Scene {
     }
 
     public static List<String> getOperatorConfigurations() {
-        List<String> operatorConfigurations = OPERATOR_MAP.values().stream()
-                .map(t -> InstantiationUtil.instantiate(t).getSpecification())
+        return OPERATOR_MAP.entrySet().stream()
+                .map(t -> {
+                    String specification = InstantiationUtil.instantiate(t.getValue()).getSpecification();
+                    return String.format("\"%s\": %s", t.getKey(), specification);
+                })
                 .collect(Collectors.toList());
-        return operatorConfigurations;
     }
 }
