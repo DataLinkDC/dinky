@@ -23,13 +23,12 @@ import org.dinky.process.model.ProcessEntity;
 
 import java.util.List;
 
-/**
- * ProcessService
- */
+/** ProcessService */
 public interface ProcessService {
 
     /**
      * List all process
+     *
      * @param active true: list active process, false: list inactive process {@link Boolean}
      * @return {@link List}<{@link ProcessEntity}>
      */
@@ -37,6 +36,7 @@ public interface ProcessService {
 
     /**
      * get log by user id
+     *
      * @param userId user id {@link Integer}
      * @return {@link String}
      */
@@ -44,6 +44,7 @@ public interface ProcessService {
 
     /**
      * clear log by user id
+     *
      * @param userId user id {@link Integer}
      */
     void clearConsoleByUserId(Integer userId);

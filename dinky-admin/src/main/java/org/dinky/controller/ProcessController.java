@@ -48,6 +48,7 @@ public class ProcessController {
 
     /**
      * List all process
+     *
      * @param active true: list active process, false: list inactive process {@link Boolean}
      * @return {@link ProTableResult}<{@link ProcessEntity}>
      */
@@ -59,6 +60,7 @@ public class ProcessController {
 
     /**
      * get process by user id
+     *
      * @return {@link ProTableResult} <{@link String} >
      */
     @GetMapping("/getConsoleByUserId")
@@ -68,6 +70,7 @@ public class ProcessController {
 
     /**
      * clear console by user id
+     *
      * @return {@link Result} <{@link String}>
      */
     @GetMapping("/clearConsole")
