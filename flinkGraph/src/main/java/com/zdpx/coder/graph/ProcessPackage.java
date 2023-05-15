@@ -49,6 +49,13 @@ public class ProcessPackage extends Node {
                 .collect(Collectors.toSet());
     }
 
+    public Set<ProcessPackage> getProcessPackages() {
+        return getNodeWrapper().getChildren().stream()
+                .filter(t -> t instanceof ProcessPackage)
+                .map(t -> (ProcessPackage) t)
+                .collect(Collectors.toSet());
+    }
+
     public void setChildren(Set<Node> originOperatorWrappers) {
         getNodeWrapper().setChildren(new ArrayList<>(originOperatorWrappers));
     }

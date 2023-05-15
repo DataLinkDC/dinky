@@ -29,6 +29,13 @@ public class OutputPortObject<T extends PseudoData<T>> extends AbstractPort<T>
 
     public OutputPortObject(Operator parent, String name) {
         super(parent, name);
+        parent.getOutputPorts().put(name,this);
+    }
+
+    @Override
+    public void setConnection(Connection<T> value) {
+        super.setConnection(value);
+        value.setFromPort(this);
     }
 
     @Override

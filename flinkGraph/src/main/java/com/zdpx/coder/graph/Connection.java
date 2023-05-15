@@ -30,9 +30,13 @@ import com.zdpx.coder.operator.TableInfo;
  */
 public class Connection<T extends PseudoData<T>> extends Node {
 
-    /** 源端口 */
+    /**
+     * 源端口
+     */
     private OutputPort<T> fromPort;
-    /** 目标端口 */
+    /**
+     * 目标端口
+     */
     private InputPort<T> toPort;
 
     // region g/s
@@ -43,6 +47,9 @@ public class Connection<T extends PseudoData<T>> extends Node {
 
     public void setFromPort(OutputPort<T> fromPort) {
         this.fromPort = fromPort;
+        if (fromPort.getConnection() != this) {
+            fromPort.setConnection(this);
+        }
     }
 
     public InputPort<T> getToPort() {
@@ -51,6 +58,9 @@ public class Connection<T extends PseudoData<T>> extends Node {
 
     public void setToPort(InputPort<T> toPort) {
         this.toPort = toPort;
+        if (toPort.getConnection() != this) {
+            toPort.setConnection(this);
+        }
     }
 
     // endregion

@@ -71,22 +71,21 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
     }
 
     private String convertConfigToSource(Task task) {
-        String flowGraphScript = task.getStatement();
         List<Task> tasks = taskService.list(new QueryWrapper<Task>().eq("dialect", "Java"));
         Map<String, String> udfDatabase =
-                tasks.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        Task::getName,
-                                        Task::getSavePointPath,
-                                        (existing, replacement) -> replacement));
-
-        ToInternalConvert toic = new X6ToInternalConvert();
-        Scene sceneInternal = toic.convert(flowGraphScript);
-
+        tasks.stream()
+                .collect(
+                        Collectors.toMap(
+                                Task::getName,
+                                Task::getSavePointPath,
+                                (existing, replacement) -> replacement));
         Map<String, String> udfAll = new HashMap<>();
         udfAll.putAll(Scene.USER_DEFINED_FUNCTION);
         udfAll.putAll(udfDatabase);
+
+        String flowGraphScript = task.getStatement();
+        ToInternalConvert toic = new X6ToInternalConvert();
+        Scene sceneInternal = toic.convert(flowGraphScript);
         SceneCodeBuilder su = new SceneCodeBuilder(sceneInternal);
         su.setUdfFunctionMap(udfAll);
 

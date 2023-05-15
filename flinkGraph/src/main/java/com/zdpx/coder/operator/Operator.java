@@ -156,9 +156,6 @@ public abstract class Operator extends Node implements Runnable {
     /** 校验输入参数是否正确. */
     protected void validParameters() {
         String parametersString = getParametersString();
-        parametersString =
-                parametersString.substring(
-                        parametersString.indexOf("[") + 1, parametersString.lastIndexOf("]"));
         if (jsonSchemaValidator.getSchema() == null) {
             log.warn("{} operator not parameter validation schema.", this.getName());
             return;

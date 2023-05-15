@@ -1,9 +1,9 @@
 package com.zdpx.coder.json;
 
-import org.junit.jupiter.api.Test;
-
+import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.x6.X6ToInternalConvert;
+import org.junit.jupiter.api.Test;
 
 class X6ToInternalConvertTest {
 
@@ -154,5 +154,8 @@ class X6ToInternalConvertTest {
     void convert() {
         X6ToInternalConvert x6 = new X6ToInternalConvert();
         Scene result = x6.convert(x6_json);
+        result.getEnvironment().setResultType(ResultType.SQL);
+        SceneCodeBuilder su = new SceneCodeBuilder(result);
+        final String build = su.build();
     }
 }

@@ -35,6 +35,7 @@ public class InputPortObject<T extends PseudoData<T>> extends AbstractPort<T>
 
     public InputPortObject(Operator parent, String name) {
         super(parent, name);
+        parent.getInputPorts().put(name, this);
     }
 
     @Override
@@ -53,6 +54,12 @@ public class InputPortObject<T extends PseudoData<T>> extends AbstractPort<T>
                 connection,
                 String.format("Operator %s input not connection.", this.getParent().getName()));
         return getConnection().getFromPort();
+    }
+
+    @Override
+    public void setConnection(Connection<T> value) {
+        super.setConnection(value);
+        value.setToPort(this);
     }
 
     /**

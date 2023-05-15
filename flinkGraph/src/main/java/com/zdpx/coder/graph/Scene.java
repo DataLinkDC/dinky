@@ -54,7 +54,7 @@ public class Scene {
 
     public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
 
-    private Environment environment;
+    private Environment environment = new Environment();
     private ProcessPackage processPackage;
 
     /**
@@ -81,29 +81,13 @@ public class Scene {
      * @return 所有节点的包裹类
      */
     public static List<Operator> getAllOperator(ProcessPackage processPackage) {
-        List<Operator> originOperatorAllNodes = new ArrayList<>();
-        List<ProcessPackage> processPackages = new LinkedList<>();
-        processPackages.add(processPackage);
-        while (processPackages.iterator().hasNext()) {
-            ProcessPackage processPackageLocal = processPackages.iterator().next();
-            List<Operator> originOperators =
-                    processPackageLocal.getOperators().stream()
-                            .filter(Objects::nonNull)
-                            .collect(Collectors.toList());
-            if (!CollectionUtils.isEmpty(originOperators)) {
-                originOperatorAllNodes.addAll(new ArrayList<>(originOperators));
-                for (Node originOperator : originOperators) {
-                    List<Node> children = originOperator.getNodeWrapper().getChildren();
-                    if (!Objects.isNull(children)) {
-                        processPackages.addAll(
-                                children.stream()
-                                        .filter(t -> t instanceof ProcessPackage)
-                                        .map(t -> (ProcessPackage) t)
-                                        .collect(Collectors.toList()));
-                    }
-                }
+        Set<Operator> operators = processPackage.getOperators();
+        List<Operator> originOperatorAllNodes = new ArrayList<>(operators);
+        Set<ProcessPackage> processPackages = processPackage.getProcessPackages();
+        if (processPackages != null && !processPackages.isEmpty()) {
+            for (ProcessPackage pp : processPackages) {
+                originOperatorAllNodes.addAll(getAllOperator(pp));
             }
-            processPackages.remove(processPackageLocal);
         }
         return originOperatorAllNodes;
     }
@@ -151,7 +135,7 @@ public class Scene {
         return OPERATOR_MAP.entrySet().stream()
                 .map(t -> {
                     String specification = InstantiationUtil.instantiate(t.getValue()).getSpecification();
-                    return String.format("\"%s\": %s", t.getKey(), specification);
+                    return String.format("{\"name\": \"%s\",\n\"specification\": \"%s\"}", t.getKey(), specification);
                 })
                 .collect(Collectors.toList());
     }

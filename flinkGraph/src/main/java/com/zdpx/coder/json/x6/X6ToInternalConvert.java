@@ -84,6 +84,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
             });
             Scene scene = new Scene();
             scene.setProcessPackage(processPackage);
+            return scene;
         } catch (JsonProcessingException e) {
             log.error(e.getMessage());
         }
@@ -110,9 +111,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     node = new ProcessPackage();
                     break;
                 default:
-                    {
-                        node = createOperatorByCode(cell_shape);
-                    }
+                    node = createOperatorByCode(cell_shape);
             }
             node.setId(tempNode.getKey());
             node.setNodeWrapper(new X6NodeWrapper());
@@ -155,6 +154,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                 });
     }
 
+    @SuppressWarnings("unchecked")
     private static void processConnections(
             Map<String, Node> nodes, Map<String, TempNode> tempNodeMap) {
         List<Connection<TableInfo>> connections =
@@ -172,25 +172,15 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     String sourceCell = source.get("cell").asText();
                     String sourcePort = source.get("port").asText();
                     Operator sourceOperator = (Operator) nodes.get(sourceCell);
-                    OutputPort<TableInfo> outputPort =
-                            sourceOperator.getOutputPorts().get(sourcePort);
-                    if (outputPort == null) {
-                        sourceOperator.getOutputPorts().put(sourcePort,
-                                new OutputPortObject<>(sourceOperator, sourcePort));
-                    }
+                    OutputPort<TableInfo> outputPort = new OutputPortObject<>(sourceOperator, sourcePort);
+                    outputPort.setConnection(t);
 
                     JsonNode target = cell.get("target");
                     String targetCell = target.get("cell").asText();
                     String targetPort = target.get("port").asText();
                     Operator targetOperator = (Operator) nodes.get(targetCell);
-                    InputPort<TableInfo> inputPort = targetOperator.getInputPorts().get(targetPort);
-                    if (inputPort == null) {
-                        targetOperator.getInputPorts().put(targetPort, new InputPortObject(targetOperator, targetPort));
-                    }
-
-
-                    t.setFromPort(outputPort);
-                    t.setToPort(inputPort);
+                    InputPort<TableInfo> inputPort =  new InputPortObject<>(targetOperator, targetPort);
+                    inputPort.setConnection(t);
                 });
     }
 
@@ -209,7 +199,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
 
                     JsonNode data = tn.getNode().get("data");
                     if (data != null) {
-                        String parameters = data.get("parameters").asText();
+                        String parameters = data.get("parameters").toPrettyString();
                         t.getNodeWrapper().setParameters(parameters);
                     }
                 });

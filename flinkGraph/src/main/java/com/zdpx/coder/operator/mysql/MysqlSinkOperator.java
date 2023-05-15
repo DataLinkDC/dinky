@@ -32,12 +32,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MysqlSinkOperator extends MysqlTable {
 
-    private InputPortObject<TableInfo> inputPortObject;
+    public static final String INPUT_0 = "input_0";
 
     @Override
     protected void initialize() {
-        inputPortObject = new InputPortObject<>(this, "input_0");
-        getInputPorts().put("input_0", inputPortObject);
+        getInputPorts().put(INPUT_0, new InputPortObject<>(this, INPUT_0));
     }
 
     @Override
@@ -51,7 +50,7 @@ public class MysqlSinkOperator extends MysqlTable {
                 String.format(
                         "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> FROM ${tableInfo.name}");
 
-        TableInfo pseudoData = inputPortObject.getOutputPseudoData();
+        TableInfo pseudoData = ((InputPortObject<TableInfo>)getInputPorts().get(INPUT_0)).getOutputPseudoData();
         if (pseudoData == null) {
             log.warn("{} input table info empty error.", getName());
             return;
@@ -67,50 +66,184 @@ public class MysqlSinkOperator extends MysqlTable {
     @Override
     protected String propertySchemaDefinition() {
         return "{\n" +
-                "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n" +
-                "  \"type\": \"object\",\n" +
-                "  \"properties\": {\n" +
-                "    \"parameters\": {\n" +
-                "      \"type\": \"array\",\n" +
-                "      \"items\": {\n" +
+                "    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n" +
+                "    \"$id\": \"http://example.com/example.json\",\n" +
+                "    \"type\": \"array\",\n" +
+                "    \"default\": [],\n" +
+                "    \"title\": \"Root Schema\",\n" +
+                "    \"items\": {\n" +
                 "        \"type\": \"object\",\n" +
-                "        \"properties\": {\n" +
-                "          \"tableName\": {\n" +
-                "            \"type\": \"string\"\n" +
-                "          },\n" +
-                "          \"connector\": {\n" +
-                "            \"type\": \"string\"\n" +
-                "          },\n" +
-                "          \"columns\": {\n" +
-                "            \"type\": \"array\",\n" +
-                "            \"items\": {\n" +
-                "              \"type\": \"object\",\n" +
-                "              \"properties\": {\n" +
-                "                \"name\": {\n" +
-                "                  \"type\": \"string\"\n" +
-                "                },\n" +
-                "                \"type\": {\n" +
-                "                  \"type\": \"string\"\n" +
-                "                }\n" +
-                "              },\n" +
-                "              \"required\": [\n" +
-                "                \"name\",\n" +
-                "                \"type\"\n" +
-                "              ]\n" +
-                "            }\n" +
-                "          }\n" +
-                "        },\n" +
+                "        \"default\": {},\n" +
+                "        \"title\": \"A Schema\",\n" +
                 "        \"required\": [\n" +
-                "          \"tableName\",\n" +
-                "          \"connector\",\n" +
-                "          \"columns\"\n" +
-                "        ]\n" +
-                "      }\n" +
-                "    }\n" +
-                "  },\n" +
-                "  \"required\": [\n" +
-                "    \"parameters\"\n" +
-                "  ]\n" +
+                "            \"tableName\",\n" +
+                "            \"connector\",\n" +
+                "            \"columns\"\n" +
+                "        ],\n" +
+                "        \"properties\": {\n" +
+                "            \"tableName\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"default\": \"\",\n" +
+                "                \"title\": \"The tableName Schema\",\n" +
+                "                \"examples\": [\n" +
+                "                    \"TS\"\n" +
+                "                ]\n" +
+                "            },\n" +
+                "            \"connector\": {\n" +
+                "                \"type\": \"string\",\n" +
+                "                \"default\": \"\",\n" +
+                "                \"title\": \"The connector Schema\",\n" +
+                "                \"examples\": [\n" +
+                "                    \"task\"\n" +
+                "                ]\n" +
+                "            },\n" +
+                "            \"columns\": {\n" +
+                "                \"type\": \"array\",\n" +
+                "                \"default\": [],\n" +
+                "                \"title\": \"The columns Schema\",\n" +
+                "                \"items\": {\n" +
+                "                    \"type\": \"object\",\n" +
+                "                    \"title\": \"A Schema\",\n" +
+                "                    \"required\": [\n" +
+                "                        \"name\",\n" +
+                "                        \"type\"\n" +
+                "                    ],\n" +
+                "                    \"properties\": {\n" +
+                "                        \"name\": {\n" +
+                "                            \"type\": \"string\",\n" +
+                "                            \"title\": \"The name Schema\",\n" +
+                "                            \"examples\": [\n" +
+                "                                \"typ\",\n" +
+                "                                \"taskId\",\n" +
+                "                                \"taskStatus\",\n" +
+                "                                \"dt\",\n" +
+                "                                \"WATERMARK FOR dt AS dt - INTERVAL '15' SECOND\",\n" +
+                "                                \"PRIMARY KEY(taskId) NOT ENFORCED \"\n" +
+                "                            ]\n" +
+                "                        },\n" +
+                "                        \"type\": {\n" +
+                "                            \"type\": \"string\",\n" +
+                "                            \"title\": \"The type Schema\",\n" +
+                "                            \"examples\": [\n" +
+                "                                \"STRING\",\n" +
+                "                                \"INT\",\n" +
+                "                                \"TIMESTAMP(3)\",\n" +
+                "                                \"\"\n" +
+                "                            ]\n" +
+                "                        }\n" +
+                "                    },\n" +
+                "                    \"examples\": [{\n" +
+                "                        \"name\": \"typ\",\n" +
+                "                        \"type\": \"STRING\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"taskId\",\n" +
+                "                        \"type\": \"STRING\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"taskStatus\",\n" +
+                "                        \"type\": \"INT\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"dt\",\n" +
+                "                        \"type\": \"TIMESTAMP(3)\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"WATERMARK FOR dt AS dt - INTERVAL '15' SECOND\",\n" +
+                "                        \"type\": \"\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"PRIMARY KEY(taskId) NOT ENFORCED \",\n" +
+                "                        \"type\": \"\"\n" +
+                "                    }]\n" +
+                "                },\n" +
+                "                \"examples\": [\n" +
+                "                    [{\n" +
+                "                        \"name\": \"typ\",\n" +
+                "                        \"type\": \"STRING\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"taskId\",\n" +
+                "                        \"type\": \"STRING\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"taskStatus\",\n" +
+                "                        \"type\": \"INT\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"dt\",\n" +
+                "                        \"type\": \"TIMESTAMP(3)\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"WATERMARK FOR dt AS dt - INTERVAL '15' SECOND\",\n" +
+                "                        \"type\": \"\"\n" +
+                "                    },\n" +
+                "                    {\n" +
+                "                        \"name\": \"PRIMARY KEY(taskId) NOT ENFORCED \",\n" +
+                "                        \"type\": \"\"\n" +
+                "                    }]\n" +
+                "                ]\n" +
+                "            }\n" +
+                "        },\n" +
+                "        \"examples\": [{\n" +
+                "            \"tableName\": \"TS\",\n" +
+                "            \"connector\": \"task\",\n" +
+                "            \"columns\": [{\n" +
+                "                \"name\": \"typ\",\n" +
+                "                \"type\": \"STRING\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"taskId\",\n" +
+                "                \"type\": \"STRING\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"taskStatus\",\n" +
+                "                \"type\": \"INT\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"dt\",\n" +
+                "                \"type\": \"TIMESTAMP(3)\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"WATERMARK FOR dt AS dt - INTERVAL '15' SECOND\",\n" +
+                "                \"type\": \"\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"PRIMARY KEY(taskId) NOT ENFORCED \",\n" +
+                "                \"type\": \"\"\n" +
+                "            }]\n" +
+                "        }]\n" +
+                "    },\n" +
+                "    \"examples\": [\n" +
+                "        [{\n" +
+                "            \"tableName\": \"TS\",\n" +
+                "            \"connector\": \"task\",\n" +
+                "            \"columns\": [{\n" +
+                "                \"name\": \"typ\",\n" +
+                "                \"type\": \"STRING\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"taskId\",\n" +
+                "                \"type\": \"STRING\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"taskStatus\",\n" +
+                "                \"type\": \"INT\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"dt\",\n" +
+                "                \"type\": \"TIMESTAMP(3)\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"WATERMARK FOR dt AS dt - INTERVAL '15' SECOND\",\n" +
+                "                \"type\": \"\"\n" +
+                "            },\n" +
+                "            {\n" +
+                "                \"name\": \"PRIMARY KEY(taskId) NOT ENFORCED \",\n" +
+                "                \"type\": \"\"\n" +
+                "            }]\n" +
+                "        }]\n" +
+                "    ]\n" +
                 "}";
     }
 }
