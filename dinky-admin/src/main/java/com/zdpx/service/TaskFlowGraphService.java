@@ -22,9 +22,9 @@ package com.zdpx.service;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Task;
 
-import com.zdpx.model.FlowGraph;
-
 import java.util.List;
+
+import com.zdpx.model.FlowGraph;
 
 /** */
 public interface TaskFlowGraphService extends ISuperService<FlowGraph> {

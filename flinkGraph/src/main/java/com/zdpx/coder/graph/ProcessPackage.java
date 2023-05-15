@@ -19,13 +19,13 @@
 
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
 
 /** 过程类,相当于一个节点集合, 不参与计算图, 主要用于分组. */
 public class ProcessPackage extends Node {
@@ -71,7 +71,7 @@ public class ProcessPackage extends Node {
     public List<Connection<TableInfo>> getConnects() {
         return getNodeWrapper().getChildren().stream()
                 .filter(t -> t instanceof Connection)
-                .map(t -> (Connection<TableInfo>)t)
+                .map(t -> (Connection<TableInfo>) t)
                 .collect(Collectors.toList());
     }
 
