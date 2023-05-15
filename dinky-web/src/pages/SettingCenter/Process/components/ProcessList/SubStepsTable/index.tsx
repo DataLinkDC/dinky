@@ -22,11 +22,11 @@ import {ProTable} from "@ant-design/pro-components";
 import ShowLog from "@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable/ShowLog";
 import {ShowLogBtn} from "@/components/CallBackButton/ShowLogBtn";
 import {MatchProcessStatus} from "@/pages/SettingCenter/Process/components/ProcessList/function";
+import {l} from "@/utils/intl";
 
 type SubStepsTableProps = {
   steps: ProcessSteps[];
 }
-
 
 type ShowLogProps = {
   type: string;
@@ -58,16 +58,10 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
     return <ShowLog cancelViewLog={cancelViewLog} visibleViewLog={visibleViewLog} {...viewLogProp}/>;
   };
 
-  // stepStatus: string;
-  // info: string;
-  // error: string;
-  // startTime: Date;
-  // endTime: Date;
-  // time: string;
   const stepsColumns: ProColumns<ProcessSteps>[] = [
     {
-      dataIndex: 'index',
-      valueType: 'indexBorder',
+      dataIndex: "index",
+      valueType: "indexBorder",
       width: 48,
     },
     {
@@ -82,9 +76,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       dataIndex: "info",
       align: "center",
       render: (_, record) => {
-        return <>
-          <ShowLogBtn onClick={() => handleViewLog("步骤信息", record.info)}/>
-        </>;
+        return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewInfoLog"), record.info)}/>;
       }
     },
     {
@@ -92,9 +84,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       dataIndex: "error",
       align: "center",
       render: (_, record) => {
-        return <>
-          <ShowLogBtn onClick={() => handleViewLog("步骤错误信息", record.error)}/>
-        </>;
+        return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewErrorLog"), record.error)}/>;
       }
     },
     {

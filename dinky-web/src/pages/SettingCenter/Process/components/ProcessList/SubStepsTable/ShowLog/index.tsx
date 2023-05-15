@@ -39,7 +39,7 @@ const CodeEditProps = {
 
 const ShowLog: React.FC<ShowLogProps> = (props) => {
 
-  const {type, log,visibleViewLog,cancelViewLog} = props;
+  const {type, log, visibleViewLog, cancelViewLog} = props;
 
 
   return <>
@@ -50,7 +50,7 @@ const ShowLog: React.FC<ShowLogProps> = (props) => {
       onCancel={cancelViewLog}
       okButtonProps={{style: {display: "none"}}}
     >
-      <CodeShow {...CodeEditProps} code={log} showFloatButton />
+      <CodeShow {...CodeEditProps} code={log} showFloatButton/>
     </Modal>
   </>;
 };

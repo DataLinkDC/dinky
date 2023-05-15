@@ -793,6 +793,8 @@ export default {
   'sys.process.endTime': 'End Time',
   'sys.process.duration': 'Duration',
   'sys.process.operator': 'Operator',
+  'sys.process.viewInfoLog':'View Info Level Log',
+  'sys.process.viewErrorLog':'View Error Level Log',
   'sys.info.logList.tips': 'Click left log file to viewing',
 
   'devops.jobinfo.alert.title': 'Title',

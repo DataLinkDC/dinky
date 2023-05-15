@@ -787,6 +787,8 @@ export default {
   'sys.process.endTime':'结束时间',
   'sys.process.duration':'耗时',
   'sys.process.operator':'操作人',
+  'sys.process.viewInfoLog':'查看 Info 级别日志',
+  'sys.process.viewErrorLog':'查看 Error 级别日志',
   'sys.info.logList.tips': '点击左侧日志文件查看',
 
   'devops.jobinfo.alert.title':'标题',

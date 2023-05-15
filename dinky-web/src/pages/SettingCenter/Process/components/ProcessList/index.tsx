@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, {useEffect} from "react";
+import React from "react";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {getData} from "@/services/api";
 import {ProTable} from "@ant-design/pro-components";
@@ -26,13 +26,6 @@ import {l} from "@/utils/intl";
 import {MatchProcessStatus, MatchProcessType} from "@/pages/SettingCenter/Process/components/ProcessList/function";
 
 const ProcessList: React.FC = () => {
-
-  useEffect(() => {
-    getData(API_CONSTANTS.PROCESS_LIST, {active: false}).then((res) => {
-      console.log(res);
-    });
-
-  }, []);
 
   const processColumns: ProColumns<Process>[] = [
     {
