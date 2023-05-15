@@ -19,14 +19,16 @@
 
 package com.zdpx.coder.operator.mysql;
 
-import java.util.Map;
-
 import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.operator.TableInfo;
 import com.zdpx.coder.utils.TableDataStreamConverter;
 import com.zdpx.coder.utils.TemplateUtils;
 
-/** */
+import java.util.Map;
+
+/**
+ *
+ */
 public class MysqlSourceOperator extends MysqlTable {
 
     private OutputPortObject<TableInfo> outputPortObject;
@@ -49,5 +51,53 @@ public class MysqlSourceOperator extends MysqlTable {
         outputPortObject.setPseudoData(ti);
     }
 
-    // endregion
+    @Override
+    protected String propertySchemaDefinition() {
+        return "{\n" +
+                "  \"$schema\": \"http://json-schema.org/draft-07/schema#\",\n" +
+                "  \"type\": \"object\",\n" +
+                "  \"properties\": {\n" +
+                "    \"parameters\": {\n" +
+                "      \"type\": \"array\",\n" +
+                "      \"items\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"properties\": {\n" +
+                "          \"tableName\": {\n" +
+                "            \"type\": \"string\"\n" +
+                "          },\n" +
+                "          \"connector\": {\n" +
+                "            \"type\": \"string\"\n" +
+                "          },\n" +
+                "          \"columns\": {\n" +
+                "            \"type\": \"array\",\n" +
+                "            \"items\": {\n" +
+                "              \"type\": \"object\",\n" +
+                "              \"properties\": {\n" +
+                "                \"name\": {\n" +
+                "                  \"type\": \"string\"\n" +
+                "                },\n" +
+                "                \"type\": {\n" +
+                "                  \"type\": \"string\"\n" +
+                "                }\n" +
+                "              },\n" +
+                "              \"required\": [\n" +
+                "                \"name\",\n" +
+                "                \"type\"\n" +
+                "              ]\n" +
+                "            }\n" +
+                "          }\n" +
+                "        },\n" +
+                "        \"required\": [\n" +
+                "          \"tableName\",\n" +
+                "          \"connector\",\n" +
+                "          \"columns\"\n" +
+                "        ]\n" +
+                "      }\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"required\": [\n" +
+                "    \"parameters\"\n" +
+                "  ]\n" +
+                "}";
+    }
 }

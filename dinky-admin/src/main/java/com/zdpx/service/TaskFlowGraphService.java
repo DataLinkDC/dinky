@@ -24,10 +24,14 @@ import org.dinky.model.Task;
 
 import com.zdpx.model.FlowGraph;
 
+import java.util.List;
+
 /** */
 public interface TaskFlowGraphService extends ISuperService<FlowGraph> {
 
     boolean insert(FlowGraph statement);
 
     boolean saveOrUpdateTask(Task task);
+
+    List<String> getOperatorConfigurations();
 }

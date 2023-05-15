@@ -28,4 +28,6 @@ public interface Identifier {
     default String getCode() {
         return getClass().getSimpleName();
     }
+
+    String getConfiguration();
 }

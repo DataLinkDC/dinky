@@ -19,6 +19,7 @@
 
 package com.zdpx.coder.graph;
 
+import com.zdpx.coder.utils.InstantiationUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -144,5 +145,12 @@ public class Scene {
     public static Map<String, String> getUserDefinedFunctionMaps() {
         return getUserDefinedFunctionClassMaps().entrySet().stream()
                 .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getName()));
+    }
+
+    public static List<String> getOperatorConfigurations() {
+        List<String> operatorConfigurations = OPERATOR_MAP.values().stream()
+                .map(t -> InstantiationUtil.instantiate(t).getConfiguration())
+                .collect(Collectors.toList());
+        return operatorConfigurations;
     }
 }
