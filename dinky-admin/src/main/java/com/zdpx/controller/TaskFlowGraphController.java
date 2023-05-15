@@ -19,9 +19,10 @@
 
 package com.zdpx.controller;
 
-import org.codehaus.jackson.JsonNode;
 import org.dinky.common.result.Result;
 import org.dinky.model.Task;
+
+import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -32,8 +33,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.zdpx.service.TaskFlowGraphService;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.List;
 
 /** */
 @Slf4j
@@ -58,7 +57,7 @@ public class TaskFlowGraphController {
 
     @GetMapping("/configurations")
     public Result<List<String>> getOperatorConfigurations() {
-        List<String> configurations= taskFlowGraphService.getOperatorConfigurations();
+        List<String> configurations = taskFlowGraphService.getOperatorConfigurations();
         return Result.succeed(configurations);
     }
 }

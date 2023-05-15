@@ -19,7 +19,6 @@
 
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.utils.InstantiationUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -39,6 +38,7 @@ import org.reflections.Reflections;
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.operator.Identifier;
 import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.utils.InstantiationUtil;
 import com.zdpx.udf.IUdfDefine;
 
 import lombok.Data;
@@ -148,9 +148,10 @@ public class Scene {
     }
 
     public static List<String> getOperatorConfigurations() {
-        List<String> operatorConfigurations = OPERATOR_MAP.values().stream()
-                .map(t -> InstantiationUtil.instantiate(t).getConfiguration())
-                .collect(Collectors.toList());
+        List<String> operatorConfigurations =
+                OPERATOR_MAP.values().stream()
+                        .map(t -> InstantiationUtil.instantiate(t).getConfiguration())
+                        .collect(Collectors.toList());
         return operatorConfigurations;
     }
 }

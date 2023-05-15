@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.zdpx.coder.graph.InputPortObject;
-import com.zdpx.coder.graph.OutputPortObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,8 +17,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.zdpx.coder.graph.Connection;
 import com.zdpx.coder.graph.InputPort;
+import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.Node;
 import com.zdpx.coder.graph.OutputPort;
+import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.graph.ProcessPackage;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.ToInternalConvert;
@@ -78,10 +78,11 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                             .filter(node -> node.getNodeWrapper().getParent() == null)
                             .collect(Collectors.toList());
 
-            processPackages.forEach(t -> {
-                t.getNodeWrapper().setParent(processPackage);
-                processPackage.getNodeWrapper().getChildren().add(t);
-            });
+            processPackages.forEach(
+                    t -> {
+                        t.getNodeWrapper().setParent(processPackage);
+                        processPackage.getNodeWrapper().getChildren().add(t);
+                    });
             Scene scene = new Scene();
             scene.setProcessPackage(processPackage);
         } catch (JsonProcessingException e) {
@@ -175,8 +176,11 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     OutputPort<TableInfo> outputPort =
                             sourceOperator.getOutputPorts().get(sourcePort);
                     if (outputPort == null) {
-                        sourceOperator.getOutputPorts().put(sourcePort,
-                                new OutputPortObject<>(sourceOperator, sourcePort));
+                        sourceOperator
+                                .getOutputPorts()
+                                .put(
+                                        sourcePort,
+                                        new OutputPortObject<>(sourceOperator, sourcePort));
                     }
 
                     JsonNode target = cell.get("target");
@@ -185,9 +189,10 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     Operator targetOperator = (Operator) nodes.get(targetCell);
                     InputPort<TableInfo> inputPort = targetOperator.getInputPorts().get(targetPort);
                     if (inputPort == null) {
-                        targetOperator.getInputPorts().put(targetPort, new InputPortObject(targetOperator, targetPort));
+                        targetOperator
+                                .getInputPorts()
+                                .put(targetPort, new InputPortObject(targetOperator, targetPort));
                     }
-
 
                     t.setFromPort(outputPort);
                     t.setToPort(inputPort);

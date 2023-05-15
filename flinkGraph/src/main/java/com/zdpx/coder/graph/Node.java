@@ -1,13 +1,14 @@
 package com.zdpx.coder.graph;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdpx.coder.operator.Identifier;
 import com.zdpx.coder.operator.Parameters;
-import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public abstract class Node implements Identifier {
@@ -46,7 +47,7 @@ public abstract class Node implements Identifier {
     @Override
     public String getConfiguration() {
         Map<String, Parameters> configuration = new HashMap<>();
-        configuration.put(getName(),parameters);
+        configuration.put(getName(), parameters);
         try {
             return mapper.writeValueAsString(configuration);
         } catch (JsonProcessingException e) {
@@ -54,5 +55,4 @@ public abstract class Node implements Identifier {
         }
         return null;
     }
-
 }
