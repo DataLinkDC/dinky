@@ -19,18 +19,21 @@
 
 package com.zdpx.coder.operator;
 
+import com.squareup.javapoet.ClassName;
+import com.zdpx.coder.Specifications;
+import com.zdpx.coder.utils.Preconditions;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.squareup.javapoet.ClassName;
-import com.zdpx.coder.Specifications;
-import com.zdpx.coder.utils.Preconditions;
-
-/** */
+/**
+ *
+ */
 public final class OperatorParameterUtils {
-    private OperatorParameterUtils() {}
+    private OperatorParameterUtils() {
+    }
 
     public static ClassName getClassNameByName(String name) {
         if ("STRING".equals(name)) {
@@ -39,7 +42,6 @@ public final class OperatorParameterUtils {
         return null;
     }
 
-    @SuppressWarnings("unchecked")
     static Map<String, String> getColumns(String name, Map<String, Object> parameter) {
         Preconditions.checkArgument(name != null, "getColumns function parameter name null");
 
@@ -49,6 +51,7 @@ public final class OperatorParameterUtils {
             return params;
         }
 
+        @SuppressWarnings("unchecked")
         Map<String, List<Map<String, String>>> columns =
                 (Map<String, List<Map<String, String>>>) parameter.get(name);
         if (columns != null) {

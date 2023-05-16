@@ -47,9 +47,9 @@ public class MysqlSinkOperator extends MysqlTable {
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
 
         String sql =
-                String.format(
-                        "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> FROM ${tableInfo.name}");
+                "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> FROM ${tableInfo.name}";
 
+        @SuppressWarnings("unchecked")
         TableInfo pseudoData = ((InputPortObject<TableInfo>)getInputPorts().get(INPUT_0)).getOutputPseudoData();
         if (pseudoData == null) {
             log.warn("{} input table info empty error.", getName());

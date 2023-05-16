@@ -19,19 +19,22 @@
 
 package com.zdpx.coder.utils;
 
+import com.zdpx.coder.operator.Column;
+import com.zdpx.coder.operator.TableInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.zdpx.coder.operator.Column;
-import com.zdpx.coder.operator.TableInfo;
-
-/** */
+/**
+ *
+ */
 public class TableDataStreamConverter {
-    private TableDataStreamConverter() {}
+    private TableDataStreamConverter() {
+    }
 
-    @SuppressWarnings("unchecked")
     public static TableInfo getTableInfo(Map<String, Object> dataModel) {
+        @SuppressWarnings("unchecked")
         List<Map<String, String>> columns = (List<Map<String, String>>) dataModel.get("columns");
         List<Column> cs = new ArrayList<>();
         for (Map<String, String> dm : columns) {

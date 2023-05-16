@@ -94,15 +94,25 @@ import java.util.Map;
  */
 public class FieldFunction {
 
-    /** 函数需要的参数, 如果类型为{@link FieldFunction}, 会按照嵌套函数处理, */
+    /**
+     * 函数需要的参数, 如果类型为{@link FieldFunction}, 会按照嵌套函数处理,
+     */
     List<Object> parameters = new ArrayList<>();
-    /** 字段输入名称,通过<b>AS</b>关键字进行字段重命名 */
+    /**
+     * 字段输入名称,通过<b>AS</b>关键字进行字段重命名
+     */
     private String outName;
-    /** 字段输出类型, 约定(deprecated). */
+    /**
+     * 字段输出类型, 约定(deprecated).
+     */
     private String outType;
-    /** 自定义调用的函数名称 */
+    /**
+     * 自定义调用的函数名称
+     */
     private String functionName;
-    /** 函数参数分隔符,如内置函数CAST的分隔符可视为<b>AS</b> */
+    /**
+     * 函数参数分隔符,如内置函数CAST的分隔符可视为<b>AS</b>
+     */
     private String delimiter;
 
     /**
@@ -111,12 +121,12 @@ public class FieldFunction {
      * @param fos 字段配置信息
      * @return 方法定义
      */
-    @SuppressWarnings("unchecked")
     static FieldFunction processFieldConfigure(String tableName, Map<String, Object> fos) {
         FieldFunction fo = new FieldFunction();
         fo.setOutName((String) fos.get("outName"));
         fo.setFunctionName((String) fos.get("functionName"));
         fo.setDelimiter((String) fos.get("delimiter"));
+        @SuppressWarnings("unchecked")
         List<Object> fieldParameters = (List<Object>) fos.get("parameters");
 
         if (fieldParameters == null) {
@@ -128,6 +138,7 @@ public class FieldFunction {
         for (Object fieldParameter : fieldParameters) {
             if (fieldParameter instanceof Map) {
                 // 表示函数需要递归处理
+                @SuppressWarnings("unchecked")
                 Map<String, Object> fp = (Map<String, Object>) fieldParameter;
                 result.add(processFieldConfigure(tableName, fp));
             } else if (fieldParameter instanceof String) {

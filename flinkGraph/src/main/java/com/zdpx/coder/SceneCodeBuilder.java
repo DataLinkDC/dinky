@@ -128,7 +128,7 @@ public class SceneCodeBuilder {
                 operators.stream()
                         .sorted(Comparator.comparing(Operator::getId, Comparator.naturalOrder()))
                         .collect(Collectors.toList());
-        final Set preOperators = new HashSet<Operator>();
+        final Set<Operator> preOperators = new HashSet<>();
         for (Operator op : ops) {
             call.accept(op);
             op.getInputPorts().values().stream()
