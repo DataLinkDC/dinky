@@ -51,6 +51,7 @@ public class MysqlSourceOperator extends MysqlTable {
 
     @Override
     protected String propertySchemaDefinition() {
+        //region json schema
         return "{\n"
                 + "    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n"
                 + "    \"$id\": \"http://example.com/example.json\",\n"
@@ -231,5 +232,6 @@ public class MysqlSourceOperator extends MysqlTable {
                 + "        }]\n"
                 + "    ]\n"
                 + "}";
+        //endregion
     }
 }
