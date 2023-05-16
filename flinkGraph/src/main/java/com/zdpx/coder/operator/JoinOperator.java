@@ -112,6 +112,6 @@ public class JoinOperator extends Operator {
         List<Column> cls = Operator.getColumnFromFieldFunctions(ffsPrimary);
         generate(sqlStr);
 
-        postOutput(outputPort, outputTableName, cls);
+        postTableOutput(outputPort, outputTableName, cls);
     }
 }

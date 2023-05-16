@@ -86,7 +86,7 @@ public class CommSelectFunctionOperator extends Operator {
 
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
 
-        postOutput(
+        postTableOutput(
                 outputPortObject,
                 outputTableName,
                 Specifications.convertFieldFunctionToColumns(ffs));

@@ -178,14 +178,15 @@ public class CepOperator extends Operator {
                 .filter(t -> t.getName().equals(partition))
                 .findFirst()
                 .ifPresent(columns::add);
-        postOutput(outputPortObject, outputTableName, columns);
+        postTableOutput(outputPortObject, outputTableName, columns);
     }
 
     @SuppressWarnings("unchecked")
     private <T> List<T> getSpecialTypeList(
             Map<String, Object> parameters, String key, Class<T> type) {
         List<Map<String, Object>> measureList = (List<Map<String, Object>>) parameters.get(key);
-        return mapper.convertValue(measureList, new TypeReference<List<T>>() {});
+        return mapper.convertValue(measureList, new TypeReference<>() {
+        });
     }
 
     /**

@@ -209,7 +209,7 @@ public abstract class Operator extends Node implements Runnable {
      */
     protected abstract void execute();
 
-    protected void postOutput(
+    protected void postTableOutput(
             OutputPort<TableInfo> outputPortObject,
             String postTableName,
             List<Column> columns) {
