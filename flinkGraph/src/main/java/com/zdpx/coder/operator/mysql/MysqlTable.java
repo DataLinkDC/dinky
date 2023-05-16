@@ -19,18 +19,17 @@
 
 package com.zdpx.coder.operator.mysql;
 
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
-import com.zdpx.coder.utils.TableDataStreamConverter;
 import org.apache.commons.collections.CollectionUtils;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- *
- */
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
+import com.zdpx.coder.utils.TableDataStreamConverter;
+
+/** */
 public abstract class MysqlTable extends Operator {
     public static final String TEMPLATE =
             "CREATE TABLE ${tableName} ("

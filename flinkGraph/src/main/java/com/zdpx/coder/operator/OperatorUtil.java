@@ -1,8 +1,8 @@
 package com.zdpx.coder.operator;
 
-import com.zdpx.coder.graph.OutputPort;
-
 import java.util.List;
+
+import com.zdpx.coder.graph.OutputPort;
 
 public class OperatorUtil {
     protected static void postTableOutput(

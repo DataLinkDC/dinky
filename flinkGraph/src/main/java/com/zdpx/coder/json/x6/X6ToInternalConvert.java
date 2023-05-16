@@ -1,5 +1,16 @@
 package com.zdpx.coder.json.x6;
 
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,17 +27,8 @@ import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.ToInternalConvert;
 import com.zdpx.coder.operator.Operator;
 import com.zdpx.coder.utils.InstantiationUtil;
+
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
 
 public final class X6ToInternalConvert implements ToInternalConvert {
 
@@ -176,7 +178,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     } else {
                         outputPort = new OutputPortObject<>(sourceOperator, sourcePort);
                     }
-                    outputPort.setConnection((Connection)t);
+                    outputPort.setConnection((Connection) t);
 
                     JsonNode target = cell.get("target");
                     String targetCell = target.get("cell").asText();
@@ -188,7 +190,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     } else {
                         inputPort = new InputPortObject<>(targetOperator, targetPort);
                     }
-                    inputPort.setConnection((Connection)t);
+                    inputPort.setConnection((Connection) t);
                 });
     }
 

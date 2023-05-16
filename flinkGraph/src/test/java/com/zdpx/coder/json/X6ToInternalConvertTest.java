@@ -160,12 +160,12 @@ class X6ToInternalConvertTest {
     @Test
     void convert() {
         final String expect =
-                "\r\n" +
-                        "CREATE TABLE source_b806945860f5 (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'source', 'username' = 'root');\r\n" +
-                        "\r\n" +
-                        "CREATE TABLE sink_93e26de9739d (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'sink', 'username' = 'root');\r\n" +
-                        "\r\n" +
-                        "INSERT INTO sink_93e26de9739d (id,taskId,longitude,latitude,va,gbu_time,taskStatus,task_time) SELECT id, taskId, longitude, latitude, va, gbu_time, taskStatus, task_time FROM source_b806945860f5;\r\n";
+                "\r\n"
+                        + "CREATE TABLE source_b806945860f5 (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'source', 'username' = 'root');\r\n"
+                        + "\r\n"
+                        + "CREATE TABLE sink_93e26de9739d (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'sink', 'username' = 'root');\r\n"
+                        + "\r\n"
+                        + "INSERT INTO sink_93e26de9739d (id,taskId,longitude,latitude,va,gbu_time,taskStatus,task_time) SELECT id, taskId, longitude, latitude, va, gbu_time, taskStatus, task_time FROM source_b806945860f5;\r\n";
 
         X6ToInternalConvert x6 = new X6ToInternalConvert();
         Scene result = x6.convert(x6_json);

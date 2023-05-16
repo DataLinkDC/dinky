@@ -19,15 +19,13 @@
 
 package com.zdpx.coder.operator;
 
-import com.zdpx.coder.graph.OutputPortObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 用于端口数据复制, 转为多路输出
- */
+import com.zdpx.coder.graph.OutputPortObject;
+
+/** 用于端口数据复制, 转为多路输出 */
 public class DuplicateOperator extends Operator {
 
     @Override
@@ -61,10 +59,11 @@ public class DuplicateOperator extends Operator {
     @SuppressWarnings("unchecked")
     @Override
     protected void execute() {
-        final TableInfo pseudoData = getInputPorts().values().stream()
-                .map(t -> (TableInfo) t.getConnection().getFromPort().getPseudoData())
-                .findAny()
-                .orElse(null);
+        final TableInfo pseudoData =
+                getInputPorts().values().stream()
+                        .map(t -> (TableInfo) t.getConnection().getFromPort().getPseudoData())
+                        .findAny()
+                        .orElse(null);
         getOutputPorts()
                 .values()
                 .forEach(t -> ((OutputPortObject<TableInfo>) t).setPseudoData(pseudoData));
