@@ -202,12 +202,6 @@ public abstract class Operator extends Node implements Runnable {
     /** 逻辑执行函数 */
     protected abstract void execute();
 
-    protected static void postTableOutput(
-            OutputPort<TableInfo> outputPortObject, String postTableName, List<Column> columns) {
-        TableInfo ti = TableInfo.newBuilder().name(postTableName).columns(columns).build();
-        outputPortObject.setPseudoData(ti);
-    }
-
     /**
      * 注册输入端口
      *

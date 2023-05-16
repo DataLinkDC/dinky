@@ -178,7 +178,7 @@ public class CepOperator extends Operator {
                 .filter(t -> t.getName().equals(partition))
                 .findFirst()
                 .ifPresent(columns::add);
-        postTableOutput(outputPortObject, outputTableName, columns);
+        OperatorUtil.postTableOutput(outputPortObject, outputTableName, columns);
     }
 
     @SuppressWarnings("unchecked")

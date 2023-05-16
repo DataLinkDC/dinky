@@ -140,7 +140,7 @@ public class BroadcastOperator extends Operator {
         func.accept(primaryParams, primaryInput);
         func.accept(broadcastParams, broadcastInput);
 
-        postTableOutput(outputPort, broadcastResultTableName, cls);
+        OperatorUtil.postTableOutput(outputPort, broadcastResultTableName, cls);
     }
 
     private CodeBlock getCodeBlock(
