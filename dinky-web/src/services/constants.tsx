@@ -126,6 +126,16 @@ export const API_CONSTANTS = {
   // ---- get project all build logs ----
   GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
 
+  // UDF template
+  UDF_TEMPLATE: "/api/udf/template/list",
+  // UDF template add or update
+  UDF_TEMPLATE_ADD_UPDATE: "/api/udf/template",
+  // UDF template delete
+  UDF_TEMPLATE_DELETE: "/api/udf/template/delete",
+  // UDF template enable or disable
+  UDF_TEMPLATE_ENABLE: "/api/udf/template/enable",
+
+
 
   // system config center
   //-- system root logs
@@ -281,6 +291,7 @@ export const DIALECT = {
   MARKDOWN: "markdown",
   SCALA: "scala",
   PYTHON: "py",
+  PYTHON_LONG: "python",
   YML: "yml",
   YAML: "yaml",
   SH: "sh",

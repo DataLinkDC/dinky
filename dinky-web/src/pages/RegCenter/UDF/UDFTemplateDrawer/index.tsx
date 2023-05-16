@@ -17,28 +17,31 @@
  *
  */
 
+import {UDFTemplate} from "@/types/RegCenter/data";
 import React from "react";
-import ProDescriptions from "@ant-design/pro-descriptions";
-import {GlobalVar} from "@/types/RegCenter/data";
+import {Drawer} from "antd";
+import UDFTemplateDesc from "./UDFTemplateDesc";
 
-type GlobalVarDescProps = {
-    values: Partial<GlobalVar>;
-    columns: any;
+type UDFTemplateDrawerProps = {
+  onCancel: (flag?: boolean) => void;
+  values: Partial<UDFTemplate>;
+  modalVisible: boolean;
+  columns: any;
 }
-const  GlobalVarDesc: React.FC<GlobalVarDescProps> = (props) => {
-    const {values, columns} = props;
-    return <>
-        <ProDescriptions<GlobalVar>
-            column={1}
-            loading={values && Object.keys(values).length === 0}
-            title={values.name}
-            request={async () => ({
-                data: values,
-            })}
-            params={{id: values.id}}
-            columns={columns}
-        />
-    </>
-}
+const UDFTemplateDrawer: React.FC<UDFTemplateDrawerProps> = (props) => {
+  const {onCancel: handleCancel, values, modalVisible, columns} = props;
 
-export default GlobalVarDesc;
+
+  return <>
+    <Drawer
+      width={"45%"}
+      open={modalVisible}
+      onClose={() => handleCancel(false)}
+    >
+      <UDFTemplateDesc values={values} columns={columns}/>
+    </Drawer>
+  </>;
+
+};
+
+export default UDFTemplateDrawer;

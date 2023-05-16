@@ -188,6 +188,8 @@ export const getLanguage = (type: string): string => {
       return DIALECT.SCALA;
     case DIALECT.PYTHON:
       return DIALECT.PYTHON;
+    case DIALECT.PYTHON_LONG:
+      return DIALECT.PYTHON_LONG;
     case DIALECT.SQL:
       return DIALECT.SQL;
     default:
@@ -252,7 +254,7 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  */
 export const renderLanguage = (type: string, splitChar: string) => {
   if (trim(splitChar).length === 0) {
-    getLanguage(type);
+    return getLanguage(type);
   } else {
     let suffixOfType = type.toString().split(splitChar).reverse()[0];
     return getLanguage(suffixOfType);

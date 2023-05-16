@@ -28,7 +28,7 @@ type GlobalVarDrawerProps = {
     modalVisible: boolean;
     columns: any;
 }
-const DocumentDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
+const GlobalVarDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
     const {onCancel: handleCancel, values, modalVisible, columns} = props;
 
 
@@ -44,4 +44,4 @@ const DocumentDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
 
 }
 
-export default DocumentDrawer;
+export default GlobalVarDrawer;

@@ -32,4 +32,12 @@ public interface UDFTemplateService extends ISuperService<UDFTemplate> {
      * @return boolean
      */
     boolean saveOrUpdate(UDFTemplate udfTemplate);
+
+    /**
+     * enable or disable udf template
+     *
+     * @param id udf template id {@link UDFTemplate#id}
+     * @return {@link Boolean}
+     */
+    Boolean enable(Integer id);
 }
