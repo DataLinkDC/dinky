@@ -19,6 +19,12 @@
 
 package com.zdpx.coder.operator;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdpx.coder.Specifications;
@@ -26,12 +32,6 @@ import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.utils.NameHelper;
 import com.zdpx.coder.utils.TemplateUtils;
-
-import java.text.MessageFormat;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * <b>Complex Event Processing</b> operator, which allows for pattern detection in event streams.
@@ -68,8 +68,8 @@ import java.util.stream.Collectors;
  *   <li><b>DEFINE</b> - this section defines the conditions that the pattern variables must
  *       satisfy.
  * </ul>
- * <p>
- * The following example illustrates the syntax for basic pattern recognition:
+ *
+ * <p>The following example illustrates the syntax for basic pattern recognition:
  *
  * <pre>{@code
  * SELECT T.aid, T.bid, T.cid
@@ -139,16 +139,12 @@ public class CepOperator extends Operator {
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> defineList = (List<Map<String, Object>>) parameters.get(DEFINES);
-        List<Define> defines =
-                mapper.convertValue(defineList, new TypeReference<>() {
-                });
+        List<Define> defines = mapper.convertValue(defineList, new TypeReference<>() {});
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> patternList =
                 (List<Map<String, Object>>) parameters.get(PATTERNS);
-        List<Pattern> patterns =
-                mapper.convertValue(patternList, new TypeReference<>() {
-                });
+        List<Pattern> patterns = mapper.convertValue(patternList, new TypeReference<>() {});
 
         SkipStrategy skipStrategy =
                 mapper.convertValue(parameters.get(SKIP_STRATEGY), SkipStrategy.class);
@@ -189,8 +185,7 @@ public class CepOperator extends Operator {
     private <T> List<T> getSpecialTypeList(
             Map<String, Object> parameters, String key, Class<T> type) {
         List<Map<String, Object>> measureList = (List<Map<String, Object>>) parameters.get(key);
-        return mapper.convertValue(measureList, new TypeReference<>() {
-        });
+        return mapper.convertValue(measureList, new TypeReference<>() {});
     }
 
     /**
@@ -207,13 +202,9 @@ public class CepOperator extends Operator {
      */
     static class Define {
         private static final String AS = "AS";
-        /**
-         * Pattern Variable
-         */
+        /** Pattern Variable */
         private String variable;
-        /**
-         * condition like where sql statement.
-         */
+        /** condition like where sql statement. */
         private String condition;
 
         public Define() {
@@ -249,13 +240,9 @@ public class CepOperator extends Operator {
     }
 
     static class Pattern {
-        /**
-         * pattern variable name
-         */
+        /** pattern variable name */
         private String variable;
-        /**
-         * pattern variable quantifier
-         */
+        /** pattern variable quantifier */
         private String quantifier;
 
         public Pattern() {
@@ -317,29 +304,29 @@ public class CepOperator extends Operator {
          */
         public static final String FIRST = "FIRST";
 
-        /**
-         * strategy
-         */
+        /** strategy */
         private String strategy;
-        /**
-         * pattern variable
-         */
+        /** pattern variable */
         private String variable;
 
         public String generateStatement() {
             switch (strategy) {
-                case LAST_ROW: {
-                    return "PAST LAST ROW";
-                }
-                case NEXT_ROW: {
-                    return "TO NEXT ROW";
-                }
-                case LAST: {
-                    return "TO LAST " + variable;
-                }
-                case FIRST: {
-                    return "TO FIRST " + variable;
-                }
+                case LAST_ROW:
+                    {
+                        return "PAST LAST ROW";
+                    }
+                case NEXT_ROW:
+                    {
+                        return "TO NEXT ROW";
+                    }
+                case LAST:
+                    {
+                        return "TO LAST " + variable;
+                    }
+                case FIRST:
+                    {
+                        return "TO FIRST " + variable;
+                    }
                 default:
                     return "";
             }

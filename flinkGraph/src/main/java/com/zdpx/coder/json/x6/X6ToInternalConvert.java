@@ -1,5 +1,16 @@
 package com.zdpx.coder.json.x6;
 
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,17 +28,8 @@ import com.zdpx.coder.json.ToInternalConvert;
 import com.zdpx.coder.operator.Operator;
 import com.zdpx.coder.operator.TableInfo;
 import com.zdpx.coder.utils.InstantiationUtil;
+
 import lombok.Data;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
 
 public final class X6ToInternalConvert implements ToInternalConvert {
 
@@ -77,10 +79,11 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                             .filter(node -> node.getNodeWrapper().getParent() == null)
                             .collect(Collectors.toList());
 
-            processPackages.forEach(t -> {
-                t.getNodeWrapper().setParent(processPackage);
-                processPackage.getNodeWrapper().getChildren().add(t);
-            });
+            processPackages.forEach(
+                    t -> {
+                        t.getNodeWrapper().setParent(processPackage);
+                        processPackage.getNodeWrapper().getChildren().add(t);
+                    });
             Scene scene = new Scene();
             scene.setProcessPackage(processPackage);
             return scene;
@@ -173,7 +176,9 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     Operator sourceOperator = (Operator) nodes.get(sourceCell);
                     OutputPort<TableInfo> outputPort = null;
                     if (sourceOperator.getOutputPorts().containsKey(sourcePort)) {
-                        outputPort = (OutputPort<TableInfo>) sourceOperator.getOutputPorts().get(sourcePort);
+                        outputPort =
+                                (OutputPort<TableInfo>)
+                                        sourceOperator.getOutputPorts().get(sourcePort);
                     } else {
                         outputPort = new OutputPortObject<>(sourceOperator, sourcePort);
                     }
@@ -185,9 +190,11 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     Operator targetOperator = (Operator) nodes.get(targetCell);
                     InputPort<TableInfo> inputPort = null;
                     if (targetOperator.getInputPorts().containsKey(targetPort)) {
-                        inputPort = (InputPort<TableInfo>) targetOperator.getInputPorts().get(targetPort);
-                    }else {
-                         inputPort = new InputPortObject<>(targetOperator, targetPort);
+                        inputPort =
+                                (InputPort<TableInfo>)
+                                        targetOperator.getInputPorts().get(targetPort);
+                    } else {
+                        inputPort = new InputPortObject<>(targetOperator, targetPort);
                     }
                     inputPort.setConnection(t);
                 });

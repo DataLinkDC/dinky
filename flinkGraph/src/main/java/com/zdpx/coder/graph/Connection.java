@@ -30,13 +30,9 @@ import com.zdpx.coder.operator.TableInfo;
  */
 public class Connection<T extends PseudoData<T>> extends Node {
 
-    /**
-     * 源端口
-     */
+    /** 源端口 */
     private OutputPort<T> fromPort;
-    /**
-     * 目标端口
-     */
+    /** 目标端口 */
     private InputPort<T> toPort;
 
     // region g/s

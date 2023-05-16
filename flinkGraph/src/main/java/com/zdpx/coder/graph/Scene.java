@@ -19,16 +19,8 @@
 
 package com.zdpx.coder.graph;
 
-import com.zdpx.coder.SceneCodeBuilder;
-import com.zdpx.coder.operator.Identifier;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.utils.InstantiationUtil;
-import com.zdpx.udf.IUdfDefine;
-import lombok.Data;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
-import org.reflections.Reflections;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -38,6 +30,17 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import org.reflections.Reflections;
+
+import com.zdpx.coder.SceneCodeBuilder;
+import com.zdpx.coder.operator.Identifier;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.utils.InstantiationUtil;
+import com.zdpx.udf.IUdfDefine;
+
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 /** 场景配置类, */
 @Slf4j
@@ -62,7 +65,8 @@ public class Scene {
         return SceneCodeBuilder.getCodeClassMap(operators);
     }
 
-    public static <S extends PseudoData<S>, T extends  PseudoData<T>> List<Operator> getSinkOperatorNodes(ProcessPackage processPackage) {
+    public static <S extends PseudoData<S>, T extends PseudoData<T>>
+            List<Operator> getSinkOperatorNodes(ProcessPackage processPackage) {
         List<Operator> originOperator = getAllOperator(processPackage);
         return originOperator.stream()
                 .filter(t -> CollectionUtils.isEmpty(t.getOutputPorts().values()))
@@ -75,7 +79,7 @@ public class Scene {
      * @param processPackage 计算图的过程信息
      * @return 所有节点的包裹类
      */
-    public static   List<Operator> getAllOperator(ProcessPackage processPackage) {
+    public static List<Operator> getAllOperator(ProcessPackage processPackage) {
         Set<Operator> operators = processPackage.getOperators();
         List<Operator> originOperatorAllNodes = new ArrayList<>(operators);
         Set<ProcessPackage> processPackages = processPackage.getProcessPackages();
@@ -128,10 +132,14 @@ public class Scene {
 
     public static List<String> getOperatorConfigurations() {
         return OPERATOR_MAP.entrySet().stream()
-                .map(t -> {
-                    String specification = InstantiationUtil.instantiate(t.getValue()).getSpecification();
-                    return String.format("{\"name\": \"%s\",\n\"specification\": \"%s\"}", t.getKey(), specification);
-                })
+                .map(
+                        t -> {
+                            String specification =
+                                    InstantiationUtil.instantiate(t.getValue()).getSpecification();
+                            return String.format(
+                                    "{\"name\": \"%s\",\n\"specification\": \"%s\"}",
+                                    t.getKey(), specification);
+                        })
                 .collect(Collectors.toList());
     }
 }

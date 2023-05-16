@@ -94,25 +94,15 @@ import java.util.Map;
  */
 public class FieldFunction {
 
-    /**
-     * 函数需要的参数, 如果类型为{@link FieldFunction}, 会按照嵌套函数处理,
-     */
+    /** 函数需要的参数, 如果类型为{@link FieldFunction}, 会按照嵌套函数处理, */
     List<Object> parameters = new ArrayList<>();
-    /**
-     * 字段输入名称,通过<b>AS</b>关键字进行字段重命名
-     */
+    /** 字段输入名称,通过<b>AS</b>关键字进行字段重命名 */
     private String outName;
-    /**
-     * 字段输出类型, 约定(deprecated).
-     */
+    /** 字段输出类型, 约定(deprecated). */
     private String outType;
-    /**
-     * 自定义调用的函数名称
-     */
+    /** 自定义调用的函数名称 */
     private String functionName;
-    /**
-     * 函数参数分隔符,如内置函数CAST的分隔符可视为<b>AS</b>
-     */
+    /** 函数参数分隔符,如内置函数CAST的分隔符可视为<b>AS</b> */
     private String delimiter;
 
     /**

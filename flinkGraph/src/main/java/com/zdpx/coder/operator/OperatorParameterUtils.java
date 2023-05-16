@@ -19,21 +19,18 @@
 
 package com.zdpx.coder.operator;
 
-import com.squareup.javapoet.ClassName;
-import com.zdpx.coder.Specifications;
-import com.zdpx.coder.utils.Preconditions;
-
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-/**
- *
- */
+import com.squareup.javapoet.ClassName;
+import com.zdpx.coder.Specifications;
+import com.zdpx.coder.utils.Preconditions;
+
+/** */
 public final class OperatorParameterUtils {
-    private OperatorParameterUtils() {
-    }
+    private OperatorParameterUtils() {}
 
     public static ClassName getClassNameByName(String name) {
         if ("STRING".equals(name)) {

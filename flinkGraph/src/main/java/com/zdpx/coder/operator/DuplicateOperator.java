@@ -19,15 +19,13 @@
 
 package com.zdpx.coder.operator;
 
-import com.zdpx.coder.graph.OutputPortObject;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * 用于端口数据复制, 转为多路输出
- */
+import com.zdpx.coder.graph.OutputPortObject;
+
+/** 用于端口数据复制, 转为多路输出 */
 public class DuplicateOperator extends Operator {
 
     @Override
@@ -41,7 +39,8 @@ public class DuplicateOperator extends Operator {
             List<Map<String, Object>> outputInfo = Operator.getParameterLists(parameters);
 
             for (Map<String, Object> oi : outputInfo) {
-                OutputPortObject<TableInfo> opi = registerOutputObjectPort(oi.get("outputName").toString());
+                OutputPortObject<TableInfo> opi =
+                        registerOutputObjectPort(oi.get("outputName").toString());
                 getOutputPorts().put(opi.getName(), opi);
             }
         }
@@ -60,10 +59,13 @@ public class DuplicateOperator extends Operator {
     @SuppressWarnings("unchecked")
     @Override
     protected void execute() {
-        var pseudoData = getInputPorts().values().stream()
-                .map(t -> (TableInfo) t.getConnection().getFromPort().getPseudoData())
-                .findAny()
-                .orElse(null);
-        getOutputPorts().values().forEach(t -> ((OutputPortObject<TableInfo>)t).setPseudoData(pseudoData));
+        var pseudoData =
+                getInputPorts().values().stream()
+                        .map(t -> (TableInfo) t.getConnection().getFromPort().getPseudoData())
+                        .findAny()
+                        .orElse(null);
+        getOutputPorts()
+                .values()
+                .forEach(t -> ((OutputPortObject<TableInfo>) t).setPseudoData(pseudoData));
     }
 }

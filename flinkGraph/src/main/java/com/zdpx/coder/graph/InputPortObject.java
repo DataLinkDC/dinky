@@ -27,7 +27,7 @@ import com.zdpx.coder.utils.Preconditions;
  *
  * @author Licho Sun
  */
-public class InputPortObject<T extends  PseudoData<T>> extends AbstractPort<T>
+public class InputPortObject<T extends PseudoData<T>> extends AbstractPort<T>
         implements InputPort<T> {
 
     /** 接口可接受类型 */

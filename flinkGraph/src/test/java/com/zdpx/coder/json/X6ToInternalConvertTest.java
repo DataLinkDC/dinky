@@ -1,12 +1,13 @@
 package com.zdpx.coder.json;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+
+import org.junit.jupiter.api.Test;
+
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.x6.X6ToInternalConvert;
-import org.junit.jupiter.api.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
 
 class X6ToInternalConvertTest {
 
@@ -142,10 +143,10 @@ class X6ToInternalConvertTest {
                     + "      \"shape\": \"edge\",\n"
                     + "      \"attrs\": { \"line\": { \"stroke\": \"#8f8f8f\", \"strokeWidth\": 1 } },\n"
                     + "      \"id\": \"72359a19-9226-42b2-9c71-7809d090bf84\",\n"
-                    + "      \"source\": { \"cell\": \"d582a458-ecb5-4099-848c-b806945860f5\" , \"port\": " +
-                    "\"output_0\"},\n"
-                    + "      \"target\": { \"cell\": \"dfba19c2-3b46-4255-b524-93e26de9739d\" , \"port\": " +
-                    "\"input_0\"},\n"
+                    + "      \"source\": { \"cell\": \"d582a458-ecb5-4099-848c-b806945860f5\" , \"port\": "
+                    + "\"output_0\"},\n"
+                    + "      \"target\": { \"cell\": \"dfba19c2-3b46-4255-b524-93e26de9739d\" , \"port\": "
+                    + "\"input_0\"},\n"
                     + "      \"vertices\": [\n"
                     + "        { \"x\": 120, \"y\": 60 },\n"
                     + "        { \"x\": 200, \"y\": 100 }\n"
@@ -159,12 +160,12 @@ class X6ToInternalConvertTest {
     @Test
     void convert() {
         final String expect =
-                "\r\n" +
-                        "CREATE TABLE source_d582a458-ecb5-4099-848c-b806945860f5 (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'source', 'username' = 'root');\r\n" +
-                        "\r\n" +
-                        "CREATE TABLE sink_dfba19c2-3b46-4255-b524-93e26de9739d (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'sink', 'username' = 'root');\r\n" +
-                        "\r\n" +
-                        "INSERT INTO sink_dfba19c2-3b46-4255-b524-93e26de9739d (id,taskId,longitude,latitude,va,gbu_time,taskStatus,task_time) SELECT id, taskId, longitude, latitude, va, gbu_time, taskStatus, task_time FROM source_d582a458-ecb5-4099-848c-b806945860f5;\r\n";
+                "\r\n"
+                        + "CREATE TABLE source_d582a458-ecb5-4099-848c-b806945860f5 (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'source', 'username' = 'root');\r\n"
+                        + "\r\n"
+                        + "CREATE TABLE sink_dfba19c2-3b46-4255-b524-93e26de9739d (id STRING, taskId STRING, longitude DOUBLE, latitude DOUBLE, va DOUBLE, gbu_time TIMESTAMP, taskStatus INT, task_time TIMESTAMP) WITH ('password' = '123456', 'connector' = 'jdbc', 'url' = 'jdbc:mysql://192.168.1.88:3306/flink?allowPublicKeyRetrieval=true', 'table-name' = 'sink', 'username' = 'root');\r\n"
+                        + "\r\n"
+                        + "INSERT INTO sink_dfba19c2-3b46-4255-b524-93e26de9739d (id,taskId,longitude,latitude,va,gbu_time,taskStatus,task_time) SELECT id, taskId, longitude, latitude, va, gbu_time, taskStatus, task_time FROM source_d582a458-ecb5-4099-848c-b806945860f5;\r\n";
 
         X6ToInternalConvert x6 = new X6ToInternalConvert();
         Scene result = x6.convert(x6_json);
