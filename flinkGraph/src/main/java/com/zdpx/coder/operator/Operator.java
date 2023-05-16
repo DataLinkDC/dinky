@@ -101,7 +101,7 @@ public abstract class Operator extends Node implements Runnable {
         try {
             parametersLocal =
                     objectMapper.readValue(
-                            parametersStr, new TypeReference<List<Map<String, Object>>>() {
+                            parametersStr, new TypeReference<>() {
                             });
         } catch (JsonProcessingException e) {
             log.error(e.toString());
@@ -324,19 +324,6 @@ public abstract class Operator extends Node implements Runnable {
         udfFunctions.putAll(ufs);
     }
 
-    public static JsonNode getNestValue(String json, String path) {
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root;
-        try {
-            root = mapper.readTree(json);
-        } catch (JsonProcessingException e) {
-            log.error("json not contains path:{}", path);
-            return null;
-        }
-
-        return root.at(path);
-    }
-
     public static JsonNode getNestValue(Map<String, Object> maps, String path) {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root;
@@ -426,11 +413,6 @@ public abstract class Operator extends Node implements Runnable {
     public Map<String, OutputPort<? extends PseudoData<?>>> getOutputPorts() {
         return outputPorts;
     }
-
-    public Map<String, OutputPort<? extends PseudoData<?>>> getOutputPortsHelp() {
-        return outputPorts;
-    }
-
 
     public void setOutputPorts(Map<String, OutputPort<? extends PseudoData<?>>> outputPorts) {
         this.outputPorts = outputPorts;
