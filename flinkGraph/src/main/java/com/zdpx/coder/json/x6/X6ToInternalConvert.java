@@ -1,16 +1,5 @@
 package com.zdpx.coder.json.x6;
 
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,10 +15,18 @@ import com.zdpx.coder.graph.ProcessPackage;
 import com.zdpx.coder.graph.Scene;
 import com.zdpx.coder.json.ToInternalConvert;
 import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
 import com.zdpx.coder.utils.InstantiationUtil;
-
 import lombok.Data;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
 
 public final class X6ToInternalConvert implements ToInternalConvert {
 
@@ -158,11 +155,10 @@ public final class X6ToInternalConvert implements ToInternalConvert {
 
     private static void processConnections(
             Map<String, Node> nodes, Map<String, TempNode> tempNodeMap) {
-        @SuppressWarnings("unchecked")
-        List<Connection<TableInfo>> connections =
+        List<Connection<?>> connections =
                 nodes.values().stream()
                         .filter(node -> node instanceof Connection)
-                        .map(node -> (Connection<TableInfo>) node)
+                        .map(node -> (Connection<?>) node)
                         .collect(Collectors.toList());
 
         connections.forEach(
@@ -174,29 +170,25 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     String sourceCell = source.get("cell").asText();
                     String sourcePort = source.get("port").asText();
                     Operator sourceOperator = (Operator) nodes.get(sourceCell);
-                    OutputPort<TableInfo> outputPort = null;
+                    OutputPort<?> outputPort = null;
                     if (sourceOperator.getOutputPorts().containsKey(sourcePort)) {
-                        outputPort =
-                                (OutputPort<TableInfo>)
-                                        sourceOperator.getOutputPorts().get(sourcePort);
+                        outputPort = sourceOperator.getOutputPorts().get(sourcePort);
                     } else {
                         outputPort = new OutputPortObject<>(sourceOperator, sourcePort);
                     }
-                    outputPort.setConnection(t);
+                    outputPort.setConnection((Connection)t);
 
                     JsonNode target = cell.get("target");
                     String targetCell = target.get("cell").asText();
                     String targetPort = target.get("port").asText();
                     Operator targetOperator = (Operator) nodes.get(targetCell);
-                    InputPort<TableInfo> inputPort = null;
+                    InputPort<?> inputPort = null;
                     if (targetOperator.getInputPorts().containsKey(targetPort)) {
-                        inputPort =
-                                (InputPort<TableInfo>)
-                                        targetOperator.getInputPorts().get(targetPort);
+                        inputPort = targetOperator.getInputPorts().get(targetPort);
                     } else {
                         inputPort = new InputPortObject<>(targetOperator, targetPort);
                     }
-                    inputPort.setConnection(t);
+                    inputPort.setConnection((Connection)t);
                 });
     }
 
