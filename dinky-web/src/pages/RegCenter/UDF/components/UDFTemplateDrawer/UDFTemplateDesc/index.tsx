@@ -18,27 +18,27 @@
  */
 
 import React from "react";
-import ProDescriptions from "@ant-design/pro-descriptions";
-import {GlobalVar} from "@/types/RegCenter/data";
+import {GlobalVar, UDFTemplate} from "@/types/RegCenter/data";
+import { ProDescriptions } from "@ant-design/pro-components";
 
-type GlobalVarDescProps = {
-    values: Partial<GlobalVar>;
-    columns: any;
+type UDFTemplateDescProps = {
+  values: Partial<UDFTemplate>;
+  columns: any;
 }
-const  GlobalVarDesc: React.FC<GlobalVarDescProps> = (props) => {
-    const {values, columns} = props;
-    return <>
-        <ProDescriptions<GlobalVar>
-            column={1}
-            loading={values && Object.keys(values).length === 0}
-            title={values.name}
-            request={async () => ({
-                data: values,
-            })}
-            params={{id: values.id}}
-            columns={columns}
-        />
-    </>
-}
+const UDFTemplateDesc: React.FC<UDFTemplateDescProps> = (props) => {
+  const {values, columns} = props;
+  return <>
+    <ProDescriptions<GlobalVar>
+      column={1}
+      loading={values && Object.keys(values).length === 0}
+      title={values.name}
+      request={async () => ({
+        data: values,
+      })}
+      params={{id: values.id}}
+      columns={columns}
+    />
+  </>;
+};
 
-export default GlobalVarDesc;
+export default UDFTemplateDesc;

@@ -210,3 +210,9 @@ export type GitProjectTreeNode = {
   leaf: boolean;
   children: GitProjectTreeNode[];
 }
+
+export type UDFTemplate = BaseBeanColumns & {
+  codeType: string,
+  functionType: string,
+  templateCode: string
+}

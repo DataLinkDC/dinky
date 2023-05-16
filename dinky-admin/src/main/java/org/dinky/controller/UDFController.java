@@ -23,6 +23,7 @@ import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
 import org.dinky.model.UDFTemplate;
 import org.dinky.service.UDFTemplateService;
+import org.dinky.utils.MessageResolverUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,13 +31,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.annotation.Resource;
-
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -44,17 +45,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** @since 0.6.8 */
+/** UDFController */
 @Slf4j
 @RestController
-@RequestMapping("/api/udf")
+@RequestMapping("/api/udf/template")
+@RequiredArgsConstructor
 public class UDFController {
 
-    @Resource UDFTemplateService udfTemplateService;
+    private final UDFTemplateService udfTemplateService;
 
-    @PostMapping("/template/tree")
+    @PostMapping("/tree")
     public Result<List<Object>> listUdfTemplates() {
         List<UDFTemplate> list = udfTemplateService.list();
         Map<String, Dict> one = new HashMap<>(3);
@@ -105,19 +108,38 @@ public class UDFController {
         return Result.succeed(CollUtil.newArrayList(result.values()));
     }
 
-    @PostMapping("/template/list")
-    public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode para) {
-        return udfTemplateService.selectForProTable(para);
+    /**
+     * get udf template list
+     *
+     * @param params {@link JsonNode}
+     * @return {@link ProTableResult} <{@link UDFTemplate}>
+     */
+    @PostMapping("/list")
+    public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode params) {
+        return udfTemplateService.selectForProTable(params);
     }
 
-    @PutMapping("/template/")
-    public Result<String> addTemplate(@RequestBody UDFTemplate udfTemplate) {
+    /**
+     * save or update udf template
+     *
+     * @param udfTemplate {@link UDFTemplate}
+     * @return {@link Result} <{@link String}>
+     */
+    @PutMapping
+    public Result<String> saveOrUpdate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
-                ? Result.succeed("操作成功")
-                : Result.failed("操作失败");
+                ? Result.succeed(MessageResolverUtils.getMessage("save.success"))
+                : Result.failed(MessageResolverUtils.getMessage("save.failed"));
     }
 
+    /**
+     * delete udf template by id, this method is deprecated, please use {@link #delete(Integer id)}
+     *
+     * @param para {@link JsonNode}
+     * @return {@link Result} <{@link String}>
+     */
     @DeleteMapping("/template/list")
+    @Deprecated
     public Result deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
@@ -135,6 +157,31 @@ public class UDFController {
             }
         } else {
             return Result.failed("请选择要删除的记录");
+        }
+    }
+
+    /**
+     * delete udf template by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result} <{@link Void}>
+     */
+    @DeleteMapping("/delete")
+    @Transactional(rollbackFor = Exception.class)
+    public Result<Void> delete(@RequestParam Integer id) {
+        if (udfTemplateService.removeById(id)) {
+            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+        }
+    }
+
+    @PutMapping("/enable")
+    public Result<Void> enable(@RequestParam Integer id) {
+        if (udfTemplateService.enable(id)) {
+            return Result.succeed(MessageResolverUtils.getMessage("modify.success"));
+        } else {
+            return Result.failed(MessageResolverUtils.getMessage("modify.failed"));
         }
     }
 }

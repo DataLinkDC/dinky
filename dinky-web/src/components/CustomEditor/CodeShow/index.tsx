@@ -23,14 +23,16 @@ import {MonacoEditorOptions} from "@/types/Public/data";
 import React, {useState} from "react";
 import {editor} from "monaco-editor";
 import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
+import FullscreenBtn from "../FullscreenBtn";
 
 /**
  * props
  * todo:
  *  1. Realize full screen/exit full screen in the upper right corner of the editor (Visible after opening)
+ *    - The full screen button is done, but the full screen is not implemented
  *  2. Callback for right-clicking to clear logs (optional, not required)
  */
-export type CodeShowFormProps = {
+type CodeShowFormProps = {
   height?: string;
   width?: string;
   language?: string;
@@ -41,6 +43,7 @@ export type CodeShowFormProps = {
   autoWrap?: string;
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
+  fullScreenBtn?: boolean;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
@@ -69,6 +72,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     autoWrap = "on", //  auto wrap
     showFloatButton = false,
     refreshLogCallback,
+    fullScreenBtn = false,
   } = props;
 
   const {ScrollType} = editor;
@@ -77,10 +81,11 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
   const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
+  const [fullScreen, setFullScreen] = useState<boolean>(false);
   const [editorRef, setEditorRef] = useState<any>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
 
-  // register TypeScript language service
+  // register TypeScript language service, if language is not set default value is typescript!
   monaco.languages.register({
     id: language || "typescript",
   });
@@ -113,7 +118,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   /**
    *  handle stop auto refresh log
    */
-  const handleStartAutoRefresh = () => {
+  const handleStartAutoRefresh = async () => {
     setAutoRefresh(true);
     const timerSync = setInterval(() => {
       handleSyncLog();
@@ -147,7 +152,6 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    // @ts-ignore
     editorRef?.setScrollPosition({scrollTop: editorRef.getScrollTop() - 500}, ScrollType.Smooth);
   };
 
@@ -158,7 +162,6 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
     setEditorRef(editor);
-    // 在编辑器加载完成后，设置自动布局和自动高亮显示
     editor.layout();
     editor.focus();
   };
@@ -176,8 +179,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackBottom,
     handleUpScroll,
     handleDownScroll,
-  }
-
+  };
 
 
   /**
@@ -185,6 +187,10 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   return (<>
     <div className={"monaco-float"}>
+      {/* fullScreen button */}
+      {fullScreenBtn && <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
+
+      {/* editor */}
       <MonacoEditor
         width={width}
         height={height}
@@ -203,6 +209,8 @@ const CodeShow = (props: CodeShowFormProps) => {
         editorDidMount={editorDidMount}
         theme={theme ? theme : convertCodeEditTheme()}
       />
+
+      {/* float button */}
       {showFloatButton && <EditorFloatBtn {...restEditBtnProps}/>}
     </div>
   </>);

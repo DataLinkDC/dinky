@@ -155,13 +155,19 @@ export default [
         icon: 'GithubOutlined',
         component: './RegCenter/GitProject',
       },
+      {
+        path: '/registration/udf',
+        name: 'udf',
+        icon: 'ToolOutlined',
+        component: './RegCenter/UDF',
+      },
     ],
   },
   {
     name: 'auth',
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
-    // access: "canAdmin",
+    access: "canAdmin",
     routes: [
       {
         path: '/auth',
@@ -208,12 +214,6 @@ export default [
         name: 'flinksetting',
         icon: 'SettingOutlined',
         // component: './SettingCenter/FlinkSettings',
-      },
-      {
-        path: '/settings/udf',
-        name: 'udf',
-        icon: 'ToolOutlined',
-        // component: './SettingCenter/UDFTemplate',
       },
       {
         path: '/settings/system',
