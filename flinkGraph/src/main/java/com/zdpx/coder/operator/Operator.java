@@ -19,22 +19,6 @@
 
 package com.zdpx.coder.operator;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.flink.table.functions.UserDefinedFunction;
-
-import java.security.InvalidParameterException;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.annotation.Nullable;
-
-import org.reflections.Reflections;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -50,9 +34,23 @@ import com.zdpx.coder.graph.Node;
 import com.zdpx.coder.graph.NodeWrapper;
 import com.zdpx.coder.graph.OutputPort;
 import com.zdpx.coder.graph.OutputPortObject;
+import com.zdpx.coder.graph.PseudoData;
 import com.zdpx.coder.utils.JsonSchemaValidator;
-
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.flink.table.functions.UserDefinedFunction;
+import org.reflections.Reflections;
+
+import javax.annotation.Nullable;
+import java.security.InvalidParameterException;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.BiFunction;
+import java.util.stream.Collectors;
 
 /**
  * 宏算子抽象类
@@ -64,11 +62,9 @@ public abstract class Operator extends Node implements Runnable {
     public static final String FIELD_FUNCTIONS = "fieldFunctions";
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
-    @SuppressWarnings("rawtypes")
-    private Map<String, InputPort> inputPorts = new HashMap<>();
+    private Map<String, InputPort<? extends PseudoData<?>>> inputPorts = new HashMap<>();
 
-    @SuppressWarnings("rawtypes")
-    private Map<String, OutputPort> outputPorts = new HashMap<>();
+    private Map<String, OutputPort<? extends PseudoData<?>>> outputPorts = new HashMap<>();
 
     protected Map<String, String> userFunctions;
     private SceneCodeBuilder sceneCodeBuilder;
@@ -105,7 +101,8 @@ public abstract class Operator extends Node implements Runnable {
         try {
             parametersLocal =
                     objectMapper.readValue(
-                            parametersStr, new TypeReference<List<Map<String, Object>>>() {});
+                            parametersStr, new TypeReference<List<Map<String, Object>>>() {
+                            });
         } catch (JsonProcessingException e) {
             log.error(e.toString());
         }
@@ -153,7 +150,9 @@ public abstract class Operator extends Node implements Runnable {
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
     }
 
-    /** 校验输入参数是否正确. */
+    /**
+     * 校验输入参数是否正确.
+     */
     protected void validParameters() {
         String parametersString = getParametersString();
         if (jsonSchemaValidator.getSchema() == null) {
@@ -170,10 +169,14 @@ public abstract class Operator extends Node implements Runnable {
         }
     }
 
-    /** 初始化信息,输出/输入端口应该在该函数中完成注册定义 */
+    /**
+     * 初始化信息,输出/输入端口应该在该函数中完成注册定义
+     */
     protected abstract void initialize();
 
-    /** 定义属性约束 */
+    /**
+     * 定义属性约束
+     */
     protected String propertySchemaDefinition() {
         return null;
     }
@@ -201,11 +204,13 @@ public abstract class Operator extends Node implements Runnable {
         return getParameterLists().get(0);
     }
 
-    /** 逻辑执行函数 */
+    /**
+     * 逻辑执行函数
+     */
     protected abstract void execute();
 
     protected void postOutput(
-            OutputPortObject<TableInfo> outputPortObject,
+            OutputPort<TableInfo> outputPortObject,
             String postTableName,
             List<Column> columns) {
         TableInfo ti = TableInfo.newBuilder().name(postTableName).columns(columns).build();
@@ -218,10 +223,15 @@ public abstract class Operator extends Node implements Runnable {
      * @param name 端口名称
      * @return 输入端口
      */
-    protected InputPortObject<TableInfo> registerInputPort(String name) {
-        InputPortObject<TableInfo> inputPortObject = new InputPortObject<>(this, name);
-        inputPorts.put(name, inputPortObject);
-        return inputPortObject;
+    protected <S extends PseudoData<S>, T extends InputPort<S>> T registerInputPort(String name,
+                                                                                    BiFunction<Operator, String, T> constructor) {
+        final T portObject = constructor.apply(this, name);
+        inputPorts.put(name, portObject);
+        return portObject;
+    }
+
+    protected <T extends PseudoData<T>> InputPortObject<T> registerInputObjectPort(String name) {
+        return registerInputPort(name, InputPortObject<T>::new);
     }
 
     /**
@@ -230,10 +240,15 @@ public abstract class Operator extends Node implements Runnable {
      * @param name 端口名称
      * @return 输出端口
      */
-    protected OutputPortObject<TableInfo> registerOutputPort(String name) {
-        OutputPortObject<TableInfo> outputPortObject = new OutputPortObject<>(this, name);
-        outputPorts.put(name, outputPortObject);
-        return outputPortObject;
+    protected <S extends PseudoData<S>, T extends OutputPort<S>> T registerOutputPort(String name,
+                                                                                      BiFunction<Operator, String, T> constructor) {
+        final T portObject = constructor.apply(this, name);
+        outputPorts.put(name, portObject);
+        return portObject;
+    }
+
+    protected <T extends PseudoData<T>> OutputPortObject<T> registerOutputObjectPort(String name) {
+        return registerOutputPort(name, OutputPortObject<T>::new);
     }
 
     /**
@@ -264,7 +279,9 @@ public abstract class Operator extends Node implements Runnable {
                 });
     }
 
-    /** 设置宏算子参数的校验信息. */
+    /**
+     * 设置宏算子参数的校验信息.
+     */
     protected void definePropertySchema() {
         String propertySchema = propertySchemaDefinition();
         if (Strings.isNullOrEmpty(propertySchema)) {
@@ -288,7 +305,9 @@ public abstract class Operator extends Node implements Runnable {
         return this.getOperatorWrapper().getParameters();
     }
 
-    /** 生成内部用户自定义函数(算子)对应的注册代码, 以便在flink sql中对其进行引用调用. */
+    /**
+     * 生成内部用户自定义函数(算子)对应的注册代码, 以便在flink sql中对其进行引用调用.
+     */
     private void generateUdfFunctionByInner() {
         Map<String, String> ufs = this.getUserFunctions();
         if (ufs == null) {
@@ -341,8 +360,9 @@ public abstract class Operator extends Node implements Runnable {
 
     public static Map<String, Object> getJsonAsMap(JsonNode inputs) {
         return new ObjectMapper()
-                .<Map<String, Object>>convertValue(
-                        inputs, new TypeReference<Map<String, Object>>() {});
+                .convertValue(
+                        inputs, new TypeReference<>() {
+                        });
     }
 
     public static List<Column> getColumnFromFieldFunctions(List<FieldFunction> ffs) {
@@ -395,23 +415,24 @@ public abstract class Operator extends Node implements Runnable {
         return Objects.hash(nodeWrapper);
     }
 
-    @SuppressWarnings("rawtypes")
-    public Map<String, InputPort> getInputPorts() {
+    public Map<String, InputPort<? extends PseudoData<?>>> getInputPorts() {
         return inputPorts;
     }
 
-    @SuppressWarnings("rawtypes")
-    public void setInputPorts(Map<String, InputPort> inputPorts) {
+    public void setInputPorts(Map<String, InputPort<? extends PseudoData<?>>> inputPorts) {
         this.inputPorts = inputPorts;
     }
 
-    @SuppressWarnings("rawtypes")
-    public Map<String, OutputPort> getOutputPorts() {
+    public Map<String, OutputPort<? extends PseudoData<?>>> getOutputPorts() {
         return outputPorts;
     }
 
-    @SuppressWarnings("rawtypes")
-    public void setOutputPorts(Map<String, OutputPort> outputPorts) {
+    public Map<String, OutputPort<? extends PseudoData<?>>> getOutputPortsHelp() {
+        return outputPorts;
+    }
+
+
+    public void setOutputPorts(Map<String, OutputPort<? extends PseudoData<?>>> outputPorts) {
         this.outputPorts = outputPorts;
     }
 

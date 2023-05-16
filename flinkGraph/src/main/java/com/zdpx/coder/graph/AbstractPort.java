@@ -27,7 +27,7 @@ import com.zdpx.coder.operator.Operator;
  * @author Licho Sun
  * @param <T> 表示接口包含的数据类型
  */
-public class AbstractPort<T extends PseudoData<T>> implements Port<T> {
+public class AbstractPort<T extends  PseudoData<T>> implements Port<T> {
     /** 端口名称 */
     protected String name;
 

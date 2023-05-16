@@ -42,7 +42,7 @@ public class ProcessPackage extends Node {
         this.expanded = expanded;
     }
 
-    public Set<Operator> getOperators() {
+    public <S extends PseudoData<S>, T extends  PseudoData<T>> Set<Operator> getOperators() {
         return getNodeWrapper().getChildren().stream()
                 .filter(t -> t instanceof Operator)
                 .map(t -> (Operator) t)

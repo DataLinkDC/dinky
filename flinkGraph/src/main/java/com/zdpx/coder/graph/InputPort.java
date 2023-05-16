@@ -20,8 +20,8 @@
 package com.zdpx.coder.graph;
 
 /** 输入端口接口 */
-public interface InputPort<S extends PseudoData<S>> extends Port<S> {
-    S getPseudoData();
+public interface InputPort<T extends PseudoData<T>> extends Port<T> {
+    T getPseudoData();
 
-    void setPseudoData(S value);
+    void setPseudoData(T value);
 }

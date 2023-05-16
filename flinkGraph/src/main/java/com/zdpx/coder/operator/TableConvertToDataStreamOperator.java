@@ -36,8 +36,8 @@ public class TableConvertToDataStreamOperator extends Operator {
     @Override
     protected void initialize() {
         parameters.getParameterList().add(new Parameter(Specifications.TABLE_NAME));
-        outputPortObject = registerOutputPort("output_0)");
-        registerInputPort("input_0");
+        outputPortObject = registerOutputObjectPort("output_0)");
+        registerInputObjectPort("input_0");
     }
 
     @Override

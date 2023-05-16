@@ -50,8 +50,8 @@ public class CommSelectFunctionOperator extends Operator {
 
     @Override
     protected void initialize() {
-        inputPortObject = registerInputPort("input_0");
-        outputPortObject = registerOutputPort("output_0");
+        inputPortObject = registerInputObjectPort("input_0");
+        outputPortObject = registerOutputObjectPort("output_0");
     }
 
     @Override

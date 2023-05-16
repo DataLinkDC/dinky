@@ -51,9 +51,9 @@ public class JoinOperator extends Operator {
 
     @Override
     protected void initialize() {
-        primaryInput = registerInputPort("primaryInput");
-        secondInput = registerInputPort("secondInput");
-        outputPort = registerOutputPort("output_0");
+        primaryInput = registerInputObjectPort("primaryInput");
+        secondInput = registerInputObjectPort("secondInput");
+        outputPort = registerOutputObjectPort("output_0");
     }
 
     @Override

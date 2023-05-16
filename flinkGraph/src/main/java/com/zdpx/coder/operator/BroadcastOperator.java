@@ -92,9 +92,9 @@ public class BroadcastOperator extends Operator {
 
     @Override
     protected void initialize() {
-        primaryInput = registerInputPort("primaryInput");
-        broadcastInput = registerInputPort("broadcastInput");
-        outputPort = registerOutputPort("output_0");
+        primaryInput = registerInputObjectPort("primaryInput");
+        broadcastInput = registerInputObjectPort("broadcastInput");
+        outputPort = registerOutputObjectPort("output_0");
     }
 
     @Override

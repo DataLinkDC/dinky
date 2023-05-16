@@ -22,7 +22,7 @@ package com.zdpx.coder.graph;
 import com.zdpx.coder.operator.Operator;
 
 /** 输出端口 */
-public class OutputPortObject<T extends PseudoData<T>> extends AbstractPort<T>
+public class OutputPortObject<T extends  PseudoData<T>> extends AbstractPort<T>
         implements OutputPort<T> {
 
     private T tableInfo;
