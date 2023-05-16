@@ -33,7 +33,7 @@ import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
-import TemplateModal from "@/pages/RegCenter/UDF/TemplateModal";
+import TemplateModal from "@/pages/RegCenter/UDF/components/TemplateModal";
 import UDFTemplateDrawer from "../UDFTemplateDrawer";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 

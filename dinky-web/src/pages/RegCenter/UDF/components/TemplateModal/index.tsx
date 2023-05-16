@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import TemplateProFrom from "@/pages/RegCenter/UDF/TemplateModal/TemplateProFrom";
+import TemplateProFrom from "@/pages/RegCenter/UDF/components/TemplateModal/TemplateProFrom";
 import React, {useEffect} from "react";
 import {Button, Form} from "antd";
 import {GitProject, UDFTemplate} from "@/types/RegCenter/data";

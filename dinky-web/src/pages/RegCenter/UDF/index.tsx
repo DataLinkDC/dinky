@@ -16,7 +16,7 @@
  */
 
 import {PageContainer} from "@ant-design/pro-components";
-import TemplateTable from "@/pages/RegCenter/UDF/TemplateTable";
+import TemplateTable from "@/pages/RegCenter/UDF/components/TemplateTable";
 
 export default ()=>{
     return <PageContainer title={false}>
