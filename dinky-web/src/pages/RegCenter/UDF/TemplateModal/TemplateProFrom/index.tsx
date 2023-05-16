@@ -37,6 +37,7 @@ const CodeEditProps = {
   width: "40vw",
   lineNumbers: "on",
   language: "java",
+  showFloatButton: true,
 };
 
 

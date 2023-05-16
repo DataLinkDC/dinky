@@ -33,6 +33,7 @@ body,
 .content {
   padding: 32px 0 24px;
 }
+
 .top {
   text-align: center;
 }
@@ -53,7 +54,7 @@ body,
   left: -30vw;
   top: -5vh;
   display: flex;
-  flex: auto ;
+  flex: auto;
   flex-flow: column-reverse;
 }
 
@@ -66,29 +67,32 @@ body,
 }
 
 
-.loginformMain  {
+.loginformMain {
   display: flex;
   flex: auto;
   max-height: max-content;
   padding: 0vh 6vh 30vh 2vh;
-  justify-content: center ;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   background-size: cover;
   background-position: left center;
   background-repeat: no-repeat;
   z-index: 1;
-  .form{
+
+  .form {
     position: relative;
     height: 100%;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
     margin-left: 60vw;
     margin-bottom: -15vh;
   }
+
   .loginform {
     padding: 2vh 2vw;
   }
 }
+
 // .login-form style --- end ----
 
 
@@ -116,6 +120,7 @@ body,
 ::-webkit-scrollbar-corner {
   background-color: #f5f5f5;
 }
+
 // scrollbar style --- end ----
 
 .colorWeak {
@@ -250,6 +255,15 @@ ol {
     .back-bottom {
       transform: rotate(180deg);
     }
+  }
+
+  .full-screen {
+    position: absolute;
+    transform: translate(5%, 15%);
+    top: 0;
+    right: 2vw;
+    width: 40px;
+    height: 40px;
   }
 }
 

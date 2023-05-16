@@ -69,23 +69,51 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
         {/* if refreshLogCallback is not null, then show sync button , auto refresh button and stop auto refresh button  */}
         {refreshLogCallback &&
           <>
-            <FloatButton tooltip={l("button.refresh")} icon={<SyncOutlined spin={loading}/>} onClick={handleSyncLog}/>
-            {autoRefresh ?
-              <FloatButton icon={<StopFilled spin={stopping}/>} tooltip={l("button.stopRefresh")} onClick={handleStopAutoRefresh}/> :
-              <FloatButton icon={<PlayCircleFilled/>} tooltip={l("button.startRefresh")} onClick={handleStartAutoRefresh}/>
+            <FloatButton
+              tooltip={l("button.refresh")}
+              icon={<SyncOutlined spin={loading}/>}
+              onClick={handleSyncLog}
+            />
 
+            {autoRefresh ?
+              <FloatButton
+                icon={<StopFilled spin={stopping}/>}
+                tooltip={l("button.stopRefresh")}
+                onClick={handleStopAutoRefresh}
+              /> :
+              <FloatButton
+                icon={<PlayCircleFilled/>}
+                tooltip={l("button.startRefresh")}
+                onClick={handleStartAutoRefresh}
+              />
             }
           </>
         }
         {/* back top */}
-        <FloatButton.BackTop tooltip={l("button.backTop")} onClick={handleBackTop} visibilityHeight={0}/>
+        <FloatButton.BackTop
+          tooltip={l("button.backTop")}
+          onClick={handleBackTop}
+          visibilityHeight={0}
+        />
         {/* go bottom */}
-        <FloatButton.BackTop className={"back-bottom"} tooltip={l("button.backBottom")} onClick={handleBackBottom}
-                             visibilityHeight={0}/>
+        <FloatButton.BackTop
+          className={"back-bottom"}
+          tooltip={l("button.backBottom")}
+          onClick={handleBackBottom}
+          visibilityHeight={0}
+        />
         {/* scroll up */}
-        <FloatButton icon={<UpCircleFilled/>} tooltip={l("button.upScroll")} onClick={handleUpScroll}/>
+        <FloatButton
+          icon={<UpCircleFilled/>}
+          tooltip={l("button.upScroll")}
+          onClick={handleUpScroll}
+        />
         {/* scroll down */}
-        <FloatButton icon={<DownCircleFilled/>} tooltip={l("button.downScroll")} onClick={handleDownScroll}/>
+        <FloatButton
+          icon={<DownCircleFilled/>}
+          tooltip={l("button.downScroll")}
+          onClick={handleDownScroll}
+        />
       </Space>
     </FloatButton.Group>
   </>;
