@@ -17,42 +17,39 @@
  *
  */
 
-package org.dinky.dto;
+package org.dinky.cdc;
+
+import org.dinky.exception.SplitTableException;
+import org.dinky.model.FlinkCDCConfig;
+
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.Map;
 
 /**
- * GitProjectTreeNodeDTO
+ * CDCBuilder
  *
- * @since 0.8.0
+ * @since 2022/11/04
  */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class GitProjectTreeNodeDTO {
-    private String name;
-    private String path;
-    private String content;
-    private Long size;
-    private boolean isLeaf;
-    private List<GitProjectTreeNodeDTO> children;
+public interface CDCBuilder {
 
-    public GitProjectTreeNodeDTO(
-            String name,
-            String path,
-            boolean isLeaf,
-            List<GitProjectTreeNodeDTO> children,
-            Long size) {
-        this.name = name;
-        this.path = path;
-        this.isLeaf = isLeaf;
-        this.children = children;
-        this.size = size;
+    String getHandle();
+
+    CDCBuilder create(FlinkCDCConfig config);
+
+    DataStreamSource<String> build(StreamExecutionEnvironment env);
+
+    List<String> getSchemaList();
+
+    List<String> getTableList();
+
+    Map<String, Map<String, String>> parseMetaDataConfigs();
+
+    String getSchemaFieldName();
+
+    default Map<String, String> parseMetaDataConfig() {
+        throw new SplitTableException("此数据源并未实现分库分表");
     }
 }

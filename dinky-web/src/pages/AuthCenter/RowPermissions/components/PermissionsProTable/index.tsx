@@ -38,17 +38,22 @@ const PermissionsProTable: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
 
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        setLoading(false);
+        actionRef.current?.reload?.();
+    }
 
     /**
      * delete role by id
      * @param id role id
      */
     const handleDeleteSubmit = async (id: number) => {
-        setLoading(true);
-        // TODO: DELETE role interface is use /api/rowPermissions/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/rowPermissions (rowPermissions)
-        await handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id);
-        setLoading(false);
-        actionRef.current?.reload?.();
+       await executeAndCallbackRefresh(async () => {
+            // TODO: DELETE role interface is use /api/rowPermissions/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/rowPermissions (rowPermissions)
+            await handleRemoveById(API_CONSTANTS.ROW_PERMISSIONS_DELETE, id);
+        });
     }
 
     /**
@@ -56,13 +61,10 @@ const PermissionsProTable: React.FC = () => {
      * @param value
      */
     const handleAddOrUpdateSubmit = async (value: any) => {
-        await handleAddOrUpdate(API_CONSTANTS.ROW_PERMISSIONS, {
-            ...value,
-            tenantId: getTenantByLocalStorage()
+        await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.ROW_PERMISSIONS, {...value, tenantId: getTenantByLocalStorage()});
+            handleModalVisible(false);
         });
-        handleModalVisible(false);
-        setFormValues({})
-        actionRef.current?.reload?.();
     }
 
     /**
@@ -163,15 +165,12 @@ const PermissionsProTable: React.FC = () => {
         />
 
         {/* modify row Permissions */}
-        {(formValues && Object.keys(formValues).length) &&
-            <PermissionsModal
-                onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
-        }
-
+        <PermissionsModal
+            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+            onCancel={() => handleCancel()}
+            modalVisible={updateModalVisible}
+            values={formValues}
+        />
     </>
 }
 

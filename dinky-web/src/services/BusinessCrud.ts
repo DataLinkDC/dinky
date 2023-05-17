@@ -18,7 +18,7 @@
 import {
   addOrUpdateData, putData, getDataByRequestBody, getInfoById,
   postAll,
-  removeById, updateDataByParams,
+  removeById, updateDataByParams, getData,
 } from "@/services/api";
 import {l} from "@/utils/intl";
 import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from "@/services/constants";
@@ -190,7 +190,7 @@ export const handlePutData = async (url: string, fields: any) => {
 };
 
 
-export const getDataByParams = async (url: string, params: any) => {
+export const getDataByParams = async (url: string, params?: any) => {
   try {
     const {datas} = await getDataByRequestBody(url, params);
     return datas;
@@ -198,6 +198,16 @@ export const getDataByParams = async (url: string, params: any) => {
     return false;
   }
 };
+
+export const queryDataByParams = async (url: string, params?: any) => {
+  try {
+    const {datas} = await getData(url, params);
+    return datas;
+  } catch (error) {
+    return false;
+  }
+};
+
 
 export const handlePutDataByParams = async (url: string, title: string, params: any) => {
   await LoadingMessageAsync(l("app.request.running") + title);

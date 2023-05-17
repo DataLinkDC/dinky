@@ -41,6 +41,7 @@
                 <module>dinky-flink-1.14</module>
                 <module>dinky-flink-1.15</module>
                 <module>dinky-flink-1.16</module>
+                <module>dinky-flink-1.17</module>
             </modules>
         </profile>
     </profiles>

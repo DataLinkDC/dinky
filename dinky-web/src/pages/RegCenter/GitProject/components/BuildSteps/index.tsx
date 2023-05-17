@@ -92,7 +92,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         return l("rc.gp.build.step." + step);
     }
 
-
+  // const [data, error] = useSSE(() => {
+  //   return fetch("https://myapi.example.com").then((res) => res.json());
+  // }, []);
 
     useEffect(() => {
         if (values.buildStep === 0) {
@@ -100,6 +102,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             setCurrentStep(0);
         }
         const eventSource = new EventSource(API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+
         setEventSource(eventSource);
 
         buildStepList();

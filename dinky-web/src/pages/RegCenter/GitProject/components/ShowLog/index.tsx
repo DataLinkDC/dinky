@@ -22,8 +22,7 @@ import {Modal} from "antd";
 import {l} from "@/utils/intl";
 import {GitProject} from "@/types/RegCenter/data";
 import React, {useEffect} from "react";
-import {getData} from "@/services/api";
-import {getDataByParams, handleData} from "@/services/BusinessCrud";
+import {handleData} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 
 type ShowLogProps = {
@@ -66,7 +65,7 @@ export const ShowLog: React.FC<ShowLogProps> = (props) => {
      */
     useEffect(() => {
         queryAllStepLogs();
-    }, [modalVisible]);
+    }, []);
 
 
     /**
@@ -86,7 +85,6 @@ export const ShowLog: React.FC<ShowLogProps> = (props) => {
                 code={log}
                 showFloatButton={true}
                 refreshLogCallback={queryAllStepLogs}
-                enableTimer={true}
             />
         </Modal>
     );

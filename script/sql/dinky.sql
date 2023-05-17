@@ -785,9 +785,9 @@ INSERT INTO `dinky_tenant` VALUES (1, 'DefaultTenant', 0, 'DefaultTenant', '2022
 DROP TABLE IF EXISTS `dinky_udf`;
 CREATE TABLE `dinky_udf`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'udf name',
-  `class_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Complete class name',
-  `source_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'source code',
+  `name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'udf name',
+  `class_name` varchar(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Complete class name',
+  `source_code` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'source code',
   `compiler_code` binary(255) NULL DEFAULT NULL COMMENT 'compiler product',
   `version_id` int(11) NULL DEFAULT NULL COMMENT 'version',
   `version_description` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'version description',
@@ -798,9 +798,9 @@ CREATE TABLE `dinky_udf`  (
   `dialect` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'dialect',
   `type` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'type',
   `step` int(11) NULL DEFAULT NULL COMMENT 'job lifecycle step',
-  `enable` tinyint(1) NULL DEFAULT NULL COMMENT 'is enable',
+  `enable` tinyint(1) NULL DEFAULT 1 COMMENT 'is enable',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'udf' ROW_FORMAT = Dynamic;
 
@@ -814,13 +814,13 @@ CREATE TABLE `dinky_udf`  (
 DROP TABLE IF EXISTS `dinky_udf_template`;
 CREATE TABLE `dinky_udf_template`  (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '模板名称',
-  `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '代码类型',
-  `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '函数类型',
-  `template_code` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT '模板代码',
-  `enabled` tinyint(1) NULL DEFAULT NULL COMMENT 'is enable',
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'template name',
+  `code_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'code type',
+  `function_type` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'function type',
+  `template_code` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'code',
+  `enabled` tinyint(1) NULL DEFAULT 1 COMMENT 'is enable',
   `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
+  `update_time` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'udf template' ROW_FORMAT = Dynamic;
 

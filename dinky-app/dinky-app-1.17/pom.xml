@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.dinky</groupId>
+        <artifactId>dinky-app</artifactId>
+        <version>0.8.0</version>
+    </parent>
+    <artifactId>dinky-app-1.17</artifactId>
+
+    <packaging>jar</packaging>
+
+    <name>Dinky : App 1.17</name>
+
+    <properties>
+        <mainClass>org.dinky.app.MainApp</mainClass>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-app-base</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-client-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
+            <artifactId>dinky-flink-${dinky.flink.version}</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>${maven-assembly-plugin.version}</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <archive>
+                        <manifest>
+                            <!-- 可以设置jar包的入口类(可选) -->
+                            <mainClass>org.dinky.app.MainApp</mainClass>
+                        </manifest>
+                    </archive>
+                    <outputDirectory>${project.parent.parent.basedir}/build/extends</outputDirectory>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <phase>package</phase>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

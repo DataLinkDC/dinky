@@ -46,17 +46,33 @@ public class ProcessController {
 
     private final ProcessService processService;
 
+    /**
+     * List all process
+     *
+     * @param active true: list active process, false: list inactive process {@link Boolean}
+     * @return {@link ProTableResult}<{@link ProcessEntity}>
+     */
     @GetMapping("/listAllProcess")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {
         List<ProcessEntity> processEntities = processService.listAllProcess(active);
         return ProTableResult.<ProcessEntity>builder().success(true).data(processEntities).build();
     }
 
+    /**
+     * get process by user id
+     *
+     * @return {@link ProTableResult} <{@link String} >
+     */
     @GetMapping("/getConsoleByUserId")
     public Result<String> getConsoleByUserId() {
         return Result.data(processService.getConsoleByUserId(StpUtil.getLoginIdAsInt()));
     }
 
+    /**
+     * clear console by user id
+     *
+     * @return {@link Result} <{@link String}>
+     */
     @GetMapping("/clearConsole")
     public Result<String> clearConsole() {
         processService.clearConsoleByUserId(StpUtil.getLoginIdAsInt());

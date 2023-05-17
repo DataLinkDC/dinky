@@ -21,7 +21,17 @@ import {THEME, CODE_EDIT_THEME} from "@/types/Public/data";
 import {editor} from "monaco-editor";
 import React, {useEffect, useState} from "react";
 import {trim} from "lodash";
-import {FileIcon, FolderSvgExpand, JavaSvg, MarkDownSvg, ShellSvg, XMLSvg, YAMLSvg} from "@/components/Icons/CodeLanguageIcon";
+import {
+  FileIcon,
+  FolderSvgExpand,
+  JavaSvg,
+  LogSvg,
+  MarkDownSvg,
+  ScalaSvg,
+  ShellSvg,
+  XMLSvg,
+  YAMLSvg
+} from "@/components/Icons/CodeLanguageIcon";
 import path from "path";
 
 /**
@@ -158,6 +168,7 @@ export const useSSEBuildArrayData = (url: string) => {
 export const getLanguage = (type: string): string => {
   switch (type) {
     case DIALECT.JAVA:
+    case DIALECT.LOG:
       return DIALECT.JAVA;
     case DIALECT.MD:
     case DIALECT.MDX:
@@ -177,6 +188,8 @@ export const getLanguage = (type: string): string => {
       return DIALECT.SCALA;
     case DIALECT.PYTHON:
       return DIALECT.PYTHON;
+    case DIALECT.PYTHON_LONG:
+      return DIALECT.PYTHON_LONG;
     case DIALECT.SQL:
       return DIALECT.SQL;
     default:
@@ -192,6 +205,8 @@ export const getIcon = (type: string) => {
   switch (type) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
+    case DIALECT.SCALA:
+      return <ScalaSvg/>;
     case DIALECT.MD:
     case DIALECT.MDX:
       return <MarkDownSvg/>;
@@ -204,6 +219,8 @@ export const getIcon = (type: string) => {
     case DIALECT.BASH:
     case DIALECT.CMD:
       return <ShellSvg/>;
+    case DIALECT.LOG:
+      return <LogSvg/>;
     default:
       return <FileIcon/>;
   }
@@ -237,7 +254,7 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  */
 export const renderLanguage = (type: string, splitChar: string) => {
   if (trim(splitChar).length === 0) {
-    getLanguage(type);
+    return getLanguage(type);
   } else {
     let suffixOfType = type.toString().split(splitChar).reverse()[0];
     return getLanguage(suffixOfType);
@@ -251,3 +268,42 @@ export const renderLanguage = (type: string, splitChar: string) => {
 export const folderSeparator = () => {
   return path.sep;
 }
+
+
+
+
+/**
+ * build tree data
+ * @param data
+ * @returns {any}
+ */
+export const buildTreeData = (data: any): any => data?.map((item: any) => {
+
+  // build key
+  let buildKey = item.path + folderSeparator() + item.name;
+
+  // if has children , recursive build
+  if (item.children) {
+    return {
+      isLeaf: !item.leaf,
+      name: item.name,
+      parentId: item.path,
+      icon: renderIcon(item.name, ".", item.leaf),
+      content: item.content,
+      path: item.path,
+      title: item.name,
+      key: buildKey,
+      children: buildTreeData(item.children)
+    };
+  }
+  return {
+    isLeaf: !item.leaf,
+    name: item.name,
+    parentId: item.path,
+    icon: renderIcon(item.name, ".", item.leaf),
+    content: item.content,
+    path: item.path,
+    title: item.name,
+    key: buildKey,
+  };
+});

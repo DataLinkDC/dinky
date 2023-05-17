@@ -24,9 +24,7 @@ const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
   return (
     <DefaultFooter
-      style={{
-        background: 'none',
-      }}
+      style={{background: 'none'}}
       copyright={`${currentYear} ` + l('app.copyright.produced')}
       links={[
         {

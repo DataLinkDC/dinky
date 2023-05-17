@@ -21,18 +21,18 @@ package org.dinky.service.impl;
 
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.GitProjectTreeNodeDTO;
 import org.dinky.dto.JarClassesDTO;
+import org.dinky.dto.TreeNodeDTO;
 import org.dinky.mapper.GitProjectMapper;
 import org.dinky.model.GitProject;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
+import org.dinky.utils.TreeUtil;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -85,10 +85,10 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
      * @return {@link List < GitProjectCodeTreeDTO >}
      */
     @Override
-    public List<GitProjectTreeNodeDTO> getProjectCode(Integer id) {
+    public List<TreeNodeDTO> getProjectCode(Integer id) {
         GitProject gitProject = getById(id);
         File projectDir = GitRepository.getProjectDir(gitProject.getName());
-        return treeNodeData(projectDir);
+        return TreeUtil.treeNodeData(projectDir, true);
     }
 
     /**
@@ -159,77 +159,9 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
             buildStep5Logs(file, sb);
             sb.append("\n\n\n\n");
         } else {
-            sb.append(readFile(file));
+            sb.append(FileUtil.readUtf8String(file));
             sb.append("\n\n\n\n");
         }
-    }
-
-    /**
-     * build tree node data
-     *
-     * @param projectDir {@link File}
-     * @return {@link List < GitProjectTreeNodeDTO >}
-     */
-    private static List<GitProjectTreeNodeDTO> treeNodeData(File projectDir) {
-        List<GitProjectTreeNodeDTO> nodes = new ArrayList<>();
-        if (projectDir.exists() && projectDir.isDirectory()) {
-
-            GitProjectTreeNodeDTO rootNode =
-                    new GitProjectTreeNodeDTO(
-                            projectDir.getName(),
-                            projectDir.getAbsolutePath(),
-                            true,
-                            new ArrayList<>(),
-                            0L);
-            buildTree(projectDir, rootNode);
-            nodes.add(rootNode);
-        }
-        return nodes;
-    }
-
-    /**
-     * build tree
-     *
-     * @param file {@link File}
-     * @param parentNode {@link GitProjectTreeNodeDTO}
-     */
-    private static void buildTree(File file, GitProjectTreeNodeDTO parentNode) {
-        if (file.isDirectory()) {
-            File[] children = file.listFiles();
-            if (children != null) {
-                for (File child : children) {
-
-                    GitProjectTreeNodeDTO childNode =
-                            new GitProjectTreeNodeDTO(
-                                    child.getName(),
-                                    child.getAbsolutePath(),
-                                    child.isDirectory(),
-                                    new ArrayList<>(),
-                                    child.length());
-                    parentNode.getChildren().add(childNode);
-                    buildTree(child, childNode);
-                }
-            }
-        } else {
-            try {
-                String content = readFile(file);
-                parentNode.setLeaf(file.isDirectory());
-                parentNode.setContent(content);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
-    /**
-     * read file
-     *
-     * @param file {@link File}
-     * @return {@link String}
-     * @throws IOException
-     */
-    private static String readFile(File file) throws IOException {
-        return FileUtil.readUtf8String(file);
     }
 
     /**
@@ -295,7 +227,7 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
      * @throws IOException
      */
     private void buildStep5Logs(File file, StringBuilder sb) throws IOException {
-        String step5Log = readFile(file);
+        String step5Log = FileUtil.readUtf8String(file);
         sb.append("Jar And UDF Class List:\n");
         List<JarClassesDTO> jarClassesDTOList = JSONUtil.toList(step5Log, JarClassesDTO.class);
         jarClassesDTOList.stream()

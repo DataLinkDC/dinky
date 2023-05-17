@@ -20,225 +20,200 @@
 import MonacoEditor, {monaco} from "react-monaco-editor";
 import {convertCodeEditTheme} from "@/utils/function";
 import {MonacoEditorOptions} from "@/types/Public/data";
-import {FloatButton, Space} from "antd";
-import {
-    DownCircleFilled,
-    StopOutlined,
-    SyncOutlined,
-    UpCircleFilled
-} from "@ant-design/icons";
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {editor} from "monaco-editor";
-import {l} from "@/utils/intl";
-import IStandaloneCodeEditor = editor.IStandaloneCodeEditor;
-import ScrollType = editor.ScrollType;
+import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
+import FullscreenBtn from "../FullscreenBtn";
 
-export type CodeShowFormProps = {
-    height?: string;
-    width?: string;
-    language?: string;
-    options?: any;
-    code: string;
-    lineNumbers?: string;
-    theme?: string;
-    autoWrap?: string;
-    showFloatButton?: boolean;
-    enableTimer?: boolean;
-    refreshLogCallback?: () => void;
+/**
+ * props
+ * todo:
+ *  1. Realize full screen/exit full screen in the upper right corner of the editor (Visible after opening)
+ *    - The full screen button is done, but the full screen is not implemented
+ *  2. Callback for right-clicking to clear logs (optional, not required)
+ */
+type CodeShowFormProps = {
+  height?: string;
+  width?: string;
+  language?: string;
+  options?: any;
+  code: string;
+  lineNumbers?: string;
+  theme?: string;
+  autoWrap?: string;
+  showFloatButton?: boolean;
+  refreshLogCallback?: () => void;
+  fullScreenBtn?: boolean;
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
 
-    /**
-     * 1. height: edit height
-     * 2. width: edit width
-     * 3. language: edit language
-     * 4. options: edit options
-     * 5. code: content
-     * 6. readOnly: is readOnly, value: true | false
-     * 7. lineNumbers: is show lineNumbers, value: on | off | relative | interval
-     * 8. theme: edit theme , value: vs-dark | vs | hc-black
-     * 9. autoWrap: is auto wrap, value: on | off | wordWrapColumn | bounded
-     */
-    const {
-        height = "30vh", // if null or undefined, set default value
-        width = "100%", // if null or undefined, set default value
-        language,
-        options = {
-            ...MonacoEditorOptions, // set default options
-        },
-        code, // content
-        lineNumbers, // show lineNumbers
-        theme, // edit theme
-        autoWrap = "on", //  auto wrap
-        showFloatButton = false,
-        enableTimer = false,
-        refreshLogCallback,
-    } = props;
+  /**
+   * 1. height: edit height
+   * 2. width: edit width
+   * 3. language: edit language
+   * 4. options: edit options
+   * 5. code: content
+   * 6. readOnly: is readOnly, value: true | false
+   * 7. lineNumbers: is show lineNumbers, value: on | off | relative | interval
+   * 8. theme: edit theme , value: vs-dark | vs | hc-black
+   * 9. autoWrap: is auto wrap, value: on | off | wordWrapColumn | bounded
+   */
+  const {
+    height = "30vh", // if null or undefined, set default value
+    width = "100%", // if null or undefined, set default value
+    language,
+    options = {
+      ...MonacoEditorOptions, // set default options
+    },
+    code, // content
+    lineNumbers, // show lineNumbers
+    theme, // edit theme
+    autoWrap = "on", //  auto wrap
+    showFloatButton = false,
+    refreshLogCallback,
+    fullScreenBtn = false,
+  } = props;
+
+  const {ScrollType} = editor;
 
 
-    const [loading, setLoading] = useState<boolean>(false);
-    const [stoping, setStoping] = useState<boolean>(false);
-    const [editor, setEditor] = useState<IStandaloneCodeEditor>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [stopping, setStopping] = useState<boolean>(false);
+  const [autoRefresh, setAutoRefresh] = useState<boolean>(false);
+  const [fullScreen, setFullScreen] = useState<boolean>(false);
+  const [editorRef, setEditorRef] = useState<any>();
+  const [timer, setTimer] = useState<NodeJS.Timer>();
+
+  // register TypeScript language service, if language is not set default value is typescript!
+  monaco.languages.register({
+    id: language || "typescript",
+  });
+
+  /**
+   *  handle sync log
+   * @returns {Promise<void>}
+   */
+  const handleSyncLog = async () => {
+    setLoading(true);
+    setTimeout(() => {
+      refreshLogCallback?.();
+      setLoading(false);
+    }, 1000);
+  };
 
 
-    const [timer, setTimer] = useState<NodeJS.Timer>();
+  /**
+   *  handle stop auto refresh log
+   */
+  const handleStopAutoRefresh = () => {
+    setStopping(true);
+    setTimeout(() => {
+      clearInterval(timer);
+      setStopping(false);
+      setAutoRefresh(false);
+    }, 1000);
+  };
 
-    // register TypeScript language service
-    monaco.languages.register({
-        id: language || "typescript",
-    });
-
-    /**
-     * @description: handle sync log
-     * @returns {Promise<void>}
-     */
-    const handleSyncLog = async () => {
-        setLoading(true);
-        setTimeout(() => {
-            refreshLogCallback?.();
-            setLoading(false);
-        }, 1000);
-    };
-
-    /**
-     * @description: handle auto refresh log
-     */
-    useEffect(() => {
-        if (enableTimer) {
-            const timerSync = setInterval(() => {
-                handleSyncLog();
-            }, 5000);
-            setTimer(timerSync)
-            return () => {
-                clearInterval(timerSync);
-            }
-        }
-    }, [])
-
-    /**
-     * @description: handle stop auto refresh log
-     */
-   const handleStopAutoRefresh = () => {
-       setStoping(true);
-       setTimeout(() => {
-           clearInterval(timer);
-           setStoping(false)
-       }, 1000);
-
-    }
+  /**
+   *  handle stop auto refresh log
+   */
+  const handleStartAutoRefresh = async () => {
+    setAutoRefresh(true);
+    const timerSync = setInterval(() => {
+      handleSyncLog();
+    }, 5000);
+    setTimer(timerSync);
+  };
 
 
-    /**
-     * @description: handle scroll to top
-     */
-    const handleBackTop = () => {
-        editor?.revealLine(1);
-    }
+  /**
+   *  handle scroll to top
+   */
+  const handleBackTop = () => {
+    editorRef.revealLine(1);
+  };
 
-    /**
-     * @description: handle scroll to bottom
-     */
-    const handleBackBottom = () => {
-        // @ts-ignore
-        editor?.revealLine(editor?.getModel()?.getLineCount());
-    }
+  /**
+   *  handle scroll to bottom
+   */
+  const handleBackBottom = () => {
+    editorRef.revealLine(editorRef.getModel().getLineCount());
+  };
 
-    /**
-     * @description: handle scroll to down
-     */
-    const handleDownScroll = () => {
-        // @ts-ignore
-        editor?.setScrollPosition({scrollTop: editor?.getScrollTop() + 500}, ScrollType.Smooth);
-    }
+  /**
+   *  handle scroll to down
+   */
+  const handleDownScroll = () => {
+    editorRef.setScrollPosition({scrollTop: editorRef.getScrollTop() + 500}, ScrollType.Smooth);
+  };
 
-    /**
-     * @description: handle scroll to up
-     */
-    const handleUpScroll = () => {
-        // @ts-ignore
-        editor?.setScrollPosition({scrollTop: editor?.getScrollTop() - 500}, ScrollType.Smooth);
-    }
+  /**
+   *  handle scroll to up
+   */
+  const handleUpScroll = () => {
+    editorRef?.setScrollPosition({scrollTop: editorRef.getScrollTop() - 500}, ScrollType.Smooth);
+  };
 
 
-    /**
-     * @description: editorDidMount
-     * @param {editor.IStandaloneCodeEditor} editor
-     */
-    const editorDidMount = (editor: IStandaloneCodeEditor) => {
-        setEditor(editor)
-        // 在编辑器加载完成后，设置自动布局和自动高亮显示
-        editor.layout();
-        editor.focus();
-    }
+  /**
+   *  editorDidMount
+   * @param {editor.IStandaloneCodeEditor} editor
+   */
+  const editorDidMount = (editor: editor.IStandaloneCodeEditor) => {
+    setEditorRef(editor);
+    editor.layout();
+    editor.focus();
+  };
 
-    /**
-     * @description: render
-     */
-    return (<>
-        <div className={"monaco-float"}>
-            <MonacoEditor
-                width={width}
-                height={height}
-                value={loading ? "loading..." : code}
-                language={language}
-                options={{
-                    ...options,
-                    readOnly: true,
-                    wordWrap: autoWrap,
-                    autoDetectHighContrast: true,
-                    selectOnLineNumbers: true,
-                    fixedOverflowWidgets: true,
-                    autoClosingDelete: "always",
-                    lineNumbers,
-                }}
-                editorDidMount={editorDidMount}
-                theme={theme ? theme : convertCodeEditTheme()}
-            />
-            <FloatButton.Group
-                open={showFloatButton} shape="square"
-                className={"float-button"}
-            >
-                <Space direction={"vertical"}>
-                    {refreshLogCallback &&
-                       <>
-                           <FloatButton
-                               tooltip={l('button.refresh')}
-                               icon={<SyncOutlined spin={loading}/>}
-                               onClick={handleSyncLog}
-                           />
-                           {enableTimer &&
-                               <FloatButton
-                                   tooltip={l('button.stopRefresh')}
-                                   icon={<StopOutlined spin={stoping}/>}
-                                   onClick={handleStopAutoRefresh}
-                               />
-                           }
-                       </>
-                    }
-                    <FloatButton.BackTop
-                        tooltip={l('button.backTop')}
-                        onClick={handleBackTop}
-                        visibilityHeight={0}/>
-                    <FloatButton.BackTop
-                        className={"back-bottom"}
-                        tooltip={l('button.backBottom')}
-                        onClick={handleBackBottom}
-                        visibilityHeight={0}/>
-                    <FloatButton
-                        icon={<UpCircleFilled/>}
-                        tooltip={l('button.upScroll')}
-                        onClick={handleUpScroll}
-                    />
-                    <FloatButton
-                        icon={<DownCircleFilled/>}
-                        tooltip={l('button.downScroll')}
-                        onClick={handleDownScroll}
-                    />
-                </Space>
-            </FloatButton.Group>
-        </div>
-    </>);
+
+  const restEditBtnProps = {
+    refreshLogCallback,
+    autoRefresh,
+    stopping,
+    loading,
+    handleSyncLog,
+    handleStopAutoRefresh,
+    handleStartAutoRefresh,
+    handleBackTop,
+    handleBackBottom,
+    handleUpScroll,
+    handleDownScroll,
+  };
+
+
+  /**
+   *  render
+   */
+  return (<>
+    <div className={"monaco-float"}>
+      {/* fullScreen button */}
+      {fullScreenBtn && <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
+
+      {/* editor */}
+      <MonacoEditor
+        width={width}
+        height={height}
+        value={loading ? "loading..." : code}
+        language={language}
+        options={{
+          ...options,
+          readOnly: true,
+          wordWrap: autoWrap,
+          autoDetectHighContrast: true,
+          selectOnLineNumbers: true,
+          fixedOverflowWidgets: true,
+          autoClosingDelete: "always",
+          lineNumbers,
+        }}
+        editorDidMount={editorDidMount}
+        theme={theme ? theme : convertCodeEditTheme()}
+      />
+
+      {/* float button */}
+      {showFloatButton && <EditorFloatBtn {...restEditBtnProps}/>}
+    </div>
+  </>);
 };
 
 export default CodeShow;

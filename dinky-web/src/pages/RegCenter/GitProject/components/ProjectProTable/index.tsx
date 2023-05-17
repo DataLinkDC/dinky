@@ -54,11 +54,6 @@ import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 import {ShowLogBtn} from "@/components/CallBackButton/ShowLogBtn";
-import {
-  BuildStepOfCodeType,
-  JavaSteps,
-  PythonSteps
-} from "@/pages/RegCenter/GitProject/components/BuildSteps/constants";
 
 const ProjectProTable: React.FC = () => {
 
@@ -90,7 +85,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<GitProject>) => {
-    await executeAndCallback(() => updateEnabled(API_CONSTANTS.GIT_PROJECT_ENABLE, {id: value.id}));
+    await executeAndCallback(async () => await updateEnabled(API_CONSTANTS.GIT_PROJECT_ENABLE, {id: value.id}));
   };
 
 
@@ -115,22 +110,19 @@ const ProjectProTable: React.FC = () => {
   };
 
 
-
-
   /**
    *  build modal visible,when build success, set build modal visible to step modal visible
    * @param {Partial<GitProject>} value
    * @returns {Promise<void>}
    */
   const handleBuild = async (value: Partial<GitProject>) => {
-    setLoading(true);
-    await setFormValues(value);
-    const result = await handlePutDataByParams(API_CONSTANTS.GIT_PROJECT_BUILD, l("rc.gp.building"), {id: value.id});
-    if (result) {
-      await handleBuildVisible(true);
-      // todo : build success, set build modal visible and set build steps
-    }
-    setLoading(false);
+    await executeAndCallback(async () => {
+        const result = await handlePutDataByParams(API_CONSTANTS.GIT_PROJECT_BUILD, l("rc.gp.building"), {id: value.id});
+        if (result) {
+          handleBuildVisible(true);
+            // todo : build success, set build modal visible and set build steps
+        }
+    });
   };
 
   /**
@@ -150,7 +142,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallback(() => handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id));
+    await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id));
   };
 
   /**
@@ -174,6 +166,7 @@ const ProjectProTable: React.FC = () => {
       title: l("rc.gp.url"),
       dataIndex: "url",
       copyable: true,
+      ellipsis: true,
     },
     {
       title: l("rc.gp.codeType"),
@@ -300,22 +293,19 @@ const ProjectProTable: React.FC = () => {
       columns={columns}
     />
     {/* added modal form */}
-    {modalVisible &&
-      <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                    modalVisible={modalVisible} values={{}}/>}
+    <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+                  modalVisible={modalVisible} values={{}}/>
     {/* modify modal form */}
-    {updateModalVisible &&
-      <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                    modalVisible={updateModalVisible}
-                    values={formValues}/>}
+    <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+                  modalVisible={updateModalVisible}
+                  values={formValues}/>
     {/* build steps modal */}
-    {formValues && <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
+    {buildModalVisible && <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
                                values={formValues}/>}
     {/* show build log modal */}
-    {logModalVisible && <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}
+    {logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}
     {/* show code tree modal */}
-    {codeTreeModalVisible &&
-      <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>}
+    <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>
   </>;
 };
 export default ProjectProTable;

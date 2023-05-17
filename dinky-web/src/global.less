@@ -21,10 +21,107 @@ body,
   height: 100%;
   margin: 0;
   padding: 0;
+  overflow-x: auto;
+  overflow-y: auto;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
   'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
   'Noto Color Emoji';
 }
+
+
+// .login-form style --- start ----
+.content {
+  padding: 32px 0 24px;
+}
+
+.top {
+  text-align: center;
+}
+
+.header {
+  height: 100px;
+  line-height: 144px;
+  position: relative;
+  font-weight: 600;
+  font-size: 4rem;
+  font-family: PMingLiU-ExtB, 'Helvetica Neue', Arial, Helvetica, sans-serif;
+
+}
+
+.logo {
+  position: absolute;
+  width: 28vw;
+  left: -30vw;
+  top: -5vh;
+  display: flex;
+  flex: auto;
+  flex-flow: column-reverse;
+}
+
+
+.desc {
+  margin-bottom: 2rem;
+  margin-top: 2rem;
+  color: @text-color-secondary;
+  font-size: @font-size-base;
+}
+
+
+.loginformMain {
+  display: flex;
+  flex: auto;
+  max-height: max-content;
+  padding: 0vh 6vh 30vh 2vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background-size: cover;
+  background-position: left center;
+  background-repeat: no-repeat;
+  z-index: 1;
+
+  .form {
+    position: relative;
+    height: 100%;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
+    margin-left: 60vw;
+    margin-bottom: -15vh;
+  }
+
+  .loginform {
+    padding: 2vh 2vw;
+  }
+}
+
+// .login-form style --- end ----
+
+
+// scrollbar style --- start ----
+::-webkit-scrollbar {
+  width: 0.5vw;
+  height: 1vh;
+  background-color: #f5f5f5;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 6px;
+  box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #aaa;
+}
+
+::-webkit-scrollbar-thumb:active {
+  background-color: #999;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #f5f5f5;
+}
+
+// scrollbar style --- end ----
 
 .colorWeak {
   filter: invert(80%);
@@ -121,8 +218,21 @@ ol {
   overflow-y: auto;
   max-height: 70vh;
   min-height: 70vh;
+
+  .ant-tree {
+    min-width: max-content;
+
+    .ant-tree-node-content-wrapper {
+      display: flex;
+
+      :hover {
+        color: #1eef07;
+      }
+    }
+  }
 }
-.code-content-empty{
+
+.code-content-empty {
   height: 100%;
   display: flex;
   justify-content: center;
@@ -132,17 +242,28 @@ ol {
   max-height: 70vh;
 }
 
-.monaco-float{
+.monaco-float {
   position: relative;
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   .float-button {
     position: absolute;
     transform: translate(5%, 15%);
-    .back-bottom{
+
+    .back-bottom {
       transform: rotate(180deg);
     }
+  }
+
+  .full-screen {
+    position: absolute;
+    transform: translate(5%, 15%);
+    top: 0;
+    right: 2vw;
+    width: 40px;
+    height: 40px;
   }
 }
 

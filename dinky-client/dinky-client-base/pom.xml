@@ -153,6 +153,11 @@
                     <artifactId>dinky-flink-1.16</artifactId>
                     <scope>${scope.runtime}</scope>
                 </dependency>
+                <dependency>
+                    <groupId>org.dinky</groupId>
+                    <artifactId>dinky-flink-1.17</artifactId>
+                    <scope>${scope.runtime}</scope>
+                </dependency>
             </dependencies>
         </profile>
     </profiles>

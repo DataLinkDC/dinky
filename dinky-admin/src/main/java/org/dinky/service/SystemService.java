@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.FileNode;
 
 import java.util.List;
@@ -31,19 +32,11 @@ import java.util.List;
 public interface SystemService {
 
     /**
-     * list all dir and file by dir path
-     *
-     * @param path
-     * @return {@link List<FileNode>}
-     */
-    List<FileNode> listDirByPath(String path);
-
-    /**
      * List log root dir.
      *
      * @return {@link List<FileNode>}
      */
-    List<FileNode> listLogDir();
+    List<TreeNodeDTO> listLogDir();
 
     /**
      * readFile
