@@ -50,6 +50,8 @@ export default {
   'button.recycle': '回收',
   'button.refresh': '刷新',
   'button.test': '测试',
+  'button.clear': '清除',
+  'button.copy': '复制',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
   'button.asc': '升序',

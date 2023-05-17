@@ -78,6 +78,22 @@ export const API_CONSTANTS = {
 
 
   // --- registries  center ---
+
+  // datasource registries list
+  DATASOURCE: "/api/database",
+  // datasource registries delete
+  DATASOURCE_DELETE: "/api/database/delete",
+  // datasource registries enable or disable
+  DATASOURCE_ENABLE: "/api/database/enable",
+  // datasource registries test
+  DATASOURCE_TEST: "/api/database/testConnect",
+  // datasource  checkHeartBeat By Id
+  DATASOURCE_CHECK_HEARTBEAT_BY_ID: "/api/database/checkHeartBeatByDataSourceId",
+  // copy datasource
+  DATASOURCE_COPY: "/api/database/copyDatabase",
+
+
+
   // document list
   DOCUMENT: "/api/document",
   // delete document by id
@@ -229,6 +245,28 @@ export const MODAL_FORM_STYLE: any = {
 };
 
 
+
+export const PRO_LIST_CARD_META = {
+  title: {},
+  subTitle: {},
+  type: {},
+  avatar: {},
+  content: {},
+  actions: {
+    cardActionProps: "actions"
+  },
+};
+
+export const PRO_LIST_CARD_OPTIONS = {
+  search: false,
+  metas: PRO_LIST_CARD_META,
+  pagination: {
+    defaultPageSize: 10,
+  },
+  grid: {gutter: 24, column: 5}
+};
+
+
 /**
  * the protable layout of public
  */
@@ -250,10 +288,18 @@ export const PROTABLE_OPTIONS_PUBLIC = {
  * the modal layout of public
  */
 export const NORMAL_MODAL_OPTIONS = {
-  width: "40%",
+  width: "50%",
   bodyStyle: {padding: "20px 10px 10px"},
   destroyOnClose: true,
   maskClosable: false,
+};
+
+
+/**
+ * the modal layout of public
+ */
+export const MODAL_FORM_OPTIONS = {
+  width: "50%",
 };
 
 /**

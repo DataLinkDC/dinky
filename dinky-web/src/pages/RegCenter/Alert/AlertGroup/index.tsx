@@ -30,8 +30,7 @@ import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/Bus
 import {showAlertInstance} from "@/pages/RegCenter/Alert/AlertGroup/service";
 import {connect} from "@umijs/max";
 import {ProList} from "@ant-design/pro-components";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
-import {PRO_LIST_CARD_OPTIONS} from "@/pages/RegCenter/Alert/AlertInstance/constans";
+import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
 import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import DescriptionsItem from "antd/es/descriptions/Item";
