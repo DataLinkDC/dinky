@@ -15,14 +15,16 @@
  * limitations under the License.
  */
 
-import React, {useEffect, useState} from "react";
-import {DataSources} from "@/types/RegCenter/data";
-import {Loading} from "@/pages/Other/Loading";
-import {Button} from "antd";
-import {BackwardOutlined} from "@ant-design/icons";
-import {DataSourceDetailBackButton} from "@/components/StyledComponents";
-import {l} from "@/utils/intl";
-import {history} from "@umijs/max";
+import React, {useCallback, useEffect, useState} from 'react';
+import {DataSources} from '@/types/RegCenter/data';
+import {Loading} from '@/pages/Other/Loading';
+import {Button, Col, Row} from 'antd';
+import {BackwardOutlined} from '@ant-design/icons';
+import {DataSourceDetailBackButton} from '@/components/StyledComponents';
+import {l} from '@/utils/intl';
+import {history} from '@umijs/max';
+import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
+import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 
 type DataSourceDetailProps = {
   dataSource: Partial<DataSources.DataSource>;
@@ -32,28 +34,48 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
 
   const {dataSource, backClick} = props;
   const [loading, setLoading] = useState<boolean>(false);
+  const [treeData, setTreeData] = useState<Partial<any>[]>([]);
 
   const handleBackClick = () => {
     // go back
     history.back();
     // back click callback
     backClick();
-  }
+  };
 
   useEffect(() => {
-    // todo: fetch data by dataSource.id
+    // todo: fetch data by dataSource.id to set treeData
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
     }, 1000);
   }, []);
 
+  const onSchemaTreeNodeClick = useCallback((info: any) => {
+    console.log(info);
+  }, []);
+
   return <>
     <DataSourceDetailBackButton>
-      <Button icon={<BackwardOutlined/>} type="primary" onClick={handleBackClick}>{l("button.back")}</Button>
+      <Button icon={<BackwardOutlined/>} type="primary" onClick={handleBackClick}>{l('button.back')}</Button>
     </DataSourceDetailBackButton>
-
-    <Loading loading={loading}/>
+    {
+      loading ?
+        <Loading loading={loading}/>
+        :
+        <>
+          <Row>
+            <Col span={4} className={'siderTree'}>
+              {/* tree */}
+              <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
+            </Col>
+            <Col span={20}>
+              {/* tags */}
+              <RightTagsRouter/>
+            </Col>
+          </Row>
+        </>
+    }
   </>;
 };
 

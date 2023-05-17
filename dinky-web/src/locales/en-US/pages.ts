@@ -149,6 +149,10 @@ export default {
 
 
   // datasource of schema info page
+  'rc.ds.detail.tag.desc': 'Description',
+  'rc.ds.detail.tag.query': 'Query',
+  'rc.ds.detail.tag.gensql': 'Generate SQL',
+  'rc.ds.detail.tag.console': 'Console',
   'rc.ds.no': 'No.',
   'rc.ds.columnName': 'Field Name',
   'rc.ds.comment': 'Comment',

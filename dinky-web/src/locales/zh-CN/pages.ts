@@ -145,6 +145,10 @@ export default {
   'rc.ds.enter': '点击列表中得 icon 图片进入该数据源得详情页! 支持查看该数据源的库&表信息,以及可以进行及时查询',
 
   // datasource of schema info page
+  'rc.ds.detail.tag.desc': '描述',
+  'rc.ds.detail.tag.query': '查询',
+  'rc.ds.detail.tag.gensql': '生成 SQL',
+  'rc.ds.detail.tag.console': '控制台',
   'rc.ds.no': '序号',
   'rc.ds.columnName': '字段名称',
   'rc.ds.comment': '注释',
