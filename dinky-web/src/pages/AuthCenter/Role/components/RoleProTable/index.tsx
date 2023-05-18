@@ -43,17 +43,22 @@ const RoleProTable: React.FC = () => {
         const [loading, setLoading] = useState<boolean>(false);
         const actionRef = useRef<ActionType>();
 
+        const executeAndCallbackRefresh = async (callback: () => void) => {
+            setLoading(true);
+            await callback();
+            setLoading(false);
+            actionRef.current?.reload?.();
+        }
 
         /**
          * delete role by id
          * @param id role id
          */
         const handleDeleteSubmit = async (id: number) => {
-            setLoading(true);
-            // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
-            await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-            setLoading(false);
-            actionRef.current?.reload?.();
+            await executeAndCallbackRefresh(async () => {
+                // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
+                await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
+            });
         }
 
         /**
@@ -61,14 +66,13 @@ const RoleProTable: React.FC = () => {
          * @param value
          */
         const handleAddOrUpdateSubmit = async (value: any) => {
-            // TODO: added or update role interface is use /api/role/addedOrUpdateRole  , because of the backend interface 'saveOrUpdate' is repeat , in the future, we need to change the interface to /api/role (ROLE)
-            await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {
-                ...value,
-                tenantId: getTenantByLocalStorage()
+            await executeAndCallbackRefresh(async () => {
+                // TODO: added or update role interface is use /api/role/addedOrUpdateRole  , because of the backend interface 'saveOrUpdate' is repeat , in the future, we need to change the interface to /api/role (ROLE)
+                await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
+                handleModalVisible(false);
             });
-            handleModalVisible(false);
-            setFormValues({})
-            actionRef?.current?.reload?.();
+
+
         }
 
         /**
@@ -162,14 +166,12 @@ const RoleProTable: React.FC = () => {
                 values={{}}
             />
             {/* modify */}
-            {(formValues && Object.keys(formValues).length) &&
-                <RoleModalForm
-                    onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
-                    onCancel={() => handleCancel()}
-                    modalVisible={updateModalVisible}
-                    values={formValues}
-                />
-            }
+            <RoleModalForm
+                onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
+                onCancel={() => handleCancel()}
+                modalVisible={updateModalVisible}
+                values={formValues}
+            />
         </>
     }
 ;

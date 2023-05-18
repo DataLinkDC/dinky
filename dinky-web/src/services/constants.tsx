@@ -124,7 +124,29 @@ export const API_CONSTANTS = {
   // ---- get project build steps ----
   GIT_PROJECT_BUILD_STEPS: "/api/git/build-steps",
   // ---- get project all build logs ----
-    GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
+  GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
+
+  // UDF template
+  UDF_TEMPLATE: "/api/udf/template/list",
+  // UDF template add or update
+  UDF_TEMPLATE_ADD_UPDATE: "/api/udf/template",
+  // UDF template delete
+  UDF_TEMPLATE_DELETE: "/api/udf/template/delete",
+  // UDF template enable or disable
+  UDF_TEMPLATE_ENABLE: "/api/udf/template/enable",
+
+
+
+  // system config center
+  //-- system root logs
+  SYSTEM_ROOT_LOG: "/api/system/getRootLog",
+  // -- get logs list
+  SYSTEM_ROOT_LOG_LIST: "/api/system/listLogDir",
+  // -- READ LOG file
+  SYSTEM_ROOT_LOG_READ: "/api/system/readFile",
+
+  // process list
+  PROCESS_LIST: "/api/process/listAllProcess",
 
 };
 
@@ -262,12 +284,14 @@ export const SWITCH_OPTIONS =() => {
 
 export const DIALECT = {
   JAVA: "java",
+  LOG: "log",
   XML: "xml",
   MD: "md",
   MDX: "mdx",
   MARKDOWN: "markdown",
   SCALA: "scala",
   PYTHON: "py",
+  PYTHON_LONG: "python",
   YML: "yml",
   YAML: "yaml",
   SH: "sh",

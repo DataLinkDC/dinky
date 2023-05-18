@@ -92,7 +92,14 @@
                 <include>dinky-client-1.16-${project.version}.jar</include>
             </includes>
         </fileSet>
-
+        <fileSet>
+            <directory>${project.parent.basedir}/build/extends/</directory>
+            <outputDirectory>plugins/flink1.17</outputDirectory>
+            <includes>
+                <include>dinky-catalog-mysql-1.17-${project.version}.jar</include>
+                <include>dinky-client-1.17-${project.version}.jar</include>
+            </includes>
+        </fileSet>
         <fileSet>
             <directory>${project.parent.basedir}/build/extends/</directory>
             <outputDirectory>plugins</outputDirectory>

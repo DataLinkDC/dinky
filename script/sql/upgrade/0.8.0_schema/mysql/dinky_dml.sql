@@ -31,3 +31,17 @@ UPDATE dinky_cluster_configuration SET config_json =( SELECT JSON_SET( config_js
 
 -- Fix spelling error
 update dinky_task set dialect = 'KubernetesApplication' where dialect = 'KubernetesApplaction';
+
+-- change dinky_udf_template table structure
+alter table dinky_udf_template alter column `enabled` set default 1;
+alter table dinky_udf_template modify column `name` varchar(100);
+alter table dinky_udf_template modify column `template_code` longtext;
+
+
+-- change dinky_udf table structure
+alter table dinky_udf modify column `name` varchar(200);
+alter table dinky_udf modify column `class_name` varchar(200);
+alter table dinky_udf modify column `class_name` varchar(200);
+alter table dinky_udf alter column `enable` set default 1;
+alter table dinky_udf modify column `source_code` longtext;
+

@@ -23,20 +23,7 @@ import org.dinky.db.mapper.SuperMapper;
 import org.dinky.model.UDFTemplate;
 
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
-import java.util.List;
-import java.util.Map;
-
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
-/** @since 0.6.8 udf 模板mapper */
+/** udf template mapper */
 @Mapper
-public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {
-
-    @Override
-    @Select("select * from dinky_udf_template")
-    List<UDFTemplate> selectForProTable(
-            Page<UDFTemplate> page, Wrapper<UDFTemplate> queryWrapper, Map<String, Object> param);
-}
+public interface UDFTemplateMapper extends SuperMapper<UDFTemplate> {}

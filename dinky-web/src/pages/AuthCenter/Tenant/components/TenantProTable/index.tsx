@@ -44,15 +44,22 @@ const TenantProTable: React.FC = () => {
     const [formValues, setFormValues] = useState<Partial<UserBaseInfo.Tenant>>({});
 
 
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        setLoading(false);
+        actionRef.current?.reload?.();
+    }
+
     /**
      * add tenant
      * @param value
      */
     const handleAddOrUpdateSubmit = async (value: Partial<UserBaseInfo.Tenant>) => {
-        await handleAddOrUpdate(API_CONSTANTS.TENANT, value);
-        handleModalVisible(false);
-        setFormValues({})
-        actionRef?.current?.reload?.();
+       await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.TENANT, value);
+            handleModalVisible(false);
+        })
     };
 
     /**
@@ -60,24 +67,20 @@ const TenantProTable: React.FC = () => {
      * @param id tenant id
      */
     const handleDeleteSubmit = async (id: number) => {
-        setLoading(true)
-        // TODO: delete tenant interface is use /api/tenant/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/tenant (TENANT)
-        await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
-        setLoading(false)
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(async () => {
+            // TODO: delete tenant interface is use /api/tenant/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/tenant (TENANT)
+            await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
+        })
     };
 
     /**
      * assign user to tenant
      */
     const handleAssignUserSubmit = async () => {
-        // to save
-        await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
-            tenantId: formValues.id as number,
-            userIds: tenantRelFormValues
-        });
-        setHandleGrantTenant(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {tenantId: formValues.id, userIds: tenantRelFormValues});
+            setHandleGrantTenant(false);
+        })
     }
     const handleCancel = () => {
         handleModalVisible(false);
@@ -173,15 +176,13 @@ const TenantProTable: React.FC = () => {
         />
 
         {/*update tenant form*/}
-        {(formValues && Object.keys(formValues).length) &&
-            <TenantForm
-                key={"tenantFormUpdate"}
-                onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
-        }
+        <TenantForm
+            key={"tenantFormUpdate"}
+            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+            onCancel={() => handleCancel()}
+            modalVisible={updateModalVisible}
+            values={formValues}
+        />
         {/* assign user to tenant */}
         <TenantModalTransfer
             tenant={formValues}

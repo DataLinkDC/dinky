@@ -18,7 +18,7 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {LockTwoTone} from "@ant-design/icons";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button} from "antd";
@@ -61,23 +61,12 @@ const UserProTable = () => {
     const actionRef = useRef<ActionType>(); // table action
     const access = useAccess(); // access control
 
-
     const executeAndCallbackRefresh = async (callback: () => void) => {
         setLoading(true);
         await callback();
-        actionRef.current?.reload?.();
         setLoading(false);
+        actionRef.current?.reload?.();
     }
-
-    /**
-     * user add role to submit
-     */
-    const handleGrantRoleSubmit = async () => {
-        await executeAndCallbackRefresh(() => {
-            handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {userId: formValues.id, roleIds: roleList});
-            handleAssignRoleTransferOpen(false);
-        })
-    };
 
     /**
      * edit user
@@ -111,17 +100,31 @@ const UserProTable = () => {
      * @param value
      */
     const handleDeleteUser = async (value: UserBaseInfo.User) => {
-        // TODO: delete user interface is use /api/users/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/users (USER)
-        await executeAndCallbackRefresh(() => handleRemoveById(API_CONSTANTS.USER_DELETE, value.id))
+        await executeAndCallbackRefresh(async () => {
+            // TODO: delete user interface is use /api/users/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/users (USER)
+            await handleRemoveById(API_CONSTANTS.USER_DELETE, value.id)
+        })
     };
 
+    /**
+     * user add role to submit
+     */
+    const handleGrantRoleSubmit = async () => {
+        await executeAndCallbackRefresh(async () => {
+            await handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {userId: formValues.id, roleIds: roleList});
+            handleAssignRoleTransferOpen(false);
+        })
+
+    };
 
     /**
      * user enable or disable
      * @param value
      */
     const handleChangeEnable = async (value: UserBaseInfo.User) => {
-        await executeAndCallbackRefresh(() => updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id}))
+        await executeAndCallbackRefresh(async () => {
+            await updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id})
+        })
     };
 
     /**
@@ -129,8 +132,11 @@ const UserProTable = () => {
      * @param value
      */
     const handlePasswordChangeSubmit = async (value: any) => {
-        await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
-        await handlePasswordModalOpen(false);
+        await executeAndCallbackRefresh(async () => {
+            await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
+            await handlePasswordModalOpen(false);
+        })
+
     };
 
     /**
@@ -138,9 +144,9 @@ const UserProTable = () => {
      * @param value
      */
     const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
-        await executeAndCallbackRefresh(() => {
-             handleAddOrUpdate(API_CONSTANTS.USER, value);
-             handleModalOpen(false);
+        await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.USER, value);
+            handleModalOpen(false);
         })
     };
 
@@ -171,7 +177,8 @@ const UserProTable = () => {
             dataIndex: "enabled",
             hideInSearch: true,
             render: (_, record) => {
-                return <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)}/>;
+                return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
+                                        onChange={() => handleChangeEnable(record)}/>;
             },
             filters: STATUS_MAPPING(),
             filterMultiple: false,
@@ -198,7 +205,8 @@ const UserProTable = () => {
             width: "10vh",
             render: (_: any, record: UserBaseInfo.User) => [
                 <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
-                <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)} title={l('user.assignRole')}/>,
+                <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)}
+                           title={l('user.assignRole')}/>,
                 <Button
                     className={"options-button"}
                     key={`${record.id}_change`}
@@ -245,27 +253,23 @@ const UserProTable = () => {
             modalVisible={modalOpen}
             values={{}}
         />
-        {(formValues && Object.keys(formValues).length > 0) && (
-            <>
-                <PasswordModal
-                    key={"handlePasswordChangeSubmit"}
-                    onSubmit={handlePasswordChangeSubmit}
-                    onCancel={() => handlePasswordModalOpen(false)}
-                    modalVisible={passwordModalOpen}
-                    values={formValues}
-                />
-                <UserModalForm
-                    key={"handleUpdateUser"}
-                    onSubmit={handleSubmitUser}
-                    onCancel={() => {
-                        handleUpdateModalOpen(false);
-                        setFormValues({});
-                    }}
-                    modalVisible={updateModalOpen}
-                    values={formValues}
-                />
-            </>
-        )}
+        <PasswordModal
+            key={"handlePasswordChangeSubmit"}
+            onSubmit={handlePasswordChangeSubmit}
+            onCancel={() => handlePasswordModalOpen(false)}
+            modalVisible={passwordModalOpen}
+            values={formValues}
+        />
+        <UserModalForm
+            key={"handleUpdateUser"}
+            onSubmit={handleSubmitUser}
+            onCancel={() => {
+                handleUpdateModalOpen(false);
+                setFormValues({});
+            }}
+            modalVisible={updateModalOpen}
+            values={formValues}
+        />
         {/* assign role to user */}
         <RoleModalTransfer
             user={formValues}

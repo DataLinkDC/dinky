@@ -21,7 +21,7 @@
 import React, {useEffect} from "react";
 import {Form, Modal} from "antd";
 import {FormContextValue} from "@/components/Context/FormContext";
-import {FORM_LAYOUT_PUBLIC, NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
 import {l} from "@/utils/intl";
 import {Document} from "@/types/RegCenter/data";
 import DocumentForm from "@/pages/RegCenter/Document/components/DocumentModal/DocumentForm";

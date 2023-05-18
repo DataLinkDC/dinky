@@ -18,12 +18,9 @@
  */
 
 
-import {Button, Drawer, Popconfirm, Space, Switch} from 'antd';
 import React, {useRef, useState} from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
 import type {ActionType, ProColumns} from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
-import ProDescriptions from '@ant-design/pro-descriptions';
 import {l} from "@/utils/intl";
 import {Document} from "@/types/RegCenter/data";
 import {queryList} from "@/services/api";
@@ -63,7 +60,14 @@ const DocumentTableList: React.FC = () => {
         handleModalVisible(false);
         handleUpdateModalVisible(false);
         setDrawerOpen(false);
-        setFormValues({});
+    }
+
+    const executeAndCallbackRefresh = async (callback: () => void) => {
+        setLoading(true);
+        await callback();
+        setLoading(false);
+        handleCancel();
+        actionRef.current?.reload?.();
     }
 
     /**
@@ -71,8 +75,9 @@ const DocumentTableList: React.FC = () => {
      * @param id
      */
     const handleDeleteSubmit = async (id: number) => {
-        await handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id);
-        actionRef.current?.reload?.();
+       await executeAndCallbackRefresh(async () => {
+            await handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id);
+        })
     }
 
     /**
@@ -80,10 +85,9 @@ const DocumentTableList: React.FC = () => {
      * @param value
      */
     const handleChangeEnable = async (value: Partial<Document>) => {
-        setLoading(true);
-        await updateEnabled(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
-        setLoading(false);
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(async () => {
+            await updateEnabled(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
+        })
     };
 
 
@@ -92,9 +96,9 @@ const DocumentTableList: React.FC = () => {
      * @param value
      */
     const handleAddOrUpdateSubmit = async (value: Partial<Document>) => {
-        await handleAddOrUpdate(API_CONSTANTS.DOCUMENT, value);
-        handleCancel();
-        actionRef.current?.reload?.();
+        await executeAndCallbackRefresh(async () => {
+            await handleAddOrUpdate(API_CONSTANTS.DOCUMENT, value);
+        })
     }
 
     const handleClickEdit = (record: Partial<Document>) => {
@@ -178,7 +182,8 @@ const DocumentTableList: React.FC = () => {
             filterMultiple: false,
             valueEnum: STATUS_ENUM(),
             render: (_, record) => {
-                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record} onChange={() => handleChangeEnable(record)}/>
+                return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record}
+                                        onChange={() => handleChangeEnable(record)}/>
             },
         },
         {
@@ -229,14 +234,12 @@ const DocumentTableList: React.FC = () => {
             values={{}}
         />
         {/*UPDATED*/}
-        {formValues && Object.keys(formValues).length &&
-            <DocumentModalForm
-                onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
-        }
+        <DocumentModalForm
+            onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+            onCancel={() => handleCancel()}
+            modalVisible={updateModalVisible}
+            values={formValues}
+        />
         {/*DRAWER*/}
         <DocumentDrawer onCancel={() => handleCancel()} modalVisible={drawerOpen} values={formValues}
                         columns={columns}/>

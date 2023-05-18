@@ -66,6 +66,7 @@ export default {
   'button.downScroll': '向下滚动',
   'button.upScroll': '向上滚动',
   'button.stopRefresh': '停止自动刷新',
+  'button.startRefresh': '开始自动刷新(5s/次)',
 
 
   'right.menu.open': '打开',

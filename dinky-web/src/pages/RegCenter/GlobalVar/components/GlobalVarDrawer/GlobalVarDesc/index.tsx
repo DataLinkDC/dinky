@@ -25,7 +25,7 @@ type GlobalVarDescProps = {
     values: Partial<GlobalVar>;
     columns: any;
 }
-const DocumentDesc: React.FC<GlobalVarDescProps> = (props) => {
+const  GlobalVarDesc: React.FC<GlobalVarDescProps> = (props) => {
     const {values, columns} = props;
     return <>
         <ProDescriptions<GlobalVar>
@@ -41,4 +41,4 @@ const DocumentDesc: React.FC<GlobalVarDescProps> = (props) => {
     </>
 }
 
-export default DocumentDesc;
+export default GlobalVarDesc;
