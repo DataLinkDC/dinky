@@ -22,15 +22,17 @@ import {Button, Col, Row} from 'antd';
 import {BackwardOutlined} from '@ant-design/icons';
 import {DataSourceDetailBackButton} from '@/components/StyledComponents';
 import {l} from '@/utils/intl';
-import {history} from '@umijs/max';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
+import { useNavigate } from '@umijs/max';
 
 type DataSourceDetailProps = {
   dataSource: Partial<DataSources.DataSource>;
   backClick: () => void;
 }
 const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
+  const navigate = useNavigate();
+
 
   const {dataSource, backClick} = props;
   const [loading, setLoading] = useState<boolean>(false);
@@ -38,7 +40,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
 
   const handleBackClick = () => {
     // go back
-    history.back();
+    navigate('/registration/database', { state: { from: `/registration/database/detail/${dataSource.id}` } });
     // back click callback
     backClick();
   };

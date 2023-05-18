@@ -136,13 +136,14 @@ export default {
   'rc.ds.flinkConfigPlaceholder': '请指定 Flink With 的默认配置!',
   'rc.ds.flinkConfigTooltip': '避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用 `变量引用方式` 来加载连接配置。说明：引用名称指的是唯一标识，即该表单中的`名称`。注意需要开启全局变量（原片段机制）',
   'rc.ds.flinkTemplatePlaceholder': '请指定 Flink With 的生成模板!',
-  'rc.ds.flinkTemplateTooltip': 'Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 `变量引用方式`中得 schemaName 是指动态获取数据库，`变量引用方式`中得 tableName 动态获取表名称',
+  'rc.ds.flinkTemplateTooltip': 'Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 `变量引用方式`中的 schemaName 是指动态获取数据库，`变量引用方式`中的 tableName 动态获取表名称',
   'rc.ds.source': '来源',
   'rc.ds.warehouse': '数仓',
   'rc.ds.application': '应用',
   'rc.ds.backup': '备份',
   'rc.ds.other': '其他',
-  'rc.ds.enter': '点击列表中得 icon 图片进入该数据源得详情页! 支持查看该数据源的库&表信息,以及可以进行及时查询',
+  'rc.ds.enter': '点击列表中的 icon 图片进入该数据源的详情页! 支持查看该数据源的库&表信息,以及可以进行即时查询',
+  'rc.ds.enter.error': '该数据源状态异常无法进入,心跳正常后方可进入!',
 
   // datasource of schema info page
   'rc.ds.detail.tag.desc': '描述',

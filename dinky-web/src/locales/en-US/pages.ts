@@ -146,7 +146,7 @@ export default {
   'rc.ds.backup': 'Backup',
   'rc.ds.other': 'Other',
   'rc.ds.enter': 'Click the icon picture in the list to enter the details page of the DataSource! Support viewing the database & table information of the DataSource, and timely query',
-
+  'rc.ds.enter.error': 'The DataSource status is abnormal and cannot be entered, only after the heartbeat is normal!',
 
   // datasource of schema info page
   'rc.ds.detail.tag.desc': 'Description',

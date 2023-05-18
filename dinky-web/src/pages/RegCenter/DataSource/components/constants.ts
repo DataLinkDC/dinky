@@ -23,15 +23,15 @@ import {l} from '@/utils/intl';
  */
 export const DATA_SOURCE_TYPE: any = [
   {
-    type: 'MySql',
+    type: 'MySQL',
   }, {
     type: 'Oracle',
   }, {
-    type: 'PostgreSql',
+    type: 'PostgreSQL',
   }, {
     type: 'ClickHouse',
   }, {
-    type: 'SqlServer',
+    type: 'SQLServer',
   }, {
     type: 'Doris',
   }, {

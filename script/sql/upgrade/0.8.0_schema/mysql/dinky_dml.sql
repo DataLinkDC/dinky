@@ -45,3 +45,7 @@ alter table dinky_udf modify column `class_name` varchar(200);
 alter table dinky_udf alter column `enable` set default 1;
 alter table dinky_udf modify column `source_code` longtext;
 
+-- change data source of type
+update dinky_data_source set `type` = 'MySQL' where `type` = 'Mysql';
+update dinky_data_source set `type` = 'PostgreSQL' where `type` = 'PostgreSql';
+update dinky_data_source set `type` = 'SQLServer' where `type` = 'SqlServer';

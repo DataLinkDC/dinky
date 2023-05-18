@@ -18,11 +18,11 @@
 import React from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {Values} from "async-validator";
-import {ProForm, ProFormGroup, ProFormSelect, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
+import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {DataSources} from "@/types/RegCenter/data.d";
 import {AUTO_COMPLETE_TYPE, GROUP_TYPE} from "@/pages/RegCenter/DataSource/components/constants";
-import {AutoComplete} from "antd";
+import {AutoComplete, Input} from "antd";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
 import {renderDataSourceType} from "@/pages/RegCenter/DataSource/components/function";
 
@@ -60,22 +60,21 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
       <ProForm.Group>
         <ProFormText
           name="name"
-          width={"lg"}
+          width={"md"}
           label={l("rc.ds.name")}
           rules={[{required: true, message: l("rc.ds.namePlaceholder")}]}
           placeholder={l("rc.ds.namePlaceholder")}
         />
         <ProFormSelect
           name="groupName"
-          width={"md"}
+          width={"sm"}
           label={l("rc.ds.groupName")}
           options={GROUP_TYPE}
           placeholder={l("rc.ds.groupNamePlaceholder")}
         />
-
         <ProFormSelect
           name="type"
-          width={"md"}
+          width={"sm"}
           label={l("rc.ds.type")}
           showSearch
           options={renderDataSourceType()}
@@ -98,6 +97,12 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           rules={[{required: true, message: l("rc.ds.passwordPlaceholder")}]}
           placeholder={l("rc.ds.passwordPlaceholder")}
         />
+        <ProFormText
+          name="note"
+          width={"md"}
+          label={l("global.table.note")}
+          placeholder={l("global.table.notePlaceholder")}
+        />
       </ProForm.Group>
 
       <ProForm.Group>
@@ -105,20 +110,14 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           options={AUTO_COMPLETE_TYPE}
           onSelect={(value) => form.setFieldsValue({url: value})}
         >
-          <ProFormTextArea
+          <ProForm.Item
             name="url"
-            width={"lg"}
             label={l("rc.ds.url")}
             rules={[{required: true, message: l("rc.ds.urlPlaceholder")}]}
-            placeholder={l("rc.ds.urlPlaceholder")}
-          />
+          >
+            <Input.TextArea rows={3} cols={130}  placeholder={l("rc.ds.urlPlaceholder")}/>
+          </ProForm.Item>
         </AutoComplete>
-        <ProFormTextArea
-          name="note"
-          width={"md"}
-          label={l("global.table.note")}
-          placeholder={l("global.table.notePlaceholder")}
-        />
 
       </ProForm.Group>
 

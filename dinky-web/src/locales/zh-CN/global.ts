@@ -94,8 +94,8 @@ export default {
   'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
   'tips.create.session.success': '创建会话【{session}】成功！',
 
-  'status.enabled': '已启用',
-  'status.disabled': '已禁用',
+  'status.enabled': '启用',
+  'status.disabled': '禁用',
 
   'global.time.second': '秒 ',
   'global.time.minute': '分 ',
