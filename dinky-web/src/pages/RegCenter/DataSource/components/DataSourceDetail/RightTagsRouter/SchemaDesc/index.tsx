@@ -34,7 +34,6 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
     {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ?
       <>
         <TableInfo tableInfo={tableInfo}/>
-        <Divider/>
         <ColumnInfo columnInfo={tableColumns}/>
       </>
       : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
