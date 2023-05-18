@@ -19,6 +19,7 @@
 
 package com.zdpx.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.model.Task;
 import org.dinky.service.TaskService;
@@ -69,7 +70,7 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
     }
 
     @Override
-    public List<String> getOperatorConfigurations() {
+    public List<JsonNode> getOperatorConfigurations() {
         return Scene.getOperatorConfigurations();
     }
 

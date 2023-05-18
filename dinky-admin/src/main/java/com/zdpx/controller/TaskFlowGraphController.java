@@ -19,6 +19,7 @@
 
 package com.zdpx.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.dinky.common.result.Result;
 import org.dinky.model.Task;
 
@@ -49,15 +50,18 @@ public class TaskFlowGraphController {
     @PutMapping
     public Result<Void> submitSql(@RequestBody Task task) {
         if (taskFlowGraphService.saveOrUpdateTask(task)) {
-            return Result.succeed("操作成功");
+            return Result.succeed("submit sql success");
         } else {
-            return Result.failed("操作失败");
+            return Result.failed("submit sql failed");
         }
     }
 
-    @GetMapping("/configurations")
-    public Result<List<String>> getOperatorConfigurations() {
-        List<String> configurations = taskFlowGraphService.getOperatorConfigurations();
+    @GetMapping("/operatorConfigure")
+    public Result<List<JsonNode>> getOperatorConfigurations() {
+        List<JsonNode> configurations = taskFlowGraphService.getOperatorConfigurations();
+        if (configurations == null || configurations.isEmpty()) {
+            return Result.failed("get configuration failed");
+        }
         return Result.succeed(configurations);
     }
 }

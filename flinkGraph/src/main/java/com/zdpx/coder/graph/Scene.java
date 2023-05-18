@@ -19,6 +19,9 @@
 
 package com.zdpx.coder.graph;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -31,6 +34,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.elasticsearch.index.mapper.Mapper;
 import org.reflections.Reflections;
 
 import com.zdpx.coder.SceneCodeBuilder;
@@ -51,7 +55,7 @@ public class Scene {
     public static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
 
     public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
-
+    private static final ObjectMapper mapper = new ObjectMapper();
     private Environment environment = new Environment();
     private ProcessPackage processPackage;
 
@@ -130,15 +134,19 @@ public class Scene {
                 .collect(Collectors.toMap(Map.Entry::getKey, t -> t.getValue().getName()));
     }
 
-    public static List<String> getOperatorConfigurations() {
+    public static List<JsonNode> getOperatorConfigurations() {
         return OPERATOR_MAP.entrySet().stream()
                 .map(
                         t -> {
                             String specification =
                                     InstantiationUtil.instantiate(t.getValue()).getSpecification();
-                            return String.format(
-                                    "{\"name\": \"%s\",\n\"specification\": \"%s\"}",
-                                    t.getKey(), specification);
+                            try {
+                                return mapper.readTree(String.format(
+                                        "{\"name\": \"%s\",\n\"specification\": %s}",
+                                        t.getKey(), specification));
+                            } catch (JsonProcessingException e) {
+                                throw new RuntimeException(e);
+                            }
                         })
                 .collect(Collectors.toList());
     }

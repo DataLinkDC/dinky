@@ -19,6 +19,7 @@
 
 package com.zdpx.service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Task;
 
@@ -33,5 +34,5 @@ public interface TaskFlowGraphService extends ISuperService<FlowGraph> {
 
     boolean saveOrUpdateTask(Task task);
 
-    List<String> getOperatorConfigurations();
+    List<JsonNode> getOperatorConfigurations();
 }
