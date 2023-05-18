@@ -239,7 +239,7 @@ export const FORM_LAYOUT_PUBLIC = {
  * the modal form layout of public
  */
 export const MODAL_FORM_STYLE: any = {
-  width: "40%",
+  width: "50%",
   style: {
     maxHeight: "70vh",
     overflowY: "auto",

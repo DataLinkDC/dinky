@@ -88,9 +88,9 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   return <>
     <DataSourceDetailBackButton>
       <Space size={'large'}>
-        <Button size={'small'} icon={<ReloadOutlined spin={loading}/>} type="primary"
+        <Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"
                 onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>
-        <Button size={'small'} icon={<BackwardOutlined/>} type="primary"
+        <Button size={'middle'} icon={<BackwardOutlined/>} type="primary"
                 onClick={handleBackClick}>{l('button.back')}</Button>
       </Space>
     </DataSourceDetailBackButton>
