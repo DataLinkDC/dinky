@@ -149,12 +149,19 @@ export default {
   'rc.ds.enter.error': 'The DataSource status is abnormal and cannot be entered, only after the heartbeat is normal!',
 
   // datasource of schema info page
+  // tags
   'rc.ds.detail.tag.desc': 'Description',
   'rc.ds.detail.tag.query': 'Query',
   'rc.ds.detail.tag.gensql': 'Generate SQL',
   'rc.ds.detail.tag.console': 'Console',
+
+  // tips
+  'rc.ds.detail.tips': 'Click on the table on the left to get the description information of the table',
+
+  // columns info
   'rc.ds.no': 'No.',
   'rc.ds.columnName': 'Field Name',
+  'rc.ds.columnType': 'Type',
   'rc.ds.comment': 'Comment',
   'rc.ds.primarykey': 'Primary Key',
   'rc.ds.autoIncrement': 'Autoincrement',

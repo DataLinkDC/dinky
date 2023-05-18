@@ -18,13 +18,15 @@
 import React, {useCallback, useEffect, useState} from 'react';
 import {DataSources} from '@/types/RegCenter/data';
 import {Loading} from '@/pages/Other/Loading';
-import {Button, Col, Row} from 'antd';
-import {BackwardOutlined} from '@ant-design/icons';
+import {Button, Col, Row, Space} from 'antd';
+import {BackwardOutlined, ReloadOutlined} from '@ant-design/icons';
 import {DataSourceDetailBackButton} from '@/components/StyledComponents';
 import {l} from '@/utils/intl';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
-import { useNavigate } from '@umijs/max';
+import {useNavigate} from '@umijs/max';
+import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
+import {getDataByIdReturnResult, queryDataByParams} from '@/services/BusinessCrud';
 
 type DataSourceDetailProps = {
   dataSource: Partial<DataSources.DataSource>;
@@ -37,29 +39,60 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   const {dataSource, backClick} = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
+  const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
+  const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
 
   const handleBackClick = () => {
     // go back
-    navigate('/registration/database', { state: { from: `/registration/database/detail/${dataSource.id}` } });
+    navigate('/registration/database', {state: {from: `/registration/database/detail/${dataSource.id}`}});
     // back click callback
     backClick();
   };
 
-  useEffect(() => {
-    // todo: fetch data by dataSource.id to set treeData
+
+  const querySchemaTree = useCallback(async () => {
+    setTableColumns([]);
+    setTableInfo({});
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then((res) => {
+      if (res.code === RESPONSE_CODE.SUCCESS) {
+        setTreeData(res.datas);
+      }
+    });
+    setLoading(false);
   }, []);
 
-  const onSchemaTreeNodeClick = useCallback((info: any) => {
-    console.log(info);
+
+  useEffect(() => {
+    querySchemaTree();
   }, []);
+
+  const onSchemaTreeNodeClick = useCallback(async (info: any) => {
+    const {node: nodeInfo, node: {isLeaf, parentId, name, fullInfo}} = info;
+    if (isLeaf) {
+      console.log(nodeInfo, 'nodeInfo');
+      const data = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, {
+        id: dataSource.id,
+        schemaName: parentId,
+        tableName: name
+      });
+      setTableColumns(data);
+      setTableInfo(fullInfo);
+    } else {
+      setTableColumns([]);
+      setTableInfo({});
+    }
+  }, []);
+
 
   return <>
     <DataSourceDetailBackButton>
-      <Button icon={<BackwardOutlined/>} type="primary" onClick={handleBackClick}>{l('button.back')}</Button>
+      <Space size={'large'}>
+        <Button size={'small'} icon={<ReloadOutlined spin={loading}/>} type="primary"
+                onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>
+        <Button size={'small'} icon={<BackwardOutlined/>} type="primary"
+                onClick={handleBackClick}>{l('button.back')}</Button>
+      </Space>
     </DataSourceDetailBackButton>
     {
       loading ?
@@ -67,14 +100,17 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
         :
         <>
           <Row>
-            <Col span={4} className={'siderTree'}>
-              {/* tree */}
-              <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
-            </Col>
-            <Col span={20}>
-              {/* tags */}
-              <RightTagsRouter/>
-            </Col>
+              <Col span={4} className={'siderTree schemaTree'}>
+                {/* tree */}
+                <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
+              </Col>
+              <Col span={20}>
+                {/* tags */}
+                <RightTagsRouter
+                  tableInfo={tableInfo}
+                  tableColumns={tableColumns}
+                />
+              </Col>
           </Row>
         </>
     }

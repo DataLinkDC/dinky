@@ -18,7 +18,8 @@
 
 import {Empty, Tree} from 'antd';
 import React from 'react';
-import {buildTreeData} from '@/utils/function';
+import {DatabaseTwoTone, TableOutlined, TabletTwoTone} from '@ant-design/icons';
+import {folderSeparator} from '@/utils/function';
 
 const {DirectoryTree} = Tree;
 
@@ -31,12 +32,40 @@ type SchemaTreeProps = {
 
 const SchemaTree:React.FC<SchemaTreeProps> = (props) => {
   const {treeData, onNodeClick} = props;
+
+  const buildSchemaTree = (data: any): any => data.map((item: any) => {
+    return {
+      isLeaf: false,
+      name: item.name,
+      parentId: item.name,
+      icon: <DatabaseTwoTone/>,
+      content: item.name,
+      path: item.name,
+      title: item.name,
+      fullInfo: item,
+      key: item.name,
+      children: item.tables.map((table: any) => {
+        return {
+          isLeaf: true,
+          name: table.name,
+          parentId: item.name,
+          icon: <TableOutlined/>,
+          content: table.name,
+          path: item.name + folderSeparator() + table.name,
+          title: table.name,
+          key: item.name + folderSeparator() + table.name,
+          fullInfo: table,
+        };
+      }),
+    };
+  });
+
   return<>
     {
       (treeData.length > 0) ?
         <DirectoryTree
           onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildTreeData(treeData)}
+          treeData={buildSchemaTree(treeData)}
         /> : <Empty className={"code-content-empty"}/>
     }
   </>

@@ -146,12 +146,19 @@ export default {
   'rc.ds.enter.error': '该数据源状态异常无法进入,心跳正常后方可进入!',
 
   // datasource of schema info page
+  // tags
   'rc.ds.detail.tag.desc': '描述',
   'rc.ds.detail.tag.query': '查询',
   'rc.ds.detail.tag.gensql': '生成 SQL',
   'rc.ds.detail.tag.console': '控制台',
+
+  // tips
+  'rc.ds.detail.tips': '点击左侧的表,获取表的描述信息',
+
+  // columns info
   'rc.ds.no': '序号',
-  'rc.ds.columnName': '字段名称',
+  'rc.ds.columnName': '名称',
+  'rc.ds.columnType': '类型',
   'rc.ds.comment': '注释',
   'rc.ds.primarykey': '主键',
   'rc.ds.autoIncrement': '自增',

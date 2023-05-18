@@ -19,45 +19,55 @@ import {Space, Tabs} from 'antd';
 import {l} from '@/utils/intl';
 import {
   BookOutlined,
-  ConsoleSqlOutlined,
-  LaptopOutlined,
-  SearchOutlined
 } from '@ant-design/icons';
 import React from 'react';
+import {DataSources} from '@/types/RegCenter/data';
+import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
 
-const {TabPane} = Tabs;
 
-const RightTagsRouter = () => {
+type RightTagsRouterProps = {
+  tableInfo: Partial<DataSources.Table>;
+  tableColumns: Partial<DataSources.Column[]>;
+}
+
+
+const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
+
+  const {tableColumns, tableInfo} = props;
+
+  const [activeKey, setActiveKey] = React.useState('desc');
+
   return <>
-    <Tabs>
-      <TabPane
-        tab={<Space><BookOutlined/>{l('rc.ds.detail.tag.desc')}</Space>}
-        key={'desc'}
-      >
-        <div>desc</div>
-      </TabPane>
-
-      <TabPane
-        tab={<Space><SearchOutlined/>{l('rc.ds.detail.tag.query')}</Space>}
-        key={'query'}
-      >
-        <div>query</div>
-      </TabPane>
-
-      <TabPane
-        tab={<Space><LaptopOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>}
-        key={'gensql'}
-      >
-        <div>gensql</div>
-      </TabPane>
-
-      <TabPane
-        tab={<Space><ConsoleSqlOutlined/>{l('rc.ds.detail.tag.console')}</Space>}
-        key={'console'}
-      >
-        <div>console</div>
-      </TabPane>
-    </Tabs>
+    <Tabs
+      activeKey={activeKey}
+      onChange={(key) => setActiveKey(key)}
+      size="small"
+      animated
+      destroyInactiveTabPane
+      style={{height: '100%'}}
+      items={[
+        {
+          key: 'desc',
+          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.desc')}</Space>,
+          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+        },
+        {
+          key: 'query',
+          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.query')}</Space>,
+          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+        },
+        {
+          key: 'gensql',
+          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
+          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+        },
+        {
+          key: 'console',
+          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
+          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+        },
+      ]}
+    />
   </>;
 };
 

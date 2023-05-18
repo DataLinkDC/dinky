@@ -91,7 +91,9 @@ export const API_CONSTANTS = {
   DATASOURCE_CHECK_HEARTBEAT_BY_ID: "/api/database/checkHeartBeatByDataSourceId",
   // copy datasource
   DATASOURCE_COPY: "/api/database/copyDatabase",
-
+  // get schema by datasource id
+  DATASOURCE_GET_SCHEMA_TABLES: "/api/database/getSchemasAndTables",
+  DATASOURCE_GET_COLUMNS_BY_TABLE: "/api/database/listColumns",
 
 
   // document list
