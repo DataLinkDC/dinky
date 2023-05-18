@@ -21,21 +21,21 @@ import {SWITCH_OPTIONS} from "@/services/constants";
 import React from "react";
 
 type EnableSwitchProps = {
-    record: any;
-    onChange: () => void;
-    disabled?: boolean;
+  record: any;
+  onChange: () => void;
+  disabled?: boolean;
 }
 export const EnableSwitchBtn: React.FC<EnableSwitchProps> = (props) => {
 
-    const {record, onChange, disabled = false} = props;
+  const {record, onChange, disabled = false} = props;
 
-    return <>
-        <Space className={"hidden-overflow"}>
-            <Switch
-                {...SWITCH_OPTIONS()}
-                checked={record.enabled}
-                disabled={disabled}
-                onChange={() => onChange()}/>
-        </Space>
-    </>
-}
+  return <>
+    <Space className={"hidden-overflow"}>
+      <Switch
+        {...SWITCH_OPTIONS()}
+        checked={record.enabled}
+        disabled={disabled}
+        onChange={() => onChange()}/>
+    </Space>
+  </>;
+};

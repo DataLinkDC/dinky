@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-
-import {Alert} from '@/types/RegCenter/data';
+import {PageContainer} from "@ant-design/pro-components";
+import DataSourceTable from "@/pages/RegCenter/DataSource/components/DataSourceList";
 
 /**
- * AlertInstanceFormProps
+ * render DataSource page
  */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+export default () => {
+  return <>
+    <PageContainer title={false}>
+      <DataSourceTable/>
+    </PageContainer>
+  </>;
+}

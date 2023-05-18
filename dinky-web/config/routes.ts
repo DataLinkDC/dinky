@@ -118,7 +118,12 @@ export default [
         path: '/registration/database',
         name: 'database',
         icon: 'DatabaseOutlined',
-        // component: './RegistrationCenter/DataBase',
+        component: './RegCenter/DataSource',
+        routes: [
+          {
+            path: '/registration/database/detail/:id',
+          }
+        ]
       },
       {
         path: '/registration/alert',
@@ -167,7 +172,7 @@ export default [
     name: 'auth',
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
-    access: "canAdmin",
+    access: 'canAdmin',
     routes: [
       {
         path: '/auth',

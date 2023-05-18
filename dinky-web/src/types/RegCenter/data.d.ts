@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {BaseBeanColumns} from "@/types/Public/data";
+import {BaseBeanColumns} from '@/types/Public/data';
 
 /**
  * about alert
@@ -44,11 +44,11 @@ export type AlertConfig = {
 }
 
 export const ALERT_TYPE = {
-  DINGTALK: "DingTalk",
-  WECHAT: "WeChat",
-  FEISHU: "FeiShu",
-  EMAIL: "Email",
-  GROUP: "Group",
+  DINGTALK: 'DingTalk',
+  WECHAT: 'WeChat',
+  FEISHU: 'FeiShu',
+  EMAIL: 'Email',
+  GROUP: 'Group',
 };
 
 export const ALERT_CONFIG_LIST: AlertConfig[] = [{
@@ -98,12 +98,12 @@ declare namespace Cluster {
 /**
  * about database and metadata
  */
-declare namespace DataBases {
+declare namespace DataSources {
 
   /**
    * database info
    */
-  export type DataBase = BaseBeanColumns & {
+  export type DataSource = BaseBeanColumns & {
     groupName: string,
     type: string,
     url: string,
@@ -199,7 +199,6 @@ export type GitProject = BaseBeanColumns & {
   buildStep: number,
   udfClassMapList: string,
 }
-
 
 
 export type GitProjectTreeNode = {

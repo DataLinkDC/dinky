@@ -50,6 +50,8 @@ export default {
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
   'button.test': 'Test',
+  'button.clear': 'Clear',
+  'button.copy': 'Copy',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
   'button.asc': 'ASC',

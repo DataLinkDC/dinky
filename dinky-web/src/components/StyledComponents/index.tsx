@@ -15,16 +15,17 @@
  * limitations under the License.
  */
 
+import styled from "styled-components";
 
-import {Alert} from '@/types/RegCenter/data';
+export const DataSourceAction = styled.div`
+  display: flex !important;
+  justify-content: space-between;
+  margin-left: 2vw;
+  margin-right: 2vw;
+`;
 
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+
+export const DataSourceDetailBackButton = styled.div`
+  display: flex !important;
+  justify-content: flex-end;
+`;
