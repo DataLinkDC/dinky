@@ -20,6 +20,7 @@ import {Divider, Empty} from 'antd';
 import React from 'react';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import ColumnInfo from './ColumnInfo/Index';
+import {l} from '@/utils/intl';
 
 type SchemaDescProps = {
   tableInfo: Partial<DataSources.Table>;
@@ -36,7 +37,7 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
         <Divider/>
         <ColumnInfo columnInfo={tableColumns}/>
       </>
-      : <Empty className={'code-content-empty'} description={'点击左侧的表,获取表的描述信息'}/>
+      : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
     }
   </>;
 };
