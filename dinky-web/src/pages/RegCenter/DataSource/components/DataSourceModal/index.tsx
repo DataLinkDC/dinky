@@ -125,6 +125,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
     <ModalForm<DataSources.DataSource>
       {...MODAL_FORM_OPTIONS}
       open={visible}
+      modalProps={{onCancel: handleCancel}}
       title={values.id ? l("rc.ds.modify") : l("rc.ds.create")}
       form={form}
       submitter={{render: () => [...renderFooter()]}}
