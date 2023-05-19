@@ -119,6 +119,7 @@ const ProjectProTable: React.FC = () => {
     await executeAndCallback(async () => {
         const result = await handlePutDataByParams(API_CONSTANTS.GIT_PROJECT_BUILD, l("rc.gp.building"), {id: value.id});
         if (result) {
+          setFormValues(value);
           handleBuildVisible(true);
             // todo : build success, set build modal visible and set build steps
         }
@@ -303,7 +304,9 @@ const ProjectProTable: React.FC = () => {
     {buildModalVisible && <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
                                values={formValues}/>}
     {/* show build log modal */}
-    {logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}
+    {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
+    {logModalVisible &&  <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
+                                     values={formValues}/>}
     {/* show code tree modal */}
     <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>
   </>;

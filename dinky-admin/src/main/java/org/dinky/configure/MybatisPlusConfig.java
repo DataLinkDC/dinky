@@ -74,7 +74,7 @@ public class MybatisPlusConfig {
                     "dinky_savepoints",
                     "dinky_task",
                     "dinky_task_statement",
-                    "dinky_git_project",
+                    //                    "dinky_git_project",
                     "dinky_task_version");
 
     @Bean

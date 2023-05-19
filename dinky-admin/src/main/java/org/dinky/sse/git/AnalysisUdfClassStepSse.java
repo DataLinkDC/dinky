@@ -85,6 +85,9 @@ public class AnalysisUdfClassStepSse extends StepSse {
                             v.stream().map(Class::getName).collect(Collectors.toList()));
                     dataList.add(gitAnalysisJarDTO);
                 });
+        // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
+        System.gc();
+
         String data = JSONUtil.toJsonStr(dataList);
         sendMsg(getList(null).set("data", data));
 

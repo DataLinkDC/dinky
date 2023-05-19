@@ -398,7 +398,7 @@ public class UDFUtil {
         } catch (ValidationException e) {
             throw e;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return classList;
     }

@@ -25,6 +25,7 @@ import org.dinky.dto.GitProjectDTO;
 import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
 import org.dinky.service.GitProjectService;
+import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
 import org.dinky.utils.MessageResolverUtils;
@@ -35,6 +36,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -167,8 +169,9 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @CrossOrigin("*")
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
-        SseEmitter emitter = new SseEmitter(TimeUnit.MINUTES.toMillis(30));
+        SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
         Dict params = new Dict();
         File logDir =

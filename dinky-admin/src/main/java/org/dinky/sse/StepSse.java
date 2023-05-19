@@ -113,18 +113,18 @@ public abstract class StepSse {
     }
 
     public synchronized void addFileMsg(Object msg) {
-        FileUtil.appendString(Convert.toStr(msg), getLogFile(), StandardCharsets.UTF_8);
+        FileUtil.appendUtf8String(Convert.toStr(msg), getLogFile());
     }
 
     public synchronized void addFileMsgCusLog(String msg) {
         String content = "\n=============    " + Convert.toStr(msg) + "   =============\n";
-        msgList.add(content);
-        FileUtil.appendString(content, getLogFile(), StandardCharsets.UTF_8);
+        addMsg(content);
+        FileUtil.appendUtf8String(content, getLogFile());
     }
 
     public synchronized void addFileMsgLog(String msg) {
-        sendMsg(msg);
-        FileUtil.appendString(msg, getLogFile(), StandardCharsets.UTF_8);
+        addMsg(msg);
+        FileUtil.appendUtf8String(msg, getLogFile());
     }
 
     public synchronized void addFileLog(List<?> data) {
@@ -137,11 +137,11 @@ public abstract class StepSse {
         return new File(logDir, getStep() + ".log");
     }
 
-    public void sendSync() {
+    public synchronized void sendSync() {
         if (CollUtil.isNotEmpty(msgList)) {
             sendMsg(getLogObj(msgList));
+            msgList.clear();
         }
-        msgList.clear();
     }
 
     public void send() {
@@ -234,18 +234,20 @@ public abstract class StepSse {
         //                "status":1  # 2完成  1进行中 0失败
         //
         //        }
+        Object dataResult =
+                (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
         return Dict.create()
-                .set("type", 2)
+                .set("type", 1)
                 .set("currentStep", getStep())
                 .set("resultType", 1)
-                .set("data", JSONUtil.toJsonStr(data))
+                .set("data", dataResult)
                 .set("currentStepName", name)
                 .set("status", status);
     }
 
     protected Dict getLog(String data) {
         return Dict.create()
-                .set("type", 2)
+                .set("type", 1)
                 .set("currentStep", getStep())
                 .set("resultType", 1)
                 .set("data", data)
@@ -259,7 +261,7 @@ public abstract class StepSse {
 
     protected Dict getEndLog() {
         return Dict.create()
-                .set("type", 3)
+                .set("type", 1)
                 .set("currentStep", getStep())
                 .set("resultType", 1)
                 .set("currentStepName", name)
@@ -277,7 +279,7 @@ public abstract class StepSse {
     }
 
     public void getStatus(int step, int status, List<Dict> data) {
-        Dict result = new Dict().set("step", getStep()).set("name", name);
+        Dict result = new Dict().set("step", getStep()).set("name", name).set("status", -1);
         if (getStep() <= step) {
             Instant instant =
                     FileUtil.getAttributes(getLogFile().toPath(), true).creationTime().toInstant();
@@ -287,7 +289,7 @@ public abstract class StepSse {
                             new DateTime(instant).toString(DatePattern.NORM_DATETIME_PATTERN))
                     .set("status", getStep() < step ? 2 : status);
         } else {
-            result.set("startTime", null).set("status", null);
+            result.set("startTime", null);
         }
         data.add(result);
         if (nexStepSse != null) {

@@ -31,7 +31,7 @@ import org.dinky.sse.git.HeadStepSse;
 import org.dinky.sse.git.MavenStepSse;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,19 +39,18 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.IntStream;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
 public final class GitProjectStepSseFactory {
-
     private static Map<Integer, List<SseEmitter>> sseEmitterMap = new ConcurrentHashMap<>();
     private static final ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
@@ -61,6 +60,9 @@ public final class GitProjectStepSseFactory {
 
         StepSse headStepSse = getHeadStepPlan(gitProject.getCodeType(), sleep, emitterList, params);
         cachedThreadPool.execute(headStepSse::main);
+        gitProject.setBuildStep(1);
+        gitProject.setBuildState(1);
+        gitProject.updateById();
 
         sseEmitterMap.put(gitProject.getId(), emitterList);
     }
@@ -102,25 +104,31 @@ public final class GitProjectStepSseFactory {
     }
 
     public static void observe(SseEmitter emitter, GitProject gitProject, Dict params) {
-
         List<Dict> dataList = new ArrayList<>();
         Integer state = gitProject.getExecState();
         Integer step = gitProject.getBuildStep();
         getHeadStepPlan(gitProject.getCodeType(), 0, null, params).getStatus(step, state, dataList);
         try {
-            emitter.send(SseEmitter.event().data(StepResult.getStepInfo(step, dataList)));
+            emitter.send(
+                    SseEmitter.event()
+                            .data(
+                                    StepResult.getStepInfo(
+                                            step, gitProject.getBuildState(), dataList)));
 
             File logDir = getLogDir(gitProject.getName(), gitProject.getBranch());
-            List<String> msgList =
-                    FileUtil.readLines(new File(logDir, step + ".log"), StandardCharsets.UTF_8);
-            StepResult stepResult =
-                    StepResult.builder()
-                            .currentStep(step)
-                            .status(state)
-                            .data(StrUtil.join("\n", msgList))
-                            .type(2)
-                            .build();
-            emitter.send(SseEmitter.event().id("2").data(stepResult));
+            IntStream.range(1, step + 1)
+                    .forEach(
+                            s -> {
+                                String log = FileUtil.readUtf8String(new File(logDir, s + ".log"));
+                                StepResult stepResult =
+                                        StepResult.genLog(s, step == s ? state : 2, log, step != s);
+                                try {
+                                    emitter.send(SseEmitter.event().id("2").data(stepResult));
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                            });
+
         } catch (Exception e) {
             e.printStackTrace();
         }

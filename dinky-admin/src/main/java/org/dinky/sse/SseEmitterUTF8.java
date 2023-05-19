@@ -19,34 +19,23 @@
 
 package org.dinky.sse;
 
-import java.io.Serializable;
+import java.nio.charset.StandardCharsets;
 
-import lombok.Getter;
-import lombok.Setter;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.server.ServerHttpResponse;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
-@Setter
-@Getter
-public class StepState implements Serializable {
-    private Integer currentStep;
-    // 1.log 2.data
-    private Integer type;
-    private Object content;
-    /** 2-success 1-process 0-failed */
-    private Integer status;
+public class SseEmitterUTF8 extends SseEmitter {
+    public SseEmitterUTF8(Long timeout) {
+        super(timeout);
+    }
 
-    private Boolean history;
+    @Override
+    protected void extendResponse(ServerHttpResponse outputMessage) {
+        super.extendResponse(outputMessage);
 
-    public static StepState genHistoryLog(Integer currentStep, Integer status, String log) {
-        StepState stepState = new StepState();
-        stepState.setHistory(true);
-        stepState.setContent(log);
-        stepState.setType(1);
-        stepState.setCurrentStep(currentStep);
-        stepState.setStatus(status);
-        return stepState;
+        HttpHeaders headers = outputMessage.getHeaders();
+        headers.setContentType(new MediaType(MediaType.TEXT_EVENT_STREAM, StandardCharsets.UTF_8));
     }
 }
