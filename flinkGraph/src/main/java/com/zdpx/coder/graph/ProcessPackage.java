@@ -42,7 +42,7 @@ public class ProcessPackage extends Node {
         this.expanded = expanded;
     }
 
-    public <S extends PseudoData<S>, T extends PseudoData<T>> Set<Operator> getOperators() {
+    public Set<Operator> getOperators() {
         return getNodeWrapper().getChildren().stream()
                 .filter(t -> t instanceof Operator)
                 .map(t -> (Operator) t)
@@ -68,10 +68,10 @@ public class ProcessPackage extends Node {
         return getNodeWrapper().getChildren();
     }
 
-    public List<Connection<TableInfo>> getConnects() {
+    public List<Connection> getConnects() {
         return getNodeWrapper().getChildren().stream()
                 .filter(t -> t instanceof Connection)
-                .map(t -> (Connection<TableInfo>) t)
+                .map(t -> (Connection) t)
                 .collect(Collectors.toList());
     }
 

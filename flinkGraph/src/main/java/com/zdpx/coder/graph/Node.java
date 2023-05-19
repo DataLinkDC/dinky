@@ -12,7 +12,6 @@ public abstract class Node implements Identifier {
     protected String name;
     protected Parameters parameters = new Parameters();
     protected NodeWrapper nodeWrapper;
-    private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
     public String getId() {

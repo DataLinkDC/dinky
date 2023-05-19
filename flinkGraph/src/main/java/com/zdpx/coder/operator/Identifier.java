@@ -19,7 +19,9 @@
 
 package com.zdpx.coder.operator;
 
-/** */
+/**
+ *
+ */
 public interface Identifier {
     String getId();
 
@@ -27,6 +29,11 @@ public interface Identifier {
 
     default String getCode() {
         return getClass().getSimpleName();
+    }
+
+    default String getGroup() {
+        String name = getClass().getName();
+        return name.replace("com.zdpx.coder.operator", "");
     }
 
     String getSpecification();

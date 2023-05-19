@@ -1,15 +1,26 @@
 package com.zdpx.coder.json.origin;
 
-import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
-import static com.zdpx.coder.graph.Scene.getAllOperator;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.zdpx.coder.graph.Connection;
+import com.zdpx.coder.graph.Environment;
+import com.zdpx.coder.graph.InputPort;
+import com.zdpx.coder.graph.OutputPort;
+import com.zdpx.coder.graph.ProcessPackage;
+import com.zdpx.coder.graph.Scene;
+import com.zdpx.coder.json.ToInternalConvert;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
+import com.zdpx.coder.utils.InstantiationUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -19,24 +30,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeanUtils;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zdpx.coder.graph.Connection;
-import com.zdpx.coder.graph.Environment;
-import com.zdpx.coder.graph.InputPort;
-import com.zdpx.coder.graph.Node;
-import com.zdpx.coder.graph.OutputPort;
-import com.zdpx.coder.graph.ProcessPackage;
-import com.zdpx.coder.graph.Scene;
-import com.zdpx.coder.json.ToInternalConvert;
-import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
-import com.zdpx.coder.utils.InstantiationUtil;
-
-import lombok.extern.slf4j.Slf4j;
+import static com.zdpx.coder.graph.Scene.OPERATOR_MAP;
+import static com.zdpx.coder.graph.Scene.getAllOperator;
 
 @Slf4j
 public class OriginToInternalConvert implements ToInternalConvert {
@@ -88,29 +83,6 @@ public class OriginToInternalConvert implements ToInternalConvert {
                                 t.getInputPorts().values().stream()
                                         .allMatch(p -> Objects.isNull(p.getConnection())))
                 .collect(Collectors.toList());
-    }
-
-    public static List<Connection<TableInfo>> getAllConnections(ProcessPackage processPackage) {
-        List<Connection<TableInfo>> connections = new ArrayList<>();
-        List<ProcessPackage> processPackages = new LinkedList<>();
-        processPackages.add(processPackage);
-        while (processPackages.iterator().hasNext()) {
-            ProcessPackage processPackageLocal = processPackages.iterator().next();
-            List<Node> originOperatorWrappers = processPackageLocal.getNodeWrapper().getChildren();
-            connections.addAll(processPackageLocal.getConnects());
-            if (!CollectionUtils.isEmpty(originOperatorWrappers)) {
-                for (Node originOperatorWrapper : originOperatorWrappers) {
-                    if (!Objects.isNull(
-                            ((OriginNode) originOperatorWrapper.getNodeWrapper()).getProcesses())) {
-                        processPackages.addAll(
-                                ((OriginNode) originOperatorWrapper.getNodeWrapper())
-                                        .getProcesses());
-                    }
-                }
-            }
-            processPackages.remove(processPackageLocal);
-        }
-        return connections;
     }
 
     /**
