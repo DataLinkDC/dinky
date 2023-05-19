@@ -94,6 +94,7 @@ export const API_CONSTANTS = {
   // get schema by datasource id
   DATASOURCE_GET_SCHEMA_TABLES: "/api/database/getSchemasAndTables",
   DATASOURCE_GET_COLUMNS_BY_TABLE: "/api/database/listColumns",
+  DATASOURCE_GET_GEN_SQL: "/api/database/getSqlGeneration",
 
 
   // document list

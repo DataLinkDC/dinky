@@ -153,7 +153,7 @@ export default {
   'rc.ds.detail.tag.console': '控制台',
 
   // tips
-  'rc.ds.detail.tips': '点击左侧的表,获取表的描述信息',
+  'rc.ds.detail.tips': '点击左侧的表,获取相关信息',
 
   // columns info
   'rc.ds.no': '序号',
