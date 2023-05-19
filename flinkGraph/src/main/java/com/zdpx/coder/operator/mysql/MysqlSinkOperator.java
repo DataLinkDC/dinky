@@ -47,9 +47,9 @@ public class MysqlSinkOperator extends MysqlTable {
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
 
         String sql =
-                "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) " +
-                        "SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> " +
-                        "FROM ${tableInfo.name}";
+                "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) "
+                        + "SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> "
+                        + "FROM ${tableInfo.name}";
 
         @SuppressWarnings("unchecked")
         TableInfo pseudoData =
@@ -68,7 +68,7 @@ public class MysqlSinkOperator extends MysqlTable {
 
     @Override
     protected String propertySchemaDefinition() {
-        //region json schema
+        // region json schema
         return "{\n"
                 + "    \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n"
                 + "    \"$id\": \"http://example.com/example.json\",\n"
@@ -249,6 +249,6 @@ public class MysqlSinkOperator extends MysqlTable {
                 + "        }]\n"
                 + "    ]\n"
                 + "}";
-        //endregion
+        // endregion
     }
 }

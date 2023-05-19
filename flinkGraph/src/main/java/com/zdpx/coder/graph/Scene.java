@@ -19,9 +19,6 @@
 
 package com.zdpx.coder.graph;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -34,9 +31,11 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.elasticsearch.index.mapper.Mapper;
 import org.reflections.Reflections;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.zdpx.coder.SceneCodeBuilder;
 import com.zdpx.coder.operator.Identifier;
 import com.zdpx.coder.operator.Operator;
@@ -140,9 +139,12 @@ public class Scene {
                         t -> {
                             Operator operator = InstantiationUtil.instantiate(t.getValue());
                             try {
-                                return mapper.readTree(String.format(
-                                        "{\"name\": \"%s\",\n\"group\": %s,\n\"specification\": %s}",
-                                        t.getKey(), operator.getGroup(),operator.getSpecification()));
+                                return mapper.readTree(
+                                        String.format(
+                                                "{\"name\": \"%s\",\n\"group\": %s,\n\"specification\": %s}",
+                                                t.getKey(),
+                                                operator.getGroup(),
+                                                operator.getSpecification()));
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e);
                             }
