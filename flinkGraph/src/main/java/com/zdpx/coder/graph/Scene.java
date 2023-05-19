@@ -54,7 +54,7 @@ public class Scene {
     /** 保存所有已定义算子, 类初始化时进行加载 */
     public static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
 
-    public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
+    protected static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
     private static final ObjectMapper mapper = new ObjectMapper();
     private Environment environment = new Environment();
     private ProcessPackage processPackage;
@@ -69,8 +69,7 @@ public class Scene {
         return SceneCodeBuilder.getCodeClassMap(operators);
     }
 
-    public static <S extends PseudoData<S>, T extends PseudoData<T>>
-            List<Operator> getSinkOperatorNodes(ProcessPackage processPackage) {
+    public static List<Operator> getSinkOperatorNodes(ProcessPackage processPackage) {
         List<Operator> originOperator = getAllOperator(processPackage);
         return originOperator.stream()
                 .filter(t -> CollectionUtils.isEmpty(t.getOutputPorts().values()))
@@ -122,7 +121,8 @@ public class Scene {
                                     } catch (NoSuchMethodException
                                             | InvocationTargetException
                                             | IllegalAccessException
-                                            | InstantiationException ignore) {
+                                            | InstantiationException ex) {
+                                        log.error(ex.getMessage());
                                     }
                                     return null;
                                 },
@@ -138,12 +138,11 @@ public class Scene {
         return OPERATOR_MAP.entrySet().stream()
                 .map(
                         t -> {
-                            String specification =
-                                    InstantiationUtil.instantiate(t.getValue()).getSpecification();
+                            Operator operator = InstantiationUtil.instantiate(t.getValue());
                             try {
                                 return mapper.readTree(String.format(
-                                        "{\"name\": \"%s\",\n\"specification\": %s}",
-                                        t.getKey(), specification));
+                                        "{\"name\": \"%s\",\n\"group\": %s,\n\"specification\": %s}",
+                                        t.getKey(), operator.getGroup(),operator.getSpecification()));
                             } catch (JsonProcessingException e) {
                                 throw new RuntimeException(e);
                             }

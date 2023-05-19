@@ -44,14 +44,14 @@ public class ProcessPackage extends Node {
 
     public Set<Operator> getOperators() {
         return getNodeWrapper().getChildren().stream()
-                .filter(t -> t instanceof Operator)
+                .filter(Operator.class::isInstance)
                 .map(t -> (Operator) t)
                 .collect(Collectors.toSet());
     }
 
     public Set<ProcessPackage> getProcessPackages() {
         return getNodeWrapper().getChildren().stream()
-                .filter(t -> t instanceof ProcessPackage)
+                .filter(ProcessPackage.class::isInstance)
                 .map(t -> (ProcessPackage) t)
                 .collect(Collectors.toSet());
     }
@@ -70,7 +70,7 @@ public class ProcessPackage extends Node {
 
     public List<Connection> getConnects() {
         return getNodeWrapper().getChildren().stream()
-                .filter(t -> t instanceof Connection)
+                .filter(Connection.class::isInstance)
                 .map(t -> (Connection) t)
                 .collect(Collectors.toList());
     }

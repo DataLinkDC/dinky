@@ -29,7 +29,7 @@ public interface PseudoData<T extends PseudoData<T>> {
     /**
      * 获取数据类型表示
      *
-     * @return
+     * @return dataType
      */
     DataType getType();
 }

@@ -95,16 +95,16 @@ public final class X6ToInternalConvert implements ToInternalConvert {
     /**
      * 按照从顶层向下初始化垂直信息
      *
-     * @param allTempNodes
-     * @return
+     * @param allTempNodes temp nodes
+     * @return node dict
      */
     private Map<String, Node> createNodesWithPackage(Map<String, TempNode> allTempNodes) {
         Map<String, Node> nodes = new HashMap<>();
         for (Map.Entry<String, TempNode> tempNode : allTempNodes.entrySet()) {
             Node node;
             JsonNode cell = tempNode.getValue().getNode();
-            String cell_shape = cell.get("shape").asText();
-            switch (cell_shape) {
+            String cellShape = cell.get("shape").asText();
+            switch (cellShape) {
                 case "edge":
                     node = new Connection<>();
                     break;
@@ -112,7 +112,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
                     node = new ProcessPackage();
                     break;
                 default:
-                    node = createOperatorByCode(cell_shape);
+                    node = createOperatorByCode(cellShape);
             }
             node.setId(tempNode.getKey());
             node.setNodeWrapper(new X6NodeWrapper());
@@ -124,8 +124,8 @@ public final class X6ToInternalConvert implements ToInternalConvert {
     private static void processPackage(Map<String, Node> nodes, Map<String, TempNode> tempNodeMap) {
         List<ProcessPackage> processPackages =
                 nodes.values().stream()
-                        .filter(node -> node instanceof ProcessPackage)
-                        .map(node -> (ProcessPackage) node)
+                        .filter(ProcessPackage.class::isInstance)
+                        .map(ProcessPackage.class::cast)
                         .collect(Collectors.toList());
 
         processPackages.forEach(
@@ -159,7 +159,7 @@ public final class X6ToInternalConvert implements ToInternalConvert {
             Map<String, Node> nodes, Map<String, TempNode> tempNodeMap) {
         List<Connection<?>> connections =
                 nodes.values().stream()
-                        .filter(node -> node instanceof Connection)
+                        .filter(Connection.class::isInstance)
                         .map(node -> (Connection<?>) node)
                         .collect(Collectors.toList());
 
@@ -197,8 +197,8 @@ public final class X6ToInternalConvert implements ToInternalConvert {
     private void processOperators(Map<String, Node> nodes, Map<String, TempNode> tempNodeMap) {
         List<Operator> operators =
                 nodes.values().stream()
-                        .filter(node -> node instanceof Operator)
-                        .map(node -> (Operator) node)
+                        .filter(Operator.class::isInstance)
+                        .map(Operator.class::cast)
                         .collect(Collectors.toList());
 
         operators.forEach(
