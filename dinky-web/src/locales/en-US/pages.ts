@@ -156,7 +156,7 @@ export default {
   'rc.ds.detail.tag.console': 'Console',
 
   // tips
-  'rc.ds.detail.tips': 'Click on the table on the left to get the description information of the table',
+  'rc.ds.detail.tips': 'Click on the table on the left to get relevant information',
 
   // columns info
   'rc.ds.no': 'No.',

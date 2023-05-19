@@ -17,8 +17,7 @@
 
 import React, {useCallback, useEffect, useState} from 'react';
 import {DataSources} from '@/types/RegCenter/data';
-import {Loading} from '@/pages/Other/Loading';
-import {Button, Col, Row, Space} from 'antd';
+import {Button, Space} from 'antd';
 import {BackwardOutlined, ReloadOutlined} from '@ant-design/icons';
 import {DataSourceDetailBackButton} from '@/components/StyledComponents';
 import {l} from '@/utils/intl';
@@ -27,6 +26,7 @@ import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceD
 import {useNavigate} from '@umijs/max';
 import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
 import {getDataByIdReturnResult, queryDataByParams} from '@/services/BusinessCrud';
+import {ProCard} from '@ant-design/pro-components';
 
 type DataSourceDetailProps = {
   dataSource: Partial<DataSources.DataSource>;
@@ -40,6 +40,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
   const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
+  const [genSQL, setGenSQL] = useState<Partial<DataSources.SqlGeneration>>({});
   const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
 
   const handleBackClick = () => {
@@ -49,10 +50,15 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
     backClick();
   };
 
-
-  const querySchemaTree = useCallback(async () => {
+  const clearState = () => {
     setTableColumns([]);
     setTableInfo({});
+    setGenSQL({});
+  };
+
+
+  const querySchemaTree = useCallback(async () => {
+    clearState();
     setLoading(true);
     await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then((res) => {
       if (res.code === RESPONSE_CODE.SUCCESS) {
@@ -67,53 +73,72 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
     querySchemaTree();
   }, []);
 
+  /**
+   * tree node click
+   */
   const onSchemaTreeNodeClick = useCallback(async (info: any) => {
-    const {node: nodeInfo, node: {isLeaf, parentId, name, fullInfo}} = info;
+    const {node: {isLeaf, parentId, name, fullInfo}} = info;
     if (isLeaf) {
-      console.log(nodeInfo, 'nodeInfo');
-      const data = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, {
+      /**
+       * get table columns
+       */
+      const columnsData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, {
         id: dataSource.id,
         schemaName: parentId,
         tableName: name
       });
-      setTableColumns(data);
+      /**
+       * get gen sql
+       */
+      const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {
+        id: dataSource.id,
+        schemaName: parentId,
+        tableName: name
+      });
+      setTableColumns(columnsData);
+      setGenSQL(genSQLData);
       setTableInfo(fullInfo);
     } else {
-      setTableColumns([]);
-      setTableInfo({});
+      clearState();
     }
   }, []);
 
+  /**
+   * render back button and refresh button
+   * @return {JSX.Element}
+   */
+  const renderBackButton = () => {
+    return <>
+      <DataSourceDetailBackButton>
+        <Space size={'middle'}>
+          <Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"
+                  onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>
+          <Button size={'middle'} icon={<BackwardOutlined/>} type="primary"
+                  onClick={handleBackClick}>{l('button.back')}</Button>
+        </Space>
+      </DataSourceDetailBackButton>
+    </>;
+  };
 
+  /**
+   * render
+   */
   return <>
-    <DataSourceDetailBackButton>
-      <Space size={'large'}>
-        <Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"
-                onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>
-        <Button size={'middle'} icon={<BackwardOutlined/>} type="primary"
-                onClick={handleBackClick}>{l('button.back')}</Button>
-      </Space>
-    </DataSourceDetailBackButton>
-    {
-      loading ?
-        <Loading loading={loading}/>
-        :
-        <>
-          <Row>
-              <Col span={4} className={'siderTree schemaTree'}>
-                {/* tree */}
-                <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
-              </Col>
-              <Col span={20}>
-                {/* tags */}
-                <RightTagsRouter
-                  tableInfo={tableInfo}
-                  tableColumns={tableColumns}
-                />
-              </Col>
-          </Row>
-        </>
-    }
+    <ProCard loading={loading} ghost split="vertical">
+      <ProCard bordered className={'siderTree schemaTree'} colSpan="20%">
+        {/* tree */}
+        <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
+      </ProCard>
+      <ProCard headerBordered>
+        {/* tags */}
+        <RightTagsRouter
+          tableInfo={tableInfo}
+          tableColumns={tableColumns}
+          genSQL={genSQL}
+          rightButtons={renderBackButton()}
+        />
+      </ProCard>
+    </ProCard>
   </>;
 };
 

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Space, Tabs} from 'antd';
+import {Space} from 'antd';
 import {l} from '@/utils/intl';
 import {
   BookOutlined,
@@ -23,50 +23,69 @@ import {
 import React from 'react';
 import {DataSources} from '@/types/RegCenter/data';
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
+import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/GenSQL';
+import {ProCard} from '@ant-design/pro-components';
+import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
+import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
 
 
+/**
+ * props
+ */
 type RightTagsRouterProps = {
-  tableInfo: Partial<DataSources.Table>;
-  tableColumns: Partial<DataSources.Column[]>;
+  tableInfo: Partial<DataSources.Table>,
+  tableColumns: Partial<DataSources.Column[]>,
+  genSQL: Partial<DataSources.SqlGeneration>,
+  rightButtons: React.ReactNode,
 }
 
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
-  const {tableColumns, tableInfo} = props;
-
+  const {tableColumns, tableInfo, genSQL, rightButtons} = props;
+  // state
   const [activeKey, setActiveKey] = React.useState('desc');
 
+  // tab list
+  const tabList = [
+    {
+      key: 'desc',
+      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.desc')}</Space>,
+      children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+    },
+    {
+      key: 'query',
+      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.query')}</Space>,
+      children: <SQLQuery query={'111'}/>
+    },
+    {
+      key: 'gensql',
+      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
+      children: <GenSQL sql={genSQL}/>
+    },
+    {
+      key: 'console',
+      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
+      children: <SQLConsole querySQL={''}/>
+    },
+  ];
+
+  // tab props
+  const restTabProps = {
+    activeKey: activeKey,
+    type: 'card',
+    tabBarExtraContent: rightButtons,
+    animated: true,
+    onChange: (key: string) => setActiveKey(key),
+    items: tabList,
+  };
+
+
+  /**
+   * render
+   */
   return <>
-    <Tabs
-      activeKey={activeKey}
-      onChange={(key) => setActiveKey(key)}
-      size="small"
-      animated
-      destroyInactiveTabPane
-      style={{height: '100%'}}
-      items={[
-        {
-          key: 'desc',
-          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.desc')}</Space>,
-          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
-        },
-        {
-          key: 'query',
-          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.query')}</Space>,
-          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
-        },
-        {
-          key: 'gensql',
-          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
-          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
-        },
-        {
-          key: 'console',
-          label: <Space><BookOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
-          children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
-        },
-      ]}
+    <ProCard size="small" bordered tabs={{...restTabProps}}
     />
   </>;
 };
