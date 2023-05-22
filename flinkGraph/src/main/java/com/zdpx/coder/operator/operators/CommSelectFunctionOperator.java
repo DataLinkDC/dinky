@@ -17,7 +17,7 @@
  *
  */
 
-package com.zdpx.coder.operator;
+package com.zdpx.coder.operator.operators;
 
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +28,10 @@ import com.zdpx.coder.Specifications;
 import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.OutputPortObject;
 import com.zdpx.coder.graph.Scene;
+import com.zdpx.coder.operator.FieldFunction;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.OperatorUtil;
+import com.zdpx.coder.operator.TableInfo;
 import com.zdpx.coder.utils.NameHelper;
 import com.zdpx.coder.utils.TemplateUtils;
 

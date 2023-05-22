@@ -163,7 +163,7 @@ public class FieldFunction {
      * @param funcs 字段处理函数配置
      * @return {@link FieldFunction}形式的字段处理定义
      */
-    protected static List<FieldFunction> analyzeParameters(
+    public static List<FieldFunction> analyzeParameters(
             String primaryTableName, List<Map<String, Object>> funcs) {
         List<FieldFunction> fieldFunctions = new ArrayList<>();
         for (Map<String, Object> fos : funcs) {

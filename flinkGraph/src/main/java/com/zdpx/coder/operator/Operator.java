@@ -318,7 +318,7 @@ public abstract class Operator extends Node implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
-    static List<FieldFunction> getFieldFunctions(
+    public static List<FieldFunction> getFieldFunctions(
             String primaryTableName, Map<String, Object> parameters) {
         return FieldFunction.analyzeParameters(
                 primaryTableName, (List<Map<String, Object>>) parameters.get(FIELD_FUNCTIONS));

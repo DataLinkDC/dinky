@@ -39,7 +39,7 @@ public final class OperatorParameterUtils {
         return null;
     }
 
-    static Map<String, String> getColumns(String name, Map<String, Object> parameter) {
+    public static Map<String, String> getColumns(String name, Map<String, Object> parameter) {
         Preconditions.checkArgument(name != null, "getColumns function parameter name null");
 
         Map<String, String> params = new LinkedHashMap<>();
@@ -60,7 +60,7 @@ public final class OperatorParameterUtils {
         return params;
     }
 
-    static String generateColumnNames(Map<String, String> columns) {
+    public static String generateColumnNames(Map<String, String> columns) {
         return columns.keySet().stream()
                 .map(t -> String.format("\"%s\"", t))
                 .collect(Collectors.joining(","));

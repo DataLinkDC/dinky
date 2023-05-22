@@ -17,27 +17,35 @@
  *
  */
 
-package com.zdpx.coder.operator;
+package com.zdpx.coder.operator.operators;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import com.zdpx.coder.Specifications;
-import com.zdpx.coder.code.CodeJavaBuilder;
 import com.zdpx.coder.graph.OutputPortObject;
-import com.zdpx.coder.graph.PseudoData;
-import com.zdpx.coder.utils.NameHelper;
+import com.zdpx.coder.operator.Operator;
+import com.zdpx.coder.operator.TableInfo;
 
-/** */
-public class TableConvertToDataStreamOperator extends Operator {
-
-    private OutputPortObject<TableInfo> outputPortObject;
+/** 用于端口数据复制, 转为多路输出 */
+public class DuplicateOperator extends Operator {
 
     @Override
     protected void initialize() {
-        parameters.getParameterList().add(new Parameter(Specifications.TABLE_NAME));
-        outputPortObject = registerOutputObjectPort("output_0)");
         registerInputObjectPort("input_0");
+    }
+
+    @Override
+    protected void handleParameters(String parameters) {
+        if (getOutputPorts().isEmpty() && this.nodeWrapper != null) {
+            List<Map<String, Object>> outputInfo = Operator.getParameterLists(parameters);
+
+            for (Map<String, Object> oi : outputInfo) {
+                OutputPortObject<TableInfo> opi =
+                        registerOutputObjectPort(oi.get("outputName").toString());
+                getOutputPorts().put(opi.getName(), opi);
+            }
+        }
     }
 
     @Override
@@ -50,30 +58,16 @@ public class TableConvertToDataStreamOperator extends Operator {
         return true;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void execute() {
-        String tn =
-                NameHelper.generateVariableName(
-                        parameters.getParameterByName(Specifications.TABLE_NAME));
-        if (!(this.getSchemaUtil().getGenerateResult() instanceof CodeJavaBuilder)) {
-            return;
-        }
-
-        CodeJavaBuilder gjr = (CodeJavaBuilder) this.getSchemaUtil().getGenerateResult();
-        gjr.getCodeContext()
-                .getMain()
-                .addStatement(
-                        "DataStream<Row> $2L = $1L.toDataStream($1L.sqlQuery(\"select * from $2L\"))",
-                        Specifications.TABLE_ENV,
-                        tn)
-                .addCode(System.lineSeparator());
-
-        PseudoData pseudoData =
+        final TableInfo pseudoData =
                 getInputPorts().values().stream()
-                        .map(t -> t.getConnection().getFromPort().getPseudoData())
+                        .map(t -> (TableInfo) t.getConnection().getFromPort().getPseudoData())
                         .findAny()
                         .orElse(null);
-
-        outputPortObject.setPseudoData((TableInfo) pseudoData);
+        getOutputPorts()
+                .values()
+                .forEach(t -> ((OutputPortObject<TableInfo>) t).setPseudoData(pseudoData));
     }
 }
