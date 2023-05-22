@@ -30,6 +30,7 @@ import org.dinky.sse.git.GetJarsStepSse;
 import org.dinky.sse.git.GitCloneStepSse;
 import org.dinky.sse.git.HeadStepSse;
 import org.dinky.sse.git.MavenStepSse;
+import org.dinky.sse.git.PythonZipStepSse;
 
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,6 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
-import org.dinky.sse.git.PythonZipStepSse;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.io.FileUtil;
@@ -75,15 +75,13 @@ public final class GitProjectStepSseFactory {
         AtomicInteger stepAtomic = new AtomicInteger(1);
 
         HeadStepSse headStepSse =
-                new HeadStepSse(
-                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                new HeadStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
         GitCloneStepSse gitCloneStepSse =
                 new GitCloneStepSse(
                         sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
 
         DoneStepSse doneStepSse =
-                new DoneStepSse(
-                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                new DoneStepSse(sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
         headStepSse.setNexStepSse(gitCloneStepSse);
         switch (codeType) {
             case 1:
@@ -131,7 +129,11 @@ public final class GitProjectStepSseFactory {
                                             step, gitProject.getBuildState(), dataList)));
 
             if (gitProject.getBuildState() == 3) {
-                StepResult data = StepResult.getData(gitProject.getCodeType().equals(1) ? 5 : 4, state, gitProject.getUdfClassMapList());
+                StepResult data =
+                        StepResult.getData(
+                                gitProject.getCodeType().equals(1) ? 5 : 4,
+                                state,
+                                gitProject.getUdfClassMapList());
                 emitter.send(SseEmitter.event().data(data));
             }
 

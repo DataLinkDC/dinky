@@ -19,9 +19,7 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.function.util.UDFUtil;
 import org.dinky.model.GitProject;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
 
@@ -63,7 +61,6 @@ public class HeadStepSse extends StepSse {
             case 2:
                 checkPython();
         }
-
     }
 
     private void checkJava() {
@@ -78,6 +75,5 @@ public class HeadStepSse extends StepSse {
         addFileMsgLog(mavenVersionMsg);
     }
 
-    private void checkPython() {
-    }
+    private void checkPython() {}
 }

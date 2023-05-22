@@ -19,9 +19,7 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.model.GitProject;
 import org.dinky.sse.StepSse;
-import org.dinky.utils.GitRepository;
 import org.dinky.utils.MavenUtil;
 
 import java.io.File;
@@ -32,9 +30,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
 
 /**
  * @author ZackYoung
