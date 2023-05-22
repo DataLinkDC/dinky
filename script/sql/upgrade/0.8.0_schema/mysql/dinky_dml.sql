@@ -45,5 +45,10 @@ alter table dinky_udf modify column `class_name` varchar(200);
 alter table dinky_udf alter column `enable` set default 1;
 alter table dinky_udf modify column `source_code` longtext;
 
+-- change data source of type
+update dinky_data_source set `type` = 'MySQL' where `type` = 'Mysql';
+update dinky_data_source set `type` = 'PostgreSQL' where `type` = 'PostgreSql';
+update dinky_data_source set `type` = 'SQLServer' where `type` = 'SqlServer';
+
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`) VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', NULL, NULL, NULL, NULL, '-P flink-1.14', 1, 1, NULL, NULL, 1, 0, 1, '');
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`) VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', NULL, NULL, NULL, NULL, '', 2, 1, NULL, NULL, 1, 0, 1, '');

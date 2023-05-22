@@ -50,6 +50,8 @@ export default {
   'button.recycle': '回收',
   'button.refresh': '刷新',
   'button.test': '测试',
+  'button.clear': '清除',
+  'button.copy': '复制',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
   'button.asc': '升序',
@@ -92,8 +94,8 @@ export default {
   'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
   'tips.create.session.success': '创建会话【{session}】成功！',
 
-  'status.enabled': '已启用',
-  'status.disabled': '已禁用',
+  'status.enabled': '启用',
+  'status.disabled': '禁用',
 
   'global.time.second': '秒 ',
   'global.time.minute': '分 ',

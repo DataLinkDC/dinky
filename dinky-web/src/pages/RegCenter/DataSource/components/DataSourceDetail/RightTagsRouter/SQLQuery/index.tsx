@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
+import React from 'react';
 
-import {Alert} from '@/types/RegCenter/data';
+type SQLQueryProps = {
+  query: string,
+}
 
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
+//todo: SQLQuery component
+const SQLQuery: React.FC<SQLQueryProps> = (props) => {
+  const {query} = props;
+  return <div>SQLQuery</div>;
 };
+
+export default SQLQuery;

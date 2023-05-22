@@ -26,12 +26,11 @@ import {Alert} from "@/types/RegCenter/data.d";
 import {queryList} from "@/services/api";
 import {handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
 import {ProList} from "@ant-design/pro-components";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
+import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import AlertTypeChoose from "./components/AlertTypeChoose";
-import {PRO_LIST_CARD_OPTIONS} from "@/pages/RegCenter/Alert/AlertInstance/constans";
 
 
 const AlertInstanceTableList: React.FC = () => {
