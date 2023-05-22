@@ -19,23 +19,23 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.model.GitProject;
-import org.dinky.sse.StepSse;
-import org.dinky.utils.GitRepository;
-import org.dinky.utils.MavenUtil;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import org.dinky.model.GitProject;
+import org.dinky.sse.StepSse;
+import org.dinky.utils.GitRepository;
+import org.dinky.utils.MavenUtil;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import java.io.File;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * @author ZackYoung
@@ -60,6 +60,10 @@ public class MavenStepSse extends StepSse {
                 FileUtil.file(
                         GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
+        File buildDir = FileUtil.mkdir(new File(GitRepository.getProjectBuildDir(gitProject.getName()), gitProject.getBranch()));
+
+        Arrays.stream(Objects.requireNonNull(pom.listFiles(pathname -> !".git".equals(pathname.getName())))).forEach(f-> FileUtil.copy(f, buildDir, true));
+        pom =buildDir ;
         if (StrUtil.isNotBlank(gitProject.getPom())) {
             pom = new File(pom, gitProject.getPom());
         }
@@ -76,6 +80,7 @@ public class MavenStepSse extends StepSse {
                         CollUtil.newArrayList("clean", "package"),
                         StrUtil.split(gitProject.getBuildArgs(), " "),
                         this::addMsg);
+        params.put("pom",pom);
         if (!state) {
             setFinish(false);
         }

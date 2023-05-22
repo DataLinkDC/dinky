@@ -81,6 +81,15 @@ public class StepResult implements Serializable {
                 .history(false)
                 .build();
     }
+    public static StepResult getData(Integer currentStep, Integer status, String data) {
+        return StepResult.builder()
+                .type(2)
+                .currentStep(currentStep)
+                .data(data)
+                .status(status)
+                .history(true)
+                .build();
+    }
 
     @Override
     public String toString() {

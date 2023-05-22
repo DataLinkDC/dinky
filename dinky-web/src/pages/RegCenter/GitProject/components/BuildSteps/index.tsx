@@ -62,6 +62,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   const [log, setLog] = useState<string>("");
 
   const [currentStep, setCurrentStep] = useState<number>(0);
+  const [showList, setShowList] = useState<boolean>(false);
   const [percent, setPercent] = useState<number>(0);
   const [currentDataMsg, setCurrentDataMsg] = useState<BuildMsgData>();
   const [buildSteps, setBuildSteps] = useState<Partial<any[]>>([]);
@@ -91,7 +92,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   }
 
   const renderTitle = (step: number) => {
-    return l("rc.gp.build.step." + step);
+    return (values.codeType === 1 ? JavaSteps : PythonSteps)[step-1].title;
   }
 
   useEffect(() => {
@@ -110,6 +111,8 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     let globalCurrentStep: number = 0;
     let execNum: number = 0;
     let stepNum: number = 1;
+    let showDataStep = -1;
+    let showData = "";
 
     //sse listen event message
     eventSource.onmessage = e => {
@@ -138,7 +141,13 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               disabled: item.status === -1 || status === 1,
               onClick: () => {
                 if (item.status !== -1 && status !== 1) {
-                  setLog(logList[item.step]?.join("\n"))
+                  if (item.step === showDataStep) {
+                    setShowList(true)
+                    setLog(showData)
+                  } else {
+                    setShowList(false)
+                    setLog(logList[item.step]?.join("\n"))
+                  }
                   setCurrentStep(item.step)
                 }
               }
@@ -157,6 +166,10 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               setLog(logList[currentStep]?.join("\n"))
             }
           }
+          if (type === 2) {
+            showDataStep = currentStep;
+            showData = JSON.parse(data);
+          }
           if (currentStep >= globalCurrentStep) {
             setCurrentStep(currentStep);
             setPercent(parseInt(String(100 / stepNum * currentStep)));
@@ -171,6 +184,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
           }
         }
       } catch (e) {
+        console.error(e)
         eventSource.close();
       }
     };
@@ -197,7 +211,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       okButtonProps={{style: {display: "none"}}}
     >
       <AutoSteps steps={steps} currentDataMsg={currentDataMsg} percent={percent} currentStep={currentStep}
-                 values={values} log={log}/>
+                 values={values} log={log} showList={showList}/>
     </Modal>
   </>;
 };

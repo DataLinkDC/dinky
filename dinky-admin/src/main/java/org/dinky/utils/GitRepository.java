@@ -149,6 +149,9 @@ public class GitRepository {
     public static File getProjectDir(String projectName) {
         return FileUtil.file(PathConstant.TMP_PATH, "git", projectName);
     }
+    public static File getProjectBuildDir(String projectName) {
+        return FileUtil.file(PathConstant.TMP_PATH, "git_build", projectName);
+    }
 
     /**
      * 获取分支列表（提供拼音排序）

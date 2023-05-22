@@ -52,7 +52,9 @@ public class PythonZipStepSse extends StepSse {
                 FileUtil.file(
                         GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
 
-        params.put("zipFile", ZipUtil.zip(file));
+        File zipFile = ZipUtil.zip(file);
+        addFileMsgLog("ZipFile Path is: " + zipFile);
+        params.put("zipFile", zipFile);
         params.put("projectFile", file);
     }
 }

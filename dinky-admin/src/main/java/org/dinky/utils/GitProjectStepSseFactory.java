@@ -25,6 +25,7 @@ import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.DoneStepSse;
 import org.dinky.sse.StepSse;
 import org.dinky.sse.git.AnalysisUdfClassStepSse;
+import org.dinky.sse.git.AnalysisUdfPythonStepSse;
 import org.dinky.sse.git.GetJarsStepSse;
 import org.dinky.sse.git.GitCloneStepSse;
 import org.dinky.sse.git.HeadStepSse;
@@ -41,6 +42,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.IntStream;
 
+import org.dinky.sse.git.PythonZipStepSse;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.io.FileUtil;
@@ -72,34 +74,47 @@ public final class GitProjectStepSseFactory {
         AtomicInteger msgId = new AtomicInteger(1);
         AtomicInteger stepAtomic = new AtomicInteger(1);
 
-        if (codeType.equals(1)) {
-            HeadStepSse headStepSse =
-                    new HeadStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-            GitCloneStepSse gitCloneStepSse =
-                    new GitCloneStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-            MavenStepSse mavenStepSse =
-                    new MavenStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-            GetJarsStepSse getJarsStepSse =
-                    new GetJarsStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-            AnalysisUdfClassStepSse analysisUdfClassStepSse =
-                    new AnalysisUdfClassStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
-            DoneStepSse doneStepSse =
-                    new DoneStepSse(
-                            sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        HeadStepSse headStepSse =
+                new HeadStepSse(
+                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        GitCloneStepSse gitCloneStepSse =
+                new GitCloneStepSse(
+                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
 
-            headStepSse.setNexStepSse(gitCloneStepSse);
-            gitCloneStepSse.setNexStepSse(mavenStepSse);
-            mavenStepSse.setNexStepSse(getJarsStepSse);
-            getJarsStepSse.setNexStepSse(analysisUdfClassStepSse);
-            analysisUdfClassStepSse.setNexStepSse(doneStepSse);
-            return headStepSse;
-        } else {
-            throw new DinkyException("only support java!");
+        DoneStepSse doneStepSse =
+                new DoneStepSse(
+                        sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        headStepSse.setNexStepSse(gitCloneStepSse);
+        switch (codeType) {
+            case 1:
+                MavenStepSse mavenStepSse =
+                        new MavenStepSse(
+                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                GetJarsStepSse getJarsStepSse =
+                        new GetJarsStepSse(
+                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                AnalysisUdfClassStepSse analysisUdfClassStepSse =
+                        new AnalysisUdfClassStepSse(
+                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                gitCloneStepSse.setNexStepSse(mavenStepSse);
+                mavenStepSse.setNexStepSse(getJarsStepSse);
+                getJarsStepSse.setNexStepSse(analysisUdfClassStepSse);
+                analysisUdfClassStepSse.setNexStepSse(doneStepSse);
+                return headStepSse;
+            case 2:
+                PythonZipStepSse pythonZipStepSse =
+                        new PythonZipStepSse(
+                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+                AnalysisUdfPythonStepSse analysisUdfPythonStepSse =
+                        new AnalysisUdfPythonStepSse(
+                                sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+
+                gitCloneStepSse.setNexStepSse(pythonZipStepSse);
+                pythonZipStepSse.setNexStepSse(analysisUdfPythonStepSse);
+                analysisUdfPythonStepSse.setNexStepSse(doneStepSse);
+                return headStepSse;
+            default:
+                throw new DinkyException("only support Java & Python!");
         }
     }
 
@@ -115,6 +130,11 @@ public final class GitProjectStepSseFactory {
                                     StepResult.getStepInfo(
                                             step, gitProject.getBuildState(), dataList)));
 
+            if (gitProject.getBuildState() == 3) {
+                StepResult data = StepResult.getData(gitProject.getCodeType().equals(1) ? 5 : 4, state, gitProject.getUdfClassMapList());
+                emitter.send(SseEmitter.event().data(data));
+            }
+
             File logDir = getLogDir(gitProject.getName(), gitProject.getBranch());
             IntStream.range(1, step + 1)
                     .forEach(
@@ -123,12 +143,11 @@ public final class GitProjectStepSseFactory {
                                 StepResult stepResult =
                                         StepResult.genLog(s, step == s ? state : 2, log, step != s);
                                 try {
-                                    emitter.send(SseEmitter.event().id("2").data(stepResult));
+                                    emitter.send(SseEmitter.event().data(stepResult));
                                 } catch (IOException e) {
                                     e.printStackTrace();
                                 }
                             });
-
         } catch (Exception e) {
             e.printStackTrace();
         }

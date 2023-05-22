@@ -211,6 +211,8 @@ public abstract class StepSse {
                                 e.printStackTrace();
                             }
                         });
+        // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
+        System.gc();
     }
 
     public int getStep() {

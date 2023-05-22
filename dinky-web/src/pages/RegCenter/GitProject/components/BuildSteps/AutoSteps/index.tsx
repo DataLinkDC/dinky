@@ -38,6 +38,7 @@ export type BuildMsgData = {
   status: number; // 2:finish 1:running 0:fail
   resultType?: number; // 1:log 2: jar list or class list
   log: string;
+  showList: boolean;
 
 }
 
@@ -49,15 +50,15 @@ type BuildStepsProps = {
   percent: number;
   currentStep: number;
   log: string;
+  showList: boolean;
 }
 
 export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
 
   const {
     values, steps,
-    currentDataMsg, percent, currentStep, log
+    currentDataMsg, percent, currentStep, log,showList
   } = props;
-
 
   /**
    * state
@@ -88,11 +89,11 @@ export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
     <div style={contentStyle}>
       {
         // if resultType is 1, data is log, else data is jar list or class list
-        // currentDataMsg?.resultType === 1 ?
+        !showList ?
         <CodeShow height={"50vh"} code={log || ""} language={"java"} options={{scrollBeyondLastLine: true}}
                   showFloatButton={true}/>
-        // :
-        // <JarShow step={currentStepStatus} data={currentDataMsg?.data}/>
+        :
+        <JarShow step={currentStep} data={log}/>
       }
     </div>
     {/*<div style={{marginTop: 24}}>*/}
