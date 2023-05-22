@@ -54,7 +54,7 @@ public class Scene {
     /** 保存所有已定义算子, 类初始化时进行加载 */
     public static final Map<String, Class<? extends Operator>> OPERATOR_MAP = getOperatorMaps();
 
-    protected static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
+    public static final Map<String, String> USER_DEFINED_FUNCTION = getUserDefinedFunctionMaps();
     private static final ObjectMapper mapper = new ObjectMapper();
     private Environment environment = new Environment();
     private ProcessPackage processPackage;
@@ -141,9 +141,10 @@ public class Scene {
                             Operator operator = InstantiationUtil.instantiate(t.getValue());
                             try {
                                 return mapper.readTree(String.format(
-                                        "{\"name\": \"%s\",\n\"group\": %s,\n\"specification\": %s}",
+                                        "{\"name\": \"%s\",%n\"group\":\"%s\",%n\"specification\": %s}",
                                         t.getKey(), operator.getGroup(),operator.getSpecification()));
                             } catch (JsonProcessingException e) {
+                                log.error("getOperatorConfigurations error");
                                 throw new RuntimeException(e);
                             }
                         })
