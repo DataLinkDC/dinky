@@ -16,7 +16,7 @@
  */
 
 
-import {DATA_SOURCE_TYPE} from "@/pages/RegCenter/DataSource/components/constants";
+import {DATA_SOURCE_TYPE, QUERY_KEYWORD} from '@/pages/RegCenter/DataSource/components/constants';
 import {DefaultOptionType} from "antd/es/select";
 import {
   ClickHouseIcons, DefaultDBIcons,
@@ -74,3 +74,11 @@ export const renderDataSourceType = () => {
   });
   return dataSourceType;
 };
+
+export const buildColumnsQueryKeyWord = (data : string[]) => {
+  const result = data.concat(QUERY_KEYWORD).map((item: string | number) => ({
+    value: item,
+    label: item,
+  }))
+  return result
+}

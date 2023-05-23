@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
-import React, {useCallback, useEffect, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ProTable} from '@ant-design/pro-table';
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
 import {handleOption} from '@/services/BusinessCrud';
 import {Alert, Empty, Form} from 'antd';
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
-import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import {l} from '@/utils/intl';
 import {DefaultOptionType} from 'rc-select/lib/Select';
-
+import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
+import {buildColumnsQueryKeyWord} from '@/pages/RegCenter/DataSource/components/function';
 // props
 type SQLQueryProps = {
-  queryParams: Partial<QueryParams>
+  queryParams: QueryParams
 }
 
 const SQLQuery: React.FC<SQLQueryProps> = (props) => {
@@ -43,19 +43,13 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
 
 
   // query data
-  const fetchData = async (values: { whereInput: string; orderInput: string; }) => {
+  const fetchData = async (values: any) => {
     setLoading(true);
-    let option = {
-      where: values.whereInput ? values.whereInput : '',
-      order: values.orderInput ? values.orderInput : '', limitStart: '0', limitEnd: '500'
-    };
-
     const result = await handleOption(API_CONSTANTS.DATASOURCE_QUERY_DATA, l('global.getdata.tips'), {
       id: dbId,
       schemaName,
       tableName,
-      sql: 'select * from ' + tableName,
-      option: option
+      option: {where: values.where, order: values.order, limitStart: '0', limitEnd: '500'},
     });
     const {code, datas: {columns, rowData}} = result; // 获取到的数据
     if (code === 1) {
@@ -64,7 +58,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       setErrMsg({isErr: false, msg: ''});
     }
     // render columns list
-    const tableColumns = columns.map((item: string | number) => ({
+    const tableColumns = columns?.map((item: string | number) => ({
       title: item,
       dataIndex: item,
       key: item,
@@ -72,18 +66,14 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       tooltip: item,
       width: '8%',
     }));
-
-    let autoComplete: DefaultOptionType[] = [];
-    // build autoComplete columns list
-    autoComplete = columns.map((item: string | number) => ({
-      value: item,
-      label: item,
-    }));
-    setAutoCompleteColumns(autoComplete);
+    setAutoCompleteColumns( buildColumnsQueryKeyWord(columns));
     setTableData({columns: tableColumns, rowData: rowData});
     setLoading(false);
   };
 
+  /**
+   * clear state
+   */
   const clearState = () => {
     setTableData({columns: [], rowData: []});
     setErrMsg({isErr: false, msg: ''});
@@ -94,13 +84,17 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
 
   useEffect(() => {
     if (dbId && tableName && schemaName) {
-      fetchData({whereInput: '', orderInput: ''});
+      const values = form.getFieldsValue();
+      fetchData(values);
     } else {
       clearState();
     }
-  }, [dbId, tableName, schemaName]);
+  }, [dbId, tableName, schemaName, form]);
 
 
+  /**
+   * render alert msg
+   */
   const renderAlert = () => {
     return <>
       {errMsg.isErr ? (
@@ -117,11 +111,13 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
   /**
    * render toolbar
    */
-  const renderToolBar = useCallback(() => {
-    return [
-      <QueryForm key={'queryForm'} autoCompleteColumns={autoCompleteColumns} form={form}
-                 onSubmit={(values => fetchData(values))}/>,];
-  }, []);
+  const renderToolBar = () => [
+    <QueryForm
+      key={'queryForm'}
+      autoCompleteColumns={autoCompleteColumns}
+      form={form}
+      onSubmit={(values) => fetchData(values)}/>,
+  ];
 
 
   /**

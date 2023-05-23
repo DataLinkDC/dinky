@@ -16,12 +16,12 @@
  */
 
 import {ProForm, ProFormText} from '@ant-design/pro-components';
-import React from 'react';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
 import {AutoComplete} from 'antd';
-import {DefaultOptionType} from 'rc-select/lib/Select';
+import React from 'react';
 import {l} from '@/utils/intl';
+import {DefaultOptionType} from 'rc-select/es/Select';
 
 type QueryFormProps = {
   form: FormInstance<Values>;
@@ -38,36 +38,54 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
    * search form submit
    */
   const onSubmitHandle = () => {
-    const values = form.validateFields();
+    const values = form.getFieldsValue();
     submitHandle(values);
   };
+
+  /**
+   * handle change
+   * @param value
+   * @param tag
+   */
+  const handleChange = (value: string, tag: string) => {
+    switch (tag) {
+      case 'where':
+        form.setFieldsValue({where: `${(form.getFieldsValue().where || '') + value}`});
+        break;
+      case 'order':
+        form.setFieldsValue({order: `${(form.getFieldsValue().order || '') + value}`});
+        break;
+    }
+  };
+
+
 
   const renderForm = () => {
     return <>
       <AutoComplete
+        backfill
+        autoFocus
         options={autoCompleteColumns}
-        onSelect={(value: string) => {
-          form.setFieldsValue({whereInput: value});
-        }}
+        onSelect={(value: string) => handleChange(value, 'where')}
       >
         <ProFormText
           addonBefore={'WHERE'}
-          key="whereInput"
-          name="whereInput"
+          width={'md'}
+          key="where"
+          name="where"
           required
         />
       </AutoComplete>
 
       <AutoComplete
         options={autoCompleteColumns}
-        onSelect={(value: string) => {
-          form.setFieldsValue({orderInput: value});
-        }}
+        onSelect={(value: string) => handleChange(value, 'order')}
       >
         <ProFormText
           addonBefore={'ORDER BY'}
-          key="ORDER BY"
-          name="orderInput"
+          width={'md'}
+          key="order"
+          name="order"
           required
         />
       </AutoComplete>

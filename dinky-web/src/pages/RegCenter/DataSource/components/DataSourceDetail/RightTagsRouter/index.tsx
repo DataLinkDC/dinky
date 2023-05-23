@@ -20,7 +20,7 @@ import {l} from '@/utils/intl';
 import {
   BookOutlined,
 } from '@ant-design/icons';
-import React from 'react';
+import React, {useState} from 'react';
 import {DataSources} from '@/types/RegCenter/data';
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
 import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/GenSQL';
@@ -36,7 +36,7 @@ type RightTagsRouterProps = {
   tableInfo: Partial<DataSources.Table>,
   tableColumns: Partial<DataSources.Column[]>,
   rightButtons: React.ReactNode,
-  queryParams: Partial<QueryParams>
+  queryParams: QueryParams
   tagDisabled: boolean
 }
 
@@ -45,7 +45,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
   const {tableColumns, tableInfo,queryParams, tagDisabled, rightButtons} = props;
   // state
-  const [activeKey, setActiveKey] = React.useState('desc');
+  const [activeKey, setActiveKey] = useState('desc');
 
   // tab list
   const tabList = [
@@ -85,13 +85,11 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
     items: tabList,
   };
 
-
   /**
    * render
    */
   return <>
-    <ProCard size="small" bordered tabs={{...restTabProps}}
-    />
+    <ProCard size="small" bordered tabs={{...restTabProps}}/>
   </>;
 };
 
