@@ -44,7 +44,11 @@ public class SystemConfiguration {
             Lists.newArrayList(
                     systemConfiguration.useRestAPI,
                     systemConfiguration.sqlSeparator,
-                    systemConfiguration.jobIdWait);
+                    systemConfiguration.jobIdWait,
+                    systemConfiguration.mavenSettings,
+                    systemConfiguration.mavenRepository,
+                    systemConfiguration.mavenRepositoryUser,
+                    systemConfiguration.mavenRepositoryPassword);
 
     private Configuration useRestAPI =
             new Configuration(
@@ -63,6 +67,38 @@ public class SystemConfiguration {
                     ValueType.INT,
                     30,
                     "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
+
+    private Configuration mavenSettings =
+            new Configuration(
+                    "mavenSettings",
+                    "Maven Settings 文件路径",
+                    ValueType.STRING,
+                    "",
+                    "Maven Settings File Path");
+
+    private Configuration mavenRepository =
+            new Configuration(
+                    "mavenRepository",
+                    "Maven Central Repository",
+                    ValueType.STRING,
+                    "https://maven.aliyun.com/nexus/content/repositories/central",
+                    "Maven private server address");
+
+    private Configuration mavenRepositoryUser =
+            new Configuration(
+                    "mavenRepositoryUser",
+                    "Maven Central Repository Auth User",
+                    ValueType.STRING,
+                    "",
+                    "Maven private server authentication username");
+
+    private Configuration mavenRepositoryPassword =
+            new Configuration(
+                    "mavenRepositoryPassword",
+                    "Maven Central Repository Auth Password",
+                    ValueType.STRING,
+                    "",
+                    "Maven private server authentication password");
 
     public void setConfiguration(JsonNode jsonNode) {
         CONFIGURATION_LIST.stream()
@@ -119,6 +155,22 @@ public class SystemConfiguration {
 
     public void setJobIdWait(Configuration jobIdWait) {
         this.jobIdWait.setValue(jobIdWait);
+    }
+
+    public String getMavenSettings() {
+        return (String) mavenSettings.getValue();
+    }
+
+    public String getMavenRepository() {
+        return (String) mavenRepository.getValue();
+    }
+
+    public String getMavenRepositoryUser() {
+        return (String) mavenRepositoryUser.getValue();
+    }
+
+    public String getMavenRepositoryPassword() {
+        return (String) mavenRepositoryPassword.getValue();
     }
 
     enum ValueType {

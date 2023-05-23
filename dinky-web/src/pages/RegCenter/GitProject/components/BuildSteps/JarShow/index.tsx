@@ -46,9 +46,10 @@ const JarShow: React.FC<JarShowProps> = (props) => {
 
   return <>
     {
-      step === 4 ?
-        <JarList jarList={resultData}/> :
-        step === 5 ? <ClassList jarAndClassesList={resultData}/> : <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
+      <ClassList jarAndClassesList={resultData}/>
+      // step === 4 ?
+      //   <JarList jarList={resultData}/> :
+      //   step === 5 ? <ClassList jarAndClassesList={resultData}/> : <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
     }
   </>;
 };

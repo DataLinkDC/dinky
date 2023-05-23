@@ -77,6 +77,7 @@ const CodeShow = (props: CodeShowFormProps) => {
 
   const {ScrollType} = editor;
 
+  const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
@@ -164,6 +165,16 @@ const CodeShow = (props: CodeShowFormProps) => {
     setEditorRef(editor);
     editor.layout();
     editor.focus();
+    if (scrollBeyondLastLine){
+      editor.onDidChangeModelContent(()=>{
+        const lineCount = editor.getModel()?.getLineCount() as number;
+        if (lineCount>20){
+          editor.revealLine(lineCount);
+        }else {
+          editor.revealLine(1);
+        }
+      });
+    }
   };
 
 
@@ -205,6 +216,7 @@ const CodeShow = (props: CodeShowFormProps) => {
           fixedOverflowWidgets: true,
           autoClosingDelete: "always",
           lineNumbers,
+
         }}
         editorDidMount={editorDidMount}
         theme={theme ? theme : convertCodeEditTheme()}

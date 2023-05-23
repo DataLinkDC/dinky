@@ -34,14 +34,19 @@ import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
 import org.dinky.process.exception.DinkyException;
 
+import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.python.PythonOptions;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
 import org.apache.flink.table.functions.UserDefinedFunction;
 import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +57,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +65,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.ClassScanner;
 import cn.hutool.core.lang.Dict;
@@ -262,7 +269,7 @@ public class UDFUtil {
      * 得到udf版本和构建jar
      *
      * @param codeList 代码列表
-     * @return {@link java.lang.String}
+     * @return {@link String}
      */
     @Deprecated
     public static String getUdfFileAndBuildJar(List<UDF> codeList) {
@@ -391,8 +398,73 @@ public class UDFUtil {
         } catch (ValidationException e) {
             throw e;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return classList;
+    }
+
+    public static List<String> getPythonUdfList(String pythonPath, String udfFile) {
+        File checkFile = new File(PathConstant.TMP_PATH, "getPyFuncList.py");
+        if (!checkFile.exists()) {
+            FileUtil.writeUtf8String(ResourceUtil.readUtf8Str("getPyFuncList.py"), checkFile);
+        }
+        List<String> udfNameList =
+                execPyAndGetUdfNameList(pythonPath, checkFile.getAbsolutePath(), udfFile);
+
+        List<String> successUdfList = new ArrayList<>();
+        if (CollUtil.isEmpty(udfNameList)) {
+            return new ArrayList<>();
+        }
+        for (String udfName : udfNameList) {
+            if (StrUtil.isBlank(udfName)) {
+                continue;
+            }
+            Configuration configuration = new Configuration();
+            configuration.set(PythonOptions.PYTHON_FILES, udfFile + ".zip");
+            configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, pythonPath);
+            configuration.set(PythonOptions.PYTHON_EXECUTABLE, pythonPath);
+
+            System.out.println(udfName);
+            try {
+                PythonFunctionFactory.getPythonFunction(udfName, configuration, null);
+                successUdfList.add(udfName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        System.out.println(successUdfList);
+        return successUdfList;
+    }
+
+    private static List<String> execPyAndGetUdfNameList(
+            String pyPath, String pyFile, String checkPyFile) {
+        Process process;
+        try {
+            // 运行Python3脚本的命令，换成自己的即可
+            String shell =
+                    StrUtil.join(
+                            " ",
+                            Arrays.asList(
+                                    Opt.ofBlankAble(pyPath).orElse("python3"),
+                                    pyFile,
+                                    checkPyFile));
+            process = Runtime.getRuntime().exec(shell);
+
+            if (process.waitFor() != 0) {
+                LineNumberReader lineNumberReader =
+                        new LineNumberReader(new InputStreamReader(process.getErrorStream()));
+                String errMsg = lineNumberReader.lines().collect(Collectors.joining("\n"));
+                throw new DinkyException(errMsg);
+            }
+
+            InputStreamReader ir = new InputStreamReader(process.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            String result = input.readLine();
+            input.close();
+            ir.close();
+            return StrUtil.split(result, ",");
+        } catch (IOException | InterruptedException e) {
+            throw new DinkyException(e);
+        }
     }
 }

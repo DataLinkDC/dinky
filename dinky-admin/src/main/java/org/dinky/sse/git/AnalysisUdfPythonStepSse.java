@@ -19,42 +19,56 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.dto.GitProjectDTO;
+import org.dinky.dto.GitAnalysisJarDTO;
+import org.dinky.function.data.model.Env;
+import org.dinky.function.util.UDFUtil;
 import org.dinky.model.GitProject;
 import org.dinky.sse.StepSse;
-import org.dinky.utils.GitRepository;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONUtil;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
-public class GitCloneStepSse extends StepSse {
-    public GitCloneStepSse(
+public class AnalysisUdfPythonStepSse extends StepSse {
+    public AnalysisUdfPythonStepSse(
             int sleep,
             List<SseEmitter> emitterList,
             Dict params,
             AtomicInteger msgId,
             AtomicInteger stepAtomic,
             ExecutorService cachedThreadPool) {
-        super("git clone", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
+        super("analysis udf", sleep, emitterList, params, msgId, stepAtomic, cachedThreadPool);
     }
 
     @Override
     public void exec() {
-        GitProject gitProject = (GitProject) params.get("gitProject");
+        File zipFile = (File) params.get("zipFile");
+        File projectFile = (File) params.get("projectFile");
+        List<String> pythonUdfList =
+                UDFUtil.getPythonUdfList(Env.getPath(), projectFile.getAbsolutePath());
+        GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
+        gitAnalysisJarDTO.setJarPath(zipFile.getAbsolutePath());
+        gitAnalysisJarDTO.setClassList(pythonUdfList);
 
-        GitRepository gitRepository =
-                new GitRepository(BeanUtil.toBean(gitProject, GitProjectDTO.class));
-        gitRepository.cloneAndPull(
-                gitProject.getName(), gitProject.getBranch(), getLogFile(), this::addMsg);
+        List<GitAnalysisJarDTO> dataList = CollUtil.newArrayList(gitAnalysisJarDTO);
+
+        String data = JSONUtil.toJsonStr(dataList);
+        sendMsg(getList(null).set("data", data));
+
+        FileUtil.appendString(data, getLogFile(), StandardCharsets.UTF_8);
+
+        // write result
+        GitProject gitProject = (GitProject) params.get("gitProject");
+        gitProject.setUdfClassMapList(data);
+        gitProject.updateById();
     }
 }

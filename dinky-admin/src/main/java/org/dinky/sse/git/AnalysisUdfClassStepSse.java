@@ -85,6 +85,7 @@ public class AnalysisUdfClassStepSse extends StepSse {
                             v.stream().map(Class::getName).collect(Collectors.toList()));
                     dataList.add(gitAnalysisJarDTO);
                 });
+
         String data = JSONUtil.toJsonStr(dataList);
         sendMsg(getList(null).set("data", data));
 

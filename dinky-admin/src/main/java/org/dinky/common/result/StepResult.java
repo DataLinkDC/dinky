@@ -38,19 +38,57 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class StepResult implements Serializable {
-    /** message type (1-stepInfo 2-log) */
-    private Integer type;
 
     private Integer currentStep;
+    // 0.stepInfo 1.log 2.data
+    private Integer type;
     private Object data;
-    /** 0-fail , 1-process , 2-success */
+    /** 2-success 1-process 0-failed */
     private Integer status;
 
-    public static StepResult getStepInfo(Integer currentStep, Object data) {
+    private Boolean history;
+
+    public static StepResult genHistoryLog(Integer currentStep, Integer status, String log) {
+        return genLog(currentStep, status, log, true);
+    }
+
+    public static StepResult genLog(
+            Integer currentStep, Integer status, String log, Boolean history) {
+        StepResult stepResult = new StepResult();
+        stepResult.setHistory(history);
+        stepResult.setData(log);
+        stepResult.setType(1);
+        stepResult.setCurrentStep(currentStep);
+        stepResult.setStatus(status);
+        return stepResult;
+    }
+
+    public static StepResult getStepInfo(Integer currentStep, Integer status, Object data) {
+        return StepResult.builder()
+                .type(0)
+                .currentStep(currentStep)
+                .data(JSONUtil.toJsonStr(data))
+                .status(status)
+                .build();
+    }
+
+    public static StepResult getLog(Integer currentStep, Integer status, String data) {
         return StepResult.builder()
                 .type(1)
                 .currentStep(currentStep)
-                .data(JSONUtil.toJsonStr(data))
+                .data(data)
+                .status(status)
+                .history(false)
+                .build();
+    }
+
+    public static StepResult getData(Integer currentStep, Integer status, String data) {
+        return StepResult.builder()
+                .type(2)
+                .currentStep(currentStep)
+                .data(data)
+                .status(status)
+                .history(true)
                 .build();
     }
 

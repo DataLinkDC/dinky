@@ -82,16 +82,16 @@ const ClassList: React.FC<ClassListProps> = (props) => {
       columns={columns}
       toolBarRender={false}
       showHeader={false}
-      dataSource={JSON.parse(JSON.stringify(jarAndClassesList)) as BuildJarList[]}
+      dataSource={jarAndClassesList as BuildJarList[]}
       search={false}
       rowKey="jarPath"
       pagination={false}
-      // expandable={{
-      //   expandRowByClick: true,
-      //   expandedRowRender: record => {
-      //     return <List split className={"child-list"}>{buildExpandableList(record.classList)}</List>;
-      //   }
-      // }}
+      expandable={{
+        expandRowByClick: true,
+        expandedRowRender: record => {
+          return <List split className={"child-list"}>{buildExpandableList(record.classList)}</List>;
+        }
+      }}
     />
   </>;
 };
