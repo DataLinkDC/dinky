@@ -234,4 +234,5 @@ public class MysqlSourceOperator extends MysqlTable {
                 + "}";
         //endregion
     }
+
 }

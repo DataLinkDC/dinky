@@ -62,7 +62,7 @@ public class SceneCodeBuilder {
         if (scene.getEnvironment().getResultType() == ResultType.JAVA) {
             CodeContext codeContext = createCodeContext(scene);
             codeBuilder = new CodeJavaBuilderImpl(codeContext);
-        } else if (scene.getEnvironment().getResultType() == ResultType.SQL) {
+        } else {
             codeBuilder = new CodeSqlBuilderImpl();
         }
     }

@@ -20,12 +20,14 @@
 package com.zdpx.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Task;
 
 import java.util.List;
 
 import com.zdpx.model.FlowGraph;
+import org.springframework.web.bind.annotation.RequestBody;
 
 /** */
 public interface TaskFlowGraphService extends ISuperService<FlowGraph> {
@@ -34,5 +36,7 @@ public interface TaskFlowGraphService extends ISuperService<FlowGraph> {
 
     boolean saveOrUpdateTask(Task task);
 
-    List<JsonNode> getOperatorConfigurations();
+    String testGraphStatement( String graph);
+
+        List<JsonNode> getOperatorConfigurations();
 }
