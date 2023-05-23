@@ -26,12 +26,14 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
+@Disabled("This is local test!")
 public class MavenUtilTests {
 
     @Test
