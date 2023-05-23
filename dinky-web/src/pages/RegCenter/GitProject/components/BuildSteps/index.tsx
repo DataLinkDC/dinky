@@ -27,6 +27,7 @@ import {JavaSteps, PythonSteps} from "@/pages/RegCenter/GitProject/components/Bu
 import {API_CONSTANTS} from "@/services/constants";
 import Exception from "@@/plugin-layout/Exception";
 import integer from "async-validator/dist-types/validator/integer";
+import proxy from "../../../../../../config/proxy";
 
 
 /**
@@ -92,7 +93,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   }
 
   const renderTitle = (step: number) => {
-    return (values.codeType === 1 ? JavaSteps : PythonSteps)[step-1].title;
+    return (values.codeType === 1 ? JavaSteps : PythonSteps)[step - 1].title;
   }
 
   useEffect(() => {
@@ -101,9 +102,13 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       setCurrentStep(0);
     }
 
-    const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const {REACT_APP_ENV = 'dev'} = process.env;
+    // @ts-ignore
+    const url = proxy[REACT_APP_ENV]["/api/"].target || ""
+    // 这里不要代理。sse使用代理会变成同步
+    // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const eventSource = new EventSource(url + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
 
-    // setEventSource(eventSource);
 
     buildStepList();
 

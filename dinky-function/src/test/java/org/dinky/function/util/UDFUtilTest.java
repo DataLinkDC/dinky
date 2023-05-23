@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import cn.hutool.core.lang.Opt;
@@ -70,6 +71,7 @@ class UDFUtilTest {
 
     @Test
     @Ignore
+    @Disabled("this is local test!")
     void pythonTest() throws ExecutionException {
 
         String pythonPath = "python";
