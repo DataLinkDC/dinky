@@ -32,7 +32,7 @@ import FullscreenBtn from "../FullscreenBtn";
  *    - The full screen button is done, but the full screen is not implemented
  *  2. Callback for right-clicking to clear logs (optional, not required)
  */
-type CodeShowFormProps = {
+export type CodeShowFormProps = {
   height?: string;
   width?: string;
   language?: string;
