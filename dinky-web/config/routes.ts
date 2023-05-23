@@ -42,9 +42,15 @@ export default [
   },
   {
     path: '/',
-    redirect: '/datastudio',
+    redirect: '/home',
   },
-
+  {
+    path: '/home',
+    name: 'home',
+    icon: 'HomeOutlined',
+    footerRender: false,
+    component: './Home',
+  },
   {
     path: '/datastudio',
     name: 'datastudio',
