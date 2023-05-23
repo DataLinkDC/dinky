@@ -16,7 +16,7 @@
  */
 
 import {DataSources} from '@/types/RegCenter/data';
-import {Divider, Empty} from 'antd';
+import {Empty} from 'antd';
 import React from 'react';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import ColumnInfo from './ColumnInfo/Index';

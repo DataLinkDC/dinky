@@ -25,9 +25,9 @@ import {l} from "@/utils/intl";
 import {AutoSteps, BuildMsgData} from "@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps";
 import {JavaSteps, PythonSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps/constants";
 import {API_CONSTANTS} from "@/services/constants";
-import Exception from "@@/plugin-layout/Exception";
-import integer from "async-validator/dist-types/validator/integer";
 import proxy from "../../../../../../config/proxy";
+import {renderStatus} from '@/pages/RegCenter/GitProject/function';
+import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
 
 
 /**
@@ -39,16 +39,6 @@ type BuildStepsProps = {
   values: Partial<GitProject>;
 };
 
-
-export type BuildStepsState = {
-  key: number;
-  title: string;
-  status: string;
-  description: string;
-  disabled: boolean;
-  onClick: () => void;
-}
-
 export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
   /**
@@ -59,39 +49,19 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     modalVisible,
     values,
   } = props;
-  let [logList, setLogList] = useState<Record<number, string[]>>({});
+  const [logList, setLogList] = useState<Record<number, string[]>>({});
   const [log, setLog] = useState<string>("");
-
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showList, setShowList] = useState<boolean>(false);
   const [percent, setPercent] = useState<number>(0);
   const [currentDataMsg, setCurrentDataMsg] = useState<BuildMsgData>();
-  const [buildSteps, setBuildSteps] = useState<Partial<any[]>>([]);
   const [steps, handleSteps] = useState<BuildStepsState[]>([]);
 
-  const buildStepList = () => {
-    if (values.codeType === 1) { // if code type is  java then build java steps
-      setBuildSteps(JavaSteps);
-    } else {
-      setBuildSteps(PythonSteps);
-    }
-  };
 
-
-  const renderStatus = (status: number) => {
-    let statusTemp = "";
-    if (status === 0) {
-      statusTemp = "error";
-    } else if (status === 1) {
-      statusTemp = "process";
-    } else if (status === 2) {
-      statusTemp = "finish";
-    } else {
-      statusTemp = "wait";
-    }
-    return statusTemp;
-  }
-
+  /**
+   * render step title
+   * @param step
+   */
   const renderTitle = (step: number) => {
     return (values.codeType === 1 ? JavaSteps : PythonSteps)[step - 1].title;
   }
@@ -109,10 +79,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
     const eventSource = new EventSource(url + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
 
-
-    buildStepList();
-
-    let stepArray: BuildStepsState[] = [];
+    let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;
     let execNum: number = 0;
     let stepNum: number = 1;
@@ -124,20 +91,20 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       try {
         // type  // 1是总状态  2是log  3是部分状态
         // status // 0是失败 1是进行中 2 完成
-        let resultMsg = JSON.parse(e.data);
-        const {currentStep, type, data, status, history} = resultMsg;
+        let result = JSON.parse(e.data);
+        const {currentStep, type, data, status, history} = result;
 
         if (type === 0) {
           if (execNum === 1) {
-            logList = {};
+            setLogList({});
           }
           execNum++;
-          let a1 = JSON.parse(data);
-          stepNum = a1.length;
-          setPercent(parseInt(String(100 / stepNum * currentStep)));
-          setCurrentStep(currentStep);
+          let parseResultData = JSON.parse(data); // parse data
+          stepNum = parseResultData.length; // get step num
+          setPercent(parseInt(String(100 / stepNum * currentStep))); // set percent
+          setCurrentStep(currentStep); // set current step
 
-          stepArray = a1.map((item: any) => {
+          stepArray = parseResultData.map((item: any) => {
             return {
               key: item.step,
               title: renderTitle(item.step),
@@ -182,10 +149,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
           }
 
 
-          setCurrentDataMsg(resultMsg);
+          setCurrentDataMsg(result);
           if ((status === 2 || status === 0) && history === false) {
             eventSource.close();
-            console.log("build success --- close")
           }
         }
       } catch (e) {

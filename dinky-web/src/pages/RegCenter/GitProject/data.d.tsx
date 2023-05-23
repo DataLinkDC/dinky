@@ -15,37 +15,11 @@
  * limitations under the License.
  */
 
-
-import {Empty, Tree} from 'antd';
-import React from 'react';
-import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
-
-const {DirectoryTree} = Tree;
-
-/**
- * props
- */
-type SchemaTreeProps = {
-  treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
+export type BuildStepsState = {
+  key: number;
+  title: string;
+  status: string;
+  description: string;
+  disabled: boolean;
+  onClick: () => void;
 }
-
-
-const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const {treeData, onNodeClick} = props;
-
-  /**
-   * render
-   */
-  return <>
-    {
-      (treeData.length > 0) ?
-        <DirectoryTree
-          onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildSchemaTree(treeData)}
-        /> : <Empty className={'code-content-empty'}/>
-    }
-  </>;
-};
-
-export default SchemaTree;

@@ -155,6 +155,7 @@ export default {
   'global.error': 'Error',
   'global.warning': 'Warning',
   'global.success': 'Success',
+  'global.getdata.tips': 'Get Data',
 
   'global.notifaction.iknow': 'I understand',
   'global.notifaction.full-error': 'Complete error message',

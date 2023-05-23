@@ -27,6 +27,7 @@ import {
   JavaSvg,
   LogSvg,
   MarkDownSvg,
+  PythonSvg,
   ScalaSvg,
   ShellSvg,
   XMLSvg,
@@ -187,7 +188,6 @@ export const getLanguage = (type: string): string => {
     case DIALECT.SCALA:
       return DIALECT.SCALA;
     case DIALECT.PYTHON:
-      return DIALECT.PYTHON;
     case DIALECT.PYTHON_LONG:
       return DIALECT.PYTHON_LONG;
     case DIALECT.SQL:
@@ -207,6 +207,9 @@ export const getIcon = (type: string) => {
       return <JavaSvg/>;
     case DIALECT.SCALA:
       return <ScalaSvg/>;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return <PythonSvg/>;
     case DIALECT.MD:
     case DIALECT.MDX:
       return <MarkDownSvg/>;

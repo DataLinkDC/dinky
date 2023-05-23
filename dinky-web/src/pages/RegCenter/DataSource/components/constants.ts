@@ -131,3 +131,27 @@ export const AUTO_COMPLETE_TYPE = [
     label: 'jdbc:presto://localhost:8080/dinky',
   },
 ];
+
+
+export const QUERY_KEYWORD = [
+  'and',
+  'or',
+  'not',
+  'in',
+  'like',
+  'between',
+  'is null',
+  'is not null',
+  'is not',
+  '=',
+  '!=',
+  '<',
+  '>',
+  '<=',
+  '>=',
+  '<>',
+  '!',
+  'desc',
+  'asc',
+  'not in ()',
+];

@@ -134,6 +134,12 @@ export default defineConfig({
     baseNavigator: true,
     useLocalStorage: true,
   },
+
+  /**
+   *  @name styled-components 插件
+   */
+  // styledComponents: {},
+
   /**
    * @name antd 插件
    * @description 内置了 babel import 插件
