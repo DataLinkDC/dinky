@@ -57,7 +57,6 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
     setLoading(true);
     await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then((res) => {
       setTreeData(res);
-      console.log(res);
     });
     setLoading(false);
   };

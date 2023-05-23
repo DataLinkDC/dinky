@@ -26,7 +26,7 @@ import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/GenSQL';
 import {ProCard} from '@ant-design/pro-components';
 import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
-import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
+import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 
 
 /**
@@ -35,14 +35,15 @@ import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 type RightTagsRouterProps = {
   tableInfo: Partial<DataSources.Table>,
   tableColumns: Partial<DataSources.Column[]>,
-  genSQL: Partial<DataSources.SqlGeneration>,
   rightButtons: React.ReactNode,
+  queryParams: Partial<QueryParams>
+  tagDisabled: boolean
 }
 
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
-  const {tableColumns, tableInfo, genSQL, rightButtons} = props;
+  const {tableColumns, tableInfo,queryParams, tagDisabled, rightButtons} = props;
   // state
   const [activeKey, setActiveKey] = React.useState('desc');
 
@@ -51,22 +52,26 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
     {
       key: 'desc',
       label: <Space><BookOutlined/>{l('rc.ds.detail.tag.desc')}</Space>,
-      children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>
+      children: <SchemaDesc tableInfo={tableInfo} tableColumns={tableColumns}/>,
+      disabled: tagDisabled
     },
     {
       key: 'query',
       label: <Space><BookOutlined/>{l('rc.ds.detail.tag.query')}</Space>,
-      children: <SQLQuery query={'111'}/>
+      children: <SQLQuery queryParams={queryParams}/>,
+      disabled: tagDisabled
     },
     {
       key: 'gensql',
       label: <Space><BookOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
-      children: <GenSQL sql={genSQL}/>
+      children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams}/>,
+      disabled: tagDisabled
     },
     {
       key: 'console',
       label: <Space><BookOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
-      children: <SQLConsole querySQL={''}/>
+      disabled: tagDisabled,
+      // children: <SQLConsole dbId={dataSourceInfo.id}  schema={tableInfo.schema} table={tableInfo.name} />
     },
   ];
 

@@ -24,7 +24,7 @@ import lombok.Data;
 @Data
 public class QueryData {
 
-    private String id;
+    private Integer id;
 
     private String schemaName;
 

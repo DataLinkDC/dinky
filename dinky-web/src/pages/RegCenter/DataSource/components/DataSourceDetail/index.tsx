@@ -27,6 +27,7 @@ import {useNavigate} from '@umijs/max';
 import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
 import {getDataByIdReturnResult, queryDataByParams} from '@/services/BusinessCrud';
 import {ProCard} from '@ant-design/pro-components';
+import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 
 type DataSourceDetailProps = {
   dataSource: Partial<DataSources.DataSource>;
@@ -38,10 +39,11 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
 
   const {dataSource, backClick} = props;
   const [loading, setLoading] = useState<boolean>(false);
+  const [disabled, setDisabled] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
   const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
-  const [genSQL, setGenSQL] = useState<Partial<DataSources.SqlGeneration>>({});
   const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
+  const [params, setParams] = useState<QueryParams>({id: 0, schemaName: '', tableName: ''});
 
   const handleBackClick = () => {
     // go back
@@ -51,9 +53,14 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   };
 
   const clearState = () => {
+    setDisabled(true);
     setTableColumns([]);
     setTableInfo({});
-    setGenSQL({});
+    setParams({
+      id: 0,
+      schemaName: '',
+      tableName: ''
+    });
   };
 
 
@@ -77,26 +84,23 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
    * tree node click
    */
   const onSchemaTreeNodeClick = useCallback(async (info: any) => {
-    const {node: {isLeaf, parentId, name, fullInfo}} = info;
+    const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     if (isLeaf) {
+      setParams({
+        id: dataSource.id || 0,
+        schemaName,
+        tableName
+      });
+      setDisabled(false);
       /**
        * get table columns
        */
       const columnsData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, {
         id: dataSource.id,
-        schemaName: parentId,
-        tableName: name
-      });
-      /**
-       * get gen sql
-       */
-      const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {
-        id: dataSource.id,
-        schemaName: parentId,
-        tableName: name
+        schemaName,
+        tableName
       });
       setTableColumns(columnsData);
-      setGenSQL(genSQLData);
       setTableInfo(fullInfo);
     } else {
       clearState();
@@ -129,13 +133,14 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
         {/* tree */}
         <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
       </ProCard>
-      <ProCard headerBordered>
+      <ProCard colSpan="80%" loading={loading} ghost headerBordered>
         {/* tags */}
         <RightTagsRouter
           tableInfo={tableInfo}
           tableColumns={tableColumns}
-          genSQL={genSQL}
+          queryParams={params}
           rightButtons={renderBackButton()}
+          tagDisabled={disabled}
         />
       </ProCard>
     </ProCard>

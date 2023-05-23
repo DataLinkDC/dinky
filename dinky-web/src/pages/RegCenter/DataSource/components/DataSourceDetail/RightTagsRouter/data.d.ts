@@ -15,37 +15,23 @@
  * limitations under the License.
  */
 
-
-import {Empty, Tree} from 'antd';
-import React from 'react';
-import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
-
-const {DirectoryTree} = Tree;
-
-/**
- * props
- */
-type SchemaTreeProps = {
-  treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
+export type QueryData = {
+  id: string;
+  schemaName: string;
+  tableName: string;
+  sql: string;
+  option: Option;
 }
 
+export type Option = {
+  where: string;
+  order: string;
+  limitStart: string;
+  limitEnd: string;
+}
 
-const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const {treeData, onNodeClick} = props;
-
-  /**
-   * render
-   */
-  return <>
-    {
-      (treeData.length > 0) ?
-        <DirectoryTree
-          onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildSchemaTree(treeData)}
-        /> : <Empty className={'code-content-empty'}/>
-    }
-  </>;
-};
-
-export default SchemaTree;
+export type QueryParams = {
+  id: number;
+  schemaName: string;
+  tableName: string;
+}

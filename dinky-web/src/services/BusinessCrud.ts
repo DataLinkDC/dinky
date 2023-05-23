@@ -147,13 +147,14 @@ export const updateEnabled = async (url: string, params: any) => {
 export const handleOption = async (url: string, title: string, param: any) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
-    const {code, msg} = await postAll(url, param);
-    if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+    const result = await postAll(url, param);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(result.msg);
+      return result;
     } else {
-      WarningMessage(msg);
+      WarningMessage(result.msg);
+      return false;
     }
-    return true;
   } catch (error) {
     return false;
   }

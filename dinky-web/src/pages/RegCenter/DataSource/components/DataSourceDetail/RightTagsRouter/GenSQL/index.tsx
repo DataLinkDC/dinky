@@ -16,14 +16,18 @@
  */
 
 import {DataSources} from '@/types/RegCenter/data';
-import React from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import {ProCard} from '@ant-design/pro-components';
 import {Empty} from 'antd';
 import {l} from '@/utils/intl';
+import {queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/constants';
+import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 
 type GenSQLProps = {
-  sql: Partial<DataSources.SqlGeneration>;
+  queryParams: Partial<QueryParams>,
+  tagDisabled: boolean
 }
 
 /**
@@ -39,39 +43,72 @@ const CodeShowProps = {
 
 
 const GenSQL: React.FC<GenSQLProps> = (props) => {
-  const {sql} = props;
+  const {queryParams, tagDisabled} = props;
+  const [genSQL, setGenSQL] = useState<Partial<DataSources.SqlGeneration>>({});
   const [activeKey, setActiveKey] = React.useState<string>('flinkddl');
 
-  // tab list
+  const queryDDL = useCallback(async () => {
+    //get gen sql
+    const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {...queryParams});
+    setGenSQL(genSQLData);
+  }, [queryParams]);
+
+  /**
+   * query
+   */
+  useEffect(() => {
+    if (queryParams.id && queryParams.tableName && queryParams.schemaName) {
+      queryDDL();
+    }
+  }, [queryParams]);
+
+  /**
+   * render content
+   * @param code
+   */
+  const renderContent = (code = '') => {
+    return <CodeShow {...CodeShowProps} code={tagDisabled ? '' : code}/>;
+  };
+
+
+  /**
+   * tab list
+   */
   const tabList = [
     {
       key: 'flinkddl',
       label: 'Flink DDL',
-      children: <CodeShow {...CodeShowProps} code={sql.flinkSqlCreate || ''}/>
+      disabled: tagDisabled,
+      children: renderContent(genSQL.sqlCreate)
     },
     {
       key: 'select',
       label: 'Select',
-      children: <CodeShow {...CodeShowProps} code={sql.sqlSelect || ''}/>
+      disabled: tagDisabled,
+      children:renderContent(genSQL.sqlSelect)
     },
     {
       key: 'sqlddl',
       label: 'SQL DDL',
-      children: <CodeShow {...CodeShowProps} code={sql.sqlCreate || ''}/>
+      disabled: tagDisabled,
+      children: renderContent(genSQL.sqlCreate)
     }
-  ]
+  ];
 
   // tab props
   const restTabProps = {
     activeKey,
-    onChange: (key: string) =>setActiveKey(key),
+    onChange: (key: string) => setActiveKey(key),
     tabPosition: 'left',
+    size: 'small',
     items: tabList
-  }
+  };
 
-
+  /**
+   * render
+   */
   return <>
-    { (sql.flinkSqlCreate || sql.sqlSelect || sql.sqlCreate) ?
+    {(genSQL.flinkSqlCreate || genSQL.sqlSelect || genSQL.sqlCreate) ?
       <ProCard tabs={{...restTabProps}}/>
       : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
     }

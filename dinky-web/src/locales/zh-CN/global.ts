@@ -151,6 +151,7 @@ export default {
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',
+  'global.getdata.tips': '获取数据',
 
   'global.notifaction.iknow': '我知道了',
   'global.notifaction.full-error': '完整错误信息',
