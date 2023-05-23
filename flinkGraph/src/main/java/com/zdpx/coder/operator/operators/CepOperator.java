@@ -363,103 +363,104 @@ public class CepOperator extends Operator {
 
     @Override
     protected String propertySchemaDefinition() {
-        return "{\n"
-                + "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n"
-                + "  \"$id\": \"https://dzpx.com/detection\",\n"
-                + "  \"title\": \"CepOperator Define\",\n"
-                + "  \"description\": \"define the CepOperator parameter\",\n"
-                + "  \"type\": \"object\",\n"
-                + "  \"properties\": {\n"
-                + "    \"partition\": {\n"
-                + "      \"type\": \"string\",\n"
-                + "      \"description\": \"field for partition\"\n"
-                + "    },\n"
-                + "    \"orderBy\": {\n"
-                + "      \"type\": \"string\",\n"
-                + "      \"description\": \"field for order\"\n"
-                + "    },\n"
-                + "    \"patterns\": {\n"
-                + "      \"type\": \"array\",\n"
-                + "      \"description\": \"define pattern variable and case\",\n"
-                + "      \"prefixItems\": {\n"
-                + "        \"type\": \"object\",\n"
-                + "        \"properties\": {\n"
-                + "          \"variable\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"pattern variable name\"\n"
-                + "          },\n"
-                + "          \"quantifier\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"pattern variable's quantifier, * + ? {n} {n,} {n,m} {,m}\"\n"
-                + "          }\n"
-                + "        }\n"
-                + "      }\n"
-                + "    },\n"
-                + "    \"skipStrategy\": {\n"
-                + "      \"type\": \"object\",\n"
-                + "      \"description\": \"skip strategy\",\n"
-                + "      \"properties\": {\n"
-                + "        \"strategy\": {\n"
-                + "          \"type\": \"string\",\n"
-                + "          \"description\": \"strategy model\"\n"
-                + "        },\n"
-                + "        \"variable\": {\n"
-                + "          \"type\": \"string\",\n"
-                + "          \"description\": \"pattern variable\"\n"
-                + "        }\n"
-                + "      }\n"
-                + "    },\n"
-                + "    \"measures\": {\n"
-                + "      \"type\": \"array\",\n"
-                + "      \"description\": \"define measure\",\n"
-                + "      \"prefixItems\": {\n"
-                + "        \"type\": \"object\",\n"
-                + "        \"properties\": {\n"
-                + "          \"functionName\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"offsetMethod last n, first n\"\n"
-                + "          },\n"
-                + "          \"outName\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"the name after calculate pattern variable's field\"\n"
-                + "          },\n"
-                + "          \"delimiter\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"function parameter delimiter, if cast, can set AS, if +-*/ and not "
-                + "functionName, as expression\"\n"
-                + "          },\n"
-                + "          \"parameters\": {\n"
-                + "            \"type\": \"array\",\n"
-                + "            \"prefixItems\": {\n"
-                + "              \"type\": \"string\"\n"
-                + "            }\n"
-                + "          }\n"
-                + "        }\n"
-                + "      }\n"
-                + "    },\n"
-                + "    \"defines\": {\n"
-                + "      \"type\": \"array\",\n"
-                + "      \"description\": \"define defines\",\n"
-                + "      \"prefixItems\": {\n"
-                + "        \"type\": \"object\",\n"
-                + "        \"properties\": {\n"
-                + "          \"variable\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"define pattern variable\"\n"
-                + "          },\n"
-                + "          \"condition\": {\n"
-                + "            \"type\": \"string\",\n"
-                + "            \"description\": \"like sql where statement\"\n"
-                + "          }\n"
-                + "        }\n"
-                + "      }\n"
-                + "    },\n"
-                + "    \"required\": [\n"
-                + "      \"pattern\",\n"
-                + "      \"measures\",\n"
-                + "      \"defines\"\n"
-                + "    ]\n"
-                + "  }\n"
-                + "}";
+        return "{\n" +
+                "  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n" +
+                "  \"$id\": \"https://dzpx.com/detection\",\n" +
+                "  \"title\": \"CepOperator Define\",\n" +
+                "  \"description\": \"define the CepOperator parameter\",\n" +
+                "  \"type\": \"array\",\n" +
+                "  \"items\": {\n" +
+                "    \"properties\": {\n" +
+                "      \"partition\": {\n" +
+                "        \"type\": \"string\",\n" +
+                "        \"description\": \"field for partition\"\n" +
+                "      },\n" +
+                "      \"orderBy\": {\n" +
+                "        \"type\": \"string\",\n" +
+                "        \"description\": \"field for order\"\n" +
+                "      },\n" +
+                "      \"patterns\": {\n" +
+                "        \"type\": \"array\",\n" +
+                "        \"description\": \"define pattern variable and case\",\n" +
+                "        \"prefixItems\": {\n" +
+                "          \"type\": \"object\",\n" +
+                "          \"properties\": {\n" +
+                "            \"variable\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"pattern variable name\"\n" +
+                "            },\n" +
+                "            \"quantifier\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"pattern variable\\u0027s quantifier, * + ? {n} {n,} {n,m} {,m}\"\n" +
+                "            }\n" +
+                "          }\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"skipStrategy\": {\n" +
+                "        \"type\": \"object\",\n" +
+                "        \"description\": \"skip strategy\",\n" +
+                "        \"properties\": {\n" +
+                "          \"strategy\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"strategy model\"\n" +
+                "          },\n" +
+                "          \"variable\": {\n" +
+                "            \"type\": \"string\",\n" +
+                "            \"description\": \"pattern variable\"\n" +
+                "          }\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"measures\": {\n" +
+                "        \"type\": \"array\",\n" +
+                "        \"description\": \"define measure\",\n" +
+                "        \"prefixItems\": {\n" +
+                "          \"type\": \"object\",\n" +
+                "          \"properties\": {\n" +
+                "            \"functionName\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"offsetMethod last n, first n\"\n" +
+                "            },\n" +
+                "            \"outName\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"the name after calculate pattern variable\\u0027s field\"\n" +
+                "            },\n" +
+                "            \"delimiter\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"function parameter delimiter, if cast, can set AS, if +-*/ and not \\nfunctionName, as expression\"\n" +
+                "            },\n" +
+                "            \"parameters\": {\n" +
+                "              \"type\": \"array\",\n" +
+                "              \"prefixItems\": {\n" +
+                "                \"type\": \"string\"\n" +
+                "              }\n" +
+                "            }\n" +
+                "          }\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"defines\": {\n" +
+                "        \"type\": \"array\",\n" +
+                "        \"description\": \"define defines\",\n" +
+                "        \"prefixItems\": {\n" +
+                "          \"type\": \"object\",\n" +
+                "          \"properties\": {\n" +
+                "            \"variable\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"define pattern variable\"\n" +
+                "            },\n" +
+                "            \"condition\": {\n" +
+                "              \"type\": \"string\",\n" +
+                "              \"description\": \"like sql where statement\"\n" +
+                "            }\n" +
+                "          }\n" +
+                "        }\n" +
+                "      },\n" +
+                "      \"required\": [\n" +
+                "        \"pattern\",\n" +
+                "        \"measures\",\n" +
+                "        \"defines\"\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
     }
 }
