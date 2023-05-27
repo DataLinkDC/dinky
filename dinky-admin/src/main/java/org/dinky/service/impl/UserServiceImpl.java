@@ -254,7 +254,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result chooseTenant(Integer tenantId) {
+    public Result<Tenant> chooseTenant(Integer tenantId) {
         Tenant currentTenant = tenantService.getById(tenantId);
         if (Asserts.isNull(currentTenant)) {
             return Result.failed(MessageResolverUtils.getMessage("user.get.tenant.failed"));
