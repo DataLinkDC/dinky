@@ -52,6 +52,10 @@ public class Result<T> implements Serializable {
         this.msg = msg;
     }
 
+    public void setData(T data) {
+        this.datas = data;
+    }
+
     public Result(Status status) {
         if (status != null) {
             this.code = status.getCode();

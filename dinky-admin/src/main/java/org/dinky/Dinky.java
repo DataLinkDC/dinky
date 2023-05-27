@@ -26,7 +26,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 /**
- * Dinky 启动器
+ * Dinky Starter
  *
  * @since 2021/5/28
  */

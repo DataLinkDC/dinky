@@ -130,7 +130,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<UserDTO> loginUser(LoginDTO loginDTO) {
+    public Result loginUser(LoginDTO loginDTO) {
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
@@ -254,7 +254,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<Tenant> chooseTenant(Integer tenantId) {
+    public Result chooseTenant(Integer tenantId) {
         Tenant currentTenant = tenantService.getById(tenantId);
         if (Asserts.isNull(currentTenant)) {
             return Result.failed(MessageResolverUtils.getMessage("user.get.tenant.failed"));
@@ -270,7 +270,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result<UserDTO> queryCurrentUserInfo() {
+    public Result queryCurrentUserInfo() {
         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
         if (Asserts.isNotNull(userInfo)
                 && Asserts.isNotNull(userInfo.getUser())
@@ -312,5 +312,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
         return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
+    }
+
+    @Override
+    public void outLogin() {
+        StpUtil.logout();
     }
 }

@@ -76,10 +76,10 @@ public interface UserService extends ISuperService<User> {
     /**
      * loginUser
      *
-     * @param loginDTO loginDTO
-     * @return {@link Result}<{@link UserDTO}>
+     * @param loginDTO basic information for user login
+     * @return user UserDTO information
      */
-    Result<UserDTO> loginUser(LoginDTO loginDTO);
+    Result loginUser(LoginDTO loginDTO);
 
     /**
      * getUserByUsername
@@ -111,16 +111,16 @@ public interface UserService extends ISuperService<User> {
      * choose tenant
      *
      * @param tenantId
-     * @return {@link Result}<{@link Tenant}>
+     * @return the specified tenant
      */
-    Result<Tenant> chooseTenant(Integer tenantId);
+    Result chooseTenant(Integer tenantId);
 
     /**
      * get current user base info
      *
-     * @return {@link Result}<{@link UserDTO}>
+     * @return obtain the current user's UserDTO
      */
-    Result<UserDTO> queryCurrentUserInfo();
+    Result queryCurrentUserInfo();
 
     /**
      * user enable or disable
@@ -151,4 +151,10 @@ public interface UserService extends ISuperService<User> {
      * @return role select permissions list
      */
     List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
+
+    /**
+     * user loginout
+     *
+     */
+    void outLogin();
 }

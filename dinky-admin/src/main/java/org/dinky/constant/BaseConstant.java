@@ -28,4 +28,19 @@ public class BaseConstant {
     public static final Integer DEFAULT_BATCH_INSERT_SIZE = 1000;
 
     public static final String YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss";
+
+    /**
+     * result status
+     */
+    public static final String  STATUS="status";
+
+    /**
+     * result data
+     */
+    public static final String DATA_LIST="data";
+
+    /**
+     * result message
+     */
+    public static final String MSG = "msg";
 }
