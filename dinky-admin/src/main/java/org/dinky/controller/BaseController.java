@@ -27,7 +27,7 @@ public abstract class BaseController {
     }
 
     /**
-     * error handle
+     * get error result
      *
      * @param code result code
      * @param msg result message
