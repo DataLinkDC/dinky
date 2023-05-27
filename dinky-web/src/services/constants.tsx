@@ -167,6 +167,8 @@ export const API_CONSTANTS = {
   // process list
   PROCESS_LIST: "/api/process/listAllProcess",
 
+  GET_JOB_LIST: "/api/jobInstance",
+
 };
 
 
@@ -350,4 +352,28 @@ export const DIALECT = {
   JSON: "json",
   SQL: "sql",
   JAVASCRIPT: "javascript",
+};
+
+export const JOB_LIFE_CYCLE = {
+  UNKNOWN: 0,
+  CREATE: 1,
+  DEVELOP: 2,
+  DEBUG: 3,
+  RELEASE: 4,
+  ONLINE: 5,
+  CANCEL: 6,
+};
+
+export const JOB_STATUS = {
+  FINISHED: 'FINISHED',
+  RUNNING: 'RUNNING',
+  FAILED: 'FAILED',
+  CANCELED: 'CANCELED',
+  INITIALIZING: 'INITIALIZING',
+  RESTARTING: 'RESTARTING',
+  CREATED: 'CREATED',
+  FAILING: 'FAILING',
+  SUSPENDED: 'SUSPENDED',
+  CANCELLING: 'CANCELLING',
+  UNKNOWN: 'UNKNOWN',
 };

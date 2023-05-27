@@ -127,7 +127,8 @@ export default {
   'global.table.status.abnormal': '异常',
 
   'global.table.jobname': '任务名称',
-  'global.table.jobid': '作业ID',
+  'global.table.jobid': 'Job ID',
+  'global.table.taskid': '任务ID',
   'global.table.lifecycle': '生命周期',
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
