@@ -37,7 +37,7 @@ public class BaseConstant {
     /**
      * result data
      */
-    public static final String DATA_LIST="data";
+    public static final String DATA="data";
 
     /**
      * result message
