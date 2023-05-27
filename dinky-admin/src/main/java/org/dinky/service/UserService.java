@@ -79,7 +79,7 @@ public interface UserService extends ISuperService<User> {
      * @param loginDTO basic information for user login
      * @return user UserDTO information
      */
-    Result loginUser(LoginDTO loginDTO);
+    Result<UserDTO> loginUser(LoginDTO loginDTO);
 
     /**
      * getUserByUsername
@@ -113,14 +113,14 @@ public interface UserService extends ISuperService<User> {
      * @param tenantId
      * @return the specified tenant
      */
-    Result chooseTenant(Integer tenantId);
+    Result<Tenant> chooseTenant(Integer tenantId);
 
     /**
      * get current user base info
      *
      * @return obtain the current user's UserDTO
      */
-    Result queryCurrentUserInfo();
+    Result<UserDTO> queryCurrentUserInfo();
 
     /**
      * user enable or disable

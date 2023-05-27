@@ -130,7 +130,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result loginUser(LoginDTO loginDTO) {
+    public Result<UserDTO> loginUser(LoginDTO loginDTO) {
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
             return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
@@ -270,7 +270,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Result queryCurrentUserInfo() {
+    public Result<UserDTO> queryCurrentUserInfo() {
         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
         if (Asserts.isNotNull(userInfo)
                 && Asserts.isNotNull(userInfo.getUser())

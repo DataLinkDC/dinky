@@ -21,7 +21,9 @@ package org.dinky.controller;
 
 import org.dinky.common.result.Result;
 import org.dinky.dto.LoginDTO;
+import org.dinky.dto.UserDTO;
 import org.dinky.enums.Status;
+import org.dinky.model.Tenant;
 import org.dinky.service.UserService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -54,7 +56,7 @@ public class AdminController extends BaseController{
      * @return obtain the user's UserDTO
      */
     @PostMapping("/login")
-    public Result login(@RequestBody LoginDTO loginDTO) {
+    public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
     }
 
@@ -64,7 +66,7 @@ public class AdminController extends BaseController{
      * @return user loginout status information
      */
     @DeleteMapping("/outLogin")
-    public Result outLogin() {
+    public Result<Void> outLogin() {
         userService.outLogin();
         return getResultFromStatus(Status.SIGN_OUT_SUCESS);
     }
@@ -75,7 +77,7 @@ public class AdminController extends BaseController{
      * @return obtain the current user's UserDTO
      */
     @GetMapping("/current")
-    public Result getCurrentUserInfo() {
+    public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();
     }
 
@@ -86,7 +88,7 @@ public class AdminController extends BaseController{
      * @return the specified tenant
      */
     @PostMapping("/chooseTenant")
-    public Result getTenantByTenantId(@RequestParam("tenantId") Integer tenantId) {
+    public Result<Tenant> getTenantByTenantId(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
     }
 }
