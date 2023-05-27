@@ -69,6 +69,7 @@ import org.apache.flink.table.planner.delegation.ExecutorBase;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.utils.ExecutorUtils;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
+import org.apache.flink.types.Row;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -406,6 +407,11 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 new LineageContext(
                         flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
+    }
+
+    @Override
+    public <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList) {
+        createTemporaryView(s, fromChangelogStream(dataStream));
     }
 
     @Override

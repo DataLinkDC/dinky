@@ -17,55 +17,32 @@
  *
  */
 
-package org.dinky.utils;
+package org.dinky.cdc.utils;
 
-import org.dinky.constant.FlinkParamConstant;
 import org.dinky.model.FlinkCDCConfig;
 import org.dinky.model.Table;
+import org.dinky.utils.SqlUtil;
 
-import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.runtime.util.EnvironmentInformation;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+public class FlinkStatementUtil {
 
-/**
- * FlinkBaseUtil
- *
- * @since 2022/3/9 19:15
- */
-public class FlinkBaseUtil {
-    private static final Logger logger = LoggerFactory.getLogger(FlinkBaseUtil.class);
-
-    public static Map<String, String> getParamsFromArgs(String[] args) {
-        Map<String, String> params = new HashMap<>();
-        ParameterTool parameters = ParameterTool.fromArgs(args);
-        params.put(FlinkParamConstant.ID, parameters.get(FlinkParamConstant.ID, null));
-        params.put(FlinkParamConstant.DRIVER, parameters.get(FlinkParamConstant.DRIVER, null));
-        params.put(FlinkParamConstant.URL, parameters.get(FlinkParamConstant.URL, null));
-        params.put(FlinkParamConstant.USERNAME, parameters.get(FlinkParamConstant.USERNAME, null));
-        params.put(FlinkParamConstant.PASSWORD, parameters.get(FlinkParamConstant.PASSWORD, null));
-        params.put(
-                FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
-        return params;
-    }
-
-    public static String getCDCSqlInsert(
+    public static String getCDCInsertSql(
             Table table, String targetName, String sourceName, FlinkCDCConfig config) {
-        StringBuilder sb = new StringBuilder("INSERT INTO `");
+        StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(targetName);
-        sb.append("` SELECT\n");
+        sb.append(" SELECT\n");
         for (int i = 0; i < table.getColumns().size(); i++) {
             sb.append("    ");
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(String.format("`%s`", table.getColumns().get(i).getName())).append(" \n");
+            sb.append("`" + table.getColumns().get(i).getName() + "`").append(" \n");
         }
         sb.append(" FROM `");
         sb.append(sourceName);
@@ -124,7 +101,45 @@ public class FlinkBaseUtil {
         return sb.toString();
     }
 
-    public static String getSinkConfigurationString(
+    public static String getCreateCatalogStatement(FlinkCDCConfig config) {
+        String catalogName = config.getSink().get("catalog.name");
+        List<String> catalogParamKeys =
+                config.getSink().entrySet().stream()
+                        .filter(
+                                item -> {
+                                    return item.getKey().startsWith("catalog.");
+                                })
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList());
+        StringBuilder sb = new StringBuilder("CREATE CATALOG ");
+        sb.append(catalogName);
+        sb.append(" WITH (\n");
+        catalogParamKeys.remove("catalog.name");
+        for (int i = 0; i < catalogParamKeys.size(); i++) {
+            sb.append("    ");
+            if (i > 0) {
+                sb.append(",");
+            }
+            sb.append("'")
+                    .append(catalogParamKeys.get(i).replace("catalog.", ""))
+                    .append("' = '")
+                    .append(config.getSink().get(catalogParamKeys.get(i)))
+                    .append("' \n");
+        }
+        sb.append(")\n");
+        return sb.toString();
+    }
+
+    private static String convertSinkColumnType(String type, FlinkCDCConfig config) {
+        if (config.getSink().get("connector").equals("hudi")) {
+            if (type.equals("TIMESTAMP")) {
+                return "TIMESTAMP(3)";
+            }
+        }
+        return type;
+    }
+
+    private static String getSinkConfigurationString(
             Table table,
             FlinkCDCConfig config,
             String sinkSchemaName,
@@ -139,14 +154,5 @@ public class FlinkBaseUtil {
             configurationString = SqlUtil.replaceAllParam(configurationString, "pkList", pkList);
         }
         return configurationString;
-    }
-
-    public static String convertSinkColumnType(String type, FlinkCDCConfig config) {
-        if (config.getSink().get("connector").equals("hudi")) {
-            if (type.equals("TIMESTAMP")) {
-                return "TIMESTAMP(3)";
-            }
-        }
-        return type;
     }
 }
