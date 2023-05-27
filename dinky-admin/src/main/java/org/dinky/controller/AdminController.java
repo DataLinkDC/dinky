@@ -45,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class AdminController extends BaseController{
+public class AdminController{
 
     private final UserService userService;
 
@@ -68,7 +68,7 @@ public class AdminController extends BaseController{
     @DeleteMapping("/outLogin")
     public Result<Void> outLogin() {
         userService.outLogin();
-        return getResultFromStatus(Status.SIGN_OUT_SUCESS);
+        return Result.getResultFromStatus(Status.SIGN_OUT_SUCESS);
     }
 
     /**
