@@ -4,9 +4,9 @@ import React, {useRef} from 'react';
 import {Jobs} from "@/types/DevOps/data";
 import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/constants";
-import JobStatus from "@/pages/DevOps/JobList/compents/JobStatus";
 import {parseSecondStr} from "@/utils/function";
 import {queryList} from "@/services/api";
+import {TagJobStatus} from "@/pages/DevOps/JobList/function";
 
 
 type HistoryProps = {
@@ -39,22 +39,16 @@ const JobHistoryItem = (props: HistoryProps) => {
     {
       title: l('global.table.status'),
       dataIndex: "status",
-      render: (_, row) => {
-        return (<JobStatus status={row.status}/>);
-      }
+      render: (_, row) => TagJobStatus(row.status)
     },
     {
       title: l('global.table.useTime'),
-      render: (_, row) => {
-        return parseSecondStr(row.duration)
-      }
+      render: (_, row) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      render: () => [
-        <a key={"history-detail"}>{l('devops.joblist.detail')}</a>
-      ],
+      render: () => [<a key={"history-detail"}>{l('devops.joblist.detail')}</a>],
     },
   ];
 
@@ -77,7 +71,6 @@ const JobHistoryItem = (props: HistoryProps) => {
         pagination={{showSizeChanger: false}}
       />
     </>
-
   );
 }
 export default JobHistoryItem;

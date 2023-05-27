@@ -5,16 +5,11 @@ import React, {useEffect, useRef} from 'react';
 import {Jobs} from "@/types/DevOps/data";
 import JobHistoryItem from "@/pages/DevOps/JobList/compents/JobHistoryItem";
 import {l} from "@/utils/intl";
-import JobLifeCycle from "@/pages/DevOps/JobList/compents/JobLifeCycle";
-import JobStatus from "@/pages/DevOps/JobList/compents/JobStatus";
 import {parseSecondStr} from "@/utils/function";
 import {API_CONSTANTS} from "@/services/constants";
-import {
-  JOB_STATUS_FILTER,
-  LIFECYCLE_FILTER
-} from "@/pages/DevOps/JobList/config";
 import {queryList} from "@/services/api";
 import {ClockCircleTwoTone, EyeTwoTone} from "@ant-design/icons";
+import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from "@/pages/DevOps/JobList/function";
 
 const JobList = () => {
   const tableRef = useRef<ActionType>();
@@ -33,7 +28,7 @@ const JobList = () => {
       filters: LIFECYCLE_FILTER(),
       hideInSearch:true,
       dataIndex: "step",
-      render: (_, row) => <JobLifeCycle step={row.step}/>
+      render: (_, row) => TagJobLifeCycle(row.step)
     },
     {
       title: l('global.table.runmode'),
@@ -59,7 +54,7 @@ const JobList = () => {
       filters: JOB_STATUS_FILTER(),
       hideInSearch:true,
       dataIndex: "status",
-      render: (_, row) => <JobStatus status={row.status}/>
+      render: (_, row) => TagJobStatus(row.status)
     },
     Table.EXPAND_COLUMN,
     {
