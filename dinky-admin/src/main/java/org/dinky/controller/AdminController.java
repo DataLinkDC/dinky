@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,7 +46,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
-public class AdminController{
+public class AdminController {
 
     private final UserService userService;
 
@@ -53,7 +54,7 @@ public class AdminController{
      * user login
      *
      * @param loginDTO basic information for user login
-     * @return obtain the user's UserDTO
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     @PostMapping("/login")
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
@@ -63,7 +64,7 @@ public class AdminController{
     /**
      * user logout
      *
-     * @return user loginout status information
+     * @return {@link Result}{@link Void} user loginout status information
      */
     @DeleteMapping("/outLogin")
     public Result<Void> outLogin() {
@@ -74,7 +75,7 @@ public class AdminController{
     /**
      * get current user info
      *
-     * @return obtain the current user's UserDTO
+     * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     @GetMapping("/current")
     public Result<UserDTO> getCurrentUserInfo() {
@@ -85,7 +86,7 @@ public class AdminController{
      * choose tenant by tenantId
      *
      * @param tenantId
-     * @return the specified tenant
+     * @return {@link Result}{@link Tenant} the specified tenant
      */
     @PostMapping("/chooseTenant")
     public Result<Tenant> getTenantByTenantId(@RequestParam("tenantId") Integer tenantId) {

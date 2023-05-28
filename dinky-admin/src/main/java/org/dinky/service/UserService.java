@@ -77,7 +77,7 @@ public interface UserService extends ISuperService<User> {
      * loginUser
      *
      * @param loginDTO basic information for user login
-     * @return user UserDTO information
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     Result<UserDTO> loginUser(LoginDTO loginDTO);
 
@@ -111,14 +111,14 @@ public interface UserService extends ISuperService<User> {
      * choose tenant
      *
      * @param tenantId
-     * @return the specified tenant
+     * @return {@link Result}{@link Tenant} the specified tenant
      */
     Result<Tenant> chooseTenant(Integer tenantId);
 
     /**
      * get current user base info
      *
-     * @return obtain the current user's UserDTO
+     * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     Result<UserDTO> queryCurrentUserInfo();
 
@@ -152,9 +152,6 @@ public interface UserService extends ISuperService<User> {
      */
     List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
 
-    /**
-     * user loginout
-     *
-     */
+    /** user loginout */
     void outLogin();
 }

@@ -123,9 +123,9 @@ public class Result<T> implements Serializable {
      * this method returns a successful result with the status
      *
      * @param status
-     * @return result code
+     * @return {@link Result}{@link Void} result status information
      */
-    public static Result<Void> getResultFromStatus(Status status){
+    public static Result<Void> getResultFromStatus(Status status) {
         Result<Void> result = new Result<Void>();
         result.setCode(status.getCode());
         result.setMsg(status.getMsg());
