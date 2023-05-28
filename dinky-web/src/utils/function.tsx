@@ -34,6 +34,7 @@ import {
   YAMLSvg
 } from "@/components/Icons/CodeLanguageIcon";
 import path from "path";
+import {l} from "@/utils/intl";
 
 /**
  * PUT tenantId TO localStorage & cookies
@@ -270,6 +271,32 @@ export const renderLanguage = (type: string, splitChar: string) => {
  */
 export const folderSeparator = () => {
   return path.sep;
+}
+
+
+/**
+ * Generate time string
+ * @param s_time datetime
+ */
+export const parseSecondStr = (s_time: number) => {
+  let second_time = Math.floor(s_time);
+  let time = second_time + l( 'global.time.second');
+  if (second_time > 60) {
+    let second = second_time % 60;
+    let min = Math.floor(second_time / 60);
+    time = min + l( 'global.time.minute') + second + l( 'global.time.second');
+    if (min > 60) {
+      min = Math.floor(second_time / 60) % 60;
+      let hour = Math.floor(Math.floor(second_time / 60) / 60);
+      time = hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
+      if (hour > 24) {
+        hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
+        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
+        time = day + l( 'global.time.day') + hour + l( 'global.time.hour') + min + l( 'global.time.minute') + second + l( 'global.time.second');
+      }
+    }
+  }
+  return time;
 }
 
 
