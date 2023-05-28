@@ -62,6 +62,7 @@ import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
+import org.apache.flink.types.Row;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -337,6 +338,12 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
                 new LineageContext(
                         flinkChainedProgram, (TableEnvironmentImpl) streamTableEnvironment);
         return lineageContext.getLineage(statement);
+    }
+
+    @Override
+    public <T> void createTemporaryView(
+            String s, DataStream<Row> dataStream, List<String> columnNameList) {
+        createTemporaryView(s, fromChangelogStream(dataStream));
     }
 
     @Override

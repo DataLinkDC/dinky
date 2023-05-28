@@ -54,6 +54,7 @@ class FlinkCDCConfigTest {
                         null,
                         null,
                         sinkConfig,
+                        null,
                         null);
         String sinkConfigureStr = flinkCDCConfig.getSinkConfigurationString();
         assertThat(
