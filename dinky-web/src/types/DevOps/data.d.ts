@@ -5,9 +5,7 @@ import {BaseBeanColumns} from "@/types/Public/data";
  */
 declare namespace Jobs {
 
-  export type JobInstanceTableListItem =  BaseBeanColumns &  {
-    id: number,
-    name: string,
+  export type JobInstance =  BaseBeanColumns &  {
     taskId: number,
     step: number,
     clusterId: number,
@@ -20,8 +18,6 @@ declare namespace Jobs {
     error: string,
     failedRestartCount: number,
     duration: number,
-    createTime: Date,
-    updateTime: Date,
     finishTime: Date,
   };
 

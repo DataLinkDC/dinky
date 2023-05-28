@@ -13,13 +13,13 @@ type HistoryProps = {
   taskId: number;
 };
 
-const JobHistoryItem = (props: HistoryProps) => {
+const JobHistoryList = (props: HistoryProps) => {
 
   const {taskId} = props
 
   const actionRef = useRef<ActionType>();
 
-  const jobListColums: ProColumns<Jobs.JobInstanceTableListItem>[] = [
+  const jobListColums: ProColumns<Jobs.JobInstance>[] = [
 
     {
       title: l('global.table.createTime'),
@@ -54,7 +54,7 @@ const JobHistoryItem = (props: HistoryProps) => {
 
   return (
     <>
-      <ProTable<Jobs.JobInstanceTableListItem>
+      <ProTable<Jobs.JobInstance>
         search={false}
         params={{isHistory: true}}
         tableStyle={{overflowX: "hidden", overflowY: "hidden", margin: "10px"}}
@@ -73,4 +73,4 @@ const JobHistoryItem = (props: HistoryProps) => {
     </>
   );
 }
-export default JobHistoryItem;
+export default JobHistoryList;

@@ -3,7 +3,7 @@ import {ProTable} from '@ant-design/pro-components';
 import {Button, Table} from 'antd';
 import React, {useEffect, useRef} from 'react';
 import {Jobs} from "@/types/DevOps/data";
-import JobHistoryItem from "@/pages/DevOps/JobList/compents/JobHistoryItem";
+import JobHistoryList from "@/pages/DevOps/JobList/compents/JobHistoryList";
 import {l} from "@/utils/intl";
 import {parseSecondStr} from "@/utils/function";
 import {API_CONSTANTS} from "@/services/constants";
@@ -14,7 +14,7 @@ import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from
 const JobList = () => {
   const tableRef = useRef<ActionType>();
 
-  const jobListColums: ProColumns<Jobs.JobInstanceTableListItem>[] = [
+  const jobListColums: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('global.table.taskid'),
       dataIndex: "taskId",
@@ -72,11 +72,11 @@ const JobList = () => {
   ];
 
   useEffect(() => {
-    setInterval(()=>tableRef.current?.reload(false), 1000);
+    setInterval(()=>tableRef.current?.reload(false), 5*1000);
   }, []);
 
   return (
-    <ProTable<Jobs.JobInstanceTableListItem>
+    <ProTable<Jobs.JobInstance>
       rowKey={(record => record.jid)}
       columns={jobListColums}
       params={{isHistory: false}}
@@ -90,7 +90,7 @@ const JobList = () => {
         })
       }}
       expandable={{
-        expandedRowRender: (record) => <JobHistoryItem taskId={record.taskId} key={record.jid}/>,
+        expandedRowRender: (record) => <JobHistoryList taskId={record.taskId} key={record.jid}/>,
         expandIcon: ({expanded, onExpand, record}) => {
           return (
             <Button
