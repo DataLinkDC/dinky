@@ -51,6 +51,14 @@ export default {
   'about.communityRules.5':
     ' Register who is using Dinky, and can enter the enterprise user group to provide technical support. ',
 
+  //-------------------------------- devops --------------------------------
+  // devops
+
+  'devops.joblist.joblist': 'JobList',
+  'devops.joblist.history': 'History',
+  'devops.joblist.detail': 'Job Detail',
+
+
   //-------------------------------- auth center --------------------------------
   // user
   'user.manager': 'User Management',

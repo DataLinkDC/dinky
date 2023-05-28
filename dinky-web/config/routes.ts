@@ -65,13 +65,13 @@ export default [
     routes: [
       {
         path: '/devops',
-        redirect: '/devops/job',
+        redirect: '/devops/joblist',
       },
       {
-        path: '/devops/job',
+        path: '/devops/joblist',
         name: 'job',
         hideInMenu: true,
-        // component: './DevOps/JobInfo',
+        component: './DevOps/JobList',
       },
     ],
   },
