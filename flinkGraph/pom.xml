@@ -49,7 +49,6 @@ under the License.
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <reflections.version>0.10.2</reflections.version>
         <scala.binary.version>2.12</scala.binary.version>
-        <target.java.version>11</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
     </properties>
 

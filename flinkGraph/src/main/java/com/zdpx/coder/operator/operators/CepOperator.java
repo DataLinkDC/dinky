@@ -144,12 +144,12 @@ public class CepOperator extends Operator {
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> defineList = (List<Map<String, Object>>) parameters.get(DEFINES);
-        List<Define> defines = mapper.convertValue(defineList, new TypeReference<>() {});
+        List<Define> defines = mapper.convertValue(defineList, new TypeReference<List<Define>>() {});
 
         @SuppressWarnings("unchecked")
         List<Map<String, Object>> patternList =
                 (List<Map<String, Object>>) parameters.get(PATTERNS);
-        List<Pattern> patterns = mapper.convertValue(patternList, new TypeReference<>() {});
+        List<Pattern> patterns = mapper.convertValue(patternList, new TypeReference<List<Pattern>>() {});
 
         SkipStrategy skipStrategy =
                 mapper.convertValue(parameters.get(SKIP_STRATEGY), SkipStrategy.class);
@@ -190,7 +190,7 @@ public class CepOperator extends Operator {
     private <T> List<T> getSpecialTypeList(
             Map<String, Object> parameters, String key, Class<T> type) {
         List<Map<String, Object>> measureList = (List<Map<String, Object>>) parameters.get(key);
-        return mapper.convertValue(measureList, new TypeReference<>() {});
+        return mapper.convertValue(measureList, new TypeReference<List<T>>() {});
     }
 
     /**

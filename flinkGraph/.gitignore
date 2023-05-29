@@ -33,6 +33,8 @@ out
 gen
 ### Gradle template
 .gradle
+gradlew
+gradlew.bat
 **/build/
 
 # Ignore Gradle GUI config
