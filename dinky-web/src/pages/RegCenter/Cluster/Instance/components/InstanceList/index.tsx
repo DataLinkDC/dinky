@@ -41,6 +41,9 @@ import {
 
 export default () => {
 
+  /**
+   * state
+   */
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [createOpen, setCreateOpen] = useState<boolean>(false);
@@ -59,12 +62,19 @@ export default () => {
     actionRef.current?.reload?.();
   };
 
+  /**
+   * cancel
+   */
   const handleCancel = async () => {
     setCreateOpen(false);
     setModifyeOpen(false);
     setFormValue({});
   };
 
+  /**
+   * submit add or update
+   * @param value
+   */
   const handleSubmit = async (value: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
       await handleAddOrUpdate(API_CONSTANTS.CLUSTER_INSTANCE, value);
@@ -72,36 +82,56 @@ export default () => {
     });
   };
 
+  /**
+   * edit open
+   * @param value
+   */
   const handleEdit = async (value: Partial<Cluster.Instance>) => {
     setFormValue(value);
     setModifyeOpen(true);
   };
 
+  /**
+   * delete by id
+   * @param id
+   */
   const handleDelete = async (id: number) => {
     await executeAndCallback(async () => {
       await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_DELETE, id);
     });
   };
 
+  /**
+   * enable or disable
+   * @param record
+   */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
       await updateEnabled(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id});
     });
   };
 
+  /**
+   * check heart beat
+   */
   const handleHeartBeat = async () => {
     await executeAndCallback(async () => {
       await handleOption(API_CONSTANTS.CLUSTER_INSTANCE_HEARTBEATS, l('rc.ci.heartbeat'), null);
     });
   };
 
+  /**
+   * recycle instance
+   */
   const handleRecycle = async () => {
     await executeAndCallback(async () => {
       await handleRemoveById(API_CONSTANTS.CLUSTER_INSTANCE_RECYCLE, 0);
     });
   };
 
-
+  /**
+   * columns
+   */
   const columns: ProColumns<Cluster.Instance>[] = [
     {
       title: l('rc.ci.name'),
@@ -181,15 +211,22 @@ export default () => {
     },
   ];
 
+  /**
+   * tool bar render
+   */
   const toolBarRender = () => [
     <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)}/>,
     <Button key={'heartbeat_all'} type={'primary'} icon={<HeartTwoTone/>}
             onClick={() => handleHeartBeat()}>{l('button.heartbeat')}</Button>,
-    <Popconfirm key={'recycle'} title={l('rc.ci.recycle')} description={l('rc.ci.recycleConfirm')} onConfirm={handleRecycle}>
+    <Popconfirm key={'recycle'} title={l('rc.ci.recycle')} description={l('rc.ci.recycleConfirm')}
+                onConfirm={handleRecycle}>
       <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined/>}>{l('button.recycle')}</Button>
     </Popconfirm>,
   ];
 
+  /**
+   * render
+   */
   return <>
     <ProTable<Cluster.Instance>
       headerTitle={l('rc.ci.management')}
@@ -200,8 +237,9 @@ export default () => {
       toolBarRender={toolBarRender}
       request={(params, sorter, filter: any) => queryList(API_CONSTANTS.CLUSTER_INSTANCE, {...params, sorter, filter})}
     />
-
+    {/*added*/}
     <InstanceModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit}/>
+    {/*modify*/}
     <InstanceModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>
 
   </>;
