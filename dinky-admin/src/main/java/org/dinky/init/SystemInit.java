@@ -31,6 +31,7 @@ import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.config.DolphinSchedulerProperties;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
+import org.dinky.service.GitProjectService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
@@ -67,6 +68,7 @@ public class SystemInit implements ApplicationRunner {
     private final TaskService taskService;
     private final TenantService tenantService;
     private final DolphinSchedulerProperties dolphinSchedulerProperties;
+    private final GitProjectService gitProjectService;
     private static Project project;
 
     @Override
@@ -125,6 +127,7 @@ public class SystemInit implements ApplicationRunner {
                 taskService.getAllUDF().stream()
                         .map(UDFUtils::taskToUDF)
                         .collect(Collectors.toList()));
+        UdfCodePool.updateGitPool(gitProjectService.getGitPool());
         TenantContextHolder.set(null);
     }
 }

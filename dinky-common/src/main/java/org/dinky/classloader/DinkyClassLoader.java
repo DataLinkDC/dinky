@@ -19,7 +19,7 @@
 
 package org.dinky.classloader;
 
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -84,7 +84,7 @@ public class DinkyClassLoader extends URLClassLoader {
                     return;
                 }
                 super.addURL(file.toURI().toURL());
-                JarPathContextHolder.addOtherPlugins(file);
+                FlinkUdfPathContextHolder.addOtherPlugins(file);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }

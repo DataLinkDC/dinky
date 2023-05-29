@@ -20,6 +20,7 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ActionType;
 import org.dinky.gateway.config.ClusterConfig;
@@ -57,6 +58,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Executors;
@@ -293,6 +295,8 @@ public abstract class YarnGateway extends AbstractGateway {
                     Arrays.stream(config.getJarPaths())
                             .map(FileUtil::file)
                             .collect(Collectors.toList()));
+            yarnClusterDescriptor.addShipFiles(
+                    new ArrayList<>(FlinkUdfPathContextHolder.getPyUdfFile()));
         }
         return yarnClusterDescriptor;
     }

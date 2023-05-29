@@ -22,7 +22,7 @@ package org.dinky.explainer;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.watchTable.WatchStatementExplainer;
@@ -113,9 +113,9 @@ public class Explainer {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParser.getAllFilePath(statement)
-                        .forEach(JarPathContextHolder::addOtherPlugins);
+                        .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
-                        .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
+                        .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);

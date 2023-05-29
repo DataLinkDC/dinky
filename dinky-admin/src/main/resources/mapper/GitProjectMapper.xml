@@ -40,5 +40,7 @@
                 ${ew.sqlSegment}
             </if>
         </where>
+        order by order_line asc
+
     </select>
 </mapper>
