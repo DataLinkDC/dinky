@@ -25,7 +25,7 @@ import org.dinky.model.ClusterConfiguration;
 import org.apache.ibatis.annotations.Mapper;
 
 /**
- * ClusterMapper
+ * ClusterConfigurationMapper
  *
  * @since 2021/5/28 13:56
  */

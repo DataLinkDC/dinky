@@ -55,7 +55,7 @@ import org.dinky.result.IResult;
 import org.dinky.result.SelectResult;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.SavepointsService;
@@ -90,7 +90,7 @@ public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
 
-    private final ClusterService clusterService;
+    private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final SavepointsService savepointsService;
     private final DataBaseService dataBaseService;
@@ -156,7 +156,7 @@ public class StudioServiceImpl implements StudioService {
         // If you are using a shared session, configure the current jobManager address
         if (!config.isUseSession()) {
             config.setAddress(
-                    clusterService.buildEnvironmentAddress(
+                    clusterInstanceService.buildEnvironmentAddress(
                             config.isUseRemote(), config.getClusterId()));
         }
     }
@@ -245,7 +245,7 @@ public class StudioServiceImpl implements StudioService {
         JobConfig config = studioDDLDTO.getJobConfig();
         if (!config.isUseSession()) {
             config.setAddress(
-                    clusterService.buildEnvironmentAddress(
+                    clusterInstanceService.buildEnvironmentAddress(
                             config.isUseRemote(), studioDDLDTO.getClusterId()));
         }
         JobManager jobManager = JobManager.build(config);
@@ -381,7 +381,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public List<JsonNode> listJobs(Integer clusterId) {
-        Cluster cluster = clusterService.getById(clusterId);
+        Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         try {
             return FlinkAPI.build(cluster.getJobManagerHost()).listJobs();
@@ -393,7 +393,7 @@ public class StudioServiceImpl implements StudioService {
 
     @Override
     public boolean cancel(Integer clusterId, String jobId) {
-        Cluster cluster = clusterService.getById(clusterId);
+        Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
@@ -410,7 +410,7 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public boolean savepoint(
             Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
-        Cluster cluster = clusterService.getById(clusterId);
+        Cluster cluster = clusterInstanceService.getById(clusterId);
 
         Asserts.checkNotNull(cluster, "该集群不存在");
         boolean useGateway = false;

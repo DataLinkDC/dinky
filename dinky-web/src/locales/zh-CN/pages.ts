@@ -120,6 +120,32 @@ export default {
 
   //-------------------------------- register center --------------------------------
 
+  // ============= cluster =======================
+  // instance
+  'rc.ci.management': '集群实例管理',
+  'rc.ci.name': '实例名称',
+  'rc.ci.alias': '实例别名',
+  'rc.ci.type': '类型',
+  'rc.ci.version': '版本',
+  'rc.ci.jma': 'JobManger 地址',
+  'rc.ci.ar': '自动注册',
+  'rc.ci.status': '状态',
+  'rc.ci.jmha': 'JobManger 高可用地址',
+  'rc.ci.create': '创建集群',
+  'rc.ci.modify': '修改集群',
+  'rc.ci.deleteConfirm': '确定删除该 Flink 实例吗？',
+  'rc.ci.recycle': '回收 Flink 实例',
+  'rc.ci.heartbeat': '心跳检测',
+  'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',
+  'rc.ci.jmha.validate.slash': '不符合规则! 不能包含/',
+  'rc.ci.jmha.validate.port': '不符合规则! 端口号区间[0-65535]',
+  'rc.ci.jmha.tips': '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
+  'rc.ci.jmhaPlaceholder': '请输入 JobManager HA 地址!',
+  'rc.ci.typePlaceholder': '请选择集群类型!',
+  'rc.ci.namePlaceholder': '请输入名称!',
+  'rc.ci.aliasPlaceholder': '请输入别名!',
+
+
   // =============== data source =======================
   // datasource list page
   'rc.ds.management': '数据源管理',
@@ -179,6 +205,10 @@ export default {
   'rc.ds.character': '字符集',
   'rc.ds.collationRule': '排序规则',
   'rc.ds.javaType': 'Java 类型',
+
+  // console sql
+  'rc.ds.console.exec': '执行',
+  'rc.ds.console.running': '运行中...',
 
 
   // alert instance
