@@ -47,6 +47,14 @@ export default {
   'about.communityRules.4': '群提问题请礼貌并且说明【版本、执行模式、操作描述、截图】。',
   'about.communityRules.5': ' 登记谁在使用 Dinky，可进入企业用户群提供技术支持。',
 
+  //-------------------------------- devops --------------------------------
+  // devops
+
+  'devops.joblist.joblist': '任务列表',
+  'devops.joblist.history': '历史',
+  'devops.joblist.detail': '详情',
+
+
   //-------------------------------- auth center --------------------------------
   // user
   'user.manager': '用户管理',

@@ -168,6 +168,8 @@ export const API_CONSTANTS = {
   // process list
   PROCESS_LIST: "/api/process/listAllProcess",
 
+  GET_JOB_LIST: "/api/jobInstance",
+
 };
 
 
