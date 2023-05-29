@@ -61,6 +61,7 @@ spring:
       max-file-size: 524288000
       max-request-size: 524288000
       enabled: true
+  profiles.active: h2 #[h2,mysql,pgsql]
 server:
   port: 8888
 
