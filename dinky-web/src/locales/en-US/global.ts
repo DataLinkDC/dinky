@@ -150,6 +150,8 @@ export default {
 
   'global.fullScreen': 'FullScreen',
   'global.fullScreen.exit': 'Exit FullScreen',
+  'global.yes': 'Yes',
+  'global.no': 'No',
 
   'global.info': 'Info',
   'global.error': 'Error',

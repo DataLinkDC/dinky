@@ -93,7 +93,7 @@ import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.HistoryService;
@@ -166,7 +166,7 @@ import lombok.RequiredArgsConstructor;
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
 
     private final StatementService statementService;
-    private final ClusterService clusterService;
+    private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final SavepointsService savepointsService;
     private final JarService jarService;
@@ -412,7 +412,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         task.parseConfig();
         if (task.getClusterId() != null) {
-            Cluster cluster = clusterService.getById(task.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (cluster != null) {
                 task.setClusterName(cluster.getAlias());
             }
@@ -884,7 +884,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return true;
         }
 
-        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+        Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
         Asserts.checkNotNull(cluster, "该集群不存在");
 
         Task task = this.getTaskInfoById(jobInstance.getTaskId());
@@ -967,7 +967,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         config.setJarTask(isJarTask);
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(
-                    clusterService.buildEnvironmentAddress(
+                    clusterInstanceService.buildEnvironmentAddress(
                             config.isUseRemote(), task.getClusterId()));
         } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
                 // support custom K8s app submit, rather than clusterConfiguration
@@ -1066,7 +1066,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Asserts.checkNull(jobInstance, "the task instance not exist.");
             TenantContextHolder.set(jobInstance.getTenantId());
             jobInfoDetail.setInstance(jobInstance);
-            Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
             jobInfoDetail.setCluster(cluster);
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
@@ -1184,7 +1184,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String exportJsonByTaskId(Integer taskId) {
         Task task = getTaskInfoById(taskId);
         if (Asserts.isNotNull(task.getClusterId())) {
-            Cluster cluster = clusterService.getById(task.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (Asserts.isNotNull(cluster)) {
                 task.setClusterName(cluster.getName());
             }
@@ -1277,7 +1277,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task task = mapper.treeToValue(json, Task.class);
             if (Asserts.isNotNull(task.getClusterName())) {
                 Cluster cluster =
-                        clusterService.getOne(
+                        clusterInstanceService.getOne(
                                 new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
                 if (Asserts.isNotNull(cluster)) {
                     task.setClusterId(cluster.getId());

@@ -79,6 +79,15 @@ export const API_CONSTANTS = {
 
   // --- registries  center ---
 
+  // ----cluster instance
+    // cluster instance list
+  CLUSTER_INSTANCE: "/api/cluster",
+  CLUSTER_INSTANCE_ENABLE: "/api/cluster/enable",
+  CLUSTER_INSTANCE_DELETE: "/api/cluster/delete",
+  CLUSTER_INSTANCE_HEARTBEATS: "/api/cluster/heartbeats",
+  CLUSTER_INSTANCE_RECYCLE: "/api/cluster/recycle",
+
+
   // datasource registries list
   DATASOURCE: "/api/database",
   // datasource registries delete
@@ -353,4 +362,16 @@ export const DIALECT = {
   JSON: "json",
   SQL: "sql",
   JAVASCRIPT: "javascript",
+};
+
+
+export const RUN_MODE = {
+  LOCAL: 'local',
+  STANDALONE: 'standalone',
+  YARN_SESSION: 'yarn-session',
+  YARN_PER_JOB: 'yarn-per-job',
+  YARN_APPLICATION: 'yarn-application',
+  KUBERNETES_SESSION: 'kubernetes-session',
+  KUBERNETES_APPLICATION: 'kubernetes-application',
+  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator',
 };
