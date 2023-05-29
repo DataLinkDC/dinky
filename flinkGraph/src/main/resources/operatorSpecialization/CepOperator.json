@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://dzpx.com/detection",
+  "title": "CepOperator Define",
+  "description": "define the CepOperator parameter",
+  "type": "array",
+  "items": {
+    "properties": {
+      "partition": {
+        "type": "string",
+        "description": "field for partition"
+      },
+      "orderBy": {
+        "type": "string",
+        "description": "field for order"
+      },
+      "patterns": {
+        "type": "array",
+        "description": "define pattern variable and case",
+        "prefixItems": {
+          "type": "object",
+          "properties": {
+            "variable": {
+              "type": "string",
+              "description": "pattern variable name"
+            },
+            "quantifier": {
+              "type": "string",
+              "description": "pattern variable\u0027s quantifier, * + ? {n} {n,} {n,m} {,m}"
+            }
+          }
+        }
+      },
+      "skipStrategy": {
+        "type": "object",
+        "description": "skip strategy",
+        "properties": {
+          "strategy": {
+            "type": "string",
+            "description": "strategy model"
+          },
+          "variable": {
+            "type": "string",
+            "description": "pattern variable"
+          }
+        }
+      },
+      "measures": {
+        "type": "array",
+        "description": "define measure",
+        "prefixItems": {
+          "type": "object",
+          "properties": {
+            "functionName": {
+              "type": "string",
+              "description": "offsetMethod last n, first n"
+            },
+            "outName": {
+              "type": "string",
+              "description": "the name after calculate pattern variable\u0027s field"
+            },
+            "delimiter": {
+              "type": "string",
+              "description": "function parameter delimiter, if cast, can set AS, if +-*/ and not functionName, as expression"
+            },
+            "parameters": {
+              "type": "array",
+              "prefixItems": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "defines": {
+        "type": "array",
+        "description": "define defines",
+        "prefixItems": {
+          "type": "object",
+          "properties": {
+            "variable": {
+              "type": "string",
+              "description": "define pattern variable"
+            },
+            "condition": {
+              "type": "string",
+              "description": "like sql where statement"
+            }
+          }
+        }
+      },
+      "required": [
+        "pattern",
+        "measures",
+        "defines"
+      ]
+    }
+  }
+}
