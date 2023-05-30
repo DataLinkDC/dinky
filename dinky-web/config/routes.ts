@@ -71,7 +71,7 @@ export default [
         path: '/devops/joblist',
         name: 'job',
         hideInMenu: true,
-        component: './DevOps/JobList',
+        component: './DevOps',
       },
     ],
   },

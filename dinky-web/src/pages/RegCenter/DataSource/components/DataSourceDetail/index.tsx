@@ -73,7 +73,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
       }
     });
     setLoading(false);
-  }, []);
+  }, [dataSource.id]);
 
 
   useEffect(() => {
@@ -128,12 +128,12 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
    * render
    */
   return <>
-    <ProCard loading={loading} ghost split="vertical">
-      <ProCard bordered className={'siderTree schemaTree'} colSpan="20%">
+    <ProCard loading={loading} ghost gutter={[16, 16]} split="vertical">
+      <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan="16%">
         {/* tree */}
         <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
       </ProCard>
-      <ProCard colSpan="80%" loading={loading} ghost headerBordered>
+      <ProCard hoverable colSpan="84%" ghost headerBordered>
         {/* tags */}
         <RightTagsRouter
           tableInfo={tableInfo}

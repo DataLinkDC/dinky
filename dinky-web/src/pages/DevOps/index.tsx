@@ -15,30 +15,16 @@
  * limitations under the License.
  */
 
-import styled from "styled-components";
+import {PageContainer} from '@ant-design/pro-layout';
+import JobList from '@/pages/DevOps/JobList';
 
-export const DataSourceAction = styled.div`
-  display: flex !important;
-  justify-content: space-between;
-  margin-left: 2vw;
-  margin-right: 2vw;
-`;
-
-
-export const DataSourceDetailBackButton = styled.div`
-  display: flex !important;
-  justify-content: flex-end;
-`;
-
-export const Height80VHDiv = styled.div`
-  height: 80vh;
-  overflow: auto;
-`;
-
-export const StartButton = styled.div`
-  position: absolute;
-  color: #1890ff;
-  font-size: large;
-  z-index: 2;
-  top: 50%;
-`;
+export default () => {
+  /**
+   * breadcrumb={{style:{display:'none'}}} is used to hide the breadcrumb || 隐藏右上角的路由导航面包屑
+   */
+  return <>
+    <PageContainer title={false} breadcrumb={{style:{display:'none'}}}>
+      <JobList/>
+    </PageContainer>
+  </>;
+}

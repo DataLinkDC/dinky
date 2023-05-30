@@ -21,6 +21,7 @@ import React from 'react';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
 import ColumnInfo from './ColumnInfo/Index';
 import {l} from '@/utils/intl';
+import {Height80VHDiv} from '@/components/StyledComponents';
 
 type SchemaDescProps = {
   tableInfo: Partial<DataSources.Table>;
@@ -30,7 +31,7 @@ type SchemaDescProps = {
 const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
   const {tableInfo, tableColumns} = props;
 
-  return <>
+  return <Height80VHDiv>
     {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ?
       <>
         <TableInfo tableInfo={tableInfo}/>
@@ -38,7 +39,7 @@ const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
       </>
       : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
     }
-  </>;
+  </Height80VHDiv>;
 };
 
 export default SchemaDesc;

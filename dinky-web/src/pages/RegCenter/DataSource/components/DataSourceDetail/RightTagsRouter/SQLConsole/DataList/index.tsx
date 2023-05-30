@@ -15,30 +15,34 @@
  * limitations under the License.
  */
 
-import styled from "styled-components";
+import {PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
+import {ProTable} from '@ant-design/pro-components';
+import React from 'react';
+import {ProColumns} from '@ant-design/pro-table';
 
-export const DataSourceAction = styled.div`
-  display: flex !important;
-  justify-content: space-between;
-  margin-left: 2vw;
-  margin-right: 2vw;
-`;
+type DataListProps = {
+  columns: ProColumns[];
+  data: any[];
+}
+const DataList: React.FC<DataListProps> = (props) => {
+  const {columns, data} = props;
 
+  return <>
+    <ProTable
+      {...PROTABLE_OPTIONS_PUBLIC}
+      pagination={{
+        position: ['bottomCenter'],
+        pageSize: 9,
+        showQuickJumper: true,
+        hideOnSinglePage: true,
+      }}
+      columns={columns}
+      dataSource={data}
+      search={false}
+      options={false}
+      scroll={{x: 'max-content'}}
+    />
+  </>;
+};
 
-export const DataSourceDetailBackButton = styled.div`
-  display: flex !important;
-  justify-content: flex-end;
-`;
-
-export const Height80VHDiv = styled.div`
-  height: 80vh;
-  overflow: auto;
-`;
-
-export const StartButton = styled.div`
-  position: absolute;
-  color: #1890ff;
-  font-size: large;
-  z-index: 2;
-  top: 50%;
-`;
+export default DataList;
