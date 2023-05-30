@@ -92,6 +92,9 @@ public class GitProject extends SuperEntity<GitProject> {
     @TableField(value = "udf_class_map_list")
     private String udfClassMapList;
 
+    @TableField(value = "order_line")
+    private Integer orderLine;
+
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
 

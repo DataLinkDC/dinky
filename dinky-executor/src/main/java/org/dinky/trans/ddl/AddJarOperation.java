@@ -19,7 +19,7 @@
 
 package org.dinky.trans.ddl;
 
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.executor.Executor;
 import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.trans.AbstractOperation;
@@ -54,6 +54,7 @@ public class AddJarOperation extends AbstractOperation implements Operation {
     }
 
     public void init() {
-        AddJarSqlParser.getAllFilePath(statement).forEach(JarPathContextHolder::addOtherPlugins);
+        AddJarSqlParser.getAllFilePath(statement)
+                .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
     }
 }

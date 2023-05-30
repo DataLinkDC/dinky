@@ -24,13 +24,18 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /** @since 0.7.0 */
-public class JarPathContextHolder {
+public class FlinkUdfPathContextHolder {
 
     private static final ThreadLocal<Set<File>> UDF_PATH_CONTEXT = new ThreadLocal<>();
     private static final ThreadLocal<Set<File>> OTHER_PLUGINS_PATH_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<Set<File>> PYTHON_UDF_FILE = new ThreadLocal<>();
 
     public static void addUdfPath(File file) {
         getUdfFile().add(file);
+    }
+
+    public static void addPyUdfPath(File file) {
+        getPyUdfFile().add(file);
     }
 
     public static void addOtherPlugins(File file) {
@@ -42,6 +47,13 @@ public class JarPathContextHolder {
             UDF_PATH_CONTEXT.set(new CopyOnWriteArraySet<>());
         }
         return UDF_PATH_CONTEXT.get();
+    }
+
+    public static Set<File> getPyUdfFile() {
+        if (PYTHON_UDF_FILE.get() == null) {
+            PYTHON_UDF_FILE.set(new CopyOnWriteArraySet<>());
+        }
+        return PYTHON_UDF_FILE.get();
     }
 
     public static Set<File> getOtherPluginsFiles() {

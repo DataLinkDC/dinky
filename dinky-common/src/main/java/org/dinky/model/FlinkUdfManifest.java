@@ -17,53 +17,17 @@
  *
  */
 
-package org.dinky.dto;
+package org.dinky.model;
 
-import javax.validation.constraints.NotNull;
+import java.net.URL;
+import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
 @Getter
 @Setter
-public class GitProjectDTO {
-    private Long id;
-    /** */
-    @NotNull private String name;
-
-    @NotNull private String url;
-
-    /** */
-    @NotNull private String branch;
-
-    /** */
-    private String username;
-
-    /** */
-    private String password;
-
-    private String privateKey;
-
-    /** */
-    private String pom;
-
-    /** */
-    private String buildArgs;
-
-    /** */
-    private Integer codeType;
-
-    private Integer type;
-
-    /** */
-    private String description;
-
-    /** */
-    @NotNull private Boolean enabled;
-
-    private Integer orderLine;
+public class FlinkUdfManifest {
+    private List<URL> jars;
+    private List<URL> pythonFiles;
 }

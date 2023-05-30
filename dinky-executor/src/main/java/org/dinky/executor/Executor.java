@@ -302,6 +302,14 @@ public abstract class Executor {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
+        //        if (MapUtil.isNotEmpty(setConfig)) {
+        //            setConfig.put(PythonOptions.PYTHON_FILES.key(), String.join(",",
+        // udfPyFilePath));
+        //            setConfig.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
+        //            Configuration configuration =
+        // Configuration.fromMap(executorSetting.getConfig());
+        //            environment.getConfig().configure(configuration, null);
+        //        }
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);

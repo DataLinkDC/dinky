@@ -49,7 +49,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     modalVisible,
     values,
   } = props;
-  const [logList, setLogList] = useState<Record<number, string[]>>({});
+  let [logList, setLogList] = useState<Record<number, string[]>>({});
   const [log, setLog] = useState<string>("");
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showList, setShowList] = useState<boolean>(false);
@@ -96,7 +96,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
         if (type === 0) {
           if (execNum === 1) {
-            setLogList({});
+            logList={}
           }
           execNum++;
           let parseResultData = JSON.parse(data); // parse data
