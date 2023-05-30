@@ -19,9 +19,6 @@
 
 package org.dinky;
 
-import cn.hutool.system.SystemUtil;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfiguration;
@@ -29,6 +26,10 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import cn.hutool.system.SystemUtil;
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Dinky 启动器
@@ -48,12 +49,17 @@ public class Dinky {
         ConfigurableApplicationContext application = app.run(args);
         Environment env = application.getEnvironment();
         String port = env.getProperty("server.port");
-        log.info("\n----------------------------------------------------------\n\t" +
-                        "Application 'Dinky' is running! Access URLs:\n\t" +
-                        "Local: \t\thttp://localhost:{}\n\t" +
-                        "External: \thttp://{}:{}\n\t" +
-                        "Doc: \thttp://{}:{}/doc.html\n" +
-                        "----------------------------------------------------------",
-                port, ipAddress, port, ipAddress, port);
+        log.info(
+                "\n----------------------------------------------------------\n\t"
+                        + "Application 'Dinky' is running! Access URLs:\n\t"
+                        + "Local: \t\thttp://localhost:{}\n\t"
+                        + "External: \thttp://{}:{}\n\t"
+                        + "Doc: \thttp://{}:{}/doc.html\n"
+                        + "----------------------------------------------------------",
+                port,
+                ipAddress,
+                port,
+                ipAddress,
+                port);
     }
 }

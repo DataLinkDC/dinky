@@ -97,7 +97,6 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         if (type === 0) {
           if (execNum === 1) {
             logList={}
-            setLogList({});
           }
           execNum++;
           let parseResultData = JSON.parse(data); // parse data
