@@ -30,11 +30,11 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.JobManager;
-import org.dinky.mapper.ClusterMapper;
+import org.dinky.mapper.ClusterInstanceMapper;
 import org.dinky.model.Cluster;
 import org.dinky.model.ClusterConfiguration;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -48,14 +48,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 
 /**
- * ClusterServiceImpl
+ * ClusterInstanceServiceImpl
  *
  * @since 2021/5/28 14:02
  */
 @Service
 @RequiredArgsConstructor
-public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
-        implements ClusterService {
+public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstanceMapper, Cluster>
+        implements ClusterInstanceService {
 
     private final ClusterConfigurationService clusterConfigurationService;
 
@@ -130,16 +130,25 @@ public class ClusterServiceImpl extends SuperServiceImpl<ClusterMapper, Cluster>
         return cluster;
     }
 
+    /**
+     * @param id
+     * @return
+     */
     @Override
-    public boolean enableCluster(Cluster cluster) {
-        Cluster clusterInfo = getById(cluster);
-        clusterInfo.setEnabled(cluster.getEnabled());
+    public Boolean deleteClusterInstanceById(Integer id) {
+        return baseMapper.deleteById(id) > 0;
+    }
+
+    @Override
+    public Boolean enableClusterInstance(Integer id) {
+        Cluster clusterInfo = getById(id);
+        clusterInfo.setEnabled(!clusterInfo.getEnabled());
         checkHealth(clusterInfo);
         return updateById(clusterInfo);
     }
 
     @Override
-    public int clearCluster() {
+    public Integer recycleCluster() {
         List<Cluster> clusters = listAutoEnable();
         int count = 0;
         for (Cluster item : clusters) {

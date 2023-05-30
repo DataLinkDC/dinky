@@ -111,7 +111,7 @@ export default [
           {
             path: '/registration/cluster/instance',
             name: 'cluster-instance',
-            // component: './RegistrationCenter/ClusterManage/Cluster',
+            component: './RegCenter/Cluster/Instance',
           },
           {
             path: '/registration/cluster/config',
@@ -128,6 +128,7 @@ export default [
         routes: [
           {
             path: '/registration/database/detail/:id',
+            footerRender: false,
           }
         ]
       },

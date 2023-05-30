@@ -124,6 +124,30 @@ export default {
 
 
   //-------------------------------- register center --------------------------------
+  'rc.ci.management': 'Cluster Instance Management',
+  'rc.ci.name': 'Name',
+  'rc.ci.alias': 'Alias',
+  'rc.ci.type': 'Type',
+  'rc.ci.version': 'Version',
+  'rc.ci.jma': 'JobManger Address',
+  'rc.ci.ar': 'Auto Registration',
+  'rc.ci.status': 'Status',
+  'rc.ci.jmha': 'JobManger HA Address',
+  'rc.ci.create': 'Create Cluster Instance',
+  'rc.ci.modify': 'Modify cluster Instance',
+  'rc.ci.deleteConfirm': 'Are you sure to delete this Flink Cluster instance? ',
+  'rc.ci.recycle': 'Recycle Flink Cluster Instances',
+  'rc.ci.heartbeat': 'Heartbeat Detection',
+  'rc.ci.recycleConfirm': 'Are you sure to recycle all automatically created and expired Flink instances? ',
+  'rc.ci.jmha.validate.slash': 'Does not comply with the rules! Cannot contain /',
+  'rc.ci.jmha.validate.port': 'Does not meet the rules! Port number range [0-65535]',
+  'rc.ci.jmha.tips': 'Add the RestApi address of the JobManager of the Flink cluster. In HA mode, the addresses are separated by commas, for example: 192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
+  'rc.ci.jmhaPlaceholder': 'Please enter the JobManager HA address!',
+  'rc.ci.typePlaceholder': 'Please select a cluster type!',
+  'rc.ci.namePlaceholder': 'Please enter a name!',
+  'rc.ci.aliasPlaceholder': 'Please enter an alias!',
+
+
   // datasource
   'rc.ds.management': 'DataSource Management',
   'rc.ds.name': 'Name',
@@ -182,6 +206,10 @@ export default {
   'rc.ds.character': 'Character Set',
   'rc.ds.collationRule': 'Collation Rule',
   'rc.ds.javaType': 'Java Type',
+
+  // console sql
+  'rc.ds.console.exec': 'Execute',
+  'rc.ds.console.running': 'Running...',
 
 
   // alert instance

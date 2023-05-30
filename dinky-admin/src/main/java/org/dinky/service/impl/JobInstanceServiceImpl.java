@@ -36,7 +36,7 @@ import org.dinky.model.JobInstanceCount;
 import org.dinky.model.JobInstanceStatus;
 import org.dinky.model.JobStatus;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
@@ -65,7 +65,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         implements JobInstanceService {
 
     private final HistoryService historyService;
-    private final ClusterService clusterService;
+    private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
 
@@ -149,7 +149,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         } else {
             JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
             jobInfoDetail.setInstance(jobInstance);
-            jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+            jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
@@ -172,7 +172,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
         jobInfoDetail = new JobInfoDetail(jobInstance.getId());
         jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+        jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
         jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
         History history = historyService.getById(jobInstance.getHistoryId());
 

@@ -147,6 +147,8 @@ export default {
 
   'global.fullScreen': '全屏',
   'global.fullScreen.exit': '退出全屏',
+  'global.yes': '是',
+  'global.no': '否',
 
   'global.info': '信息',
   'global.error': '错误',

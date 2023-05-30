@@ -17,44 +17,17 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.mapper;
 
-import org.dinky.cluster.FlinkClusterInfo;
-import org.dinky.db.service.ISuperService;
+import org.dinky.db.mapper.SuperMapper;
 import org.dinky.model.Cluster;
+
+import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-/**
- * ClusterService
- *
- * @since 2021/5/28 14:01
- */
-public interface ClusterService extends ISuperService<Cluster> {
-
-    FlinkClusterInfo checkHeartBeat(String hosts, String host);
-
-    String getJobManagerAddress(Cluster cluster);
-
-    String buildEnvironmentAddress(boolean useRemote, Integer id);
-
-    String buildRemoteEnvironmentAddress(Integer id);
-
-    String buildLocalEnvironmentAddress();
-
-    List<Cluster> listEnabledAll();
-
+/** ClusterInstanceMapper */
+@Mapper
+public interface ClusterInstanceMapper extends SuperMapper<Cluster> {
     List<Cluster> listSessionEnable();
-
-    List<Cluster> listAutoEnable();
-
-    Cluster registersCluster(Cluster cluster);
-
-    boolean enableCluster(Cluster cluster);
-
-    int clearCluster();
-
-    void killCluster(Integer id);
-
-    Cluster deploySessionCluster(Integer id);
 }

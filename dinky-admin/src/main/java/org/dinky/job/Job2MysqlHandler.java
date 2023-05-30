@@ -31,7 +31,7 @@ import org.dinky.model.JobInstance;
 import org.dinky.model.JobStatus;
 import org.dinky.model.Task;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JarService;
 import org.dinky.service.JobHistoryService;
@@ -52,7 +52,7 @@ import org.springframework.context.annotation.DependsOn;
 public class Job2MysqlHandler implements JobHandler {
 
     private static final HistoryService historyService;
-    private static final ClusterService clusterService;
+    private static final ClusterInstanceService clusterInstanceService;
     private static final ClusterConfigurationService clusterConfigurationService;
     private static final JarService jarService;
     private static final JobInstanceService jobInstanceService;
@@ -61,7 +61,9 @@ public class Job2MysqlHandler implements JobHandler {
 
     static {
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
-        clusterService = SpringContextUtils.getBean("clusterServiceImpl", ClusterService.class);
+        clusterInstanceService =
+                SpringContextUtils.getBean(
+                        "clusterInstanceServiceImpl", ClusterInstanceService.class);
         clusterConfigurationService =
                 SpringContextUtils.getBean(
                         "clusterConfigurationServiceImpl", ClusterConfigurationService.class);
@@ -135,7 +137,7 @@ public class Job2MysqlHandler implements JobHandler {
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
             cluster =
-                    clusterService.registersCluster(
+                    clusterInstanceService.registersCluster(
                             Cluster.autoRegistersCluster(
                                     job.getJobManagerAddress(),
                                     job.getJobId(),
@@ -149,7 +151,7 @@ public class Job2MysqlHandler implements JobHandler {
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
                 && Asserts.isNotNullString(job.getJobManagerAddress())) {
             cluster =
-                    clusterService.registersCluster(
+                    clusterInstanceService.registersCluster(
                             Cluster.autoRegistersCluster(
                                     job.getJobManagerAddress(),
                                     job.getJobId(),
@@ -161,7 +163,7 @@ public class Job2MysqlHandler implements JobHandler {
                 clusterId = cluster.getId();
             }
         } else {
-            cluster = clusterService.getById(clusterId);
+            cluster = clusterInstanceService.getById(clusterId);
         }
 
         history.setClusterId(clusterId);
