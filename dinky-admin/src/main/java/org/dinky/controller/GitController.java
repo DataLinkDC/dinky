@@ -71,7 +71,7 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/saveOrUpdate")
-    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProject gitProject) {
+    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
         GitRepository gitRepository =
                 new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));

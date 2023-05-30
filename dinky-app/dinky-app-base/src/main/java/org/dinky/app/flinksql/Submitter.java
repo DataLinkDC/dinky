@@ -35,6 +35,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.PipelineOptions;
+import org.apache.flink.python.PythonOptions;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -59,6 +60,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.URLUtil;
 
 /**
@@ -286,37 +288,46 @@ public class Submitter {
                 FileUtils.forceMkdir(new File(usrlib));
                 String depZip = flinkHome + "/dep.zip";
 
-                downloadFile(httpJar, depZip);
+                boolean exists = downloadFile(httpJar, depZip);
+                if (exists) {
+                    String depPath = flinkHome + "/dep";
+                    ZipUtils.unzip(depZip, depPath);
+                    // move all jar
+                    FileUtil.listFileNames(depPath + "/jar")
+                            .forEach(
+                                    f -> {
+                                        FileUtil.moveContent(
+                                                FileUtil.file(depPath + "/jar/" + f),
+                                                FileUtil.file(usrlib + "/" + f),
+                                                true);
+                                    });
+                    URL[] jarUrls =
+                            FileUtil.listFileNames(usrlib).stream()
+                                    .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                                    .toArray(URL[]::new);
+                    URL[] pyUrls =
+                            FileUtil.listFileNames(depPath + "/py/").stream()
+                                    .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
+                                    .toArray(URL[]::new);
 
-                String depPath = flinkHome + "/dep";
-                ZipUtils.unzip(depZip, depPath);
-                // move all jar
-                FileUtil.listFileNames(depPath + "/jar")
-                        .forEach(
-                                f -> {
-                                    FileUtil.moveContent(
-                                            FileUtil.file(depPath + "/jar/" + f),
-                                            FileUtil.file(usrlib + "/" + f),
-                                            true);
-                                });
-                URL[] jarUrls =
-                        FileUtil.listFileNames(usrlib).stream()
-                                .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                                .toArray(URL[]::new);
-
-                addURLs(jarUrls);
-                executorSetting
-                        .getConfig()
-                        .put(
-                                PipelineOptions.JARS.key(),
-                                Arrays.stream(jarUrls)
-                                        .map(URL::toString)
-                                        .collect(Collectors.joining(";")));
-
-                // download python_udf.zip
-                String httpPythonZip =
-                        "http://" + dinkyAddr + "/download/downloadPythonUDF/" + taskId;
-                downloadFile(httpPythonZip, flinkHome + "/python_udf.zip");
+                    addURLs(jarUrls);
+                    executorSetting
+                            .getConfig()
+                            .put(
+                                    PipelineOptions.JARS.key(),
+                                    Arrays.stream(jarUrls)
+                                            .map(URL::toString)
+                                            .collect(Collectors.joining(";")));
+                    if (ArrayUtil.isNotEmpty(pyUrls)) {
+                        executorSetting
+                                .getConfig()
+                                .put(
+                                        PythonOptions.PYTHON_FILES.key(),
+                                        Arrays.stream(jarUrls)
+                                                .map(URL::toString)
+                                                .collect(Collectors.joining(",")));
+                    }
+                }
             } catch (IOException e) {
                 logger.error("");
                 throw new RuntimeException(e);
@@ -339,21 +350,26 @@ public class Submitter {
         }
     }
 
-    public static void downloadFile(String url, String path) throws IOException {
-        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
-        // 设置超时间为3秒
-        conn.setConnectTimeout(3 * 1000);
-        // 获取输入流
-        InputStream inputStream = conn.getInputStream();
-        // 获取输出流
-        FileOutputStream outputStream = new FileOutputStream(path);
-        // 每次下载1024位
-        byte[] b = new byte[1024];
-        int len = -1;
-        while ((len = inputStream.read(b)) != -1) {
-            outputStream.write(b, 0, len);
+    public static boolean downloadFile(String url, String path) throws IOException {
+        try {
+            HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+            // 设置超时间为3秒
+            conn.setConnectTimeout(3 * 1000);
+            // 获取输入流
+            InputStream inputStream = conn.getInputStream();
+            // 获取输出流
+            FileOutputStream outputStream = new FileOutputStream(path);
+            // 每次下载1024位
+            byte[] b = new byte[1024];
+            int len = -1;
+            while ((len = inputStream.read(b)) != -1) {
+                outputStream.write(b, 0, len);
+            }
+            inputStream.close();
+            outputStream.close();
+            return true;
+        } catch (Exception e) {
+            return false;
         }
-        inputStream.close();
-        outputStream.close();
     }
 }
