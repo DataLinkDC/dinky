@@ -25,6 +25,7 @@ import {l} from '@/utils/intl';
 import {DefaultOptionType} from 'rc-select/lib/Select';
 import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import {buildColumnsQueryKeyWord} from '@/pages/RegCenter/DataSource/components/function';
+import {Height80VHDiv} from '@/components/StyledComponents';
 // props
 type SQLQueryProps = {
   queryParams: QueryParams
@@ -66,7 +67,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
       tooltip: item,
       width: '8%',
     }));
-    setAutoCompleteColumns( buildColumnsQueryKeyWord(columns));
+    setAutoCompleteColumns(buildColumnsQueryKeyWord(columns));
     setTableData({columns: tableColumns, rowData: rowData});
     setLoading(false);
   };
@@ -123,7 +124,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
   /**
    * render
    */
-  return <>
+  return <Height80VHDiv>
     {
       (dbId && tableName && schemaName) ? (
         <ProTable
@@ -133,7 +134,8 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
           size={'small'}
           search={false}
           pagination={{
-            defaultPageSize: 12,
+            defaultPageSize: 15,
+            hideOnSinglePage: true,
           }}
           dateFormatter="string"
           columns={tableData.columns}
@@ -148,7 +150,7 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
         />
       ) : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
     }
-  </>;
+  </Height80VHDiv>;
 };
 
 export default SQLQuery;

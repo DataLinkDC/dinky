@@ -19,11 +19,13 @@ import {DataSources} from '@/types/RegCenter/data';
 import React, {useCallback, useEffect, useState} from 'react';
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import {ProCard} from '@ant-design/pro-components';
-import {Empty} from 'antd';
+import {Empty, Typography} from 'antd';
 import {l} from '@/utils/intl';
 import {queryDataByParams} from '@/services/BusinessCrud';
 import {API_CONSTANTS} from '@/services/constants';
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+
+const {Paragraph} = Typography;
 
 type GenSQLProps = {
   queryParams: Partial<QueryParams>,
@@ -34,7 +36,7 @@ type GenSQLProps = {
  * props for CodeShow
  */
 const CodeShowProps = {
-  height: '60vh',
+  height: '68vh',
   width: '100%',
   lineNumbers: 'on',
   language: 'sql',
@@ -70,6 +72,16 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
     return <CodeShow {...CodeShowProps} code={tagDisabled ? '' : code}/>;
   };
 
+  /**
+   * render label
+   * @param {string} content
+   * @param {string} title
+   * @returns {JSX.Element}
+   */
+  const renderLabel = (content: string, title: string) => {
+    return <Paragraph copyable={{text: content}}>{title}</Paragraph>;
+  };
+
 
   /**
    * tab list
@@ -77,19 +89,19 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
   const tabList = [
     {
       key: 'flinkddl',
-      label: 'Flink DDL',
+      label: renderLabel(genSQL.flinkSqlCreate || '', 'Flink DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlCreate)
+      children: renderContent(genSQL.flinkSqlCreate)
     },
     {
       key: 'select',
-      label: 'Select',
+      label: renderLabel(genSQL.sqlSelect || '', 'Select'),
       disabled: tagDisabled,
-      children:renderContent(genSQL.sqlSelect)
+      children: renderContent(genSQL.sqlSelect)
     },
     {
       key: 'sqlddl',
-      label: 'SQL DDL',
+      label: renderLabel(genSQL.sqlCreate || '', 'SQL DDL'),
       disabled: tagDisabled,
       children: renderContent(genSQL.sqlCreate)
     }

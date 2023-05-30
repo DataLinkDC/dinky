@@ -132,6 +132,7 @@ export default {
 
   'global.table.jobname': 'Job Name',
   'global.table.jobid': 'Job Id',
+  'global.table.taskid': 'Task Id',
   'global.table.lifecycle': 'Life Cycle',
   'global.table.lifecycle.all': 'All',
   'global.table.lifecycle.dev': 'Develop',

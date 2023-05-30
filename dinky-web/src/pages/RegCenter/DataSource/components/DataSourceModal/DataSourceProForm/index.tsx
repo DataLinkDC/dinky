@@ -15,16 +15,16 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
-import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
-import {DataSources} from "@/types/RegCenter/data.d";
-import {AUTO_COMPLETE_TYPE, GROUP_TYPE} from "@/pages/RegCenter/DataSource/components/constants";
-import {AutoComplete, Input} from "antd";
-import CodeEdit from "@/components/CustomEditor/CodeEdit";
-import {renderDataSourceType} from "@/pages/RegCenter/DataSource/components/function";
+import React from 'react';
+import {FormInstance} from 'antd/es/form/hooks/useForm';
+import {Values} from 'async-validator';
+import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from '@ant-design/pro-components';
+import {l} from '@/utils/intl';
+import {DataSources} from '@/types/RegCenter/data.d';
+import {AUTO_COMPLETE_TYPE, GROUP_TYPE} from '@/pages/RegCenter/DataSource/components/constants';
+import {AutoComplete, Input} from 'antd';
+import CodeEdit from '@/components/CustomEditor/CodeEdit';
+import {renderDataSourceType} from '@/pages/RegCenter/DataSource/components/function';
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>,
@@ -35,10 +35,10 @@ type DataSourceProFormProps = {
 
 
 const CodeEditProps = {
-  height: "30vh",
-  width: "22vw",
-  lineNumbers: "off",
-  language: "sql",
+  height: '30vh',
+  width: '22vw',
+  lineNumbers: 'off',
+  language: 'sql',
 };
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
@@ -48,7 +48,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
 
   const handleTypeChange = (type: string) => {
-    if (type === "Hive" || type === "Presto") {
+    if (type === 'Hive' || type === 'Presto') {
       setExcludeFormItem(true);
     } else {
       setExcludeFormItem(false);
@@ -60,48 +60,48 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
       <ProForm.Group>
         <ProFormText
           name="name"
-          width={"md"}
-          label={l("rc.ds.name")}
-          rules={[{required: true, message: l("rc.ds.namePlaceholder")}]}
-          placeholder={l("rc.ds.namePlaceholder")}
+          width={'md'}
+          label={l('rc.ds.name')}
+          rules={[{required: true, message: l('rc.ds.namePlaceholder')}]}
+          placeholder={l('rc.ds.namePlaceholder')}
         />
         <ProFormSelect
           name="groupName"
-          width={"sm"}
-          label={l("rc.ds.groupName")}
+          width={'sm'}
+          label={l('rc.ds.groupName')}
           options={GROUP_TYPE}
-          placeholder={l("rc.ds.groupNamePlaceholder")}
+          placeholder={l('rc.ds.groupNamePlaceholder')}
         />
         <ProFormSelect
           name="type"
-          width={"sm"}
-          label={l("rc.ds.type")}
+          width={'sm'}
+          label={l('rc.ds.type')}
           showSearch
           options={renderDataSourceType()}
-          rules={[{required: true, message: l("rc.ds.typePlaceholder")}]}
-          placeholder={l("rc.ds.typePlaceholder")}
+          rules={[{required: true, message: l('rc.ds.typePlaceholder')}]}
+          placeholder={l('rc.ds.typePlaceholder')}
 
         />
 
         <ProFormText
           name="username"
-          width={"sm"}
-          label={l("rc.ds.username")}
-          rules={[{required: true, message: l("rc.ds.usernamePlaceholder")}]}
-          placeholder={l("rc.ds.usernamePlaceholder")}
+          width={'sm'}
+          label={l('rc.ds.username')}
+          rules={[{required: true, message: l('rc.ds.usernamePlaceholder')}]}
+          placeholder={l('rc.ds.usernamePlaceholder')}
         />
         <ProFormText.Password
           name="password"
-          width={"sm"}
-          label={l("rc.ds.password")}
-          rules={[{required: true, message: l("rc.ds.passwordPlaceholder")}]}
-          placeholder={l("rc.ds.passwordPlaceholder")}
+          width={'sm'}
+          label={l('rc.ds.password')}
+          rules={[{required: true, message: l('rc.ds.passwordPlaceholder')}]}
+          placeholder={l('rc.ds.passwordPlaceholder')}
         />
         <ProFormText
           name="note"
-          width={"md"}
-          label={l("global.table.note")}
-          placeholder={l("global.table.notePlaceholder")}
+          width={'md'}
+          label={l('global.table.note')}
+          placeholder={l('global.table.notePlaceholder')}
         />
       </ProForm.Group>
 
@@ -112,10 +112,10 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
         >
           <ProForm.Item
             name="url"
-            label={l("rc.ds.url")}
-            rules={[{required: true, message: l("rc.ds.urlPlaceholder")}]}
+            label={l('rc.ds.url')}
+            rules={[{required: true, message: l('rc.ds.urlPlaceholder')}]}
           >
-            <Input.TextArea rows={3} cols={130}  placeholder={l("rc.ds.urlPlaceholder")}/>
+            <Input.TextArea rows={3} cols={130} placeholder={l('rc.ds.urlPlaceholder')}/>
           </ProForm.Item>
         </AutoComplete>
 
@@ -125,18 +125,18 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
         <ProFormGroup>
           <ProForm.Item
             name="flinkConfig"
-            label={l("rc.ds.flinkConfig")}
-            tooltip={l("rc.ds.flinkConfigTooltip")}
+            label={l('rc.ds.flinkConfig')}
+            tooltip={l('rc.ds.flinkConfigTooltip')}
           >
-            <CodeEdit {...CodeEditProps} onChange={flinkConfigChange} code={values.flinkConfig || ""}/>
+            <CodeEdit {...CodeEditProps} onChange={flinkConfigChange} code={values.flinkConfig || ''}/>
           </ProForm.Item>
 
           <ProForm.Item
             name="flinkTemplate"
-            label={l("rc.ds.flinkTemplate")}
-            tooltip={l("rc.ds.flinkTemplateTooltip")}
+            label={l('rc.ds.flinkTemplate')}
+            tooltip={l('rc.ds.flinkTemplateTooltip')}
           >
-            <CodeEdit {...CodeEditProps} onChange={flinkTemplateChange} code={values.flinkTemplate || ""}/>
+            <CodeEdit {...CodeEditProps} onChange={flinkTemplateChange} code={values.flinkTemplate || ''}/>
           </ProForm.Item>
         </ProFormGroup>
       }

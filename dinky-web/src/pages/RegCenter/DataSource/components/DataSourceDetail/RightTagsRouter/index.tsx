@@ -18,7 +18,7 @@
 import {Space} from 'antd';
 import {l} from '@/utils/intl';
 import {
-  BookOutlined,
+  BookOutlined, ConsoleSqlOutlined, HighlightOutlined,
 } from '@ant-design/icons';
 import React, {useState} from 'react';
 import {DataSources} from '@/types/RegCenter/data';
@@ -27,6 +27,8 @@ import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/Rig
 import {ProCard} from '@ant-design/pro-components';
 import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
+import {SearchOutline} from 'antd-mobile-icons';
 
 
 /**
@@ -43,7 +45,7 @@ type RightTagsRouterProps = {
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
-  const {tableColumns, tableInfo,queryParams, tagDisabled, rightButtons} = props;
+  const {tableColumns, tableInfo, queryParams, tagDisabled, rightButtons} = props;
   // state
   const [activeKey, setActiveKey] = useState('desc');
 
@@ -57,21 +59,20 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
     },
     {
       key: 'query',
-      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.query')}</Space>,
+      label: <Space><SearchOutline/>{l('rc.ds.detail.tag.query')}</Space>,
       children: <SQLQuery queryParams={queryParams}/>,
       disabled: tagDisabled
     },
     {
       key: 'gensql',
-      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
+      label: <Space><HighlightOutlined/>{l('rc.ds.detail.tag.gensql')}</Space>,
       children: <GenSQL tagDisabled={tagDisabled} queryParams={queryParams}/>,
       disabled: tagDisabled
     },
     {
       key: 'console',
-      label: <Space><BookOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
-      disabled: tagDisabled,
-      // children: <SQLConsole dbId={dataSourceInfo.id}  schema={tableInfo.schema} table={tableInfo.name} />
+      label: <Space><ConsoleSqlOutlined/>{l('rc.ds.detail.tag.console')}</Space>,
+      children: <SQLConsole/>
     },
   ];
 
@@ -89,7 +90,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
    * render
    */
   return <>
-    <ProCard size="small" bordered tabs={{...restTabProps}}/>
+    <ProCard className={'schemaTree'} size="small" bordered tabs={{...restTabProps}}/>
   </>;
 };
 
