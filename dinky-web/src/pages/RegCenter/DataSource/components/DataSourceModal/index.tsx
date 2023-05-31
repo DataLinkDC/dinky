@@ -15,14 +15,14 @@
  * limitations under the License.
  */
 
-import {Button, Form} from "antd";
-import {l} from "@/utils/intl";
-import React, {useEffect} from "react";
-import {MODAL_FORM_OPTIONS} from "@/services/constants";
-import {DataSources} from "@/types/RegCenter/data";
-import DataSourceProForm from "@/pages/RegCenter/DataSource/components/DataSourceModal/DataSourceProForm";
-import {FormContextValue} from "@/components/Context/FormContext";
-import {ModalForm} from "@ant-design/pro-components";
+import {Button, Form} from 'antd';
+import {l} from '@/utils/intl';
+import React, {useEffect} from 'react';
+import {MODAL_FORM_OPTIONS} from '@/services/constants';
+import {DataSources} from '@/types/RegCenter/data';
+import DataSourceProForm from '@/pages/RegCenter/DataSource/components/DataSourceModal/DataSourceProForm';
+import {FormContextValue} from '@/components/Context/FormContext';
+import {ModalForm} from '@ant-design/pro-components';
 
 type DataSourceModalProps = {
   visible: boolean;
@@ -36,8 +36,8 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
 
   const {visible, values, onCancel, onSubmit, onTest} = props;
   const [submitting, setSubmitting] = React.useState<boolean>(false);
-  const [flinkConfigValue, setFlinkConfigValue] = React.useState<string>(values.flinkConfig || "");
-  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(values.flinkTemplate || "");
+  const [flinkConfigValue, setFlinkConfigValue] = React.useState<string>(values.flinkConfig || '');
+  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(values.flinkTemplate || '');
 
   /**
    * init form
@@ -110,11 +110,11 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
    */
   const renderFooter = () => {
     return [
-      <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
-      <Button key={"test"} loading={submitting} type="primary"
-              onClick={handleTestConnect}>{l("button.test")}</Button>,
-      <Button key={"finish"} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l("button.finish")}</Button>,
+      <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
+      <Button key={'test'} loading={submitting} type="primary"
+              onClick={handleTestConnect}>{l('button.test')}</Button>,
+      <Button key={'finish'} loading={submitting} type="primary"
+              onClick={() => submitForm()}>{l('button.finish')}</Button>,
     ];
   };
 
@@ -126,7 +126,7 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
       {...MODAL_FORM_OPTIONS}
       open={visible}
       modalProps={{onCancel: handleCancel}}
-      title={values.id ? l("rc.ds.modify") : l("rc.ds.create")}
+      title={values.id ? l('rc.ds.modify') : l('rc.ds.create')}
       form={form}
       submitter={{render: () => [...renderFooter()]}}
       initialValues={{...values, flinkConfig: flinkConfigValue, flinkTemplate: flinkTemplateValue}}

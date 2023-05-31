@@ -22,7 +22,7 @@ package org.dinky.function.util;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
@@ -344,7 +344,7 @@ public class UDFUtil {
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
-                    JarPathContextHolder.addUdfPath(
+                    FlinkUdfPathContextHolder.addUdfPath(
                             FileUtil.file(
                                     DinkyClassLoaderContextHolder.get()
                                             .loadClass(className)
@@ -366,6 +366,15 @@ public class UDFUtil {
                         .code(udf.getCode())
                         .functionLanguage(udf.getFunctionLanguage())
                         .build();
+            }
+            String gitPackage = UdfCodePool.getGitPackage(className);
+
+            if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
+                if (FileUtil.getSuffix(gitPackage).equals("jar")) {
+                    FlinkUdfPathContextHolder.addUdfPath(new File(gitPackage));
+                } else {
+                    FlinkUdfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                }
             }
         }
         return null;

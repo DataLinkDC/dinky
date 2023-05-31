@@ -25,6 +25,7 @@ import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ZackYoung
@@ -37,6 +38,8 @@ public interface GitProjectService extends ISuperService<GitProject> {
      * @param gitProjectDTO gitProjectDTO
      */
     void saveOrUpdate(GitProjectDTO gitProjectDTO);
+
+    Map<String, String> getGitPool();
 
     /**
      * 更新状态

@@ -28,7 +28,7 @@ const TableInfo: React.FC<TableInfoProps> = (props) => {
   const {tableInfo} = props;
 
   return <>
-    <Descriptions  size={'small'} bordered column={4}>
+    <Descriptions size={'small'} bordered column={4}>
       <Descriptions.Item label="Name">{tableInfo.name}</Descriptions.Item>
       <Descriptions.Item label="Schema">{tableInfo.schema}</Descriptions.Item>
       <Descriptions.Item label="Catalog">{tableInfo.catalog}</Descriptions.Item>

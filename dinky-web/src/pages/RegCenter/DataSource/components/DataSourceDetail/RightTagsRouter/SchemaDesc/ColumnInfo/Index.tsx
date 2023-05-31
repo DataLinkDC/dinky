@@ -115,7 +115,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
     <ProTable<DataSources.Column>
       toolBarRender={false}
       pagination={{
-        defaultPageSize: 10,
+        defaultPageSize: 14,
         hideOnSinglePage: true,
       }}
       search={false}

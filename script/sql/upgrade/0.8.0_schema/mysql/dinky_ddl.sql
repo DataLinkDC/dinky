@@ -97,6 +97,7 @@ CREATE TABLE `dinky_git_project` (
                                      `build_step` tinyint(2) NOT NULL DEFAULT '0',
                                      `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
                                      `udf_class_map_list` text COMMENT 'scan udf class',
+                                     `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
                                      `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                      `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                      PRIMARY KEY (`id`) USING BTREE,

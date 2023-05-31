@@ -17,22 +17,17 @@
  *
  */
 
-package org.dinky.mapper;
+package org.dinky.model;
 
-import org.dinky.db.mapper.SuperMapper;
-import org.dinky.model.Cluster;
-
-import org.apache.ibatis.annotations.Mapper;
-
+import java.net.URL;
 import java.util.List;
 
-/**
- * ClusterMapper
- *
- * @since 2021/5/28 13:56
- */
-@Mapper
-public interface ClusterMapper extends SuperMapper<Cluster> {
+import lombok.Getter;
+import lombok.Setter;
 
-    List<Cluster> listSessionEnable();
+@Getter
+@Setter
+public class FlinkUdfManifest {
+    private List<URL> jars;
+    private List<URL> pythonFiles;
 }

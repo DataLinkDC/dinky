@@ -64,4 +64,6 @@ public class GitProjectDTO {
 
     /** */
     @NotNull private Boolean enabled;
+
+    private Integer orderLine;
 }

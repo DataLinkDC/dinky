@@ -29,3 +29,16 @@ export const DataSourceDetailBackButton = styled.div`
   display: flex !important;
   justify-content: flex-end;
 `;
+
+export const Height80VHDiv = styled.div`
+  height: 80vh;
+  overflow: auto;
+`;
+
+export const StartButton = styled.div`
+  position: absolute;
+  color: #1890ff;
+  font-size: large;
+  z-index: 2;
+  top: 50%;
+`;

@@ -36,9 +36,16 @@ public class UdfCodePool {
     /** udf code pool key -> class name value -> udf */
     private static final Map<String, UDF> CODE_POOL = new ConcurrentHashMap<>();
 
+    private static final Map<String, String> GIT_POOL = new ConcurrentHashMap<>();
+
     public static void registerPool(List<UDF> udfList) {
         CODE_POOL.clear();
         CODE_POOL.putAll(udfList.stream().collect(Collectors.toMap(UDF::getClassName, udf -> udf)));
+    }
+
+    public static void updateGitPool(Map<String, String> newPool) {
+        GIT_POOL.clear();
+        GIT_POOL.putAll(newPool);
     }
 
     public static void addOrUpdate(UDF udf) {
@@ -52,5 +59,9 @@ public class UdfCodePool {
             log.warn(error);
         }
         return udf;
+    }
+
+    public static String getGitPackage(String className) {
+        return GIT_POOL.get(className);
     }
 }

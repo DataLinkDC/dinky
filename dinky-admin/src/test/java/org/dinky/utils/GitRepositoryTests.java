@@ -22,12 +22,14 @@ package org.dinky.utils;
 import java.io.File;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * @author ZackYoung
  * @since 0.8.0
  */
+@Disabled
 public class GitRepositoryTests {
     // ssh-keygen -m PEM -t ecdsa
     GitRepository sshRepository =

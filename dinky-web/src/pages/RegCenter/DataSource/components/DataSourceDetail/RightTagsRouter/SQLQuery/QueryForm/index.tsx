@@ -59,7 +59,6 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
   };
 
 
-
   const renderForm = () => {
     return <>
       <AutoComplete

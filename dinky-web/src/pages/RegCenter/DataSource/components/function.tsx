@@ -17,7 +17,7 @@
 
 
 import {DATA_SOURCE_TYPE, QUERY_KEYWORD} from '@/pages/RegCenter/DataSource/components/constants';
-import {DefaultOptionType} from "antd/es/select";
+import {DefaultOptionType} from 'antd/es/select';
 import {
   ClickHouseIcons, DefaultDBIcons,
   DorisIcons, HiveIcons,
@@ -25,7 +25,7 @@ import {
   OracleIcons, PhoenixIcons,
   PostgresqlIcons, PrestoIcons,
   SqlServerIcons, StarRocksIcons
-} from "@/components/Icons/DBIcons";
+} from '@/components/Icons/DBIcons';
 
 
 /**
@@ -35,25 +35,25 @@ import {
  */
 export const renderDBIcon = (type: string, size?: number) => {
   switch (type.toLowerCase()) {
-    case "mysql":
+    case 'mysql':
       return <MysqlIcons size={size}/>;
-    case "oracle":
+    case 'oracle':
       return <OracleIcons size={size}/>;
-    case "postgresql":
+    case 'postgresql':
       return <PostgresqlIcons size={size}/>;
-    case "clickhouse":
+    case 'clickhouse':
       return <ClickHouseIcons size={size}/>;
-    case "sqlserver":
+    case 'sqlserver':
       return <SqlServerIcons size={size}/>;
-    case "doris":
+    case 'doris':
       return <DorisIcons size={size}/>;
-    case "phoenix":
+    case 'phoenix':
       return <PhoenixIcons size={size}/>;
-    case "hive":
+    case 'hive':
       return <HiveIcons size={size}/>;
-    case "starrocks":
+    case 'starrocks':
       return <StarRocksIcons size={size}/>;
-    case "presto":
+    case 'presto':
       return <PrestoIcons size={size}/>;
     default:
       return <DefaultDBIcons size={size}/>;
@@ -75,10 +75,10 @@ export const renderDataSourceType = () => {
   return dataSourceType;
 };
 
-export const buildColumnsQueryKeyWord = (data : string[]) => {
+export const buildColumnsQueryKeyWord = (data: string[]) => {
   const result = data.concat(QUERY_KEYWORD).map((item: string | number) => ({
     value: item,
     label: item,
-  }))
-  return result
-}
+  }));
+  return result;
+};

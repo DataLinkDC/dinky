@@ -15,40 +15,51 @@
  * limitations under the License.
  */
 
-import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import React, {useState} from 'react';
+import {Height80VHDiv} from '@/components/StyledComponents';
+import {Alert, Result} from 'antd';
+import {PageLoading} from '@ant-design/pro-components';
+import DataList from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/DataList';
+import Editor from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/Editor';
+import {l} from '@/utils/intl';
+import {
+  tempColumns,
+  tempData
+} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole/data';
 
-const CodeEditProps = {
-  height: '35vh',
-  width: '100%',
-  lineNumbers: 'on',
-  language: 'sql',
-  // autoRange: true, // todo: 使用此配置项,后续可以自动识别光标位置,根据;分割,得到 sql 片段区间, 在左侧自动添加 执行按钮 和 区间选中效果, 规划内,暂未实现
-};
 
-type SQLConsoleProps = {
-  querySQL: string,
-}
-
-const SQLConsole:React.FC<SQLConsoleProps> = (props) => {
-  const {querySQL} = props;
+const SQLConsole: React.FC = () => {
 
   const [inputValue, setInputValue] = useState('');
   const [loading, setLoading] = useState<boolean>(false);
 
   const handleInputChange = (value: string) => {
     setInputValue(value);
-  }
+  };
 
   const execSql = async () => {
     setLoading(true);
     // todo: exec sql callback
-    setLoading(false);
-  }
+    setTimeout(() => {
+      setLoading(false);
+    }, 3000);
+  };
 
-  return <>
-    <CodeEdit {...CodeEditProps} onChange={handleInputChange} code={inputValue}/>
-  </>
-}
+
+  const renderAlertMsg = (flag: boolean, msg: string) => {
+    if (!flag) {
+      return <Alert style={{margin: 0, height: '2vw', alignItems: 'center'}} message={msg} type="error" showIcon/>;
+    } else {
+      return <Alert style={{margin: 0, height: '2vw', alignItems: 'center'}} message={msg} type="success" showIcon/>;
+    }
+  };
+
+  return <Height80VHDiv>
+    <Editor inputValue={inputValue} loading={loading} execCallback={execSql} handleInputChange={handleInputChange}/>
+    {/*{renderAlertMsg(false, '执行成功')}*/}
+    {loading ? <Result icon={<PageLoading spin={loading}/>} title={l('rc.ds.console.running')}/> :
+      <DataList columns={tempColumns} data={tempData}/>}
+  </Height80VHDiv>;
+};
 
 export default SQLConsole;
