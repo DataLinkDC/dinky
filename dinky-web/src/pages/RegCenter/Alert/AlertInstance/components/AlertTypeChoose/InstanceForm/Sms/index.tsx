@@ -31,7 +31,7 @@ import {
   renderUniSmsForm,
   renderYunpianSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
-import {MANU_FACTURERS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import {MANU_FACTURERS, SMS_TYPE} from '@/pages/RegCenter/Alert/AlertInstance/constans';
 
 
 const Sms = (props: any) => {
@@ -41,23 +41,23 @@ const Sms = (props: any) => {
    */
   const renderFormBySmsType = useCallback((smsType: number) => {
     switch (smsType) {
-      case 1:
+      case SMS_TYPE.ALIBABA:
         return renderAlibabaSmsForm();
-      case 2:
+      case SMS_TYPE.HUAWEI:
         return renderHuaWeiSmsForm();
-      case 3:
+      case SMS_TYPE.YUNPIAN:
         return renderYunpianSmsForm();
-      case 4:
+      case SMS_TYPE.TENCENT:
         return renderTencentSmsForm();
-      case 5:
+      case SMS_TYPE.UNI:
         return renderUniSmsForm();
-      case 6:
+      case  SMS_TYPE.JDCLOUD:
         return renderJDSmsForm();
-      case 7:
+      case SMS_TYPE.CLOOPEN:
         return renderCloopenSmsForm();
-      case 8:
+      case SMS_TYPE.EMAY:
         return renderEmaySmsForm();
-      case 9:
+      case SMS_TYPE.CTYUN:
         return renderCtyunForm();
       default:
         return undefined;

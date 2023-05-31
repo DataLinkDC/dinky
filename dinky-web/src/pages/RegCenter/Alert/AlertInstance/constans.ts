@@ -88,3 +88,15 @@ export const MANU_FACTURERS = [
     value: 9,
   },
 ];
+
+export enum SMS_TYPE {
+  ALIBABA = 1,
+  HUAWEI = 2,
+  YUNPIAN = 3,
+  TENCENT = 4,
+  UNI = 5,
+  JDCLOUD = 6,
+  CLOOPEN = 7,
+  EMAY = 8,
+  CTYUN = 9,
+}
