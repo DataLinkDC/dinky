@@ -25,9 +25,7 @@ import org.dinky.alert.AlertResult;
 import cn.hutool.json.JSONUtil;
 
 /**
- * WeChatAlert
- *
- * @since 2022/2/23 21:09
+ * SmsAlert
  */
 public class SmsAlert extends AbstractAlert {
 

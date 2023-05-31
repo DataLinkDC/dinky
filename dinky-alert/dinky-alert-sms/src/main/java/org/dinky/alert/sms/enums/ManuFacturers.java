@@ -37,7 +37,7 @@ public enum ManuFacturers {
     /** 亿美软通短信 */
     EMAY(8, "亿美软通短信"),
     /** 天翼云短信 */
-    CTYUN(8, "天翼云短信"),
+    CTYUN(9, "天翼云短信"),
     ;
 
     private final Integer code;

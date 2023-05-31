@@ -21,7 +21,6 @@ import {l} from '@/utils/intl';
 import {ProForm, ProFormSelect, ProFormSwitch} from '@ant-design/pro-components';
 import {SWITCH_OPTIONS} from '@/services/constants';
 import {
-  MANU_FACTURERS,
   renderAlibabaSmsForm,
   renderCloopenSmsForm,
   renderCtyunForm,
@@ -32,6 +31,7 @@ import {
   renderUniSmsForm,
   renderYunpianSmsForm
 } from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
+import {MANU_FACTURERS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
 
 
 const Sms = (props: any) => {

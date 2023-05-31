@@ -26,9 +26,7 @@ import {
   SmsSvg,
   WeChatSvg
 } from '@/components/Icons/AlertIcon';
-import {
-  MANU_FACTURERS
-} from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms/function';
+import {MANU_FACTURERS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
 
 /**
  * get json data to alert instance
@@ -90,5 +88,5 @@ export const getAlertIcon = (type: string, size?: number) => {
 };
 
 export const getSmsType = (type: number) => {
-  return MANU_FACTURERS[type].label;
+  return MANU_FACTURERS.find((item) => item.value === type)?.label;
 }

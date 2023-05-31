@@ -19,6 +19,9 @@
 
 package org.dinky.alert.sms;
 
+/**
+ * SmsConstants
+ */
 public class SmsConstants {
     public static final String TYPE = "Sms";
 
