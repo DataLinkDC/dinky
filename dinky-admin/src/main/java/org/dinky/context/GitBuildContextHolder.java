@@ -17,36 +17,30 @@
  *
  */
 
-package org.dinky.sse;
+package org.dinky.context;
 
-import java.io.Serializable;
+import org.dinky.function.constant.PathConstant;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.ArrayList;
+import java.util.List;
 
-/**
- * @author ZackYoung
- * @since 0.8.0
- */
-@Setter
-@Getter
-public class StepState implements Serializable {
-    private Integer currentStep;
-    // 1.log 2.data
-    private Integer type;
-    private Object content;
-    /** 2-success 1-process 0-failed */
-    private Integer status;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.json.JSONUtil;
 
-    private Boolean history;
+public class GitBuildContextHolder {
+    private static final List<Integer> RUNNING_LIST = new ArrayList<>();
 
-    public static StepState genHistoryLog(Integer currentStep, Integer status, String log) {
-        StepState stepState = new StepState();
-        stepState.setHistory(true);
-        stepState.setContent(log);
-        stepState.setType(1);
-        stepState.setCurrentStep(currentStep);
-        stepState.setStatus(status);
-        return stepState;
+    public static void addRun(Integer id) {
+        RUNNING_LIST.add(id);
+        FileUtil.writeUtf8String(
+                JSONUtil.toJsonStr(getAll()), PathConstant.TMP_PATH + "/build.list");
+    }
+
+    public static void remove(Integer id) {
+        RUNNING_LIST.remove(id);
+    }
+
+    public static List<Integer> getAll() {
+        return new ArrayList<>(RUNNING_LIST);
     }
 }

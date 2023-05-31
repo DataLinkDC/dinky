@@ -19,6 +19,7 @@
 
 package org.dinky.sse;
 
+import org.dinky.context.GitBuildContextHolder;
 import org.dinky.model.GitProject;
 
 import java.io.File;
@@ -212,6 +213,9 @@ public abstract class StepSse {
                             }
                         });
         // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
+        GitProject gitProject = (GitProject) params.get("gitProject");
+
+        GitBuildContextHolder.remove(gitProject.getId());
         System.gc();
     }
 
@@ -236,6 +240,7 @@ public abstract class StepSse {
         //                "status":1  # 2完成  1进行中 0失败
         //
         //        }
+
         Object dataResult =
                 (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
         return Dict.create()
@@ -245,20 +250,6 @@ public abstract class StepSse {
                 .set("data", dataResult)
                 .set("currentStepName", name)
                 .set("status", status);
-    }
-
-    protected Dict getLog(String data) {
-        return Dict.create()
-                .set("type", 1)
-                .set("currentStep", getStep())
-                .set("resultType", 1)
-                .set("data", data)
-                .set("currentStepName", name)
-                .set("status", status);
-    }
-
-    protected Dict getLogObj() {
-        return getLogObj(msgList);
     }
 
     protected Dict getEndLog() {
