@@ -39,8 +39,8 @@ import cn.hutool.json.JSONUtil;
 public class SmsSender {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
-    private SupplierConfig configLoader = null;
-    SmsBlend smsSendFactory = null;
+    private static SupplierConfig configLoader = null;
+    private static SmsBlend smsSendFactory = null;
 
     /** manufacturers of sms */
     private Integer manufacturers;

@@ -41,7 +41,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <scope>${scope.runtime}</scope>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
