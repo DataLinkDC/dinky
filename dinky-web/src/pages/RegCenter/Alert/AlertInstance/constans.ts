@@ -16,15 +16,36 @@
  */
 
 
-import {Alert} from '@/types/RegCenter/data';
+import {ALERT_TYPE} from '@/types/RegCenter/data.d';
+import {l} from '@/utils/intl';
+import {DefaultOptionType} from 'rc-select/es/Select';
 
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+
+export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
+  {
+    label: l('rc.ai.dingTalk'),
+    value: ALERT_TYPE.DINGTALK,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.wechat'),
+    value: ALERT_TYPE.WECHAT,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.feishu'),
+    value: ALERT_TYPE.FEISHU,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.email'),
+    value: ALERT_TYPE.EMAIL,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.sms'),
+    value: ALERT_TYPE.SMS,
+    disabled: false,
+  }
+];
+

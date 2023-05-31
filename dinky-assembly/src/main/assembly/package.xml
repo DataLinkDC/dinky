@@ -219,6 +219,14 @@
             </includes>
         </fileSet>
         <fileSet>
+            <directory>${project.parent.basedir}/dinky-alert/dinky-alert-sms/target
+            </directory>
+            <outputDirectory>lib</outputDirectory>
+            <includes>
+                <include>dinky-alert-sms-${project.version}.jar</include>
+            </includes>
+        </fileSet>
+        <fileSet>
             <directory>${project.parent.basedir}/dinky-alert/dinky-alert-wechat/target
             </directory>
             <outputDirectory>lib</outputDirectory>

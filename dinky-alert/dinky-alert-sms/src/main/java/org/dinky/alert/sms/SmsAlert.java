@@ -17,30 +17,28 @@
  *
  */
 
-package org.dinky.alert.wechat;
+package org.dinky.alert.sms;
+
+import org.dinky.alert.AbstractAlert;
+import org.dinky.alert.AlertResult;
+
+import cn.hutool.json.JSONUtil;
 
 /**
- * WeChatType
+ * WeChatAlert
  *
- * @since 2022/2/23 21:36
+ * @since 2022/2/23 21:09
  */
-public enum WeChatType {
-    APP(1, "app"),
-    CHAT(2, "wechat");
+public class SmsAlert extends AbstractAlert {
 
-    private final int code;
-    private final String value;
-
-    WeChatType(int code, String value) {
-        this.code = code;
-        this.value = value;
+    @Override
+    public String getType() {
+        return SmsConstants.TYPE;
     }
 
-    public int getCode() {
-        return code;
-    }
-
-    public String getValue() {
-        return value;
+    @Override
+    public AlertResult send(String title, String content) {
+        SmsSender sender = new SmsSender(JSONUtil.toJsonStr(getConfig().getParam()));
+        return sender.send(title, content);
     }
 }

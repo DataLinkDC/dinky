@@ -35,6 +35,7 @@
         <module>dinky-alert-wechat</module>
         <module>dinky-alert-feishu</module>
         <module>dinky-alert-email</module>
+        <module>dinky-alert-sms</module>
     </modules>
 
 </project>
