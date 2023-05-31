@@ -37,7 +37,7 @@ tips() {
 }
 
 updatePid() {
-  pid=$(ps -ef | grep [d]ink  | awk '{print $2}' | head -1)
+  pid=$(ps -ef | grep [d]inky  | awk '{print $2}' | head -1)
   echo $pid >"${PID_PATH}"/${PID_FILE}
 }
 
