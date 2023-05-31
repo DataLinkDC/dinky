@@ -19,26 +19,25 @@
 
 package org.dinky.sse.git;
 
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Dict;
+import cn.hutool.json.JSONUtil;
 import org.dinky.dto.GitAnalysisJarDTO;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.model.GitProject;
 import org.dinky.sse.StepSse;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
-
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
-
-import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.lang.Dict;
-import cn.hutool.json.JSONUtil;
 
 /**
  * @author ZackYoung
@@ -77,16 +76,21 @@ public class AnalysisUdfClassStepSse extends StepSse {
                             sendMsg(Dict.create().set(jar, udfClassByJar));
                         });
 
+        AtomicInteger index = new AtomicInteger(1);
         udfMap.forEach(
                 (k, v) -> {
                     GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
                     gitAnalysisJarDTO.setJarPath(k);
                     gitAnalysisJarDTO.setClassList(
                             v.stream().map(Class::getName).collect(Collectors.toList()));
+                    gitAnalysisJarDTO.setOrderLine(index.get());
+                    index.getAndIncrement();
                     dataList.add(gitAnalysisJarDTO);
                 });
 
+        dataList.sort(Comparator.comparing(GitAnalysisJarDTO::getOrderLine));
         String data = JSONUtil.toJsonStr(dataList);
+
         sendMsg(getList(null).set("data", data));
 
         FileUtil.appendString(data, getLogFile(), StandardCharsets.UTF_8);

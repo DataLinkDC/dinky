@@ -30,4 +30,5 @@ import lombok.Setter;
 public class GitAnalysisJarDTO {
     private String jarPath;
     private List<String> classList;
+    private Integer orderLine = 1;
 }

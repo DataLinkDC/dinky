@@ -20,6 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.common.result.StepResult;
+import org.dinky.context.GitBuildContextHolder;
 import org.dinky.model.GitProject;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.DoneStepSse;
@@ -66,6 +67,7 @@ public final class GitProjectStepSseFactory {
         gitProject.setBuildState(1);
         gitProject.updateById();
 
+        GitBuildContextHolder.addRun(gitProject.getId());
         sseEmitterMap.put(gitProject.getId(), emitterList);
     }
 
