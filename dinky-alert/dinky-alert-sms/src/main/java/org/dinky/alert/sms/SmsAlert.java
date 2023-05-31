@@ -24,9 +24,7 @@ import org.dinky.alert.AlertResult;
 
 import cn.hutool.json.JSONUtil;
 
-/**
- * SmsAlert
- */
+/** SmsAlert */
 public class SmsAlert extends AbstractAlert {
 
     @Override

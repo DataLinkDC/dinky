@@ -58,11 +58,10 @@ public class SmsSender {
     public AlertResult send(String title, String content) {
         AlertResult alertResult = new AlertResult();
         logger.info("send sms, title: {}, content: {}", title, content);
-        // todo:
-        //  1. support multi sms manufacturers send
+        // todo: 1. support multi sms manufacturers send
         // 使用自定义模板群发短信 || use custom template mass texting
         smsSendFactory.massTexting(Arrays.asList("17722226666"), "110", new LinkedHashMap<>());
-        //  2. validate sms send result
+        // todo: 2. validate sms send result
         return alertResult;
     }
 }
