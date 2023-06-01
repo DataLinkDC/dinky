@@ -171,6 +171,8 @@ export const API_CONSTANTS = {
 
 
   // system config center
+  // global config list
+  SYSTEM_GET_ALL_CONFIG: "/api/sysConfig/getAll",
   //-- system root logs
   SYSTEM_ROOT_LOG: "/api/system/getRootLog",
   // -- get logs list

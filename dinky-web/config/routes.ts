@@ -219,13 +219,13 @@ export default [
     routes: [
       {
         path: '/settings',
-        redirect: '/settings/flinksetting',
+        redirect: '/settings/globalsetting',
       },
       {
-        path: '/settings/flinksetting',
-        name: 'flinksetting',
+        path: '/settings/globalsetting',
+        name: 'globalsetting',
         icon: 'SettingOutlined',
-        // component: './SettingCenter/FlinkSettings',
+        component: './SettingCenter/GlobalSetting',
       },
       {
         path: '/settings/system',

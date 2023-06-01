@@ -15,13 +15,23 @@
  * limitations under the License.
  */
 
-import {PageContainer} from '@ant-design/pro-components';
-import SettingOverView from '@/pages/SettingCenter/GlobalSetting/SettingOverView';
 
-export default () => {
+import {BaseConfigProperties} from '@/types/SettingCenter/data';
+import { ProCard } from '@ant-design/pro-components';
+
+interface EnvConfigProps {
+  data: BaseConfigProperties
+}
+
+export const EnvConfig = ({data}: EnvConfigProps) => {
   return <>
-    <PageContainer title={false}>
-      <SettingOverView/>
-    </PageContainer>
-  </>;
+    <ProCard
+      title="Dinky 环境配置"
+      headerBordered
+      collapsible
+      defaultCollapsed={false}
+    >
+      内容
+    </ProCard>
+  </>
 }

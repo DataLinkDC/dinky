@@ -15,13 +15,14 @@
  * limitations under the License.
  */
 
-import {PageContainer} from '@ant-design/pro-components';
-import SettingOverView from '@/pages/SettingCenter/GlobalSetting/SettingOverView';
 
-export default () => {
-  return <>
-    <PageContainer title={false}>
-      <SettingOverView/>
-    </PageContainer>
-  </>;
+import {BaseConfigProperties} from '@/types/SettingCenter/data';
+
+interface FlinkConfigProps {
+  data: BaseConfigProperties
+}
+
+export const FlinkConfig = ({data}: FlinkConfigProps) => {
+
+  return <div>{JSON.stringify(data)}</div>;
 }

@@ -59,7 +59,7 @@ export default {
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',
   'menu.settings': 'Setting Center',
-  'menu.settings.flinksetting': 'Flink Settings',
+  'menu.settings.globalsetting': 'Global Settings',
   'menu.settings.system': 'System Info',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
