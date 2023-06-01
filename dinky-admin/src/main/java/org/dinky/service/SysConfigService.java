@@ -20,8 +20,10 @@
 package org.dinky.service;
 
 import org.dinky.db.service.ISuperService;
+import org.dinky.model.Configuration;
 import org.dinky.model.SysConfig;
 
+import java.util.List;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,7 +35,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface SysConfigService extends ISuperService<SysConfig> {
 
-    Map<String, Object> getAll();
+    Map<String, List<Configuration<?>>> getAll();
 
     void initSysConfig();
 

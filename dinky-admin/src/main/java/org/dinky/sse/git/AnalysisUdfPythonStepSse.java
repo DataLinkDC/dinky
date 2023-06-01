@@ -20,9 +20,9 @@
 package org.dinky.sse.git;
 
 import org.dinky.dto.GitAnalysisJarDTO;
-import org.dinky.function.data.model.Env;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.model.GitProject;
+import org.dinky.model.SystemConfiguration;
 import org.dinky.sse.StepSse;
 
 import java.io.File;
@@ -54,7 +54,9 @@ public class AnalysisUdfPythonStepSse extends StepSse {
         File zipFile = (File) params.get("zipFile");
         File projectFile = (File) params.get("projectFile");
         List<String> pythonUdfList =
-                UDFUtil.getPythonUdfList(Env.getPath(), projectFile.getAbsolutePath());
+                UDFUtil.getPythonUdfList(
+                        SystemConfiguration.getInstances().getPythonHome(),
+                        projectFile.getAbsolutePath());
         GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
         gitAnalysisJarDTO.setJarPath(zipFile.getAbsolutePath());
         gitAnalysisJarDTO.setClassList(pythonUdfList);

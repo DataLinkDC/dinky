@@ -35,7 +35,6 @@ import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorSetting;
 import org.dinky.explainer.Explainer;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.function.data.model.Env;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
@@ -339,7 +338,7 @@ public class JobManager {
 
         Set<File> pyUdfFile = FlinkUdfPathContextHolder.getPyUdfFile();
         executor.initPyUDF(
-                Env.getPath(),
+                SystemConfiguration.getInstances().getPythonHome(),
                 pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
