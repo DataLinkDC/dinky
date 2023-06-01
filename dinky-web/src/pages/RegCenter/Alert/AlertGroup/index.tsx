@@ -241,12 +241,15 @@ const AlertGroupTableList: React.FC = (props: any) => {
                 modalVisible={modalVisible}
                 values={{}}
             />
-            <AlertGroupForm
-                onSubmit={handleSubmit}
-                onCancel={handleCleanState}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
+            {
+                ( formValues && Object.keys(formValues).length>0) &&
+                <AlertGroupForm
+                    onSubmit={handleSubmit}
+                    onCancel={handleCleanState}
+                    modalVisible={updateModalVisible}
+                    values={formValues}
+                />
+            }
 
         </PageContainer>
     );

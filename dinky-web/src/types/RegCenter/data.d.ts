@@ -48,6 +48,7 @@ export const ALERT_TYPE = {
   WECHAT: 'WeChat',
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
+  SMS: 'Sms',
   GROUP: 'Group',
 };
 
@@ -59,6 +60,8 @@ export const ALERT_CONFIG_LIST: AlertConfig[] = [{
   type: ALERT_TYPE.FEISHU,
 }, {
   type: ALERT_TYPE.EMAIL,
+}, {
+  type: ALERT_TYPE.SMS,
 }
 ];
 
@@ -71,7 +74,7 @@ declare namespace Cluster {
    * flink cluster instance
    * mainly used for `yarn session` `standalone`
    */
-  export type ClusterInstance = BaseBeanColumns & {
+  export type Instance = BaseBeanColumns & {
     alias: string,
     type: string,
     hosts: string,
@@ -86,7 +89,7 @@ declare namespace Cluster {
    * flink cluster config
    * mainly used for `projob` `application` `k8s` and start a new session cluster
    */
-  export type ClusterConfig = BaseBeanColumns & {
+  export type Config = BaseBeanColumns & {
     type: string,
     config: any,
     configJson: string,

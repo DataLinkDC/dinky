@@ -21,7 +21,6 @@
 import {Modal} from "antd";
 import React, {useEffect, useState} from "react";
 import {GitProject} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
 import {AutoSteps, BuildMsgData} from "@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps";
 import {JavaSteps, PythonSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps/constants";
 import {API_CONSTANTS} from "@/services/constants";
@@ -34,8 +33,8 @@ import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
  * props
  */
 type BuildStepsProps = {
-  onCancel: (flag?: boolean) => void;
-  modalVisible: boolean;
+  onCancel: (flag?: boolean) => void
+  title: string;
   values: Partial<GitProject>;
 };
 
@@ -46,7 +45,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    */
   const {
     onCancel: handleModalVisible,
-    modalVisible,
+    title,
     values,
   } = props;
   let [logList, setLogList] = useState<Record<number, string[]>>({});
@@ -174,7 +173,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
   return <>
     <Modal
-      title={l("rc.gp.build")}
+      title={title}
       width={"85%"}
       open={true}
       maskClosable={false}

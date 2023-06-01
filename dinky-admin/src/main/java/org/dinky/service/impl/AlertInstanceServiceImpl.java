@@ -109,9 +109,14 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
 
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
-        if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-            alertMsgBuilder.linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
-            alertMsgBuilder.exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+        if (!alertInstance.getType().equals("Sms")) {
+            if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
+                alertMsgBuilder.linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
+                alertMsgBuilder.exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+            } else {
+                alertMsgBuilder.linkUrl(linkUrl);
+                alertMsgBuilder.exceptionUrl(exceptionUrl);
+            }
         } else {
             alertMsgBuilder.linkUrl(linkUrl);
             alertMsgBuilder.exceptionUrl(exceptionUrl);

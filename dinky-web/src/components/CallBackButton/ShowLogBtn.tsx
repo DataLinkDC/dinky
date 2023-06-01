@@ -24,15 +24,17 @@ import React from "react";
 
 type ShowLogBtnProps = {
     onClick: () => void;
+    disabled?: boolean;
 }
 
 export const ShowLogBtn: React.FC<ShowLogBtnProps> = ( props) => {
 
-    const {onClick} = props;
+    const {onClick,disabled=false} = props;
     return <>
         <Button
             className={"options-button"}
             title={l("button.showLog")}
+            disabled={disabled}
             icon={<ShowLogIcon/>}
             onClick={() => onClick()}
         />

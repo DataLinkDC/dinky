@@ -21,9 +21,7 @@ import React, {useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {GitProject} from "@/types/RegCenter/data";
 import {
-  getDataByParams,
-  handleAddOrUpdate, handleData,
-  handlePutDataByParams,
+  handleAddOrUpdate, handlePutDataByParams,
   handleRemoveById,
   updateEnabled
 } from "@/services/BusinessCrud";
@@ -44,9 +42,8 @@ import {
   renderBranchesTagColor
 } from "@/pages/RegCenter/GitProject/constans";
 import {ShowCodeTreeIcon} from "@/components/Icons/CustomIcons";
-import {getData, queryList} from "@/services/api";
+import {queryList} from "@/services/api";
 import {BuildSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps";
-import {ShowLog} from "@/pages/RegCenter/GitProject/components/ShowLog";
 import {CodeTree} from "@/pages/RegCenter/GitProject/components/CodeTree";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import ProjectModal from "@/pages/RegCenter/GitProject/components/ProjectModal";
@@ -227,7 +224,7 @@ const ProjectProTable: React.FC = () => {
       valueType: "option",
       width: "10vw",
       render: (text, record) => [
-        <ShowLogBtn key={`${record.id}_showLog`} onClick={() => handleShowLog(record)}/>,
+        <ShowLogBtn disabled={record.buildStep === 0} key={`${record.id}_showLog`} onClick={() => handleShowLog(record)}/>,
         <Button
           key={`${record.id}_code`}
           className={"options-button"}
@@ -301,12 +298,10 @@ const ProjectProTable: React.FC = () => {
                   modalVisible={updateModalVisible}
                   values={formValues}/>
     {/* build steps modal */}
-    {buildModalVisible && <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
-                               values={formValues}/>}
+    {buildModalVisible && <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel}  values={formValues}/>}
     {/* show build log modal */}
     {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
-    {logModalVisible &&  <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
-                                     values={formValues}/>}
+    {logModalVisible &&  <BuildSteps  title={l('rc.gp.log')} onCancel={handleCancel} values={formValues}/>}
     {/* show code tree modal */}
     <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>
   </>;
