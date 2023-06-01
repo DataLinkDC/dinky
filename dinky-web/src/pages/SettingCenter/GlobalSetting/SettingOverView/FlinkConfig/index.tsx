@@ -17,12 +17,25 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
+import {ProCard} from "@ant-design/pro-components";
+import FlinkConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig/FlinkConfigList";
 
 interface FlinkConfigProps {
-  data: BaseConfigProperties
+    data: BaseConfigProperties[]
 }
 
 export const FlinkConfig = ({data}: FlinkConfigProps) => {
 
-  return <div>{JSON.stringify(data)}</div>;
+    return <>
+        <ProCard
+            title="Flink 环境配置"
+            tooltip="Dinky对接 Flink 主要参数"
+            size="small"
+            headerBordered
+            collapsible
+            defaultCollapsed={false}
+        >
+            <FlinkConfigList data={data}/>
+        </ProCard>
+    </>
 }

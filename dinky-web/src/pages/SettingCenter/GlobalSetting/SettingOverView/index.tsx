@@ -43,18 +43,13 @@ const SettingOverView = () => {
         maven: mavenConfig,
         dolphinscheduler: dsConfig
       } = JSON.parse(JSON.stringify(data));
-      if (dinkyEnv){
-        return <EnvConfig data={dinkyEnv}/>;
-      }
-      if (flinkConfig){
-        return <FlinkConfig data={flinkConfig}/>;
-      }
-      if (mavenConfig){
-        return <MavenConfig data={mavenConfig}/>;
-      }
-      if (dsConfig){
-        return <DSConfig data={dsConfig}/>;
-      }
+      console.log(data)
+      return  <>
+        <EnvConfig data={dinkyEnv}/>
+        <FlinkConfig data={flinkConfig}/>
+        <MavenConfig data={mavenConfig}/>
+        <DSConfig data={dsConfig}/>
+      </>
     }
   };
 

@@ -17,12 +17,25 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
+import {ProCard} from "@ant-design/pro-components";
+import DSConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig/DSConfigList";
 
 interface DSConfigProps {
-  data: BaseConfigProperties
+  data: BaseConfigProperties[]
 }
 
 export const DSConfig = ({data}: DSConfigProps) => {
 
-  return <div>{JSON.stringify(data)}</div>;
+  return <>
+    <ProCard
+        title="DolphinSchuder 配置"
+        tooltip="海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上，提高您的工作效率 "
+        size="small"
+        headerBordered
+        collapsible
+        defaultCollapsed={false}
+    >
+      <DSConfigList data={data}/>
+    </ProCard>
+  </>
 }

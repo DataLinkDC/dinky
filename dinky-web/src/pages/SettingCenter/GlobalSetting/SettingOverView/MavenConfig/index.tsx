@@ -17,12 +17,24 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
+import {ProCard} from "@ant-design/pro-components";
+import MavenConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig/MavenConfigList";
 
 interface MavenConfigProps {
-  data: BaseConfigProperties;
+  data: BaseConfigProperties[]
 }
 
 export const MavenConfig = ({data}: MavenConfigProps) => {
 
-  return <div>{JSON.stringify(data)}</div>;
-}
+  return <>
+    <ProCard
+        title="Maven 配置"
+        tooltip="Maven 编译的主要参数"
+        size="small"
+        headerBordered
+        collapsible
+        defaultCollapsed={false}
+    >
+      <MavenConfigList data={data}/>
+    </ProCard>
+  </>}

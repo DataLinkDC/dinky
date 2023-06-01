@@ -466,6 +466,35 @@ export default {
 
 
   //-------------------------------- setting center --------------------------------
+  //setting
+  'sys.env.settings.pythonHome': 'Python 环境变量',
+  'sys.env.settings.pythonHome.note': 'Python 环境变量',
+  'sys.env.settings.dinkyAddr': 'Dinky 地址',
+  'sys.env.settings.dinkyAddr.note': '该地址必须与Dinky Application后台url中配置的地址相同',
+  'sys.flink.settings.useRestAPI': '使用 Rest API',
+  'sys.flink.settings.useRestAPI.note': '在运维 Flink 任务时是否使用 RestAPI',
+  'sys.flink.settings.sqlSeparator': 'SQL 分隔符',
+  'sys.flink.settings.sqlSeparator.note': 'SQL 分隔符',
+  'sys.flink.settings.jobIdWait': 'Job 提交等待时间',
+  'sys.flink.settings.jobIdWait.note': '提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）',
+  'sys.maven.settings.settingsFilePath': 'Maven 配置文件路径',
+  'sys.maven.settings.settingsFilePath.note': 'Maven 配置文件路径, eg: /opt/maven/conf/settings.xml , 请注意填写全路径,包含settings.xml文件名',
+  'sys.maven.settings.repository': 'Maven 仓库地址',
+  'sys.maven.settings.repository.note': 'Maven 仓库地址',
+  'sys.maven.settings.repositoryUser': 'Maven 仓库用户名',
+  'sys.maven.settings.repositoryUser.note': 'Maven 私服认证用户名',
+  'sys.maven.settings.repositoryPassword': 'Maven 仓库密码',
+  'sys.maven.settings.repositoryPassword.note': 'Maven 私服认证密码',
+  'sys.dolphinscheduler.settings.enable': '是否启用',
+  'sys.dolphinscheduler.settings.enable.note': '是否启用, 启用后才能使用 DolphinScheduler 的相关功能, 请确保 DolphinScheduler 的相关配置正确',
+  'sys.dolphinscheduler.settings.url': 'DolphinScheduler 地址',
+  'sys.dolphinscheduler.settings.url.note': '地址必须和DolphinScheduler后台配置的地址一致，eg: http://127.0.0.1:12345/dolphinscheduler',
+  'sys.dolphinscheduler.settings.token': 'DolphinScheduler Token',
+  'sys.dolphinscheduler.settings.token.note': 'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
+  'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
+  'sys.dolphinscheduler.settings.projectName.note': 'DolphinScheduler 中指定的项目名称，不区分大小写',
+
+
   // process
   'sys.process.id': '进程ID',
   'sys.process.name': '进程名',

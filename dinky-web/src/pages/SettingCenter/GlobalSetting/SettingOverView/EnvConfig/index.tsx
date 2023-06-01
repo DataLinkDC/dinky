@@ -18,20 +18,23 @@
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import { ProCard } from '@ant-design/pro-components';
+import EnvList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig/EnvList";
 
 interface EnvConfigProps {
-  data: BaseConfigProperties
+  data: BaseConfigProperties[]
 }
 
 export const EnvConfig = ({data}: EnvConfigProps) => {
   return <>
     <ProCard
       title="Dinky 环境配置"
+      tooltip="主要以修改系统变量为主，保证基础功能稳定运行"
+      size="small"
       headerBordered
       collapsible
       defaultCollapsed={false}
     >
-      内容
+      <EnvList data={data}/>
     </ProCard>
   </>
 }

@@ -226,6 +226,7 @@ export default [
         name: 'globalsetting',
         icon: 'SettingOutlined',
         component: './SettingCenter/GlobalSetting',
+        footerRender: false,
       },
       {
         path: '/settings/system',
