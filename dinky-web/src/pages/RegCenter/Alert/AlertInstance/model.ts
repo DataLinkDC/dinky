@@ -18,6 +18,7 @@
 
 import {Reducer} from "umi";
 import {Alert} from "@/types/RegCenter/data.d";
+import {showAlertInstance} from "@/pages/RegCenter/Alert/AlertGroup/service";
 
 export type AlertStateType = {
   instance:Alert.AlertInstance[],
@@ -43,7 +44,10 @@ const AlertModel: AlertModelType = {
   },
 
   effects: {
-
+    *queryInstance({ }, { call, put }) {
+      const { datas } = yield call(showAlertInstance);
+      yield put({ type: 'saveInstance', payload: datas });
+    },
   },
 
   reducers: {
