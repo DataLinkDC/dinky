@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.common.result.ProTableResult;
 import org.dinky.common.result.Result;
+import org.dinky.model.Configuration;
 import org.dinky.model.SysConfig;
 import org.dinky.service.SysConfigService;
 
@@ -100,7 +101,7 @@ public class SysConfigController {
 
     /** 获取所有配置 */
     @GetMapping("/getAll")
-    public Result<Map<String, Object>> getAll() {
+    public Result<Map<String, List<Configuration<?>>>> getAll() {
         return Result.succeed(sysConfigService.getAll(), "获取成功");
     }
 

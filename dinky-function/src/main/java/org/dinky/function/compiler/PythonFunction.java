@@ -21,10 +21,10 @@ package org.dinky.function.compiler;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.function.data.model.Env;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.function.util.ZipWriter;
+import org.dinky.model.SystemConfiguration;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 
@@ -79,8 +79,12 @@ public class PythonFunction implements FunctionCompiler, FunctionPackage {
         try {
             Configuration configuration = new Configuration((Configuration) conf);
             configuration.set(PythonOptions.PYTHON_FILES, zipFile.getAbsolutePath());
-            configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, Env.getPath());
-            configuration.set(PythonOptions.PYTHON_EXECUTABLE, Env.getPath());
+            configuration.set(
+                    PythonOptions.PYTHON_CLIENT_EXECUTABLE,
+                    SystemConfiguration.getInstances().getPythonHome());
+            configuration.set(
+                    PythonOptions.PYTHON_EXECUTABLE,
+                    SystemConfiguration.getInstances().getPythonHome());
 
             PythonFunctionFactory.getPythonFunction(udf.getClassName(), configuration, null);
             process.info("Python udf编译成功 ; className:" + udf.getClassName());

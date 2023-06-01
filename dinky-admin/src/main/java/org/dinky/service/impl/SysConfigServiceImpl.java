@@ -22,14 +22,15 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.SysConfigMapper;
+import org.dinky.model.Configuration;
 import org.dinky.model.SysConfig;
 import org.dinky.model.SystemConfiguration;
 import org.dinky.service.SysConfigService;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -49,19 +50,19 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
     private static final ObjectMapper mapper = new ObjectMapper();
 
     @Override
-    public Map<String, Object> getAll() {
-        Map<String, Object> map = new HashMap<>();
-        List<SysConfig> sysConfigs = list();
-        for (SysConfig item : sysConfigs) {
-            map.put(item.getName(), item.getValue());
-        }
-        SystemConfiguration.getInstances().addConfiguration(map);
-        return map;
+    public Map<String, List<Configuration<?>>> getAll() {
+        return SystemConfiguration.getInstances().addConfiguration();
     }
 
     @Override
     public void initSysConfig() {
-        SystemConfiguration.getInstances().setConfiguration(mapper.valueToTree(getAll()));
+        SystemConfiguration.getInstances()
+                .setConfiguration(
+                        mapper.valueToTree(
+                                list().stream()
+                                        .collect(
+                                                Collectors.toMap(
+                                                        SysConfig::getName, SysConfig::getValue))));
     }
 
     @Override

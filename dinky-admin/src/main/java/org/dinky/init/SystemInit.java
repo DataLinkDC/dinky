@@ -27,9 +27,9 @@ import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.FlinkJobTask;
 import org.dinky.model.JobInstance;
+import org.dinky.model.SystemConfiguration;
 import org.dinky.model.Tenant;
 import org.dinky.scheduler.client.ProjectClient;
-import org.dinky.scheduler.config.DolphinSchedulerProperties;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
 import org.dinky.service.GitProjectService;
@@ -72,7 +72,6 @@ public class SystemInit implements ApplicationRunner {
     private final JobInstanceService jobInstanceService;
     private final TaskService taskService;
     private final TenantService tenantService;
-    private final DolphinSchedulerProperties dolphinSchedulerProperties;
     private final GitProjectService gitProjectService;
     private static Project project;
 
@@ -102,16 +101,22 @@ public class SystemInit implements ApplicationRunner {
 
     /** init DolphinScheduler */
     private void initDolphinScheduler() {
-        if (dolphinSchedulerProperties.isEnabled()) {
-            try {
-                project = projectClient.getDinkyProject();
-                if (Asserts.isNull(project)) {
-                    project = projectClient.createDinkyProject();
-                }
-            } catch (Exception e) {
-                log.error("Error in DolphinScheduler: ", e);
-            }
-        }
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        systemConfiguration.setInitMethod(
+                c -> {
+                    if (c == systemConfiguration.getDolphinschedulerEnable()) {
+                        if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                            try {
+                                project = projectClient.getDinkyProject();
+                                if (Asserts.isNull(project)) {
+                                    project = projectClient.createDinkyProject();
+                                }
+                            } catch (Exception e) {
+                                log.error("Error in DolphinScheduler: ", e);
+                            }
+                        }
+                    }
+                });
     }
 
     /**

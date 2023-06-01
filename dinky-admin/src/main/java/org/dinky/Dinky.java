@@ -49,6 +49,7 @@ public class Dinky {
         ConfigurableApplicationContext application = app.run(args);
         Environment env = application.getEnvironment();
         String port = env.getProperty("server.port");
+        System.setProperty("dinkyAddr", ipAddress + ":" + port);
         log.info(
                 "\n----------------------------------------------------------\n\t"
                         + "Application 'Dinky' is running! Access URLs:\n\t"

@@ -19,203 +19,187 @@
 
 package org.dinky.model;
 
-import org.dinky.assertion.Asserts;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.google.common.collect.Lists;
+
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.StrUtil;
+import lombok.Getter;
 
 /**
  * SystemConfiguration
  *
  * @since 2021/11/18
  */
+@Getter
 public class SystemConfiguration {
 
-    private static volatile SystemConfiguration systemConfiguration = new SystemConfiguration();
+    private static final SystemConfiguration systemConfiguration = new SystemConfiguration();
 
     public static SystemConfiguration getInstances() {
         return systemConfiguration;
     }
 
-    private static final List<Configuration> CONFIGURATION_LIST =
-            Lists.newArrayList(
-                    systemConfiguration.useRestAPI,
-                    systemConfiguration.sqlSeparator,
-                    systemConfiguration.jobIdWait,
-                    systemConfiguration.mavenSettings,
-                    systemConfiguration.mavenRepository,
-                    systemConfiguration.mavenRepositoryUser,
-                    systemConfiguration.mavenRepositoryPassword);
+    private Consumer<Configuration<?>> initMethod = null;
 
-    private Configuration useRestAPI =
-            new Configuration(
-                    "useRestAPI",
-                    "使用 RestAPI",
-                    ValueType.BOOLEAN,
-                    true,
-                    "在运维 Flink 任务时是否使用 RestAPI");
-    private Configuration sqlSeparator =
-            new Configuration(
-                    "sqlSeparator", "FlinkSQL语句分割符", ValueType.STRING, ";\n", "Flink SQL 的语句分割符");
-    private Configuration jobIdWait =
-            new Configuration(
-                    "jobIdWait",
-                    "获取 Job ID 的最大等待时间（秒）",
-                    ValueType.INT,
-                    30,
-                    "提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
-
-    private Configuration mavenSettings =
-            new Configuration(
-                    "mavenSettings",
-                    "Maven Settings 文件路径",
-                    ValueType.STRING,
-                    "",
-                    "Maven Settings File Path");
-
-    private Configuration mavenRepository =
-            new Configuration(
-                    "mavenRepository",
-                    "Maven Central Repository",
-                    ValueType.STRING,
-                    "https://maven.aliyun.com/nexus/content/repositories/central",
-                    "Maven private server address");
-
-    private Configuration mavenRepositoryUser =
-            new Configuration(
-                    "mavenRepositoryUser",
-                    "Maven Central Repository Auth User",
-                    ValueType.STRING,
-                    "",
-                    "Maven private server authentication username");
-
-    private Configuration mavenRepositoryPassword =
-            new Configuration(
-                    "mavenRepositoryPassword",
-                    "Maven Central Repository Auth Password",
-                    ValueType.STRING,
-                    "",
-                    "Maven private server authentication password");
-
-    public void setConfiguration(JsonNode jsonNode) {
-        CONFIGURATION_LIST.stream()
-                .filter(t -> jsonNode.has(t.getName()))
-                .forEach(
-                        item -> {
-                            final JsonNode value = jsonNode.get(item.getName());
-                            switch (item.getType()) {
-                                case BOOLEAN:
-                                    item.setValue(value.asBoolean());
-                                    break;
-                                case INT:
-                                    item.setValue(value.asInt());
-                                    break;
-                                default:
-                                    item.setValue(value.asText());
-                            }
-                        });
+    public static Configuration.OptionBuilder key(String key) {
+        return new Configuration.OptionBuilder(key);
     }
 
-    public void addConfiguration(Map<String, Object> map) {
-        for (Configuration item : CONFIGURATION_LIST) {
-            final String name = item.getName();
-            if (!map.containsKey(name)) {
-                map.put(name, item.getValue());
-                continue;
-            }
+    private static final List<Configuration<?>> CONFIGURATION_LIST =
+            Arrays.stream(
+                            ReflectUtil.getFields(
+                                    SystemConfiguration.class,
+                                    f -> f.getType() == Configuration.class))
+                    .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
+                    .collect(Collectors.toList());
 
-            if (item.getType().equals(ValueType.BOOLEAN)) {
-                map.put(name, Asserts.isEqualsIgnoreCase("true", map.get(name).toString()));
-            }
+    private Configuration<Boolean> useRestAPI =
+            key("flink.settings.useRestAPI")
+                    .booleanType()
+                    .defaultValue(true)
+                    .note("在运维 Flink 任务时是否使用 RestAPI");
+    private Configuration<String> sqlSeparator =
+            key("flink.settings.sqlSeparator")
+                    .stringType()
+                    .defaultValue(";\n")
+                    .note("FlinkSQL语句分割符");
+    private Configuration<Integer> jobIdWait =
+            key("flink.settings.jobIdWait")
+                    .intType()
+                    .defaultValue(30)
+                    .note("提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
+
+    private Configuration<String> mavenSettings =
+            key("maven.settings.settingsFilePath")
+                    .stringType()
+                    .defaultValue("")
+                    .note("Maven Settings 文件路径");
+
+    private Configuration<String> mavenRepository =
+            key("maven.settings.repository")
+                    .stringType()
+                    .defaultValue("https://maven.aliyun.com/nexus/content/repositories/central")
+                    .note("Maven private server address");
+
+    private Configuration<String> mavenRepositoryUser =
+            key("maven.settings.repositoryUser")
+                    .stringType()
+                    .defaultValue("")
+                    .note("Maven private server authentication username");
+
+    private Configuration<String> mavenRepositoryPassword =
+            key("maven.settings.repositoryUser")
+                    .stringType()
+                    .defaultValue("")
+                    .note("Maven Central Repository Auth Password");
+
+    private Configuration<String> pythonHome =
+            key("env.settings.pythonHome").stringType().defaultValue("python3").note("PYTHON HOME");
+
+    private Configuration<String> dinkyAddr =
+            key("env.settings.dinkyAddr")
+                    .stringType()
+                    .defaultValue(System.getProperty("dinkyAddr"))
+                    .note(
+                            "the address must be the same as the address configured in the Dinky Application background url");
+
+    private Configuration<Boolean> dolphinschedulerEnable =
+            key("dolphinscheduler.settings.enable")
+                    .booleanType()
+                    .defaultValue(false)
+                    .note("Dolphinscheduler ON-OFF");
+
+    private Configuration<String> dolphinschedulerUrl =
+            key("dolphinscheduler.settings.url")
+                    .stringType()
+                    .defaultValue("")
+                    .note(
+                            "The address must be the same as the address configured in the DolphinScheduler background , eg: http://127.0.0.1:12345/dolphinscheduler");
+    private Configuration<String> dolphinschedulerToken =
+            key("dolphinscheduler.settings.token")
+                    .stringType()
+                    .defaultValue("")
+                    .note(
+                            "DolphinScheduler's Token , Please create a token in DolphinScheduler's Security Center -> Token Management, and modify the following configuration");
+    private Configuration<String> dolphinschedulerProjectName =
+            key("dolphinscheduler.settings.projectName")
+                    .stringType()
+                    .defaultValue("Dinky")
+                    .note("The project name specified in DolphinScheduler, case insensitive");
+
+    public void setConfiguration(JsonNode jsonNode) {
+        CONFIGURATION_LIST.forEach(
+                item -> {
+                    final JsonNode value = jsonNode.get(item.getKey());
+                    if (value == null || value.isNull()) {
+                        item.setValue(item.getDefaultValue());
+                        return;
+                    }
+                    item.setValue(value);
+                });
+        // initRun
+        CONFIGURATION_LIST.forEach(
+                c -> Opt.ofNullable(this.initMethod).ifPresent(x -> x.accept(c)));
+    }
+
+    public Map<String, List<Configuration<?>>> addConfiguration() {
+        Map<String, List<Configuration<?>>> data = new TreeMap<>();
+        for (Configuration<?> item : CONFIGURATION_LIST) {
+            final String name = item.getKey();
+            String k = StrUtil.split(name, ".").get(0);
+            Opt.ofBlankAble(k)
+                    .ifPresent(
+                            key -> {
+                                data.computeIfAbsent(k, x -> new ArrayList<>());
+                                data.get(k).add(item);
+                            });
         }
+        return data;
+    }
+
+    public void setInitMethod(Consumer<Configuration<?>> initMethod) {
+        this.initMethod = initMethod;
     }
 
     public boolean isUseRestAPI() {
-        return (boolean) useRestAPI.getValue();
-    }
-
-    public void setUseRestAPI(boolean useRestAPI) {
-        this.useRestAPI.setValue(useRestAPI);
+        return useRestAPI.getValue();
     }
 
     public String getSqlSeparator() {
-        return sqlSeparator.getValue().toString();
-    }
-
-    public void setSqlSeparator(String sqlSeparator) {
-        this.sqlSeparator.setValue(sqlSeparator);
+        return sqlSeparator.getValue();
     }
 
     public int getJobIdWait() {
-        return (int) jobIdWait.getValue();
-    }
-
-    public void setJobIdWait(Configuration jobIdWait) {
-        this.jobIdWait.setValue(jobIdWait);
+        return jobIdWait.getValue();
     }
 
     public String getMavenSettings() {
-        return (String) mavenSettings.getValue();
+
+        return mavenSettings.getValue();
     }
 
     public String getMavenRepository() {
-        return (String) mavenRepository.getValue();
+        return mavenRepository.getValue();
     }
 
     public String getMavenRepositoryUser() {
-        return (String) mavenRepositoryUser.getValue();
+        return mavenRepositoryUser.getValue();
     }
 
     public String getMavenRepositoryPassword() {
-        return (String) mavenRepositoryPassword.getValue();
+        return mavenRepositoryPassword.getValue();
     }
 
-    enum ValueType {
-        STRING,
-        INT,
-        DOUBLE,
-        FLOAT,
-        BOOLEAN,
-        DATE
-    }
-
-    public class Configuration {
-
-        private final String label;
-        private final Object defaultValue;
-        private final String note;
-
-        private String name;
-        private ValueType type;
-        private Object value;
-
-        public Configuration(
-                String name, String label, ValueType type, Object defaultValue, String note) {
-            this.name = name;
-            this.label = label;
-            this.type = type;
-            this.defaultValue = defaultValue;
-            this.value = defaultValue;
-            this.note = note;
-        }
-
-        public void setValue(Object value) {
-            this.value = value;
-        }
-
-        public Object getValue() {
-            return value;
-        }
-
-        public ValueType getType() {
-            return type;
-        }
-
-        public String getName() {
-            return name;
-        }
+    public String getPythonHome() {
+        return pythonHome.getValue();
     }
 }
