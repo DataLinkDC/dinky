@@ -27,6 +27,7 @@ import org.dinky.dto.TreeNodeDTO;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.mapper.GitProjectMapper;
 import org.dinky.model.GitProject;
+import org.dinky.params.GitProjectSortJarParams;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;
@@ -89,6 +90,30 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         gitProject.insertOrUpdate();
 
         ThreadUtil.execAsync(() -> UdfCodePool.updateGitPool(getGitPool()));
+    }
+
+    /** @param gitProjectDTOList */
+    @Override
+    public void dragendSortProject(Map gitProjectDTOList) {
+        List<GitProject> gitProjectList =
+                BeanUtil.copyToList(
+                        ((List<?>) gitProjectDTOList.get("sortList")), GitProject.class);
+        for (GitProject gitProject : gitProjectList) {
+            updateById(gitProject);
+        }
+    }
+
+    /** @param gitProjectSortJarParams */
+    @Override
+    public Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams) {
+        GitProject gitProject = getById(gitProjectSortJarParams.getProjectId());
+        if (gitProject == null) {
+            return false;
+        } else {
+            String jarClasses = JSONUtil.toJsonStr(gitProjectSortJarParams.getJars());
+            gitProject.setUdfClassMapList(jarClasses);
+            return updateById(gitProject);
+        }
     }
 
     @Override

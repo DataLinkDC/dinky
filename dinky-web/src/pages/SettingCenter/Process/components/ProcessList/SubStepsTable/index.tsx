@@ -67,7 +67,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
     {
       title: l('sys.process.subStep.status'),
       dataIndex: "stepStatus",
-      render: (_, record) => {
+      render: (_: any, record:ProcessSteps) => {
         return MatchProcessStatus(record.stepStatus);
       }
     },
@@ -75,7 +75,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       title: l('sys.process.subStep.info'),
       dataIndex: "info",
       align: "center",
-      render: (_, record) => {
+      render: (_: any, record: ProcessSteps) => {
         return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewInfoLog"), record.info)}/>;
       }
     },
@@ -83,7 +83,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       title: l('sys.process.subStep.error'),
       dataIndex: "error",
       align: "center",
-      render: (_, record) => {
+      render: (_: any, record: ProcessSteps) => {
         return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewErrorLog"), record.error)}/>;
       }
     },

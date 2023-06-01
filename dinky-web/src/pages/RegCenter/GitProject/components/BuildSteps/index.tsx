@@ -35,7 +35,7 @@ import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
 type BuildStepsProps = {
   onCancel: (flag?: boolean) => void
   title: string;
-  values: Partial<GitProject>;
+  values: GitProject;
 };
 
 export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
@@ -53,7 +53,6 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showList, setShowList] = useState<boolean>(false);
   const [percent, setPercent] = useState<number>(0);
-  const [currentDataMsg, setCurrentDataMsg] = useState<BuildMsgData>();
   const [steps, handleSteps] = useState<BuildStepsState[]>([]);
 
 
@@ -146,15 +145,11 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             setPercent(parseInt(String(100 / stepNum * currentStep)));
             stepArray[currentStep - 1].status = renderStatus(status)
           }
-
-
-          setCurrentDataMsg(result);
           if ((status === 2 || status === 0) && history === false) {
             eventSource.close();
           }
         }
       } catch (e) {
-        console.error(e)
         eventSource.close();
       }
     };
@@ -166,11 +161,17 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
   }, [])
 
+  /**
+   * cancel
+   */
   const handleCancel = () => {
     handleModalVisible();
   }
 
 
+  /**
+   * render
+   */
   return <>
     <Modal
       title={title}
@@ -180,7 +181,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       onCancel={() => handleCancel()}
       okButtonProps={{style: {display: "none"}}}
     >
-      <AutoSteps steps={steps} currentDataMsg={currentDataMsg} percent={percent} currentStep={currentStep}
+      <AutoSteps steps={steps} percent={percent} currentStep={currentStep}
                  values={values} log={log} showList={showList}/>
     </Modal>
   </>;

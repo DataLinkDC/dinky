@@ -23,8 +23,11 @@ import org.dinky.db.model.SuperEntity;
 
 import java.util.Date;
 
+import org.springframework.boot.jackson.JsonObjectDeserializer;
+
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import lombok.Data;
 
@@ -90,6 +93,7 @@ public class GitProject extends SuperEntity<GitProject> {
 
     /** scan udf class */
     @TableField(value = "udf_class_map_list")
+    @JsonDeserialize(using = JsonObjectDeserializer.class)
     private String udfClassMapList;
 
     @TableField(value = "order_line")
