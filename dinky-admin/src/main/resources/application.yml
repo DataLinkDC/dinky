@@ -50,15 +50,15 @@ spring:
   cache:
     type: simple
     # If type is configured as redis, this item can be configured as needed, note: Pay attention to the indentation of this configuration item
-#    redis:
-#      # Whether to cache empty values, save the default
-#      cache-null-values: false
-#      # Cache expiration time, default 24 hours
-#      time-to-live: 86400
+    #    redis:
+    #      # Whether to cache empty values, save the default
+    #      cache-null-values: false
+    #      # Cache expiration time, default 24 hours
+    #      time-to-live: 86400
 
-   ########################################################## Redis配置 ##########################################################
-   # If sa-token needs to rely on redis, please open the redis configuration and depend on pom.xml and dinky-admin/pom.xml, and configure redis connection information in application.yml
-   # note: pay attention to the indentation of this configuration item
+    ########################################################## Redis配置 ##########################################################
+    # If sa-token needs to rely on redis, please open the redis configuration and depend on pom.xml and dinky-admin/pom.xml, and configure redis connection information in application.yml
+    # note: pay attention to the indentation of this configuration item
 #  redis:
 #     host: localhost
 #     port: 6379
@@ -97,6 +97,26 @@ mybatis-plus:
     ##### mybatis-plus prints complete sql (only for development environment)
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+
+#################################################################################################################
+################################################# SMS Config ####################################################
+#################################################################################################################
+sms:
+  # Whether to enable SMS
+  config-type: sql_config
+  is-print: false
+  sql:
+    # The database connection information
+    url: ${spring.datasource.url}
+    username: ${spring.datasource.username}
+    password: ${spring.datasource.password}
+    driver-class-name: ${spring.datasource.driver-class-name}
+    table-name: dinky_alert_instance
+    supplier-field-name: manufacturers
+    config-name: params
+    start-name: enabled
+    is-start: 1
+
 
 
 #################################################################################################################
