@@ -24,6 +24,7 @@ import org.dinky.common.result.Result;
 import org.dinky.dto.GitProjectDTO;
 import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
+import org.dinky.params.GitProjectSortJarParams;
 import org.dinky.service.GitProjectService;
 import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.GitProjectStepSseFactory;
@@ -32,6 +33,7 @@ import org.dinky.utils.MessageResolverUtils;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
@@ -77,6 +79,43 @@ public class GitController {
                 new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
         gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
         return Result.succeed();
+    }
+
+    /**
+     * drag sort project level
+     *
+     * @param sortList after sorter data
+     * @return {@link Result}<{@link Void}>
+     */
+    @PostMapping("/dragendSortProject")
+    public Result<Void> dragendSortProject(@RequestBody Map sortList) {
+        if (sortList == null) {
+            return Result.failed("获取不到项目信息");
+        }
+        gitProjectService.dragendSortProject(sortList);
+        return Result.succeed();
+    }
+
+    /**
+     * drag sort jar level
+     *
+     * @param gitProjectSortJarParams
+     * @return {@link Result}<{@link Void}>
+     */
+    @PostMapping("/dragendSortJar")
+    public Result<Void> dragendSortJar(
+            @RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
+        GitProject gitProjectServiceById =
+                gitProjectService.getById(gitProjectSortJarParams.getProjectId());
+        if (gitProjectServiceById == null) {
+            return Result.failed("获取不到项目信息");
+        } else {
+            if (gitProjectService.dragendSortJar(gitProjectSortJarParams)) {
+                return Result.succeed();
+            } else {
+                return Result.failed("排序失败");
+            }
+        }
     }
 
     /**

@@ -18,17 +18,12 @@
  */
 
 
-import {Button, Progress, Steps, theme} from "antd";
-import React, {useEffect, useState} from "react";
+import {Progress, Steps, theme} from "antd";
+import React, {useEffect} from "react";
 import CodeShow from "@/components/CustomEditor/CodeShow";
-import {ErrorNotification, SuccessMessageAsync} from "@/utils/messages";
-import {l} from "@/utils/intl";
-import {API_CONSTANTS} from "@/services/constants";
 import {GitProject} from "@/types/RegCenter/data";
 import {processColor} from "@/pages/RegCenter/GitProject/constans";
 import JarShow from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow";
-import {BuildStepsState} from "@/pages/RegCenter/GitProject/components/BuildSteps";
-import {JsonArray} from "type-fest";
 
 
 export type BuildMsgData = {
@@ -44,29 +39,32 @@ export type BuildMsgData = {
 
 
 type BuildStepsProps = {
-  values: Partial<GitProject>;
+  values: GitProject;
   steps: any[];
-  currentDataMsg: any;
   percent: number;
   currentStep: number;
   log: string;
   showList: boolean;
 }
 
+const CodeShowProps = {
+  height: "50vh",
+  language: "java",
+  lineNumbers: "on",
+  showFloatButton: true,
+};
+
+
 export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
 
   const {
-    values, steps,
-    currentDataMsg, percent, currentStep, log,showList
+    values, steps, percent, currentStep, log,showList
   } = props;
 
   /**
    * state
    */
   const {token} = theme.useToken();
-
-  useEffect(() => {
-  }, []);
 
 
   const contentStyle: React.CSSProperties = {
@@ -80,33 +78,23 @@ export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
   };
 
   return <>
-    <Steps status={"wait"}
-           size={"small"}
-           onChange={(current) => current}
-           type={"navigation"} responsive={true}
-           current={currentStep-1} items={steps} percent={percent} initial={0}/>
+    <Steps
+        initial={0}
+        type={'navigation'}
+        status={'wait'}
+        size={'small'}
+        onChange={(current) => current}
+        current={currentStep-1}
+        items={steps}
+        percent={percent}
+    />
     <Progress percent={percent} strokeColor={processColor}/>
     <div style={contentStyle}>
       {
         // if resultType is 1, data is log, else data is jar list or class list
         !showList ?
-        <CodeShow height={"50vh"} code={log || ""} language={"java"} options={{scrollBeyondLastLine: true}}
-                  showFloatButton={true}/>
-        :
-        <JarShow step={currentStep} data={log}/>
+        <CodeShow  code={log || ""} options={{scrollBeyondLastLine: true}} {...CodeShowProps}/> : <JarShow value={values} data={log}/>
       }
     </div>
-    {/*<div style={{marginTop: 24}}>*/}
-    {/*    {currentStepStatus < steps.length - 1 && (*/}
-    {/*        <Button type="primary" onClick={() => nextStep()}>*/}
-    {/*            {l("button.next")}*/}
-    {/*        </Button>*/}
-    {/*    )}*/}
-    {/*    {currentStepStatus > 0 && (*/}
-    {/*        <Button style={{margin: "0 8px"}} onClick={() => prevStep()}>*/}
-    {/*            {l("button.prev")}*/}
-    {/*        </Button>*/}
-    {/*    )}*/}
-    {/*</div>*/}
   </>;
 };

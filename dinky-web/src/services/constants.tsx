@@ -136,6 +136,10 @@ export const API_CONSTANTS = {
   GIT_PROJECT: "/api/git/getProjectList",
   // ---- saveOrUpdate ----
   GIT_SAVE_UPDATE: "/api/git/saveOrUpdate",
+  // dragendSortProject
+  GIT_DRAGEND_SORT_PROJECT: "/api/git/dragendSortProject",
+  // dragendSort jar
+  GIT_DRAGEND_SORT_JAR: "/api/git/dragendSortJar",
   // ---- get git branch ----
   GIT_BRANCH: "/api/git/getBranchList",
   // ---- DELETE project ----

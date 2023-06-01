@@ -23,6 +23,7 @@ import org.dinky.db.service.ISuperService;
 import org.dinky.dto.GitProjectDTO;
 import org.dinky.dto.TreeNodeDTO;
 import org.dinky.model.GitProject;
+import org.dinky.params.GitProjectSortJarParams;
 
 import java.util.List;
 import java.util.Map;
@@ -38,6 +39,21 @@ public interface GitProjectService extends ISuperService<GitProject> {
      * @param gitProjectDTO gitProjectDTO
      */
     void saveOrUpdate(GitProjectDTO gitProjectDTO);
+
+    /**
+     * drag sort project level
+     *
+     * @param gitProjectDTOList
+     */
+    void dragendSortProject(Map gitProjectDTOList);
+
+    /**
+     * drag sort jar level
+     *
+     * @param gitProjectSortJarParams
+     * @return
+     */
+    Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams);
 
     Map<String, String> getGitPool();
 

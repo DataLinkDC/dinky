@@ -192,6 +192,12 @@ export type GlobalVar = BaseBeanColumns & {
   note: string,
 };
 
+export type BuildJarList = {
+  jarPath: string;
+  orderLine: number;
+  classList: string[];
+}
+
 /**
  * git project
  */
@@ -210,6 +216,7 @@ export type GitProject = BaseBeanColumns & {
   buildState: number,
   buildStep: number,
   udfClassMapList: string,
+  orderLine: number,
 }
 
 
