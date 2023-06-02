@@ -21,6 +21,7 @@ package org.dinky.model;
 
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
@@ -34,6 +35,7 @@ import lombok.Getter;
 public class Configuration<T> {
     private final String key;
     @JsonIgnore private final transient Class<T> type;
+    private transient Function<T, T> desensitizedHandler = null;
     private final String frontType;
     private String note;
 
@@ -50,6 +52,10 @@ public class Configuration<T> {
 
     public void setValue(Object value) {
         this.value = type.isInstance(value) ? (T) value : Convert.convert(getType(), value);
+    }
+
+    public void setDesensitizedHandler(Function<T, T> desensitizedHandler) {
+        this.desensitizedHandler = desensitizedHandler;
     }
 
     public Configuration(String key, Class<T> type, String note, T defaultValue) {

@@ -27,8 +27,6 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
@@ -61,7 +59,6 @@ public class SystemConfiguration {
                                     f -> f.getType() == Configuration.class))
                     .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
                     .collect(Collectors.toList());
-
     private Configuration<Boolean> useRestAPI =
             key("flink.settings.useRestAPI")
                     .booleanType()
@@ -97,7 +94,7 @@ public class SystemConfiguration {
                     .note("Maven private server authentication username");
 
     private Configuration<String> mavenRepositoryPassword =
-            key("maven.settings.repositoryUser")
+            key("maven.settings.repositoryPassword")
                     .stringType()
                     .defaultValue("")
                     .note("Maven Central Repository Auth Password");
@@ -136,11 +133,20 @@ public class SystemConfiguration {
                     .defaultValue("Dinky")
                     .note("The project name specified in DolphinScheduler, case insensitive");
 
-    public void setConfiguration(JsonNode jsonNode) {
+    public void init() {
+        if (StrUtil.isBlank(dinkyAddr.getDefaultValue())) {
+            ReflectUtil.setFieldValue(dinkyAddr, "defaultValue", System.getProperty("dinkyAddr"));
+        }
+    }
+
+    public void setConfiguration(Map<String, String> configMap) {
         CONFIGURATION_LIST.forEach(
                 item -> {
-                    final JsonNode value = jsonNode.get(item.getKey());
-                    if (value == null || value.isNull()) {
+                    if (!configMap.containsKey(item.getKey())) {
+                        return;
+                    }
+                    final String value = configMap.get(item.getKey());
+                    if (StrUtil.isBlank(value)) {
                         item.setValue(item.getDefaultValue());
                         return;
                     }
@@ -151,7 +157,7 @@ public class SystemConfiguration {
                 c -> Opt.ofNullable(this.initMethod).ifPresent(x -> x.accept(c)));
     }
 
-    public Map<String, List<Configuration<?>>> addConfiguration() {
+    public Map<String, List<Configuration<?>>> getAllConfiguration() {
         Map<String, List<Configuration<?>>> data = new TreeMap<>();
         for (Configuration<?> item : CONFIGURATION_LIST) {
             final String name = item.getKey();

@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.SysConfigMapper;
 import org.dinky.model.Configuration;
@@ -27,7 +26,7 @@ import org.dinky.model.SysConfig;
 import org.dinky.model.SystemConfiguration;
 import org.dinky.service.SysConfigService;
 
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -35,8 +34,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.map.MapUtil;
 
 /**
  * SysConfigServiceImpl
@@ -51,40 +54,42 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
 
     @Override
     public Map<String, List<Configuration<?>>> getAll() {
-        return SystemConfiguration.getInstances().addConfiguration();
+        return SystemConfiguration.getInstances().getAllConfiguration();
     }
 
     @Override
     public void initSysConfig() {
-        SystemConfiguration.getInstances()
-                .setConfiguration(
-                        mapper.valueToTree(
-                                list().stream()
-                                        .collect(
-                                                Collectors.toMap(
-                                                        SysConfig::getName, SysConfig::getValue))));
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        systemConfiguration.init();
+        List<Configuration<?>> configurationList =
+                systemConfiguration.getAllConfiguration().entrySet().stream()
+                        .flatMap(x -> x.getValue().stream())
+                        .collect(Collectors.toList());
+        List<SysConfig> sysConfigList = list();
+        List<String> nameList =
+                sysConfigList.stream().map(SysConfig::getName).collect(Collectors.toList());
+        configurationList.stream()
+                .filter(x -> !nameList.contains(x.getKey()))
+                .map(
+                        x -> {
+                            SysConfig sysConfig = new SysConfig();
+                            sysConfig.setName(x.getKey());
+                            sysConfig.setValue(Convert.toStr(x.getDefaultValue()));
+                            return sysConfig;
+                        })
+                .forEach(Model::insertOrUpdate);
+        Map<String, String> configMap =
+                CollUtil.toMap(
+                        sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+        systemConfiguration.setConfiguration(configMap);
     }
 
     @Override
-    public void updateSysConfigByJson(JsonNode node) {
-        if (node != null && node.isObject()) {
-            Iterator<Map.Entry<String, JsonNode>> it = node.fields();
-            while (it.hasNext()) {
-                Map.Entry<String, JsonNode> entry = it.next();
-                String name = entry.getKey();
-                String value = entry.getValue().asText();
-                SysConfig config = getOne(new QueryWrapper<SysConfig>().eq("name", name));
-                SysConfig newConfig = new SysConfig();
-                newConfig.setValue(value);
-                if (Asserts.isNull(config)) {
-                    newConfig.setName(name);
-                    save(newConfig);
-                } else {
-                    newConfig.setId(config.getId());
-                    updateById(newConfig);
-                }
-            }
-        }
-        SystemConfiguration.getInstances().setConfiguration(node);
+    public void updateSysConfigByKv(String key, String value) {
+        SysConfig config = getOne(new QueryWrapper<SysConfig>().eq("name", key));
+        config.setValue(value);
+        config.updateById();
+
+        SystemConfiguration.getInstances().setConfiguration(MapUtil.of(key, value));
     }
 }

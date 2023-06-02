@@ -87,6 +87,14 @@ public class GitController {
      * @param sortList after sorter data
      * @return {@link Result}<{@link Void}>
      */
+    //    @PostMapping("/dragendSortProject")
+    //    public Result<Void> dragendSortProject(@RequestBody Map sortList) {
+    //        if (sortList == null) {
+    //            return Result.failed("获取不到项目信息");
+    //        }
+    //        gitProjectService.dragendSortProject(sortList);
+    //        return Result.succeed();
+    //    }
     @PostMapping("/dragendSortProject")
     public Result<Void> dragendSortProject(@RequestBody Map sortList) {
         if (sortList == null) {

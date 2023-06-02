@@ -20,7 +20,9 @@
 package org.dinky.common.result;
 
 import java.io.Serializable;
+import java.util.Date;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.json.JSONUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -40,7 +42,7 @@ import lombok.Setter;
 public class StepResult implements Serializable {
 
     private Integer currentStep;
-    // 0.stepInfo 1.log 2.data
+    // 0.stepInfo 1.log 2.data 3.finish_info
     private Integer type;
     private Object data;
     /** 2-success 1-process 0-failed */
@@ -50,6 +52,16 @@ public class StepResult implements Serializable {
 
     public static StepResult genHistoryLog(Integer currentStep, Integer status, String log) {
         return genLog(currentStep, status, log, true);
+    }
+
+    public static StepResult genFinishInfo(Integer currentStep, Integer status, Date date) {
+        return StepResult.builder()
+                .type(3)
+                .currentStep(currentStep)
+                .data(DateUtil.formatDateTime(date))
+                .status(status)
+                .history(false)
+                .build();
     }
 
     public static StepResult genLog(

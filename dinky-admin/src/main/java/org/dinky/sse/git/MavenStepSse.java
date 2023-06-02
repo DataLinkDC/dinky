@@ -90,8 +90,6 @@ public class MavenStepSse extends StepSse {
                         StrUtil.split(gitProject.getBuildArgs(), " "),
                         this::addMsg);
         params.put("pom", pom);
-        if (!state) {
-            setFinish(false);
-        }
+        Assert.isTrue(state, "maven build failed");
     }
 }
