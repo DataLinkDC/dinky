@@ -42,7 +42,7 @@ public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
         Cookie cookie = WebUtils.getCookie(request, BaseConstant.LOCALE_LANGUAGE_COOKIE);
         if (Asserts.isNotNull(cookie)) {
             // Proceed in cookie
-            return true;
+            LocaleContextHolder.setLocale(parseLocaleValue(cookie.getValue()));
         }
         // Proceed in header
         String newLocale = request.getHeader(BaseConstant.LOCALE_LANGUAGE_COOKIE);

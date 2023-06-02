@@ -15,8 +15,14 @@
  * limitations under the License.
  */
 
-import {VERSION} from "@/services/constants";
-import {parseJsonStr, setTenantStorageAndCookie} from "@/utils/function";
+import {STORY_LANGUAGE, VERSION} from '@/services/constants';
+import {
+  getLocalStorageLanguage, getValueFromLocalStorage,
+  parseJsonStr,
+  setCookieByKey,
+  setKeyToLocalStorage,
+  setTenantStorageAndCookie
+} from '@/utils/function';
 import {l} from "@/utils/intl";
 import {
   FullscreenExitOutlined,
@@ -35,6 +41,7 @@ import {ThemeCloud, ThemeStar} from "@/components/ThemeSvg/ThemeSvg";
 import {chooseTenantSubmit} from "@/services/BusinessCrud";
 import {ErrorNotification, SuccessNotification} from "@/utils/messages";
 import {THEME} from "@/types/Public/data";
+import cookies from 'js-cookie';
 
 
 const GlobalHeaderRight: React.FC = () => {
@@ -51,7 +58,7 @@ const GlobalHeaderRight: React.FC = () => {
    * init render theme status
    */
   useEffect(() => {
-    const theme :any = localStorage.getItem(THEME.NAV_THEME) !== undefined ? localStorage.getItem(THEME.NAV_THEME) :  settings?.navTheme
+    const theme :any = getValueFromLocalStorage(THEME.NAV_THEME) !== undefined ? getValueFromLocalStorage(THEME.NAV_THEME) :  settings?.navTheme
     setThemeChecked(theme === THEME.dark ? true : false);
     setInitialState((preInitialState) => {
       return {
@@ -63,6 +70,18 @@ const GlobalHeaderRight: React.FC = () => {
     });
 
   }, []);
+
+  useEffect(() => {
+    const lang = getLocalStorageLanguage();
+    if (lang) {
+      setCookieByKey(STORY_LANGUAGE, lang);
+      setInitialState((s) => ({
+        ...s,
+        locale: lang,
+      }));
+    }
+  }, [initialState?.settings?.locale]);
+
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -203,12 +222,12 @@ const GlobalHeaderRight: React.FC = () => {
         checkedChildren={<ThemeCloud/>}
         unCheckedChildren={<ThemeStar/>}
         onChange={(value) => {
-          localStorage.setItem(THEME.NAV_THEME, !value ? THEME.light : THEME.dark);
+          setKeyToLocalStorage(THEME.NAV_THEME, !value ? THEME.light : THEME.dark);
           setInitialState((preInitialState :any) => {
             return {
               ...preInitialState,
               settings: {
-                ...settings, navTheme: !value ? THEME.light : THEME.dark,colorMenuBackground: (localStorage.getItem(THEME.NAV_THEME) === THEME.dark ? "transparent" : "#fff")
+                ...settings, navTheme: !value ? THEME.light : THEME.dark,colorMenuBackground: (getValueFromLocalStorage(THEME.NAV_THEME) === THEME.dark ? "transparent" : "#fff")
               }
             };
           });

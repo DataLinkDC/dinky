@@ -16,10 +16,27 @@
  */
 
 import {useEmotionCss} from "@ant-design/use-emotion-css";
-import {SelectLang} from "@@/exports";
-import React from "react";
+import {SelectLang, useModel} from '@@/exports';
+import React, {useEffect} from 'react';
+import {getLocalStorageLanguage, setCookieByKey} from '@/utils/function';
+import {STORY_LANGUAGE} from '@/services/constants';
 
 const LangSwitch = () => {
+
+  const {initialState, setInitialState} = useModel("@@initialState");
+
+  useEffect(() => {
+    const lang = getLocalStorageLanguage();
+    if (lang) {
+      setCookieByKey(STORY_LANGUAGE, lang);
+      setInitialState((s) => ({
+        ...s,
+        locale: lang,
+      }));
+    }
+  }, [initialState]);
+
+
   const langClassName = useEmotionCss(({token}) => {
     return {
       width: 42,
