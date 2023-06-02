@@ -17,27 +17,43 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import { ProCard } from '@ant-design/pro-components';
-import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
-import {l} from "@/utils/intl";
-import {Tag} from "antd";
-import React from "react";
+import {ProCard} from '@ant-design/pro-components';
+import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
+import {l} from '@/utils/intl';
+import {Tag} from 'antd';
+import React from 'react';
 
 interface EnvConfigProps {
-  data: BaseConfigProperties[]
+  data: BaseConfigProperties[];
+  onSave: (data: BaseConfigProperties) => void;
 }
 
-export const EnvConfig = ({data}: EnvConfigProps) => {
+export const EnvConfig = ({data, onSave}: EnvConfigProps) => {
+  const [loading, setLoading] = React.useState(false);
+
+  const onSaveHandler = (data: BaseConfigProperties) => {
+    setLoading(true);
+    onSave(data);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
   return <>
     <ProCard
       title={l('sys.setting.dinky')}
       tooltip={l('sys.setting.dinky.tooltip')}
       size="small"
-      headerBordered
-      collapsible
+      loading={loading}
+      headerBordered collapsible ghost
       defaultCollapsed={false}
     >
-      <GeneralConfig tag={<><Tag color={'error'}>{l('sys.setting.tag.system')}</Tag></>} data={data}/>
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        tag={<><Tag color={'error'}>{l('sys.setting.tag.system')}</Tag></>}
+        data={data}
+      />
     </ProCard>
-  </>
-}
+  </>;
+};

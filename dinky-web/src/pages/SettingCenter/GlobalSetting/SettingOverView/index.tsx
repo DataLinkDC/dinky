@@ -18,7 +18,7 @@
 import React, {memo, useEffect} from 'react';
 import {API_CONSTANTS} from '@/services/constants';
 import {queryDataByParams} from '@/services/BusinessCrud';
-import {Settings} from '@/types/SettingCenter/data';
+import {BaseConfigProperties, Settings} from '@/types/SettingCenter/data';
 import {EnvConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig';
 import {FlinkConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import {MavenConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
@@ -28,22 +28,31 @@ const SettingOverView = () => {
 
   const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: []});
 
-  useEffect(() => {
-    // console.log('SettingOverView');
-    queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
+
+  const fetchData = async () => {
+    await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
       setData(res);
     });
+  };
+
+  useEffect(() => {
+    fetchData();
   }, []);
+
+  const handleSaveSubmit = (data: BaseConfigProperties) => {
+    // todo: save data of update data
+    console.log(data, 'handleSaveSubmit');
+  };
 
   const renderData = () => {
     if (data) {
       const {env: dinkyEnv, flink: flinkConfig, maven: mavenConfig, dolphinscheduler: dsConfig} = data;
-      return  <>
-        <EnvConfig data={dinkyEnv}/>
-        <FlinkConfig data={flinkConfig}/>
-        <MavenConfig data={mavenConfig}/>
-        <DSConfig data={dsConfig}/>
-      </>
+      return <>
+        <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>
+        <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>
+        <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>
+        <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>
+      </>;
     }
   };
 

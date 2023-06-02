@@ -17,28 +17,43 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from "@ant-design/pro-components";
-import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
-import {l} from "@/utils/intl";
-import {Tag} from "antd";
-import React from "react";
+import {ProCard} from '@ant-design/pro-components';
+import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
+import {l} from '@/utils/intl';
+import {Tag} from 'antd';
+import React from 'react';
 
 interface DSConfigProps {
-  data: BaseConfigProperties[]
+  data: BaseConfigProperties[];
+  onSave: (data: BaseConfigProperties) => void;
 }
 
-export const DSConfig = ({data}: DSConfigProps) => {
+export const DSConfig = ({data, onSave}: DSConfigProps) => {
 
+  const [loading, setLoading] = React.useState(false);
+
+  const onSaveHandler = (data: BaseConfigProperties) => {
+    setLoading(true);
+    onSave(data);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
   return <>
     <ProCard
-        title={l('sys.setting.ds')}
-        tooltip={l('sys.setting.ds.tooltip')}
-        size="small"
-        headerBordered
-        collapsible
-        defaultCollapsed={false}
+      title={l('sys.setting.ds')}
+      tooltip={l('sys.setting.ds.tooltip')}
+      size="small"
+      loading={loading}
+      headerBordered ghost collapsible
+      defaultCollapsed={false}
     >
-      <GeneralConfig tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>} data={data}/>
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
+        data={data}
+      />
     </ProCard>
-  </>
-}
+  </>;
+};

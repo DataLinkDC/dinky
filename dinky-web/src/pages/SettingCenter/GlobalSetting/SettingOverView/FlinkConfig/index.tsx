@@ -17,28 +17,45 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from "@ant-design/pro-components";
-import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
-import {l} from "@/utils/intl";
-import {Tag} from "antd";
-import React from "react";
+import {ProCard} from '@ant-design/pro-components';
+import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
+import {l} from '@/utils/intl';
+import {Tag} from 'antd';
+import React from 'react';
 
 interface FlinkConfigProps {
-    data: BaseConfigProperties[]
+  data: BaseConfigProperties[];
+  onSave: (data: BaseConfigProperties) => void;
 }
 
-export const FlinkConfig = ({data}: FlinkConfigProps) => {
+export const FlinkConfig = ({data, onSave}: FlinkConfigProps) => {
 
-    return <>
-        <ProCard
-            title={l('sys.setting.flink')}
-            tooltip={l('sys.setting.flink.tooltip')}
-            size="small"
-            headerBordered
-            collapsible
-            defaultCollapsed={false}
-        >
-            <GeneralConfig tag={<><Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag></>} data={data}/>
-        </ProCard>
-    </>
-}
+  const [loading, setLoading] = React.useState(false);
+
+  const onSaveHandler = (data: BaseConfigProperties) => {
+    setLoading(true);
+    onSave(data);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  };
+
+  return <>
+    <ProCard
+      title={l('sys.setting.flink')}
+      tooltip={l('sys.setting.flink.tooltip')}
+      size="small"
+      headerBordered collapsible ghost
+      defaultCollapsed={false}
+    >
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        tag={<>
+          <Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag>
+          <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag></>}
+        data={data}
+      />
+    </ProCard>
+  </>;
+};

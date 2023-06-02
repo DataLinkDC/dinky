@@ -17,107 +17,138 @@
  *
  */
 
-import React, {useState} from "react";
-import {ProFieldFCMode, ProList} from "@ant-design/pro-components";
-import {BaseConfigProperties} from "@/types/SettingCenter/data";
-import {Descriptions, Input, Space, Switch, Tag} from "antd";
-import {l} from "@/utils/intl";
-import {SettingTwoTone} from "@ant-design/icons";
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {SWITCH_OPTIONS} from "@/services/constants";
+import React, {useRef} from 'react';
+import {ProList} from '@ant-design/pro-components';
+import {BaseConfigProperties} from '@/types/SettingCenter/data';
+import {Descriptions, Input, Space, Switch} from 'antd';
+import {l} from '@/utils/intl';
+import {BackwardOutlined, SaveTwoTone, SettingTwoTone} from '@ant-design/icons';
+import {EditBtn} from '@/components/CallBackButton/EditBtn';
+import {SWITCH_OPTIONS} from '@/services/constants';
+import {ActionType} from '@ant-design/pro-table';
+import {ProListMetas, ProListProps} from '@ant-design/pro-list';
 
-const GeneralConfig = (props: any) => {
-    const [state, setState] = useState<ProFieldFCMode>('read');
-    const [value, setValue] = useState<any>();
-
-    return <>
-        <ProList<BaseConfigProperties>
-            rowKey="key"
-            style={{margin: 0}}
-            size={'small'}
-            dataSource={props.data}
-            showActions="hover"
-            metas={{
-                title: {
-                    editable: false,
-                    render: (dom: any, entity: BaseConfigProperties) => {
-                        return <>
-                            <Space size={10}>
-                                <Descriptions.Item>
-                                    {l(`sys.${entity.key}`)}
-                                </Descriptions.Item>
-                                {props.tag}
-                            </Space>
-                        </>
-                    }
-                },
-                avatar: {
-                    editable: false,
-                    render: (dom: any, entity: BaseConfigProperties) => {
-                        return <SettingTwoTone/>
-                    }
-                },
-                description: {
-                    editable: false,
-                    render: (dom: any, entity: BaseConfigProperties) => {
-                        return <>{l(`sys.${entity.key}.note`)}</>
-                    }
-                },
-                content: {
-                    dataIndex: 'value',
-                    valueType: (item: BaseConfigProperties) => item.frontType,
-                    renderFormItem: (entity: BaseConfigProperties, config, form) => {
-                        console.log(config, form, entity, 'renderFormItem');
-                        return <>
-                            {
-                                entity.frontType === 'boolean' ?
-                                    <Switch
-                                        {...SWITCH_OPTIONS()}
-                                        style={{width: '4vw'}}
-                                        checked={entity.value}
-                                        onChange={() => console.log(entity)}
-                                    />
-                                    :
-                                    <Input style={{width: '30vw'}} value={entity.value}/>
-                            }
-                        </>
-                    },
-                    render: (dom: any, entity: BaseConfigProperties) => {
-                        return <>
-                            {
-                                entity.frontType === 'boolean' ?
-                                    <Switch
-                                        {...SWITCH_OPTIONS()}
-                                        style={{width: '4vw'}}
-                                        checked={entity.value}
-                                        onChange={() => console.log(entity)}
-                                    />
-                                    :
-                                    <Input style={{width: '30vw'}} disabled value={entity.value}/>
-                            }
-                        </>
-                    }
-                },
-                actions: {
-                    render: (text: string, row: BaseConfigProperties, index: number, action: any) => [
-                        <EditBtn
-                            onClick={() => {
-                                action.startEditable(row.key);
-                                setState('update')
-                            }}
-                        />
-                    ],
-                },
-            }}
-            editable={{
-                onDelete: undefined,
-                onSave: async (key, record, originRow) => {
-                    console.log(key, record, originRow);
-                    return true;
-                },
-            }}
-        />
-    </>
+type GeneralConfigProps = {
+  data: BaseConfigProperties[];
+  tag: React.ReactNode;
+  onSave: (data: BaseConfigProperties) => void;
+  loading: boolean;
 }
+
+const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
+
+  const {data, tag, onSave: handleSubmit, loading} = props;
+
+
+  const actionRef = useRef<ActionType>();
+
+  const handleSave = (data: BaseConfigProperties) => {
+    handleSubmit(data);
+    actionRef.current?.reload();
+  };
+
+  /**
+   * render actions for each entity in the list
+   * @param action startEditable
+   * @param entity entity
+   */
+  const renderActions = (action: any, entity: BaseConfigProperties) => {
+    return entity.frontType === 'boolean' ? [] : [
+      <EditBtn
+        key="edit"
+        onClick={() => {
+          action.startEditable(entity.key);
+        }}
+      />
+    ];
+  };
+
+  /**
+   * render title for each entity in the list
+   * @param entity
+   */
+  const renderTitle = (entity: BaseConfigProperties) => {
+    return <>
+      <Descriptions.Item>
+        {l(`sys.${entity.key}`)}
+      </Descriptions.Item>
+      <Space style={{marginLeft: 15}} size={0}>
+        {tag}
+      </Space>
+    </>;
+  };
+
+  /**
+   * render value for each entity in the list
+   * @param entity
+   */
+  const renderValue = (entity: BaseConfigProperties) => {
+    // todo: 默认情况下，所有的配置项都是不可编辑的，只有在点击编辑按钮后才能编辑 , 但是这里的switch组件是可以编辑的，需要修改 , 暂未解决
+    return <>
+      {
+        entity.frontType === 'boolean' ?
+          <Switch
+            {...SWITCH_OPTIONS()}
+            style={{width: '4vw'}}
+            disabled={false}
+            checked={entity.value}
+            onChange={() => console.log(entity)}
+          /> :
+          <Input style={{width: '30vw'}} disabled value={entity.value}/>
+      }
+    </>;
+  };
+
+
+  const metasRestProps: ProListMetas = {
+    title: {
+      editable: false,
+      render: (dom: any, entity: BaseConfigProperties) => renderTitle(entity),
+    },
+    avatar: {
+      editable: false,
+      render: () => <SettingTwoTone/>,
+    },
+    description: {
+      editable: false,
+      render: (dom: any, entity: BaseConfigProperties) => <>{l(`sys.${entity.key}.note`)}</>
+    },
+    content: {
+      dataIndex: 'value',
+      render: (dom: any, entity: BaseConfigProperties) => renderValue(entity),
+    },
+    actions: {
+      render: (text: any, row: BaseConfigProperties, index: number, action: any) => renderActions(action, row),
+    },
+  };
+
+
+  /**
+   * rest props for ProList
+   */
+  const restProps: ProListProps = {
+    rowKey: 'key',
+    style: {margin: 0},
+    loading: loading,
+    actionRef: actionRef,
+    size: 'small',
+    dataSource: data,
+    showActions: 'hover',
+    metas: {...metasRestProps},
+    editable: {
+      saveText: <><SaveTwoTone title={l('button.save')}/></>,
+      cancelText: <><BackwardOutlined title={l('button.cancel')}/></>,
+      actionRender: (row, config, dom) => row.frontType === 'boolean' ? [] : [dom.save, dom.cancel],
+      onSave: async (key, record) => handleSave(record),
+    }
+  };
+
+  /**
+   * render list
+   */
+  return <>
+    <ProList<BaseConfigProperties> {...restProps} />
+  </>;
+};
 
 export default GeneralConfig;

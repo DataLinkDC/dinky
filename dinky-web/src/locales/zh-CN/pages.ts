@@ -476,6 +476,7 @@ export default {
   'sys.setting.maven.tooltip': 'Maven 编译的主要参数',
   'sys.setting.ds.tooltip': '海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上',
   'sys.setting.tag.extend': '扩展配置',
+  'sys.setting.tag.core': '核心配置',
   'sys.setting.tag.integration': '集成配置',
   'sys.setting.tag.system': '系统配置',
   'sys.env.settings.pythonHome': 'Python 环境变量',

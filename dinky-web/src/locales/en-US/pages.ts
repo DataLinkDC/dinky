@@ -476,6 +476,7 @@ export default {
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
   'sys.setting.tag.extend': 'Extended Configuration',
+  'sys.setting.tag.core': 'Core Configuration',
   'sys.setting.tag.integration': 'Integration Configuration',
   'sys.setting.tag.system': 'System Configuration',
   'sys.env.settings.dinkyAddr': 'Dinky Address',
