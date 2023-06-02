@@ -60,7 +60,7 @@ export default {
   'menu.auth.tenant': '租户',
   'menu.settings': '配置中心',
   'menu.settings.globalsetting': '全局配置',
-  'menu.settings.system': '系统信息',
+  'menu.settings.systemlog': '系统日志',
   'menu.settings.process': '进程列表',
   'menu.settings.services': '服务器列表',
   'menu.metrics': '监控',

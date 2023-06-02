@@ -229,8 +229,8 @@ export default [
         footerRender: false,
       },
       {
-        path: '/settings/system',
-        name: 'system',
+        path: '/settings/systemlog',
+        name: 'systemlog',
         icon: 'InfoCircleOutlined',
         component: './SettingCenter/SystemInfo',
       },

@@ -60,7 +60,7 @@ export default {
   'menu.auth.tenant': 'Tenant',
   'menu.settings': 'Setting Center',
   'menu.settings.globalsetting': 'Global Settings',
-  'menu.settings.system': 'System Info',
+  'menu.settings.systemlog': 'System Log',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
   'menu.metrics': 'Dashboard',
