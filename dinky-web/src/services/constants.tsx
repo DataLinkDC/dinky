@@ -201,6 +201,14 @@ export const TENANT_ID = "tenantId";
 export const VERSION = "0.8.0";
 
 /**
+ * the platform language
+ */
+export const STORY_LANGUAGE = "language";
+export const LANGUAGE_KEY = 'umi_locale';
+export const LANGUAGE_ZH = 'zh-CN';
+export const LANGUAGE_EN = 'en-US';
+
+/**
  * REQUEST METHOD CONSTANTS
  */
 export const METHOD_CONSTANTS = {

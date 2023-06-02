@@ -79,24 +79,17 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     </>;
   };
 
-  /**
-   * render value for each entity in the list
-   * @param entity
-   */
-  const renderValue = (entity: BaseConfigProperties) => {
-    return <>
-      {
-        entity.frontType === 'boolean' ?
-          <Switch
-            {...SWITCH_OPTIONS()}
-            style={{width: '4vw'}}
-            checked={entity.value}
-            onChange={(checked) => handleSubmit({...entity, value: checked})}
-          /> :
-          <Input style={{width: '30vw'}} disabled value={entity.value}/>
-      }
-    </>;
-  };
+  const renderValuesOfForm = (entity: BaseConfigProperties) => {
+    if (entity.frontType === 'boolean') {
+      return <Switch {...SWITCH_OPTIONS()} style={{width: '4vw'}} checked={entity.value}
+        onChange={(checked) => handleSubmit({...entity, value: checked})}
+      />;
+    } else if (entity.frontType === 'password') {
+      return <Input.Password style={{width: '30vw'}} disabled value={entity.value}/>;
+    } else {
+      return <Input style={{width: '30vw'}} disabled value={entity.value}/>;
+    }
+  }
 
 
   const metasRestProps: ProListMetas = {
@@ -114,7 +107,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     },
     content: {
       dataIndex: 'value',
-      render: (dom: any, entity: BaseConfigProperties) => renderValue(entity),
+      render: (dom: any, entity: BaseConfigProperties) => renderValuesOfForm(entity),
     },
     actions: {
       render: (text: any, row: BaseConfigProperties, index: number, action: any) => renderActions(action, row),

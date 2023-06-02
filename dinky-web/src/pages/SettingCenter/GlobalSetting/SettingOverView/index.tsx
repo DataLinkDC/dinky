@@ -41,8 +41,7 @@ const SettingOverView = () => {
   }, []);
 
   const handleSaveSubmit = async (data: BaseConfigProperties) => {
-    // todo: save data of update data
-    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: data.key}), data);
+    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: l(`sys.${data.key}`)}), data);
     if (code === RESPONSE_CODE.SUCCESS) await fetchData();
   };
 
