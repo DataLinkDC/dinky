@@ -46,6 +46,7 @@ import java.util.stream.IntStream;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
 
@@ -65,6 +66,7 @@ public final class GitProjectStepSseFactory {
         cachedThreadPool.execute(headStepSse::main);
         gitProject.setBuildStep(1);
         gitProject.setBuildState(1);
+        gitProject.setLastBuild(DateUtil.date());
         gitProject.updateById();
 
         GitBuildContextHolder.addRun(gitProject.getId());

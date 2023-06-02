@@ -26,8 +26,6 @@ import org.dinky.model.SysConfig;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * SysConfig
  *
@@ -39,5 +37,5 @@ public interface SysConfigService extends ISuperService<SysConfig> {
 
     void initSysConfig();
 
-    void updateSysConfigByJson(JsonNode node);
+    void updateSysConfigByKv(String key, String value);
 }

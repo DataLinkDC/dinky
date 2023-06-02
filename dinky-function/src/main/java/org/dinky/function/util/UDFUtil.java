@@ -43,10 +43,7 @@ import org.apache.flink.table.functions.UserDefinedFunction;
 import org.apache.flink.table.functions.UserDefinedFunctionHelper;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -57,7 +54,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,6 +72,7 @@ import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
@@ -441,13 +438,11 @@ public class UDFUtil {
                 e.printStackTrace();
             }
         }
-        System.out.println(successUdfList);
         return successUdfList;
     }
 
     private static List<String> execPyAndGetUdfNameList(
             String pyPath, String pyFile, String checkPyFile) {
-        Process process;
         try {
             // 运行Python3脚本的命令，换成自己的即可
             String shell =
@@ -457,22 +452,9 @@ public class UDFUtil {
                                     Opt.ofBlankAble(pyPath).orElse("python3"),
                                     pyFile,
                                     checkPyFile));
-            process = Runtime.getRuntime().exec(shell);
 
-            if (process.waitFor() != 0) {
-                LineNumberReader lineNumberReader =
-                        new LineNumberReader(new InputStreamReader(process.getErrorStream()));
-                String errMsg = lineNumberReader.lines().collect(Collectors.joining("\n"));
-                throw new DinkyException(errMsg);
-            }
-
-            InputStreamReader ir = new InputStreamReader(process.getInputStream());
-            LineNumberReader input = new LineNumberReader(ir);
-            String result = input.readLine();
-            input.close();
-            ir.close();
-            return StrUtil.split(result, ",");
-        } catch (IOException | InterruptedException e) {
+            return StrUtil.split(RuntimeUtil.execForStr(shell), ",");
+        } catch (Exception e) {
             throw new DinkyException(e);
         }
     }

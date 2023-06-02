@@ -23,6 +23,7 @@ import org.dinky.dto.GitAnalysisJarDTO;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.model.GitProject;
 import org.dinky.model.SystemConfiguration;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.StepSse;
 
 import java.io.File;
@@ -53,6 +54,13 @@ public class AnalysisUdfPythonStepSse extends StepSse {
     public void exec() {
         File zipFile = (File) params.get("zipFile");
         File projectFile = (File) params.get("projectFile");
+        try {
+            Thread.currentThread()
+                    .getContextClassLoader()
+                    .loadClass("org.apache.flink.table.api.ValidationException");
+        } catch (ClassNotFoundException e) {
+            throw new DinkyException("flink dependency not found");
+        }
         List<String> pythonUdfList =
                 UDFUtil.getPythonUdfList(
                         SystemConfiguration.getInstances().getPythonHome(),

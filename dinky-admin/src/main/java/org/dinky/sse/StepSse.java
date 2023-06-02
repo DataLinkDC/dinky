@@ -19,6 +19,7 @@
 
 package org.dinky.sse;
 
+import org.dinky.common.result.StepResult;
 import org.dinky.context.GitBuildContextHolder;
 import org.dinky.model.GitProject;
 
@@ -38,6 +39,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
@@ -105,7 +107,7 @@ public abstract class StepSse {
                                                                             msgId
                                                                                     .getAndIncrement()))
                                                             .data(msg));
-                                        } catch (IOException e) {
+                                        } catch (IllegalStateException | IOException e) {
                                             loseLise.add(emitter);
                                         }
                                     });
@@ -183,6 +185,7 @@ public abstract class StepSse {
 
         GitProject gitProject = (GitProject) params.get("gitProject");
 
+        sendMsg(StepResult.genFinishInfo(getStep(), status ? 2 : 0, DateUtil.date()));
         if (!status) {
             gitProject.setBuildState(2);
             close();

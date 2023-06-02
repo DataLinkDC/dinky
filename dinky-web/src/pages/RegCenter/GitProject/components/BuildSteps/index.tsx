@@ -94,7 +94,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
         if (type === 0) {
           if (execNum === 1) {
-            logList={}
+            logList = {}
           }
           execNum++;
           let parseResultData = JSON.parse(data); // parse data
@@ -135,11 +135,14 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               logList[currentStep].push(data)
               setLog(logList[currentStep]?.join("\n"))
             }
-          }
-          if (type === 2) {
+          } else if (type === 2) {
             showDataStep = currentStep;
             showData = JSON.parse(data);
+          }else if (type===3){
+            stepArray[currentStep].description=data;
+            return
           }
+
           if (currentStep >= globalCurrentStep) {
             setCurrentStep(currentStep);
             setPercent(parseInt(String(100 / stepNum * currentStep)));
