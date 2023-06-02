@@ -31,7 +31,7 @@ import {
   STATUS_MAPPING,
 } from "@/services/constants";
 import {l} from "@/utils/intl";
-import {Button, Empty, Popconfirm, Tag} from "antd";
+import {Button, Empty, Popconfirm, Tag} from 'antd';
 import {BranchesOutlined, BuildTwoTone} from "@ant-design/icons";
 import {
   GIT_PROJECT_BUILD_STEP,
@@ -41,7 +41,7 @@ import {
   renderBranchesTagColor
 } from "@/pages/RegCenter/GitProject/constans";
 import {ShowCodeTreeIcon} from "@/components/Icons/CustomIcons";
-import {addOrUpdateData, queryList} from "@/services/api";
+import {queryList} from "@/services/api";
 import {BuildSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps";
 import {CodeTree} from "@/pages/RegCenter/GitProject/components/CodeTree";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
@@ -154,7 +154,7 @@ const ProjectProTable: React.FC = () => {
       dataIndex: 'id',
       tooltip: l("rc.gp.level.tooltip"),
       render: (dom: any,record:GitProject) => {
-        return <Tag color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
+        return <Tag style={{marginLeft: 10}} color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
       },
     },
     {
@@ -223,7 +223,7 @@ const ProjectProTable: React.FC = () => {
       filters: STATUS_MAPPING(),
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
-      render: ( _:string, record:GitProject) => {
+      render: ( _:any, record:GitProject) => {
         return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
                                 onChange={() => handleChangeEnable(record)}/>;
       },
@@ -232,7 +232,7 @@ const ProjectProTable: React.FC = () => {
       title: l("global.table.operate"),
       valueType: "option",
       width: "10vw",
-      render: (text:string, record:GitProject) => [
+      render: (text:any, record:GitProject) => [
         <ShowLogBtn disabled={record.buildStep === 0} key={`${record.id}_showLog`} onClick={() => handleShowLog(record)}/>,
         <Button
           key={`${record.id}_code`}

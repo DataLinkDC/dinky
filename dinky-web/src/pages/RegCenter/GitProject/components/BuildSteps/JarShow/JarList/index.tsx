@@ -63,7 +63,7 @@ const JarList: React.FC<JarListProps> = (props) => {
       tooltip: l("rc.gp.ucl.orderLine.tooltip"),
       copyable: true,
       render: (dom:any, record:BuildJarList) => {
-        return <Tag color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
+        return <Tag style={{marginLeft: 10}}  color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
       }
     },
     {
