@@ -36,24 +36,6 @@ import {
 import path from 'path';
 import {l} from '@/utils/intl';
 
-/**
- * PUT tenantId TO localStorage & cookies
- * @param tenantId
- */
-export function setTenantStorageAndCookie(tenantId: number) {
-  // save as localStorage
-  localStorage.setItem(TENANT_ID, tenantId.toString());
-  // save as cookies
-  cookies.set(TENANT_ID, tenantId.toString(), {path: '/'});
-}
-
-/**
- * get tenant id
- * @param tenantId
- */
-export function getTenantByLocalStorage() {
-  return localStorage.getItem(TENANT_ID);
-}
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -64,7 +46,7 @@ export function getLocalStorageLanguage() {
 }
 
 /**
- * get language by localStorage's umi_locale , if not exist , return zh-CN
+ * set key value to localStorage
  * @param tenantId
  */
 export function setKeyToLocalStorage(key: string, value: string) {
@@ -73,13 +55,21 @@ export function setKeyToLocalStorage(key: string, value: string) {
 
 
 /**
- * get language by localStorage's umi_locale , if not exist , return zh-CN
+ * get value by localStorage's key
  * @param tenantId
  */
 export function getValueFromLocalStorage(key: string) {
-  return  localStorage.getItem(key) || '';
+  return localStorage.getItem(key) || '';
 }
 
+
+/**
+ * get tenant id
+ * @param tenantId
+ */
+export function getTenantByLocalStorage() {
+  return getValueFromLocalStorage(TENANT_ID);
+}
 
 
 /**
@@ -94,8 +84,20 @@ export function getCookieByKey(key: string) {
  * set cookie by key
  * @param tenantId
  */
-export function setCookieByKey(key: string, value: string) {
-  cookies.set(key, value);
+export function setCookieByKey(key: string, value: string, options?: {}) {
+  cookies.set(key, value, options);
+}
+
+
+/**
+ * PUT tenantId TO localStorage & cookies
+ * @param tenantId
+ */
+export function setTenantStorageAndCookie(tenantId: number) {
+  // save as localStorage
+  setKeyToLocalStorage(TENANT_ID, tenantId.toString());
+  // save as cookies
+  setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
 }
 
 
