@@ -18,7 +18,10 @@
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import {ProCard} from "@ant-design/pro-components";
-import DSConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig/DSConfigList";
+import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
+import {l} from "@/utils/intl";
+import {Tag} from "antd";
+import React from "react";
 
 interface DSConfigProps {
   data: BaseConfigProperties[]
@@ -28,14 +31,14 @@ export const DSConfig = ({data}: DSConfigProps) => {
 
   return <>
     <ProCard
-        title="DolphinSchuder 配置"
-        tooltip="海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上，提高您的工作效率 "
+        title={l('sys.setting.ds')}
+        tooltip={l('sys.setting.ds.tooltip')}
         size="small"
         headerBordered
         collapsible
         defaultCollapsed={false}
     >
-      <DSConfigList data={data}/>
+      <GeneralConfig tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>} data={data}/>
     </ProCard>
   </>
 }

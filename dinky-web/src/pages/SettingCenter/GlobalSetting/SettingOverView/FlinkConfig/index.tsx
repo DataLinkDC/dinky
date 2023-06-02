@@ -18,7 +18,10 @@
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import {ProCard} from "@ant-design/pro-components";
-import FlinkConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig/FlinkConfigList";
+import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
+import {l} from "@/utils/intl";
+import {Tag} from "antd";
+import React from "react";
 
 interface FlinkConfigProps {
     data: BaseConfigProperties[]
@@ -28,14 +31,14 @@ export const FlinkConfig = ({data}: FlinkConfigProps) => {
 
     return <>
         <ProCard
-            title="Flink 环境配置"
-            tooltip="Dinky对接 Flink 主要参数"
+            title={l('sys.setting.flink')}
+            tooltip={l('sys.setting.flink.tooltip')}
             size="small"
             headerBordered
             collapsible
             defaultCollapsed={false}
         >
-            <FlinkConfigList data={data}/>
+            <GeneralConfig tag={<><Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag></>} data={data}/>
         </ProCard>
     </>
 }

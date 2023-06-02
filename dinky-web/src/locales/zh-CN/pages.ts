@@ -467,6 +467,17 @@ export default {
 
   //-------------------------------- setting center --------------------------------
   //setting
+  'sys.setting.dinky': 'Dinky 环境配置',
+  'sys.setting.flink': 'Flink 配置',
+  'sys.setting.maven': 'Maven 配置',
+  'sys.setting.ds': 'DolphinSchuder 配置',
+  'sys.setting.dinky.tooltip': '主要以修改系统变量为主，保证基础功能稳定运行',
+  'sys.setting.flink.tooltip': 'Dinky对接 Flink 主要参数',
+  'sys.setting.maven.tooltip': 'Maven 编译的主要参数',
+  'sys.setting.ds.tooltip': '海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上',
+  'sys.setting.tag.extend': '扩展配置',
+  'sys.setting.tag.integration': '集成配置',
+  'sys.setting.tag.system': '系统配置',
   'sys.env.settings.pythonHome': 'Python 环境变量',
   'sys.env.settings.pythonHome.note': 'Python 环境变量',
   'sys.env.settings.dinkyAddr': 'Dinky 地址',

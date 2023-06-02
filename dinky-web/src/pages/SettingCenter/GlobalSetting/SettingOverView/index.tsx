@@ -26,7 +26,7 @@ import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSCo
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings[]>([]);
+  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: []});
 
   useEffect(() => {
     // console.log('SettingOverView');
@@ -37,13 +37,7 @@ const SettingOverView = () => {
 
   const renderData = () => {
     if (data) {
-      const {
-        env: dinkyEnv,
-        flink: flinkConfig,
-        maven: mavenConfig,
-        dolphinscheduler: dsConfig
-      } = JSON.parse(JSON.stringify(data));
-      console.log(data)
+      const {env: dinkyEnv, flink: flinkConfig, maven: mavenConfig, dolphinscheduler: dsConfig} = data;
       return  <>
         <EnvConfig data={dinkyEnv}/>
         <FlinkConfig data={flinkConfig}/>

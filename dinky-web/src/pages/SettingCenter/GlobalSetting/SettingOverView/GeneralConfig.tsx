@@ -17,21 +17,18 @@
  *
  */
 
-import {Descriptions, Input, Space, Switch, Tag} from "antd";
+import React, {useState} from "react";
 import {ProFieldFCMode, ProList} from "@ant-design/pro-components";
 import {BaseConfigProperties} from "@/types/SettingCenter/data";
+import {Descriptions, Input, Space, Switch, Tag} from "antd";
 import {l} from "@/utils/intl";
-import {FastBackwardFilled, SaveTwoTone, SettingTwoTone} from "@ant-design/icons";
+import {SettingTwoTone} from "@ant-design/icons";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import React, {useState} from "react";
 import {SWITCH_OPTIONS} from "@/services/constants";
 
-
-const EnvList = (props: any) => {
-
+const GeneralConfig = (props: any) => {
     const [state, setState] = useState<ProFieldFCMode>('read');
     const [value, setValue] = useState<any>();
-
 
     return <>
         <ProList<BaseConfigProperties>
@@ -46,10 +43,10 @@ const EnvList = (props: any) => {
                     render: (dom: any, entity: BaseConfigProperties) => {
                         return <>
                             <Space size={10}>
-                               <Descriptions.Item>
-                                   {l(`sys.${entity.key}`)}
-                               </Descriptions.Item>
-                                <Tag color={'error'}>系统配置</Tag>
+                                <Descriptions.Item>
+                                    {l(`sys.${entity.key}`)}
+                                </Descriptions.Item>
+                                {props.tag}
                             </Space>
                         </>
                     }
@@ -68,19 +65,35 @@ const EnvList = (props: any) => {
                 },
                 content: {
                     dataIndex: 'value',
-                    valueType: (item:BaseConfigProperties) => item.frontType,
+                    valueType: (item: BaseConfigProperties) => item.frontType,
+                    renderFormItem: (entity: BaseConfigProperties, config, form) => {
+                        console.log(config, form, entity, 'renderFormItem');
+                        return <>
+                            {
+                                entity.frontType === 'boolean' ?
+                                    <Switch
+                                        {...SWITCH_OPTIONS()}
+                                        style={{width: '4vw'}}
+                                        checked={entity.value}
+                                        onChange={() => console.log(entity)}
+                                    />
+                                    :
+                                    <Input style={{width: '30vw'}} value={entity.value}/>
+                            }
+                        </>
+                    },
                     render: (dom: any, entity: BaseConfigProperties) => {
                         return <>
                             {
                                 entity.frontType === 'boolean' ?
                                     <Switch
-                                        unCheckedChildren={'已关闭'}
-                                        checkedChildren={'已开启'}
-                                        style={{width:'5vw'}}
+                                        {...SWITCH_OPTIONS()}
+                                        style={{width: '4vw'}}
                                         checked={entity.value}
                                         onChange={() => console.log(entity)}
-                                    />                                    :
-                                    <Input style={{width:'30vw'}} disabled value={entity.value}/>
+                                    />
+                                    :
+                                    <Input style={{width: '30vw'}} disabled value={entity.value}/>
                             }
                         </>
                     }
@@ -107,4 +120,4 @@ const EnvList = (props: any) => {
     </>
 }
 
-export default EnvList
+export default GeneralConfig;

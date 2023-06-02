@@ -18,7 +18,10 @@
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import {ProCard} from "@ant-design/pro-components";
-import MavenConfigList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig/MavenConfigList";
+import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
+import {l} from "@/utils/intl";
+import {Tag} from "antd";
+import React from "react";
 
 interface MavenConfigProps {
   data: BaseConfigProperties[]
@@ -28,13 +31,13 @@ export const MavenConfig = ({data}: MavenConfigProps) => {
 
   return <>
     <ProCard
-        title="Maven 配置"
-        tooltip="Maven 编译的主要参数"
+        title={l('sys.setting.maven')}
+        tooltip={l('sys.setting.maven.tooltip')}
         size="small"
         headerBordered
         collapsible
         defaultCollapsed={false}
     >
-      <MavenConfigList data={data}/>
+      <GeneralConfig tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>} data={data}/>
     </ProCard>
   </>}

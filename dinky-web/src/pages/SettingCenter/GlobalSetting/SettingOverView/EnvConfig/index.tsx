@@ -18,7 +18,10 @@
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import { ProCard } from '@ant-design/pro-components';
-import EnvList from "@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig/EnvList";
+import GeneralConfig from "@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig";
+import {l} from "@/utils/intl";
+import {Tag} from "antd";
+import React from "react";
 
 interface EnvConfigProps {
   data: BaseConfigProperties[]
@@ -27,14 +30,14 @@ interface EnvConfigProps {
 export const EnvConfig = ({data}: EnvConfigProps) => {
   return <>
     <ProCard
-      title="Dinky 环境配置"
-      tooltip="主要以修改系统变量为主，保证基础功能稳定运行"
+      title={l('sys.setting.dinky')}
+      tooltip={l('sys.setting.dinky.tooltip')}
       size="small"
       headerBordered
       collapsible
       defaultCollapsed={false}
     >
-      <EnvList data={data}/>
+      <GeneralConfig tag={<><Tag color={'error'}>{l('sys.setting.tag.system')}</Tag></>} data={data}/>
     </ProCard>
   </>
 }
