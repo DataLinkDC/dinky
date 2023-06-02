@@ -136,15 +136,18 @@ export default () => {
     {
       title: l('rc.ci.name'),
       dataIndex: 'name',
+      ellipsis: true,
     },
     {
       title: l('rc.ci.alias'),
       dataIndex: 'alias',
+      ellipsis: true,
     },
     {
       title: l('rc.ci.type'),
       dataIndex: 'type',
       hideInSearch: true,
+      width: '8%',
     },
     {
       title: l('rc.ci.jma'),
@@ -156,31 +159,37 @@ export default () => {
       title: l('rc.ci.ar'),
       dataIndex: 'autoRegisters',
       hideInSearch: true,
+      width: '5%',
       valueEnum: CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM,
     },
     {
       title: l('rc.ci.version'),
       dataIndex: 'version',
       hideInSearch: true,
+      width: '5%',
     },
     {
       title: l('rc.ci.status'),
       dataIndex: 'status',
       hideInSearch: true,
+      width: '6%',
       valueEnum: CLUSTER_INSTANCE_STATUS_ENUM,
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
+      width: '5%',
+      ellipsis: true,
     },
     {
       title: l('global.table.isEnable'),
       dataIndex: 'enabled',
+      width: '6%',
       hideInSearch: true,
       filters: STATUS_MAPPING(),
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
-      render: (_, record) => {
+      render: (_: any, record: Cluster.Instance) => {
         return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
                                 onChange={() => handleChangeEnable(record)}/>;
       },
@@ -201,8 +210,8 @@ export default () => {
       title: l('global.table.operate'),
       hideInSearch: true,
       valueType: 'option',
-      width: '10vw',
-      render: (_, record) => [
+      width: '8vw',
+      render: (_: any, record: Cluster.Instance) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>,
         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDelete(record.id)}
                              description={l('rc.ci.deleteConfirm')}/>,

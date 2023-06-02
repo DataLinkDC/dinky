@@ -62,6 +62,7 @@ export default [
     path: '/devops',
     name: 'devops',
     icon: 'ControlOutlined',
+    footerRender: false,
     routes: [
       {
         path: '/devops',
@@ -98,6 +99,7 @@ export default [
     path: '/registration',
     name: 'registration',
     icon: 'AppstoreOutlined',
+    footerRender: false,
     routes: [
       {
         path: '/registration',
@@ -125,10 +127,10 @@ export default [
         name: 'database',
         icon: 'DatabaseOutlined',
         component: './RegCenter/DataSource',
+        footerRender: false,
         routes: [
           {
             path: '/registration/database/detail/:id',
-            footerRender: false,
           }
         ]
       },
@@ -180,6 +182,7 @@ export default [
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
     access: 'canAdmin',
+    footerRender: false,
     routes: [
       {
         path: '/auth',
@@ -216,6 +219,7 @@ export default [
     name: 'settings',
     icon: 'SettingOutlined',
     path: '/settings',
+    footerRender: false,
     routes: [
       {
         path: '/settings',
@@ -226,7 +230,6 @@ export default [
         name: 'globalsetting',
         icon: 'SettingOutlined',
         component: './SettingCenter/GlobalSetting',
-        footerRender: false,
       },
       {
         path: '/settings/systemlog',
@@ -240,24 +243,20 @@ export default [
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/Process',
       },
-      {
-        path: '/settings/services',
-        name: 'services',
-        icon: 'CloudServerOutlined',
-        // component: './SettingCenter/Service',
-      },
     ],
   },
   {
     path: '/metrics',
     name: 'metrics',
     icon: 'DashboardOutlined',
+    footerRender: false,
     // component: './Metrics',
   },
   {
     path: '/about',
     name: 'about',
     icon: 'SmileOutlined',
+    footerRender: false,
     component: './Other/About',
   },
   {

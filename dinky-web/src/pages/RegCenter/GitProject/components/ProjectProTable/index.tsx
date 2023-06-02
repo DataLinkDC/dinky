@@ -160,6 +160,8 @@ const ProjectProTable: React.FC = () => {
     {
       title: l("rc.gp.name"),
       dataIndex: "name",
+      ellipsis: true,
+      width: '10%',
     },
     {
       title: l("rc.gp.branch"),
@@ -174,12 +176,14 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "url",
       copyable: true,
       ellipsis: true,
+        width: '10%',
     },
     {
       title: l("rc.gp.codeType"),
       dataIndex: "codeType",
       hideInSearch: true,
       filterMultiple: false,
+        width: "6%",
       valueEnum: GIT_PROJECT_CODE_TYPE_ENUM,
       filters: GIT_PROJECT_CODE_TYPE,
     },
@@ -188,6 +192,7 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "type",
       hideInSearch: true,
       filterMultiple: false,
+      width: "8%",
       valueEnum: GIT_PROJECT_TYPE_ENUM,
       filters: GIT_PROJECT_TYPE,
     },
@@ -211,14 +216,17 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "lastBuild",
       hideInSearch: true,
       valueType: "dateTime",
+      width: "12%",
     },
     {
       title: l("global.table.note"),
       dataIndex: "description",
+      ellipsis: true,
     },
     {
       title: l("global.table.isEnable"),
       dataIndex: "enable",
+      width: "6%",
       hideInSearch: true,
       filters: STATUS_MAPPING(),
       filterMultiple: false,
@@ -320,7 +328,6 @@ const ProjectProTable: React.FC = () => {
         actionRef={actionRef}
         dragSortKey={"id"}
         toolBarRender={() => [<CreateBtn key={"gittable"} onClick={() => handleModalVisible(true)}/>,]}
-        pagination={{pageSize: 5,hideOnSinglePage:true}}
         expandable={{expandRowByClick: false,expandedRowRender: (record: GitProject) => renderClassList(record)}}
         request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GIT_PROJECT, {...params, sorter, filter})}
         onDragSortEnd={handleDragSortEnd}

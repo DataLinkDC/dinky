@@ -39,11 +39,11 @@ const JobHistoryList = (props: HistoryProps) => {
     {
       title: l('global.table.status'),
       dataIndex: "status",
-      render: (_, row) => TagJobStatus(row.status)
+      render: (_: any, row: { status: string | undefined; }) => TagJobStatus(row.status)
     },
     {
       title: l('global.table.useTime'),
-      render: (_, row) => parseSecondStr(row.duration)
+      render: (_: any, row: { duration: number; }) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.operate'),

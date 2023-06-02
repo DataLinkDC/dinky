@@ -19,8 +19,8 @@
 
 
 import React from "react";
-import {PageContainer} from "@ant-design/pro-layout";
 import UserProTable from "@/pages/AuthCenter/User/components/UserProTable";
+import {PageContainer} from "@ant-design/pro-components";
 
 
 export default () => {

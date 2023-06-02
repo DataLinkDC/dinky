@@ -176,7 +176,7 @@ const UserProTable = () => {
             title: l("global.table.isEnable"),
             dataIndex: "enabled",
             hideInSearch: true,
-            render: (_, record) => {
+            render: (_: any, record: UserBaseInfo.User) => {
                 return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
                                         onChange={() => handleChangeEnable(record)}/>;
             },
@@ -202,7 +202,7 @@ const UserProTable = () => {
         {
             title: l("global.table.operate"),
             valueType: "option",
-            width: "10vh",
+            width: "12vh",
             render: (_: any, record: UserBaseInfo.User) => [
                 <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                 <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)}
