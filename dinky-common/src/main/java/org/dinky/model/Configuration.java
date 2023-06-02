@@ -19,16 +19,17 @@
 
 package org.dinky.model;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Assert;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import java.util.Date;
 import java.util.List;
 import java.util.function.Function;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.lang.Assert;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 @Getter
 public class Configuration<T> {
