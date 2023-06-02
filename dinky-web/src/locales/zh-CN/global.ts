@@ -31,6 +31,7 @@ export default {
   'button.batchDisable': '批量禁用',
   'button.more': '更多',
   'button.config': '配置',
+  'button.modify': '修改',
   'button.edit': '编辑',
   'button.start': '启动',
   'button.stop': '停止',

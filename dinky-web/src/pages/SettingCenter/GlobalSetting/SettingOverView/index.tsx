@@ -16,13 +16,14 @@
  */
 
 import React, {memo, useEffect} from 'react';
-import {API_CONSTANTS} from '@/services/constants';
-import {queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
+import {handleOption, queryDataByParams} from '@/services/BusinessCrud';
 import {BaseConfigProperties, Settings} from '@/types/SettingCenter/data';
 import {EnvConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/EnvConfig';
 import {FlinkConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import {MavenConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
 import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
+import {l} from '@/utils/intl';
 
 const SettingOverView = () => {
 
@@ -39,9 +40,10 @@ const SettingOverView = () => {
     fetchData();
   }, []);
 
-  const handleSaveSubmit = (data: BaseConfigProperties) => {
+  const handleSaveSubmit = async (data: BaseConfigProperties) => {
     // todo: save data of update data
-    console.log(data, 'handleSaveSubmit');
+    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: data.key}), data);
+    if (code === RESPONSE_CODE.SUCCESS) await fetchData();
   };
 
   const renderData = () => {

@@ -22,11 +22,12 @@ import {ProList} from '@ant-design/pro-components';
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import {Descriptions, Input, Space, Switch} from 'antd';
 import {l} from '@/utils/intl';
-import {BackwardOutlined, SaveTwoTone, SettingTwoTone} from '@ant-design/icons';
+import {SaveTwoTone, SettingTwoTone} from '@ant-design/icons';
 import {EditBtn} from '@/components/CallBackButton/EditBtn';
 import {SWITCH_OPTIONS} from '@/services/constants';
 import {ActionType} from '@ant-design/pro-table';
 import {ProListMetas, ProListProps} from '@ant-design/pro-list';
+import {BackIcon} from '@/components/Icons/CustomIcons';
 
 type GeneralConfigProps = {
   data: BaseConfigProperties[];
@@ -135,7 +136,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     metas: {...metasRestProps},
     editable: {
       saveText: <><SaveTwoTone title={l('button.save')}/></>,
-      cancelText: <><BackwardOutlined title={l('button.cancel')}/></>,
+      cancelText: <><BackIcon title={l('button.back')}/></>,
       actionRender: (row, config, dom) => row.frontType === 'boolean' ? [] : [dom.save, dom.cancel],
       onSave: async (key, record) => handleSave(record),
     }

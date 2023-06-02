@@ -31,6 +31,7 @@ export default {
   'button.batchDisable': 'Batch Disable',
   'button.more': 'More',
   'button.config': 'Config',
+  'button.modify': 'Modify',
   'button.edit': 'Edit',
   'button.start': 'Start',
   'button.stop': 'Stop',
