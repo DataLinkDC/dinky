@@ -32,7 +32,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Dinky 启动器
+ * Dinky Starter
  *
  * @since 2021/5/28
  */

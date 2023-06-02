@@ -313,4 +313,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
         return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
     }
+
+    @Override
+    public void outLogin() {
+        StpUtil.logout();
+    }
 }
