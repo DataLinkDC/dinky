@@ -83,7 +83,6 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * @param entity
    */
   const renderValue = (entity: BaseConfigProperties) => {
-    // todo: 默认情况下，所有的配置项都是不可编辑的，只有在点击编辑按钮后才能编辑 , 但是这里的switch组件是可以编辑的，需要修改 , 暂未解决
     return <>
       {
         entity.frontType === 'boolean' ?
@@ -92,7 +91,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
             style={{width: '4vw'}}
             disabled={false}
             checked={entity.value}
-            onChange={() => console.log(entity)}
+            onChange={(checked) => handleSubmit({...entity, value: checked})}
           /> :
           <Input style={{width: '30vw'}} disabled value={entity.value}/>
       }
