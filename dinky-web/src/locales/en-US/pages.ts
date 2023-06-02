@@ -495,7 +495,7 @@ export default {
   'sys.maven.settings.repositoryUser': 'Maven warehouse user name',
   'sys.maven.settings.repositoryUser.note': 'Maven private server authentication user name',
   'sys.maven.settings.repositoryPassword': 'Maven warehouse password',
-  'sys.maven.settings.repositoryPassword.note': 'Maven private server authentication password',
+  'sys.maven.settings.repositoryPassword.note': 'Maven private server authentication password, please note: For security reasons, the password will not be displayed in plain text, and it has been desensitized when it returns',
   'sys.dolphinscheduler.settings.enable': 'Whether to enable DolphinScheduler',
   'sys.dolphinscheduler.settings.enable.note': 'Whether to enable DolphinScheduler, the relevant functions of DolphinScheduler can only be used after it is enabled, please ensure that the relevant configuration of DolphinScheduler is correct',
   'sys.dolphinscheduler.settings.url': 'DolphinScheduler address',

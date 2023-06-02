@@ -497,7 +497,7 @@ export default {
   'sys.maven.settings.repositoryUser': 'Maven 仓库用户名',
   'sys.maven.settings.repositoryUser.note': 'Maven 私服认证用户名',
   'sys.maven.settings.repositoryPassword': 'Maven 仓库密码',
-  'sys.maven.settings.repositoryPassword.note': 'Maven 私服认证密码',
+  'sys.maven.settings.repositoryPassword.note': 'Maven 私服认证密码,请注意: 此处为了安全起见,密码不会显示明文,返回时已做脱敏处理',
   'sys.dolphinscheduler.settings.enable': '是否启用 DolphinScheduler',
   'sys.dolphinscheduler.settings.enable.note': '是否启用 DolphinScheduler ,启用后才能使用 DolphinScheduler 的相关功能, 请确保 DolphinScheduler 的相关配置正确',
   'sys.dolphinscheduler.settings.url': 'DolphinScheduler 地址',
