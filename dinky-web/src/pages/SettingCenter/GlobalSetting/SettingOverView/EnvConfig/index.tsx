@@ -44,7 +44,6 @@ export const EnvConfig = ({data, onSave}: EnvConfigProps) => {
       title={l('sys.setting.dinky')}
       tooltip={l('sys.setting.dinky.tooltip')}
       size="small"
-      loading={loading}
       headerBordered collapsible ghost
       defaultCollapsed={false}
     >

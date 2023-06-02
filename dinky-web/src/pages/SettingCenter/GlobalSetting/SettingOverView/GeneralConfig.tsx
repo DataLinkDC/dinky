@@ -89,7 +89,6 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
           <Switch
             {...SWITCH_OPTIONS()}
             style={{width: '4vw'}}
-            disabled={false}
             checked={entity.value}
             onChange={(checked) => handleSubmit({...entity, value: checked})}
           /> :

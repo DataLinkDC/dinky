@@ -44,7 +44,6 @@ export const DSConfig = ({data, onSave}: DSConfigProps) => {
       title={l('sys.setting.ds')}
       tooltip={l('sys.setting.ds.tooltip')}
       size="small"
-      loading={loading}
       headerBordered ghost collapsible
       defaultCollapsed={false}
     >
