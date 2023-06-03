@@ -31,7 +31,7 @@ import org.dinky.model.QueryData;
 import org.dinky.model.Schema;
 import org.dinky.model.SqlGeneration;
 import org.dinky.service.DataBaseService;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +75,9 @@ public class DataBaseController {
     public Result<Void> saveOrUpdate(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
-            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
         }
     }
 
@@ -129,9 +129,9 @@ public class DataBaseController {
     @DeleteMapping("/delete")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
         }
-        return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+        return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
     }
 
     /**
@@ -143,9 +143,9 @@ public class DataBaseController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (databaseService.enable(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("modify.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
         }
-        return Result.failed(MessageResolverUtils.getMessage("modify.failed"));
+        return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
     }
 
     /**
@@ -158,7 +158,7 @@ public class DataBaseController {
     @Deprecated
     public Result<DataBase> getOneById(@RequestBody DataBase database) {
         database = databaseService.getById(database.getId());
-        return Result.succeed(database, MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(database, I18nMsgUtils.getMsg("response.get.success"));
     }
 
     /**
@@ -169,7 +169,7 @@ public class DataBaseController {
     @GetMapping("/listEnabledAll")
     public Result<List<DataBase>> listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
-        return Result.succeed(dataBases, MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(dataBases, I18nMsgUtils.getMsg("response.get.success"));
     }
 
     /**

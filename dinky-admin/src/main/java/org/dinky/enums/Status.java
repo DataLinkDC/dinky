@@ -66,7 +66,7 @@ public enum Status {
     DELETE_USER_BY_ID_ERROR(10093, "delete user by id error", "删除用户失败"),
     VERIFY_USERNAME_ERROR(10100, "verify username error", "用户名验证失败"),
     SIGN_OUT_ERROR(10123, "sign out error", "退出失败"),
-    SIGN_OUT_SUCESS(10124, "sign out sucess", "退出成功"),
+    SIGN_OUT_SUCCESS(10124, "sign out success", "退出成功"),
     USER_DISABLED(10148, "The current user is disabled", "当前用户已停用"),
     CURRENT_LOGIN_USER_TENANT_NOT_EXIST(
             10181, "the tenant of the currently login user is not specified", "未指定当前登录用户的租户"),

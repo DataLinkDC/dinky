@@ -19,7 +19,10 @@
 
 package org.dinky.utils;
 
+import org.dinky.enums.Status;
+
 import java.util.Arrays;
+import java.util.Optional;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -27,33 +30,52 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import cn.hutool.extra.spring.SpringUtil;
 
 /** desc： 获取i18n资源文件 */
-public class MessageResolverUtils {
+public class I18nMsgUtils {
 
     private static MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
 
-    public MessageResolverUtils() {}
+    public I18nMsgUtils() {}
 
     /**
-     * 根据 messageKey 获取国际化消息 委托给 spring messageSource
+     * According to messageKey and parameters, get the message and delegate to spring messageSource
      *
-     * @param code 消息key
-     * @return 解析后的国际化
+     * @param code msg key
+     * @return {@link String} internationalization information
      */
-    public static String getMessage(Object code) {
+    public static String getMsg(Object code) {
         return messageSource.getMessage(
                 code.toString(), null, code.toString(), LocaleContextHolder.getLocale());
     }
 
     /**
-     * 根据 messageKey 和参数 获取消息 委托给 spring messageSource
+     * According to messageKey and parameters, get the message and delegate to spring messageSource
      *
-     * @param code 消息key
-     * @param messageArgs 参数
-     * @return 解析后的国际化
+     * @param code msg key
+     * @param messageArgs msg parameters
+     * @return {@link String} internationalization information
      */
-    public static String getMessages(Object code, Object... messageArgs) {
-        Object[] objs = Arrays.stream(messageArgs).map(MessageResolverUtils::getMessage).toArray();
+    public static String getMsg(Object code, Object... messageArgs) {
+        Object[] objs = Arrays.stream(messageArgs).map(I18nMsgUtils::getMsg).toArray();
         return messageSource.getMessage(
                 code.toString(), objs, code.toString(), LocaleContextHolder.getLocale());
+    }
+
+    /**
+     * Get internationalization information according to status
+     *
+     * @param status {@link Status}
+     * @return {@link String} internationalization information
+     */
+    public static String getMsg(Status status) {
+        Optional<Status> statusByCode = Status.findStatusByCode(status.getCode());
+        if (statusByCode.isPresent()) {
+            return messageSource.getMessage(
+                    "", null, status.getMsg(), LocaleContextHolder.getLocale());
+        }
+        return messageSource.getMessage(
+                "unknown.i18n",
+                null,
+                "Unknown i18n information, please check. . .",
+                LocaleContextHolder.getLocale());
     }
 }

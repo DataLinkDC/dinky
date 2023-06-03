@@ -29,7 +29,7 @@ import org.dinky.service.GitProjectService;
 import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.io.File;
 import java.util.List;
@@ -243,9 +243,9 @@ public class GitController {
 
         List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
         if (projectCode == null) {
-            return Result.failed(MessageResolverUtils.getMessage("response.get.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("response.get.failed"));
         }
-        return Result.succeed(projectCode, MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(projectCode, I18nMsgUtils.getMsg("response.get.success"));
     }
 
     /**
@@ -259,8 +259,8 @@ public class GitController {
 
         String allBuildLog = gitProjectService.getAllBuildLog(id);
         if (allBuildLog == null) {
-            return Result.failed(MessageResolverUtils.getMessage("response.get.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("response.get.failed"));
         }
-        return Result.succeed(allBuildLog, MessageResolverUtils.getMessage("response.get.success"));
+        return Result.succeed(allBuildLog, I18nMsgUtils.getMsg("response.get.success"));
     }
 }

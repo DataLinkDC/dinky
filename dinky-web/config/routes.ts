@@ -127,7 +127,6 @@ export default [
         name: 'database',
         icon: 'DatabaseOutlined',
         component: './RegCenter/DataSource',
-        footerRender: false,
         routes: [
           {
             path: '/registration/database/detail/:id',

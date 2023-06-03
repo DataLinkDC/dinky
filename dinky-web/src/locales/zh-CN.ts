@@ -20,6 +20,7 @@ import menu from './zh-CN/menu';
 import pages from './zh-CN/pages';
 import pwa from './zh-CN/pwa';
 import request from './zh-CN/request';
+import response from './zh-CN/response';
 
 export default {
   'navBar.lang': '语言',
@@ -31,5 +32,6 @@ export default {
   ...pages,
   ...menu,
   ...pwa,
-  ...request
+  ...request,
+  ...response,
 };
