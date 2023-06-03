@@ -41,6 +41,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
+@Deprecated
 public class NamespaceServiceImpl extends SuperServiceImpl<NamespaceMapper, Namespace>
         implements NamespaceService {
 

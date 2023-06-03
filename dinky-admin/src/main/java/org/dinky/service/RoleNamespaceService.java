@@ -24,6 +24,7 @@ import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
+@Deprecated
 public interface RoleNamespaceService extends ISuperService<RoleNamespace> {
 
     /**

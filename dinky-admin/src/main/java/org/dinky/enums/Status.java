@@ -27,98 +27,57 @@ import org.springframework.context.i18n.LocaleContextHolder;
 public enum Status {
 
     /** response data msg */
-    SUCCESS(200, "success", "获取成功"),
-    FAILED(400, "success", "获取失败"),
+    SUCCESS(200, "Successfully", "获取成功"),
+    FAILED(400, "Failed", "获取失败"),
 
     /** request && response message */
     INTERNAL_SERVER_ERROR_ARGS(7001, "Internal Server Error: {0}", "服务端异常: {0}"),
-    REQUEST_PARAMS_NOT_VALID_ERROR(7002, "request parameter {0} is not valid", "请求参数[{0}]无效"),
-
-    /** base */
-    NAME_NULL(8001, "name must be not null", "名称不能为空"),
-    NAME_EXIST(8002, "name {0} already exists", "名称[{0}]已存在"),
+    REQUEST_PARAMS_NOT_VALID_ERROR(7002, "Request Parameter {0} Is Not Valid", "请求参数[{0}]无效"),
 
     /** interface CRUD operations */
-    ADDED_SUCCESS(9001, "added successfully", "新增成功"),
-    ADDED_FAILED(9002, "added failed", "新增失败"),
-    UPDATE_SUCCESS(9003, "update successfully", "修改成功"),
-    UPDATE_FAILED(9004, "update failed", "修改失败"),
-    SAVE_ERROR(9005, "save error", "保存失败"),
-    SAVE_SUCCESS(9006, "save successfully", "保存成功"),
-    DELETE_ERROR(9007, "delete error", "删除失败"),
-    DELETE_SUCCESS(9008, "delete successfully", "删除成功"),
+    ADDED_SUCCESS(9001, "Added Successfully", "新增成功"),
+    ADDED_FAILED(9002, "Added Failed", "新增失败"),
+    UPDATE_SUCCESS(9003, "Update Successfully", "修改成功"),
+    UPDATE_FAILED(9004, "Update Failed", "修改失败"),
+    SAVE_ERROR(9005, "Save Failed", "保存失败"),
+    SAVE_SUCCESS(9006, "Save Successfully", "保存成功"),
+    DELETE_ERROR(9007, "Delete Failed", "删除失败"),
+    DELETE_SUCCESS(9008, "Delete Successfully", "删除成功"),
+    REFRESH_SUCCESS(9009, "Refresh Successfully", "刷新成功"),
+    REFRESH_FAILED(9010, "Refresh Failed", "刷新失败"),
+    QUERY_SUCCESS(9011, "Query Successfully", "查询成功"),
+    QUERY_FAILED(9012, "Query Failed", "查询失败"),
 
-    /** user,tenant,role,namespace */
-    USER_NAME_EXIST(10001, "user name already exists", "用户名已存在"),
-    USER_NAME_NULL(10002, "user name is null", "用户名不能为空"),
-    USER_NOT_EXIST(10003, "user {0} not exists", "用户[{0}]不存在"),
-    ALERT_GROUP_NOT_EXIST(10004, "alarm group not found", "告警组不存在"),
-    ALERT_GROUP_EXIST(10005, "alarm group already exists", "告警组名称已存在"),
-    USER_NAME_PASSWD_ERROR(10006, "user name or password error", "用户名或密码不正确"),
-    LOGIN_SESSION_FAILED(10007, "create session failed!", "创建session失败"),
-    TENANT_NOT_EXIST(10008, "tenant not exists", "租户不存在"),
-    LOGIN_SUCCESS(10009, "login success", "登录成功"),
-    USER_LOGIN_FAILURE(10010, "user login failure", "用户登录失败"),
-
-    USER_NOT_LOGIN(10011, "user is not login", "用户未登录"),
-
-    CREATE_TENANT_ERROR(10012, "create tenant error", "创建租户失败"),
-    UPDATE_TENANT_ERROR(10013, "update tenant error", "更新租户失败"),
-    DELETE_TENANT_BY_ID_ERROR(10014, "delete tenant by id error", "删除租户失败"),
-    CREATE_USER_ERROR(10015, "create user error", "创建用户失败"),
-    UPDATE_USER_ERROR(10016, "update user error", "更新用户失败"),
-    DELETE_USER_BY_ID_ERROR(10017, "delete user by id error", "删除用户失败"),
-    VERIFY_USERNAME_ERROR(10018, "verify username error", "用户名验证失败"),
-    SIGN_OUT_ERROR(10019, "sign out error", "退出失败"),
-    SIGN_OUT_SUCCESS(10020, "sign out success", "退出成功"),
-    USER_DISABLED(10021, "The current user is disabled", "当前用户已停用"),
-    CURRENT_LOGIN_USER_TENANT_NOT_EXIST(
-            10022, "the tenant of the currently login user is not specified", "未指定当前登录用户的租户"),
-    NO_CURRENT_OPERATING_PERMISSION(
-            10023, "The current user does not have this permission.", "当前用户无此权限"),
+    /** user,tenant,role */
+    // user
+    USER_NAME_EXIST(10001, "UserName Already Exists", "用户名已存在"),
+    USER_NOT_EXIST(10002, "User Not Exist", "用户不存在"),
+    USER_NAME_PASSWD_ERROR(10003, "UserName Or Password Not Correct", "用户名或密码不正确"),
+    LOGIN_SUCCESS(10004, "Login Successfully", "登录成功"),
+    USER_LOGIN_FAILURE(10005, "User Login Failure", "用户登录失败"),
+    USER_NOT_LOGIN(10006, "User is Not Login", "用户未登录"),
+    SIGN_OUT_SUCCESS(10007, "Sign Out Successfully", "退出成功"),
+    USER_DISABLED_BY_ADMIN(10008, "The Current User is Disabled By Admin", "当前用户已被管理员停用"),
+    // tenant
+    TENANT_NAME_EXIST(10101, "Tenant Already Exists", "租户已存在"),
+    TENANT_NAME_NOT_EXIST(10102, "Tenant Not Exists", "租户不存在"),
+    // role
+    ROLE_NAME_EXIST(10201, "Role Already Exists", "角色已存在"),
+    ROLE_NOT_EXIST(10202, "Role Not Exists", "角色不存在"),
 
     /** database */
-    DATASOURCE_EXIST(11001, "data source name already exists", "数据源名称已存在"),
-    DATASOURCE_CONNECT_FAILED(11002, "data source connection failed", "建立数据源连接失败"),
-    CREATE_DATASOURCE_ERROR(11003, "create datasource error", "创建数据源失败"),
-    UPDATE_DATASOURCE_ERROR(11004, "update datasource error", "更新数据源失败"),
-    QUERY_DATASOURCE_ERROR(11005, "query datasource error", "查询数据源失败"),
-    CONNECT_DATASOURCE_FAILURE(11006, "connect datasource failure", "建立数据源连接失败"),
-    CONNECTION_TEST_FAILURE(11007, "connection test failure", "测试数据源连接失败"),
-    DELETE_DATA_SOURCE_FAILURE(11008, "delete data source failure", "删除数据源失败"),
-    VERIFY_DATASOURCE_NAME_FAILURE(11009, "verify datasource name failure", "验证数据源名称失败"),
-    UNAUTHORIZED_DATASOURCE(11010, "unauthorized datasource", "未经授权的数据源"),
-    AUTHORIZED_DATA_SOURCE(11011, "authorized data source", "授权数据源失败"),
+    DATASOURCE_EXIST(11001, "DataSource Name Already Exists", "数据源名称已存在"),
+    DATASOURCE_CONNECT_FAILED(11002, "DataSource Connection Failed", "建立数据源连接失败"),
+    DATASOURCE_HEARTBEAT_FAILED(11003, "DataSource HeartBeat Failed", "数据源心跳检测失败"),
+
 
     /** job or task about */
     JOB_RELEASE_DISABLED_UPDATE(
-            12001, "Assignment has been published, modification is prohibited", "作业已发布，禁止修改"),
-    SCHEDULE_STATUS_UNKNOWN(12002, "unknown status: {0}", "未知状态: {0}"),
-    TASK_NOT_EXIST(12003, "task not exist", "任务不存在"),
-    JOB_INSTANCE_NOT_EXIST(12004, "job instance not exist", "作业实例不存在"),
-    SAVEPOINT_IS_NULL(12005, "savepoint is null", "保存点为空"),
-
-    /** alert group , alert instance */
-    CREATE_ALERT_GROUP_ERROR(13001, "create alert group error", "创建告警组失败"),
-    QUERY_ALL_ALERT_GROUP_ERROR(13002, "query all alert group error", "查询告警组失败"),
-    UPDATE_ALERT_GROUP_ERROR(13003, "update alert group error", "更新告警组失败"),
-    DELETE_ALERT_GROUP_ERROR(13004, "delete alert group error", "删除告警组失败"),
-    ALERT_GROUP_GRANT_USER_ERROR(13005, "alert group grant user error", "告警组授权用户失败"),
-
-    /** udf */
-    CREATE_UDF_FUNCTION_ERROR(14001, "create udf function error", "创建UDF函数失败"),
-    UPDATE_UDF_FUNCTION_ERROR(14002, "update udf function error", "更新UDF函数失败"),
-    DELETE_UDF_FUNCTION_ERROR(14003, "delete udf function error", "删除UDF函数失败"),
-    UDF_FUNCTION_NOT_EXIST(14004, "UDF function not found", "UDF函数不存在"),
-    UDF_FUNCTION_EXISTS(14005, "UDF function already exists", "UDF函数已存在"),
-
-    /** for monitor */
-    QUERY_DATABASE_STATE_ERROR(15001, "query database state error", "查询数据库状态失败"),
-
-    /** cluster */
-    CREATE_CLUSTER_ERROR(16001, "create cluster error", "创建集群失败"),
-    CLUSTER_NAME_EXISTS(16002, "this cluster name [{0}] already exists", "集群名称[{0}]已经存在"),
-    CLUSTER_NAME_IS_NULL(16003, "this cluster name shouldn't be empty.", "集群名称不能为空"),
+            12001, "Assignment Has Been Published, Modification is Prohibited", "作业已发布，禁止修改"),
+    SCHEDULE_STATUS_UNKNOWN(12002, "Unknown Status: {0}", "未知状态: {0}"),
+    TASK_NOT_EXIST(12003, "Task Not Exist", "任务不存在"),
+    JOB_INSTANCE_NOT_EXIST(12004, "Job Instance Not Exist", "作业实例不存在"),
+    SAVEPOINT_IS_NULL(12005, "Savepoint Is Null", "保存点为空"),
     ;
 
     private final int code;

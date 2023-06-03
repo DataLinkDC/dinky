@@ -26,6 +26,7 @@ import org.dinky.result.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+@Deprecated
 public interface NamespaceService extends ISuperService<Namespace> {
 
     /**

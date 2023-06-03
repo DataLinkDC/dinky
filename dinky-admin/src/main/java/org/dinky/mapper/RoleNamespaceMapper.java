@@ -29,6 +29,7 @@ import java.util.List;
 
 /** role namespace mapper interface */
 @Mapper
+@Deprecated
 public interface RoleNamespaceMapper extends SuperMapper<RoleNamespace> {
 
     /**

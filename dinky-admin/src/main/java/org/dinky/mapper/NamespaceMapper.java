@@ -26,4 +26,5 @@ import org.apache.ibatis.annotations.Mapper;
 
 /** namespace mapper interface */
 @Mapper
+@Deprecated
 public interface NamespaceMapper extends SuperMapper<Namespace> {}
