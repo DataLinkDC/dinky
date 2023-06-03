@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.db.util;
+package org.dinky.mybatis.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;

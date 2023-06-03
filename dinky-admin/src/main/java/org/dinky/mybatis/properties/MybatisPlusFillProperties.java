@@ -17,11 +17,32 @@
  *
  */
 
-package org.dinky.db.annotation;
+package org.dinky.mybatis.properties;
+
+import org.springframework.boot.context.properties.ConfigurationProperties;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * 新增接口
+ * MybatisPlusFillProperties
  *
- * @since 2021/5/3 20:57
+ * @since 2021/5/25
  */
-public interface Save {}
+@Setter
+@Getter
+@ConfigurationProperties(prefix = "dinky.mybatis-plus.fill")
+public class MybatisPlusFillProperties {
+
+    private Boolean enabled = true;
+
+    private Boolean enableInsertFill = true;
+
+    private Boolean enableUpdateFill = true;
+
+    private String createTimeField = "createTime";
+
+    private String updateTimeField = "updateTime";
+
+    private String name = "name";
+}

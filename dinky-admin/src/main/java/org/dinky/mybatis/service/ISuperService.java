@@ -17,27 +17,25 @@
  *
  */
 
-package org.dinky.db.mapper;
+package org.dinky.mybatis.service;
 
-import org.apache.ibatis.annotations.Param;
+import org.dinky.result.ProTableResult;
 
-import java.util.List;
 import java.util.Map;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /**
- * SuperMapper
+ * ISuperService
  *
  * @since 2021/5/25
  */
-public interface SuperMapper<T> extends BaseMapper<T> {
+public interface ISuperService<T> extends IService<T> {
 
-    List<T> selectForProTable(
-            Page<T> page,
-            @Param(Constants.WRAPPER) Wrapper<T> queryWrapper,
-            @Param("param") Map<String, Object> param);
+    ProTableResult<T> selectForProTable(JsonNode para);
+
+    ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete);
+
+    ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap);
 }

@@ -22,7 +22,6 @@ package org.dinky.service.impl;
 import static org.dinky.gateway.config.GatewayConfig.FLINK_VERSION;
 
 import org.dinky.config.Docker;
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
@@ -33,6 +32,7 @@ import org.dinky.mapper.ClusterConfigurationMapper;
 import org.dinky.model.ClusterConfiguration;
 import org.dinky.model.FlinkClusterConfiguration;
 import org.dinky.model.FlinkClusterConfiguration.Type;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.utils.DockerClientUtils;
 

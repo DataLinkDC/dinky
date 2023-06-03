@@ -17,32 +17,27 @@
  *
  */
 
-package org.dinky.db.properties;
+package org.dinky.mybatis.mapper;
 
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.apache.ibatis.annotations.Param;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+import java.util.Map;
+
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 /**
- * MybatisPlusFillProperties
+ * SuperMapper
  *
  * @since 2021/5/25
  */
-@Setter
-@Getter
-@ConfigurationProperties(prefix = "dinky.mybatis-plus.fill")
-public class MybatisPlusFillProperties {
+public interface SuperMapper<T> extends BaseMapper<T> {
 
-    private Boolean enabled = true;
-
-    private Boolean enableInsertFill = true;
-
-    private Boolean enableUpdateFill = true;
-
-    private String createTimeField = "createTime";
-
-    private String updateTimeField = "updateTime";
-
-    private String name = "name";
+    List<T> selectForProTable(
+            Page<T> page,
+            @Param(Constants.WRAPPER) Wrapper<T> queryWrapper,
+            @Param("param") Map<String, Object> param);
 }

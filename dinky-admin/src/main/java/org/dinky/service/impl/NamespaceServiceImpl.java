@@ -20,11 +20,11 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.NamespaceMapper;
 import org.dinky.model.Namespace;
 import org.dinky.model.RoleNamespace;
 import org.dinky.model.Tenant;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.result.ProTableResult;
 import org.dinky.result.Result;
 import org.dinky.service.NamespaceService;

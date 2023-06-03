@@ -23,7 +23,6 @@ import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.CatalogueTaskDTO;
 import org.dinky.enums.JobLifeCycle;
 import org.dinky.enums.JobStatus;
@@ -33,6 +32,7 @@ import org.dinky.model.History;
 import org.dinky.model.JobInstance;
 import org.dinky.model.Statement;
 import org.dinky.model.Task;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobInstanceService;

@@ -20,8 +20,8 @@
 package org.dinky.service;
 
 import org.dinky.cluster.FlinkClusterInfo;
-import org.dinky.db.service.ISuperService;
 import org.dinky.model.Cluster;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 

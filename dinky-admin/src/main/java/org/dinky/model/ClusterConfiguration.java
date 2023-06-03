@@ -20,7 +20,7 @@
 package org.dinky.model;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.db.model.SuperEntity;
+import org.dinky.mybatis.model.SuperEntity;
 
 import java.util.HashMap;
 import java.util.Map;

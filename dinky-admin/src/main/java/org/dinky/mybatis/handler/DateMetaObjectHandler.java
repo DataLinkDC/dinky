@@ -17,9 +17,9 @@
  *
  */
 
-package org.dinky.db.handler;
+package org.dinky.mybatis.handler;
 
-import org.dinky.db.properties.MybatisPlusFillProperties;
+import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
 import org.apache.ibatis.reflection.MetaObject;
 

@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
 import org.dinky.model.Tenant;
+import org.dinky.mybatis.service.ISuperService;
 import org.dinky.params.AssignUserToTenantParams;
 import org.dinky.result.Result;
 

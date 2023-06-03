@@ -21,8 +21,6 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.db.util.ProTableUtil;
 import org.dinky.enums.JobStatus;
 import org.dinky.enums.Status;
 import org.dinky.explainer.lineage.LineageBuilder;
@@ -34,6 +32,8 @@ import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobInstanceCount;
 import org.dinky.model.JobInstanceStatus;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.mybatis.util.ProTableUtil;
 import org.dinky.result.ProTableResult;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;

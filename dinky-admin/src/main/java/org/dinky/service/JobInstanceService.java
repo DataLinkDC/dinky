@@ -19,11 +19,11 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobInstanceStatus;
+import org.dinky.mybatis.service.ISuperService;
 import org.dinky.result.ProTableResult;
 
 import java.util.List;

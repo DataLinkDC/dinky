@@ -19,11 +19,11 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.SysConfigMapper;
 import org.dinky.model.Configuration;
 import org.dinky.model.SysConfig;
 import org.dinky.model.SystemConfiguration;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.SysConfigService;
 
 import java.util.HashMap;

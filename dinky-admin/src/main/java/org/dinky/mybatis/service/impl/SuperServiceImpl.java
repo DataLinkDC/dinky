@@ -17,11 +17,11 @@
  *
  */
 
-package org.dinky.db.service.impl;
+package org.dinky.mybatis.service.impl;
 
-import org.dinky.db.mapper.SuperMapper;
-import org.dinky.db.service.ISuperService;
-import org.dinky.db.util.ProTableUtil;
+import org.dinky.mybatis.mapper.SuperMapper;
+import org.dinky.mybatis.service.ISuperService;
+import org.dinky.mybatis.util.ProTableUtil;
 import org.dinky.result.ProTableResult;
 
 import java.util.List;

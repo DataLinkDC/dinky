@@ -17,25 +17,11 @@
  *
  */
 
-package org.dinky.db.service;
-
-import org.dinky.result.ProTableResult;
-
-import java.util.Map;
-
-import com.baomidou.mybatisplus.extension.service.IService;
-import com.fasterxml.jackson.databind.JsonNode;
+package org.dinky.mybatis.annotation;
 
 /**
- * ISuperService
+ * 新增接口
  *
- * @since 2021/5/25
+ * @since 2021/5/3 20:57
  */
-public interface ISuperService<T> extends IService<T> {
-
-    ProTableResult<T> selectForProTable(JsonNode para);
-
-    ProTableResult<T> selectForProTable(JsonNode para, boolean isDelete);
-
-    ProTableResult<T> selectForProTable(JsonNode para, Map<String, Object> paraMap);
-}
+public interface Save {}
