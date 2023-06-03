@@ -24,7 +24,17 @@ import java.util.Optional;
 
 import org.springframework.context.i18n.LocaleContextHolder;
 
+/**
+ * Status enum.
+ * <p>
+ *     <b>NOTE:</b> This enumeration is used to define status codes and internationalization messages for response data.
+ *     <br> This is mainly responsible for the internationalization information returned by the interface
+ */
 public enum Status {
+    // TODO:
+    //  1. add more status codes and messages
+    //  2. Move the internationalization information in the messages.properties file to here
+    //  3. messages.properties is mainly responsible for writing the internationalization information in the swagger document
 
     /** response data msg */
     SUCCESS(200, "Successfully", "获取成功"),
