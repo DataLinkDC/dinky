@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.dto.CatalogueTaskDTO;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.model.Catalogue;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.CatalogueService;
 
 import java.io.BufferedReader;

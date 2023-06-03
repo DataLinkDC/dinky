@@ -20,6 +20,8 @@
 package org.dinky.gateway.config;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.SavePointType;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -17,48 +17,48 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.process.enums;
 
-import java.util.Arrays;
+import org.dinky.assertion.Asserts;
 
 /**
- * JobLifeCycle
+ * ProcessType
  *
- * @since 2022/2/1 16:37
+ * @since 2022/10/16 16:33
  */
-public enum JobLifeCycle {
-    UNKNOWN(0, "未知"),
-    CREATE(1, "创建"),
-    DEVELOP(2, "开发"),
-    DEBUG(3, "调试"),
-    RELEASE(4, "发布"),
-    ONLINE(5, "上线"),
-    CANCEL(6, "注销");
+public enum ProcessType {
+    FLINK_EXPLAIN("FlinkExplain"),
+    FLINK_EXECUTE("FlinkExecute"),
+    FLINK_SUBMIT("FlinkSubmit"),
+    SQL_EXPLAIN("SQLExplain"),
+    SQL_EXECUTE("SQLExecute"),
+    SQL_SUBMIT("SQLSubmit"),
+    LINEAGE("Lineage"),
+    UNKNOWN("Unknown");
 
-    private Integer value;
-    private String label;
+    private String value;
 
-    JobLifeCycle(Integer value, String label) {
+    ProcessType(String value) {
         this.value = value;
-        this.label = label;
     }
 
-    public Integer getValue() {
+    public String getValue() {
         return value;
     }
 
-    public String getLabel() {
-        return label;
+    public static ProcessType get(String value) {
+        for (ProcessType type : ProcessType.values()) {
+            if (Asserts.isEquals(type.getValue(), value)) {
+                return type;
+            }
+        }
+        return ProcessType.UNKNOWN;
     }
 
-    public static JobLifeCycle get(Integer value) {
-        return Arrays.stream(values())
-                .filter(item -> item.getValue().equals(value))
-                .findFirst()
-                .orElse(JobLifeCycle.UNKNOWN);
-    }
-
-    public boolean equalsValue(Integer step) {
-        return value.equals(step);
+    public boolean equalsValue(String type) {
+        if (Asserts.isEquals(value, type)) {
+            return true;
+        }
+        return false;
     }
 }

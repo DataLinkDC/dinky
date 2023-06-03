@@ -17,37 +17,48 @@
  *
  */
 
-package org.dinky.gateway.config;
-
-import org.dinky.assertion.Asserts;
+package org.dinky.enums;
 
 import java.util.Arrays;
 
 /**
- * SavePointType
+ * JobLifeCycle
  *
- * @since 2021/11/3 21:58
+ * @since 2022/2/1 16:37
  */
-public enum SavePointType {
-    TRIGGER("trigger"),
-    DISPOSE("dispose"),
-    STOP("stop"),
-    CANCEL("cancel");
+public enum JobLifeCycle {
+    UNKNOWN(0, "未知"),
+    CREATE(1, "创建"),
+    DEVELOP(2, "开发"),
+    DEBUG(3, "调试"),
+    RELEASE(4, "发布"),
+    ONLINE(5, "上线"),
+    CANCEL(6, "注销");
 
-    private String value;
+    private Integer value;
+    private String label;
 
-    SavePointType(String value) {
+    JobLifeCycle(Integer value, String label) {
         this.value = value;
+        this.label = label;
     }
 
-    public String getValue() {
+    public Integer getValue() {
         return value;
     }
 
-    public static SavePointType get(String value) {
-        return Arrays.stream(SavePointType.values())
-                .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
+    public String getLabel() {
+        return label;
+    }
+
+    public static JobLifeCycle get(Integer value) {
+        return Arrays.stream(values())
+                .filter(item -> item.getValue().equals(value))
                 .findFirst()
-                .orElse(SavePointType.TRIGGER);
+                .orElse(JobLifeCycle.UNKNOWN);
+    }
+
+    public boolean equalsValue(Integer step) {
+        return value.equals(step);
     }
 }

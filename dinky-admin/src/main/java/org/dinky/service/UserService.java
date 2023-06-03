@@ -19,7 +19,6 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.dto.LoginDTO;
 import org.dinky.dto.ModifyPasswordDTO;
@@ -29,6 +28,7 @@ import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Tenant;
 import org.dinky.model.User;
 import org.dinky.params.AssignRoleParams;
+import org.dinky.result.Result;
 
 import java.util.List;
 

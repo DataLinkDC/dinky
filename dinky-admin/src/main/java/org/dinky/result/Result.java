@@ -17,10 +17,10 @@
  *
  */
 
-package org.dinky.common.result;
+package org.dinky.result;
 
+import org.dinky.enums.CodeEnum;
 import org.dinky.enums.Status;
-import org.dinky.model.CodeEnum;
 import org.dinky.utils.I18nMsgUtils;
 
 import java.io.Serializable;
@@ -41,10 +41,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Result<T> implements Serializable {
 
+    /** result data */
     private T datas;
+    /** result code */
     private Integer code;
+    /** result msg */
     private String msg;
+    /** result time */
     private String time;
+    /** result success */
     private boolean success;
 
     public Result(Integer code, String msg) {
@@ -73,16 +78,24 @@ public class Result<T> implements Serializable {
         return of(null, CodeEnum.SUCCESS.getCode(), msg);
     }
 
+    public static <T> Result<T> succeed(Status status) {
+        return of(null, CodeEnum.SUCCESS.getCode(), status.getMsg());
+    }
+
     public static <T> Result<T> succeed() {
         return of(null, CodeEnum.SUCCESS.getCode(), I18nMsgUtils.getMsg("operate.success"));
+    }
+
+    public static <T> Result<T> succeed(T model) {
+        return of(model, CodeEnum.SUCCESS.getCode(), "");
     }
 
     public static <T> Result<T> succeed(T model, String msg) {
         return of(model, CodeEnum.SUCCESS.getCode(), msg);
     }
 
-    public static <T> Result<T> succeed(T model) {
-        return of(model, CodeEnum.SUCCESS.getCode(), "");
+    public static <T> Result<T> succeed(T model, Status status) {
+        return of(model, CodeEnum.SUCCESS.getCode(), status.getMsg());
     }
 
     public static <T> Result<T> data(T model) {
@@ -93,16 +106,24 @@ public class Result<T> implements Serializable {
         return new Result<>(datas, code, msg, new DateTime().toString(), code == 0);
     }
 
+    public static <T> Result<T> of(T datas, Integer code, Status status) {
+        return new Result<>(datas, code, status.getMsg(), new DateTime().toString(), code == 0);
+    }
+
     public static <T> Result<T> failed(String msg) {
         return of(null, CodeEnum.ERROR.getCode(), msg);
     }
 
-    public static <T> Result<T> notLogin(String msg) {
-        return of(null, CodeEnum.NOTLOGIN.getCode(), msg);
+    public static <T> Result<T> failed(Status status) {
+        return of(null, CodeEnum.ERROR.getCode(), status.getMsg());
     }
 
     public static <T> Result<T> failed(T model, String msg) {
         return of(model, CodeEnum.ERROR.getCode(), msg);
+    }
+
+    public static <T> Result<T> failed(T model, Status status) {
+        return of(model, CodeEnum.ERROR.getCode(), status.getMsg());
     }
 
     /**

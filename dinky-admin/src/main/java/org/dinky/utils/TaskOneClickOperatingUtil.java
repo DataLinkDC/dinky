@@ -19,14 +19,14 @@
 
 package org.dinky.utils;
 
-import org.dinky.common.result.Result;
 import org.dinky.context.SpringContextUtils;
-import org.dinky.model.CodeEnum;
-import org.dinky.model.JobLifeCycle;
-import org.dinky.model.JobStatus;
+import org.dinky.enums.CodeEnum;
+import org.dinky.enums.JobLifeCycle;
+import org.dinky.enums.JobStatus;
+import org.dinky.enums.TaskOperatingSavepointSelect;
+import org.dinky.enums.TaskOperatingStatus;
 import org.dinky.model.Task;
-import org.dinky.model.TaskOperatingSavepointSelect;
-import org.dinky.model.TaskOperatingStatus;
+import org.dinky.result.Result;
 import org.dinky.result.TaskOperatingResult;
 import org.dinky.service.TaskService;
 

@@ -17,28 +17,28 @@
  *
  */
 
-package org.dinky.process.model;
+package org.dinky.process.enums;
 
 import org.dinky.assertion.Asserts;
 
+import java.util.Arrays;
+
 /**
- * ProcessType
+ * ProcessStatus
  *
  * @since 2022/10/16 16:33
  */
-public enum ProcessType {
-    FLINK_EXPLAIN("FlinkExplain"),
-    FLINK_EXECUTE("FlinkExecute"),
-    FLINK_SUBMIT("FlinkSubmit"),
-    SQL_EXPLAIN("SQLExplain"),
-    SQL_EXECUTE("SQLExecute"),
-    SQL_SUBMIT("SQLSubmit"),
-    LINEAGE("Lineage"),
-    UNKNOWN("Unknown");
+public enum ProcessStatus {
+    INITIALIZING("INITIALIZING"),
+    RUNNING("RUNNING"),
+    FAILED("FAILED"),
+    CANCELED("CANCELED"),
+    FINISHED("FINISHED"),
+    UNKNOWN("UNKNOWN");
 
     private String value;
 
-    ProcessType(String value) {
+    ProcessStatus(String value) {
         this.value = value;
     }
 
@@ -46,13 +46,11 @@ public enum ProcessType {
         return value;
     }
 
-    public static ProcessType get(String value) {
-        for (ProcessType type : ProcessType.values()) {
-            if (Asserts.isEquals(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return ProcessType.UNKNOWN;
+    public static ProcessStatus get(String value) {
+        return Arrays.stream(ProcessStatus.values())
+                .filter(type -> Asserts.isEquals(type.getValue(), value))
+                .findFirst()
+                .orElse(ProcessStatus.UNKNOWN);
     }
 
     public boolean equalsValue(String type) {
@@ -60,5 +58,15 @@ public enum ProcessType {
             return true;
         }
         return false;
+    }
+
+    public boolean isActiveStatus() {
+        switch (this) {
+            case INITIALIZING:
+            case RUNNING:
+                return true;
+            default:
+                return false;
+        }
     }
 }

@@ -19,10 +19,10 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.AlertGroup;
 import org.dinky.model.AlertHistory;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.utils.I18nMsgUtils;

@@ -17,32 +17,34 @@
  *
  */
 
-package org.dinky.common.result;
+package org.dinky.enums;
 
-import java.io.Serializable;
-import java.util.List;
+/** 分库分表的类型 */
+public enum TableType {
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+    /** 分库分表 */
+    SPLIT_DATABASE_AND_TABLE,
+    /** 分表单库 */
+    SPLIT_DATABASE_AND_SINGLE_TABLE,
+    /** 单库分表 */
+    SINGLE_DATABASE_AND_SPLIT_TABLE
+    /** 单库单表 */
+    ,
+    SINGLE_DATABASE_AND_TABLE;
 
-/**
- * 分页结果
- *
- * @since 2021/5/3 20:03
- */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class PageResult<T> implements Serializable {
+    public static TableType type(boolean splitDatabase, boolean splitTable) {
+        if (splitDatabase && splitTable) {
+            return TableType.SPLIT_DATABASE_AND_TABLE;
+        }
 
-    private static final long serialVersionUID = -5143774412936881374L;
-    /** 总数 */
-    private Long count;
-    /** 是否成功：0 成功、1 失败 */
-    private int code;
-    /** 当前页结果集 */
-    private List<T> data;
+        if (splitTable) {
+            return TableType.SINGLE_DATABASE_AND_SPLIT_TABLE;
+        }
+
+        if (splitDatabase) {
+            return TableType.SPLIT_DATABASE_AND_SINGLE_TABLE;
+        }
+
+        return TableType.SINGLE_DATABASE_AND_TABLE;
+    }
 }

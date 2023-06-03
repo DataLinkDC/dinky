@@ -19,10 +19,10 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.Result;
 import org.dinky.db.service.ISuperService;
 import org.dinky.model.Tenant;
 import org.dinky.params.AssignUserToTenantParams;
+import org.dinky.result.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -20,12 +20,12 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.dto.ModifyPasswordDTO;
 import org.dinky.model.User;
 import org.dinky.model.UserTenant;
 import org.dinky.params.AssignRoleParams;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 import org.dinky.utils.I18nMsgUtils;

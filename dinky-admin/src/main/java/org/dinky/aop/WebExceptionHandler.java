@@ -19,9 +19,10 @@
 
 package org.dinky.aop;
 
-import org.dinky.common.result.Result;
+import org.dinky.enums.CodeEnum;
+import org.dinky.enums.Status;
 import org.dinky.exception.BusException;
-import org.dinky.model.CodeEnum;
+import org.dinky.result.Result;
 import org.dinky.utils.I18nMsgUtils;
 
 import org.apache.commons.lang3.StringUtils;
@@ -72,7 +73,7 @@ public class WebExceptionHandler {
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.notLogin(I18nMsgUtils.getMsg("login.not.login"));
+        return Result.failed(Status.USER_NOT_LOGIN);
     }
 
     /**

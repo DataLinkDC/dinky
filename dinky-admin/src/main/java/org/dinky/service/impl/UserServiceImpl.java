@@ -20,7 +20,6 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.db.service.impl.SuperServiceImpl;
@@ -35,6 +34,7 @@ import org.dinky.model.User;
 import org.dinky.model.UserRole;
 import org.dinky.model.UserTenant;
 import org.dinky.params.AssignRoleParams;
+import org.dinky.result.Result;
 import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;

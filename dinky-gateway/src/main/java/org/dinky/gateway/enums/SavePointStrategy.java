@@ -17,18 +17,35 @@
  *
  */
 
-package org.dinky.assertion;
+package org.dinky.gateway.enums;
 
 /**
- * Tips
+ * SavePointStrategy
  *
- * @since 2021/12/9 23:19
+ * @since 2021/11/23 10:28
  */
-public class Tips {
+public enum SavePointStrategy {
+    NONE(0),
+    LATEST(1),
+    EARLIEST(2),
+    CUSTOM(3);
 
-    public static final String TASK_NOT_EXIST = "作业不存在";
+    private Integer value;
 
-    public static final String JOB_INSTANCE_NOT_EXIST = "作业实例不存在";
+    SavePointStrategy(Integer value) {
+        this.value = value;
+    }
 
-    public static final String SAVEPOINT_IS_NULL = "保存点为空";
+    public Integer getValue() {
+        return value;
+    }
+
+    public static SavePointStrategy get(Integer value) {
+        for (SavePointStrategy type : SavePointStrategy.values()) {
+            if (type.getValue() == value) {
+                return type;
+            }
+        }
+        return SavePointStrategy.NONE;
+    }
 }

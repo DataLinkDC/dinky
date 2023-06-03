@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
 import org.dinky.dto.APICancelDTO;
 import org.dinky.dto.APIExecuteJarDTO;
 import org.dinky.dto.APIExecuteSqlDTO;
@@ -31,6 +30,7 @@ import org.dinky.job.JobResult;
 import org.dinky.model.JobInstance;
 import org.dinky.result.APIJobResult;
 import org.dinky.result.ExplainResult;
+import org.dinky.result.Result;
 import org.dinky.result.SelectResult;
 import org.dinky.service.APIService;
 import org.dinky.service.JobInstanceService;

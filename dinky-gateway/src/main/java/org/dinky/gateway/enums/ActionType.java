@@ -17,36 +17,35 @@
  *
  */
 
-package org.dinky.common.result;
+package org.dinky.gateway.enums;
 
-import java.io.Serializable;
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.dinky.assertion.Asserts;
 
 /**
- * Ant Design Pro ProTable Query Result
+ * ActionType
  *
- * @since 2021/5/18 21:54
+ * @since 2021/11/3 21:58
  */
-@Data
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
-public class ProTableResult<T> implements Serializable {
+public enum ActionType {
+    SAVEPOINT("savepoint"),
+    CANCEL("cancel");
 
-    private static final long serialVersionUID = -6377431009117000655L;
-    /** 总数 */
-    private Long total;
-    /** 是否成功：true 成功、false 失败 */
-    private boolean success;
-    /** 当前页码 */
-    private Integer current;
-    /** 当前每页记录数 */
-    private Integer pageSize;
-    /** 当前页结果集 */
-    private List<T> data;
+    private final String value;
+
+    ActionType(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public static ActionType get(String value) {
+        for (ActionType type : ActionType.values()) {
+            if (Asserts.isEquals(type.getValue(), value)) {
+                return type;
+            }
+        }
+        return ActionType.SAVEPOINT;
+    }
 }

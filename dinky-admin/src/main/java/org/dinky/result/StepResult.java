@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.common.result;
+package org.dinky.result;
 
 import java.io.Serializable;
 import java.util.Date;

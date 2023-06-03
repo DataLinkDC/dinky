@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
 import org.dinky.dto.LoginDTO;
 import org.dinky.dto.UserDTO;
 import org.dinky.enums.Status;
 import org.dinky.model.Tenant;
+import org.dinky.result.Result;
 import org.dinky.service.UserService;
 import org.dinky.utils.I18nMsgUtils;
 

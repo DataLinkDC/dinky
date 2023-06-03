@@ -17,35 +17,27 @@
  *
  */
 
-package org.dinky.gateway.config;
+package org.dinky.enums;
 
 /**
- * SavePointStrategy
+ * 状态码
  *
- * @since 2021/11/23 10:28
+ * @since 2021/5/28 19:58
  */
-public enum SavePointStrategy {
-    NONE(0),
-    LATEST(1),
-    EARLIEST(2),
-    CUSTOM(3);
+public enum CodeEnum {
+    SUCCESS(0),
+    ERROR(1),
 
-    private Integer value;
+    EXCEPTION(5),
+    NOTLOGIN(401);
 
-    SavePointStrategy(Integer value) {
-        this.value = value;
+    private Integer code;
+
+    CodeEnum(Integer code) {
+        this.code = code;
     }
 
-    public Integer getValue() {
-        return value;
-    }
-
-    public static SavePointStrategy get(Integer value) {
-        for (SavePointStrategy type : SavePointStrategy.values()) {
-            if (type.getValue() == value) {
-                return type;
-            }
-        }
-        return SavePointStrategy.NONE;
+    public Integer getCode() {
+        return code;
     }
 }

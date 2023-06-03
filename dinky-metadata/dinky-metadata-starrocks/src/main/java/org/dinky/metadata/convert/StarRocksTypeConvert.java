@@ -20,8 +20,8 @@
 package org.dinky.metadata.convert;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.enums.ColumnType;
 import org.dinky.model.Column;
-import org.dinky.model.ColumnType;
 
 public class StarRocksTypeConvert implements ITypeConvert {
 

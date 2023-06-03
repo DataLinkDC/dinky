@@ -19,7 +19,7 @@
 
 package org.dinky.dto;
 
-import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.enums.SavePointType;
 
 import lombok.Getter;
 import lombok.Setter;

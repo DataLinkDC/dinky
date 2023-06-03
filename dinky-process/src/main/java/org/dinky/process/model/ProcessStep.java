@@ -19,6 +19,8 @@
 
 package org.dinky.process.model;
 
+import org.dinky.process.enums.ProcessStatus;
+
 import java.time.LocalDateTime;
 
 /**

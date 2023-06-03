@@ -17,22 +17,15 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.enums;
+
+import java.util.Arrays;
 
 /** @version 1.0 */
-public enum TaskOperatingStatus {
-    INIT(1, "init", "初始化"),
+public enum TaskOperatingSavepointSelect {
+    DEFAULT_CONFIG(0, "defaultConfig", "默认保存点"),
 
-    OPERATING_BEFORE(4, "operatingBefore", "操作前准备"),
-
-    TASK_STATUS_NO_DONE(8, "taskStatusNoDone", "任务不是完成状态"),
-
-    OPERATING(12, "operating", "正在操作"),
-
-    EXCEPTION(13, "exception", "异常"),
-
-    SUCCESS(16, "success", "成功"),
-    FAIL(20, "fail", "失败");
+    LATEST(1, "latest", "最新保存点");
 
     private Integer code;
 
@@ -40,7 +33,7 @@ public enum TaskOperatingStatus {
 
     private String message;
 
-    TaskOperatingStatus(Integer code, String name, String message) {
+    TaskOperatingSavepointSelect(Integer code, String name, String message) {
         this.code = code;
         this.name = name;
         this.message = message;
@@ -56,5 +49,12 @@ public enum TaskOperatingStatus {
 
     public String getMessage() {
         return message;
+    }
+
+    public static TaskOperatingSavepointSelect valueByCode(Integer code) {
+        return Arrays.stream(values())
+                .filter(savepointSelect -> savepointSelect.getCode().equals(code))
+                .findFirst()
+                .orElse(null);
     }
 }

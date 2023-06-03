@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.enums;
 
 import org.dinky.assertion.Asserts;
 

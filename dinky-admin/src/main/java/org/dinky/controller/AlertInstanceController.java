@@ -21,9 +21,9 @@ package org.dinky.controller;
 
 import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.AlertInstance;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.AlertInstanceService;
 import org.dinky.utils.I18nMsgUtils;
 

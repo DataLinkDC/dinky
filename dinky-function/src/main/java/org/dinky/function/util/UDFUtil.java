@@ -29,7 +29,7 @@ import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
 import org.dinky.process.exception.DinkyException;

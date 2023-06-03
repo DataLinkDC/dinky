@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.UDFTemplate;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.utils.I18nMsgUtils;
 

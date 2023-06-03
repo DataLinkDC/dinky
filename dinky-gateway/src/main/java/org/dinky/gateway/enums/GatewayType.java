@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.gateway;
+package org.dinky.gateway.enums;
 
 import org.dinky.assertion.Asserts;
 

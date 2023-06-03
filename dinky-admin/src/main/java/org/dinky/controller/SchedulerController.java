@@ -19,10 +19,10 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
 import org.dinky.init.SystemInit;
 import org.dinky.model.Catalogue;
 import org.dinky.model.SystemConfiguration;
+import org.dinky.result.Result;
 import org.dinky.scheduler.client.ProcessClient;
 import org.dinky.scheduler.client.TaskClient;
 import org.dinky.scheduler.enums.ReleaseState;

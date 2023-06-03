@@ -20,6 +20,7 @@
 package org.dinky.model;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.enums.TableType;
 import org.dinky.utils.SqlUtil;
 
 import java.beans.Transient;

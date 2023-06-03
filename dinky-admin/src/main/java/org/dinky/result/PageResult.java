@@ -17,27 +17,32 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.result;
+
+import java.io.Serializable;
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
- * 状态码
+ * 分页结果
  *
- * @since 2021/5/28 19:58
+ * @since 2021/5/3 20:03
  */
-public enum CodeEnum {
-    SUCCESS(0),
-    ERROR(1),
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageResult<T> implements Serializable {
 
-    EXCEPTION(5),
-    NOTLOGIN(401);
-
-    private Integer code;
-
-    CodeEnum(Integer code) {
-        this.code = code;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
+    private static final long serialVersionUID = -5143774412936881374L;
+    /** 总数 */
+    private Long count;
+    /** 是否成功：0 成功、1 失败 */
+    private int code;
+    /** 当前页结果集 */
+    private List<T> data;
 }

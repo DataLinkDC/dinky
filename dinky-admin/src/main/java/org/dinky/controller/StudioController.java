@@ -20,7 +20,6 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.Result;
 import org.dinky.dto.StudioCADTO;
 import org.dinky.dto.StudioDDLDTO;
 import org.dinky.dto.StudioExecuteDTO;
@@ -31,6 +30,7 @@ import org.dinky.model.Catalog;
 import org.dinky.model.FlinkColumn;
 import org.dinky.model.Schema;
 import org.dinky.result.IResult;
+import org.dinky.result.Result;
 import org.dinky.result.SelectResult;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.service.StudioService;

@@ -17,35 +17,20 @@
  *
  */
 
-package org.dinky.gateway.config;
+package org.dinky.gateway.enums;
 
-import org.dinky.assertion.Asserts;
+import org.apache.flink.annotation.Experimental;
 
-/**
- * ActionType
- *
- * @since 2021/11/3 21:58
- */
-public enum ActionType {
-    SAVEPOINT("savepoint"),
-    CANCEL("cancel");
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    private final String value;
-
-    ActionType(String value) {
-        this.value = value;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public static ActionType get(String value) {
-        for (ActionType type : ActionType.values()) {
-            if (Asserts.isEquals(type.getValue(), value)) {
-                return type;
-            }
-        }
-        return ActionType.SAVEPOINT;
-    }
+@Experimental
+@JsonIgnoreProperties(ignoreUnknown = true)
+public enum UpgradeMode {
+    @JsonProperty("savepoint")
+    SAVEPOINT,
+    @JsonProperty("last-state")
+    LAST_STATE,
+    @JsonProperty("stateless")
+    STATELESS
 }

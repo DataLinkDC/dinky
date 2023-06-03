@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.FragmentVariable;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.utils.I18nMsgUtils;
 

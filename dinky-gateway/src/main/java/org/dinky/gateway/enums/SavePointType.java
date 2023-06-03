@@ -17,34 +17,37 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.gateway.enums;
 
-/** 分库分表的类型 */
-public enum TableType {
+import org.dinky.assertion.Asserts;
 
-    /** 分库分表 */
-    SPLIT_DATABASE_AND_TABLE,
-    /** 分表单库 */
-    SPLIT_DATABASE_AND_SINGLE_TABLE,
-    /** 单库分表 */
-    SINGLE_DATABASE_AND_SPLIT_TABLE
-    /** 单库单表 */
-    ,
-    SINGLE_DATABASE_AND_TABLE;
+import java.util.Arrays;
 
-    public static TableType type(boolean splitDatabase, boolean splitTable) {
-        if (splitDatabase && splitTable) {
-            return TableType.SPLIT_DATABASE_AND_TABLE;
-        }
+/**
+ * SavePointType
+ *
+ * @since 2021/11/3 21:58
+ */
+public enum SavePointType {
+    TRIGGER("trigger"),
+    DISPOSE("dispose"),
+    STOP("stop"),
+    CANCEL("cancel");
 
-        if (splitTable) {
-            return TableType.SINGLE_DATABASE_AND_SPLIT_TABLE;
-        }
+    private String value;
 
-        if (splitDatabase) {
-            return TableType.SPLIT_DATABASE_AND_SINGLE_TABLE;
-        }
+    SavePointType(String value) {
+        this.value = value;
+    }
 
-        return TableType.SINGLE_DATABASE_AND_TABLE;
+    public String getValue() {
+        return value;
+    }
+
+    public static SavePointType get(String value) {
+        return Arrays.stream(SavePointType.values())
+                .filter(type -> Asserts.isEqualsIgnoreCase(type.getValue(), value))
+                .findFirst()
+                .orElse(SavePointType.TRIGGER);
     }
 }

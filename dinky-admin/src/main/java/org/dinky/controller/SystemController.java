@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
 import org.dinky.constant.DirConstant;
 import org.dinky.dto.TreeNodeDTO;
+import org.dinky.result.Result;
 import org.dinky.service.SystemService;
 
 import java.util.List;

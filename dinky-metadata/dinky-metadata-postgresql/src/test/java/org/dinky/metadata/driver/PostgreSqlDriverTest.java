@@ -21,8 +21,8 @@ package org.dinky.metadata.driver;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.dinky.enums.ColumnType;
 import org.dinky.model.Column;
-import org.dinky.model.ColumnType;
 import org.dinky.model.Table;
 
 import java.util.ArrayList;

@@ -19,7 +19,7 @@
 
 package org.dinky.db.service;
 
-import org.dinky.common.result.ProTableResult;
+import org.dinky.result.ProTableResult;
 
 import java.util.Map;
 

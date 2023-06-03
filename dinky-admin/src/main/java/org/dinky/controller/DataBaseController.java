@@ -20,8 +20,6 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.constant.CommonConstant;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -30,6 +28,8 @@ import org.dinky.model.DataBase;
 import org.dinky.model.QueryData;
 import org.dinky.model.Schema;
 import org.dinky.model.SqlGeneration;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.DataBaseService;
 import org.dinky.utils.I18nMsgUtils;
 
