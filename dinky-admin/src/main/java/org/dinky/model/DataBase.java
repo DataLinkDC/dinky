@@ -19,8 +19,8 @@
 
 package org.dinky.model;
 
-import org.dinky.db.model.SuperEntity;
 import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.mybatis.model.SuperEntity;
 
 import java.time.LocalDateTime;
 

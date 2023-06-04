@@ -19,9 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
 import org.dinky.model.Configuration;
 import org.dinky.model.SysConfig;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 import java.util.Map;

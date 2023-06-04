@@ -3,7 +3,7 @@ import {ProTable} from '@ant-design/pro-components';
 import {Button, Table} from 'antd';
 import React, {useEffect, useRef} from 'react';
 import {Jobs} from '@/types/DevOps/data';
-import JobHistoryList from '@/pages/DevOps/JobList/compents/JobHistoryList';
+import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import {l} from '@/utils/intl';
 import {parseSecondStr} from '@/utils/function';
 import {API_CONSTANTS} from '@/services/constants';
@@ -29,7 +29,7 @@ const JobList = () => {
       hideInSearch: true,
       filterMultiple: false,
       dataIndex: 'step',
-      render: (_, row) => TagJobLifeCycle(row.step)
+      render: (_: any, row: { step: number; }) => TagJobLifeCycle(row.step)
     },
     {
       title: l('global.table.runmode'),
@@ -48,7 +48,7 @@ const JobList = () => {
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_, row) => parseSecondStr(row.duration)
+      render: (_: any, row: { duration: number; }) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.status'),
@@ -56,13 +56,13 @@ const JobList = () => {
       filterMultiple: false,
       hideInSearch: true,
       dataIndex: 'status',
-      render: (_, row) => TagJobStatus(row.status)
+      render: (_: any, row: { status: string | undefined; }) => TagJobStatus(row.status)
     },
     Table.EXPAND_COLUMN,
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      render: (text, record) => [
+      render: (text: any, record: { id: any; }) => [
         <Button
           className={'options-button'}
           key={`${record.id}_history`}

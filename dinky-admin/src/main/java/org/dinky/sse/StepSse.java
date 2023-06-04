@@ -19,9 +19,9 @@
 
 package org.dinky.sse;
 
-import org.dinky.common.result.StepResult;
 import org.dinky.context.GitBuildContextHolder;
 import org.dinky.model.GitProject;
+import org.dinky.result.StepResult;
 
 import java.io.File;
 import java.io.IOException;

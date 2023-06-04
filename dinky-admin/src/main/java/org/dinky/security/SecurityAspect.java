@@ -19,11 +19,11 @@
 
 package org.dinky.security;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.History;
 import org.dinky.model.JobInfoDetail;
 import org.dinky.result.ExplainResult;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.result.SqlExplainResult;
 
 import java.util.List;

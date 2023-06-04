@@ -22,8 +22,8 @@ package org.dinky.metadata.driver;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.dinky.enums.ColumnType;
 import org.dinky.model.Column;
-import org.dinky.model.ColumnType;
 import org.dinky.model.Table;
 
 import java.util.Arrays;

@@ -20,7 +20,7 @@
 package org.dinky.dto;
 
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointStrategy;
+import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.job.JobConfig;
 
 import lombok.Getter;

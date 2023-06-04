@@ -21,16 +21,16 @@ package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
-import org.dinky.gateway.config.ActionType;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.model.JobStatus;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;

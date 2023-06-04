@@ -19,15 +19,15 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.Result;
-import org.dinky.db.service.ISuperService;
 import org.dinky.dto.TaskRollbackVersionDTO;
+import org.dinky.enums.JobLifeCycle;
+import org.dinky.enums.JobStatus;
 import org.dinky.job.JobResult;
 import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
-import org.dinky.model.JobLifeCycle;
-import org.dinky.model.JobStatus;
 import org.dinky.model.Task;
+import org.dinky.mybatis.service.ISuperService;
+import org.dinky.result.Result;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.result.TaskOperatingResult;
 

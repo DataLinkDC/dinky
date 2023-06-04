@@ -20,9 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.model.Namespace;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.NamespaceService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/namespace")
 @RequiredArgsConstructor
+@Deprecated
 public class NamespaceController {
 
     private final NamespaceService namespaceService;

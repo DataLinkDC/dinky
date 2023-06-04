@@ -19,11 +19,10 @@
 
 package org.dinky.result;
 
-import org.dinky.common.result.Result;
-import org.dinky.model.CodeEnum;
+import org.dinky.enums.CodeEnum;
+import org.dinky.enums.TaskOperatingSavepointSelect;
+import org.dinky.enums.TaskOperatingStatus;
 import org.dinky.model.Task;
-import org.dinky.model.TaskOperatingSavepointSelect;
-import org.dinky.model.TaskOperatingStatus;
 
 import lombok.Data;
 

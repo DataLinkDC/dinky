@@ -20,11 +20,9 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.assertion.Tips;
-import org.dinky.common.result.ProTableResult;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.db.util.ProTableUtil;
+import org.dinky.enums.JobStatus;
+import org.dinky.enums.Status;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTaskPool;
@@ -34,7 +32,9 @@ import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
 import org.dinky.model.JobInstanceCount;
 import org.dinky.model.JobInstanceStatus;
-import org.dinky.model.JobStatus;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.mybatis.util.ProTableUtil;
+import org.dinky.result.ProTableResult;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
@@ -240,7 +240,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public void initTenantByJobInstanceId(Integer id) {
         Integer tenantId = baseMapper.getTenantByJobInstanceId(id);
-        Asserts.checkNull(tenantId, Tips.JOB_INSTANCE_NOT_EXIST);
+        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
         TenantContextHolder.set(tenantId);
     }
 }

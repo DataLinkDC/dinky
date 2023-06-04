@@ -19,6 +19,8 @@
 
 package org.dinky.model;
 
+import org.dinky.enums.ColumnType;
+
 import java.io.Serializable;
 
 import lombok.AccessLevel;

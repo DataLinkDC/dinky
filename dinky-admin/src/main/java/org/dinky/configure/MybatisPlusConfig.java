@@ -20,8 +20,8 @@
 package org.dinky.configure;
 
 import org.dinky.context.TenantContextHolder;
-import org.dinky.db.handler.DateMetaObjectHandler;
-import org.dinky.db.properties.MybatisPlusFillProperties;
+import org.dinky.mybatis.handler.DateMetaObjectHandler;
+import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
 import java.util.List;
 

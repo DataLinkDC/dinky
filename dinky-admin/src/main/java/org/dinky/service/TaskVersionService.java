@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
 import org.dinky.model.TaskVersion;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 

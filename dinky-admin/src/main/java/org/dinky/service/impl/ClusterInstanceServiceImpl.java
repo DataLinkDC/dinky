@@ -24,15 +24,15 @@ import org.dinky.assertion.Asserts;
 import org.dinky.cluster.FlinkCluster;
 import org.dinky.cluster.FlinkClusterInfo;
 import org.dinky.constant.FlinkConstant;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterInstanceMapper;
 import org.dinky.model.Cluster;
 import org.dinky.model.ClusterConfiguration;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.ClusterConfigurationService;
 import org.dinky.service.ClusterInstanceService;
 

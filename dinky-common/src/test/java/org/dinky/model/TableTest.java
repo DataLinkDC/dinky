@@ -22,6 +22,8 @@ package org.dinky.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.dinky.enums.ColumnType;
+
 import java.util.Arrays;
 import java.util.List;
 

@@ -25,13 +25,13 @@ import static org.dinky.utils.SplitUtil.isSplit;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CommonConstant;
+import org.dinky.enums.TableType;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.model.Column;
 import org.dinky.model.QueryData;
 import org.dinky.model.Schema;
 import org.dinky.model.Table;
-import org.dinky.model.TableType;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.result.SqlExplainResult;

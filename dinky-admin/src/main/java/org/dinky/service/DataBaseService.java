@@ -19,13 +19,13 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.model.Column;
 import org.dinky.model.DataBase;
 import org.dinky.model.QueryData;
 import org.dinky.model.Schema;
 import org.dinky.model.SqlGeneration;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 

@@ -19,7 +19,7 @@
 
 package org.dinky.model;
 
-import org.dinky.db.model.SuperEntity;
+import org.dinky.mybatis.model.SuperEntity;
 
 import com.baomidou.mybatisplus.annotation.TableName;
 

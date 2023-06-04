@@ -53,11 +53,4 @@ export default {
   'app.request.loading': '加载中...',
   'app.request.back': '返回主页',
 
-
-  'app.response.response-error':'响应出错',
-  'app.response.sucess':'成功',
-  'app.response.error':'错误',
-  'app.response.exception':'服务端错误',
-  'app.response.notlogin':'未登录',
-  'app.response.notexist':'你访问的页面/接口不存在',
 };

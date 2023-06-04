@@ -19,13 +19,13 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.model.Jar;
 import org.dinky.model.Task;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.JarService;
 import org.dinky.service.TaskService;
 

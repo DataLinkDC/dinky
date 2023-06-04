@@ -19,6 +19,8 @@
 
 package org.dinky.gateway.kubernetes.operator.api;
 
+import org.dinky.gateway.enums.UpgradeMode;
+
 import org.apache.flink.annotation.Experimental;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;

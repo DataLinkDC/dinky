@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
 import org.dinky.process.model.ProcessEntity;
+import org.dinky.result.ProTableResult;
+import org.dinky.result.Result;
 import org.dinky.service.ProcessService;
 
 import java.util.List;

@@ -17,6 +17,8 @@
 
 
 import {l} from "@/utils/intl";
+import {ModalFormProps} from "@ant-design/pro-form/es/layouts/ModalForm";
+import {ProTableProps} from "@ant-design/pro-table";
 
 /**
  * the  interface api constants
@@ -291,8 +293,10 @@ export const PRO_LIST_CARD_META = {
 export const PRO_LIST_CARD_OPTIONS = {
   search: false,
   metas: PRO_LIST_CARD_META,
+  size: "small",
   pagination: {
-    defaultPageSize: 10,
+    defaultPageSize: 15,
+    hideOnSinglePage: true,
   },
   grid: {gutter: 24, column: 5}
 };
@@ -301,16 +305,23 @@ export const PRO_LIST_CARD_OPTIONS = {
 /**
  * the protable layout of public
  */
-export const PROTABLE_OPTIONS_PUBLIC = {
+export const PROTABLE_OPTIONS_PUBLIC : any = {
   pagination: {
-    defaultPageSize: 8,
+    defaultPageSize: 12,
     hideOnSinglePage: true,
     showQuickJumper: false,
     showSizeChanger: false,
+    position: ["bottomCenter"],
   },
+  ghost: false,
   rowKey: "id",
+  size: "small",
+  scroll: {
+    y: "auto",
+  },
   search: {
-    labelWidth: 120, // must be number
+    ghost: false,
+    labelWidth: 80, // must be number
     span: 4,
   },
 };
@@ -329,7 +340,7 @@ export const NORMAL_MODAL_OPTIONS = {
 /**
  * the modal layout of public
  */
-export const MODAL_FORM_OPTIONS = {
+export const MODAL_FORM_OPTIONS:ModalFormProps = {
   width: "50%",
 };
 

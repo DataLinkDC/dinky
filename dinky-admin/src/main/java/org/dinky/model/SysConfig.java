@@ -19,7 +19,7 @@
 
 package org.dinky.model;
 
-import org.dinky.db.annotation.Save;
+import org.dinky.mybatis.annotation.Save;
 
 import java.time.LocalDateTime;
 

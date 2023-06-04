@@ -20,8 +20,8 @@
 package org.dinky.model;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.db.model.SuperEntity;
 import org.dinky.job.JobConfig;
+import org.dinky.mybatis.model.SuperEntity;
 
 import java.util.ArrayList;
 import java.util.List;

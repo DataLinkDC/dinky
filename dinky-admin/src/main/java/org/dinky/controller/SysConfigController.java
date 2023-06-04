@@ -19,8 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
 import org.dinky.model.Configuration;
+import org.dinky.result.Result;
 import org.dinky.service.SysConfigService;
 
 import java.util.List;

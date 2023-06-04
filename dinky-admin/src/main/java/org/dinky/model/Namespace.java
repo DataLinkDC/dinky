@@ -35,6 +35,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = false)
 @TableName("dinky_namespace")
+@Deprecated
 public class Namespace implements Serializable {
 
     private static final long serialVersionUID = -5960332046748903443L;

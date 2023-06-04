@@ -19,7 +19,7 @@
 
 package org.dinky.dto;
 
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.job.JobConfig;
 
 import lombok.Getter;

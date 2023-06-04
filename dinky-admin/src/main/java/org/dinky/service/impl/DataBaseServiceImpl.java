@@ -21,7 +21,6 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.CommonConstant;
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
@@ -31,6 +30,7 @@ import org.dinky.model.QueryData;
 import org.dinky.model.Schema;
 import org.dinky.model.SqlGeneration;
 import org.dinky.model.Table;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
 
 import org.apache.commons.lang3.StringUtils;

@@ -26,8 +26,6 @@ import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
-import org.dinky.assertion.Tips;
-import org.dinky.common.result.Result;
 import org.dinky.config.Dialect;
 import org.dinky.config.Docker;
 import org.dinky.constant.FlinkRestResultConstant;
@@ -36,19 +34,23 @@ import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.db.service.impl.SuperServiceImpl;
 import org.dinky.dto.SqlDTO;
 import org.dinky.dto.TaskRollbackVersionDTO;
 import org.dinky.dto.TaskVersionConfigureDTO;
+import org.dinky.enums.JobLifeCycle;
+import org.dinky.enums.JobStatus;
+import org.dinky.enums.Status;
+import org.dinky.enums.TaskOperatingSavepointSelect;
+import org.dinky.enums.TaskOperatingStatus;
 import org.dinky.exception.BusException;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
-import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointStrategy;
-import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.FlinkJobTask;
@@ -72,21 +74,19 @@ import org.dinky.model.Jar;
 import org.dinky.model.JobHistory;
 import org.dinky.model.JobInfoDetail;
 import org.dinky.model.JobInstance;
-import org.dinky.model.JobLifeCycle;
-import org.dinky.model.JobStatus;
 import org.dinky.model.RoleSelectPermissions;
 import org.dinky.model.Savepoints;
 import org.dinky.model.Statement;
 import org.dinky.model.SystemConfiguration;
 import org.dinky.model.Task;
-import org.dinky.model.TaskOperatingSavepointSelect;
-import org.dinky.model.TaskOperatingStatus;
 import org.dinky.model.TaskVersion;
 import org.dinky.model.UDFTemplate;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.enums.ProcessType;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.process.model.ProcessType;
+import org.dinky.result.Result;
 import org.dinky.result.SqlExplainResult;
 import org.dinky.result.TaskOperatingResult;
 import org.dinky.service.AlertGroupService;
@@ -218,7 +218,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTask(Integer id) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
@@ -287,7 +287,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTaskToOnline(Task dtoTask, Integer id) {
         final Task task = dtoTask == null ? this.getTaskInfoById(id) : dtoTask;
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         task.setStep(JobLifeCycle.ONLINE.getValue());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
@@ -305,7 +305,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult restartTask(Integer id, String savePointPath) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
@@ -435,7 +435,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public void initTenantByTaskId(Integer id) {
         Integer tenantId = baseMapper.getTenantByTaskId(id);
-        Asserts.checkNull(tenantId, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMsg());
         TenantContextHolder.set(tenantId);
     }
 
@@ -616,7 +616,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public String exportSql(Integer id) {
         Task task = getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (Dialect.notFlinkSql(task.getDialect())) {
             return task.getStatement();
         }
@@ -808,7 +808,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Result<JobResult> reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }

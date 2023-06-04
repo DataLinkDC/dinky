@@ -20,7 +20,7 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;

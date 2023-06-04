@@ -22,9 +22,9 @@ package org.dinky.job;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.NetConstant;
 import org.dinky.executor.ExecutorSetting;
-import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointStrategy;
+import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.enums.SavePointStrategy;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;

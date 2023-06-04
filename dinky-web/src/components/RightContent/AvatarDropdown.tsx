@@ -112,13 +112,13 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   const { initialState, setInitialState } = useModel('@@initialState');
 
   const onMenuClick = useCallback(
-    (event: MenuInfo) => {
+    async (event: MenuInfo) => {
       const { key } = event;
       if (key === 'logout') {
         flushSync(() => {
           setInitialState((s) => ({ ...s, currentUser: undefined }));
         });
-        loginOut();
+        await loginOut();
         return;
       }
       history.push(`/account/${key}`);

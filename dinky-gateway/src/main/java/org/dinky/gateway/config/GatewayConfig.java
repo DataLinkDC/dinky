@@ -20,7 +20,7 @@
 package org.dinky.gateway.config;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 
 import org.apache.http.util.TextUtils;
 
