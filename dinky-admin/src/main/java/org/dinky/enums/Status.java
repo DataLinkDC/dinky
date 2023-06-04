@@ -26,15 +26,17 @@ import org.springframework.context.i18n.LocaleContextHolder;
 
 /**
  * Status enum.
- * <p>
- *     <b>NOTE:</b> This enumeration is used to define status codes and internationalization messages for response data.
- *     <br> This is mainly responsible for the internationalization information returned by the interface
+ *
+ * <p><b>NOTE:</b> This enumeration is used to define status codes and internationalization messages
+ * for response data. <br>
+ * This is mainly responsible for the internationalization information returned by the interface
  */
 public enum Status {
     // TODO:
     //  1. add more status codes and messages
     //  2. Move the internationalization information in the messages.properties file to here
-    //  3. messages.properties is mainly responsible for writing the internationalization information in the swagger document
+    //  3. messages.properties is mainly responsible for writing the internationalization
+    // information in the swagger document
 
     /** response data msg */
     SUCCESS(200, "Successfully", "获取成功"),
@@ -79,7 +81,6 @@ public enum Status {
     DATASOURCE_EXIST(11001, "DataSource Name Already Exists", "数据源名称已存在"),
     DATASOURCE_CONNECT_FAILED(11002, "DataSource Connection Failed", "建立数据源连接失败"),
     DATASOURCE_HEARTBEAT_FAILED(11003, "DataSource HeartBeat Failed", "数据源心跳检测失败"),
-
 
     /** job or task about */
     JOB_RELEASE_DISABLED_UPDATE(
