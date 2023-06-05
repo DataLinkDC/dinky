@@ -20,11 +20,11 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.model.Column;
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Schema;
-import org.dinky.model.Table;
 import org.dinky.utils.JSONUtil;
 
 import org.apache.flink.api.common.functions.FilterFunction;

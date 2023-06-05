@@ -4,7 +4,7 @@
     <sql id="baseSql">
         id,role_id,namespace_id
     </sql>
-    <select id="selectForProTable" resultType="org.dinky.model.RoleNamespace">
+    <select id="selectForProTable" resultType="org.dinky.data.model.RoleNamespace">
         select
         <include refid="baseSql"/>
         from

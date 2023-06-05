@@ -20,8 +20,8 @@
 package org.dinky.cdc.doris;
 
 import org.dinky.cdc.SinkBuilder;
-import org.dinky.model.Column;
-import org.dinky.model.FlinkCDCConfig;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.utils.JSONUtil;
 
 import org.apache.flink.api.common.functions.FlatMapFunction;

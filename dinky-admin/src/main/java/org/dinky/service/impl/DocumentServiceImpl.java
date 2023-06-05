@@ -20,8 +20,8 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Document;
 import org.dinky.mapper.DocumentMapper;
-import org.dinky.model.Document;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DocumentService;
 

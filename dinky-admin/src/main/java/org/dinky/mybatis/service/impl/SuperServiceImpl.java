@@ -19,10 +19,10 @@
 
 package org.dinky.mybatis.service.impl;
 
+import org.dinky.data.result.ProTableResult;
 import org.dinky.mybatis.mapper.SuperMapper;
 import org.dinky.mybatis.service.ISuperService;
 import org.dinky.mybatis.util.ProTableUtil;
-import org.dinky.result.ProTableResult;
 
 import java.util.List;
 import java.util.Map;

@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.model.Configuration;
+import org.dinky.data.model.SysConfig;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.mapper.SysConfigMapper;
-import org.dinky.model.Configuration;
-import org.dinky.model.SysConfig;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.SysConfigService;
 
@@ -35,7 +35,6 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
@@ -50,8 +49,6 @@ import cn.hutool.core.map.MapUtil;
 public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysConfig>
         implements SysConfigService {
 
-    private static final ObjectMapper mapper = new ObjectMapper();
-
     @Override
     public Map<String, List<Configuration<?>>> getAll() {
         return SystemConfiguration.getInstances().getAllConfiguration();
@@ -60,7 +57,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
     @Override
     public void initSysConfig() {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        systemConfiguration.init();
+        systemConfiguration.initAfterBeanStarted();
         List<Configuration<?>> configurationList =
                 systemConfiguration.getAllConfiguration().entrySet().stream()
                         .flatMap(x -> x.getValue().stream())

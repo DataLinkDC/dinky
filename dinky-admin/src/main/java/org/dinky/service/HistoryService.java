@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.model.History;
+import org.dinky.data.model.History;
 import org.dinky.mybatis.service.ISuperService;
 
 /**

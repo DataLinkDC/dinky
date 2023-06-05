@@ -20,7 +20,7 @@
 package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.NetConstant;
+import org.dinky.data.constant.NetConstant;
 
 import lombok.Getter;
 import lombok.Setter;

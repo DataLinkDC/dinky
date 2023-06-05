@@ -19,12 +19,12 @@
 
 package org.dinky.controller;
 
-import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.TreeNodeDTO;
-import org.dinky.model.GitProject;
-import org.dinky.params.GitProjectSortJarParams;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.params.GitProjectSortJarParams;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.GitProjectService;
 import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.GitProjectStepSseFactory;

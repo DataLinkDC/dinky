@@ -19,7 +19,7 @@
 
 package org.dinky.configure;
 
-import org.dinky.constant.BaseConstant;
+import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
 

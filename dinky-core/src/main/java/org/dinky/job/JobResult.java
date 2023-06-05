@@ -19,7 +19,7 @@
 
 package org.dinky.job;
 
-import org.dinky.result.IResult;
+import org.dinky.data.result.IResult;
 
 import java.time.LocalDateTime;
 

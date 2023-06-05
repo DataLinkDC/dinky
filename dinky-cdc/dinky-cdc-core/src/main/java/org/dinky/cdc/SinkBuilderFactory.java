@@ -22,8 +22,8 @@ package org.dinky.cdc;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
+import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
-import org.dinky.model.FlinkCDCConfig;
 
 import java.util.HashMap;
 import java.util.Map;

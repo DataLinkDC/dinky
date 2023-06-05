@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.Document;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.Document;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.DocumentService;
 import org.dinky.utils.I18nMsgUtils;
 

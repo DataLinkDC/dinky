@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.model.LineageRel;
+import org.dinky.data.model.LineageRel;
 
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;

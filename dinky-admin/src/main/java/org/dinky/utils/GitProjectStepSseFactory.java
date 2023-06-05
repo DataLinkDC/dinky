@@ -20,9 +20,9 @@
 package org.dinky.utils;
 
 import org.dinky.context.GitBuildContextHolder;
-import org.dinky.model.GitProject;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.result.StepResult;
 import org.dinky.process.exception.DinkyException;
-import org.dinky.result.StepResult;
 import org.dinky.sse.DoneStepSse;
 import org.dinky.sse.StepSse;
 import org.dinky.sse.git.AnalysisUdfClassStepSse;

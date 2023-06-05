@@ -20,9 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.model.Namespace;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.Namespace;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.NamespaceService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;

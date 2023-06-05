@@ -20,7 +20,7 @@
 package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.BaseConstant;
+import org.dinky.data.constant.BaseConstant;
 
 import java.util.Locale;
 

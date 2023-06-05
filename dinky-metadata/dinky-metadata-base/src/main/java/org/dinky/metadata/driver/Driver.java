@@ -20,14 +20,14 @@
 package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.exception.MetaDataException;
-import org.dinky.exception.SplitTableException;
+import org.dinky.data.exception.MetaDataException;
+import org.dinky.data.exception.SplitTableException;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.QueryData;
-import org.dinky.model.Schema;
-import org.dinky.model.Table;
-import org.dinky.result.SqlExplainResult;
 
 import java.util.List;
 import java.util.Map;

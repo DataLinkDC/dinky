@@ -19,7 +19,7 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.model.GitProject;
+import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
 

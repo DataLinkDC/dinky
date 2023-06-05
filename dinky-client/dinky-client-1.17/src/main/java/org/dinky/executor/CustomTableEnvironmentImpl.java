@@ -21,8 +21,8 @@ package org.dinky.executor;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.model.LineageRel;
-import org.dinky.result.SqlExplainResult;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
 import org.dinky.utils.LineageContext;
 

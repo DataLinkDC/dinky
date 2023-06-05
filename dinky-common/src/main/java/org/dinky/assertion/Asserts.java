@@ -19,7 +19,7 @@
 
 package org.dinky.assertion;
 
-import org.dinky.exception.RunTimeException;
+import org.dinky.data.exception.RunTimeException;
 
 import java.util.Arrays;
 import java.util.Collection;

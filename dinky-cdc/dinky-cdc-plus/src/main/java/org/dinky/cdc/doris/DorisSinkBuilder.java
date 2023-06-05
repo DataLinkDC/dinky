@@ -22,8 +22,8 @@ package org.dinky.cdc.doris;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.SinkBuilder;
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Table;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
 
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;

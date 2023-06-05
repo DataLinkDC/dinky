@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.model.UploadFileRecord;
+import org.dinky.data.model.UploadFileRecord;
 import org.dinky.mybatis.service.ISuperService;
 
 /** UploadFileRecordService */

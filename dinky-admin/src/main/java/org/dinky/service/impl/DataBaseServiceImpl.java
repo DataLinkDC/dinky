@@ -20,16 +20,16 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.CommonConstant;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.DataBase;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.model.Table;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.DataBase;
-import org.dinky.model.QueryData;
-import org.dinky.model.Schema;
-import org.dinky.model.SqlGeneration;
-import org.dinky.model.Table;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
 

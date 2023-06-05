@@ -19,15 +19,15 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.dto.GitAnalysisJarDTO;
-import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.JarClassesDTO;
-import org.dinky.dto.TreeNodeDTO;
+import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.JarClassesDTO;
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.mapper.GitProjectMapper;
-import org.dinky.model.GitProject;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.params.GitProjectSortJarParams;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;

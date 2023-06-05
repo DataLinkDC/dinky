@@ -20,7 +20,7 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.enums.JobStatus;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.GatewayType;

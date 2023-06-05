@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.process.exception.DinkyException;
 

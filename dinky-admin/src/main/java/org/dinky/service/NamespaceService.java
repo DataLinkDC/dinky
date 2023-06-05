@@ -19,10 +19,10 @@
 
 package org.dinky.service;
 
-import org.dinky.model.Namespace;
+import org.dinky.data.model.Namespace;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

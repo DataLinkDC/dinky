@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.model.RoleSelectPermissions;
 import org.dinky.mapper.RoleSelectPermissionsMapper;
-import org.dinky.model.RoleSelectPermissions;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RoleSelectPermissionsService;
 

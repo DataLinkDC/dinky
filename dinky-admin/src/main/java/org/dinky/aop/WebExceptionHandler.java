@@ -19,10 +19,10 @@
 
 package org.dinky.aop;
 
-import org.dinky.enums.CodeEnum;
-import org.dinky.enums.Status;
-import org.dinky.exception.BusException;
-import org.dinky.result.Result;
+import org.dinky.data.enums.CodeEnum;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.result.Result;
 import org.dinky.utils.I18nMsgUtils;
 
 import org.apache.commons.lang3.StringUtils;
