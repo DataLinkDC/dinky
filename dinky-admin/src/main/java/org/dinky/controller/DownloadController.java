@@ -20,10 +20,10 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.exception.BusException;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.model.FlinkUdfManifest;
 
 import java.io.File;
 import java.io.InputStream;

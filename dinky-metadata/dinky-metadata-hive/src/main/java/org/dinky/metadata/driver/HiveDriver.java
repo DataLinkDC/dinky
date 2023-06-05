@@ -20,15 +20,15 @@
 package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
 import org.dinky.metadata.constant.HiveConstant;
 import org.dinky.metadata.convert.HiveTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.query.HiveQuery;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.Schema;
-import org.dinky.model.Table;
 import org.dinky.utils.LogUtil;
 
 import org.apache.commons.lang3.StringUtils;

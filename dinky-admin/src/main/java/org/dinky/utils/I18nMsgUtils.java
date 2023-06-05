@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.enums.Status;
+import org.dinky.data.enums.Status;
 
 import java.util.Arrays;
 import java.util.Optional;

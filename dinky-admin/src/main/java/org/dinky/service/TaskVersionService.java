@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.model.TaskVersion;
+import org.dinky.data.model.TaskVersion;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

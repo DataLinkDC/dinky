@@ -19,10 +19,10 @@
 
 package org.dinky.job;
 
+import org.dinky.data.result.IResult;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorSetting;
 import org.dinky.gateway.enums.GatewayType;
-import org.dinky.result.IResult;
 
 import java.time.LocalDateTime;
 import java.util.List;

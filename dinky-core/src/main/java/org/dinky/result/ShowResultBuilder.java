@@ -19,6 +19,7 @@
 
 package org.dinky.result;
 
+import org.dinky.data.result.IResult;
 import org.dinky.utils.FlinkUtil;
 
 import org.apache.flink.table.api.TableResult;

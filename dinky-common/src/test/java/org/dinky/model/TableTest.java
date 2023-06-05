@@ -22,7 +22,9 @@ package org.dinky.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
-import org.dinky.enums.ColumnType;
+import org.dinky.data.enums.ColumnType;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Table;
 
 import java.util.Arrays;
 import java.util.List;

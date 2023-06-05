@@ -20,7 +20,7 @@
 package org.dinky.gateway.kubernetes.operator;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.enums.JobStatus;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.enums.UpgradeMode;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;

@@ -24,10 +24,10 @@ import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Schema;
-import org.dinky.model.Table;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.LogUtil;
 

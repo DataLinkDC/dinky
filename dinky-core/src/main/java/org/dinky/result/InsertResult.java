@@ -19,6 +19,9 @@
 
 package org.dinky.result;
 
+import org.dinky.data.result.AbstractResult;
+import org.dinky.data.result.IResult;
+
 import java.time.LocalDateTime;
 
 import lombok.Getter;

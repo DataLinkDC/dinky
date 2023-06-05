@@ -3,7 +3,7 @@
 <mapper namespace="org.dinky.mapper.DocumentMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.dinky.model.Document">
+    <resultMap id="BaseResultMap" type="org.dinky.data.model.Document">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="category" property="category" />
@@ -24,7 +24,7 @@
     </sql>
 
 
-    <select id="selectForProTable" resultType="org.dinky.model.Document">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Document">
         select
         a.*
         from

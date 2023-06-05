@@ -19,12 +19,13 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.Configuration;
-import org.dinky.result.Result;
+import org.dinky.data.model.Configuration;
+import org.dinky.data.result.Result;
 import org.dinky.service.SysConfigService;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.Dict;
+import cn.hutool.core.map.MapUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +61,11 @@ public class SysConfigController {
     /** 获取所有配置 */
     @GetMapping("/getAll")
     public Result<Map<String, List<Configuration<?>>>> getAll() {
-        return Result.succeed(sysConfigService.getAll(), "获取成功");
+        Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
+        Map<String, List<Configuration<?>>> map =
+                MapUtil.map(
+                        all,
+                        (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
+        return Result.succeed(map, "获取成功");
     }
 }

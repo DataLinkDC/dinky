@@ -19,7 +19,7 @@
 
 package org.dinky.job;
 
-import org.dinky.model.JobInfoDetail;
+import org.dinky.data.model.JobInfoDetail;
 import org.dinky.pool.AbstractPool;
 
 /**

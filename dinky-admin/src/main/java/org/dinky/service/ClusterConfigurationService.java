@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
+import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.model.ClusterConfiguration;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

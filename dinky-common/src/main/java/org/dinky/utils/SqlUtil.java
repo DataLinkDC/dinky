@@ -20,7 +20,7 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.model.SystemConfiguration;
+import org.dinky.data.model.SystemConfiguration;
 
 import java.util.Map;
 import java.util.regex.Pattern;

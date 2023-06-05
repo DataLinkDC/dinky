@@ -4,7 +4,7 @@
     <sql id="baseSql">
         id,tenant_code,is_delete,note,create_time,update_time
     </sql>
-    <select id="selectForProTable" resultType="org.dinky.model.Tenant">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Tenant">
         select
         <include refid="baseSql"/>
         from
@@ -28,7 +28,7 @@
             </if>
         </where>
     </select>
-    <select id="getTenantByIds" resultType="org.dinky.model.Tenant">
+    <select id="getTenantByIds" resultType="org.dinky.data.model.Tenant">
         select id
               ,tenant_code
               ,is_delete

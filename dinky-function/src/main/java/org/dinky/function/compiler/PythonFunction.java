@@ -20,11 +20,11 @@
 package org.dinky.function.compiler;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.function.util.ZipWriter;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 

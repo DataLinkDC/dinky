@@ -19,14 +19,14 @@
 
 package org.dinky.metadata.driver;
 
+import org.dinky.data.model.Table;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.metadata.ast.Clickhouse20CreateTableStatement;
 import org.dinky.metadata.convert.ClickHouseTypeConvert;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.parser.Clickhouse20StatementParser;
 import org.dinky.metadata.query.ClickHouseQuery;
 import org.dinky.metadata.query.IDBQuery;
-import org.dinky.model.Table;
-import org.dinky.result.SqlExplainResult;
 import org.dinky.utils.LogUtil;
 
 import java.sql.PreparedStatement;

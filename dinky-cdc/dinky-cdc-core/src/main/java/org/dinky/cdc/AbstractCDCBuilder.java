@@ -21,7 +21,7 @@ package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkParamConstant;
-import org.dinky.model.FlinkCDCConfig;
+import org.dinky.data.model.FlinkCDCConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;

@@ -19,7 +19,7 @@
 
 package org.dinky.context;
 
-import org.dinky.dto.UserDTO;
+import org.dinky.data.dto.UserDTO;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

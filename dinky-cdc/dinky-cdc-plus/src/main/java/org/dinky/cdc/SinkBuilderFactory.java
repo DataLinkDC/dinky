@@ -27,7 +27,7 @@ import org.dinky.cdc.kafka.KafkaSinkBuilder;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.exception.FlinkClientException;
-import org.dinky.model.FlinkCDCConfig;
+import org.dinky.data.model.FlinkCDCConfig;
 
 import java.util.HashMap;
 import java.util.Map;

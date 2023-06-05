@@ -19,10 +19,10 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.dto.GitAnalysisJarDTO;
+import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.model.GitProject;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.StepSse;
 

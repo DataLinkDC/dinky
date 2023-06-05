@@ -27,13 +27,13 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 
-import org.dinky.constant.CommonConstant;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Schema;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.driver.MySqlDriver;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.Schema;
 
 import java.sql.Connection;
 import java.sql.DriverManager;

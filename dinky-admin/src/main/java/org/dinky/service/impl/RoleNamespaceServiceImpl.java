@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.model.RoleNamespace;
 import org.dinky.mapper.RoleNamespaceMapper;
-import org.dinky.model.RoleNamespace;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RoleNamespaceService;
 

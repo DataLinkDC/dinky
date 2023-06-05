@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.RoleMapper">
-    <resultMap id="roleResultMap" type="org.dinky.model.Role">
+    <resultMap id="roleResultMap" type="org.dinky.data.model.Role">
         <id property="id" column="id"/>
         <result property="tenantId" column="tenant_id"/>
         <result property="roleCode" column="role_code"/>
@@ -10,10 +10,10 @@
         <result property="note" column="note"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
-        <collection property="namespaces" ofType="org.dinky.model.Namespace"
+        <collection property="namespaces" ofType="org.dinky.data.model.Namespace"
                     resultMap="namespaceResultMap"></collection>
     </resultMap>
-    <resultMap id="namespaceResultMap" type="org.dinky.model.Namespace">
+    <resultMap id="namespaceResultMap" type="org.dinky.data.model.Namespace">
         <id property="id" column="id"/>
         <result property="tenantId" column="tenant_id"/>
         <result property="namespaceCode" column="namespace_code"/>
@@ -42,7 +42,7 @@
                  join dinky_namespace dn
                       on drn.namespace_id = dn.id
     </sql>
-    <select id="selectForProTable" resultType="org.dinky.model.Role">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Role">
         select
             a.*
         from dinky_role a
@@ -72,7 +72,7 @@
         </where>
     </select>
 
-    <select id="getRoleByIds" resultType="org.dinky.model.Role">
+    <select id="getRoleByIds" resultType="org.dinky.data.model.Role">
         select id
         ,tenant_id
         ,role_code
@@ -88,7 +88,7 @@
         </foreach>
     </select>
 
-    <select id="getRoleByTenantIdAndIds" resultType="org.dinky.model.Role">
+    <select id="getRoleByTenantIdAndIds" resultType="org.dinky.data.model.Role">
         select id
         ,tenant_id
         ,role_code

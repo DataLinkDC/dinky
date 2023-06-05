@@ -24,7 +24,7 @@ import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
-import org.dinky.model.FlinkCDCConfig;
+import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.api.common.eventtime.WatermarkStrategy;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;

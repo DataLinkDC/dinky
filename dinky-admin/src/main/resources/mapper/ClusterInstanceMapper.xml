@@ -3,7 +3,7 @@
 <mapper namespace="org.dinky.mapper.ClusterInstanceMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.dinky.model.Cluster">
+    <resultMap id="BaseResultMap" type="org.dinky.data.model.Cluster">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="alias" property="alias" />
@@ -27,7 +27,7 @@
     </sql>
 
 
-    <select id="selectForProTable" resultType="org.dinky.model.Cluster">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Cluster">
         select
         a.*
         from
@@ -58,7 +58,7 @@
         </where>
     </select>
 
-    <select id="listSessionEnable" resultType="org.dinky.model.Cluster">
+    <select id="listSessionEnable" resultType="org.dinky.data.model.Cluster">
         select
         a.*
         from

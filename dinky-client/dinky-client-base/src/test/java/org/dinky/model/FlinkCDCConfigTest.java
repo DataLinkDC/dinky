@@ -22,6 +22,8 @@ package org.dinky.model;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
+import org.dinky.data.model.FlinkCDCConfig;
+
 import java.util.HashMap;
 import java.util.Map;
 

@@ -20,8 +20,8 @@
 package org.dinky.utils;
 
 import org.dinky.constant.FlinkParamConstant;
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Table;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
 
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.runtime.util.EnvironmentInformation;

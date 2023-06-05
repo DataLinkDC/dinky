@@ -21,7 +21,7 @@ package org.dinky.api;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkRestAPIConstant;
-import org.dinky.constant.NetConstant;
+import org.dinky.data.constant.NetConstant;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;

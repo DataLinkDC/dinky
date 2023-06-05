@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.JobHistoryMapper">
 
-    <select id="getByIdWithoutTenant" resultType="org.dinky.model.JobHistory">
+    <select id="getByIdWithoutTenant" resultType="org.dinky.data.model.JobHistory">
         select *
         from dinky_job_history
         where id = #{id}
         limit 1
     </select>
 
-    <select id="selectForProTable" resultType="org.dinky.model.JobHistory">
+    <select id="selectForProTable" resultType="org.dinky.data.model.JobHistory">
         select
         a.*
         from

@@ -20,8 +20,8 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.UploadFileConstant;
-import org.dinky.exception.BusException;
+import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.exception.BusException;
 import org.dinky.service.FileUploadService;
 import org.dinky.service.UploadFileRecordService;
 import org.dinky.utils.FilePathUtil;

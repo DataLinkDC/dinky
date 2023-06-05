@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.Savepoints;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.Savepoints;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.SavepointsService;
 
 import java.util.ArrayList;

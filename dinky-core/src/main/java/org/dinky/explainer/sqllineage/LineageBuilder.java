@@ -20,12 +20,12 @@
 package org.dinky.explainer.sqllineage;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Column;
 import org.dinky.explainer.lineage.LineageRelation;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.explainer.lineage.LineageTable;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
-import org.dinky.model.Column;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 

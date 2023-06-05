@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.History;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.History;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
 import java.util.ArrayList;
