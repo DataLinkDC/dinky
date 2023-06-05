@@ -18,7 +18,6 @@
 
 import {l} from "@/utils/intl";
 import {ModalFormProps} from "@ant-design/pro-form/es/layouts/ModalForm";
-import {ProTableProps} from "@ant-design/pro-table";
 
 /**
  * the  interface api constants
@@ -320,7 +319,6 @@ export const PROTABLE_OPTIONS_PUBLIC : any = {
     y: "auto",
   },
   search: {
-    ghost: false,
     labelWidth: 80, // must be number
     span: 4,
   },

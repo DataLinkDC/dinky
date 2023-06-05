@@ -16,7 +16,7 @@
  */
 
 import {PageContainer} from "@ant-design/pro-components";
-import TagInfo from "@/pages/SettingCenter/SystemInfo/TagInfo";
+import TagInfo from "@/pages/SettingCenter/SystemLogs/TagInfo";
 
 export default () => {
   return <PageContainer title={false}>

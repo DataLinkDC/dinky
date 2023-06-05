@@ -15,42 +15,44 @@
  * limitations under the License.
  */
 
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import React from "react";
-import {l} from "@/utils/intl";
-import {Empty} from "antd";
 
+import CodeShow from "@/components/CustomEditor/CodeShow";
+import {useEffect, useState} from "react";
+import {queryDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
+
+
+/**
+ * code edit props
+ */
 const CodeEditProps = {
-  height: "70vh",
+  height: "82vh",
   width: "100%",
   lineNumbers: "on",
   language: "java",
 };
+const RootLogs = () => {
 
-type LogsShowProps = {
-  code: string;
-  refreshLogCallback: () => void;
-}
-// todo:
-//    If the log is too large and there are too many contents,
-//    MonacoEditor will have performance problems.
-//    It is planned to optimize it through `react-virtualized`
+  const [code, setCode] = useState<string>("");
 
-const LogsShow: React.FC<LogsShowProps> = (props) => {
+  const queryLogs = async () => {
+    const result = await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG);
+    setCode(result);
+  };
 
-  const {code, refreshLogCallback} = props;
+  useEffect(() => {
+    queryLogs();
+  }, []);
 
-  const restLogsShowProps = {
+  const restRootLogProps = {
+    code: code,
     showFloatButton: true,
-    code,
-    refreshLogCallback,
+    refreshLogCallback: queryLogs,
   };
 
   return <>
-    { code ? <CodeShow {...restLogsShowProps} {...CodeEditProps} />
-    : <Empty className={"code-content-empty"} description={l("sys.info.logList.tips")}/>
-    }
+    <CodeShow  {...restRootLogProps} {...CodeEditProps} />
   </>;
 };
 
-export default LogsShow;
+export default RootLogs;

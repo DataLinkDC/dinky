@@ -76,25 +76,6 @@ export default [
       },
     ],
   },
-  //todo: data center will be merge to the registration center's datasource module , it will be removed in the future
-
-  // {
-  //   path: '/datacenter',
-  //   name: 'datacenter',
-  //   icon: 'DatabaseOutlined',
-  //   routes: [
-  //     {
-  //       path: '/datacenter',
-  //       redirect: '/datacenter/metadata',
-  //     },
-  //     {
-  //       path: '/datacenter/metadata',
-  //       name: 'metadata',
-  //       icon: 'DatabaseOutlined',
-  //       // component: './DataCenter/MetaData',
-  //     },
-  //   ],
-  // },
   {
     path: '/registration',
     name: 'registration',
@@ -234,7 +215,7 @@ export default [
         path: '/settings/systemlog',
         name: 'systemlog',
         icon: 'InfoCircleOutlined',
-        component: './SettingCenter/SystemInfo',
+        component: './SettingCenter/SystemLogs',
       },
       {
         path: '/settings/process',
@@ -260,7 +241,6 @@ export default [
   },
   {
     path: '*',
-    layout: false,
     component: './Other/404',
   },
 ];

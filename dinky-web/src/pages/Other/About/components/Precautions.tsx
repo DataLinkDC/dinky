@@ -15,44 +15,19 @@
  * limitations under the License.
  */
 
+import {l} from '@/utils/intl';
+import {Alert} from 'antd';
+import React from 'react';
+import {AlertRestProps} from '@/pages/Other/About';
 
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {useEffect, useState} from "react";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
-
-
-/**
- * code edit props
- */
-const CodeEditProps = {
-  height: "75vh",
-  width: "100%",
-  lineNumbers: "on",
-  language: "java",
-};
-const RootLogs = () => {
-
-  const [code, setCode] = useState<string>("");
-
-  const queryLogs = async () => {
-    const result = await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG);
-    setCode(result);
-  };
-
-  useEffect(() => {
-    queryLogs();
-  }, []);
-
-  const restRootLogProps = {
-    code: code,
-    showFloatButton: true,
-    refreshLogCallback: queryLogs,
-  };
+export const Precautions = () => {
 
   return <>
-    <CodeShow  {...restRootLogProps} {...CodeEditProps} />
+    <Alert
+      message={l('about.precautions')}
+      description={l('about.wechatApply')}
+      type="warning"
+      {...AlertRestProps}
+    />
   </>;
 };
-
-export default RootLogs;
