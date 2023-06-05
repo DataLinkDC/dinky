@@ -17,20 +17,17 @@
  *
  */
 
-package org.dinky.model;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+package org.dinky.data.model;
 
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.Table;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
 
 /** */
 class TableTest {

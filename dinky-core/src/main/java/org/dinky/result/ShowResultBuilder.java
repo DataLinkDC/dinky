@@ -17,13 +17,11 @@
  *
  */
 
-package org.dinky.result;
-
-import org.dinky.data.result.IResult;
-import org.dinky.utils.FlinkUtil;
+package org.dinky.data.result;
 
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
+import org.dinky.utils.FlinkUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;

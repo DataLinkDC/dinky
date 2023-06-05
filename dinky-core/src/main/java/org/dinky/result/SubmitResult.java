@@ -17,9 +17,7 @@
  *
  */
 
-package org.dinky.result;
-
-import org.dinky.data.result.IResult;
+package org.dinky.data.result;
 
 import java.time.LocalDateTime;
 import java.util.List;

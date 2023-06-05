@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.result;
+package org.dinky.data.result;
 
 /**
  * JobSubmitRecord

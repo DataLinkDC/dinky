@@ -17,18 +17,15 @@
  *
  */
 
-package org.dinky.result;
+package org.dinky.data.result;
 
-import org.dinky.data.result.AbstractResult;
-import org.dinky.data.result.IResult;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import lombok.Getter;
-import lombok.Setter;
 
 /**
  * SelectResult

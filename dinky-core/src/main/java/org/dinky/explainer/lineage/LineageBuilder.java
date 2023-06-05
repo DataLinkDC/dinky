@@ -19,9 +19,9 @@
 
 package org.dinky.explainer.lineage;
 
+import org.dinky.data.model.LineageRel;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.Explainer;
-import org.dinky.model.LineageRel;
 
 import java.util.ArrayList;
 import java.util.HashMap;

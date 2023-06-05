@@ -19,8 +19,6 @@
 
 package org.dinky.utils;
 
-import org.dinky.model.LineageRel;
-
 import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.rel.metadata.RelColumnOrigin;
@@ -44,6 +42,7 @@ import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.planner.plan.optimize.program.StreamOptimizeContext;
 import org.apache.flink.table.planner.plan.schema.TableSourceTable;
 import org.apache.flink.table.planner.plan.trait.MiniBatchInterval;
+import org.dinky.data.model.LineageRel;
 
 import java.util.ArrayList;
 import java.util.List;

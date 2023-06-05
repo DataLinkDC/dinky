@@ -19,9 +19,7 @@
 
 package org.dinky.executor;
 
-import org.dinky.data.result.SqlExplainResult;
-import org.dinky.model.LineageRel;
-
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
@@ -33,11 +31,11 @@ import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.types.Row;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
 
 import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * CustomTableEnvironment

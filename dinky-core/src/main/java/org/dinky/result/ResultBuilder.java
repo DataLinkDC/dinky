@@ -17,12 +17,10 @@
  *
  */
 
-package org.dinky.result;
-
-import org.dinky.data.result.IResult;
-import org.dinky.parser.SqlType;
+package org.dinky.data.result;
 
 import org.apache.flink.table.api.TableResult;
+import org.dinky.parser.SqlType;
 
 /**
  * ResultBuilder
