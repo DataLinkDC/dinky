@@ -19,10 +19,12 @@
 
 package org.dinky.executor;
 
-import cn.hutool.core.util.ReflectUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.dinky.assertion.Asserts;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
+import org.dinky.utils.LineageContext;
+
 import org.apache.flink.api.common.RuntimeExecutionMode;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
@@ -67,11 +69,6 @@ import org.apache.flink.table.planner.delegation.DefaultExecutor;
 import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.types.Row;
-import org.dinky.assertion.Asserts;
-import org.dinky.data.model.LineageRel;
-import org.dinky.data.result.SqlExplainResult;
-import org.dinky.utils.FlinkStreamProgramWithoutPhysical;
-import org.dinky.utils.LineageContext;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -80,6 +77,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.util.ReflectUtil;
 
 /**
  * 定制TableEnvironmentImpl
