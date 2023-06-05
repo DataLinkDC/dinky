@@ -19,8 +19,8 @@
 
 package org.dinky.cdc;
 
-import org.dinky.exception.SplitTableException;
-import org.dinky.model.FlinkCDCConfig;
+import org.dinky.data.exception.SplitTableException;
+import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;

@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.utils.I18nMsgUtils;
 

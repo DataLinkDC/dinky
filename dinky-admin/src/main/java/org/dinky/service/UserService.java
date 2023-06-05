@@ -19,16 +19,16 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.LoginDTO;
-import org.dinky.dto.ModifyPasswordDTO;
-import org.dinky.dto.UserDTO;
-import org.dinky.model.Role;
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.model.Tenant;
-import org.dinky.model.User;
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
+import org.dinky.data.params.AssignRoleParams;
+import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.params.AssignRoleParams;
-import org.dinky.result.Result;
 
 import java.util.List;
 

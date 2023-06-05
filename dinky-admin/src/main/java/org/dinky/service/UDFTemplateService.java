@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.model.UDFTemplate;
+import org.dinky.data.model.UDFTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
 /** @since 0.6.8 */

@@ -19,7 +19,7 @@
 
 package org.dinky.mapper;
 
-import org.dinky.model.RoleNamespace;
+import org.dinky.data.model.RoleNamespace;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;

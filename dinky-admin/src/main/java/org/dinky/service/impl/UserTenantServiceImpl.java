@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.model.UserTenant;
 import org.dinky.mapper.UserTenantMapper;
-import org.dinky.model.UserTenant;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UserTenantService;
 

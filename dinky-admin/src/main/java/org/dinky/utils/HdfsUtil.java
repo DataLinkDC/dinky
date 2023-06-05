@@ -20,8 +20,8 @@
 package org.dinky.utils;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.UploadFileConstant;
-import org.dinky.exception.BusException;
+import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.exception.BusException;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FSDataOutputStream;

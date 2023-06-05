@@ -19,8 +19,8 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.process.exception.DinkyException;
 
 import java.io.File;

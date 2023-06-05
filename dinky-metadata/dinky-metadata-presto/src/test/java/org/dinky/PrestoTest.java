@@ -19,12 +19,12 @@
 
 package org.dinky;
 
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.Schema;
-import org.dinky.model.Table;
 
 import java.sql.SQLException;
 import java.util.LinkedHashMap;

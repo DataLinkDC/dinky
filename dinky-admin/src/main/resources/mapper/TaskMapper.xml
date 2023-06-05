@@ -20,7 +20,7 @@
 
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.TaskMapper">
-    <select id="selectForProTable" resultType="org.dinky.model.Task">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Task">
         select
         a.*
         from
@@ -52,7 +52,7 @@
         where `name` REGEXP '${name}_[0-9]$'
     </select>
 
-    <select id="getTaskByNameAndTenantId" resultType="org.dinky.model.Task">
+    <select id="getTaskByNameAndTenantId" resultType="org.dinky.data.model.Task">
         select *
         from dinky_task
         where 1 = 1
@@ -66,7 +66,7 @@
         where id = #{id}
     </select>
 
-    <select id="queryOnLineTaskByDoneStatus" resultType="org.dinky.model.Task">
+    <select id="queryOnLineTaskByDoneStatus" resultType="org.dinky.data.model.Task">
         select t.id as id, t.name as name
         from dinky_task t
         left join dinky_catalogue c on c.task_id = t.id

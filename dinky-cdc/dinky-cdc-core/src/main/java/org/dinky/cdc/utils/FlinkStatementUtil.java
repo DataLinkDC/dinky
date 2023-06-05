@@ -19,8 +19,8 @@
 
 package org.dinky.cdc.utils;
 
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Table;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
 import org.dinky.utils.SqlUtil;
 
 import org.apache.flink.runtime.util.EnvironmentInformation;

@@ -19,7 +19,7 @@
 
 package org.dinky.scheduler.client;
 
-import org.dinky.model.SystemConfiguration;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.model.DagData;
 import org.dinky.scheduler.model.ProcessDefinition;

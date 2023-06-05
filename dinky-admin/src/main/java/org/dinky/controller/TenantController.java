@@ -19,10 +19,10 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.Tenant;
-import org.dinky.params.AssignUserToTenantParams;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.params.AssignUserToTenantParams;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.TenantService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;

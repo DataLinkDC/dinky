@@ -19,7 +19,7 @@
 
 package org.dinky.mybatis.service;
 
-import org.dinky.result.ProTableResult;
+import org.dinky.data.result.ProTableResult;
 
 import java.util.Map;
 

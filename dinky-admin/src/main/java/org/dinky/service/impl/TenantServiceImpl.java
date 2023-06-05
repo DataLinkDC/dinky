@@ -20,16 +20,16 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.BaseConstant;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.model.Namespace;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.model.UserTenant;
+import org.dinky.data.params.AssignUserToTenantParams;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.TenantMapper;
-import org.dinky.model.Namespace;
-import org.dinky.model.Role;
-import org.dinky.model.Tenant;
-import org.dinky.model.UserTenant;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.params.AssignUserToTenantParams;
-import org.dinky.result.Result;
 import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;

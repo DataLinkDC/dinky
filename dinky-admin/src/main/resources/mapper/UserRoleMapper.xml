@@ -4,7 +4,7 @@
     <sql id="baseSql">
         id,user_id,role_id
     </sql>
-    <select id="selectForProTable" resultType="org.dinky.model.UserRole">
+    <select id="selectForProTable" resultType="org.dinky.data.model.UserRole">
         select
         <include refid="baseSql"/>
         from
@@ -26,7 +26,7 @@
         </where>
     </select>
 
-    <select id="getUserRoleByUserId" resultType="org.dinky.model.UserRole">
+    <select id="getUserRoleByUserId" resultType="org.dinky.data.model.UserRole">
         select
             <include refid="baseSql"/>
         from
@@ -50,7 +50,7 @@
         </foreach>
     </delete>
 
-    <select id="getRoleByUserId" resultType="org.dinky.model.Role">
+    <select id="getRoleByUserId" resultType="org.dinky.data.model.Role">
         select
             distinct
             b.id

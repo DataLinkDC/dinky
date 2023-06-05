@@ -24,8 +24,8 @@ import org.dinky.cdc.mysql.MysqlCDCBuilder;
 import org.dinky.cdc.oracle.OracleCDCBuilder;
 import org.dinky.cdc.postgres.PostgresCDCBuilder;
 import org.dinky.cdc.sqlserver.SqlServerCDCBuilder;
+import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
-import org.dinky.model.FlinkCDCConfig;
 
 import java.util.HashMap;
 import java.util.Map;

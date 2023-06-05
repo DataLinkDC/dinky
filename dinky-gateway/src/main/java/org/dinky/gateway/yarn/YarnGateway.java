@@ -21,7 +21,7 @@ package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.FlinkUdfPathContextHolder;
-import org.dinky.enums.JobStatus;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;

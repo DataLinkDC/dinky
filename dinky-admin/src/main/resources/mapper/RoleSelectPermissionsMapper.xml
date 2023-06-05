@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.RoleSelectPermissionsMapper">
-    <select id="selectForProTable" resultType="org.dinky.model.RoleSelectPermissions">
+    <select id="selectForProTable" resultType="org.dinky.data.model.RoleSelectPermissions">
         select
         a.*,
         b.role_code,
@@ -40,7 +40,7 @@
         </foreach>
     </delete>
 
-    <select id="listRoleSelectPermissionsByRoleIds" resultType="org.dinky.model.RoleSelectPermissions">
+    <select id="listRoleSelectPermissionsByRoleIds" resultType="org.dinky.data.model.RoleSelectPermissions">
         select
         a.*,
         b.role_code,

@@ -19,11 +19,11 @@
 
 package org.dinky.core;
 
+import org.dinky.data.result.ResultPool;
+import org.dinky.data.result.SelectResult;
 import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobResult;
-import org.dinky.result.ResultPool;
-import org.dinky.result.SelectResult;
 
 import java.util.HashMap;
 

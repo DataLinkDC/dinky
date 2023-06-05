@@ -19,10 +19,10 @@
 
 package org.dinky.controller;
 
-import org.dinky.model.Role;
-import org.dinky.model.UserRole;
-import org.dinky.result.ProTableResult;
-import org.dinky.result.Result;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.UserRole;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.RoleService;
 import org.dinky.service.UserRoleService;
 import org.dinky.utils.I18nMsgUtils;

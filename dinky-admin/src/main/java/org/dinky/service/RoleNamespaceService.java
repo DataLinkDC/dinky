@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.model.RoleNamespace;
+import org.dinky.data.model.RoleNamespace;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;

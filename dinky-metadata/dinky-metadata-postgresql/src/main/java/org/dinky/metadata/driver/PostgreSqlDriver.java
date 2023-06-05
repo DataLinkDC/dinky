@@ -20,13 +20,13 @@
 package org.dinky.metadata.driver;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Table;
 import org.dinky.metadata.convert.ITypeConvert;
 import org.dinky.metadata.convert.PostgreSqlTypeConvert;
 import org.dinky.metadata.query.IDBQuery;
 import org.dinky.metadata.query.PostgreSqlQuery;
-import org.dinky.model.Column;
-import org.dinky.model.QueryData;
-import org.dinky.model.Table;
 import org.dinky.utils.TextUtil;
 
 import java.util.HashMap;

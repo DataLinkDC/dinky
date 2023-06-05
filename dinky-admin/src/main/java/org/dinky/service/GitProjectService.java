@@ -19,11 +19,11 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.TreeNodeDTO;
-import org.dinky.model.GitProject;
+import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.mybatis.service.ISuperService;
-import org.dinky.params.GitProjectSortJarParams;
 
 import java.util.List;
 import java.util.Map;

@@ -19,14 +19,14 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.APICancelDTO;
-import org.dinky.dto.APIExecuteJarDTO;
-import org.dinky.dto.APIExecuteSqlDTO;
-import org.dinky.dto.APIExplainSqlDTO;
-import org.dinky.dto.APISavePointDTO;
+import org.dinky.data.dto.APICancelDTO;
+import org.dinky.data.dto.APIExecuteJarDTO;
+import org.dinky.data.dto.APIExecuteSqlDTO;
+import org.dinky.data.dto.APIExplainSqlDTO;
+import org.dinky.data.dto.APISavePointDTO;
+import org.dinky.data.result.APIJobResult;
+import org.dinky.data.result.ExplainResult;
 import org.dinky.gateway.result.SavePointResult;
-import org.dinky.result.APIJobResult;
-import org.dinky.result.ExplainResult;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 

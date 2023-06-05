@@ -19,11 +19,11 @@
 
 package org.dinky.metadata;
 
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Schema;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.driver.DriverConfig;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.Schema;
 
 import java.util.List;
 import java.util.UUID;

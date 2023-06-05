@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.constant.UploadFileConstant;
+import org.dinky.data.constant.UploadFileConstant;
 
 import org.apache.commons.lang3.StringUtils;
 

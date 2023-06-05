@@ -19,8 +19,8 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.model.Savepoints;
 import org.dinky.mapper.SavepointsMapper;
-import org.dinky.model.Savepoints;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.SavepointsService;
 
