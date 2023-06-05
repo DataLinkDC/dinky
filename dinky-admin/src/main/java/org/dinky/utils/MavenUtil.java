@@ -99,14 +99,15 @@ public class MavenUtil {
         }
         String mavenCommandLine =
                 getMavenCommandLine(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
+        Opt.ofNullable(consumer)
+                .ifPresent(c -> c.accept("Executing command: " + mavenCommandLine + "\n"));
 
         int waitValue =
                 RuntimeUtils.run(
                         mavenCommandLine,
                         s -> {
-                            s = DateUtil.date().toMsStr() + " - " + s;
+                            s = DateUtil.date().toMsStr() + " - " + s + "\n";
                             consumer.accept(s);
-                            FileUtil.writeUtf8String(s, logFile);
                         },
                         log::error);
         return waitValue == 0;

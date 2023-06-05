@@ -88,7 +88,7 @@ public class MavenStepSse extends StepSse {
                         getLogFile().getAbsolutePath(),
                         CollUtil.newArrayList("clean", "package"),
                         StrUtil.split(gitProject.getBuildArgs(), " "),
-                        this::addMsg);
+                        this::addFileMsgLog);
         params.put("pom", pom);
         Assert.isTrue(state, "maven build failed");
     }
