@@ -159,7 +159,7 @@ export default () => {
       title: l('rc.ci.ar'),
       dataIndex: 'autoRegisters',
       hideInSearch: true,
-      width: '5%',
+      width: '8%',
       valueEnum: CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM,
     },
     {
@@ -172,7 +172,7 @@ export default () => {
       title: l('rc.ci.status'),
       dataIndex: 'status',
       hideInSearch: true,
-      width: '6%',
+      width: '8%',
       valueEnum: CLUSTER_INSTANCE_STATUS_ENUM,
     },
     {
