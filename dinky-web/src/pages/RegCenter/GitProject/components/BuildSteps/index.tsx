@@ -83,6 +83,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     let stepNum: number = 1;
     let showDataStep = -1;
     let showData = "";
+    let finish = false;
 
     //sse listen event message
     eventSource.onmessage = e => {
@@ -108,9 +109,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               title: renderTitle(item.step),
               status: renderStatus(item.status),
               description: item.startTime,
-              disabled: item.status === -1 || status === 1,
+              disabled: true,
               onClick: () => {
-                if (item.status !== -1 && status !== 1) {
+                if (finish) {
                   if (item.step === showDataStep) {
                     setShowList(true)
                     setLog(showData)
@@ -138,9 +139,8 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
           } else if (type === 2) {
             showDataStep = currentStep;
             showData = JSON.parse(data);
-          }else if (type===3){
-            stepArray[currentStep].description=data;
-            return
+          } else if (type === 3) {
+            stepArray[currentStep].description = data;
           }
 
           if (currentStep >= globalCurrentStep) {
@@ -148,11 +148,17 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             setPercent(parseInt(String(100 / stepNum * currentStep)));
             stepArray[currentStep - 1].status = renderStatus(status)
           }
-          if ((status === 2 || status === 0) && history === false) {
+          if ((status === 2 || status === 0) && currentStep === stepNum) {
+            if (currentStep === stepNum) {
+              stepArray.forEach(d => d.disabled = false)
+            }
+            finish = true;
             eventSource.close();
+            return;
           }
         }
       } catch (e) {
+        finish = true;
         eventSource.close();
       }
     };

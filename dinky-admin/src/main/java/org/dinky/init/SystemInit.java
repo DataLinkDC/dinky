@@ -29,6 +29,7 @@ import org.dinky.data.model.Tenant;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.FlinkJobTask;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.scheduler.client.ProjectClient;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
@@ -54,6 +55,7 @@ import org.springframework.stereotype.Component;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -106,6 +108,16 @@ public class SystemInit implements ApplicationRunner {
                 c -> {
                     if (c == systemConfiguration.getDolphinschedulerEnable()) {
                         if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                            if (StrUtil.hasBlank(
+                                    systemConfiguration.getDolphinschedulerUrl().getValue(),
+                                    systemConfiguration.getDolphinschedulerProjectName().getValue(),
+                                    systemConfiguration.getDolphinschedulerToken().getValue())) {
+                                sysConfigService.updateSysConfigByKv(
+                                        systemConfiguration.getDolphinschedulerEnable().getKey(),
+                                        "false");
+                                throw new DinkyException(
+                                        "Before starting dolphinscheduler docking, please fill in the relevant configuration");
+                            }
                             try {
                                 project = projectClient.getDinkyProject();
                                 if (Asserts.isNull(project)) {
@@ -113,6 +125,7 @@ public class SystemInit implements ApplicationRunner {
                                 }
                             } catch (Exception e) {
                                 log.error("Error in DolphinScheduler: ", e);
+                                throw new DinkyException(e);
                             }
                         }
                     }

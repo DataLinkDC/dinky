@@ -22,7 +22,7 @@ package org.dinky.context;
 /** TenantContextHolder */
 public class TenantContextHolder {
 
-    private static final ThreadLocal<Object> TENANT_CONTEXT = new ThreadLocal<>();
+    private static final ThreadLocal<Object> TENANT_CONTEXT = new InheritableThreadLocal<>();
 
     public static void set(Object value) {
         TENANT_CONTEXT.set(value);
