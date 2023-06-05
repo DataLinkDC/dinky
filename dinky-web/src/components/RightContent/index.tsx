@@ -48,7 +48,6 @@ const GlobalHeaderRight: React.FC = () => {
   /**
    * status
    */
-  const actionRef = useRef<ActionType>();
   const [fullScreen, setFullScreen] = useState(true);
   const [themeChecked, setThemeChecked] = useState(false);
   const {initialState, setInitialState} = useModel("@@initialState");
@@ -150,7 +149,8 @@ const GlobalHeaderRight: React.FC = () => {
         } else {
           ErrorNotification(result.msg);
         }
-        actionRef.current?.reload();
+        // trigger global refresh, such as reload page
+        window.location.reload();
       },
     });
   };
