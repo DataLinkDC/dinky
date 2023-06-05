@@ -15,25 +15,32 @@
  * limitations under the License.
  */
 
-import {Tabs} from "antd";
-import RootLogs from "@/pages/SettingCenter/SystemInfo/TagInfo/RootLogs";
-import LogList from "@/pages/SettingCenter/SystemInfo/TagInfo/LogList";
 
-const {TabPane} = Tabs;
+import React from "react";
+import {Empty, Tree} from "antd";
+import {buildTreeData} from "@/utils/function";
 
-const TagInfo = () => {
+type LogsTreeProps = {
+  treeData: Partial<any>[];
+  onNodeClick: (info: any) => void
+}
 
+
+const {DirectoryTree} = Tree;
+
+const LogsTree: React.FC<LogsTreeProps> = (props) => {
+
+  const {treeData, onNodeClick} = props;
 
   return <>
-    <Tabs >
-      <TabPane tab={" Root Logs "} key="logs">
-        <RootLogs/>
-      </TabPane>
-      <TabPane tab={" Log List "} key="logList">
-        <LogList/>
-      </TabPane>
-    </Tabs>
+    {
+      (treeData.length > 0) ?
+        <DirectoryTree
+          onSelect={(_, info) => onNodeClick(info)}
+          treeData={buildTreeData(treeData)}
+        /> : <Empty className={"code-content-empty"}/>
+    }
   </>;
 };
 
-export default TagInfo;
+export default LogsTree;

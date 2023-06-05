@@ -18,8 +18,8 @@
 
 import {Col, Row} from "antd";
 import React, {useEffect, useState} from "react";
-import LogsTree from "@/pages/SettingCenter/SystemInfo/TagInfo/LogList/LogsTree";
-import LogsShow from "@/pages/SettingCenter/SystemInfo/TagInfo/LogList/LogsShow";
+import LogsTree from "@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree";
+import LogsShow from "@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow";
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 
@@ -63,14 +63,10 @@ const LogList = () => {
   return <>
     <Row>
       <Col span={4} className={"siderTree"}>
-        {/* tree */}
         <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)}/>
-        {/*<SiderTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} loading={loading}/>*/}
       </Col>
       <Col span={20}>
-        {/* code */}
         <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()}/>
-        {/*<CodeContent code={codeValue} current={currentGitProjectTreeNode}/>*/}
       </Col>
     </Row>
   </>;

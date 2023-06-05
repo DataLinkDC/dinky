@@ -15,33 +15,11 @@
  * limitations under the License.
  */
 
+import {PageContainer} from "@ant-design/pro-components";
+import TagInfo from "@/pages/SettingCenter/SystemLogs/TagInfo";
 
-import React from "react";
-import {Empty, Tree} from "antd";
-import {PageLoading} from "@ant-design/pro-components";
-import {buildTreeData} from "@/utils/function";
-
-type LogsTreeProps = {
-  treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
+export default () => {
+  return <PageContainer title={false}>
+    <TagInfo/>
+  </PageContainer>
 }
-
-
-const {DirectoryTree} = Tree;
-
-const LogsTree: React.FC<LogsTreeProps> = (props) => {
-
-  const {treeData, onNodeClick} = props;
-
-  return <>
-    {
-      (treeData.length > 0) ?
-        <DirectoryTree
-          onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildTreeData(treeData)}
-        /> : <Empty className={"code-content-empty"}/>
-    }
-  </>;
-};
-
-export default LogsTree;

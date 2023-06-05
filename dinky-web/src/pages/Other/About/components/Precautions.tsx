@@ -15,11 +15,19 @@
  * limitations under the License.
  */
 
-import {PageContainer} from "@ant-design/pro-components";
-import TagInfo from "@/pages/SettingCenter/SystemInfo/TagInfo";
+import {l} from '@/utils/intl';
+import {Alert} from 'antd';
+import React from 'react';
+import {AlertRestProps} from '@/pages/Other/About';
 
-export default () => {
-  return <PageContainer title={false}>
-    <TagInfo/>
-  </PageContainer>
-}
+export const Precautions = () => {
+
+  return <>
+    <Alert
+      message={l('about.precautions')}
+      description={l('about.wechatApply')}
+      type="warning"
+      {...AlertRestProps}
+    />
+  </>;
+};
