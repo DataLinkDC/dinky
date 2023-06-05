@@ -19,10 +19,10 @@
 
 package org.dinky.data.result;
 
+import java.time.LocalDateTime;
+
 import lombok.Getter;
 import lombok.Setter;
-
-import java.time.LocalDateTime;
 
 /**
  * InsertResult

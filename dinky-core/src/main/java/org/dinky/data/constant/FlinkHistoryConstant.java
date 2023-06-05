@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.constant;
+package org.dinky.data.constant;
 
 public interface FlinkHistoryConstant {
 

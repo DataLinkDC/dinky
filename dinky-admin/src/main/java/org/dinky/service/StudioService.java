@@ -19,8 +19,6 @@
 
 package org.dinky.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
@@ -36,6 +34,9 @@ import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
 
 import java.util.List;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * StudioService

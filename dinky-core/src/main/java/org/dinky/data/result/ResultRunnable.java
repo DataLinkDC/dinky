@@ -19,14 +19,13 @@
 
 package org.dinky.data.result;
 
-import com.google.common.collect.Streams;
-import lombok.extern.slf4j.Slf4j;
+import org.dinky.constant.FlinkConstant;
+import org.dinky.utils.FlinkUtil;
+
 import org.apache.flink.core.execution.JobClient;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
 import org.apache.flink.types.RowKind;
-import org.dinky.constant.FlinkConstant;
-import org.dinky.utils.FlinkUtil;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -35,6 +34,10 @@ import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+
+import com.google.common.collect.Streams;
+
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * ResultRunnable

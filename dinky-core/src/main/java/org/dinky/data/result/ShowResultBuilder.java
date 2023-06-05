@@ -19,9 +19,10 @@
 
 package org.dinky.data.result;
 
+import org.dinky.utils.FlinkUtil;
+
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.types.Row;
-import org.dinky.utils.FlinkUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,6 +62,6 @@ public class ShowResultBuilder implements ResultBuilder {
             }
             rows.add(map);
         }
-        return new DDLResult(rows, rows.size(), column);
+        return new org.dinky.data.result.DDLResult(rows, rows.size(), column);
     }
 }

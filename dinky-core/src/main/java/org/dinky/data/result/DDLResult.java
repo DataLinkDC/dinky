@@ -19,35 +19,42 @@
 
 package org.dinky.data.result;
 
-import org.apache.flink.table.api.TableResult;
-import org.dinky.parser.SqlType;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * ResultBuilder
+ * DDLResult
  *
- * @since 2021/5/25 15:59
+ * @since 2021/6/29 22:06
  */
-public interface ResultBuilder {
+@Setter
+@Getter
+public class DDLResult extends AbstractResult implements IResult {
 
-    static ResultBuilder build(
-            SqlType operationType,
-            Integer maxRowNum,
-            boolean isChangeLog,
-            boolean isAutoCancel,
-            String timeZone) {
-        switch (operationType) {
-            case SELECT:
-                return new SelectResultBuilder(maxRowNum, isChangeLog, isAutoCancel, timeZone);
-            case SHOW:
-            case DESC:
-            case DESCRIBE:
-                return new ShowResultBuilder();
-            case INSERT:
-                return new InsertResultBuilder();
-            default:
-                return new DDLResultBuilder();
-        }
+    private List<Map<String, Object>> rowData;
+    private Integer total;
+    private Set<String> columns;
+
+    public DDLResult(boolean success) {
+        this.success = success;
+        this.endTime = LocalDateTime.now();
     }
 
-    IResult getResult(TableResult tableResult);
+    public DDLResult(List<Map<String, Object>> rowData, Integer total, Set<String> columns) {
+        this.rowData = rowData;
+        this.total = total;
+        this.columns = columns;
+        this.success = true;
+        this.endTime = LocalDateTime.now();
+    }
+
+    @Override
+    public String getJobId() {
+        return null;
+    }
 }
