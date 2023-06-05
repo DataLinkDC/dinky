@@ -100,9 +100,20 @@ public class ProjectClient {
                         .execute()
                         .body();
 
-        return MyJSONUtil.toPageBeanAndFindByName(
-                content,
-                SystemConfiguration.getInstances().getDolphinschedulerProjectName().getValue(),
-                Project.class);
+        Project pageBeanAndFindByName = null;
+        try {
+            pageBeanAndFindByName =
+                    MyJSONUtil.toPageBeanAndFindByName(
+                            content,
+                            SystemConfiguration.getInstances()
+                                    .getDolphinschedulerProjectName()
+                                    .getValue(),
+                            Project.class);
+        } catch (Exception e) {
+            SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
+            throw new RuntimeException(content);
+        }
+
+        return pageBeanAndFindByName;
     }
 }

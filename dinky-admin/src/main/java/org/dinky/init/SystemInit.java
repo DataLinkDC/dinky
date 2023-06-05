@@ -112,6 +112,9 @@ public class SystemInit implements ApplicationRunner {
                                     systemConfiguration.getDolphinschedulerUrl().getValue(),
                                     systemConfiguration.getDolphinschedulerProjectName().getValue(),
                                     systemConfiguration.getDolphinschedulerToken().getValue())) {
+                                sysConfigService.updateSysConfigByKv(
+                                        systemConfiguration.getDolphinschedulerEnable().getKey(),
+                                        "false");
                                 throw new DinkyException(
                                         "Before starting dolphinscheduler docking, please fill in the relevant configuration");
                             }
@@ -122,6 +125,7 @@ public class SystemInit implements ApplicationRunner {
                                 }
                             } catch (Exception e) {
                                 log.error("Error in DolphinScheduler: ", e);
+                                throw new DinkyException(e);
                             }
                         }
                     }

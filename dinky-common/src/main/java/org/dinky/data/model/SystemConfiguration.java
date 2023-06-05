@@ -156,8 +156,9 @@ public class SystemConfiguration {
                     item.setValue(value);
                 });
         // initRun
-        CONFIGURATION_LIST.forEach(
-                c -> Opt.ofNullable(this.initMethod).ifPresent(x -> x.accept(c)));
+        for (Configuration<?> configuration : CONFIGURATION_LIST) {
+            Opt.ofNullable(this.initMethod).ifPresent(x -> x.accept(configuration));
+        }
     }
 
     public Map<String, List<Configuration<?>>> getAllConfiguration() {
