@@ -21,7 +21,7 @@ import {l} from "@/utils/intl";
 import {Empty} from "antd";
 
 const CodeEditProps = {
-  height: "70vh",
+  height: "82vh",
   width: "100%",
   lineNumbers: "on",
   language: "java",

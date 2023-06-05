@@ -16,16 +16,17 @@
  */
 
 
-import {Col, Row} from "antd";
-import React, {useEffect, useState} from "react";
-import LogsTree from "@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree";
-import LogsShow from "@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
+import {Col, Row} from 'antd';
+import React, {useEffect, useState} from 'react';
+import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
+import LogsShow from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow';
+import {queryDataByParams} from '@/services/BusinessCrud';
+import {API_CONSTANTS} from '@/services/constants';
+import {ProCard} from '@ant-design/pro-components';
 
 const LogList = () => {
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
-  const [log, setLog] = useState<string>("");
+  const [log, setLog] = useState<string>('');
   const [clickFileName, setClickFileName] = useState<any>();
 
   const queryLogList = async () => {
@@ -61,14 +62,14 @@ const LogList = () => {
 
 
   return <>
-    <Row>
-      <Col span={4} className={"siderTree"}>
+    <ProCard ghost>
+      <ProCard ghost colSpan={'18%'} className={"siderTree"} >
         <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)}/>
-      </Col>
-      <Col span={20}>
+      </ProCard>
+      <ProCard ghost >
         <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()}/>
-      </Col>
-    </Row>
+      </ProCard>
+    </ProCard>
   </>;
 };
 

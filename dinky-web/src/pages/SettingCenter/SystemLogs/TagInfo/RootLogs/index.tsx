@@ -26,7 +26,7 @@ import {API_CONSTANTS} from "@/services/constants";
  * code edit props
  */
 const CodeEditProps = {
-  height: "75vh",
+  height: "82vh",
   width: "100%",
   lineNumbers: "on",
   language: "java",

@@ -54,7 +54,7 @@ const TagInfo = () => {
    * render
    */
   return <>
-    <ProCard className={'schemaTree'} size="small" bordered tabs={{...restTabProps}}/>
+    <ProCard ghost className={'schemaTree'} size="small" bordered tabs={{...restTabProps}}/>
   </>;
 };
 
