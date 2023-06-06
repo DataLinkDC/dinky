@@ -61,7 +61,7 @@ public class WebExceptionHandler {
 
     @ExceptionHandler
     public Result<Void> busException(BusException e) {
-        if (StrUtil.isNotEmpty(e.getMsg())) {
+        if (StrUtil.isEmpty(e.getMsg())) {
             return Result.failed(I18nMsgUtils.getMsg(e.getCode(), e.getErrorArgs()));
         }
         return Result.failed(e.getMsg());
