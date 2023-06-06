@@ -1031,9 +1031,9 @@ CREATE TABLE `metadata_table_property`  (
 
 
 -- ----------------------------
--- Table structure for dinky_role_select_permissions
+-- Table structure for dinky_row_permissions
 -- ----------------------------
-CREATE TABLE dinky_role_select_permissions
+CREATE TABLE dinky_row_permissions
 (
   id           int auto_increment comment 'ID'
     primary key,

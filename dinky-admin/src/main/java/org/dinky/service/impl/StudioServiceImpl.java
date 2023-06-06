@@ -33,7 +33,7 @@ import org.dinky.data.model.Catalog;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.FlinkColumn;
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
@@ -134,11 +134,11 @@ public class StudioServiceImpl implements StudioService {
         }
 
         process.info("Initializing data permissions...");
-        List<RoleSelectPermissions> currentRoleSelectPermissions =
+        List<RowPermissions> currentRoleSelectPermissions =
                 userService.getCurrentRoleSelectPermissions();
         if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
             ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
-            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+            for (RowPermissions roleSelectPermissions : currentRoleSelectPermissions) {
                 if (Asserts.isAllNotNullString(
                         roleSelectPermissions.getTableName(),
                         roleSelectPermissions.getExpression())) {
@@ -210,7 +210,7 @@ public class StudioServiceImpl implements StudioService {
         process.info("Initializing database connection...");
         if (Asserts.isNull(sqlDTO.getDatabaseId())) {
             result.setSuccess(false);
-            result.setError("请指定数据源");
+            result.setError("please select a database.");
             result.setEndTimeNow();
             return result;
         }

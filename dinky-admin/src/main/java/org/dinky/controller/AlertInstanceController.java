@@ -21,11 +21,11 @@ package org.dinky.controller;
 
 import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertInstanceService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.List;
 
@@ -63,9 +63,9 @@ public class AlertInstanceController {
     public Result<Void> saveOrUpdate(@RequestBody AlertInstance alertInstance) throws Exception {
         if (alertInstanceService.saveOrUpdate(alertInstance)) {
             AlertPool.remove(alertInstance.getName());
-            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -102,9 +102,9 @@ public class AlertInstanceController {
     @DeleteMapping("/delete")
     public Result<Void> deleteInstanceById(@RequestParam("id") Integer id) {
         if (alertInstanceService.deleteAlertInstance(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
@@ -117,24 +117,10 @@ public class AlertInstanceController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam("id") Integer id) {
         if (alertInstanceService.enable(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
-    }
-
-    /**
-     * get AlertInstance info by id
-     *
-     * @param alertInstance {@link AlertInstance}
-     * @return {@link Result} of {@link AlertInstance}
-     * @throws Exception {@link Exception}
-     */
-    @PostMapping("/getOneById")
-    public Result<AlertInstance> getOneById(@RequestBody AlertInstance alertInstance)
-            throws Exception {
-        alertInstance = alertInstanceService.getById(alertInstance.getId());
-        return Result.succeed(alertInstance, I18nMsgUtils.getMsg("response.get.success"));
     }
 
     /**
@@ -144,8 +130,7 @@ public class AlertInstanceController {
      */
     @GetMapping("/listEnabledAll")
     public Result<List<AlertInstance>> listEnabledAll() {
-        return Result.succeed(
-                alertInstanceService.listEnabledAll(), I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(alertInstanceService.listEnabledAll());
     }
 
     /**
@@ -158,9 +143,9 @@ public class AlertInstanceController {
     public Result<Void> sendTest(@RequestBody AlertInstance alertInstance) {
         AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
         if (alertResult.getSuccess()) {
-            return Result.succeed(I18nMsgUtils.getMsg("send.success"));
+            return Result.succeed(Status.SEND_TEST_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("send.failed"));
+            return Result.failed(Status.SEND_TEST_FAILED);
         }
     }
 }

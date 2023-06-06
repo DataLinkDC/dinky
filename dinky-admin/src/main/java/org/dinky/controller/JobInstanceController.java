@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.JobManagerConfiguration;
@@ -106,25 +107,25 @@ public class JobInstanceController {
                 Dict.create()
                         .set("history", jobInstanceService.getStatusCount(true))
                         .set("instance", jobInstanceService.getStatusCount(false));
-        return Result.succeed(result, "获取成功");
+        return Result.succeed(result);
     }
 
     /** 获取Job实例的所有信息 */
     @GetMapping("/getJobInfoDetail")
     public Result<JobInfoDetail> getJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.getJobInfoDetail(id), "获取成功");
+        return Result.succeed(jobInstanceService.getJobInfoDetail(id));
     }
 
     /** 刷新Job实例的所有信息 */
     @GetMapping("/refreshJobInfoDetail")
     public Result<JobInfoDetail> refreshJobInfoDetail(@RequestParam Integer id) {
-        return Result.succeed(taskService.refreshJobInfoDetail(id), "刷新成功");
+        return Result.succeed(taskService.refreshJobInfoDetail(id), Status.RESTART_SUCCESS);
     }
 
     /** 获取单任务实例的血缘分析 */
     @GetMapping("/getLineage")
     public Result<LineageResult> getLineage(@RequestParam Integer id) {
-        return Result.succeed(jobInstanceService.getLineage(id), "刷新成功");
+        return Result.succeed(jobInstanceService.getLineage(id), Status.RESTART_SUCCESS);
     }
 
     /** 获取 JobManager 的信息 */
@@ -135,7 +136,7 @@ public class JobInstanceController {
             BuildConfiguration.buildJobManagerConfiguration(
                     jobManagerConfiguration, FlinkAPI.build(address));
         }
-        return Result.succeed(jobManagerConfiguration, "获取成功");
+        return Result.succeed(jobManagerConfiguration);
     }
 
     /** 获取 TaskManager 的信息 */
@@ -148,6 +149,6 @@ public class JobInstanceController {
             BuildConfiguration.buildTaskManagerConfiguration(
                     taskManagerConfigurationList, flinkAPI, taskManagerContainers);
         }
-        return Result.succeed(taskManagerConfigurationList, "获取成功");
+        return Result.succeed(taskManagerConfigurationList);
     }
 }

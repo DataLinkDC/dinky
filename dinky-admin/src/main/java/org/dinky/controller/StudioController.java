@@ -24,6 +24,7 @@ import org.dinky.data.dto.StudioCADTO;
 import org.dinky.data.dto.StudioDDLDTO;
 import org.dinky.data.dto.StudioExecuteDTO;
 import org.dinky.data.dto.StudioMetaStoreDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalog;
 import org.dinky.data.model.FlinkColumn;
 import org.dinky.data.model.Schema;
@@ -68,14 +69,14 @@ public class StudioController {
     public Result<JobResult> executeSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         try {
             JobResult jobResult = studioService.executeSql(studioExecuteDTO);
-            return Result.succeed(jobResult, "execute successful");
+            return Result.succeed(jobResult, Status.EXECUTE_SUCCESS);
         } catch (Exception ex) {
             JobResult jobResult = new JobResult();
             jobResult.setJobConfig(studioExecuteDTO.getJobConfig());
             jobResult.setSuccess(false);
             jobResult.setStatement(studioExecuteDTO.getStatement());
             jobResult.setError(ex.toString());
-            return Result.failed(jobResult, "execute failed");
+            return Result.failed(jobResult, Status.EXECUTE_FAILED);
         }
     }
 
@@ -89,14 +90,14 @@ public class StudioController {
     /** 获取执行图 */
     @PostMapping("/getStreamGraph")
     public Result<ObjectNode> getStreamGraph(@RequestBody StudioExecuteDTO studioExecuteDTO) {
-        return Result.succeed(studioService.getStreamGraph(studioExecuteDTO), "获取执行图成功");
+        return Result.succeed(studioService.getStreamGraph(studioExecuteDTO));
     }
 
     /** 获取sql的jobplan */
     @PostMapping("/getJobPlan")
     public Result<ObjectNode> getJobPlan(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         try {
-            return Result.succeed(studioService.getJobPlan(studioExecuteDTO), "获取作业计划成功");
+            return Result.succeed(studioService.getJobPlan(studioExecuteDTO));
         } catch (Exception e) {
             e.printStackTrace();
             return Result.failed(e.getMessage());
@@ -107,13 +108,13 @@ public class StudioController {
     @PostMapping("/executeDDL")
     public Result<IResult> executeDDL(@RequestBody StudioDDLDTO studioDDLDTO) {
         IResult result = studioService.executeDDL(studioDDLDTO);
-        return Result.succeed(result, "执行成功");
+        return Result.succeed(result, Status.EXECUTE_SUCCESS);
     }
 
     /** 根据jobId获取数据 */
     @GetMapping("/getJobData")
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
-        return Result.succeed(studioService.getJobData(jobId), "获取成功");
+        return Result.succeed(studioService.getJobData(jobId));
     }
 
     /** 获取单任务实例的血缘分析 */
@@ -129,13 +130,13 @@ public class StudioController {
     @GetMapping("/listJobs")
     public Result<JsonNode[]> listJobs(@RequestParam Integer clusterId) {
         List<JsonNode> jobs = studioService.listJobs(clusterId);
-        return Result.succeed(jobs.toArray(new JsonNode[0]), "获取成功");
+        return Result.succeed(jobs.toArray(new JsonNode[0]));
     }
 
     /** 停止任务 */
     @GetMapping("/cancel")
     public Result<Boolean> cancel(@RequestParam Integer clusterId, @RequestParam String jobId) {
-        return Result.succeed(studioService.cancel(clusterId, jobId), "停止成功");
+        return Result.succeed(studioService.cancel(clusterId, jobId), Status.STOP_SUCCESS);
     }
 
     /** savepoint */
@@ -154,13 +155,13 @@ public class StudioController {
     /** 获取 Meta Store Catalog 和 Database */
     @PostMapping("/getMSCatalogs")
     public Result<List<Catalog>> getMSCatalogs(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
-        return Result.succeed(studioService.getMSCatalogs(studioMetaStoreDTO), "获取成功");
+        return Result.succeed(studioService.getMSCatalogs(studioMetaStoreDTO));
     }
 
     /** 获取 Meta Store Schema/Database 信息 */
     @PostMapping("/getMSSchemaInfo")
     public Result<Schema> getMSSchemaInfo(@RequestBody StudioMetaStoreDTO studioMetaStoreDTO) {
-        return Result.succeed(studioService.getMSSchemaInfo(studioMetaStoreDTO), "获取成功");
+        return Result.succeed(studioService.getMSSchemaInfo(studioMetaStoreDTO));
     }
 
     /** 获取 Meta Store Flink Column 信息 */
@@ -175,6 +176,6 @@ public class StudioController {
         studioMetaStoreDTO.setCatalog(catalog);
         studioMetaStoreDTO.setDatabase(database);
         studioMetaStoreDTO.setTable(table);
-        return Result.succeed(studioService.getMSFlinkColumns(studioMetaStoreDTO), "获取成功");
+        return Result.succeed(studioService.getMSFlinkColumns(studioMetaStoreDTO));
     }
 }

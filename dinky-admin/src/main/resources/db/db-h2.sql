@@ -1602,10 +1602,10 @@ CREATE TABLE `metadata_table_property` (
 -- Records of metadata_table_property
 -- ----------------------------
 -- ----------------------------
--- Table structure for dinky_role_select_permissions
+-- Table structure for dinky_row_permissions
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_role_select_permissions`;
-CREATE TABLE dinky_role_select_permissions (
+DROP TABLE IF EXISTS `dinky_row_permissions`;
+CREATE TABLE dinky_row_permissions (
                                              id int PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
                                              role_id int NOT NULL COMMENT '角色ID',
                                              table_name varchar(255) NULL COMMENT '表名',

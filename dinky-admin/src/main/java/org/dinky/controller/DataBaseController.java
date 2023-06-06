@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
@@ -31,7 +32,6 @@ import org.dinky.data.result.Result;
 import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.DataBaseService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,9 +75,9 @@ public class DataBaseController {
     public Result<Void> saveOrUpdate(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
-            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -129,9 +129,9 @@ public class DataBaseController {
     @DeleteMapping("/delete")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         }
-        return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+        return Result.failed(Status.DELETE_FAILED);
     }
 
     /**
@@ -143,22 +143,9 @@ public class DataBaseController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (databaseService.enable(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         }
-        return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
-    }
-
-    /**
-     * get one by id
-     *
-     * @param database {@link DataBase}
-     * @return {@link Result}< {@link DataBase}>
-     */
-    @PostMapping("/getOneById")
-    @Deprecated
-    public Result<DataBase> getOneById(@RequestBody DataBase database) {
-        database = databaseService.getById(database.getId());
-        return Result.succeed(database, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**
@@ -169,7 +156,7 @@ public class DataBaseController {
     @GetMapping("/listEnabledAll")
     public Result<List<DataBase>> listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
-        return Result.succeed(dataBases, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(dataBases);
     }
 
     /**
@@ -183,7 +170,7 @@ public class DataBaseController {
         String msg = databaseService.testConnect(database);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
         if (isHealthy) {
-            return Result.succeed("数据源连接测试成功!");
+            return Result.succeed(Status.DATASOURCE_CONNECT_SUCCESS);
         } else {
             return Result.failed(msg);
         }
@@ -243,7 +230,7 @@ public class DataBaseController {
     @PutMapping("/checkHeartBeatByDataSourceId")
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         String error = "";
         try {
             databaseService.checkHeartBeat(dataBase);
@@ -254,7 +241,7 @@ public class DataBaseController {
         if (Asserts.isNotNullString(error)) {
             return Result.failed(error);
         }
-        return Result.succeed("数据源连接正常");
+        return Result.succeed(Status.DATASOURCE_CONNECT_NORMAL);
     }
 
     /**
@@ -266,7 +253,7 @@ public class DataBaseController {
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
-        return Result.succeed(databaseService.getSchemasAndTables(id), "获取成功");
+        return Result.succeed(databaseService.getSchemasAndTables(id));
     }
 
     /**
@@ -278,7 +265,7 @@ public class DataBaseController {
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
-        return Result.succeed("clear cache", "success");
+        return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
 
     /**
@@ -294,7 +281,7 @@ public class DataBaseController {
             @RequestParam Integer id,
             @RequestParam String schemaName,
             @RequestParam String tableName) {
-        return Result.succeed(databaseService.listColumns(id, schemaName, tableName), "获取成功");
+        return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
     }
 
     /**
@@ -307,9 +294,9 @@ public class DataBaseController {
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
-            return Result.succeed(jdbcSelectResult, "获取成功");
+            return Result.succeed(jdbcSelectResult);
         } else {
-            return Result.failed(jdbcSelectResult, "查询失败");
+            return Result.failed();
         }
     }
 
@@ -323,9 +310,9 @@ public class DataBaseController {
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
-            return Result.succeed(jdbcSelectResult, "获取成功");
+            return Result.succeed(jdbcSelectResult);
         } else {
-            return Result.failed(jdbcSelectResult, "查询失败");
+            return Result.failed();
         }
     }
 
@@ -342,7 +329,7 @@ public class DataBaseController {
             @RequestParam Integer id,
             @RequestParam String schemaName,
             @RequestParam String tableName) {
-        return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName), "获取成功");
+        return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
     }
 
     /**
@@ -354,9 +341,9 @@ public class DataBaseController {
     @PostMapping("/copyDatabase")
     public Result<Void> copyDatabase(@RequestBody DataBase database) {
         if (databaseService.copyDatabase(database)) {
-            return Result.succeed("复制成功!");
+            return Result.succeed(Status.COPY_SUCCESS);
         } else {
-            return Result.failed("复制失败！");
+            return Result.failed(Status.COPY_FAILED);
         }
     }
 }

@@ -94,22 +94,22 @@ public class WebExceptionHandler {
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
                     return Result.failed(
-                            String.format(
-                                    "字段:%s, %s",
-                                    fieldError.getField(), fieldError.getDefaultMessage()));
+                            Status.GLOBAL_PARAMS_CHECK_ERROR,
+                            fieldError.getField(),
+                            fieldError.getDefaultMessage());
                 }
                 return Result.failed(
-                        String.format(
-                                "字段:%s,不合法的值:%s",
-                                fieldError.getField(), fieldError.getRejectedValue()));
+                        Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE,
+                        fieldError.getField(),
+                        fieldError.getRejectedValue());
             }
         }
-        return Result.failed(I18nMsgUtils.getMsg("request.params.error"));
+        return Result.failed(Status.REQUEST_PARAMS_ERROR);
     }
 
     @ExceptionHandler
     public Result<Void> unknownException(Exception e) {
         logger.error("ERROR:", e);
-        return Result.failed(e.getMessage());
+        return Result.failed(Status.UNKNOWN_ERROR, (Object) e.getMessage());
     }
 }

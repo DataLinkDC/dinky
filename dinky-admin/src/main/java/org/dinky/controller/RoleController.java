@@ -25,7 +25,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.RoleService;
 import org.dinky.service.UserRoleService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,6 +83,7 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         return roleService.deleteRoles(para);
     }
@@ -115,6 +115,6 @@ public class RoleController {
             userRoleIds.add(userRole.getRoleId());
         }
         Dict result = Dict.create().set("roles", roleList).set("roleIds", userRoleIds);
-        return Result.succeed(result, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(result);
     }
 }

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -167,9 +168,9 @@ public class CatalogueController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.saveOrUpdate(catalogue)) {
-            return Result.succeed("创建成功");
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed("创建失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -206,14 +207,14 @@ public class CatalogueController {
     @PostMapping("/getOneById")
     public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
         catalogue = catalogueService.getById(catalogue.getId());
-        return Result.succeed(catalogue, "获取成功");
+        return Result.succeed(catalogue);
     }
 
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
     public Result<List<Catalogue>> getCatalogueTreeData() {
         List<Catalogue> catalogues = catalogueService.getAllData();
-        return Result.succeed(catalogues, "获取成功");
+        return Result.succeed(catalogues);
     }
 
     /** 创建节点和作业 */
@@ -221,9 +222,9 @@ public class CatalogueController {
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
-            return Result.succeed(catalogue, "保存成功");
+            return Result.succeed(catalogue, Status.SAVE_SUCCESS);
         } else {
-            return Result.failed("保存失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -231,9 +232,9 @@ public class CatalogueController {
     @PutMapping("/toRename")
     public Result<Void> toRename(@RequestBody Catalogue catalogue) {
         if (catalogueService.toRename(catalogue)) {
-            return Result.succeed("重命名成功");
+            return Result.succeed(Status.RENAME_SUCCESS);
         } else {
-            return Result.failed("重命名失败");
+            return Result.failed(Status.RENAME_FAILED);
         }
     }
 
@@ -241,18 +242,18 @@ public class CatalogueController {
     @PutMapping("/moveCatalogue")
     public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
-            return Result.succeed(true, "移动成功");
+            return Result.succeed(true, Status.MOVE_SUCCESS);
         } else {
-            return Result.failed(false, "移动失败");
+            return Result.failed(false, Status.MOVE_FAILED);
         }
     }
 
     @PostMapping("/copyTask")
     public Result<Catalogue> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
-            return Result.succeed("复制作业成功");
+            return Result.succeed(Status.COPY_SUCCESS);
         } else {
-            return Result.failed("复制作业失败");
+            return Result.failed(Status.COPY_FAILED);
         }
     }
 }

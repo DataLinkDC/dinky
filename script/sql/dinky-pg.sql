@@ -1062,10 +1062,10 @@ COMMENT ON TABLE "public"."dinky_role_namespace" IS 'Role and namespace relation
 INSERT INTO "public"."dinky_role_namespace" VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
--- Table structure for dinky_role_select_permissions
+-- Table structure for dinky_row_permissions
 -- ----------------------------
-DROP TABLE IF EXISTS "public"."dinky_role_select_permissions";
-CREATE TABLE "public"."dinky_role_select_permissions" (
+DROP TABLE IF EXISTS "public"."dinky_row_permissions";
+CREATE TABLE "public"."dinky_row_permissions" (
                                                           "id" SERIAL NOT NULL,
                                                           "role_id" int4 NOT NULL,
                                                           "table_name" varchar(255) COLLATE "pg_catalog"."default",
@@ -1074,16 +1074,16 @@ CREATE TABLE "public"."dinky_role_select_permissions" (
                                                           "update_time" timestamp(6)
 )
 ;
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."id" IS 'ID';
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."role_id" IS '角色ID';
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."table_name" IS '表名';
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."expression" IS '表达式';
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."create_time" IS '创建时间';
-COMMENT ON COLUMN "public"."dinky_role_select_permissions"."update_time" IS '更新时间';
-COMMENT ON TABLE "public"."dinky_role_select_permissions" IS '角色数据查询权限';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."id" IS 'ID';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."role_id" IS '角色ID';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."table_name" IS '表名';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."expression" IS '表达式';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."create_time" IS '创建时间';
+COMMENT ON COLUMN "public"."dinky_row_permissions"."update_time" IS '更新时间';
+COMMENT ON TABLE "public"."dinky_row_permissions" IS '角色数据查询权限';
 
 -- ----------------------------
--- Records of dinky_role_select_permissions
+-- Records of dinky_row_permissions
 -- ----------------------------
 
 -- ----------------------------

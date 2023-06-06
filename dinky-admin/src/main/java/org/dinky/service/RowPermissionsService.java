@@ -19,12 +19,12 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
-public interface RoleSelectPermissionsService extends ISuperService<RoleSelectPermissions> {
+public interface RowPermissionsService extends ISuperService<RowPermissions> {
 
     /**
      * delete user role select permissions by role id
@@ -38,15 +38,15 @@ public interface RoleSelectPermissionsService extends ISuperService<RoleSelectPe
      * select user role data permissions by role id
      *
      * @param roleId role id
-     * @return List<RoleSelectPermissions>
+     * @return List<RowPermissions>
      */
-    List<RoleSelectPermissions> listAllByRoleId(Integer roleId);
+    List<RowPermissions> listAllByRoleId(Integer roleId);
 
     /**
      * select user role data permissions by role ids
      *
      * @param roleIds role ids
-     * @return List<RoleSelectPermissions>
+     * @return List<RowPermissions>
      */
-    List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds);
+    List<RowPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds);
 }

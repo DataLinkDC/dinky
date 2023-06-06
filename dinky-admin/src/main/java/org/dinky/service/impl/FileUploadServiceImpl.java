@@ -69,7 +69,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                                 UploadFileConstant.TARGET_LOCAL)) {
                             return;
                         } else {
-                            throw BusException.valueOfMsg("数据库异常");
+                            throw BusException.valueOfMsg("database exception");
                         }
                     } catch (IOException e) {
                         throw BusException.valueOf("file.upload.failed", e);
@@ -86,11 +86,11 @@ public class FileUploadServiceImpl implements FileUploadService {
                             UploadFileConstant.TARGET_HDFS)) {
                         return;
                     } else {
-                        throw BusException.valueOfMsg("数据库异常");
+                        throw BusException.valueOfMsg("database exception");
                     }
                 }
             default:
-                throw BusException.valueOfMsg("非法的上传文件目的地");
+                throw BusException.valueOfMsg("Illegal upload file destination");
         }
     }
 
@@ -98,7 +98,7 @@ public class FileUploadServiceImpl implements FileUploadService {
     public void upload(MultipartFile file, Byte fileType) {
         String dir = UploadFileConstant.getDirPath(fileType);
         if (StringUtils.isEmpty(dir)) {
-            throw BusException.valueOfMsg("非法的上传文件类型");
+            throw BusException.valueOfMsg("Illegal upload file type");
         }
         upload(file, dir, fileType);
     }
@@ -106,17 +106,17 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public void upload(MultipartFile[] files, String dir, Byte fileType) {
         if (StringUtils.isEmpty(dir)) {
-            throw BusException.valueOfMsg("非法的上传文件类型");
+            throw BusException.valueOfMsg("Illegal upload file type");
         }
         if (files.length > 0) {
             for (MultipartFile file : files) {
                 upload(file, dir, fileType);
             }
             if (!uploadFileRecordService.saveOrUpdateDir(dir, fileType, getTarget(dir, fileType))) {
-                throw BusException.valueOfMsg("数据库异常");
+                throw BusException.valueOfMsg("database exception");
             }
         } else {
-            throw BusException.valueOfMsg("没有检测到要上传的文件");
+            throw BusException.valueOfMsg("No file detected for upload");
         }
     }
 
@@ -134,7 +134,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 filePath,
                 UploadFileConstant.FLINK_LIB_ID,
                 UploadFileConstant.TARGET_HDFS)) {
-            throw BusException.valueOfMsg("数据库异常");
+            throw BusException.valueOfMsg("database exception");
         }
     }
 
@@ -147,7 +147,7 @@ public class FileUploadServiceImpl implements FileUploadService {
                 }
                 if (!uploadFileRecordService.saveOrUpdateDir(
                         dir, UploadFileConstant.FLINK_LIB_ID, UploadFileConstant.TARGET_HDFS)) {
-                    throw BusException.valueOfMsg("数据库异常");
+                    throw BusException.valueOfMsg("database exception");
                 }
             } catch (Exception e) {
                 throw BusException.valueOf("unknown.error", e);

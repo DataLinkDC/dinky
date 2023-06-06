@@ -25,6 +25,7 @@ import org.dinky.data.dto.APIExecuteSqlDTO;
 import org.dinky.data.dto.APIExplainSqlDTO;
 import org.dinky.data.dto.APISavePointDTO;
 import org.dinky.data.dto.APISavePointTaskDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.result.APIJobResult;
 import org.dinky.data.result.ExplainResult;
@@ -69,47 +70,47 @@ public class APIController {
     @GetMapping("/submitTask")
     public Result<JobResult> submitTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.submitTask(id), "执行成功");
+        return Result.succeed(taskService.submitTask(id), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/executeSql")
     public Result<APIJobResult> executeSql(@RequestBody APIExecuteSqlDTO apiExecuteSqlDTO) {
-        return Result.succeed(apiService.executeSql(apiExecuteSqlDTO), "执行成功");
+        return Result.succeed(apiService.executeSql(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/explainSql")
     public Result<ExplainResult> explainSql(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
-        return Result.succeed(apiService.explainSql(apiExecuteSqlDTO), "执行成功");
+        return Result.succeed(apiService.explainSql(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/getJobPlan")
     public Result<ObjectNode> getJobPlan(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
-        return Result.succeed(apiService.getJobPlan(apiExecuteSqlDTO), "执行成功");
+        return Result.succeed(apiService.getJobPlan(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/getStreamGraph")
     public Result<ObjectNode> getStreamGraph(@RequestBody APIExplainSqlDTO apiExecuteSqlDTO) {
-        return Result.succeed(apiService.getStreamGraph(apiExecuteSqlDTO), "执行成功");
+        return Result.succeed(apiService.getStreamGraph(apiExecuteSqlDTO), Status.EXECUTE_SUCCESS);
     }
 
     @GetMapping("/getJobData")
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
-        return Result.succeed(studioService.getJobData(jobId), "获取成功");
+        return Result.succeed(studioService.getJobData(jobId));
     }
 
     @PostMapping("/cancel")
     public Result<Boolean> cancel(@RequestBody APICancelDTO apiCancelDTO) {
-        return Result.succeed(apiService.cancel(apiCancelDTO), "执行成功");
+        return Result.succeed(apiService.cancel(apiCancelDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/savepoint")
     public Result<SavePointResult> savepoint(@RequestBody APISavePointDTO apiSavePointDTO) {
-        return Result.succeed(apiService.savepoint(apiSavePointDTO), "执行成功");
+        return Result.succeed(apiService.savepoint(apiSavePointDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/executeJar")
     public Result<APIJobResult> executeJar(@RequestBody APIExecuteJarDTO apiExecuteJarDTO) {
-        return Result.succeed(apiService.executeJar(apiExecuteJarDTO), "执行成功");
+        return Result.succeed(apiService.executeJar(apiExecuteJarDTO), Status.EXECUTE_SUCCESS);
     }
 
     @PostMapping("/savepointTask")
@@ -124,7 +125,7 @@ public class APIController {
     @GetMapping("/restartTask")
     public Result<JobResult> restartTask(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.restartTask(id, null), "重启成功");
+        return Result.succeed(taskService.restartTask(id, null), Status.RESTART_SUCCESS);
     }
 
     /** 选择保存点重启任务 */
@@ -132,7 +133,7 @@ public class APIController {
     public Result<JobResult> restartTask(
             @RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
+        return Result.succeed(taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
     }
 
     /** 上线任务 */
@@ -168,13 +169,13 @@ public class APIController {
     @GetMapping("/getJobInstance")
     public Result<JobInstance> getJobInstance(@RequestParam Integer id) {
         jobInstanceService.initTenantByJobInstanceId(id);
-        return Result.succeed(jobInstanceService.getById(id), "获取成功");
+        return Result.succeed(jobInstanceService.getById(id));
     }
 
     /** 通过 taskId 获取 Task 对应的 Job 实例的信息 */
     @GetMapping("/getJobInstanceByTaskId")
     public Result<JobInstance> getJobInstanceByTaskId(@RequestParam Integer id) {
         taskService.initTenantByTaskId(id);
-        return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id), "获取成功");
+        return Result.succeed(jobInstanceService.getJobInstanceByTaskId(id));
     }
 }

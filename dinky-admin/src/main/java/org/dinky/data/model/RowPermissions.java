@@ -33,8 +33,8 @@ import lombok.EqualsAndHashCode;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dinky_role_select_permissions")
-public class RoleSelectPermissions implements Serializable {
+@TableName("dinky_row_permissions")
+public class RowPermissions implements Serializable {
 
     private static final long serialVersionUID = 8676666963206334660L;
 

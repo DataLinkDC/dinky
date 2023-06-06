@@ -103,3 +103,6 @@ CREATE TABLE `dinky_git_project` (
                                      PRIMARY KEY (`id`) USING BTREE,
                                      KEY `tenant_id` (`tenant_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+
+
+ALTER TABLE dinky_role_select_permissions RENAME TO dinky_row_permissions;
