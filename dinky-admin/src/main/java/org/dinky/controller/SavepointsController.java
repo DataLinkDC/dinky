@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -58,9 +59,9 @@ public class SavepointsController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Savepoints savepoints) throws Exception {
         if (savepointsService.saveOrUpdate(savepoints)) {
-            return Result.succeed("新增成功");
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed("新增失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -72,6 +73,7 @@ public class SavepointsController {
 
     /** 批量删除 */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
@@ -91,16 +93,9 @@ public class SavepointsController {
         }
     }
 
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<Savepoints> getOneById(@RequestBody Savepoints savepoints) throws Exception {
-        savepoints = savepointsService.getById(savepoints.getId());
-        return Result.succeed(savepoints, "获取成功");
-    }
-
     /** 获取指定作业ID的所有savepoint */
     @GetMapping("/listSavepointsByTaskId")
     public Result<List<Savepoints>> listSavepointsByTaskId(@RequestParam Integer taskID) {
-        return Result.succeed(savepointsService.listSavepointsByTaskId(taskID), "获取成功");
+        return Result.succeed(savepointsService.listSavepointsByTaskId(taskID));
     }
 }

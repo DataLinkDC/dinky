@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
 import org.dinky.data.model.QueryData;
@@ -131,7 +132,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<Schema> getSchemasAndTables(Integer id) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Schema> schemasAndTables = driver.getSchemasAndTables();
         driver.close();
@@ -141,7 +142,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public List<Column> listColumns(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         driver.close();
@@ -151,7 +152,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getFlinkTableSql(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -161,7 +162,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getSqlSelect(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -171,7 +172,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public String getSqlCreate(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         List<Column> columns = driver.listColumns(schemaName, tableName);
         Table table = Table.build(tableName, schemaName, columns);
@@ -181,7 +182,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public JdbcSelectResult queryData(QueryData queryData) {
         DataBase dataBase = getById(queryData.getId());
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         StringBuilder queryOption = driver.genQueryOption(queryData);
         return driver.query(queryOption.toString(), null);
@@ -190,7 +191,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public JdbcSelectResult execSql(QueryData queryData) {
         DataBase dataBase = getById(queryData.getId());
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         long startTime = System.currentTimeMillis();
         JdbcSelectResult jdbcSelectResult = driver.query(queryData.getSql(), 500);
@@ -203,7 +204,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     @Override
     public SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName) {
         DataBase dataBase = getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
+        Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
         Driver driver = Driver.build(dataBase.getDriverConfig());
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();

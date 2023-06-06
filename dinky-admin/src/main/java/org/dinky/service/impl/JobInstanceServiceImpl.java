@@ -141,7 +141,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail getJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, "该任务实例不存在");
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
         String key = jobInstance.getId().toString();
         FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         if (pool.containsKey(key)) {
@@ -165,7 +165,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
     @Override
     public JobInfoDetail refreshJobInfoDetailInfo(JobInstance jobInstance) {
-        Asserts.checkNull(jobInstance, "该任务实例不存在");
+        Asserts.checkNull(jobInstance, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
         JobInfoDetail jobInfoDetail;
         FlinkJobTaskPool pool = FlinkJobTaskPool.INSTANCE;
         String key = jobInstance.getId().toString();

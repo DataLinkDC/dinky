@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.result.Result;
@@ -84,7 +85,7 @@ public class SchedulerController {
                 catalogueService.getOne(
                         new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
-            return Result.failed("节点获取失败");
+            return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
 
         List<String> lists = Lists.newArrayList();
@@ -106,7 +107,7 @@ public class SchedulerController {
                         taskMainInfo.getProcessDefinitionVersion());
                 taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
             } else {
-                return Result.failed("请先工作流保存");
+                return Result.failed(Status.DS_WORK_FLOW_NOT_SAVE);
             }
         }
         return Result.succeed(taskDefinition);
@@ -124,7 +125,7 @@ public class SchedulerController {
                 catalogueService.getOne(
                         new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
-            return Result.failed("节点获取失败");
+            return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
 
         List<String> lists = Lists.newArrayList();
@@ -164,7 +165,7 @@ public class SchedulerController {
                 catalogueService.getOne(
                         new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
-            return Result.failed("节点获取失败");
+            return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
 
         List<String> lists = Lists.newArrayList();
@@ -186,24 +187,24 @@ public class SchedulerController {
             processClient.createProcessDefinition(
                     projectCode, processName, taskCode, array.toString());
 
-            return Result.succeed("添加工作流定义成功");
+            return Result.succeed(Status.DS_ADD_WORK_FLOW_DEFINITION_SUCCESS);
         } else {
             if (process.getReleaseState() == ReleaseState.ONLINE) {
-                return Result.failed("工作流定义 [" + processName + "] 已经上线已经上线");
+                return Result.failed(Status.DS_WORK_FLOW_DEFINITION_ONLINE, (Object) processName);
             }
             long processCode = process.getCode();
             TaskMainInfo taskDefinitionInfo =
                     taskClient.getTaskMainInfo(projectCode, processName, taskName);
             if (taskDefinitionInfo != null) {
                 return Result.failed(
-                        "添加失败,工作流定义[" + processName + "]已存在任务定义[" + taskName + "] 请刷新");
+                        Status.DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST, processName, taskName);
             }
 
             String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
             taskClient.createTaskDefinition(
                     projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
 
-            return Result.succeed("添加任务定义成功");
+            return Result.succeed(Status.DS_ADD_TASK_DEFINITION_SUCCESS);
         }
     }
 
@@ -219,21 +220,22 @@ public class SchedulerController {
 
         TaskDefinition taskDefinition = taskClient.getTaskDefinition(projectCode, taskCode);
         if (taskDefinition == null) {
-            return Result.failed("任务不存在");
+            return Result.failed(Status.DS_TASK_NOT_EXIST);
         }
         if (!"DINKY".equals(taskDefinition.getTaskType())) {
-            return Result.failed("海豚调度类型为[" + taskDefinition.getTaskType() + "] 不支持,非DINKY类型");
+            return Result.failed(
+                    Status.DS_TASK_TYPE_NOT_SUPPORT, (Object) taskDefinition.getTaskType());
         }
         DagData dagData = processClient.getProcessDefinitionInfo(projectCode, processCode);
         if (dagData == null) {
-            return Result.failed("工作流定义不存在");
+            return Result.failed(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST);
         }
         ProcessDefinition process = dagData.getProcessDefinition();
         if (process == null) {
-            return Result.failed("工作流定义不存在");
+            return Result.failed(Status.DS_WORK_FLOW_DEFINITION_NOT_EXIST);
         }
         if (process.getReleaseState() == ReleaseState.ONLINE) {
-            return Result.failed("工作流定义 [" + process.getName() + "] 已经上线");
+            return Result.failed(Status.DS_WORK_FLOW_DEFINITION_ONLINE, (Object) process.getName());
         }
 
         taskRequest.setName(taskDefinition.getName());
@@ -243,7 +245,7 @@ public class SchedulerController {
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
         taskClient.updateTaskDefinition(
                 projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
-        return Result.succeed("修改成功");
+        return Result.succeed(Status.MODIFY_SUCCESS);
     }
 
     private void getDinkyNames(List<String> lists, Catalogue catalogue, int i) {
@@ -255,7 +257,7 @@ public class SchedulerController {
         }
         catalogue = catalogueService.getById(catalogue.getParentId());
         if (catalogue == null) {
-            throw new SchedulerException("节点获取失败");
+            throw new SchedulerException("Get Node List Error");
         }
         if (i == 0) {
             lists.add(catalogue.getName() + ":" + catalogue.getId());

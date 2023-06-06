@@ -19,7 +19,7 @@
 
 package org.dinky.mapper;
 
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
@@ -29,7 +29,7 @@ import java.util.List;
 
 /** role select permissions mapper interface */
 @Mapper
-public interface RoleSelectPermissionsMapper extends SuperMapper<RoleSelectPermissions> {
+public interface RoleSelectPermissionsMapper extends SuperMapper<RowPermissions> {
 
     /**
      * delete user role select permissions by role id
@@ -43,8 +43,8 @@ public interface RoleSelectPermissionsMapper extends SuperMapper<RoleSelectPermi
      * select user role data permissions by role ids
      *
      * @param roleIds role ids
-     * @return List<RoleSelectPermissions>
+     * @return List<RowPermissions>
      */
-    List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(
+    List<RowPermissions> listRoleSelectPermissionsByRoleIds(
             @Param("roleIds") List<Integer> roleIds);
 }

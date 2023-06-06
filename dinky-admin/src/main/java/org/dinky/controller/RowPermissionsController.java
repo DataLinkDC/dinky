@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
-import org.dinky.service.RoleSelectPermissionsService;
-import org.dinky.utils.I18nMsgUtils;
+import org.dinky.service.RowPermissionsService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,20 +46,20 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/rowPermissions")
 public class RowPermissionsController {
 
-    @Autowired private RoleSelectPermissionsService roleSelectPermissionsService;
+    @Autowired private RowPermissionsService roleSelectPermissionsService;
 
     /**
      * save or update roleSelectPermissions
      *
-     * @param roleSelectPermissions {@link RoleSelectPermissions}
+     * @param roleSelectPermissions {@link RowPermissions}
      * @return {@link Result}
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody RoleSelectPermissions roleSelectPermissions) {
+    public Result saveOrUpdateRole(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
-            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("save.success"));
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -102,19 +102,19 @@ public class RowPermissionsController {
     public Result delete(@RequestParam("id") Integer id) {
 
         if (roleSelectPermissionsService.removeById(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         }
-        return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+        return Result.failed(Status.DELETE_FAILED);
     }
 
     /**
      * query roleSelectPermissions list
      *
      * @param para {@link JsonNode}
-     * @return {@link ProTableResult} of {@link RoleSelectPermissions}
+     * @return {@link ProTableResult} of {@link RowPermissions}
      */
     @PostMapping
-    public ProTableResult<RoleSelectPermissions> listRoles(@RequestBody JsonNode para) {
+    public ProTableResult<RowPermissions> listRoles(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);
     }
 }

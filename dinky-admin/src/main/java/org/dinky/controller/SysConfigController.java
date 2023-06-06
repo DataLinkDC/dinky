@@ -66,6 +66,6 @@ public class SysConfigController {
                 MapUtil.map(
                         all,
                         (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
-        return Result.succeed(map, "获取成功");
+        return Result.succeed(map);
     }
 }

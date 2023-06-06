@@ -57,3 +57,4 @@ INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `us
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.useRestAPI' where `name` = 'useRestAPI';
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.sqlSeparator' where `name` = 'sqlSeparator';
 UPDATE `dinky_sys_config` SET  `name` = 'flink.settings.jobIdWait' where `name` = 'jobIdWait';
+

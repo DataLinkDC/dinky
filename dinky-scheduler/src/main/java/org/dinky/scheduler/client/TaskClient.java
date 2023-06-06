@@ -275,7 +275,7 @@ public class TaskClient {
     public Long genTaskCode(Long projectCode) {
         List<Long> codes = genTaskCodes(projectCode, 1);
         if (codes == null || codes.isEmpty()) {
-            throw new SchedulerException("生成任务定义编号失败");
+            throw new SchedulerException("Failed to generate task definition number");
         }
         return codes.get(0);
     }

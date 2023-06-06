@@ -96,7 +96,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                     systemConfiguration.getDolphinschedulerProjectName().getValue(),
                     systemConfiguration.getDolphinschedulerToken().getValue())) {
                 throw new DinkyException(
-                        "Before starting dolphinscheduler docking, please fill in the relevant configuration");
+                        "Before starting DolphinScheduler docking, please fill in the relevant configuration");
             }
         }
         systemConfiguration.setConfiguration(MapUtil.of(key, value));

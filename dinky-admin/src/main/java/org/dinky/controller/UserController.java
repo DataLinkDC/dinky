@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.User;
 import org.dinky.data.model.UserTenant;
 import org.dinky.data.params.AssignRoleParams;
@@ -28,7 +29,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ public class UserController {
             return userService.registerUser(user);
         } else {
             userService.modifyUser(user);
-            return Result.succeed("修改成功");
+            return Result.succeed(Status.MODIFY_SUCCESS);
         }
     }
 
@@ -89,12 +89,12 @@ public class UserController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam("id") Integer id) {
         if (userService.checkAdmin(id)) {
-            return Result.failed(I18nMsgUtils.getMsg("user.superadmin.cannot.disable"));
+            return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
         } else {
             if (userService.enable(id)) {
-                return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+                return Result.succeed(Status.MODIFY_SUCCESS);
             } else {
-                return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+                return Result.failed(Status.MODIFY_FAILED);
             }
         }
     }
@@ -119,9 +119,9 @@ public class UserController {
     @DeleteMapping("/delete")
     public Result<Void> deleteUserById(@RequestParam("id") Integer id) {
         if (userService.removeUser(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
@@ -167,7 +167,7 @@ public class UserController {
     public Result<User> getOneById(@RequestBody User user) {
         user = userService.getById(user.getId());
         user.setPassword(null);
-        return Result.succeed(user, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(user);
     }
 
     /**
@@ -225,6 +225,6 @@ public class UserController {
             userIds.add(userTenant.getUserId());
         }
         Dict result = Dict.create().set("users", userList).set("userIds", userIds);
-        return Result.succeed(result, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(result);
     }
 }

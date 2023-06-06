@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.DocumentService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,9 +61,9 @@ public class DocumentController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
-            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -114,9 +114,9 @@ public class DocumentController {
     @DeleteMapping("/delete")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
@@ -129,23 +129,10 @@ public class DocumentController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (documentService.enable(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
-    }
-
-    /**
-     * get document by id
-     *
-     * @param document
-     * @return {@link Result} of {@link Document}
-     * @throws {@link Exception}
-     */
-    @PostMapping("/getOneById")
-    public Result<Document> getOneById(@RequestBody Document document) throws Exception {
-        document = documentService.getById(document.getId());
-        return Result.succeed(document, I18nMsgUtils.getMsg("response.get.success"));
     }
 
     /**
@@ -157,8 +144,6 @@ public class DocumentController {
      */
     @GetMapping("/getFillAllByVersion")
     public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
-        return Result.succeed(
-                documentService.getFillAllByVersion(version),
-                I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(documentService.getFillAllByVersion(version));
     }
 }

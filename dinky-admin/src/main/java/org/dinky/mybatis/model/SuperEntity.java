@@ -53,12 +53,12 @@ public class SuperEntity<T extends Model<?>> extends Model<T> {
     private Integer id;
 
     @NotNull(
-            message = "名称不能为空",
+            message = "Name cannot be null",
             groups = {Save.class})
     private String name;
 
     @NotNull(
-            message = "是否启用不能为空",
+            message = "Enabled cannot be null",
             groups = {Save.class})
     private Boolean enabled;
 

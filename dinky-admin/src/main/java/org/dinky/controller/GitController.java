@@ -21,6 +21,7 @@ package org.dinky.controller;
 
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.GitProject;
 import org.dinky.data.params.GitProjectSortJarParams;
 import org.dinky.data.result.ProTableResult;
@@ -29,7 +30,6 @@ import org.dinky.service.GitProjectService;
 import org.dinky.sse.SseEmitterUTF8;
 import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.io.File;
 import java.util.List;
@@ -87,21 +87,13 @@ public class GitController {
      * @param sortList after sorter data
      * @return {@link Result}<{@link Void}>
      */
-    //    @PostMapping("/dragendSortProject")
-    //    public Result<Void> dragendSortProject(@RequestBody Map sortList) {
-    //        if (sortList == null) {
-    //            return Result.failed("获取不到项目信息");
-    //        }
-    //        gitProjectService.dragendSortProject(sortList);
-    //        return Result.succeed();
-    //    }
     @PostMapping("/dragendSortProject")
     public Result<Void> dragendSortProject(@RequestBody Map sortList) {
         if (sortList == null) {
-            return Result.failed("获取不到项目信息");
+            return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         }
         gitProjectService.dragendSortProject(sortList);
-        return Result.succeed();
+        return Result.succeed(Status.GIT_SORT_SUCCESS);
     }
 
     /**
@@ -116,12 +108,12 @@ public class GitController {
         GitProject gitProjectServiceById =
                 gitProjectService.getById(gitProjectSortJarParams.getProjectId());
         if (gitProjectServiceById == null) {
-            return Result.failed("获取不到项目信息");
+            return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         } else {
             if (gitProjectService.dragendSortJar(gitProjectSortJarParams)) {
-                return Result.succeed();
+                return Result.succeed(Status.GIT_SORT_SUCCESS);
             } else {
-                return Result.failed("排序失败");
+                return Result.failed(Status.GIT_SORT_FAILED);
             }
         }
     }
@@ -195,7 +187,7 @@ public class GitController {
 
         GitProject gitProject = gitProjectService.getById(id);
         if (gitProject.getBuildState().equals(1)) {
-            return Result.failed("此任务正在构建");
+            return Result.failed(Status.GIT_BUILDING);
         }
 
         Dict params = new Dict();
@@ -206,7 +198,7 @@ public class GitController {
         params.set("gitProject", gitProject).set("logDir", logDir);
         GitProjectStepSseFactory.build(gitProject, params);
 
-        return Result.succeed();
+        return Result.succeed(Status.GIT_BUILD_SUCCESS);
     }
 
     /**
@@ -243,24 +235,8 @@ public class GitController {
 
         List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
         if (projectCode == null) {
-            return Result.failed(I18nMsgUtils.getMsg("response.get.failed"));
+            return Result.failed();
         }
-        return Result.succeed(projectCode, I18nMsgUtils.getMsg("response.get.success"));
-    }
-
-    /**
-     * get all build log
-     *
-     * @param id {@link Integer}
-     * @return {@link Result} of {@link Void}
-     */
-    @GetMapping("/getAllBuildLog")
-    public Result<String> getAllBuildLog(@RequestParam("id") Integer id) {
-
-        String allBuildLog = gitProjectService.getAllBuildLog(id);
-        if (allBuildLog == null) {
-            return Result.failed(I18nMsgUtils.getMsg("response.get.failed"));
-        }
-        return Result.succeed(allBuildLog, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(projectCode);
     }
 }

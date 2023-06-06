@@ -22,6 +22,7 @@ package org.dinky.service.impl;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Namespace;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.Tenant;
@@ -34,7 +35,6 @@ import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserTenantService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,19 +70,19 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
         if (Asserts.isNull(tenantId)) {
             Tenant tenantByTenantCode = getTenantByTenantCode(tenant.getTenantCode());
             if (Asserts.isNotNull(tenantByTenantCode)) {
-                return Result.failed(I18nMsgUtils.getMsg("tenant.exists"));
+                return Result.failed(Status.TENANT_ALREADY_EXISTS);
             }
             tenant.setIsDelete(false);
             if (save(tenant)) {
                 TenantContextHolder.set(tenant.getId());
-                return Result.succeed(I18nMsgUtils.getMsg("create.success"));
+                return Result.succeed(Status.ADDED_SUCCESS);
             }
-            return Result.failed(I18nMsgUtils.getMsg("create.failed"));
+            return Result.failed(Status.ADDED_FAILED);
         } else {
             if (modifyTenant(tenant)) {
-                return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+                return Result.succeed(Status.MODIFY_SUCCESS);
             }
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
     }
 
@@ -143,7 +143,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     public Result<Void> removeTenantById(Integer tenantId) {
         Tenant tenant = getById(tenantId);
         if (Asserts.isNull(tenant)) {
-            return Result.failed(I18nMsgUtils.getMsg("tenant.not.exists"));
+            return Result.failed(Status.TENANT_NOT_EXIST);
         }
 
         List<UserTenant> userTenants =
@@ -153,13 +153,13 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
                                 new LambdaQueryWrapper<UserTenant>()
                                         .eq(UserTenant::getTenantId, tenantId));
         if (CollectionUtil.isNotEmpty(userTenants)) {
-            return Result.failed(I18nMsgUtils.getMsg("tenant.has.user"));
+            return Result.failed(Status.TENANT_BINDING_USER);
         }
         Integer deleteByIdResult = baseMapper.deleteById(tenantId);
         if (deleteByIdResult > 0) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
@@ -212,12 +212,12 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
                 userTenantService.saveOrUpdateBatch(
                         tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
         if (result) {
-            return Result.succeed(I18nMsgUtils.getMsg("tenant.assign.user.success"));
+            return Result.succeed(Status.TENANT_ASSIGN_USER_SUCCESS);
         } else {
             if (tenantUserList.size() == 0) {
-                return Result.succeed(I18nMsgUtils.getMsg("tenant.binding.user.deleteAll"));
+                return Result.succeed(Status.TENANT_BINDING_USER_DELETE_ALL);
             }
-            return Result.failed(I18nMsgUtils.getMsg("tenant.assign.user.failed"));
+            return Result.failed(Status.TENANT_ASSIGN_USER_FAILED);
         }
     }
 }

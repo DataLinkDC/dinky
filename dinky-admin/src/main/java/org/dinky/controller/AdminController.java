@@ -90,7 +90,7 @@ public class AdminController {
      * @return {@link Result}{@link Tenant} the specified tenant
      */
     @PostMapping("/chooseTenant")
-    public Result<Tenant> getTenantByTenantId(@RequestParam("tenantId") Integer tenantId) {
+    public Result<Tenant> switchingTenant(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
     }
 }
