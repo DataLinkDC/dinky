@@ -17,15 +17,16 @@
 
 import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
-import {LinkOutlined} from '@ant-design/icons';
-import type {Settings as LayoutSettings} from '@ant-design/pro-components';
-import {SettingDrawer} from '@ant-design/pro-components';
+import { LinkOutlined } from '@ant-design/icons';
+import type { Settings as LayoutSettings } from '@ant-design/pro-components';
+import { SettingDrawer } from '@ant-design/pro-components';
 import defaultSettings from '../config/defaultSettings';
-import {currentUser as queryCurrentUser} from './services/ant-design-pro/api';
-import {history, Link} from 'umi';
-import {RunTimeLayoutConfig} from "@@/plugin-layout/layoutExports";
+import { currentUser as queryCurrentUser } from './services/ant-design-pro/api';
+import { history, Link } from 'umi';
+import { RunTimeLayoutConfig } from '@@/plugin-layout/layoutExports';
 import { message, notification } from 'antd';
-
+import { Provider } from 'react-redux';
+import store from '@/components/Studio/StudioGraphEdit/GraphEditor/store/index';
 
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
@@ -73,7 +74,7 @@ export async function getInitialState(): Promise<{
           isDelete: user.isDelete,
           createTime: user.createTime,
           updateTime: user.updateTime,
-          isAdmin: user.isAdmin
+          isAdmin: user.isAdmin,
         },
         roleList: result.datas.roleList,
         tenantList: result.datas.tenantList,
@@ -86,7 +87,7 @@ export async function getInitialState(): Promise<{
     return undefined;
   };
   // 如果不是登录页面，执行
-  const {location} = history;
+  const { location } = history;
   if (location.pathname !== loginPath) {
     const currentUser = await fetchUserInfo();
     return {
@@ -102,25 +103,30 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
+export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) => {
   return {
-    rightContentRender: () => <RightContent/>,
-    footerRender: () => <Footer/>,
+    rightContentRender: () => <RightContent />,
+    footerRender: () => <Footer />,
     onPageChange: () => {
-      const {location} = history;
+      const { location } = history;
       // 如果没有登录，重定向到 login
-      console.log(initialState?.currentUser,'initialState.currentUser',location.pathname ,loginPath);
+      console.log(
+        initialState?.currentUser,
+        'initialState.currentUser',
+        location.pathname,
+        loginPath,
+      );
       if (!initialState?.currentUser && location.pathname !== loginPath) {
         history.push(loginPath);
       }
     },
     links: isDev
       ? [
-        <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
-          <LinkOutlined/>
-          <span>OpenAPI 文档</span>
-        </Link>,
-      ]
+          <Link key="openapi" to="/umi/plugin/openapi" target="_blank">
+            <LinkOutlined />
+            <span>OpenAPI 文档</span>
+          </Link>,
+        ]
       : [],
     menuHeaderRender: undefined,
     // 自定义 403 页面
@@ -130,8 +136,9 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       // if (initialState?.loading) return <PageLoading />;
       return (
         <>
-          {children}
-          {isDev &&
+          <Provider store={store}>{children}</Provider>
+
+          {isDev && (
             <SettingDrawer
               disableUrlParams
               enableDarkTheme
@@ -143,8 +150,7 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
                 }));
               }}
             />
-
-          }
+          )}
         </>
       );
     },
@@ -240,3 +246,16 @@ export const request = {
     },
   ],
 };
+
+// export function rootContainer(props: any) {
+//   const location = useLocation();
+//   return (
+//     <Provider store={store}>
+//       {router({
+//         ...props,
+//         history: createBrowserHistory(),
+//         location,
+//       })}
+//     </Provider>
+//   );
+// }

@@ -1,0 +1,34 @@
+.custom-calcu-node-label {
+
+  width: 100%;
+  font-size: 12px;
+  text-align: center;
+  white-space: nowrap;
+  /* 禁止换行 */
+  overflow: hidden;
+  /* 超出部分隐藏 */
+  text-overflow: ellipsis;
+  /* 超出部分以省略号显示 */
+}
+
+
+.custom-calcu-node {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+
+  .custom-calcu-node-svg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+  }
+
+  .custom-svg {
+    width: 25px !important;
+    height: 25px !important;
+  }
+
+}
