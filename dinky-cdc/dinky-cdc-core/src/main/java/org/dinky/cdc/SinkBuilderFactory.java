@@ -19,33 +19,33 @@
 
 package org.dinky.cdc;
 
+import com.google.common.collect.ImmutableMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
-            new HashMap<String, Supplier<SinkBuilder>>() {
+    private SinkBuilderFactory() {
+    }
 
-                {
-                    put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
-                    put(SQLCatalogSinkBuilder.KEY_WORD, () -> new SQLCatalogSinkBuilder());
-                }
-            };
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
+            ImmutableMap.of(
+                    SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new,
+                    SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new
+            );
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
         return SINK_BUILDER_MAP
-                .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
+                .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
                 .get()
                 .create(config);
     }

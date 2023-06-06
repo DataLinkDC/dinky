@@ -151,23 +151,23 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         }
 
         if (Asserts.isNotNullString(fetchSize)) {
-            sourceBuilder.fetchSize(Integer.valueOf(fetchSize));
+            sourceBuilder.fetchSize(Integer.parseInt(fetchSize));
         }
 
         if (Asserts.isNotNullString(connectTimeout)) {
-            sourceBuilder.connectTimeout(Duration.ofMillis(Long.valueOf(connectTimeout)));
+            sourceBuilder.connectTimeout(Duration.ofMillis(Long.parseLong(connectTimeout)));
         }
 
         if (Asserts.isNotNullString(connectMaxRetries)) {
-            sourceBuilder.connectMaxRetries(Integer.valueOf(connectMaxRetries));
+            sourceBuilder.connectMaxRetries(Integer.parseInt(connectMaxRetries));
         }
 
         if (Asserts.isNotNullString(connectionPoolSize)) {
-            sourceBuilder.connectionPoolSize(Integer.valueOf(connectionPoolSize));
+            sourceBuilder.connectionPoolSize(Integer.parseInt(connectionPoolSize));
         }
 
         if (Asserts.isNotNullString(heartbeatInterval)) {
-            sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.valueOf(heartbeatInterval)));
+            sourceBuilder.heartbeatInterval(Duration.ofMillis(Long.parseLong(heartbeatInterval)));
         }
 
         if (Asserts.isAllNotNullString(chunkSize)) {
@@ -175,11 +175,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         }
 
         if (Asserts.isNotNullString(distributionFactorLower)) {
-            sourceBuilder.distributionFactorLower(Double.valueOf(distributionFactorLower));
+            sourceBuilder.distributionFactorLower(Double.parseDouble(distributionFactorLower));
         }
 
         if (Asserts.isNotNullString(distributionFactorUpper)) {
-            sourceBuilder.distributionFactorUpper(Double.valueOf(distributionFactorUpper));
+            sourceBuilder.distributionFactorUpper(Double.parseDouble(distributionFactorUpper));
         }
 
         if (Asserts.isEqualsIgnoreCase(scanNewlyAddedTableEnabled, "true")) {

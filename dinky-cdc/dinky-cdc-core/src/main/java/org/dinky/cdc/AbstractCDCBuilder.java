@@ -31,9 +31,9 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
 
     protected FlinkCDCConfig config;
 
-    public AbstractCDCBuilder() {}
+    protected AbstractCDCBuilder() {}
 
-    public AbstractCDCBuilder(FlinkCDCConfig config) {
+    protected AbstractCDCBuilder(FlinkCDCConfig config) {
         this.config = config;
     }
 
@@ -48,10 +48,12 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = getSchema();
+
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             Collections.addAll(schemaList, schemas);
         }
+
         List<String> tableList = getTableList();
         for (String tableName : tableList) {
             tableName = tableName.trim();
