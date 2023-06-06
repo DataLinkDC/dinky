@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.zdpx.coder.operator.Operator;
-import com.zdpx.coder.operator.TableInfo;
 
 /** 过程类,相当于一个节点集合, 不参与计算图, 主要用于分组. */
 public class ProcessPackage extends Node {

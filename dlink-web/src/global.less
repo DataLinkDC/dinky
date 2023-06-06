@@ -19,6 +19,7 @@
 
 @import '~antd/es/style/themes/default.less';
 
+
 html,
 body,
 #root {
@@ -57,13 +58,14 @@ ol {
     width: 100%;
     overflow-x: auto;
 
-    &-thead > tr,
-    &-tbody > tr {
-      > th,
-      > td {
+    &-thead>tr,
+    &-tbody>tr {
+
+      >th,
+      >td {
         white-space: pre;
 
-        > span {
+        >span {
           display: block;
         }
       }
@@ -72,8 +74,9 @@ ol {
 }
 
 // 兼容IE11
-@media screen and(-ms-high-contrast: active), (-ms-high-contrast: none) {
-  body .ant-design-pro > .ant-layout {
+@media screen and(-ms-high-contrast: active),
+(-ms-high-contrast: none) {
+  body .ant-design-pro>.ant-layout {
     min-height: 100vh;
   }
 }
@@ -95,6 +98,9 @@ div .ant-pro-page-container-children-content {
   padding-top: 3px;
 }
 
-.ant-tabs-top > .ant-tabs-nav, .ant-tabs-bottom > .ant-tabs-nav, .ant-tabs-top > div > .ant-tabs-nav, .ant-tabs-bottom > div > .ant-tabs-nav {
+.ant-tabs-top>.ant-tabs-nav,
+.ant-tabs-bottom>.ant-tabs-nav,
+.ant-tabs-top>div>.ant-tabs-nav,
+.ant-tabs-bottom>div>.ant-tabs-nav {
   margin: 0 0 0px 0 !important;
 }

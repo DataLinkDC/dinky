@@ -19,9 +19,7 @@
 
 package com.zdpx.coder.operator;
 
-/**
- *
- */
+/** */
 public interface Identifier {
     String getId();
 

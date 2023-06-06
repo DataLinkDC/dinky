@@ -17,19 +17,19 @@
  *
  */
 
-
-import {Button, message, notification} from 'antd';
-import {l} from '@/utils/intl';
+import { Button, message, notification } from 'antd';
+import { l } from '@/utils/intl';
 import defaultSettings from '../config/defaultSettings';
 
 const { pwa } = defaultSettings;
 const isHttps = document.location.protocol === 'https:';
 
+import '@/components/Studio/StudioGraphEdit/GraphEditor/assets/css/iconfont-svg';
 // if pwa is true
 if (pwa) {
   // Notify user if offline now
   window.addEventListener('sw.offline', () => {
-    message.warning(l('app.pwa.offline' ));
+    message.warning(l('app.pwa.offline'));
   });
 
   // Pop up a prompt on the page asking the user if they want to use the latest version

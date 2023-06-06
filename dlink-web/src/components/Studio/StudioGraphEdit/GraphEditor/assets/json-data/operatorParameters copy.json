@@ -1,0 +1,1074 @@
+{
+  "datas": [
+    {
+      "name": "JoinOperator",
+      "group": "operators.JoinOperator",
+      "specification": null,
+      "ports": {
+        "inputs": [
+          {
+            "id": "primaryInput"
+          },
+          {
+            "id": "secondInput"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output_0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "MysqlSourceOperator",
+      "group": "mysql.MysqlSourceOperator",
+      "specification": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "http://example.com/example.json",
+        "type": "array",
+        "default": [],
+        "title": "Root Schema",
+        "items": {
+          "type": "object",
+          "default": {},
+          "title": "A Schema",
+          "required": [
+            "tableName",
+            "connector",
+            "columns"
+          ],
+          "properties": {
+            "tableName": {
+              "type": "string",
+              "default": "",
+              "title": "The tableName Schema",
+              "examples": [
+                "TS"
+              ]
+            },
+            "connector": {
+              "type": "string",
+              "default": "",
+              "title": "The connector Schema",
+              "examples": [
+                "task"
+              ]
+            },
+            "columns": {
+              "type": "array",
+              "default": [],
+              "title": "The columns Schema",
+              "items": {
+                "type": "object",
+                "title": "A Schema",
+                "required": [
+                  "name",
+                  "type"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "title": "The name Schema",
+                    "examples": [
+                      "typ",
+                      "taskId",
+                      "taskStatus",
+                      "dt",
+                      "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                      "PRIMARY KEY(taskId) NOT ENFORCED "
+                    ]
+                  },
+                  "type": {
+                    "type": "string",
+                    "title": "The type Schema",
+                    "examples": [
+                      "STRING",
+                      "INT",
+                      "TIMESTAMP(3)",
+                      ""
+                    ]
+                  }
+                },
+                "examples": [
+                  {
+                    "name": "typ",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "taskStatus",
+                    "type": "INT"
+                  },
+                  {
+                    "name": "dt",
+                    "type": "TIMESTAMP(3)"
+                  },
+                  {
+                    "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                    "type": ""
+                  },
+                  {
+                    "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                    "type": ""
+                  }
+                ]
+              },
+              "examples": [
+                [
+                  {
+                    "name": "typ",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "taskId",
+                    "type": "STRING"
+                  },
+                  {
+                    "name": "taskStatus",
+                    "type": "INT"
+                  },
+                  {
+                    "name": "dt",
+                    "type": "TIMESTAMP(3)"
+                  },
+                  {
+                    "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                    "type": ""
+                  },
+                  {
+                    "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                    "type": ""
+                  }
+                ]
+              ]
+            }
+          },
+          "examples": [
+            {
+              "tableName": "TS",
+              "connector": "task",
+              "columns": [
+                {
+                  "name": "typ",
+                  "type": "STRING"
+                },
+                {
+                  "name": "taskId",
+                  "type": "STRING"
+                },
+                {
+                  "name": "taskStatus",
+                  "type": "INT"
+                },
+                {
+                  "name": "dt",
+                  "type": "TIMESTAMP(3)"
+                },
+                {
+                  "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                  "type": ""
+                },
+                {
+                  "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                  "type": ""
+                }
+              ]
+            }
+          ]
+        },
+        "examples": [
+          [
+            {
+              "tableName": "TS",
+              "connector": "task",
+              "columns": [
+                {
+                  "name": "typ",
+                  "type": "STRING"
+                },
+                {
+                  "name": "taskId",
+                  "type": "STRING"
+                },
+                {
+                  "name": "taskStatus",
+                  "type": "INT"
+                },
+                {
+                  "name": "dt",
+                  "type": "TIMESTAMP(3)"
+                },
+                {
+                  "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                  "type": ""
+                },
+                {
+                  "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                  "type": ""
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "ports": {
+        "inputs": [],
+        "outputs": [
+          {
+            "id": "output_0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "DuplicateOperator",
+      "group": "operators.DuplicateOperator",
+      "specification": null,
+      "ports": {
+        "inputs": [
+          {
+            "id": "input_0"
+          }
+        ],
+        "outputs": []
+      }
+    },
+    {
+      "name": "MysqlSinkOperator",
+      "group": "mysql.MysqlSinkOperator",
+      "specification": {
+        "title": "Person",
+        "type": "object",
+        "required": [
+          "name",
+          "age",
+          "date",
+          "favorite_color",
+          "gender",
+          "location",
+          "pets"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "First and Last name",
+            "minLength": 4,
+            "default": "Jeremy Dorn"
+          },
+          "age": {
+            "type": "integer",
+            "default": 25,
+            "minimum": 18,
+            "maximum": 99
+          },
+          "favorite_color": {
+            "type": "string",
+            "format": "color",
+            "title": "favorite color",
+            "default": "#ffa500"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "male",
+              "female",
+              "other"
+            ]
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "options": {
+              "flatpickr": {}
+            }
+          },
+          "location": {
+            "type": "object",
+            "title": "Location",
+            "properties": {
+              "city": {
+                "type": "string",
+                "default": "San Francisco"
+              },
+              "state": {
+                "type": "string",
+                "default": "CA"
+              },
+              "citystate": {
+                "type": "string",
+                "description": "This is generated automatically from the previous two fields",
+                "template": "{{city}}, {{state}}",
+                "watch": {
+                  "city": "location.city",
+                  "state": "location.state"
+                }
+              }
+            }
+          },
+          "pets": {
+            "type": "array",
+            "format": "table",
+            "title": "Pets",
+            "uniqueItems": true,
+            "items": {
+              "type": "object",
+              "title": "Pet",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "cat",
+                    "dog",
+                    "bird",
+                    "reptile",
+                    "other"
+                  ],
+                  "default": "dog"
+                },
+                "name": {
+                  "type": "string"
+                }
+              }
+            },
+            "default": [
+              {
+                "type": "dog",
+                "name": "Walter"
+              }
+            ]
+          }
+        }
+      },
+      "ports": {
+        "inputs": [
+          {
+            "id": "input_0"
+          }
+        ],
+        "outputs": []
+      }
+    },
+    {
+      "name": "CommSelectFunctionOperator",
+      "group": "operators.CommSelectFunctionOperator",
+      "specification": null,
+      "ports": {
+        "inputs": [
+          {
+            "id": "input_0"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output_0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "TableConvertToDataStreamOperator",
+      "group": "operators.TableConvertToDataStreamOperator",
+      "specification": null,
+      "ports": {
+        "inputs": [
+          {
+            "id": "input_0"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output_0)"
+          }
+        ]
+      }
+    },
+    {
+      "name": "CepOperator",
+      "group": "operators.CepOperator",
+      "specification": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": "https://dzpx.com/detection",
+        "title": "CepOperator Define",
+        "description": "define the CepOperator parameter",
+        "type": "array",
+        "items": {
+          "properties": {
+            "partition": {
+              "type": "string",
+              "description": "field for partition"
+            },
+            "orderBy": {
+              "type": "string",
+              "description": "field for order"
+            },
+            "patterns": {
+              "type": "array",
+              "description": "define pattern variable and case",
+              "prefixItems": {
+                "type": "object",
+                "properties": {
+                  "variable": {
+                    "type": "string",
+                    "description": "pattern variable name"
+                  },
+                  "quantifier": {
+                    "type": "string",
+                    "description": "pattern variable's quantifier, * + ? {n} {n,} {n,m} {,m}"
+                  }
+                }
+              }
+            },
+            "skipStrategy": {
+              "type": "object",
+              "description": "skip strategy",
+              "properties": {
+                "strategy": {
+                  "type": "string",
+                  "description": "strategy model"
+                },
+                "variable": {
+                  "type": "string",
+                  "description": "pattern variable"
+                }
+              }
+            },
+            "measures": {
+              "type": "array",
+              "description": "define measure",
+              "prefixItems": {
+                "type": "object",
+                "properties": {
+                  "functionName": {
+                    "type": "string",
+                    "description": "offsetMethod last n, first n"
+                  },
+                  "outName": {
+                    "type": "string",
+                    "description": "the name after calculate pattern variable's field"
+                  },
+                  "delimiter": {
+                    "type": "string",
+                    "description": "function parameter delimiter, if cast, can set AS, if +-*/ and not \nfunctionName, as expression"
+                  },
+                  "parameters": {
+                    "type": "array",
+                    "prefixItems": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "defines": {
+              "type": "array",
+              "description": "define defines",
+              "prefixItems": {
+                "type": "object",
+                "properties": {
+                  "variable": {
+                    "type": "string",
+                    "description": "define pattern variable"
+                  },
+                  "condition": {
+                    "type": "string",
+                    "description": "like sql where statement"
+                  }
+                }
+              }
+            },
+            "required": [
+              "pattern",
+              "measures",
+              "defines"
+            ]
+          }
+        }
+      },
+      "ports": {
+        "inputs": [
+          {
+            "id": "input_0"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output_0"
+          }
+        ]
+      }
+    },
+    {
+      "name": "BroadcastOperator",
+      "group": "operators.BroadcastOperator",
+      "specification": {
+        "type": "object",
+        "title": "",
+        "$schema": "http://json-schema.org/draft-04/schema#",
+        "properties": {
+          "photo": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/photo"
+            },
+            "options": {
+              "collapsed": true
+            },
+            "propertyOrder": 3
+          },
+          "person": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/person"
+            },
+            "options": {
+              "collapsed": true
+            },
+            "propertyOrder": 2
+          },
+          "vehicle": {
+            "type": "array",
+            "items": {
+              "$ref": "#/definitions/vehicle"
+            },
+            "options": {
+              "collapsed": true
+            },
+            "propertyOrder": 1
+          },
+          "accidentDetails": {
+            "$ref": "#/definitions/accidentDetails",
+            "options": {
+              "collapsed": true
+            },
+            "propertyOrder": 0
+          }
+        },
+        "definitions": {
+          "photo": {
+            "type": "object",
+            "title": "Photo",
+            "multiple": true,
+            "required": [
+              "_localId",
+              "Picture"
+            ],
+            "properties": {
+              "Picture": {
+                "type": "string",
+                "media": {
+                  "type": "image/jpeg",
+                  "binaryEncoding": "base64"
+                },
+                "fieldType": "image",
+                "propertyOrder": 0
+              },
+              "_localId": {
+                "type": "string",
+                "options": {
+                  "hidden": true
+                },
+                "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+              },
+              "Description": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": true,
+                "propertyOrder": 1
+              }
+            },
+            "definitions": {},
+            "description": "Pictures of the accident",
+            "plural_title": "Photos"
+          },
+          "person": {
+            "type": "object",
+            "title": "Person",
+            "multiple": true,
+            "required": [
+              "_localId"
+            ],
+            "properties": {
+              "Age": {
+                "type": "string",
+                "format": "number",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 4
+              },
+              "Sex": {
+                "enum": [
+                  "Male",
+                  "Female"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 3
+              },
+              "Name": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 0
+              },
+              "Injury": {
+                "enum": [
+                  "Fatal",
+                  "Serious",
+                  "Minor",
+                  "Not injured"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 5
+              },
+              "Address": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 1
+              },
+              "vehicle": {
+                "type": "string",
+                "watch": {
+                  "target": "vehicle"
+                },
+                "fieldType": "reference",
+                "enumSource": [
+                  {
+                    "title": "{{item.vehicle type}} {{item.Make}} {{item.Model}}",
+                    "value": "{{item._localId}}",
+                    "source": "target"
+                  }
+                ],
+                "propertyOrder": 11
+              },
+              "Hospital": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 9
+              },
+              "_localId": {
+                "type": "string",
+                "options": {
+                  "hidden": true
+                },
+                "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+              },
+              "Involvment": {
+                "enum": [
+                  "Pedestrian",
+                  "Witness",
+                  "Passenger",
+                  "Driver"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 10
+              },
+              "Driver error": {
+                "enum": [
+                  "Fatigued/asleep",
+                  "Inattentive",
+                  "Too fast",
+                  "Too close",
+                  "No signal",
+                  "Bad overtaking",
+                  "Bad turning",
+                  "Using cell phone"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 6
+              },
+              "Alcohol/drugs": {
+                "enum": [
+                  "Alcohol suspected",
+                  "Drugs suspected"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 7
+              },
+              "License number": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 2
+              },
+              "Seat belt/helmet": {
+                "enum": [
+                  "Seat belt/helmet worn",
+                  "Not worn",
+                  "Not worn correctly"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 8
+              }
+            },
+            "definitions": {},
+            "description": "A person involved in the accident",
+            "plural_title": "People"
+          },
+          "vehicle": {
+            "type": "object",
+            "title": "Vehicle",
+            "multiple": true,
+            "required": [
+              "_localId"
+            ],
+            "properties": {
+              "Make": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 1
+              },
+              "Model": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 2
+              },
+              "Damage": {
+                "enum": [
+                  "None",
+                  "Front",
+                  "Rear",
+                  "Right",
+                  "Left",
+                  "Roof",
+                  "Multiple"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 11
+              },
+              "Defect": {
+                "enum": [
+                  "None",
+                  "Lights",
+                  "Brakes",
+                  "Steering",
+                  "Tires",
+                  "Multiple"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 10
+              },
+              "Loading": {
+                "enum": [
+                  "Legal",
+                  "Over loaded",
+                  "Unsafe load"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 8
+              },
+              "Maneuver": {
+                "enum": [
+                  "Left turn",
+                  "Right turn",
+                  "\"U\" turn",
+                  "Cross traffic",
+                  "Merging",
+                  "Diverging",
+                  "Overtaking",
+                  "Going ahead",
+                  "Reversing",
+                  "Sudden start",
+                  "Sudden stop",
+                  "Parked off road",
+                  "Parked on road"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 7
+              },
+              "_localId": {
+                "type": "string",
+                "options": {
+                  "hidden": true
+                },
+                "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+              },
+              "Direction": {
+                "enum": [
+                  "North",
+                  "South",
+                  "East",
+                  "West"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 9
+              },
+              "Plate number": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 3
+              },
+              "Vehicle type": {
+                "enum": [
+                  "Bicycle",
+                  "Pedicab",
+                  "Motorcycle",
+                  "Tricycle",
+                  "Car",
+                  "Jeepney",
+                  "Bus",
+                  "Truck (Rigid)",
+                  "Truck (Artic)",
+                  "Van",
+                  "Animal"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 0
+              },
+              "Engine number": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 5
+              },
+              "Chassis number": {
+                "type": "string",
+                "format": "text",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 4
+              },
+              "Insurance details": {
+                "type": "string",
+                "format": "textarea",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 6
+              }
+            },
+            "definitions": {},
+            "description": "A vehicle involved in the accident",
+            "plural_title": "Vehicles"
+          },
+          "accidentDetails": {
+            "type": "object",
+            "title": "Accident Details",
+            "details": true,
+            "multiple": false,
+            "required": [
+              "_localId"
+            ],
+            "properties": {
+              "Severity": {
+                "enum": [
+                  "Fatal",
+                  "Injury",
+                  "Property"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": true,
+                "propertyOrder": 0
+              },
+              "_localId": {
+                "type": "string",
+                "options": {
+                  "hidden": true
+                },
+                "pattern": "^[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}$"
+              },
+              "Main cause": {
+                "enum": [
+                  "Vehicle defect",
+                  "Road defect",
+                  "Human error"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": true,
+                "propertyOrder": 1
+              },
+              "Description": {
+                "type": "string",
+                "format": "textarea",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 3
+              },
+              "Num vehicles": {
+                "type": "string",
+                "format": "number",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 5
+              },
+              "Surface type": {
+                "enum": [
+                  "Concrete",
+                  "Asphalt",
+                  "Gravel",
+                  "Earth"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 12
+              },
+              "Street lights": {
+                "enum": [
+                  "Lit",
+                  "Unlit"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 10
+              },
+              "Collision type": {
+                "enum": [
+                  "Head on",
+                  "Rear end",
+                  "Right angle",
+                  "Side swipe",
+                  "Overturned vehicle",
+                  "Hit object in road",
+                  "Hit object off road",
+                  "Hit parked vehicle",
+                  "Hit pedestrian",
+                  "Hit animal"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": true,
+                "propertyOrder": 2
+              },
+              "Traffic control": {
+                "enum": [
+                  "None",
+                  "Centerline",
+                  "Pedestrian crossing",
+                  "School crossing",
+                  "Police controlled",
+                  "Traffic lights",
+                  "Stop sign",
+                  "Give way"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 8
+              },
+              "Surface condition": {
+                "enum": [
+                  "Dry",
+                  "Wet",
+                  "Muddy",
+                  "Flooded"
+                ],
+                "type": "string",
+                "fieldType": "selectlist",
+                "displayType": "select",
+                "isSearchable": false,
+                "propertyOrder": 11
+              },
+              "Num driver casualties": {
+                "type": "string",
+                "format": "number",
+                "fieldType": "text",
+                "isSearchable": true,
+                "propertyOrder": 4
+              },
+              "Num passenger casualties": {
+                "type": "string",
+                "format": "number",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 6
+              },
+              "Num pedestrian casualties": {
+                "type": "string",
+                "format": "number",
+                "fieldType": "text",
+                "isSearchable": false,
+                "propertyOrder": 7
+              }
+            },
+            "definitions": {},
+            "description": "Details for Accident",
+            "plural_title": "Accident Details",
+            "propertyOrder": 0
+          }
+        },
+        "description": "",
+        "plural_title": ""
+      },
+      "ports": {
+        "inputs": [
+          {
+            "id": "primaryInput"
+          },
+          {
+            "id": "broadcastInput"
+          }
+        ],
+        "outputs": [
+          {
+            "id": "output_0"
+          }
+        ]
+      }
+    }
+  ],
+  "code": 0,
+  "msg": "",
+  "time": "2023-05-26 10:33:07",
+  "success": true
+}

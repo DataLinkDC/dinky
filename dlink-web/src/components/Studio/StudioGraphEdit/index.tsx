@@ -1,64 +1,18 @@
-import GraphEditor from "@/components/Studio/StudioGraphEdit/GraphEditor";
-import {Dispatch, DocumentStateType} from "@@/plugin-dva/connect";
-import {connect} from "umi";
+import { memo } from 'react';
+import GraphEditor from '@/components/Studio/StudioGraphEdit/GraphEditor/views/home/index';
+import { useAppDispatch } from '@/components/Studio/StudioGraphEdit/GraphEditor/hooks/redux-hooks';
+import { initFlowDataAction } from '@/components/Studio/StudioGraphEdit/GraphEditor/store/modules/home';
+import styles from './index.less';
 
+const FlinkGraphEditor = memo((props) => {
+  //获取数据
+  const dispatch = useAppDispatch();
+  dispatch(initFlowDataAction());
+  return (
+    <div className={styles['graph-container']}>
+      <GraphEditor></GraphEditor>
+    </div>
+  );
+});
 
-const FlinkGraphEditor = (props: any) => {
-    const {
-        height = '100%',
-        width = '100%',
-        language = 'sql',
-        options = {
-            selectOnLineNumbers: true,
-            renderSideBySide: false,
-            autoIndent: 'None',
-        },
-        monaco,
-        // sqlMetaData,
-    } = props;
-
-
-    return (
-        <>
-            <GraphEditor
-                ref={monaco}
-                width={width}
-                height={height}
-                language={language}
-                options={options}
-                onChange={() => {
-                }}
-                theme="vs-dark"
-                editorDidMount={() => {
-                }}
-                onUploadJson={(context: string) => props.saveSql(context)}
-            >
-
-            </GraphEditor>
-        </>
-    )
-}
-
-
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-    /*saveText:(tabs:any,tabIndex:any)=>dispatch({
-      type: "Studio/saveTask",
-      payload: tabs.panes[tabIndex].task,
-    }),*/
-    saveSql: (val: any) => dispatch({
-        type: "Studio/saveSql",
-        payload: val,
-    }),
-    saveSqlMetaData: (sqlMetaData: any, key: number) => dispatch({
-        type: "Studio/saveSqlMetaData",
-        payload: {
-            activeKey: key,
-            sqlMetaData,
-            isModified: true,
-        }
-    }),
-})
-
-export default connect(({Document}: { Document: DocumentStateType }) => ({
-    fillDocuments: Document.fillDocuments,
-}), mapDispatchToProps)(FlinkGraphEditor);
+export default FlinkGraphEditor;

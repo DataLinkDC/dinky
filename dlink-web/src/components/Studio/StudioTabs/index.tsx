@@ -17,25 +17,23 @@
  *
  */
 
-
-import {Dropdown, Menu, message, Tabs} from 'antd';
+import { Dropdown, Menu, message, Tabs } from 'antd';
 import React from 'react';
-import {connect} from 'umi';
-import {StateType} from '@/pages/DataStudio/model';
+import { connect } from 'umi';
+import { StateType } from '@/pages/DataStudio/model';
 import styles from './index.less';
 import StudioEdit from '../StudioEdit';
-import {DIALECT} from '../conf';
-import StudioHome from "@/components/Studio/StudioHome";
-import {Dispatch} from "@@/plugin-dva/connect";
-import StudioKubernetes from "@/components/Studio/StudioKubernetes";
-import {l} from "@/utils/intl";
-import StudioGraphEdit from "@/components/Studio/StudioGraphEdit";
+import { DIALECT } from '../conf';
+import StudioHome from '@/components/Studio/StudioHome';
+import { Dispatch } from '@@/plugin-dva/connect';
+import StudioKubernetes from '@/components/Studio/StudioKubernetes';
+import { l } from '@/utils/intl';
+import StudioGraphEdit from '@/components/Studio/StudioGraphEdit';
 
-const {TabPane} = Tabs;
+const { TabPane } = Tabs;
 
 const EditorTabs = (props: any) => {
-
-  const {tabs, current, toolHeight, width, height} = props;
+  const { tabs, current, toolHeight, width, height } = props;
   const onChange = (activeKey: any) => {
     props.saveToolHeight(toolHeight);
     props.changeActiveKey(activeKey);
@@ -92,11 +90,15 @@ const EditorTabs = (props: any) => {
   const Tab = (pane: any) => (
     <span>
       {pane.key === 0 ? (
-        <>{pane.icon} {pane.title}</>
+        <>
+          {pane.icon} {pane.title}
+        </>
       ) : (
         <Dropdown overlay={menu(pane)} trigger={['contextMenu']}>
           <span className="ant-dropdown-link">
-            <>{pane.icon} {pane.title}</>
+            <>
+              {pane.icon} {pane.title}
+            </>
           </span>
         </Dropdown>
       )}
@@ -112,55 +114,63 @@ const EditorTabs = (props: any) => {
             tabsKey={pane.key}
             conf={pane.value}
             monaco={pane.monaco}
-            height={height ? height : (toolHeight - 32)}
+            height={height ? height : toolHeight - 32}
             width={width}
           />
         </TabPane>
-      )
+      );
     } else if (pane.task.dialect == DIALECT.GRAPH_SQL && pane.isGraph) {
       return (
-          <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-            <StudioGraphEdit
-                current={pane.task}
-                height={height ? height : (toolHeight - 32)}
-                width={width}
-                language={getLanguage(current.task.dialect)}>
-            </StudioGraphEdit>
-          </TabPane>
-      )
+        <TabPane
+          tab={Tab(pane)}
+          key={pane.key}
+          closable={pane.closable}
+          style={{ width: '100%', height: '100%' }}
+        >
+          <StudioGraphEdit
+            current={pane.task}
+            height={height ? height : toolHeight - 32}
+            width={width}
+            language={getLanguage(current.task.dialect)}
+          ></StudioGraphEdit>
+        </TabPane>
+      );
     } else {
-      return (<TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-        <StudioEdit
-          tabsKey={pane.key}
-          sql={pane.value}
-          monaco={pane.monaco}
-          sqlMetaData={pane.sqlMetaData}
-          height={height ? height : (toolHeight - 32)}
-          width={width}
-          language={getLanguage(current.task.dialect)}
-        />
-      </TabPane>)
+      return (
+        <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
+          <StudioEdit
+            tabsKey={pane.key}
+            sql={pane.value}
+            monaco={pane.monaco}
+            sqlMetaData={pane.sqlMetaData}
+            height={height ? height : toolHeight - 32}
+            width={width}
+            language={getLanguage(current.task.dialect)}
+          />
+        </TabPane>
+      );
     }
-  }
+  };
   const getLanguage = (dialect: string) => {
     switch (dialect) {
       case DIALECT.JAVA:
-        return DIALECT.JAVA.toLowerCase()
+        return DIALECT.JAVA.toLowerCase();
       case DIALECT.SCALA:
-        return DIALECT.SCALA.toLowerCase()
+        return DIALECT.SCALA.toLowerCase();
       case DIALECT.PYTHON:
-        return DIALECT.PYTHON.toLowerCase()
+        return DIALECT.PYTHON.toLowerCase();
       case DIALECT.GRAPH_SQL:
         return DIALECT.GRAPH_SQL.toLowerCase();
       default:
-        return DIALECT.SQL.toLowerCase()
+        return DIALECT.SQL.toLowerCase();
     }
-
-  }
+  };
 
   return (
     <>
-      {tabs.panes.length === 0 ? <StudioHome width={width}/> :
+      {tabs.panes.length === 0 ? (
+        <StudioHome width={width} />
+      ) : (
         <Tabs
           hideAdd
           type="editable-card"
@@ -169,39 +179,50 @@ const EditorTabs = (props: any) => {
           activeKey={tabs.activeKey + ''}
           onEdit={onEdit}
           className={styles['edit-tabs']}
-          style={{height: height ? height : toolHeight}}
+          style={{ height: height ? height : toolHeight }}
         >
           {tabs.panes.map((pane, i) => getTabPane(pane, i))}
-        </Tabs>}
+        </Tabs>
+      )}
     </>
   );
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  closeTabs: (current: any, key: string) => dispatch({
-    type: 'Studio/closeTabs',
-    payload: {
-      deleteType: key,
-      current
-    },
-  }), saveTabs: (newPanes: any, newActiveKey: number) => dispatch({
-    type: 'Studio/saveTabs',
-    payload: {
-      activeKey: newActiveKey,
-      panes: newPanes,
-    },
-  }), saveToolHeight: (toolHeight: number) => dispatch({
-    type: 'Studio/saveToolHeight',
-    payload: toolHeight - 0.0001,
-  }), changeActiveKey: (activeKey: number) => dispatch({
-    type: 'Studio/changeActiveKey',
-    payload: activeKey,
-  }),
-})
+  closeTabs: (current: any, key: string) =>
+    dispatch({
+      type: 'Studio/closeTabs',
+      payload: {
+        deleteType: key,
+        current,
+      },
+    }),
+  saveTabs: (newPanes: any, newActiveKey: number) =>
+    dispatch({
+      type: 'Studio/saveTabs',
+      payload: {
+        activeKey: newActiveKey,
+        panes: newPanes,
+      },
+    }),
+  saveToolHeight: (toolHeight: number) =>
+    dispatch({
+      type: 'Studio/saveToolHeight',
+      payload: toolHeight - 0.0001,
+    }),
+  changeActiveKey: (activeKey: number) =>
+    dispatch({
+      type: 'Studio/changeActiveKey',
+      payload: activeKey,
+    }),
+});
 
-export default connect(({Studio}: { Studio: StateType }) => ({
-  current: Studio.current,
-  sql: Studio.sql,
-  tabs: Studio.tabs,
-  toolHeight: Studio.toolHeight,
-}), mapDispatchToProps)(EditorTabs);
+export default connect(
+  ({ Studio }: { Studio: StateType }) => ({
+    current: Studio.current,
+    sql: Studio.sql,
+    tabs: Studio.tabs,
+    toolHeight: Studio.toolHeight,
+  }),
+  mapDispatchToProps,
+)(EditorTabs);

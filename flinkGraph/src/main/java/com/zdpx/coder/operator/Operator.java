@@ -136,9 +136,10 @@ public abstract class Operator extends Node implements Runnable {
                 .filter(t -> t.getKey().equals(functionName))
                 .findAny()
                 .ifPresent(
-                        t -> this.getSchemaUtil()
-                                .getGenerateResult()
-                                .registerUdfFunction(t.getKey(), t.getValue()));
+                        t ->
+                                this.getSchemaUtil()
+                                        .getGenerateResult()
+                                        .registerUdfFunction(t.getKey(), t.getValue()));
         sceneCodeBuilder.getUdfFunctionMap().remove(functionName);
     }
 
