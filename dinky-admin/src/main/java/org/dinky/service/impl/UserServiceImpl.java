@@ -26,13 +26,17 @@ import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
+import org.dinky.data.enums.UserType;
+import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.RowPermissions;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
 import org.dinky.data.model.UserRole;
 import org.dinky.data.model.UserTenant;
 import org.dinky.data.params.AssignRoleParams;
+import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -79,6 +83,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final TenantService tenantService;
 
     private final RowPermissionsService roleSelectPermissionsService;
+
+    private final LdapServiceImpl ldapService;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -129,30 +135,104 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         return baseMapper.deleteById(id) > 0;
     }
 
+    /**
+     * The user login method is to determine whether to use ldap authentication or local
+     * authentication according to the field isLdapLogin. After the ldap authentication is
+     * successful, it will automatically find the local mapped data to return
+     *
+     * @param loginDTO a user based on the provided login credentials.
+     * @return a Result object containing the user information if the login is successful, or an
+     *     appropriate error status if the login fails.
+     */
     @Override
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {
+        User user = null;
+        try {
+            // Determine the login method (LDAP or local) based on the flag in loginDTO
+            user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
+        } catch (AuthException e) {
+            // Handle authentication exceptions and return the corresponding error status
+            return Result.failed(e.getStatus());
+        }
+
+        // Check if the user is enabled
+        if (!user.getEnabled()) {
+            return Result.failed(Status.USER_DISABLED_BY_ADMIN);
+        }
+
+        UserDTO userInfo = refreshUserInfo(user);
+        if (Asserts.isNullCollection(userInfo.getTenantList())) {
+            return Result.failed(Status.USER_NOT_BINDING_TENANT);
+        }
+
+        // Perform login using StpUtil (Assuming it handles the session management)
+        StpUtil.login(user.getId(), loginDTO.isAutoLogin());
+
+        // Return the user information along with a success status
+        return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
+    }
+
+    private User localLogin(LoginDTO loginDTO) throws AuthException {
+        // Get user from local database by username
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed(Status.USER_NOT_EXIST);
+            // User doesn't exist
+            throw new AuthException(Status.USER_NOT_EXIST);
         }
+
         String userPassword = user.getPassword();
+        // Check if the provided password is null
         if (Asserts.isNullString(loginDTO.getPassword())) {
-            return Result.failed(Status.LOGIN_PASSWORD_NOT_NULL);
+            throw new AuthException(Status.LOGIN_PASSWORD_NOT_NULL);
         }
+
+        // Compare the hashed form of the provided password with the stored password
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
-            if (!user.getEnabled()) {
-                return Result.failed(Status.USER_DISABLED_BY_ADMIN);
-            }
-            // get user tenants and roles
-            UserDTO userInfo = refreshUserInfo(user);
-            if (Asserts.isNullCollection(userInfo.getTenantList())) {
-                return Result.failed(Status.USER_NOT_BINDING_TENANT);
-            }
-            StpUtil.login(user.getId(), loginDTO.isAutoLogin());
-            return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
+            return user;
         } else {
-            return Result.failed(Status.LOGIN_FAILURE);
+            throw new AuthException(Status.USER_NAME_PASSWD_ERROR);
         }
+    }
+
+    private User ldapLogin(LoginDTO loginDTO) throws AuthException {
+        // Authenticate user against LDAP
+        User userFromLdap = ldapService.authenticate(loginDTO);
+        // Get user from local database
+        User userFromLocal = getUserByUsername(loginDTO.getUsername());
+
+        if (Asserts.isNull(userFromLocal)) {
+            // User doesn't exist locally
+            // Check if LDAP user autoload is enabled
+            if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
+                throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
+            }
+
+            // Get default tenant from system configuration
+            String defaultTeantCode =
+                    SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
+            Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
+            if (Asserts.isNull(tenant)) {
+                throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
+            }
+
+            // Update LDAP user properties and save
+            userFromLdap.setUserType(UserType.LDAP.getCode());
+            userFromLdap.setEnabled(true);
+            userFromLdap.setIsAdmin(false);
+            userFromLdap.setIsDelete(false);
+            save(userFromLdap);
+
+            // Assign the user to the default tenant
+            List<Integer> userIds = getUserIdsByTeantId(tenant.getId());
+            User user = getUserByUsername(loginDTO.getUsername());
+            userIds.add(user.getId());
+            tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
+            return user;
+        }
+
+        // If local database have the user and ldap login is pass,
+        // Return user from local database
+        return userFromLocal;
     }
 
     private UserDTO refreshUserInfo(User user) {
@@ -314,5 +394,20 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public void outLogin() {
         StpUtil.logout();
+    }
+
+    @Override
+    public List<Integer> getUserIdsByTeantId(int id) {
+        List<UserTenant> userTenants =
+                userTenantService
+                        .getBaseMapper()
+                        .selectList(
+                                new LambdaQueryWrapper<UserTenant>()
+                                        .eq(UserTenant::getTenantId, id));
+        List<Integer> userIds = new ArrayList<>();
+        for (UserTenant userTenant : userTenants) {
+            userIds.add(userTenant.getUserId());
+        }
+        return userIds;
     }
 }

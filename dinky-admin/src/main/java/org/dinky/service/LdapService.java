@@ -17,19 +17,23 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.service;
 
-import java.util.List;
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.exception.AuthException;
+import org.dinky.data.model.User;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import javax.naming.NamingException;
 
-/** assign role params */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AssignUserToTenantParams {
-    Integer tenantId;
-    List<Integer> userIds;
+public interface LdapService {
+    //    List<User> listUsers(LdapConfig ldapConfig);
+
+    /**
+     * Authenticates the user based on the provided login credentials. Throws AuthException if
+     * authentication fails.
+     *
+     * @param loginDTO The login user info
+     * @return ldap user
+     */
+    User authenticate(LoginDTO userDTO) throws AuthException, NamingException;
 }
