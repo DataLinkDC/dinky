@@ -17,22 +17,27 @@
  *
  */
 
-import {Col, Row} from 'antd';
-import JobOverView from "@/pages/Home/JobOverView";
-import {PageContainer} from "@ant-design/pro-components";
-import DevOverView from "@/pages/Home/DevOverView";
+declare namespace Home {
 
-export default () => {
-  return <PageContainer title={false}>
-    <Row style={{marginTop: '5px', marginBottom: '10px'}}>
-      <Col span={24}>
-        <JobOverView/>
-      </Col>
-    </Row>
-    <Row>
-      <Col span={24}>
-        <DevOverView/>
-      </Col>
-    </Row>
-  </PageContainer>
+  type StatusCount = {
+    all: number,
+    initializing: number,
+    running: number,
+    finished: number,
+    failed: number,
+    canceled: number,
+    restarting: number,
+    created: number,
+    failing: number,
+    cancelling: number,
+    suspended: number,
+    reconciling: number,
+    unknown: number,
+  }
+
+  type PieItem = {
+    type: string,
+    value: number,
+  }
+
 }
