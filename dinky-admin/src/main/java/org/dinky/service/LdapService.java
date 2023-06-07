@@ -29,10 +29,11 @@ public interface LdapService {
     //    List<User> listUsers(LdapConfig ldapConfig);
 
     /**
-     * Authenticates the user based on the provided login credentials.
-     *Throws AuthException if authentication fails.
+     * Authenticates the user based on the provided login credentials. Throws AuthException if
+     * authentication fails.
+     *
      * @param loginDTO The login user info
      * @return ldap user
-     **/
+     */
     User authenticate(LoginDTO userDTO) throws AuthException, NamingException;
 }

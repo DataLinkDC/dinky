@@ -136,14 +136,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     /**
-     * The user login method is to determine whether to use ldap authentication or local authentication
-     * according to the field isLdapLogin.
-     * After the ldap authentication is successful,
-     * it will automatically find the local mapped data to return
+     * The user login method is to determine whether to use ldap authentication or local
+     * authentication according to the field isLdapLogin. After the ldap authentication is
+     * successful, it will automatically find the local mapped data to return
      *
-     * @param loginDTO  a user based on the provided login credentials.
-     * @return  a Result object containing the user information if the login is successful,
-     *          or an appropriate error status if the login fails.
+     * @param loginDTO a user based on the provided login credentials.
+     * @return a Result object containing the user information if the login is successful, or an
+     *     appropriate error status if the login fails.
      */
     @Override
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {

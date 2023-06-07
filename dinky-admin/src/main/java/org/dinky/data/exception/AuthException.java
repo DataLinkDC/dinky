@@ -24,8 +24,7 @@ import org.dinky.data.enums.Status;
 import lombok.Data;
 
 /**
- * AuthException
- * About login error
+ * AuthException About login error
  *
  * @since 2021/5/28 14:21
  */

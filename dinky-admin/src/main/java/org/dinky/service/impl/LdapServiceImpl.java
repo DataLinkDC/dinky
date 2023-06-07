@@ -48,11 +48,12 @@ public class LdapServiceImpl implements LdapService {
     SystemConfiguration configuration = SystemConfiguration.getInstances();
 
     /**
-     * Authenticates the user based on the provided login credentials.
-     *Throws AuthException if authentication fails.
+     * Authenticates the user based on the provided login credentials. Throws AuthException if
+     * authentication fails.
+     *
      * @param loginDTO The login user info
      * @return ldap user
-     **/
+     */
     @Override
     public User authenticate(LoginDTO loginDTO) throws AuthException {
         LdapTemplate ldapTemplate = new LdapTemplate(getLdapContext());
@@ -62,8 +63,7 @@ public class LdapServiceImpl implements LdapService {
                         "(&%s(%s=%s))",
                         configuration.getLdapFilter().getValue(),
                         configuration.getLdapCastUsername().getValue(),
-                        loginDTO.getUsername()
-                );
+                        loginDTO.getUsername());
         // Perform search operation, we have alreday config baseDn in global
         // so the param base has config ""
         List<LdapUserIdentification> result =
@@ -89,8 +89,8 @@ public class LdapServiceImpl implements LdapService {
                 // Validate username and password
                 getLdapContext()
                         .getContext(ldapUserIdentification.getAbsoluteDn(), loginDTO.getPassword());
-                //If no exception is thrown, then the login is successful，
-                //Build the User with cast
+                // If no exception is thrown, then the login is successful，
+                // Build the User with cast
                 User user = new User();
                 user.setUsername(loginDTO.getUsername());
                 user.setNickname(
