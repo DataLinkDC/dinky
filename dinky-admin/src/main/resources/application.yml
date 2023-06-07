@@ -148,21 +148,27 @@ sa-token:
 #################################################################################################################
 knife4j:
   enable: true
-  openapi:
-    title: Dinky REST APIS
-    description: Dinky REST APIS
-    concat: Dinky
-    url: http://www.dlink.top/
-    version: v4.0
-    license: Apache 2.0
-    license-url: https://www.apache.org/licenses/LICENSE-2.0
-    group:
-      Api:
-        group-name: Dinky Api
-        api-rule: package
-        api-rule-resources:
-          - org.dinky.controller
+#  openapi:
+#    title: Dinky REST APIS
+#    description: Dinky REST APIS
+#    concat: Dinky
+#    url: http://www.dlink.top/
+#    version: v4.0
+#    license: Apache 2.0
+#    license-url: https://www.apache.org/licenses/LICENSE-2.0
+#    group:
+#      Api:
+#        group-name: Dinky Api
+#        api-rule: package
+#        api-rule-resources:
+#          - org.dinky.controller
+Dinky:
+  version: @project.version@
+
 management:
   health:
     redis:
       enabled: false
+
+sms:
+  is-print: false
