@@ -1472,6 +1472,7 @@ CREATE TABLE "public"."dinky_user" (
                                        "password" varchar(50) COLLATE "pg_catalog"."default",
                                        "nickname" varchar(50) COLLATE "pg_catalog"."default",
                                        "worknum" varchar(50) COLLATE "pg_catalog"."default",
+                                       "user_type" int2 COLLATE "pg_catalog"."default",
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,

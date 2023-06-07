@@ -866,6 +866,7 @@ CREATE TABLE `dinky_user`  (
                              `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
                              `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'nickname',
                              `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'worknum',
+                             `user_type`   int        default 0 not null comment 'login type (0:LOCAL,1:LDAP)',
                              `avatar` blob NULL COMMENT 'avatar',
                              `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'mobile phone',
                              `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
