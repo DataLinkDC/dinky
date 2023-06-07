@@ -9,31 +9,31 @@ export const handleInitPort = () => {
     groups: {
       outputs: {
         zIndex: 1,
-        position: "right",
+        position: 'right',
         attrs: {
           circle: {
             r: 6,
             magnet: true,
-            stroke: "#818181",
+            stroke: '#818181',
             strokeWidth: 1,
-            fill: "#b2a2e9",
+            fill: '#b2a2e9',
             style: {
-              visibility: "hidden",
+              visibility: 'hidden',
             },
           },
         },
       },
       inputs: {
-        position: "left",
+        position: 'left',
         attrs: {
           circle: {
             r: 6,
             magnet: true,
-            stroke: "#818181",
+            stroke: '#818181',
             strokeWidth: 1,
-            fill: "#915dac",
+            fill: '#915dac',
             style: {
-              visibility: "hidden",
+              visibility: 'hidden',
             },
           },
         },

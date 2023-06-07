@@ -6,8 +6,8 @@ export type SvgType = {
 };
 
 const defaultStyle = {
-  width: '30px',
-  height: '30px',
+  width: '20px',
+  height: '20px',
 };
 
 /** 自定义的菜单 icon  */

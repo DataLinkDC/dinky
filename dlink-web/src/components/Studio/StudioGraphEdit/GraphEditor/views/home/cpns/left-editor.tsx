@@ -1,6 +1,5 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { Graph, Node } from '@antv/x6';
-import { CloudSyncOutlined, FileOutlined } from '@ant-design/icons';
 import { handleInitPort } from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/ports-register';
 import { initGraph } from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/init-graph';
 import { stencilComponentsLoader } from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/stencil-components-loader';
@@ -8,12 +7,10 @@ import { initStencil } from '@/components/Studio/StudioGraphEdit/GraphEditor/uti
 import { handleInitNodes } from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/node-by-data-loader';
 import registerShape from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/shape-register';
 import unRegisterShape from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/shape-unregister';
-import { message } from 'antd';
 import {
   useAppDispatch,
   useAppSelector,
 } from '@/components/Studio/StudioGraphEdit/GraphEditor/hooks/redux-hooks';
-import { putSqlJson } from '@/components/Studio/StudioGraphEdit/GraphEditor/service/request/test';
 import { CustomMenu } from './menu';
 import { initMenu } from '@/components/Studio/StudioGraphEdit/GraphEditor/utils/init-menu';
 import styles from './index.less';
@@ -40,27 +37,6 @@ const LeftEditor = memo(() => {
     flowData: state.home.flowData,
     operatorParameters: state.home.operatorParameters,
   }));
-
-  const handleSave = () => {
-    putSqlJson(graphRef.current?.toJSON())
-      .then(() => {})
-      .catch(() => {});
-
-    messageApi.open({
-      type: 'success',
-      content: 'This is a success save',
-    });
-  };
-
-  const handleDeploy = () => {
-    messageApi.open({
-      type: 'success',
-      content: 'This is a success deploy',
-    });
-  };
-
-  const [messageApi, contextHolder] = message.useMessage();
-
   useEffect(() => {
     if (editorContentRef.current) {
       const editorContentContainer: HTMLElement = editorContentRef.current;
@@ -105,31 +81,10 @@ const LeftEditor = memo(() => {
 
   return (
     <div className={styles['leftEditor']}>
-      {contextHolder}
       <div className={styles['leftEditor-stencil']}>
         <div ref={stencilRef}></div>
       </div>
       <div className={styles['leftEditor-editor']}>
-        <div className={styles['editor-header']}>
-          <div
-            className={styles['header-save']}
-            onClick={() => {
-              handleSave();
-            }}
-          >
-            <span>保存</span>
-            <FileOutlined />
-          </div>
-          <div
-            className={styles['header-save']}
-            onClick={() => {
-              handleDeploy();
-            }}
-          >
-            <span>部署</span>
-            <CloudSyncOutlined />
-          </div>
-        </div>
         <div className={styles['editor-content']}>
           <div ref={editorContentRef} className={styles['x6-graph']}>
             {showMenuInfo.show && (

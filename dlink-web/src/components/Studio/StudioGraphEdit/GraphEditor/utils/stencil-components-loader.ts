@@ -21,6 +21,8 @@ export const stencilComponentsLoader = (
   operatorParameters?.forEach((param: Parameter) => {
     const node = graph.createNode({
       shape: param.name,
+      width: 70,
+      height: 50,
       attrs: {
         body: {
           rx: 7,
@@ -28,7 +30,7 @@ export const stencilComponentsLoader = (
         },
         text: {
           text: param.name,
-          fontSize: 10,
+          fontSize: 2,
         },
       },
     });
@@ -56,9 +58,7 @@ export const stencilComponentsLoader = (
         text: 'Group Name',
       },
     },
-    data: {
-      parent: true,
-    },
+    data: {},
   });
   stencil.load([groupNode], 'groupNode');
 

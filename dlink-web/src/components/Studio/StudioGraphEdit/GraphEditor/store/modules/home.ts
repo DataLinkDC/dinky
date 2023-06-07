@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Parameter } from '@/components/Studio/StudioGraphEdit/GraphEditor/ts-define/parameter';
+import { Graph } from '@antv/x6';
 
 export const initFlowDataAction = createAsyncThunk('fetchData', (payload, store) => {
   // getOperatorConfigure().then((res: any) => {
@@ -32,6 +33,8 @@ const homeSlice = createSlice({
     currentSelectNodeName: '',
     //当前选中的节点参数数据
     currentSelectNodeParamsData: [],
+    //保存graph在其他组件中调用
+    graph: Graph,
   },
   reducers: {
     initFlowDataInfo(state, { payload }) {
@@ -57,6 +60,9 @@ const homeSlice = createSlice({
     changeCurrentSelectNodeParamsData(state, { payload }) {
       state.currentSelectNode = payload;
     },
+    changeGraph(state, { payload }) {
+      state.graph = payload;
+    },
   },
   extraReducers: {},
 });
@@ -68,6 +74,7 @@ export const {
   changeCurrentSelectNode,
   changeCurrentSelectNodeName,
   changeCurrentSelectNodeParamsData,
+  changeGraph,
 } = homeSlice.actions;
 
 export default homeSlice.reducer;

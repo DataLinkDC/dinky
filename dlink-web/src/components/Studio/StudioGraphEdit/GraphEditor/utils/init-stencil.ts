@@ -44,6 +44,9 @@ export const initStencil = (
       title: 'textArea',
       collapsable: true,
       collapsed: true,
+      layoutOptions: {
+        resizeToFit: true,
+      },
     },
   ];
 
@@ -68,7 +71,7 @@ export const initStencil = (
     stencilGraphWidth: 180,
     layoutOptions: {
       columns: 2,
-      resizeToFit: true,
+      resizeToFit: false,
     },
     groups: [...groups, ...otherGroups],
   });

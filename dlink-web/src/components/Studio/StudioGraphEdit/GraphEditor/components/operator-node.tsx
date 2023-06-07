@@ -1,10 +1,10 @@
-import React, { memo, FC } from 'react';
+import { memo } from 'react';
 
-import { NodeType } from './cpn-shape';
 import BaseNode from './base-node';
+import { NodeType } from './cpn-shape';
 
-const OperatorNode: FC<NodeType> = memo(({ node }: NodeType) => {
-  return <BaseNode nt={node} iconPath="icon-operator" />;
+const OperatorNode = memo((nodeType: NodeType) => {
+  return <BaseNode nodeType={nodeType} iconPath="icon-operator" />;
 });
 
 export default OperatorNode;

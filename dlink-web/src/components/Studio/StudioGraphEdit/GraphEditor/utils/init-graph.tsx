@@ -4,6 +4,7 @@ import loadPlugin from './plugin';
 import {
   changeCurrentSelectNode,
   changeCurrentSelectNodeName,
+  changeGraph,
 } from '@/components/Studio/StudioGraphEdit/GraphEditor/store/modules/home';
 import React from 'react';
 
@@ -42,6 +43,7 @@ export const initGraph = (
       allowBlank: false,
       //是否允许在相同的起始节点和终止之间创建多条边
       allowMulti: false,
+      allowLoop: false,
       // 自动吸附
       snap: {
         radius: 20,
@@ -105,11 +107,10 @@ export const initGraph = (
     embedding: {
       enabled: true,
       findParent({ node }) {
-        const bbox = node.getBBox();
-        return this.getNodes().filter((node) => {
-          const data = node.getData<{ parent: boolean }>();
-          if (data && data.parent) {
-            const targetBBox = node.getBBox();
+        return this.getNodes().filter((targetNode) => {
+          if (targetNode.shape == 'package') {
+            const bbox = node.getBBox();
+            const targetBBox = targetNode.getBBox();
             return bbox.isIntersectWithRect(targetBBox);
           }
           return false;
@@ -120,26 +121,7 @@ export const initGraph = (
       //画布背景色
       color: '#fff',
     },
-    grid: {
-      visible: true,
-      type: 'doubleMesh',
-      args: [
-        {
-          // 主网格线颜色
-          color: '#eee',
-          // 主网格线宽度
-          thickness: 0.5,
-        },
-        {
-          // 次网格线颜色
-          color: '#ddd',
-          // 次网格线宽度
-          thickness: 1,
-          // 主次网格线间隔
-          factor: 4,
-        },
-      ],
-    },
+    grid: true,
   });
 
   //加载相关插件
@@ -215,18 +197,12 @@ export const initGraph = (
   });
 
   graph.on('node:selected', ({ node }) => {
-    debugger;
-    console.log(node, 'selected');
+    dispatch(changeCurrentSelectNode(node));
+    dispatch(changeCurrentSelectNodeName(node.shape));
 
-    if (graph.getSelectedCells().length) {
-      dispatch(changeCurrentSelectNode(node));
-      dispatch(changeCurrentSelectNodeName(node.getAttrs().text.text));
-
-      //深拷贝,数组要改变地址子组件才能监听到变化
-      let selectNode = [];
-      selectNode.push(node);
-      setSelectedNodes([...selectNode]);
-    }
+    //深拷贝,数组要改变地址子组件才能监听到变化
+    selectedNodes.push(node);
+    setSelectedNodes([...selectedNodes]);
   });
 
   //右键菜单
@@ -238,29 +214,8 @@ export const initGraph = (
     const p = graph.clientToGraph(e.clientX, e.clientY);
   });
 
-  graph.on('node:collapse', ({ node, e }: any) => {
-    node.toggleCollapse();
-    const collapsed = node.isCollapsed();
-    const collapse = (parent: any) => {
-      const cells = parent.getChildren();
-      if (cells) {
-        cells.forEach((cell: any) => {
-          if (collapsed) {
-            cell.hide();
-          } else {
-            cell.show();
-          }
-
-          if (cell.shape === 'package') {
-            if (!cell.isCollapsed()) {
-              collapse(cell);
-            }
-          }
-        });
-      }
-    };
-
-    collapse(node);
+  graph.on('node:collapse', ({ cell: node }: any) => {
+    node.toggleCollapse(node.isCollapsed());
   });
 
   //群组大小自适应处理
@@ -277,82 +232,11 @@ export const initGraph = (
     if (options.skipParentHandler) {
       return;
     }
-
-    const children = node.getChildren();
-    if (children && children.length) {
-      node.prop('originSize', node.getSize());
-    }
   });
 
   graph.on('node:change:position', ({ node, options }) => {
     if (options.skipParentHandler || ctrlPressed) {
       return;
-    }
-
-    if (node.getChildren()?.length) {
-      node.prop('originPosition', node.getPosition());
-    }
-
-    const parent = node.getParent();
-    if (!parent?.isNode()) {
-      return;
-    }
-
-    let originSize = parent.prop('originSize');
-    if (originSize == null) {
-      originSize = parent.getSize();
-      parent.prop('originSize', originSize);
-    }
-
-    let originPosition = parent.prop('originPosition');
-    if (originPosition == null) {
-      originPosition = parent.getPosition();
-      parent.prop('originPosition', originPosition);
-    }
-
-    let x = originPosition.x;
-    let y = originPosition.y;
-    let cornerX = originPosition.x + originSize.width;
-    let cornerY = originPosition.y + originSize.height;
-    let hasChange = false;
-    const children = parent.getChildren();
-    if (children) {
-      children.forEach((child) => {
-        const bbox = child.getBBox().inflate(10);
-        const corner = bbox.getCorner();
-
-        if (bbox.x < x) {
-          x = bbox.x;
-          hasChange = true;
-        }
-
-        if (bbox.y < y) {
-          y = bbox.y;
-          hasChange = true;
-        }
-
-        if (corner.x > cornerX) {
-          cornerX = corner.x;
-          hasChange = true;
-        }
-
-        if (corner.y > cornerY) {
-          cornerY = corner.y;
-          hasChange = true;
-        }
-      });
-    }
-
-    if (hasChange) {
-      parent.prop(
-        {
-          position: { x, y },
-          size: { width: cornerX - x, height: cornerY - y },
-        },
-        // Note that we also pass a flag so that we know we shouldn't
-        // adjust the `originPosition` and `originSize` in our handlers.
-        { skipParentHandler: true },
-      );
     }
   });
 
@@ -402,5 +286,6 @@ export const initGraph = (
       },
     });
   });
+  dispatch(changeGraph(graph));
   return graph;
 };

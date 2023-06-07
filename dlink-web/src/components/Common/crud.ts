@@ -17,21 +17,18 @@
  *
  */
 
+import { extend } from 'umi-request';
+import { TableListParams } from '@/components/Common/data';
+import { message } from 'antd';
+import { l } from '@/utils/intl';
 
-import {extend} from "umi-request";
-import {TableListParams} from "@/components/Common/data";
-import {message} from "antd";
-import {l} from "@/utils/intl";
-
-
-export const request2 = extend(
-  {headers: {tenantId: localStorage.getItem('dlink-tenantId') || ''}}
-);
+export const request2 = extend({
+  headers: { tenantId: localStorage.getItem('dlink-tenantId') || '' },
+});
 
 export const getStorageTenantId = () => {
   return localStorage.getItem('dlink-tenantId') || '';
-}
-
+};
 
 export const CODE = {
   SUCCESS: 0,
@@ -66,6 +63,7 @@ export async function removeData(url: string, params: any[]) {
 }
 
 export async function addOrUpdateData(url: string, params: any) {
+  debugger;
   return request2(url, {
     method: 'PUT',
     data: {
@@ -105,7 +103,7 @@ export const handleAddOrUpdate = async (url: string, fields: any) => {
   const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
   const hide = message.loading(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg} = await addOrUpdateData(url, {...fields});
+    const { code, msg } = await addOrUpdateData(url, { ...fields });
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -124,7 +122,7 @@ export const handleAddOrUpdateWithResult = async (url: string, fields: any) => {
   const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
   const hide = message.loading(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg, datas} = await addOrUpdateData(url, {...fields});
+    const { code, msg, datas } = await addOrUpdateData(url, { ...fields });
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -143,7 +141,10 @@ export const handleRemove = async (url: string, selectedRows: []) => {
   const hide = message.loading(l('app.request.delete'));
   if (!selectedRows) return true;
   try {
-    const {code, msg} = await removeData(url, selectedRows.map((row) => row.id));
+    const { code, msg } = await removeData(
+      url,
+      selectedRows.map((row) => row.id),
+    );
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -161,7 +162,7 @@ export const handleRemove = async (url: string, selectedRows: []) => {
 export const handleRemoveById = async (url: string, id: number) => {
   const hide = message.loading(l('app.request.delete'));
   try {
-    const {code, msg} = await removeData(url, [id]);
+    const { code, msg } = await removeData(url, [id]);
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -180,7 +181,10 @@ export const handleSubmit = async (url: string, title: string, selectedRows: any
   const hide = message.loading(l('app.request.running') + title);
   if (!selectedRows) return true;
   try {
-    const {code, msg} = await postDataArray(url, selectedRows.map((row) => row.id));
+    const { code, msg } = await postDataArray(
+      url,
+      selectedRows.map((row) => row.id),
+    );
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -197,14 +201,14 @@ export const handleSubmit = async (url: string, title: string, selectedRows: any
 
 export const updateEnabled = (url: string, selectedRows: [], enabled: boolean) => {
   selectedRows.forEach((item) => {
-    handleAddOrUpdate(url, {id: item.id, enabled: enabled})
-  })
+    handleAddOrUpdate(url, { id: item.id, enabled: enabled });
+  });
 };
 
 export const handleOption = async (url: string, title: string, param: any) => {
   const hide = message.loading(l('app.request.running') + title);
   try {
-    const {code, msg} = await postAll(url, param);
+    const { code, msg } = await postAll(url, param);
     hide();
     if (code == CODE.SUCCESS) {
       message.success(msg);
@@ -221,7 +225,7 @@ export const handleOption = async (url: string, title: string, param: any) => {
 
 export const handleData = async (url: string, id: any) => {
   try {
-    const {code, datas, msg} = await getData(url, id);
+    const { code, datas, msg } = await getData(url, id);
     if (code == CODE.SUCCESS) {
       return datas;
     } else {
@@ -236,7 +240,7 @@ export const handleData = async (url: string, id: any) => {
 
 export const handleInfo = async (url: string, id: number) => {
   try {
-    const {datas} = await getInfoById(url, id);
+    const { datas } = await getInfoById(url, id);
     return datas;
   } catch (error) {
     message.error(l('app.request.geterror.error'));
