@@ -3,6 +3,7 @@ package org.dinky.cdc.sql;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.utils.TypeConversions;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
+    protected final ObjectMapper objectMapper = new ObjectMapper();
 
     protected AbstractSqlSinkBuilder() {
     }

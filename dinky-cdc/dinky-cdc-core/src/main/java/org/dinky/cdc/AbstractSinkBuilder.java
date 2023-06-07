@@ -19,18 +19,6 @@
 
 package org.dinky.cdc;
 
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.table.types.utils.TypeConversions;
-import org.apache.flink.types.Row;
-import org.dinky.assertion.Asserts;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
-
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -45,6 +33,7 @@ import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.StringData;
 import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.operations.ModifyOperation;
+import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.BooleanType;
 import org.apache.flink.table.types.logical.DateType;
@@ -60,7 +49,18 @@ import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.OutputTag;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.JSONUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -69,11 +69,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
-import javax.xml.bind.DatatypeConverter;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class AbstractSinkBuilder implements SinkBuilder {
 
@@ -224,6 +219,26 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList) {}
 
+
+    protected List<Operation> createInsertOperations(CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
+        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
+        logger.info(cdcSqlInsert);
+
+        List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
+        logger.info("Create {} FlinkSQL insert into successful...", tableName);
+        try {
+            if (!operations.isEmpty()) {
+                Operation operation = operations.get(0);
+                if (operation instanceof ModifyOperation) {
+                    modifyOperations.add((ModifyOperation) operation);
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Translate to plan occur exception: {}", e.toString());
+            throw e;
+        }
+        return operations;
+    }
 
     @Override
     public DataStreamSource<String> build(

@@ -19,8 +19,26 @@
 
 package org.dinky.cdc.sql;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.logical.BigIntType;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.DecimalType;
+import org.apache.flink.table.types.logical.FloatType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.table.types.logical.VarBinaryType;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
 import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
@@ -31,31 +49,7 @@ import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SplitUtil;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.dag.Transformation;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.FloatType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarBinaryType;
-import org.apache.flink.table.types.utils.TypeConversions;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
-
+import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -67,8 +61,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.xml.bind.DatatypeConverter;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -87,7 +79,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             DataStream<Row> rowDataDataStream,
             Table table,
             List<String> columnNameList) {
-        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline(); // 上游表
+        // 上游表名称
+        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, columnNameList);
         logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
@@ -95,20 +88,28 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     private void addTableSinks(
             CustomTableEnvironment customTableEnvironment, Table table, String viewName) {
-
-        String sinkSchemaName = getSinkSchemaName(table); // 下游库名称
-        String sinkTableName = getSinkTableName(table); // 下游表名称
+        // 下游库名称
+        String sinkSchemaName = getSinkSchemaName(table);
+        // 下游表名称
+        String sinkTableName = getSinkTableName(table);
 
         // 这个地方要根据下游表的数量进行生成
-        if (config.getSinks() != null && config.getSinks().size() > 0) {
-            boolean onlySingleSink = config.getSinks().size() == 1;
-            int index = 0;
-            for (Map<String, String> sink : config.getSinks()) {
+        if (CollectionUtils.isEmpty(config.getSinks())) {
+            addSinkInsert(
+                    customTableEnvironment,
+                    table,
+                    viewName,
+                    sinkTableName,
+                    sinkSchemaName,
+                    sinkTableName);
+        } else {
+            for (int index = 0; index < config.getSinks().size(); index++) {
                 String tableName = sinkTableName;
-                if (!onlySingleSink) {
-                    tableName = tableName + "_" + index++;
+                if (config.getSinks().size() != 1) {
+                    tableName = sinkTableName + "_" + index;
                 }
-                config.setSink(sink);
+
+                config.setSink(config.getSinks().get(index));
                 addSinkInsert(
                         customTableEnvironment,
                         table,
@@ -117,14 +118,6 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                         sinkSchemaName,
                         sinkTableName);
             }
-        } else {
-            addSinkInsert(
-                    customTableEnvironment,
-                    table,
-                    viewName,
-                    sinkTableName,
-                    sinkSchemaName,
-                    sinkTableName);
         }
     }
 
@@ -142,25 +135,9 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                         table, tableName, config, sinkSchemaName, sinkTableName, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
-        logger.info("Create " + tableName + " FlinkSQL DDL successful...");
+        logger.info("Create {} FlinkSQL DDL successful...", tableName);
 
-        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
-        logger.info(cdcSqlInsert);
-
-        List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
-        logger.info("Create " + tableName + " FlinkSQL insert into successful...");
-        try {
-            if (!operations.isEmpty()) {
-                Operation operation = operations.get(0);
-                if (operation instanceof ModifyOperation) {
-                    modifyOperations.add((ModifyOperation) operation);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Translate to plan occur exception: {}", e.toString());
-            throw e;
-        }
-        return operations;
+        return createInsertOperations(customTableEnvironment, table, viewName, tableName);
     }
 
     @Override
@@ -174,7 +151,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     }
 
     @Override
-    public DataStreamSource build(
+    public DataStreamSource<String> build(
             CDCBuilder cdcBuilder,
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
@@ -185,102 +162,101 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             sinkTimeZone = ZoneId.of(timeZone);
         }
         final List<Schema> schemaList = config.getSchemaList();
-        if (Asserts.isNotNullCollection(schemaList)) {
-
-            logger.info("Build deserialize successful...");
-            Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
-            Map<String, Table> tableMap = new HashMap<>();
-            Map<String, String> splitConfMap = config.getSplit();
-
-            for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
-                    String sinkTableName = getSinkTableName(table);
-                    OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
-                    tagMap.put(table, outputTag);
-                    tableMap.put(table.getSchemaTableName(), table);
-                }
-            }
-            final String schemaFieldName = config.getSchemaFieldName();
-            ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator =
-                    dataStreamSource
-                            .map(x -> objectMapper.readValue(x, Map.class))
-                            .returns(Map.class);
-
-            SingleOutputStreamOperator<Map> processOperator =
-                    mapOperator.process(
-                            new ProcessFunction<Map, Map>() {
-
-                                @Override
-                                public void processElement(
-                                        Map map,
-                                        ProcessFunction<Map, Map>.Context ctx,
-                                        Collector<Map> out)
-                                        throws Exception {
-                                    LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                    try {
-                                        String tableName =
-                                                SplitUtil.getReValue(
-                                                                source.get(schemaFieldName)
-                                                                        .toString(),
-                                                                splitConfMap)
-                                                        + "."
-                                                        + SplitUtil.getReValue(
-                                                                source.get("table").toString(),
-                                                                splitConfMap);
-                                        Table table = tableMap.get(tableName);
-                                        OutputTag<Map> outputTag = tagMap.get(table);
-                                        Optional.ofNullable(outputTag)
-                                                .orElseThrow(
-                                                        () ->
-                                                                new RuntimeException(
-                                                                        "data outPutTag is not exists!table name is  "
-                                                                                + tableName));
-                                        ctx.output(outputTag, map);
-                                    } catch (Exception e) {
-                                        logger.error(e.getMessage(), e);
-                                        out.collect(map);
-                                    }
-                                }
-                            });
-            tagMap.forEach(
-                    (table, tag) -> {
-                        final String schemaTableName = table.getSchemaTableName();
-                        try {
-                            DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                            logger.info("Build {} shunt successful...", schemaTableName);
-                            List<String> columnNameList = new ArrayList<>();
-                            List<LogicalType> columnTypeList = new ArrayList<>();
-                            buildColumn(columnNameList, columnTypeList, table.getColumns());
-                            DataStream<Row> rowDataDataStream =
-                                    buildRow(
-                                                    filterOperator,
-                                                    columnNameList,
-                                                    columnTypeList,
-                                                    schemaTableName)
-                                            .rebalance();
-                            logger.info("Build " + schemaTableName + " flatMap successful...");
-                            logger.info("Start build " + schemaTableName + " sink...");
-                            String viewName =
-                                    addSourceTableView(
-                                            customTableEnvironment,
-                                            rowDataDataStream,
-                                            table,
-                                            columnNameList);
-                            addTableSinks(customTableEnvironment, table, viewName);
-                        } catch (Exception e) {
-                            logger.error("Build " + schemaTableName + " cdc sync failed...");
-                            logger.error(LogUtil.getError(e));
-                        }
-                    });
-
-            List<Transformation<?>> trans =
-                    customTableEnvironment.getPlanner().translate(modifyOperations);
-            for (Transformation<?> item : trans) {
-                env.addOperator(item);
-            }
-            logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
+        if (Asserts.isNullCollection(schemaList)) {
+            return dataStreamSource;
         }
+
+        logger.info("Build deserialize successful...");
+        Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
+        Map<String, Table> tableMap = new HashMap<>();
+
+        for (Schema schema : schemaList) {
+            for (Table table : schema.getTables()) {
+                String sinkTableName = getSinkTableName(table);
+                OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
+                tagMap.put(table, outputTag);
+                tableMap.put(table.getSchemaTableName(), table);
+            }
+        }
+        final String schemaFieldName = config.getSchemaFieldName();
+        SingleOutputStreamOperator<Map> mapOperator =
+                dataStreamSource
+                        .map(x -> objectMapper.readValue(x, Map.class))
+                        .returns(Map.class);
+
+        Map<String, String> splitConfMap = config.getSplit();
+        SingleOutputStreamOperator<Map> processOperator =
+                mapOperator.process(
+                        new ProcessFunction<Map, Map>() {
+
+                            @Override
+                            public void processElement(
+                                    Map map,
+                                    ProcessFunction<Map, Map>.Context ctx,
+                                    Collector<Map> out) {
+                                LinkedHashMap source = (LinkedHashMap) map.get("source");
+                                try {
+                                    String tableName =
+                                            SplitUtil.getReValue(
+                                                            source.get(schemaFieldName)
+                                                                    .toString(),
+                                                            splitConfMap)
+                                                    + "."
+                                                    + SplitUtil.getReValue(
+                                                            source.get("table").toString(),
+                                                            splitConfMap);
+                                    Table table = tableMap.get(tableName);
+                                    OutputTag<Map> outputTag = tagMap.get(table);
+                                    Optional.ofNullable(outputTag)
+                                            .orElseThrow(
+                                                    () ->
+                                                            new RuntimeException(
+                                                                    "data outPutTag is not exists!table name is  "
+                                                                            + tableName));
+                                    ctx.output(outputTag, map);
+                                } catch (Exception e) {
+                                    logger.error(e.getMessage(), e);
+                                    out.collect(map);
+                                }
+                            }
+                        });
+        tagMap.forEach(
+                (table, tag) -> {
+                    final String schemaTableName = table.getSchemaTableName();
+                    try {
+                        DataStream<Map> filterOperator = shunt(processOperator, table, tag);
+                        logger.info("Build {} shunt successful...", schemaTableName);
+                        List<String> columnNameList = new ArrayList<>();
+                        List<LogicalType> columnTypeList = new ArrayList<>();
+                        buildColumn(columnNameList, columnTypeList, table.getColumns());
+                        DataStream<Row> rowDataDataStream =
+                                buildRow(
+                                                filterOperator,
+                                                columnNameList,
+                                                columnTypeList,
+                                                schemaTableName)
+                                        .rebalance();
+                        logger.info("Build " + schemaTableName + " flatMap successful...");
+                        logger.info("Start build " + schemaTableName + " sink...");
+                        String viewName =
+                                addSourceTableView(
+                                        customTableEnvironment,
+                                        rowDataDataStream,
+                                        table,
+                                        columnNameList);
+                        addTableSinks(customTableEnvironment, table, viewName);
+                    } catch (Exception e) {
+                        logger.error("Build " + schemaTableName + " cdc sync failed...");
+                        logger.error(LogUtil.getError(e));
+                    }
+                });
+
+        List<Transformation<?>> trans =
+                customTableEnvironment.getPlanner().translate(modifyOperations);
+        for (Transformation<?> item : trans) {
+            env.addOperator(item);
+        }
+        logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
         return dataStreamSource;
     }
 
