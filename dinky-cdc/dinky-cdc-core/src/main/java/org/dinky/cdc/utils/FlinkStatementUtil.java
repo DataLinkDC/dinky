@@ -27,13 +27,15 @@ import org.apache.flink.runtime.util.EnvironmentInformation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class FlinkStatementUtil {
 
+    private FlinkStatementUtil() {
+    }
+
     public static String getCDCInsertSql(
-            Table table, String targetName, String sourceName, FlinkCDCConfig config) {
+            Table table, String targetName, String sourceName) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(targetName);
         sb.append(" SELECT\n");
@@ -42,7 +44,7 @@ public class FlinkStatementUtil {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append("`" + table.getColumns().get(i).getName() + "`").append(" \n");
+            sb.append(String.format("`%s`", table.getColumns().get(i).getName())).append(" \n");
         }
         sb.append(" FROM `");
         sb.append(sourceName);
@@ -91,12 +93,12 @@ public class FlinkStatementUtil {
             pksb.append("`");
         }
         pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
+        if (!pks.isEmpty()) {
             sb.append("    ,");
             sb.append(pksb);
         }
         sb.append(") WITH (\n");
-        sb.append(getSinkConfigurationString(table, config, sinkSchemaName, sinkTableName, pkList));
+        sb.append(getSinkConfigurationString(config, sinkSchemaName, sinkTableName, pkList));
         sb.append(")\n");
         return sb.toString();
     }
@@ -104,12 +106,9 @@ public class FlinkStatementUtil {
     public static String getCreateCatalogStatement(FlinkCDCConfig config) {
         String catalogName = config.getSink().get("catalog.name");
         List<String> catalogParamKeys =
-                config.getSink().entrySet().stream()
+                config.getSink().keySet().stream()
                         .filter(
-                                item -> {
-                                    return item.getKey().startsWith("catalog.");
-                                })
-                        .map(Map.Entry::getKey)
+                                s -> s.startsWith("catalog."))
                         .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder("CREATE CATALOG ");
         sb.append(catalogName);
@@ -131,16 +130,13 @@ public class FlinkStatementUtil {
     }
 
     private static String convertSinkColumnType(String type, FlinkCDCConfig config) {
-        if (config.getSink().get("connector").equals("hudi")) {
-            if (type.equals("TIMESTAMP")) {
+        if (config.getSink().get("connector").equals("hudi") && (type.equals("TIMESTAMP"))) {
                 return "TIMESTAMP(3)";
-            }
         }
         return type;
     }
 
     private static String getSinkConfigurationString(
-            Table table,
             FlinkCDCConfig config,
             String sinkSchemaName,
             String sinkTableName,
