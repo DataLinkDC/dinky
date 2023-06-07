@@ -150,6 +150,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         return new SQLSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public DataStreamSource<String> build(
             CDCBuilder cdcBuilder,
@@ -169,7 +170,6 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         logger.info("Build deserialize successful...");
         Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
         Map<String, Table> tableMap = new HashMap<>();
-
         for (Schema schema : schemaList) {
             for (Table table : schema.getTables()) {
                 String sinkTableName = getSinkTableName(table);
@@ -178,6 +178,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                 tableMap.put(table.getSchemaTableName(), table);
             }
         }
+
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource
@@ -236,8 +237,9 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                                                 columnTypeList,
                                                 schemaTableName)
                                         .rebalance();
-                        logger.info("Build " + schemaTableName + " flatMap successful...");
-                        logger.info("Start build " + schemaTableName + " sink...");
+                        logger.info("Build {} flatMap successful...", schemaTableName);
+                        logger.info("Start build {} sink...", schemaTableName);
+
                         String viewName =
                                 addSourceTableView(
                                         customTableEnvironment,
@@ -246,7 +248,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                                         columnNameList);
                         addTableSinks(customTableEnvironment, table, viewName);
                     } catch (Exception e) {
-                        logger.error("Build " + schemaTableName + " cdc sync failed...");
+                        logger.error("Build {} cdc sync failed...", schemaTableName);
                         logger.error(LogUtil.getError(e));
                     }
                 });
@@ -256,7 +258,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         for (Transformation<?> item : trans) {
             env.addOperator(item);
         }
-        logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
+        logger.info("A total of {} table cdc sync were build successful...", trans.size());
         return dataStreamSource;
     }
 
@@ -268,11 +270,11 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
                 return LocalDate.ofEpochDay((Integer) value);
-            } else if (value instanceof Long) {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
-            } else {
-                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
             }
+            if (value instanceof Long) {
+                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+            }
+            return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
         }
 
         if (logicalType instanceof TimestampType) {
@@ -304,10 +306,6 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
         }
 
-        if (logicalType instanceof DecimalType) {
-            return new BigDecimal(String.valueOf(value));
-        }
-
         if (logicalType instanceof FloatType) {
             if (value instanceof Float) {
                 return value;
@@ -319,12 +317,15 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             return Float.parseFloat(value.toString());
         }
 
+        if (logicalType instanceof DecimalType) {
+            return new BigDecimal(String.valueOf(value));
+        }
+
         if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
-            } else {
-                return value;
             }
+            return value;
         }
 
         if (logicalType instanceof VarBinaryType) {

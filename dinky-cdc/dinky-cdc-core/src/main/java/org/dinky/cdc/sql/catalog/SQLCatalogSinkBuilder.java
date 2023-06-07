@@ -125,6 +125,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 tableMap.put(table.getSchemaTableName(), table);
             }
         }
+
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource
@@ -159,7 +160,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                     final String schemaTableName = table.getSchemaTableName();
                     try {
                         DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                        logger.info(String.format("Build %s shunt successful...", schemaTableName));
+                        logger.info("Build {} shunt successful...", schemaTableName);
                         List<String> columnNameList = new ArrayList<>();
                         List<LogicalType> columnTypeList = new ArrayList<>();
                         buildColumn(columnNameList, columnTypeList, table.getColumns());
@@ -170,14 +171,15 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                                                 columnTypeList,
                                                 schemaTableName)
                                         .rebalance();
-                        logger.info(String.format("Build %s flatMap successful...", schemaTableName));
-                        logger.info(String.format("Start build %s sink...", schemaTableName));
+                        logger.info("Build {} flatMap successful...", schemaTableName);
+                        logger.info("Start build {} sink...", schemaTableName);
+
                         addTableSink(
                                 customTableEnvironment,
                                 rowDataDataStream,
                                 table);
                     } catch (Exception e) {
-                        logger.error(String.format("Build %s cdc sync failed...", schemaTableName));
+                        logger.error("Build {} cdc sync failed...", schemaTableName);
                         logger.error(LogUtil.getError(e));
                     }
                 });
@@ -187,7 +189,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         for (Transformation<?> item : trans) {
             env.addOperator(item);
         }
-        logger.info(String.format("A total of %d table cdc sync were build successfull...", trans.size()));
+        logger.info("A total of {} table cdc sync were build successful...", trans.size());
         return dataStreamSource;
     }
 
@@ -201,9 +203,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 return Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
                         .toLocalDate();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
             }
+            return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
         }
 
         if (logicalType instanceof TimestampType) {
@@ -211,32 +212,32 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                 return Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
                         .toLocalDateTime();
-            } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
+
+            if (value instanceof String) {
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
+            }
+
+            return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
         }
 
         if (logicalType instanceof DecimalType) {
-            return new BigDecimal((String) value);
+            return new BigDecimal(String.valueOf(value));
         }
 
         if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
-            } else {
-                return value;
             }
+            return value;
         }
 
         if (logicalType instanceof VarBinaryType) {
             // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
             if (value instanceof String) {
                 return DatatypeConverter.parseBase64Binary((String) value);
-            } else {
-                return value;
             }
+            return value;
         }
 
         return value;
