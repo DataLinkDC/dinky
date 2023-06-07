@@ -48,5 +48,4 @@ public class MysqlSourceOperator extends MysqlTable {
         ti.setName(generateTableName(ti.getName()));
         outputPortObject.setPseudoData(ti);
     }
-
 }
