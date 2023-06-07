@@ -66,8 +66,10 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                         rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
                         break;
                     case "u":
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, after);
+                        rowCollect(
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                        rowCollect(
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, after);
                         break;
                     default:
                 }

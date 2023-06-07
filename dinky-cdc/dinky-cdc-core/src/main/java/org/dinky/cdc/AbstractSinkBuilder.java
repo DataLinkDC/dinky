@@ -19,7 +19,6 @@
 
 package org.dinky.cdc;
 
-import org.apache.flink.util.Collector;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.Column;
@@ -58,6 +57,7 @@ import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
+import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.math.BigDecimal;
@@ -158,11 +158,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<LogicalType> columnTypeList,
             String schemaTableName) {
         return filterOperator.flatMap(
-                        sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+                sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
     }
 
     @SuppressWarnings("rawtypes")
-    private FlatMapFunction<Map, RowData> sinkRowDataFunction(List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
+    private FlatMapFunction<Map, RowData> sinkRowDataFunction(
+            List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
         return (value, out) -> {
             try {
                 Map after = (Map) value.get("after");
@@ -176,8 +177,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                         rowDataCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
                         break;
                     case "u":
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, after);
+                        rowDataCollect(
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                        rowDataCollect(
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, after);
                         break;
                     default:
                 }
@@ -193,20 +196,17 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    private void rowDataCollect(List<String> columnNameList,
-                                List<LogicalType> columnTypeList,
-                                Collector<RowData> out,
-                                RowKind rowKind,
-                                Map value) {
-        GenericRowData genericRowData =
-                new GenericRowData(columnNameList.size());
+    private void rowDataCollect(
+            List<String> columnNameList,
+            List<LogicalType> columnTypeList,
+            Collector<RowData> out,
+            RowKind rowKind,
+            Map value) {
+        GenericRowData genericRowData = new GenericRowData(columnNameList.size());
         genericRowData.setRowKind(rowKind);
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
-                    i,
-                    convertValue(
-                            value.get(columnNameList.get(i)),
-                            columnTypeList.get(i)));
+                    i, convertValue(value.get(columnNameList.get(i)), columnTypeList.get(i)));
         }
         out.collect(genericRowData);
     }
