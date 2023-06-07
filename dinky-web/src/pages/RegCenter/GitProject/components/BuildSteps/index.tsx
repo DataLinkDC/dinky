@@ -148,10 +148,8 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             setPercent(parseInt(String(100 / stepNum * currentStep)));
             stepArray[currentStep - 1].status = renderStatus(status)
           }
-          if ((status === 2 || status === 0) && currentStep === stepNum) {
-            if (currentStep === stepNum) {
-              stepArray.forEach(d => d.disabled = false)
-            }
+          if ((status === 2 && currentStep === stepNum) || status === 0) {
+            stepArray.forEach(d => d.disabled = false)
             finish = true;
             eventSource.close();
             return;

@@ -19,6 +19,7 @@
 
 package org.dinky.configure;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
@@ -32,6 +33,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @since 2022/09/24 11:23
  */
 @Configuration
+@ConditionalOnProperty(prefix = "spring.cache", name = "type", havingValue = "REDIS")
 public class CacheConfig {
 
     /** 配置Redis缓存注解的value序列化方式 */
