@@ -19,7 +19,7 @@
 
 package org.dinky.scheduler.client;
 
-import org.dinky.scheduler.config.DolphinSchedulerProperties;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.model.DagData;
 import org.dinky.scheduler.model.ProcessDefinition;
@@ -36,7 +36,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.lang.TypeReference;
@@ -50,8 +49,6 @@ public class ProcessClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
 
-    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
-
     /**
      * 查询工作流定义
      *
@@ -62,15 +59,20 @@ public class ProcessClient {
     public List<ProcessDefinition> getProcessDefinition(Long projectCode, String processName) {
         Map<String, Object> map = new HashMap<>();
         map.put("projectCode", projectCode);
+
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/process-definition",
                         map);
 
         String content =
                 HttpRequest.get(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(ParamUtil.getPageParams(processName))
                         .timeout(5000)
                         .execute()
@@ -118,13 +120,17 @@ public class ProcessClient {
         map.put("code", processCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/process-definition/{code}",
                         map);
 
         String content =
                 HttpRequest.get(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .timeout(5000)
                         .execute()
                         .body();
@@ -146,7 +152,7 @@ public class ProcessClient {
         map.put("projectCode", projectCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/process-definition",
                         map);
 
@@ -165,7 +171,11 @@ public class ProcessClient {
 
         String content =
                 HttpRequest.post(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(params)
                         .timeout(5000)
                         .execute()

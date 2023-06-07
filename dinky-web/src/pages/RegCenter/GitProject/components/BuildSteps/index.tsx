@@ -21,161 +21,177 @@
 import {Modal} from "antd";
 import React, {useEffect, useState} from "react";
 import {GitProject} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
 import {AutoSteps, BuildMsgData} from "@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps";
 import {JavaSteps, PythonSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps/constants";
 import {API_CONSTANTS} from "@/services/constants";
+import proxy from "../../../../../../config/proxy";
+import {renderStatus} from '@/pages/RegCenter/GitProject/function';
+import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
 
 
 /**
  * props
  */
 type BuildStepsProps = {
-    onCancel: (flag?: boolean) => void;
-    modalVisible: boolean;
-    values: Partial<GitProject>;
+  onCancel: (flag?: boolean) => void
+  title: string;
+  values: GitProject;
 };
-
-
-export type BuildStepsState = {
-    key: number;
-    title: string;
-    status: string;
-    description: string;
-    disabled: boolean;
-    onClick: () => void;
-}
 
 export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
-    /**
-     * extract props
-     */
-    const {
-        onCancel: handleModalVisible,
-        modalVisible,
-        values,
-    } = props;
+  /**
+   * extract props
+   */
+  const {
+    onCancel: handleModalVisible,
+    title,
+    values,
+  } = props;
+  let [logList, setLogList] = useState<Record<number, string[]>>({});
+  const [log, setLog] = useState<string>("");
+  const [currentStep, setCurrentStep] = useState<number>(0);
+  const [showList, setShowList] = useState<boolean>(false);
+  const [percent, setPercent] = useState<number>(0);
+  const [steps, handleSteps] = useState<BuildStepsState[]>([]);
 
 
-    const [currentStep, setCurrentStep] = useState<number>(values.buildStep || 0);
-    const [percent, setPercent] = useState<number>(0);
-    const [currentDataMsg, setCurrentDataMsg] = useState<BuildMsgData>();
-    const [eventSource, setEventSource] = useState<EventSource>();
-    const [buildSteps, setBuildSteps] = useState<Partial<any[]>>([]);
-    const [steps , handleSteps] = useState<Partial<BuildStepsState[]>>([]);
+  /**
+   * render step title
+   * @param step
+   */
+  const renderTitle = (step: number) => {
+    return (values.codeType === 1 ? JavaSteps : PythonSteps)[step - 1].title;
+  }
 
-    const buildStepList = () => {
-        if (values.codeType === 1) { // if code type is  java then build java steps
-            setBuildSteps(JavaSteps);
-        } else {
-            setBuildSteps(PythonSteps);
+  useEffect(() => {
+    if (values.buildStep === 0) {
+      setPercent(0);
+      setCurrentStep(0);
+    }
+
+    const {REACT_APP_ENV = 'dev'} = process.env;
+    // @ts-ignore
+    const url = proxy[REACT_APP_ENV]["/api/"].target || ""
+    // 这里不要代理。sse使用代理会变成同步
+    // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const eventSource = new EventSource(url + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+
+    let stepArray: BuildStepsState[] = []; // 步骤数组
+    let globalCurrentStep: number = 0;
+    let execNum: number = 0;
+    let stepNum: number = 1;
+    let showDataStep = -1;
+    let showData = "";
+    let finish = false;
+
+    //sse listen event message
+    eventSource.onmessage = e => {
+      try {
+        // type  // 1是总状态  2是log  3是部分状态
+        // status // 0是失败 1是进行中 2 完成
+        let result = JSON.parse(e.data);
+        const {currentStep, type, data, status, history} = result;
+
+        if (type === 0) {
+          if (execNum === 1) {
+            logList = {}
+          }
+          execNum++;
+          let parseResultData = JSON.parse(data); // parse data
+          stepNum = parseResultData.length; // get step num
+          setPercent(parseInt(String(100 / stepNum * currentStep))); // set percent
+          setCurrentStep(currentStep); // set current step
+
+          stepArray = parseResultData.map((item: any) => {
+            return {
+              key: item.step,
+              title: renderTitle(item.step),
+              status: renderStatus(item.status),
+              description: item.startTime,
+              disabled: true,
+              onClick: () => {
+                if (finish) {
+                  if (item.step === showDataStep) {
+                    setShowList(true)
+                    setLog(showData)
+                  } else {
+                    setShowList(false)
+                    setLog(logList[item.step]?.join("\n"))
+                  }
+                  setCurrentStep(item.step)
+                }
+              }
+            };
+          })
+          globalCurrentStep = currentStep;
+          handleSteps(stepArray);
         }
+        if (type !== 0) {
+          if (type === 1) {
+            if (logList[currentStep] === undefined) {
+              logList[currentStep] = []
+            }
+            if (data !== undefined) {
+              logList[currentStep].push(data)
+              setLog(logList[currentStep]?.join("\n"))
+            }
+          } else if (type === 2) {
+            showDataStep = currentStep;
+            showData = JSON.parse(data);
+          } else if (type === 3) {
+            stepArray[currentStep].description = data;
+          }
+
+          if (currentStep >= globalCurrentStep) {
+            setCurrentStep(currentStep);
+            setPercent(parseInt(String(100 / stepNum * currentStep)));
+            stepArray[currentStep - 1].status = renderStatus(status)
+          }
+          if ((status === 2 || status === 0) && currentStep === stepNum) {
+            if (currentStep === stepNum) {
+              stepArray.forEach(d => d.disabled = false)
+            }
+            finish = true;
+            eventSource.close();
+            return;
+          }
+        }
+      } catch (e) {
+        finish = true;
+        eventSource.close();
+      }
     };
 
 
-    const renderStatus = (status: number) => {
-        let statusTemp = "";
-        if (status === 0) {
-            statusTemp = "error";
-        } else if (status === 1) {
-            statusTemp = "process";
-        } else if (status === 2) {
-            statusTemp = "finish";
-        } else {
-            statusTemp = "wait";
-        }
-        return statusTemp;
+    return () => {
+      eventSource.close();
     }
 
-    const renderTitle = (step: number) => {
-        return l("rc.gp.build.step." + step);
-    }
+  }, [])
 
-  // const [data, error] = useSSE(() => {
-  //   return fetch("https://myapi.example.com").then((res) => res.json());
-  // }, []);
-
-    useEffect(() => {
-        if (values.buildStep === 0) {
-            setPercent(0);
-            setCurrentStep(0);
-        }
-        const eventSource = new EventSource(API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-
-        setEventSource(eventSource);
-
-        buildStepList();
-
-        //sse listen event message
-        eventSource.onmessage = e => {
-            // type  // 1是总状态  2是log  3是部分状态
-            // status // 0是失败 1是进行中 2 完成
-            let resultMsg = JSON.parse(e.data);
-
-            if (resultMsg.type === 1) {
-                // {
-                //     key: 1,
-                //     title: l("rc.gp.build.step.1"),
-                //     status: "wait",
-                // },
-                console.log(resultMsg)
-
-                const {currentStep,data} = resultMsg;
-
-                setCurrentStep(currentStep);
-                setPercent((currentStep * 20) - 20);
-
-                let a1 = JSON.parse(data);
-
-               const nnn = a1.map((item: any) => {
-                    return {
-                        key: item.step,
-                        title: renderTitle(item.step),
-                        status: renderStatus(item.status),
-                        description: item.startTime,
-                        disabled: item.status === 2,
-                        onClick: () => {
-                            console.log(item,111111111)
-                        }
-                    };
-                })
-                handleSteps(nnn);
-            }
-            if (resultMsg.type !== 1) {
-                setCurrentDataMsg(resultMsg);
-                console.log(resultMsg,'msg')
-                if (resultMsg.status === 2 && resultMsg.currentStep === 6) {
-                    eventSource.close();
-                    console.log("build success --- close")
-                }
-            }
-        };
+  /**
+   * cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+  }
 
 
-        return () => {
-            eventSource.close();
-        }
-
-    }, [values])
-
-    const handleCancel = () => {
-        handleModalVisible();
-        eventSource?.close();
-    }
-
-
-    return <>
-        <Modal
-            title={l("rc.gp.build")}
-            width={"85%"}
-            open={modalVisible}
-            maskClosable={false}
-            onCancel={() => handleCancel()}
-            okButtonProps={{style: {display: "none"}}}
-        >
-            <AutoSteps steps={steps} currentDataMsg={currentDataMsg} percent={percent} currentStep={currentStep}
-                       values={values}/>
-        </Modal>
-    </>;
+  /**
+   * render
+   */
+  return <>
+    <Modal
+      title={title}
+      width={"85%"}
+      open={true}
+      maskClosable={false}
+      onCancel={() => handleCancel()}
+      okButtonProps={{style: {display: "none"}}}
+    >
+      <AutoSteps steps={steps} percent={percent} currentStep={currentStep}
+                 values={values} log={log} showList={showList}/>
+    </Modal>
+  </>;
 };

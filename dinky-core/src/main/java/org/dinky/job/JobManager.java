@@ -28,38 +28,38 @@ import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.context.RowLevelPermissionsContext;
+import org.dinky.data.model.FlinkUdfManifest;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.result.ErrorResult;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.IResult;
+import org.dinky.data.result.InsertResult;
+import org.dinky.data.result.ResultBuilder;
+import org.dinky.data.result.ResultPool;
+import org.dinky.data.result.SelectResult;
 import org.dinky.executor.EnvironmentSetting;
 import org.dinky.executor.Executor;
 import org.dinky.executor.ExecutorSetting;
 import org.dinky.explainer.Explainer;
 import org.dinky.function.constant.PathConstant;
-import org.dinky.function.data.model.Env;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
-import org.dinky.gateway.GatewayType;
-import org.dinky.gateway.config.ActionType;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.parser.SqlType;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.result.ErrorResult;
-import org.dinky.result.ExplainResult;
-import org.dinky.result.IResult;
-import org.dinky.result.InsertResult;
-import org.dinky.result.ResultBuilder;
-import org.dinky.result.ResultPool;
-import org.dinky.result.SelectResult;
 import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
@@ -102,8 +102,8 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONArray;
-import cn.hutool.json.JSONObject;
+import cn.hutool.core.util.URLUtil;
+import cn.hutool.json.JSONUtil;
 
 /**
  * JobManager
@@ -260,20 +260,29 @@ public class JobManager {
 
     private void addConfigurationClsAndJars(List<URL> jarList, List<URL> classpaths)
             throws Exception {
-        Field configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
-        configuration.setAccessible(true);
-        Configuration o =
-                (Configuration) configuration.get(executor.getStreamExecutionEnvironment());
-
-        Field confData = Configuration.class.getDeclaredField("confData");
-        confData.setAccessible(true);
-        Map<String, Object> temp = (Map<String, Object>) confData.get(o);
+        Map<String, Object> temp = getFlinkConfigurationMap();
         temp.put(
                 PipelineOptions.CLASSPATHS.key(),
                 classpaths.stream().map(URL::toString).collect(Collectors.toList()));
         temp.put(
                 PipelineOptions.JARS.key(),
                 jarList.stream().map(URL::toString).collect(Collectors.toList()));
+    }
+
+    private Map<String, Object> getFlinkConfigurationMap() {
+        Field configuration = null;
+        try {
+            configuration = StreamExecutionEnvironment.class.getDeclaredField("configuration");
+            configuration.setAccessible(true);
+            Configuration o =
+                    (Configuration) configuration.get(executor.getStreamExecutionEnvironment());
+            Field confData = Configuration.class.getDeclaredField("confData");
+            confData.setAccessible(true);
+            Map<String, Object> temp = (Map<String, Object>) confData.get(o);
+            return temp;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void initUDF(List<UDF> udfList) {
@@ -290,9 +299,9 @@ public class JobManager {
 
         // 这里要分开
         // 1. 得到jar包路径，注入remote环境
-        Set<File> jarFiles = JarPathContextHolder.getUdfFile();
+        Set<File> jarFiles = FlinkUdfPathContextHolder.getUdfFile();
 
-        Set<File> otherPluginsFiles = JarPathContextHolder.getOtherPluginsFiles();
+        Set<File> otherPluginsFiles = FlinkUdfPathContextHolder.getOtherPluginsFiles();
         jarFiles.addAll(otherPluginsFiles);
 
         List<File> udfJars =
@@ -309,16 +318,6 @@ public class JobManager {
         if (GATEWAY_TYPE_MAP.get(SESSION).contains(runMode)) {
             config.setJarFiles(jarPaths);
         }
-        try {
-            List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
-            writeManifest(taskId, jarList);
-
-            addConfigurationClsAndJars(
-                    jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
-        } catch (Exception e) {
-            logger.error("add configuration failed;reason:{}", LogUtil.getError(e));
-            throw new RuntimeException(e);
-        }
 
         // 2.编译python
         String[] pyPaths =
@@ -329,22 +328,50 @@ public class JobManager {
                         executor.getTableConfig().getConfiguration());
 
         executor.initUDF(jarPaths);
+        if (ArrayUtil.isNotEmpty(pyPaths)) {
+            for (String pyPath : pyPaths) {
+                if (StrUtil.isNotBlank(pyPath)) {
+                    FlinkUdfPathContextHolder.addPyUdfPath(new File(pyPath));
+                }
+            }
+        }
 
-        executor.initPyUDF(Env.getPath(), pyPaths);
+        Set<File> pyUdfFile = FlinkUdfPathContextHolder.getPyUdfFile();
+        executor.initPyUDF(
+                SystemConfiguration.getInstances().getPythonHome(),
+                pyUdfFile.stream().map(File::getAbsolutePath).toArray(String[]::new));
         if (GATEWAY_TYPE_MAP.get(YARN).contains(runMode)) {
             config.getGatewayConfig().setJarPaths(ArrayUtil.append(jarPaths, pyPaths));
         }
-        process.info(StrUtil.format("A total of {} UDF have been Init.", udfList.size()));
+
+        try {
+            List<URL> jarList = CollUtil.newArrayList(URLUtils.getURLs(jarFiles));
+            // 3.写入udf所需文件
+            writeManifest(taskId, jarList);
+
+            addConfigurationClsAndJars(
+                    jarList, CollUtil.newArrayList(URLUtils.getURLs(otherPluginsFiles)));
+        } catch (Exception e) {
+            logger.error("add configuration failed;reason:{}", LogUtil.getError(e));
+            throw new RuntimeException(e);
+        }
+
+        process.info(
+                StrUtil.format(
+                        "A total of {} UDF have been Init.", udfList.size() + pyUdfFile.size()));
         process.info("Initializing Flink UDF...Finish");
     }
 
     private void writeManifest(Integer taskId, List<URL> jarPaths) {
-        JSONArray array =
-                new JSONArray(jarPaths.stream().map(URL::getFile).collect(Collectors.toList()));
-        JSONObject object = new JSONObject();
-        object.set("jars", array);
+        FlinkUdfManifest flinkUdfManifest = new FlinkUdfManifest();
+        flinkUdfManifest.setJars(jarPaths);
+        flinkUdfManifest.setPythonFiles(
+                FlinkUdfPathContextHolder.getPyUdfFile().stream()
+                        .map(URLUtil::getURL)
+                        .collect(Collectors.toList()));
+
         FileUtil.writeUtf8String(
-                object.toStringPretty(),
+                JSONUtil.toJsonStr(flinkUdfManifest),
                 PathConstant.getUdfPackagePath(taskId) + PathConstant.DEP_MANIFEST);
     }
 
@@ -379,7 +406,7 @@ public class JobManager {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " .not exists! ");
                     }
-                    JarPathContextHolder.addUdfPath(file);
+                    FlinkUdfPathContextHolder.addUdfPath(file);
                 }
             }
             // add custom classpath
@@ -390,7 +417,7 @@ public class JobManager {
                     if (!file.exists()) {
                         throw new DinkyException("file: " + path + " .not exists! ");
                     }
-                    JarPathContextHolder.addOtherPlugins(file);
+                    FlinkUdfPathContextHolder.addOtherPlugins(file);
                 }
             }
         }
@@ -398,8 +425,8 @@ public class JobManager {
         DinkyClassLoaderContextHolder.get()
                 .addURL(
                         CollUtil.addAll(
-                                JarPathContextHolder.getUdfFile(),
-                                JarPathContextHolder.getOtherPluginsFiles()));
+                                FlinkUdfPathContextHolder.getUdfFile(),
+                                FlinkUdfPathContextHolder.getOtherPluginsFiles()));
     }
 
     public JobResult executeSql(String statement) {

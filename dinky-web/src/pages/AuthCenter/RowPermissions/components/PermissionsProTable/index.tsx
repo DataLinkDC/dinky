@@ -129,7 +129,7 @@ const PermissionsProTable: React.FC = () => {
             dataIndex: 'option',
             valueType: 'option',
             width: "10vh",
-            render: (_, record) => [
+            render: (_: any, record: RowPermissions) => [
                 <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                 <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                      description={l('rowPermissions.deleteConfirm')}/>

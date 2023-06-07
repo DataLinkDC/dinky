@@ -19,8 +19,8 @@
 
 package org.dinky.utils;
 
-import org.dinky.constant.DirConstant;
-import org.dinky.model.FileNode;
+import org.dinky.data.constant.DirConstant;
+import org.dinky.data.model.FileNode;
 
 import java.util.List;
 

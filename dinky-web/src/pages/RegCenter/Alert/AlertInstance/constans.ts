@@ -16,33 +16,87 @@
  */
 
 
-import {Alert} from "@/types/RegCenter/data";
-
-/**
- * AlertInstanceFormProps
- */
-export type AlertInstanceFormProps = {
-  onCancel: (flag?: boolean) => void;
-  onSubmit: (values: Partial<Alert.AlertInstance>) => void;
-  onTest: (values: Partial<Alert.AlertInstance>) => void;
-  modalVisible: boolean;
-  values: Partial<Alert.AlertInstance>;
-};
+import {ALERT_TYPE} from '@/types/RegCenter/data.d';
+import {l} from '@/utils/intl';
+import {DefaultOptionType} from 'rc-select/es/Select';
 
 
-export const PRO_LIST_CARD_META = {
-  title: {},
-  subTitle: {},
-  type: {},
-  avatar: {},
-  content: {},
-  actions: {
-    cardActionProps: "actions"
+export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
+  {
+    label: l('rc.ai.dingTalk'),
+    value: ALERT_TYPE.DINGTALK,
+    disabled: false,
   },
-};
+  {
+    label: l('rc.ai.wechat'),
+    value: ALERT_TYPE.WECHAT,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.feishu'),
+    value: ALERT_TYPE.FEISHU,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.email'),
+    value: ALERT_TYPE.EMAIL,
+    disabled: false,
+  },
+  {
+    label: l('rc.ai.sms'),
+    value: ALERT_TYPE.SMS,
+    disabled: false,
+  }
+];
 
-export const PRO_LIST_CARD_OPTIONS = {
-  search: false,
-  metas: PRO_LIST_CARD_META,
-  grid: {gutter: 24, column: 6}
-};
+
+export const MANU_FACTURERS = [
+  {
+    label: l('rc.ai.mf.alibaba'),
+    value: 1,
+  },
+  {
+    label: l('rc.ai.mf.huawei'),
+    value: 2,
+  },
+  {
+    label: l('rc.ai.mf.yunpian'),
+    value: 3,
+  },
+  {
+    label: l('rc.ai.mf.tencent'),
+    value: 4,
+  },
+  {
+    label: l('rc.ai.mf.uni'),
+    value: 5,
+  },
+  {
+    label: l('rc.ai.mf.jdcloud'),
+    value: 6,
+  },
+  {
+    label: l('rc.ai.mf.cloopen'),
+    value: 7,
+  },
+  {
+    label: l('rc.ai.mf.emay'),
+    value: 8,
+  },
+  {
+    label: l('rc.ai.mf.ctyun'),
+    value: 9,
+  },
+];
+
+export enum SMS_TYPE {
+  ALIBABA = 1,
+  HUAWEI = 2,
+  YUNPIAN = 3,
+  TENCENT = 4,
+  UNI = 5,
+  JDCLOUD = 6,
+  CLOOPEN = 7,
+  EMAY = 8,
+  CTYUN = 9,
+}

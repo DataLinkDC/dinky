@@ -20,16 +20,16 @@
 package org.dinky.gateway.kubernetes.operator;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
+import org.dinky.gateway.enums.UpgradeMode;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec.Resource;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeployment;
 import org.dinky.gateway.kubernetes.operator.api.FlinkDeploymentSpec;
 import org.dinky.gateway.kubernetes.operator.api.JobSpec;
-import org.dinky.gateway.kubernetes.operator.api.UpgradeMode;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.model.JobStatus;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
 

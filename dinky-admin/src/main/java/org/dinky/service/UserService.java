@@ -19,16 +19,16 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.Result;
-import org.dinky.db.service.ISuperService;
-import org.dinky.dto.LoginDTO;
-import org.dinky.dto.ModifyPasswordDTO;
-import org.dinky.dto.UserDTO;
-import org.dinky.model.Role;
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.model.Tenant;
-import org.dinky.model.User;
-import org.dinky.params.AssignRoleParams;
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
+import org.dinky.data.params.AssignRoleParams;
+import org.dinky.data.result.Result;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
@@ -76,8 +76,8 @@ public interface UserService extends ISuperService<User> {
     /**
      * loginUser
      *
-     * @param loginDTO loginDTO
-     * @return {@link Result}<{@link UserDTO}>
+     * @param loginDTO basic information for user login
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     Result<UserDTO> loginUser(LoginDTO loginDTO);
 
@@ -111,14 +111,14 @@ public interface UserService extends ISuperService<User> {
      * choose tenant
      *
      * @param tenantId
-     * @return {@link Result}<{@link Tenant}>
+     * @return {@link Result}{@link Tenant} the specified tenant
      */
     Result<Tenant> chooseTenant(Integer tenantId);
 
     /**
      * get current user base info
      *
-     * @return {@link Result}<{@link UserDTO}>
+     * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     Result<UserDTO> queryCurrentUserInfo();
 
@@ -151,4 +151,7 @@ public interface UserService extends ISuperService<User> {
      * @return role select permissions list
      */
     List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
+
+    /** user loginout */
+    void outLogin();
 }

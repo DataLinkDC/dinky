@@ -140,7 +140,7 @@ const TenantProTable: React.FC = () => {
             title: l('global.table.operate'),
             valueType: 'option',
             width: "10vh",
-            render: (_, record: UserBaseInfo.Tenant) => [
+            render: (_:any, record: UserBaseInfo.Tenant) => [
                 <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                 <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
                            title={l('tenant.AssignUser')}/>,

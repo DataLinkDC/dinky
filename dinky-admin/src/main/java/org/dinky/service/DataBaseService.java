@@ -19,13 +19,13 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.DataBase;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.SqlGeneration;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.DataBase;
-import org.dinky.model.QueryData;
-import org.dinky.model.Schema;
-import org.dinky.model.SqlGeneration;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
@@ -36,16 +36,61 @@ import java.util.List;
  */
 public interface DataBaseService extends ISuperService<DataBase> {
 
+    /**
+     * test connect database
+     *
+     * @param dataBase {@link DataBase}
+     * @return {@link String}
+     */
     String testConnect(DataBase dataBase);
 
-    boolean checkHeartBeat(DataBase dataBase);
+    /**
+     * check heart beat
+     *
+     * @param dataBase {@link DataBase}
+     * @return {@link Boolean}
+     */
+    Boolean checkHeartBeat(DataBase dataBase);
 
-    boolean saveOrUpdateDataBase(DataBase dataBase);
+    /**
+     * save or update database
+     *
+     * @param dataBase {@link DataBase}
+     * @return {@link Boolean}
+     */
+    Boolean saveOrUpdateDataBase(DataBase dataBase);
 
+    /**
+     * enable or disable database
+     *
+     * @param id {@link Integer}
+     * @return {@link Boolean}
+     */
+    Boolean enable(Integer id);
+
+    /**
+     * list all enable database
+     *
+     * @return {@link List}< {@link DataBase}>
+     */
     List<DataBase> listEnabledAll();
 
+    /**
+     * get all database of schemas and tables
+     *
+     * @param id {@link Integer}
+     * @return {@link List}< {@link Schema}>
+     */
     List<Schema> getSchemasAndTables(Integer id);
 
+    /**
+     * get columns of table
+     *
+     * @param id {@link Integer}
+     * @param schemaName {@link String}
+     * @param tableName {@link String}
+     * @return {@link List}< {@link Column}>
+     */
     List<Column> listColumns(Integer id, String schemaName, String tableName);
 
     String getFlinkTableSql(Integer id, String schemaName, String tableName);
@@ -54,15 +99,41 @@ public interface DataBaseService extends ISuperService<DataBase> {
 
     String getSqlCreate(Integer id, String schemaName, String tableName);
 
+    /**
+     * query data of table
+     *
+     * @param queryData {@link QueryData}
+     * @return {@link JdbcSelectResult}
+     */
     JdbcSelectResult queryData(QueryData queryData);
 
+    /**
+     * exec sql
+     *
+     * @param queryData {@link QueryData}
+     * @return {@link JdbcSelectResult}
+     */
     JdbcSelectResult execSql(QueryData queryData);
 
+    /**
+     * get sql generation
+     *
+     * @param id {@link Integer}
+     * @param schemaName {@link String}
+     * @param tableName {@link String}
+     * @return {@link SqlGeneration}
+     */
     SqlGeneration getSqlGeneration(Integer id, String schemaName, String tableName);
 
     List<String> listEnabledFlinkWith();
 
     String getEnabledFlinkWithSql();
 
-    boolean copyDatabase(DataBase database);
+    /**
+     * copy database
+     *
+     * @param database {@link DataBase}
+     * @return {@link Boolean}
+     */
+    Boolean copyDatabase(DataBase database);
 }

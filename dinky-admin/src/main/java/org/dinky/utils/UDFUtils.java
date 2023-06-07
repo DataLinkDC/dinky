@@ -19,9 +19,9 @@
 
 package org.dinky.utils;
 
+import org.dinky.data.model.Task;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.model.Task;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 

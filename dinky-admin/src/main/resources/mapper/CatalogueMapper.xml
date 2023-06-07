@@ -3,7 +3,7 @@
 <mapper namespace="org.dinky.mapper.CatalogueMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="org.dinky.model.Catalogue">
+    <resultMap id="BaseResultMap" type="org.dinky.data.model.Catalogue">
         <id column="id" property="id" />
         <result column="name" property="name" />
         <result column="task_id" property="taskId" />
@@ -20,7 +20,7 @@
         id, name, task_id, type,parent_id,is_leaf, enabled, create_time, update_time
     </sql>
 
-    <select id="selectForProTable" resultType="org.dinky.model.Catalogue">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Catalogue">
         select
         a.*
         from

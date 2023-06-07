@@ -20,9 +20,9 @@
 package org.dinky.service;
 
 import org.dinky.alert.AlertResult;
-import org.dinky.common.result.Result;
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.AlertInstance;
+import org.dinky.data.model.AlertInstance;
+import org.dinky.data.result.Result;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.io.Serializable;
 import java.util.List;

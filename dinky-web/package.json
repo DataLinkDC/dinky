@@ -66,6 +66,7 @@
     "react-monaco-editor": "^0.52.0",
     "react-spring": "^9.7.1",
     "screenfull": "^6.0.2",
+    "styled-components": "^6.0.0-rc.1",
     "use-sse": "^2.0.1"
   },
   "devDependencies": {

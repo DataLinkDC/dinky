@@ -15,24 +15,79 @@
  * limitations under the License.
  */
 
-import {DIALECT, TENANT_ID} from "@/services/constants";
-import cookies from "js-cookie";
-import {THEME, CODE_EDIT_THEME} from "@/types/Public/data";
-import {editor} from "monaco-editor";
-import React, {useEffect, useState} from "react";
-import {trim} from "lodash";
+import {DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID} from '@/services/constants';
+import cookies from 'js-cookie';
+import {CODE_EDIT_THEME, THEME} from '@/types/Public/data';
+import {editor} from 'monaco-editor';
+import React, {useEffect, useState} from 'react';
+import {trim} from 'lodash';
 import {
   FileIcon,
   FolderSvgExpand,
   JavaSvg,
   LogSvg,
   MarkDownSvg,
+  PythonSvg,
   ScalaSvg,
   ShellSvg,
   XMLSvg,
   YAMLSvg
-} from "@/components/Icons/CodeLanguageIcon";
-import path from "path";
+} from '@/components/Icons/CodeLanguageIcon';
+import path from 'path';
+import {l} from '@/utils/intl';
+
+
+/**
+ * get language by localStorage's umi_locale , if not exist , return zh-CN
+ * @param tenantId
+ */
+export function getLocalStorageLanguage() {
+  return localStorage.getItem(LANGUAGE_KEY) || LANGUAGE_ZH;
+}
+
+/**
+ * set key value to localStorage
+ * @param tenantId
+ */
+export function setKeyToLocalStorage(key: string, value: string) {
+  localStorage.setItem(key, value);
+}
+
+
+/**
+ * get value by localStorage's key
+ * @param tenantId
+ */
+export function getValueFromLocalStorage(key: string) {
+  return localStorage.getItem(key) || '';
+}
+
+
+/**
+ * get tenant id
+ * @param tenantId
+ */
+export function getTenantByLocalStorage() {
+  return getValueFromLocalStorage(TENANT_ID);
+}
+
+
+/**
+ * get cookie by key
+ * @param tenantId
+ */
+export function getCookieByKey(key: string) {
+  return cookies.get(key) || '';
+}
+
+/**
+ * set cookie by key
+ * @param tenantId
+ */
+export function setCookieByKey(key: string, value: string, options?: {}) {
+  cookies.set(key, value, options);
+}
+
 
 /**
  * PUT tenantId TO localStorage & cookies
@@ -40,18 +95,11 @@ import path from "path";
  */
 export function setTenantStorageAndCookie(tenantId: number) {
   // save as localStorage
-  localStorage.setItem(TENANT_ID, tenantId.toString());
+  setKeyToLocalStorage(TENANT_ID, tenantId.toString());
   // save as cookies
-  cookies.set(TENANT_ID, tenantId.toString(), {path: "/"});
+  setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
 }
 
-/**
- * get tenant id
- * @param tenantId
- */
-export function getTenantByLocalStorage() {
-  return localStorage.getItem(TENANT_ID);
-}
 
 /**
  * parseJsonStr
@@ -78,30 +126,30 @@ export function convertCodeEditTheme() {
    * user can define a new theme by calling the defineTheme method on the editor.
    */
   editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
-    base: "vs", // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+    base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
     inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
     // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
     rules: [
-      {token: "comment", foreground: "#008800", fontStyle: "italic"},
-      {token: "keyword", foreground: "#064cff", fontStyle: "bold"},
-      {token: "string", foreground: "#507dee"},
-      {token: "delimiter", foreground: "#041d81"},
-      {token: "readonly", foreground: "#e73a6e", background: "#141414", fontStyle: "italic"},
-      {token: "number", foreground: "#ffffff"},
+      {token: 'comment', foreground: '#008800', fontStyle: 'italic'},
+      {token: 'keyword', foreground: '#064cff', fontStyle: 'bold'},
+      {token: 'string', foreground: '#507dee'},
+      {token: 'delimiter', foreground: '#041d81'},
+      {token: 'readonly', foreground: '#e73a6e', background: '#141414', fontStyle: 'italic'},
+      {token: 'number', foreground: '#ffffff'},
 
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
-      "editor.background": "#141414", //  editor background color
-      "editor.lineHighlightBackground": "#141414", //  editor line highlight background color
-      "editorLineNumber.foreground": "#ffffff", //   editor line number color
-      "editorCursor.foreground": "#ffffff", //  editor cursor color
-      "editorIndentGuide.background": "#ffffff", //  editor indent guide color
-      "editor.foreground": "#ffffff", //  editor selection highlight border color
-      "editor.selectionBackground": "#4ba1ef", //  editor selection highlight color
-      "editor.selectionHighlightBorder": "#4ba1ef", //  editor selection highlight border color
-      "editor.findMatchBackground": "#4ba1ef", //  editor find match highlight color
-      "editor.wordHighlightBackground": "#8bb2d2", //  editor word highlight color
+      'editor.background': '#141414', //  editor background color
+      'editor.lineHighlightBackground': '#141414', //  editor line highlight background color
+      'editorLineNumber.foreground': '#ffffff', //   editor line number color
+      'editorCursor.foreground': '#ffffff', //  editor cursor color
+      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
+      'editor.foreground': '#ffffff', //  editor selection highlight border color
+      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
+      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
+      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
+      'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
     }
   });
 
@@ -187,7 +235,6 @@ export const getLanguage = (type: string): string => {
     case DIALECT.SCALA:
       return DIALECT.SCALA;
     case DIALECT.PYTHON:
-      return DIALECT.PYTHON;
     case DIALECT.PYTHON_LONG:
       return DIALECT.PYTHON_LONG;
     case DIALECT.SQL:
@@ -207,6 +254,9 @@ export const getIcon = (type: string) => {
       return <JavaSvg/>;
     case DIALECT.SCALA:
       return <ScalaSvg/>;
+    case DIALECT.PYTHON:
+    case DIALECT.PYTHON_LONG:
+      return <PythonSvg/>;
     case DIALECT.MD:
     case DIALECT.MDX:
       return <MarkDownSvg/>;
@@ -239,7 +289,7 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
   } else {
     if (trim(splitChar).length === 0) {
       return getIcon(type);
-    }else {
+    } else {
       let suffixOfType = type.toString().split(splitChar).reverse()[0];
       return getIcon(suffixOfType);
     }
@@ -267,9 +317,33 @@ export const renderLanguage = (type: string, splitChar: string) => {
  */
 export const folderSeparator = () => {
   return path.sep;
-}
+};
 
 
+/**
+ * Generate time string
+ * @param s_time datetime
+ */
+export const parseSecondStr = (s_time: number) => {
+  let second_time = Math.floor(s_time);
+  let time = second_time + l('global.time.second');
+  if (second_time > 60) {
+    let second = second_time % 60;
+    let min = Math.floor(second_time / 60);
+    time = min + l('global.time.minute') + second + l('global.time.second');
+    if (min > 60) {
+      min = Math.floor(second_time / 60) % 60;
+      let hour = Math.floor(Math.floor(second_time / 60) / 60);
+      time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+      if (hour > 24) {
+        hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
+        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
+        time = day + l('global.time.day') + hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+      }
+    }
+  }
+  return time;
+};
 
 
 /**
@@ -288,7 +362,7 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
       isLeaf: !item.leaf,
       name: item.name,
       parentId: item.path,
-      icon: renderIcon(item.name, ".", item.leaf),
+      icon: renderIcon(item.name, '.', item.leaf),
       content: item.content,
       path: item.path,
       title: item.name,
@@ -300,7 +374,7 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
     isLeaf: !item.leaf,
     name: item.name,
     parentId: item.path,
-    icon: renderIcon(item.name, ".", item.leaf),
+    icon: renderIcon(item.name, '.', item.leaf),
     content: item.content,
     path: item.path,
     title: item.name,

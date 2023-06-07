@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.model.FragmentVariable;
+import org.dinky.data.model.FragmentVariable;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.FragmentVariableService;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,9 +60,9 @@ public class FragmentVariableController {
     public Result<Void> saveOrUpdate(@RequestBody FragmentVariable fragmentVariable)
             throws Exception {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
-            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
         }
     }
 
@@ -86,9 +86,9 @@ public class FragmentVariableController {
     @DeleteMapping("/delete")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (fragmentVariableService.removeById(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
         }
     }
 
@@ -101,9 +101,9 @@ public class FragmentVariableController {
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (fragmentVariableService.enable(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
         }
     }
 

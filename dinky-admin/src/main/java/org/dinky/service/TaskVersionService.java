@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.TaskVersion;
+import org.dinky.data.model.TaskVersion;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
@@ -29,7 +29,7 @@ public interface TaskVersionService extends ISuperService<TaskVersion> {
     /**
      * @description 通过作业Id查询版本数据
      * @param taskId
-     * @return java.util.List<org.dinky.model.TaskVersion>
+     * @return java.util.List<org.dinky.data.model.TaskVersion>
      */
     List<TaskVersion> getTaskVersionByTaskId(Integer taskId);
 }

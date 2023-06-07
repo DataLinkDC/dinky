@@ -22,7 +22,11 @@ package org.dinky.explainer;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.executor.Executor;
 import org.dinky.explainer.watchTable.WatchStatementExplainer;
@@ -33,14 +37,10 @@ import org.dinky.job.JobConfig;
 import org.dinky.job.JobManager;
 import org.dinky.job.JobParam;
 import org.dinky.job.StatementParam;
-import org.dinky.model.LineageRel;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.parser.SqlType;
 import org.dinky.parser.check.AddJarSqlParser;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.result.ExplainResult;
-import org.dinky.result.SqlExplainResult;
 import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
@@ -113,9 +113,9 @@ public class Explainer {
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
                 AddJarSqlParser.getAllFilePath(statement)
-                        .forEach(JarPathContextHolder::addOtherPlugins);
+                        .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
-                        .addURL(URLUtils.getURLs(JarPathContextHolder.getOtherPluginsFiles()));
+                        .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
                 Configuration combinationConfig = getCombinationConfig();
                 FileSystem.initialize(combinationConfig, null);

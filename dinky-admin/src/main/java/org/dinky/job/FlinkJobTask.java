@@ -25,8 +25,8 @@ import org.dinky.daemon.constant.FlinkTaskConstant;
 import org.dinky.daemon.pool.DefaultThreadPool;
 import org.dinky.daemon.task.DaemonTask;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.model.JobInstance;
-import org.dinky.model.JobStatus;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.model.JobInstance;
 import org.dinky.service.TaskService;
 
 import java.time.Duration;

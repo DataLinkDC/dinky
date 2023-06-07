@@ -19,11 +19,12 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.RoleNamespace;
+import org.dinky.data.model.RoleNamespace;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
+@Deprecated
 public interface RoleNamespaceService extends ISuperService<RoleNamespace> {
 
     /**

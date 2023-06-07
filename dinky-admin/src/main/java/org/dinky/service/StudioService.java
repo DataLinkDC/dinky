@@ -19,19 +19,19 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.SqlDTO;
-import org.dinky.dto.StudioCADTO;
-import org.dinky.dto.StudioDDLDTO;
-import org.dinky.dto.StudioExecuteDTO;
-import org.dinky.dto.StudioMetaStoreDTO;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.StudioCADTO;
+import org.dinky.data.dto.StudioDDLDTO;
+import org.dinky.data.dto.StudioExecuteDTO;
+import org.dinky.data.dto.StudioMetaStoreDTO;
+import org.dinky.data.model.Catalog;
+import org.dinky.data.model.FlinkColumn;
+import org.dinky.data.model.Schema;
+import org.dinky.data.result.IResult;
+import org.dinky.data.result.SelectResult;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
-import org.dinky.model.Catalog;
-import org.dinky.model.FlinkColumn;
-import org.dinky.model.Schema;
-import org.dinky.result.IResult;
-import org.dinky.result.SelectResult;
-import org.dinky.result.SqlExplainResult;
 
 import java.util.List;
 

@@ -21,10 +21,10 @@ package org.dinky.service.impl;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.FlinkRestResultConstant;
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.constant.FlinkRestResultConstant;
+import org.dinky.data.model.JobHistory;
 import org.dinky.mapper.JobHistoryMapper;
-import org.dinky.model.JobHistory;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.JobHistoryService;
 import org.dinky.utils.JSONUtil;
 

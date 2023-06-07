@@ -2,14 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.JobInstanceMapper">
 
-    <select id="getByIdWithoutTenant" resultType="org.dinky.model.JobInstance">
+    <select id="getByIdWithoutTenant" resultType="org.dinky.data.model.JobInstance">
         select *
         from dinky_job_instance
         where id = #{id}
         limit 1
     </select>
 
-    <select id="selectForProTable" resultType="org.dinky.model.JobInstance">
+    <select id="selectForProTable" resultType="org.dinky.data.model.JobInstance">
         select
         a.*,
         dh.type as type,
@@ -30,6 +30,9 @@
             </if>
             <if test='param.type!=null and param.type!=""'>
                 and dh.type = #{param.type}
+            </if>
+            <if test='param.taskId!=null and param.taskId!=""'>
+                and a.task_id = #{param.taskId}
             </if>
             <if test='param.step!=null and param.step!=""'>
                 and a.step = #{param.step}
@@ -57,7 +60,7 @@
         </where>
     </select>
 
-    <select id="countStatus" resultType="org.dinky.model.JobInstanceCount">
+    <select id="countStatus" resultType="org.dinky.data.model.JobInstanceCount">
         select a.status,
                count(1) as counts
         from dinky_job_instance a
@@ -69,21 +72,21 @@
         group by status
     </select>
 
-    <select id="countHistoryStatus" resultType="org.dinky.model.JobInstanceCount">
+    <select id="countHistoryStatus" resultType="org.dinky.data.model.JobInstanceCount">
         select status,
                count(1) as counts
         from dinky_job_instance
         group by status
     </select>
 
-    <select id="listJobInstanceActive" resultType="org.dinky.model.JobInstance">
+    <select id="listJobInstanceActive" resultType="org.dinky.data.model.JobInstance">
         select *
         from dinky_job_instance
         where status not in ('FAILED', 'CANCELED', 'FINISHED', 'UNKNOWN')
         order by id desc
     </select>
 
-    <select id="getJobInstanceByTaskId" resultType="org.dinky.model.JobInstance">
+    <select id="getJobInstanceByTaskId" resultType="org.dinky.data.model.JobInstance">
         select *
         from dinky_job_instance
         where task_id = #{id}

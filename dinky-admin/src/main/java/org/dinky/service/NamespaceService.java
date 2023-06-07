@@ -19,13 +19,14 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.Namespace;
+import org.dinky.data.model.Namespace;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
+import org.dinky.mybatis.service.ISuperService;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+@Deprecated
 public interface NamespaceService extends ISuperService<Namespace> {
 
     /**

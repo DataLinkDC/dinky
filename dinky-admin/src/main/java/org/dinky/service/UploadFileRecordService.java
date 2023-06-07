@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.UploadFileRecord;
+import org.dinky.data.model.UploadFileRecord;
+import org.dinky.mybatis.service.ISuperService;
 
 /** UploadFileRecordService */
 public interface UploadFileRecordService extends ISuperService<UploadFileRecord> {

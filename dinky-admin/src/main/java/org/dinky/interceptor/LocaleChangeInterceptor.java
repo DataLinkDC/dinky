@@ -20,7 +20,7 @@
 package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.BaseConstant;
+import org.dinky.data.constant.BaseConstant;
 
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
         Cookie cookie = WebUtils.getCookie(request, BaseConstant.LOCALE_LANGUAGE_COOKIE);
         if (Asserts.isNotNull(cookie)) {
             // Proceed in cookie
-            return true;
+            LocaleContextHolder.setLocale(parseLocaleValue(cookie.getValue()));
         }
         // Proceed in header
         String newLocale = request.getHeader(BaseConstant.LOCALE_LANGUAGE_COOKIE);

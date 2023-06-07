@@ -57,7 +57,6 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
     setLoading(true);
     await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then((res) => {
       setTreeData(res);
-      console.log(res);
     });
     setLoading(false);
   };
@@ -68,7 +67,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
    */
   useEffect(() => {
     queryCodeTree();
-  }, []);
+  }, [values.id]);
 
 
   /**
@@ -88,7 +87,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
    */
   return <>
     <Row>
-      <Col span={6} className={"siderTree"}>
+      <Col span={6} className={"siderTree gitCodeTree"}>
         {/* tree */}
         <SiderTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} loading={loading}/>
       </Col>

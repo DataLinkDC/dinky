@@ -19,9 +19,7 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.model.GitProject;
 import org.dinky.sse.StepSse;
-import org.dinky.utils.GitRepository;
 import org.dinky.utils.MavenUtil;
 
 import java.io.File;
@@ -32,9 +30,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Opt;
 
 /**
  * @author ZackYoung
@@ -54,20 +50,11 @@ public class GetJarsStepSse extends StepSse {
 
     @Override
     public void exec() {
-        GitProject gitProject = (GitProject) params.get("gitProject");
-        String pom =
-                Opt.ofBlankAble(gitProject.getPom())
-                        .orElse(
-                                FileUtil.file(
-                                                GitRepository.getProjectDir(gitProject.getName()),
-                                                gitProject.getBranch())
-                                        .getAbsolutePath());
-
-        List<File> jars = MavenUtil.getJars(new File(pom));
+        List<File> jars = MavenUtil.getJars((File) params.get("pom"));
 
         List<String> pathList =
                 jars.stream().map(File::getAbsolutePath).collect(Collectors.toList());
-        addFileLog(pathList);
+        addFileMsg(pathList);
 
         params.put("jarPath", pathList);
     }

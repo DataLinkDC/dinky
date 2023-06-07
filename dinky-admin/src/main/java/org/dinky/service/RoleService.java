@@ -19,10 +19,10 @@
 
 package org.dinky.service;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.Role;
+import org.dinky.data.model.Role;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 

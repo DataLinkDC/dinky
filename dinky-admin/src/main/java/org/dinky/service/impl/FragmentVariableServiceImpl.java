@@ -19,9 +19,9 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.FragmentVariable;
 import org.dinky.mapper.FragmentVariableMapper;
-import org.dinky.model.FragmentVariable;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.FragmentVariableService;
 
 import java.util.LinkedHashMap;

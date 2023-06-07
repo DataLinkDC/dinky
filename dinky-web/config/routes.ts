@@ -42,9 +42,15 @@ export default [
   },
   {
     path: '/',
-    redirect: '/datastudio',
+    redirect: '/home',
   },
-
+  {
+    path: '/home',
+    name: 'home',
+    icon: 'HomeOutlined',
+    footerRender: false,
+    component: './Home',
+  },
   {
     path: '/datastudio',
     name: 'datastudio',
@@ -56,42 +62,25 @@ export default [
     path: '/devops',
     name: 'devops',
     icon: 'ControlOutlined',
+    footerRender: false,
     routes: [
       {
         path: '/devops',
-        redirect: '/devops/job',
+        redirect: '/devops/joblist',
       },
       {
-        path: '/devops/job',
+        path: '/devops/joblist',
         name: 'job',
         hideInMenu: true,
-        // component: './DevOps/JobInfo',
+        component: './DevOps',
       },
     ],
   },
-  //todo: data center will be merge to the registration center's datasource module , it will be removed in the future
-
-  // {
-  //   path: '/datacenter',
-  //   name: 'datacenter',
-  //   icon: 'DatabaseOutlined',
-  //   routes: [
-  //     {
-  //       path: '/datacenter',
-  //       redirect: '/datacenter/metadata',
-  //     },
-  //     {
-  //       path: '/datacenter/metadata',
-  //       name: 'metadata',
-  //       icon: 'DatabaseOutlined',
-  //       // component: './DataCenter/MetaData',
-  //     },
-  //   ],
-  // },
   {
     path: '/registration',
     name: 'registration',
     icon: 'AppstoreOutlined',
+    footerRender: false,
     routes: [
       {
         path: '/registration',
@@ -105,7 +94,7 @@ export default [
           {
             path: '/registration/cluster/instance',
             name: 'cluster-instance',
-            // component: './RegistrationCenter/ClusterManage/Cluster',
+            component: './RegCenter/Cluster/Instance',
           },
           {
             path: '/registration/cluster/config',
@@ -118,7 +107,12 @@ export default [
         path: '/registration/database',
         name: 'database',
         icon: 'DatabaseOutlined',
-        // component: './RegistrationCenter/DataBase',
+        component: './RegCenter/DataSource',
+        routes: [
+          {
+            path: '/registration/database/detail/:id',
+          }
+        ]
       },
       {
         path: '/registration/alert',
@@ -167,7 +161,8 @@ export default [
     name: 'auth',
     icon: 'SafetyCertificateOutlined',
     path: '/auth',
-    access: "canAdmin",
+    access: 'canAdmin',
+    footerRender: false,
     routes: [
       {
         path: '/auth',
@@ -204,22 +199,23 @@ export default [
     name: 'settings',
     icon: 'SettingOutlined',
     path: '/settings',
+    footerRender: false,
     routes: [
       {
         path: '/settings',
-        redirect: '/settings/flinksetting',
+        redirect: '/settings/globalsetting',
       },
       {
-        path: '/settings/flinksetting',
-        name: 'flinksetting',
+        path: '/settings/globalsetting',
+        name: 'globalsetting',
         icon: 'SettingOutlined',
-        // component: './SettingCenter/FlinkSettings',
+        component: './SettingCenter/GlobalSetting',
       },
       {
-        path: '/settings/system',
-        name: 'system',
+        path: '/settings/systemlog',
+        name: 'systemlog',
         icon: 'InfoCircleOutlined',
-        component: './SettingCenter/SystemInfo',
+        component: './SettingCenter/SystemLogs',
       },
       {
         path: '/settings/process',
@@ -227,29 +223,24 @@ export default [
         icon: 'ReconciliationOutlined',
         component: './SettingCenter/Process',
       },
-      {
-        path: '/settings/services',
-        name: 'services',
-        icon: 'CloudServerOutlined',
-        // component: './SettingCenter/Service',
-      },
     ],
   },
   {
     path: '/metrics',
     name: 'metrics',
     icon: 'DashboardOutlined',
+    footerRender: false,
     // component: './Metrics',
   },
   {
     path: '/about',
     name: 'about',
     icon: 'SmileOutlined',
+    footerRender: false,
     component: './Other/About',
   },
   {
     path: '*',
-    layout: false,
     component: './Other/404',
   },
 ];

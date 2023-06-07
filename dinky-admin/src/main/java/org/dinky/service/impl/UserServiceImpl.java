@@ -20,28 +20,28 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.Result;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.dto.LoginDTO;
-import org.dinky.dto.ModifyPasswordDTO;
-import org.dinky.dto.UserDTO;
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
+import org.dinky.data.model.UserRole;
+import org.dinky.data.model.UserTenant;
+import org.dinky.data.params.AssignRoleParams;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.UserMapper;
-import org.dinky.model.Role;
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.model.Tenant;
-import org.dinky.model.User;
-import org.dinky.model.UserRole;
-import org.dinky.model.UserTenant;
-import org.dinky.params.AssignRoleParams;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
 import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -84,7 +84,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> registerUser(User user) {
         User userByUsername = getUserByUsername(user.getUsername());
         if (Asserts.isNotNull(userByUsername)) {
-            return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
+            return Result.failed(I18nMsgUtils.getMsg("user.register.account.exists"));
         }
         if (Asserts.isNullString(user.getPassword())) {
             user.setPassword(DEFAULT_PASSWORD);
@@ -93,9 +93,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         user.setEnabled(true);
         user.setIsDelete(false);
         if (save(user)) {
-            return Result.succeed(MessageResolverUtils.getMessage("create.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("create.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("user.register.account.exists"));
+            return Result.failed(I18nMsgUtils.getMsg("user.register.account.exists"));
         }
     }
 
@@ -111,17 +111,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
         User user = getUserByUsername(modifyPasswordDTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
+            return Result.failed(I18nMsgUtils.getMsg("login.user.not.exists"));
         }
         if (!Asserts.isEquals(
                 SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
-            return Result.failed(MessageResolverUtils.getMessage("user.oldpassword.incorrect"));
+            return Result.failed(I18nMsgUtils.getMsg("user.oldpassword.incorrect"));
         }
         user.setPassword(SaSecureUtil.md5(modifyPasswordDTO.getNewPassword()));
         if (updateById(user)) {
-            return Result.succeed(MessageResolverUtils.getMessage("user.change.password.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("user.change.password.success"));
         }
-        return Result.failed(MessageResolverUtils.getMessage("user.change.password.failed"));
+        return Result.failed(I18nMsgUtils.getMsg("user.change.password.failed"));
     }
 
     @Override
@@ -133,25 +133,25 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<UserDTO> loginUser(LoginDTO loginDTO) {
         User user = getUserByUsername(loginDTO.getUsername());
         if (Asserts.isNull(user)) {
-            return Result.failed(MessageResolverUtils.getMessage("login.user.not.exists"));
+            return Result.failed(I18nMsgUtils.getMsg("login.user.not.exists"));
         }
         String userPassword = user.getPassword();
         if (Asserts.isNullString(loginDTO.getPassword())) {
-            return Result.failed(MessageResolverUtils.getMessage("login.password.notnull"));
+            return Result.failed(I18nMsgUtils.getMsg("login.password.notnull"));
         }
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
             if (!user.getEnabled()) {
-                return Result.failed(MessageResolverUtils.getMessage("login.user.disabled"));
+                return Result.failed(I18nMsgUtils.getMsg("login.user.disabled"));
             }
             // get user tenants and roles
             UserDTO userInfo = refreshUserInfo(user);
             if (Asserts.isNullCollection(userInfo.getTenantList())) {
-                return Result.failed(MessageResolverUtils.getMessage("login.user.not.binding"));
+                return Result.failed(I18nMsgUtils.getMsg("login.user.not.binding"));
             }
             StpUtil.login(user.getId(), loginDTO.isAutoLogin());
-            return Result.succeed(userInfo, MessageResolverUtils.getMessage("login.success"));
+            return Result.succeed(userInfo, I18nMsgUtils.getMsg("login.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("login.fail"));
+            return Result.failed(I18nMsgUtils.getMsg("login.fail"));
         }
     }
 
@@ -243,13 +243,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // save or update user role
         boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
         if (result) {
-            return Result.succeed(MessageResolverUtils.getMessage("user.assign.role.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("user.assign.role.success"));
         } else {
             if (userRoleList.size() == 0) {
-                return Result.succeed(
-                        MessageResolverUtils.getMessage("user.binding.role.deleteAll"));
+                return Result.succeed(I18nMsgUtils.getMsg("user.binding.role.deleteAll"));
             }
-            return Result.failed(MessageResolverUtils.getMessage("user.assign.role.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("user.assign.role.failed"));
         }
     }
 
@@ -257,15 +256,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Tenant> chooseTenant(Integer tenantId) {
         Tenant currentTenant = tenantService.getById(tenantId);
         if (Asserts.isNull(currentTenant)) {
-            return Result.failed(MessageResolverUtils.getMessage("user.get.tenant.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("user.get.tenant.failed"));
         } else {
             UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
             userInfo.setCurrentTenant(currentTenant);
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfo);
             TenantContextHolder.set(currentTenant.getId());
 
-            return Result.succeed(
-                    currentTenant, MessageResolverUtils.getMessage("user.select.tenant.success"));
+            return Result.succeed(currentTenant, I18nMsgUtils.getMsg("user.select.tenant.success"));
         }
     }
 
@@ -278,10 +276,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                 && Asserts.isNotNull(userInfo.getTenantList())
                 && Asserts.isNotNull(userInfo.getCurrentTenant())) {
             StpUtil.getSession().set("user", userInfo);
-            return Result.succeed(
-                    userInfo, MessageResolverUtils.getMessage("response.get.success"));
+            return Result.succeed(userInfo, I18nMsgUtils.getMsg("response.get.success"));
         } else {
-            return Result.failed(userInfo, MessageResolverUtils.getMessage("response.get.failed"));
+            return Result.failed(userInfo, I18nMsgUtils.getMsg("response.get.failed"));
         }
     }
 
@@ -312,5 +309,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         List<Integer> roleIds = currentRole.stream().map(Role::getId).collect(Collectors.toList());
         return roleSelectPermissionsService.listRoleSelectPermissionsByRoleIds(roleIds);
+    }
+
+    @Override
+    public void outLogin() {
+        StpUtil.logout();
     }
 }

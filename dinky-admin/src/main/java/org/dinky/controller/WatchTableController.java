@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
+import org.dinky.data.result.Result;
 import org.dinky.service.WatchTableService;
 
 import org.springframework.web.bind.annotation.PutMapping;

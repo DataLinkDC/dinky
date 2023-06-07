@@ -19,14 +19,15 @@
 
 package org.dinky.utils;
 
-import org.dinky.dto.GitProjectDTO;
+import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.process.exception.DinkyException;
 
 import java.io.File;
-import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.eclipse.jgit.api.CloneCommand;
 import org.eclipse.jgit.api.Git;
@@ -49,6 +50,7 @@ import com.jcraft.jsch.Session;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
@@ -64,7 +66,7 @@ import lombok.extern.slf4j.Slf4j;
 public class GitRepository {
     private static final String BRANCH_PREFIX = "refs/heads/";
     /** 匹配 ssh格式 git 地址 */
-    private static final String SSH_REGEX = "^git@[\\w.]+:[\\w\\.||-]+/(\\w)+\\.git$";
+    private static final String SSH_REGEX = "^git@[\\w\\.]+:([\\w_-]+)/(.*?)\\.git$";
 
     private String url;
     private String username;
@@ -79,7 +81,11 @@ public class GitRepository {
     }
 
     public File cloneAndPull(String projectName, String branch) {
+        return cloneAndPull(projectName, branch, null, null);
+    }
 
+    public File cloneAndPull(
+            String projectName, String branch, File logFile, Consumer<String> consumer) {
         List<String> branchList = getBranchList();
         if (!branchList.contains(branch)) {
             throw new DinkyException(
@@ -112,9 +118,22 @@ public class GitRepository {
                                 .findGitDir()
                                 .build();
                 git = new Git(repository);
-
                 git.pull()
-                        .setProgressMonitor(new TextProgressMonitor(new PrintWriter(System.out)))
+                        .setProgressMonitor(
+                                new TextProgressMonitor(
+                                        new StringWriter() {
+                                            @Override
+                                            public void write(String str) {
+                                                if (logFile != null) {
+                                                    FileUtil.appendUtf8String(str, logFile);
+                                                }
+                                                if (consumer != null) {
+                                                    consumer.accept(str);
+                                                }
+                                                System.out.println(str);
+                                                super.write(str);
+                                            }
+                                        }))
                         .call();
                 git.close();
             } else {
@@ -129,6 +148,10 @@ public class GitRepository {
 
     public static File getProjectDir(String projectName) {
         return FileUtil.file(PathConstant.TMP_PATH, "git", projectName);
+    }
+
+    public static File getProjectBuildDir(String projectName) {
+        return FileUtil.file(PathConstant.TMP_PATH, "git_build", projectName);
     }
 
     /**
@@ -187,6 +210,9 @@ public class GitRepository {
      */
     private <T extends TransportCommand<T, ?>> T initCommand(T command) {
         if (isSshGitUrl(url)) {
+            Assert.notBlank(privateKey, "The private key address cannot be empty.");
+            Assert.isTrue(FileUtil.exist(privateKey), "The private key address does not exist.");
+
             TransportConfigCallback sshSessionFactory =
                     getTransportConfigCallback(privateKey, password);
             command.setTransportConfigCallback(sshSessionFactory);

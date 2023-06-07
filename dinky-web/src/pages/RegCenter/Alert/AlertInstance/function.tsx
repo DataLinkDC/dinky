@@ -17,7 +17,16 @@
 
 
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
-import {AlertGroupSvg, DefaultSvg, DingTalkSvg, EmailSvg, FeiShuSvg, WeChatSvg} from "@/components/Icons/AlertIcon";
+import {
+  AlertGroupSvg,
+  DefaultSvg,
+  DingTalkSvg,
+  EmailSvg,
+  FeiShuSvg,
+  SmsSvg,
+  WeChatSvg
+} from '@/components/Icons/AlertIcon';
+import {MANU_FACTURERS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
 
 /**
  * get json data to alert instance
@@ -46,6 +55,10 @@ export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any)
     newValue.enabled = params.enabled;
     delete params.enabled;
   }
+  if (params.type) {
+    newValue.type = params.type;
+    delete params.type;
+  }
   let data: string = JSON.stringify(params);
   return {...newValue, params: data};
 };
@@ -63,6 +76,8 @@ export const getAlertIcon = (type: string, size?: number) => {
       return <WeChatSvg size={size}/>;
     case ALERT_TYPE.FEISHU:
       return <FeiShuSvg size={size}/>;
+    case ALERT_TYPE.SMS:
+      return <SmsSvg size={size}/>;
     case ALERT_TYPE.EMAIL:
       return <EmailSvg size={size}/>;
     case ALERT_TYPE.GROUP:
@@ -71,3 +86,7 @@ export const getAlertIcon = (type: string, size?: number) => {
       return <DefaultSvg size={size}/>;
   }
 };
+
+export const getSmsType = (type: number) => {
+  return MANU_FACTURERS.find((item) => item.value === type)?.label;
+}

@@ -31,6 +31,7 @@ export default {
   'button.batchDisable': '批量禁用',
   'button.more': '更多',
   'button.config': '配置',
+  'button.modify': '修改',
   'button.edit': '编辑',
   'button.start': '启动',
   'button.stop': '停止',
@@ -50,6 +51,8 @@ export default {
   'button.recycle': '回收',
   'button.refresh': '刷新',
   'button.test': '测试',
+  'button.clear': '清除',
+  'button.copy': '复制',
   'button.refreshData': '刷新数据',
   'button.collapseDir': '折叠目录',
   'button.asc': '升序',
@@ -92,8 +95,8 @@ export default {
   'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
   'tips.create.session.success': '创建会话【{session}】成功！',
 
-  'status.enabled': '已启用',
-  'status.disabled': '已禁用',
+  'status.enabled': '启用',
+  'status.disabled': '禁用',
 
   'global.time.second': '秒 ',
   'global.time.minute': '分 ',
@@ -125,7 +128,8 @@ export default {
   'global.table.status.abnormal': '异常',
 
   'global.table.jobname': '任务名称',
-  'global.table.jobid': '作业ID',
+  'global.table.jobid': 'Job ID',
+  'global.table.taskid': '任务ID',
   'global.table.lifecycle': '生命周期',
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
@@ -144,11 +148,14 @@ export default {
 
   'global.fullScreen': '全屏',
   'global.fullScreen.exit': '退出全屏',
+  'global.yes': '是',
+  'global.no': '否',
 
   'global.info': '信息',
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',
+  'global.getdata.tips': '获取数据',
 
   'global.notifaction.iknow': '我知道了',
   'global.notifaction.full-error': '完整错误信息',

@@ -19,8 +19,8 @@
 
 package org.dinky.mapper;
 
-import org.dinky.db.mapper.SuperMapper;
-import org.dinky.model.RoleNamespace;
+import org.dinky.data.model.RoleNamespace;
+import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,6 +29,7 @@ import java.util.List;
 
 /** role namespace mapper interface */
 @Mapper
+@Deprecated
 public interface RoleNamespaceMapper extends SuperMapper<RoleNamespace> {
 
     /**

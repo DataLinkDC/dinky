@@ -56,6 +56,11 @@
         </dependency>
         <dependency>
             <groupId>org.dinky</groupId>
+            <artifactId>dinky-alert-sms</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.dinky</groupId>
             <artifactId>dinky-alert-email</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>

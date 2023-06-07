@@ -19,12 +19,12 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.SysConfig;
+import org.dinky.data.model.Configuration;
+import org.dinky.data.model.SysConfig;
+import org.dinky.mybatis.service.ISuperService;
 
+import java.util.List;
 import java.util.Map;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /**
  * SysConfig
@@ -33,9 +33,9 @@ import com.fasterxml.jackson.databind.JsonNode;
  */
 public interface SysConfigService extends ISuperService<SysConfig> {
 
-    Map<String, Object> getAll();
+    Map<String, List<Configuration<?>>> getAll();
 
     void initSysConfig();
 
-    void updateSysConfigByJson(JsonNode node);
+    void updateSysConfigByKv(String key, String value);
 }

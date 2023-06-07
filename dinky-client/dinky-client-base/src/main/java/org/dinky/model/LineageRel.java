@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.data.model;
 
 /**
  * LineageResult

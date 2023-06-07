@@ -32,6 +32,7 @@
         <module>dinky-flink</module>
         <module>dinky-common</module>
         <module>dinky-client</module>
+        <module>dinky-cdc</module>
         <module>dinky-catalog</module>
         <module>dinky-process</module>
         <module>dinky-gateway</module>
@@ -498,6 +499,11 @@
             </dependency>
             <dependency>
                 <groupId>org.dinky</groupId>
+                <artifactId>dinky-alert-sms</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
                 <artifactId>dinky-alert-email</artifactId>
                 <version>${project.version}</version>
             </dependency>
@@ -534,6 +540,16 @@
             <dependency>
                 <groupId>org.dinky</groupId>
                 <artifactId>dinky-flink-1.17</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-cdc-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dinky</groupId>
+                <artifactId>dinky-cdc-doris</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -19,8 +19,8 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.dto.GitProjectDTO;
-import org.dinky.model.GitProject;
+import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.GitRepository;
 
@@ -50,12 +50,11 @@ public class GitCloneStepSse extends StepSse {
 
     @Override
     public void exec() {
-        addFileMsgLog("git clone start");
         GitProject gitProject = (GitProject) params.get("gitProject");
 
         GitRepository gitRepository =
                 new GitRepository(BeanUtil.toBean(gitProject, GitProjectDTO.class));
-        gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
-        addFileMsgLog("git clone finish");
+        gitRepository.cloneAndPull(
+                gitProject.getName(), gitProject.getBranch(), getLogFile(), this::addMsg);
     }
 }

@@ -19,6 +19,7 @@
 
 package org.dinky.sse.git;
 
+import org.dinky.data.model.GitProject;
 import org.dinky.sse.StepSse;
 import org.dinky.utils.MavenUtil;
 
@@ -52,6 +53,17 @@ public class HeadStepSse extends StepSse {
     }
 
     private void checkEnv() {
+        GitProject gitProject = (GitProject) params.get("gitProject");
+        switch (gitProject.getCodeType()) {
+            case 1:
+                checkJava();
+                break;
+            case 2:
+                checkPython();
+        }
+    }
+
+    private void checkJava() {
         String mavenHome = MavenUtil.getMavenHome();
 
         if (StrUtil.isBlank(mavenHome)) {
@@ -59,6 +71,9 @@ public class HeadStepSse extends StepSse {
             setFinish(false);
         }
         String mavenVersionMsg = MavenUtil.getMavenVersion();
+        mavenVersionMsg += "\n Your Maven Home is: " + mavenHome;
         addFileMsgLog(mavenVersionMsg);
     }
+
+    private void checkPython() {}
 }

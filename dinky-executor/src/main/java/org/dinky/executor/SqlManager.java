@@ -25,7 +25,7 @@ import static org.apache.flink.util.Preconditions.checkNotNull;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
-import org.dinky.model.SystemConfiguration;
+import org.dinky.data.model.SystemConfiguration;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;

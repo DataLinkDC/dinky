@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.data.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
@@ -54,6 +54,7 @@ class FlinkCDCConfigTest {
                         null,
                         null,
                         sinkConfig,
+                        null,
                         null);
         String sinkConfigureStr = flinkCDCConfig.getSinkConfigurationString();
         assertThat(

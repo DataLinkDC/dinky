@@ -19,7 +19,7 @@
 
 package org.dinky.gateway.result;
 
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 
 import java.time.LocalDateTime;
 

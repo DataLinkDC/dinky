@@ -4,7 +4,7 @@
     <sql id="baseSql">
         id,tenant_id,namespace_code,enabled,note,create_time,update_time
     </sql>
-    <select id="selectForProTable" resultType="org.dinky.model.Namespace">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Namespace">
         select
         <include refid="baseSql"/>
         from

@@ -25,8 +25,11 @@ import org.springframework.boot.autoconfigure.freemarker.FreeMarkerAutoConfigura
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
+
 /**
- * Dinky 启动器
+ * Dinky Starter
  *
  * @since 2021/5/28
  */
@@ -35,9 +38,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
         scanBasePackages = {"org.dinky", "com.zdpx"},
         exclude = FreeMarkerAutoConfiguration.class)
 @EnableCaching
+@Slf4j
 public class Dinky {
-
+    @SneakyThrows
     public static void main(String[] args) {
-        SpringApplication.run(Dinky.class, args);
+        SpringApplication app = new SpringApplication(Dinky.class);
+        app.run(args);
     }
 }

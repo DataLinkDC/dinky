@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.Statement;
 import org.dinky.explainer.watchTable.WatchStatementExplainer;
 import org.dinky.mapper.StatementMapper;
-import org.dinky.model.Statement;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.parser.SqlType;
 import org.dinky.service.StatementService;
 import org.dinky.trans.Operations;

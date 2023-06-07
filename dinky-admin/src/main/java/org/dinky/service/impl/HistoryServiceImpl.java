@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.History;
+import org.dinky.data.result.ResultPool;
 import org.dinky.mapper.HistoryMapper;
-import org.dinky.model.History;
-import org.dinky.result.ResultPool;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.HistoryService;
 
 import org.springframework.stereotype.Service;

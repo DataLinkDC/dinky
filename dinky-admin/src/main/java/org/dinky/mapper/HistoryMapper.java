@@ -19,8 +19,8 @@
 
 package org.dinky.mapper;
 
-import org.dinky.db.mapper.SuperMapper;
-import org.dinky.model.History;
+import org.dinky.data.model.History;
+import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

@@ -19,25 +19,22 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.model.SysConfig;
+import org.dinky.data.model.Configuration;
+import org.dinky.data.result.Result;
 import org.dinky.service.SysConfigService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
+import cn.hutool.core.lang.Dict;
+import cn.hutool.core.map.MapUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,60 +51,21 @@ public class SysConfigController {
 
     private final SysConfigService sysConfigService;
 
-    /** 新增或者更新 */
-    @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody SysConfig sysConfig) throws Exception {
-        if (sysConfigService.saveOrUpdate(sysConfig)) {
-            return Result.succeed("新增成功");
-        } else {
-            return Result.failed("新增失败");
-        }
-    }
-
-    /** 动态查询列表 */
-    @PostMapping
-    public ProTableResult<SysConfig> listSysConfigs(@RequestBody JsonNode para) {
-        return sysConfigService.selectForProTable(para);
-    }
-
     /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!sysConfigService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<SysConfig> getOneById(@RequestBody SysConfig sysConfig) throws Exception {
-        sysConfig = sysConfigService.getById(sysConfig.getId());
-        return Result.succeed(sysConfig, "获取成功");
+    @PostMapping("/modifyConfig")
+    public Result<Void> modifyConfig(@RequestBody Dict params) {
+        sysConfigService.updateSysConfigByKv(params.getStr("key"), params.getStr("value"));
+        return Result.succeed();
     }
 
     /** 获取所有配置 */
     @GetMapping("/getAll")
-    public Result<Map<String, Object>> getAll() {
-        return Result.succeed(sysConfigService.getAll(), "获取成功");
-    }
-
-    /** 批量更新配置 */
-    @PostMapping("/updateSysConfigByJson")
-    public Result<Void> updateSysConfigByJson(@RequestBody JsonNode para) {
-        sysConfigService.updateSysConfigByJson(para);
-        return Result.succeed("更新配置成功");
+    public Result<Map<String, List<Configuration<?>>>> getAll() {
+        Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
+        Map<String, List<Configuration<?>>> map =
+                MapUtil.map(
+                        all,
+                        (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
+        return Result.succeed(map, "获取成功");
     }
 }

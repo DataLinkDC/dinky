@@ -19,7 +19,9 @@
 
 package org.dinky.sse;
 
-import org.dinky.model.GitProject;
+import org.dinky.context.GitBuildContextHolder;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.result.StepResult;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,6 +39,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.date.DatePattern;
 import cn.hutool.core.date.DateTime;
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
@@ -104,7 +107,7 @@ public abstract class StepSse {
                                                                             msgId
                                                                                     .getAndIncrement()))
                                                             .data(msg));
-                                        } catch (IOException e) {
+                                        } catch (IllegalStateException | IOException e) {
                                             loseLise.add(emitter);
                                         }
                                     });
@@ -113,13 +116,18 @@ public abstract class StepSse {
     }
 
     public synchronized void addFileMsg(Object msg) {
-        FileUtil.appendString(Convert.toStr(msg), getLogFile(), StandardCharsets.UTF_8);
+        FileUtil.appendUtf8String(Convert.toStr(msg), getLogFile());
+    }
+
+    public synchronized void addFileMsgCusLog(String msg) {
+        String content = "\n=============    " + Convert.toStr(msg) + "   =============\n";
+        addMsg(content);
+        FileUtil.appendUtf8String(content, getLogFile());
     }
 
     public synchronized void addFileMsgLog(String msg) {
-        String content = "=============    " + Convert.toStr(msg) + "   =============\n";
-        msgList.add(content);
-        FileUtil.appendString(content, getLogFile(), StandardCharsets.UTF_8);
+        addMsg(msg);
+        FileUtil.appendUtf8String(msg, getLogFile());
     }
 
     public synchronized void addFileLog(List<?> data) {
@@ -132,11 +140,11 @@ public abstract class StepSse {
         return new File(logDir, getStep() + ".log");
     }
 
-    public void sendSync() {
+    public synchronized void sendSync() {
         if (CollUtil.isNotEmpty(msgList)) {
             sendMsg(getLogObj(msgList));
+            msgList.clear();
         }
-        msgList.clear();
     }
 
     public void send() {
@@ -157,10 +165,11 @@ public abstract class StepSse {
                     }
                 });
         try {
+            addFileMsgCusLog("step " + getStep() + ": " + name + " start");
             exec();
             setFinish(true);
         } catch (Exception e) {
-            addMsg(ExceptionUtil.stacktraceToString(e));
+            addFileMsgLog(ExceptionUtil.stacktraceToString(e));
             send();
             setFinish(false);
         }
@@ -168,11 +177,15 @@ public abstract class StepSse {
 
     public void setFinish(boolean status) {
         this.status = status ? 2 : 0;
+        addFileMsgCusLog(
+                "step " + getStep() + ": " + name + " " + (status ? "finished" : "failed"));
+
         sendSync();
         sendMsg(getEndLog());
 
         GitProject gitProject = (GitProject) params.get("gitProject");
 
+        sendMsg(StepResult.genFinishInfo(getStep(), status ? 2 : 0, DateUtil.date()));
         if (!status) {
             gitProject.setBuildState(2);
             close();
@@ -202,6 +215,11 @@ public abstract class StepSse {
                                 e.printStackTrace();
                             }
                         });
+        // Manual GC is required here to release file IO(此处需要手动GC，释放文件IO)
+        GitProject gitProject = (GitProject) params.get("gitProject");
+
+        GitBuildContextHolder.remove(gitProject.getId());
+        System.gc();
     }
 
     public int getStep() {
@@ -225,32 +243,21 @@ public abstract class StepSse {
         //                "status":1  # 2完成  1进行中 0失败
         //
         //        }
+
+        Object dataResult =
+                (data instanceof List) ? StrUtil.join("\n", data) : JSONUtil.toJsonStr(data);
         return Dict.create()
-                .set("type", 2)
+                .set("type", 1)
                 .set("currentStep", getStep())
                 .set("resultType", 1)
-                .set("data", JSONUtil.toJsonStr(data))
+                .set("data", dataResult)
                 .set("currentStepName", name)
                 .set("status", status);
-    }
-
-    protected Dict getLog(String data) {
-        return Dict.create()
-                .set("type", 2)
-                .set("currentStep", getStep())
-                .set("resultType", 1)
-                .set("data", data)
-                .set("currentStepName", name)
-                .set("status", status);
-    }
-
-    protected Dict getLogObj() {
-        return getLogObj(msgList);
     }
 
     protected Dict getEndLog() {
         return Dict.create()
-                .set("type", 3)
+                .set("type", 1)
                 .set("currentStep", getStep())
                 .set("resultType", 1)
                 .set("currentStepName", name)
@@ -268,7 +275,7 @@ public abstract class StepSse {
     }
 
     public void getStatus(int step, int status, List<Dict> data) {
-        Dict result = new Dict().set("step", getStep()).set("name", name);
+        Dict result = new Dict().set("step", getStep()).set("name", name).set("status", -1);
         if (getStep() <= step) {
             Instant instant =
                     FileUtil.getAttributes(getLogFile().toPath(), true).creationTime().toInstant();
@@ -278,7 +285,7 @@ public abstract class StepSse {
                             new DateTime(instant).toString(DatePattern.NORM_DATETIME_PATTERN))
                     .set("status", getStep() < step ? 2 : status);
         } else {
-            result.set("startTime", null).set("status", null);
+            result.set("startTime", null);
         }
         data.add(result);
         if (nexStepSse != null) {

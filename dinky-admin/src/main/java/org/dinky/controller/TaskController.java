@@ -19,15 +19,15 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.TaskOperatingSavepointSelect;
+import org.dinky.data.model.Task;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.JobResult;
-import org.dinky.model.JobLifeCycle;
-import org.dinky.model.JobStatus;
-import org.dinky.model.Task;
-import org.dinky.model.TaskOperatingSavepointSelect;
 import org.dinky.service.TaskService;
 import org.dinky.utils.TaskOneClickOperatingUtil;
 import org.dinky.utils.UDFUtils;

@@ -15,3 +15,13 @@
  * limitations under the License.
  */
 
+import {PageContainer} from '@ant-design/pro-components';
+import SettingOverView from '@/pages/SettingCenter/GlobalSetting/SettingOverView';
+
+export default () => {
+  return <>
+    <PageContainer title={false}>
+      <SettingOverView/>
+    </PageContainer>
+  </>;
+}

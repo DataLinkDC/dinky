@@ -19,19 +19,19 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
-import org.dinky.dto.APICancelDTO;
-import org.dinky.dto.APIExecuteJarDTO;
-import org.dinky.dto.APIExecuteSqlDTO;
-import org.dinky.dto.APIExplainSqlDTO;
-import org.dinky.dto.APISavePointDTO;
-import org.dinky.dto.APISavePointTaskDTO;
+import org.dinky.data.dto.APICancelDTO;
+import org.dinky.data.dto.APIExecuteJarDTO;
+import org.dinky.data.dto.APIExecuteSqlDTO;
+import org.dinky.data.dto.APIExplainSqlDTO;
+import org.dinky.data.dto.APISavePointDTO;
+import org.dinky.data.dto.APISavePointTaskDTO;
+import org.dinky.data.model.JobInstance;
+import org.dinky.data.result.APIJobResult;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.Result;
+import org.dinky.data.result.SelectResult;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobResult;
-import org.dinky.model.JobInstance;
-import org.dinky.result.APIJobResult;
-import org.dinky.result.ExplainResult;
-import org.dinky.result.SelectResult;
 import org.dinky.service.APIService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.StudioService;

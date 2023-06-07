@@ -19,12 +19,12 @@
 
 package org.dinky.security;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.model.History;
-import org.dinky.model.JobInfoDetail;
-import org.dinky.result.ExplainResult;
-import org.dinky.result.SqlExplainResult;
+import org.dinky.data.model.History;
+import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.result.ExplainResult;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
+import org.dinky.data.result.SqlExplainResult;
 
 import java.util.List;
 import java.util.regex.Matcher;

@@ -20,10 +20,8 @@
 package org.dinky.utils;
 
 import org.dinky.constant.FlinkParamConstant;
-import org.dinky.model.Column;
-import org.dinky.model.ColumnType;
-import org.dinky.model.FlinkCDCConfig;
-import org.dinky.model.Table;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
 
 import org.apache.flink.api.java.utils.ParameterTool;
 import org.apache.flink.runtime.util.EnvironmentInformation;
@@ -67,7 +65,7 @@ public class FlinkBaseUtil {
             if (i > 0) {
                 sb.append(",");
             }
-            sb.append(getColumnProcessing(table.getColumns().get(i), config)).append(" \n");
+            sb.append(String.format("`%s`", table.getColumns().get(i).getName())).append(" \n");
         }
         sb.append(" FROM `");
         sb.append(sourceName);
@@ -150,15 +148,5 @@ public class FlinkBaseUtil {
             }
         }
         return type;
-    }
-
-    public static String getColumnProcessing(Column column, FlinkCDCConfig config) {
-        if ("true".equals(config.getSink().get(FlinkCDCConfig.COLUMN_REPLACE_LINE_BREAK))
-                && ColumnType.STRING.equals(column.getJavaType())) {
-            return String.format(
-                    "REGEXP_REPLACE(`%s`, '\\n', '') AS `%s`", column.getName(), column.getName());
-        } else {
-            return String.format("`%s`", column.getName());
-        }
     }
 }

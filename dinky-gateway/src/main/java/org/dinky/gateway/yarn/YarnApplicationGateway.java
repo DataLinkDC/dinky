@@ -20,11 +20,12 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.GatewayType;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.config.AppConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.YarnResult;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -36,10 +37,12 @@ import org.apache.flink.runtime.client.JobStatusMessage;
 import org.apache.flink.yarn.YarnClusterDescriptor;
 import org.apache.hadoop.yarn.api.records.ApplicationId;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * YarnApplicationGateway
@@ -62,6 +65,12 @@ public class YarnApplicationGateway extends YarnGateway {
         AppConfig appConfig = config.getAppConfig();
         configuration.set(
                 PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+
+        configuration.setString(
+                "python.files",
+                FlinkUdfPathContextHolder.getPyUdfFile().stream()
+                        .map(File::getName)
+                        .collect(Collectors.joining(",")));
 
         String[] userJarParas =
                 Asserts.isNotNull(appConfig.getUserJarParas())

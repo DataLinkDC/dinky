@@ -19,12 +19,12 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
+import org.dinky.data.model.Catalogue;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.result.Result;
 import org.dinky.init.SystemInit;
-import org.dinky.model.Catalogue;
 import org.dinky.scheduler.client.ProcessClient;
 import org.dinky.scheduler.client.TaskClient;
-import org.dinky.scheduler.config.DolphinSchedulerProperties;
 import org.dinky.scheduler.enums.ReleaseState;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.DagData;
@@ -68,7 +68,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SchedulerController {
 
-    private final DolphinSchedulerProperties dolphinSchedulerProperties;
     private final ProcessClient processClient;
     private final TaskClient taskClient;
     private final CatalogueService catalogueService;
@@ -155,7 +154,7 @@ public class SchedulerController {
             @Valid @RequestBody TaskRequest taskRequest) {
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
         dinkyTaskParams.setTaskId(dinkyTaskId.toString());
-        dinkyTaskParams.setAddress(dolphinSchedulerProperties.getAddress());
+        dinkyTaskParams.setAddress(SystemConfiguration.getInstances().getDinkyAddr().getValue());
         taskRequest.setTaskParams(JSONUtil.parseObj(dinkyTaskParams).toString());
         taskRequest.setTaskType("DINKY");
 

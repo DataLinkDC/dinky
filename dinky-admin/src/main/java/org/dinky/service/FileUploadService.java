@@ -19,7 +19,7 @@
 
 package org.dinky.service;
 
-import org.dinky.constant.UploadFileConstant;
+import org.dinky.data.constant.UploadFileConstant;
 
 import org.springframework.web.multipart.MultipartFile;
 

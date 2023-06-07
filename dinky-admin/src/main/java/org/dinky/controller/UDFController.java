@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.model.UDFTemplate;
+import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.UDFTemplateService;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,8 +128,8 @@ public class UDFController {
     @PutMapping
     public Result<String> saveOrUpdate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
-                ? Result.succeed(MessageResolverUtils.getMessage("save.success"))
-                : Result.failed(MessageResolverUtils.getMessage("save.failed"));
+                ? Result.succeed(I18nMsgUtils.getMsg("save.success"))
+                : Result.failed(I18nMsgUtils.getMsg("save.failed"));
     }
 
     /**
@@ -170,18 +170,18 @@ public class UDFController {
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> delete(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
         }
     }
 
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (udfTemplateService.enable(id)) {
-            return Result.succeed(MessageResolverUtils.getMessage("modify.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("modify.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
         }
     }
 }
