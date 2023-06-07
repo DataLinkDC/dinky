@@ -64,43 +64,41 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
-        String database = config.getDatabase();
-        String serverId = config.getSource().get("server-id");
-        String serverTimeZone = config.getSource().get("server-time-zone");
-        String fetchSize = config.getSource().get("scan.snapshot.fetch.size");
-        String connectTimeout = config.getSource().get("connect.timeout");
-        String connectMaxRetries = config.getSource().get("connect.max-retries");
-        String connectionPoolSize = config.getSource().get("connection.pool.size");
-        String heartbeatInterval = config.getSource().get("heartbeat.interval");
-        String chunkSize = config.getSource().get("scan.incremental.snapshot.chunk.size");
+        Map<String, String> source = config.getSource();
+        String serverId = source.get("server-id");
+        String serverTimeZone = source.get("server-time-zone");
+        String fetchSize = source.get("scan.snapshot.fetch.size");
+        String connectTimeout = source.get("connect.timeout");
+        String connectMaxRetries = source.get("connect.max-retries");
+        String connectionPoolSize = source.get("connection.pool.size");
+        String heartbeatInterval = source.get("heartbeat.interval");
+        String chunkSize = source.get("scan.incremental.snapshot.chunk.size");
         String distributionFactorLower =
-                config.getSource().get("chunk-key.even-distribution.factor.upper-bound");
+                source.get("chunk-key.even-distribution.factor.upper-bound");
         String distributionFactorUpper =
-                config.getSource().get("chunk-key.even-distribution.factor.lower-bound");
+                source.get("chunk-key.even-distribution.factor.lower-bound");
         String scanNewlyAddedTableEnabled =
-                config.getSource().get("scan.newly-added-table.enabled");
-        String schemaChanges = config.getSource().get("schema.changes");
+                source.get("scan.newly-added-table.enabled");
+        String schemaChanges = source.get("schema.changes");
 
-        Properties debeziumProperties = new Properties();
         // 为部分转换添加默认值
+        Properties debeziumProperties = new Properties();
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
-        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey())
-                    && Asserts.isNotNullString(entry.getValue())) {
-                debeziumProperties.setProperty(entry.getKey(), entry.getValue());
+        config.getDebezium().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                debeziumProperties.setProperty(key, value);
             }
-        }
+        });
 
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
-        for (Map.Entry<String, String> entry : config.getJdbc().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey())
-                    && Asserts.isNotNullString(entry.getValue())) {
-                jdbcProperties.setProperty(entry.getKey(), entry.getValue());
+        config.getJdbc().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                jdbcProperties.setProperty(key, value);
             }
-        }
+        });
 
         MySqlSourceBuilder<String> sourceBuilder =
                 MySqlSource.<String>builder()
@@ -109,19 +107,19 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                         .username(config.getUsername())
                         .password(config.getPassword());
 
+        String database = config.getDatabase();
         if (Asserts.isNotNullString(database)) {
             String[] databases = database.split(FlinkParamConstant.SPLIT);
             sourceBuilder.databaseList(databases);
         } else {
-            sourceBuilder.databaseList(new String[0]);
+            sourceBuilder.databaseList();
         }
 
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(
-                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[0]));
         } else {
-            sourceBuilder.tableList(new String[0]);
+            sourceBuilder.tableList();
         }
 
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
@@ -194,54 +192,11 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
-    public Map<String, Map<String, String>> parseMetaDataConfigs() {
-        Map<String, Map<String, String>> allConfigMap = new HashMap<>();
-        List<String> schemaList = getSchemaList();
-        boolean tinyInt1isBit =
-                !config.getJdbc().containsKey("tinyInt1isBit")
-                        || "true".equalsIgnoreCase(config.getJdbc().get("tinyInt1isBit"));
-        boolean transformedBitIsBoolean =
-                !config.getJdbc().containsKey("transformedBitIsBoolean")
-                        || "true".equalsIgnoreCase(config.getJdbc().get("transformedBitIsBoolean"));
-
-        for (String schema : schemaList) {
-            Map<String, String> configMap = new HashMap<>();
-            configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
-            StringBuilder sb = new StringBuilder("jdbc:mysql://");
-            sb.append(config.getHostname());
-            sb.append(":");
-            sb.append(config.getPort());
-            sb.append("/");
-            sb.append(schema);
-            if (tinyInt1isBit && transformedBitIsBoolean) {
-                sb.append("?tinyInt1isBit=true");
-            } else {
-                sb.append("?tinyInt1isBit=false");
-            }
-            configMap.put(ClientConstant.METADATA_NAME, sb.toString());
-            configMap.put(ClientConstant.METADATA_URL, sb.toString());
-            configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
-            configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
-            allConfigMap.put(schema, configMap);
-        }
-        return allConfigMap;
-    }
-
     @Override
     public Map<String, String> parseMetaDataConfig() {
-        Map<String, String> configMap = new HashMap<>();
-
-        configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
-        StringBuilder sb = new StringBuilder("jdbc:mysql://");
-        sb.append(config.getHostname());
-        sb.append(":");
-        sb.append(config.getPort());
-        sb.append("/");
-        configMap.put(ClientConstant.METADATA_NAME, sb.toString());
-        configMap.put(ClientConstant.METADATA_URL, sb.toString());
-        configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
-        configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
-        return configMap;
+        String url = String.format("jdbc:mysql://%s:%d/", config.getHostname(),
+                config.getPort());
+        return parseMetaDataSingleConfig(url);
     }
 
     @Override
@@ -252,5 +207,19 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     @Override
     public String getSchema() {
         return config.getDatabase();
+    }
+
+    @Override
+    protected String getMetadataType() {
+        return METADATA_TYPE;
+    }
+
+    @Override
+    protected String generateUrl(String schema) {
+        Map<String, String> jdbc = config.getJdbc();
+        boolean tinyInt1isBit = "true".equalsIgnoreCase(jdbc.get("tinyInt1isBit"));
+        boolean transformedBitIsBoolean = "true".equalsIgnoreCase(jdbc.get("transformedBitIsBoolean"));
+        return String.format("jdbc:mysql://%s:%d/%s?tinyInt1isBit=%s", config.getHostname(),
+                config.getPort(), schema, tinyInt1isBit && transformedBitIsBoolean);
     }
 }
