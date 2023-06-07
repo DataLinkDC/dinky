@@ -286,7 +286,7 @@ public class OriginToInternalConvert implements ToInternalConvert {
                                                                             t.getName(),
                                                                             connection.getToPort()))
                                                     .findAny()
-                                                    .map(t->t));
+                                                    .map(t -> t));
 
             if (inputPort.isPresent()) {
                 InputPort t = inputPort.get();

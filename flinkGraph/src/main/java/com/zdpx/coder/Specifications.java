@@ -26,13 +26,14 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 import com.zdpx.coder.operator.Column;
 import com.zdpx.coder.operator.FieldFunction;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Shared constants for a code generation specification
@@ -112,7 +113,11 @@ public final class Specifications {
     }
 
     public static String readSpecializationFileByClassName(String filePathJson) {
-        String path = Specifications.class.getClassLoader().getResource("operatorSpecialization").getPath();
+        String path =
+                Specifications.class
+                        .getClassLoader()
+                        .getResource("operatorSpecialization")
+                        .getPath();
         return readSpecializationFile(path + "/" + filePathJson + ".json");
     }
 

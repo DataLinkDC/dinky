@@ -19,7 +19,6 @@
 
 package com.zdpx.coder.operator;
 
-import com.zdpx.coder.Specifications;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.flink.table.functions.UserDefinedFunction;
 
@@ -46,6 +45,7 @@ import com.google.common.collect.Sets;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import com.zdpx.coder.SceneCodeBuilder;
+import com.zdpx.coder.Specifications;
 import com.zdpx.coder.graph.InputPort;
 import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.Node;
@@ -104,7 +104,9 @@ public abstract class Operator extends Node implements Runnable {
         }
 
         try {
-            parametersLocal = objectMapper.readValue(parametersStr, new TypeReference<List<Map<String, Object>>>() {});
+            parametersLocal =
+                    objectMapper.readValue(
+                            parametersStr, new TypeReference<List<Map<String, Object>>>() {});
         } catch (JsonProcessingException e) {
             log.error(e.toString());
         }

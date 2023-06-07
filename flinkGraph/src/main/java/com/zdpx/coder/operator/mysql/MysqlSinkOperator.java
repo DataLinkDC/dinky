@@ -47,9 +47,9 @@ public class MysqlSinkOperator extends MysqlTable {
         this.getSchemaUtil().getGenerateResult().generate(sqlStr);
 
         String sql =
-                "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) " +
-                        "SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> " +
-                        "FROM ${tableInfo.name}";
+                "INSERT INTO ${tableName} (<#list tableInfo.columns as column>${column.name}<#sep>,</#sep></#list>) "
+                        + "SELECT <#list tableInfo.columns as column>${column.name}<#sep>, </#list> "
+                        + "FROM ${tableInfo.name}";
 
         @SuppressWarnings("unchecked")
         TableInfo pseudoData =
@@ -65,5 +65,4 @@ public class MysqlSinkOperator extends MysqlTable {
         String insertSqlStr = TemplateUtils.format("insert", data, sql);
         this.getSchemaUtil().getGenerateResult().generate(insertSqlStr);
     }
-
 }
