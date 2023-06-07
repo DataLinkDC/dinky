@@ -48,8 +48,8 @@
 .rightDetail {
   box-sizing: border-box;
   flex: 1;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
 
   .rightDetail-header {
     height: 40px;
@@ -63,28 +63,12 @@
   .rightDetail-content {
     // text-align: center;
     border: 2px solid #ccc;
-    flex: 1;
+    // flex: 1;
+    height: calc(100% - 40px);
 
     .json-editor-content {
       height: 100% !important;
       overflow-y: scroll;
     }
-
-    .je-panel {
-      background-color: #fff;
-    }
-
-    // .form-group {
-    //   display: flex;
-    // }
-
-    .btn.btn-primary {
-      background-color: #6c757d;
-      border: #6c757d;
-      border-radius: 5px;
-      // width: 25px;
-      // height: 25px;
-    }
-
   }
 }
