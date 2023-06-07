@@ -19,18 +19,16 @@
 
 package org.dinky.cdc.sql.catalog;
 
+import com.google.common.collect.Lists;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
@@ -45,9 +43,7 @@ import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.utils.LogUtil;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
@@ -55,11 +51,22 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql-catalog";
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
+
+    {
+        typeConverterList = Lists.newArrayList(
+                this::convertDateType,
+                this::convertTimestampType,
+                this::convertDecimalType,
+                this::convertBigIntType,
+                this::convertVarBinaryType
+        );
+    }
 
     public SQLCatalogSinkBuilder() {}
 
@@ -193,53 +200,32 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         return dataStreamSource;
     }
 
-    protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
-            return null;
-        }
-
+    protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue())
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
-                        .toLocalDate();
+                        .toLocalDate());
             }
-            return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+            return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
         }
+        return Optional.empty();
+    }
 
+    protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue())
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
-                        .toLocalDateTime();
+                        .toLocalDateTime());
             }
 
             if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
+                return Optional.of(Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
             }
 
-            return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+            return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
         }
-
-        if (logicalType instanceof DecimalType) {
-            return new BigDecimal(String.valueOf(value));
-        }
-
-        if (logicalType instanceof BigIntType) {
-            if (value instanceof Integer) {
-                return ((Integer) value).longValue();
-            }
-            return value;
-        }
-
-        if (logicalType instanceof VarBinaryType) {
-            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
-            if (value instanceof String) {
-                return DatatypeConverter.parseBase64Binary((String) value);
-            }
-            return value;
-        }
-
-        return value;
+        return Optional.empty();
     }
 }

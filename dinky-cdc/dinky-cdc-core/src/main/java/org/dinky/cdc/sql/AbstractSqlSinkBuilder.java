@@ -5,6 +5,7 @@ import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
@@ -15,8 +16,10 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.utils.JSONUtil;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
     protected final ObjectMapper objectMapper = new ObjectMapper();
@@ -87,4 +90,12 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 sqlSinkFunction(columnNameList, columnTypeList, schemaTableName),
                 new RowTypeInfo(typeInformation, columnNameList.toArray(new String[0])));
     }
+
+    protected Optional<Object> convertDecimalType(Object value, LogicalType logicalType) {
+        if (logicalType instanceof DecimalType) {
+            return Optional.of(new BigDecimal(String.valueOf(value)));
+        }
+        return Optional.empty();
+    }
+
 }

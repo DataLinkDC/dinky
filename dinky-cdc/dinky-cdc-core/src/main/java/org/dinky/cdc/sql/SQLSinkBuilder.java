@@ -19,6 +19,7 @@
 
 package org.dinky.cdc.sql;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.flink.api.dag.Transformation;
@@ -28,13 +29,10 @@ import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.FloatType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
@@ -49,7 +47,6 @@ import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SplitUtil;
 
-import javax.xml.bind.DatatypeConverter;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -67,6 +64,17 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
+
+    {
+        typeConverterList = Lists.newArrayList(
+                this::convertDateType,
+                this::convertTimestampType,
+                this::convertFloatType,
+                this::convertDecimalType,
+                this::convertBigIntType,
+                this::convertVarBinaryType
+        );
+    }
 
     public SQLSinkBuilder() {}
 
@@ -262,81 +270,45 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         return dataStreamSource;
     }
 
-    protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
-            return null;
-        }
 
+
+    protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return LocalDate.ofEpochDay((Integer) value);
+                return Optional.of(LocalDate.ofEpochDay((Integer) value));
             }
             if (value instanceof Long) {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+                return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
             }
-            return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
+            return Optional.of(Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate());
         }
+        return Optional.empty();
+    }
 
+    protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue())
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
-                        .toLocalDateTime();
+                        .toLocalDateTime());
             }
 
             if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
+                return Optional.of(Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
             }
 
-            TimestampType logicalType1 = (TimestampType) logicalType;
+            TimestampType timestampType = (TimestampType) logicalType;
             // 转换为毫秒
-            if (logicalType1.getPrecision() == 3) {
-                return Instant.ofEpochMilli((long) value)
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime();
-            }
-
-            if (logicalType1.getPrecision() > 3) {
-                return Instant.ofEpochMilli(
+            if (timestampType.getPrecision() > 3) {
+                return Optional.of(Instant.ofEpochMilli(
                                 ((long) value)
-                                        / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                                        / (long) Math.pow(10, timestampType.getPrecision() - 3.0))
                         .atZone(sinkTimeZone)
-                        .toLocalDateTime();
+                        .toLocalDateTime());
             }
-            return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
+            return Optional.of(Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime());
         }
-
-        if (logicalType instanceof FloatType) {
-            if (value instanceof Float) {
-                return value;
-            }
-
-            if (value instanceof Double) {
-                return ((Double) value).floatValue();
-            }
-            return Float.parseFloat(value.toString());
-        }
-
-        if (logicalType instanceof DecimalType) {
-            return new BigDecimal(String.valueOf(value));
-        }
-
-        if (logicalType instanceof BigIntType) {
-            if (value instanceof Integer) {
-                return ((Integer) value).longValue();
-            }
-            return value;
-        }
-
-        if (logicalType instanceof VarBinaryType) {
-            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
-            if (value instanceof String) {
-                return DatatypeConverter.parseBase64Binary((String) value);
-            }
-
-            return value;
-        }
-
-        return value;
+        return Optional.empty();
     }
+
 }
