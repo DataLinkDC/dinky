@@ -19,6 +19,12 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
+import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.model.SysConfig;
 import org.dinky.data.model.SystemConfiguration;
@@ -26,21 +32,12 @@ import org.dinky.mapper.SysConfigMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.SysConfigService;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.activerecord.Model;
-
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * SysConfigServiceImpl
@@ -78,8 +75,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                         })
                 .forEach(Model::insertOrUpdate);
         Map<String, String> configMap =
-                CollUtil.toMap(
-                        sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+                CollUtil.toMap(list(), new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.setConfiguration(configMap);
     }
 
