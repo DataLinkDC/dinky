@@ -19,7 +19,17 @@
 
 package org.dinky.cdc.sql.catalog;
 
-import com.google.common.collect.Lists;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.LogUtil;
+
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
@@ -32,16 +42,6 @@ import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.types.Row;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.CDCBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.LogUtil;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -53,19 +53,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.common.collect.Lists;
+
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql-catalog";
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     {
-        typeConverterList = Lists.newArrayList(
-                this::convertDateType,
-                this::convertTimestampType,
-                this::convertDecimalType,
-                this::convertBigIntType,
-                this::convertVarBinaryType
-        );
+        typeConverterList =
+                Lists.newArrayList(
+                        this::convertDateType,
+                        this::convertTimestampType,
+                        this::convertDecimalType,
+                        this::convertBigIntType,
+                        this::convertVarBinaryType);
     }
 
     public SQLCatalogSinkBuilder() {}
@@ -135,9 +137,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
 
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
-                dataStreamSource
-                        .map(x -> objectMapper.readValue(x, Map.class))
-                        .returns(Map.class);
+                dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
 
         SingleOutputStreamOperator<Map> processOperator =
                 mapOperator.process(
@@ -181,10 +181,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                         logger.info("Build {} flatMap successful...", schemaTableName);
                         logger.info("Start build {} sink...", schemaTableName);
 
-                        addTableSink(
-                                customTableEnvironment,
-                                rowDataDataStream,
-                                table);
+                        addTableSink(customTableEnvironment, rowDataDataStream, table);
                     } catch (Exception e) {
                         logger.error("Build {} cdc sync failed...", schemaTableName);
                         logger.error(LogUtil.getError(e));
@@ -203,11 +200,13 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDate());
+                return Optional.of(
+                        Instant.ofEpochMilli(((Integer) value).longValue())
+                                .atZone(sinkTimeZone)
+                                .toLocalDate());
             }
-            return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
+            return Optional.of(
+                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
         }
         return Optional.empty();
     }
@@ -215,16 +214,19 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
+                return Optional.of(
+                        Instant.ofEpochMilli(((Integer) value).longValue())
+                                .atZone(sinkTimeZone)
+                                .toLocalDateTime());
             }
 
             if (value instanceof String) {
-                return Optional.of(Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+                return Optional.of(
+                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
             }
 
-            return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
+            return Optional.of(
+                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
         }
         return Optional.empty();
     }

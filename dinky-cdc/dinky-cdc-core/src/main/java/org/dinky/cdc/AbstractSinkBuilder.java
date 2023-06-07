@@ -19,7 +19,15 @@
 
 package org.dinky.cdc;
 
-import com.google.common.collect.Lists;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.JSONUtil;
+
 import org.apache.flink.api.common.functions.FilterFunction;
 import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.functions.MapFunction;
@@ -50,18 +58,7 @@ import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
 import org.apache.flink.util.OutputTag;
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.xml.bind.DatatypeConverter;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
@@ -72,6 +69,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Properties;
 
+import javax.xml.bind.DatatypeConverter;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.Lists;
+
 public abstract class AbstractSinkBuilder implements SinkBuilder {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
@@ -79,16 +83,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected FlinkCDCConfig config;
     protected List<ModifyOperation> modifyOperations = new ArrayList<>();
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
-    
-    protected List<ConvertType> typeConverterList = Lists.newArrayList(
-            this::convertVarCharType,
-            this::convertDateType,
-            this::convertVarBinaryType,
-            this::convertBigIntType,
-            this::convertFloatType,
-            this::convertDecimalType,
-            this::convertTimestampType
-    );
+
+    protected List<ConvertType> typeConverterList =
+            Lists.newArrayList(
+                    this::convertVarCharType,
+                    this::convertDateType,
+                    this::convertVarBinaryType,
+                    this::convertBigIntType,
+                    this::convertFloatType,
+                    this::convertDecimalType,
+                    this::convertTimestampType);
 
     protected AbstractSinkBuilder() {}
 
@@ -231,8 +235,11 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList) {}
 
-
-    protected List<Operation> createInsertOperations(CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
+    protected List<Operation> createInsertOperations(
+            CustomTableEnvironment customTableEnvironment,
+            Table table,
+            String viewName,
+            String tableName) {
         String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
         logger.info(cdcSqlInsert);
 
@@ -364,10 +371,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         if (logicalType instanceof VarBinaryType) {
             // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
             if (value instanceof String) {
-                return  Optional.of(DatatypeConverter.parseBase64Binary(value.toString()));
+                return Optional.of(DatatypeConverter.parseBase64Binary(value.toString()));
             }
 
-            return  Optional.of(value);
+            return Optional.of(value);
         }
         return Optional.empty();
     }
@@ -388,42 +395,51 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             if (value instanceof Float) {
                 return Optional.of(value);
             }
-            
+
             if (value instanceof Double) {
-                return  Optional.of(((Double) value).floatValue());
+                return Optional.of(((Double) value).floatValue());
             }
 
-            return  Optional.of(Float.parseFloat(value.toString()));
+            return Optional.of(Float.parseFloat(value.toString()));
         }
-        return  Optional.empty();
+        return Optional.empty();
     }
 
     protected Optional<Object> convertDecimalType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DecimalType) {
             final DecimalType decimalType = (DecimalType) logicalType;
-            return Optional.ofNullable(DecimalData.fromBigDecimal(new BigDecimal((String) value),
-                    decimalType.getPrecision(),
-                    decimalType.getScale()));
+            return Optional.ofNullable(
+                    DecimalData.fromBigDecimal(
+                            new BigDecimal((String) value),
+                            decimalType.getPrecision(),
+                            decimalType.getScale()));
         }
         return Optional.empty();
     }
-    
+
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(TimestampData.fromLocalDateTime(
-                        Instant.ofEpochMilli(((Integer) value).longValue())
-                                .atZone(sinkTimeZone)
-                                .toLocalDateTime()));
-            }
-            
-            if (value instanceof Long) {
-                return Optional.of(TimestampData.fromLocalDateTime(
-                        Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime()));
+                return Optional.of(
+                        TimestampData.fromLocalDateTime(
+                                Instant.ofEpochMilli(((Integer) value).longValue())
+                                        .atZone(sinkTimeZone)
+                                        .toLocalDateTime()));
             }
 
-            return Optional.of(TimestampData.fromLocalDateTime(
-                    Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime()));
+            if (value instanceof Long) {
+                return Optional.of(
+                        TimestampData.fromLocalDateTime(
+                                Instant.ofEpochMilli((long) value)
+                                        .atZone(sinkTimeZone)
+                                        .toLocalDateTime()));
+            }
+
+            return Optional.of(
+                    TimestampData.fromLocalDateTime(
+                            Instant.parse(value.toString())
+                                    .atZone(sinkTimeZone)
+                                    .toLocalDateTime()));
         }
         return Optional.empty();
     }
@@ -431,11 +447,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected Optional<Object> convertDateType(Object target, LogicalType logicalType) {
         long value = (long) target;
         if (logicalType instanceof DateType) {
-            return Optional.of(StringData.fromString(
-                    Instant.ofEpochMilli(value)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
-                            .toString()));
+            return Optional.of(
+                    StringData.fromString(
+                            Instant.ofEpochMilli(value)
+                                    .atZone(ZoneId.systemDefault())
+                                    .toLocalDate()
+                                    .toString()));
         }
         return Optional.empty();
     }
@@ -465,24 +482,27 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     @Override
     public String getSinkTableName(Table table) {
         String tableName = table.getName();
-        if (config.getSink().containsKey("table.prefix.schema") && (Boolean.parseBoolean(config.getSink().get("table.prefix.schema")))) {
-                tableName = table.getSchema() + "_" + tableName;            
+        if (config.getSink().containsKey("table.prefix.schema")
+                && (Boolean.parseBoolean(config.getSink().get("table.prefix.schema")))) {
+            tableName = table.getSchema() + "_" + tableName;
         }
-        
+
         if (config.getSink().containsKey("table.prefix")) {
             tableName = config.getSink().get("table.prefix") + tableName;
         }
-        
+
         if (config.getSink().containsKey("table.suffix")) {
             tableName = tableName + config.getSink().get("table.suffix");
         }
-        
-        if (config.getSink().containsKey("table.lower") && (Boolean.parseBoolean(config.getSink().get("table.lower")))) {
-                tableName = tableName.toLowerCase();            
+
+        if (config.getSink().containsKey("table.lower")
+                && (Boolean.parseBoolean(config.getSink().get("table.lower")))) {
+            tableName = tableName.toLowerCase();
         }
-        
-        if (config.getSink().containsKey("table.upper") && (Boolean.parseBoolean(config.getSink().get("table.upper")))) {
-                tableName = tableName.toUpperCase();            
+
+        if (config.getSink().containsKey("table.upper")
+                && (Boolean.parseBoolean(config.getSink().get("table.upper")))) {
+            tableName = tableName.toUpperCase();
         }
         return tableName;
     }
@@ -492,7 +512,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         if (Asserts.isNullCollection(table.getColumns())) {
             return pks;
         }
-        
+
         for (Column column : table.getColumns()) {
             if (column.isKeyFlag()) {
                 pks.add(column.getName());

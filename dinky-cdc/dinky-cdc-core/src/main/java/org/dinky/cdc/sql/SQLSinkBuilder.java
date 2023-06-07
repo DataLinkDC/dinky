@@ -19,23 +19,6 @@
 
 package org.dinky.cdc.sql;
 
-import com.google.common.collect.Lists;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.dag.Transformation;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.types.Row;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
@@ -47,8 +30,23 @@ import org.dinky.executor.CustomTableEnvironment;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SplitUtil;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.api.dag.Transformation;
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.streaming.api.datastream.DataStreamSource;
+import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
+import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.api.functions.ProcessFunction;
+import org.apache.flink.table.operations.Operation;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.types.Row;
+import org.apache.flink.util.Collector;
+import org.apache.flink.util.OutputTag;
+
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -59,6 +57,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.google.common.collect.Lists;
+
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql";
@@ -66,14 +66,14 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     {
-        typeConverterList = Lists.newArrayList(
-                this::convertDateType,
-                this::convertTimestampType,
-                this::convertFloatType,
-                this::convertDecimalType,
-                this::convertBigIntType,
-                this::convertVarBinaryType
-        );
+        typeConverterList =
+                Lists.newArrayList(
+                        this::convertDateType,
+                        this::convertTimestampType,
+                        this::convertFloatType,
+                        this::convertDecimalType,
+                        this::convertBigIntType,
+                        this::convertVarBinaryType);
     }
 
     public SQLSinkBuilder() {}
@@ -189,9 +189,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
-                dataStreamSource
-                        .map(x -> objectMapper.readValue(x, Map.class))
-                        .returns(Map.class);
+                dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
 
         Map<String, String> splitConfMap = config.getSplit();
         SingleOutputStreamOperator<Map> processOperator =
@@ -207,8 +205,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                                 try {
                                     String tableName =
                                             SplitUtil.getReValue(
-                                                            source.get(schemaFieldName)
-                                                                    .toString(),
+                                                            source.get(schemaFieldName).toString(),
                                                             splitConfMap)
                                                     + "."
                                                     + SplitUtil.getReValue(
@@ -270,15 +267,14 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         return dataStreamSource;
     }
 
-
-
     protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
                 return Optional.of(LocalDate.ofEpochDay((Integer) value));
             }
             if (value instanceof Long) {
-                return Optional.of(Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
+                return Optional.of(
+                        Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
             }
             return Optional.of(Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate());
         }
@@ -288,27 +284,33 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
+                return Optional.of(
+                        Instant.ofEpochMilli(((Integer) value).longValue())
+                                .atZone(sinkTimeZone)
+                                .toLocalDateTime());
             }
 
             if (value instanceof String) {
-                return Optional.of(Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+                return Optional.of(
+                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
             }
 
             TimestampType timestampType = (TimestampType) logicalType;
             // 转换为毫秒
             if (timestampType.getPrecision() > 3) {
-                return Optional.of(Instant.ofEpochMilli(
-                                ((long) value)
-                                        / (long) Math.pow(10, timestampType.getPrecision() - 3.0))
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime());
+                return Optional.of(
+                        Instant.ofEpochMilli(
+                                        ((long) value)
+                                                / (long)
+                                                        Math.pow(
+                                                                10,
+                                                                timestampType.getPrecision() - 3.0))
+                                .atZone(sinkTimeZone)
+                                .toLocalDateTime());
             }
-            return Optional.of(Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime());
+            return Optional.of(
+                    Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime());
         }
         return Optional.empty();
     }
-
 }
