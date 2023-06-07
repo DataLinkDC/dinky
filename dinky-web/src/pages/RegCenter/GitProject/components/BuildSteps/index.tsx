@@ -149,9 +149,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             stepArray[currentStep - 1].status = renderStatus(status)
           }
           if ((status === 2 && currentStep === stepNum) || status === 0) {
-            if (currentStep === stepNum) {
-              stepArray.forEach(d => d.disabled = false)
-            }
+            stepArray.forEach(d => d.disabled = false)
             finish = true;
             eventSource.close();
             return;
