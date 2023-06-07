@@ -509,6 +509,7 @@ export default {
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
   'sys.dolphinscheduler.settings.projectName.note': 'DolphinScheduler 中指定的项目名称，不区分大小写',
 
+  //LDAP
   'sys.ldap.settings.enable': '是否启用ldap',
   'sys.ldap.settings.enable.note': '开启LDAP登录功能',
   'sys.ldap.settings.url': 'ldap服务地址',
