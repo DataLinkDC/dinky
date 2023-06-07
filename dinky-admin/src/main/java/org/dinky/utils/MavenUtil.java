@@ -56,6 +56,7 @@ public class MavenUtil {
                                     .getParentFile(),
                             "/bin/java")
                     .getAbsolutePath();
+    private static final String EXECTOR = SystemUtil.getOsInfo().isWindows() ? "mvn.cmd" : "mvn";
 
     //    /home/zackyoung/.jdks/corretto-1.8.0_372/bin/java
     // -Dmaven.multiModuleProjectDirectory=/home/zackyoung/IdeaProjects/dinky-quickstart-java
@@ -151,7 +152,7 @@ public class MavenUtil {
     }
 
     public static String getMavenVersion() {
-        return RuntimeUtil.execForStr(getMavenHome() + "/bin/mvn -v");
+        return RuntimeUtil.execForStr(getMavenHome() + "/bin/" + EXECTOR + " -v");
     }
 
     public static String getMavenHome() {
@@ -160,7 +161,7 @@ public class MavenUtil {
             return mavenHome;
         }
         String searchCmd = SystemUtil.getOsInfo().isWindows() ? "where" : "which";
-        mavenHome = RuntimeUtil.execForStr(searchCmd + " mvn").trim();
+        mavenHome = RuntimeUtil.execForStr(searchCmd + " " + EXECTOR).trim();
         if (StrUtil.isNotBlank(mavenHome)) {
             try {
                 return new File(mavenHome).toPath().toRealPath().getParent().getParent().toString();

@@ -48,7 +48,10 @@ public class EnvInit implements ApplicationRunner {
                         + "Local: \t\thttp://localhost:{}\n\t"
                         + "External: \thttp://{}:{}\n\t"
                         + "Doc: \thttp://{}:{}/doc.html\n"
+                        + "Druid Monitor: \thttp://{}:{}/druid/index.html\n"
                         + "----------------------------------------------------------",
+                port,
+                ipAddress,
                 port,
                 ipAddress,
                 port,

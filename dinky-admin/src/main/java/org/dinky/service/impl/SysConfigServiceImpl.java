@@ -78,8 +78,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                         })
                 .forEach(Model::insertOrUpdate);
         Map<String, String> configMap =
-                CollUtil.toMap(
-                        sysConfigList, new HashMap<>(), SysConfig::getName, SysConfig::getValue);
+                CollUtil.toMap(list(), new HashMap<>(), SysConfig::getName, SysConfig::getValue);
         systemConfiguration.setConfiguration(configMap);
     }
 
