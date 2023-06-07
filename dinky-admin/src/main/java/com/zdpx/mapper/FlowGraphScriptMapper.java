@@ -19,11 +19,10 @@
 
 package com.zdpx.mapper;
 
-import org.dinky.db.mapper.SuperMapper;
-
 import org.apache.ibatis.annotations.Mapper;
 
 import com.zdpx.model.FlowGraph;
+import org.dinky.mybatis.mapper.SuperMapper;
 
 /** */
 @Mapper
