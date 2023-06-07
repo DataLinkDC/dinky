@@ -19,6 +19,7 @@
 
 package org.dinky.cdc;
 
+import org.apache.flink.util.Collector;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.Column;
@@ -150,82 +151,64 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return processOperator.getSideOutput(tag);
     }
 
+    @SuppressWarnings("rawtypes")
     protected DataStream<RowData> buildRowData(
             SingleOutputStreamOperator<Map> filterOperator,
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
         return filterOperator.flatMap(
-                (FlatMapFunction<Map, RowData>)
-                        (value, out) -> {
-                            try {
-                                switch (value.get("op").toString()) {
-                                    case "r":
-                                    case "c":
-                                        GenericRowData igenericRowData =
-                                                new GenericRowData(columnNameList.size());
-                                        igenericRowData.setRowKind(RowKind.INSERT);
-                                        Map idata = (Map) value.get("after");
-                                        for (int i = 0; i < columnNameList.size(); i++) {
-                                            igenericRowData.setField(
-                                                    i,
-                                                    convertValue(
-                                                            idata.get(columnNameList.get(i)),
-                                                            columnTypeList.get(i)));
-                                        }
-                                        out.collect(igenericRowData);
-                                        break;
-                                    case "d":
-                                        GenericRowData dgenericRowData =
-                                                new GenericRowData(columnNameList.size());
-                                        dgenericRowData.setRowKind(RowKind.DELETE);
-                                        Map ddata = (Map) value.get("before");
-                                        for (int i = 0; i < columnNameList.size(); i++) {
-                                            dgenericRowData.setField(
-                                                    i,
-                                                    convertValue(
-                                                            ddata.get(columnNameList.get(i)),
-                                                            columnTypeList.get(i)));
-                                        }
-                                        out.collect(dgenericRowData);
-                                        break;
-                                    case "u":
-                                        GenericRowData ubgenericRowData =
-                                                new GenericRowData(columnNameList.size());
-                                        ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
-                                        Map ubdata = (Map) value.get("before");
-                                        for (int i = 0; i < columnNameList.size(); i++) {
-                                            ubgenericRowData.setField(
-                                                    i,
-                                                    convertValue(
-                                                            ubdata.get(columnNameList.get(i)),
-                                                            columnTypeList.get(i)));
-                                        }
-                                        out.collect(ubgenericRowData);
-                                        GenericRowData uagenericRowData =
-                                                new GenericRowData(columnNameList.size());
-                                        uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
-                                        Map uadata = (Map) value.get("after");
-                                        for (int i = 0; i < columnNameList.size(); i++) {
-                                            uagenericRowData.setField(
-                                                    i,
-                                                    convertValue(
-                                                            uadata.get(columnNameList.get(i)),
-                                                            columnTypeList.get(i)));
-                                        }
-                                        out.collect(uagenericRowData);
-                                        break;
-                                    default:
-                                }
-                            } catch (Exception e) {
-                                logger.error(
-                                        "SchameTable: {} - Row: {} - Exception:",
-                                        schemaTableName,
-                                        JSONUtil.toJsonString(value),
-                                        e);
-                                throw e;
-                            }
-                        });
+                        sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+    }
+
+    @SuppressWarnings("rawtypes")
+    private FlatMapFunction<Map, RowData> sinkRowDataFunction(List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
+        return (value, out) -> {
+            try {
+                Map after = (Map) value.get("after");
+                Map before = (Map) value.get("before");
+                switch (value.get("op").toString()) {
+                    case "r":
+                    case "c":
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.INSERT, after);
+                        break;
+                    case "d":
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
+                        break;
+                    case "u":
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, after);
+                        break;
+                    default:
+                }
+            } catch (Exception e) {
+                logger.error(
+                        "SchemaTable: {} - Row: {} - Exception: {}",
+                        schemaTableName,
+                        JSONUtil.toJsonString(value),
+                        e.toString());
+                throw e;
+            }
+        };
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void rowDataCollect(List<String> columnNameList,
+                                List<LogicalType> columnTypeList,
+                                Collector<RowData> out,
+                                RowKind rowKind,
+                                Map value) {
+        GenericRowData genericRowData =
+                new GenericRowData(columnNameList.size());
+        genericRowData.setRowKind(rowKind);
+        for (int i = 0; i < columnNameList.size(); i++) {
+            genericRowData.setField(
+                    i,
+                    convertValue(
+                            value.get(columnNameList.get(i)),
+                            columnTypeList.get(i)));
+        }
+        out.collect(genericRowData);
     }
 
     public void addSink(
