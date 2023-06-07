@@ -60,6 +60,8 @@ public class User implements Serializable {
 
     private String nickname;
 
+    private int userType;
+
     private String worknum;
 
     private byte[] avatar;

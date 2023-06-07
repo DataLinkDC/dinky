@@ -17,19 +17,21 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.data.enums;
 
-import java.util.List;
+public enum UserType {
+    LDAP(0, "LDAP"),
+    LOCAL(1, "LOCAL");
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+    private final int code;
+    private final String type;
 
-/** assign role params */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AssignUserToTenantParams {
-    Integer tenantId;
-    List<Integer> userIds;
+    public int getCode() {
+        return this.code;
+    }
+
+    UserType(int code, String type) {
+        this.code = code;
+        this.type = type;
+    }
 }

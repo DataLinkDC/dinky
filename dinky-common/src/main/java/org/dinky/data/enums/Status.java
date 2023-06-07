@@ -103,6 +103,12 @@ public enum Status {
     SWITCHING_TENANT_SUCCESS(10018, "Select Tenant Success", "选择租户成功"),
     // user.superadmin.cannot.disable
     USER_SUPERADMIN_CANNOT_DISABLE(10019, "User SuperAdmin Cannot Disable", "超级管理员用户不能停用"),
+    LDAP_USER_DUPLICAT(10020, "The ldap matches to multiple user data", "ldap匹配到多个用户数据"),
+    LDAP_USER_AUTOLOAD_FORBAID(
+            10021,
+            "Auto-mapping LDAP users are not enabled, please contact your administrator to import",
+            "未开启自动映射LDAP用户，请联系管理员导入"),
+    LDAP_DEFAULT_TENANT_NOFOUND(10021, "The LDAP default tenant does not exist", "LDAP默认租户不存在"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),

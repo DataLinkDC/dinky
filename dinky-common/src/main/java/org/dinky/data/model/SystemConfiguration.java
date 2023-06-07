@@ -135,6 +135,58 @@ public class SystemConfiguration {
                     .defaultValue("Dinky")
                     .note("The project name specified in DolphinScheduler, case insensitive");
 
+    private final Configuration<Boolean> ldapEnable =
+            key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
+
+    private final Configuration<String> ldapUrl =
+            key("ldap.settings.url").stringType().defaultValue("").note("ldap server address");
+
+    private final Configuration<String> ldapUserDn =
+            key("ldap.settings.userDn")
+                    .stringType()
+                    .defaultValue("")
+                    .note("ldap login dn or username");
+
+    private final Configuration<String> ldapUserPassword =
+            key("ldap.settings.userPassword")
+                    .stringType()
+                    .defaultValue("")
+                    .note("ldap login password");
+    //    private final Configuration<Integer> ldapCountLimit =
+    //            key("ldap.settings.countLimit")
+    //                    .intType()
+    //                    .defaultValue(0)
+    //                    .note("");
+    private final Configuration<Integer> ldapTimeLimit =
+            key("ldap.settings.timeLimit")
+                    .intType()
+                    .defaultValue(30)
+                    .note("ldap connection timeout");
+
+    private final Configuration<String> ldapBaseDn =
+            key("ldap.settings.baseDn").stringType().defaultValue("").note("ldap user base dn");
+
+    private final Configuration<String> ldapFilter =
+            key("ldap.settings.filter").stringType().defaultValue("").note("ldap user filter");
+
+    private final Configuration<Boolean> ldapAutoload =
+            key("ldap.settings.autoload")
+                    .booleanType()
+                    .defaultValue(true)
+                    .note("Whether auto-mapping ldap users is enabled");
+
+    private final Configuration<String> ldapDefaultTeant =
+            key("ldap.settings.defaultTeant")
+                    .stringType()
+                    .defaultValue("DefaultTenant")
+                    .note("ldap default default teant code");
+
+    private final Configuration<String> ldapCastUsername =
+            key("ldap.settings.castUsername").stringType().defaultValue("cn").note("");
+
+    private final Configuration<String> ldapCastNickname =
+            key("ldap.settings.castNickname").stringType().defaultValue("sn").note("");
+
     /** Initialize after spring bean startup */
     public void initAfterBeanStarted() {
         if (StrUtil.isBlank(dinkyAddr.getDefaultValue())) {

@@ -35,4 +35,5 @@ public class LoginDTO {
     private String password;
     private Integer tenantId;
     private boolean autoLogin;
+    private boolean ldapLogin;
 }

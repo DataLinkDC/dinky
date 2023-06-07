@@ -17,19 +17,20 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.data.model;
 
-import java.util.List;
+import javax.naming.directory.Attributes;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/** assign role params */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class AssignUserToTenantParams {
-    Integer tenantId;
-    List<Integer> userIds;
+@AllArgsConstructor
+public class LdapUserIdentification {
+
+    private String absoluteDn;
+    private String relativeDn;
+    private Attributes attributes;
 }
