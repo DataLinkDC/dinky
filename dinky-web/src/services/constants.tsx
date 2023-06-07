@@ -180,7 +180,11 @@ export const API_CONSTANTS = {
   // process list
   PROCESS_LIST: "/api/process/listAllProcess",
 
+  // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
+
+  // -- LDAP
+  GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus"
 
 };
 
