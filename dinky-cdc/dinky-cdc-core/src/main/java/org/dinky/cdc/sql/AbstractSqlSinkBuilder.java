@@ -51,7 +51,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
     }
 
     @SuppressWarnings("rawtypes")
-    protected FlatMapFunction<Map, Row> sqlSinkFunction(
+    protected FlatMapFunction<Map, Row> sqlSinkRowFunction(
             List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
         return (value, out) -> {
             try {
@@ -60,14 +60,14 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 switch (value.get("op").toString()) {
                     case "r":
                     case "c":
-                        collect(columnNameList, columnTypeList, out, RowKind.INSERT, after);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, after);
                         break;
                     case "d":
-                        collect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
                         break;
                     case "u":
-                        collect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
-                        collect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, after);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, after);
                         break;
                     default:
                 }
@@ -83,7 +83,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
     }
 
     @SuppressWarnings("rawtypes")
-    private void collect(
+    private void rowCollect(
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             Collector<Row> out,
@@ -108,7 +108,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                                 columnTypeList.toArray(new LogicalType[0])));
 
         return filterOperator.flatMap(
-                sqlSinkFunction(columnNameList, columnTypeList, schemaTableName),
+                sqlSinkRowFunction(columnNameList, columnTypeList, schemaTableName),
                 new RowTypeInfo(typeInformation, columnNameList.toArray(new String[0])));
     }
 
