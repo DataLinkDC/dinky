@@ -20,8 +20,8 @@
 package org.dinky.data.enums;
 
 public enum UserType {
-    LDAP(0, "LDAP"),
-    LOCAL(1, "LOCAL");
+    LDAP(1, "LDAP"),
+    LOCAL(0, "LOCAL");
 
     private final int code;
     private final String type;
