@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.User;
-import org.dinky.data.model.UserTenant;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -42,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
@@ -214,16 +212,7 @@ public class UserController {
     @GetMapping("/getUserListByTenantId")
     public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
-        List<UserTenant> userTenants =
-                userTenantService
-                        .getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<UserTenant>()
-                                        .eq(UserTenant::getTenantId, id));
-        List<Integer> userIds = new ArrayList<>();
-        for (UserTenant userTenant : userTenants) {
-            userIds.add(userTenant.getUserId());
-        }
+        List<Integer> userIds = userService.getUserIdsByTeantId(id);
         Dict result = Dict.create().set("users", userList).set("userIds", userIds);
         return Result.succeed(result);
     }

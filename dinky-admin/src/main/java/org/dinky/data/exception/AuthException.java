@@ -17,19 +17,30 @@
  *
  */
 
-package org.dinky.data.params;
+package org.dinky.data.exception;
 
-import java.util.List;
+import org.dinky.data.enums.Status;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-/** assign role params */
+/**
+ * AuthException
+ * About login error
+ *
+ * @since 2021/5/28 14:21
+ */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class AssignUserToTenantParams {
-    Integer tenantId;
-    List<Integer> userIds;
+public class AuthException extends Exception {
+
+    private Status status;
+
+    public AuthException(Status status) {
+        super(status.getMsg());
+        this.status = status;
+    }
+
+    public AuthException(Throwable cause, Status status) {
+        super(status.getMsg(), cause);
+        this.status = status;
+    }
 }

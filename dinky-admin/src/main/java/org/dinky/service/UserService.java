@@ -154,4 +154,11 @@ public interface UserService extends ISuperService<User> {
 
     /** user loginout */
     void outLogin();
+
+    /**
+     * get user ids where user in given tenant id
+     *
+     * @return role select permissions list
+     */
+    List<Integer> getUserIdsByTeantId(int id);
 }
