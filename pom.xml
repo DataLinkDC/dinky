@@ -72,7 +72,7 @@
         <jaxb.version>2.3.0</jaxb.version>
         <jedis.version>2.9.0</jedis.version>
         <junit5.version>5.9.1</junit5.version>
-        <knife4j.version>3.0.3</knife4j.version>
+        <knife4j.version>4.1.0</knife4j.version>
         <log4j.version>2.19.0</log4j.version>
         <lombok.version>1.18.24</lombok.version>
         <maven-assembly-plugin.version>3.4.2</maven-assembly-plugin.version>
@@ -107,7 +107,7 @@
         <snakeyaml.version>1.33</snakeyaml.version>
         <spotless.ratchetFrom>origin/dev</spotless.ratchetFrom>
         <spotless.version>2.27.1</spotless.version>
-        <spring-boot-dependencies.version>2.6.13</spring-boot-dependencies.version>
+        <spring-boot-dependencies.version>2.7.11</spring-boot-dependencies.version>
         <spring.ldap.version>3.1.0</spring.ldap.version>
         <target.java.version>8</target.java.version>
         <testcontainers.version>1.16.2</testcontainers.version>
@@ -115,6 +115,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.xiaoymin</groupId>
+                <artifactId>knife4j-dependencies</artifactId>
+                <version>${knife4j.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <dependency>
                 <groupId>org.junit</groupId>
                 <artifactId>junit-bom</artifactId>
@@ -248,11 +255,6 @@
                 <version>${spring-boot-dependencies.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
-            </dependency>
-            <dependency>
-                <groupId>com.github.xiaoymin</groupId>
-                <artifactId>knife4j-spring-boot-starter</artifactId>
-                <version>${knife4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.projectlombok</groupId>
