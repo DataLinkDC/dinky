@@ -22,16 +22,13 @@ package org.dinky.cdc.oracle;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
-import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import com.ververica.cdc.connectors.base.options.StartupOptions;
@@ -68,11 +65,13 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
         Properties properties = new Properties();
-        config.getDebezium().forEach((key, value) -> {
-            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                properties.setProperty(key, value);
-            }
-        });
+        config.getDebezium()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                properties.setProperty(key, value);
+                            }
+                        });
 
         OracleSource.Builder<String> sourceBuilder =
                 OracleSource.<String>builder()
@@ -92,8 +91,7 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(
-                    schemaTableNameList.toArray(new String[0]));
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[0]));
         } else {
             sourceBuilder.tableList();
         }
@@ -130,7 +128,8 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
 
     @Override
     protected String generateUrl(String schema) {
-        return String.format("jdbc:oracle:thin:@%s:%s:%s", config.getHostname(), config.getPort(),
-                config.getDatabase());
+        return String.format(
+                "jdbc:oracle:thin:@%s:%s:%s",
+                config.getHostname(), config.getPort(), config.getDatabase());
     }
 }

@@ -247,8 +247,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create " + tableName + " FlinkSQL DDL successful...");
 
-        String cdcSqlInsert =
-                FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
+        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
         logger.info(cdcSqlInsert);
 
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);

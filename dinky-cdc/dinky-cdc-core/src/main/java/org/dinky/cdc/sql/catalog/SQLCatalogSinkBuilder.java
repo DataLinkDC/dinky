@@ -191,8 +191,7 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
         logger.info("Create " + viewName + " temporaryView successful...");
-        String cdcSqlInsert =
-                FlinkStatementUtil.getCDCInsertSql(table, sinkTableName, viewName);
+        String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, sinkTableName, viewName);
         logger.info(cdcSqlInsert);
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
         logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");

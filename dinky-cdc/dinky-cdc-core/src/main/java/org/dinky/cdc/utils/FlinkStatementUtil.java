@@ -31,11 +31,9 @@ import java.util.stream.Collectors;
 
 public class FlinkStatementUtil {
 
-    private FlinkStatementUtil() {
-    }
+    private FlinkStatementUtil() {}
 
-    public static String getCDCInsertSql(
-            Table table, String targetName, String sourceName) {
+    public static String getCDCInsertSql(Table table, String targetName, String sourceName) {
         StringBuilder sb = new StringBuilder("INSERT INTO ");
         sb.append(targetName);
         sb.append(" SELECT\n");
@@ -107,8 +105,7 @@ public class FlinkStatementUtil {
         String catalogName = config.getSink().get("catalog.name");
         List<String> catalogParamKeys =
                 config.getSink().keySet().stream()
-                        .filter(
-                                s -> s.startsWith("catalog."))
+                        .filter(s -> s.startsWith("catalog."))
                         .collect(Collectors.toList());
         StringBuilder sb = new StringBuilder("CREATE CATALOG ");
         sb.append(catalogName);
@@ -131,16 +128,13 @@ public class FlinkStatementUtil {
 
     private static String convertSinkColumnType(String type, FlinkCDCConfig config) {
         if (config.getSink().get("connector").equals("hudi") && (type.equals("TIMESTAMP"))) {
-                return "TIMESTAMP(3)";
+            return "TIMESTAMP(3)";
         }
         return type;
     }
 
     private static String getSinkConfigurationString(
-            FlinkCDCConfig config,
-            String sinkSchemaName,
-            String sinkTableName,
-            String pkList) {
+            FlinkCDCConfig config, String sinkSchemaName, String sinkTableName, String pkList) {
         String configurationString =
                 SqlUtil.replaceAllParam(
                         config.getSinkConfigurationString(), "schemaName", sinkSchemaName);

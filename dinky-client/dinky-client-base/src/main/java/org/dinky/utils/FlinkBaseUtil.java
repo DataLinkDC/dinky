@@ -24,11 +24,8 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.runtime.util.EnvironmentInformation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;

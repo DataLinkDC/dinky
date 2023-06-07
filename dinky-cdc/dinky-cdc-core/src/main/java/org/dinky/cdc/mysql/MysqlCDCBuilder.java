@@ -22,7 +22,6 @@ package org.dinky.cdc.mysql;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
-import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
@@ -31,7 +30,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
 import java.time.Duration;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -77,8 +75,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
                 source.get("chunk-key.even-distribution.factor.upper-bound");
         String distributionFactorUpper =
                 source.get("chunk-key.even-distribution.factor.lower-bound");
-        String scanNewlyAddedTableEnabled =
-                source.get("scan.newly-added-table.enabled");
+        String scanNewlyAddedTableEnabled = source.get("scan.newly-added-table.enabled");
         String schemaChanges = source.get("schema.changes");
 
         // 为部分转换添加默认值
@@ -86,19 +83,23 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
-        config.getDebezium().forEach((key, value) -> {
-            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                debeziumProperties.setProperty(key, value);
-            }
-        });
+        config.getDebezium()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                debeziumProperties.setProperty(key, value);
+                            }
+                        });
 
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
-        config.getJdbc().forEach((key, value) -> {
-            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                jdbcProperties.setProperty(key, value);
-            }
-        });
+        config.getJdbc()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                jdbcProperties.setProperty(key, value);
+                            }
+                        });
 
         MySqlSourceBuilder<String> sourceBuilder =
                 MySqlSource.<String>builder()
@@ -194,8 +195,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     @Override
     public Map<String, String> parseMetaDataConfig() {
-        String url = String.format("jdbc:mysql://%s:%d/", config.getHostname(),
-                config.getPort());
+        String url = String.format("jdbc:mysql://%s:%d/", config.getHostname(), config.getPort());
         return parseMetaDataSingleConfig(url);
     }
 
@@ -218,8 +218,13 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     protected String generateUrl(String schema) {
         Map<String, String> jdbc = config.getJdbc();
         boolean tinyInt1isBit = "true".equalsIgnoreCase(jdbc.get("tinyInt1isBit"));
-        boolean transformedBitIsBoolean = "true".equalsIgnoreCase(jdbc.get("transformedBitIsBoolean"));
-        return String.format("jdbc:mysql://%s:%d/%s?tinyInt1isBit=%s", config.getHostname(),
-                config.getPort(), schema, tinyInt1isBit && transformedBitIsBoolean);
+        boolean transformedBitIsBoolean =
+                "true".equalsIgnoreCase(jdbc.get("transformedBitIsBoolean"));
+        return String.format(
+                "jdbc:mysql://%s:%d/%s?tinyInt1isBit=%s",
+                config.getHostname(),
+                config.getPort(),
+                schema,
+                tinyInt1isBit && transformedBitIsBoolean);
     }
 }

@@ -22,16 +22,13 @@ package org.dinky.cdc.sqlserver;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
-import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -73,21 +70,23 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
-        config.getDebezium().forEach((key, value) -> {
-            if (Asserts.isNotNullString(key)
-                    && Asserts.isNotNullString(value)) {
-                debeziumProperties.setProperty(key, value);
-            }
-        });
+        config.getDebezium()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                debeziumProperties.setProperty(key, value);
+                            }
+                        });
 
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
-        config.getJdbc().forEach((key, value) -> {
-            if (Asserts.isNotNullString(key)
-                    && Asserts.isNotNullString(value)) {
-                jdbcProperties.setProperty(key, value);
-            }
-        });
+        config.getJdbc()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                jdbcProperties.setProperty(key, value);
+                            }
+                        });
 
         final SqlServerSource.Builder<String> sourceBuilder =
                 SqlServerSource.<String>builder()
@@ -141,7 +140,8 @@ public class SqlServerCDCBuilder extends AbstractCDCBuilder implements CDCBuilde
 
     @Override
     protected String generateUrl(String schema) {
-        return String.format("jdbc:sqlserver://%s:%s;database=%s",
+        return String.format(
+                "jdbc:sqlserver://%s:%s;database=%s",
                 config.getHostname(), config.getPort(), config.getDatabase());
     }
 }

@@ -34,8 +34,7 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
 
     protected FlinkCDCConfig config;
 
-    protected AbstractCDCBuilder() {
-    }
+    protected AbstractCDCBuilder() {}
 
     protected AbstractCDCBuilder(FlinkCDCConfig config) {
         this.config = config;
@@ -100,7 +99,6 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
         configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
         return configMap;
     }
-
 
     public abstract String getSchema();
 

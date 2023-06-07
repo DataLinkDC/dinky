@@ -19,7 +19,6 @@
 
 package org.dinky.cdc;
 
-import com.google.common.collect.ImmutableMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.mysql.MysqlCDCBuilder;
 import org.dinky.cdc.oracle.OracleCDCBuilder;
@@ -31,9 +30,10 @@ import org.dinky.exception.FlinkClientException;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableMap;
+
 public class CDCBuilderFactory {
-    private CDCBuilderFactory() {
-    }
+    private CDCBuilderFactory() {}
 
     private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP =
             ImmutableMap.<String, Supplier<CDCBuilder>>builder()
@@ -50,8 +50,7 @@ public class CDCBuilderFactory {
 
         Supplier<CDCBuilder> cdcBuilderSupplier = CDC_BUILDER_MAP.get(config.getType());
         if (cdcBuilderSupplier == null) {
-            throw new FlinkClientException(
-                    "未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
+            throw new FlinkClientException("未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
         }
         return cdcBuilderSupplier.get().create(config);
     }

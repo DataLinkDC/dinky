@@ -87,8 +87,7 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(
-                    schemaTableNameList.toArray(new String[0]));
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[0]));
         } else {
             sourceBuilder.tableList();
         }

@@ -19,7 +19,6 @@
 
 package org.dinky.cdc;
 
-import com.google.common.collect.ImmutableMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
@@ -29,16 +28,16 @@ import org.dinky.exception.FlinkClientException;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableMap;
+
 public class SinkBuilderFactory {
 
-    private SinkBuilderFactory() {
-    }
+    private SinkBuilderFactory() {}
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
             ImmutableMap.of(
                     SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new,
-                    SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new
-            );
+                    SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {

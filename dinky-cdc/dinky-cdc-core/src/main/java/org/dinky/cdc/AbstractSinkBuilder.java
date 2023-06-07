@@ -55,7 +55,6 @@ import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
-import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
 import java.math.BigDecimal;
@@ -110,10 +109,11 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected SingleOutputStreamOperator<Map> deserialize(
             DataStreamSource<String> dataStreamSource) {
         return dataStreamSource.map(
-                (MapFunction<String, Map>) value -> {
-                    ObjectMapper objectMapper = new ObjectMapper();
-                    return objectMapper.readValue(value, Map.class);
-                });
+                (MapFunction<String, Map>)
+                        value -> {
+                            ObjectMapper objectMapper = new ObjectMapper();
+                            return objectMapper.readValue(value, Map.class);
+                        });
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
@@ -121,11 +121,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         final String tableName = table.getName();
         final String schemaName = table.getSchema();
         return mapOperator.filter(
-                (FilterFunction<Map>) value -> {
-                    LinkedHashMap source = (LinkedHashMap) value.get("source");
-                    return tableName.equals(source.get("table").toString())
-                            && schemaName.equals(source.get(schemaFieldName).toString());
-                });
+                (FilterFunction<Map>)
+                        value -> {
+                            LinkedHashMap source = (LinkedHashMap) value.get("source");
+                            return tableName.equals(source.get("table").toString())
+                                    && schemaName.equals(source.get(schemaFieldName).toString());
+                        });
     }
 
     protected DataStream<Map> shunt(
@@ -140,75 +141,76 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<LogicalType> columnTypeList,
             String schemaTableName) {
         return filterOperator.flatMap(
-                (FlatMapFunction<Map, RowData>) (value, out) -> {
-                    try {
-                        switch (value.get("op").toString()) {
-                            case "r":
-                            case "c":
-                                GenericRowData igenericRowData =
-                                        new GenericRowData(columnNameList.size());
-                                igenericRowData.setRowKind(RowKind.INSERT);
-                                Map idata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    igenericRowData.setField(
-                                            i,
-                                            convertValue(
-                                                    idata.get(columnNameList.get(i)),
-                                                    columnTypeList.get(i)));
+                (FlatMapFunction<Map, RowData>)
+                        (value, out) -> {
+                            try {
+                                switch (value.get("op").toString()) {
+                                    case "r":
+                                    case "c":
+                                        GenericRowData igenericRowData =
+                                                new GenericRowData(columnNameList.size());
+                                        igenericRowData.setRowKind(RowKind.INSERT);
+                                        Map idata = (Map) value.get("after");
+                                        for (int i = 0; i < columnNameList.size(); i++) {
+                                            igenericRowData.setField(
+                                                    i,
+                                                    convertValue(
+                                                            idata.get(columnNameList.get(i)),
+                                                            columnTypeList.get(i)));
+                                        }
+                                        out.collect(igenericRowData);
+                                        break;
+                                    case "d":
+                                        GenericRowData dgenericRowData =
+                                                new GenericRowData(columnNameList.size());
+                                        dgenericRowData.setRowKind(RowKind.DELETE);
+                                        Map ddata = (Map) value.get("before");
+                                        for (int i = 0; i < columnNameList.size(); i++) {
+                                            dgenericRowData.setField(
+                                                    i,
+                                                    convertValue(
+                                                            ddata.get(columnNameList.get(i)),
+                                                            columnTypeList.get(i)));
+                                        }
+                                        out.collect(dgenericRowData);
+                                        break;
+                                    case "u":
+                                        GenericRowData ubgenericRowData =
+                                                new GenericRowData(columnNameList.size());
+                                        ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
+                                        Map ubdata = (Map) value.get("before");
+                                        for (int i = 0; i < columnNameList.size(); i++) {
+                                            ubgenericRowData.setField(
+                                                    i,
+                                                    convertValue(
+                                                            ubdata.get(columnNameList.get(i)),
+                                                            columnTypeList.get(i)));
+                                        }
+                                        out.collect(ubgenericRowData);
+                                        GenericRowData uagenericRowData =
+                                                new GenericRowData(columnNameList.size());
+                                        uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
+                                        Map uadata = (Map) value.get("after");
+                                        for (int i = 0; i < columnNameList.size(); i++) {
+                                            uagenericRowData.setField(
+                                                    i,
+                                                    convertValue(
+                                                            uadata.get(columnNameList.get(i)),
+                                                            columnTypeList.get(i)));
+                                        }
+                                        out.collect(uagenericRowData);
+                                        break;
+                                    default:
                                 }
-                                out.collect(igenericRowData);
-                                break;
-                            case "d":
-                                GenericRowData dgenericRowData =
-                                        new GenericRowData(columnNameList.size());
-                                dgenericRowData.setRowKind(RowKind.DELETE);
-                                Map ddata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    dgenericRowData.setField(
-                                            i,
-                                            convertValue(
-                                                    ddata.get(columnNameList.get(i)),
-                                                    columnTypeList.get(i)));
-                                }
-                                out.collect(dgenericRowData);
-                                break;
-                            case "u":
-                                GenericRowData ubgenericRowData =
-                                        new GenericRowData(columnNameList.size());
-                                ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
-                                Map ubdata = (Map) value.get("before");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    ubgenericRowData.setField(
-                                            i,
-                                            convertValue(
-                                                    ubdata.get(columnNameList.get(i)),
-                                                    columnTypeList.get(i)));
-                                }
-                                out.collect(ubgenericRowData);
-                                GenericRowData uagenericRowData =
-                                        new GenericRowData(columnNameList.size());
-                                uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
-                                Map uadata = (Map) value.get("after");
-                                for (int i = 0; i < columnNameList.size(); i++) {
-                                    uagenericRowData.setField(
-                                            i,
-                                            convertValue(
-                                                    uadata.get(columnNameList.get(i)),
-                                                    columnTypeList.get(i)));
-                                }
-                                out.collect(uagenericRowData);
-                                break;
-                            default:
-                        }
-                    } catch (Exception e) {
-                        logger.error(
-                                "SchameTable: {} - Row: {} - Exception:",
-                                schemaTableName,
-                                JSONUtil.toJsonString(value),
-                                e);
-                        throw e;
-                    }
-                });
+                            } catch (Exception e) {
+                                logger.error(
+                                        "SchameTable: {} - Row: {} - Exception:",
+                                        schemaTableName,
+                                        JSONUtil.toJsonString(value),
+                                        e);
+                                throw e;
+                            }
+                        });
     }
 
     public void addSink(
@@ -216,7 +218,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList){};
+            List<LogicalType> columnTypeList) {};
 
     @Override
     public DataStreamSource<String> build(
