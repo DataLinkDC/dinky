@@ -59,7 +59,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
     public static final String KEY_WORD = "datastream-doris-ext";
     private static final long serialVersionUID = 8430362249137471854L;
 
-    protected static final Logger logger = LoggerFactory.getLogger(DorisSinkBuilder.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DorisExtendSinkBuilder.class);
 
     private Map<String, AdditionalColumnEntry<String, String>> additionalColumnConfigList = null;
 
@@ -80,6 +80,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         return new DorisExtendSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
     protected Object buildRowDataValues(
             Map value,
             Map rowData,
@@ -132,6 +133,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         return convertValue(rowData.get(columnName), columnType);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected DataStream<RowData> buildRowData(
             SingleOutputStreamOperator<Map> filterOperator,
@@ -227,7 +229,7 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
                                     "SchameTable: {} - Row: {} - Exception: {}",
                                     schemaTableName,
                                     JSONUtil.toJsonString(value),
-                                    e);
+                                    e.toString());
                             throw e;
                         }
                     }
@@ -243,82 +245,73 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         }
         if (this.additionalColumnConfigList != null && this.additionalColumnConfigList.size() > 0) {
             logger.info("Start add additional column");
-            for (Map.Entry col : this.additionalColumnConfigList.entrySet()) {
-                String colName = (String) col.getKey();
-                AdditionalColumnEntry<String, String> kv =
-                        (AdditionalColumnEntry<String, String>) col.getValue();
+            this.additionalColumnConfigList.forEach((key, value) -> {
                 logger.info(
-                        "col: { name: "
-                                + colName
-                                + ", type:"
-                                + kv.getKey()
-                                + ", val: "
-                                + kv.getValue()
-                                + "}");
+                        String.format("col: { name: %s, type:%s, val: %s}", key, value.getKey(), value.getValue()));
 
-                switch (kv.getKey()) {
+                switch (value.getKey()) {
                     case "META":
-                        switch (kv.getValue().toLowerCase()) {
+                        switch (value.getValue().toLowerCase()) {
                             case "op_ts":
-                                columnNameList.add(colName);
+                                columnNameList.add(key);
                                 columnTypeList.add(new TimestampType());
                                 break;
                             case "database_name":
                             case "table_name":
                             case "schema_name":
-                                columnNameList.add(colName);
+                                columnNameList.add(key);
                                 columnTypeList.add(new VarCharType());
                                 break;
                             default:
-                                logger.warn("Unsupported meta field:" + kv.getValue());
+                                logger.warn(String.format("Unsupported meta field:%s", value.getValue()));
                         }
                         break;
                     case "BOOLEAN":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new BooleanType());
                         break;
                     case "INT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new IntType());
                         break;
                     case "TINYINT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new TinyIntType());
                         break;
                     case "BIGINT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new BigIntType());
                         break;
                     case "DECIMAL":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new DecimalType());
                         break;
                     case "FLOAT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new FloatType());
                         break;
                     case "DATE":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new DateType());
                         break;
                     case "TIMESTAMP":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new TimestampType());
                         break;
                     case "CHAR":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new CharType());
                         break;
                     case "VARCHAR":
                     case "STRING":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new VarCharType());
                         break;
                     default:
-                        logger.warn("Unsupported additional column type:" + kv.getKey());
+                        logger.warn(String.format("Unsupported additional column type:%s", value.getKey()));
                         break;
                 }
-            }
+            });
             logger.info("Additional column added complete");
         }
     }
@@ -335,19 +328,19 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         }
 
         Map<String, AdditionalColumnEntry<String, String>> cfg = new HashMap<>();
-        logger.info("AdditionalColumns: " + additionalColumnConfig);
+        logger.info(String.format("AdditionalColumns: %s", additionalColumnConfig));
         String[] cols = additionalColumnConfig.split(",");
 
         for (String col : cols) {
             String[] kv = col.split(":");
             if (kv.length != 2) {
-                logger.warn("additional-columns format invalid. col=" + col);
+                logger.warn(String.format("additional-columns format invalid. col=%s", col));
                 return null;
             }
 
             String[] strs = kv[1].split("@");
             if (strs.length != 2) {
-                logger.warn("additional-columns format invalid. val=" + kv[1]);
+                logger.warn(String.format("additional-columns format invalid. val=%s", kv[1]));
                 return null;
             }
 

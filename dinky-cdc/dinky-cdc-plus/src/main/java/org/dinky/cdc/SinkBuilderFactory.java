@@ -19,6 +19,7 @@
 
 package org.dinky.cdc;
 
+import com.google.common.collect.ImmutableMap;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.doris.DorisExtendSinkBuilder;
 import org.dinky.cdc.doris.DorisSchemaEvolutionSinkBuilder;
@@ -29,33 +30,30 @@ import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.exception.FlinkClientException;
 import org.dinky.data.model.FlinkCDCConfig;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
 public class SinkBuilderFactory {
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
-            new HashMap<String, Supplier<SinkBuilder>>() {
+    private SinkBuilderFactory() {
+    }
 
-                {
-                    put(SQLSinkBuilder.KEY_WORD, () -> new SQLSinkBuilder());
-                    put(SQLCatalogSinkBuilder.KEY_WORD, () -> new SQLCatalogSinkBuilder());
-                    put(KafkaSinkBuilder.KEY_WORD, () -> new KafkaSinkBuilder());
-                    put(DorisSinkBuilder.KEY_WORD, () -> new DorisSinkBuilder());
-                    put(DorisExtendSinkBuilder.KEY_WORD, () -> new DorisExtendSinkBuilder());
-                    put(
-                            DorisSchemaEvolutionSinkBuilder.KEY_WORD,
-                            () -> new DorisSchemaEvolutionSinkBuilder());
-                }
-            };
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
+            ImmutableMap.<String, Supplier<SinkBuilder>>builder()
+                    .put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new)
+                    .put(SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new)
+                    .put(KafkaSinkBuilder.KEY_WORD, KafkaSinkBuilder::new)
+                    .put(DorisSinkBuilder.KEY_WORD, DorisSinkBuilder::new)
+                    .put(DorisExtendSinkBuilder.KEY_WORD, DorisExtendSinkBuilder::new)
+                    .put(DorisSchemaEvolutionSinkBuilder.KEY_WORD, DorisSchemaEvolutionSinkBuilder::new)
+                    .build();
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("请指定 Sink connector。");
         }
         return SINK_BUILDER_MAP
-                .getOrDefault(config.getSink().get("connector"), () -> new SQLSinkBuilder())
+                .getOrDefault(config.getSink().get("connector"), SQLSinkBuilder::new)
                 .get()
                 .create(config);
     }

@@ -211,12 +211,12 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                 });
     }
 
-    public abstract void addSink(
+    public void addSink(
             StreamExecutionEnvironment env,
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList);
+            List<LogicalType> columnTypeList){};
 
     @Override
     public DataStreamSource<String> build(
