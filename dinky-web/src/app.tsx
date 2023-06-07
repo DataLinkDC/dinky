@@ -18,7 +18,6 @@
 import Footer from "@/components/Footer";
 import RightContent from "@/components/RightContent";
 import {PageLoading, Settings as LayoutSettings} from "@ant-design/pro-components";
-// import {SettingDrawer} from "@ant-design/pro-components";
 import type {RunTimeLayoutConfig} from "@umijs/max";
 import {history} from "@umijs/max";
 import defaultSettings from "../config/defaultSettings";
@@ -27,6 +26,8 @@ import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
+import {l} from "@/utils/intl";
+import Settings from "../config/defaultSettings";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -91,6 +92,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
   const theme = localStorage.getItem("navTheme");
 
   return {
+    headerTitleRender: () => {
+      Settings.title =l('layouts.userLayout.title');
+      return <> {<img height={50} width={50} src={Settings.logo}/> }{ l('layouts.userLayout.title')}</>;
+    },
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     siderWidth: 180,
@@ -115,18 +120,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       return (
         <>
           {children}
-          {/*{isDev && <SettingDrawer*/}
-          {/*  disableUrlParams*/}
-          {/*  enableDarkTheme*/}
-          {/*  settings={initialState?.settings}*/}
-          {/*  onSettingChange={(settings) => {*/}
-          {/*    setInitialState((preInitialState) => ({*/}
-          {/*      ...preInitialState,*/}
-          {/*      settings,*/}
-          {/*    }));*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*}*/}
         </>
       );
     },

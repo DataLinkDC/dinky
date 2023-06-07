@@ -32,7 +32,6 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
-  title: 'Dinky Real-time Platform ',
   pwa: true,
   logo: '/dinky.svg',
   iconfontUrl: '',
