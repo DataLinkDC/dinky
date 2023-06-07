@@ -6,7 +6,7 @@
         ,user_id,tenant_id
     </sql>
 
-    <select id="getUserTenantByUserId" resultType="org.dinky.model.UserTenant">
+    <select id="getUserTenantByUserId" resultType="org.dinky.data.model.UserTenant">
         select
         <include refid="baseSql"/>
         from

@@ -20,10 +20,10 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
+import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.model.ClusterConfiguration;
 import org.dinky.service.ClusterConfigurationService;
 
 import java.util.ArrayList;

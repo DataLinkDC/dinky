@@ -4,7 +4,7 @@
 
 
 
-    <select id="selectForProTable" resultType="org.dinky.model.TaskVersion">
+    <select id="selectForProTable" resultType="org.dinky.data.model.TaskVersion">
         select
        a.*
         from

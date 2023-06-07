@@ -31,6 +31,7 @@ export default {
   'button.batchDisable': 'Batch Disable',
   'button.more': 'More',
   'button.config': 'Config',
+  'button.modify': 'Modify',
   'button.edit': 'Edit',
   'button.start': 'Start',
   'button.stop': 'Stop',
@@ -50,6 +51,8 @@ export default {
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
   'button.test': 'Test',
+  'button.clear': 'Clear',
+  'button.copy': 'Copy',
   'button.refreshData': 'Refresh Data',
   'button.collapseDir': 'Collapse Directory',
   'button.asc': 'ASC',
@@ -130,6 +133,7 @@ export default {
 
   'global.table.jobname': 'Job Name',
   'global.table.jobid': 'Job Id',
+  'global.table.taskid': 'Task Id',
   'global.table.lifecycle': 'Life Cycle',
   'global.table.lifecycle.all': 'All',
   'global.table.lifecycle.dev': 'Develop',
@@ -148,11 +152,14 @@ export default {
 
   'global.fullScreen': 'FullScreen',
   'global.fullScreen.exit': 'Exit FullScreen',
+  'global.yes': 'Yes',
+  'global.no': 'No',
 
   'global.info': 'Info',
   'global.error': 'Error',
   'global.warning': 'Warning',
   'global.success': 'Success',
+  'global.getdata.tips': 'Get Data',
 
   'global.notifaction.iknow': 'I understand',
   'global.notifaction.full-error': 'Complete error message',

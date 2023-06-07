@@ -19,7 +19,7 @@
 
 package org.dinky.classloader;
 
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -29,6 +29,7 @@ import java.net.URLStreamHandlerFactory;
 import java.util.Collection;
 import java.util.List;
 
+import cn.hutool.core.io.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 
 /** @since 0.7.0 */
@@ -77,14 +78,28 @@ public class DinkyClassLoader extends URLClassLoader {
         for (String path : paths) {
             File file = new File(path);
             try {
+                if (file.isDirectory()) {
+                    FileUtil.walkFiles(
+                            file,
+                            f -> {
+                                if (FileUtil.getSuffix(f).equals("jar")) {
+                                    try {
+                                        super.addURL(f.toURI().toURL());
+                                    } catch (MalformedURLException e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                }
+                            });
+                    continue;
+                }
                 if (!file.exists()) {
                     if (notExistsFiles != null && !notExistsFiles.isEmpty()) {
                         notExistsFiles.add(file.getAbsolutePath());
                     }
-                    return;
+                    continue;
                 }
                 super.addURL(file.toURI().toURL());
-                JarPathContextHolder.addOtherPlugins(file);
+                FlinkUdfPathContextHolder.addOtherPlugins(file);
             } catch (MalformedURLException e) {
                 throw new RuntimeException(e);
             }

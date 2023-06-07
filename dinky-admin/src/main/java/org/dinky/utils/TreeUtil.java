@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.dto.TreeNodeDTO;
+import org.dinky.data.dto.TreeNodeDTO;
 
 import java.io.File;
 import java.io.IOException;

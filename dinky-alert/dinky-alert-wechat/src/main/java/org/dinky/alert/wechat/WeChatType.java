@@ -25,8 +25,8 @@ package org.dinky.alert.wechat;
  * @since 2022/2/23 21:36
  */
 public enum WeChatType {
-    APP(1, "应用"),
-    CHAT(2, "群聊");
+    APP(1, "app"),
+    CHAT(2, "wechat");
 
     private final int code;
     private final String value;

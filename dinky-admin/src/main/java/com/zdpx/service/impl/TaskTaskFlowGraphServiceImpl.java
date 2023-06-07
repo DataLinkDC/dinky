@@ -19,8 +19,8 @@
 
 package com.zdpx.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.model.Task;
+import org.dinky.data.model.Task;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.TaskService;
 
 import java.util.HashMap;
@@ -41,7 +41,7 @@ import com.zdpx.mapper.FlowGraphScriptMapper;
 import com.zdpx.model.FlowGraph;
 import com.zdpx.service.TaskFlowGraphService;
 
-import groovy.util.logging.Slf4j;
+import lombok.extern.slf4j.Slf4j;
 
 /** */
 @Slf4j
@@ -74,7 +74,23 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
         return Scene.getOperatorConfigurations();
     }
 
+    @Override
+    public String testGraphStatement(String graph) {
+        return convertToSql(graph);
+    }
+
     private String convertConfigToSource(Task task) {
+        String flowGraphScript = task.getStatement();
+        String sql = convertToSql(flowGraphScript);
+
+        FlowGraph flowGraph = new FlowGraph();
+        flowGraph.setTaskId(task.getId());
+        flowGraph.setScript(flowGraphScript);
+        this.saveOrUpdate(flowGraph);
+        return sql;
+    }
+
+    public String convertToSql(String flowGraphScript) {
         List<Task> tasks = taskService.list(new QueryWrapper<Task>().eq("dialect", "Java"));
         Map<String, String> udfDatabase =
                 tasks.stream()
@@ -87,16 +103,10 @@ public class TaskTaskFlowGraphServiceImpl extends SuperServiceImpl<FlowGraphScri
         udfAll.putAll(Scene.USER_DEFINED_FUNCTION);
         udfAll.putAll(udfDatabase);
 
-        String flowGraphScript = task.getStatement();
         ToInternalConvert toic = new X6ToInternalConvert();
         Scene sceneInternal = toic.convert(flowGraphScript);
         SceneCodeBuilder su = new SceneCodeBuilder(sceneInternal);
         su.setUdfFunctionMap(udfAll);
-
-        FlowGraph flowGraph = new FlowGraph();
-        flowGraph.setTaskId(task.getId());
-        flowGraph.setScript(flowGraphScript);
-        this.saveOrUpdate(flowGraph);
         return su.build();
     }
 }

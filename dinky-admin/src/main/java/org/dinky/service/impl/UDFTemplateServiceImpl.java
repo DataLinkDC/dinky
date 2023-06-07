@@ -20,10 +20,10 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.exception.BusException;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.model.UDFTemplate;
 import org.dinky.mapper.UDFTemplateMapper;
-import org.dinky.model.UDFTemplate;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UDFTemplateService;
 
 import org.springframework.stereotype.Service;

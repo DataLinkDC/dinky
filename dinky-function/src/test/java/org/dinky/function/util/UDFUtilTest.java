@@ -22,10 +22,24 @@ package org.dinky.function.util;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.dinky.process.exception.DinkyException;
+
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.LineNumberReader;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
+import org.junit.Ignore;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.util.StrUtil;
 
 class UDFUtilTest {
 
@@ -53,5 +67,46 @@ class UDFUtilTest {
         assertFalse(
                 c.apply(
                         "create tempOrary system function  a  as  abc  using jar 'path', jar 'path/2'"));
+    }
+
+    @Test
+    @Ignore
+    @Disabled("this is local test!")
+    void pythonTest() throws ExecutionException {
+
+        String pythonPath = "python";
+        String udfFile = "C:\\project\\companyProjects\\dinky-quickstart-python\\udtf.py";
+        List<String> pythonUdfList = UDFUtil.getPythonUdfList(pythonPath, udfFile);
+    }
+
+    private List<String> execPyAndGetUdfNameList(String pyPath, String pyFile, String checkPyFile) {
+        Process process;
+        try {
+            // 运行Python3脚本的命令，换成自己的即可
+            String shell =
+                    StrUtil.join(
+                            " ",
+                            Arrays.asList(
+                                    Opt.ofBlankAble(pyPath).orElse("python3"),
+                                    pyFile,
+                                    checkPyFile));
+            process = Runtime.getRuntime().exec(shell);
+
+            if (process.waitFor() != 0) {
+                LineNumberReader lineNumberReader =
+                        new LineNumberReader(new InputStreamReader(process.getErrorStream()));
+                String errMsg = lineNumberReader.lines().collect(Collectors.joining("\n"));
+                throw new DinkyException(errMsg);
+            }
+
+            InputStreamReader ir = new InputStreamReader(process.getInputStream());
+            LineNumberReader input = new LineNumberReader(ir);
+            String result = input.readLine();
+            input.close();
+            ir.close();
+            return StrUtil.split(result, ",");
+        } catch (IOException | InterruptedException e) {
+            throw new DinkyException(e);
+        }
     }
 }

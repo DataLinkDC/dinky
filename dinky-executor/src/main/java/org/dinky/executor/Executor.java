@@ -22,11 +22,11 @@ package org.dinky.executor;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.CustomTableEnvironmentContext;
 import org.dinky.context.DinkyClassLoaderContextHolder;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
 import org.dinky.interceptor.FlinkInterceptor;
 import org.dinky.interceptor.FlinkInterceptorResult;
-import org.dinky.model.LineageRel;
 import org.dinky.parser.CustomParserImpl;
-import org.dinky.result.SqlExplainResult;
 
 import org.apache.flink.api.common.ExecutionConfig;
 import org.apache.flink.api.common.JobExecutionResult;
@@ -302,6 +302,14 @@ public abstract class Executor {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
+        //        if (MapUtil.isNotEmpty(setConfig)) {
+        //            setConfig.put(PythonOptions.PYTHON_FILES.key(), String.join(",",
+        // udfPyFilePath));
+        //            setConfig.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
+        //            Configuration configuration =
+        // Configuration.fromMap(executorSetting.getConfig());
+        //            environment.getConfig().configure(configuration, null);
+        //        }
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);

@@ -20,13 +20,7 @@
 import {getData} from "@/services/api";
 import {API_CONSTANTS} from "@/services/constants";
 
-export function showAlertInstance(dispatch: any) {
-  const res = getData(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL);
-  res.then((result) => {
-    result.datas && dispatch && dispatch({
-      type: "Alert/saveInstance",
-      payload: result.datas,
-    });
-  });
+export function showAlertInstance() {
+  return getData(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL);
 }
 

@@ -19,8 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
-import org.dinky.constant.UploadFileConstant;
+import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.result.Result;
 import org.dinky.service.FileUploadService;
 
 import org.apache.commons.lang3.StringUtils;

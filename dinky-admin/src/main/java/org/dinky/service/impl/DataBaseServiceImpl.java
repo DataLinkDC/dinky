@@ -20,17 +20,17 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.constant.CommonConstant;
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.DataBase;
+import org.dinky.data.model.QueryData;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.SqlGeneration;
+import org.dinky.data.model.Table;
 import org.dinky.mapper.DataBaseMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.Column;
-import org.dinky.model.DataBase;
-import org.dinky.model.QueryData;
-import org.dinky.model.Schema;
-import org.dinky.model.SqlGeneration;
-import org.dinky.model.Table;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.DataBaseService;
 
 import org.apache.commons.lang3.StringUtils;
@@ -59,7 +59,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public boolean checkHeartBeat(DataBase dataBase) {
+    public Boolean checkHeartBeat(DataBase dataBase) {
         boolean isHealthy = false;
         dataBase.setHeartbeatTime(LocalDateTime.now());
         try {
@@ -80,7 +80,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public boolean saveOrUpdateDataBase(DataBase dataBase) {
+    public Boolean saveOrUpdateDataBase(DataBase dataBase) {
         if (Asserts.isNull(dataBase)) {
             return false;
         }
@@ -107,6 +107,20 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
                 return updateById(dataBase);
             }
         }
+    }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean enable(Integer id) {
+        DataBase dataBase = getById(id);
+        if (Asserts.isNull(dataBase)) {
+            return false;
+        }
+        dataBase.setEnabled(!dataBase.getEnabled());
+        return updateById(dataBase);
     }
 
     @Override
@@ -219,7 +233,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     }
 
     @Override
-    public boolean copyDatabase(DataBase database) {
+    public Boolean copyDatabase(DataBase database) {
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
         database.setName(

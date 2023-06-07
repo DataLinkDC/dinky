@@ -19,7 +19,7 @@
 
 package com.zdpx.mapper;
 
-import org.dinky.db.mapper.SuperMapper;
+import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
 

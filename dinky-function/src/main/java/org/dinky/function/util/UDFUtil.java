@@ -22,19 +22,21 @@ package org.dinky.function.util;
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
 import org.dinky.context.DinkyClassLoaderContextHolder;
-import org.dinky.context.JarPathContextHolder;
+import org.dinky.context.FlinkUdfPathContextHolder;
 import org.dinky.function.FunctionFactory;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.compiler.CustomStringScalaCompiler;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.data.model.UDF;
 import org.dinky.function.pool.UdfCodePool;
-import org.dinky.gateway.GatewayType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.pool.ClassEntity;
 import org.dinky.pool.ClassPool;
 import org.dinky.process.exception.DinkyException;
 
+import org.apache.flink.client.python.PythonFunctionFactory;
 import org.apache.flink.configuration.Configuration;
+import org.apache.flink.python.PythonOptions;
 import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.catalog.FunctionLanguage;
 import org.apache.flink.table.functions.UserDefinedFunction;
@@ -59,6 +61,7 @@ import org.slf4j.LoggerFactory;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.ClassScanner;
 import cn.hutool.core.lang.Dict;
@@ -69,6 +72,7 @@ import cn.hutool.core.util.ClassLoaderUtil;
 import cn.hutool.core.util.ClassUtil;
 import cn.hutool.core.util.ReUtil;
 import cn.hutool.core.util.ReflectUtil;
+import cn.hutool.core.util.RuntimeUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.MD5;
 import cn.hutool.extra.template.TemplateConfig;
@@ -262,7 +266,7 @@ public class UDFUtil {
      * 得到udf版本和构建jar
      *
      * @param codeList 代码列表
-     * @return {@link java.lang.String}
+     * @return {@link String}
      */
     @Deprecated
     public static String getUdfFileAndBuildJar(List<UDF> codeList) {
@@ -337,7 +341,7 @@ public class UDFUtil {
             if (ClassLoaderUtil.isPresent(className)) {
                 // 获取已经加载在java的类，对应的包路径
                 try {
-                    JarPathContextHolder.addUdfPath(
+                    FlinkUdfPathContextHolder.addUdfPath(
                             FileUtil.file(
                                     DinkyClassLoaderContextHolder.get()
                                             .loadClass(className)
@@ -359,6 +363,15 @@ public class UDFUtil {
                         .code(udf.getCode())
                         .functionLanguage(udf.getFunctionLanguage())
                         .build();
+            }
+            String gitPackage = UdfCodePool.getGitPackage(className);
+
+            if (StrUtil.isNotBlank(gitPackage) && FileUtil.exist(gitPackage)) {
+                if (FileUtil.getSuffix(gitPackage).equals("jar")) {
+                    FlinkUdfPathContextHolder.addUdfPath(new File(gitPackage));
+                } else {
+                    FlinkUdfPathContextHolder.addPyUdfPath(new File(gitPackage));
+                }
             }
         }
         return null;
@@ -391,8 +404,58 @@ public class UDFUtil {
         } catch (ValidationException e) {
             throw e;
         } catch (Exception e) {
-
+            e.printStackTrace();
         }
         return classList;
+    }
+
+    public static List<String> getPythonUdfList(String pythonPath, String udfFile) {
+        File checkFile = new File(PathConstant.TMP_PATH, "getPyFuncList.py");
+        if (!checkFile.exists()) {
+            FileUtil.writeUtf8String(ResourceUtil.readUtf8Str("getPyFuncList.py"), checkFile);
+        }
+        List<String> udfNameList =
+                execPyAndGetUdfNameList(pythonPath, checkFile.getAbsolutePath(), udfFile);
+
+        List<String> successUdfList = new ArrayList<>();
+        if (CollUtil.isEmpty(udfNameList)) {
+            return new ArrayList<>();
+        }
+        for (String udfName : udfNameList) {
+            if (StrUtil.isBlank(udfName)) {
+                continue;
+            }
+            Configuration configuration = new Configuration();
+            configuration.set(PythonOptions.PYTHON_FILES, udfFile + ".zip");
+            configuration.set(PythonOptions.PYTHON_CLIENT_EXECUTABLE, pythonPath);
+            configuration.set(PythonOptions.PYTHON_EXECUTABLE, pythonPath);
+
+            System.out.println(udfName);
+            try {
+                PythonFunctionFactory.getPythonFunction(udfName, configuration, null);
+                successUdfList.add(udfName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return successUdfList;
+    }
+
+    private static List<String> execPyAndGetUdfNameList(
+            String pyPath, String pyFile, String checkPyFile) {
+        try {
+            // 运行Python3脚本的命令，换成自己的即可
+            String shell =
+                    StrUtil.join(
+                            " ",
+                            Arrays.asList(
+                                    Opt.ofBlankAble(pyPath).orElse("python3"),
+                                    pyFile,
+                                    checkPyFile));
+
+            return StrUtil.split(RuntimeUtil.execForStr(shell), ",");
+        } catch (Exception e) {
+            throw new DinkyException(e);
+        }
     }
 }

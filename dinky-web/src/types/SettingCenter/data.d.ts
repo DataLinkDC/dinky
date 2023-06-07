@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-
+// ============================  System Info ============================
 export type ProcessSteps = {
   stepStatus: string;
   info: string;
@@ -39,4 +39,19 @@ export type Process = {
   stepIndex: number;
   steps: ProcessSteps[];
   userId: number;
+}
+
+
+// ============================  System Settings ============================
+export type Settings = {
+  dolphinscheduler: BaseConfigProperties[];
+  env: BaseConfigProperties[];
+  flink: BaseConfigProperties[];
+  maven: BaseConfigProperties[];
+}
+export type BaseConfigProperties = {
+  key: string;
+  value: any;
+  note: string;
+  frontType: string;
 }

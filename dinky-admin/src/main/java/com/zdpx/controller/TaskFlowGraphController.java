@@ -19,8 +19,8 @@
 
 package com.zdpx.controller;
 
-import org.dinky.common.result.Result;
-import org.dinky.model.Task;
+import org.dinky.data.model.Task;
+import org.dinky.data.result.Result;
 
 import java.util.List;
 
@@ -54,6 +54,12 @@ public class TaskFlowGraphController {
         } else {
             return Result.failed("submit sql failed");
         }
+    }
+
+    @PutMapping("testGraphSql")
+    public Result<Void> testGraphStatement(@RequestBody String graph) {
+        String sql = taskFlowGraphService.testGraphStatement(graph);
+        return Result.succeed();
     }
 
     @GetMapping("/operatorConfigure")

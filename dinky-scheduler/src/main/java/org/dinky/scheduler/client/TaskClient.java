@@ -19,7 +19,7 @@
 
 package org.dinky.scheduler.client;
 
-import org.dinky.scheduler.config.DolphinSchedulerProperties;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.scheduler.constant.Constants;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.TaskDefinition;
@@ -39,7 +39,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import cn.hutool.core.lang.TypeReference;
@@ -52,8 +51,6 @@ import cn.hutool.json.JSONObject;
 public class TaskClient {
 
     private static final Logger logger = LoggerFactory.getLogger(TaskClient.class);
-
-    @Autowired private DolphinSchedulerProperties dolphinSchedulerProperties;
 
     /**
      * 查询任务定义
@@ -87,7 +84,7 @@ public class TaskClient {
         map.put("projectCode", projectCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/task-definition",
                         map);
 
@@ -98,7 +95,11 @@ public class TaskClient {
 
         String content =
                 HttpRequest.get(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(pageParams)
                         .timeout(5000)
                         .execute()
@@ -131,13 +132,17 @@ public class TaskClient {
         map.put("code", taskCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/task-definition/{code}",
                         map);
 
         String content =
                 HttpRequest.get(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .timeout(5000)
                         .execute()
                         .body();
@@ -162,7 +167,7 @@ public class TaskClient {
         map.put("projectCode", projectCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/task-definition/save-single",
                         map);
 
@@ -176,7 +181,11 @@ public class TaskClient {
 
         String content =
                 HttpRequest.post(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(pageParams)
                         .timeout(5000)
                         .execute()
@@ -201,7 +210,7 @@ public class TaskClient {
         map.put("code", taskCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/task-definition/{code}/with-upstream",
                         map);
 
@@ -211,7 +220,11 @@ public class TaskClient {
 
         String content =
                 HttpRequest.put(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(params)
                         .timeout(5000)
                         .execute()
@@ -232,14 +245,18 @@ public class TaskClient {
         map.put("projectCode", projectCode);
         String format =
                 StrUtil.format(
-                        dolphinSchedulerProperties.getUrl()
+                        SystemConfiguration.getInstances().getDolphinschedulerUrl().getValue()
                                 + "/projects/{projectCode}/task-definition/gen-task-codes",
                         map);
         Map<String, Object> params = new HashMap<>();
         params.put("genNum", genNum);
         String content =
                 HttpRequest.get(format)
-                        .header(Constants.TOKEN, dolphinSchedulerProperties.getToken())
+                        .header(
+                                Constants.TOKEN,
+                                SystemConfiguration.getInstances()
+                                        .getDolphinschedulerToken()
+                                        .getValue())
                         .form(params)
                         .timeout(5000)
                         .execute()

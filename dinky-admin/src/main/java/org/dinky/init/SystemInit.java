@@ -23,18 +23,22 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.Tenant;
+import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.FlinkJobTask;
-import org.dinky.model.JobInstance;
-import org.dinky.model.Tenant;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.scheduler.client.ProjectClient;
-import org.dinky.scheduler.config.DolphinSchedulerProperties;
 import org.dinky.scheduler.exception.SchedulerException;
 import org.dinky.scheduler.model.Project;
+import org.dinky.service.GitProjectService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
+import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
 
 import java.util.ArrayList;
@@ -48,6 +52,10 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
+import com.baomidou.mybatisplus.extension.activerecord.Model;
+
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -66,7 +74,7 @@ public class SystemInit implements ApplicationRunner {
     private final JobInstanceService jobInstanceService;
     private final TaskService taskService;
     private final TenantService tenantService;
-    private final DolphinSchedulerProperties dolphinSchedulerProperties;
+    private final GitProjectService gitProjectService;
     private static Project project;
 
     @Override
@@ -79,6 +87,7 @@ public class SystemInit implements ApplicationRunner {
         initTaskMonitor();
         initDolphinScheduler();
         registerUDF();
+        updateGitBuildState();
     }
 
     /** init task monitor */
@@ -94,16 +103,33 @@ public class SystemInit implements ApplicationRunner {
 
     /** init DolphinScheduler */
     private void initDolphinScheduler() {
-        if (dolphinSchedulerProperties.isEnabled()) {
-            try {
-                project = projectClient.getDinkyProject();
-                if (Asserts.isNull(project)) {
-                    project = projectClient.createDinkyProject();
-                }
-            } catch (Exception e) {
-                log.error("Error in DolphinScheduler: ", e);
-            }
-        }
+        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
+        systemConfiguration.setInitMethod(
+                c -> {
+                    if (c == systemConfiguration.getDolphinschedulerEnable()) {
+                        if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                            if (StrUtil.hasBlank(
+                                    systemConfiguration.getDolphinschedulerUrl().getValue(),
+                                    systemConfiguration.getDolphinschedulerProjectName().getValue(),
+                                    systemConfiguration.getDolphinschedulerToken().getValue())) {
+                                sysConfigService.updateSysConfigByKv(
+                                        systemConfiguration.getDolphinschedulerEnable().getKey(),
+                                        "false");
+                                throw new DinkyException(
+                                        "Before starting dolphinscheduler docking, please fill in the relevant configuration");
+                            }
+                            try {
+                                project = projectClient.getDinkyProject();
+                                if (Asserts.isNull(project)) {
+                                    project = projectClient.createDinkyProject();
+                                }
+                            } catch (Exception e) {
+                                log.error("Error in DolphinScheduler: ", e);
+                                throw new DinkyException(e);
+                            }
+                        }
+                    }
+                });
     }
 
     /**
@@ -125,6 +151,21 @@ public class SystemInit implements ApplicationRunner {
                 taskService.getAllUDF().stream()
                         .map(UDFUtils::taskToUDF)
                         .collect(Collectors.toList()));
+        UdfCodePool.updateGitPool(gitProjectService.getGitPool());
         TenantContextHolder.set(null);
+    }
+
+    public void updateGitBuildState() {
+        String path = PathConstant.TMP_PATH + "/build.list";
+        if (FileUtil.exist(path)) {
+            List<Integer> runningList =
+                    JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
+            gitProjectService.list().stream()
+                    .filter(x -> x.getBuildState().equals(1))
+                    .filter(x -> runningList.contains(x.getId()))
+                    .peek(x -> x.setBuildState(2))
+                    .forEach(Model::updateById);
+            FileUtil.del(path);
+        }
     }
 }

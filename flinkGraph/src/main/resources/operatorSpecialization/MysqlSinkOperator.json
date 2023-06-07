@@ -1,0 +1,180 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "http://example.com/example.json",
+    "type": "array",
+    "default": [],
+    "title": "Root Schema",
+    "items": {
+        "type": "object",
+        "default": {},
+        "title": "A Schema",
+        "required": [
+            "tableName",
+            "connector",
+            "columns"
+        ],
+        "properties": {
+            "tableName": {
+                "type": "string",
+                "default": "",
+                "title": "The tableName Schema",
+                "examples": [
+                    "TS"
+                ]
+            },
+            "connector": {
+                "type": "string",
+                "default": "",
+                "title": "The connector Schema",
+                "examples": [
+                    "task"
+                ]
+            },
+            "columns": {
+                "type": "array",
+                "default": [],
+                "title": "The columns Schema",
+                "items": {
+                    "type": "object",
+                    "title": "A Schema",
+                    "required": [
+                        "name",
+                        "type"
+                    ],
+                    "properties": {
+                        "name": {
+                            "type": "string",
+                            "title": "The name Schema",
+                            "examples": [
+                                "typ",
+                                "taskId",
+                                "taskStatus",
+                                "dt",
+                                "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                                "PRIMARY KEY(taskId) NOT ENFORCED "
+                            ]
+                        },
+                        "type": {
+                            "type": "string",
+                            "title": "The type Schema",
+                            "examples": [
+                                "STRING",
+                                "INT",
+                                "TIMESTAMP(3)",
+                                ""
+                            ]
+                        }
+                    },
+                    "examples": [{
+                        "name": "typ",
+                        "type": "STRING"
+                    },
+                    {
+                        "name": "taskId",
+                        "type": "STRING"
+                    },
+                    {
+                        "name": "taskStatus",
+                        "type": "INT"
+                    },
+                    {
+                        "name": "dt",
+                        "type": "TIMESTAMP(3)"
+                    },
+                    {
+                        "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                        "type": ""
+                    },
+                    {
+                        "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                        "type": ""
+                    }]
+                },
+                "examples": [
+                    [{
+                        "name": "typ",
+                        "type": "STRING"
+                    },
+                    {
+                        "name": "taskId",
+                        "type": "STRING"
+                    },
+                    {
+                        "name": "taskStatus",
+                        "type": "INT"
+                    },
+                    {
+                        "name": "dt",
+                        "type": "TIMESTAMP(3)"
+                    },
+                    {
+                        "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                        "type": ""
+                    },
+                    {
+                        "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                        "type": ""
+                    }]
+                ]
+            }
+        },
+        "examples": [{
+            "tableName": "TS",
+            "connector": "task",
+            "columns": [{
+                "name": "typ",
+                "type": "STRING"
+            },
+            {
+                "name": "taskId",
+                "type": "STRING"
+            },
+            {
+                "name": "taskStatus",
+                "type": "INT"
+            },
+            {
+                "name": "dt",
+                "type": "TIMESTAMP(3)"
+            },
+            {
+                "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                "type": ""
+            },
+            {
+                "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                "type": ""
+            }]
+        }]
+    },
+    "examples": [
+        [{
+            "tableName": "TS",
+            "connector": "task",
+            "columns": [{
+                "name": "typ",
+                "type": "STRING"
+            },
+            {
+                "name": "taskId",
+                "type": "STRING"
+            },
+            {
+                "name": "taskStatus",
+                "type": "INT"
+            },
+            {
+                "name": "dt",
+                "type": "TIMESTAMP(3)"
+            },
+            {
+                "name": "WATERMARK FOR dt AS dt - INTERVAL '15' SECOND",
+                "type": ""
+            },
+            {
+                "name": "PRIMARY KEY(taskId) NOT ENFORCED ",
+                "type": ""
+            }]
+        }]
+    ]
+}

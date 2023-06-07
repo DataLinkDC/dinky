@@ -31,13 +31,18 @@ fi
 
 tips() {
   echo ""
-  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startWithJmx|stop|restart|status].   For example: sh auto.sh start  "
+  echo "WARNING!!!......Tips, please use command: sh auto.sh [start|startOnPending|startWithJmx|stop|restart|status].   For example: sh auto.sh start  "
   echo ""
   exit 1
 }
 
+updatePid() {
+  pid=$(ps -ef | grep [d]inky  | awk '{print $2}' | head -1)
+  echo $pid >"${PID_PATH}"/${PID_FILE}
+}
+
 start() {
-  pid=$(cat "${PID_PATH}"/${PID_FILE})
+  updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky  &
     echo $! >"${PID_PATH}"/${PID_FILE}
@@ -48,8 +53,19 @@ start() {
   fi
 }
 
+startOnPending() {
+  updatePid
+  if [ -z "$pid" ]; then
+    java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none -cp "${CLASS_PATH}" org.dinky.Dinky
+    echo "FLINK VERSION : $FLINK_VERSION"
+    echo "........................................Start Dinky Successfully........................................"
+  else
+    echo "Dinky pid $pid is in ${PID_PATH}/${PID_FILE}, Please stop first !!!"
+  fi
+}
+
 startWithJmx() {
-  pid=$(cat "${PID_PATH}"/${PID_FILE})
+  updatePid
   if [ -z "$pid" ]; then
     nohup java -Ddruid.mysql.usePingMethod=false -Xms512M -Xmx2048M -XX:PermSize=512M -XX:MaxPermSize=1024M -XX:+HeapDumpOnOutOfMemoryError -Xverify:none "${JMX}" -cp "${CLASS_PATH}" org.dinky.Dinky &
     echo $! >"${PID_PATH}"/${PID_FILE}
@@ -61,6 +77,7 @@ startWithJmx() {
 }
 
 stop() {
+  updatePid
   pid=$(cat "${PID_PATH}"/${PID_FILE})
   if [ -z $pid ]; then
     echo "Dinky pid is not exist in ${PID_PATH}/${PID_FILE}"
@@ -73,7 +90,7 @@ stop() {
 }
 
 status() {
-  pid=$(cat "${PID_PATH}"/${PID_FILE})
+  updatePid
   if [ -z $pid ]; then
     echo ""
     echo "Service ${JAR_NAME} is not running!"
@@ -96,6 +113,9 @@ restart() {
 case "$1" in
 "start")
   start
+  ;;
+"startOnPending")
+  startOnPending
   ;;
 "startWithJmx")
   startWithJmx

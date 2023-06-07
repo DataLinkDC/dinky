@@ -19,8 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
-import org.dinky.model.UploadFileRecord;
+import org.dinky.data.model.UploadFileRecord;
+import org.dinky.data.result.Result;
 import org.dinky.service.UploadFileRecordService;
 
 import java.util.List;

@@ -19,10 +19,11 @@
 
 package org.dinky.aop;
 
-import org.dinky.common.result.Result;
-import org.dinky.exception.BusException;
-import org.dinky.model.CodeEnum;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.data.enums.CodeEnum;
+import org.dinky.data.enums.Status;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.result.Result;
+import org.dinky.utils.I18nMsgUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -61,7 +62,7 @@ public class WebExceptionHandler {
     @ExceptionHandler
     public Result<Void> busException(BusException e) {
         if (StrUtil.isNotEmpty(e.getMsg())) {
-            return Result.failed(MessageResolverUtils.getMessages(e.getCode(), e.getErrorArgs()));
+            return Result.failed(I18nMsgUtils.getMsg(e.getCode(), e.getErrorArgs()));
         }
         return Result.failed(e.getMsg());
     }
@@ -72,7 +73,7 @@ public class WebExceptionHandler {
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
         response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.notLogin(MessageResolverUtils.getMessage("login.not.login"));
+        return Result.failed(Status.USER_NOT_LOGIN);
     }
 
     /**
@@ -103,7 +104,7 @@ public class WebExceptionHandler {
                                 fieldError.getField(), fieldError.getRejectedValue()));
             }
         }
-        return Result.failed(MessageResolverUtils.getMessage("request.params.error"));
+        return Result.failed(I18nMsgUtils.getMsg("request.params.error"));
     }
 
     @ExceptionHandler

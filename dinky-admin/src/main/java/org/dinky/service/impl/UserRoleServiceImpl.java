@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.UserRole;
 import org.dinky.mapper.UserRoleMapper;
-import org.dinky.model.Role;
-import org.dinky.model.UserRole;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UserRoleService;
 
 import java.util.List;

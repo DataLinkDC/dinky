@@ -19,8 +19,15 @@
 
 package com.zdpx.coder;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -34,6 +41,8 @@ import com.zdpx.coder.operator.FieldFunction;
  * @author licho
  */
 public final class Specifications {
+    private static final Logger logger = LoggerFactory.getLogger(Specifications.class);
+
     public static final String PACKAGE_NAME = Specifications.class.getPackage().getName();
     public static final String ENV = "env";
     public static final String TABLE_ENV = "tableEnv";
@@ -101,5 +110,32 @@ public final class Specifications {
         return ffs.stream()
                 .map(t -> new Column(t.getOutName(), t.getOutType()))
                 .collect(Collectors.toList());
+    }
+
+    public static String readSpecializationFileByClassName(String filePathJson) {
+        String path =
+                Specifications.class
+                        .getClassLoader()
+                        .getResource("operatorSpecialization")
+                        .getPath();
+        return readSpecializationFile(path + "/" + filePathJson + ".json");
+    }
+
+    public static String readSpecializationFile(String filePath) {
+        File file = new File(filePath);
+        if (!file.exists()) {
+            return "";
+        }
+
+        StringBuilder contentBuilder = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            String sCurrentLine;
+            while ((sCurrentLine = br.readLine()) != null) {
+                contentBuilder.append(sCurrentLine).append("\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return contentBuilder.toString();
     }
 }

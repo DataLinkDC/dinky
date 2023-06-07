@@ -19,12 +19,15 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.dto.GitProjectDTO;
-import org.dinky.dto.JarClassesDTO;
-import org.dinky.dto.TreeNodeDTO;
+import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.dto.GitProjectDTO;
+import org.dinky.data.dto.JarClassesDTO;
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.GitProject;
+import org.dinky.data.params.GitProjectSortJarParams;
+import org.dinky.function.pool.UdfCodePool;
 import org.dinky.mapper.GitProjectMapper;
-import org.dinky.model.GitProject;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
 import org.dinky.utils.GitProjectStepSseFactory;
@@ -34,7 +37,9 @@ import org.dinky.utils.TreeUtil;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +48,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.json.JSONUtil;
 
 /**
@@ -66,9 +73,79 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
         }
 
         GitProject gitProject = BeanUtil.toBean(gitProjectDTO, GitProject.class);
+        if (gitProject.getOrderLine() == null) {
+            Integer maxOrderLine =
+                    Opt.ofNullable(
+                                    baseMapper
+                                            .selectOne(
+                                                    new LambdaQueryWrapper<GitProject>()
+                                                            .orderByAsc(GitProject::getOrderLine)
+                                                            .last(" limit 1"))
+                                            .getOrderLine())
+                            .orElse(999);
+            gitProject.setOrderLine(maxOrderLine + 1);
+        }
         BeanUtil.copyProperties(gitProjectDTO, gitProject);
 
         gitProject.insertOrUpdate();
+
+        ThreadUtil.execAsync(() -> UdfCodePool.updateGitPool(getGitPool()));
+    }
+
+    /** @param gitProjectDTOList */
+    @Override
+    public void dragendSortProject(Map gitProjectDTOList) {
+        List<GitProject> gitProjectList =
+                BeanUtil.copyToList(
+                        ((List<?>) gitProjectDTOList.get("sortList")), GitProject.class);
+        for (GitProject gitProject : gitProjectList) {
+            updateById(gitProject);
+        }
+    }
+
+    /** @param gitProjectSortJarParams */
+    @Override
+    public Boolean dragendSortJar(GitProjectSortJarParams gitProjectSortJarParams) {
+        GitProject gitProject = getById(gitProjectSortJarParams.getProjectId());
+        if (gitProject == null) {
+            return false;
+        } else {
+            String jarClasses = JSONUtil.toJsonStr(gitProjectSortJarParams.getJars());
+            gitProject.setUdfClassMapList(jarClasses);
+            return updateById(gitProject);
+        }
+    }
+
+    @Override
+    public Map<String, String> getGitPool() {
+        List<GitProject> list = list();
+        Map<String, String> gitPool = new LinkedHashMap<>();
+        Opt.ofEmptyAble(list)
+                .ifPresent(
+                        l -> {
+                            for (GitProject gitProject : list) {
+                                List<GitAnalysisJarDTO> gitAnalysisJarList =
+                                        JSONUtil.toList(
+                                                gitProject.getUdfClassMapList(),
+                                                GitAnalysisJarDTO.class);
+                                for (GitAnalysisJarDTO analysisJarDTO : gitAnalysisJarList) {
+                                    analysisJarDTO
+                                            .getClassList()
+                                            .forEach(
+                                                    udf -> {
+                                                        gitPool.computeIfAbsent(
+                                                                udf,
+                                                                k -> analysisJarDTO.getJarPath());
+                                                    });
+                                }
+                            }
+                        });
+        return gitPool;
+    }
+
+    @Override
+    public List<GitProject> list() {
+        return list(new LambdaQueryWrapper<GitProject>().orderByAsc(GitProject::getOrderLine));
     }
 
     @Override
@@ -87,7 +164,8 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
     @Override
     public List<TreeNodeDTO> getProjectCode(Integer id) {
         GitProject gitProject = getById(id);
-        File projectDir = GitRepository.getProjectDir(gitProject.getName());
+        File projectDir =
+                new File(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch());
         return TreeUtil.treeNodeData(projectDir, true);
     }
 

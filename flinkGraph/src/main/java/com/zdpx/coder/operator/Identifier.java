@@ -31,7 +31,7 @@ public interface Identifier {
 
     default String getGroup() {
         String name = getClass().getName();
-        return name.replace("com.zdpx.coder.operator", "");
+        return name.replace("com.zdpx.coder.operator.", "");
     }
 
     String getSpecification();

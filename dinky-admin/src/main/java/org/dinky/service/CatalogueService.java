@@ -19,9 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.dto.CatalogueTaskDTO;
-import org.dinky.model.Catalogue;
+import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.model.Catalogue;
+import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 

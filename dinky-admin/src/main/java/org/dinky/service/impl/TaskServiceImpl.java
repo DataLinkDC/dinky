@@ -26,29 +26,53 @@ import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.assertion.Assert;
 import org.dinky.assertion.Asserts;
-import org.dinky.assertion.Tips;
-import org.dinky.common.result.Result;
 import org.dinky.config.Dialect;
 import org.dinky.config.Docker;
-import org.dinky.constant.FlinkRestResultConstant;
-import org.dinky.constant.NetConstant;
 import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.dto.SqlDTO;
-import org.dinky.dto.TaskRollbackVersionDTO;
-import org.dinky.dto.TaskVersionConfigureDTO;
-import org.dinky.exception.BusException;
+import org.dinky.data.constant.FlinkRestResultConstant;
+import org.dinky.data.constant.NetConstant;
+import org.dinky.data.dto.SqlDTO;
+import org.dinky.data.dto.TaskRollbackVersionDTO;
+import org.dinky.data.dto.TaskVersionConfigureDTO;
+import org.dinky.data.enums.JobLifeCycle;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.Status;
+import org.dinky.data.enums.TaskOperatingSavepointSelect;
+import org.dinky.data.enums.TaskOperatingStatus;
+import org.dinky.data.exception.BusException;
+import org.dinky.data.model.AlertGroup;
+import org.dinky.data.model.AlertHistory;
+import org.dinky.data.model.AlertInstance;
+import org.dinky.data.model.Catalogue;
+import org.dinky.data.model.Cluster;
+import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.data.model.DataBase;
+import org.dinky.data.model.History;
+import org.dinky.data.model.Jar;
+import org.dinky.data.model.JobHistory;
+import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.Savepoints;
+import org.dinky.data.model.Statement;
+import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.Task;
+import org.dinky.data.model.TaskVersion;
+import org.dinky.data.model.UDFTemplate;
+import org.dinky.data.result.Result;
+import org.dinky.data.result.SqlExplainResult;
+import org.dinky.data.result.TaskOperatingResult;
 import org.dinky.function.compiler.CustomStringJavaCompiler;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.function.util.UDFUtil;
 import org.dinky.gateway.Gateway;
-import org.dinky.gateway.GatewayType;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointStrategy;
-import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.FlinkJobTask;
@@ -60,40 +84,16 @@ import org.dinky.job.JobResult;
 import org.dinky.mapper.TaskMapper;
 import org.dinky.metadata.driver.Driver;
 import org.dinky.metadata.result.JdbcSelectResult;
-import org.dinky.model.AlertGroup;
-import org.dinky.model.AlertHistory;
-import org.dinky.model.AlertInstance;
-import org.dinky.model.Catalogue;
-import org.dinky.model.Cluster;
-import org.dinky.model.ClusterConfiguration;
-import org.dinky.model.DataBase;
-import org.dinky.model.History;
-import org.dinky.model.Jar;
-import org.dinky.model.JobHistory;
-import org.dinky.model.JobInfoDetail;
-import org.dinky.model.JobInstance;
-import org.dinky.model.JobLifeCycle;
-import org.dinky.model.JobStatus;
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.model.Savepoints;
-import org.dinky.model.Statement;
-import org.dinky.model.SystemConfiguration;
-import org.dinky.model.Task;
-import org.dinky.model.TaskOperatingSavepointSelect;
-import org.dinky.model.TaskOperatingStatus;
-import org.dinky.model.TaskVersion;
-import org.dinky.model.UDFTemplate;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.context.ProcessContextHolder;
+import org.dinky.process.enums.ProcessType;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
-import org.dinky.process.model.ProcessType;
-import org.dinky.result.SqlExplainResult;
-import org.dinky.result.TaskOperatingResult;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.DataBaseService;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.service.HistoryService;
@@ -166,7 +166,7 @@ import lombok.RequiredArgsConstructor;
 public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implements TaskService {
 
     private final StatementService statementService;
-    private final ClusterService clusterService;
+    private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final SavepointsService savepointsService;
     private final JarService jarService;
@@ -218,7 +218,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTask(Integer id) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
             return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
@@ -287,7 +287,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult submitTaskToOnline(Task dtoTask, Integer id) {
         final Task task = dtoTask == null ? this.getTaskInfoById(id) : dtoTask;
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         task.setStep(JobLifeCycle.ONLINE.getValue());
 
         if (Dialect.notFlinkSql(task.getDialect())) {
@@ -305,7 +305,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public JobResult restartTask(Integer id, String savePointPath) {
         Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
@@ -412,7 +412,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         task.parseConfig();
         if (task.getClusterId() != null) {
-            Cluster cluster = clusterService.getById(task.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (cluster != null) {
                 task.setClusterName(cluster.getAlias());
             }
@@ -435,7 +435,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public void initTenantByTaskId(Integer id) {
         Integer tenantId = baseMapper.getTenantByTaskId(id);
-        Asserts.checkNull(tenantId, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(tenantId, Status.TASK_NOT_EXIST.getMsg());
         TenantContextHolder.set(tenantId);
     }
 
@@ -616,7 +616,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public String exportSql(Integer id) {
         Task task = getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (Dialect.notFlinkSql(task.getDialect())) {
             return task.getStatement();
         }
@@ -808,7 +808,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Result<JobResult> reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
-        Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
+        Asserts.checkNull(task, Status.TASK_NOT_EXIST.getMsg());
         if (checkJobInstanceId(task)) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
@@ -884,7 +884,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return true;
         }
 
-        Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+        Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
         Asserts.checkNotNull(cluster, "该集群不存在");
 
         Task task = this.getTaskInfoById(jobInstance.getTaskId());
@@ -967,7 +967,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         config.setJarTask(isJarTask);
         if (!JobManager.useGateway(config.getType())) {
             config.setAddress(
-                    clusterService.buildEnvironmentAddress(
+                    clusterInstanceService.buildEnvironmentAddress(
                             config.isUseRemote(), task.getClusterId()));
         } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
                 // support custom K8s app submit, rather than clusterConfiguration
@@ -1066,7 +1066,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Asserts.checkNull(jobInstance, "the task instance not exist.");
             TenantContextHolder.set(jobInstance.getTenantId());
             jobInfoDetail.setInstance(jobInstance);
-            Cluster cluster = clusterService.getById(jobInstance.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(jobInstance.getClusterId());
             jobInfoDetail.setCluster(cluster);
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
@@ -1184,7 +1184,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String exportJsonByTaskId(Integer taskId) {
         Task task = getTaskInfoById(taskId);
         if (Asserts.isNotNull(task.getClusterId())) {
-            Cluster cluster = clusterService.getById(task.getClusterId());
+            Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (Asserts.isNotNull(cluster)) {
                 task.setClusterName(cluster.getName());
             }
@@ -1277,7 +1277,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task task = mapper.treeToValue(json, Task.class);
             if (Asserts.isNotNull(task.getClusterName())) {
                 Cluster cluster =
-                        clusterService.getOne(
+                        clusterInstanceService.getOne(
                                 new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
                 if (Asserts.isNotNull(cluster)) {
                     task.setClusterId(cluster.getId());

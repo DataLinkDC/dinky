@@ -19,7 +19,7 @@
 
 package org.dinky.job;
 
-import org.dinky.exception.JobException;
+import org.dinky.data.exception.JobException;
 
 import java.util.ServiceLoader;
 

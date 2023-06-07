@@ -107,7 +107,7 @@ const RoleProTable: React.FC = () => {
             {
                 title: l('role.belongTenant'),
                 hideInSearch: true,
-                render: (_, record) => {
+                render: (_:any, record: UserBaseInfo.Role) => {
                     return <Tag color="blue">{record.tenant.tenantCode}</Tag>
                 }
             },
@@ -135,7 +135,7 @@ const RoleProTable: React.FC = () => {
                 title: l('global.table.operate'),
                 valueType: 'option',
                 width: "10vh",
-                render: (_, record) => [
+                render: (_:any, record: UserBaseInfo.Role) => [
                     <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                     <>{record.id !== 1 &&
                         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}

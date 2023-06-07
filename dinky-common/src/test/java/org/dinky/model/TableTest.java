@@ -17,10 +17,12 @@
  *
  */
 
-package org.dinky.model;
+package org.dinky.data.model;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
+
+import org.dinky.data.enums.ColumnType;
 
 import java.util.Arrays;
 import java.util.List;

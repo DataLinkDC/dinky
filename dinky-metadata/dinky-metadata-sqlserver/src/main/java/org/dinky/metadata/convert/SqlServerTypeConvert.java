@@ -20,8 +20,8 @@
 package org.dinky.metadata.convert;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.model.Column;
-import org.dinky.model.ColumnType;
+import org.dinky.data.enums.ColumnType;
+import org.dinky.data.model.Column;
 
 public class SqlServerTypeConvert implements ITypeConvert {
 

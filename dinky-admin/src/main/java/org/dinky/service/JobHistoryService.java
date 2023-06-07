@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.JobHistory;
+import org.dinky.data.model.JobHistory;
+import org.dinky.mybatis.service.ISuperService;
 
 /**
  * JobHistoryService

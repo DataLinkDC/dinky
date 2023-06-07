@@ -20,13 +20,14 @@
 package org.dinky.gateway;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.config.ActionType;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.SavePointResult;
-import org.dinky.model.JobStatus;
 import org.dinky.utils.FlinkUtil;
 import org.dinky.utils.LogUtil;
 

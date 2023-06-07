@@ -17,34 +17,127 @@
  *
  */
 
+import {ActionType, DragSortTable, ProColumns} from "@ant-design/pro-table";
+import {List, Tag} from "antd";
+import React, {useEffect, useRef, useState} from "react";
+import {BuildJarList} from "@/types/RegCenter/data";
+import {l} from "@/utils/intl";
+import {ProList} from "@ant-design/pro-components";
+import {handleOption} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
 
-import React from "react";
-import {Empty, List} from "antd";
-
+/**
+ * props
+ */
 type JarListProps = {
-  jarList: string[];
+  projectId: number;
+  jarAndClassesList: Partial<BuildJarList[]>;
 }
+
 
 const JarList: React.FC<JarListProps> = (props) => {
 
-  const {jarList} = props;
+  /**
+   * state
+   */
+  const {jarAndClassesList,projectId} = props;
+  const actionRef = useRef<ActionType>();
+  const [loading,setLoading] = useState(false)
+  const [classes ,setClasses] = useState<Partial<BuildJarList[]>>()
 
+  /**
+   * init
+   */
+  useEffect(()=>{
+    setClasses(jarAndClassesList)
+  },[jarAndClassesList])
 
-  const buildExpandableList = () => {
-    return (
-      // if enable show classes then show classes, else show empty
-      jarList.length > 0 ?
-        <>
-          {jarList.map((item, index) => {
-            return <><List.Item key={index}>{item}</List.Item></>;
-          })}
-        </> :
-        <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
-    );
+  /**
+   * columns
+   * @type {({copyable: boolean, dataIndex: string, tooltip: any, title: any, render: (dom: any, record: BuildJarList) => JSX.Element} | {dataIndex: string, valueType: string} | {copyable: boolean, dataIndex: string, title: any})[]}
+   */
+  const columns: ProColumns<BuildJarList>[] = [
+    {
+      title: l("rc.gp.level"),
+      dataIndex: "orderLine",
+      tooltip: l("rc.gp.ucl.orderLine.tooltip"),
+      copyable: true,
+      render: (dom:any, record:BuildJarList) => {
+        return <Tag style={{marginLeft: 10}}  color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
+      }
+    },
+    {
+      dataIndex: "index",
+      valueType: "indexBorder",
+    },
+    {
+      title: l("rc.gp.ucl.jarPath"),
+      dataIndex: "jarPath",
+      copyable: true,
+    }
+  ];
+
+  /**
+   * render sublist of udf
+   * @param {BuildJarList} record
+   * @returns {JSX.Element}
+   */
+  const renderUdf = (record: BuildJarList) => {
+    return <>
+      <ProList
+          dataSource={record.classList as any[]}
+          rowKey="index"
+          size={"small"}
+          pagination={{
+            pageSize: 5,
+            hideOnSinglePage: true,
+            showSizeChanger: false,
+          }}
+          renderItem={(item,index) => {
+            return <List.Item className={'child-list'} key={index}>{item}</List.Item>;
+          }}
+      />
+    </>;
+  }
+
+  /**
+   * drag sort call
+   * @param {BuildJarList[]} newDataSource
+   * @returns {Promise<void>}
+   */
+  const handleDragSortEnd = async (newDataSource: BuildJarList[]) => {
+    setLoading(true)
+    const updatedItems = newDataSource.map((item:BuildJarList, index:number) => ({...item, orderLine: index + 1,}));
+    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR,l('rc.gp.ucl.jarOrder'),{projectId, jars: updatedItems})
+    setClasses(updatedItems)
+    setLoading(false)
+    actionRef.current?.reload();
   };
 
+  /**
+   * render
+   */
   return <>
-    <List split className={"child-list"}>{buildExpandableList()}</List>;
+    <DragSortTable<BuildJarList>
+      style={{ overflowY: "auto", msOverflowY: "hidden",marginLeft: "0.5vw" }}
+      columns={columns}
+      toolBarRender={false}
+      sortDirections={['ascend']}
+      showHeader={false}
+      actionRef={actionRef}
+      loading={loading}
+      dataSource={classes as BuildJarList[]}
+      search={false}
+      rowKey="orderLine"
+      revalidateOnFocus
+      pagination={{
+        defaultPageSize: 5,
+        hideOnSinglePage: true,
+      }}
+      expandable={{expandRowByClick: false, expandedRowRender: record => renderUdf(record)}}
+      dragSortKey={"orderLine"}
+      onDragSortEnd={handleDragSortEnd}
+    />
   </>;
 };
 

@@ -20,6 +20,8 @@
 package org.dinky.process.model;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.process.enums.ProcessStatus;
+import org.dinky.process.enums.ProcessType;
 import org.dinky.process.pool.ConsolePool;
 
 import java.time.LocalDateTime;

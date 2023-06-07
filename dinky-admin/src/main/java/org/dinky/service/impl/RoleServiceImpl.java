@@ -20,23 +20,23 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.Namespace;
+import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleNamespace;
+import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.model.UserRole;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.RoleMapper;
-import org.dinky.model.Namespace;
-import org.dinky.model.Role;
-import org.dinky.model.RoleNamespace;
-import org.dinky.model.RoleSelectPermissions;
-import org.dinky.model.Tenant;
-import org.dinky.model.UserRole;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleNamespaceService;
 import org.dinky.service.RoleSelectPermissionsService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
-import org.dinky.utils.MessageResolverUtils;
+import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,16 +116,14 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                     .eq(Role::getRoleCode, role.getRoleCode()));
             if (Asserts.isNotNull(roleCode)) {
                 return Result.failed(
-                        String.format(
-                                MessageResolverUtils.getMessage("role.exists"),
-                                role.getRoleCode()));
+                        String.format(I18nMsgUtils.getMsg("role.exists"), role.getRoleCode()));
             }
         }
         Boolean roleSaveOrUpdate = saveOrUpdate(role);
         if (roleSaveOrUpdate) {
-            return Result.succeed(MessageResolverUtils.getMessage("save.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("save.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
         }
     }
 
@@ -139,7 +137,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                         .selectCount(
                                 new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
         if (selectUserRoleCnt > 0) {
-            return Result.failed(MessageResolverUtils.getMessage("role.binding.user"));
+            return Result.failed(I18nMsgUtils.getMsg("role.binding.user"));
         }
         Long selectedRowPermissionsCount =
                 roleSelectPermissionsService
@@ -148,14 +146,14 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
                                 new LambdaQueryWrapper<RoleSelectPermissions>()
                                         .eq(RoleSelectPermissions::getRoleId, id));
         if (selectedRowPermissionsCount > 0) {
-            return Result.failed(MessageResolverUtils.getMessage("role.binding.rowPermissions"));
+            return Result.failed(I18nMsgUtils.getMsg("role.binding.rowPermissions"));
         }
 
         Boolean removeById = roleService.removeById(role);
         if (removeById) {
-            return Result.succeed(MessageResolverUtils.getMessage("delete.success"));
+            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
         } else {
-            return Result.failed(MessageResolverUtils.getMessage("delete.failed"));
+            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
         }
     }
 

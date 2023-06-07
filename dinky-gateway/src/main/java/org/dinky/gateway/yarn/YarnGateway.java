@@ -20,16 +20,17 @@
 package org.dinky.gateway.yarn;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.context.FlinkUdfPathContextHolder;
+import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
-import org.dinky.gateway.config.ActionType;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.config.SavePointType;
+import org.dinky.gateway.enums.ActionType;
+import org.dinky.gateway.enums.SavePointType;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
-import org.dinky.model.JobStatus;
 
 import org.apache.flink.client.deployment.ClusterRetrieveException;
 import org.apache.flink.client.program.ClusterClient;
@@ -57,6 +58,7 @@ import org.apache.hadoop.yarn.exceptions.YarnException;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.Executors;
@@ -293,6 +295,8 @@ public abstract class YarnGateway extends AbstractGateway {
                     Arrays.stream(config.getJarPaths())
                             .map(FileUtil::file)
                             .collect(Collectors.toList()));
+            yarnClusterDescriptor.addShipFiles(
+                    new ArrayList<>(FlinkUdfPathContextHolder.getPyUdfFile()));
         }
         return yarnClusterDescriptor;
     }

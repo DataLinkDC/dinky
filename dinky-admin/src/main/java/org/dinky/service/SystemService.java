@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.dto.TreeNodeDTO;
-import org.dinky.model.FileNode;
+import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.model.FileNode;
 
 import java.util.List;
 

@@ -19,6 +19,9 @@
 
 package org.dinky.sse;
 
+import org.dinky.function.pool.UdfCodePool;
+import org.dinky.service.GitProjectService;
+
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -26,6 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.lang.Dict;
+import cn.hutool.extra.spring.SpringUtil;
 
 /**
  * @author ZackYoung
@@ -44,6 +48,9 @@ public class DoneStepSse extends StepSse {
 
     @Override
     public void exec() {
-        addFileMsgLog("finished");
+        addFileMsgCusLog("Updating UDF pool");
+        GitProjectService gitProjectService = SpringUtil.getBean(GitProjectService.class);
+        UdfCodePool.updateGitPool(gitProjectService.getGitPool());
+        addFileMsgCusLog("The UDF pool has been updated");
     }
 }

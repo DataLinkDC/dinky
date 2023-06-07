@@ -17,6 +17,7 @@
 
 
 import {l} from "@/utils/intl";
+import {ModalFormProps} from "@ant-design/pro-form/es/layouts/ModalForm";
 
 /**
  * the  interface api constants
@@ -78,6 +79,35 @@ export const API_CONSTANTS = {
 
 
   // --- registries  center ---
+
+  // ----cluster instance
+    // cluster instance list
+  CLUSTER_INSTANCE: "/api/cluster",
+  CLUSTER_INSTANCE_ENABLE: "/api/cluster/enable",
+  CLUSTER_INSTANCE_DELETE: "/api/cluster/delete",
+  CLUSTER_INSTANCE_HEARTBEATS: "/api/cluster/heartbeats",
+  CLUSTER_INSTANCE_RECYCLE: "/api/cluster/recycle",
+
+
+  // datasource registries list
+  DATASOURCE: "/api/database",
+  // datasource registries delete
+  DATASOURCE_DELETE: "/api/database/delete",
+  // datasource registries enable or disable
+  DATASOURCE_ENABLE: "/api/database/enable",
+  // datasource registries test
+  DATASOURCE_TEST: "/api/database/testConnect",
+  // datasource  checkHeartBeat By Id
+  DATASOURCE_CHECK_HEARTBEAT_BY_ID: "/api/database/checkHeartBeatByDataSourceId",
+  // copy datasource
+  DATASOURCE_COPY: "/api/database/copyDatabase",
+  // get schema by datasource id
+  DATASOURCE_GET_SCHEMA_TABLES: "/api/database/getSchemasAndTables",
+  DATASOURCE_GET_COLUMNS_BY_TABLE: "/api/database/listColumns",
+  DATASOURCE_GET_GEN_SQL: "/api/database/getSqlGeneration",
+  DATASOURCE_QUERY_DATA: "/api/database/queryData",
+
+
   // document list
   DOCUMENT: "/api/document",
   // delete document by id
@@ -107,6 +137,10 @@ export const API_CONSTANTS = {
   GIT_PROJECT: "/api/git/getProjectList",
   // ---- saveOrUpdate ----
   GIT_SAVE_UPDATE: "/api/git/saveOrUpdate",
+  // dragendSortProject
+  GIT_DRAGEND_SORT_PROJECT: "/api/git/dragendSortProject",
+  // dragendSort jar
+  GIT_DRAGEND_SORT_JAR: "/api/git/dragendSortJar",
   // ---- get git branch ----
   GIT_BRANCH: "/api/git/getBranchList",
   // ---- DELETE project ----
@@ -138,6 +172,10 @@ export const API_CONSTANTS = {
 
 
   // system config center
+  // global config list
+  SYSTEM_GET_ALL_CONFIG: "/api/sysConfig/getAll",
+  // update global config by key
+  SYSTEM_MODIFY_CONFIG: "/api/sysConfig/modifyConfig",
   //-- system root logs
   SYSTEM_ROOT_LOG: "/api/system/getRootLog",
   // -- get logs list
@@ -147,6 +185,8 @@ export const API_CONSTANTS = {
 
   // process list
   PROCESS_LIST: "/api/process/listAllProcess",
+
+  GET_JOB_LIST: "/api/jobInstance",
 
 };
 
@@ -160,6 +200,14 @@ export const TENANT_ID = "tenantId";
  * the platform version
  */
 export const VERSION = "0.8.0";
+
+/**
+ * the platform language
+ */
+export const STORY_LANGUAGE = "language";
+export const LANGUAGE_KEY = 'umi_locale';
+export const LANGUAGE_ZH = 'zh-CN';
+export const LANGUAGE_EN = 'en-US';
 
 /**
  * REQUEST METHOD CONSTANTS
@@ -221,7 +269,7 @@ export const FORM_LAYOUT_PUBLIC = {
  * the modal form layout of public
  */
 export const MODAL_FORM_STYLE: any = {
-  width: "40%",
+  width: "50%",
   style: {
     maxHeight: "70vh",
     overflowY: "auto",
@@ -229,19 +277,49 @@ export const MODAL_FORM_STYLE: any = {
 };
 
 
+
+export const PRO_LIST_CARD_META = {
+  title: {},
+  subTitle: {},
+  type: {},
+  avatar: {},
+  content: {},
+  actions: {
+    cardActionProps: "actions"
+  },
+};
+
+export const PRO_LIST_CARD_OPTIONS = {
+  search: false,
+  metas: PRO_LIST_CARD_META,
+  size: "small",
+  pagination: {
+    defaultPageSize: 15,
+    hideOnSinglePage: true,
+  },
+  grid: {gutter: 24, column: 5}
+};
+
+
 /**
  * the protable layout of public
  */
-export const PROTABLE_OPTIONS_PUBLIC = {
+export const PROTABLE_OPTIONS_PUBLIC : any = {
   pagination: {
-    defaultPageSize: 8,
+    defaultPageSize: 12,
     hideOnSinglePage: true,
     showQuickJumper: false,
     showSizeChanger: false,
+    position: ["bottomCenter"],
   },
+  ghost: false,
   rowKey: "id",
+  size: "small",
+  scroll: {
+    y: "auto",
+  },
   search: {
-    labelWidth: 120, // must be number
+    labelWidth: 80, // must be number
     span: 4,
   },
 };
@@ -250,10 +328,18 @@ export const PROTABLE_OPTIONS_PUBLIC = {
  * the modal layout of public
  */
 export const NORMAL_MODAL_OPTIONS = {
-  width: "40%",
+  width: "50%",
   bodyStyle: {padding: "20px 10px 10px"},
   destroyOnClose: true,
   maskClosable: false,
+};
+
+
+/**
+ * the modal layout of public
+ */
+export const MODAL_FORM_OPTIONS:ModalFormProps = {
+  width: "50%",
 };
 
 /**
@@ -301,4 +387,16 @@ export const DIALECT = {
   JSON: "json",
   SQL: "sql",
   JAVASCRIPT: "javascript",
+};
+
+
+export const RUN_MODE = {
+  LOCAL: 'local',
+  STANDALONE: 'standalone',
+  YARN_SESSION: 'yarn-session',
+  YARN_PER_JOB: 'yarn-per-job',
+  YARN_APPLICATION: 'yarn-application',
+  KUBERNETES_SESSION: 'kubernetes-session',
+  KUBERNETES_APPLICATION: 'kubernetes-application',
+  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator',
 };

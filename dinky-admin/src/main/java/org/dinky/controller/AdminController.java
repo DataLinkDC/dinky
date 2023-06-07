@@ -19,11 +19,13 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.Result;
-import org.dinky.dto.LoginDTO;
-import org.dinky.dto.UserDTO;
-import org.dinky.model.Tenant;
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.UserDTO;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.Tenant;
+import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
+import org.dinky.utils.I18nMsgUtils;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,7 +35,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -53,8 +54,8 @@ public class AdminController {
     /**
      * user login
      *
-     * @param loginDTO
-     * @return {@link Result}{@link UserDTO}
+     * @param loginDTO basic information for user login
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     @PostMapping("/login")
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
@@ -64,21 +65,21 @@ public class AdminController {
     /**
      * user logout
      *
-     * @return {@link Result}{@link Void}
+     * @return {@link Result}{@link Void} user loginout status information
      */
     @DeleteMapping("/outLogin")
     public Result<Void> outLogin() {
-        StpUtil.logout();
-        return Result.succeed("退出成功");
+        userService.outLogin();
+        return Result.succeed(I18nMsgUtils.getMsg(Status.SIGN_OUT_SUCCESS));
     }
 
     /**
      * get current user info
      *
-     * @return {@link Result}{@link UserDTO}
+     * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     @GetMapping("/current")
-    public Result<UserDTO> current() {
+    public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();
     }
 
@@ -86,10 +87,10 @@ public class AdminController {
      * choose tenant by tenantId
      *
      * @param tenantId
-     * @return {@link Result}{@link Tenant}
+     * @return {@link Result}{@link Tenant} the specified tenant
      */
     @PostMapping("/chooseTenant")
-    public Result<Tenant> chooseTenant(@RequestParam("tenantId") Integer tenantId) {
+    public Result<Tenant> getTenantByTenantId(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
     }
 }

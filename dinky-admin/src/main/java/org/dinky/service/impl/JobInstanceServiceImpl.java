@@ -20,23 +20,23 @@
 package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.assertion.Tips;
-import org.dinky.common.result.ProTableResult;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.db.service.impl.SuperServiceImpl;
-import org.dinky.db.util.ProTableUtil;
+import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.Status;
+import org.dinky.data.model.History;
+import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.JobInstanceCount;
+import org.dinky.data.model.JobInstanceStatus;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.FlinkJobTaskPool;
 import org.dinky.mapper.JobInstanceMapper;
-import org.dinky.model.History;
-import org.dinky.model.JobInfoDetail;
-import org.dinky.model.JobInstance;
-import org.dinky.model.JobInstanceCount;
-import org.dinky.model.JobInstanceStatus;
-import org.dinky.model.JobStatus;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.mybatis.util.ProTableUtil;
 import org.dinky.service.ClusterConfigurationService;
-import org.dinky.service.ClusterService;
+import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.HistoryService;
 import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
@@ -65,7 +65,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         implements JobInstanceService {
 
     private final HistoryService historyService;
-    private final ClusterService clusterService;
+    private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
     private final JobHistoryService jobHistoryService;
 
@@ -149,7 +149,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
         } else {
             JobInfoDetail jobInfoDetail = new JobInfoDetail(jobInstance.getId());
             jobInfoDetail.setInstance(jobInstance);
-            jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+            jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
             jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
             History history = historyService.getById(jobInstance.getHistoryId());
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
@@ -172,7 +172,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
 
         jobInfoDetail = new JobInfoDetail(jobInstance.getId());
         jobInfoDetail.setInstance(jobInstance);
-        jobInfoDetail.setCluster(clusterService.getById(jobInstance.getClusterId()));
+        jobInfoDetail.setCluster(clusterInstanceService.getById(jobInstance.getClusterId()));
         jobInfoDetail.setJobHistory(jobHistoryService.getJobHistory(jobInstance.getId()));
         History history = historyService.getById(jobInstance.getHistoryId());
 
@@ -240,7 +240,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
     @Override
     public void initTenantByJobInstanceId(Integer id) {
         Integer tenantId = baseMapper.getTenantByJobInstanceId(id);
-        Asserts.checkNull(tenantId, Tips.JOB_INSTANCE_NOT_EXIST);
+        Asserts.checkNull(tenantId, Status.JOB_INSTANCE_NOT_EXIST.getMsg());
         TenantContextHolder.set(tenantId);
     }
 }

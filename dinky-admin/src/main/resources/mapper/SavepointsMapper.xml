@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dinky.mapper.SavepointsMapper">
 
-    <select id="selectForProTable" resultType="org.dinky.model.Savepoints">
+    <select id="selectForProTable" resultType="org.dinky.data.model.Savepoints">
         select
         a.*
         from
@@ -27,14 +27,14 @@
         </where>
     </select>
 
-    <select id="getLatestSavepointByTaskId" resultType="org.dinky.model.Savepoints">
+    <select id="getLatestSavepointByTaskId" resultType="org.dinky.data.model.Savepoints">
         SELECT * FROM dinky_savepoints
         WHERE task_id = #{id}
         ORDER BY create_time DESC
         LIMIT 1
     </select>
 
-    <select id="getEarliestSavepointByTaskId" resultType="org.dinky.model.Savepoints">
+    <select id="getEarliestSavepointByTaskId" resultType="org.dinky.data.model.Savepoints">
         SELECT * FROM dinky_savepoints
         WHERE task_id = #{id}
         ORDER BY create_time ASC

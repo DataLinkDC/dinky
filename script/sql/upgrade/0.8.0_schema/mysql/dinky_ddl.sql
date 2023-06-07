@@ -78,3 +78,28 @@ ALTER TABLE dinky_cluster_configuration DROP COLUMN `alias`;
 ALTER TABLE dinky_task_version DROP COLUMN `alias`;
 ALTER TABLE dinky_task DROP COLUMN `alias`;
 ALTER TABLE dinky_jar DROP COLUMN `alias`;
+CREATE TABLE `dinky_git_project` (
+                                     `id` bigint(20) NOT NULL AUTO_INCREMENT,
+                                     `tenant_id` bigint(20) NOT NULL,
+                                     `name` varchar(255) NOT NULL,
+                                     `url` varchar(1000) NOT NULL,
+                                     `branch` varchar(1000) NOT NULL,
+                                     `username` varchar(255) DEFAULT NULL,
+                                     `password` varchar(255) DEFAULT NULL,
+                                     `private_key` varchar(255) DEFAULT NULL COMMENT 'keypath',
+                                     `pom` varchar(255) DEFAULT NULL,
+                                     `build_args` varchar(255) DEFAULT NULL,
+                                     `code_type` tinyint(4) DEFAULT NULL COMMENT 'code type(1-java,2-python)',
+                                     `type` tinyint(4) NOT NULL COMMENT '1-http ,2-ssh',
+                                     `last_build` datetime DEFAULT NULL,
+                                     `description` varchar(255) DEFAULT NULL,
+                                     `build_state` tinyint(2) NOT NULL DEFAULT '0' COMMENT '0-notStart 1-process 2-failed 3-success',
+                                     `build_step` tinyint(2) NOT NULL DEFAULT '0',
+                                     `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT '0-disable 1-enable',
+                                     `udf_class_map_list` text COMMENT 'scan udf class',
+                                     `order_line` int(11) NOT NULL DEFAULT '1' COMMENT 'order',
+                                     `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                     `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                     PRIMARY KEY (`id`) USING BTREE,
+                                     KEY `tenant_id` (`tenant_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;

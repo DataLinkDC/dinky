@@ -19,8 +19,8 @@
 
 package org.dinky.service;
 
-import org.dinky.db.service.ISuperService;
-import org.dinky.model.AlertHistory;
+import org.dinky.data.model.AlertHistory;
+import org.dinky.mybatis.service.ISuperService;
 
 /** AlertHistoryService */
 public interface AlertHistoryService extends ISuperService<AlertHistory> {

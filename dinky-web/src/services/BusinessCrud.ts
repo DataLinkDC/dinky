@@ -19,16 +19,16 @@ import {
   addOrUpdateData, putData, getDataByRequestBody, getInfoById,
   postAll,
   removeById, updateDataByParams, getData,
-} from "@/services/api";
-import {l} from "@/utils/intl";
-import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from "@/services/constants";
-import {request} from "@@/exports";
+} from '@/services/api';
+import {l} from '@/utils/intl';
+import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
+import {request} from '@@/exports';
 import {
   LoadingMessageAsync, SuccessMessage, WarningMessage,
-} from "@/utils/messages";
+} from '@/utils/messages';
 
 
-const APPLICATION_JSON = "application/json";
+const APPLICATION_JSON = 'application/json';
 
 // ================================ About Account ================================
 /**
@@ -90,8 +90,8 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
  * @param params
  */
 export const handleAddOrUpdate = async (url: string, params: any) => {
-  const tipsTitle = params.id ? l("app.request.update") : l("app.request.add");
-  await LoadingMessageAsync(l("app.request.running") + tipsTitle);
+  const tipsTitle = params.id ? l('app.request.update') : l('app.request.add');
+  await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
     const {code, msg} = await addOrUpdateData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
@@ -111,7 +111,7 @@ export const handleAddOrUpdate = async (url: string, params: any) => {
  * @param id
  */
 export const handleRemoveById = async (url: string, id: number) => {
-  await LoadingMessageAsync(l("app.request.delete"));
+  await LoadingMessageAsync(l('app.request.delete'));
   try {
     const {code, msg} = await removeById(url, {id});
     if (code === RESPONSE_CODE.SUCCESS) {
@@ -130,7 +130,7 @@ export const handleRemoveById = async (url: string, id: number) => {
  * @param params
  */
 export const updateEnabled = async (url: string, params: any) => {
-  await LoadingMessageAsync(l("app.request.update"));
+  await LoadingMessageAsync(l('app.request.update'));
   try {
     const {code, msg} = await updateDataByParams(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
@@ -145,15 +145,16 @@ export const updateEnabled = async (url: string, params: any) => {
 };
 
 export const handleOption = async (url: string, title: string, param: any) => {
-  await LoadingMessageAsync(l("app.request.running") + title);
+  await LoadingMessageAsync(l('app.request.running') + title);
   try {
-    const {code, msg} = await postAll(url, param);
-    if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+    const result = await postAll(url, param);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(result.msg);
+      return result;
     } else {
-      WarningMessage(msg);
+      WarningMessage(result.msg);
+      return false;
     }
-    return true;
   } catch (error) {
     return false;
   }
@@ -174,8 +175,8 @@ export const handleData = async (url: string, id: any) => {
 
 
 export const handlePutData = async (url: string, fields: any) => {
-  const tipsTitle = fields.id ? l("app.request.update") : l("app.request.add");
-  await LoadingMessageAsync(l("app.request.running") + tipsTitle);
+  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
+  await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
     const {code, msg} = await postAll(url, {...fields});
     if (code === RESPONSE_CODE.SUCCESS) {
@@ -210,7 +211,7 @@ export const queryDataByParams = async (url: string, params?: any) => {
 
 
 export const handlePutDataByParams = async (url: string, title: string, params: any) => {
-  await LoadingMessageAsync(l("app.request.running") + title);
+  await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const {code, msg} = await putData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
@@ -218,6 +219,22 @@ export const handlePutDataByParams = async (url: string, title: string, params: 
       return true;
     } else {
       WarningMessage(msg);
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+};
+
+
+export const getDataByIdReturnResult = async (url: string, id: any) => {
+  try {
+    const result = await getInfoById(url, id);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(result.msg);
+      return result;
+    } else {
+      WarningMessage(result.msg);
       return false;
     }
   } catch (error) {

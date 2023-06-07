@@ -19,14 +19,16 @@
 
 package org.dinky.sse.git;
 
-import org.dinky.dto.GitAnalysisJarDTO;
+import org.dinky.data.dto.GitAnalysisJarDTO;
+import org.dinky.data.model.GitProject;
 import org.dinky.function.util.UDFUtil;
-import org.dinky.model.GitProject;
+import org.dinky.process.exception.DinkyException;
 import org.dinky.sse.StepSse;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -69,6 +71,13 @@ public class AnalysisUdfClassStepSse extends StepSse {
 
         List<GitAnalysisJarDTO> dataList = new ArrayList<>();
         Map<String, List<Class<?>>> udfMap = new TreeMap<>();
+        try {
+            Thread.currentThread()
+                    .getContextClassLoader()
+                    .loadClass("org.apache.flink.table.api.ValidationException");
+        } catch (ClassNotFoundException e) {
+            throw new DinkyException("flink dependency not found");
+        }
         pathList.parallelStream()
                 .forEach(
                         jar -> {
@@ -77,15 +86,21 @@ public class AnalysisUdfClassStepSse extends StepSse {
                             sendMsg(Dict.create().set(jar, udfClassByJar));
                         });
 
+        AtomicInteger index = new AtomicInteger(1);
         udfMap.forEach(
                 (k, v) -> {
                     GitAnalysisJarDTO gitAnalysisJarDTO = new GitAnalysisJarDTO();
                     gitAnalysisJarDTO.setJarPath(k);
                     gitAnalysisJarDTO.setClassList(
                             v.stream().map(Class::getName).collect(Collectors.toList()));
+                    gitAnalysisJarDTO.setOrderLine(index.get());
+                    index.getAndIncrement();
                     dataList.add(gitAnalysisJarDTO);
                 });
+
+        dataList.sort(Comparator.comparing(GitAnalysisJarDTO::getOrderLine));
         String data = JSONUtil.toJsonStr(dataList);
+
         sendMsg(getList(null).set("data", data));
 
         FileUtil.appendString(data, getLogFile(), StandardCharsets.UTF_8);

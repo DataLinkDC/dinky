@@ -130,7 +130,7 @@ const TemplateTable: React.FC = () => {
     {
       title: l("rc.template.name"),
       dataIndex: "name",
-      render: (dom, record) => {
+      render: (dom :any, record:UDFTemplate) => {
         return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
       }    },
     {
@@ -157,7 +157,7 @@ const TemplateTable: React.FC = () => {
       hideInTable: true,
       filterMultiple: false,
       onFilter: false,
-      render : (dom, record) => {
+      render : (dom:any, record:UDFTemplate) => {
         return <CodeShow {...CodeShowProps} code={record.templateCode} showFloatButton />;
       }
     },
@@ -165,7 +165,7 @@ const TemplateTable: React.FC = () => {
       title: l("global.table.isEnable"),
       dataIndex: "enabled",
       hideInSearch: true,
-      render: (_, record) => {
+      render: (_:any, record:UDFTemplate) => {
         return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawer} record={record}
                                 onChange={() => handleChangeEnable(record)}/>;
       },
@@ -189,7 +189,7 @@ const TemplateTable: React.FC = () => {
       width: "10vh",
       hideInSearch: true,
       hideInDescriptions: true,
-      render: (text, record) => [
+      render: (text: any, record: UDFTemplate) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>,
         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                              description={l("rc.template.deleteConfirm")}/>,

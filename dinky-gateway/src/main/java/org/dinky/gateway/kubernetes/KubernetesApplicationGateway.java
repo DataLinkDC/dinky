@@ -20,11 +20,11 @@
 package org.dinky.gateway.kubernetes;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.GatewayType;
+import org.dinky.data.model.SystemConfiguration;
 import org.dinky.gateway.config.AppConfig;
+import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
-import org.dinky.model.SystemConfiguration;
 import org.dinky.utils.LogUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
@@ -38,6 +38,9 @@ import org.apache.http.util.TextUtils;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+
+import cn.hutool.core.util.StrUtil;
 
 /**
  * KubernetesApplicationGateway
@@ -84,7 +87,19 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             while (jobStatusMessages.size() == 0 && counts > 0) {
                 Thread.sleep(1000);
                 counts--;
-                jobStatusMessages = clusterClient.listJobs().get();
+                try {
+                    jobStatusMessages = clusterClient.listJobs().get();
+                } catch (ExecutionException e) {
+                    if (StrUtil.contains(e.getMessage(), "Number of retries has been exhausted.")) {
+                        // refresh the job manager ip address
+                        clusterClient.close();
+                        clusterClient = clusterClientProvider.getClusterClient();
+                    } else {
+                        LogUtil.getError(e);
+                        throw e;
+                    }
+                }
+
                 if (jobStatusMessages.size() > 0) {
                     break;
                 }

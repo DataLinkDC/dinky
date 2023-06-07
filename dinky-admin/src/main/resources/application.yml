@@ -1,119 +1,168 @@
-spring:
-  datasource:
-    url: jdbc:mysql://${MYSQL_ADDR:127.0.0.1:3306}/${MYSQL_DATABASE:dinky}?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false&zeroDateTimeBehavior=convertToNull&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: ${MYSQL_USERNAME:dinky}
-    password: ${MYSQL_PASSWORD:dinky}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-  application:
-    name: dinky
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
-    format:
-      date: yyyy-MM-dd HH:mm:ss
-    #json格式化全局配置
-  jackson:
-    time-zone: GMT+8
-    date-format: yyyy-MM-dd HH:mm:ss
-
-  main:
-    allow-circular-references: true
-
-  #  默认使用内存缓存元数据信息，
-  #  dinky支持redis缓存，如有需要请把simple改为redis，并打开下面的redis连接配置
-  #  子配置项可以按需要打开或自定义配置
-  cache:
-    type: simple
-  ##    如果type配置为redis，则该项可按需配置
-  #    redis:
-  ##      是否缓存空值，保存默认即可
-  #      cache-null-values: false
-  ##      缓存过期时间，24小时
-  #      time-to-live: 86400
-
-
-  #  flyway:
-  #    enabled: false
-  #    clean-disabled: true
-  ##    baseline-on-migrate: true
-  #    table: dinky_schema_history
-  # Redis配置
-  #sa-token如需依赖redis，请打开redis配置和pom.xml、dinky-admin/pom.xml中依赖
-  # redis:
-  #   host: localhost
-  #   port: 6379
-  #   password:
-  #   database: 10
-  #   jedis:
-  #     pool:
-  #       # 连接池最大连接数（使用负值表示没有限制）
-  #       max-active: 50
-  #       # 连接池最大阻塞等待时间（使用负值表示没有限制）
-  #       max-wait: 3000
-  #       # 连接池中的最大空闲连接数
-  #       max-idle: 20
-  #       # 连接池中的最小空闲连接数
-  #       min-idle: 5
-  #   # 连接超时时间（毫秒）
-  #   timeout: 5000
-  servlet:
-    multipart:
-      max-file-size: 524288000
-      max-request-size: 524288000
-      enabled: true
+#################################################################################################################
+################################################# Common Config #################################################
+#################################################################################################################
+# Dinky application port
 server:
   port: 8888
 
+spring:
+  # Dinky application name
+  application:
+    name: Dinky
+  profiles:
+    # The h2 database is used by default. If you need to use other databases, please set the configuration active to: mysql, currently supports [mysql, pgsql, h2]
+    # If you use mysql database, please configure mysql database connection information in application-mysql.yml
+    # If you use pgsql database, please configure pgsql database connection information in application-pgsql.yml
+    # If you use the h2 database, please configure the h2 database connection information in application-h2.yml,
+    # note: the h2 database is only for experience use, and the related data that has been created cannot be migrated, please use it with caution
+    active: mysql #[h2,mysql,pgsql]
+
+  # mvc config
+  mvc:
+    pathmatch:
+      # Path matching strategy, default ant_path_matcher, support ant_path_matcher and path_pattern_parser
+      matching-strategy: ant_path_matcher
+    format:
+      date: yyyy-MM-dd HH:mm:ss # date format
+      time: HH:mm:ss # time format
+      date-time: yyyy-MM-dd HH:mm:ss # date-time format
+
+  # json format global configuration
+  jackson:
+    time-zone: GMT+8 # Time zone, default is GMT+8
+    date-format: yyyy-MM-dd HH:mm:ss # Date format, the default is yyyy-MM-dd HH:mm:ss
+
+  # circular references allowed
+  main:
+    allow-circular-references: true
+
+  # file upload config of servlet , the default is 500MB
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 524288000
+      max-request-size: 524288000
+
+
+  # By default, memory cache metadata information is used,
+  # dinky supports redis cache, if necessary, please change simple to redis, and open the following redis connection configuration
+  # Sub-configuration items can be opened or customized as needed
+  cache:
+    type: simple
+    # If type is configured as redis, this item can be configured as needed, note: Pay attention to the indentation of this configuration item
+    #    redis:
+    #      # Whether to cache empty values, save the default
+    #      cache-null-values: false
+    #      # Cache expiration time, default 24 hours
+    #      time-to-live: 86400
+
+    ########################################################## Redis配置 ##########################################################
+    # If sa-token needs to rely on redis, please open the redis configuration and depend on pom.xml and dinky-admin/pom.xml, and configure redis connection information in application.yml
+    # note: pay attention to the indentation of this configuration item
+#  redis:
+#     host: localhost
+#     port: 6379
+#     password:
+#     database: 10
+#     jedis:
+#       pool:
+#         # The maximum number of connections in the connection pool (use a negative value to indicate no limit)
+#         max-active: 50
+#         # The maximum blocking waiting time of the connection pool (use a negative value to indicate no limit)
+#         max-wait: 3000
+#         # The maximum number of idle connections in the connection pool
+#         max-idle: 20
+#         # The minimum number of idle connections in the connection pool
+#         min-idle: 5
+#     # Connection timeout (milliseconds)
+#     timeout: 5000
+
+#################################################################################################################
+################################################# Mybatis Config ################################################
+######### Please note: that the following configurations are not recommended to be modified #####################
+#################################################################################################################
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
-  #实体扫描，多个package用逗号或者分号分隔
+  # Entity scanning, multiple packages are separated by commas or semicolons
   typeAliasesPackage: org.dinky.model
   global-config:
     db-config:
       id-type: auto
-      #逻辑删除配置
+      # Logic delete configuration : 0: false(Not deleted), 1: true(deleted)
       logic-delete-field: is_delete
       logic-delete-value: 1
       logic-not-delete-value: 0
     banner: false
   configuration:
-    ##### mybatis-plus打印完整sql(只适用于开发环境)
-    #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    ##### mybatis-plus prints complete sql (only for development environment)
+    #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
 
-# Sa-Token 配置
+#################################################################################################################
+################################################# SMS Config ####################################################
+#################################################################################################################
+#sms:
+#  # Whether to enable SMS
+#  config-type: sql_config
+#  is-print: false
+#  sql:
+#    # The database connection information
+#    url: ${spring.datasource.url}
+#    username: ${spring.datasource.username}
+#    password: ${spring.datasource.password}
+#    driver-class-name: ${spring.datasource.driver-class-name}
+#    table-name: dinky_alert_instance
+#    supplier-field-name: manufacturers
+#    config-name: params
+#    start-name: enabled
+#    is-start: 1
+
+
+
+#################################################################################################################
+################################################# Sa-Token Config ###############################################
+#################################################################################################################
+# Sa-Token basic configuration
 sa-token:
-  # token名称 (同时也是cookie名称)
+  # token name (also cookie name)
   token-name: satoken
-  # token有效期，单位s 默认10小时, -1代表永不过期
+  # The validity period of the token, the unit is 10 hours by default, -1 means it will never expire
   timeout: 36000
-  # token临时有效期 (指定时间内无操作就视为token过期) 单位: 秒
+  # The temporary validity period of the token (the token will be considered as expired if there is no operation within the specified time)
+  # unit: second
   activity-timeout: -1
-  # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
+  # Whether to allow the same account to log in concurrently (when true, allow login together, when false, new login squeezes out old login)
   is-concurrent: false
-  # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
+  # When multiple people log in to the same account, whether to share a token (if true, all logins share a token, and if false, create a new token for each login)
   is-share: true
-  # token风格
+  # token style
   token-style: uuid
-  # 是否输出操作日志
+  # Whether to output the operation log
   is-log: false
+  # Whether to print banner
   is-print: false
 
+
+#################################################################################################################
+################################################# knife4j Config ################################################
+#################################################################################################################
 knife4j:
   enable: true
 
-dinky:
-  dolphinscheduler:
-    enabled: false
-    # dolphinscheduler 地址
-    url: http://127.0.0.1:5173/dolphinscheduler
-    # dolphinscheduler 生成的token
-    token: ad54eb8f57fadea95f52763517978b26
-    # dolphinscheduler 中指定的项目名不区分大小写
-    project-name: Dinky
-    # Dolphinscheduler DinkyTask Address
-    address: http://127.0.0.1:8888
-
-  # python udf 需要用到的 python 执行环境
-  python:
-    path: python
+##################################################################################################################
+################################################## DolphinScheduler Config #######################################
+##################################################################################################################
+#dinky:
+#  dolphinscheduler:
+#    # If you enable the integrated DolphinScheduler, you need to configure the following configuration items
+#    enabled: false
+#    # DolphinScheduler Address
+#    # Note: The address must be the same as the address configured in the DolphinScheduler background , eg: http://127.0.0.1:12345/dolphinscheduler
+#    url: http://127.0.0.1:5173/dolphinscheduler
+#    # DolphinScheduler's Token , Please create a token in DolphinScheduler's Security Center -> Token Management, and modify the following configuration
+#    token: ad54eb8f57fadea95f52763517978b26
+#    # The project name specified in DolphinScheduler, case insensitive
+#    project-name: Dinky
+#    # DolphinScheduler DinkyTask Address , eg: http://127.0.0.1:8888
+#    # note: the address must be the same as the address configured in the Dinky Application background url
+#    address: http://127.0.0.1:8888

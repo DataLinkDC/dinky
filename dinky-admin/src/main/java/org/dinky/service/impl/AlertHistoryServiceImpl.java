@@ -19,9 +19,9 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.AlertHistory;
 import org.dinky.mapper.AlertHistoryMapper;
-import org.dinky.model.AlertHistory;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.AlertHistoryService;
 
 import java.util.List;

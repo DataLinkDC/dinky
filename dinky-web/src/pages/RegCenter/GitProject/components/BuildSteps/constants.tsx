@@ -102,21 +102,16 @@ export const PythonSteps = [
   },
   {
     key: 3,
-    title: l("rc.gp.build.step.3"),
-    status: "wait",
-  },
-  {
-    key: 4,
     title: l("rc.gp.build.step.4"),
     status: "wait",
   },
   {
-    key: 5,
+    key: 4,
     title: l("rc.gp.build.step.5"),
     status: "wait",
   },
   {
-    key: 6,
+    key: 5,
     title: l("rc.gp.build.step.6"),
     status: "wait",
   },

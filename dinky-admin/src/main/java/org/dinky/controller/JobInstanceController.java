@@ -21,14 +21,14 @@ package org.dinky.controller;
 
 import org.dinky.api.FlinkAPI;
 import org.dinky.assertion.Asserts;
-import org.dinky.common.result.ProTableResult;
-import org.dinky.common.result.Result;
+import org.dinky.data.model.JobInfoDetail;
+import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.JobManagerConfiguration;
+import org.dinky.data.model.TaskManagerConfiguration;
+import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.BuildConfiguration;
-import org.dinky.model.JobInfoDetail;
-import org.dinky.model.JobInstance;
-import org.dinky.model.JobManagerConfiguration;
-import org.dinky.model.TaskManagerConfiguration;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 

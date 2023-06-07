@@ -55,10 +55,4 @@ export default {
   'app.request.loading': 'Loading...',
   'app.request.back': 'Back Home',
 
-  'app.response.response-error':'ResponseError',
-  'app.response.sucess':'Success',
-  'app.response.error':'Error',
-  'app.response.exception':'Server exception',
-  'app.response.notlogin':'Not Login',
-  'app.response.notexist':'you visit the page or interface does not exist',
 };

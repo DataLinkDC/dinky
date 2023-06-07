@@ -18,13 +18,10 @@
  */
 
 import React, {useRef, useState} from "react";
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
+import {ActionType, DragSortTable, ProColumns} from "@ant-design/pro-table";
 import {GitProject} from "@/types/RegCenter/data";
 import {
-  getDataByParams,
-  handleAddOrUpdate, handleData,
-  handlePutDataByParams,
-  handleRemoveById,
+  handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById,
   updateEnabled
 } from "@/services/BusinessCrud";
 import {
@@ -34,7 +31,7 @@ import {
   STATUS_MAPPING,
 } from "@/services/constants";
 import {l} from "@/utils/intl";
-import {Button, Popconfirm, Tag} from "antd";
+import {Button, Empty, Popconfirm, Tag} from 'antd';
 import {BranchesOutlined, BuildTwoTone} from "@ant-design/icons";
 import {
   GIT_PROJECT_BUILD_STEP,
@@ -44,9 +41,8 @@ import {
   renderBranchesTagColor
 } from "@/pages/RegCenter/GitProject/constans";
 import {ShowCodeTreeIcon} from "@/components/Icons/CustomIcons";
-import {getData, queryList} from "@/services/api";
+import {queryList} from "@/services/api";
 import {BuildSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps";
-import {ShowLog} from "@/pages/RegCenter/GitProject/components/ShowLog";
 import {CodeTree} from "@/pages/RegCenter/GitProject/components/CodeTree";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import ProjectModal from "@/pages/RegCenter/GitProject/components/ProjectModal";
@@ -54,6 +50,7 @@ import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 import {ShowLogBtn} from "@/components/CallBackButton/ShowLogBtn";
+import ClassList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList";
 
 const ProjectProTable: React.FC = () => {
 
@@ -76,7 +73,7 @@ const ProjectProTable: React.FC = () => {
     setLoading(true);
     await callback();
     setLoading(false);
-    actionRef.current?.reload?.();
+    actionRef.current?.reload()
   };
 
   /**
@@ -119,6 +116,7 @@ const ProjectProTable: React.FC = () => {
     await executeAndCallback(async () => {
         const result = await handlePutDataByParams(API_CONSTANTS.GIT_PROJECT_BUILD, l("rc.gp.building"), {id: value.id});
         if (result) {
+          setFormValues(value);
           handleBuildVisible(true);
             // todo : build success, set build modal visible and set build steps
         }
@@ -151,13 +149,24 @@ const ProjectProTable: React.FC = () => {
    */
   const columns: ProColumns<GitProject>[] = [
     {
+      title: l("rc.gp.level"),
+      hideInSearch: true,
+      dataIndex: 'id',
+      tooltip: l("rc.gp.level.tooltip"),
+      render: (dom: any,record:GitProject) => {
+        return <Tag style={{marginLeft: 10}} color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
+      },
+    },
+    {
       title: l("rc.gp.name"),
       dataIndex: "name",
+      ellipsis: true,
+      width: '10%',
     },
     {
       title: l("rc.gp.branch"),
       dataIndex: "branch",
-      renderText: (text, record) => {
+      renderText: (text :string, record: GitProject) => {
         return <Tag icon={<BranchesOutlined/>}
                     color={renderBranchesTagColor(record.branch)}>{record.branch}</Tag>;
       }
@@ -167,12 +176,14 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "url",
       copyable: true,
       ellipsis: true,
+        width: '10%',
     },
     {
       title: l("rc.gp.codeType"),
       dataIndex: "codeType",
       hideInSearch: true,
       filterMultiple: false,
+        width: "6%",
       valueEnum: GIT_PROJECT_CODE_TYPE_ENUM,
       filters: GIT_PROJECT_CODE_TYPE,
     },
@@ -181,6 +192,7 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "type",
       hideInSearch: true,
       filterMultiple: false,
+      width: "8%",
       valueEnum: GIT_PROJECT_TYPE_ENUM,
       filters: GIT_PROJECT_TYPE,
     },
@@ -204,19 +216,22 @@ const ProjectProTable: React.FC = () => {
       dataIndex: "lastBuild",
       hideInSearch: true,
       valueType: "dateTime",
+      width: "12%",
     },
     {
       title: l("global.table.note"),
       dataIndex: "description",
+      ellipsis: true,
     },
     {
       title: l("global.table.isEnable"),
       dataIndex: "enable",
+      width: "6%",
       hideInSearch: true,
       filters: STATUS_MAPPING(),
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
-      render: (_, record) => {
+      render: ( _:any, record:GitProject) => {
         return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
                                 onChange={() => handleChangeEnable(record)}/>;
       },
@@ -225,8 +240,8 @@ const ProjectProTable: React.FC = () => {
       title: l("global.table.operate"),
       valueType: "option",
       width: "10vw",
-      render: (text, record) => [
-        <ShowLogBtn key={`${record.id}_showLog`} onClick={() => handleShowLog(record)}/>,
+      render: (text:any, record:GitProject) => [
+        <ShowLogBtn disabled={record.buildStep === 0} key={`${record.id}_showLog`} onClick={() => handleShowLog(record)}/>,
         <Button
           key={`${record.id}_code`}
           className={"options-button"}
@@ -263,7 +278,7 @@ const ProjectProTable: React.FC = () => {
     handleBuildVisible(false);
     handleLogVisible(false);
     handleCodeTreeVisible(false);
-    actionRef.current?.reload?.();
+    actionRef.current?.reload();
   };
 
 
@@ -275,22 +290,47 @@ const ProjectProTable: React.FC = () => {
   const handleAddOrUpdateSubmit = async (value: Partial<GitProject>) => {
     await handleAddOrUpdate(API_CONSTANTS.GIT_SAVE_UPDATE, value);
     handleCancel();
-    actionRef.current?.reload?.();
   };
+
+  /**
+   * drag sort call
+   * @param {GitProject[]} newDataSource
+   * @returns {Promise<void>}
+   */
+  const handleDragSortEnd = async (newDataSource: GitProject[]) => {
+    const updatedItems = newDataSource.map((item:GitProject, index:number) => ({...item, orderLine: index + 1,}));
+    await executeAndCallback(async () => await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'),{sortList: updatedItems}));
+  };
+
+  /**
+   * render jar
+   * @param {GitProject} record
+   * @returns {JSX.Element}
+   */
+  const renderClassList = (record: GitProject) => {
+    const {udfClassMapList, id} = record
+    if (udfClassMapList) {
+      return <ClassList projectId={id} jarAndClassesList={JSON.parse(udfClassMapList)}/>
+    }
+    return <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
+  }
 
 
   /**
    * render
    */
   return <>
-    <ProTable<GitProject>
-      {...PROTABLE_OPTIONS_PUBLIC}
-      loading={loading}
-      actionRef={actionRef}
-      headerTitle={l("rc.gp.management")}
-      toolBarRender={() => [<CreateBtn key={"gitcreate"} onClick={() => handleModalVisible(true)}/>]}
-      request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GIT_PROJECT, {...params, sorter, filter})}
-      columns={columns}
+    <DragSortTable<GitProject>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        headerTitle={l("rc.gp.management")}
+        columns={columns}
+        loading={ loading }
+        actionRef={actionRef}
+        dragSortKey={"id"}
+        toolBarRender={() => [<CreateBtn key={"gittable"} onClick={() => handleModalVisible(true)}/>,]}
+        expandable={{expandRowByClick: false,expandedRowRender: (record: GitProject) => renderClassList(record)}}
+        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GIT_PROJECT, {...params, sorter, filter})}
+        onDragSortEnd={handleDragSortEnd}
     />
     {/* added modal form */}
     <ProjectModal onCancel={handleCancel} onSubmit={(value) => handleAddOrUpdateSubmit(value)}
@@ -300,10 +340,10 @@ const ProjectProTable: React.FC = () => {
                   modalVisible={updateModalVisible}
                   values={formValues}/>
     {/* build steps modal */}
-    {buildModalVisible && <BuildSteps onCancel={handleCancel} modalVisible={buildModalVisible}
-                               values={formValues}/>}
+    {buildModalVisible && <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel}  values={formValues as any}/>}
     {/* show build log modal */}
-    {logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}
+    {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
+    {logModalVisible &&  <BuildSteps  title={l('rc.gp.log')} onCancel={handleCancel} values={formValues as any}/>}
     {/* show code tree modal */}
     <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues}/>
   </>;

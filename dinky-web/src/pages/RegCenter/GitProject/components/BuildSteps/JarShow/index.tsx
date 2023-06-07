@@ -17,40 +17,41 @@
  *
  */
 
-import {Empty} from "antd";
 import React, {useEffect} from "react";
+import {GitProject} from "@/types/RegCenter/data";
 import JarList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/JarList";
-import ClassList from "@/pages/RegCenter/GitProject/components/BuildSteps/JarShow/ClassList";
 
 
-export type BuildJarList = {
-  jarPath: string;
-  classList: string[];
-}
 
-
+/** props
+ */
 type JarShowProps = {
-  step: number
+  value: GitProject
   data: any
 }
 
 const JarShow: React.FC<JarShowProps> = (props) => {
 
-  const {step, data} = props;
+  const { data ,value} = props;
 
+  /**
+   * state
+   */
   const [resultData, setResultData] = React.useState<any[]>([]);
 
+  /**
+   * Effect
+   */
   useEffect(  () => {
     setResultData(data);
-  }, [data]);
+  }, [data,value]);
 
-  return <>
-    {
-      step === 4 ?
-        <JarList jarList={resultData}/> :
-        step === 5 ? <ClassList jarAndClassesList={resultData}/> : <Empty image={Empty.PRESENTED_IMAGE_DEFAULT}/>
-    }
-  </>;
+  /**
+   * render
+   */
+  return <div style={{height: '50vh',overflowY:'auto'}}>
+    <JarList projectId={value.id} jarAndClassesList={resultData}/>
+  </div>;
 };
 
 export default JarShow;

@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.constant.UploadFileConstant;
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.model.UploadFileRecord;
 import org.dinky.mapper.UploadFileRecordMapper;
-import org.dinky.model.UploadFileRecord;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.UploadFileRecordService;
 import org.dinky.utils.FilePathUtil;
 

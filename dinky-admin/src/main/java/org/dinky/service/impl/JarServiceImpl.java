@@ -19,9 +19,9 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.db.service.impl.SuperServiceImpl;
+import org.dinky.data.model.Jar;
 import org.dinky.mapper.JarMapper;
-import org.dinky.model.Jar;
+import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.JarService;
 
 import java.util.List;

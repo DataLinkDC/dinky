@@ -45,6 +45,7 @@ import com.google.common.collect.Sets;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.ValidationMessage;
 import com.zdpx.coder.SceneCodeBuilder;
+import com.zdpx.coder.Specifications;
 import com.zdpx.coder.graph.InputPort;
 import com.zdpx.coder.graph.InputPortObject;
 import com.zdpx.coder.graph.Node;
@@ -103,7 +104,9 @@ public abstract class Operator extends Node implements Runnable {
         }
 
         try {
-            parametersLocal = objectMapper.readValue(parametersStr, new TypeReference<>() {});
+            parametersLocal =
+                    objectMapper.readValue(
+                            parametersStr, new TypeReference<List<Map<String, Object>>>() {});
         } catch (JsonProcessingException e) {
             log.error(e.toString());
         }
@@ -170,14 +173,9 @@ public abstract class Operator extends Node implements Runnable {
     /** 初始化信息,输出/输入端口应该在该函数中完成注册定义 */
     protected abstract void initialize();
 
-    /** 定义属性约束 */
-    protected String propertySchemaDefinition() {
-        return null;
-    }
-
     @Override
     public String getSpecification() {
-        return propertySchemaDefinition();
+        return Specifications.readSpecializationFileByClassName(this.getClass().getSimpleName());
     }
 
     /**
@@ -265,7 +263,7 @@ public abstract class Operator extends Node implements Runnable {
 
     /** 设置宏算子参数的校验信息. */
     protected void definePropertySchema() {
-        String propertySchema = propertySchemaDefinition();
+        String propertySchema = getSpecification();
         if (Strings.isNullOrEmpty(propertySchema)) {
             log.debug("operator {} don't have schema file.", this.getClass().getSimpleName());
             return;
@@ -319,14 +317,14 @@ public abstract class Operator extends Node implements Runnable {
     }
 
     @SuppressWarnings("unchecked")
-    static List<FieldFunction> getFieldFunctions(
+    public static List<FieldFunction> getFieldFunctions(
             String primaryTableName, Map<String, Object> parameters) {
         return FieldFunction.analyzeParameters(
                 primaryTableName, (List<Map<String, Object>>) parameters.get(FIELD_FUNCTIONS));
     }
 
     public static Map<String, Object> getJsonAsMap(JsonNode inputs) {
-        return new ObjectMapper().convertValue(inputs, new TypeReference<>() {});
+        return new ObjectMapper().convertValue(inputs, new TypeReference<Map<String, Object>>() {});
     }
 
     public static List<Column> getColumnFromFieldFunctions(List<FieldFunction> ffs) {

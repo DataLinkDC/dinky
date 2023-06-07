@@ -19,18 +19,20 @@
 
 package org.dinky.executor;
 
-import org.dinky.model.LineageRel;
-import org.dinky.result.SqlExplainResult;
+import org.dinky.data.model.LineageRel;
+import org.dinky.data.result.SqlExplainResult;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.runtime.jobgraph.JobGraph;
 import org.apache.flink.runtime.rest.messages.JobPlanInfo;
+import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.graph.StreamGraph;
 import org.apache.flink.table.api.ExplainDetail;
 import org.apache.flink.table.api.bridge.java.StreamTableEnvironment;
 import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
+import org.apache.flink.types.Row;
 
 import java.util.List;
 import java.util.Map;
@@ -67,4 +69,6 @@ public interface CustomTableEnvironment
     default List<LineageRel> getLineage(String statement) {
         return null;
     }
+
+    <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
 }

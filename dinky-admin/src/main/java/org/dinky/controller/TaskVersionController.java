@@ -19,9 +19,9 @@
 
 package org.dinky.controller;
 
-import org.dinky.common.result.ProTableResult;
-import org.dinky.dto.TaskVersionHistoryDTO;
-import org.dinky.model.TaskVersion;
+import org.dinky.data.dto.TaskVersionHistoryDTO;
+import org.dinky.data.model.TaskVersion;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.service.TaskVersionService;
 
 import java.util.List;
