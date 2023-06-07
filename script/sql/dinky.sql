@@ -879,7 +879,7 @@ CREATE TABLE `dinky_user`  (
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
