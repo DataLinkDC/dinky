@@ -28,12 +28,10 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SplitUtil;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.common.functions.FlatMapFunction;
 import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.api.java.typeutils.RowTypeInfo;
@@ -55,7 +53,6 @@ import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.VarBinaryType;
 import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
-import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
@@ -73,7 +70,7 @@ import java.util.Optional;
 
 import javax.xml.bind.DatatypeConverter;
 
-public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable {
+public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
@@ -85,105 +82,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         super(config);
     }
 
-    @Override
-    public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
-
-    private DataStream<Row> buildRow(
-            DataStream<Map> filterOperator,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList,
-            String schemaTableName) {
-        final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
-        final LogicalType[] columnTypes =
-                columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-
-        TypeInformation<?>[] typeInformations =
-                TypeConversions.fromDataTypeToLegacyInfo(
-                        TypeConversions.fromLogicalToDataType(columnTypes));
-        RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
-        return filterOperator.flatMap(
-                new FlatMapFunction<Map, Row>() {
-
-                    @Override
-                    public void flatMap(Map value, Collector<Row> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    Row irow =
-                                            Row.withPositions(
-                                                    RowKind.INSERT, columnNameList.size());
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        irow.setField(
-                                                i,
-                                                convertValue(
-                                                        idata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(irow);
-                                    break;
-                                case "d":
-                                    Row drow =
-                                            Row.withPositions(
-                                                    RowKind.DELETE, columnNameList.size());
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        drow.setField(
-                                                i,
-                                                convertValue(
-                                                        ddata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(drow);
-                                    break;
-                                case "u":
-                                    Row ubrow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_BEFORE, columnNameList.size());
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubrow.setField(
-                                                i,
-                                                convertValue(
-                                                        ubdata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(ubrow);
-                                    Row uarow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_AFTER, columnNameList.size());
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uarow.setField(
-                                                i,
-                                                convertValue(
-                                                        uadata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(uarow);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error(
-                                    "SchameTable: {} - Row: {} - Exception:",
-                                    schemaTableName,
-                                    JSONUtil.toJsonString(value),
-                                    e);
-                            throw e;
-                        }
-                    }
-                },
-                rowTypeInfo);
-    }
-
     private String addSourceTableView(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
@@ -191,7 +89,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             List<String> columnNameList) {
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline(); // 上游表
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, columnNameList);
-        logger.info("Create " + viewName + " temporaryView successful...");
+        logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
     }
 
@@ -220,12 +118,11 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                         sinkTableName);
             }
         } else {
-            String tableName = sinkTableName;
             addSinkInsert(
                     customTableEnvironment,
                     table,
                     viewName,
-                    tableName,
+                    sinkTableName,
                     sinkSchemaName,
                     sinkTableName);
         }
@@ -253,14 +150,14 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
         logger.info("Create " + tableName + " FlinkSQL insert into successful...");
         try {
-            if (operations.size() > 0) {
+            if (!operations.isEmpty()) {
                 Operation operation = operations.get(0);
                 if (operation instanceof ModifyOperation) {
                     modifyOperations.add((ModifyOperation) operation);
                 }
             }
         } catch (Exception e) {
-            logger.error("Translate to plan occur exception: {}", e);
+            logger.error("Translate to plan occur exception: {}", e.toString());
             throw e;
         }
         return operations;
@@ -351,7 +248,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                         final String schemaTableName = table.getSchemaTableName();
                         try {
                             DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                            logger.info("Build " + schemaTableName + " shunt successful...");
+                            logger.info("Build {} shunt successful...", schemaTableName);
                             List<String> columnNameList = new ArrayList<>();
                             List<LogicalType> columnTypeList = new ArrayList<>();
                             buildColumn(columnNameList, columnTypeList, table.getColumns());
@@ -391,6 +288,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         if (value == null) {
             return null;
         }
+
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
                 return LocalDate.ofEpochDay((Integer) value);
@@ -399,54 +297,69 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             } else {
                 return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate();
             }
-        } else if (logicalType instanceof TimestampType) {
+        }
+
+        if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
                         .toLocalDateTime();
-            } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
-            } else {
-                TimestampType logicalType1 = (TimestampType) logicalType;
-                // 转换为毫秒
-                if (logicalType1.getPrecision() == 3) {
-                    return Instant.ofEpochMilli((long) value)
-                            .atZone(sinkTimeZone)
-                            .toLocalDateTime();
-                } else if (logicalType1.getPrecision() > 3) {
-                    return Instant.ofEpochMilli(
-                                    ((long) value)
-                                            / (long) Math.pow(10, logicalType1.getPrecision() - 3))
-                            .atZone(sinkTimeZone)
-                            .toLocalDateTime();
-                }
-                return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
             }
-        } else if (logicalType instanceof DecimalType) {
+
+            if (value instanceof String) {
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
+            }
+
+            TimestampType logicalType1 = (TimestampType) logicalType;
+            // 转换为毫秒
+            if (logicalType1.getPrecision() == 3) {
+                return Instant.ofEpochMilli((long) value)
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime();
+            }
+
+            if (logicalType1.getPrecision() > 3) {
+                return Instant.ofEpochMilli(
+                                ((long) value)
+                                        / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime();
+            }
+            return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
+        }
+
+        if (logicalType instanceof DecimalType) {
             return new BigDecimal(String.valueOf(value));
-        } else if (logicalType instanceof FloatType) {
+        }
+
+        if (logicalType instanceof FloatType) {
             if (value instanceof Float) {
                 return value;
-            } else if (value instanceof Double) {
-                return ((Double) value).floatValue();
-            } else {
-                return Float.parseFloat(value.toString());
             }
-        } else if (logicalType instanceof BigIntType) {
+
+            if (value instanceof Double) {
+                return ((Double) value).floatValue();
+            }
+            return Float.parseFloat(value.toString());
+        }
+
+        if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
             } else {
                 return value;
             }
-        } else if (logicalType instanceof VarBinaryType) {
+        }
+
+        if (logicalType instanceof VarBinaryType) {
             // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
             if (value instanceof String) {
                 return DatatypeConverter.parseBase64Binary((String) value);
-            } else {
-                return value;
             }
-        } else {
+
             return value;
         }
+
+        return value;
     }
 }

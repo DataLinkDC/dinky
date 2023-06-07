@@ -19,6 +19,10 @@
 
 package org.dinky.cdc;
 
+import org.apache.flink.api.common.typeinfo.TypeInformation;
+import org.apache.flink.api.java.typeutils.RowTypeInfo;
+import org.apache.flink.table.types.utils.TypeConversions;
+import org.apache.flink.types.Row;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.FlinkCDCConfig;
@@ -218,7 +222,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             DataStream<RowData> rowDataDataStream,
             Table table,
             List<String> columnNameList,
-            List<LogicalType> columnTypeList) {};
+            List<LogicalType> columnTypeList) {}
+
 
     @Override
     public DataStreamSource<String> build(

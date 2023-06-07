@@ -179,7 +179,7 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
                                         getSinkSchemaName(table), getSinkTableName(table)));
                     } else {
                         executionBuilder.setLabelPrefix(
-                                String.format("dlink-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table),
+                                String.format("dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table),
                                         UUID.randomUUID()));
                     }
 

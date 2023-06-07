@@ -20,28 +20,23 @@
 package org.dinky.cdc.sql.catalog;
 
 import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
 import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
 import org.dinky.utils.LogUtil;
 
-import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
 import org.apache.flink.api.dag.Transformation;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.BigIntType;
@@ -50,9 +45,7 @@ import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.VarBinaryType;
-import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
-import org.apache.flink.types.RowKind;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
 
@@ -68,7 +61,7 @@ import java.util.Map;
 
 import javax.xml.bind.DatatypeConverter;
 
-public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serializable {
+public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql-catalog";
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
@@ -79,131 +72,32 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
         super(config);
     }
 
-    @Override
-    public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
-
-    private DataStream<Row> buildRow(
-            DataStream<Map> filterOperator,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList,
-            String schemaTableName) {
-        final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
-        final LogicalType[] columnTypes =
-                columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-
-        TypeInformation<?>[] typeInformations =
-                TypeConversions.fromDataTypeToLegacyInfo(
-                        TypeConversions.fromLogicalToDataType(columnTypes));
-        RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
-        return filterOperator.flatMap(
-                new FlatMapFunction<Map, Row>() {
-
-                    @Override
-                    public void flatMap(Map value, Collector<Row> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    Row irow =
-                                            Row.withPositions(
-                                                    RowKind.INSERT, columnNameList.size());
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        irow.setField(
-                                                i,
-                                                convertValue(
-                                                        idata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(irow);
-                                    break;
-                                case "d":
-                                    Row drow =
-                                            Row.withPositions(
-                                                    RowKind.DELETE, columnNameList.size());
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        drow.setField(
-                                                i,
-                                                convertValue(
-                                                        ddata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(drow);
-                                    break;
-                                case "u":
-                                    Row ubrow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_BEFORE, columnNameList.size());
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubrow.setField(
-                                                i,
-                                                convertValue(
-                                                        ubdata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(ubrow);
-                                    Row uarow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_AFTER, columnNameList.size());
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uarow.setField(
-                                                i,
-                                                convertValue(
-                                                        uadata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(uarow);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error(
-                                    "SchameTable: {} - Row: {} - Exception:",
-                                    schemaTableName,
-                                    JSONUtil.toJsonString(value),
-                                    e);
-                            throw e;
-                        }
-                    }
-                },
-                rowTypeInfo);
-    }
-
     private void addTableSink(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+            Table table) {
 
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
         String sinkTableName = catalogName + "." + sinkSchemaName + "." + tableName;
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
+
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
-        logger.info("Create " + viewName + " temporaryView successful...");
+        logger.info("Create {} temporaryView successful...", viewName);
         String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, sinkTableName, viewName);
         logger.info(cdcSqlInsert);
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
-        logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
+        logger.info("Create {} FlinkSQL insert into successful...", sinkTableName);
         try {
-            if (operations.size() > 0) {
+            if (!operations.isEmpty()) {
                 Operation operation = operations.get(0);
                 if (operation instanceof ModifyOperation) {
                     modifyOperations.add((ModifyOperation) operation);
                 }
             }
         } catch (Exception e) {
-            logger.error("Translate to plan occur exception: {}", e);
+            logger.error("Translate to plan occur exception: {}", e.toString());
             throw e;
         }
     }
@@ -218,8 +112,9 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
         return new SQLCatalogSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource build(
+    public DataStreamSource<String> build(
             CDCBuilder cdcBuilder,
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
@@ -259,8 +154,7 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
                                 public void processElement(
                                         Map map,
                                         ProcessFunction<Map, Map>.Context ctx,
-                                        Collector<Map> out)
-                                        throws Exception {
+                                        Collector<Map> out) {
                                     LinkedHashMap source = (LinkedHashMap) map.get("source");
                                     try {
                                         Table table =
@@ -280,7 +174,7 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
                         final String schemaTableName = table.getSchemaTableName();
                         try {
                             DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                            logger.info("Build " + schemaTableName + " shunt successful...");
+                            logger.info(String.format("Build %s shunt successful...", schemaTableName));
                             List<String> columnNameList = new ArrayList<>();
                             List<LogicalType> columnTypeList = new ArrayList<>();
                             buildColumn(columnNameList, columnTypeList, table.getColumns());
@@ -291,15 +185,14 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
                                                     columnTypeList,
                                                     schemaTableName)
                                             .rebalance();
-                            logger.info("Build " + schemaTableName + " flatMap successful...");
-                            logger.info("Start build " + schemaTableName + " sink...");
+                            logger.info(String.format("Build %s flatMap successful...", schemaTableName));
+                            logger.info(String.format("Start build %s sink...", schemaTableName));
                             addTableSink(
                                     customTableEnvironment,
                                     rowDataDataStream,
-                                    table,
-                                    columnNameList);
+                                    table);
                         } catch (Exception e) {
-                            logger.error("Build " + schemaTableName + " cdc sync failed...");
+                            logger.error(String.format("Build %s cdc sync failed...", schemaTableName));
                             logger.error(LogUtil.getError(e));
                         }
                     });
@@ -309,7 +202,7 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
             for (Transformation<?> item : trans) {
                 env.addOperator(item);
             }
-            logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
+            logger.info(String.format("A total of %d table cdc sync were build successfull...", trans.size()));
         }
         return dataStreamSource;
     }
@@ -318,6 +211,7 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
         if (value == null) {
             return null;
         }
+
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue())
@@ -326,7 +220,9 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
             } else {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
             }
-        } else if (logicalType instanceof TimestampType) {
+        }
+
+        if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue())
                         .atZone(sinkTimeZone)
@@ -336,23 +232,29 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
             } else {
                 return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
             }
-        } else if (logicalType instanceof DecimalType) {
+        }
+
+        if (logicalType instanceof DecimalType) {
             return new BigDecimal((String) value);
-        } else if (logicalType instanceof BigIntType) {
+        }
+
+        if (logicalType instanceof BigIntType) {
             if (value instanceof Integer) {
                 return ((Integer) value).longValue();
             } else {
                 return value;
             }
-        } else if (logicalType instanceof VarBinaryType) {
+        }
+
+        if (logicalType instanceof VarBinaryType) {
             // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
             if (value instanceof String) {
                 return DatatypeConverter.parseBase64Binary((String) value);
             } else {
                 return value;
             }
-        } else {
-            return value;
         }
+
+        return value;
     }
 }

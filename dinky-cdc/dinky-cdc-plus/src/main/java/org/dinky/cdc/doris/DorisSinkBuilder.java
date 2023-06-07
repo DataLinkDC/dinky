@@ -174,7 +174,7 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
                     String.format("%s-%s_%s", sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()), getSinkSchemaName(table), getSinkTableName(table)));
         } else {
             executionBuilder.setLabelPrefix(
-                    String.format("dlink-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table), UUID.randomUUID()));
+                    String.format("dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table), UUID.randomUUID()));
         }
 
         if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
@@ -204,12 +204,9 @@ public class DorisSinkBuilder extends AbstractSinkBuilder implements Serializabl
 
         rowDataDataStream
                 .sinkTo(builder.build())
-                .name(
-                        "Doris Sink(table=["
-                                + getSinkSchemaName(table)
-                                + "."
-                                + getSinkTableName(table)
-                                + "])");
+                .name(String.format("Doris Sink(table=[%s.%s])",
+                                getSinkSchemaName(table),
+                                getSinkTableName(table)));
     }
 
     @Override
