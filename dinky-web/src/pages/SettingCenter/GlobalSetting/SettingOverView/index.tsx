@@ -29,7 +29,7 @@ import FadeIn from "@/components/Animation/FadeIn";
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: []});
+  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: [] , ldap: []});
 
 
   const fetchData = async () => {
