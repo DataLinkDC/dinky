@@ -19,14 +19,12 @@
 
 package org.dinky.cdc;
 
-import org.apache.flink.client.deployment.ClusterClientFactory;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
 
-import java.util.*;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
@@ -41,8 +39,7 @@ public class SinkBuilderFactory {
                     SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
-        final ServiceLoader<SinkBuilder> loader =
-                ServiceLoader.load(SinkBuilder.class);
+        final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
 
         final List<SinkBuilder> compatibleFactories = new ArrayList<>();
         final Iterator<SinkBuilder> factories = loader.iterator();
