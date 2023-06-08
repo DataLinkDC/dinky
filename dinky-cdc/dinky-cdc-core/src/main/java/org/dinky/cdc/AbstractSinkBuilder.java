@@ -204,17 +204,16 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         GenericRowData genericRowData = new GenericRowData(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
-                    i, buildRowDataValues(value, rowKind, columnNameList.get(i), columnTypeList.get(i)));
+                    i,
+                    buildRowDataValues(
+                            value, rowKind, columnNameList.get(i), columnTypeList.get(i)));
         }
         out.collect(genericRowData);
     }
 
     @SuppressWarnings("rawtypes")
     protected Object buildRowDataValues(
-            Map value,
-            RowKind rowKind,
-            String columnName,
-            LogicalType columnType) {
+            Map value, RowKind rowKind, String columnName, LogicalType columnType) {
         Map data = getOriginRowData(rowKind, value);
         return convertValue(data.get(columnName), columnType);
     }
