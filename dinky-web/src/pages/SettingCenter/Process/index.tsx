@@ -17,10 +17,13 @@
 
 import {PageContainer} from "@ant-design/pro-components";
 import ProcessList from "./components/ProcessList";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 export default ()=> {
 
-  return <PageContainer title={false}>
-    <ProcessList />
-  </PageContainer>
+  return <SlowlyAppear>
+    <PageContainer title={false}>
+      <ProcessList />
+    </PageContainer>
+  </SlowlyAppear>
 }

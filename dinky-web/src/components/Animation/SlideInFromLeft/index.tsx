@@ -17,15 +17,17 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
 
-export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
-    </Pop>
-}
+import { useSpring, animated } from 'react-spring';
+
+const SlideInFromLeft = (props: any) => {
+    const { children } = props;
+    const style = useSpring({
+        from: { transform: 'translateX(100%)' },
+        to: { transform: 'translateX(10%)' },
+        config: { duration: 1000 },
+    });
+    return <animated.div style={style}>{children}</animated.div>;
+};
+
+export default SlideInFromLeft

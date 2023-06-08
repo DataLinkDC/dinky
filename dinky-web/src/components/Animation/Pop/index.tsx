@@ -17,15 +17,18 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
+import { useSpring, animated } from 'react-spring';
 
-export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
-    </Pop>
-}
+//弹出效果：
+const Pop = (props: any) => {
+    const {children} = props;
+    const style = useSpring({
+        from: { transform: 'scale(0)', opacity: 0 },
+        to: { transform: 'scale(1)', opacity: 1 },
+        config: { tension: 300, friction: 20 },
+    });
+
+    return <animated.div style={style}>{children}</animated.div>;
+};
+
+export default Pop

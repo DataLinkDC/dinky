@@ -17,15 +17,18 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
+import {useSpring, animated} from 'react-spring';
 
-export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
-    </Pop>
-}
+// 变形效果
+const Transform = (props: any) => {
+    const {children} = props;
+    const style = useSpring({
+        from: {transform: 'scale(1) rotate(0deg)'},
+        to: {transform: 'scale(0.5) rotate(180deg)'},
+        config: {duration: 1000},
+    });
+
+    return <animated.div style={style}>{children}</animated.div>;
+};
+
+export default Transform

@@ -20,6 +20,7 @@
 import React from 'react';
 import {PageContainer} from '@ant-design/pro-layout';
 import DocumentProTable from "@/pages/RegCenter/Document/components/DocumentProTable";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 
 
 export default () => {
@@ -27,9 +28,9 @@ export default () => {
     /**
      * render
      */
-    return (
+    return <SlowlyAppear>
         <PageContainer title={false}>
             <DocumentProTable/>
         </PageContainer>
-    );
+    </SlowlyAppear>
 };

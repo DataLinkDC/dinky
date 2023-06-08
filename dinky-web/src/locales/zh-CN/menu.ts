@@ -31,7 +31,6 @@ export default {
   'menu.account.logout': '退出登录',
   'menu.account.changePassword': '修改密码',
   'menu.account.checkTenant': '切换租户',
-  'menu.tenants': '租户：',
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',
 
   'menu.datastudio': '数据开发',

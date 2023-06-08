@@ -32,6 +32,7 @@ const Settings: ProLayoutProps & {
   fixedHeader: false,
   fixSiderbar: true,
   colorWeak: false,
+  // 这里不能删除,需要先设置,否则会导致页面白屏, 然后在 layout 进行重新赋值
   title: 'Dinky Real-time Platform ',
   pwa: true,
   logo: '/dinky.svg',
