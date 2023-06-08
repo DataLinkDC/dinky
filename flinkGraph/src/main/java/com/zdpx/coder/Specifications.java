@@ -124,7 +124,7 @@ public final class Specifications {
     public static String readSpecializationFile(String filePath) {
         File file = new File(filePath);
         if (!file.exists()) {
-            return "";
+            return null;
         }
 
         StringBuilder contentBuilder = new StringBuilder();

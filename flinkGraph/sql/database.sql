@@ -41,7 +41,7 @@ create table flink.ts
 );
 
 # dinky datatable
-create table dlink.zdpx_task_flow_graph
+create table dinky.zdpx_task_flow_graph
 (
     id          int auto_increment
         primary key,
