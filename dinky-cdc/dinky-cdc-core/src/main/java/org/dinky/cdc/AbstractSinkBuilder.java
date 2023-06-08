@@ -64,6 +64,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,25 +163,23 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    private FlatMapFunction<Map, RowData> sinkRowDataFunction(
+    protected FlatMapFunction<Map, RowData> sinkRowDataFunction(
             List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
         return (value, out) -> {
             try {
-                Map after = (Map) value.get("after");
-                Map before = (Map) value.get("before");
                 switch (value.get("op").toString()) {
                     case "r":
                     case "c":
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.INSERT, after);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.INSERT, value);
                         break;
                     case "d":
-                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.DELETE, value);
                         break;
                     case "u":
                         rowDataCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
                         rowDataCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, after);
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
                         break;
                     default:
                 }
@@ -196,19 +195,43 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     @SuppressWarnings("rawtypes")
-    private void rowDataCollect(
+    protected void rowDataCollect(
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             Collector<RowData> out,
             RowKind rowKind,
             Map value) {
-        GenericRowData genericRowData = new GenericRowData(columnNameList.size());
-        genericRowData.setRowKind(rowKind);
+        GenericRowData genericRowData = new GenericRowData(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
-                    i, convertValue(value.get(columnNameList.get(i)), columnTypeList.get(i)));
+                    i, buildRowDataValues(value, rowKind, columnNameList.get(i), columnTypeList.get(i)));
         }
         out.collect(genericRowData);
+    }
+
+    @SuppressWarnings("rawtypes")
+    protected Object buildRowDataValues(
+            Map value,
+            RowKind rowKind,
+            String columnName,
+            LogicalType columnType) {
+        Map data = getOriginRowData(rowKind, value);
+        return convertValue(data.get(columnName), columnType);
+    }
+
+    @SuppressWarnings("rawtypes")
+    public static Map getOriginRowData(RowKind rowKind, Map value) {
+        switch (rowKind) {
+            case INSERT:
+            case UPDATE_AFTER:
+                return (Map) value.get("after");
+            case UPDATE_BEFORE:
+            case DELETE:
+                return (Map) value.get("before");
+            default:
+                logger.warn("Unsupported row kind: {}", rowKind);
+        }
+        return Collections.emptyMap();
     }
 
     public void addSink(

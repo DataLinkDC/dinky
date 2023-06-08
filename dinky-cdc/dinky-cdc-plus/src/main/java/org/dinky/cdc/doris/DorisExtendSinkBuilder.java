@@ -83,11 +83,13 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
     @SuppressWarnings("rawtypes")
     protected Object buildRowDataValues(
             Map value,
-            Map rowData,
+            RowKind rowKind,
             String columnName,
-            LogicalType columnType,
-            Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList,
-            ZoneId opTimeZone) {
+            LogicalType columnType) {
+        Map rowData = getOriginRowData(rowKind, value);
+        final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList =
+                this.additionalColumnConfigList;
+        final ZoneId opTimeZone = this.getSinkTimeZone();
         if (aColumnConfigList != null
                 && aColumnConfigList.size() > 0
                 && aColumnConfigList.containsKey(columnName)) {
@@ -140,101 +142,11 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList =
-                this.additionalColumnConfigList;
-        final ZoneId opTimeZone = this.getSinkTimeZone();
-        logger.info("sinkTimeZone:" + this.getSinkTimeZone().toString());
+        logger.info("sinkTimeZone:{}", this.getSinkTimeZone().toString());
         return filterOperator.flatMap(
-                new FlatMapFunction<Map, RowData>() {
-
-                    @Override
-                    public void flatMap(Map value, Collector<RowData> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    GenericRowData igenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    igenericRowData.setRowKind(RowKind.INSERT);
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        igenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        idata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(igenericRowData);
-                                    break;
-                                case "d":
-                                    GenericRowData dgenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    dgenericRowData.setRowKind(RowKind.DELETE);
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        dgenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        ddata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(dgenericRowData);
-                                    break;
-                                case "u":
-                                    GenericRowData ubgenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubgenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        ubdata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(ubgenericRowData);
-                                    GenericRowData uagenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uagenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        uadata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(uagenericRowData);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error(
-                                    "SchameTable: {} - Row: {} - Exception: {}",
-                                    schemaTableName,
-                                    JSONUtil.toJsonString(value),
-                                    e.toString());
-                            throw e;
-                        }
-                    }
-                });
+                sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
     }
+
 
     @Override
     protected void buildColumn(
