@@ -19,13 +19,14 @@
 
 package org.dinky.cdc;
 
+import org.apache.flink.client.deployment.ClusterClientFactory;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
 
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 import com.google.common.collect.ImmutableMap;
@@ -40,6 +41,25 @@ public class SinkBuilderFactory {
                     SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
+        final ServiceLoader<SinkBuilder> loader =
+                ServiceLoader.load(SinkBuilder.class);
+
+        final List<SinkBuilder> compatibleFactories = new ArrayList<>();
+        final Iterator<SinkBuilder> factories = loader.iterator();
+        while (factories.hasNext()) {
+            try {
+                final SinkBuilder factory = factories.next();
+                if (factory != null) {
+                    compatibleFactories.add(factory);
+                }
+            } catch (Throwable e) {
+                if (e.getCause() instanceof NoClassDefFoundError) {
+                } else {
+                    throw e;
+                }
+            }
+        }
+
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("set Sink connector。");
         }
