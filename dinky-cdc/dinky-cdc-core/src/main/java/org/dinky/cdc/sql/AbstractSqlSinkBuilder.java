@@ -168,6 +168,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 });
     }
 
+    @SuppressWarnings("rawtypes")
     protected SingleOutputStreamOperator<Map> createMapSingleOutputStreamOperator(DataStreamSource<String> dataStreamSource, Map<Table, OutputTag<Map>> tagMap, Map<String, Table> tableMap) {
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
