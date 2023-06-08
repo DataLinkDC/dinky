@@ -19,51 +19,35 @@
 
 package org.dinky.cdc.sql;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.CDCBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.LogUtil;
-import org.dinky.utils.SplitUtil;
-
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.api.dag.Transformation;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.types.Row;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
+import org.dinky.utils.SplitUtil;
 
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import com.google.common.collect.Lists;
+import java.util.stream.Collectors;
 
 public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
-    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     {
         typeConverterList =
@@ -85,17 +69,24 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     private String addSourceTableView(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+            Table table) {
         // 上游表名称
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
+        List<String> columnNameList = table.getColumns().stream().map(Column::getName).collect(Collectors.toList());
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, columnNameList);
         logger.info("Create {} temporaryView successful...", viewName);
         return viewName;
     }
 
-    private void addTableSinks(
-            CustomTableEnvironment customTableEnvironment, Table table, String viewName) {
+    @Override
+    protected void addTableSink(
+            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
+        String viewName = addSourceTableView(
+                customTableEnvironment,
+                rowDataDataStream,
+                table
+        );
+
         // 下游库名称
         String sinkSchemaName = getSinkSchemaName(table);
         // 下游表名称
@@ -158,115 +149,18 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         return new SQLSinkBuilder(config);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
-        final String timeZone = config.getSink().get("timezone");
-        config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)) {
-            sinkTimeZone = ZoneId.of(timeZone);
-        }
-        final List<Schema> schemaList = config.getSchemaList();
-        if (Asserts.isNullCollection(schemaList)) {
-            return dataStreamSource;
-        }
-
-        logger.info("Build deserialize successful...");
-        Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
-        Map<String, Table> tableMap = new HashMap<>();
-        for (Schema schema : schemaList) {
-            for (Table table : schema.getTables()) {
-                String sinkTableName = getSinkTableName(table);
-                OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
-                tagMap.put(table, outputTag);
-                tableMap.put(table.getSchemaTableName(), table);
-            }
-        }
-
-        final String schemaFieldName = config.getSchemaFieldName();
-        SingleOutputStreamOperator<Map> mapOperator =
-                dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
-
-        Map<String, String> splitConfMap = config.getSplit();
-        SingleOutputStreamOperator<Map> processOperator =
-                mapOperator.process(
-                        new ProcessFunction<Map, Map>() {
-
-                            @Override
-                            public void processElement(
-                                    Map map,
-                                    ProcessFunction<Map, Map>.Context ctx,
-                                    Collector<Map> out) {
-                                LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                try {
-                                    String tableName =
-                                            SplitUtil.getReValue(
-                                                            source.get(schemaFieldName).toString(),
-                                                            splitConfMap)
-                                                    + "."
-                                                    + SplitUtil.getReValue(
-                                                            source.get("table").toString(),
-                                                            splitConfMap);
-                                    Table table = tableMap.get(tableName);
-                                    OutputTag<Map> outputTag = tagMap.get(table);
-                                    Optional.ofNullable(outputTag)
-                                            .orElseThrow(
-                                                    () ->
-                                                            new RuntimeException(
-                                                                    "data outPutTag is not exists!table name is  "
-                                                                            + tableName));
-                                    ctx.output(outputTag, map);
-                                } catch (Exception e) {
-                                    logger.error(e.getMessage(), e);
-                                    out.collect(map);
-                                }
-                            }
-                        });
-        tagMap.forEach(
-                (table, tag) -> {
-                    final String schemaTableName = table.getSchemaTableName();
-                    try {
-                        DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                        logger.info("Build {} shunt successful...", schemaTableName);
-                        List<String> columnNameList = new ArrayList<>();
-                        List<LogicalType> columnTypeList = new ArrayList<>();
-                        buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        DataStream<Row> rowDataDataStream =
-                                buildRow(
-                                                filterOperator,
-                                                columnNameList,
-                                                columnTypeList,
-                                                schemaTableName)
-                                        .rebalance();
-                        logger.info("Build {} flatMap successful...", schemaTableName);
-                        logger.info("Start build {} sink...", schemaTableName);
-
-                        String viewName =
-                                addSourceTableView(
-                                        customTableEnvironment,
-                                        rowDataDataStream,
-                                        table,
-                                        columnNameList);
-                        addTableSinks(customTableEnvironment, table, viewName);
-                    } catch (Exception e) {
-                        logger.error("Build {} cdc sync failed...", schemaTableName);
-                        logger.error(LogUtil.getError(e));
-                    }
-                });
-
-        List<Transformation<?>> trans =
-                customTableEnvironment.getPlanner().translate(modifyOperations);
-        for (Transformation<?> item : trans) {
-            env.addOperator(item);
-        }
-        logger.info("A total of {} table cdc sync were build successful...", trans.size());
-        return dataStreamSource;
+    protected String createTableName(LinkedHashMap source, String schemaFieldName) {
+        return SplitUtil.getReValue(
+                source.get(schemaFieldName).toString(),
+                config.getSplit())
+                + "."
+                + SplitUtil.getReValue(
+                source.get("table").toString(),
+                config.getSplit());
     }
 
+    @Override
     protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
@@ -281,6 +175,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         return Optional.empty();
     }
 
+    @Override
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {

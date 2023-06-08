@@ -19,46 +19,27 @@
 
 package org.dinky.cdc.sql.catalog;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.CDCBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
-import org.dinky.cdc.utils.FlinkStatementUtil;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.LogUtil;
-
-import org.apache.flink.api.dag.Transformation;
+import com.google.common.collect.Lists;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
 import org.apache.flink.table.types.logical.DateType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.types.Row;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
+import org.dinky.cdc.utils.FlinkStatementUtil;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-
-import com.google.common.collect.Lists;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql-catalog";
-    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     {
         typeConverterList =
@@ -76,7 +57,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         super(config);
     }
 
-    private void addTableSink(
+    @Override
+    public void addTableSink(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
             Table table) {
@@ -103,100 +85,19 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         return new SQLCatalogSinkBuilder(config);
     }
 
-    @SuppressWarnings("rawtypes")
-    @Override
-    public DataStreamSource<String> build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
-        final String timeZone = config.getSink().get("timezone");
-        config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)) {
-            sinkTimeZone = ZoneId.of(timeZone);
-        }
-        final List<Schema> schemaList = config.getSchemaList();
-        if (Asserts.isNullCollection(schemaList)) {
-            return dataStreamSource;
-        }
-
+    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {
         logger.info("Build catalog successful...");
         customTableEnvironment.executeSql(FlinkStatementUtil.getCreateCatalogStatement(config));
-
-        logger.info("Build deserialize successful...");
-        Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
-        Map<String, Table> tableMap = new HashMap<>();
-        for (Schema schema : schemaList) {
-            for (Table table : schema.getTables()) {
-                String sinkTableName = getSinkTableName(table);
-                OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
-                tagMap.put(table, outputTag);
-                tableMap.put(table.getSchemaTableName(), table);
-            }
-        }
-
-        final String schemaFieldName = config.getSchemaFieldName();
-        SingleOutputStreamOperator<Map> mapOperator =
-                dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
-
-        SingleOutputStreamOperator<Map> processOperator =
-                mapOperator.process(
-                        new ProcessFunction<Map, Map>() {
-
-                            @Override
-                            public void processElement(
-                                    Map map,
-                                    ProcessFunction<Map, Map>.Context ctx,
-                                    Collector<Map> out) {
-                                LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                try {
-                                    Table table =
-                                            tableMap.get(
-                                                    source.get(schemaFieldName).toString()
-                                                            + "."
-                                                            + source.get("table").toString());
-                                    OutputTag<Map> outputTag = tagMap.get(table);
-                                    ctx.output(outputTag, map);
-                                } catch (Exception e) {
-                                    out.collect(map);
-                                }
-                            }
-                        });
-        tagMap.forEach(
-                (table, tag) -> {
-                    final String schemaTableName = table.getSchemaTableName();
-                    try {
-                        DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                        logger.info("Build {} shunt successful...", schemaTableName);
-                        List<String> columnNameList = new ArrayList<>();
-                        List<LogicalType> columnTypeList = new ArrayList<>();
-                        buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        DataStream<Row> rowDataDataStream =
-                                buildRow(
-                                                filterOperator,
-                                                columnNameList,
-                                                columnTypeList,
-                                                schemaTableName)
-                                        .rebalance();
-                        logger.info("Build {} flatMap successful...", schemaTableName);
-                        logger.info("Start build {} sink...", schemaTableName);
-
-                        addTableSink(customTableEnvironment, rowDataDataStream, table);
-                    } catch (Exception e) {
-                        logger.error("Build {} cdc sync failed...", schemaTableName);
-                        logger.error(LogUtil.getError(e));
-                    }
-                });
-
-        List<Transformation<?>> trans =
-                customTableEnvironment.getPlanner().translate(modifyOperations);
-        for (Transformation<?> item : trans) {
-            env.addOperator(item);
-        }
-        logger.info("A total of {} table cdc sync were build successful...", trans.size());
-        return dataStreamSource;
     }
 
+    @Override
+    protected String createTableName(LinkedHashMap source, String schemaFieldName) {
+        return source.get(schemaFieldName).toString()
+                + "."
+                + source.get("table").toString();
+    }
+
+    @Override
     protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
@@ -211,6 +112,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
         return Optional.empty();
     }
 
+    @Override
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {

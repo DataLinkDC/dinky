@@ -19,6 +19,7 @@
 
 package org.dinky.cdc;
 
+import org.apache.flink.types.Row;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.Column;
@@ -529,4 +530,6 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected ZoneId getSinkTimeZone() {
         return this.sinkTimeZone;
     }
+
+
 }
