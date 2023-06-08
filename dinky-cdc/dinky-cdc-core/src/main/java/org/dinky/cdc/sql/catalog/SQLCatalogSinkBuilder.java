@@ -19,12 +19,6 @@
 
 package org.dinky.cdc.sql.catalog;
 
-import com.google.common.collect.Lists;
-import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.LogicalType;
-import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.types.Row;
 import org.dinky.cdc.SinkBuilder;
 import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
@@ -32,10 +26,18 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
 
+import org.apache.flink.streaming.api.datastream.DataStream;
+import org.apache.flink.table.types.logical.DateType;
+import org.apache.flink.table.types.logical.LogicalType;
+import org.apache.flink.table.types.logical.TimestampType;
+import org.apache.flink.types.Row;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Optional;
+
+import com.google.common.collect.Lists;
 
 public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
@@ -92,9 +94,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
 
     @Override
     protected String createTableName(LinkedHashMap source, String schemaFieldName) {
-        return source.get(schemaFieldName).toString()
-                + "."
-                + source.get("table").toString();
+        return source.get(schemaFieldName).toString() + "." + source.get("table").toString();
     }
 
     @Override
