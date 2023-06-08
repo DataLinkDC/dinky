@@ -1472,6 +1472,7 @@ CREATE TABLE "public"."dinky_user" (
                                        "password" varchar(50) COLLATE "pg_catalog"."default",
                                        "nickname" varchar(50) COLLATE "pg_catalog"."default",
                                        "worknum" varchar(50) COLLATE "pg_catalog"."default",
+                                       "user_type" int2 COLLATE "pg_catalog"."default",
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,
@@ -1496,7 +1497,7 @@ COMMENT ON TABLE "public"."dinky_user" IS 'user';
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO "public"."dinky_user" VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO "public"."dinky_user" VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_user_role

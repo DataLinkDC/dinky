@@ -106,3 +106,6 @@ CREATE TABLE `dinky_git_project` (
 
 
 ALTER TABLE dinky_role_select_permissions RENAME TO dinky_row_permissions;
+
+ALTER TABLE dinky_user
+    add user_type int default 0 not null comment 'login type（0:LOCAL,1:LDAP）' after user_type;
