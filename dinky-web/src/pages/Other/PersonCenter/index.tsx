@@ -17,17 +17,27 @@
  *
  */
 
-import React from "react";
+import React, {useState} from "react";
 import {useModel} from "@@/exports";
-import {Avatar, Divider, Drawer, Spin, Tag, Typography} from "antd";
+import {Divider, Empty, Form, Space, Tag} from "antd";
 import {PageContainer, PageLoading, ProCard} from "@ant-design/pro-components";
 import {UserBaseInfo} from "@/types/User/data";
-
-const { Paragraph } = Typography;
+import {l} from "@/utils/intl";
+import {LogSvg} from "@/components/Icons/CodeLanguageIcon";
+import PasswordForm from "@/pages/AuthCenter/User/components/PasswordModal/PasswordForm";
+import {SecurityScanTwoTone} from "@ant-design/icons";
+import {handleOption} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
+import BaseInfo from "@/pages/Other/PersonCenter/BaseInfo";
+import Pop from "@/components/Animation/Pop";
 
 const PersonCenter = () => {
 
+    const [form] = Form.useForm();
+
     const { initialState, setInitialState } = useModel('@@initialState');
+    const [activeKey, setActiveKey] = useState('operation');
+
     const loading = <PageLoading/>;
 
     if (!initialState) {
@@ -38,27 +48,92 @@ const PersonCenter = () => {
         return loading;
     }
 
-    // TODO: SUPPORT USER INFO , the left card is render user base info , the right card is render change password form etc..
-    return <PageContainer title={false}>
-        <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
-            <ProCard style={{height: '91vh',alignItems:'center'}} colSpan="30%" hoverable bordered>
-                <Avatar draggable size={128} src={currentUser.user.avatar} />
-                <Divider dashed plain />
-                {/*<Typography.Title level={1} >{currentUser.user.username}</Typography.Title >*/}
-                {/*<Typography.Title level={3} >{currentUser.user.nickname}</Typography.Title >*/}
-                {/*<Typography.Title level={4} >{currentUser.user.mobile}</Typography.Title >*/}
-                {/*<Typography.Title level={4} >{currentUser.user.worknum}</Typography.Title >*/}
-                {/*<Divider orientation={'left'} dashed plain >租户</Divider>*/}
-                {/*<Paragraph>*/}
-                {/*    {currentUser.roleList}*/}
-                {/*    {currentUser.tenantList?.map((item: UserBaseInfo.Tenant) => {*/}
-                {/*        return <Tag color={'default'} key={item.id}>{item.tenantCode} </Tag>*/}
-                {/*    })}*/}
-                {/*</Paragraph>*/}
+    const { roleList, tenantList,currentTenant,user } = currentUser;
+
+    /**
+     * renderTenantTagList
+     * @param {UserBaseInfo.Tenant[]} items
+     * @returns {JSX.Element[] | undefined}
+     */
+    const renderTenantTagList = (items: UserBaseInfo.Tenant[]) => {
+        return items?.map((item: UserBaseInfo.Tenant) => {
+            return <>
+                <Tag color={'success'} key={item.id}>{item.tenantCode} </Tag>
+            </>
+        })
+    };
+
+    /**
+     * renderRoleTagList
+     * @param {UserBaseInfo.Role[]} items
+     * @returns {JSX.Element[] | undefined}
+     */
+    const renderRoleTagList = (items: UserBaseInfo.Role[]) => {
+        return items?.map((item: UserBaseInfo.Role) => {
+            return <>
+                <Tag color={'success'} key={item.id}>{item.roleCode}</Tag>
+            </>
+        })
+    };
+
+    /**
+     * handleSubmitPassWord
+     * @param value
+     * @returns {Promise<void>}
+     */
+    const handleSubmitPassWord = async (value: any) => {
+        // todo: change password
+        await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
+    }
+
+
+    /**
+     * tabList
+     * @type {({children: JSX.Element, label: JSX.Element, key: string} | {children: JSX.Element, label: JSX.Element, key: string})[]}
+     */
+    const tabList = [
+        {
+            key: 'operation',
+            label: <><LogSvg/>{l('user.op')}</>,
+            children: <><Empty description={l('global.stay.tuned')} image={Empty.PRESENTED_IMAGE_DEFAULT}/></>,
+        },
+        {
+            key: 'changePassword',
+            label: <><SecurityScanTwoTone/>{l('button.changePassword')}</>,
+            children: <PasswordForm form={form} renderSubmit values={user} onSubmit={handleSubmitPassWord} />,
+        },
+    ];
+
+
+    /**
+     * render
+     */
+    return <Pop>
+        <PageContainer title={false}>
+            <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
+                <ProCard style={{height: '91vh',textAlign:'center'}} colSpan="30%" hoverable bordered>
+                    <BaseInfo user={user} currentTenant={currentTenant} />
+
+                    <Divider orientation={'left'} plain >{l('user.tenant')}</Divider>
+                    <Space>{renderTenantTagList(tenantList || [])}</Space>
+                    <Divider plain ></Divider>
+                    <Divider orientation={'left'} plain >{l('user.role')}</Divider>
+                    <Space>{renderRoleTagList(roleList || [])}</Space>
+                </ProCard>
+
+                <ProCard
+                    style={{height: '91vh',textAlign:'center'}}
+                    tabs={{
+                        activeKey: activeKey,
+                        type: 'card',
+                        animated: true,
+                        onChange: (key: string) => setActiveKey(key),
+                        items: tabList,
+                    }}
+                />
             </ProCard>
-            <ProCard hoverable bordered>Auto</ProCard>
-        </ProCard>
-    </PageContainer>;
+        </PageContainer>
+    </Pop>;
 }
 
 export default PersonCenter;

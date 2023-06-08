@@ -25,10 +25,13 @@ import {UserBaseInfo} from "@/types/User/data";
 import React from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {Values} from "async-validator";
+import {Button} from "antd";
 
 type PasswordFormProps = {
     values: Partial<UserBaseInfo.ChangePasswordParams>;
     form: FormInstance<Values>
+    renderSubmit?: boolean;
+    onSubmit?: (values: Partial<UserBaseInfo.ChangePasswordParams>) => void;
 };
 
 
@@ -37,7 +40,14 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     /**
      * init props
      */
-    const {values, form} = props;
+    const {values, form,renderSubmit=false,onSubmit} = props;
+    const handleSubmit = async () => {
+       const value = await form?.validateFields()
+        if (onSubmit) {
+            onSubmit(values);
+        }
+    }
+
 
     /**
      * render changePassword form
@@ -95,7 +105,15 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
             form={form}
             initialValues={values}
             layout={"horizontal"}
-            submitter={false}
+            submitter={{
+                render: (submitProps, doms) => {
+                    return renderSubmit?<>
+                        <Button type="primary" onClick={async ()=>{
+                            await handleSubmit();
+                        }}>{l('button.submit')}</Button>
+                    </>:<></>
+                },
+            }}
         >
             {pwdFormRender()}
         </ProForm>

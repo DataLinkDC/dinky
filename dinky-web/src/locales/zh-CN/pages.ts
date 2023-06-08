@@ -79,6 +79,12 @@ export default {
   'user.newpwdPlaceholder': '请输入新密码',
   'user.repeatpwdPlaceholder': '请重复输入新密码',
   'user.oldNewPwdNoMatch': '两次输入的新密码不一致',
+  // --  personal info
+  'user.info': '个人信息',
+  'user.tenant': '租户',
+  'user.role': '角色',
+  'user.op': '操作记录',
+  'user.current.tenant': '当前登录租户',
 
   // tenant
   'tenant.TenantManager': '租户管理',

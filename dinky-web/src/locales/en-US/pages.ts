@@ -82,6 +82,12 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  // --  personal info
+  'user.info': 'Personal Info',
+  'user.tenant': 'Tenant',
+  'user.role': 'Role',
+  'user.op': 'Operation',
+  'user.current.tenant': 'Current Tenant',
 
   // tenant
   'tenant.TenantManager': 'Tenant Management',
