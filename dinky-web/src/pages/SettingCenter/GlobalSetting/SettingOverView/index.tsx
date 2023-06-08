@@ -25,6 +25,7 @@ import {MavenConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/M
 import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
 import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig";
 import {l} from '@/utils/intl';
+import FadeIn from "@/components/Animation/FadeIn";
 
 const SettingOverView = () => {
 
@@ -65,9 +66,9 @@ const SettingOverView = () => {
   };
 
 
-  return <>
+  return <FadeIn>
     {renderData()}
-  </>;
+  </FadeIn>;
 };
 
 export default memo(SettingOverView);

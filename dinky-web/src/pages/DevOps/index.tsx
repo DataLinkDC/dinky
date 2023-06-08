@@ -17,14 +17,15 @@
 
 import {PageContainer} from '@ant-design/pro-layout';
 import JobList from '@/pages/DevOps/JobList';
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
 
 export default () => {
   /**
    * breadcrumb={{style:{display:'none'}}} is used to hide the breadcrumb || 隐藏右上角的路由导航面包屑
    */
-  return <>
+  return <SlowlyAppear>
     <PageContainer title={false} breadcrumb={{style:{display:'none'}}}>
       <JobList/>
     </PageContainer>
-  </>;
+  </SlowlyAppear>;
 }

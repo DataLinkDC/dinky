@@ -15,21 +15,29 @@
  * limitations under the License.
  */
 
-import { LogoutOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  LogoutOutlined,
+  TeamOutlined,
+  UserSwitchOutlined
+} from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
-import { Avatar, Spin } from 'antd';
+import {Avatar, Modal, Spin} from 'antd';
 import { stringify } from 'querystring';
 import type { MenuInfo } from 'rc-menu/lib/interface';
 import React, { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
-import {outLogin} from "@/services/BusinessCrud";
+import {chooseTenantSubmit, outLogin} from "@/services/BusinessCrud";
+import {l} from "@/utils/intl";
+import {setTenantStorageAndCookie} from "@/utils/function";
+import {ErrorNotification, SuccessNotification} from "@/utils/messages";
+import {
+  ItemType,
+} from "rc-menu/es/interface";
 
-export type GlobalHeaderRightProps = {
-  menu?: boolean;
-};
+
 
 const Name = () => {
   const { initialState } = useModel('@@initialState');
@@ -73,7 +81,7 @@ const AvatarLogo = () => {
   );
 };
 
-const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
+const AvatarDropdown = () => {
   /**
    * 退出登录，并且将当前的 url 保存
    */
@@ -93,6 +101,7 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
       });
     }
   };
+
   const actionClassName = useEmotionCss(({ token }) => {
     return {
       display: 'flex',
@@ -111,17 +120,14 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
   });
   const { initialState, setInitialState } = useModel('@@initialState');
 
-  const onMenuClick = useCallback(
+  const loginOutHandler = useCallback(
     async (event: MenuInfo) => {
       const { key } = event;
-      if (key === 'logout') {
         flushSync(() => {
-          setInitialState((s) => ({ ...s, currentUser: undefined }));
+            setInitialState((s) => ({ ...s, currentUser: undefined }));
         });
         await loginOut();
         return;
-      }
-      history.push(`/account/${key}`);
     },
     [setInitialState],
   );
@@ -146,36 +152,77 @@ const AvatarDropdown: React.FC<GlobalHeaderRightProps> = ({ menu }) => {
     return loading;
   }
 
+
+  /**
+   *
+   * @param option
+   */
+  const tenantHandleChange = (option:any) => {
+    const tenantCode = option.domEvent.target.innerText;
+    const tenantId = option.key as number;
+    Modal.confirm({
+      title: l("menu.account.checkTenant"),
+      content: l("menu.account.checkTenantConfirm", "", {tenantCode}),
+      okText: l("button.confirm"),
+      cancelText: l("button.cancel"),
+      onOk: async () => {
+        const result = await chooseTenantSubmit({tenantId});
+        setTenantStorageAndCookie(tenantId);
+        if (result.code === 0) {
+          SuccessNotification(result.msg);
+        } else {
+          ErrorNotification(result.msg);
+        }
+        // trigger global refresh, such as reload page
+        window.location.reload();
+      },
+    });
+  };
+  const renderTenantList = () => {
+    let chooseTenantList: ItemType[] = [];
+    currentUser.tenantList?.map((item) => {
+     return chooseTenantList.push({
+        key: item.id,
+        label: item.tenantCode,
+        disabled: item.id === currentUser.currentTenant?.id,
+        onClick: (e) => tenantHandleChange(e),
+      })
+    })
+    return chooseTenantList;
+  }
+
+
   const menuItems = [
-    ...(menu
-      ? [
-          {
-            key: 'center',
-            icon: <UserOutlined />,
-            label: '个人中心',
-          },
-          {
-            key: 'settings',
-            icon: <SettingOutlined />,
-            label: '个人设置',
-          },
-          {
-            type: 'divider' as const,
-          },
-        ]
-      : []),
-    {
-      key: 'logout',
-      icon: <LogoutOutlined />,
-      label: '退出登录',
-    },
+      {
+        key: 'center',
+        icon: <TeamOutlined />,
+        label: l('menu.account.center'),
+        onClick: () => history.push('/account/center'),
+      },
+      {
+        type: 'divider' as const,
+      },
+      {
+        key: 'switching',
+        icon: <UserSwitchOutlined />,
+        label: l('menu.account.checkTenant'),
+        children:  renderTenantList(),
+      },
+      {
+        type: 'divider' as const,
+      },
+      {
+        key: 'logout',
+        icon: <LogoutOutlined />,
+        label: l('menu.account.logout'),
+        onClick: loginOutHandler,
+      },
   ];
 
   return (
     <HeaderDropdown
       menu={{
         selectedKeys: [],
-        onClick: onMenuClick,
         items: menuItems,
       }}
     >

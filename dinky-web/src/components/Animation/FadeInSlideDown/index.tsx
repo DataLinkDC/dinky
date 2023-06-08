@@ -17,15 +17,19 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
+// 淡入效果并从上方滑入
 
-export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
-    </Pop>
-}
+import {useSpring, animated} from 'react-spring';
+
+const FadeInSlideDown = (props: any) => {
+    const {children} = props;
+    const style = useSpring({
+        from: {opacity: 0, transform: 'translateY(-100px)'},
+        to: {opacity: 1, transform: 'translateY(0)'},
+        config: {duration: 500},
+    });
+
+    return <animated.div style={style}>{children}</animated.div>;
+};
+
+export default FadeInSlideDown

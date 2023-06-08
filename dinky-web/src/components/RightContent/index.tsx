@@ -18,10 +18,8 @@
 import {STORY_LANGUAGE, VERSION} from '@/services/constants';
 import {
   getLocalStorageLanguage, getValueFromLocalStorage,
-  parseJsonStr,
   setCookieByKey,
   setKeyToLocalStorage,
-  setTenantStorageAndCookie
 } from '@/utils/function';
 import {l} from "@/utils/intl";
 import {
@@ -29,19 +27,14 @@ import {
   FullscreenOutlined,
   GlobalOutlined
 } from "@ant-design/icons";
-import {ActionType} from "@ant-design/pro-components";
 import {useEmotionCss} from "@ant-design/use-emotion-css";
 import {SelectLang, useModel} from "@umijs/max";
-import {Modal, Select, Space, Switch, Tooltip} from "antd";
-import {OptionType} from "dayjs";
-import React, {useEffect, useRef, useState} from "react";
+import {Space, Switch, Tooltip} from "antd";
+import React, {useEffect, useState} from "react";
 import screenfull from "screenfull";
 import Avatar from "./AvatarDropdown";
 import {ThemeCloud, ThemeStar} from "@/components/ThemeSvg/ThemeSvg";
-import {chooseTenantSubmit} from "@/services/BusinessCrud";
-import {ErrorNotification, SuccessNotification} from "@/utils/messages";
 import {THEME} from "@/types/Public/data";
-import cookies from 'js-cookie';
 
 
 const GlobalHeaderRight: React.FC = () => {
@@ -128,32 +121,6 @@ const GlobalHeaderRight: React.FC = () => {
     };
   });
 
-  /**
-   *
-   * @param option
-   */
-  const tenantHandleChange = (option: OptionType) => {
-    const result = parseJsonStr(option as string);
-    const tenantId = result.value;
-
-    Modal.confirm({
-      title: l("menu.account.checkTenant"),
-      content: l("menu.account.checkTenantConfirm", "", {tenantCode: result.children}),
-      okText: l("button.confirm"),
-      cancelText: l("button.cancel"),
-      onOk: async () => {
-        const result = await chooseTenantSubmit({tenantId});
-        setTenantStorageAndCookie(tenantId);
-        if (result.code === 0) {
-          SuccessNotification(result.msg);
-        } else {
-          ErrorNotification(result.msg);
-        }
-        // trigger global refresh, such as reload page
-        window.location.reload();
-      },
-    });
-  };
 
   /**
    * full screen or exit full screen
@@ -165,20 +132,7 @@ const GlobalHeaderRight: React.FC = () => {
     }
   };
 
-  /**
-   * generate tenant list card
-   */
-  const genTenantListForm = () => {
-    const tenants: any[] = [];
-    currentUser?.tenantList?.forEach((item) => {
-      tenants.push(
-        <Select.Option key={item.id} value={item.id}>
-          {item.tenantCode}
-        </Select.Option>,
-      );
-    });
-    return tenants;
-  };
+
 
   const fullScreenProps = {
     style: {color: "white"},
@@ -192,29 +146,13 @@ const GlobalHeaderRight: React.FC = () => {
         {fullScreen ? <FullscreenOutlined {...fullScreenProps} onClick={screenFull}/> :
           <FullscreenExitOutlined {...fullScreenProps} onClick={screenFull}/>}
       </Tooltip>
-      <Avatar menu={true}/>
-      <>
-        <span className={actionClassName}>{l("menu.tenants")}</span>
-        <Select
-          className={actionClassName}
-          style={{width: "18vh"}}
-          value={currentUser?.currentTenant?.tenantCode?.toString()}
-          defaultValue={currentUser?.currentTenant?.tenantCode?.toString() || ""}
-          onChange={(value, option) => {
-            tenantHandleChange(option as OptionType);
-          }}
-        >
-          {genTenantListForm()}
-        </Select>
-      </>
-
+      <Avatar/>
       <Tooltip
         placement="bottom"
         title={<span>{l("menu.version", "", {version: VERSION})}</span>}
       >
         <Space className={actionClassName}>{l("menu.version", "", {version: VERSION})}</Space>
       </Tooltip>
-
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName}/>
       <Switch
         key={"themeSwitch"}

@@ -21,6 +21,7 @@
 import React from "react";
 import {PageContainer} from '@ant-design/pro-layout';
 import RoleProTable from "@/pages/AuthCenter/Role/components/RoleProTable";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 
 export default () => {
@@ -28,9 +29,9 @@ export default () => {
     /**
      * render
      */
-    return <>
+    return <SlowlyAppear>
         <PageContainer title={false}>
             <RoleProTable/>
         </PageContainer>
-    </>
+    </SlowlyAppear>
 };

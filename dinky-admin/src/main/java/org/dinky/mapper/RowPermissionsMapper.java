@@ -29,7 +29,7 @@ import java.util.List;
 
 /** role select permissions mapper interface */
 @Mapper
-public interface RoleSelectPermissionsMapper extends SuperMapper<RowPermissions> {
+public interface RowPermissionsMapper extends SuperMapper<RowPermissions> {
 
     /**
      * delete user role select permissions by role id
