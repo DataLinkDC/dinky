@@ -65,6 +65,7 @@ export default {
   'user.username': 'User Name',
   'user.jobnumber': 'Job Number',
   'user.phone': 'Phone Number',
+  'user.type': 'User Type',
   'user.nickname': 'Nick Name',
   'user.create': 'Create User',
   'user.update': 'Modify User',
