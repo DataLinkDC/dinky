@@ -134,25 +134,27 @@ public class CDCSource {
         Map<String, String> split = createConfigure(config, "split.");
         splitMapInit(split);
         Map<String, String> source = createConfigure(config, "source.");
-        Map<String, String> jdbc =  createConfigure(config, "jdbc.properties.");
+        Map<String, String> jdbc = createConfigure(config, "jdbc.properties.");
         Map<String, String> sink = createConfigure(config, "sink.");
 
         /* 支持多目标写入功能, 从0开始顺序写入配置. */
         Map<String, Map<String, String>> sinks = new HashMap<>();
         final Pattern p = Pattern.compile("sink\\[(?<index>.*)]");
-        config.forEach((key, value) -> {
-            if (key.startsWith("sink[")) {
-                Matcher matcher = p.matcher(key);
-                if (matcher.find()) {
-                    final String index = matcher.group("index");
-                    Map<String, String> sinkMap = sinks.computeIfAbsent(index, k -> new HashMap<>());
-                    key = key.replaceFirst("sink\\[" + index + "].", "");
-                    if (!sinkMap.containsKey(key)) {
-                        sinkMap.put(key, value);
+        config.forEach(
+                (key, value) -> {
+                    if (key.startsWith("sink[")) {
+                        Matcher matcher = p.matcher(key);
+                        if (matcher.find()) {
+                            final String index = matcher.group("index");
+                            Map<String, String> sinkMap =
+                                    sinks.computeIfAbsent(index, k -> new HashMap<>());
+                            key = key.replaceFirst("sink\\[" + index + "].", "");
+                            if (!sinkMap.containsKey(key)) {
+                                sinkMap.put(key, value);
+                            }
+                        }
                     }
-                }
-            }
-        });
+                });
 
         final ArrayList<Map<String, String>> sinkList = new ArrayList<>(sinks.values());
         Map<String, String> newSink = new HashMap<>();
@@ -194,14 +196,15 @@ public class CDCSource {
 
     private static Map<String, String> createConfigure(Map<String, String> config, String prefix) {
         Map<String, String> item = new HashMap<>();
-        config.forEach((key, value) -> {
-            if (key.startsWith(prefix)) {
-                key = key.replaceFirst(prefix, "");
-                if (!item.containsKey(key)) {
-                    item.put(key, value);
-                }
-            }
-        });
+        config.forEach(
+                (key, value) -> {
+                    if (key.startsWith(prefix)) {
+                        key = key.replaceFirst(prefix, "");
+                        if (!item.containsKey(key)) {
+                            item.put(key, value);
+                        }
+                    }
+                });
         return item;
     }
 
