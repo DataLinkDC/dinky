@@ -155,6 +155,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         return Optional.empty();
     }
 
+    @SuppressWarnings("rawtypes")
     protected void addTableSinkForTags(
             CustomTableEnvironment customTableEnvironment,
             Map<Table, OutputTag<Map>> tagMap,
