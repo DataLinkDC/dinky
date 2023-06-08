@@ -115,7 +115,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public Result<Void> modifyPassword(ModifyPasswordDTO modifyPasswordDTO) {
-        User user = getUserByUsername(modifyPasswordDTO.getUsername());
+        User user = getById(modifyPasswordDTO.getId());
         if (Asserts.isNull(user)) {
             return Result.failed(Status.USER_NOT_EXIST);
         }

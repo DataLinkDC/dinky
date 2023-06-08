@@ -28,10 +28,10 @@ import {Values} from "async-validator";
 import {Button} from "antd";
 
 type PasswordFormProps = {
-    values: Partial<UserBaseInfo.ChangePasswordParams>;
+    values: UserBaseInfo.User;
     form: FormInstance<Values>
     renderSubmit?: boolean;
-    onSubmit?: (values: Partial<UserBaseInfo.ChangePasswordParams>) => void;
+    onSubmit?: (values: UserBaseInfo.ChangePasswordParams) => void;
 };
 
 
@@ -40,11 +40,12 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     /**
      * init props
      */
-    const {values, form,renderSubmit=false,onSubmit} = props;
+    const {values, form,renderSubmit=false, onSubmit} = props;
     const handleSubmit = async () => {
        const value = await form?.validateFields()
         if (onSubmit) {
-            onSubmit(values);
+            const {password, newPassword, newPasswordCheck} = value;
+            onSubmit({id: values.id, newPassword, newPasswordCheck: newPasswordCheck, password: password , username: values.username})
         }
     }
 

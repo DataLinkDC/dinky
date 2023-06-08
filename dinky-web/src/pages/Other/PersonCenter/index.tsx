@@ -81,9 +81,9 @@ const PersonCenter = () => {
      * @param value
      * @returns {Promise<void>}
      */
-    const handleSubmitPassWord = async (value: any) => {
-        // todo: change password
+    const handleSubmitPassWord = async (value: UserBaseInfo.ChangePasswordParams) => {
         await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
+        form.resetFields();
     }
 
 
