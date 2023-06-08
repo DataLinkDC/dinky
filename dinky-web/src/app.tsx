@@ -93,8 +93,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
 
   return {
     headerTitleRender: () => {
+      // 重新对 title 的设置进行设置
       Settings.title =l('layouts.userLayout.title');
-      return <> {<img height={50} width={50} src={Settings.logo}/> }{ l('layouts.userLayout.title')}</>;
+      // 重新对 logo 的设置进行设置 由于 logo 是一个组件，所以需要重新渲染, 重新渲染的时候，会重新执行一次 layout
+      return <> {<img height={50} width={50} src={Settings.logo}/>}{l('layouts.userLayout.title')}</>;
     },
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
@@ -111,7 +113,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         history.push(loginPath);
       }
     },
-    menuHeaderRender: undefined,
     // 自定义 403 页面
     unAccessible:<UnAccessible/>,
     // 增加一个 loading 的状态
