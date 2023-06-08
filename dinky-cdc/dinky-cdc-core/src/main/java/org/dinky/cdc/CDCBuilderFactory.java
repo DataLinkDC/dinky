@@ -45,12 +45,12 @@ public class CDCBuilderFactory {
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getType())) {
-            throw new FlinkClientException("请指定 CDC Source 类型。");
+            throw new FlinkClientException("set CDC Source type。");
         }
 
         Supplier<CDCBuilder> cdcBuilderSupplier = CDC_BUILDER_MAP.get(config.getType());
         if (cdcBuilderSupplier == null) {
-            throw new FlinkClientException("未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
+            throw new FlinkClientException("mismatched CDC Source type[" + config.getType() + "].");
         }
         return cdcBuilderSupplier.get().create(config);
     }
