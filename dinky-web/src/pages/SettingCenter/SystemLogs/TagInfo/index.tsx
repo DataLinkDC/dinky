@@ -41,20 +41,24 @@ const TagInfo = () => {
     },
   ];
 
-  // tab props
-  const restTabProps = {
-    activeKey: activeKey,
-    type: 'card',
-    animated: true,
-    onChange: (key: string) => setActiveKey(key),
-    items: tabList,
-  };
 
   /**
    * render
    */
   return <>
-    <ProCard ghost className={'schemaTree'} size="small" bordered tabs={{...restTabProps}}/>
+    <ProCard
+        ghost
+        className={'schemaTree'}
+        size="small"
+        bordered
+        tabs={{
+          activeKey: activeKey,
+          type: 'card',
+          animated: true,
+          onChange: (key: string) => setActiveKey(key),
+          items: tabList,
+        }}
+    />
   </>;
 };
 

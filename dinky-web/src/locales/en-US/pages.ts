@@ -17,7 +17,7 @@
 
 export default {
   //-------------------------------- common --------------------------------
-  'layouts.userLayout.title': 'Dinky Real-time Computing Platform',
+  'layouts.userLayout.title': 'Dinky Real-time Platform ',
   'login.error': 'Login failed, please try again! Reason：{msg}',
   'login.result': '{msg}\t\t{time}',
   'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
@@ -83,6 +83,12 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  // --  personal info
+  'user.info': 'Personal Info',
+  'user.tenant': 'Tenant',
+  'user.role': 'Role',
+  'user.op': 'Operation',
+  'user.current.tenant': 'Current Tenant',
 
   // tenant
   'tenant.TenantManager': 'Tenant Management',

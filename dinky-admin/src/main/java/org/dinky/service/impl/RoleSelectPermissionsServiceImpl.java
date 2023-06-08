@@ -20,7 +20,7 @@
 package org.dinky.service.impl;
 
 import org.dinky.data.model.RowPermissions;
-import org.dinky.mapper.RoleSelectPermissionsMapper;
+import org.dinky.mapper.RowPermissionsMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RowPermissionsService;
 
@@ -32,7 +32,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
 public class RoleSelectPermissionsServiceImpl
-        extends SuperServiceImpl<RoleSelectPermissionsMapper, RowPermissions>
+        extends SuperServiceImpl<RowPermissionsMapper, RowPermissions>
         implements RowPermissionsService {
 
     @Override

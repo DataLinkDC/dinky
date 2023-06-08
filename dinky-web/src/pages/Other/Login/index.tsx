@@ -114,6 +114,7 @@ const Login: React.FC = () => {
     try {
       // login
       const result = await login({...values});
+      setInitialState((s) => ({...s, currentUser: result.datas}));
       await SuccessMessageAsync(l("login.result", "", {msg: result.msg, time: result.time}));
       /**
        * After successful login, set the tenant list

@@ -19,11 +19,14 @@
 import React from 'react';
 import AlertInstanceList from '@/pages/RegCenter/Alert/AlertInstance/components/AlertInstanceList';
 import {PageContainer} from '@ant-design/pro-components';
+import Scale from '@/components/Animation/Scale';
 
 
 export default () => {
-  return <PageContainer title={false}>
-    <AlertInstanceList/>
-  </PageContainer>;
+  return <Scale>
+    <PageContainer title={false}>
+      <AlertInstanceList/>
+    </PageContainer>
+  </Scale>;
 }
 

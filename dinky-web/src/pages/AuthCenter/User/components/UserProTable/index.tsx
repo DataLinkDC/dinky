@@ -132,7 +132,7 @@ const UserProTable = () => {
      * change password submit
      * @param value
      */
-    const handlePasswordChangeSubmit = async (value: any) => {
+    const handlePasswordChangeSubmit = async (value: UserBaseInfo.ChangePasswordParams) => {
         await executeAndCallbackRefresh(async () => {
             await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
             await handlePasswordModalOpen(false);

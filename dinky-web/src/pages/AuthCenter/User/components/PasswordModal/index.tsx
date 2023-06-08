@@ -28,9 +28,9 @@ import PasswordForm from "@/pages/AuthCenter/User/components/PasswordModal/Passw
 
 type PasswordModalFormProps = {
     onCancel: (flag?: boolean) => void;
-    onSubmit: (values: Partial<UserBaseInfo.ChangePasswordParams>) => void;
+    onSubmit: (values: UserBaseInfo.ChangePasswordParams) => void;
     modalVisible: boolean;
-    values: Partial<UserBaseInfo.ChangePasswordParams>;
+    values: Partial<UserBaseInfo.User>;
 };
 
 
@@ -66,9 +66,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
     }, [modalVisible, values, form]);
 
 
-    const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
-        username: values.username,
-    });
+    const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({...values});
 
 
     /**
@@ -100,7 +98,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
             onCancel={() => handleCancel()}
             onOk={() => submitForm()}
         >
-            <PasswordForm values={values} form={form}/>
+            <PasswordForm values={values as any} form={form}/>
         </Modal>
     </>
 };

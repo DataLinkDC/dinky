@@ -18,7 +18,6 @@
 import Footer from "@/components/Footer";
 import RightContent from "@/components/RightContent";
 import {PageLoading, Settings as LayoutSettings} from "@ant-design/pro-components";
-// import {SettingDrawer} from "@ant-design/pro-components";
 import type {RunTimeLayoutConfig} from "@umijs/max";
 import {history} from "@umijs/max";
 import defaultSettings from "../config/defaultSettings";
@@ -27,6 +26,8 @@ import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
+import {l} from "@/utils/intl";
+import Settings from "../config/defaultSettings";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -91,6 +92,15 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
   const theme = localStorage.getItem("navTheme");
 
   return {
+    headerTitleRender: () => {
+      // 重新对 title 的设置进行设置
+      Settings.title =l('layouts.userLayout.title');
+      // 重新对 logo 的设置进行设置 由于 logo 是一个组件，所以需要重新渲染, 重新渲染的时候，会重新执行一次 layout
+      return <>
+        <img height={50} width={50} src={Settings.logo}/>
+        <span style={{marginLeft: 10 ,color:'white'}}>{Settings.title}</span>
+      </>;
+    },
     rightContentRender: () => <RightContent />,
     footerRender: () => <Footer />,
     siderWidth: 180,
@@ -106,7 +116,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
         history.push(loginPath);
       }
     },
-    menuHeaderRender: undefined,
     // 自定义 403 页面
     unAccessible:<UnAccessible/>,
     // 增加一个 loading 的状态
@@ -115,18 +124,6 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       return (
         <>
           {children}
-          {/*{isDev && <SettingDrawer*/}
-          {/*  disableUrlParams*/}
-          {/*  enableDarkTheme*/}
-          {/*  settings={initialState?.settings}*/}
-          {/*  onSettingChange={(settings) => {*/}
-          {/*    setInitialState((preInitialState) => ({*/}
-          {/*      ...preInitialState,*/}
-          {/*      settings,*/}
-          {/*    }));*/}
-          {/*  }}*/}
-          {/*/>*/}
-          {/*}*/}
         </>
       );
     },

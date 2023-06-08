@@ -17,15 +17,23 @@
  *
  */
 
-import React from "react";
-import {PageContainer} from "@ant-design/pro-components";
-import InstanceList from "@/pages/RegCenter/Cluster/Instance/components/InstanceList";
-import Pop from "@/components/Animation/Pop";
+import React from 'react';
+import { useSpring, animated } from 'react-spring';
 
-export default () => {
-    return <Pop>
-        <PageContainer title={false}>
-            <InstanceList/>
-        </PageContainer>
-    </Pop>
-}
+// 缓慢出现
+const SlowlyAppear = (props: any) => {
+    const { children } = props;
+    const slowlyAppearProps = useSpring({
+        opacity: 1,
+        from: { opacity: 0 },
+        config: { duration: 1000 },
+    });
+
+    return (
+        <animated.h1 style={slowlyAppearProps}>
+            {children}
+        </animated.h1>
+    );
+};
+
+export default SlowlyAppear;

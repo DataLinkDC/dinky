@@ -19,6 +19,8 @@
 
 import {PageContainer} from "@ant-design/pro-layout";
 import ProjectProTable from "@/pages/RegCenter/GitProject/components/ProjectProTable";
+import FadeIn from "@/components/Animation/FadeIn";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 
 export default () => {
@@ -26,7 +28,9 @@ export default () => {
   /**
    * render
    */
-  return <PageContainer title={false}>
-    <ProjectProTable/>
-  </PageContainer>;
+  return <SlowlyAppear>
+    <PageContainer title={false}>
+      <ProjectProTable/>
+    </PageContainer>
+  </SlowlyAppear>;
 };

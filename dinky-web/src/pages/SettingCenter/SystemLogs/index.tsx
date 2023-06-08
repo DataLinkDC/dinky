@@ -17,9 +17,12 @@
 
 import {PageContainer} from "@ant-design/pro-components";
 import TagInfo from "@/pages/SettingCenter/SystemLogs/TagInfo";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 export default () => {
-  return <PageContainer title={false}>
-    <TagInfo/>
-  </PageContainer>
+  return <SlowlyAppear>
+    <PageContainer title={false}>
+      <TagInfo/>
+    </PageContainer>
+  </SlowlyAppear>
 }

@@ -240,6 +240,11 @@ export default [
     component: './Other/About',
   },
   {
+    path: '/account/center',
+    footerRender: false,
+    component: './Other/PersonCenter',
+  },
+  {
     path: '*',
     component: './Other/404',
   },
