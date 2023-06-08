@@ -72,7 +72,7 @@ const GlobalHeaderRight: React.FC = () => {
         locale: lang,
       }));
     }
-  }, [initialState?.settings?.locale]);
+  }, [initialState?.settings]);
 
 
   if (!initialState || !initialState.settings) {
