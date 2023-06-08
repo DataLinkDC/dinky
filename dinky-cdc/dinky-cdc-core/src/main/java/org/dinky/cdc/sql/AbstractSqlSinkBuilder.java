@@ -55,21 +55,19 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             List<String> columnNameList, List<LogicalType> columnTypeList, String schemaTableName) {
         return (value, out) -> {
             try {
-                Map after = (Map) value.get("after");
-                Map before = (Map) value.get("before");
                 switch (value.get("op").toString()) {
                     case "r":
                     case "c":
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, after);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, (Map)value.get("after"));
                         break;
                     case "d":
-                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, before);
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, (Map) value.get("before"));
                         break;
                     case "u":
                         rowCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, before);
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, (Map) value.get("before"));
                         rowCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, after);
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, (Map) value.get("after"));
                         break;
                     default:
                 }
@@ -114,6 +112,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 new RowTypeInfo(typeInformation, columnNameList.toArray(new String[0])));
     }
 
+    @Override
     protected Optional<Object> convertDecimalType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DecimalType) {
             return Optional.of(new BigDecimal(String.valueOf(value)));

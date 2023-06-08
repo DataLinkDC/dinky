@@ -78,9 +78,8 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
                         .username(config.getUsername())
                         .password(config.getPassword());
 
-        String schema = config.getSchema();
-        if (Asserts.isNotNullString(schema)) {
-            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+        if (Asserts.isNotNullString(config.getSchema())) {
+            String[] schemas = config.getSchema().split(FlinkParamConstant.SPLIT);
             sourceBuilder.schemaList(schemas);
         } else {
             sourceBuilder.schemaList();
