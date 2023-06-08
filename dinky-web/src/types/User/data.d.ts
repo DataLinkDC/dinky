@@ -24,6 +24,7 @@ declare namespace UserBaseInfo {
     password?: string;
     avatar?: string;
     worknum?: string;
+    userType?: number;
     mobile?: string;
     enabled: boolean;
     isDelete: boolean;

@@ -62,6 +62,7 @@ export default {
   'user.username': '用户名',
   'user.jobnumber': '工号',
   'user.phone': '手机号',
+  'user.type': '注册类型',
   'user.nickname': '昵称',
   'user.create': '添加用户',
   'user.update': '修改用户',
