@@ -35,8 +35,7 @@ import java.util.function.Supplier;
 
 public class SinkBuilderFactory {
 
-    private SinkBuilderFactory() {
-    }
+    private SinkBuilderFactory() {}
 
     private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
             ImmutableMap.<String, Supplier<SinkBuilder>>builder()

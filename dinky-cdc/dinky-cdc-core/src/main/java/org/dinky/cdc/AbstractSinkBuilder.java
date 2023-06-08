@@ -79,6 +79,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 
 public abstract class AbstractSinkBuilder implements SinkBuilder {
+    protected ObjectMapper objectMapper = new ObjectMapper();
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractSinkBuilder.class);
 

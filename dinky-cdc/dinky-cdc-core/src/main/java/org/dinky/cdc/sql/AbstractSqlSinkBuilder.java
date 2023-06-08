@@ -58,7 +58,6 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder implements Serializable {
-    protected final ObjectMapper objectMapper = new ObjectMapper();
     protected ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     protected AbstractSqlSinkBuilder() {}
