@@ -358,11 +358,7 @@ const StudioMenu = (props: any) => {
   };
 
   const saveSqlAndSettingToTask = () => {
-    console.log(current);
-
-    console.log(graph.toJSON(), 'graphjson');
-
-    props.saveTask(current, [graph.toJSON()]);
+    props.saveTask(current, JSON.stringify(graph.toJSON()));
   };
 
   const exportSql = () => {
@@ -886,11 +882,11 @@ const StudioMenu = (props: any) => {
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
-  saveTask: (current: any, config?: []) => {
+  saveTask: (current: any, statement?: string) => {
     debugger;
     dispatch({
       type: 'Studio/saveTask',
-      payload: { ...current.task, config },
+      payload: { ...current.task, statement },
     });
   },
 

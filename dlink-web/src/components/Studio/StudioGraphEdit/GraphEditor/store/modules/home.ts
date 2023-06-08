@@ -1,24 +1,26 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { Parameter } from '@/components/Studio/StudioGraphEdit/GraphEditor/ts-define/parameter';
 import { Graph } from '@antv/x6';
+import { getOperatorConfigure } from '../../service/request/test';
+import { message } from 'antd';
 
 export const initFlowDataAction = createAsyncThunk('fetchData', (payload, store) => {
-  // getOperatorConfigure().then((res: any) => {
-  //   if (res.status !== 200) {
-  //     message.error("请求节点参数失败!");
-  //     return;
-  //   }
-  //   if (res?.data?.datas) {
-  //     store.dispatch(initOperatorParameters(res.data.datas));
-  //   }
-  // });
-  import(
-    '@/components/Studio/StudioGraphEdit/GraphEditor/assets/json-data/operatorParameters.json'
-  ).then((res: any) => {
-    if (res?.datas) {
-      store.dispatch(initOperatorParameters(res.datas));
+  getOperatorConfigure().then((res: any) => {
+    if (res.status !== 200) {
+      message.error('请求节点参数失败!');
+      return;
+    }
+    if (res?.data?.datas) {
+      store.dispatch(initOperatorParameters(res.data.datas));
     }
   });
+  // import(
+  //   '@/components/Studio/StudioGraphEdit/GraphEditor/assets/json-data/operatorParameters.json'
+  // ).then((res: any) => {
+  //   if (res?.datas) {
+  //     store.dispatch(initOperatorParameters(res.datas));
+  //   }
+  // });
 });
 
 const homeSlice = createSlice({

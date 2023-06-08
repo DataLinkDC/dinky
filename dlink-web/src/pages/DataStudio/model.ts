@@ -268,7 +268,6 @@ const Model: ModelType = {
 
   effects: {
     *saveTask({ payload }, { call, put }) {
-      debugger;
       const para = payload;
       para.configJson = JSON.stringify(payload.config);
       if (para.dialect == 'GraphSql') {
