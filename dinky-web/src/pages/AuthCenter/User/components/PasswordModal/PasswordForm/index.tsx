@@ -56,7 +56,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     const pwdFormRender = () => {
         return <>
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="password"
                 hasFeedback
                 label={l('user.oldpwd')}
@@ -64,7 +64,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
                 rules={[{required: true, message: l('user.oldpwdPlaceholder')}]}
             />
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="newPassword"
                 hasFeedback
                 label={l('user.newpwd')}
@@ -72,7 +72,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
                 rules={[{required: true, message: l('user.newpwdPlaceholder')}]}
             />
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="newPasswordCheck"
                 hasFeedback
                 dependencies={['newPassword']}
