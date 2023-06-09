@@ -21,6 +21,7 @@ import {StatisticCard} from '@ant-design/pro-components';
 import React from 'react';
 import {TinyArea} from '@ant-design/plots';
 import styles from "@/global.less";
+import CountFormatter from "@/components/CountFormatter";
 
 const {Statistic} = StatisticCard;
 
@@ -47,6 +48,7 @@ const JobRunView: React.FC = () => {
         title: '当前运行',
         value: 20,
         suffix: '个',
+          formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Statistic
             title="已守护"

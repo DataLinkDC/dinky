@@ -19,6 +19,7 @@
 
 import React from 'react';
 import {Radar} from '@ant-design/plots';
+import {RadarConfig} from "@ant-design/plots/es/components/radar";
 
 const TaskDialectRadar = () => {
   // 数据更新于 2021.01.09
@@ -52,7 +53,7 @@ const TaskDialectRadar = () => {
       star: 1626,
     },
   ];
-  const config = {
+  const config:RadarConfig = {
     data: data.map((d) => ({...d, star: Math.sqrt(d.star)})),
     xField: 'name',
     yField: 'star',

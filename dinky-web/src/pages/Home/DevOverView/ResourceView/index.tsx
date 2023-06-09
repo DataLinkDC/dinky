@@ -20,12 +20,18 @@
 import React, {useState, useEffect} from 'react';
 import {StatisticCard} from '@ant-design/pro-components';
 import RcResizeObserver from 'rc-resize-observer';
+import {
+    AlertGroupIcon,
+    AlertInstanceIcon, ClusterConfigIcon,
+    ClusterInstanceIcon,
+    DatabaseIcon, GitIcon,
+    GlobalVarIcon
+} from "@/components/Icons/HomeIcon";
+import {DatabaseTwoTone} from "@ant-design/icons";
+import {imgStyle} from "@/pages/Home/constants";
+import CountFormatter from "@/components/CountFormatter";
 
-const imgStyle = {
-  display: 'block',
-  width: 42,
-  height: 42,
-};
+
 
 const ResourceView = () => {
 
@@ -43,26 +49,16 @@ const ResourceView = () => {
           statistic={{
             title: 'Flink 集群实例',
             value: 2176,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*dr_0RKvVzVwAAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon:<ClusterInstanceIcon style={imgStyle}/>,
+            formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
         <StatisticCard
           statistic={{
             title: '集群配置',
             value: 475,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*-jVKQJgA1UgAAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon: <ClusterConfigIcon style={imgStyle}/>,
+            formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
       </StatisticCard.Group>
@@ -71,26 +67,16 @@ const ResourceView = () => {
           statistic={{
             title: '数据源',
             value: 87,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*FPlYQoTNlBEAAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon: <DatabaseIcon style={imgStyle}/>,
+              formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
         <StatisticCard
           statistic={{
             title: '全局变量',
             value: 1754,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon: <GlobalVarIcon style={imgStyle}/>,
+              formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
       </StatisticCard.Group>
@@ -99,29 +85,30 @@ const ResourceView = () => {
           statistic={{
             title: '告警实例',
             value: 87,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*FPlYQoTNlBEAAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon: <AlertInstanceIcon style={imgStyle}/>,
+              formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
         <StatisticCard
           statistic={{
             title: '告警组',
             value: 1754,
-            icon: (
-              <img
-                style={imgStyle}
-                src="https://gw.alipayobjects.com/mdn/rms_7bc6d8/afts/img/A*pUkAQpefcx8AAAAAAAAAAABkARQnAQ"
-                alt="icon"
-              />
-            ),
+            icon: <AlertGroupIcon style={imgStyle}/>,
+              formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
       </StatisticCard.Group>
+        <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
+            <StatisticCard
+                statistic={{
+                    title: 'Git 项目',
+                    value: 220,
+                    icon: <GitIcon style={imgStyle}/>,
+                    formatter: (value)=> <CountFormatter value={Number(value)}/>
+                }}
+            />
+
+        </StatisticCard.Group>
     </RcResizeObserver>
   );
 };

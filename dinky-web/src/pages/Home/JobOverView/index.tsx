@@ -49,7 +49,6 @@ const JobOverView: React.FC = () => {
       >
         <ProCard split={split}>
           <ProCard split="horizontal">
-            <ProCard split="horizontal">
               <ProCard bodyStyle={{padding: '0 12px'}}>
                 <JobRunView/>
               </ProCard>
@@ -58,7 +57,6 @@ const JobOverView: React.FC = () => {
               </ProCard>
               <ProCard bodyStyle={{padding: '0 12px'}}>
                 <JobRecoveryView/>
-              </ProCard>
             </ProCard>
           </ProCard>
           <ProCard title="当前作业运行状态">
@@ -70,11 +68,8 @@ const JobOverView: React.FC = () => {
             <LoadScoreGauge/>
           </ProCard>
           <ProCard split="horizontal">
-            <ProCard split="horizontal">
               <JobErrorView/>
-            </ProCard>
           </ProCard>
-
         </ProCard>
       </ProCard>
     </RcResizeObserver>

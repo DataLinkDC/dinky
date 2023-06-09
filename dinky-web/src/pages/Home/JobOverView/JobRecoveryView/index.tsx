@@ -22,12 +22,14 @@ import React from 'react';
 import {RingProgress} from '@ant-design/plots';
 import {Space} from "antd";
 import styles from '@/global.less';
+import CountFormatter from "@/components/CountFormatter";
+import {RingProgressConfig} from "@ant-design/plots/es/components/ring-progress";
 
 const {Statistic} = StatisticCard;
 
 const JobRecoveryView: React.FC = () => {
 
-  const config = {
+  const config : RingProgressConfig = {
     height: 80,
     width: 80,
     autoFit: false,
@@ -42,6 +44,7 @@ const JobRecoveryView: React.FC = () => {
         title: '今日恢复',
         value: 2,
         suffix: '个',
+          formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Space>
             <Statistic

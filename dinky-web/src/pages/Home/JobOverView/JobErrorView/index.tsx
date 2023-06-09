@@ -19,22 +19,23 @@
 
 import {Space, Table} from 'antd';
 import React, {useState} from 'react';
-import type {ColumnsType} from 'antd/es/table';
-import {StatisticCard} from "@ant-design/pro-components";
+import {ProColumns, ProTable, StatisticCard} from "@ant-design/pro-components";
 import styles from "@/global.less";
 import {Progress} from "@ant-design/plots";
+import CountFormatter from "@/components/CountFormatter";
+import {ProgressConfig} from "@ant-design/plots/es/components/progress";
 
 const {Statistic} = StatisticCard;
 
 interface DataType {
   rank: React.Key;
   name: string;
-  value: number;
+  value: string;
 }
 
 const JobErrorView: React.FC = () => {
 
-  const [data, setData] = useState([
+  const [  data, setData] =  useState<DataType[]>([
     {
       "rank": 1,
       "name": '任务1',
@@ -62,10 +63,11 @@ const JobErrorView: React.FC = () => {
     },
   ]);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ProColumns<DataType>[] = [
     {
       title: '排名',
       dataIndex: 'rank',
+      valueType: 'indexBorder',
     },
     {
       title: '任务名',
@@ -77,12 +79,12 @@ const JobErrorView: React.FC = () => {
     },
   ];
 
-  const config = {
+  const config : ProgressConfig = {
     height: 50,
     width: 200,
     autoFit: false,
     percent: 0.7,
-    color: ['#5B8FF9', '#E8EDF3'],
+    color: ['#5B8FF9', '#acaeb0'],
   };
 
   return <>
@@ -92,6 +94,7 @@ const JobErrorView: React.FC = () => {
         title: '当前未处理失败',
         value: 3,
         suffix: '个',
+        formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Space>
             <Statistic
@@ -112,7 +115,7 @@ const JobErrorView: React.FC = () => {
         </div>
       }
     />
-    <Table columns={columns} dataSource={data} pagination={false} size="small"/>
+    <ProTable columns={columns} dataSource={data} search={false} toolBarRender={false} pagination={false} size="small"/>
   </>;
 };
 

@@ -24,6 +24,7 @@ import React, {useState} from 'react';
 import DevHeatmap from "@/pages/Home/DevOverView/DevHeatmap";
 import TaskDialectRadar from "@/pages/Home/DevOverView/TaskDialectRadar";
 import ResourceView from "@/pages/Home/DevOverView/ResourceView";
+import BatchStreamProportion from "@/pages/Home/DevOverView/BatchStreamProportion";
 
 const DevOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
@@ -42,17 +43,23 @@ const DevOverView: React.FC = () => {
         size="small"
         split={split}
       >
-        <Row>
-          <Col span={12}>
-            <DevHeatmap/>
-          </Col>
-          <Col span={6}>
+        <ProCard split="vertical">
+          <ProCard split="horizontal" colSpan={'40%'}>
+            <ProCard>
+              <BatchStreamProportion/>
+            </ProCard>
+            <ProCard >
+              <DevHeatmap/>
+            </ProCard>
+          </ProCard>
+
+          <ProCard colSpan={'30%'} >
             <TaskDialectRadar/>
-          </Col>
-          <Col span={6}>
+          </ProCard>
+          <ProCard>
             <ResourceView/>
-          </Col>
-        </Row>
+          </ProCard>
+        </ProCard>
       </ProCard>
     </RcResizeObserver>
   );

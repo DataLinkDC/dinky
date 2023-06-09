@@ -21,6 +21,7 @@ import {StatisticCard} from '@ant-design/pro-components';
 import React from 'react';
 import {TinyColumn} from '@ant-design/plots';
 import styles from "@/global.less";
+import CountFormatter from "@/components/CountFormatter";
 
 const {Statistic} = StatisticCard;
 
@@ -33,7 +34,7 @@ const JobFinishedView: React.FC = () => {
     autoFit: false,
     data,
     tooltip: {
-      customContent: function (x, data) {
+      customContent: function (x: any, data: { data: { y: number; }; }[]) {
         return `NO.${x}: ${data[0]?.data?.y.toFixed(2)}`;
       },
     },
@@ -46,6 +47,7 @@ const JobFinishedView: React.FC = () => {
         title: '今日完成',
         value: 123,
         suffix: '次',
+          formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Statistic
             title="日环比"
