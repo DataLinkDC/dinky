@@ -35,6 +35,7 @@ import org.apache.flink.types.Row;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.google.common.collect.Lists;
@@ -93,7 +94,7 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     }
 
     @Override
-    protected String createTableName(LinkedHashMap source, String schemaFieldName) {
+    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
         return source.get(schemaFieldName).toString() + "." + source.get("table").toString();
     }
 

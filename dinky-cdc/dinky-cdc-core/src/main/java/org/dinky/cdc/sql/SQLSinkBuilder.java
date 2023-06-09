@@ -41,6 +41,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -151,10 +152,10 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     }
 
     @Override
-    protected String createTableName(LinkedHashMap source, String schemaFieldName) {
-        return SplitUtil.getReValue(source.get(schemaFieldName).toString(), config.getSplit())
+    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+        return SplitUtil.getReValue(source.get(schemaFieldName).toString(), split)
                 + "."
-                + SplitUtil.getReValue(source.get("table").toString(), config.getSplit());
+                + SplitUtil.getReValue(source.get("table").toString(), split);
     }
 
     @Override

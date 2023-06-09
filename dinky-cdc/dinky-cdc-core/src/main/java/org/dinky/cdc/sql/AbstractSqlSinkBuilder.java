@@ -193,6 +193,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
+        Map<String, String> split = config.getSplit();
         return mapOperator.process(
                 new ProcessFunction<Map, Map>() {
                     @Override
@@ -200,7 +201,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                             Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) {
                         LinkedHashMap source = (LinkedHashMap) map.get("source");
                         try {
-                            String tableName = createTableName(source, schemaFieldName);
+                            String tableName = createTableName(source, schemaFieldName, split);
                             OutputTag<Map> outputTag = tagMap.get(tableMap.get(tableName));
                             ctx.output(outputTag, map);
                         } catch (Exception e) {
@@ -216,7 +217,13 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             DataStream<Row> rowDataDataStream,
             Table table);
 
-    protected abstract String createTableName(LinkedHashMap source, String schemaFieldName);
+    /**
+     * @param source
+     * @param schemaFieldName
+     * @param split           must keep for flink use.
+     * @return
+     */
+    protected abstract String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split);
 
     @SuppressWarnings("rawtypes")
     @Override
