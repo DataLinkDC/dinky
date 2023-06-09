@@ -24,38 +24,27 @@ import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.ServiceLoader;
 import java.util.function.Supplier;
-
-import com.google.common.collect.ImmutableMap;
+import java.util.stream.Collectors;
 
 public class SinkBuilderFactory {
+    private static final Logger logger = LoggerFactory.getLogger(SinkBuilderFactory.class);
 
     private SinkBuilderFactory() {}
 
-    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP =
-            ImmutableMap.of(
-                    SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new,
-                    SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
+    private static final Map<String, Supplier<SinkBuilder>> SINK_BUILDER_MAP = getPlusSinkBuilder();
 
     public static SinkBuilder buildSinkBuilder(FlinkCDCConfig config) {
-        final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
-
-        final List<SinkBuilder> compatibleFactories = new ArrayList<>();
-        final Iterator<SinkBuilder> factories = loader.iterator();
-        while (factories.hasNext()) {
-            try {
-                final SinkBuilder factory = factories.next();
-                if (factory != null) {
-                    compatibleFactories.add(factory);
-                }
-            } catch (Throwable e) {
-                if (e.getCause() instanceof NoClassDefFoundError) {
-                } else {
-                    throw e;
-                }
-            }
-        }
 
         if (Asserts.isNull(config) || Asserts.isNullString(config.getSink().get("connector"))) {
             throw new FlinkClientException("set Sink connector。");
@@ -65,4 +54,57 @@ public class SinkBuilderFactory {
                 .get()
                 .create(config);
     }
+
+    private static Map<String, Supplier<SinkBuilder>> getPlusSinkBuilder() {
+        Map<String, Supplier<SinkBuilder>> map = new HashMap<>();
+        map.put(SQLSinkBuilder.KEY_WORD, SQLSinkBuilder::new);
+        map.put(SQLCatalogSinkBuilder.KEY_WORD, SQLCatalogSinkBuilder::new);
+
+        final ServiceLoader<SinkBuilder> loader = ServiceLoader.load(SinkBuilder.class);
+
+        final List<SinkBuilder> sinkBuilders = new ArrayList<>();
+        final Iterator<SinkBuilder> factories = loader.iterator();
+        while (factories.hasNext()) {
+            try {
+                final SinkBuilder factory = factories.next();
+                if (factory != null) {
+                    sinkBuilders.add(factory);
+                }
+            } catch (Throwable e) {
+                logger.warn("Could not load service provider class : {}", e.getMessage());
+            }
+        }
+
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
+                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+        map.putAll(plusSinkBuilder);
+        return map;
+    }
+
+    @SuppressWarnings("unchecked")
+    private static Supplier<SinkBuilder> getSupplier(SinkBuilder clazz) {
+            return () -> {
+                try {
+                    return SinkBuilder.class.newInstance();
+                } catch (InstantiationException | IllegalAccessException e) {
+                    logger.warn("Could not load service provider class : {}", e.getMessage());
+                }
+                return null;
+            };
+    }
+
+    public static String getKeyWord(SinkBuilder c){
+        String fieldName = "KEY_WORD";
+        String result  = null;
+        try {
+            Field f = c.getClass().getDeclaredField(fieldName);
+            result = (String) f.get(null);
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+
 }
