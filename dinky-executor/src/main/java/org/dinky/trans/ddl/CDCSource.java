@@ -157,9 +157,8 @@ public class CDCSource {
                 });
 
         final ArrayList<Map<String, String>> sinkList = new ArrayList<>(sinks.values());
-        Map<String, String> newSink = new HashMap<>();
         if (sink.isEmpty() && !sinkList.isEmpty()) {
-            newSink = sinkList.get(0);
+            sink = sinkList.get(0);
         }
 
         CDCSource cdcSource =
@@ -177,7 +176,7 @@ public class CDCSource {
                         split,
                         debezium,
                         source,
-                        newSink,
+                        sink,
                         sinkList,
                         jdbc);
         if (Asserts.isNotNullString(config.get("database-name"))) {
