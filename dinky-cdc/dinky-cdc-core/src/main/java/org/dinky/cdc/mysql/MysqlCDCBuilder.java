@@ -217,10 +217,10 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     @Override
     protected String generateUrl(String schema) {
         return String.format(
-                "jdbc:mysql://%s:%d%s",
+                "jdbc:mysql://%s:%d/%s%s",
                 config.getHostname(),
                 config.getPort(),
-//                schema,
+                schema,
                 composeJdbcProperties(config.getJdbc()));
     }
 

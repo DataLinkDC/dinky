@@ -62,7 +62,9 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                         this::convertVarBinaryType);
     }
 
-    public SQLSinkBuilder() {}
+    public SQLSinkBuilder() {
+
+    }
 
     private SQLSinkBuilder(FlinkCDCConfig config) {
         super(config);

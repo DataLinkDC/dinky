@@ -231,7 +231,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             driver.createSchema(schema);
         }
         sink.put(FlinkCDCConfig.SINK_DB, schema);
-        sink.put("url", url + "/" + schema);
+        if (!url.contains(schema)) {
+            sink.put("url", url + "/" + schema);
+        }
         return driver;
     }
 
