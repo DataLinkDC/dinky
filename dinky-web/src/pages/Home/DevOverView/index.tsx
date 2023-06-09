@@ -18,13 +18,14 @@
  */
 
 import {ProCard} from '@ant-design/pro-components';
-import {Badge, Col, Row} from 'antd';
+import {Badge} from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
 import React, {useState} from 'react';
 import DevHeatmap from "@/pages/Home/DevOverView/DevHeatmap";
 import TaskDialectRadar from "@/pages/Home/DevOverView/TaskDialectRadar";
 import ResourceView from "@/pages/Home/DevOverView/ResourceView";
 import BatchStreamProportion from "@/pages/Home/DevOverView/BatchStreamProportion";
+import {l} from "@/utils/intl";
 
 const DevOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
@@ -37,7 +38,7 @@ const DevOverView: React.FC = () => {
       }}
     >
       <ProCard
-        title={<><Badge status="processing"/> 数据开发</>}
+        title={<><Badge status="processing"/>{l('home.develop')}</>}
         headerBordered
         bordered
         size="small"

@@ -18,8 +18,8 @@
  */
 
 import React from 'react';
-import { Gauge } from '@ant-design/plots';
-import {GaugeConfig} from "@ant-design/plots/es/components/gauge";
+import {Gauge, GaugeConfig} from '@ant-design/plots';
+import {l} from "@/utils/intl";
 
 const LoadScoreGauge = () => {
 
@@ -51,13 +51,13 @@ const LoadScoreGauge = () => {
       title: {
         formatter: ({ percent }) => {
           if (percent < ticks[1]) {
-            return 'Excellent';
+            return l('home.server.load.excellent');
           }
 
           if (percent < ticks[2]) {
-            return 'Good';
+            return l('home.server.load.good');
           }
-          return 'Poor';
+          return l('home.server.load.bad');
         },
         style: ({ percent }) => {
           return {

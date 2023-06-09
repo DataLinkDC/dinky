@@ -19,16 +19,17 @@
 
 import {StatisticCard} from '@ant-design/pro-components';
 import React from 'react';
-import {TinyColumn} from '@ant-design/plots';
+import {TinyColumn, TinyColumnConfig} from '@ant-design/plots';
 import styles from "@/global.less";
 import CountFormatter from "@/components/CountFormatter";
+import {l} from "@/utils/intl";
 
 const {Statistic} = StatisticCard;
 
 const JobFinishedView: React.FC = () => {
 
   const data = [274, 337, 81, 497, 666, 219, 269];
-  const config = {
+  const config :TinyColumnConfig = {
     height: 80,
     width: 220,
     autoFit: false,
@@ -44,13 +45,13 @@ const JobFinishedView: React.FC = () => {
     <StatisticCard
       chartPlacement="right"
       statistic={{
-        title: '今日完成',
+        title: l('home.job.finished'),
         value: 123,
-        suffix: '次',
+        suffix: l('global.bout'),
           formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Statistic
-            title="日环比"
+            title={l('home.job.running.dayonday')}
             value="3.57 %"
             trend="up"
           />

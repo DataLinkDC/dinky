@@ -345,6 +345,18 @@ export const parseSecondStr = (s_time: number) => {
   return time;
 };
 
+/**
+ * Generate MilliSecond time string
+ * @param {number} second_time
+ * @returns {any}
+ */
+export function parseMilliSecondStr(second_time: number) {
+  if (((second_time / 1000) % 60) < 1) {
+    return second_time + l('global.time.millisecond');
+  }
+  return parseSecondStr(second_time / 1000);
+}
+
 
 /**
  * build tree data

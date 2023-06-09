@@ -18,10 +18,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Pie } from '@ant-design/plots';
+import {Pie, PieConfig} from '@ant-design/plots';
 import {getStatusCount} from "@/pages/Home/service";
-import {PieConfig} from "@ant-design/plots/es/components/pie";
-import {Home} from "@/pages/Home/data.d";
+import {Home} from "@/types/Home/data.d";
+import {l} from "@/utils/intl";
 const JobStatusPie = () => {
 
   const [jobStatusData, setJobStatusData] = useState<Home.PieItem[]>([]);
@@ -83,7 +83,7 @@ const JobStatusPie = () => {
         style: {
           fontSize: '16px',
         },
-        customHtml: ()=> 'Job Instance',
+        customHtml: ()=> l('home.job.instance')
       },
       content: {
         style: {

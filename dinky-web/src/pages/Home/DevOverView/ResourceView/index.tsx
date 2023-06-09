@@ -30,6 +30,7 @@ import {
 import {DatabaseTwoTone} from "@ant-design/icons";
 import {imgStyle} from "@/pages/Home/constants";
 import CountFormatter from "@/components/CountFormatter";
+import {l} from "@/utils/intl";
 
 
 
@@ -47,7 +48,7 @@ const ResourceView = () => {
       <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
         <StatisticCard
           statistic={{
-            title: 'Flink 集群实例',
+            title: l('home.develop.re.ci'),
             value: 2176,
             icon:<ClusterInstanceIcon style={imgStyle}/>,
             formatter: (value)=> <CountFormatter value={Number(value)}/>
@@ -55,7 +56,7 @@ const ResourceView = () => {
         />
         <StatisticCard
           statistic={{
-            title: '集群配置',
+            title: l('home.develop.re.cc'),
             value: 475,
             icon: <ClusterConfigIcon style={imgStyle}/>,
             formatter: (value)=> <CountFormatter value={Number(value)}/>
@@ -65,7 +66,7 @@ const ResourceView = () => {
       <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
         <StatisticCard
           statistic={{
-            title: '数据源',
+            title: l('home.develop.re.ds'),
             value: 87,
             icon: <DatabaseIcon style={imgStyle}/>,
               formatter: (value)=> <CountFormatter value={Number(value)}/>
@@ -73,7 +74,7 @@ const ResourceView = () => {
         />
         <StatisticCard
           statistic={{
-            title: '全局变量',
+            title: l('home.develop.re.gv'),
             value: 1754,
             icon: <GlobalVarIcon style={imgStyle}/>,
               formatter: (value)=> <CountFormatter value={Number(value)}/>
@@ -83,7 +84,7 @@ const ResourceView = () => {
       <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
         <StatisticCard
           statistic={{
-            title: '告警实例',
+            title: l('home.develop.re.ai'),
             value: 87,
             icon: <AlertInstanceIcon style={imgStyle}/>,
               formatter: (value)=> <CountFormatter value={Number(value)}/>
@@ -91,24 +92,24 @@ const ResourceView = () => {
         />
         <StatisticCard
           statistic={{
-            title: '告警组',
+            title: l('home.develop.re.ag'),
             value: 1754,
             icon: <AlertGroupIcon style={imgStyle}/>,
               formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
         />
       </StatisticCard.Group>
-        <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
-            <StatisticCard
-                statistic={{
-                    title: 'Git 项目',
-                    value: 220,
-                    icon: <GitIcon style={imgStyle}/>,
-                    formatter: (value)=> <CountFormatter value={Number(value)}/>
-                }}
-            />
+    <StatisticCard.Group direction={responsive ? 'column' : 'row'}>
+        <StatisticCard
+            statistic={{
+                title: l('home.develop.re.git'),
+                value: 220,
+                icon: <GitIcon style={imgStyle}/>,
+                formatter: (value)=> <CountFormatter value={Number(value)}/>
+            }}
+        />
 
-        </StatisticCard.Group>
+    </StatisticCard.Group>
     </RcResizeObserver>
   );
 };

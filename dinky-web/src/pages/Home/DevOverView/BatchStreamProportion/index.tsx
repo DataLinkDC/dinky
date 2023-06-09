@@ -17,23 +17,22 @@
  *
  */
 
-import React, {useState} from "react";
-import {Statistic} from "antd";
+import React from "react";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import CountFormatter from "@/components/CountFormatter";
-import {BatchJobIcon, ClusterInstanceIcon, StreamingJobIcon} from "@/components/Icons/HomeIcon";
+import {BatchJobIcon, StreamingJobIcon} from "@/components/Icons/HomeIcon";
 import {imgStyle} from "@/pages/Home/constants";
+import {l} from "@/utils/intl";
 
 export const BatchStreamProportion: React.FC = () => {
 
- const [responsive, setResponsive] = useState(false);
-
   return <ProCard split={'vertical'} size={'small'}>
-    <StatisticCard.Group bodyStyle={{alignContent:'center'}} direction={responsive ? 'column' : 'row'}>
+    <StatisticCard.Group bodyStyle={{alignContent:'center'}}>
       <StatisticCard
           statistic={{
-            title: '批作业',
+            title: l('home.job.batch'),
             value: 11,
+            suffix: l('global.item'),
             icon: <BatchJobIcon style={imgStyle}/>,
             formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}
@@ -41,8 +40,9 @@ export const BatchStreamProportion: React.FC = () => {
         <StatisticCard.Divider/>
       <StatisticCard
           statistic={{
-            title: '流作业',
+            title: l('home.job.stream'),
             value: 233,
+            suffix: l('global.item'),
             icon: <StreamingJobIcon style={imgStyle}/>,
             formatter: (value)=> <CountFormatter value={Number(value)}/>
           }}

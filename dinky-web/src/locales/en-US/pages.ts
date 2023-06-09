@@ -52,6 +52,42 @@ export default {
   'about.communityRules.5':
     ' Register who is using Dinky, and can enter the enterprise user group to provide technical support. ',
 
+  //-------------------------------- Home --------------------------------
+  'home.job.metrics': 'Job Monitoring',
+  'home.job.running.status': 'Current Job Running Status',
+  'home.server.load': 'Server Load',
+  'home.job.running': 'Currently Running',
+  'home.job.finished': 'Completed Today',
+  'home.job.recovery': 'Recovery Today',
+  'home.job.online': 'Online Today',
+  'home.job.failed': 'Failed Today',
+  'home.job.recovery.rate': 'Recovery Rate',
+  'home.job.running.dayonday': 'Day on Day Ratio',
+  'home.job.instance': 'Task Instance',
+  'home.server.load.excellent': 'Excellent',
+  'home.server.load.good': 'Good',
+  'home.server.load.bad': 'Bad',
+  'home.job.failed.unhandle': 'Currently Unhandled Failure',
+  'home.job.failed.handle': 'Handled',
+  'home.job.failed.rank': 'Rank',
+  'home.job.failed.name': 'Job Name',
+  'home.job.failed.time': 'Abnormal Time',
+  'home.develop': 'Data Develop',
+  'home.job.batch': 'Batch Job',
+  'home.job.stream': 'Streaming Job',
+  'home.job.total': 'Number of Jobs',
+  'home.job.type': 'Job Type',
+  'home.job.rate': 'Proportion of Jobs',
+  'home.develop.re.ci': 'Flink Cluster Instance',
+  'home.develop.re.cc': 'Cluster Configuration',
+  'home.develop.re.ds': 'Data Source',
+  'home.develop.re.gv': 'Global Variables',
+  'home.develop.re.ai': 'Alarm Instance',
+  'home.develop.re.ag': 'Alarm Group',
+  'home.develop.re.git': 'Git Project',
+
+
+
   //-------------------------------- devops --------------------------------
   // devops
 
