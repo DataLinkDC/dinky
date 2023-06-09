@@ -21,6 +21,7 @@
 import React from "react";
 import UserProTable from "@/pages/AuthCenter/User/components/UserProTable";
 import {PageContainer} from "@ant-design/pro-components";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 
 export default () => {
@@ -28,10 +29,10 @@ export default () => {
     /**
      * render
      */
-    return <>
+    return <SlowlyAppear>
         <PageContainer title={false}>
             <UserProTable/>
         </PageContainer>
-    </>
+    </SlowlyAppear>
 };
 

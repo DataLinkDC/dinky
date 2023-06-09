@@ -34,6 +34,7 @@ import {getAlertIcon} from "@/pages/RegCenter/Alert/AlertInstance/function";
 import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import AlertGroupForm from "@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm";
+import Pop from "@/components/Animation/Pop";
 
 const AlertGroupTableList: React.FC = (props: any) => {
     /**
@@ -220,7 +221,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
     }));
 
 
-    return (
+    return <Pop>
         <PageContainer title={false}>
             {/* alert group list */}
             <ProList<Alert.AlertGroup>
@@ -250,7 +251,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
             }
 
         </PageContainer>
-    );
+    </Pop>
 };
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

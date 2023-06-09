@@ -25,10 +25,11 @@ import {MavenConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/M
 import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
 import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig";
 import {l} from '@/utils/intl';
+import FadeIn from "@/components/Animation/FadeIn";
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: []});
+  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: [] , ldap: []});
 
 
   const fetchData = async () => {
@@ -65,9 +66,9 @@ const SettingOverView = () => {
   };
 
 
-  return <>
+  return <FadeIn>
     {renderData()}
-  </>;
+  </FadeIn>;
 };
 
 export default memo(SettingOverView);

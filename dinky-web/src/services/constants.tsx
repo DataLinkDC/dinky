@@ -184,8 +184,10 @@ export const API_CONSTANTS = {
   GET_JOB_LIST: "/api/jobInstance",
 
   // -- LDAP
-  GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus"
+  GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
 
+  // -- home
+  GET_STATUS_COUNT: "api/jobInstance/getStatusCount",
 };
 
 

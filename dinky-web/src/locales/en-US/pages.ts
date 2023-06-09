@@ -17,7 +17,7 @@
 
 export default {
   //-------------------------------- common --------------------------------
-  'layouts.userLayout.title': 'Dinky Real-time Computing Platform',
+  'layouts.userLayout.title': 'Dinky Real-time Platform ',
   'login.error': 'Login failed, please try again! Reason：{msg}',
   'login.result': '{msg}\t\t{time}',
   'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
@@ -30,6 +30,7 @@ export default {
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',
   'login.rememberMe': 'Remember me',
+  'login.ldapLogin': 'LDAP Login',
   'about.Community':
     'Welcome to join the Dinky Official Community, Build a win-win situation',
   'about.QQcode': 'QQ Official Community Group',
@@ -83,6 +84,12 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  // --  personal info
+  'user.info': 'Personal Info',
+  'user.tenant': 'Tenant',
+  'user.role': 'Role',
+  'user.op': 'Operation',
+  'user.current.tenant': 'Current Tenant',
 
   // tenant
   'tenant.TenantManager': 'Tenant Management',
@@ -475,6 +482,7 @@ export default {
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
+  'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
