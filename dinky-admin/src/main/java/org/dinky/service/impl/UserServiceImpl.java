@@ -229,6 +229,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userIds.add(user.getId());
             tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
             return user;
+        }else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
+            throw new AuthException(Status.LDAP_LOGIN_FORBID);
         }
 
         // If local database have the user and ldap login is pass,

@@ -210,6 +210,11 @@ public enum Status {
             "If the user filter rule cannot be empty, enter the relevant configuration",
             "用户过滤规则不能为空，请填写相关配置"),
 
+    LDAP_LOGIN_FORBID(
+            18007,
+            "If the current user login mode is not LDAP, contact the administrator to modify it, or do not use LDAP to log in",
+            "当前用户登录模式不是LDAP，请联系管理员修改,或不使用LDAP登录"),
+
     /** global exception */
     GLOBAL_PARAMS_CHECK_ERROR(90001, "Field: {0}, {1}", "字段: {0}, {1}"),
     GLOBAL_PARAMS_CHECK_ERROR_VALUE(90002, "Field: {0}, Illegal Value: {1}", "字段: {0}, 不合法的值: {1}"),
