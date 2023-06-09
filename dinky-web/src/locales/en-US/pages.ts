@@ -30,6 +30,7 @@ export default {
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',
   'login.rememberMe': 'Remember me',
+  'login.ldapLogin': 'LDAP Login',
   'about.Community':
     'Welcome to join the Dinky Official Community, Build a win-win situation',
   'about.QQcode': 'QQ Official Community Group',
@@ -481,6 +482,7 @@ export default {
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
+  'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
