@@ -44,7 +44,6 @@ public class LdapController {
 
     @Autowired LdapService ldapService;
 
-    /** Gets the LDAP configuration status */
     @GetMapping("/ldapEnableStatus")
     public Result<Boolean> ldapStatus() {
         return Result.succeed(
