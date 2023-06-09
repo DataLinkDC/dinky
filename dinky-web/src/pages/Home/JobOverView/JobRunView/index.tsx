@@ -19,8 +19,10 @@
 
 import {StatisticCard} from '@ant-design/pro-components';
 import React from 'react';
-import {TinyArea} from '@ant-design/plots';
+import {TinyArea, TinyAreaConfig} from '@ant-design/plots';
 import styles from "@/global.less";
+import CountFormatter from "@/components/CountFormatter";
+import {l} from "@/utils/intl";
 
 const {Statistic} = StatisticCard;
 
@@ -29,7 +31,7 @@ const JobRunView: React.FC = () => {
   const data = [
     264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192,
   ];
-  const config = {
+  const config:TinyAreaConfig = {
     height: 80,
     width: 220,
     autoFit: false,
@@ -44,9 +46,10 @@ const JobRunView: React.FC = () => {
     <StatisticCard
       chartPlacement="right"
       statistic={{
-        title: '当前运行',
+        title: l('home.job.running'),
         value: 20,
-        suffix: '个',
+        suffix: l('global.item'),
+        formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Statistic
             title="已守护"

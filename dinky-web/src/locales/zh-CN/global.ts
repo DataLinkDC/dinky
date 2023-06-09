@@ -160,4 +160,27 @@ export default {
   'global.notifaction.iknow': '我知道了',
   'global.notifaction.full-error': '完整错误信息',
 
+  'global.item': '个',
+  'global.bout': '次',
+
+  'global.week.sunday': '星期日',
+  'global.week.monday': '星期一',
+  'global.week.tuesday': '星期二',
+  'global.week.wednesday': '星期三',
+  'global.week.thursday': '星期四',
+  'global.week.friday': '星期五',
+  'global.week.saturday': '星期六',
+  'global.month.january': '一月',
+  'global.month.february': '二月',
+  'global.month.march': '三月',
+  'global.month.april': '四月',
+  'global.month.may': '五月',
+  'global.month.june': '六月',
+  'global.month.july': '七月',
+  'global.month.august': '八月',
+  'global.month.september': '九月',
+  'global.month.october': '十月',
+  'global.month.november': '十一月',
+  'global.month.december': '十二月',
+
 };

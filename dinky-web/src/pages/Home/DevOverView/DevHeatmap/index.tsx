@@ -18,7 +18,8 @@
  */
 
 import React, {useState, useEffect} from 'react';
-import {Heatmap, G2} from '@ant-design/plots';
+import {Heatmap, G2, HeatmapConfig} from '@ant-design/plots';
+import {WEEK_LIST} from "@/pages/Home/constants";
 
 const DevHeatmap = () => {
   const [data, setData] = useState([]);
@@ -89,7 +90,7 @@ const DevHeatmap = () => {
       return group;
     },
   });
-  const config = {
+  const config :HeatmapConfig = {
     data,
     height: 200,
     autoFit: false,
@@ -101,7 +102,7 @@ const DevHeatmap = () => {
     meta: {
       day: {
         type: 'cat',
-        values: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+        values: WEEK_LIST,
       },
       week: {
         type: 'cat',

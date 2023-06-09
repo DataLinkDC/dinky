@@ -19,15 +19,17 @@
 
 import {StatisticCard} from '@ant-design/pro-components';
 import React from 'react';
-import {RingProgress} from '@ant-design/plots';
+import {RingProgress, RingProgressConfig} from '@ant-design/plots';
 import {Space} from "antd";
 import styles from '@/global.less';
+import CountFormatter from "@/components/CountFormatter";
+import {l} from "@/utils/intl";
 
 const {Statistic} = StatisticCard;
 
 const JobRecoveryView: React.FC = () => {
 
-  const config = {
+  const config : RingProgressConfig = {
     height: 80,
     width: 80,
     autoFit: false,
@@ -39,18 +41,19 @@ const JobRecoveryView: React.FC = () => {
     <StatisticCard
       chartPlacement="right"
       statistic={{
-        title: '今日恢复',
+        title: l('home.job.recovery'),
         value: 2,
-        suffix: '个',
+        suffix: l('global.item'),
+        formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Space>
             <Statistic
-              title="今日上线"
+              title={l('home.job.online')}
               value='5 '
-              suffix='个'
+              suffix={l('global.item')}
             />
             <Statistic
-              title="恢复占比"
+              title={l('home.job.recovery.rate')}
               value="40 %"
             />
           </Space>

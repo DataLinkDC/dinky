@@ -18,10 +18,10 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { Pie } from '@ant-design/plots';
+import {Pie, PieConfig} from '@ant-design/plots';
 import {getStatusCount} from "@/pages/Home/service";
-import {Home} from "@/types/Home/data";
-
+import {Home} from "@/types/Home/data.d";
+import {l} from "@/utils/intl";
 const JobStatusPie = () => {
 
   const [jobStatusData, setJobStatusData] = useState<Home.PieItem[]>([]);
@@ -57,7 +57,7 @@ const JobStatusPie = () => {
     });
   };
 
-  const config = {
+  const config :PieConfig = {
     appendPadding: 10,
     data: jobStatusData,
     angleField: 'value',
@@ -83,7 +83,7 @@ const JobStatusPie = () => {
         style: {
           fontSize: '16px',
         },
-        customHtml: 'Job Instance',
+        customHtml: ()=> l('home.job.instance')
       },
       content: {
         style: {
@@ -92,7 +92,7 @@ const JobStatusPie = () => {
           textOverflow: 'ellipsis',
           fontSize: '24px',
         },
-        content: jobCount,
+        content: String(jobCount),
       },
     },
   };

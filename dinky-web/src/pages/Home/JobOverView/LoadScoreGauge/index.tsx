@@ -18,14 +18,15 @@
  */
 
 import React from 'react';
-import { Gauge } from '@ant-design/plots';
+import {Gauge, GaugeConfig} from '@ant-design/plots';
+import {l} from "@/utils/intl";
 
 const LoadScoreGauge = () => {
 
   const ticks = [0, 1 / 3, 2 / 3, 1];
   const color = ['#30BF78', '#FAAD14', '#F4664A'];
 
-  const config = {
+  const config: GaugeConfig = {
     padding: 15,
     percent: 0.25,
     type: 'meter',
@@ -50,14 +51,13 @@ const LoadScoreGauge = () => {
       title: {
         formatter: ({ percent }) => {
           if (percent < ticks[1]) {
-            return 'Excellent';
+            return l('home.server.load.excellent');
           }
 
           if (percent < ticks[2]) {
-            return 'Good';
+            return l('home.server.load.good');
           }
-
-          return 'Poor';
+          return l('home.server.load.bad');
         },
         style: ({ percent }) => {
           return {

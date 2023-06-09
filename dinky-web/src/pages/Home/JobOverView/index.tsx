@@ -27,8 +27,7 @@ import JobErrorView from "@/pages/Home/JobOverView/JobErrorView";
 import JobRunView from "@/pages/Home/JobOverView/JobRunView";
 import JobFinishedView from "@/pages/Home/JobOverView/JobFinishedView";
 import JobRecoveryView from "@/pages/Home/JobOverView/JobRecoveryView";
-
-const {Statistic} = StatisticCard;
+import {l} from "@/utils/intl";
 
 const JobOverView: React.FC = () => {
   const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
@@ -41,7 +40,7 @@ const JobOverView: React.FC = () => {
       }}
     >
       <ProCard
-        title={<><Badge status="processing"/> 作业监控</>}
+        title={<><Badge status="processing"/>{l('home.job.metrics')}</>}
         headerBordered
         bordered
         size="small"
@@ -49,7 +48,6 @@ const JobOverView: React.FC = () => {
       >
         <ProCard split={split}>
           <ProCard split="horizontal">
-            <ProCard split="horizontal">
               <ProCard bodyStyle={{padding: '0 12px'}}>
                 <JobRunView/>
               </ProCard>
@@ -58,23 +56,19 @@ const JobOverView: React.FC = () => {
               </ProCard>
               <ProCard bodyStyle={{padding: '0 12px'}}>
                 <JobRecoveryView/>
-              </ProCard>
             </ProCard>
           </ProCard>
-          <ProCard title="当前作业运行状态">
+          <ProCard title={l('home.job.running.status')}>
             <JobStatusPie/>
           </ProCard>
         </ProCard>
         <ProCard split={split}>
-          <ProCard title="Dinky 负载状况">
+          <ProCard title={l('home.server.load')}>
             <LoadScoreGauge/>
           </ProCard>
           <ProCard split="horizontal">
-            <ProCard split="horizontal">
               <JobErrorView/>
-            </ProCard>
           </ProCard>
-
         </ProCard>
       </ProCard>
     </RcResizeObserver>

@@ -18,51 +18,65 @@
  */
 
 import React from 'react';
-import {Radar} from '@ant-design/plots';
+import {Radar, RadarConfig} from '@ant-design/plots';
+import {l} from "@/utils/intl";
 
+type TaskDialectSummary = {
+    type: string;
+    count: number;
+    rate: number;
+}
 const TaskDialectRadar = () => {
   // 数据更新于 2021.01.09
-  const data = [
+  const data : TaskDialectSummary[] = [
     {
-      name: 'FlinkSQL',
-      star: 10371,
+      type: 'FlinkSQL',
+      count: 10371,
+      rate: 0.01,
     },
     {
-      name: 'FlinkJar',
-      star: 7380,
+      type: 'FlinkJar',
+      count: 7380,
+      rate: 0.01,
     },
     {
-      name: 'K8SApplication',
-      star: 7414,
+      type: 'K8SApplication',
+      count: 7414,
+      rate: 0.01,
     },
     {
-      name: 'Doris',
-      star: 2140,
+      type: 'Doris',
+      count: 2140,
+      rate: 0.01,
     },
     {
-      name: 'FlinkSQLEnv',
-      star: 660,
+      type: 'FlinkSQLEnv',
+      count: 660,
+      rate: 0.01,
     },
     {
-      name: 'Java',
-      star: 885,
+      type: 'Java',
+      count: 885,
+      rate: 0.01,
     },
     {
-      name: 'Mysql',
-      star: 1626,
+      type: 'Mysql',
+      count: 1626,
+      rate: 0.01,
     },
   ];
-  const config = {
-    data: data.map((d) => ({...d, star: Math.sqrt(d.star)})),
-    xField: 'name',
-    yField: 'star',
+  const config:RadarConfig = {
+    data: data.map((d) => ({...d, count: Math.sqrt(d.count)})),
+    xField: 'type',
+    yField: 'count',
+    autoFit: true,
     appendPadding: [0, 10, 0, 10],
     meta: {
-      star: {
-        alias: 'star 数量',
+      count: {
+        alias: l('home.job.total'),
         min: 0,
         nice: true,
-        formatter: (v) => Number(v).toFixed(2),
+        formatter: (v) => Number(v),
       },
     },
     xAxis: {

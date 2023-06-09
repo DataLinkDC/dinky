@@ -19,10 +19,12 @@
 
 import {Space, Table} from 'antd';
 import React, {useState} from 'react';
-import type {ColumnsType} from 'antd/es/table';
-import {StatisticCard} from "@ant-design/pro-components";
+import {ProColumns, ProTable, StatisticCard} from "@ant-design/pro-components";
 import styles from "@/global.less";
-import {Progress} from "@ant-design/plots";
+import {Progress, ProgressConfig} from "@ant-design/plots";
+import CountFormatter from "@/components/CountFormatter";
+import {l} from "@/utils/intl";
+import {parseMilliSecondStr, parseSecondStr} from "@/utils/function";
 
 const {Statistic} = StatisticCard;
 
@@ -34,73 +36,93 @@ interface DataType {
 
 const JobErrorView: React.FC = () => {
 
-  const [data, setData] = useState([
+  const [  data, setData] =  useState<DataType[]>([
     {
       "rank": 1,
       "name": '任务1',
-      "value": '10 分钟'
+      "value": 10000
     },
     {
       "rank": 2,
       "name": '任务2',
-      "value": '10 分钟'
+      "value": 20000
     },
     {
       "rank": 3,
       "name": '任务3',
-      "value": '10 分钟'
+      "value": 30000
     },
     {
       "rank": 4,
       "name": '任务4',
-      "value": '10 分钟'
+      "value": 40000
     },
     {
       "rank": 5,
       "name": '任务5',
-      "value": '10 分钟'
+      "value": 50000
+    },
+    {
+      "rank": 6,
+      "name": '任务6',
+      "value": 60000
+    },
+    {
+      "rank": 7,
+      "name": '任务7',
+      "value": 70000
+    },
+    {
+      "rank": 8,
+      "name": '任务8',
+      "value": 80000
     },
   ]);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ProColumns<DataType>[] = [
     {
-      title: '排名',
+      title: l('home.job.failed.rank'),
       dataIndex: 'rank',
+      valueType: 'indexBorder',
     },
     {
-      title: '任务名',
+      title: l('home.job.failed.name'),
       dataIndex: 'name',
     },
     {
-      title: '已异常时间',
+      title: l('home.job.failed.time'),
       dataIndex: 'value',
+      render:(_:any,record: DataType) => {
+        return <>{parseMilliSecondStr(record.value)}</>
+      }
     },
   ];
 
-  const config = {
+  const config : ProgressConfig = {
     height: 50,
     width: 200,
     autoFit: false,
     percent: 0.7,
-    color: ['#5B8FF9', '#E8EDF3'],
+    color: ['#5B8FF9', '#acaeb0'],
   };
 
   return <>
     <StatisticCard
       chartPlacement="right"
       statistic={{
-        title: '当前未处理失败',
+        title: l('home.job.failed.unhandle'),
         value: 3,
-        suffix: '个',
+        suffix: l('global.item'),
+        formatter: (value)=> <CountFormatter value={Number(value)}/>,
         description: (
           <Space>
             <Statistic
-              title="今日失败"
+              title={l('home.job.failed')}
               value='10 '
-              suffix='个'
+              suffix={l('global.item')}
             />
             <Statistic
-              title="已处理"
+              title={l('home.job.failed.handle')}
               value="70%"
             />
           </Space>
@@ -112,7 +134,15 @@ const JobErrorView: React.FC = () => {
         </div>
       }
     />
-    <Table columns={columns} dataSource={data} pagination={false} size="small"/>
+    <ProTable
+        columns={columns}
+        scroll={{y: 230}}
+        dataSource={data}
+        search={false}
+        toolBarRender={false}
+        pagination={false}
+        size="small"
+    />
   </>;
 };
 
