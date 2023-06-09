@@ -78,7 +78,7 @@ Dinky 是一个 `开箱即用` 、`易扩展` ，以 `Apache Flink` 为基础，
 - dev 分支为 0.8 重构版，尚不稳定
 - 0.7 分支为当前稳定版，编译调试请使用该分支
 
-详见 [源码编译](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/build.md) 和 [安装部署](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/deploy.md) 。
+详见 [源码编译](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/compile.mdx) 和 [安装部署](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/deploy.mdx) 。
 
 ## 如何升级
 
