@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.context.LdapContext;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
@@ -28,17 +29,16 @@ import org.dinky.data.model.User;
 import org.dinky.service.LdapService;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.naming.directory.Attributes;
-import javax.naming.directory.SearchControls;
 
 import org.springframework.ldap.AuthenticationException;
-import org.springframework.ldap.core.ContextMapper;
-import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.ldap.core.LdapTemplate;
-import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.stereotype.Service;
 
+import cn.hutool.core.lang.Assert;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -56,7 +56,7 @@ public class LdapServiceImpl implements LdapService {
      */
     @Override
     public User authenticate(LoginDTO loginDTO) throws AuthException {
-        LdapTemplate ldapTemplate = new LdapTemplate(getLdapContext());
+        LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
         // Build LDAP filter, The LdapCastUsername is map to Dinky UserName
         String filter =
                 String.format(
@@ -67,7 +67,8 @@ public class LdapServiceImpl implements LdapService {
         // Perform search operation, we have alreday config baseDn in global
         // so the param base has config ""
         List<LdapUserIdentification> result =
-                ldapTemplate.search("", filter, getControls(), new UserContextMapper());
+                ldapTemplate.search(
+                        "", filter, LdapContext.getControls(), new LdapContext.UserContextMapper());
         // Only if the returned result is one is correct,
         // otherwise the corresponding exception is thrown
         if (result.size() == 0) {
@@ -87,7 +88,7 @@ public class LdapServiceImpl implements LdapService {
             try {
                 Attributes attributes = ldapUserIdentification.getAttributes();
                 // Validate username and password
-                getLdapContext()
+                LdapContext.getLdapContext()
                         .getContext(ldapUserIdentification.getAbsoluteDn(), loginDTO.getPassword());
                 // If no exception is thrown, then the login is successful，
                 // Build the User with cast
@@ -109,31 +110,26 @@ public class LdapServiceImpl implements LdapService {
         }
     }
 
-    private LdapContextSource getLdapContext() {
-        LdapContextSource contextSource = new LdapContextSource();
-        contextSource.setUrl(configuration.getLdapUrl().getValue());
-        contextSource.setBase(configuration.getLdapBaseDn().getValue());
-        contextSource.setUserDn(configuration.getLdapUserDn().getValue());
-        contextSource.setPassword(configuration.getLdapUserPassword().getValue());
-        contextSource.afterPropertiesSet();
-        return contextSource;
-    }
+    /**
+     * Returns a list of rule-filtered users in LDAP and for data where username and nickname fail
+     * to be successfully matched
+     *
+     * @return User List
+     */
+    @Override
+    public List<User> listUsers() {
+        String filter = configuration.getLdapFilter().getValue();
+        Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMsg());
 
-    private SearchControls getControls() {
-        SearchControls controls = new SearchControls();
-        controls.setSearchScope(SearchControls.SUBTREE_SCOPE);
-        // controls.setCountLimit(ldapConfig.getCountLimit());
-        controls.setTimeLimit(configuration.getLdapTimeLimit().getValue());
-        return controls;
-    }
+        LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
+        List<User> result =
+                ldapTemplate.search(
+                        "",
+                        configuration.getLdapFilter().getValue(),
+                        LdapContext.getControls(),
+                        new LdapContext.UserAttributesMapperMapper());
 
-    private static class UserContextMapper implements ContextMapper<LdapUserIdentification> {
-        public LdapUserIdentification mapFromContext(Object ctx) {
-            DirContextOperations adapter = (DirContextOperations) ctx;
-            return new LdapUserIdentification(
-                    adapter.getNameInNamespace(),
-                    adapter.getDn().toString(),
-                    adapter.getAttributes());
-        }
+        // User is empty representative not matched to relevant attribute, filtered out
+        return result.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
 }

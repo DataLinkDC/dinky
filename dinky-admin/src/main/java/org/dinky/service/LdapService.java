@@ -23,10 +23,13 @@ import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.User;
 
+import java.util.List;
+
 import javax.naming.NamingException;
 
 public interface LdapService {
-    //    List<User> listUsers(LdapConfig ldapConfig);
+
+    List<User> listUsers();
 
     /**
      * Authenticates the user based on the provided login credentials. Throws AuthException if
@@ -35,5 +38,5 @@ public interface LdapService {
      * @param loginDTO The login user info
      * @return ldap user
      */
-    User authenticate(LoginDTO userDTO) throws AuthException, NamingException;
+    User authenticate(LoginDTO loginDTO) throws AuthException, NamingException;
 }

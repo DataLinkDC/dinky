@@ -19,9 +19,14 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.User;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.LdapService;
+
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,23 +44,29 @@ public class LdapController {
 
     @Autowired LdapService ldapService;
 
-    /** Gets the LDAP configuration status */
     @GetMapping("/ldapEnableStatus")
     public Result<Boolean> ldapStatus() {
         return Result.succeed(
                 SystemConfiguration.getInstances().getLdapEnable().getValue(), "获取成功");
     }
 
-    //    @PostMapping("/listUser")
-    //    public ProTableResult<User> listUser(@RequestBody LdapConfig ldapConfig) {
-    //        List<User> users = ldapService.listUsers(ldapConfig);
-    //        return ProTableResult.<User>builder()
-    //                .success(true)
-    //                .data(users)
-    //                .total((long) users.size())
-    ////                .current(1)
-    ////                .pageSize(1)
-    //                .build();
-    //    }
+    @GetMapping("/testConnection")
+    public Result<Integer> testConnection() {
+        List<User> users = ldapService.listUsers();
+        if (users.size() > 0) {
+            return Result.succeed(users.size());
+        } else {
+            return Result.failed(Status.LDAP_NO_USER_FOUND);
+        }
+    }
 
+    @GetMapping("/listUser")
+    public ProTableResult<User> listUser() {
+        List<User> users = ldapService.listUsers();
+        return ProTableResult.<User>builder()
+                .success(true)
+                .data(users)
+                .total((long) users.size())
+                .build();
+    }
 }
