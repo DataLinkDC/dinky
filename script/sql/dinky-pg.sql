@@ -1472,7 +1472,7 @@ CREATE TABLE "public"."dinky_user" (
                                        "password" varchar(50) COLLATE "pg_catalog"."default",
                                        "nickname" varchar(50) COLLATE "pg_catalog"."default",
                                        "worknum" varchar(50) COLLATE "pg_catalog"."default",
-                                       "user_type" int2 COLLATE "pg_catalog"."default",
+                                       "user_type" int2 NOT NULL,
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,
@@ -1487,6 +1487,7 @@ COMMENT ON COLUMN "public"."dinky_user"."password" IS 'password';
 COMMENT ON COLUMN "public"."dinky_user"."nickname" IS 'nickname';
 COMMENT ON COLUMN "public"."dinky_user"."worknum" IS 'worknum';
 COMMENT ON COLUMN "public"."dinky_user"."avatar" IS 'avatar';
+COMMENT ON COLUMN "public"."dinky_user"."user_type" IS 'user_type';
 COMMENT ON COLUMN "public"."dinky_user"."mobile" IS 'mobile phone';
 COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_user"."is_delete" IS 'is delete';
