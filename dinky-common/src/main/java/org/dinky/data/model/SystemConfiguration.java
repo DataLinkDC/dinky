@@ -68,7 +68,7 @@ public class SystemConfiguration {
     private Configuration<String> sqlSeparator =
             key("flink.settings.sqlSeparator")
                     .stringType()
-                    .defaultValue(";\n")
+                    .defaultValue(";\\n")
                     .note("FlinkSQL语句分割符");
     private Configuration<Integer> jobIdWait =
             key("flink.settings.jobIdWait")
