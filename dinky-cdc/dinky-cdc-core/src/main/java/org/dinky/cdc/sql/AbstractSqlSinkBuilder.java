@@ -220,10 +220,11 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
     /**
      * @param source
      * @param schemaFieldName
-     * @param split           must keep for flink use.
+     * @param split must keep for flink use.
      * @return
      */
-    protected abstract String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split);
+    protected abstract String createTableName(
+            LinkedHashMap source, String schemaFieldName, Map<String, String> split);
 
     @SuppressWarnings("rawtypes")
     @Override

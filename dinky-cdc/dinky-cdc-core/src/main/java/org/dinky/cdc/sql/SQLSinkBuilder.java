@@ -153,7 +153,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     }
 
     @Override
-    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+    protected String createTableName(
+            LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
         return SplitUtil.getReValue(source.get(schemaFieldName).toString(), split)
                 + "."
                 + SplitUtil.getReValue(source.get("table").toString(), split);

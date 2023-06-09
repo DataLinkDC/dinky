@@ -95,7 +95,8 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
     }
 
     @Override
-    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+    protected String createTableName(
+            LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
         return source.get(schemaFieldName).toString() + "." + source.get("table").toString();
     }
 
