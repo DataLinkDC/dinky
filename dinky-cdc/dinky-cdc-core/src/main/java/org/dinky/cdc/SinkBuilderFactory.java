@@ -24,8 +24,6 @@ import org.dinky.cdc.sql.SQLSinkBuilder;
 import org.dinky.cdc.sql.catalog.SQLCatalogSinkBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -36,6 +34,9 @@ import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SinkBuilderFactory {
     private static final Logger logger = LoggerFactory.getLogger(SinkBuilderFactory.class);
@@ -75,36 +76,41 @@ public class SinkBuilderFactory {
             }
         }
 
-        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
-                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder =
+                sinkBuilders.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        SinkBuilderFactory::getKeyWord,
+                                        SinkBuilderFactory::getSupplier));
         map.putAll(plusSinkBuilder);
         return map;
     }
 
     @SuppressWarnings("unchecked")
     private static Supplier<SinkBuilder> getSupplier(SinkBuilder clazz) {
-            return () -> {
-                try {
-                    return SinkBuilder.class.newInstance();
-                } catch (InstantiationException | IllegalAccessException e) {
-                    logger.warn("Could not load service provider class : {}", e.getMessage());
-                }
-                return null;
-            };
+        return () -> {
+            try {
+                return SinkBuilder.class.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                logger.warn("Could not load service provider class : {}", e.getMessage());
+            }
+            return null;
+        };
     }
 
-    public static String getKeyWord(SinkBuilder c){
+    public static String getKeyWord(SinkBuilder c) {
         String fieldName = "KEY_WORD";
-        String result  = null;
+        String result = null;
         try {
             Field f = c.getClass().getDeclaredField(fieldName);
             result = (String) f.get(null);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        } catch (NoSuchFieldException
+                | SecurityException
+                | IllegalArgumentException
+                | IllegalAccessException e) {
             e.printStackTrace();
         }
 
         return result;
     }
-
-
 }
