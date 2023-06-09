@@ -206,7 +206,7 @@ public enum Status {
             "The LDAP connection was successful, but it did not match to any users",
             "LDAP连接成功，但未匹配到任何用户"),
     LDAP_FILTER_INCORRECT(
-            18005,
+            18006,
             "If the user filter rule cannot be empty, enter the relevant configuration",
             "用户过滤规则不能为空，请填写相关配置"),
 

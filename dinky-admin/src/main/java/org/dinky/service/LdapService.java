@@ -35,8 +35,8 @@ public interface LdapService {
      * Authenticates the user based on the provided login credentials. Throws AuthException if
      * authentication fails.
      *
-     * @param userDTO The login user info
+     * @param loginDTO The login user info
      * @return ldap user
      */
-    User authenticate(LoginDTO userDTO) throws AuthException, NamingException;
+    User authenticate(LoginDTO loginDTO) throws AuthException, NamingException;
 }
