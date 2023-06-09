@@ -100,7 +100,7 @@ public class SinkBuilderFactory {
             Field f = c.getClass().getDeclaredField(fieldName);
             result = (String) f.get(null);
         } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
-            e.printStackTrace();
+            logger.error("Could not find KEY_WORD in class : {}", e.getMessage());
         }
 
         return result;
