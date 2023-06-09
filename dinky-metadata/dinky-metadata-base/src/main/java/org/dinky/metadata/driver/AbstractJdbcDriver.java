@@ -124,7 +124,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     protected void createDataSource(DruidDataSource ds, DriverConfig config) {
-        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setName(config.getName().replaceAll("[^\\w]", ""));
         ds.setUrl(config.getUrl());
         ds.setDriverClassName(getDriverClass());
         ds.setUsername(config.getUsername());
