@@ -111,7 +111,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               description: item.startTime,
               disabled: true,
               onClick: () => {
-                if (finish) {
+                if (finish&& item.step<=currentStep) {
                   if (item.step === showDataStep) {
                     setShowList(true)
                     setLog(showData)
@@ -149,7 +149,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
             stepArray[currentStep - 1].status = renderStatus(status)
           }
           if ((status === 2 && currentStep === stepNum) || status === 0) {
-            stepArray.forEach(d => d.disabled = false)
+            stepArray.filter(x=>x.status!="wait").forEach(d => d.disabled = false)
             finish = true;
             eventSource.close();
             return;

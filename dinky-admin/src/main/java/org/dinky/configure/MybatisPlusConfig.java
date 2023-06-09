@@ -20,6 +20,9 @@
 package org.dinky.configure;
 
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.annotation.ConditionalOnListProperty;
+import org.dinky.interceptor.PostgreSQLPrepareInterceptor;
+import org.dinky.interceptor.PostgreSQLQueryInterceptor;
 import org.dinky.mybatis.handler.DateMetaObjectHandler;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
@@ -76,6 +79,25 @@ public class MybatisPlusConfig {
                     "dinky_task_statement",
                     "dinky_git_project",
                     "dinky_task_version");
+
+    @Bean
+    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
+    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    public PostgreSQLQueryInterceptor postgreSQLQueryInterceptor() {
+        return new PostgreSQLQueryInterceptor();
+    }
+
+    /**
+     * Add the plugin to the MyBatis plugin interceptor chain.
+     *
+     * @return {@linkplain PostgreSQLPrepareInterceptor}
+     */
+    @Bean
+    //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
+    @ConditionalOnListProperty(name = "spring.profiles.active", havingValue = "pgsql")
+    public PostgreSQLPrepareInterceptor postgreSQLPrepareInterceptor() {
+        return new PostgreSQLPrepareInterceptor();
+    }
 
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {

@@ -19,11 +19,6 @@
 
 package org.dinky.data.model;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -68,7 +63,7 @@ public class SystemConfiguration {
     private Configuration<String> sqlSeparator =
             key("flink.settings.sqlSeparator")
                     .stringType()
-                    .defaultValue(";\n")
+                    .defaultValue(";\\n")
                     .note("FlinkSQL语句分割符");
     private Configuration<Integer> jobIdWait =
             key("flink.settings.jobIdWait")
