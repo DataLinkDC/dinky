@@ -216,15 +216,29 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
     @Override
     protected String generateUrl(String schema) {
-        Map<String, String> jdbc = config.getJdbc();
-        boolean tinyInt1isBit = "true".equalsIgnoreCase(jdbc.get("tinyInt1isBit"));
-        boolean transformedBitIsBoolean =
-                "true".equalsIgnoreCase(jdbc.get("transformedBitIsBoolean"));
         return String.format(
-                "jdbc:mysql://%s:%d/%s?tinyInt1isBit=%s",
+                "jdbc:mysql://%s:%d%s",
                 config.getHostname(),
                 config.getPort(),
-                schema,
-                tinyInt1isBit && transformedBitIsBoolean);
+//                schema,
+                composeJdbcProperties(config.getJdbc()));
+    }
+
+    private String composeJdbcProperties(Map<String, String> jdbcProperties) {
+        if (jdbcProperties == null || jdbcProperties.isEmpty()) {
+            return "";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('?');
+        jdbcProperties.forEach(
+                (k, v) -> {
+                    sb.append(k);
+                    sb.append("=");
+                    sb.append(v);
+                    sb.append("&");
+                });
+        sb.deleteCharAt(sb.length() - 1);
+        return sb.toString();
     }
 }
