@@ -103,12 +103,6 @@ public enum Status {
     SWITCHING_TENANT_SUCCESS(10018, "Select Tenant Success", "选择租户成功"),
     // user.superadmin.cannot.disable
     USER_SUPERADMIN_CANNOT_DISABLE(10019, "User SuperAdmin Cannot Disable", "超级管理员用户不能停用"),
-    LDAP_USER_DUPLICAT(10020, "The ldap matches to multiple user data", "ldap匹配到多个用户数据"),
-    LDAP_USER_AUTOLOAD_FORBAID(
-            10021,
-            "Auto-mapping LDAP users are not enabled, please contact your administrator to import",
-            "未开启自动映射LDAP用户，请联系管理员导入"),
-    LDAP_DEFAULT_TENANT_NOFOUND(10021, "The LDAP default tenant does not exist", "LDAP默认租户不存在"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),
@@ -198,6 +192,23 @@ public enum Status {
             "DolphinScheduler Type Is [{}] Not Support, Not DINKY Type",
             "海豚调度类型为 [{}] 不支持,非DINKY类型"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "Workflow Definition Not Exist", "工作流定义不存在"),
+
+    /** LDAP About * */
+    LDAP_USER_DUPLICAT(18001, "The ldap matches to multiple user data", "ldap匹配到多个用户数据"),
+    LDAP_USER_AUTOLOAD_FORBAID(
+            18002,
+            "Auto-mapping LDAP users are not enabled, please contact your administrator to import",
+            "未开启自动映射LDAP用户，请联系管理员导入"),
+    LDAP_DEFAULT_TENANT_NOFOUND(18003, "The LDAP default tenant does not exist", "LDAP默认租户不存在"),
+    LDAP_USER_INCORRECT(18004, "The LDAP user name (DN) Incorrect", "LDAP用户名（DN）不正确"),
+    LDAP_NO_USER_FOUND(
+            18005,
+            "The LDAP connection was successful, but it did not match to any users",
+            "LDAP连接成功，但未匹配到任何用户"),
+    LDAP_FILTER_INCORRECT(
+            18005,
+            "If the user filter rule cannot be empty, enter the relevant configuration",
+            "用户过滤规则不能为空，请填写相关配置"),
 
     /** global exception */
     GLOBAL_PARAMS_CHECK_ERROR(90001, "Field: {0}, {1}", "字段: {0}, {1}"),
