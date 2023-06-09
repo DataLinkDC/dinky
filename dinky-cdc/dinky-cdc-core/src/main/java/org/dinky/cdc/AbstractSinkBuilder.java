@@ -87,20 +87,27 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected List<ModifyOperation> modifyOperations = new ArrayList<>();
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
-    protected List<ConvertType> typeConverterList =
-            Lists.newArrayList(
-                    this::convertVarCharType,
-                    this::convertDateType,
-                    this::convertVarBinaryType,
-                    this::convertBigIntType,
-                    this::convertFloatType,
-                    this::convertDecimalType,
-                    this::convertTimestampType);
+    protected List<ConvertType> typeConverterList = null;
 
-    protected AbstractSinkBuilder() {}
+    protected AbstractSinkBuilder() {
+        initTypeConverterList();
+    }
 
     protected AbstractSinkBuilder(FlinkCDCConfig config) {
         this.config = config;
+        initTypeConverterList();
+    }
+
+    protected void initTypeConverterList() {
+        typeConverterList =
+                Lists.newArrayList(
+                        this::convertVarCharType,
+                        this::convertDateType,
+                        this::convertVarBinaryType,
+                        this::convertBigIntType,
+                        this::convertFloatType,
+                        this::convertDecimalType,
+                        this::convertTimestampType);
     }
 
     public FlinkCDCConfig getConfig() {
@@ -451,11 +458,10 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected Optional<Object> convertDateType(Object target, LogicalType logicalType) {
-        long value = (long) target;
         if (logicalType instanceof DateType) {
             return Optional.of(
                     StringData.fromString(
-                            Instant.ofEpochMilli(value)
+                            Instant.ofEpochMilli((long) target)
                                     .atZone(ZoneId.systemDefault())
                                     .toLocalDate()
                                     .toString()));
@@ -464,9 +470,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected Optional<Object> convertVarCharType(Object target, LogicalType logicalType) {
-        String value = (String) target;
         if (logicalType instanceof VarCharType) {
-            return Optional.of(StringData.fromString(value));
+            return Optional.of(StringData.fromString((String) target));
         }
         return Optional.empty();
     }

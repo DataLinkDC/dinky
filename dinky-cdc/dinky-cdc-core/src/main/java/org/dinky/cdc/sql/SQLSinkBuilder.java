@@ -52,7 +52,14 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
 
-    {
+    public SQLSinkBuilder() {}
+
+    private SQLSinkBuilder(FlinkCDCConfig config) {
+        super(config);
+    }
+
+    @Override
+    protected void initTypeConverterList() {
         typeConverterList =
                 Lists.newArrayList(
                         this::convertDateType,
@@ -61,12 +68,6 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                         this::convertDecimalType,
                         this::convertBigIntType,
                         this::convertVarBinaryType);
-    }
-
-    public SQLSinkBuilder() {}
-
-    private SQLSinkBuilder(FlinkCDCConfig config) {
-        super(config);
     }
 
     private String addSourceTableView(

@@ -44,7 +44,14 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
 
     public static final String KEY_WORD = "sql-catalog";
 
-    {
+    public SQLCatalogSinkBuilder() {}
+
+    private SQLCatalogSinkBuilder(FlinkCDCConfig config) {
+        super(config);
+    }
+
+    @Override
+    protected void initTypeConverterList() {
         typeConverterList =
                 Lists.newArrayList(
                         this::convertDateType,
@@ -52,12 +59,6 @@ public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Ser
                         this::convertDecimalType,
                         this::convertBigIntType,
                         this::convertVarBinaryType);
-    }
-
-    public SQLCatalogSinkBuilder() {}
-
-    private SQLCatalogSinkBuilder(FlinkCDCConfig config) {
-        super(config);
     }
 
     @Override
