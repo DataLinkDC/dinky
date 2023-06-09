@@ -118,8 +118,7 @@ public interface Driver extends AutoCloseable {
             throw new MetaDataException("缺少数据源类型:【" + connector + "】");
         }
 
-        String name = url.replaceAll("[^\\w]", "");
-        DriverConfig driverConfig = new DriverConfig(name, type, url, username, password);
+        DriverConfig driverConfig = new DriverConfig(url, type, url, username, password);
         return build(driverConfig);
     }
 
