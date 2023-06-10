@@ -24,11 +24,8 @@ import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.data.model.Table;
 
 import org.apache.flink.api.java.utils.ParameterTool;
-import org.apache.flink.runtime.util.EnvironmentInformation;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -53,75 +50,6 @@ public class FlinkBaseUtil {
         params.put(
                 FlinkParamConstant.DINKY_ADDR, parameters.get(FlinkParamConstant.DINKY_ADDR, null));
         return params;
-    }
-
-    public static String getCDCSqlInsert(
-            Table table, String targetName, String sourceName, FlinkCDCConfig config) {
-        StringBuilder sb = new StringBuilder("INSERT INTO `");
-        sb.append(targetName);
-        sb.append("` SELECT\n");
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append(String.format("`%s`", table.getColumns().get(i).getName())).append(" \n");
-        }
-        sb.append(" FROM `");
-        sb.append(sourceName);
-        sb.append("`");
-        return sb.toString();
-    }
-
-    public static String getFlinkDDL(
-            Table table,
-            String tableName,
-            FlinkCDCConfig config,
-            String sinkSchemaName,
-            String sinkTableName,
-            String pkList) {
-        StringBuilder sb = new StringBuilder();
-        if (Integer.parseInt(EnvironmentInformation.getVersion().split("\\.")[1]) < 13) {
-            sb.append("CREATE TABLE  `");
-        } else {
-            sb.append("CREATE TABLE IF NOT EXISTS `");
-        }
-        sb.append(tableName);
-        sb.append("` (\n");
-        List<String> pks = new ArrayList<>();
-        for (int i = 0; i < table.getColumns().size(); i++) {
-            String type = table.getColumns().get(i).getFlinkType();
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`");
-            sb.append(table.getColumns().get(i).getName());
-            sb.append("` ");
-            sb.append(convertSinkColumnType(type, config));
-            sb.append("\n");
-            if (table.getColumns().get(i).isKeyFlag()) {
-                pks.add(table.getColumns().get(i).getName());
-            }
-        }
-        StringBuilder pksb = new StringBuilder("PRIMARY KEY ( ");
-        for (int i = 0; i < pks.size(); i++) {
-            if (i > 0) {
-                pksb.append(",");
-            }
-            pksb.append("`");
-            pksb.append(pks.get(i));
-            pksb.append("`");
-        }
-        pksb.append(" ) NOT ENFORCED\n");
-        if (pks.size() > 0) {
-            sb.append("    ,");
-            sb.append(pksb);
-        }
-        sb.append(") WITH (\n");
-        sb.append(getSinkConfigurationString(table, config, sinkSchemaName, sinkTableName, pkList));
-        sb.append(")\n");
-        return sb.toString();
     }
 
     public static String getSinkConfigurationString(

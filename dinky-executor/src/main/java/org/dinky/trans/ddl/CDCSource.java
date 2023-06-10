@@ -129,83 +129,38 @@ public class CDCSource {
     public static CDCSource build(String statement) {
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         Map<String, String> config = getKeyValue(map.get("WITH"));
-        Map<String, String> debezium = new HashMap<>();
-        Map<String, String> split = new HashMap<>();
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("debezium.")) {
-                String key = entry.getKey();
-                key = key.replaceFirst("debezium.", "");
-                if (!debezium.containsKey(key)) {
-                    debezium.put(key, entry.getValue());
-                }
-            }
-        }
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("split.")) {
-                String key = entry.getKey();
-                key = key.replaceFirst("split.", "");
-                if (!split.containsKey(key)) {
-                    split.put(key, entry.getValue());
-                }
-            }
-        }
+
+        Map<String, String> debezium = createConfigure(config, "debezium.");
+        Map<String, String> split = createConfigure(config, "split.");
         splitMapInit(split);
-        Map<String, String> source = new HashMap<>();
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("source.")) {
-                String key = entry.getKey();
-                key = key.replaceFirst("source.", "");
-                if (!source.containsKey(key)) {
-                    source.put(key, entry.getValue());
-                }
-            }
-        }
-        // jdbc参数(jdbc.properties.*)
-        Map<String, String> jdbc = new HashMap<>();
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("jdbc.properties.")) {
-                String key = entry.getKey();
-                key = key.replaceFirst("jdbc.properties.", "");
-                if (!jdbc.containsKey(key)) {
-                    jdbc.put(key, entry.getValue());
-                }
-            }
-        }
-        Map<String, String> sink = new HashMap<>();
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("sink.")) {
-                String key = entry.getKey();
-                key = key.replaceFirst("sink.", "");
-                if (!sink.containsKey(key)) {
-                    sink.put(key, entry.getValue());
-                }
-            }
-        }
-        /** 支持多目标写入功能, 从0开始顺序写入配置. */
+        Map<String, String> source = createConfigure(config, "source.");
+        Map<String, String> jdbc = createConfigure(config, "jdbc.properties.");
+        Map<String, String> sink = createConfigure(config, "sink.");
+
+        /* 支持多目标写入功能, 从0开始顺序写入配置. */
         Map<String, Map<String, String>> sinks = new HashMap<>();
-        final Pattern p = Pattern.compile("sink\\[(?<index>.*)\\]");
-        for (Map.Entry<String, String> entry : config.entrySet()) {
-            if (entry.getKey().startsWith("sink[")) {
-                String key = entry.getKey();
-                Matcher matcher = p.matcher(key);
-                if (matcher.find()) {
-                    final String index = matcher.group("index");
-                    Map<String, String> sinkMap = sinks.get(index);
-                    if (sinkMap == null) {
-                        sinkMap = new HashMap<>();
-                        sinks.put(index, sinkMap);
+        final Pattern p = Pattern.compile("sink\\[(?<index>.*)]");
+        config.forEach(
+                (key, value) -> {
+                    if (key.startsWith("sink[")) {
+                        Matcher matcher = p.matcher(key);
+                        if (matcher.find()) {
+                            final String index = matcher.group("index");
+                            Map<String, String> sinkMap =
+                                    sinks.computeIfAbsent(index, k -> new HashMap<>());
+                            key = key.replaceFirst("sink\\[" + index + "].", "");
+                            if (!sinkMap.containsKey(key)) {
+                                sinkMap.put(key, value);
+                            }
+                        }
                     }
-                    key = key.replaceFirst("sink\\[" + index + "\\].", "");
-                    if (!sinkMap.containsKey(key)) {
-                        sinkMap.put(key, entry.getValue());
-                    }
-                }
-            }
-        }
+                });
+
         final ArrayList<Map<String, String>> sinkList = new ArrayList<>(sinks.values());
-        if (sink.isEmpty() && sinkList.size() > 0) {
+        if (sink.isEmpty() && !sinkList.isEmpty()) {
             sink = sinkList.get(0);
         }
+
         CDCSource cdcSource =
                 new CDCSource(
                         config.get("connector"),
@@ -227,13 +182,29 @@ public class CDCSource {
         if (Asserts.isNotNullString(config.get("database-name"))) {
             cdcSource.setDatabase(config.get("database-name"));
         }
+
         if (Asserts.isNotNullString(config.get("schema-name"))) {
             cdcSource.setSchema(config.get("schema-name"));
         }
+
         if (Asserts.isNotNullString(config.get("table-name"))) {
             cdcSource.setTable(config.get("table-name"));
         }
         return cdcSource;
+    }
+
+    private static Map<String, String> createConfigure(Map<String, String> config, String prefix) {
+        Map<String, String> item = new HashMap<>();
+        config.forEach(
+                (key, value) -> {
+                    if (key.startsWith(prefix)) {
+                        key = key.replaceFirst(prefix, "");
+                        if (!item.containsKey(key)) {
+                            item.put(key, value);
+                        }
+                    }
+                });
+        return item;
     }
 
     private static void splitMapInit(Map<String, String> split) {
@@ -246,8 +217,8 @@ public class CDCSource {
     private static Map<String, String> getKeyValue(List<String> list) {
         Map<String, String> map = new HashMap<>();
         Pattern p = Pattern.compile("'(.*?)'\\s*=\\s*'(.*?)'");
-        for (int i = 0; i < list.size(); i++) {
-            Matcher m = p.matcher(list.get(i) + "'");
+        for (String s : list) {
+            Matcher m = p.matcher(s + "'");
             if (m.find()) {
                 map.put(m.group(1), m.group(2));
             }

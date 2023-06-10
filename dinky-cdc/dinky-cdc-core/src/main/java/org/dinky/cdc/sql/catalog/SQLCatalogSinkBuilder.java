@@ -19,59 +19,30 @@
 
 package org.dinky.cdc.sql.catalog;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.CDCBuilder;
 import org.dinky.cdc.SinkBuilder;
+import org.dinky.cdc.sql.AbstractSqlSinkBuilder;
 import org.dinky.cdc.utils.FlinkStatementUtil;
 import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
 import org.dinky.data.model.Table;
 import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.utils.JSONUtil;
-import org.dinky.utils.LogUtil;
 
-import org.apache.flink.api.common.functions.FlatMapFunction;
-import org.apache.flink.api.common.typeinfo.TypeInformation;
-import org.apache.flink.api.dag.Transformation;
-import org.apache.flink.api.java.typeutils.RowTypeInfo;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.flink.streaming.api.datastream.DataStream;
-import org.apache.flink.streaming.api.datastream.DataStreamSource;
-import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
-import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.operations.ModifyOperation;
-import org.apache.flink.table.operations.Operation;
-import org.apache.flink.table.types.logical.BigIntType;
 import org.apache.flink.table.types.logical.DateType;
-import org.apache.flink.table.types.logical.DecimalType;
 import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.table.types.logical.TimestampType;
-import org.apache.flink.table.types.logical.VarBinaryType;
-import org.apache.flink.table.types.utils.TypeConversions;
 import org.apache.flink.types.Row;
-import org.apache.flink.types.RowKind;
-import org.apache.flink.util.Collector;
-import org.apache.flink.util.OutputTag;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.time.Instant;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import javax.xml.bind.DatatypeConverter;
+import com.google.common.collect.Lists;
 
-public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serializable {
+public class SQLCatalogSinkBuilder extends AbstractSqlSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "sql-catalog";
-    private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLCatalogSinkBuilder() {}
 
@@ -80,133 +51,32 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
     }
 
     @Override
-    public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
-
-    private DataStream<Row> buildRow(
-            DataStream<Map> filterOperator,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList,
-            String schemaTableName) {
-        final String[] columnNames = columnNameList.toArray(new String[columnNameList.size()]);
-        final LogicalType[] columnTypes =
-                columnTypeList.toArray(new LogicalType[columnTypeList.size()]);
-
-        TypeInformation<?>[] typeInformations =
-                TypeConversions.fromDataTypeToLegacyInfo(
-                        TypeConversions.fromLogicalToDataType(columnTypes));
-        RowTypeInfo rowTypeInfo = new RowTypeInfo(typeInformations, columnNames);
-
-        return filterOperator.flatMap(
-                new FlatMapFunction<Map, Row>() {
-
-                    @Override
-                    public void flatMap(Map value, Collector<Row> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    Row irow =
-                                            Row.withPositions(
-                                                    RowKind.INSERT, columnNameList.size());
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        irow.setField(
-                                                i,
-                                                convertValue(
-                                                        idata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(irow);
-                                    break;
-                                case "d":
-                                    Row drow =
-                                            Row.withPositions(
-                                                    RowKind.DELETE, columnNameList.size());
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        drow.setField(
-                                                i,
-                                                convertValue(
-                                                        ddata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(drow);
-                                    break;
-                                case "u":
-                                    Row ubrow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_BEFORE, columnNameList.size());
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubrow.setField(
-                                                i,
-                                                convertValue(
-                                                        ubdata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(ubrow);
-                                    Row uarow =
-                                            Row.withPositions(
-                                                    RowKind.UPDATE_AFTER, columnNameList.size());
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uarow.setField(
-                                                i,
-                                                convertValue(
-                                                        uadata.get(columnNameList.get(i)),
-                                                        columnTypeList.get(i)));
-                                    }
-                                    out.collect(uarow);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error(
-                                    "SchameTable: {} - Row: {} - Exception:",
-                                    schemaTableName,
-                                    JSONUtil.toJsonString(value),
-                                    e);
-                            throw e;
-                        }
-                    }
-                },
-                rowTypeInfo);
+    protected void initTypeConverterList() {
+        typeConverterList =
+                Lists.newArrayList(
+                        this::convertDateType,
+                        this::convertTimestampType,
+                        this::convertDecimalType,
+                        this::convertBigIntType,
+                        this::convertVarBinaryType);
     }
 
-    private void addTableSink(
+    @Override
+    public void addTableSink(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
-            Table table,
-            List<String> columnNameList) {
+            Table table) {
 
         String catalogName = config.getSink().get("catalog.name");
         String sinkSchemaName = getSinkSchemaName(table);
         String tableName = getSinkTableName(table);
         String sinkTableName = catalogName + "." + sinkSchemaName + "." + tableName;
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
+
         customTableEnvironment.createTemporaryView(viewName, rowDataDataStream);
-        logger.info("Create " + viewName + " temporaryView successful...");
-        String cdcSqlInsert =
-                FlinkStatementUtil.getCDCInsertSql(table, sinkTableName, viewName, config);
-        logger.info(cdcSqlInsert);
-        List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
-        logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
-        try {
-            if (operations.size() > 0) {
-                Operation operation = operations.get(0);
-                if (operation instanceof ModifyOperation) {
-                    modifyOperations.add((ModifyOperation) operation);
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Translate to plan occur exception: {}", e);
-            throw e;
-        }
+        logger.info("Create {} temporaryView successful...", viewName);
+
+        createInsertOperations(customTableEnvironment, table, viewName, sinkTableName);
     }
 
     @Override
@@ -219,141 +89,50 @@ public class SQLCatalogSinkBuilder extends AbstractSinkBuilder implements Serial
         return new SQLCatalogSinkBuilder(config);
     }
 
-    @Override
-    public DataStreamSource build(
-            CDCBuilder cdcBuilder,
-            StreamExecutionEnvironment env,
-            CustomTableEnvironment customTableEnvironment,
-            DataStreamSource<String> dataStreamSource) {
-        final String timeZone = config.getSink().get("timezone");
-        config.getSink().remove("timezone");
-        if (Asserts.isNotNullString(timeZone)) {
-            sinkTimeZone = ZoneId.of(timeZone);
-        }
-        final List<Schema> schemaList = config.getSchemaList();
-        if (Asserts.isNotNullCollection(schemaList)) {
-            logger.info("Build catalog successful...");
-            customTableEnvironment.executeSql(FlinkStatementUtil.getCreateCatalogStatement(config));
-            logger.info("Build deserialize successful...");
-            Map<Table, OutputTag<Map>> tagMap = new HashMap<>();
-            Map<String, Table> tableMap = new HashMap<>();
-            for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
-                    String sinkTableName = getSinkTableName(table);
-                    OutputTag<Map> outputTag = new OutputTag<Map>(sinkTableName) {};
-                    tagMap.put(table, outputTag);
-                    tableMap.put(table.getSchemaTableName(), table);
-                }
-            }
-            final String schemaFieldName = config.getSchemaFieldName();
-            ObjectMapper objectMapper = new ObjectMapper();
-            SingleOutputStreamOperator<Map> mapOperator =
-                    dataStreamSource
-                            .map(x -> objectMapper.readValue(x, Map.class))
-                            .returns(Map.class);
-
-            SingleOutputStreamOperator<Map> processOperator =
-                    mapOperator.process(
-                            new ProcessFunction<Map, Map>() {
-
-                                @Override
-                                public void processElement(
-                                        Map map,
-                                        ProcessFunction<Map, Map>.Context ctx,
-                                        Collector<Map> out)
-                                        throws Exception {
-                                    LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                    try {
-                                        Table table =
-                                                tableMap.get(
-                                                        source.get(schemaFieldName).toString()
-                                                                + "."
-                                                                + source.get("table").toString());
-                                        OutputTag<Map> outputTag = tagMap.get(table);
-                                        ctx.output(outputTag, map);
-                                    } catch (Exception e) {
-                                        out.collect(map);
-                                    }
-                                }
-                            });
-            tagMap.forEach(
-                    (table, tag) -> {
-                        final String schemaTableName = table.getSchemaTableName();
-                        try {
-                            DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                            logger.info("Build " + schemaTableName + " shunt successful...");
-                            List<String> columnNameList = new ArrayList<>();
-                            List<LogicalType> columnTypeList = new ArrayList<>();
-                            buildColumn(columnNameList, columnTypeList, table.getColumns());
-                            DataStream<Row> rowDataDataStream =
-                                    buildRow(
-                                                    filterOperator,
-                                                    columnNameList,
-                                                    columnTypeList,
-                                                    schemaTableName)
-                                            .rebalance();
-                            logger.info("Build " + schemaTableName + " flatMap successful...");
-                            logger.info("Start build " + schemaTableName + " sink...");
-                            addTableSink(
-                                    customTableEnvironment,
-                                    rowDataDataStream,
-                                    table,
-                                    columnNameList);
-                        } catch (Exception e) {
-                            logger.error("Build " + schemaTableName + " cdc sync failed...");
-                            logger.error(LogUtil.getError(e));
-                        }
-                    });
-
-            List<Transformation<?>> trans =
-                    customTableEnvironment.getPlanner().translate(modifyOperations);
-            for (Transformation<?> item : trans) {
-                env.addOperator(item);
-            }
-            logger.info("A total of " + trans.size() + " table cdc sync were build successfull...");
-        }
-        return dataStreamSource;
+    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {
+        logger.info("Build catalog successful...");
+        customTableEnvironment.executeSql(FlinkStatementUtil.getCreateCatalogStatement(config));
     }
 
-    protected Object convertValue(Object value, LogicalType logicalType) {
-        if (value == null) {
-            return null;
-        }
+    @Override
+    protected String createTableName(
+            LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+        return source.get(schemaFieldName).toString() + "." + source.get("table").toString();
+    }
+
+    @Override
+    protected Optional<Object> convertDateType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
             if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDate();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate();
+                return Optional.of(
+                        Instant.ofEpochMilli(((Integer) value).longValue())
+                                .atZone(sinkTimeZone)
+                                .toLocalDate());
             }
-        } else if (logicalType instanceof TimestampType) {
-            if (value instanceof Integer) {
-                return Instant.ofEpochMilli(((Integer) value).longValue())
-                        .atZone(sinkTimeZone)
-                        .toLocalDateTime();
-            } else if (value instanceof String) {
-                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
-            } else {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
-            }
-        } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal((String) value);
-        } else if (logicalType instanceof BigIntType) {
-            if (value instanceof Integer) {
-                return ((Integer) value).longValue();
-            } else {
-                return value;
-            }
-        } else if (logicalType instanceof VarBinaryType) {
-            // VARBINARY AND BINARY is converted to String with encoding base64 in FlinkCDC.
-            if (value instanceof String) {
-                return DatatypeConverter.parseBase64Binary((String) value);
-            } else {
-                return value;
-            }
-        } else {
-            return value;
+            return Optional.of(
+                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
         }
+        return Optional.empty();
+    }
+
+    @Override
+    protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
+        if (logicalType instanceof TimestampType) {
+            if (value instanceof Integer) {
+                return Optional.of(
+                        Instant.ofEpochMilli(((Integer) value).longValue())
+                                .atZone(sinkTimeZone)
+                                .toLocalDateTime());
+            }
+
+            if (value instanceof String) {
+                return Optional.of(
+                        Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime());
+            }
+
+            return Optional.of(
+                    Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime());
+        }
+        return Optional.empty();
     }
 }

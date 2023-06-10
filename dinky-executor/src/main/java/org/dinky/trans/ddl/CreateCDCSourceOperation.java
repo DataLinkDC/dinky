@@ -185,9 +185,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 }
             }
 
-            logger.info("A total of " + schemaTableNameList.size() + " tables were detected...");
+            logger.info("A total of {} tables were detected...", schemaTableNameList.size());
             for (int i = 0; i < schemaTableNameList.size(); i++) {
-                logger.info((i + 1) + ": " + schemaTableNameList.get(i));
+                logger.info("{}: {}", i + 1, schemaTableNameList.get(i));
             }
             config.setSchemaTableNameList(schemaTableNameList);
             config.setSchemaList(schemaList);
@@ -195,14 +195,14 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     executor.getStreamExecutionEnvironment();
             if (Asserts.isNotNull(config.getParallelism())) {
                 streamExecutionEnvironment.setParallelism(config.getParallelism());
-                logger.info("Set parallelism: " + config.getParallelism());
+                logger.info("Set parallelism: {}", config.getParallelism());
             }
             if (Asserts.isNotNull(config.getCheckpoint())) {
                 streamExecutionEnvironment.enableCheckpointing(config.getCheckpoint());
-                logger.info("Set checkpoint: " + config.getCheckpoint());
+                logger.info("Set checkpoint: {}", config.getCheckpoint());
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
-            logger.info("Build " + config.getType() + " successful...");
+            logger.info("Build {} successful...", config.getType());
             sinkBuilder.build(
                     cdcBuilder,
                     streamExecutionEnvironment,
@@ -231,7 +231,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             driver.createSchema(schema);
         }
         sink.put(FlinkCDCConfig.SINK_DB, schema);
-        sink.put("url", url + "/" + schema);
+        if (!url.contains(schema)) {
+            sink.put("url", url + "/" + schema);
+        }
         return driver;
     }
 

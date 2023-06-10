@@ -22,14 +22,12 @@ package org.dinky.cdc.postgres;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
-import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -79,19 +77,18 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
                         .database(config.getDatabase())
                         .username(config.getUsername())
                         .password(config.getPassword());
-        String schema = config.getSchema();
-        if (Asserts.isNotNullString(schema)) {
-            String[] schemas = schema.split(FlinkParamConstant.SPLIT);
+
+        if (Asserts.isNotNullString(config.getSchema())) {
+            String[] schemas = config.getSchema().split(FlinkParamConstant.SPLIT);
             sourceBuilder.schemaList(schemas);
         } else {
-            sourceBuilder.schemaList(new String[0]);
+            sourceBuilder.schemaList();
         }
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(
-                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[0]));
         } else {
-            sourceBuilder.tableList(new String[0]);
+            sourceBuilder.tableList();
         }
 
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
@@ -108,29 +105,19 @@ public class PostgresCDCBuilder extends AbstractCDCBuilder implements CDCBuilder
         return env.addSource(sourceBuilder.build(), "Postgres CDC Source");
     }
 
-    public Map<String, Map<String, String>> parseMetaDataConfigs() {
-        Map<String, Map<String, String>> allConfigMap = new HashMap<>();
-        List<String> schemaList = getSchemaList();
-        for (String schema : schemaList) {
-            Map<String, String> configMap = new HashMap<>();
-            configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
-            StringBuilder sb = new StringBuilder("jdbc:postgresql://");
-            sb.append(config.getHostname());
-            sb.append(":");
-            sb.append(config.getPort());
-            sb.append("/");
-            sb.append(config.getDatabase());
-            configMap.put(ClientConstant.METADATA_NAME, sb.toString());
-            configMap.put(ClientConstant.METADATA_URL, sb.toString());
-            configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
-            configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
-            allConfigMap.put(schema, configMap);
-        }
-        return allConfigMap;
-    }
-
     @Override
     public String getSchema() {
         return config.getSchema();
+    }
+
+    @Override
+    public String generateUrl(String schema) {
+        String format = "jdbc:postgresql://%s:%s/%s";
+        return String.format(format, config.getHostname(), config.getPort(), config.getDatabase());
+    }
+
+    @Override
+    protected String getMetadataType() {
+        return METADATA_TYPE;
     }
 }

@@ -19,29 +19,25 @@
 
 package org.dinky.cdc.kafka;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.CDCBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-
 import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.connector.base.DeliveryGuarantee;
 import org.apache.flink.connector.kafka.sink.KafkaRecordSerializationSchema;
 import org.apache.flink.connector.kafka.sink.KafkaSink;
 import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -53,20 +49,13 @@ import java.util.Properties;
 public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "datastream-kafka";
+    public static final String TRANSACTIONAL_ID = "transactional.id";
 
     public KafkaSinkBuilder() {}
 
     public KafkaSinkBuilder(FlinkCDCConfig config) {
         super(config);
     }
-
-    @Override
-    public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
 
     @Override
     public String getHandle() {
@@ -78,8 +67,9 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
         return new KafkaSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource build(
+    public DataStreamSource<String> build(
             CDCBuilder cdcBuilder,
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
@@ -100,11 +90,11 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                 kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
             }
             if (!kafkaProducerConfig.isEmpty()
-                    && kafkaProducerConfig.containsKey("transactional.id")
+                    && kafkaProducerConfig.containsKey(TRANSACTIONAL_ID)
                     && Asserts.isNotNullString(
-                            kafkaProducerConfig.getProperty("transactional.id"))) {
+                            kafkaProducerConfig.getProperty(TRANSACTIONAL_ID))) {
                 kafkaSinkBuilder.setTransactionalIdPrefix(
-                        kafkaProducerConfig.getProperty("transactional.id"));
+                        kafkaProducerConfig.getProperty(TRANSACTIONAL_ID));
             }
             KafkaSink<String> kafkaSink = kafkaSinkBuilder.build();
             dataStreamSource.sinkTo(kafkaSink);
@@ -153,6 +143,7 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                                         }
                                     }
                                 });
+
                 tagMap.forEach(
                         (k, v) -> {
                             String topic = getSinkTableName(k);
@@ -175,11 +166,11 @@ public class KafkaSinkBuilder extends AbstractSinkBuilder implements Serializabl
                                 kafkaSinkBuilder.setKafkaProducerConfig(kafkaProducerConfig);
                             }
                             if (!kafkaProducerConfig.isEmpty()
-                                    && kafkaProducerConfig.containsKey("transactional.id")
+                                    && kafkaProducerConfig.containsKey(TRANSACTIONAL_ID)
                                     && Asserts.isNotNullString(
-                                            kafkaProducerConfig.getProperty("transactional.id"))) {
+                                            kafkaProducerConfig.getProperty(TRANSACTIONAL_ID))) {
                                 kafkaSinkBuilder.setTransactionalIdPrefix(
-                                        kafkaProducerConfig.getProperty("transactional.id")
+                                        kafkaProducerConfig.getProperty(TRANSACTIONAL_ID)
                                                 + "-"
                                                 + topic);
                             }
