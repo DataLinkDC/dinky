@@ -135,10 +135,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             DataStreamSource<String> dataStreamSource) {
         return dataStreamSource.map(
                 (MapFunction<String, Map>)
-                        value -> {
-                            ObjectMapper objectMapper = new ObjectMapper();
-                            return objectMapper.readValue(value, Map.class);
-                        });
+                        value -> objectMapper.readValue(value, Map.class));
     }
 
     protected SingleOutputStreamOperator<Map> shunt(

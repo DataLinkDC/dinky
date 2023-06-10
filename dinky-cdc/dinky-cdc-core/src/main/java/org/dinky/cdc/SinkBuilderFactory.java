@@ -92,7 +92,7 @@ public class SinkBuilderFactory {
             try {
                 return SinkBuilder.class.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
-                logger.warn("Could not load service provider class : {}", e.getMessage());
+                logger.warn("Could not get constructor supplier : {}", e.getMessage());
             }
             return null;
         };
