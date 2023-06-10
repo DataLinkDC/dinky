@@ -102,8 +102,9 @@ public class MySqlTypeConvert implements ITypeConvert {
         Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
         String t = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        boolean tinyInt1isBit = Asserts.isNotNullString(driverConfig.getUrl())
-                && !driverConfig.getUrl().contains("tinyInt1isBit=false");
+        boolean tinyInt1isBit =
+                Asserts.isNotNullString(driverConfig.getUrl())
+                        && !driverConfig.getUrl().contains("tinyInt1isBit=false");
         if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
         } else if (t.contains("bigint")) {
@@ -124,7 +125,8 @@ public class MySqlTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.DOUBLE;
             }
-        } else if (t.contains("boolean") || (tinyInt1isBit && t.contains("tinyint") && length.equals(1))
+        } else if (t.contains("boolean")
+                || (tinyInt1isBit && t.contains("tinyint") && length.equals(1))
                 || t.contains("bit")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
@@ -143,7 +145,10 @@ public class MySqlTypeConvert implements ITypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("binary") || t.contains("blob")) {
             columnType = ColumnType.BYTES;
-        } else if (t.contains("tinyint") || t.contains("mediumint") || t.contains("smallint") || t.contains("int")) {
+        } else if (t.contains("tinyint")
+                || t.contains("mediumint")
+                || t.contains("smallint")
+                || t.contains("int")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {
