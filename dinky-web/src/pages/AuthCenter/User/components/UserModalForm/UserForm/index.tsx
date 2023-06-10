@@ -52,7 +52,7 @@ const UserForm: React.FC<UserFormProps> = (props) => {
 
             <ProFormText
                 name="nickname"
-                label={l("user.username")}
+                label={l("user.nickname")}
                 placeholder={l("user.nicknamePlaceholder")}
                 rules={[{
                     required: true,
