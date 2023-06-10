@@ -81,6 +81,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
     private DruidDataSource dataSource;
+    protected String validationQuery = "select 1";
 
     abstract String getDriverClass();
 
@@ -129,7 +130,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
         ds.setDriverClassName(getDriverClass());
         ds.setUsername(config.getUsername());
         ds.setPassword(config.getPassword());
-        ds.setValidationQuery("select 1");
+        ds.setValidationQuery(validationQuery);
         ds.setTestWhileIdle(true);
         ds.setBreakAfterAcquireFailure(true);
         ds.setFailFast(true);

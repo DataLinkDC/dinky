@@ -40,6 +40,8 @@ import java.util.stream.Collectors;
  */
 public class OracleDriver extends AbstractJdbcDriver {
 
+    protected String validationQuery = "select 1 from dual";
+
     @Override
     String getDriverClass() {
         return "oracle.jdbc.driver.OracleDriver";
