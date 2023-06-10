@@ -79,4 +79,8 @@ export const DATE_RANGE_OPTIONS = [
         value: 'monthly',
         label: '本月',
     },
+    {
+        value: 'auto',
+        label: '自动刷新',
+    },
 ]

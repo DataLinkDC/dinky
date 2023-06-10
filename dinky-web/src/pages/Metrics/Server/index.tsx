@@ -29,6 +29,11 @@ import {CPUIcon, HeapIcon, OutHeapIcon, ThreadIcon} from "@/components/Icons/Met
 import {Space} from "antd";
 import {useEffect, useState} from "react";
 import GlobalFilter from "@/pages/Metrics/Server/GlobalFilter";
+import {
+    getDayOfMonth,
+    getSubDateTime,
+    getSubMinTime
+} from "@/pages/Metrics/Server/function";
 
 export const imgStyle = {
     display: 'block',
@@ -53,83 +58,75 @@ const Server = () => {
     }, []);
 
 
-
     const handleDateRadioChange = (e: any) => {
         const dateKey = e.target.value;
         setDateRange(dateKey)
         switch (dateKey) {
             case 'all':
-                setStartTime(getSubMinTime(currentTime,24 * 60 * 9999))
+                setStartTime(getSubMinTime(currentTime, 24 * 60 * 9999))
+                setEndTime(currentTime)
+                break;
+            case 'auto':
+                setStartTime(getSubMinTime(currentTime, 24 * 60 * 9999))
                 setEndTime(currentTime)
                 break;
             case '60s':
-                setStartTime(getSubMinTime(currentTime,1))
+                setStartTime(getSubMinTime(currentTime, 1))
                 setEndTime(currentTime)
                 break;
             case '5min':
                 console.log('5min')
-                setStartTime(getSubMinTime(currentTime,5))
+                setStartTime(getSubMinTime(currentTime, 5))
                 setEndTime(currentTime)
                 break;
             case '10min':
                 console.log('10min')
-                setStartTime(getSubMinTime(currentTime,10))
+                setStartTime(getSubMinTime(currentTime, 10))
                 setEndTime(currentTime)
                 break;
             case '1h':
-                setStartTime(getSubMinTime(currentTime,60))
+                setStartTime(getSubMinTime(currentTime, 60))
                 setEndTime(currentTime)
                 break;
             case '2h':
-                setStartTime(getSubMinTime(currentTime,2 * 60))
+                setStartTime(getSubMinTime(currentTime, 2 * 60))
                 setEndTime(currentTime)
                 break;
             case '5h':
-                setStartTime(getSubMinTime(currentTime,5 * 60))
+                setStartTime(getSubMinTime(currentTime, 5 * 60))
                 setEndTime(currentTime)
                 break;
             case '12h':
-                setStartTime(getSubMinTime(currentTime,12 * 60))
+                setStartTime(getSubMinTime(currentTime, 12 * 60))
                 setEndTime(currentTime)
                 break;
             case '24h':
-                setStartTime(getSubMinTime(currentTime,24 * 60))
+                setStartTime(getSubMinTime(currentTime, 24 * 60))
                 setEndTime(currentTime)
                 break;
             case 'today':
-                setStartTime(getSubDateTime(currentTime,0))
-                setEndTime(getSubDateEndTime(currentTime,0))
+                setStartTime(getSubDateTime(currentTime, 0, true))
+                setEndTime(getSubDateTime(currentTime, 0, false))
                 break;
             case 'yesterday':
-                setStartTime(getSubDateTime(currentTime,1))
-                setEndTime(getSubDateEndTime(currentTime,1))
+                setStartTime(getSubDateTime(currentTime, 1, true))
+                setEndTime(getSubDateTime(currentTime, 1, false))
                 break;
             case 'yesterdaybefore':
-                setStartTime(getSubDateTime(currentTime,2))
-                setEndTime(getSubDateEndTime(currentTime,2))
+                setStartTime(getSubDateTime(currentTime, 2, true))
+                setEndTime(getSubDateTime(currentTime, 2, false))
                 break;
             case 'last7days':
-                setStartTime(getSubDateTime(currentTime,7))
-                setEndTime(getSubDateEndTime(currentTime,0))
+                setStartTime(getSubDateTime(currentTime, 7,true))
+                setEndTime(getSubDateTime(currentTime, 0,false))
                 break;
             case 'last15days':
-                setStartTime(getSubDateTime(currentTime,15))
-                setEndTime(getSubDateEndTime(currentTime,0))
+                setStartTime(getSubDateTime(currentTime, 15,true))
+                setEndTime(getSubDateTime(currentTime, 0,false))
                 break;
             case 'monthly':
-                setStartTime(
-                    new Date(
-                        currentTime.getFullYear(),
-                        currentTime.getMonth(),
-                        currentTime.getDate(),
-                        0, 0, 0, 0
-                    )
-                )
-                // setEndTime(getLastDayOfMonth(new Date()))
-                break;
-            default:
-                setStartTime(getSubMinTime(currentTime,24 * 60 * 999))
-                setEndTime(currentTime)
+                setStartTime(getDayOfMonth(currentTime, true))
+                setEndTime(getDayOfMonth(currentTime, false))
                 break;
         }
     }
@@ -143,11 +140,11 @@ const Server = () => {
 
 
     return <>
-        <ProCard style={{height: '8vh'}} ghost colSpan={'100%'}>
+        <ProCard style={{height: '4vh'}} ghost colSpan={'100%'}>
             <GlobalFilter dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
-        <ProCard style={{height: '90vh'}} ghost wrap size={'small'} split={'vertical'}>
+        <ProCard style={{height: '88vh'}} ghost wrap size={'small'} split={'vertical'}>
             <ProCard style={{height: '20vh'}} split={'vertical'}>
                 <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>}>
                     <CPU/>
