@@ -35,7 +35,6 @@ import org.junit.jupiter.api.Test;
 class MySqlDriverTest {
 
     private Table table;
-    private String flinkConfig;
 
     @BeforeEach
     void setUp() {
@@ -71,7 +70,7 @@ class MySqlDriverTest {
     @Test
     void genTable() {
         MySqlDriver sqlDriver = new MySqlDriver();
-        String gen_table_sql = sqlDriver.genTable(table);
+        String gen_table_sql = sqlDriver.getCreateTableSql(table);
 
         String expect =
                 "CREATE TABLE IF NOT EXISTS `SchemaOrigin`.`TableNameOrigin` (\n"

@@ -89,7 +89,7 @@ public class MySqlDriver extends AbstractJdbcDriver {
         return genTable(table);
     }
 
-    public String genTable(Table table) {
+    private String genTable(Table table) {
         String columnStrs =
                 table.getColumns().stream()
                         .map(
