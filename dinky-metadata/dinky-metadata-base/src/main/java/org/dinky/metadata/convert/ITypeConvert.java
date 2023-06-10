@@ -22,6 +22,7 @@ package org.dinky.metadata.convert;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
+import org.dinky.metadata.driver.DriverConfig;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -39,6 +40,10 @@ public interface ITypeConvert {
 
     ColumnType convert(Column column);
 
+    default ColumnType convert(Column column, DriverConfig driverConfig) {
+        return convert(column);
+    }
+
     String convertToDB(ColumnType columnType);
 
     default Object convertValue(ResultSet results, String columnName, String javaType)
@@ -48,6 +53,8 @@ public interface ITypeConvert {
         }
         switch (javaType.toLowerCase()) {
             case "string":
+            case "text":
+            case "varchar":
                 return results.getString(columnName);
             case "double":
                 return results.getDouble(columnName);
@@ -70,6 +77,7 @@ public interface ITypeConvert {
             case "blob":
                 return results.getBlob(columnName);
             case "boolean":
+            case "bit":
                 return results.getBoolean(columnName);
             case "byte":
                 return results.getByte(columnName);
