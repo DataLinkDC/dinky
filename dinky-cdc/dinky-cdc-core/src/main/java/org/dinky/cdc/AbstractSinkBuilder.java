@@ -134,8 +134,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected SingleOutputStreamOperator<Map> deserialize(
             DataStreamSource<String> dataStreamSource) {
         return dataStreamSource.map(
-                (MapFunction<String, Map>)
-                        value -> objectMapper.readValue(value, Map.class));
+                (MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
