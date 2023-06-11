@@ -121,13 +121,13 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                         comment =
                                                 String.format(
                                                         " COMMENT '%s'",
-                                                        column.getComment().replaceAll("\"|'", ""));
+                                                        column.getComment().replaceAll("[\"']", ""));
                                     }
                                     return String.format(
                                             "    `%s` %s%s",
                                             column.getName(), column.getFlinkType(), comment);
                                 })
-                        .collect(Collectors.joining(",%n"));
+                        .collect(Collectors.joining(",\n"));
 
         List<String> columnKeys =
                 columns.stream()
@@ -142,7 +142,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                         : columnKeys.stream()
                                 .collect(
                                         Collectors.joining(
-                                                ",", ",%n    PRIMARY KEY ( ", " ) NOT ENFORCED%n"));
+                                                ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
 
         return MessageFormat.format(
                 "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
