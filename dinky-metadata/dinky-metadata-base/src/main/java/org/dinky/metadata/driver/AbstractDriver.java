@@ -102,8 +102,8 @@ public abstract class AbstractDriver implements Driver {
             }
             String columnComment = columns.get(i).getComment();
             if (Asserts.isNotNullString(columnComment)) {
-                if (columnComment.contains("\'") | columnComment.contains("\"")) {
-                    columnComment = columnComment.replaceAll("\"|'", "");
+                if (columnComment.contains("'") || columnComment.contains("\"")) {
+                    columnComment = columnComment.replaceAll("[\"']", "");
                 }
                 sb.append(String.format("`%s`  --  %s %n", columns.get(i).getName(), columnComment));
             } else {
