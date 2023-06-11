@@ -145,8 +145,8 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                                 ",", ",%n    PRIMARY KEY ( ", " ) NOT ENFORCED%n"));
 
         return MessageFormat.format(
-                        "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
-                        tableName, columnStrs, primaryKeyStr, flinkConfig);
+                "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
+                tableName, columnStrs, primaryKeyStr, flinkConfig);
     }
 
     @Transient
