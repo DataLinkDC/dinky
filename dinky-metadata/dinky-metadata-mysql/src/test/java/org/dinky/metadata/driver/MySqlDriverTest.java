@@ -62,9 +62,6 @@ class MySqlDriverTest {
                                 .build());
 
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
-
-        flinkConfig =
-                "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd";
     }
 
     @Test
