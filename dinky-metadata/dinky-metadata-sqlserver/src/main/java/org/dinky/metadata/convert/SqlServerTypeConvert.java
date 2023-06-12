@@ -33,17 +33,25 @@ public class SqlServerTypeConvert extends AbstractTypeConvert {
         this.convertMap.put("ntext", (c, d) -> getColumnType(c, ColumnType.STRING));
         this.convertMap.put("uniqueidentifier", (c, d) -> getColumnType(c, ColumnType.STRING));
         this.convertMap.put("sql_variant", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
-        this.convertMap.put("bit", (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
-        this.convertMap.put("tinyint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put("smallint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put(
+                "bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
+        this.convertMap.put(
+                "bit",
+                (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put(
+                "tinyint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put(
+                "smallint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
         this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put(
+                "float",
+                (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
         this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
         this.convertMap.put("money", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
         this.convertMap.put("smallmoney", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
         this.convertMap.put("numeric", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("real", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put(
+                "real", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
         this.convertMap.put("datetimeoffset", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
         this.convertMap.put("smalldatetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
         this.convertMap.put("datetime2", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
