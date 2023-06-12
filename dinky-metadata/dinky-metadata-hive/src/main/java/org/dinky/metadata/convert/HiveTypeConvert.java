@@ -23,7 +23,7 @@ import org.dinky.data.enums.ColumnType;
 
 public class HiveTypeConvert extends AbstractTypeConvert {
 
-    public HiveTypeConvertRefactored() {
+    public HiveTypeConvert() {
         this.convertMap.clear();
         register("char", ColumnType.STRING);
         register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
