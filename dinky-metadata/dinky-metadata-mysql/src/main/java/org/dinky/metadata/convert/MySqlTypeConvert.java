@@ -24,138 +24,60 @@ import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
 import org.dinky.metadata.driver.DriverConfig;
 
+import java.util.Optional;
+
 /**
  * MySqlTypeConvert
  *
  * @since 2021/7/20 15:21
  */
-public class MySqlTypeConvert implements ITypeConvert {
+public class MySqlTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
-        String t = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("numeric") || t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("bigint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("boolean")
-                || (t.contains("tinyint") && length.equals(1))
-                || t.contains("bit")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("datetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        } else if (t.contains("timestamp")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("time")) {
-            columnType = ColumnType.TIME;
-        } else if (t.contains("char") || t.contains("text")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("binary") || t.contains("blob")) {
-            columnType = ColumnType.BYTES;
-        } else if (t.contains("tinyint")
-                || t.contains("mediumint")
-                || t.contains("smallint")
-                || t.contains("int")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        }
-        return columnType;
+    public MySqlTypeConvert() {
+        this.convertMap.clear();
+        this.convertMap.put("numeric", (c, d) ->  getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("decimal", (c, d) ->  getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("bigint", (c, d) ->  getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
+        this.convertMap.put("float", (c, d) ->  getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put("double", (c, d) ->  getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put("boolean", (c, d) ->  getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put("bit", (c, d) ->  getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put("datetime", (c, d) ->  getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("date", (c, d) ->  getColumnType(c, ColumnType.DATE));
+        this.convertMap.put("timestamp", (c, d) ->  getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("time", (c, d) ->  getColumnType(c, ColumnType.TIME));
+        this.convertMap.put("char", (c, d) ->  getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("text", (c, d) ->  getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("binary", (c, d) ->  getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("blob", (c, d) ->  getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("tinyint", MySqlTypeConvert::convertTinyint);
+        this.convertMap.put("mediumint", (c, d) ->  getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("smallint", (c, d) ->  getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("int", (c, d) ->  getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+
     }
 
-    @Override
-    public ColumnType convert(Column column, DriverConfig driverConfig) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
+    private static Optional<ColumnType> convertTinyint(Column column, DriverConfig driverConfig) {
         Integer length = Asserts.isNull(column.getLength()) ? 0 : column.getLength();
-        String t = Asserts.isNull(column.getType()) ? "" : column.getType().toLowerCase();
+        if (!length.equals(1)) {
+            return Optional.empty();
+        }
+
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         boolean tinyInt1isBit =
                 Asserts.isNotNullString(driverConfig.getUrl())
                         && !driverConfig.getUrl().contains("tinyInt1isBit=false");
-        if (t.contains("numeric") || t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("bigint")) {
+        if(tinyInt1isBit) {
             if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
+                return Optional.of(ColumnType.JAVA_LANG_BOOLEAN);
             }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("boolean")
-                || (tinyInt1isBit && t.contains("tinyint") && length.equals(1))
-                || t.contains("bit")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("datetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        } else if (t.contains("timestamp")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("time")) {
-            columnType = ColumnType.TIME;
-        } else if (t.contains("char") || t.contains("text")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("binary") || t.contains("blob")) {
-            columnType = ColumnType.BYTES;
-        } else if (t.contains("tinyint")
-                || t.contains("mediumint")
-                || t.contains("smallint")
-                || t.contains("int")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
+            return Optional.of(ColumnType.BOOLEAN);
         }
-        return columnType;
+
+        if (isNullable) {
+            return Optional.of(ColumnType.INTEGER);
+        }
+        return Optional.of(ColumnType.INT);
     }
 
     @Override

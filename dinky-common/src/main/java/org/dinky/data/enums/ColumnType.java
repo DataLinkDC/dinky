@@ -55,8 +55,8 @@ public enum ColumnType {
     T("T[]", "ARRAY"),
     MAP("java.util.Map<K, V>", "MAP");
 
-    private String javaType;
-    private String flinkType;
+    private final String javaType;
+    private final String flinkType;
 
     ColumnType(String javaType, String flinkType) {
         this.javaType = javaType;

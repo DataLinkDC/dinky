@@ -19,60 +19,49 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
 import org.dinky.data.model.Column;
+import org.dinky.metadata.driver.DriverConfig;
+
+import java.util.Optional;
 
 /**
  * OracleTypeConvert
  *
  * @since 2021/7/21 16:00
  */
-public class OracleTypeConvert implements ITypeConvert {
+public class OracleTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.LOCAL_DATETIME;
-        } else if (t.contains("timestamp")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("number")) {
-            if (t.matches("number\\(+\\d\\)")) {
-                if (isNullable) {
-                    columnType = ColumnType.INTEGER;
-                } else {
-                    columnType = ColumnType.INT;
-                }
-            } else if (t.matches("number\\(+\\d{2}+\\)")) {
-                if (isNullable) {
-                    columnType = ColumnType.JAVA_LANG_LONG;
-                } else {
-                    columnType = ColumnType.LONG;
-                }
-            } else {
-                columnType = ColumnType.DECIMAL;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("clob")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("blob")) {
-            columnType = ColumnType.BYTES;
-        }
-        return columnType;
+    public OracleTypeConvert() {
+        this.convertMap.clear();
+        this.convertMap.put("char", (c, d) ->  getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("date", (c, d) ->  getColumnType(c, ColumnType.LOCAL_DATETIME));
+        this.convertMap.put("timestamp", (c, d) ->  getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("number", OracleTypeConvert::convertNumber);
+        this.convertMap.put("float", (c, d) ->  getColumnType(c, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put("clob", (c, d) ->  getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("blob", (c, d) ->  getColumnType(c, ColumnType.BYTES));
     }
+
+    private static Optional<ColumnType> convertNumber(Column column, DriverConfig driverConfig) {
+        boolean isNullable = !column.isKeyFlag() && column.isNullable();
+        String t = column.getType().toLowerCase();
+
+        if (t.matches("number\\(+\\d\\)")) {
+            if (isNullable) {
+                return Optional.of(ColumnType.INTEGER);
+            }
+            return Optional.of(ColumnType.INT);
+        }
+        if (t.matches("number\\(+\\d{2}+\\)")) {
+            if (isNullable) {
+                return Optional.of(ColumnType.JAVA_LANG_LONG);
+            }
+            return Optional.of(ColumnType.LONG);
+        }
+        return Optional.of(ColumnType.DECIMAL);
+    }
+
 
     @Override
     public String convertToDB(ColumnType columnType) {
