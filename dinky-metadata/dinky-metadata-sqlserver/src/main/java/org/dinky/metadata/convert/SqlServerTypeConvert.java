@@ -19,83 +19,41 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
-public class SqlServerTypeConvert implements ITypeConvert {
+public class SqlServerTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char")
-                || t.contains("varchar")
-                || t.contains("text")
-                || t.contains("nchar")
-                || t.contains("nvarchar")
-                || t.contains("ntext")
-                || t.contains("uniqueidentifier")
-                || t.contains("sql_variant")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("bigint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("bit")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("int") || t.contains("tinyint") || t.contains("smallint")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("decimal")
-                || t.contains("money")
-                || t.contains("smallmoney")
-                || t.contains("numeric")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("real")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.equalsIgnoreCase("datetime") || t.equalsIgnoreCase("smalldatetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.equalsIgnoreCase("datetime2")) {
-            // 这里应该是纳秒
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.equalsIgnoreCase("datetimeoffset")) {
-            // 这里应该是纳秒
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.equalsIgnoreCase("date")) {
-            columnType = ColumnType.LOCAL_DATE;
-        } else if (t.equalsIgnoreCase("time")) {
-            columnType = ColumnType.LOCALTIME;
-        } else if (t.contains("timestamp")
-                || t.contains("binary")
-                || t.contains("varbinary")
-                || t.contains("image")) {
-            columnType = ColumnType.BYTES;
-        }
-        return columnType;
+    public SqlServerTypeConvert() {
+        this.convertMap.clear();
+        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("varchar", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("text", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("nchar", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("nvarchar", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("ntext", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("uniqueidentifier", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("sql_variant", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
+        this.convertMap.put("bit", (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("tinyint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("smallint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("money", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("smallmoney", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("numeric", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("real", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put("datetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("smalldatetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("datetime2", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("datetimeoffset", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.LOCAL_DATE));
+        this.convertMap.put("time", (c, d) -> getColumnType(c, ColumnType.LOCALTIME));
+        this.convertMap.put("timestamp", (c, d) -> getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("binary", (c, d) -> getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("varbinary", (c, d) -> getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("image", (c, d) -> getColumnType(c, ColumnType.BYTES));
     }
 
     @Override
