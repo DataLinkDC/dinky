@@ -19,82 +19,25 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
-public class DorisTypeConvert implements ITypeConvert {
+public class DorisTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("boolean")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("tinyint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BYTE;
-            } else {
-                columnType = ColumnType.BYTE;
-            }
-        } else if (t.contains("smallint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_SHORT;
-            } else {
-                columnType = ColumnType.SHORT;
-            }
-        } else if (t.contains("bigint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("largeint")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("int")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-            // datetime must above of date,
-            // if not, date will overrwrit datetime
-        } else if (t.contains("datetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        } else if (t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("time")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        }
-        return columnType;
+    public DorisTypeConvert() {
+        this.convertMap.clear();
+        register("char", ColumnType.STRING);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("tinyint", ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE);
+        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("largeint", ColumnType.STRING);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
+        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("datetime", ColumnType.TIMESTAMP);
+        register("date", ColumnType.DATE);
+        register("decimal", ColumnType.DECIMAL);
+        register("time", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
     }
 
     @Override

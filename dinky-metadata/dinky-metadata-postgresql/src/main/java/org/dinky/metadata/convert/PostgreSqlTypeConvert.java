@@ -19,119 +19,42 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
 /**
  * PostgreSqlTypeConvert
  *
  * @since 2021/7/22 9:33
  */
-public class PostgreSqlTypeConvert implements ITypeConvert {
+public class PostgreSqlTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("smallint")
-                || t.contains("int2")
-                || t.contains("smallserial")
-                || t.contains("serial2")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_SHORT;
-            } else {
-                columnType = ColumnType.SHORT;
-            }
-        } else if (t.contains("integer") || t.contains("int4") || t.contains("serial")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        } else if (t.contains("bigint") || t.contains("int8") || t.contains("bigserial")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("real") || t.contains("float4")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("float8") || t.contains("double precision")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("numeric") || t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("boolean") || t.contains("bool")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("timestamp")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        } else if (t.contains("time")) {
-            columnType = ColumnType.TIME;
-        } else if (t.contains("char") || t.contains("text")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("bytea")) {
-            columnType = ColumnType.BYTES;
-        } else if (t.contains("array")) {
-            columnType = ColumnType.T;
-        } else if (t.contains("jsonb") | t.contains("json")) {
-            columnType = ColumnType.STRING;
-        }
-        return columnType;
-    }
-
-    @Override
-    public String convertToDB(ColumnType columnType) {
-        switch (columnType) {
-            case SHORT:
-            case JAVA_LANG_SHORT:
-                return "int2";
-            case INTEGER:
-            case INT:
-                return "integer";
-            case LONG:
-            case JAVA_LANG_LONG:
-                return "bigint";
-            case FLOAT:
-            case JAVA_LANG_FLOAT:
-                return "float4";
-            case DOUBLE:
-            case JAVA_LANG_DOUBLE:
-                return "float8";
-            case DECIMAL:
-                return "decimal";
-            case BOOLEAN:
-            case JAVA_LANG_BOOLEAN:
-                return "boolean";
-            case TIMESTAMP:
-                return "timestamp";
-            case DATE:
-                return "date";
-            case TIME:
-                return "time";
-            case BYTES:
-                return "bytea";
-            case T:
-                return "array";
-            default:
-                return "varchar";
-        }
+    public PostgreSqlTypeConvert() {
+        this.convertMap.clear();
+        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("int2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("smallserial", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("serial2", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("integer", ColumnType.INT, ColumnType.INTEGER);
+        register("int4", ColumnType.INT, ColumnType.INTEGER);
+        register("serial", ColumnType.INT, ColumnType.INTEGER);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("int8", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("bigserial", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("real", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("float4", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("float8", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("double precision", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("numeric", ColumnType.DECIMAL);
+        register("decimal", ColumnType.DECIMAL);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("bool", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("timestamp", ColumnType.TIMESTAMP);
+        register("date", ColumnType.DATE);
+        register("time", ColumnType.TIME);
+        register("char", ColumnType.STRING);
+        register("text", ColumnType.STRING);
+        register("bytea", ColumnType.BYTES);
+        register("jsonb", ColumnType.STRING);
+        register("json", ColumnType.STRING);
     }
 }
