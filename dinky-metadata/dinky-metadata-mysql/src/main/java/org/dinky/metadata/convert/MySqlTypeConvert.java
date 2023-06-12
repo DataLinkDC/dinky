@@ -35,35 +35,25 @@ public class MySqlTypeConvert extends AbstractTypeConvert {
 
     public MySqlTypeConvert() {
         this.convertMap.clear();
-        this.convertMap.put("numeric", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put(
-                "bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
-        this.convertMap.put(
-                "float", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
-        this.convertMap.put(
-                "double",
-                (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
-        this.convertMap.put(
-                "boolean",
-                (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
-        this.convertMap.put(
-                "bit",
-                (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
-        this.convertMap.put("datetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.DATE));
-        this.convertMap.put("timestamp", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("time", (c, d) -> getColumnType(c, ColumnType.TIME));
-        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("text", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("binary", (c, d) -> getColumnType(c, ColumnType.BYTES));
-        this.convertMap.put("blob", (c, d) -> getColumnType(c, ColumnType.BYTES));
-        this.convertMap.put("tinyint", MySqlTypeConvert::convertTinyint);
-        this.convertMap.put(
-                "mediumint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put(
-                "smallint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        register("numeric", ColumnType.DECIMAL);
+        register("decimal", ColumnType.DECIMAL);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("bit", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("datetime", ColumnType.TIMESTAMP);
+        register("date", ColumnType.DATE);
+        register("timestamp", ColumnType.TIMESTAMP);
+        register("time", ColumnType.TIME);
+        register("char", ColumnType.STRING);
+        register("text", ColumnType.STRING);
+        register("binary", ColumnType.BYTES);
+        register("blob", ColumnType.BYTES);
+        register("tinyint", MySqlTypeConvert::convertTinyint);
+        register("mediumint", ColumnType.INT, ColumnType.INTEGER);
+        register("smallint", ColumnType.INT, ColumnType.INTEGER);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
     }
 
     private static Optional<ColumnType> convertTinyint(Column column, DriverConfig driverConfig) {

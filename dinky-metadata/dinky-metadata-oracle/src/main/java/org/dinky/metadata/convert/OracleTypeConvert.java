@@ -34,13 +34,13 @@ public class OracleTypeConvert extends AbstractTypeConvert {
 
     public OracleTypeConvert() {
         this.convertMap.clear();
-        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.LOCAL_DATETIME));
-        this.convertMap.put("timestamp", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("number", OracleTypeConvert::convertNumber);
-        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.JAVA_LANG_FLOAT));
-        this.convertMap.put("clob", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("blob", (c, d) -> getColumnType(c, ColumnType.BYTES));
+        register("char", ColumnType.STRING);
+        register("date", ColumnType.LOCAL_DATETIME);
+        register("timestamp", ColumnType.TIMESTAMP);
+        register("number", OracleTypeConvert::convertNumber);
+        register("float", ColumnType.JAVA_LANG_FLOAT);
+        register("clob", ColumnType.STRING);
+        register("blob", ColumnType.BYTES);
     }
 
     private static Optional<ColumnType> convertNumber(Column column, DriverConfig driverConfig) {

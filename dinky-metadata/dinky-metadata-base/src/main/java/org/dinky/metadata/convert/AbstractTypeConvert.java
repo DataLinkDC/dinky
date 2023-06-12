@@ -61,11 +61,23 @@ public class AbstractTypeConvert implements ITypeConvert {
         return ColumnType.STRING;
     }
 
-    protected static Optional<ColumnType> getColumnType(Column column, ColumnType type) {
+    protected void register(String type, ColumnType columnType) {
+        this.convertMap.put(type, (c, d) -> getColumnType(c, columnType, columnType));
+    }
+
+    protected void register(String type,ColumnType notNullType, ColumnType nullType) {
+        this.convertMap.put(type, (c, d) -> getColumnType(c, notNullType, nullType));
+    }
+
+    protected void register(String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
+        this.convertMap.put(type, func);
+    }
+
+    private static Optional<ColumnType> getColumnType(Column column, ColumnType type) {
         return getColumnType(column, type, type);
     }
 
-    protected static Optional<ColumnType> getColumnType(
+    private static Optional<ColumnType> getColumnType(
             Column column, ColumnType notNullType, ColumnType nullType) {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (isNullable) {

@@ -25,43 +25,35 @@ public class SqlServerTypeConvert extends AbstractTypeConvert {
 
     public SqlServerTypeConvert() {
         this.convertMap.clear();
-        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("varchar", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("text", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("nchar", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("nvarchar", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("ntext", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("uniqueidentifier", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("sql_variant", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put(
-                "bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
-        this.convertMap.put(
-                "bit",
-                (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
-        this.convertMap.put(
-                "tinyint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put(
-                "smallint", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put(
-                "float",
-                (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
-        this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("money", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("smallmoney", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("numeric", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put(
-                "real", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
-        this.convertMap.put("datetimeoffset", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("smalldatetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("datetime2", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("datetime", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
-        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.LOCAL_DATE));
-        this.convertMap.put("time", (c, d) -> getColumnType(c, ColumnType.LOCALTIME));
-        this.convertMap.put("timestamp", (c, d) -> getColumnType(c, ColumnType.BYTES));
-        this.convertMap.put("binary", (c, d) -> getColumnType(c, ColumnType.BYTES));
-        this.convertMap.put("varbinary", (c, d) -> getColumnType(c, ColumnType.BYTES));
-        this.convertMap.put("image", (c, d) -> getColumnType(c, ColumnType.BYTES));
+        register("char", ColumnType.STRING);
+        register("varchar", ColumnType.STRING);
+        register("text", ColumnType.STRING);
+        register("nchar", ColumnType.STRING);
+        register("nvarchar", ColumnType.STRING);
+        register("ntext", ColumnType.STRING);
+        register("uniqueidentifier", ColumnType.STRING);
+        register("sql_variant", ColumnType.STRING);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("bit", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("tinyint", ColumnType.INT, ColumnType.INTEGER);
+        register("smallint", ColumnType.INT, ColumnType.INTEGER);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
+        register("float", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("decimal", ColumnType.DECIMAL);
+        register("money", ColumnType.DECIMAL);
+        register("smallmoney", ColumnType.DECIMAL);
+        register("numeric", ColumnType.DECIMAL);
+        register("real", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("datetimeoffset", ColumnType.TIMESTAMP);
+        register("smalldatetime", ColumnType.TIMESTAMP);
+        register("datetime2", ColumnType.TIMESTAMP);
+        register("datetime", ColumnType.TIMESTAMP);
+        register("date", ColumnType.LOCAL_DATE);
+        register("time", ColumnType.LOCALTIME);
+        register("timestamp", ColumnType.BYTES);
+        register("binary", ColumnType.BYTES);
+        register("varbinary", ColumnType.BYTES);
+        register("image", ColumnType.BYTES);
     }
 
     @Override
