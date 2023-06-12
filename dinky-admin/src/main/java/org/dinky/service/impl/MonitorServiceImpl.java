@@ -50,7 +50,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MonitorServiceImpl implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
-    private final MetricConfig metricConfig;
 
     public List<MetricsVO> getData(Date startTime, Date endTime) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
