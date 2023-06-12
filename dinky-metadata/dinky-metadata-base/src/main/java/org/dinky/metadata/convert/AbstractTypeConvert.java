@@ -74,10 +74,6 @@ public class AbstractTypeConvert implements ITypeConvert {
         this.convertMap.put(type, func);
     }
 
-    private static Optional<ColumnType> getColumnType(Column column, ColumnType type) {
-        return getColumnType(column, type, type);
-    }
-
     private static Optional<ColumnType> getColumnType(
             Column column, ColumnType notNullType, ColumnType nullType) {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
