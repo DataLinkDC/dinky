@@ -135,7 +135,6 @@ public class SystemConfiguration {
                     .defaultValue("Dinky")
                     .note("The project name specified in DolphinScheduler, case insensitive");
 
-
     private final Configuration<String> ldapUrl =
             key("ldap.settings.url").stringType().defaultValue("").note("ldap server address");
 
