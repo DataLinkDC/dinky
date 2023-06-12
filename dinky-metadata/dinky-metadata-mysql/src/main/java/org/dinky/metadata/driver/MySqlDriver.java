@@ -169,7 +169,10 @@ public class MySqlDriver extends AbstractJdbcDriver {
 
         StringBuilder optionBuilder =
                 new StringBuilder()
-                        .append(String.format("select * from `%s`.`%s`", queryData.getSchemaName(), queryData.getTableName()));
+                        .append(
+                                String.format(
+                                        "select * from `%s`.`%s`",
+                                        queryData.getSchemaName(), queryData.getTableName()));
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);
@@ -213,8 +216,10 @@ public class MySqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(String.format(" FROM `%s`.`%s`; -- %s%n", table.getSchema(), table.getName(),
-                    table.getComment()));
+            sb.append(
+                    String.format(
+                            " FROM `%s`.`%s`; -- %s%n",
+                            table.getSchema(), table.getName(), table.getComment()));
         } else {
             sb.append(String.format(" FROM `%s`.`%s`;%n", table.getSchema(), table.getName()));
         }

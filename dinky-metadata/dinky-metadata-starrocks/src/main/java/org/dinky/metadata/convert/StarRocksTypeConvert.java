@@ -26,18 +26,28 @@ public class StarRocksTypeConvert extends AbstractTypeConvert {
     public StarRocksTypeConvert() {
         this.convertMap.clear();
         this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("boolean", (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
-        this.convertMap.put("tinyint", (c, d) -> getColumnType(c, ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE));
-        this.convertMap.put("smallint", (c, d) -> getColumnType(c, ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT));
-        this.convertMap.put("bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
+        this.convertMap.put(
+                "boolean",
+                (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put(
+                "tinyint", (c, d) -> getColumnType(c, ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE));
+        this.convertMap.put(
+                "smallint",
+                (c, d) -> getColumnType(c, ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT));
+        this.convertMap.put(
+                "bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
         this.convertMap.put("largeint", (c, d) -> getColumnType(c, ColumnType.STRING));
         this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
-        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
-        this.convertMap.put("double", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put(
+                "float", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put(
+                "double",
+                (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
         this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.STRING));
         this.convertMap.put("datetime", (c, d) -> getColumnType(c, ColumnType.STRING));
         this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
-        this.convertMap.put("time", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put(
+                "time", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
     }
 
     @Override
