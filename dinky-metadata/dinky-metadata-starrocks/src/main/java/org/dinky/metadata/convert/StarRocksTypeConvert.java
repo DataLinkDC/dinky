@@ -19,80 +19,25 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
-public class StarRocksTypeConvert implements ITypeConvert {
+public class StarRocksTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("boolean")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("tinyint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BYTE;
-            } else {
-                columnType = ColumnType.BYTE;
-            }
-        } else if (t.contains("smallint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_SHORT;
-            } else {
-                columnType = ColumnType.SHORT;
-            }
-        } else if (t.contains("bigint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("largeint")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("int")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("date")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("datetime")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("time")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        }
-        return columnType;
+    public StarRocksTypeConvert() {
+        this.convertMap.clear();
+        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("boolean", (c, d) -> getColumnType(c, ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN));
+        this.convertMap.put("tinyint", (c, d) -> getColumnType(c, ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE));
+        this.convertMap.put("smallint", (c, d) -> getColumnType(c, ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT));
+        this.convertMap.put("bigint", (c, d) -> getColumnType(c, ColumnType.LONG, ColumnType.JAVA_LANG_LONG));
+        this.convertMap.put("largeint", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("int", (c, d) -> getColumnType(c, ColumnType.INT, ColumnType.INTEGER));
+        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put("double", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
+        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("datetime", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("decimal", (c, d) -> getColumnType(c, ColumnType.DECIMAL));
+        this.convertMap.put("time", (c, d) -> getColumnType(c, ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE));
     }
 
     @Override

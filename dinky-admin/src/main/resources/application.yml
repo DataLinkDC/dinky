@@ -169,6 +169,8 @@ management:
   health:
     redis:
       enabled: false
+    ldap:
+      enabled: false
 
 sms:
   is-print: false
