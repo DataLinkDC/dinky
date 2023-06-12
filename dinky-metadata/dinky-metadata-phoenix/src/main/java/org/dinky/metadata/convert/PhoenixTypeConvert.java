@@ -19,9 +19,7 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
 public class PhoenixTypeConvert extends AbstractTypeConvert {
 

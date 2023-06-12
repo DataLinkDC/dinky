@@ -19,9 +19,7 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
 public class HiveTypeConvert extends AbstractTypeConvert {
 
@@ -42,6 +40,7 @@ public class HiveTypeConvert extends AbstractTypeConvert {
         register("decimal", ColumnType.DECIMAL);
         register("time", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
     }
+
     @Override
     public String convertToDB(ColumnType columnType) {
         switch (columnType) {

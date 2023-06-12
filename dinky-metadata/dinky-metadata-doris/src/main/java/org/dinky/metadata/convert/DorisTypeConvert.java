@@ -19,9 +19,7 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
 public class DorisTypeConvert extends AbstractTypeConvert {
 
@@ -29,7 +27,7 @@ public class DorisTypeConvert extends AbstractTypeConvert {
         this.convertMap.clear();
         register("char", ColumnType.STRING);
         register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-        register("tinyint", ColumnType.BYTE,ColumnType.JAVA_LANG_BYTE);
+        register("tinyint", ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE);
         register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
         register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
         register("largeint", ColumnType.STRING);
