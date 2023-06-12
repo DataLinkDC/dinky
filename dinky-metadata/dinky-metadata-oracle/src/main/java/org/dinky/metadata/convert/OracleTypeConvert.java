@@ -34,13 +34,13 @@ public class OracleTypeConvert extends AbstractTypeConvert {
 
     public OracleTypeConvert() {
         this.convertMap.clear();
-        this.convertMap.put("char", (c, d) ->  getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("date", (c, d) ->  getColumnType(c, ColumnType.LOCAL_DATETIME));
-        this.convertMap.put("timestamp", (c, d) ->  getColumnType(c, ColumnType.TIMESTAMP));
+        this.convertMap.put("char", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("date", (c, d) -> getColumnType(c, ColumnType.LOCAL_DATETIME));
+        this.convertMap.put("timestamp", (c, d) -> getColumnType(c, ColumnType.TIMESTAMP));
         this.convertMap.put("number", OracleTypeConvert::convertNumber);
-        this.convertMap.put("float", (c, d) ->  getColumnType(c, ColumnType.JAVA_LANG_FLOAT));
-        this.convertMap.put("clob", (c, d) ->  getColumnType(c, ColumnType.STRING));
-        this.convertMap.put("blob", (c, d) ->  getColumnType(c, ColumnType.BYTES));
+        this.convertMap.put("float", (c, d) -> getColumnType(c, ColumnType.JAVA_LANG_FLOAT));
+        this.convertMap.put("clob", (c, d) -> getColumnType(c, ColumnType.STRING));
+        this.convertMap.put("blob", (c, d) -> getColumnType(c, ColumnType.BYTES));
     }
 
     private static Optional<ColumnType> convertNumber(Column column, DriverConfig driverConfig) {
@@ -61,7 +61,6 @@ public class OracleTypeConvert extends AbstractTypeConvert {
         }
         return Optional.of(ColumnType.DECIMAL);
     }
-
 
     @Override
     public String convertToDB(ColumnType columnType) {
