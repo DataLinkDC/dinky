@@ -65,11 +65,12 @@ public class AbstractTypeConvert implements ITypeConvert {
         this.convertMap.put(type, (c, d) -> getColumnType(c, columnType, columnType));
     }
 
-    protected void register(String type,ColumnType notNullType, ColumnType nullType) {
+    protected void register(String type, ColumnType notNullType, ColumnType nullType) {
         this.convertMap.put(type, (c, d) -> getColumnType(c, notNullType, nullType));
     }
 
-    protected void register(String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
+    protected void register(
+            String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
         this.convertMap.put(type, func);
     }
 

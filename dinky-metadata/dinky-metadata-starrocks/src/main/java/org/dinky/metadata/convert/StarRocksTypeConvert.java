@@ -25,19 +25,19 @@ public class StarRocksTypeConvert extends AbstractTypeConvert {
 
     public StarRocksTypeConvert() {
         this.convertMap.clear();
-       register("char", ColumnType.STRING);
-       register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
-       register("tinyint", ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE);
-       register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
-       register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
-       register("largeint", ColumnType.STRING);
-       register("int", ColumnType.INT, ColumnType.INTEGER);
-       register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
-       register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
-       register("date", ColumnType.STRING);
-       register("datetime", ColumnType.STRING);
-       register("decimal", ColumnType.DECIMAL);
-       register("time", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("char", ColumnType.STRING);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("tinyint", ColumnType.BYTE, ColumnType.JAVA_LANG_BYTE);
+        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("largeint", ColumnType.STRING);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
+        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("date", ColumnType.STRING);
+        register("datetime", ColumnType.STRING);
+        register("decimal", ColumnType.DECIMAL);
+        register("time", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
     }
 
     @Override
