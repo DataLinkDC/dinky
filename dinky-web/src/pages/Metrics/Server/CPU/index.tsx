@@ -37,9 +37,6 @@ const CPU: React.FC<CpuProps> = (props) => {
         return {time: x.heartTime, value: Number( x.content.jvm.cpuUsed.toFixed(2))};
     })
 
-    useEffect(() => {
-
-    }, []);
 
     const config: AreaConfig = {
         animation: false,
@@ -55,13 +52,6 @@ const CPU: React.FC<CpuProps> = (props) => {
           min:0,
           max:100
         },
-        // slider: {
-        //   start: 0,
-        //   end: 1,
-        //   trendCfg: {
-        //     isArea: true,
-        //   },
-        // },
     };
 
     return <Area {...config} />;

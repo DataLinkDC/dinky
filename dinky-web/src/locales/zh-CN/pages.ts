@@ -602,4 +602,15 @@ export default {
   // system info of log
   'sys.info.logList.tips': '点击左侧日志文件查看',
 
+
+  // metrics
+  'metrics.filter.60seconds': '60秒',
+  'metrics.filter.5minutes': '5分钟',
+  'metrics.filter.10minutes': '10分钟',
+  'metrics.filter.1hour': '1小时',
+  'metrics.filter.2hours': '2小时',
+  'metrics.filter.5hours': '5小时',
+  'metrics.filter.custom': '自定义',
+  'metrics.filter.custom.range': '日期时间范围',
+
 };

@@ -28,29 +28,26 @@ type ThreadProps = {
 type Thread = {
     time: Date;
     value: string | number;
-    name:string
+    name: string
 }
 const Thread: React.FC<ThreadProps> = (props) => {
     const {data} = props;
     const dataList: Thread[] = data.map(x => {
-        return {time: x.heartTime, value:  x.content.jvm.threadPeakCount,name:"Peak"};
+        return {time: x.heartTime, value: x.content.jvm.threadPeakCount, name: "Peak"};
     })
     const dataList2: Thread[] = data.map(x => {
-        return {time: x.heartTime, value:  x.content.jvm.threadCount,name:"Count"};
+        return {time: x.heartTime, value: x.content.jvm.threadCount, name: "Count"};
     })
     const dataListAll = dataList.concat(dataList2);
-    useEffect(() => {
-    }, []);
 
 
     const config: AreaConfig = {
-        data:dataListAll,
-        animation:false,
+        data: dataListAll,
+        animation: false,
         height: 200,
         xField: 'time',
         yField: 'value',
         seriesField: 'name',
-        isStack:false,
         xAxis: {
             type: 'time',
             mask: 'HH:mm:ss',

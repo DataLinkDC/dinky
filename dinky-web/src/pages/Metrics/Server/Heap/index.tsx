@@ -34,8 +34,6 @@ const Heap: React.FC<HeapProps> = (props) => {
     const dataList: Heap[] = data.map(x => {
         return {time: x.heartTime, value:  Number((x.content.jvm.heapUsed/(1024*1024)).toFixed(0))};
     })
-    useEffect(() => {
-    }, []);
 
 
     const config: AreaConfig = {
@@ -52,10 +50,6 @@ const Heap: React.FC<HeapProps> = (props) => {
             min:0,
             max:max
         },
-        // slider: {
-        //     start: 0.1,
-        //     end: 0.9,
-        // },
     };
 
     return <Area {...config} />;

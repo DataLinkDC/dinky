@@ -191,6 +191,10 @@ export const API_CONSTANTS = {
 
   // -- home
   GET_STATUS_COUNT: "api/jobInstance/getStatusCount",
+  GET_RESOURCE_OVERVIEW: "/api/home/getResourceOverview",
+  GET_JOB_STATUS_OVERVIEW: "/api/home/getJobStatusOverview",
+  GET_JOB_TYPE_OVERVIEW: "/api/home/getJobTypeOverview",
+  GET_JOB_MODEL_OVERVIEW: "/api/home/getJobModelOverview",
 
   // monitor
   MONITOR_GET_SYSTEM_DATA:"/api/monitor/getSysData",
