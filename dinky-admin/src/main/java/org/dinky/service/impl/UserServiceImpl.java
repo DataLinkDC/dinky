@@ -383,7 +383,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         return userIds;
     }
 
-
+    /**
+     * build user info
+     *
+     * @param userId
+     * @return
+     */
     private UserDTO buildUserInfo(Integer userId) {
 
         User user = getById(userId);
