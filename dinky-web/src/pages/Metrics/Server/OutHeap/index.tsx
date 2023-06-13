@@ -17,9 +17,10 @@
  *
  */
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
+
 type NonHeapProps = {
     data: MetricsDataType[];
     max: number;
@@ -29,17 +30,15 @@ type NonHeap = {
     value: string | number;
 }
 const NonHeap: React.FC<NonHeapProps> = (props) => {
-    const {data,max} = props;
+    const {data, max} = props;
     const dataList: NonHeap[] = data.map(x => {
-        return {time: x.heartTime, value:  Number((x.content.jvm.nonHeapMax/(1024*1024)).toFixed(0))};
+        return {time: x.heartTime, value: Number((x.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0))};
     })
-    useEffect(() => {
-    }, []);
 
 
     const config: AreaConfig = {
-        data:dataList,
-        animation:false,
+        data: dataList,
+        animation: false,
         height: 200,
         yField: 'value',
         xField: 'time',
@@ -47,14 +46,10 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
             type: 'time',
             mask: 'HH:mm:ss',
         },
-        yAxis:{
-            min:0,
-            max:max
+        yAxis: {
+            min: 0,
+            max: max
         },
-        // slider: {
-        //     start: 0.1,
-        //     end: 0.9,
-        // },
     };
 
     return <Area {...config} />;

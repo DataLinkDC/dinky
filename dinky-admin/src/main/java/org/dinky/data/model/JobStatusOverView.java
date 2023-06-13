@@ -17,43 +17,17 @@
  *
  */
 
+package org.dinky.data.model;
 
-import {l} from "@/utils/intl";
+import lombok.Data;
 
-export const DATE_RANGE_OPTIONS =(disable:boolean)=> [
-    {
-        value: '60s',
-        label: l('metrics.filter.60seconds'),
-        disable:!disable
-    },
-    {
-        value: '5min',
-        label: l('metrics.filter.5minutes'),
-        disable:!disable
-    },
-    {
-        value: '10min',
-        label: l('metrics.filter.10minutes'),
-        disable:!disable
-    },
-    {
-        value: '1h',
-        label: l('metrics.filter.1hour'),
-        disable:!disable
-    },
-    {
-        value: '2h',
-        label: l('metrics.filter.2hours'),
-        disable:!disable
-    },
-    {
-        value: '5h',
-        label: l('metrics.filter.5hours'),
-        disable:!disable
-    },
-    {
-        value: 'custom',
-        label: l('metrics.filter.custom'),
-        disable:disable
-    },
-]
+@Data
+public class JobStatusOverView {
+
+    private Integer jobRunningCount;
+    private Integer jobFinishedCount;
+    private Integer jobRecoveredCount;
+    private Integer jobOnlineCount;
+    private Integer jobOfflineCount;
+    private Integer jobErrorCount;
+}

@@ -130,7 +130,6 @@ const Server = () => {
                 setEndTime(currentTime)
                 break;
             case '5min':
-                console.log('5min')
                 setStartTime(getSubMinTime(currentTime, 5))
                 setEndTime(currentTime)
                 break;

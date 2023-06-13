@@ -62,7 +62,7 @@ export default {
   'menu.settings.systemlog': 'System Log',
   'menu.settings.process': 'Process List',
   'menu.settings.services': 'Servers List',
-  'menu.metrics': 'Dashboard',
+  'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
 };

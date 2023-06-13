@@ -17,44 +17,21 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
+package org.dinky.service;
 
+import java.util.List;
+import org.dinky.data.model.HomeResource;
+import org.dinky.data.model.JobModelOverview;
+import org.dinky.data.model.JobStatusOverView;
+import org.dinky.data.model.JobTypeOverView;
 
-type CpuProps = {
-    data: MetricsDataType[];
+public interface HomeService {
+
+    HomeResource getResourceOverview();
+
+    JobStatusOverView getJobStatusOverView();
+
+    List<JobTypeOverView> getJobTypeOverView();
+
+    JobModelOverview getJobModelOverview();
 }
-type Cpu = {
-    time: Date;
-    value: string | number;
-}
-const CPU: React.FC<CpuProps> = (props) => {
-
-    const {data} = props;
-
-    const dataList: Cpu[] = data.map(x => {
-        return {time: x.heartTime, value: Number( x.content.jvm.cpuUsed.toFixed(2))};
-    })
-
-
-    const config: AreaConfig = {
-        animation: false,
-        data: dataList,
-        height: 200,
-        yField: 'value',
-        xField: 'time',
-        xAxis: {
-            type: 'time',
-            mask: 'HH:mm:ss',
-        },
-        yAxis:{
-          min:0,
-          max:100
-        },
-    };
-
-    return <Area {...config} />;
-}
-
-export default CPU;

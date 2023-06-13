@@ -600,4 +600,14 @@ export default {
   'sys.info.logList.tips': 'Click left log file to viewing',
 
 
+  // metrics
+  'metrics.filter.60seconds': '60 Seconds',
+  'metrics.filter.5minutes': '5 Minutes',
+  'metrics.filter.10minutes': '10 Minutes',
+  'metrics.filter.1hour': '1 Hours',
+  'metrics.filter.2hours': '2 Hours',
+  'metrics.filter.5hours': '5 Hours',
+  'metrics.filter.custom': 'Custom',
+  'metrics.filter.custom.range': 'DateTime Range',
+
 };

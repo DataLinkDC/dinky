@@ -21,6 +21,7 @@
 import {LightFilter, ProFormDateTimeRangePicker, ProFormRadio} from "@ant-design/pro-components";
 import React from "react";
 import {DATE_RANGE_OPTIONS} from "@/pages/Metrics/Server/constants";
+import {l} from "@/utils/intl";
 
 type GlobalFilterProps = {
     custom: boolean;
@@ -47,7 +48,7 @@ const GlobalFilter: React.FC<GlobalFilterProps> = (props) => {
             />
             {dateRange=="custom"?<ProFormDateTimeRangePicker
                 name="datetimeRanger"
-                label="日期时间范围"
+                label={l('metrics.filter.custom.range')}
                 allowClear={false}
                 initialValue={[startTime, endTime]}
                 fieldProps={{
