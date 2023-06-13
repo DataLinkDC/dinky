@@ -27,6 +27,8 @@ import org.dinky.data.enums.ColumnType;
 import java.util.Arrays;
 import java.util.List;
 
+import org.dinky.data.model.Column;
+import org.dinky.data.model.Table;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
