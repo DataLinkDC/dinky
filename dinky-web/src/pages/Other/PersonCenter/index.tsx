@@ -77,11 +77,9 @@ const PersonCenter = () => {
      */
     const renderTenantTagList = (items: UserBaseInfo.Tenant[]) => {
         return items?.map((item: UserBaseInfo.Tenant) => {
-            return <>
-                <Descriptions.Item key={item.id}>
+            return <Descriptions.Item key={item.id}>
                     <Tag color={'success'} key={item.id}>{item.tenantCode}</Tag>
                 </Descriptions.Item>
-            </>
         })
     };
 
@@ -92,11 +90,9 @@ const PersonCenter = () => {
      */
     const renderRoleTagList = (items: UserBaseInfo.Role[]) => {
         return items?.map((item: UserBaseInfo.Role) => {
-            return <>
-               <Descriptions.Item key={item.id}>
+            return <Descriptions.Item key={item.id}>
                    <Tag color={'success'} key={item.id}>{item.roleCode}</Tag>
                </Descriptions.Item>
-            </>
         })
     };
 
