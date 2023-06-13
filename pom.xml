@@ -328,11 +328,6 @@
                 <artifactId>jedis</artifactId>
                 <version>${jedis.version}</version>
             </dependency>
-            <dependency>
-                <groupId>org.dinky</groupId>
-                <artifactId>dinky-metrics</artifactId>
-                <version>${project.version}</version>
-            </dependency>
             <!--sa-token redis持久化 end-->
             <dependency>
                 <groupId>org.dinky</groupId>
