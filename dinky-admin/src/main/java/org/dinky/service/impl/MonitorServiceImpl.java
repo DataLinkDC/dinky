@@ -20,7 +20,6 @@
 package org.dinky.service.impl;
 
 import org.dinky.configure.MetricConfig;
-import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
@@ -51,6 +50,7 @@ import lombok.RequiredArgsConstructor;
 public class MonitorServiceImpl implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
 
+    @Override
     public List<MetricsVO> getData(Date startTime, Date endTime) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
         if (endTime.compareTo(startTime) < 1) {
@@ -67,23 +67,24 @@ public class MonitorServiceImpl implements MonitorService {
         return PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
     }
 
+    @Override
     public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate) {
-        Queue<Metrics> metricsQueue = MetricConfig.getMetricsQueue();
+        Queue<MetricsVO> metricsQueue = MetricConfig.getMetricsQueue();
         scheduleRefreshMonitorDataExecutor.execute(
                 () -> {
                     try {
-                        for (Metrics metrics : metricsQueue) {
+                        for (MetricsVO metrics : metricsQueue) {
                             if (metrics.getHeartTime()
                                     .isAfter(DateUtil.toLocalDateTime(lastDate))) {
-                                sseEmitter.send(MetricsVO.of(metrics));
+                                sseEmitter.send(metrics);
                             }
                         }
                         while (true) {
                             if (CollUtil.isEmpty(metricsQueue)) {
                                 continue;
                             }
-                            for (Metrics metrics : metricsQueue) {
-                                sseEmitter.send(MetricsVO.of(metrics));
+                            for (MetricsVO metrics : metricsQueue) {
+                                sseEmitter.send(metrics);
                             }
                             ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
                         }

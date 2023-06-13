@@ -19,7 +19,7 @@
 
 package org.dinky.utils;
 
-import org.dinky.data.model.Metrics;
+import org.dinky.data.vo.MetricsVO;
 import org.dinky.function.constant.PathConstant;
 
 import org.apache.paimon.catalog.Catalog;
@@ -98,7 +98,7 @@ public class PaimonUtil {
         SCHEMA_MAP.put(METRICS_IDENTIFIER, schema);
     }
 
-    public static synchronized void writeMetrics(List<Metrics> metricsList) {
+    public static synchronized void writeMetrics(List<MetricsVO> metricsList) {
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
@@ -108,7 +108,7 @@ public class PaimonUtil {
         // 2. Write records in distributed tasks
 
         try (BatchTableWrite write = writeBuilder.newWrite()) {
-            for (Metrics metrics : metricsList) {
+            for (MetricsVO metrics : metricsList) {
                 LocalDateTime now = metrics.getHeartTime();
 
                 BinaryRow row = new BinaryRow(30);

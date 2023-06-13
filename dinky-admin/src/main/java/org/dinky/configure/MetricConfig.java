@@ -25,7 +25,7 @@ import org.dinky.data.metrics.Cpu;
 import org.dinky.data.metrics.Jvm;
 import org.dinky.data.metrics.Mem;
 import org.dinky.data.metrics.MetricsTotal;
-import org.dinky.data.model.Metrics;
+import org.dinky.data.vo.MetricsVO;
 import org.dinky.utils.PaimonUtil;
 
 import java.lang.reflect.Field;
@@ -65,7 +65,7 @@ public class MetricConfig {
     private final MeterRegistry registry;
     private ThreadPoolExecutor writePool =
             new ThreadPoolExecutor(5, 10, 1, TimeUnit.DAYS, new SynchronousQueue<>());
-    private static final Queue<Metrics> metricsQueue = new ConcurrentLinkedQueue<>();
+    private static final Queue<MetricsVO> metricsQueue = new ConcurrentLinkedQueue<>();
     public static final int SCHEDULED_RATE = 1000;
 
     /** Update status per second */
@@ -83,7 +83,7 @@ public class MetricConfig {
         //        PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER,Metrics.class,p->
         // Collections.singletonList(p.greaterThan(0,
         // Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(DateUtil.date(1686300257085L))))));
-        PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, Metrics.class);
+        PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class);
     }
 
     @PostConstruct
@@ -102,7 +102,7 @@ public class MetricConfig {
         metricsTotal.setCpu(Cpu.of());
         metricsTotal.setMem(Mem.of());
 
-        Metrics metrics = new Metrics();
+        MetricsVO metrics = new MetricsVO();
         metrics.setContent(JSONUtil.toJsonStr(metricsTotal));
         metrics.setHeartTime(now);
         metrics.setModel("local");
@@ -144,7 +144,7 @@ public class MetricConfig {
         }
     }
 
-    public static Queue<Metrics> getMetricsQueue() {
+    public static Queue<MetricsVO> getMetricsQueue() {
         return metricsQueue;
     }
 }

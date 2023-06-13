@@ -20,11 +20,9 @@
 package org.dinky.data.vo;
 
 import org.dinky.data.metrics.MetricsTotal;
-import org.dinky.data.model.Metrics;
 
 import java.time.LocalDateTime;
 
-import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -35,13 +33,4 @@ public class MetricsVO {
     private MetricsTotal metricsTotal;
     private String model;
     private LocalDateTime heartTime;
-
-    public static MetricsVO of(Metrics metrics) {
-        MetricsTotal total = JSONUtil.toBean(metrics.getContent(), MetricsTotal.class);
-        MetricsVO vo = new MetricsVO();
-        vo.setHeartTime(metrics.getHeartTime());
-        vo.setMetricsTotal(total);
-        vo.setContent(JSONUtil.toJsonStr(total));
-        return vo;
-    }
 }
