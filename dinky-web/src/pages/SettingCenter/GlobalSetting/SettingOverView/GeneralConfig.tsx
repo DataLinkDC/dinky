@@ -34,11 +34,18 @@ type GeneralConfigProps = {
   tag: React.ReactNode;
   onSave: (data: BaseConfigProperties) => void;
   loading: boolean;
+  toolBarRender?: any;
 }
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
 
-  const {data, tag, onSave: handleSubmit, loading} = props;
+  const {
+    data,
+    tag,
+    onSave: handleSubmit,
+    loading,
+    toolBarRender
+  } = props;
 
 
   const actionRef = useRef<ActionType>();
@@ -119,6 +126,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * rest props for ProList
    */
   const restProps: ProListProps = {
+    toolBarRender:toolBarRender,
     rowKey: 'key',
     style: {margin: 0},
     loading: loading,

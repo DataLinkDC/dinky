@@ -577,6 +577,11 @@ export default {
   'sys.ldap.settings.defaultTeant': 'LDAP导入默认租户编码',
   'sys.ldap.settings.defaultTeant.note': '开启自动导入用户后，新用户登录需要一个默认的租户编码，否则无法登录',
 
+  'sys.ldap.settings.testConnect': '测试连接',
+  'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
+  'sys.ldap.settings.testLogin': '测试登录',
+  'sys.ldap.settings.loadUser': '导入用户',
+
 
   // process
   'sys.process.id': '进程ID',

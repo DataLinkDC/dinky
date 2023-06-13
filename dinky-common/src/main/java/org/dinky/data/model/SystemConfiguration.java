@@ -135,9 +135,6 @@ public class SystemConfiguration {
                     .defaultValue("Dinky")
                     .note("The project name specified in DolphinScheduler, case insensitive");
 
-    private final Configuration<Boolean> ldapEnable =
-            key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
-
     private final Configuration<String> ldapUrl =
             key("ldap.settings.url").stringType().defaultValue("").note("ldap server address");
 
@@ -186,6 +183,9 @@ public class SystemConfiguration {
 
     private final Configuration<String> ldapCastNickname =
             key("ldap.settings.castNickname").stringType().defaultValue("sn").note("");
+
+    private final Configuration<Boolean> ldapEnable =
+            key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
 
     /** Initialize after spring bean startup */
     public void initAfterBeanStarted() {

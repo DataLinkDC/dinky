@@ -19,82 +19,39 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
 /**
  * ClickHouseTypeConvert
  *
  * @since 2021/7/21 17:15
  */
-public class ClickHouseTypeConvert implements ITypeConvert {
+public class ClickHouseTypeConvert extends AbstractTypeConvert {
 
     // Use mysql now,and welcome to fix it.
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("tinyint")) {
-            columnType = ColumnType.BYTE;
-        } else if (t.contains("smallint") || t.contains("tinyint unsigned")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_SHORT;
-            } else {
-                columnType = ColumnType.SHORT;
-            }
-        } else if (t.contains("bigint unsigned")
-                || t.contains("numeric")
-                || t.contains("decimal")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("bigint") || t.contains("int unsigned")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("boolean") || t.contains("tinyint(1)")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("datetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        } else if (t.contains("time")) {
-            columnType = ColumnType.TIME;
-        } else if (t.contains("char") || t.contains("text")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("binary") || t.contains("blob")) {
-            columnType = ColumnType.BYTES;
-        } else if (t.contains("int")
-                || t.contains("mediumint")
-                || t.contains("smallint unsigned")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        }
-        return columnType;
+    public ClickHouseTypeConvert() {
+        this.convertMap.clear();
+        register("tinyint", ColumnType.BYTE);
+        register("smallint", ColumnType.SHORT, ColumnType.JAVA_LANG_SHORT);
+        register("bigint unsigned", ColumnType.DECIMAL);
+        register("numeric", ColumnType.DECIMAL);
+        register("decimal", ColumnType.DECIMAL);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("int unsigned", ColumnType.LONG);
+        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("tinyint(1)", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("datetime", ColumnType.TIMESTAMP);
+        register("date", ColumnType.DATE);
+        register("time", ColumnType.TIME);
+        register("char", ColumnType.STRING);
+        register("text", ColumnType.STRING);
+        register("binary", ColumnType.BYTES);
+        register("blob", ColumnType.BYTES);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
+        register("mediumint", ColumnType.INT, ColumnType.INTEGER);
+        register("smallint unsigned", ColumnType.INT, ColumnType.INTEGER);
     }
 
     @Override

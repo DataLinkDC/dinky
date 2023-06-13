@@ -19,80 +19,40 @@
 
 package org.dinky.metadata.convert;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.ColumnType;
-import org.dinky.data.model.Column;
 
-public class PhoenixTypeConvert implements ITypeConvert {
+public class PhoenixTypeConvert extends AbstractTypeConvert {
 
-    @Override
-    public ColumnType convert(Column column) {
-        ColumnType columnType = ColumnType.STRING;
-        if (Asserts.isNull(column)) {
-            return columnType;
-        }
-        String t = column.getType().toLowerCase();
-        boolean isNullable = !column.isKeyFlag() && column.isNullable();
-        if (t.contains("char")
-                || t.contains("varchar")
-                || t.contains("text")
-                || t.contains("nchar")
-                || t.contains("nvarchar")
-                || t.contains("ntext")
-                || t.contains("uniqueidentifier")
-                || t.contains("sql_variant")) {
-            columnType = ColumnType.STRING;
-        } else if (t.contains("bigint")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_LONG;
-            } else {
-                columnType = ColumnType.LONG;
-            }
-        } else if (t.contains("int")
-                || t.contains("tinyint")
-                || t.contains("smallint")
-                || t.contains("integer")) {
-            if (isNullable) {
-                columnType = ColumnType.INTEGER;
-            } else {
-                columnType = ColumnType.INT;
-            }
-        } else if (t.contains("float")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_FLOAT;
-            } else {
-                columnType = ColumnType.FLOAT;
-            }
-        } else if (t.contains("decimal")
-                || t.contains("money")
-                || t.contains("smallmoney")
-                || t.contains("numeric")) {
-            columnType = ColumnType.DECIMAL;
-        } else if (t.contains("double")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_DOUBLE;
-            } else {
-                columnType = ColumnType.DOUBLE;
-            }
-        } else if (t.contains("boolean")) {
-            if (isNullable) {
-                columnType = ColumnType.JAVA_LANG_BOOLEAN;
-            } else {
-                columnType = ColumnType.BOOLEAN;
-            }
-        } else if (t.contains("smalldatetime") || t.contains("datetime")) {
-            columnType = ColumnType.TIMESTAMP;
-        } else if (t.contains("timestamp")
-                || t.contains("binary")
-                || t.contains("varbinary")
-                || t.contains("image")) {
-            columnType = ColumnType.BYTES;
-        } else if (t.contains("time")) {
-            columnType = ColumnType.TIME;
-        } else if (t.contains("date")) {
-            columnType = ColumnType.DATE;
-        }
-        return columnType;
+    public PhoenixTypeConvert() {
+        this.convertMap.clear();
+        register("char", ColumnType.STRING);
+        register("varchar", ColumnType.STRING);
+        register("text", ColumnType.STRING);
+        register("nchar", ColumnType.STRING);
+        register("nvarchar", ColumnType.STRING);
+        register("ntext", ColumnType.STRING);
+        register("uniqueidentifier", ColumnType.STRING);
+        register("sql_variant", ColumnType.STRING);
+        register("bigint", ColumnType.LONG, ColumnType.JAVA_LANG_LONG);
+        register("int", ColumnType.INT, ColumnType.INTEGER);
+        register("tinyint", ColumnType.INT, ColumnType.INTEGER);
+        register("smallint", ColumnType.INT, ColumnType.INTEGER);
+        register("integer", ColumnType.INT, ColumnType.INTEGER);
+        register("float", ColumnType.FLOAT, ColumnType.JAVA_LANG_FLOAT);
+        register("decimal", ColumnType.DECIMAL);
+        register("money", ColumnType.DECIMAL);
+        register("smallmoney", ColumnType.DECIMAL);
+        register("numeric", ColumnType.DECIMAL);
+        register("double", ColumnType.DOUBLE, ColumnType.JAVA_LANG_DOUBLE);
+        register("boolean", ColumnType.BOOLEAN, ColumnType.JAVA_LANG_BOOLEAN);
+        register("smalldatetime", ColumnType.TIMESTAMP);
+        register("datetime", ColumnType.TIMESTAMP);
+        register("timestamp", ColumnType.BYTES);
+        register("binary", ColumnType.BYTES);
+        register("varbinary", ColumnType.BYTES);
+        register("image", ColumnType.BYTES);
+        register("time", ColumnType.TIME);
+        register("date", ColumnType.DATE);
     }
 
     @Override

@@ -239,37 +239,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     private UserDTO refreshUserInfo(User user) {
-        List<Role> roleList = new LinkedList<>();
-        List<Tenant> tenantList = new LinkedList<>();
-
-        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
-        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
-
-        userRoles.stream()
-                .forEach(
-                        userRole -> {
-                            Role role =
-                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
-                            if (Asserts.isNotNull(role)) {
-                                roleList.add(role);
-                            }
-                        });
-
-        userTenants.stream()
-                .forEach(
-                        userTenant -> {
-                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
-                            if (Asserts.isNotNull(tenant)) {
-                                tenantList.add(tenant);
-                            }
-                        });
-
-        UserDTO userInfo = new UserDTO();
-        userInfo.setUser(user);
-        userInfo.setRoleList(roleList);
-        userInfo.setTenantList(tenantList);
-        UserInfoContextHolder.set(user.getId(), userInfo);
-        return userInfo;
+        UserDTO reBuildUserInfo = buildUserInfo(user.getId());
+        UserInfoContextHolder.set(user.getId(), reBuildUserInfo);
+        return reBuildUserInfo;
     }
 
     @Override
@@ -353,13 +325,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public Result<UserDTO> queryCurrentUserInfo() {
         UserDTO userInfo = UserInfoContextHolder.get(StpUtil.getLoginIdAsInt());
-        if (Asserts.isNotNull(userInfo)
-                && Asserts.isNotNull(userInfo.getUser())
-                && Asserts.isNotNull(userInfo.getRoleList())
-                && Asserts.isNotNull(userInfo.getTenantList())
-                && Asserts.isNotNull(userInfo.getCurrentTenant())) {
-            StpUtil.getSession().set("user", userInfo);
-            return Result.succeed(userInfo);
+
+        if (Asserts.isNotNull(userInfo)) {
+            UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
+            userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
+            return Result.succeed(userInfoDto);
         } else {
             return Result.failed();
         }
@@ -412,5 +383,50 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userIds.add(userTenant.getUserId());
         }
         return userIds;
+    }
+
+    /**
+     * build user info
+     *
+     * @param userId
+     * @return
+     */
+    private UserDTO buildUserInfo(Integer userId) {
+
+        User user = getById(userId);
+        if (Asserts.isNull(user)) {
+            return null;
+        }
+
+        List<Role> roleList = new LinkedList<>();
+        List<Tenant> tenantList = new LinkedList<>();
+
+        List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
+        List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
+
+        userRoles.stream()
+                .forEach(
+                        userRole -> {
+                            Role role =
+                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
+                            if (Asserts.isNotNull(role)) {
+                                roleList.add(role);
+                            }
+                        });
+
+        userTenants.stream()
+                .forEach(
+                        userTenant -> {
+                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
+                            if (Asserts.isNotNull(tenant)) {
+                                tenantList.add(tenant);
+                            }
+                        });
+
+        UserDTO userInfo = new UserDTO();
+        userInfo.setUser(user);
+        userInfo.setRoleList(roleList);
+        userInfo.setTenantList(tenantList);
+        return userInfo;
     }
 }
