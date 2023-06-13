@@ -328,6 +328,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         if (Asserts.isNotNull(userInfo)) {
             UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
+            userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
             return Result.succeed(userInfoDto);
         } else {
             return Result.failed();
@@ -425,7 +427,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userInfo.setUser(user);
         userInfo.setRoleList(roleList);
         userInfo.setTenantList(tenantList);
-
         return userInfo;
     }
 }

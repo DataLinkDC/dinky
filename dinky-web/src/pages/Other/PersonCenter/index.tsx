@@ -38,18 +38,7 @@ const PersonCenter = () => {
 
     const { initialState, setInitialState } = useModel('@@initialState');
     const [activeKey, setActiveKey] = useState('operation');
-
     const loading = <PageLoading/>;
-
-    if (!initialState) {
-        return loading;
-    }
-    const { currentUser } = initialState;
-    if (!currentUser || !currentUser.user.username) {
-        return loading;
-    }
-
-    const { roleList, tenantList,currentTenant,user } = currentUser;
 
     const fetchUserInfo = async () => {
         const userInfo = await initialState?.fetchUserInfo?.();
@@ -63,11 +52,21 @@ const PersonCenter = () => {
         }
     };
 
-
     useEffect(() => {
         fetchUserInfo();
-    },[initialState]);
+    },[initialState?.currentUser]);
 
+
+
+    if (!initialState) {
+        return loading;
+    }
+    const { currentUser } = initialState;
+    if (!currentUser || !currentUser.user.username) {
+        return loading;
+    }
+
+    const { roleList, tenantList,currentTenant,user } = currentUser;
 
 
     /**
@@ -132,7 +131,7 @@ const PersonCenter = () => {
         <PageContainer title={false}>
             <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
                 <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="30%" hoverable bordered>
-                    <BaseInfo user={user} currentTenant={currentTenant} />
+                    <BaseInfo user={user} tenant={currentTenant} />
                     <Divider orientation={'left'} plain >{l('user.tenant')}</Divider>
                     <Descriptions size={'small'} column={4}>{renderTenantTagList(tenantList || [])}</Descriptions>
                     <Divider plain ></Divider>
