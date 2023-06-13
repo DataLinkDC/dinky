@@ -191,6 +191,10 @@ export const API_CONSTANTS = {
 
   // -- home
   GET_STATUS_COUNT: "api/jobInstance/getStatusCount",
+
+  // monitor
+  MONITOR_GET_SYSTEM_DATA:"/api/monitor/getSysData",
+  MONITOR_GET_LAST_DATA:"/api/monitor/getLastUpdateData"
 };
 
 

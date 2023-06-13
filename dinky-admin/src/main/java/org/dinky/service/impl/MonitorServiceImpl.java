@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -53,18 +54,25 @@ public class MonitorServiceImpl implements MonitorService {
     @Override
     public List<MetricsVO> getData(Date startTime, Date endTime) {
         endTime = Opt.ofNullable(endTime).orElse(DateUtil.date());
+        Timestamp startTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
+        Timestamp endTS = Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(endTime));
+
         if (endTime.compareTo(startTime) < 1) {
             throw new DinkyException("The end date must be greater than the start date!");
         }
         Function<PredicateBuilder, List<Predicate>> filter =
                 p -> {
-                    Timestamp timestamp =
-                            Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(startTime));
-                    Predicate greaterThan = p.greaterThan(0, timestamp);
+                    Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
+                    Predicate lessOrEqual = p.lessOrEqual(0, endTS);
                     Predicate local = p.equal(2, "local");
-                    return CollUtil.newArrayList(local, greaterThan);
+                    return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
                 };
-        return PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
+        List<MetricsVO> metricsVOList =
+                PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
+        return metricsVOList.stream()
+                .filter(x -> x.getHeartTime().isAfter(startTS.toLocalDateTime()))
+                .filter(x -> x.getHeartTime().isBefore(endTS.toLocalDateTime()))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -83,9 +91,7 @@ public class MonitorServiceImpl implements MonitorService {
                             if (CollUtil.isEmpty(metricsQueue)) {
                                 continue;
                             }
-                            for (MetricsVO metrics : metricsQueue) {
-                                sseEmitter.send(metrics);
-                            }
+                            sseEmitter.send(CollUtil.getLast(metricsQueue));
                             ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
                         }
                     } catch (IOException e) {

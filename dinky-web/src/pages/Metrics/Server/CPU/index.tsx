@@ -17,44 +17,54 @@
  *
  */
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
+import {MetricsDataType} from "@/pages/Metrics/Server/data";
 
-const CPU = () => {
 
-  const [data, setData] = useState([]);
+type CpuProps = {
+    data: MetricsDataType[];
+}
+type Cpu = {
+    time: Date;
+    value: string | number;
+}
+const CPU: React.FC<CpuProps> = (props) => {
 
-  useEffect(() => {
-    asyncFetch();
-  }, []);
+    const {data} = props;
 
-  const asyncFetch = () => {
-    fetch('https://gw.alipayobjects.com/os/bmw-prod/1d565782-dde4-4bb6-8946-ea6a38ccf184.json')
-        .then((response) => response.json())
-        .then((json) => setData(json))
-        .catch((error) => {
-          console.log('fetch data failed', error);
-        });
-  };
-  const config :AreaConfig = {
-    data,
-    height: 200,
-    xField: 'Date',
-    yField: 'scales',
-    xAxis: {
-      tickCount: 5,
-    },
-    animation: false,
-    slider: {
-      start: 0.1,
-      end: 0.9,
-      trendCfg: {
-        isArea: true,
-      },
-    },
-  };
+    const dataList: Cpu[] = data.map(x => {
+        return {time: x.heartTime, value: Number( x.content.jvm.cpuUsed.toFixed(2))};
+    })
 
-  return <Area {...config} />;
+    useEffect(() => {
+
+    }, []);
+
+    const config: AreaConfig = {
+        animation: false,
+        data: dataList,
+        height: 200,
+        yField: 'value',
+        xField: 'time',
+        xAxis: {
+            type: 'time',
+            mask: 'HH:mm:ss',
+        },
+        yAxis:{
+          min:0,
+          max:100
+        },
+        // slider: {
+        //   start: 0,
+        //   end: 1,
+        //   trendCfg: {
+        //     isArea: true,
+        //   },
+        // },
+    };
+
+    return <Area {...config} />;
 }
 
 export default CPU;
