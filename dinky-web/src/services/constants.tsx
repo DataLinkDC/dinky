@@ -185,6 +185,9 @@ export const API_CONSTANTS = {
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
+  LDAP_TEST_CONNECT: "/api/ldap/testConnection",
+  LDAP_TEST_LOGIN: "/api/ldap/testLogin",
+  LDAP_LIST_USER: "/api/ldap/listUser",
 
   // -- home
   GET_STATUS_COUNT: "api/jobInstance/getStatusCount",

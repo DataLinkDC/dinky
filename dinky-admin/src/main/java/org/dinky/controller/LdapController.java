@@ -19,7 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.dto.LoginDTO;
+import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
+import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.User;
 import org.dinky.data.result.ProTableResult;
@@ -28,8 +31,12 @@ import org.dinky.service.LdapService;
 
 import java.util.List;
 
+import javax.naming.NamingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,5 +75,22 @@ public class LdapController {
                 .data(users)
                 .total((long) users.size())
                 .build();
+    }
+
+    /**
+     * ldap test login
+     *
+     * @param loginDTO basic information for user login
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
+     */
+    @PostMapping("/testLogin")
+    public Result<User> login(@RequestBody LoginDTO loginDTO) {
+        try {
+            return Result.succeed(ldapService.authenticate(loginDTO));
+        } catch (AuthException e) {
+            return Result.failed(e.getStatus());
+        } catch (NamingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -575,6 +575,11 @@ export default {
   'sys.ldap.settings.defaultTeant': 'The LDAP imports the default tenant code',
   'sys.ldap.settings.defaultTeant.note': 'After opening the automatic import of users, the new user login needs a default tenant code, otherwise it cannot log in',
 
+  'sys.ldap.settings.testConnect': 'Test Connect',
+  'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
+  'sys.ldap.settings.testLogin': 'Test Login',
+  'sys.ldap.settings.loadUser': 'Load User',
+
   // process
   'sys.process.id': 'Process ID',
   'sys.process.name': 'Process Name',
