@@ -76,6 +76,7 @@ export default {
   'home.job.batch': 'Batch Job',
   'home.job.stream': 'Streaming Job',
   'home.job.total': 'Number of Jobs',
+  'home.job.onlineRate': 'Number of Jobs Online Rate',
   'home.job.type': 'Job Type',
   'home.job.rate': 'Proportion of Jobs',
   'home.develop.re.ci': 'Flink Cluster Instance',

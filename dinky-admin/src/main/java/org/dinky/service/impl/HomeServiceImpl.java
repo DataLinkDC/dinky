@@ -23,7 +23,6 @@ import org.dinky.data.model.HomeResource;
 import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobStatusOverView;
 import org.dinky.data.model.JobTypeOverView;
-import org.dinky.data.model.Task;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertInstanceService;
 import org.dinky.service.ClusterConfigurationService;
@@ -34,12 +33,9 @@ import org.dinky.service.GitProjectService;
 import org.dinky.service.HomeService;
 import org.dinky.service.TaskService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
-
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import lombok.RequiredArgsConstructor;
 
@@ -78,25 +74,7 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public List<JobTypeOverView> getJobTypeOverView() {
-
-        List<JobTypeOverView> jobTypeOverViews = new ArrayList<>();
-        taskService
-                .list()
-                .forEach(
-                        task -> {
-                            JobTypeOverView jobTypeOverView = new JobTypeOverView();
-                            jobTypeOverView.setJobType(task.getDialect());
-                            LambdaQueryWrapper<Task> taskLambdaQueryWrapper =
-                                    new LambdaQueryWrapper<Task>()
-                                            .eq(Task::getDialect, task.getDialect());
-                            List<Task> taskList = taskService.list(taskLambdaQueryWrapper);
-                            jobTypeOverView.setJobTypeCount(taskList.size());
-                            jobTypeOverView.setRate(
-                                    taskList.size() * 1D / taskService.list().size());
-                            jobTypeOverViews.add(jobTypeOverView);
-                        });
-
-        return jobTypeOverViews;
+        return taskService.getTaskOnlineRate();
     }
 
     @Override

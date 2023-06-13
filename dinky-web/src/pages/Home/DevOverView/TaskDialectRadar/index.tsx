@@ -43,15 +43,16 @@ const TaskDialectRadar = () => {
     const config: RadarConfig = {
         data: data,
         xField: 'jobType',
-        yField: 'jobTypeCount',
+        yField: 'rate',
         autoFit: true,
         appendPadding: [0, 10, 0, 10],
         meta: {
-            jobTypeCount: {
-                alias: l('home.job.total'),
+          rate: {
+                alias: l('home.job.onlineRate'),
                 min: 0,
+                max: 100,
                 nice: true,
-                formatter: (v) => Number(v),
+                formatter: (v) => Number(v) + '%',
             },
         },
         yAxis: {
