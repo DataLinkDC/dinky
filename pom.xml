@@ -92,6 +92,7 @@
         <mybatis-plus-boot-starter.version>3.5.3.1</mybatis-plus-boot-starter.version>
         <mysql-connector-java.version>8.0.28</mysql-connector-java.version>
         <ojdbc8.version>12.2.0.1</ojdbc8.version>
+        <oshi.version>6.4.2</oshi.version>
         <poi.version>5.2.3</poi.version>
         <postgresql.version>42.5.1</postgresql.version>
         <powermock.version>2.0.9</powermock.version>
@@ -115,6 +116,11 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
             <dependency>
                 <groupId>com.github.xiaoymin</groupId>
                 <artifactId>knife4j-dependencies</artifactId>
@@ -799,6 +805,12 @@
         <connection>git@github.com:DataLinkDC/dinky.git</connection>
         <url>https://github.com/DataLinkDC/dinky</url>
     </scm>
+    <repositories>
+        <repository>
+            <id>apache-snapshots</id>
+            <url>https://maven.aliyun.com/repository/apache-snapshots</url>
+        </repository>
+    </repositories>
 
     <profiles>
         <profile>
