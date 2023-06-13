@@ -21,6 +21,7 @@ import React, {useEffect, useState} from 'react';
 import {Radar, RadarConfig} from '@ant-design/plots';
 import {l} from "@/utils/intl";
 import {queryDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
 
 type TaskDialectSummary = {
     jobType: string;
@@ -32,7 +33,7 @@ const TaskDialectRadar = () => {
     const [data, setData] = useState<TaskDialectSummary[]>([]);
 
     useEffect(() => {
-        queryDataByParams('/api/home/getJobTypeOverview').then((res) => {
+        queryDataByParams(API_CONSTANTS.GET_JOB_TYPE_OVERVIEW).then((res) => {
             setData(res);
         })
     }, [])

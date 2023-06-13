@@ -31,6 +31,7 @@ import {imgStyle} from "@/pages/Home/constants";
 import CountFormatter from "@/components/CountFormatter";
 import {l} from "@/utils/intl";
 import {queryDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
 
 type ResourceView ={
     flinkClusterCount: number;
@@ -49,7 +50,7 @@ const ResourceView = () => {
   const [data, setData] = useState<ResourceView>();
 
   useEffect(() => {
-      queryDataByParams('/api/home/getResourceOverview').then((res) => {
+      queryDataByParams(API_CONSTANTS.GET_RESOURCE_OVERVIEW).then((res) => {
           console.log(res);
           setData(res);
       });
