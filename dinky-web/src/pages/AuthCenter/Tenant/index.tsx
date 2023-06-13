@@ -20,17 +20,18 @@
 import React from "react";
 import {PageContainer} from '@ant-design/pro-layout';
 import TenantProTable from "./components/TenantProTable";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 const TenantFormList: React.FC = () => {
 
     /**
      * render
      */
-    return <>
+    return <SlowlyAppear>
         <PageContainer title={false}>
             <TenantProTable/>
         </PageContainer>
-    </>
+    </SlowlyAppear>
 };
 
 export default TenantFormList;

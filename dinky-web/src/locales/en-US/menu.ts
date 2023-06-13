@@ -30,8 +30,7 @@ export default {
   'menu.account.center': 'Account Center',
   'menu.account.logout': 'Logout',
   'menu.account.changePassword': 'Change Password',
-  'menu.account.checkTenant': 'Check Tenant',
-  'menu.tenants': 'Tenant: ',
+  'menu.account.checkTenant': 'Switch Tenant',
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
 
   'menu.datastudio': 'Data Studio',

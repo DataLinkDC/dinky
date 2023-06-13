@@ -19,11 +19,11 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.UDFTemplateService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -128,8 +128,8 @@ public class UDFController {
     @PutMapping
     public Result<String> saveOrUpdate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
-                ? Result.succeed(I18nMsgUtils.getMsg("save.success"))
-                : Result.failed(I18nMsgUtils.getMsg("save.failed"));
+                ? Result.succeed(Status.SAVE_SUCCESS)
+                : Result.failed(Status.SAVE_FAILED);
     }
 
     /**
@@ -170,18 +170,18 @@ public class UDFController {
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> delete(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam Integer id) {
         if (udfTemplateService.enable(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
     }
 }

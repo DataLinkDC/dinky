@@ -25,10 +25,13 @@ import {UserBaseInfo} from "@/types/User/data";
 import React from "react";
 import {FormInstance} from "antd/es/form/hooks/useForm";
 import {Values} from "async-validator";
+import {Button} from "antd";
 
 type PasswordFormProps = {
-    values: Partial<UserBaseInfo.ChangePasswordParams>;
+    values: UserBaseInfo.User;
     form: FormInstance<Values>
+    renderSubmit?: boolean;
+    onSubmit?: (values: UserBaseInfo.ChangePasswordParams) => void;
 };
 
 
@@ -37,7 +40,15 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     /**
      * init props
      */
-    const {values, form} = props;
+    const {values, form,renderSubmit=false, onSubmit} = props;
+    const handleSubmit = async () => {
+       const value = await form?.validateFields()
+        if (onSubmit) {
+            const {password, newPassword, newPasswordCheck} = value;
+            onSubmit({id: values.id, newPassword, newPasswordCheck: newPasswordCheck, password: password , username: values.username})
+        }
+    }
+
 
     /**
      * render changePassword form
@@ -45,7 +56,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     const pwdFormRender = () => {
         return <>
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="password"
                 hasFeedback
                 label={l('user.oldpwd')}
@@ -53,7 +64,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
                 rules={[{required: true, message: l('user.oldpwdPlaceholder')}]}
             />
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="newPassword"
                 hasFeedback
                 label={l('user.newpwd')}
@@ -61,7 +72,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
                 rules={[{required: true, message: l('user.newpwdPlaceholder')}]}
             />
             <ProFormText.Password
-                width="md"
+                width="xl"
                 name="newPasswordCheck"
                 hasFeedback
                 dependencies={['newPassword']}
@@ -95,7 +106,15 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
             form={form}
             initialValues={values}
             layout={"horizontal"}
-            submitter={false}
+            submitter={{
+                render: (submitProps, doms) => {
+                    return renderSubmit?<>
+                        <Button type="primary" onClick={async ()=>{
+                            await handleSubmit();
+                        }}>{l('button.submit')}</Button>
+                    </>:<></>
+                },
+            }}
         >
             {pwdFormRender()}
         </ProForm>

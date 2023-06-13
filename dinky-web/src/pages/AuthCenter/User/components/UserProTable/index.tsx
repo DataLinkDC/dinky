@@ -18,7 +18,7 @@
  */
 
 
-import React, {useEffect, useRef, useState} from "react";
+import React, {useRef, useState} from "react";
 import {LockTwoTone} from "@ant-design/icons";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button} from "antd";
@@ -41,6 +41,7 @@ import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import PasswordModal from "@/pages/AuthCenter/User/components/PasswordModal";
 import RoleModalTransfer from "../RoleModalTransfer";
 import UserModalForm from "@/pages/AuthCenter/User/components/UserModalForm";
+import {USER_TYPE_ENUM, UserType} from "@/pages/AuthCenter/User/components/constants";
 
 
 const UserProTable = () => {
@@ -131,7 +132,7 @@ const UserProTable = () => {
      * change password submit
      * @param value
      */
-    const handlePasswordChangeSubmit = async (value: any) => {
+    const handlePasswordChangeSubmit = async (value: UserBaseInfo.ChangePasswordParams) => {
         await executeAndCallbackRefresh(async () => {
             await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l("button.changePassword"), value);
             await handlePasswordModalOpen(false);
@@ -151,81 +152,90 @@ const UserProTable = () => {
     };
 
 
-    /**
-     * table columns
-     */
-    const columns: ProColumns<UserBaseInfo.User>[] = [
-        {
-            title: l("user.username"),
-            dataIndex: "username",
-        },
-        {
-            title: l("user.nickname"),
-            dataIndex: "nickname",
-        },
-        {
-            title: l("user.jobnumber"),
-            dataIndex: "worknum",
-        },
-        {
-            title: l("user.phone"),
-            dataIndex: "mobile",
-            hideInSearch: true,
-        },
-        {
-            title: l("global.table.isEnable"),
-            dataIndex: "enabled",
-            hideInSearch: true,
-            render: (_: any, record: UserBaseInfo.User) => {
-                return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
-                                        onChange={() => handleChangeEnable(record)}/>;
-            },
-            filters: STATUS_MAPPING(),
-            filterMultiple: false,
-            valueEnum: STATUS_ENUM(),
-        },
-        {
-            title: l("global.table.createTime"),
-            dataIndex: "createTime",
-            sorter: true,
-            valueType: "dateTime",
-            hideInTable: true,
-            hideInSearch: true,
-        },
-        {
-            title: l("global.table.updateTime"),
-            dataIndex: "updateTime",
-            hideInSearch: true,
-            sorter: true,
-            valueType: "dateTime",
-        },
-        {
-            title: l("global.table.operate"),
-            valueType: "option",
-            width: "12vh",
-            render: (_: any, record: UserBaseInfo.User) => [
-                <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
-                <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)}
-                           title={l('user.assignRole')}/>,
-                <Button
-                    className={"options-button"}
-                    key={`${record.id}_change`}
-                    icon={<LockTwoTone/>}
-                    title={l("button.changePassword")}
-                    onClick={() => {
-                        handleChangePassword(record);
-                    }}
-                />,
-                <>
-                    {(access.canAdmin && record.username !== "admin") &&
-                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteUser(record)}
-                                             description={l("user.deleteConfirm")}/>
-                    }
-                </>
-                ,
-            ],
-        },
-    ];
+  /**
+   * table columns
+   */
+  const columns: ProColumns<UserBaseInfo.User>[] = [
+    {
+      title: l("user.username"),
+      dataIndex: "username",
+    },
+    {
+      title: l("user.nickname"),
+      dataIndex: "nickname",
+    },
+    {
+      title: l("user.jobnumber"),
+      dataIndex: "worknum",
+    },
+    {
+      title: l("user.phone"),
+      dataIndex: "mobile",
+      hideInSearch: true,
+    },
+    {
+      title: l("user.type"),
+      dataIndex: "userType",
+      valueEnum: USER_TYPE_ENUM()
+    },
+    {
+      title: l("global.table.isEnable"),
+      dataIndex: "enabled",
+      hideInSearch: true,
+      render: (_: any, record: UserBaseInfo.User) => {
+        return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
+                                onChange={() => handleChangeEnable(record)}/>;
+      },
+      filters: STATUS_MAPPING(),
+      filterMultiple: false,
+      valueEnum: STATUS_ENUM(),
+    },
+    {
+      title: l("global.table.createTime"),
+      dataIndex: "createTime",
+      sorter: true,
+      valueType: "dateTime",
+      hideInTable: true,
+      hideInSearch: true,
+    },
+    {
+      title: l("global.table.updateTime"),
+      dataIndex: "updateTime",
+      hideInSearch: true,
+      sorter: true,
+      valueType: "dateTime",
+    },
+    {
+      title: l("global.table.operate"),
+      valueType: "option",
+      width: "12vh",
+      render: (_: any, record: UserBaseInfo.User) => [
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
+        <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)}
+                   title={l('user.assignRole')}/>,
+        <>
+          {record.userType == UserType.LOCAL &&
+            <Button
+              className={"options-button"}
+              key={`${record.id}_change`}
+              icon={<LockTwoTone/>}
+              title={l("button.changePassword")}
+              onClick={() => {
+                handleChangePassword(record);
+              }}
+            />
+          }
+        </>,
+        <>
+          {(access.canAdmin && record.username !== "admin") &&
+            <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteUser(record)}
+                                 description={l("user.deleteConfirm")}/>
+          }
+        </>
+        ,
+      ],
+    },
+  ];
 
 
     /**

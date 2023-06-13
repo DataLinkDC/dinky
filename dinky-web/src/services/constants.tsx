@@ -148,17 +148,11 @@ export const API_CONSTANTS = {
   // ---- update project State  ----
   GIT_PROJECT_ENABLE: "/api/git/updateEnable",
   // ---- get project details by id ----
-  GIT_GET_ONE_DETAILS: "/api/git/getOneDetails",
-  // ---- get project details by id ----
   GIT_PROJECT_CODE_TREE: "/api/git/getProjectCode",
   // ---- get project build by id ----
   GIT_PROJECT_BUILD: "/api/git/build",
   // ---- get project build logs by id----
   GIT_PROJECT_BUILD_STEP_LOGS: "/api/git/build-step-logs",
-  // ---- get project build steps ----
-  GIT_PROJECT_BUILD_STEPS: "/api/git/build-steps",
-  // ---- get project all build logs ----
-  GIT_PROJECT_BUILD_ALL_LOGS: "/api/git/getAllBuildLog",
 
   // UDF template
   UDF_TEMPLATE: "/api/udf/template/list",
@@ -186,8 +180,14 @@ export const API_CONSTANTS = {
   // process list
   PROCESS_LIST: "/api/process/listAllProcess",
 
+  // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
 
+  // -- LDAP
+  GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
+
+  // -- home
+  GET_STATUS_COUNT: "api/jobInstance/getStatusCount",
 };
 
 

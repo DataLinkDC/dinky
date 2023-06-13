@@ -17,14 +17,19 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.mapper;
 
-import org.dinky.data.model.RoleSelectPermissions;
-import org.dinky.mybatis.service.ISuperService;
+import org.dinky.data.model.RowPermissions;
+import org.dinky.mybatis.mapper.SuperMapper;
+
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
-public interface RoleSelectPermissionsService extends ISuperService<RoleSelectPermissions> {
+/** role select permissions mapper interface */
+@Mapper
+public interface RowPermissionsMapper extends SuperMapper<RowPermissions> {
 
     /**
      * delete user role select permissions by role id
@@ -32,21 +37,14 @@ public interface RoleSelectPermissionsService extends ISuperService<RoleSelectPe
      * @param roleIds role id
      * @return delete status
      */
-    boolean deleteByRoleIds(List<Integer> roleIds);
-
-    /**
-     * select user role data permissions by role id
-     *
-     * @param roleId role id
-     * @return List<RoleSelectPermissions>
-     */
-    List<RoleSelectPermissions> listAllByRoleId(Integer roleId);
+    int deleteByRoleIds(@Param("roleIds") List<Integer> roleIds);
 
     /**
      * select user role data permissions by role ids
      *
      * @param roleIds role ids
-     * @return List<RoleSelectPermissions>
+     * @return List<RowPermissions>
      */
-    List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds);
+    List<RowPermissions> listRoleSelectPermissionsByRoleIds(
+            @Param("roleIds") List<Integer> roleIds);
 }

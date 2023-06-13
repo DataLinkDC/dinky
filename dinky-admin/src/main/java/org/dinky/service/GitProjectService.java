@@ -79,12 +79,4 @@ public interface GitProjectService extends ISuperService<GitProject> {
      * @return {@link Boolean}
      */
     Boolean removeProjectAndCodeCascade(Integer id);
-
-    /**
-     * get project build all logs
-     *
-     * @param id {@link Integer}
-     * @return {@link String}
-     */
-    String getAllBuildLog(Integer id);
 }

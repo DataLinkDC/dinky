@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.process.model.ProcessEntity;
@@ -76,6 +77,6 @@ public class ProcessController {
     @GetMapping("/clearConsole")
     public Result<String> clearConsole() {
         processService.clearConsoleByUserId(StpUtil.getLoginIdAsInt());
-        return Result.succeed("Clear succeed.");
+        return Result.succeed(Status.CLEAR_SUCCESS);
     }
 }

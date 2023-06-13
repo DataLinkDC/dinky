@@ -17,9 +17,12 @@
 
 import {PageContainer} from "@ant-design/pro-components";
 import TemplateTable from "@/pages/RegCenter/UDF/components/TemplateTable";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 export default ()=>{
-    return <PageContainer title={false}>
-      <TemplateTable/>
-    </PageContainer>
+    return <SlowlyAppear>
+        <PageContainer title={false}>
+            <TemplateTable/>
+        </PageContainer>
+    </SlowlyAppear>
 }

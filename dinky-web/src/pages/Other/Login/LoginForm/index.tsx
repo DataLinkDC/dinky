@@ -17,7 +17,7 @@
  *
  */
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {l} from "@/utils/intl";
 import {ProForm, ProFormCheckbox, ProFormText} from "@ant-design/pro-components";
 import {LockOutlined, UserOutlined} from "@ant-design/icons";
@@ -25,6 +25,9 @@ import MainWithStyle from "./MainWithStyle";
 import {SubmitterProps} from "@ant-design/pro-form/es/components";
 import style from "../../../../global.less";
 import FadeIn from "@/components/Animation/FadeIn";
+import {getData} from "@/services/api";
+import {API_CONSTANTS} from "@/services/constants";
+import {Col, Row} from "antd";
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
@@ -37,6 +40,14 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   const [form] = ProForm.useForm();
 
   const [submitting, setSubmitting] = useState(false);
+  const [ldapEnabled, setLdapEnabled] = useState(false);
+
+  useEffect(() => {
+    getData(API_CONSTANTS.GET_LDAP_ENABLE).then(res => {
+      setLdapEnabled(res.datas)
+      form.setFieldValue("ldapLogin",res.datas)
+    })
+  }, []);
 
 
   const handleClickLogin = async () => {
@@ -76,9 +87,18 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
           },
         ]}
       />
-      <ProFormCheckbox name="autoLogin">
-        {l("login.rememberMe")}
-      </ProFormCheckbox>
+      <Row>
+        <Col span={18}>
+          <ProFormCheckbox name="autoLogin">
+            {l("login.rememberMe")}
+          </ProFormCheckbox>
+        </Col>
+        <Col span={6}>
+          <ProFormCheckbox name="ldapLogin" hidden={!ldapEnabled}>
+            {l("login.ldapLogin")}
+          </ProFormCheckbox>
+        </Col>
+      </Row>
     </>;
   };
 

@@ -55,6 +55,7 @@ public class SysConfig extends Model<SysConfig> {
             groups = {Save.class})
     private String name;
 
+    @TableField(value = "`value`")
     private String value;
 
     @TableField(fill = FieldFill.INSERT)

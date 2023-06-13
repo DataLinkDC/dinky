@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.Status;
 import org.dinky.data.enums.TaskOperatingSavepointSelect;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
@@ -72,9 +73,9 @@ public class TaskController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Task task) throws Exception {
         if (taskService.saveOrUpdateTask(task)) {
-            return Result.succeed("保存成功");
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed("保存失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -86,6 +87,7 @@ public class TaskController {
 
     /** 批量删除 */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             boolean isAdmin = false;
@@ -141,19 +143,19 @@ public class TaskController {
     @GetMapping
     public Result<Task> getOneById(@RequestParam Integer id) {
         Task task = taskService.getTaskInfoById(id);
-        return Result.succeed(task, "获取成功");
+        return Result.succeed(task);
     }
 
     /** 获取所有可用的 FlinkSQLEnv */
     @GetMapping(value = "/listFlinkSQLEnv")
     public Result<List<Task>> listFlinkSQLEnv() {
-        return Result.succeed(taskService.listFlinkSQLEnv(), "获取成功");
+        return Result.succeed(taskService.listFlinkSQLEnv());
     }
 
     /** 导出 sql */
     @GetMapping(value = "/exportSql")
     public Result<String> exportSql(@RequestParam Integer id) {
-        return Result.succeed(taskService.exportSql(id), "获取成功");
+        return Result.succeed(taskService.exportSql(id));
     }
 
     /** 发布任务 */
@@ -170,7 +172,7 @@ public class TaskController {
     /** 维护任务 */
     @GetMapping(value = "/developTask")
     public Result<Boolean> developTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.developTask(id), "操作成功");
+        return Result.succeed(taskService.developTask(id), Status.OPERATE_SUCCESS);
     }
 
     /** 上线任务 */
@@ -194,7 +196,7 @@ public class TaskController {
     /** 恢复任务 */
     @GetMapping(value = "/recoveryTask")
     public Result<Boolean> recoveryTask(@RequestParam Integer id) {
-        return Result.succeed(taskService.recoveryTask(id), "操作成功");
+        return Result.succeed(taskService.recoveryTask(id), Status.OPERATE_SUCCESS);
     }
 
     /** 重启任务 */
@@ -203,7 +205,7 @@ public class TaskController {
         if (isOnLine) {
             return taskService.reOnLineTask(id, null);
         } else {
-            return Result.succeed(taskService.restartTask(id, null), "重启成功");
+            return Result.succeed(taskService.restartTask(id, null), Status.RESTART_SUCCESS);
         }
     }
 
@@ -216,26 +218,27 @@ public class TaskController {
         if (isOnLine) {
             return taskService.reOnLineTask(id, savePointPath);
         } else {
-            return Result.succeed(taskService.restartTask(id, savePointPath), "重启成功");
+            return Result.succeed(
+                    taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
         }
     }
 
     /** 获取当前的 API 的地址 */
     @GetMapping(value = "/getTaskAPIAddress")
     public Result<String> getTaskAPIAddress() {
-        return Result.succeed(taskService.getTaskAPIAddress(), "重启成功");
+        return Result.succeed(taskService.getTaskAPIAddress(), Status.RESTART_SUCCESS);
     }
 
     /** 导出json */
     @GetMapping(value = "/exportJsonByTaskId")
     public Result<String> exportJsonByTaskId(@RequestParam Integer id) {
-        return Result.succeed(taskService.exportJsonByTaskId(id), "获取成功");
+        return Result.succeed(taskService.exportJsonByTaskId(id));
     }
 
     /** 导出json数组 */
     @PostMapping(value = "/exportJsonByTaskIds")
     public Result<String> exportJsonByTaskIds(@RequestBody JsonNode para) {
-        return Result.succeed(taskService.exportJsonByTaskIds(para), "获取成功");
+        return Result.succeed(taskService.exportJsonByTaskIds(para));
     }
 
     /** json文件上传 导入task */
@@ -266,7 +269,7 @@ public class TaskController {
             @RequestParam("operating") Integer operating,
             @RequestParam("catalogueId") Integer catalogueId) {
         if (operating == null) {
-            return Result.failed("操作不正确");
+            return Result.failed(Status.OPERATE_FAILED);
         }
         switch (operating) {
             case 1:
@@ -282,7 +285,7 @@ public class TaskController {
                         false,
                         catalogueId);
             default:
-                return Result.failed("操作不正确");
+                return Result.failed(Status.OPERATE_FAILED);
         }
     }
 
@@ -295,7 +298,7 @@ public class TaskController {
     @PostMapping("/onClickOperatingTask")
     public Result<Void> onClickOperatingTask(@RequestBody JsonNode operating) {
         if (operating == null || operating.get("operating") == null) {
-            return Result.failed("操作不正确");
+            return Result.failed(Status.OPERATE_FAILED);
         }
         switch (operating.get("operating").asInt()) {
             case 1:
@@ -308,7 +311,7 @@ public class TaskController {
                 return TaskOneClickOperatingUtil.onClickOffline(
                         TaskOneClickOperatingUtil.parseJsonNode(operating));
             default:
-                return Result.failed("操作不正确");
+                return Result.failed(Status.OPERATE_FAILED);
         }
     }
 

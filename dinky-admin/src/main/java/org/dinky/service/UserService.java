@@ -23,7 +23,7 @@ import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.ModifyPasswordDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.model.Role;
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
 import org.dinky.data.params.AssignRoleParams;
@@ -150,8 +150,15 @@ public interface UserService extends ISuperService<User> {
      *
      * @return role select permissions list
      */
-    List<RoleSelectPermissions> getCurrentRoleSelectPermissions();
+    List<RowPermissions> getCurrentRoleSelectPermissions();
 
     /** user loginout */
     void outLogin();
+
+    /**
+     * get user ids where user in given tenant id
+     *
+     * @return role select permissions list
+     */
+    List<Integer> getUserIdsByTeantId(int id);
 }

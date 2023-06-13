@@ -20,20 +20,23 @@
 package org.dinky.cdc;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public abstract class AbstractCDCBuilder implements CDCBuilder {
 
     protected FlinkCDCConfig config;
 
-    public AbstractCDCBuilder() {}
+    protected AbstractCDCBuilder() {}
 
-    public AbstractCDCBuilder(FlinkCDCConfig config) {
+    protected AbstractCDCBuilder(FlinkCDCConfig config) {
         this.config = config;
     }
 
@@ -48,20 +51,18 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
     public List<String> getSchemaList() {
         List<String> schemaList = new ArrayList<>();
         String schema = getSchema();
+
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             Collections.addAll(schemaList, schemas);
         }
-        List<String> tableList = getTableList();
-        for (String tableName : tableList) {
-            tableName = tableName.trim();
-            if (Asserts.isNotNullString(tableName) && tableName.contains(".")) {
-                String[] names = tableName.split("\\\\.");
-                if (!schemaList.contains(names[0])) {
-                    schemaList.add(names[0]);
-                }
-            }
-        }
+
+        getTableList().stream()
+                .map(String::trim)
+                .filter(tableName -> Asserts.isNotNullString(tableName) && tableName.contains("."))
+                .map(tableName -> tableName.split("\\\\."))
+                .filter(names -> !schemaList.contains(names[0]))
+                .forEach(names -> schemaList.add(names[0]));
         return schemaList;
     }
 
@@ -71,8 +72,8 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
         if (Asserts.isNullString(table)) {
             return tableList;
         }
-        String[] tables = table.split(FlinkParamConstant.SPLIT);
-        Collections.addAll(tableList, tables);
+
+        Collections.addAll(tableList, table.split(FlinkParamConstant.SPLIT));
         return tableList;
     }
 
@@ -80,5 +81,28 @@ public abstract class AbstractCDCBuilder implements CDCBuilder {
         return "schema";
     }
 
+    public Map<String, Map<String, String>> parseMetaDataConfigs() {
+        Map<String, Map<String, String>> allConfigMap = new HashMap<>();
+        for (String schema : getSchemaList()) {
+            String url = generateUrl(schema);
+            allConfigMap.put(schema, parseMetaDataSingleConfig(url));
+        }
+        return allConfigMap;
+    }
+
+    public Map<String, String> parseMetaDataSingleConfig(String url) {
+        Map<String, String> configMap = new HashMap<>();
+        configMap.put(ClientConstant.METADATA_NAME, url);
+        configMap.put(ClientConstant.METADATA_URL, url);
+        configMap.put(ClientConstant.METADATA_TYPE, getMetadataType());
+        configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
+        configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
+        return configMap;
+    }
+
     public abstract String getSchema();
+
+    protected abstract String getMetadataType();
+
+    protected abstract String generateUrl(String schema);
 }

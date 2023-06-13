@@ -32,10 +32,7 @@ public class DriverPool {
     private static volatile Map<String, Driver> driverMap = new ConcurrentHashMap<>();
 
     public static boolean exist(String key) {
-        if (driverMap.containsKey(key)) {
-            return true;
-        }
-        return false;
+        return driverMap.containsKey(key);
     }
 
     public static Integer push(String key, Driver gainer) {

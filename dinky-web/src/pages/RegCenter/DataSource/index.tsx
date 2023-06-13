@@ -17,14 +17,15 @@
 
 import {PageContainer} from "@ant-design/pro-components";
 import DataSourceTable from "@/pages/RegCenter/DataSource/components/DataSourceList";
+import Pop from "@/components/Animation/Pop";
 
 /**
  * render DataSource page
  */
 export default () => {
-  return <>
+  return <Pop>
     <PageContainer title={false}>
       <DataSourceTable/>
     </PageContainer>
-  </>;
+  </Pop>;
 }

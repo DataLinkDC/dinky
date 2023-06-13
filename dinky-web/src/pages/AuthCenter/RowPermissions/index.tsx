@@ -19,15 +19,16 @@
 
 import {PageContainer} from "@ant-design/pro-components";
 import PermissionsProTable from "@/pages/AuthCenter/RowPermissions/components/PermissionsProTable";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
 export default () => {
 
     /**
      * render
      */
-    return <>
+    return <SlowlyAppear>
     <PageContainer title={false}>
        <PermissionsProTable />
     </PageContainer>
-    </>
+    </SlowlyAppear>
 }

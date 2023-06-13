@@ -19,15 +19,9 @@
 
 package org.dinky.cdc.doris;
 
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.data.model.Column;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.utils.JSONUtil;
-
-import org.apache.flink.api.common.functions.FlatMapFunction;
+import com.google.common.base.Strings;
 import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
-import org.apache.flink.table.data.GenericRowData;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.data.TimestampData;
 import org.apache.flink.table.types.logical.BigIntType;
@@ -42,24 +36,24 @@ import org.apache.flink.table.types.logical.TimestampType;
 import org.apache.flink.table.types.logical.TinyIntType;
 import org.apache.flink.table.types.logical.VarCharType;
 import org.apache.flink.types.RowKind;
-import org.apache.flink.util.Collector;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.data.model.Column;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializable {
 
     public static final String KEY_WORD = "datastream-doris-ext";
     private static final long serialVersionUID = 8430362249137471854L;
 
-    protected static final Logger logger = LoggerFactory.getLogger(DorisSinkBuilder.class);
+    protected static final Logger logger = LoggerFactory.getLogger(DorisExtendSinkBuilder.class);
 
     private Map<String, AdditionalColumnEntry<String, String>> additionalColumnConfigList = null;
 
@@ -80,159 +74,72 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         return new DorisExtendSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
+    @Override
     protected Object buildRowDataValues(
             Map value,
-            Map rowData,
+            RowKind rowKind,
             String columnName,
-            LogicalType columnType,
-            Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList,
-            ZoneId opTimeZone) {
-        if (aColumnConfigList != null
-                && aColumnConfigList.size() > 0
-                && aColumnConfigList.containsKey(columnName)) {
-            AdditionalColumnEntry<String, String> col = aColumnConfigList.get(columnName);
-            if (col != null) {
-                if ("META".equals(col.getKey())) {
-                    switch (col.getValue()) {
-                        case "op_ts":
-                            Object opVal = ((Map) value.get("source")).get("ts_ms");
-                            if (opVal instanceof Integer) {
-                                return TimestampData.fromLocalDateTime(
-                                        Instant.ofEpochMilli(((Integer) opVal).longValue())
-                                                .atZone(opTimeZone)
-                                                .toLocalDateTime());
-                            } else if (opVal instanceof Long) {
-                                return TimestampData.fromLocalDateTime(
-                                        Instant.ofEpochMilli((long) opVal)
-                                                .atZone(opTimeZone)
-                                                .toLocalDateTime());
-                            } else {
-                                return TimestampData.fromLocalDateTime(
-                                        Instant.parse(value.toString())
-                                                .atZone(opTimeZone)
-                                                .toLocalDateTime());
-                            }
-                        case "database_name":
-                            return convertValue(((Map) value.get("source")).get("db"), columnType);
-                        case "table_name":
-                            return convertValue(
-                                    ((Map) value.get("source")).get("table"), columnType);
-                        case "schema_name":
-                            return convertValue(
-                                    ((Map) value.get("source")).get("schema"), columnType);
-                        default:
-                            logger.warn("Unsupported meta field:" + col.getValue());
-                            return null;
-                    }
-                } else {
-                    return convertValue(col.getValue(), columnType);
-                }
-            }
+            LogicalType columnType) {
+        if (additionalColumnConfigList == null) {
+            return convertValue(getOriginRowData(rowKind, value).get(columnName), columnType);
         }
-        return convertValue(rowData.get(columnName), columnType);
+
+        AdditionalColumnEntry<String, String> col = additionalColumnConfigList.get(columnName);
+        if (col == null) {
+            return convertValue(getOriginRowData(rowKind, value).get(columnName), columnType);
+        }
+
+        if (!"META".equals(col.getKey())) {
+            return convertValue(col.getValue(), columnType);
+        }
+
+        Map source = (Map) value.get("source");
+        switch (col.getValue()) {
+            case "op_ts":
+                Object opVal = source.get("ts_ms");
+                if (opVal instanceof Integer) {
+                    return TimestampData.fromLocalDateTime(
+                            Instant.ofEpochMilli(((Integer) opVal).longValue())
+                                    .atZone(this.getSinkTimeZone())
+                                    .toLocalDateTime());
+                }
+
+                if (opVal instanceof Long) {
+                    return TimestampData.fromLocalDateTime(
+                            Instant.ofEpochMilli((long) opVal)
+                                    .atZone(this.getSinkTimeZone())
+                                    .toLocalDateTime());
+                }
+
+                return TimestampData.fromLocalDateTime(
+                        Instant.parse(value.toString())
+                                .atZone(this.getSinkTimeZone())
+                                .toLocalDateTime());
+            case "database_name":
+                return convertValue(source.get("db"), columnType);
+            case "table_name":
+                return convertValue(source.get("table"), columnType);
+            case "schema_name":
+                return convertValue(source.get("schema"), columnType);
+            default:
+                logger.warn("Unsupported meta field: {}", col.getValue());
+                return null;
+        }
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     protected DataStream<RowData> buildRowData(
             SingleOutputStreamOperator<Map> filterOperator,
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        final Map<String, AdditionalColumnEntry<String, String>> aColumnConfigList =
-                this.additionalColumnConfigList;
-        final ZoneId opTimeZone = this.getSinkTimeZone();
-        logger.info("sinkTimeZone:" + this.getSinkTimeZone().toString());
+        logger.info("sinkTimeZone:{}", this.getSinkTimeZone());
         return filterOperator.flatMap(
-                new FlatMapFunction<Map, RowData>() {
-
-                    @Override
-                    public void flatMap(Map value, Collector<RowData> out) throws Exception {
-                        try {
-                            switch (value.get("op").toString()) {
-                                case "r":
-                                case "c":
-                                    GenericRowData igenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    igenericRowData.setRowKind(RowKind.INSERT);
-                                    Map idata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        igenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        idata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(igenericRowData);
-                                    break;
-                                case "d":
-                                    GenericRowData dgenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    dgenericRowData.setRowKind(RowKind.DELETE);
-                                    Map ddata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        dgenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        ddata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(dgenericRowData);
-                                    break;
-                                case "u":
-                                    GenericRowData ubgenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    ubgenericRowData.setRowKind(RowKind.UPDATE_BEFORE);
-                                    Map ubdata = (Map) value.get("before");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        ubgenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        ubdata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(ubgenericRowData);
-                                    GenericRowData uagenericRowData =
-                                            new GenericRowData(columnNameList.size());
-                                    uagenericRowData.setRowKind(RowKind.UPDATE_AFTER);
-                                    Map uadata = (Map) value.get("after");
-                                    for (int i = 0; i < columnNameList.size(); i++) {
-                                        uagenericRowData.setField(
-                                                i,
-                                                buildRowDataValues(
-                                                        value,
-                                                        uadata,
-                                                        columnNameList.get(i),
-                                                        columnTypeList.get(i),
-                                                        aColumnConfigList,
-                                                        opTimeZone));
-                                    }
-                                    out.collect(uagenericRowData);
-                                    break;
-                                default:
-                            }
-                        } catch (Exception e) {
-                            logger.error(
-                                    "SchameTable: {} - Row: {} - Exception: {}",
-                                    schemaTableName,
-                                    JSONUtil.toJsonString(value),
-                                    e);
-                            throw e;
-                        }
-                    }
-                });
+                sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
     }
+
 
     @Override
     protected void buildColumn(
@@ -243,111 +150,97 @@ public class DorisExtendSinkBuilder extends DorisSinkBuilder implements Serializ
         }
         if (this.additionalColumnConfigList != null && this.additionalColumnConfigList.size() > 0) {
             logger.info("Start add additional column");
-            for (Map.Entry col : this.additionalColumnConfigList.entrySet()) {
-                String colName = (String) col.getKey();
-                AdditionalColumnEntry<String, String> kv =
-                        (AdditionalColumnEntry<String, String>) col.getValue();
+            this.additionalColumnConfigList.forEach((key, value) -> {
                 logger.info(
-                        "col: { name: "
-                                + colName
-                                + ", type:"
-                                + kv.getKey()
-                                + ", val: "
-                                + kv.getValue()
-                                + "}");
+                        "col: { name: {}, type:{}, val: {}}", key, value.getKey(), value.getValue());
 
-                switch (kv.getKey()) {
+                switch (value.getKey()) {
                     case "META":
-                        switch (kv.getValue().toLowerCase()) {
+                        switch (value.getValue().toLowerCase()) {
                             case "op_ts":
-                                columnNameList.add(colName);
+                                columnNameList.add(key);
                                 columnTypeList.add(new TimestampType());
                                 break;
                             case "database_name":
                             case "table_name":
                             case "schema_name":
-                                columnNameList.add(colName);
+                                columnNameList.add(key);
                                 columnTypeList.add(new VarCharType());
                                 break;
                             default:
-                                logger.warn("Unsupported meta field:" + kv.getValue());
+                                logger.warn("Unsupported meta field:{}", value.getValue());
                         }
                         break;
                     case "BOOLEAN":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new BooleanType());
                         break;
                     case "INT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new IntType());
                         break;
                     case "TINYINT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new TinyIntType());
                         break;
                     case "BIGINT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new BigIntType());
                         break;
                     case "DECIMAL":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new DecimalType());
                         break;
                     case "FLOAT":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new FloatType());
                         break;
                     case "DATE":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new DateType());
                         break;
                     case "TIMESTAMP":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new TimestampType());
                         break;
                     case "CHAR":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new CharType());
                         break;
                     case "VARCHAR":
                     case "STRING":
-                        columnNameList.add(colName);
+                        columnNameList.add(key);
                         columnTypeList.add(new VarCharType());
                         break;
                     default:
-                        logger.warn("Unsupported additional column type:" + kv.getKey());
+                        logger.warn("Unsupported additional column type:{}", value.getKey());
                         break;
                 }
-            }
+            });
             logger.info("Additional column added complete");
         }
     }
 
     protected Map<String, AdditionalColumnEntry<String, String>> buildAdditionalColumnsConfig() {
-        if (!config.getSink().containsKey(DorisExtendSinkOptions.AdditionalColumns.key())) {
+        String additionalColumnConfig = config.getSink().get(DorisExtendSinkOptions.AdditionalColumns.key());
+        if (Strings.isNullOrEmpty(additionalColumnConfig)) {
             return null;
         }
 
-        String additionalColumnConfig =
-                config.getSink().get(DorisExtendSinkOptions.AdditionalColumns.key());
-        if (additionalColumnConfig == null || additionalColumnConfig.length() == 0) {
-            return null;
-        }
+        logger.info("AdditionalColumns: {}", additionalColumnConfig);
 
         Map<String, AdditionalColumnEntry<String, String>> cfg = new HashMap<>();
-        logger.info("AdditionalColumns: " + additionalColumnConfig);
         String[] cols = additionalColumnConfig.split(",");
-
         for (String col : cols) {
             String[] kv = col.split(":");
             if (kv.length != 2) {
-                logger.warn("additional-columns format invalid. col=" + col);
+                logger.warn("additional-columns format invalid. col={}", col);
                 return null;
             }
 
             String[] strs = kv[1].split("@");
             if (strs.length != 2) {
-                logger.warn("additional-columns format invalid. val=" + kv[1]);
+                logger.warn("additional-columns format invalid. val={}", kv[1]);
                 return null;
             }
 

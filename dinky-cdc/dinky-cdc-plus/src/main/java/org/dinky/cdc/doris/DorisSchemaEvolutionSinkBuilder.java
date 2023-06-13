@@ -19,30 +19,25 @@
 
 package org.dinky.cdc.doris;
 
-import org.dinky.assertion.Asserts;
-import org.dinky.cdc.AbstractSinkBuilder;
-import org.dinky.cdc.CDCBuilder;
-import org.dinky.cdc.SinkBuilder;
-import org.dinky.executor.CustomTableEnvironment;
-import org.dinky.data.model.FlinkCDCConfig;
-import org.dinky.data.model.Schema;
-import org.dinky.data.model.Table;
-
 import org.apache.doris.flink.cfg.DorisExecutionOptions;
 import org.apache.doris.flink.cfg.DorisOptions;
 import org.apache.doris.flink.cfg.DorisReadOptions;
 import org.apache.doris.flink.sink.DorisSink;
 import org.apache.doris.flink.sink.writer.JsonDebeziumSchemaSerializer;
-import org.apache.flink.shaded.jackson2.com.fasterxml.jackson.databind.ObjectMapper;
-import org.apache.flink.streaming.api.datastream.DataStream;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.data.RowData;
-import org.apache.flink.table.types.logical.LogicalType;
 import org.apache.flink.util.Collector;
 import org.apache.flink.util.OutputTag;
+import org.dinky.assertion.Asserts;
+import org.dinky.cdc.AbstractSinkBuilder;
+import org.dinky.cdc.CDCBuilder;
+import org.dinky.cdc.SinkBuilder;
+import org.dinky.data.model.FlinkCDCConfig;
+import org.dinky.data.model.Schema;
+import org.dinky.data.model.Table;
+import org.dinky.executor.CustomTableEnvironment;
 
 import java.io.Serializable;
 import java.util.HashMap;
@@ -63,14 +58,6 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
     }
 
     @Override
-    public void addSink(
-            StreamExecutionEnvironment env,
-            DataStream<RowData> rowDataDataStream,
-            Table table,
-            List<String> columnNameList,
-            List<LogicalType> columnTypeList) {}
-
-    @Override
     public String getHandle() {
         return KEY_WORD;
     }
@@ -80,8 +67,9 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
         return new DorisSchemaEvolutionSinkBuilder(config);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
-    public DataStreamSource build(
+    public DataStreamSource<String> build(
             CDCBuilder cdcBuilder,
             StreamExecutionEnvironment env,
             CustomTableEnvironment customTableEnvironment,
@@ -94,127 +82,126 @@ public class DorisSchemaEvolutionSinkBuilder extends AbstractSinkBuilder impleme
         properties.setProperty("format", "json");
         properties.setProperty("read_json_by_line", "true");
 
-        Map<Table, OutputTag<String>> tagMap = new HashMap<>();
-        Map<String, Table> tableMap = new HashMap<>();
-        ObjectMapper objectMapper = new ObjectMapper();
+
+        final List<Schema> schemaList = config.getSchemaList();
+        if (!Asserts.isNotNullCollection(schemaList)) {
+            return dataStreamSource;
+        }
 
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
-        final List<Schema> schemaList = config.getSchemaList();
         final String schemaFieldName = config.getSchemaFieldName();
-        if (Asserts.isNotNullCollection(schemaList)) {
-            for (Schema schema : schemaList) {
-                for (Table table : schema.getTables()) {
-                    String sinkTableName = getSinkTableName(table);
-                    OutputTag<String> outputTag = new OutputTag<String>(sinkTableName) {};
-                    tagMap.put(table, outputTag);
-                    tableMap.put(table.getSchemaTableName(), table);
-                }
+
+        Map<Table, OutputTag<String>> tagMap = new HashMap<>();
+        Map<String, Table> tableMap = new HashMap<>();
+        for (Schema schema : schemaList) {
+            for (Table table : schema.getTables()) {
+                OutputTag<String> outputTag = new OutputTag<String>(getSinkTableName(table)) {};
+                tagMap.put(table, outputTag);
+                tableMap.put(table.getSchemaTableName(), table);
             }
-            SingleOutputStreamOperator<String> process =
-                    mapOperator.process(
-                            new ProcessFunction<Map, String>() {
-
-                                @Override
-                                public void processElement(
-                                        Map map, Context ctx, Collector<String> out)
-                                        throws Exception {
-                                    LinkedHashMap source = (LinkedHashMap) map.get("source");
-                                    try {
-                                        String result = objectMapper.writeValueAsString(map);
-                                        Table table =
-                                                tableMap.get(
-                                                        source.get(schemaFieldName).toString()
-                                                                + "."
-                                                                + source.get("table").toString());
-                                        OutputTag<String> outputTag = tagMap.get(table);
-                                        ctx.output(outputTag, result);
-                                    } catch (Exception e) {
-                                        out.collect(objectMapper.writeValueAsString(map));
-                                    }
-                                }
-                            });
-            tagMap.forEach(
-                    (table, v) -> {
-                        DorisOptions dorisOptions =
-                                DorisOptions.builder()
-                                        .setFenodes(
-                                                config.getSink()
-                                                        .get(DorisSinkOptions.FENODES.key()))
-                                        .setTableIdentifier(
-                                                getSinkSchemaName(table)
-                                                        + "."
-                                                        + getSinkTableName(table))
-                                        .setUsername(
-                                                config.getSink()
-                                                        .get(DorisSinkOptions.USERNAME.key()))
-                                        .setPassword(
-                                                config.getSink()
-                                                        .get(DorisSinkOptions.PASSWORD.key()))
-                                        .build();
-
-                        DorisExecutionOptions.Builder executionBuilder =
-                                DorisExecutionOptions.builder();
-                        if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_COUNT.key())) {
-                            executionBuilder.setBufferCount(
-                                    Integer.valueOf(
-                                            sink.get(DorisSinkOptions.SINK_BUFFER_COUNT.key())));
-                        }
-                        if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_SIZE.key())) {
-                            executionBuilder.setBufferSize(
-                                    Integer.valueOf(
-                                            sink.get(DorisSinkOptions.SINK_BUFFER_SIZE.key())));
-                        }
-                        if (sink.containsKey(DorisSinkOptions.SINK_ENABLE_DELETE.key())) {
-                            executionBuilder.setDeletable(
-                                    Boolean.valueOf(
-                                            sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
-                        } else {
-                            executionBuilder.setDeletable(true);
-                        }
-                        if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
-                            executionBuilder.setLabelPrefix(
-                                    sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key())
-                                            + "-"
-                                            + getSinkSchemaName(table)
-                                            + "_"
-                                            + getSinkTableName(table));
-                        } else {
-                            executionBuilder.setLabelPrefix(
-                                    "dlink-"
-                                            + getSinkSchemaName(table)
-                                            + "_"
-                                            + getSinkTableName(table)
-                                            + UUID.randomUUID());
-                        }
-                        if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
-                            executionBuilder.setMaxRetries(
-                                    Integer.valueOf(
-                                            sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
-                        }
-
-                        executionBuilder.setStreamLoadProp(properties).setDeletable(true);
-
-                        DorisSink.Builder<String> builder = DorisSink.builder();
-                        builder.setDorisReadOptions(DorisReadOptions.builder().build())
-                                .setDorisExecutionOptions(executionBuilder.build())
-                                .setDorisOptions(dorisOptions)
-                                .setSerializer(
-                                        JsonDebeziumSchemaSerializer.builder()
-                                                .setDorisOptions(dorisOptions)
-                                                .build());
-
-                        process.getSideOutput(v)
-                                .rebalance()
-                                .sinkTo(builder.build())
-                                .name(
-                                        "Doris Schema Evolution Sink(table=["
-                                                + getSinkSchemaName(table)
-                                                + "."
-                                                + getSinkTableName(table)
-                                                + "])");
-                    });
         }
+
+        SingleOutputStreamOperator<String> process =
+                mapOperator.process(
+                        new ProcessFunction<Map, String>() {
+
+                            @Override
+                            public void processElement(
+                                    Map map, Context ctx, Collector<String> out)
+                                    throws Exception {
+                                LinkedHashMap source = (LinkedHashMap) map.get("source");
+                                String result = objectMapper.writeValueAsString(map);
+                                try {
+                                    Table table =
+                                            tableMap.get(
+                                                    source.get(schemaFieldName).toString()
+                                                            + "."
+                                                            + source.get("table").toString());
+                                    ctx.output(tagMap.get(table), result);
+                                } catch (Exception e) {
+                                    out.collect(result);
+                                }
+                            }
+                        });
+
+        tagMap.forEach(
+                (table, v) -> {
+                    DorisOptions dorisOptions =
+                            DorisOptions.builder()
+                                    .setFenodes(
+                                            config.getSink()
+                                                    .get(DorisSinkOptions.FENODES.key()))
+                                    .setTableIdentifier(
+                                            getSinkSchemaName(table)
+                                                    + "."
+                                                    + getSinkTableName(table))
+                                    .setUsername(
+                                            config.getSink()
+                                                    .get(DorisSinkOptions.USERNAME.key()))
+                                    .setPassword(
+                                            config.getSink()
+                                                    .get(DorisSinkOptions.PASSWORD.key()))
+                                    .build();
+
+                    DorisExecutionOptions.Builder executionBuilder =
+                            DorisExecutionOptions.builder();
+
+                    if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_COUNT.key())) {
+                        executionBuilder.setBufferCount(
+                                Integer.parseInt(
+                                        sink.get(DorisSinkOptions.SINK_BUFFER_COUNT.key())));
+                    }
+
+                    if (sink.containsKey(DorisSinkOptions.SINK_BUFFER_SIZE.key())) {
+                        executionBuilder.setBufferSize(
+                                Integer.parseInt(
+                                        sink.get(DorisSinkOptions.SINK_BUFFER_SIZE.key())));
+                    }
+
+                    if (sink.containsKey(DorisSinkOptions.SINK_ENABLE_DELETE.key())) {
+                        executionBuilder.setDeletable(
+                                Boolean.valueOf(
+                                        sink.get(DorisSinkOptions.SINK_ENABLE_DELETE.key())));
+                    } else {
+                        executionBuilder.setDeletable(true);
+                    }
+
+                    if (sink.containsKey(DorisSinkOptions.SINK_LABEL_PREFIX.key())) {
+                        executionBuilder.setLabelPrefix(
+                                String.format("%s-%s_%s", sink.get(DorisSinkOptions.SINK_LABEL_PREFIX.key()),
+                                        getSinkSchemaName(table), getSinkTableName(table)));
+                    } else {
+                        executionBuilder.setLabelPrefix(
+                                String.format("dinky-%s_%s%s", getSinkSchemaName(table), getSinkTableName(table),
+                                        UUID.randomUUID()));
+                    }
+
+                    if (sink.containsKey(DorisSinkOptions.SINK_MAX_RETRIES.key())) {
+                        executionBuilder.setMaxRetries(
+                                Integer.valueOf(
+                                        sink.get(DorisSinkOptions.SINK_MAX_RETRIES.key())));
+                    }
+
+                    executionBuilder.setStreamLoadProp(properties).setDeletable(true);
+
+                    DorisSink.Builder<String> builder = DorisSink.builder();
+                    builder.setDorisReadOptions(DorisReadOptions.builder().build())
+                            .setDorisExecutionOptions(executionBuilder.build())
+                            .setDorisOptions(dorisOptions)
+                            .setSerializer(
+                                    JsonDebeziumSchemaSerializer.builder()
+                                            .setDorisOptions(dorisOptions)
+                                            .build());
+
+                    process.getSideOutput(v)
+                            .rebalance()
+                            .sinkTo(builder.build())
+                            .name(
+                                    String.format("Doris Schema Evolution Sink(table=[%s.%s])",
+                                            getSinkSchemaName(table),
+                                            getSinkTableName(table)));
+                });
         return dataStreamSource;
     }
 

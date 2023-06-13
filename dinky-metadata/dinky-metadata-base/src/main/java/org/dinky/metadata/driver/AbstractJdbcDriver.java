@@ -81,6 +81,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     protected ThreadLocal<Connection> conn = new ThreadLocal<>();
 
     private DruidDataSource dataSource;
+    protected String validationQuery = "select 1";
 
     abstract String getDriverClass();
 
@@ -124,12 +125,12 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
     }
 
     protected void createDataSource(DruidDataSource ds, DriverConfig config) {
-        ds.setName(config.getName().replaceAll(":", ""));
+        ds.setName(config.getName().replaceAll("[^\\w]", ""));
         ds.setUrl(config.getUrl());
         ds.setDriverClassName(getDriverClass());
         ds.setUsername(config.getUsername());
         ds.setPassword(config.getPassword());
-        ds.setValidationQuery("select 1");
+        ds.setValidationQuery(validationQuery);
         ds.setTestWhileIdle(true);
         ds.setBreakAfterAcquireFailure(true);
         ds.setFailFast(true);
@@ -381,7 +382,7 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 if (columnList.contains(dbQuery.defaultValue())) {
                     field.setDefaultValue(results.getString(dbQuery.defaultValue()));
                 }
-                field.setJavaType(getTypeConvert().convert(field));
+                field.setJavaType(getTypeConvert().convert(field, config));
                 columns.add(field);
             }
         } catch (SQLException e) {
@@ -586,20 +587,21 @@ public abstract class AbstractJdbcDriver extends AbstractDriver {
                 column.setType(metaData.getColumnTypeName(i));
                 column.setAutoIncrement(metaData.isAutoIncrement(i));
                 column.setNullable(metaData.isNullable(i) == 0 ? false : true);
-                column.setJavaType(getTypeConvert().convert(column));
+                column.setJavaType(getTypeConvert().convert(column, config));
                 columns.add(column);
             }
             result.setColumns(columnNameList);
             while (results.next()) {
                 LinkedHashMap<String, Object> data = new LinkedHashMap<>();
-                for (int i = 0; i < columns.size(); i++) {
-                    data.put(
-                            columns.get(i).getName(),
-                            getTypeConvert()
-                                    .convertValue(
-                                            results,
-                                            columns.get(i).getName(),
-                                            columns.get(i).getType()));
+                for (Column column : columns) {
+                    String name = column.getName();
+                    String type = column.getType();
+                    Object value = getTypeConvert().convertValue(results, name, type);
+                    if (Asserts.isNotNull(value)) {
+                        data.put(name, value.toString());
+                    } else {
+                        data.put(name, null);
+                    }
                 }
                 datas.add(data);
                 count++;

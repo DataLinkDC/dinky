@@ -32,7 +32,7 @@ const DataList: React.FC<DataListProps> = (props) => {
       {...PROTABLE_OPTIONS_PUBLIC}
       pagination={{
         position: ['bottomCenter'],
-        pageSize: 9,
+        pageSize: 10,
         showQuickJumper: true,
         hideOnSinglePage: true,
       }}

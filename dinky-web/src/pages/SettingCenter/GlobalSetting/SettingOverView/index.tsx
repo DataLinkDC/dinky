@@ -23,11 +23,13 @@ import {EnvConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/Env
 import {FlinkConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/FlinkConfig';
 import {MavenConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
 import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSConfig';
+import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig";
 import {l} from '@/utils/intl';
+import FadeIn from "@/components/Animation/FadeIn";
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: []});
+  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: [] , ldap: []});
 
 
   const fetchData = async () => {
@@ -47,20 +49,26 @@ const SettingOverView = () => {
 
   const renderData = () => {
     if (data) {
-      const {env: dinkyEnv, flink: flinkConfig, maven: mavenConfig, dolphinscheduler: dsConfig} = data;
-      return <>
+      const {
+        env: dinkyEnv,
+        flink: flinkConfig,
+        maven: mavenConfig,
+        dolphinscheduler: dsConfig,
+        ldap: ldapConfig} = data;
+      return <div style={{paddingBottom:"20px"}}>
         <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>
         <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>
         <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>
         <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>
-      </>;
+        <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>
+      </div>;
     }
   };
 
 
-  return <>
+  return <FadeIn>
     {renderData()}
-  </>;
+  </FadeIn>;
 };
 
 export default memo(SettingOverView);

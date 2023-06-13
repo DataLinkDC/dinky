@@ -24,6 +24,7 @@ declare namespace UserBaseInfo {
     password?: string;
     avatar?: string;
     worknum?: string;
+    userType?: number;
     mobile?: string;
     enabled: boolean;
     isDelete: boolean;
@@ -31,10 +32,11 @@ declare namespace UserBaseInfo {
   };
 
   export type ChangePasswordParams = {
+    id: number;
     username: string;
-    password?: string;
-    newPassword?: string;
-    newPasswordCheck?: string;
+    password: string;
+    newPassword: string;
+    newPasswordCheck: string;
   };
 
   export type Tenant = ExcludeNameAndEnableColumns & {

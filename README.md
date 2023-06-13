@@ -79,7 +79,7 @@ Welcome to join the community, build a win-win situation, please refer to the co
 
 - The 0.7 branch is the current stable version. Please use this branch for compilation and debugging.
 
-See [source code compilation](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/build.md) and [installation and deployment](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/build_deploy/deploy.md) for details.
+See [source code compilation](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/compile.mdx) and [installation and deployment](https://github.com/DataLinkDC/dinky/blob/dev/docs/docs/deploy_guide/deploy.mdx) for details.
 
 ## How to Upgrade
 

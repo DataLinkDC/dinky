@@ -25,6 +25,7 @@ import org.dinky.alert.AlertMsg;
 import org.dinky.alert.AlertResult;
 import org.dinky.alert.ShowType;
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
@@ -82,7 +83,13 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         Alert alert = Alert.buildTest(alertConfig);
 
         AlertMsg alertMsg = getAlertMsg(alertInstance);
-        String title = "任务【" + alertMsg.getJobName() + "】：" + alertMsg.getJobStatus() + "!";
+        String title =
+                Status.TEST_MSG_JOB_NAME_TITLE.getMsg()
+                        + "【"
+                        + alertMsg.getJobName()
+                        + "】："
+                        + alertMsg.getJobStatus()
+                        + "!";
         return alert.send(title, alertMsg.toString());
     }
 
@@ -95,10 +102,10 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
         AlertMsg.AlertMsgBuilder alertMsgBuilder =
                 AlertMsg.builder()
-                        .alertType("实时告警监控")
+                        .alertType(Status.TEST_MSG_TITLE.getMsg())
                         .alertTime(currentDateTime)
                         .jobID(uuid)
-                        .jobName("测试任务")
+                        .jobName(Status.TEST_MSG_JOB_NAME.getMsg())
                         .jobType("SQL")
                         .jobStatus("FAILED")
                         .jobStartTime(currentDateTime)
@@ -111,8 +118,10 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
         if (!alertInstance.getType().equals("Sms")) {
             if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                alertMsgBuilder.linkUrl("[跳转至该任务的 FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl("[点击查看该任务的异常日志](" + exceptionUrl + ")");
+                alertMsgBuilder.linkUrl(
+                        "[" + Status.TEST_MSG_JOB_URL.getMsg() + " FlinkWeb](" + linkUrl + ")");
+                alertMsgBuilder.exceptionUrl(
+                        "[" + Status.TEST_MSG_JOB_LOG_URL.getMsg() + "](" + exceptionUrl + ")");
             } else {
                 alertMsgBuilder.linkUrl(linkUrl);
                 alertMsgBuilder.exceptionUrl(exceptionUrl);

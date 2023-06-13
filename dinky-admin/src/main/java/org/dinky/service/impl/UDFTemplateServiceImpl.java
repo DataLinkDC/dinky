@@ -41,12 +41,12 @@ public class UDFTemplateServiceImpl extends SuperServiceImpl<UDFTemplateMapper, 
         udfTemplate.setCodeType(StrUtil.upperFirst(udfTemplate.getCodeType().toLowerCase()));
         if (Asserts.isNull(udfTemplate.getId())) {
             if ((selectOne != null)) {
-                throw new BusException("模板名已经存在");
+                throw new BusException("the template name already exists");
             }
             return save(udfTemplate);
         } else {
             if (Asserts.isNotNull(selectOne) && !udfTemplate.getId().equals(selectOne.getId())) {
-                throw new BusException("模板名已经存在");
+                throw new BusException("the template name already exists");
             }
             return updateById(udfTemplate);
         }

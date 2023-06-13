@@ -27,34 +27,31 @@ import org.dinky.cdc.sqlserver.SqlServerCDCBuilder;
 import org.dinky.data.model.FlinkCDCConfig;
 import org.dinky.exception.FlinkClientException;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import com.google.common.collect.ImmutableMap;
+
 public class CDCBuilderFactory {
+    private CDCBuilderFactory() {}
 
     private static final Map<String, Supplier<CDCBuilder>> CDC_BUILDER_MAP =
-            new HashMap<String, Supplier<CDCBuilder>>() {
-                {
-                    put(MysqlCDCBuilder.KEY_WORD, () -> new MysqlCDCBuilder());
-                    put(OracleCDCBuilder.KEY_WORD, () -> new OracleCDCBuilder());
-                    put(PostgresCDCBuilder.KEY_WORD, () -> new PostgresCDCBuilder());
-                    put(SqlServerCDCBuilder.KEY_WORD, () -> new SqlServerCDCBuilder());
-                }
-            };
+            ImmutableMap.<String, Supplier<CDCBuilder>>builder()
+                    .put(MysqlCDCBuilder.KEY_WORD, MysqlCDCBuilder::new)
+                    .put(OracleCDCBuilder.KEY_WORD, OracleCDCBuilder::new)
+                    .put(PostgresCDCBuilder.KEY_WORD, PostgresCDCBuilder::new)
+                    .put(SqlServerCDCBuilder.KEY_WORD, SqlServerCDCBuilder::new)
+                    .build();
 
     public static CDCBuilder buildCDCBuilder(FlinkCDCConfig config) {
         if (Asserts.isNull(config) || Asserts.isNullString(config.getType())) {
-            throw new FlinkClientException("请指定 CDC Source 类型。");
+            throw new FlinkClientException("set CDC Source type。");
         }
-        return CDC_BUILDER_MAP
-                .getOrDefault(
-                        config.getType(),
-                        () -> {
-                            throw new FlinkClientException(
-                                    "未匹配到对应 CDC Source 类型的【" + config.getType() + "】。");
-                        })
-                .get()
-                .create(config);
+
+        Supplier<CDCBuilder> cdcBuilderSupplier = CDC_BUILDER_MAP.get(config.getType());
+        if (cdcBuilderSupplier == null) {
+            throw new FlinkClientException("mismatched CDC Source type[" + config.getType() + "].");
+        }
+        return cdcBuilderSupplier.get().create(config);
     }
 }

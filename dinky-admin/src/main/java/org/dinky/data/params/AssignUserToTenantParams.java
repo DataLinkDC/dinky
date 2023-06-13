@@ -21,10 +21,14 @@ package org.dinky.data.params;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /** assign role params */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class AssignUserToTenantParams {
     Integer tenantId;
     List<Integer> userIds;

@@ -230,7 +230,7 @@ export default [
     name: 'metrics',
     icon: 'DashboardOutlined',
     footerRender: false,
-    // component: './Metrics',
+    component: './Metrics',
   },
   {
     path: '/about',
@@ -238,6 +238,11 @@ export default [
     icon: 'SmileOutlined',
     footerRender: false,
     component: './Other/About',
+  },
+  {
+    path: '/account/center',
+    footerRender: false,
+    component: './Other/PersonCenter',
   },
   {
     path: '*',

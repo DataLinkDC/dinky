@@ -19,14 +19,13 @@
 
 package org.dinky.controller;
 
-import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.JobInstanceService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,10 +69,7 @@ public class ClusterInstanceController {
         cluster.setAutoRegisters(false);
         Integer id = cluster.getId();
         clusterInstanceService.registersCluster(cluster);
-        return Result.succeed(
-                Asserts.isNotNull(id)
-                        ? I18nMsgUtils.getMsg("modify.success")
-                        : I18nMsgUtils.getMsg("create.success"));
+        return Result.succeed(Status.SAVE_SUCCESS);
     }
 
     /**
@@ -86,9 +82,9 @@ public class ClusterInstanceController {
     public Result<Void> enableCluster(@RequestParam Integer id) {
         Boolean enabled = clusterInstanceService.enableClusterInstance(id);
         if (enabled) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
     }
 
@@ -103,9 +99,9 @@ public class ClusterInstanceController {
     public Result<Void> deleteClusterInstanceById(@RequestParam Integer id) {
         Boolean deleted = clusterInstanceService.deleteClusterInstanceById(id);
         if (deleted) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 
@@ -162,19 +158,6 @@ public class ClusterInstanceController {
     }
 
     /**
-     * get cluster instance by id
-     *
-     * @param cluster {@link Cluster} cluster instance
-     * @return {@link Result}<{@link Cluster}>
-     * @throws Exception
-     */
-    @PostMapping("/getOneById")
-    public Result<Cluster> getOneById(@RequestBody Cluster cluster) throws Exception {
-        cluster = clusterInstanceService.getById(cluster.getId());
-        return Result.succeed(cluster, I18nMsgUtils.getMsg("response.get.success"));
-    }
-
-    /**
      * get all enable cluster instances
      *
      * @return {@link Result}<{@link List}<{@link Cluster}>>
@@ -182,7 +165,7 @@ public class ClusterInstanceController {
     @GetMapping("/listEnabledAll")
     public Result<List<Cluster>> listEnabledAll() {
         List<Cluster> clusters = clusterInstanceService.listEnabledAll();
-        return Result.succeed(clusters, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(clusters);
     }
 
     /**
@@ -194,7 +177,7 @@ public class ClusterInstanceController {
     @Deprecated
     public Result<List<Cluster>> listSessionEnable() {
         List<Cluster> clusters = clusterInstanceService.listSessionEnable();
-        return Result.succeed(clusters, I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(clusters);
     }
 
     /**
@@ -208,7 +191,7 @@ public class ClusterInstanceController {
         for (Cluster cluster : clusters) {
             clusterInstanceService.registersCluster(cluster);
         }
-        return Result.succeed(I18nMsgUtils.getMsg("cluster.instance.heartbeat"));
+        return Result.succeed(Status.CLUSTER_INSTANCE_HEARTBEAT_SUCCESS);
     }
 
     /**
@@ -220,8 +203,7 @@ public class ClusterInstanceController {
     @Transactional(rollbackFor = Exception.class)
     public Result<Integer> recycleCluster() {
         return Result.succeed(
-                clusterInstanceService.recycleCluster(),
-                I18nMsgUtils.getMsg("cluster.instance.recycle"));
+                clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
     }
 
     /**
@@ -250,7 +232,7 @@ public class ClusterInstanceController {
                 clusterInstanceService.killCluster(item.asInt());
             }
         }
-        return Result.succeed(I18nMsgUtils.getMsg("cluster.instance.kill"));
+        return Result.succeed(Status.CLUSTER_INSTANCE_KILL);
     }
 
     /**
@@ -262,7 +244,6 @@ public class ClusterInstanceController {
     @GetMapping("/deploySessionCluster")
     public Result<Cluster> deploySessionCluster(@RequestParam("id") Integer id) {
         return Result.succeed(
-                clusterInstanceService.deploySessionCluster(id),
-                I18nMsgUtils.getMsg("cluster.instance.deploy"));
+                clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }
 }

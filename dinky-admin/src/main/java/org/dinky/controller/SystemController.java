@@ -48,7 +48,7 @@ public class SystemController {
      */
     @GetMapping("/listLogDir")
     public Result<List<TreeNodeDTO>> listLogDir() {
-        return Result.data(systemService.listLogDir());
+        return Result.succeed(systemService.listLogDir());
     }
 
     /**
@@ -69,6 +69,6 @@ public class SystemController {
      */
     @GetMapping("/readFile")
     public Result<String> readFile(@RequestParam String path) {
-        return Result.data(systemService.readFile(path));
+        return Result.succeed(systemService.readFile(path));
     }
 }

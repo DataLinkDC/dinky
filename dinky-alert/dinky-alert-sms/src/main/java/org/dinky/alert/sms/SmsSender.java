@@ -30,6 +30,8 @@ import java.util.LinkedHashMap;
 
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.universal.SupplierConfig;
+import org.dromara.sms4j.provider.base.BaseProviderFactory;
+import org.dromara.sms4j.provider.enumerate.SupplierType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +42,8 @@ public class SmsSender {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsSender.class);
     private static SupplierConfig configLoader = null;
+    private static BaseProviderFactory providerFactory = null;
+
     private static SmsBlend smsSendFactory = null;
 
     /** manufacturers of sms */
@@ -51,11 +55,14 @@ public class SmsSender {
         this.manufacturers = manufacturersId;
         requireNonNull(manufacturers, "manufacturers is null");
         configLoader = SmsConfigLoader.getConfigLoader(config, manufacturers);
-        smsSendFactory = SmsConfigLoader.getSmsFactory(manufacturersId);
+        providerFactory = getSmsTpye(manufacturersId).getProviderFactory();
+
         logger.info("you choose {} manufacturers", ManuFacturers.getManuFacturers(manufacturersId));
     }
 
-    public AlertResult send(String title, String content) {
+    public synchronized AlertResult send(String title, String content) {
+        providerFactory.refresh(configLoader);
+        smsSendFactory = providerFactory.createSms(configLoader);
         AlertResult alertResult = new AlertResult();
         logger.info("send sms, title: {}, content: {}", title, content);
         // todo: 1. support multi sms manufacturers send
@@ -63,5 +70,33 @@ public class SmsSender {
         smsSendFactory.massTexting(Arrays.asList("17722226666"), "110", new LinkedHashMap<>());
         // todo: 2. validate sms send result
         return alertResult;
+    }
+
+    public static SupplierType getSmsTpye(Integer manufacturersType) {
+
+        switch (manufacturersType) {
+            case 1:
+                return SupplierType.ALIBABA;
+            case 2:
+                return SupplierType.HUAWEI;
+            case 3:
+                return SupplierType.YUNPIAN;
+            case 4:
+                return SupplierType.TENCENT;
+            case 5:
+                return SupplierType.UNI_SMS;
+            case 6:
+                return SupplierType.JD_CLOUD;
+            case 7:
+                return SupplierType.CLOOPEN;
+            case 8:
+                return SupplierType.EMAY;
+            case 9:
+                return SupplierType.CTYUN;
+            default:
+                throw new IllegalArgumentException(
+                        "Unsupported manufacturers type: "
+                                + ManuFacturers.getManuFacturers(manufacturersType));
+        }
     }
 }

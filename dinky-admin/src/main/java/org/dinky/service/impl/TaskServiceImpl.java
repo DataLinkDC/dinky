@@ -55,7 +55,7 @@ import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.RoleSelectPermissions;
+import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Statement;
 import org.dinky.data.model.SystemConfiguration;
@@ -1034,11 +1034,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 config.setSavePointPath(null);
         }
         config.setVariables(fragmentVariableService.listEnabledVariables());
-        List<RoleSelectPermissions> currentRoleSelectPermissions =
+        List<RowPermissions> currentRoleSelectPermissions =
                 userService.getCurrentRoleSelectPermissions();
         if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
             ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
-            for (RoleSelectPermissions roleSelectPermissions : currentRoleSelectPermissions) {
+            for (RowPermissions roleSelectPermissions : currentRoleSelectPermissions) {
                 if (Asserts.isAllNotNullString(
                         roleSelectPermissions.getTableName(),
                         roleSelectPermissions.getExpression())) {

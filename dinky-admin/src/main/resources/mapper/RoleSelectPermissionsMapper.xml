@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.dinky.mapper.RoleSelectPermissionsMapper">
-    <select id="selectForProTable" resultType="org.dinky.data.model.RoleSelectPermissions">
+<mapper namespace="org.dinky.mapper.RowPermissionsMapper">
+    <select id="selectForProTable" resultType="org.dinky.data.model.RowPermissions">
         select
         a.*,
         b.role_code,
         b.role_name
         from
-        dinky_role_select_permissions a
+        dinky_row_permissions a
         join dinky_role b on b.id = a.role_id
         <where>
             1=1
@@ -33,20 +33,20 @@
     </select>
 
     <delete id="deleteByRoleIds" parameterType="java.util.List">
-        DELETE FROM dinky_role_select_permissions
+        DELETE FROM dinky_row_permissions
         WHERE role_id IN
         <foreach collection="roleIds" item="item" open="(" separator="," close=")">
             ${item}
         </foreach>
     </delete>
 
-    <select id="listRoleSelectPermissionsByRoleIds" resultType="org.dinky.data.model.RoleSelectPermissions">
+    <select id="listRoleSelectPermissionsByRoleIds" resultType="org.dinky.data.model.RowPermissions">
         select
         a.*,
         b.role_code,
         b.role_name
         from
-        dinky_role_select_permissions a, dinky_role b
+        dinky_row_permissions a, dinky_role b
         WHERE
         b.id = a.role_id
         and a.role_id IN

@@ -58,6 +58,7 @@ public interface Driver extends AutoCloseable {
         if (DriverPool.exist(key)) {
             return getHealthDriver(key);
         }
+
         synchronized (Driver.class) {
             Optional<Driver> optionalDriver = Driver.get(config);
             if (!optionalDriver.isPresent()) {
@@ -71,7 +72,6 @@ public interface Driver extends AutoCloseable {
     }
 
     static Driver buildUnconnected(DriverConfig config) {
-        String key = config.getName();
         synchronized (Driver.class) {
             Optional<Driver> optionalDriver = Driver.get(config);
             if (!optionalDriver.isPresent()) {
@@ -114,9 +114,11 @@ public interface Driver extends AutoCloseable {
                 type = "Greenplum";
             }
         }
+
         if (Asserts.isNull(type)) {
             throw new MetaDataException("缺少数据源类型:【" + connector + "】");
         }
+
         DriverConfig driverConfig = new DriverConfig(url, type, url, username, password);
         return build(driverConfig);
     }

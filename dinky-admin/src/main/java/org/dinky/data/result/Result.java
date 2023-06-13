@@ -21,7 +21,6 @@ package org.dinky.data.result;
 
 import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -83,11 +82,11 @@ public class Result<T> implements Serializable {
     }
 
     public static <T> Result<T> succeed() {
-        return of(null, CodeEnum.SUCCESS.getCode(), I18nMsgUtils.getMsg("operate.success"));
+        return of(null, CodeEnum.SUCCESS.getCode(), Status.OPERATE_SUCCESS);
     }
 
     public static <T> Result<T> succeed(T model) {
-        return of(model, CodeEnum.SUCCESS.getCode(), "");
+        return of(model, CodeEnum.SUCCESS.getCode(), Status.SUCCESS);
     }
 
     public static <T> Result<T> succeed(T model, String msg) {
@@ -96,6 +95,14 @@ public class Result<T> implements Serializable {
 
     public static <T> Result<T> succeed(T model, Status status) {
         return of(model, CodeEnum.SUCCESS.getCode(), status.getMsg());
+    }
+
+    public static <T> Result<T> succeed(T model, Status status, Object... args) {
+        return of(model, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
+    }
+
+    public static <T> Result<T> succeed(Status status, Object... args) {
+        return of(null, CodeEnum.SUCCESS.getCode(), MessageFormat.format(status.getMsg(), args));
     }
 
     public static <T> Result<T> data(T model) {
@@ -110,12 +117,24 @@ public class Result<T> implements Serializable {
         return new Result<>(datas, code, status.getMsg(), new DateTime().toString(), code == 0);
     }
 
+    public static <T> Result<T> failed() {
+        return of(null, CodeEnum.ERROR.getCode(), Status.FAILED);
+    }
+
     public static <T> Result<T> failed(String msg) {
         return of(null, CodeEnum.ERROR.getCode(), msg);
     }
 
     public static <T> Result<T> failed(Status status) {
         return of(null, CodeEnum.ERROR.getCode(), status.getMsg());
+    }
+
+    public static <T> Result<T> failed(Status status, Object... args) {
+        return of(null, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
+    }
+
+    public static <T> Result<T> failed(T model, Status status, Object... args) {
+        return of(model, CodeEnum.ERROR.getCode(), MessageFormat.format(status.getMsg(), args));
     }
 
     public static <T> Result<T> failed(T model, String msg) {

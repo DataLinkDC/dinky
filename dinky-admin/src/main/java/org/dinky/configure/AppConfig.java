@@ -41,7 +41,6 @@ import cn.dev33.satoken.interceptor.SaInterceptor;
  */
 @Configuration
 public class AppConfig implements WebMvcConfigurer {
-
     /**
      * Cookie
      *
@@ -76,6 +75,7 @@ public class AppConfig implements WebMvcConfigurer {
         registry.addInterceptor(new SaInterceptor())
                 .addPathPatterns("/api/**")
                 .excludePathPatterns("/api/login")
+                .excludePathPatterns("/druid/**")
                 .excludePathPatterns("/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())

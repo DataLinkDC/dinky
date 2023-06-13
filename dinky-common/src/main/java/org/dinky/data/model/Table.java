@@ -121,7 +121,8 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                         comment =
                                                 String.format(
                                                         " COMMENT '%s'",
-                                                        column.getComment().replaceAll("\"|'", ""));
+                                                        column.getComment()
+                                                                .replaceAll("[\"']", ""));
                                     }
                                     return String.format(
                                             "    `%s` %s%s",
@@ -144,17 +145,15 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
                                         Collectors.joining(
                                                 ",", ",\n    PRIMARY KEY ( ", " ) NOT ENFORCED\n"));
 
-        String result =
-                MessageFormat.format(
-                        "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
-                        tableName, columnStrs, primaryKeyStr, flinkConfig);
-        return result;
+        return MessageFormat.format(
+                "CREATE TABLE IF NOT EXISTS {0} (\n{1}{2}) WITH (\n{3})\n",
+                tableName, columnStrs, primaryKeyStr, flinkConfig);
     }
 
     @Transient
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
         String createSql = getFlinkDDL(getFlinkTableWith(flinkConfig), name);
-        return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
+        return String.format("DROP TABLE IF EXISTS %s;%n%s", name, createSql);
     }
 
     @Override
@@ -166,53 +165,5 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
             e.printStackTrace();
         }
         return table;
-    }
-
-    @Transient
-    public String getFlinkTableSql(String flinkConfig) {
-        return getFlinkDDL(flinkConfig, name);
-    }
-
-    @Transient
-    public String getSqlSelect(String catalogName) {
-        StringBuilder sb = new StringBuilder("SELECT\n");
-        for (int i = 0; i < columns.size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            String columnComment = columns.get(i).getComment();
-            if (Asserts.isNotNullString(columnComment)) {
-                if (columnComment.contains("\'") | columnComment.contains("\"")) {
-                    columnComment = columnComment.replaceAll("\"|'", "");
-                }
-                sb.append("`" + columns.get(i).getName() + "`  --  " + columnComment + " \n");
-            } else {
-                sb.append("`" + columns.get(i).getName() + "` \n");
-            }
-        }
-        if (Asserts.isNotNullString(comment)) {
-            sb.append(" FROM " + schema + "." + name + ";" + " -- " + comment + "\n");
-        } else {
-            sb.append(" FROM " + schema + "." + name + ";\n");
-        }
-        return sb.toString();
-    }
-
-    @Transient
-    public String getCDCSqlInsert(String targetName, String sourceName) {
-        StringBuilder sb = new StringBuilder("INSERT INTO ");
-        sb.append(targetName);
-        sb.append(" SELECT\n");
-        for (int i = 0; i < columns.size(); i++) {
-            sb.append("    ");
-            if (i > 0) {
-                sb.append(",");
-            }
-            sb.append("`" + columns.get(i).getName() + "` \n");
-        }
-        sb.append(" FROM ");
-        sb.append(sourceName);
-        return sb.toString();
     }
 }

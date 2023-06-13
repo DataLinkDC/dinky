@@ -59,6 +59,7 @@ public class HistoryController {
 
     /** 批量删除 */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
@@ -83,6 +84,6 @@ public class HistoryController {
     @PostMapping("/getOneById")
     public Result<History> getOneById(@RequestBody History history) throws Exception {
         history = historyService.getById(history.getId());
-        return Result.succeed(history, "获取成功");
+        return Result.succeed(history);
     }
 }

@@ -21,7 +21,6 @@ package org.dinky.service.impl;
 
 import org.dinky.data.dto.GitAnalysisJarDTO;
 import org.dinky.data.dto.GitProjectDTO;
-import org.dinky.data.dto.JarClassesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.GitProject;
 import org.dinky.data.params.GitProjectSortJarParams;
@@ -30,13 +29,10 @@ import org.dinky.mapper.GitProjectMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.GitProjectService;
-import org.dinky.utils.GitProjectStepSseFactory;
 import org.dinky.utils.GitRepository;
 import org.dinky.utils.TreeUtil;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -189,60 +185,6 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
     }
 
     /**
-     * get project build all logs
-     *
-     * @param id {@link Integer}
-     * @return {@link String}
-     */
-    @Override
-    public String getAllBuildLog(Integer id) {
-        GitProject gitProject = getById(id);
-        StringBuilder sb = new StringBuilder();
-        File logDir =
-                GitProjectStepSseFactory.getLogDir(gitProject.getName(), gitProject.getBranch());
-        if (logDir.exists() && logDir.isDirectory()) {
-            File[] files = logDir.listFiles();
-            // sort by file name asc order to read log
-            Arrays.sort(files, (f1, f2) -> f1.getName().compareTo(f2.getName()));
-            if (files != null) {
-                for (File file : files) {
-                    try {
-                        buildAllStepLogs(file, sb, gitProject.getCodeType());
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
-        return sb.toString();
-    }
-
-    /**
-     * get project build step logs of build result
-     *
-     * @param file {@link File}
-     * @param sb {@link StringBuilder}
-     * @param codeType {@link Integer}
-     * @throws IOException
-     */
-    private void buildAllStepLogs(File file, StringBuilder sb, Integer codeType)
-            throws IOException {
-        Integer step = Integer.valueOf(file.getName().split("\\.")[0]);
-        String buildStepTitle = matchStepByCodeType(codeType, step);
-        sb.append(
-                String.format(
-                        "########################### Step: %s ###########################\n",
-                        buildStepTitle));
-        if (step == 5) {
-            buildStep5Logs(file, sb);
-            sb.append("\n\n\n\n");
-        } else {
-            sb.append(FileUtil.readUtf8String(file));
-            sb.append("\n\n\n\n");
-        }
-    }
-
-    /**
      * match step by code type
      *
      * @param codeType {@link Integer}
@@ -295,30 +237,5 @@ public class GitProjectServiceImpl extends SuperServiceImpl<GitProjectMapper, Gi
                 break;
         }
         return stepMatch;
-    }
-
-    /**
-     * build step 5 logs , jar and udf class list , because jar and udf class is a list
-     *
-     * @param file
-     * @param sb
-     * @throws IOException
-     */
-    private void buildStep5Logs(File file, StringBuilder sb) throws IOException {
-        String step5Log = FileUtil.readUtf8String(file);
-        sb.append("Jar And UDF Class List:\n");
-        List<JarClassesDTO> jarClassesDTOList = JSONUtil.toList(step5Log, JarClassesDTO.class);
-        jarClassesDTOList.stream()
-                .forEach(
-                        jarClassesDTO -> {
-                            sb.append(jarClassesDTO.getJarPath());
-                            jarClassesDTO.getClassList().stream()
-                                    .forEach(
-                                            item -> {
-                                                sb.append("\n\t");
-                                                sb.append(item);
-                                            });
-                            sb.append("\n");
-                        });
     }
 }

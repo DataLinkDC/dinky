@@ -1511,6 +1511,7 @@ CREATE TABLE `dinky_user` (
                             `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
                             `nickname` varchar(50) NULL DEFAULT NULL COMMENT 'nickname',
                             `worknum` varchar(50) NULL DEFAULT NULL COMMENT 'worknum',
+                            user_type   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
                             `avatar` blob NULL COMMENT 'avatar',
                             `mobile` varchar(20) NULL DEFAULT NULL COMMENT 'mobile phone',
                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
@@ -1519,7 +1520,7 @@ CREATE TABLE `dinky_user` (
                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user`
-VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL
+VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0
        , NULL, NULL, 1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_role`;
@@ -1602,10 +1603,10 @@ CREATE TABLE `metadata_table_property` (
 -- Records of metadata_table_property
 -- ----------------------------
 -- ----------------------------
--- Table structure for dinky_role_select_permissions
+-- Table structure for dinky_row_permissions
 -- ----------------------------
-DROP TABLE IF EXISTS `dinky_role_select_permissions`;
-CREATE TABLE dinky_role_select_permissions (
+DROP TABLE IF EXISTS `dinky_row_permissions`;
+CREATE TABLE dinky_row_permissions (
                                              id int PRIMARY KEY AUTO_INCREMENT COMMENT 'ID',
                                              role_id int NOT NULL COMMENT '角色ID',
                                              table_name varchar(255) NULL COMMENT '表名',

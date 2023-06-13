@@ -33,14 +33,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import com.alibaba.druid.pool.DruidDataSource;
-
 /**
  * OracleDriver
  *
  * @since 2021/7/21 15:52
  */
 public class OracleDriver extends AbstractJdbcDriver {
+
+    public OracleDriver() {
+        initialize();
+    }
+
+    public void initialize() {
+        validationQuery = "select 1 from dual";
+    }
 
     @Override
     String getDriverClass() {
@@ -185,21 +191,5 @@ public class OracleDriver extends AbstractJdbcDriver {
     @Override
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
-    }
-
-    @Override
-    protected void createDataSource(DruidDataSource ds, DriverConfig config) {
-        ds.setName(config.getName().replaceAll(":", ""));
-        ds.setUrl(config.getUrl());
-        ds.setDriverClassName(getDriverClass());
-        ds.setUsername(config.getUsername());
-        ds.setPassword(config.getPassword());
-        ds.setValidationQuery("select 1 from dual");
-        ds.setTestWhileIdle(true);
-        ds.setBreakAfterAcquireFailure(true);
-        ds.setFailFast(true);
-        ds.setInitialSize(1);
-        ds.setMaxActive(8);
-        ds.setMinIdle(5);
     }
 }

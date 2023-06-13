@@ -19,13 +19,13 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertHistory;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
-import org.dinky.utils.I18nMsgUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,9 +64,9 @@ public class AlertGroupController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
-            return Result.succeed(I18nMsgUtils.getMsg("save.success"));
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("save.failed"));
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -109,27 +109,13 @@ public class AlertGroupController {
     }
 
     /**
-     * get alert group by id
-     *
-     * @param alertGroup
-     * @return
-     * @throws Exception
-     */
-    @PostMapping("/getOneById")
-    public Result<AlertGroup> getOneById(@RequestBody AlertGroup alertGroup) throws Exception {
-        alertGroup = alertGroupService.getById(alertGroup.getId());
-        return Result.succeed(alertGroup, I18nMsgUtils.getMsg("response.get.success"));
-    }
-
-    /**
      * get all enabled alert group
      *
      * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @GetMapping("/listEnabledAll")
     public Result<List<AlertGroup>> listEnabledAll() {
-        return Result.succeed(
-                alertGroupService.listEnabledAll(), I18nMsgUtils.getMsg("response.get.success"));
+        return Result.succeed(alertGroupService.listEnabledAll());
     }
 
     /**
@@ -140,9 +126,9 @@ public class AlertGroupController {
     @PutMapping("/enable")
     public Result<List<AlertGroup>> enable(@RequestParam("id") Integer id) {
         if (alertGroupService.enable(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("modify.success"));
+            return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("modify.failed"));
+            return Result.failed(Status.MODIFY_FAILED);
         }
     }
 
@@ -155,9 +141,9 @@ public class AlertGroupController {
     @DeleteMapping("/delete")
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
-            return Result.succeed(I18nMsgUtils.getMsg("delete.success"));
+            return Result.succeed(Status.DELETE_SUCCESS);
         } else {
-            return Result.failed(I18nMsgUtils.getMsg("delete.failed"));
+            return Result.failed(Status.DELETE_FAILED);
         }
     }
 

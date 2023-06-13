@@ -19,10 +19,10 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.model.RoleSelectPermissions;
-import org.dinky.mapper.RoleSelectPermissionsMapper;
+import org.dinky.data.model.RowPermissions;
+import org.dinky.mapper.RowPermissionsMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.RoleSelectPermissionsService;
+import org.dinky.service.RowPermissionsService;
 
 import java.util.List;
 
@@ -32,8 +32,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
 public class RoleSelectPermissionsServiceImpl
-        extends SuperServiceImpl<RoleSelectPermissionsMapper, RoleSelectPermissions>
-        implements RoleSelectPermissionsService {
+        extends SuperServiceImpl<RowPermissionsMapper, RowPermissions>
+        implements RowPermissionsService {
 
     @Override
     public boolean deleteByRoleIds(List<Integer> roleIds) {
@@ -41,13 +41,12 @@ public class RoleSelectPermissionsServiceImpl
     }
 
     @Override
-    public List<RoleSelectPermissions> listAllByRoleId(Integer roleId) {
-        return baseMapper.selectList(
-                new QueryWrapper<RoleSelectPermissions>().eq("role_id", roleId));
+    public List<RowPermissions> listAllByRoleId(Integer roleId) {
+        return baseMapper.selectList(new QueryWrapper<RowPermissions>().eq("role_id", roleId));
     }
 
     @Override
-    public List<RoleSelectPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds) {
+    public List<RowPermissions> listRoleSelectPermissionsByRoleIds(List<Integer> roleIds) {
         return baseMapper.listRoleSelectPermissionsByRoleIds(roleIds);
     }
 }

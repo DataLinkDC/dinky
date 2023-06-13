@@ -17,7 +17,7 @@
 
 export default {
   //-------------------------------- common --------------------------------
-  'layouts.userLayout.title': 'Dinky Real-time Computing Platform',
+  'layouts.userLayout.title': 'Dinky Real-time Platform ',
   'login.error': 'Login failed, please try again! Reason：{msg}',
   'login.result': '{msg}\t\t{time}',
   'login.notbindtenant': 'You have not bound a tenant, please contact the administrator',
@@ -30,6 +30,7 @@ export default {
   'login.password.placeholder': 'Password',
   'login.password.required': 'Please input your password!',
   'login.rememberMe': 'Remember me',
+  'login.ldapLogin': 'LDAP Login',
   'about.Community':
     'Welcome to join the Dinky Official Community, Build a win-win situation',
   'about.QQcode': 'QQ Official Community Group',
@@ -51,6 +52,42 @@ export default {
   'about.communityRules.5':
     ' Register who is using Dinky, and can enter the enterprise user group to provide technical support. ',
 
+  //-------------------------------- Home --------------------------------
+  'home.job.metrics': 'Job Monitoring',
+  'home.job.running.status': 'Current Job Running Status',
+  'home.server.load': 'Server Load',
+  'home.job.running': 'Currently Running',
+  'home.job.finished': 'Completed Today',
+  'home.job.recovery': 'Recovery Today',
+  'home.job.online': 'Online Today',
+  'home.job.failed': 'Failed Today',
+  'home.job.recovery.rate': 'Recovery Rate',
+  'home.job.running.dayonday': 'Day on Day Ratio',
+  'home.job.instance': 'Task Instance',
+  'home.server.load.excellent': 'Excellent',
+  'home.server.load.good': 'Good',
+  'home.server.load.bad': 'Bad',
+  'home.job.failed.unhandle': 'Currently Unhandled Failure',
+  'home.job.failed.handle': 'Handled',
+  'home.job.failed.rank': 'Rank',
+  'home.job.failed.name': 'Job Name',
+  'home.job.failed.time': 'Abnormal Time',
+  'home.develop': 'Data Develop',
+  'home.job.batch': 'Batch Job',
+  'home.job.stream': 'Streaming Job',
+  'home.job.total': 'Number of Jobs',
+  'home.job.type': 'Job Type',
+  'home.job.rate': 'Proportion of Jobs',
+  'home.develop.re.ci': 'Flink Cluster Instance',
+  'home.develop.re.cc': 'Cluster Configuration',
+  'home.develop.re.ds': 'Data Source',
+  'home.develop.re.gv': 'Global Variables',
+  'home.develop.re.ai': 'Alarm Instance',
+  'home.develop.re.ag': 'Alarm Group',
+  'home.develop.re.git': 'Git Project',
+
+
+
   //-------------------------------- devops --------------------------------
   // devops
 
@@ -65,6 +102,7 @@ export default {
   'user.username': 'User Name',
   'user.jobnumber': 'Job Number',
   'user.phone': 'Phone Number',
+  'user.type': 'User Type',
   'user.nickname': 'Nick Name',
   'user.create': 'Create User',
   'user.update': 'Modify User',
@@ -82,6 +120,12 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  // --  personal info
+  'user.info': 'Personal Info',
+  'user.tenant': 'Tenant',
+  'user.role': 'Role',
+  'user.op': 'Operation',
+  'user.current.tenant': 'Current Tenant',
 
   // tenant
   'tenant.TenantManager': 'Tenant Management',
@@ -469,10 +513,12 @@ export default {
   'sys.setting.flink': 'Flink Configuration',
   'sys.setting.maven': 'Maven Configuration',
   'sys.setting.ds': 'DolphinScheduler Configuration',
+  'sys.setting.ldap': 'LDAP Configuration',
   'sys.setting.dinky.tooltip': 'Mainly modify system variables to ensure stable operation of basic functions',
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
+  'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
@@ -504,6 +550,31 @@ export default {
   'sys.dolphinscheduler.settings.token.note': 'DolphinScheduler‘s Token, please create a token in DolphinScheduler’s Security Center->Token Management, and fill in the configuration',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler project name',
   'sys.dolphinscheduler.settings.projectName.note': 'The project name specified in DolphinScheduler, case insensitive',
+
+  //LDAP
+  'sys.ldap.settings.enable': 'Whether to enable the ldap',
+  'sys.ldap.settings.enable.note': 'Turn the LDAP login function on',
+  'sys.ldap.settings.url': 'ldap address of service',
+  'sys.ldap.settings.url.note': 'ldap address of service，eg：ldap://192.168.111.1:389 ',
+  'sys.ldap.settings.userDn': 'Login User name (DN)',
+  'sys.ldap.settings.userDn.note': 'User name for connecting to the ldap service, or the administrator DN',
+  'sys.ldap.settings.userPassword': 'login password',
+  'sys.ldap.settings.userPassword.note': 'Password used to connect to the ldap service',
+  'sys.ldap.settings.timeLimit': 'Connection Timeout',
+  'sys.ldap.settings.timeLimit.note': 'The maximum time to connect to the ldap service is disconnected',
+  'sys.ldap.settings.baseDn': 'BaseDn',
+  'sys.ldap.settings.baseDn.note': 'Dinky will conduct a user search on this base dn,eg：ou=users,dc=dinky,dc=com',
+  'sys.ldap.settings.filter': 'User filtering rules',
+  'sys.ldap.settings.filter.note': 'User filtering by using the filter syntax of the ldap，eg: (&(objectClass=inetOrgPerson))',
+  'sys.ldap.settings.autoload': 'User atically map users when logging in',
+  'sys.ldap.settings.autoload.note': 'When turned on, when a user logs in with LDAP, if there is no corresponding Dinky user mapping, the LDAP information is automatically pulled to create a Dinky user mapping to it. If this feature is closed, you will not be able to log in for unimported LDAP users',
+  'sys.ldap.settings.castUsername': 'The LDAP user-name segment',
+  'sys.ldap.settings.castUsername.note': 'It is necessary to fill in the attribute field of the user in an LDAP to correspond to the Dinky user. Generally, cn or uid indicates the unique identity of the user',
+  'sys.ldap.settings.castNickname': 'The LDAP nickname field',
+  'sys.ldap.settings.castNickname.note': 'Need to fill in the attribute field of the user in an LDAP to correspond to the Dinky nickname, must be filled in, generally selected as sn or other identification, not required unique',
+  'sys.ldap.settings.defaultTeant': 'The LDAP imports the default tenant code',
+  'sys.ldap.settings.defaultTeant.note': 'After opening the automatic import of users, the new user login needs a default tenant code, otherwise it cannot log in',
+
   // process
   'sys.process.id': 'Process ID',
   'sys.process.name': 'Process Name',

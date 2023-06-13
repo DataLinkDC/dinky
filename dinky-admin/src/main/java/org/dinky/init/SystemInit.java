@@ -116,7 +116,7 @@ public class SystemInit implements ApplicationRunner {
                                         systemConfiguration.getDolphinschedulerEnable().getKey(),
                                         "false");
                                 throw new DinkyException(
-                                        "Before starting dolphinscheduler docking, please fill in the relevant configuration");
+                                        "Before starting DolphinScheduler docking, please fill in the relevant configuration");
                             }
                             try {
                                 project = projectClient.getDinkyProject();

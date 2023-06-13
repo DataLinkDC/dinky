@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Statement;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -59,9 +60,9 @@ public class StatementController {
     @PutMapping
     public Result<Void> saveOrUpdate(@RequestBody Statement statement) throws Exception {
         if (statementService.saveOrUpdate(statement)) {
-            return Result.succeed("新增成功");
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed("新增失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
@@ -97,7 +98,7 @@ public class StatementController {
     @PostMapping("/getOneById")
     public Result<Statement> getOneById(@RequestBody Statement statement) throws Exception {
         statement = statementService.getById(statement.getId());
-        return Result.succeed(statement, "获取成功");
+        return Result.succeed(statement);
     }
 
     @PostMapping("/getWatchTables")

@@ -22,16 +22,13 @@ package org.dinky.cdc.oracle;
 import org.dinky.assertion.Asserts;
 import org.dinky.cdc.AbstractCDCBuilder;
 import org.dinky.cdc.CDCBuilder;
-import org.dinky.constant.ClientConstant;
 import org.dinky.constant.FlinkParamConstant;
 import org.dinky.data.model.FlinkCDCConfig;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 
 import com.ververica.cdc.connectors.base.options.StartupOptions;
@@ -68,12 +65,14 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
         Properties properties = new Properties();
-        for (Map.Entry<String, String> entry : config.getDebezium().entrySet()) {
-            if (Asserts.isNotNullString(entry.getKey())
-                    && Asserts.isNotNullString(entry.getValue())) {
-                properties.setProperty(entry.getKey(), entry.getValue());
-            }
-        }
+        config.getDebezium()
+                .forEach(
+                        (key, value) -> {
+                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                                properties.setProperty(key, value);
+                            }
+                        });
+
         OracleSource.Builder<String> sourceBuilder =
                 OracleSource.<String>builder()
                         .hostname(config.getHostname())
@@ -81,22 +80,25 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
                         .username(config.getUsername())
                         .password(config.getPassword())
                         .database(config.getDatabase());
+
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
             String[] schemas = schema.split(FlinkParamConstant.SPLIT);
             sourceBuilder.schemaList(schemas);
         } else {
-            sourceBuilder.schemaList(new String[0]);
+            sourceBuilder.schemaList();
         }
+
         List<String> schemaTableNameList = config.getSchemaTableNameList();
         if (Asserts.isNotNullCollection(schemaTableNameList)) {
-            sourceBuilder.tableList(
-                    schemaTableNameList.toArray(new String[schemaTableNameList.size()]));
+            sourceBuilder.tableList(schemaTableNameList.toArray(new String[0]));
         } else {
-            sourceBuilder.tableList(new String[0]);
+            sourceBuilder.tableList();
         }
+
         sourceBuilder.deserializer(new JsonDebeziumDeserializationSchema());
         sourceBuilder.debeziumProperties(properties);
+
         if (Asserts.isNotNullString(config.getStartupMode())) {
             switch (config.getStartupMode().toLowerCase()) {
                 case "initial":
@@ -110,32 +112,24 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
         } else {
             sourceBuilder.startupOptions(StartupOptions.latest());
         }
-        return env.addSource(sourceBuilder.build(), "Oracle CDC Source");
-    }
 
-    public Map<String, Map<String, String>> parseMetaDataConfigs() {
-        Map<String, Map<String, String>> allConfigList = new HashMap<>();
-        List<String> schemaList = getSchemaList();
-        for (String schema : schemaList) {
-            Map<String, String> configMap = new HashMap<>();
-            configMap.put(ClientConstant.METADATA_TYPE, METADATA_TYPE);
-            StringBuilder sb = new StringBuilder("jdbc:oracle:thin:@");
-            sb.append(config.getHostname());
-            sb.append(":");
-            sb.append(config.getPort());
-            sb.append(":");
-            sb.append(config.getDatabase());
-            configMap.put(ClientConstant.METADATA_NAME, sb.toString());
-            configMap.put(ClientConstant.METADATA_URL, sb.toString());
-            configMap.put(ClientConstant.METADATA_USERNAME, config.getUsername());
-            configMap.put(ClientConstant.METADATA_PASSWORD, config.getPassword());
-            allConfigList.put(schema, configMap);
-        }
-        return allConfigList;
+        return env.addSource(sourceBuilder.build(), "Oracle CDC Source");
     }
 
     @Override
     public String getSchema() {
         return config.getSchema();
+    }
+
+    @Override
+    protected String getMetadataType() {
+        return METADATA_TYPE;
+    }
+
+    @Override
+    protected String generateUrl(String schema) {
+        return String.format(
+                "jdbc:oracle:thin:@%s:%s:%s",
+                config.getHostname(), config.getPort(), config.getDatabase());
     }
 }
