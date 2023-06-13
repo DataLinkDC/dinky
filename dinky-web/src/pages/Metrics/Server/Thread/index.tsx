@@ -17,33 +17,43 @@
  *
  */
 
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
+import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import Heap from "@/pages/Metrics/Server/Heap";
 
-const Thread = () => {
-    const [data, setData] = useState([]);
-
+type ThreadProps = {
+    data: MetricsDataType[];
+}
+type Thread = {
+    time: Date;
+    value: string | number;
+    name:string
+}
+const Thread: React.FC<ThreadProps> = (props) => {
+    const {data} = props;
+    const dataList: Thread[] = data.map(x => {
+        return {time: x.heartTime, value:  x.content.jvm.threadPeakCount,name:"peak"};
+    })
+    const dataList2: Thread[] = data.map(x => {
+        return {time: x.heartTime, value:  x.content.jvm.threadCount,name:"current"};
+    })
+    const dataListAll = dataList.concat(dataList2);
     useEffect(() => {
-        asyncFetch();
     }, []);
 
-    const asyncFetch = () => {
-        fetch('https://gw.alipayobjects.com/os/bmw-prod/b21e7336-0b3e-486c-9070-612ede49284e.json')
-            .then((response) => response.json())
-            .then((json) => setData(json))
-            .catch((error) => {
-                console.log('fetch data failed', error);
-            });
-    };
+
     const config: AreaConfig = {
-        data,
+        data:dataListAll,
+        animation:false,
         height: 200,
-        xField: 'date',
+        xField: 'time',
         yField: 'value',
-        seriesField: 'country',
-        slider: {
-            start: 0.1,
-            end: 0.9,
+        seriesField: 'name',
+        isStack:false,
+        xAxis: {
+            type: 'time',
+            mask: 'HH:mm:ss',
         },
     };
 
