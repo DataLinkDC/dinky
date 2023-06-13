@@ -23,7 +23,7 @@ import React from "react";
 
 
 const BaseInfo = (props: any) => {
-    const {user, currentTenant} = props;
+    const {user, tenant} = props;
     return <>
         <Avatar style={{alignSelf: 'center', marginBottom: 50,}} draggable size={200} src={user.avatar} />
 
@@ -34,7 +34,7 @@ const BaseInfo = (props: any) => {
             <Descriptions.Item label={l('user.phone')}>{user.mobile}</Descriptions.Item>
             <Descriptions.Item label={l('user.jobnumber')}>{user.worknum}</Descriptions.Item>
             <Descriptions.Item label={l('user.current.tenant')}>
-                <Tag color={'processing'}>{currentTenant?.tenantCode}</Tag>
+                <Tag color={'processing'}>{tenant?.tenantCode}</Tag>
             </Descriptions.Item>
         </Descriptions>
     </>
