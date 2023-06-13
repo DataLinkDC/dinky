@@ -33,10 +33,10 @@ type Thread = {
 const Thread: React.FC<ThreadProps> = (props) => {
     const {data} = props;
     const dataList: Thread[] = data.map(x => {
-        return {time: x.heartTime, value:  x.content.jvm.threadPeakCount,name:"peak"};
+        return {time: x.heartTime, value:  x.content.jvm.threadPeakCount,name:"Peak"};
     })
     const dataList2: Thread[] = data.map(x => {
-        return {time: x.heartTime, value:  x.content.jvm.threadCount,name:"current"};
+        return {time: x.heartTime, value:  x.content.jvm.threadCount,name:"Count"};
     })
     const dataListAll = dataList.concat(dataList2);
     useEffect(() => {
