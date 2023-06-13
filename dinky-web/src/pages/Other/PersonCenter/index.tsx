@@ -17,9 +17,9 @@
  *
  */
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {useModel} from "@@/exports";
-import {Divider, Empty, Form, Space, Tag} from "antd";
+import {Descriptions, Divider, Empty, Form, Space, Tag} from "antd";
 import {PageContainer, PageLoading, ProCard} from "@ant-design/pro-components";
 import {UserBaseInfo} from "@/types/User/data";
 import {l} from "@/utils/intl";
@@ -30,6 +30,7 @@ import {handleOption} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import BaseInfo from "@/pages/Other/PersonCenter/BaseInfo";
 import Pop from "@/components/Animation/Pop";
+import {flushSync} from "react-dom";
 
 const PersonCenter = () => {
 
@@ -50,6 +51,25 @@ const PersonCenter = () => {
 
     const { roleList, tenantList,currentTenant,user } = currentUser;
 
+    const fetchUserInfo = async () => {
+        const userInfo = await initialState?.fetchUserInfo?.();
+        if (userInfo) {
+            flushSync(() => {
+                setInitialState((s) => ({
+                    ...s,
+                    currentUser: userInfo,
+                }));
+            });
+        }
+    };
+
+
+    useEffect(() => {
+        fetchUserInfo();
+    },[initialState]);
+
+
+
     /**
      * renderTenantTagList
      * @param {UserBaseInfo.Tenant[]} items
@@ -58,7 +78,9 @@ const PersonCenter = () => {
     const renderTenantTagList = (items: UserBaseInfo.Tenant[]) => {
         return items?.map((item: UserBaseInfo.Tenant) => {
             return <>
-                <Tag color={'success'} key={item.id}>{item.tenantCode} </Tag>
+                <Descriptions.Item key={item.id}>
+                    <Tag color={'success'} key={item.id}>{item.tenantCode}</Tag>
+                </Descriptions.Item>
             </>
         })
     };
@@ -71,7 +93,9 @@ const PersonCenter = () => {
     const renderRoleTagList = (items: UserBaseInfo.Role[]) => {
         return items?.map((item: UserBaseInfo.Role) => {
             return <>
-                <Tag color={'success'} key={item.id}>{item.roleCode}</Tag>
+               <Descriptions.Item key={item.id}>
+                   <Tag color={'success'} key={item.id}>{item.roleCode}</Tag>
+               </Descriptions.Item>
             </>
         })
     };
@@ -111,18 +135,18 @@ const PersonCenter = () => {
     return <Pop>
         <PageContainer title={false}>
             <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
-                <ProCard style={{height: '91vh',textAlign:'center'}} colSpan="30%" hoverable bordered>
+                <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="30%" hoverable bordered>
                     <BaseInfo user={user} currentTenant={currentTenant} />
-
                     <Divider orientation={'left'} plain >{l('user.tenant')}</Divider>
-                    <Space>{renderTenantTagList(tenantList || [])}</Space>
+                    <Descriptions size={'small'} column={4}>{renderTenantTagList(tenantList || [])}</Descriptions>
                     <Divider plain ></Divider>
                     <Divider orientation={'left'} plain >{l('user.role')}</Divider>
-                    <Space>{renderRoleTagList(roleList || [])}</Space>
+                    <Descriptions size={'small'} column={4}>{renderRoleTagList(roleList || [])}</Descriptions>
                 </ProCard>
 
                 <ProCard
-                    style={{height: '91vh',textAlign:'center'}}
+                    hoverable bordered
+                    style={{height: '91vh',textAlign:'center',overflowY: 'auto',}}
                     tabs={{
                         activeKey: activeKey,
                         type: 'card',
