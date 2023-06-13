@@ -29,6 +29,11 @@ import cn.hutool.core.thread.BlockPolicy;
 
 @Configuration
 public class ThreadPoolConfig {
+    /**
+     * Use sse to return to monitor the latest data(使用sse返回监控最新数据)
+     *
+     * @return
+     */
     @Bean
     public Executor scheduleRefreshMonitorDataExecutor() {
         ThreadPoolTaskExecutor threadPoolTaskExecutor = new ThreadPoolTaskExecutor();
