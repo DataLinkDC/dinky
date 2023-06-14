@@ -79,8 +79,6 @@ public class HomeServiceImpl implements HomeService {
 
     @Override
     public JobModelOverview getJobModelOverview() {
-        JobModelOverview jobModelOverview = new JobModelOverview();
-        // todo: query job model 1: get job model 2: get job model count
-        return jobModelOverview;
+        return taskService.getJobStreamingOrBatchModelOverview();
     }
 }

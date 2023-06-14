@@ -17,27 +17,46 @@
  *
  */
 
-declare namespace Home {
 
-  type StatusCount = {
-    all: number,
-    initializing: number,
-    running: number,
-    finished: number,
-    failed: number,
-    canceled: number,
-    restarting: number,
-    created: number,
-    failing: number,
-    cancelling: number,
-    suspended: number,
-    reconciling: number,
-    unknown: number,
-  }
+export type StatusCountOverView = {
+  all: number,
+  initializing: number,
+  running: number,
+  finished: number,
+  failed: number,
+  canceled: number,
+  restarting: number,
+  created: number,
+  failing: number,
+  cancelling: number,
+  suspended: number,
+  reconciling: number,
+  unknown: number,
+}
 
-  type PieItem = {
-    type: string,
-    value: number,
-  }
+export type PieItem = {
+  type: string,
+  value: number,
+}
 
+export type BatchStreamingOverView = {
+  batchJobCount: number;
+  streamingJobCount: number;
+}
+
+export type ResourceOverView ={
+  flinkClusterCount: number;
+  flinkConfigCount: number;
+  dbSourceCount: number;
+  globalVarCount: number;
+  alertInstanceCount: number;
+  alertGroupCount: number;
+  gitProjectCount: number;
+}
+
+
+type TaskDialectSummary = {
+  jobType: string;
+  jobTypeCount: number;
+  rate: number;
 }
