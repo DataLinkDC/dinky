@@ -48,6 +48,7 @@ const Thread: React.FC<ThreadProps> = (props) => {
         xField: 'time',
         yField: 'value',
         seriesField: 'name',
+        isStack:false,
         xAxis: {
             type: 'time',
             mask: 'HH:mm:ss',
