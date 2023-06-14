@@ -44,7 +44,7 @@ const Thread: React.FC<ThreadProps> = (props) => {
     const config: AreaConfig = {
         data: dataListAll,
         animation: false,
-        height: 200,
+        height: 150,
         xField: 'time',
         yField: 'value',
         seriesField: 'name',
