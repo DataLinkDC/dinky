@@ -34,6 +34,12 @@ import {
     getSubDateTime,
     getSubMinTime
 } from "@/pages/Metrics/Server/function";
+import {getDataByParams, queryDataByParams} from "@/services/BusinessCrud";
+import Metrics from "@/pages/Metrics";
+import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {API_CONSTANTS} from "@/services/constants";
+import proxy from "../../../../config/proxy";
+import NonHeap from "@/pages/Metrics/Server/OutHeap";
 
 export const imgStyle = {
     display: 'block',
@@ -41,46 +47,93 @@ export const imgStyle = {
     height: 24,
 };
 
+type DataRecord = {
+    cpuLastValue: number;
+    heapMax: number;
+    heapLastValue: number;
+    nonHeapMax: number;
+    nonHeapLastValue: number;
+    threadPeakCount: number;
+    threadCount: number;
+}
 
 const Server = () => {
     const [currentTime, setCurrentTime] = useState(new Date());
-    const [dateRange, setDateRange] = useState<string>('today');
-    const [startTime, setStartTime] = useState(new Date());
+    const [dateRange, setDateRange] = useState<string>('60s');
+    const [startTime, setStartTime] = useState(getSubMinTime(currentTime, 1));
     const [endTime, setEndTime] = useState(new Date());
+    const [data, setData] = useState<MetricsDataType[]>([]);
+    const [custom, setCustom] = useState<boolean>(false);
+
+    const [dataRecord, setDataRecord] = useState<DataRecord>({
+        heapLastValue: 0, cpuLastValue: 0, heapMax: 0
+        , threadCount: 0, threadPeakCount: 0
+        , nonHeapMax: 0, nonHeapLastValue: 0
+    });
+    let eventSource: EventSource;
+    const getLastData = (data: MetricsDataType[]) => {
+            const {REACT_APP_ENV = 'dev'} = process.env;
+
+            // @ts-ignore
+            const url = proxy[REACT_APP_ENV]["/api/"].target || ""
+
+            eventSource = new EventSource(url + API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime());
+            eventSource.onmessage = e => {
+                let result = JSON.parse(e.data);
+                result.content = JSON.parse(result.content)
+                data.push(result)
+                setData(data)
+                setDataRecord({
+                    cpuLastValue: result.content.jvm.cpuUsed.toFixed(2),
+                    heapMax: Number((result.content.jvm.heapMax / (1024 * 1024)).toFixed(0)),
+                    heapLastValue: Number((result.content.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
+                    nonHeapMax: Number((result.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
+                    nonHeapLastValue: Number((result.content.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
+                    threadPeakCount: result.content.jvm.threadPeakCount,
+                    threadCount: result.content.jvm.threadCount,
+                })
+            }
+
+    }
+    const getInitData = () => {
+        queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {startTime: startTime.getTime(), endTime: endTime.getTime()})
+            .then(res => {
+                (res as any[]).map(x => x.content = JSON.parse(x.content))
+                if (!custom) {
+                    getLastData(res)
+                }else {
+                    setData(res)
+                }
+            })
+    }
 
     useEffect(() => {
         const timer = setInterval(() => {
             setCurrentTime(new Date());
         }, 1000);
+
+        getInitData()
+
         return () => {
             clearInterval(timer);
+            eventSource?.close()
         };
-    }, []);
 
+    }, [startTime]);
 
     const handleDateRadioChange = (e: any) => {
         const dateKey = e.target.value;
         setDateRange(dateKey)
         switch (dateKey) {
-            case 'all':
-                setStartTime(getSubMinTime(currentTime, 24 * 60 * 9999))
-                setEndTime(currentTime)
-                break;
-            case 'auto':
-                setStartTime(getSubMinTime(currentTime, 24 * 60 * 9999))
-                setEndTime(currentTime)
-                break;
             case '60s':
                 setStartTime(getSubMinTime(currentTime, 1))
                 setEndTime(currentTime)
                 break;
             case '5min':
-                console.log('5min')
                 setStartTime(getSubMinTime(currentTime, 5))
                 setEndTime(currentTime)
                 break;
             case '10min':
-                console.log('10min')
                 setStartTime(getSubMinTime(currentTime, 10))
                 setEndTime(currentTime)
                 break;
@@ -96,67 +149,39 @@ const Server = () => {
                 setStartTime(getSubMinTime(currentTime, 5 * 60))
                 setEndTime(currentTime)
                 break;
-            case '12h':
-                setStartTime(getSubMinTime(currentTime, 12 * 60))
-                setEndTime(currentTime)
-                break;
-            case '24h':
-                setStartTime(getSubMinTime(currentTime, 24 * 60))
-                setEndTime(currentTime)
-                break;
-            case 'today':
-                setStartTime(getSubDateTime(currentTime, 0, true))
-                setEndTime(getSubDateTime(currentTime, 0, false))
-                break;
-            case 'yesterday':
-                setStartTime(getSubDateTime(currentTime, 1, true))
-                setEndTime(getSubDateTime(currentTime, 1, false))
-                break;
-            case 'yesterdaybefore':
-                setStartTime(getSubDateTime(currentTime, 2, true))
-                setEndTime(getSubDateTime(currentTime, 2, false))
-                break;
-            case 'last7days':
-                setStartTime(getSubDateTime(currentTime, 7,true))
-                setEndTime(getSubDateTime(currentTime, 0,false))
-                break;
-            case 'last15days':
-                setStartTime(getSubDateTime(currentTime, 15,true))
-                setEndTime(getSubDateTime(currentTime, 0,false))
-                break;
-            case 'monthly':
-                setStartTime(getDayOfMonth(currentTime, true))
-                setEndTime(getDayOfMonth(currentTime, false))
-                break;
         }
+        setCustom(false)
     }
 
-    const handleRangeChange = (e: any) => {
-        e.map((item: any) => {
-            setStartTime(item[0])
-            setEndTime(item[1])
-        })
+    const handleRangeChange = (dates: any) => {
+        setDateRange('custom')
+        setStartTime(new Date(dates[0]))
+        setEndTime(new Date(dates[1]))
+        setCustom(true)
     }
 
 
     return <>
         <ProCard style={{height: '4vh'}} ghost colSpan={'100%'}>
-            <GlobalFilter dateRange={dateRange} endTime={endTime} startTime={startTime}
+            <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
         <ProCard style={{height: '88vh'}} ghost wrap size={'small'} split={'vertical'}>
             <ProCard style={{height: '20vh'}} split={'vertical'}>
-                <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>}>
-                    <CPU/>
+                <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>} extra={dataRecord?.cpuLastValue + "%"}>
+                    <CPU data={data}/>
                 </ProCard>
-                <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}>
-                    <Heap/>
+                <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}
+                         extra={dataRecord?.heapLastValue + " / " + dataRecord?.heapMax + " MB"}>
+                    <Heap data={data} max={dataRecord?.heapMax}/>
                 </ProCard>
-                <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}>
-                    <Thread/>
+                <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}
+                         extra={dataRecord?.threadCount + " / " + dataRecord?.threadPeakCount}>
+                    <Thread data={data}/>
                 </ProCard>
-                <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}>
-                    <OutHeap/>
+                <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}
+                         extra={dataRecord?.nonHeapLastValue + " / " + dataRecord?.nonHeapMax + " MB"}>
+                    <NonHeap data={data} max={dataRecord?.nonHeapMax}/>
                 </ProCard>
             </ProCard>
         </ProCard>

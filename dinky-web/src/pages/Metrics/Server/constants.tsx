@@ -18,69 +18,42 @@
  */
 
 
-export const DATE_RANGE_OPTIONS = [
-    {
-        value: 'all',
-        label: '所有',
-    },
+import {l} from "@/utils/intl";
+
+export const DATE_RANGE_OPTIONS =(disable:boolean)=> [
     {
         value: '60s',
-        label: '60秒',
+        label: l('metrics.filter.60seconds'),
+        disable:!disable
     },
     {
         value: '5min',
-        label: '5分钟',
+        label: l('metrics.filter.5minutes'),
+        disable:!disable
     },
     {
         value: '10min',
-        label: '10分钟',
+        label: l('metrics.filter.10minutes'),
+        disable:!disable
     },
     {
         value: '1h',
-        label: '1小时',
+        label: l('metrics.filter.1hour'),
+        disable:!disable
     },
     {
         value: '2h',
-        label: '2小时',
+        label: l('metrics.filter.2hours'),
+        disable:!disable
     },
     {
         value: '5h',
-        label: '5小时',
+        label: l('metrics.filter.5hours'),
+        disable:!disable
     },
     {
-        value: '12h',
-        label: '12小时',
-    },
-    {
-        value: '24h',
-        label: '24小时',
-    },
-    {
-        value: 'today',
-        label: '今天',
-    },
-    {
-        value: 'yesterday',
-        label: '昨天',
-    },
-    {
-        value: 'yesterdaybefore',
-        label: '前天 ',
-    },
-    {
-        value: 'last7days',
-        label: '最近7天',
-    },
-    {
-        value: 'last15days',
-        label: '最近15天',
-    },
-    {
-        value: 'monthly',
-        label: '本月',
-    },
-    {
-        value: 'auto',
-        label: '自动刷新',
+        value: 'custom',
+        label: l('metrics.filter.custom'),
+        disable:disable
     },
 ]

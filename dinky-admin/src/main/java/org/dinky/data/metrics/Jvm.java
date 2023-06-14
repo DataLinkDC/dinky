@@ -94,7 +94,7 @@ public class Jvm extends BaseMetrics {
                 .withHome(SystemUtil.getJavaRuntimeInfo().getHomeDir())
                 .withTotal(SystemUtil.getTotalMemory())
                 .withMax(SystemUtil.getMaxMemory())
-                .withCpuUsed(SystemUtil.getOperatingSystemMXBean().getSystemLoadAverage() * 1000)
+                .withCpuUsed(SystemUtil.getOperatingSystemMXBean().getSystemLoadAverage())
                 .withHeapMax(heapMemoryUsage.getMax())
                 .withHeapUsed(heapMemoryUsage.getUsed())
                 .withNonHeapMax(

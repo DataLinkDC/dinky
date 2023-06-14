@@ -17,44 +17,40 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
-
-
-type CpuProps = {
-    data: MetricsDataType[];
+export type MetricsDataType = {
+    content: {
+        jvm: JVMType,
+        cpu: CPUType,
+        mem: MemoryType,
+    },
+    metricsTotal: number,
+    model: string,
+    heartTime: Date,
 }
-type Cpu = {
-    time: Date;
-    value: string | number;
-}
-const CPU: React.FC<CpuProps> = (props) => {
-
-    const {data} = props;
-
-    const dataList: Cpu[] = data.map(x => {
-        return {time: x.heartTime, value: Number( x.content.jvm.cpuUsed.toFixed(2))};
-    })
-
-
-    const config: AreaConfig = {
-        animation: false,
-        data: dataList,
-        height: 200,
-        yField: 'value',
-        xField: 'time',
-        xAxis: {
-            type: 'time',
-            mask: 'HH:mm:ss',
-        },
-        yAxis:{
-          min:0,
-          max:100
-        },
-    };
-
-    return <Area {...config} />;
+type JVMType = {
+    total: number,
+    max: number,
+    free: number,
+    cpuUsed: number,
+    nonHeapMax: number,
+    nonHeapUsed: number,
+    heapMax: number,
+    heapUsed: number,
+    threadPeakCount: number,
+    threadCount: number,
+    version: string,
+    home: string,
 }
 
-export default CPU;
+type CPUType = {
+    cpuNum: number,
+    sys: number,
+    wait: number,
+    free: number,
+}
+
+type MemoryType = {
+    total: number,
+    used: number,
+    free: number,
+}

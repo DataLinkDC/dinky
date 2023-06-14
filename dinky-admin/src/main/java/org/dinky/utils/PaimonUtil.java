@@ -113,7 +113,7 @@ public class PaimonUtil {
 
                 BinaryRow row = new BinaryRow(30);
                 BinaryRowWriter writer = new BinaryRowWriter(row);
-                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 3);
+                writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 0);
                 writer.writeString(1, BinaryString.fromString(metrics.getModel()));
                 writer.writeString(2, BinaryString.fromString(metrics.getContent()));
                 writer.writeString(

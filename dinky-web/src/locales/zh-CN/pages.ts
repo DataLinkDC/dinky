@@ -72,6 +72,7 @@ export default {
   'home.job.batch': '批作业',
   'home.job.stream': '流作业',
   'home.job.total': '作业数',
+  'home.job.onlineRate': '作业上线率',
   'home.job.type': '作业类型',
   'home.job.rate': '作业占比',
   'home.develop.re.ci': 'Flink 集群实例',
@@ -601,5 +602,16 @@ export default {
 
   // system info of log
   'sys.info.logList.tips': '点击左侧日志文件查看',
+
+
+  // metrics
+  'metrics.filter.60seconds': '60秒',
+  'metrics.filter.5minutes': '5分钟',
+  'metrics.filter.10minutes': '10分钟',
+  'metrics.filter.1hour': '1小时',
+  'metrics.filter.2hours': '2小时',
+  'metrics.filter.5hours': '5小时',
+  'metrics.filter.custom': '自定义',
+  'metrics.filter.custom.range': '日期时间范围',
 
 };
