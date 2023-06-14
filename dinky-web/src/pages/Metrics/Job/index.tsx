@@ -17,30 +17,39 @@
  *
  */
 
-import {useState} from "react";
-import {PageLoading, ProFormSelect} from "@ant-design/pro-components";
-import {Tag} from "antd";
+import React, {useEffect, useState} from "react";
+import {PageLoading, ProCard, ProFormSelect, StatisticCard} from "@ant-design/pro-components";
+import {Radio, Space, Tag} from "antd";
+import {OutHeapIcon} from "@/components/Icons/MetricsIcon";
+import NonHeap from "@/pages/Metrics/Server/OutHeap";
+import {imgStyle} from "@/pages/Metrics/Server";
+import {Line} from "@ant-design/charts";
+import FlinkChart from "./FlinkChart";
 
 
 type JobMetrics = {
     taskId: number
     flinkJobId: string
     jobName: string
+    url: string
 }
 
 
 const templateData: JobMetrics[] = [
     {
         taskId: 1,
+        url: "",
         flinkJobId: '6327183eghjshajdkahsjdhasjkdhksjageqyw',
         jobName: 'job1',
     },
     {
         taskId: 2,
-        flinkJobId: '6327132893829shajdkahsjdhashksjageqyw',
-        jobName: 'job2',
+        url: "http://10.8.16.157:8282/",
+        flinkJobId: '6906a29cdfbdaf41430ece27bdc265e8',
+        jobName: 'udf_test_1',
     }
 ]
+
 
 
 const Job = () => {
@@ -58,7 +67,7 @@ const Job = () => {
 
     const buildSelectDataOptions = (metrics: JobMetrics[]) => metrics.map((item) => {
 
-        let label = <div style={{alignItems: 'center',alignContent: 'center'}}>
+        let label = <div style={{alignItems: 'center', alignContent: 'center'}}>
             <Tag color={'processing'}>Flink JobId: {item.flinkJobId}</Tag>
             <Tag color={'success'}>TaskId: {item.taskId}</Tag>
             <Tag color={'success'}>TaskName: {item.jobName}</Tag>
@@ -79,8 +88,7 @@ const Job = () => {
         }, 2000);
     };
 
-
-    return <>
+  return <>
         <ProFormSelect
             name="job"
             label="Job"
@@ -95,7 +103,9 @@ const Job = () => {
                 (selectTaskId !== 0 && selectTaskId !== undefined) &&
                 <>
                     {loading ? <PageLoading/> : <>
-                    you choose the task id: {selectTaskId}
+                        <ProCard direction="column" ghost gutter={[0, 8]}>
+                            <FlinkChart url={templateData[1].url} metricsId={"0.Source__TableSourceScan(table=[[default_catalog__default_database__sourceTable]].numRecordsOut"} ></FlinkChart>
+                        </ProCard>
                     </>}
                 </>
             }
