@@ -24,6 +24,7 @@ import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
 import org.dinky.data.result.SqlExplainResult;
@@ -119,4 +120,6 @@ public interface TaskService extends ISuperService<Task> {
     Task getTaskByNameAndTenantId(String name, Integer tenantId);
 
     JobStatus checkJobStatus(JobInfoDetail jobInfoDetail);
+
+    List<JobTypeOverView> getTaskOnlineRate();
 }

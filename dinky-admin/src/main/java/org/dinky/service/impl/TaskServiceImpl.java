@@ -55,6 +55,7 @@ import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.model.Statement;
@@ -611,6 +612,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Gateway gateway = Gateway.build(gatewayConfig);
         return gateway.getJobStatusById(jobInfoDetail.getCluster().getName());
+    }
+
+    @Override
+    public List<JobTypeOverView> getTaskOnlineRate() {
+        return baseMapper.getTaskOnlineRate();
     }
 
     @Override

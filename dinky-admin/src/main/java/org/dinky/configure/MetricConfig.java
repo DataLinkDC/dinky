@@ -80,10 +80,6 @@ public class MetricConfig {
     public void writeScheduled() {
         PaimonUtil.writeMetrics(new ArrayList<>(metricsQueue));
         metricsQueue.clear();
-        //        PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER,Metrics.class,p->
-        // Collections.singletonList(p.greaterThan(0,
-        // Timestamp.fromLocalDateTime(DateUtil.toLocalDateTime(DateUtil.date(1686300257085L))))));
-        PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class);
     }
 
     @PostConstruct

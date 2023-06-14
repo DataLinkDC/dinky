@@ -96,4 +96,13 @@
             </foreach>
         </if>
     </select>
+
+    <select id="getTaskOnlineRate" resultType="org.dinky.data.model.JobTypeOverView">
+        select dialect jobType,
+        round(coalesce(sum(case when step = 5 then 1 else 0 end) /
+        sum(case when step <![CDATA[ < ]]> 5 then 1 else 0 end) * 100, 0), 2) rate
+        from dinky_task
+        where enabled = 1
+        group by dialect
+    </select>
 </mapper>
