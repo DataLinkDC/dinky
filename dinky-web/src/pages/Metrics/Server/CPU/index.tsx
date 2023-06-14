@@ -41,7 +41,7 @@ const CPU: React.FC<CpuProps> = (props) => {
     const config: AreaConfig = {
         animation: false,
         data: dataList,
-        height: 200,
+        height: 150,
         yField: 'value',
         xField: 'time',
         xAxis: {
