@@ -20,6 +20,7 @@
 import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {Datum} from "@antv/g2plot";
 
 type HeapProps = {
     data: MetricsDataType[];
@@ -30,15 +31,15 @@ type Heap = {
     value: string | number;
 }
 const Heap: React.FC<HeapProps> = (props) => {
-    const {data,max} = props;
+    const {data, max} = props;
     const dataList: Heap[] = data.map(x => {
-        return {time: x.heartTime, value:  Number((x.content.jvm.heapUsed/(1024*1024)).toFixed(0))};
+        return {time: x.heartTime, value: Number((x.content.jvm.heapUsed / (1024 * 1024)).toFixed(0))};
     })
 
 
     const config: AreaConfig = {
-        data:dataList,
-        animation:false,
+        data: dataList,
+        animation: false,
         height: 150,
         yField: 'value',
         xField: 'time',
@@ -46,10 +47,15 @@ const Heap: React.FC<HeapProps> = (props) => {
             type: 'time',
             mask: 'HH:mm:ss',
         },
-        yAxis:{
-            min:0,
-            max:max
+        yAxis: {
+            min: 0,
+            max: max
         },
+        tooltip: {
+            formatter: (datum: Datum) => {
+                return {name: "Heap Memory", value: datum.value + ' MB'};
+            },
+        }
     };
 
     return <Area {...config} />;

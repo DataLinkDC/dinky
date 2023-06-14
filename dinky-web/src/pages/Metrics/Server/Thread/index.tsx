@@ -42,12 +42,15 @@ const Thread: React.FC<ThreadProps> = (props) => {
 
 
     const config: AreaConfig = {
+        padding: 'auto',
+        smooth: true,
         data: dataListAll,
         animation: false,
         height: 150,
         xField: 'time',
         yField: 'value',
         seriesField: 'name',
+        isStack:false,
         xAxis: {
             type: 'time',
             mask: 'HH:mm:ss',

@@ -21,14 +21,18 @@ package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
+import org.dinky.data.annotation.PublicInterface;
 
-import java.util.Arrays;
-
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
+import cn.dev33.satoken.SaManager;
+import cn.dev33.satoken.exception.NotLoginException;
+import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
 /** tenant interceptor */
@@ -39,11 +43,32 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
     public boolean preHandle(
             HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
-        if (Asserts.isNotNull(request.getCookies())) {
-            Arrays.stream(request.getCookies())
-                    .filter(t -> "tenantId".equals(t.getName()))
-                    .findFirst()
-                    .ifPresent(t -> TenantContextHolder.set(Integer.valueOf(t.getValue())));
+        boolean isPass = false;
+        Cookie[] cookies = request.getCookies();
+        Opt<String> token = Opt.empty();
+        if (Asserts.isNotNull(cookies)) {
+            for (Cookie cookie : cookies) {
+                switch (cookie.getName()) {
+                    case "satoken":
+                        token = Opt.ofBlankAble(cookie.getValue());
+                        if (SaManager.getSaTokenDao().get("satoken:login:token:" + token.get())
+                                != null) {
+                            isPass = true;
+                        }
+                        break;
+                    case "tenantId":
+                        TenantContextHolder.set(Integer.valueOf(cookie.getValue()));
+                        break;
+                }
+            }
+        }
+        if (!isPass) {
+            if (handler instanceof HandlerMethod) {
+                if (((HandlerMethod) handler).getMethodAnnotation(PublicInterface.class) != null) {
+                    return true;
+                }
+            }
+            throw NotLoginException.newInstance("", "-1", token.get());
         }
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }

@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.MonitorService;
@@ -57,6 +58,7 @@ public class MonitorController {
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @CrossOrigin("*")
+    @PublicInterface
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
