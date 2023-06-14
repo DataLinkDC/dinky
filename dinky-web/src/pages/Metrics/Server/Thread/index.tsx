@@ -42,6 +42,8 @@ const Thread: React.FC<ThreadProps> = (props) => {
 
 
     const config: AreaConfig = {
+        padding: 'auto',
+        smooth: true,
         data: dataListAll,
         animation: false,
         height: 150,
