@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -133,6 +134,12 @@ public class MavenUtil {
             List<String> goals,
             List<String> args) {
         List<String> commandLine = new LinkedList<>();
+
+        String classpath =
+                FileUtil.loopFiles(mavenHome + "/boot").stream()
+                        .filter(x -> FileUtil.getSuffix(x).equals("jar"))
+                        .map(x -> x.getAbsolutePath())
+                        .collect(Collectors.joining(File.pathSeparator));
         commandLine.add(javaExecutor);
         commandLine.add("-Dfile.encoding=UTF-8");
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
@@ -140,10 +147,7 @@ public class MavenUtil {
         Opt.ofBlankAble(repositoryDir)
                 .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + repositoryDir));
         commandLine.add("-Dclassworlds.conf=" + mavenHome + "/bin/m2.conf");
-        commandLine.add(
-                "-classpath "
-                        + mavenHome
-                        + "/boot/plexus-classworlds-2.x.jar org.codehaus.classworlds.Launcher");
+        commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);
         commandLine.add(StrUtil.join(" ", args));

@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.Status;
@@ -209,6 +210,7 @@ public class GitController {
      */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @CrossOrigin("*")
+    @PublicInterface
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);

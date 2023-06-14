@@ -27,6 +27,7 @@ import {API_CONSTANTS} from "@/services/constants";
 import proxy from "../../../../../../config/proxy";
 import {renderStatus} from '@/pages/RegCenter/GitProject/function';
 import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
+import {getSseData} from "@/services/api";
 
 
 /**
@@ -69,13 +70,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       setPercent(0);
       setCurrentStep(0);
     }
-
-    const {REACT_APP_ENV = 'dev'} = process.env;
-    // @ts-ignore
-    const url = proxy[REACT_APP_ENV]["/api/"].target || ""
     // 这里不要代理。sse使用代理会变成同步
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-    const eventSource = new EventSource(url + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const eventSource = getSseData( API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
 
     let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;
@@ -84,6 +81,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     let showDataStep = -1;
     let showData = "";
     let finish = false;
+    let lastStep=0;
 
     //sse listen event message
     eventSource.onmessage = e => {
@@ -92,6 +90,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         // status // 0是失败 1是进行中 2 完成
         let result = JSON.parse(e.data);
         const {currentStep, type, data, status, history} = result;
+        lastStep=currentStep;
 
         if (type === 0) {
           if (execNum === 1) {
@@ -111,7 +110,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               description: item.startTime,
               disabled: true,
               onClick: () => {
-                if (finish&& item.step<=currentStep) {
+                if (finish&& item.step<=lastStep) {
                   if (item.step === showDataStep) {
                     setShowList(true)
                     setLog(showData)
