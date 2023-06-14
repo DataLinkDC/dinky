@@ -72,6 +72,7 @@ export default {
   'home.job.batch': '批作业',
   'home.job.stream': '流作业',
   'home.job.total': '作业数',
+  'home.job.onlineRate': '作业上线率',
   'home.job.type': '作业类型',
   'home.job.rate': '作业占比',
   'home.develop.re.ci': 'Flink 集群实例',
