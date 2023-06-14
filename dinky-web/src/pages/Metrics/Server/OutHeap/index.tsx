@@ -39,7 +39,7 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
     const config: AreaConfig = {
         data: dataList,
         animation: false,
-        height: 200,
+        height: 150,
         yField: 'value',
         xField: 'time',
         xAxis: {

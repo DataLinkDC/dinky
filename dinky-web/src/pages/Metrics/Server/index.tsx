@@ -166,8 +166,8 @@ const Server = () => {
             <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
-        <ProCard style={{height: '88vh'}} ghost wrap size={'small'} split={'vertical'}>
-            <ProCard style={{height: '20vh'}} split={'vertical'}>
+        <ProCard ghost wrap size={'small'} split={'vertical'}>
+            <ProCard style={{height: '16vh'}} split={'vertical'}>
                 <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>} extra={dataRecord?.cpuLastValue + "%"}>
                     <CPU data={data}/>
                 </ProCard>
