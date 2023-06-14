@@ -60,6 +60,7 @@ import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.date.TimeInterval;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -67,7 +68,7 @@ public class PaimonUtil {
     private static final String DINKY_DB = "dinky_db";
     private static final Map<Identifier, Schema> SCHEMA_MAP = new HashMap<>();
     private static final CatalogContext CONTEXT =
-            CatalogContext.create(new Path("file://" + PathConstant.TMP_PATH + "paimon"));
+            CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
     private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
     public static final Identifier METRICS_IDENTIFIER =
             Identifier.create(DINKY_DB, "dinky_metrics");
