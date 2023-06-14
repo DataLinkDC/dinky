@@ -84,6 +84,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     let showDataStep = -1;
     let showData = "";
     let finish = false;
+    let lastStep=0;
 
     //sse listen event message
     eventSource.onmessage = e => {
@@ -92,6 +93,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
         // status // 0是失败 1是进行中 2 完成
         let result = JSON.parse(e.data);
         const {currentStep, type, data, status, history} = result;
+        lastStep=currentStep;
 
         if (type === 0) {
           if (execNum === 1) {
@@ -111,7 +113,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               description: item.startTime,
               disabled: true,
               onClick: () => {
-                if (finish&& item.step<=currentStep) {
+                if (finish&& item.step<=lastStep) {
                   if (item.step === showDataStep) {
                     setShowList(true)
                     setLog(showData)
