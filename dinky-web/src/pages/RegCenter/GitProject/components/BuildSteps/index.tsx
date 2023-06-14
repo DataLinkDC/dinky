@@ -27,6 +27,7 @@ import {API_CONSTANTS} from "@/services/constants";
 import proxy from "../../../../../../config/proxy";
 import {renderStatus} from '@/pages/RegCenter/GitProject/function';
 import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
+import {getSseData} from "@/services/api";
 
 
 /**
@@ -69,13 +70,9 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       setPercent(0);
       setCurrentStep(0);
     }
-
-    const {REACT_APP_ENV = 'dev'} = process.env;
-    // @ts-ignore
-    const url = proxy[REACT_APP_ENV]["/api/"].target || ""
     // 这里不要代理。sse使用代理会变成同步
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-    const eventSource = new EventSource(url + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const eventSource = getSseData( API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
 
     let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;

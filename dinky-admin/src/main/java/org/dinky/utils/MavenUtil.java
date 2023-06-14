@@ -135,11 +135,11 @@ public class MavenUtil {
             List<String> args) {
         List<String> commandLine = new LinkedList<>();
 
-
-        String classpath = FileUtil.loopFiles(mavenHome + "/boot")
-            .stream()
-            .filter(x -> FileUtil.getSuffix(x).equals("jar"))
-            .map(x -> x.getAbsolutePath()).collect(Collectors.joining(File.pathSeparator));
+        String classpath =
+                FileUtil.loopFiles(mavenHome + "/boot").stream()
+                        .filter(x -> FileUtil.getSuffix(x).equals("jar"))
+                        .map(x -> x.getAbsolutePath())
+                        .collect(Collectors.joining(File.pathSeparator));
         commandLine.add(javaExecutor);
         commandLine.add("-Dfile.encoding=UTF-8");
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
@@ -147,9 +147,7 @@ public class MavenUtil {
         Opt.ofBlankAble(repositoryDir)
                 .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + repositoryDir));
         commandLine.add("-Dclassworlds.conf=" + mavenHome + "/bin/m2.conf");
-        commandLine.add(
-                "-classpath "
-                        + classpath+ " org.codehaus.classworlds.Launcher");
+        commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);
         commandLine.add(StrUtil.join(" ", args));

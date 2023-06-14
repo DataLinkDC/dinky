@@ -68,7 +68,8 @@ public class PaimonUtil {
     private static final String DINKY_DB = "dinky_db";
     private static final Map<Identifier, Schema> SCHEMA_MAP = new HashMap<>();
     private static final CatalogContext CONTEXT =
-            CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
+            CatalogContext.create(
+                    new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
     private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
     public static final Identifier METRICS_IDENTIFIER =
             Identifier.create(DINKY_DB, "dinky_metrics");
