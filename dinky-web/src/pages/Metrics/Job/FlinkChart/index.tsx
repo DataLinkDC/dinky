@@ -54,18 +54,18 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
     const renderSizeChangeGroup = () => {
         return <>
-            <Radio.Group className={'radio-group-chart'}
-                // options={[{label: 'Small', value: '25%'}, {label: 'Big', value: '50%'}]}
-                         size="small"
-                         buttonStyle="solid"
-                         value={chartProps.chartSize}
-                         onChange={(e) => {
-                             setChartProps((prevState) => ({
-                                 ...prevState,
-                                 chartSize: e.target.value,
-                                 titleWidth: e.target.value == '25%' ? '50%' : '95%'
-                             }))
-                         }}
+            <Radio.Group
+                className={'radio-group-chart'}
+                size="small"
+                buttonStyle="solid"
+                value={chartProps.chartSize}
+                onChange={(e) => {
+                    setChartProps((prevState) => ({
+                        ...prevState,
+                        chartSize: e.target.value,
+                        titleWidth: e.target.value == '25%' ? '50%' : '95%'
+                    }))
+                }}
             >
                 <Radio.Button value={'25%'}>Small</Radio.Button>
                 <Radio.Button value={'50%'}>Big</Radio.Button>
@@ -74,14 +74,16 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
     }
 
     const renderChartNumericRadio = () => [
-        <Radio.Group size="small" buttonStyle="solid"
-                     value={chartProps.chartType}
-                     onChange={(e) => {
-                         setChartProps((prevState) => ({
-                             ...prevState,
-                             chartType: e.target.value
-                         }))
-                     }}>
+        <Radio.Group
+            size="small"
+            buttonStyle="solid"
+            value={chartProps.chartType}
+            onChange={(e) => {
+                setChartProps((prevState) => ({
+                    ...prevState,
+                    chartType: e.target.value
+                }))
+            }}>
             <Radio.Button value="Chart">Chart</Radio.Button>
             <Radio.Button value="Numeric">Numeric</Radio.Button>
         </Radio.Group>
