@@ -125,8 +125,6 @@ public class ClusterConfigurationController {
         }
     }
 
-
-
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.enable(id)) {
@@ -135,7 +133,6 @@ public class ClusterConfigurationController {
             return Result.failed(Status.MODIFY_FAILED);
         }
     }
-
 
     /** 测试 */
     @PostMapping("/testConnect")
