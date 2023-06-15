@@ -160,12 +160,11 @@ const Server = () => {
 
 
     return <>
-        <ProCard style={{height: '4vh'}} ghost colSpan={'100%'}>
+        <ProCard colSpan={'100%'} bordered>
             <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
-        <ProCard ghost wrap size={'small'} split={'vertical'}>
-            <ProCard style={{height: '16vh'}} split={'vertical'}>
+        <ProCard bordered size={'small'} split={'vertical'}>
                 <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>} extra={dataRecord?.cpuLastValue + "%"}>
                     <CPU data={data}/>
                 </ProCard>
@@ -181,7 +180,6 @@ const Server = () => {
                          extra={dataRecord?.nonHeapLastValue + " / " + dataRecord?.nonHeapMax + " MB"}>
                     <NonHeap data={data} max={dataRecord?.nonHeapMax}/>
                 </ProCard>
-            </ProCard>
         </ProCard>
     </>
 }

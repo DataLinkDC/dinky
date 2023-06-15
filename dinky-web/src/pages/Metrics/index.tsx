@@ -25,11 +25,11 @@ import Job from "./Job";
 
 export default () => {
     return <PageContainer title={false}>
-        <ProCard  size={'small'} wrap ghost gutter={[16, 16]}>
-            <ProCard collapsible split={'horizontal'} title={'Dinky Server'} >
+        <ProCard size={'small'} split={'horizontal'} wrap gutter={[8, 16]}  >
+            <ProCard collapsible  title={'Dinky Server'} hoverable bordered headerBordered >
                 <Server/>
             </ProCard>
-            <ProCard split={'horizontal'} collapsible title={'Flink Job Metrics'} >
+            <ProCard collapsible title={'Flink Job Metrics'} hoverable bordered headerBordered >
                 <Job/>
             </ProCard>
         </ProCard>
