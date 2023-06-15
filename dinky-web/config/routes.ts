@@ -99,7 +99,7 @@ export default [
           {
             path: '/registration/cluster/config',
             name: 'cluster-config',
-            // component: './RegistrationCenter/ClusterManage/ClusterConfiguration',
+            component: './RegCenter/Cluster/Configuration',
           },
         ],
       },

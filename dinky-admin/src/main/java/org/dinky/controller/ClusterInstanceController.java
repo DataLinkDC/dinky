@@ -242,7 +242,14 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Cluster}>
      */
     @GetMapping("/deploySessionCluster")
+    @Deprecated
     public Result<Cluster> deploySessionCluster(@RequestParam("id") Integer id) {
+        return Result.succeed(
+                clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
+    }
+
+    @PutMapping("/deploySessionClusterInstance")
+    public Result<Cluster> deploySessionClusterInstance(@RequestParam("id") Integer id) {
         return Result.succeed(
                 clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }

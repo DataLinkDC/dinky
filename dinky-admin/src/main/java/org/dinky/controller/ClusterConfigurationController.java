@@ -36,6 +36,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -77,6 +78,7 @@ public class ClusterConfigurationController {
 
     /** 批量删除 */
     @DeleteMapping
+    @Deprecated
     public Result<Void> deleteMul(@RequestBody JsonNode para) {
         if (para.size() > 0) {
             List<Integer> error = new ArrayList<>();
@@ -98,6 +100,7 @@ public class ClusterConfigurationController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
+    @Deprecated
     public Result<ClusterConfiguration> getOneById(
             @RequestBody ClusterConfiguration clusterConfiguration) {
         clusterConfiguration = clusterConfigurationService.getById(clusterConfiguration.getId());
@@ -110,6 +113,29 @@ public class ClusterConfigurationController {
         List<ClusterConfiguration> clusters = clusterConfigurationService.listEnabledAll();
         return Result.succeed(clusters);
     }
+
+    /** 获取可用的集群列表 */
+    @DeleteMapping("/delete")
+    public Result<List<ClusterConfiguration>> deleteById(@RequestParam("id") Integer id) {
+        boolean removeById = clusterConfigurationService.removeById(id);
+        if (removeById) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        } else {
+            return Result.failed(Status.DELETE_FAILED);
+        }
+    }
+
+
+
+    @PutMapping("/enable")
+    public Result<Void> enable(@RequestParam("id") Integer id) {
+        if (clusterConfigurationService.enable(id)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        } else {
+            return Result.failed(Status.MODIFY_FAILED);
+        }
+    }
+
 
     /** 测试 */
     @PostMapping("/testConnect")
