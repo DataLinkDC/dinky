@@ -617,5 +617,9 @@ export default {
   'metrics.flink.job.placeholder': 'Please select a job name',
   'metrics.flink.jobId': 'Flink Job ID',
   'metrics.flink.taskId': 'Dinky Job ID',
+  'metrics.flink.subTask': 'SubTask',
+  'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
+  'metrics.flink.metrics.name': 'Metric Name',
+  'metrics.flink.metrics.placeholder': 'Please select the Metric Name (multiple choices)',
 
 };

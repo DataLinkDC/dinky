@@ -615,9 +615,15 @@ export default {
   'metrics.filter.custom': '自定义',
   'metrics.filter.custom.range': '日期时间范围',
   // flink job
-  'metrics.flink.job.name': '作业名称',
-  'metrics.flink.job.placeholder': '请选择作业名称',
+  'metrics.flink.job.name': '任务名称',
+  'metrics.flink.job.placeholder': '请选择任务名称',
   "metrics.flink.jobId": 'Flink 任务ID',
   'metrics.flink.taskId': 'Dinky 任务ID',
+  'metrics.flink.subTask': '子任务',
+  'metrics.flink.subTask.placeholder': '请选择子任务名称',
+  'metrics.flink.metrics.name': '指标名称',
+  'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
+
+
 
 };
