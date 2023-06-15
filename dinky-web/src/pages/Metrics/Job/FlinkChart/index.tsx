@@ -72,40 +72,39 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
         </>
     }
 
-    const renderChartNumericRadio = () => {
-        return <>
-            <Radio.Group size="small" buttonStyle="solid" value={chartProps.chartType}
-                         onChange={(e) => {
-                             setChartProps((prevState) => ({
-                                 ...prevState,
-                                 chartType: e.target.value
-                             }))
-                         }}>
-                <Radio.Button value="Chart">Chart</Radio.Button>
-                <Radio.Button value="Numeric">Numeric</Radio.Button>
-            </Radio.Group>
-        </>
-    }
+    const renderChartNumericRadio = () => [
+        <Radio.Group size="small" className={'flink-metrics-chart-choose'} buttonStyle="solid"
+                     value={chartProps.chartType}
+                     onChange={(e) => {
+                         setChartProps((prevState) => ({
+                             ...prevState,
+                             chartType: e.target.value
+                         }))
+                     }}>
+            <Radio.Button value="Chart">Chart</Radio.Button>
+            <Radio.Button value="Numeric">Numeric</Radio.Button>
+        </Radio.Group>
+    ]
 
     return <>
 
-        <ProCard wrap split={'vertical'} gutter={8}>
-
+        <ProCard className={'flink-metrics-main'} wrap split={'vertical'} gutter={8}>
             <ProCard
                 colSpan={chartProps.chartSize} bordered
                 title={<Paragraph style={{width: chartProps.titleWidth}} code
                                   ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
                 extra={renderSizeChangeGroup()}
+                actions={renderChartNumericRadio()}
             >
                 {chartProps.chartType == "Chart" ? <Line {...config} /> :
                     <StatisticCard
-                        style={{minHeight: '100%'}}
+                        style={{minHeight: '100%', minWidth: '100%'}}
                         statistic={{
                             value: 1000,
                         }}
                     />
                 }
-                {renderChartNumericRadio()}
+
             </ProCard>
         </ProCard>
 
