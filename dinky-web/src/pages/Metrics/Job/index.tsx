@@ -19,7 +19,7 @@
 
 import React, {useEffect, useState} from "react";
 import {ProCard, ProFormSelect} from "@ant-design/pro-components";
-import {Tag} from "antd";
+import {Col, Row, Tag} from "antd";
 import FlinkChart from "./FlinkChart";
 import {getData, queryList} from "@/services/api";
 import {API_CONSTANTS} from "@/services/constants";
@@ -195,10 +195,9 @@ const Job = () => {
       {
           (selectMetrics.length > 0) &&
           <>
-          <ProCard split={'vertical'}>
-            {data.map(j=> <ProCard><FlinkChart job={j}></FlinkChart></ProCard>)}
-            <ProCard></ProCard>
-          </ProCard>
+            <Row gutter={[8, 16]}>
+              {data.map(j=> <Col span={6} ><FlinkChart job={j}></FlinkChart></Col>)}
+            </Row>
           </>
       }
   </>
