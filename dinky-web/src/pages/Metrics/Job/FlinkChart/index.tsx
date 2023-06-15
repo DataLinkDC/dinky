@@ -2,23 +2,20 @@ import {Radio, Typography} from "antd";
 import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import React, {useEffect, useState} from "react";
-import CountFormatter from "@/components/CountFormatter";
+import {getData} from "@/services/api";
+import {API_CONSTANTS} from "@/services/constants";
 
 const {Paragraph, Text} = Typography;
 
 
-type ButtonSize = {
-    name: string
-    value: string
-}
+
 type FlinkChart = {
-    url?: String;
-    metricsId?: String
-    data?: String
+    job:JobMetrics
+    data?:String
 }
 
 const FlinkChart: React.FC<FlinkChart> = (props) => {
-    const {data, url, metricsId} = props;
+    const {data,job} = props;
 
     const [chartProps, setChartProps] = useState({
         chartSize: "25%",
@@ -28,18 +25,13 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
     const [data2, setData2] = useState<[]>([]);
 
     const asyncFetch = () => {
-        fetch(url + '?get=' + metricsId)
-            .then((response) => response.json())
-            .then((json) => {
-                json[0].time = new Date()
-                setData2(json)
-            })
-            .catch((error) => {
-                console.log('fetch data failed', error);
-            });
+      getData(API_CONSTANTS.FLINK_PROXY+"/"+job.url+'/jobs/'+job.flinkJobId+'/vertices/'+job.verticesId+'/metrics'+'?get='+job.metricsId)
+        .then(json=>{
+          json[0].time = new Date()
+          setData2(json)
+        })
     };
     useEffect(() => {
-
         asyncFetch()
     }, [])
     const config = {
@@ -54,18 +46,18 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
     const renderSizeChangeGroup = () => {
         return <>
-            <Radio.Group
-                className={'radio-group-chart'}
-                size="small"
-                buttonStyle="solid"
-                value={chartProps.chartSize}
-                onChange={(e) => {
-                    setChartProps((prevState) => ({
-                        ...prevState,
-                        chartSize: e.target.value,
-                        titleWidth: e.target.value == '25%' ? '50%' : '95%'
-                    }))
-                }}
+            <Radio.Group className={'radio-group-chart'}
+                // options={[{label: 'Small', value: '25%'}, {label: 'Big', value: '50%'}]}
+                         size="small"
+                         buttonStyle="solid"
+                         value={chartProps.chartSize}
+                         onChange={(e) => {
+                             setChartProps((prevState) => ({
+                                 ...prevState,
+                                 chartSize: e.target.value,
+                                 titleWidth: e.target.value == '25%' ? '50%' : '95%'
+                             }))
+                         }}
             >
                 <Radio.Button value={'25%'}>Small</Radio.Button>
                 <Radio.Button value={'50%'}>Big</Radio.Button>
@@ -74,42 +66,52 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
     }
 
     const renderChartNumericRadio = () => [
-        <Radio.Group
-            size="small"
-            buttonStyle="solid"
-            value={chartProps.chartType}
-            onChange={(e) => {
-                setChartProps((prevState) => ({
-                    ...prevState,
-                    chartType: e.target.value
-                }))
-            }}>
+        <Radio.Group size="small" className={'flink-metrics-chart-choose'} buttonStyle="solid"
+                     value={chartProps.chartType}
+                     onChange={(e) => {
+                         setChartProps((prevState) => ({
+                             ...prevState,
+                             chartType: e.target.value
+                         }))
+                     }}
+                     style={{textAlign:"left"}}
+        >
             <Radio.Button value="Chart">Chart</Radio.Button>
             <Radio.Button value="Numeric">Numeric</Radio.Button>
         </Radio.Group>
     ]
 
     return <>
-        <ProCard wrap split={'vertical'} gutter={8}>
+
+        <ProCard className={'flink-metrics-main'} wrap split={'vertical'} gutter={8}>
             <ProCard
-                bodyStyle={{textAlign: 'center'}}
+                bodyStyle={{ textAlign:'center'}}
                 colSpan={chartProps.chartSize} bordered
                 title={<Paragraph style={{width: chartProps.titleWidth}} code
-                                  ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
+                                  ellipsis={{tooltip: true}}>{job.metricsId} </Paragraph>}
                 extra={renderSizeChangeGroup()}
                 actions={renderChartNumericRadio()}
+                style={{height:240}}
             >
                 {chartProps.chartType == "Chart" ? <Line {...config} /> :
+
+                  <StatisticCard.Group style={{minHeight: '100%', minWidth: '100%',display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center"}} >
                     <StatisticCard
                         statistic={{
                             value: 1000,
-                            formatter: (value) => <CountFormatter value={Number(value)}/>
                         }}
                     />
+                  </StatisticCard.Group>
                 }
-
+                {/*{renderChartNumericRadio()}*/}
             </ProCard>
+
+
         </ProCard>
+
+
     </>
 }
 export default FlinkChart;

@@ -182,6 +182,7 @@ export const API_CONSTANTS = {
 
   // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
+  GET_JOB_DETAIL: "/api/jobInstance/getJobInfoDetail",
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
@@ -200,6 +201,9 @@ export const API_CONSTANTS = {
   MONITOR_GET_SYSTEM_DATA:"/api/monitor/getSysData",
   MONITOR_GET_LAST_DATA:"/api/monitor/getLastUpdateData",
   JOB_METRICS: "/api/monitor/jobMetrics",
+
+  // flink
+  FLINK_PROXY: "/api/flink"
 };
 
 
