@@ -192,18 +192,15 @@ const Job = () => {
           />
       }
     </ProCard>
-
-    <ProCard
-        split={'vertical'}
-    >
       {
           (selectMetrics.length > 0) &&
           <>
-            {data.map(j=> <FlinkChart job={j}></FlinkChart>
-            )}
+          <ProCard split={'vertical'}>
+            {data.map(j=> <ProCard><FlinkChart job={j}></FlinkChart></ProCard>)}
+            <ProCard></ProCard>
+          </ProCard>
           </>
       }
-    </ProCard>
   </>
 }
 
