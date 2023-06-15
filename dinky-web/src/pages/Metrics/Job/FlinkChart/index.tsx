@@ -2,6 +2,7 @@ import {Radio, Typography} from "antd";
 import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import React, {useEffect, useState} from "react";
+import CountFormatter from "@/components/CountFormatter";
 
 const {Paragraph, Text} = Typography;
 
@@ -73,7 +74,7 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
     }
 
     const renderChartNumericRadio = () => [
-        <Radio.Group size="small" className={'flink-metrics-chart-choose'} buttonStyle="solid"
+        <Radio.Group size="small" buttonStyle="solid"
                      value={chartProps.chartType}
                      onChange={(e) => {
                          setChartProps((prevState) => ({
@@ -87,10 +88,9 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
     ]
 
     return <>
-
-        <ProCard className={'flink-metrics-main'} wrap split={'vertical'} gutter={8}>
+        <ProCard wrap split={'vertical'} gutter={8}>
             <ProCard
-                bodyStyle={{ textAlign:'center'}}
+                bodyStyle={{textAlign: 'center'}}
                 colSpan={chartProps.chartSize} bordered
                 title={<Paragraph style={{width: chartProps.titleWidth}} code
                                   ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
@@ -99,9 +99,9 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
             >
                 {chartProps.chartType == "Chart" ? <Line {...config} /> :
                     <StatisticCard
-                        style={{minHeight: '100%', minWidth: '100%'}}
                         statistic={{
                             value: 1000,
+                            formatter: (value) => <CountFormatter value={Number(value)}/>
                         }}
                     />
                 }
