@@ -59,7 +59,6 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
                          buttonStyle="solid"
                          value={chartProps.chartSize}
                          onChange={(e) => {
-                             e.stopPropagation();
                              setChartProps((prevState) => ({
                                  ...prevState,
                                  chartSize: e.target.value,
@@ -77,8 +76,6 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
         return <>
             <Radio.Group size="small" buttonStyle="solid" value={chartProps.chartType}
                          onChange={(e) => {
-                             e.preventDefault();
-                             e.stopPropagation();
                              setChartProps((prevState) => ({
                                  ...prevState,
                                  chartType: e.target.value
@@ -110,28 +107,6 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
                 }
                 {renderChartNumericRadio()}
             </ProCard>
-
-            <ProCard
-                colSpan={chartProps.chartSize} bordered
-                title={<Paragraph style={{width: chartProps.titleWidth}} code
-                                  ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
-                extra={renderSizeChangeGroup()}
-            >
-                {chartProps.chartType == "Chart" ? <Line {...config} /> :
-                    <StatisticCard
-                        statistic={{
-                            value: 1000,
-                        }}
-                    />
-                }
-                <Radio.Group size="small" buttonStyle="solid" value={chartProps.chartType}
-                             onChange={(e) => setChartProps({...chartProps, chartType: e.target.value})}>
-                    <Radio.Button value="Chart">Chart</Radio.Button>
-                    <Radio.Button value="Numeric">Numeric</Radio.Button>
-                </Radio.Group>
-            </ProCard>
-
-
         </ProCard>
 
 
