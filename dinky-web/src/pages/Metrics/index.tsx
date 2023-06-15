@@ -25,16 +25,13 @@ import Job from "./Job";
 
 export default () => {
     return <PageContainer title={false}>
-        <ProCard  split={'horizontal'} size={'small'} wrap >
-            <ProCard split={'horizontal'} style={{height: '22vh'}}>
+        <ProCard  size={'small'} wrap ghost gutter={[16, 16]}>
+            <ProCard collapsible split={'horizontal'} title={'Dinky Server'} >
                 <Server/>
             </ProCard>
-            <ProCard.Divider/>
-
-            <ProCard split={'horizontal'}>
+            <ProCard split={'horizontal'} collapsible title={'Flink Job Metrics'} >
                 <Job/>
             </ProCard>
         </ProCard>
-
     </PageContainer>;
 }

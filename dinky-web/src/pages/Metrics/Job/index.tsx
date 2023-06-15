@@ -162,7 +162,7 @@ const Job = () => {
 
 
     return <>
-        <ProCard ghost gutter={[0, 8]}>
+        <ProCard>
             <ProFormSelect
                 name="job"
                 label={l('metrics.flink.job.name')}

@@ -9,7 +9,6 @@ import {l} from "@/utils/intl";
 import {renderMetricsChartTitle} from "@/pages/Metrics/Job/function";
 
 
-
 type FlinkChartProps = {
     job: JobMetrics
     data?: String
