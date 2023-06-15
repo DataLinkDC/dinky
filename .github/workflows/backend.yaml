@@ -123,7 +123,7 @@ jobs:
           ./mvnw -B clean install \
                   -Dmaven.test.skip=false \
                  -Dspotless.check.skip=true \
-                 -Denforcer.skip=true \
+                 -Denforcer.skip=false \
                  -Dmaven.javadoc.skip=true \
                  -P prod,scala-2.12,flink-single-version,flink-${{ matrix.flink }},maven-central \
                  --no-snapshot-updates
