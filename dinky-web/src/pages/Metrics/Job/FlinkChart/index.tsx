@@ -3,7 +3,7 @@ import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import React, {useEffect, useState} from "react";
 
-const {Paragraph,Text} = Typography;
+const {Paragraph, Text} = Typography;
 
 
 type ButtonSize = {
@@ -16,16 +16,6 @@ type FlinkChart = {
     data?: String
 }
 
-const sizeData: ButtonSize[] = [
-    {
-        name: "Small",
-        value: "25%"
-    },
-    {
-        name: "Big",
-        value: "50%"
-    }
-]
 const FlinkChart: React.FC<FlinkChart> = (props) => {
     const {data, url, metricsId} = props;
 
@@ -65,14 +55,17 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
         return <>
             <Radio.Group className={'radio-group-chart'}
                 // options={[{label: 'Small', value: '25%'}, {label: 'Big', value: '50%'}]}
-                size="small"
-                buttonStyle="solid"
-                value={chartProps.chartSize}
-                onChange={(e) => setChartProps((prevState) => ({
-                    ...prevState,
-                    chartSize: e.target.value,
-                    titleWidth: e.target.value == '25%' ? '50%': '95%'
-                }))}
+                         size="small"
+                         buttonStyle="solid"
+                         value={chartProps.chartSize}
+                         onChange={(e) => {
+                             e.stopPropagation();
+                             setChartProps((prevState) => ({
+                                 ...prevState,
+                                 chartSize: e.target.value,
+                                 titleWidth: e.target.value == '25%' ? '50%' : '95%'
+                             }))
+                         }}
             >
                 <Radio.Button value={'25%'}>Small</Radio.Button>
                 <Radio.Button value={'50%'}>Big</Radio.Button>
@@ -85,6 +78,7 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
             <Radio.Group size="small" buttonStyle="solid" value={chartProps.chartType}
                          onChange={(e) => {
                              e.preventDefault();
+                             e.stopPropagation();
                              setChartProps((prevState) => ({
                                  ...prevState,
                                  chartType: e.target.value
@@ -102,7 +96,8 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
             <ProCard
                 colSpan={chartProps.chartSize} bordered
-                title={<Text style={{width: chartProps.titleWidth}} code ellipsis={{ tooltip: true}}>{metricsId} </Text>}
+                title={<Paragraph style={{width: chartProps.titleWidth}} code
+                                  ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
                 extra={renderSizeChangeGroup()}
             >
                 {chartProps.chartType == "Chart" ? <Line {...config} /> :
@@ -118,7 +113,8 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
             <ProCard
                 colSpan={chartProps.chartSize} bordered
-                title={<Paragraph style={{width: chartProps.titleWidth}} code ellipsis={{ tooltip: true}}>{metricsId} </Paragraph>}
+                title={<Paragraph style={{width: chartProps.titleWidth}} code
+                                  ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
                 extra={renderSizeChangeGroup()}
             >
                 {chartProps.chartType == "Chart" ? <Line {...config} /> :
