@@ -602,6 +602,7 @@ export default {
 
 
   // metrics
+  // server
   'metrics.filter.60seconds': '60 Seconds',
   'metrics.filter.5minutes': '5 Minutes',
   'metrics.filter.10minutes': '10 Minutes',
@@ -610,5 +611,11 @@ export default {
   'metrics.filter.5hours': '5 Hours',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
+
+  // flink job
+  'metrics.flink.job.name': 'Job Name',
+  'metrics.flink.job.placeholder': 'Please select a job name',
+  'metrics.flink.jobId': 'Flink Job ID',
+  'metrics.flink.taskId': 'Dinky Job ID',
 
 };

@@ -25,6 +25,7 @@ import NonHeap from "@/pages/Metrics/Server/OutHeap";
 import {imgStyle} from "@/pages/Metrics/Server";
 import {Line} from "@ant-design/charts";
 import FlinkChart from "./FlinkChart";
+import {l} from "@/utils/intl";
 
 
 type JobMetrics = {
@@ -91,8 +92,8 @@ const Job = () => {
   return <>
         <ProFormSelect
             name="job"
-            label="Job"
-            placeholder={'Select a job'}
+            label={l('metrics.flink.job.name')}
+            placeholder={l('metrics.flink.job.placeholder')}
             options={buildSelectDataOptions(data)}
             fieldProps={{
                 onChange: (value) => handleSelectChange(value)

@@ -605,6 +605,7 @@ export default {
 
 
   // metrics
+  // server
   'metrics.filter.60seconds': '60秒',
   'metrics.filter.5minutes': '5分钟',
   'metrics.filter.10minutes': '10分钟',
@@ -613,5 +614,10 @@ export default {
   'metrics.filter.5hours': '5小时',
   'metrics.filter.custom': '自定义',
   'metrics.filter.custom.range': '日期时间范围',
+  // flink job
+  'metrics.flink.job.name': '作业名称',
+  'metrics.flink.job.placeholder': '请选择作业名称',
+  "metrics.flink.jobId": 'Flink 任务ID',
+  'metrics.flink.taskId': 'Dinky 任务ID',
 
 };
