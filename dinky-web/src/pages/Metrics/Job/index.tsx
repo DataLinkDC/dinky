@@ -102,7 +102,7 @@ const Job = () => {
   const buildSelectDataVerticesOptions = (vertices: Vertices[]) => vertices.map((item) => {
 
     let label = <div style={{alignItems: 'center', alignContent: 'center'}}>
-      <Tag color={'success'}>TaskName: {item.name}</Tag>
+      <Tag color={'success'}>{item.name}</Tag>
     </div>;
 
     return {
@@ -114,7 +114,7 @@ const Job = () => {
   const buildSelectDataMetricsOptions = (vertices: string[]) => vertices.map((item) => {
 
     let label = <div style={{alignItems: 'center', alignContent: 'center'}}>
-      <Tag color={'blue'}>TaskName: {item}</Tag>
+      <Tag color={'blue'}>{item}</Tag>
     </div>;
 
     return {
@@ -139,7 +139,7 @@ const Job = () => {
   const handleSelectVerticesChange = async (value: string) => {
     setSelectVertices(value)
     const data = await getFlinkJobMetrics(url, jid, value);
-    setMetrics(data)
+    setMetrics(data.sort())
   }
   const handleSelectMetricsChange = async (value: string[]) => {
     setSelectMetrics(value)
@@ -196,7 +196,7 @@ const Job = () => {
           (selectMetrics.length > 0) &&
           <>
             <Row gutter={[8, 16]}>
-              {data.map(j=> <Col span={6} ><FlinkChart job={j}></FlinkChart></Col>)}
+              {data.map(j=> <FlinkChart job={j}></FlinkChart>)}
             </Row>
           </>
       }
