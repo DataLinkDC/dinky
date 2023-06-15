@@ -27,12 +27,12 @@ import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.User;
 import org.dinky.data.result.Result;
 import org.dinky.service.LdapService;
+import org.dinky.service.UserService;
 
 import java.util.List;
 
 import javax.naming.NamingException;
 
-import org.dinky.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -49,11 +49,9 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LdapController {
 
-    @Autowired
-    LdapService ldapService;
+    @Autowired LdapService ldapService;
 
-    @Autowired
-    UserService userService;
+    @Autowired UserService userService;
 
     @GetMapping("/ldapEnableStatus")
     public Result<Boolean> ldapStatus() {
@@ -77,7 +75,13 @@ public class LdapController {
         List<User> localUsers = userService.list();
 
         users.stream()
-                .filter(ldapUser -> localUsers.stream().anyMatch(user -> user.getUsername().equals(ldapUser.getUsername())))
+                .filter(
+                        ldapUser ->
+                                localUsers.stream()
+                                        .anyMatch(
+                                                user ->
+                                                        user.getUsername()
+                                                                .equals(ldapUser.getUsername())))
                 .forEach(user -> user.setEnabled(false));
 
         return Result.succeed(users);
@@ -86,7 +90,7 @@ public class LdapController {
     @PostMapping("/importUsers")
     public Result<Void> importUsers(@RequestBody List<User> users) {
         boolean b = userService.saveBatch(users);
-        if (b){
+        if (b) {
             return Result.succeed();
         }
         return Result.failed();
