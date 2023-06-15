@@ -90,6 +90,7 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
         <ProCard className={'flink-metrics-main'} wrap split={'vertical'} gutter={8}>
             <ProCard
+                bodyStyle={{ textAlign:'center'}}
                 colSpan={chartProps.chartSize} bordered
                 title={<Paragraph style={{width: chartProps.titleWidth}} code
                                   ellipsis={{tooltip: true}}>{metricsId} </Paragraph>}
@@ -107,8 +108,6 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
 
             </ProCard>
         </ProCard>
-
-
     </>
 }
 export default FlinkChart;
