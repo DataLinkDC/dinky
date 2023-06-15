@@ -106,19 +106,19 @@ public abstract class AbstractDriver implements Driver {
                     columnComment = columnComment.replaceAll("[\"']", "");
                 }
                 sb.append(
-                        String.format("`%s`  --  %s %n", columns.get(i).getName(), columnComment));
+                        String.format("`%s`  --  %s \n", columns.get(i).getName(), columnComment));
             } else {
-                sb.append(String.format("`%s` %%n", columns.get(i).getName()));
+                sb.append(String.format("`%s` %\n", columns.get(i).getName()));
             }
         }
 
         if (Asserts.isNotNullString(table.getComment())) {
             sb.append(
                     String.format(
-                            " FROM %s.%s; -- %s%n",
+                            " FROM %s.%s; -- %s\n",
                             table.getSchema(), table.getName(), table.getComment()));
         } else {
-            sb.append(String.format(" FROM %s.%s;%n", table.getSchema(), table.getName()));
+            sb.append(String.format(" FROM %s.%s;\n", table.getSchema(), table.getName()));
         }
         return sb.toString();
     }
