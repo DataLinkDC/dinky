@@ -156,8 +156,7 @@ const Job = () => {
   }
 
   return <>
-    <ProCard direction="column" ghost gutter={[0, 8]}>
-
+    <ProCard ghost gutter={[0, 8]}>
       <ProFormSelect
         name="job"
         label="Job"
@@ -192,11 +191,17 @@ const Job = () => {
             }}
           />
       }
+    </ProCard>
+
+    <ProCard
+        split={'vertical'}
+    >
       {
-        (selectMetrics.length > 0) &&
-        <>
-        {data.map(j=><FlinkChart job={j}></FlinkChart>)}
-        </>
+          (selectMetrics.length > 0) &&
+          <>
+            {data.map(j=> <FlinkChart job={j}></FlinkChart>
+            )}
+          </>
       }
     </ProCard>
   </>

@@ -25,13 +25,13 @@ import Job from "./Job";
 
 export default () => {
     return <PageContainer title={false}>
-        <ProCard style={{height:'93vh'}} split={'horizontal'} size={'small'} wrap >
-            <ProCard split={'horizontal'}  style={{height: '22vh'}}>
+        <ProCard  split={'horizontal'} size={'small'} wrap >
+            <ProCard split={'horizontal'} style={{height: '22vh'}}>
                 <Server/>
             </ProCard>
             <ProCard.Divider/>
 
-            <ProCard split={'horizontal'} wrap>
+            <ProCard split={'horizontal'}>
                 <Job/>
             </ProCard>
         </ProCard>
