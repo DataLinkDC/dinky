@@ -1,4 +1,4 @@
-import {Col, Radio, Typography} from "antd";
+import {Button, Col, Radio, Typography} from "antd";
 import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import React, {useEffect, useState} from "react";
@@ -15,6 +15,17 @@ type FlinkChart = {
 type Data = {
   time: Date;
   value: number;
+}
+type Layout = {
+  flink_url: string;
+  task_id: number;
+  job_id: string;
+  vertices: string;
+  metrics: string;
+  position: string;
+  show_type: string;
+  show_size: string;
+  layout_name: string;
 }
 const FlinkChart: React.FC<FlinkChart> = (props) => {
   const {data, job} = props;
@@ -77,25 +88,43 @@ const FlinkChart: React.FC<FlinkChart> = (props) => {
       </Radio.Group>
     </>
   }
+  const saveThisLayout = () => {
+    const saveLayout: Layout = {
+      layout_name: "", position: "",
+      job_id: job.flinkJobId,
+      metrics: job.metricsId, show_size: chartProps.chartSize
+      , show_type: chartProps.chartType, task_id: job.taskId
+      , vertices: job.verticesId,
+      flink_url: job.url
+    }
+  }
 
   const renderChartNumericRadio = () => [
-    <Radio.Group size="small" className={'flink-metrics-chart-choose'} buttonStyle="solid"
-                 value={chartProps.chartType}
-                 onChange={(e) => {
-                   setChartProps((prevState) => ({
-                     ...prevState,
-                     chartType: e.target.value
-                   }))
-                 }}
-                 style={{textAlign: "left"}}
-    >
-      <Radio.Button value="Chart">Chart</Radio.Button>
-      <Radio.Button value="Numeric">Numeric</Radio.Button>
-    </Radio.Group>
+    <>
+      <Radio.Group size="small" className={'flink-metrics-chart-choose'} buttonStyle="solid"
+                   value={chartProps.chartType}
+                   onChange={(e) => {
+                     setChartProps((prevState) => ({
+                       ...prevState,
+                       chartType: e.target.value
+                     }))
+                   }}
+                   style={{textAlign: "left"}}
+      >
+        <Radio.Button value="Chart">Chart</Radio.Button>
+        <Radio.Button value="Numeric">Numeric</Radio.Button>
+      </Radio.Group>
+
+      {
+        data === undefined ? <Button htmlType="button" style={{textAlign: "right"}}>submit</Button> :
+          <Button htmlType="button" style={{textAlign: "right"}}>delete</Button>
+      }
+
+    </>
   ]
 
   return <>
-    <Col span={chartProps.chartSize=='25%'?6:12}>
+    <Col span={chartProps.chartSize == '25%' ? 6 : 12}>
       <ProCard
         bodyStyle={{textAlign: 'center'}}
         colSpan={chartProps.chartSize} bordered
