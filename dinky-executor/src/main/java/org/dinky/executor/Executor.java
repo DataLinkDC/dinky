@@ -238,7 +238,10 @@ public abstract class Executor {
                 reset.invoke(UserGroupInformation.class);
                 log.info("Reset kerberos authentication...");
             }
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
+        } catch (NoSuchMethodException
+                | IllegalAccessException
+                | InvocationTargetException
+                | IOException e) {
             logger.error("Reset kerberos authentication error.", e);
             throw new RuntimeException(e);
         }
