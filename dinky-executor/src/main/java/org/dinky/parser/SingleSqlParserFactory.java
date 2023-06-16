@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  * @since 2021/6/14 16:49
  */
 public class SingleSqlParserFactory {
-    private SingleSqlParserFactory(){}
+    private SingleSqlParserFactory() {}
 
     protected static final Logger logger = LoggerFactory.getLogger(SingleSqlParserFactory.class);
 

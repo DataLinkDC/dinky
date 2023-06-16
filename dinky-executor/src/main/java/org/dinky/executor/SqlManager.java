@@ -29,7 +29,6 @@ import org.dinky.data.model.SystemConfiguration;
 
 import org.apache.flink.table.api.DataTypes;
 import org.apache.flink.table.api.ExpressionParserException;
-import org.apache.flink.table.api.Table;
 import org.apache.flink.table.api.TableResult;
 import org.apache.flink.table.catalog.exceptions.CatalogException;
 import org.apache.flink.types.Row;
@@ -41,8 +40,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
