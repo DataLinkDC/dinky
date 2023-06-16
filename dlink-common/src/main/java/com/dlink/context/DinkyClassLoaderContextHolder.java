@@ -22,6 +22,7 @@ package com.dlink.context;
 import com.dlink.classloader.DinkyClassLoader;
 
 import java.io.IOException;
+import java.net.URL;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,14 +36,19 @@ public class DinkyClassLoaderContextHolder {
     private static final ThreadLocal<DinkyClassLoader> CLASS_LOADER_CONTEXT = new ThreadLocal<>();
     private static final ThreadLocal<ClassLoader> INIT_CLASS_LOADER_CONTEXT = new ThreadLocal<>();
 
-    public static void set(DinkyClassLoader classLoader) {
+    protected static void set(DinkyClassLoader classLoader) {
         CLASS_LOADER_CONTEXT.set(classLoader);
         INIT_CLASS_LOADER_CONTEXT.set(Thread.currentThread().getContextClassLoader());
         Thread.currentThread().setContextClassLoader(classLoader);
     }
 
     public static DinkyClassLoader get() {
-        return CLASS_LOADER_CONTEXT.get();
+        DinkyClassLoader dinkyClassLoader = CLASS_LOADER_CONTEXT.get();
+        if (dinkyClassLoader == null) {
+            dinkyClassLoader = new DinkyClassLoader(new URL[0]);
+            set(dinkyClassLoader);
+        }
+        return dinkyClassLoader;
     }
 
     public static void clear() {

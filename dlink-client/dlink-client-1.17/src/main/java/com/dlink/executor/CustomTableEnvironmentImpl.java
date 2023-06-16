@@ -20,6 +20,7 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LineageContext;
@@ -122,7 +123,7 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
             StreamExecutionEnvironment executionEnvironment,
             EnvironmentSettings settings) {
         final MutableURLClassLoader userClassLoader = FlinkUserCodeClassLoaders.create(
-                new URL[0], settings.getUserClassLoader(), settings.getConfiguration());
+                new URL[0], DinkyClassLoaderContextHolder.get(), settings.getConfiguration());
         final Executor executor = lookupExecutor(userClassLoader, executionEnvironment);
 
         final TableConfig tableConfig = TableConfig.getDefault();
