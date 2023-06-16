@@ -91,7 +91,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
 
   return <>
     <ModalForm
-      {...MODAL_FORM_OPTIONS}
+      width={'80%'}
       open={visible}
       modalProps={{onCancel: handleCancel}}
       title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}

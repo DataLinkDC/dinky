@@ -21,26 +21,11 @@ import {l} from '@/utils/intl';
 import React from 'react';
 
 /**
- * Cluster instance type
+ * Cluster config type
  */
-export const CLUSTER_INSTANCE_TYPE = [
-    {value: RUN_MODE.STANDALONE, label: 'Standalone'},
-    {value: RUN_MODE.YARN_SESSION, label: 'Yarn Session'},
-    {value: RUN_MODE.KUBERNETES_SESSION, label: 'Kubernetes Session'},
+export const CLUSTER_CONFIG_TYPE = [
+    {value: RUN_MODE.YARN, label: 'Flink On Yarn'},
+    {value: RUN_MODE.KUBERNETES_APPLICATION, label: 'Flink Kubernetes Native'},
+    {value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR, label: 'Flink Kubernetes Operator'},
 ]
 
-/**
- * Cluster instance  is auto registers
- */
-export const CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM = {
-  true: {text: <Tag color={'success'}>{l('global.yes')}</Tag>, status: 'Success'},
-  false: {text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error'},
-}
-
-/**
- * Cluster instance status enum
- */
-export const CLUSTER_INSTANCE_STATUS_ENUM = {
-  1: {text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>, status: 'Success'},
-  0: {text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>, status: 'Error'},
-}

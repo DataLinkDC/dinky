@@ -414,6 +414,7 @@ export const RUN_MODE = {
   STANDALONE: 'standalone',
   YARN_SESSION: 'yarn-session',
   YARN_PER_JOB: 'yarn-per-job',
+  YARN: 'yarn',
   YARN_APPLICATION: 'yarn-application',
   KUBERNETES_SESSION: 'kubernetes-session',
   KUBERNETES_APPLICATION: 'kubernetes-application',

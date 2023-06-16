@@ -21,80 +21,88 @@ import React from 'react';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
 import {Cluster} from '@/types/RegCenter/data';
-import {ProForm, ProFormGroup, ProFormSelect, ProFormText, ProFormTextArea} from '@ant-design/pro-components';
-import {CLUSTER_INSTANCE_TYPE} from '@/pages/RegCenter/Cluster/Instance/components/contants';
-import {MODAL_FORM_OPTIONS} from '@/services/constants';
+import {
+    ProForm,
+    ProFormGroup,
+    ProFormSelect,
+    ProFormText,
+} from '@ant-design/pro-components';
 import {l} from '@/utils/intl';
-import {validatorJMHAAdderess} from '@/pages/RegCenter/Cluster/Instance/components/function';
+import {Divider} from 'antd';
+import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import {RUN_MODE} from "@/services/constants";
+import HadoopConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HadoopConfig";
+import FlinkKubernetesNative
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesNative";
+import FlinkKubernetesOperator
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesOperator";
 
 
 type ConfigurationFormProps = {
-  form: FormInstance<Values>
-  value: Partial<Cluster.Config>;
+    form: FormInstance<Values>
+    value: Partial<Cluster.Config>;
 }
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
-  const {form, value} = props;
+    const {form, value} = props;
+
+    const [type, setType] = React.useState<string>(value.type || 'yarn');
 
 
-  const renderForm = () => {
+    const renderFlinkKubernetesNativeConfigForm = () => {
+
+    }
+
+
+
+
+    const renderAllForm = () => {
+        return <>
+            <Divider>{l('rc.cc.baseConfig')}</Divider>
+            <ProFormGroup>
+                <ProFormSelect
+                    name="type"
+                    label={l('rc.cc.type')}
+                    width="md"
+                    options={CLUSTER_CONFIG_TYPE}
+                    initialValue={CLUSTER_CONFIG_TYPE[0]}
+                    rules={[{required: true, message: l('rc.cc.typePlaceholder')}]}
+                    placeholder={l('rc.cc.typePlaceholder')}
+                />
+                <ProFormText
+                    name="name"
+                    label={l('rc.cc.name')}
+                    width="md"
+                    rules={[{required: true, message: l('rc.cc.namePlaceholder')}]}
+                    placeholder={l('rc.cc.namePlaceholder')}
+                />
+
+                <ProFormText
+                    name="note"
+                    label={l('global.table.note')}
+                    width="md"
+                    placeholder={l('global.table.notePlaceholder')}
+                />
+            </ProFormGroup>
+
+            {type === RUN_MODE.YARN && <HadoopConfig/>}
+            {type === RUN_MODE.KUBERNETES_APPLICATION && <FlinkKubernetesNative/>}
+            {type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR && <FlinkKubernetesOperator/>}
+
+        </>;
+    };
+
+
     return <>
-      <ProFormGroup title={''}>
-        <ProFormText
-          name="name"
-          label={l('rc.cc.name')}
-          width="md"
-          rules={[{required: true, message: l('rc.cc.namePlaceholder')}]}
-          placeholder={l('rc.cc.namePlaceholder')}
-        />
-
-        <ProFormText
-          name="alias"
-          label={l('rc.ci.alias')}
-          width="sm"
-          placeholder={l('rc.ci.aliasPlaceholder')}
-        />
-
-        <ProFormSelect
-          name="type"
-          label={l('rc.ci.type')}
-          width="sm"
-          options={CLUSTER_INSTANCE_TYPE}
-          rules={[{required: true, message: l('rc.ci.typePlaceholder')}]}
-          placeholder={l('rc.ci.typePlaceholder')}
-        />
-
-        <ProFormTextArea
-          name="hosts"
-          label={l('rc.ci.jmha')}
-          width="md"
-          tooltip={l('rc.ci.jmha.tips')}
-          validateTrigger={['onChange']}
-          rules={[{required: true, validator: (rule, hostsValue) => validatorJMHAAdderess(rule, hostsValue)}]}
-          placeholder={l('rc.ci.jmhaPlaceholder')}
-        />
-        <ProFormTextArea
-          name="note"
-          label={l('global.table.note')}
-          width="md"
-          placeholder={l('global.table.notePlaceholder')}
-        />
-
-      </ProFormGroup>
-
+        <ProForm
+            form={form}
+            initialValues={value}
+            submitter={false}
+            onValuesChange={(changedValues) => setType(changedValues.type)}
+        >
+            {renderAllForm()}
+        </ProForm>
     </>;
-  };
-
-
-  return <>
-    <ProForm
-      {...MODAL_FORM_OPTIONS as any}
-      form={form}
-      initialValues={value}
-      submitter={false}
-    >
-      {renderForm()}
-    </ProForm>
-  </>;
 
 
 };
