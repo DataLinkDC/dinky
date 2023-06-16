@@ -74,8 +74,8 @@ const Server = () => {
         , nonHeapMax: 0, nonHeapLastValue: 0
     });
     let eventSource: EventSource;
-    const getLastData =  (data: MetricsDataType[]) => {
-        eventSource = getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime() );
+    const getLastData = (data: MetricsDataType[]) => {
+        eventSource = getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime());
         eventSource.onmessage = e => {
             let result = JSON.parse(e.data);
             result.content = JSON.parse(result.content)
@@ -94,12 +94,15 @@ const Server = () => {
 
     }
     const getInitData = () => {
-        queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {startTime: startTime.getTime(), endTime: endTime.getTime()})
+        queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {
+            startTime: startTime.getTime(),
+            endTime: endTime.getTime()
+        })
             .then(res => {
                 (res as any[]).map(x => x.content = JSON.parse(x.content))
                 if (!custom) {
                     getLastData(res)
-                }else {
+                } else {
                     setData(res)
                 }
             })
@@ -159,27 +162,38 @@ const Server = () => {
     }
 
 
+    const extraDataBuilder = (data: DataRecord) => {
+        return {
+            cpuLastValue: data.cpuLastValue + "%",
+            heapLastValue: data.heapLastValue + " / " + data.heapMax + " MB",
+            nonHeapLastValue: data.nonHeapLastValue + " / " + data.nonHeapMax + " MB",
+            threadCount: data.threadCount + " / " + data.threadPeakCount
+        }
+    }
+
+
     return <>
-        <ProCard colSpan={'100%'} bordered>
+        <ProCard size={'small'} colSpan={'100%'} bordered>
             <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
-        <ProCard bordered size={'small'} split={'vertical'}>
-                <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>} extra={dataRecord?.cpuLastValue + "%"}>
-                    <CPU data={data}/>
-                </ProCard>
-                <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}
-                         extra={dataRecord?.heapLastValue + " / " + dataRecord?.heapMax + " MB"}>
-                    <Heap data={data} max={dataRecord?.heapMax}/>
-                </ProCard>
-                <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}
-                         extra={dataRecord?.threadCount + " / " + dataRecord?.threadPeakCount}>
-                    <Thread data={data}/>
-                </ProCard>
-                <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}
-                         extra={dataRecord?.nonHeapLastValue + " / " + dataRecord?.nonHeapMax + " MB"}>
-                    <NonHeap data={data} max={dataRecord?.nonHeapMax}/>
-                </ProCard>
+        <ProCard bordered split={'vertical'}>
+            <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>}
+                     extra={extraDataBuilder(dataRecord).cpuLastValue}>
+                <CPU data={data}/>
+            </ProCard>
+            <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}
+                     extra={extraDataBuilder(dataRecord).heapLastValue}>
+                <Heap data={data} max={dataRecord?.heapMax}/>
+            </ProCard>
+            <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}
+                     extra={extraDataBuilder(dataRecord).threadCount}>
+                <Thread data={data}/>
+            </ProCard>
+            <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}
+                     extra={extraDataBuilder(dataRecord).nonHeapLastValue}>
+                <NonHeap data={data} max={dataRecord?.nonHeapMax}/>
+            </ProCard>
         </ProCard>
     </>
 }
