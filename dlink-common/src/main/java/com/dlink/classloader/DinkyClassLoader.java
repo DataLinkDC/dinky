@@ -68,6 +68,20 @@ public class DinkyClassLoader extends URLClassLoader {
         }
     }
 
+    public void addURL(Collection<File> fileSet) {
+        URL[] urls = fileSet.stream()
+                .map(
+                        x -> {
+                            try {
+                                return x.toURI().toURL();
+                            } catch (MalformedURLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
+                .toArray(URL[]::new);
+        addURL(urls);
+    }
+
     public void addURL(String[] paths, List<String> notExistsFiles) {
         for (String path : paths) {
             File file = new File(path);
