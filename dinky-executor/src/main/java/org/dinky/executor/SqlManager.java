@@ -55,20 +55,10 @@ import java.util.regex.Pattern;
 public final class SqlManager {
 
     public static final String FRAGMENT = "fragment";
-    static final String SHOW_FRAGMENTS = "SHOW FRAGMENTS";
     private final Map<String, String> sqlFragments;
 
     public SqlManager() {
         sqlFragments = new HashMap<>();
-    }
-
-    /**
-     * Get names of sql fragments loaded.
-     *
-     * @return a list of names of sql fragments loaded
-     */
-    public List<String> listSqlFragments() {
-        return new ArrayList<>(sqlFragments.keySet());
     }
 
     /**
@@ -107,28 +97,6 @@ public final class SqlManager {
     }
 
     /**
-     * Unregisters a fragment of sql under the given name. The sql fragment name must be existed.
-     *
-     * @param sqlFragmentName name under which to unregister the given sql fragment.
-     * @param ignoreIfNotExists If false exception will be thrown if the fragment of sql to be
-     *     altered does not exist.
-     * @throws CatalogException if the unregistration of the sql fragment under the given name
-     *     failed. But at the moment, with CatalogException, not SqlException
-     */
-    public void unregisterSqlFragment(String sqlFragmentName, boolean ignoreIfNotExists) {
-        checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragmentName name cannot be null or empty.");
-
-        if (sqlFragments.containsKey(sqlFragmentName)) {
-            sqlFragments.remove(sqlFragmentName);
-        } else if (!ignoreIfNotExists) {
-            throw new CatalogException(
-                    format("The fragment of sql %s does not exist.", sqlFragmentName));
-        }
-    }
-
-    /**
      * Get a fragment of sql under the given name. The sql fragment name must be existed.
      *
      * @param sqlFragmentName name under which to unregister the given sql fragment.
@@ -163,39 +131,6 @@ public final class SqlManager {
         return CustomTableResultImpl.buildTableResult(
                 Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())),
                 Collections.singletonList(Row.of(sqlFragment)));
-    }
-
-    /**
-     * Get a fragment of sql under the given name. The sql fragment name must be existed.
-     *
-     * @throws CatalogException if the unregistration of the sql fragment under the given name
-     *     failed. But at the moment, with CatalogException, not SqlException
-     */
-    public Map<String, String> getSqlFragment() {
-        return sqlFragments;
-    }
-
-    public TableResult getSqlFragments() {
-        List<Row> rows = new ArrayList<>();
-        for (String key : sqlFragments.keySet()) {
-            rows.add(Row.of(key));
-        }
-        return CustomTableResultImpl.buildTableResult(
-                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())),
-                rows);
-    }
-
-    public Iterator getSqlFragmentsIterator() {
-        return sqlFragments.entrySet().iterator();
-    }
-
-    public Table getSqlFragmentsTable(CustomTableEnvironmentImpl environment) {
-        List<String> keys = new ArrayList<>(sqlFragments.keySet());
-        return environment.fromValues(keys);
-    }
-
-    public boolean checkShowFragments(String sql) {
-        return SHOW_FRAGMENTS.equals(sql.trim().toUpperCase());
     }
 
     /**
