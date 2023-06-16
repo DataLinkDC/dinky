@@ -116,8 +116,8 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
 
         List<ModifyOperation> modifyOperations =
                 operations.stream()
-                        .filter(operation -> operation instanceof ModifyOperation)
-                        .map(operation -> (ModifyOperation) operation)
+                        .filter(ModifyOperation.class::isInstance)
+                        .map(ModifyOperation.class::cast)
                         .collect(Collectors.toList());
 
         StreamGraph streamGraph = transOperatoinsToStreamGraph(modifyOperations);
@@ -180,26 +180,26 @@ public class CustomTableEnvironmentImpl extends AbstractCustomTableEnvironment {
         }
 
         Operation operation = operations.get(0);
-        SqlExplainResult record = new SqlExplainResult();
-        record.setParseTrue(true);
-        record.setExplainTrue(true);
+        SqlExplainResult data = new SqlExplainResult();
+        data.setParseTrue(true);
+        data.setExplainTrue(true);
 
         if (operation instanceof ModifyOperation) {
-            record.setType("Modify DML");
+            data.setType("Modify DML");
         } else if (operation instanceof ExplainOperation) {
-            record.setType("Explain DML");
+            data.setType("Explain DML");
         } else if (operation instanceof QueryOperation) {
-            record.setType("Query DML");
+            data.setType("Query DML");
         } else {
-            record.setExplain(operation.asSummaryString());
-            record.setType("DDL");
+            data.setExplain(operation.asSummaryString());
+            data.setType("DDL");
 
-            // record.setExplain("DDL statement needn't comment。");
-            return record;
+            // data.setExplain("DDL statement needn't comment。");
+            return data;
         }
 
-        record.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
-        return record;
+        data.setExplain(getPlanner().explain(operations, ExplainFormat.TEXT, extraDetails));
+        return data;
     }
 
     public boolean parseAndLoadConfiguration(
