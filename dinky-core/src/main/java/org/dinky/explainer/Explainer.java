@@ -19,13 +19,6 @@
 
 package org.dinky.explainer;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.util.StrUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import org.apache.flink.configuration.Configuration;
-import org.apache.flink.core.fs.FileSystem;
-import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 import org.dinky.assertion.Asserts;
 import org.dinky.constant.FlinkSQLConstant;
 import org.dinky.context.DinkyClassLoaderContextHolder;
@@ -52,13 +45,24 @@ import org.dinky.trans.Operations;
 import org.dinky.utils.LogUtil;
 import org.dinky.utils.SqlUtil;
 import org.dinky.utils.URLUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import org.apache.flink.configuration.Configuration;
+import org.apache.flink.core.fs.FileSystem;
+import org.apache.flink.runtime.rest.messages.JobPlanInfo;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.util.StrUtil;
 
 /**
  * Explainer
@@ -312,9 +316,10 @@ public class Explainer {
         }
 
         if (!jobParam.getExecute().isEmpty()) {
-            List<String> datastreamPlans = jobParam.getExecute().stream()
-                    .map(StatementParam::getValue)
-                    .collect(Collectors.toList());
+            List<String> datastreamPlans =
+                    jobParam.getExecute().stream()
+                            .map(StatementParam::getValue)
+                            .collect(Collectors.toList());
             return executor.getStreamGraphFromDataStream(datastreamPlans);
         }
         return mapper.createObjectNode();
@@ -329,9 +334,10 @@ public class Explainer {
         }
 
         if (!jobParam.getExecute().isEmpty()) {
-            List<String> datastreamPlans = jobParam.getExecute().stream()
-                    .map(StatementParam::getValue)
-                    .collect(Collectors.toList());
+            List<String> datastreamPlans =
+                    jobParam.getExecute().stream()
+                            .map(StatementParam::getValue)
+                            .collect(Collectors.toList());
             return executor.getJobPlanInfoFromDataStream(datastreamPlans);
         }
         throw new RuntimeException(
@@ -339,14 +345,15 @@ public class Explainer {
     }
 
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig = new JobConfig(
-                "local",
-                false,
-                false,
-                true,
-                useStatementSet,
-                1,
-                executor.getTableConfig().getConfiguration().toMap());
+        JobConfig jobConfig =
+                new JobConfig(
+                        "local",
+                        false,
+                        false,
+                        true,
+                        useStatementSet,
+                        1,
+                        executor.getTableConfig().getConfiguration().toMap());
         this.initialize(JobManager.buildPlanMode(jobConfig), jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();

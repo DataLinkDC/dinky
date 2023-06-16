@@ -34,8 +34,7 @@ public class SqlUtil {
 
     private static final String SEMICOLON = ";";
 
-    private SqlUtil() {
-    }
+    private SqlUtil() {}
 
     public static String[] getStatements(String sql) {
         return getStatements(sql, SystemConfiguration.getInstances().getSqlSeparator());
