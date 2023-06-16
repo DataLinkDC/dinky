@@ -19,7 +19,7 @@ const JobHistoryList = (props: HistoryProps) => {
 
   const actionRef = useRef<ActionType>();
 
-  const jobListColums: ProColumns<Jobs.JobInstance>[] = [
+  const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
 
     {
       title: l('global.table.createTime'),
@@ -59,7 +59,7 @@ const JobHistoryList = (props: HistoryProps) => {
         params={{isHistory: true}}
         tableStyle={{overflowX: "hidden", overflowY: "hidden", margin: "10px"}}
         size={"small"}
-        columns={jobListColums}
+        columns={jobListColumns}
         actionRef={actionRef}
         request={(params) => queryList(API_CONSTANTS.GET_JOB_LIST, {
             ...params,
