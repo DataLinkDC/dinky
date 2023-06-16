@@ -23,8 +23,17 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
   });
 
 
+  const [counter, setCounter] = useState(0);
+
   useEffect(() => {
-  }, data)
+    const timer = setInterval(() => {
+      setCounter((prevCounter) => prevCounter + 1);
+    }, 1000); // 每隔1000毫秒（1秒）更新一次
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
   const config = {
     animation: false,
     data: data,
