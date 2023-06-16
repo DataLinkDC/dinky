@@ -69,6 +69,6 @@ public class SystemController {
      */
     @GetMapping("/readFile")
     public Result<String> readFile(@RequestParam String path) {
-        return Result.succeed(systemService.readFile(path));
+        return Result.data(systemService.readFile(path));
     }
 }

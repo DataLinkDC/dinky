@@ -18,7 +18,7 @@
 import {request} from '@umijs/max';
 
 import {METHOD_CONSTANTS} from "@/services/constants";
-
+import proxy from "../../config/proxy";
 
 
 // ============================ CRUD REQUEST ============================
@@ -84,6 +84,14 @@ export async function removeData(url: string, params: [any]) {
       ...params,
     },
   });
+}
+export  function getSseData(url: string) {
+  const {REACT_APP_ENV = 'dev'} = process.env;
+
+  // @ts-ignore
+  const address = proxy[REACT_APP_ENV]["/api/"].target || ""
+
+  return new EventSource(address + url);
 }
 
 

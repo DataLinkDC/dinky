@@ -37,9 +37,12 @@ import {
 import {getDataByParams, queryDataByParams} from "@/services/BusinessCrud";
 import Metrics from "@/pages/Metrics";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
-import {API_CONSTANTS} from "@/services/constants";
+import {API_CONSTANTS, METHOD_CONSTANTS} from "@/services/constants";
 import proxy from "../../../../config/proxy";
 import NonHeap from "@/pages/Metrics/Server/OutHeap";
+import {getSseData} from "@/services/api";
+import {request} from "@@/exports";
+import {extend} from "umi-request";
 
 export const imgStyle = {
     display: 'block',
@@ -71,28 +74,23 @@ const Server = () => {
         , nonHeapMax: 0, nonHeapLastValue: 0
     });
     let eventSource: EventSource;
-    const getLastData = (data: MetricsDataType[]) => {
-            const {REACT_APP_ENV = 'dev'} = process.env;
-
-            // @ts-ignore
-            const url = proxy[REACT_APP_ENV]["/api/"].target || ""
-
-            eventSource = new EventSource(url + API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime());
-            eventSource.onmessage = e => {
-                let result = JSON.parse(e.data);
-                result.content = JSON.parse(result.content)
-                data.push(result)
-                setData(data)
-                setDataRecord({
-                    cpuLastValue: result.content.jvm.cpuUsed.toFixed(2),
-                    heapMax: Number((result.content.jvm.heapMax / (1024 * 1024)).toFixed(0)),
-                    heapLastValue: Number((result.content.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
-                    nonHeapMax: Number((result.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
-                    nonHeapLastValue: Number((result.content.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
-                    threadPeakCount: result.content.jvm.threadPeakCount,
-                    threadCount: result.content.jvm.threadCount,
-                })
-            }
+    const getLastData =  (data: MetricsDataType[]) => {
+        eventSource = getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime() );
+        eventSource.onmessage = e => {
+            let result = JSON.parse(e.data);
+            result.content = JSON.parse(result.content)
+            data.push(result)
+            setData(data)
+            setDataRecord({
+                cpuLastValue: result.content.jvm.cpuUsed.toFixed(2),
+                heapMax: Number((result.content.jvm.heapMax / (1024 * 1024)).toFixed(0)),
+                heapLastValue: Number((result.content.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
+                nonHeapMax: Number((result.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
+                nonHeapLastValue: Number((result.content.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
+                threadPeakCount: result.content.jvm.threadPeakCount,
+                threadCount: result.content.jvm.threadCount,
+            })
+        }
 
     }
     const getInitData = () => {
@@ -166,8 +164,8 @@ const Server = () => {
             <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                           handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
         </ProCard>
-        <ProCard style={{height: '88vh'}} ghost wrap size={'small'} split={'vertical'}>
-            <ProCard style={{height: '20vh'}} split={'vertical'}>
+        <ProCard ghost wrap size={'small'} split={'vertical'}>
+            <ProCard style={{height: '16vh'}} split={'vertical'}>
                 <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>} extra={dataRecord?.cpuLastValue + "%"}>
                     <CPU data={data}/>
                 </ProCard>

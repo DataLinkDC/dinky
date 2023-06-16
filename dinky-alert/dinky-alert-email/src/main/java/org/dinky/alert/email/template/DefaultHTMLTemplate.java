@@ -162,7 +162,7 @@ public class DefaultHTMLTemplate implements AlertTemplate {
 
         requireNonNull(content, "content must not null");
         String htmlTableThead =
-                StringUtils.isEmpty(title) ? "" : String.format("<thead>%s</thead>%n", title);
+                StringUtils.isEmpty(title) ? "" : String.format("<thead>%s</thead>\n", title);
 
         return EmailConstants.HTML_HEADER_PREFIX
                 + htmlTableThead

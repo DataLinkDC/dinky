@@ -20,6 +20,7 @@
 import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {Datum} from "@antv/g2plot";
 
 type NonHeapProps = {
     data: MetricsDataType[];
@@ -39,7 +40,7 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
     const config: AreaConfig = {
         data: dataList,
         animation: false,
-        height: 200,
+        height: 150,
         yField: 'value',
         xField: 'time',
         xAxis: {
@@ -50,6 +51,11 @@ const NonHeap: React.FC<NonHeapProps> = (props) => {
             min: 0,
             max: max
         },
+        tooltip: {
+            formatter: (datum: Datum) => {
+                return {name: "NonHeap Memory", value: datum.value + ' MB'};
+            },
+        }
     };
 
     return <Area {...config} />;

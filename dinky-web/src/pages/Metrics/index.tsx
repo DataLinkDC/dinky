@@ -20,10 +20,21 @@
 
 import React from "react";
 import Server from "@/pages/Metrics/Server";
-import {PageContainer} from "@ant-design/pro-components";
+import {PageContainer, ProCard} from "@ant-design/pro-components";
+import Job from "./Job";
 
 export default () => {
     return <PageContainer title={false}>
-        <Server/>
+        <ProCard style={{height:'93vh'}} split={'horizontal'} size={'small'} wrap >
+            <ProCard split={'horizontal'}  style={{height: '22vh'}}>
+                <Server/>
+            </ProCard>
+            <ProCard.Divider/>
+
+            <ProCard split={'horizontal'} wrap>
+                <Job/>
+            </ProCard>
+        </ProCard>
+
     </PageContainer>;
 }
