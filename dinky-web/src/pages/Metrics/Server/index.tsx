@@ -23,26 +23,19 @@ import {
 } from "@ant-design/pro-components";
 import CPU from "@/pages/Metrics/Server/CPU";
 import Heap from "@/pages/Metrics/Server/Heap";
-import OutHeap from "@/pages/Metrics/Server/OutHeap";
 import Thread from "@/pages/Metrics/Server/Thread";
 import {CPUIcon, HeapIcon, OutHeapIcon, ThreadIcon} from "@/components/Icons/MetricsIcon";
 import {Space} from "antd";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import GlobalFilter from "@/pages/Metrics/Server/GlobalFilter";
 import {
-    getDayOfMonth,
-    getSubDateTime,
     getSubMinTime
 } from "@/pages/Metrics/Server/function";
-import {getDataByParams, queryDataByParams} from "@/services/BusinessCrud";
-import Metrics from "@/pages/Metrics";
+import {queryDataByParams} from "@/services/BusinessCrud";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
-import {API_CONSTANTS, METHOD_CONSTANTS} from "@/services/constants";
-import proxy from "../../../../config/proxy";
+import {API_CONSTANTS} from "@/services/constants";
 import NonHeap from "@/pages/Metrics/Server/OutHeap";
 import {getSseData} from "@/services/api";
-import {request} from "@@/exports";
-import {extend} from "umi-request";
 
 export const imgStyle = {
     display: 'block',
