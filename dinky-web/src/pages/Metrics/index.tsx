@@ -18,18 +18,26 @@
  */
 
 
-import React from "react";
+import React, {useState} from "react";
 import Server from "@/pages/Metrics/Server";
 import {PageContainer, ProCard} from "@ant-design/pro-components";
 import Job from "./Job";
+import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
+import {Button, Input} from "antd";
 
+const commonChartConfig: G2plotConfig = {
+  data: [],
+  autoFit: false,
+  animation: false,
+  height: 150,
+}
 export default () => {
-    return <PageContainer title={false}>
-        <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
-            <Server/>
-        </ProCard>
-        <ProCard collapsible title={'Flink Job Metrics'} ghost hoverable bordered headerBordered>
-            <Job/>
-        </ProCard>
-    </PageContainer>;
+
+  return <PageContainer title={false}>
+    <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
+      <Server chartConfig={commonChartConfig}/>
+    </ProCard>
+
+    <Job/>
+  </PageContainer>;
 }

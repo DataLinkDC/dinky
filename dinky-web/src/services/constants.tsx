@@ -201,6 +201,7 @@ export const API_CONSTANTS = {
   MONITOR_GET_SYSTEM_DATA:"/api/monitor/getSysData",
   MONITOR_GET_LAST_DATA:"/api/monitor/getLastUpdateData",
   JOB_METRICS: "/api/monitor/jobMetrics",
+  SAVE_FLINK_METRICS: "/api/monitor/saveFlinkMetrics",
 
   // flink
   FLINK_PROXY: "/api/flink"

@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.PublicInterface;
+import org.dinky.data.model.Metrics;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.service.MonitorService;
@@ -31,6 +32,8 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,5 +66,11 @@ public class MonitorController {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
                 emitter, DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
+    }
+
+    @PutMapping("/saveFlinkMetrics")
+    public Result<Void> saveFlinkMetricLayout(@RequestBody List<Metrics> metricsList) {
+        monitorService.saveFlinkMetricLayout(metricsList);
+        return Result.succeed();
     }
 }

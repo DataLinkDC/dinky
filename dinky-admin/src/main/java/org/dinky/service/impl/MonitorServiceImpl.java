@@ -20,7 +20,9 @@
 package org.dinky.service.impl;
 
 import org.dinky.configure.MetricConfig;
+import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
+import org.dinky.mapper.MetricsMapper;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
 import org.dinky.utils.PaimonUtil;
@@ -38,7 +40,10 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
@@ -48,7 +53,8 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MonitorServiceImpl implements MonitorService {
+public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
+        implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
 
     @Override
@@ -102,5 +108,14 @@ public class MonitorServiceImpl implements MonitorService {
                     }
                 });
         return sseEmitter;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveFlinkMetricLayout(List<Metrics> metricsList) {
+        if (CollUtil.isEmpty(metricsList)) {
+            return;
+        }
+        saveBatch(metricsList);
     }
 }

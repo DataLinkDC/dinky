@@ -53,7 +53,7 @@ export const buildMetricsList = (subTasks: string[]) => subTasks.map((subTask) =
 export const buildSubTaskList = (subTaskList: SubTask[]) => subTaskList.map((subTask) => {
     // build label
     let label = <div className={'tag-content'}>
-        <Tag icon={<SyncOutlined spin/>} color={'processing'}>{subTask.name}</Tag>
+        <Tag icon={<SyncOutlined spin/>} color={'success'}>{subTask.name}</Tag>
     </div>;
 
     return {
@@ -90,10 +90,10 @@ export const buildRunningJobList = (metrics: Task[]) => metrics.map((item) => {
  * @param {string} metricsId
  * @returns {JSX.Element}
  */
-export const renderMetricsChartTitle = (metricsId: string) => {
+export const renderMetricsChartTitle = (metricsId: string,titleWidth:string | number) => {
     return <>
         <Paragraph
-            style={{width: '90%'}}
+            style={{width:titleWidth}}
             code ellipsis={{tooltip: true}}>
             {metricsId}
         </Paragraph>

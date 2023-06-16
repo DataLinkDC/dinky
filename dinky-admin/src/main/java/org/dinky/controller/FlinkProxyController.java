@@ -37,7 +37,8 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 
-@RestController(FlinkProxyController.API)
+@RestController()
+@RequestMapping(FlinkProxyController.API)
 public class FlinkProxyController {
     public static final String API = "/api/flink/";
 
