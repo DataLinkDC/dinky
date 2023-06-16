@@ -37,6 +37,12 @@ import FlinkKubernetesNative
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesNative";
 import FlinkKubernetesOperator
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesOperator";
+import BaseConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/BaseConfig";
+import ApplicationConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/ApplicationConfig";
+import HighPriorityConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HighPriorityConfig";
 
 
 type ConfigurationFormProps = {
@@ -49,56 +55,27 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     const [type, setType] = React.useState<string>(value.type || 'yarn');
 
 
-    const renderFlinkKubernetesNativeConfigForm = () => {
-
-    }
-
-
-
-
     const renderAllForm = () => {
         return <>
-            <Divider>{l('rc.cc.baseConfig')}</Divider>
-            <ProFormGroup>
-                <ProFormSelect
-                    name="type"
-                    label={l('rc.cc.type')}
-                    width="md"
-                    options={CLUSTER_CONFIG_TYPE}
-                    initialValue={CLUSTER_CONFIG_TYPE[0]}
-                    rules={[{required: true, message: l('rc.cc.typePlaceholder')}]}
-                    placeholder={l('rc.cc.typePlaceholder')}
-                />
-                <ProFormText
-                    name="name"
-                    label={l('rc.cc.name')}
-                    width="md"
-                    rules={[{required: true, message: l('rc.cc.namePlaceholder')}]}
-                    placeholder={l('rc.cc.namePlaceholder')}
-                />
-
-                <ProFormText
-                    name="note"
-                    label={l('global.table.note')}
-                    width="md"
-                    placeholder={l('global.table.notePlaceholder')}
-                />
-            </ProFormGroup>
-
+            <BaseConfig/>
             {type === RUN_MODE.YARN && <HadoopConfig/>}
             {type === RUN_MODE.KUBERNETES_APPLICATION && <FlinkKubernetesNative/>}
             {type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR && <FlinkKubernetesOperator/>}
-
+            <HighPriorityConfig/>
+            <ApplicationConfig/>
         </>;
     };
 
+    const onTypeChange = (changedValues: any) => {
+        if (changedValues.type) setType(changedValues.type)
+    }
 
     return <>
         <ProForm
             form={form}
             initialValues={value}
             submitter={false}
-            onValuesChange={(changedValues) => setType(changedValues.type)}
+            onValuesChange={onTypeChange}
         >
             {renderAllForm()}
         </ProForm>

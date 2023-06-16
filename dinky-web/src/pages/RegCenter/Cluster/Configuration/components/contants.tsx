@@ -19,6 +19,7 @@ import {RUN_MODE} from "@/services/constants";
 import {Tag} from 'antd';
 import {l} from '@/utils/intl';
 import React from 'react';
+import {FormConfig} from "@/pages/RegCenter/Cluster/Configuration/components/data";
 
 /**
  * Cluster config type
@@ -29,3 +30,40 @@ export const CLUSTER_CONFIG_TYPE = [
     {value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR, label: 'Flink Kubernetes Operator'},
 ]
 
+
+
+
+
+export const FLINK_CONFIG_LIST: FormConfig[] = [
+    {
+        name: 'jobmanager.memory.process.size',
+        label: l('rc.cc.jmMem'),
+        placeholder: l('rc.cc.jmMem'),
+        tooltip: l('rc.cc.jmMemHelp'),
+    }, {
+        name: 'taskmanager.memory.process.size',
+        label: l('rc.cc.tmMem'),
+        placeholder: l('rc.cc.tmMem'),
+        tooltip: l('rc.cc.tmMemHelp'),
+    }, {
+        name: 'taskmanager.memory.framework.heap.size',
+        label:  l('rc.cc.tmHeap'),
+        placeholder: l('rc.cc.tmHeap'),
+        tooltip: l('rc.cc.tmHeapHelp'),
+    }, {
+        name: 'taskmanager.numberOfTaskSlots',
+        label:  l('rc.cc.tsNum'),
+        placeholder: l('rc.cc.tsNum'),
+        tooltip: l('rc.cc.tsNumHelp'),
+    }, {
+        name: 'state.savepoints.dir',
+        label: l('rc.cc.spDir'),
+        placeholder: l('rc.cc.spDir'),
+        tooltip: l('rc.cc.spDirHelp'),
+    }, {
+        name: 'state.checkpoints.dir',
+        label: l('rc.cc.ckpDir'),
+        placeholder: l('rc.cc.ckpDir'),
+        tooltip: l('rc.cc.ckpDirHelp'),
+    }
+];
