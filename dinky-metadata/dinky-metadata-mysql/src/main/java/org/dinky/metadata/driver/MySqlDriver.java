@@ -218,10 +218,10 @@ public class MySqlDriver extends AbstractJdbcDriver {
         if (Asserts.isNotNullString(table.getComment())) {
             sb.append(
                     String.format(
-                            " FROM `%s`.`%s`; -- %s%n",
+                            " FROM `%s`.`%s`; -- %s\n",
                             table.getSchema(), table.getName(), table.getComment()));
         } else {
-            sb.append(String.format(" FROM `%s`.`%s`;%n", table.getSchema(), table.getName()));
+            sb.append(String.format(" FROM `%s`.`%s`;\n", table.getSchema(), table.getName()));
         }
         return sb.toString();
     }
