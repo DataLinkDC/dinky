@@ -184,7 +184,7 @@ const Server = () => {
             </ProCard>
             <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}
                      extra={extraDataBuilder(dataRecord).heapLastValue}>
-                <Heap data={data} max={dataRecord?.heapMax}/>
+                <Heap data={data} max={dataRecord.heapMax}/>
             </ProCard>
             <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}
                      extra={extraDataBuilder(dataRecord).threadCount}>
@@ -192,7 +192,7 @@ const Server = () => {
             </ProCard>
             <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}
                      extra={extraDataBuilder(dataRecord).nonHeapLastValue}>
-                <NonHeap data={data} max={dataRecord?.nonHeapMax}/>
+                <NonHeap data={data} max={dataRecord.nonHeapMax}/>
             </ProCard>
         </ProCard>
     </>
