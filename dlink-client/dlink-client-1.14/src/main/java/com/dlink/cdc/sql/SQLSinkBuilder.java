@@ -84,7 +84,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
 
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
-    private static AtomicInteger atomicInteger = new AtomicInteger(0);
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
@@ -290,7 +289,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                     }
                 }
             });
-            final int indexSink = atomicInteger.getAndAdd(1);
             tagMap.forEach((table, tag) -> {
                 final String schemaTableName = table.getSchemaTableName();
                 try {
@@ -336,13 +334,21 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
-            } else if (value instanceof Long) {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+            } else if (value instanceof String) {
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                // 转换为毫秒
+                if (logicalType1.getPrecision() == 3) {
+                    return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                        .atZone(sinkTimeZone).toLocalDateTime();
+                }
+                return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal(value.toString());
+            return new BigDecimal(String.valueOf(value));
         } else if (logicalType instanceof FloatType) {
             if (value instanceof Float) {
                 return value;
