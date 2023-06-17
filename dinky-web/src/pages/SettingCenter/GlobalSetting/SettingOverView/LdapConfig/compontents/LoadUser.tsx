@@ -22,7 +22,7 @@ const columns: ColumnsType<UserBaseInfo.User> = [
   {
     title: l("sys.ldap.settings.loadable"),
     dataIndex: "enabled",
-    render:(_,record) =>`${record.enabled}`
+    render:(_,record) =>record.enabled?l('rc.ai.isSimple.yes'):l('rc.ai.isSimple.no')
   },
 ];
 
