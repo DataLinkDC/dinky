@@ -34,6 +34,7 @@ import org.apache.flink.table.api.internal.TableEnvironmentInternal;
 import org.apache.flink.table.delegation.Planner;
 import org.apache.flink.types.Row;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -67,7 +68,7 @@ public interface CustomTableEnvironment
     Configuration getRootConfiguration();
 
     default List<LineageRel> getLineage(String statement) {
-        return null;
+        return Collections.emptyList();
     }
 
     <T> void createTemporaryView(String s, DataStream<Row> dataStream, List<String> columnNameList);
