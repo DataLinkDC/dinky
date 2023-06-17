@@ -23,26 +23,20 @@ import {Values} from 'async-validator';
 import {Cluster} from '@/types/RegCenter/data';
 import {
     ProForm,
-    ProFormGroup,
-    ProFormSelect,
-    ProFormText,
 } from '@ant-design/pro-components';
-import {l} from '@/utils/intl';
-import {Divider} from 'antd';
-import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import {RUN_MODE} from "@/services/constants";
-import HadoopConfig
-    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HadoopConfig";
-import FlinkKubernetesNative
-    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesNative";
-import FlinkKubernetesOperator
-    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkKubernetesOperator";
 import BaseConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/BaseConfig";
 import ApplicationConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/ApplicationConfig";
 import HighPriorityConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HighPriorityConfig";
+import YarnConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/YarnConfig";
+import FlinkK8sNative
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative";
+import FlinkK8sOperator
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sOperator";
 
 
 type ConfigurationFormProps = {
@@ -58,9 +52,9 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     const renderAllForm = () => {
         return <>
             <BaseConfig/>
-            {type === RUN_MODE.YARN && <HadoopConfig/>}
-            {type === RUN_MODE.KUBERNETES_APPLICATION && <FlinkKubernetesNative/>}
-            {type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR && <FlinkKubernetesOperator/>}
+            {type === RUN_MODE.YARN && <YarnConfig/>}
+            {type === RUN_MODE.KUBERNETES_APPLICATION && <FlinkK8sNative/>}
+            {type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR && <FlinkK8sOperator/>}
             <HighPriorityConfig/>
             <ApplicationConfig/>
         </>;

@@ -17,26 +17,20 @@
  *
  */
 
-import {Divider} from "antd";
-import {l} from "@/utils/intl";
-import {ProFormText} from "@ant-design/pro-components";
 import React from "react";
+import DockerConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative/DockerConfig";
+import K8sConfig
+    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative/K8sConfig";
 
-const FlinkKubernetesNative = () => {
+const FlinkK8sNative = () => {
 
     return <>
-        <Divider>{l('rc.cc.flinkKubernetesNativeConfig')}</Divider>
-        <ProFormText
-            name="flinkKubernetesNativeConfigPath"
-            label={l('rc.cc.flinkKubernetesNativeConfigPath')}
-            width="md"
-            rules={[{required: true, message: l('rc.cc.flinkKubernetesNativeConfigPathPlaceholder')}]}
-            placeholder={l('rc.cc.flinkKubernetesNativeConfigPathPlaceholder')}
-            help={l('rc.cc.flinkKubernetesNativeConfigPathHelp')}
-        />
+        <DockerConfig/>
+        <K8sConfig/>
     </>;
 
 }
 
 
-export default FlinkKubernetesNative;
+export default FlinkK8sNative;

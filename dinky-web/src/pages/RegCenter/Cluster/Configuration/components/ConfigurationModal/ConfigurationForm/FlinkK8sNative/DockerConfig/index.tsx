@@ -17,24 +17,37 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Divider} from "antd";
+import {DOCKER_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import {ProFormGroup, ProFormText} from "@ant-design/pro-components";
+import {Divider} from "antd";
+import {l} from "@/utils/intl";
+import React from "react";
 
-const ApplicationConfig = () => {
+const DockerConfig = () => {
+
+    const renderDockerConfigForm = () => {
+        return DOCKER_CONFIG_LIST.map(item => <>
+                <ProFormText
+                    width={300}
+                    key={item.name}
+                    name={item.name}
+                    label={item.label}
+                    tooltip={item.tooltip}
+                    placeholder={item.placeholder}
+                    initialValue={item.defaultValue}
+                />
+            </>
+        );
+    }
 
     return <>
-        <Divider>{l('rc.cc.submitSqlConfig')}</Divider>
-        <ProFormGroup labelLayout={'inline'} >
-            <ProFormText
-                width={'xl'}
-                name="userJarPath"
-                placeholder={l('rc.cc.sqlSubmitJarPathHelp')}
-                label={l('rc.cc.sqlSubmitJarPath')}
-                tooltip={l('rc.cc.sqlSubmitJarPathHelp')}
-            />
+        <Divider>{l('rc.cc.dockerConfig')}</Divider>
+        <ProFormGroup>
+            {renderDockerConfigForm()}
         </ProFormGroup>
-    </>
-}
 
-export default ApplicationConfig
+    </>
+};
+
+
+export default DockerConfig
