@@ -25,9 +25,9 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.User;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.LdapService;
+import org.dinky.service.UserService;
 
 import java.util.List;
 
@@ -51,6 +51,8 @@ public class LdapController {
 
     @Autowired LdapService ldapService;
 
+    @Autowired UserService userService;
+
     @GetMapping("/ldapEnableStatus")
     public Result<Boolean> ldapStatus() {
         return Result.succeed(
@@ -68,13 +70,30 @@ public class LdapController {
     }
 
     @GetMapping("/listUser")
-    public ProTableResult<User> listUser() {
+    public Result<List<User>> listUser() {
         List<User> users = ldapService.listUsers();
-        return ProTableResult.<User>builder()
-                .success(true)
-                .data(users)
-                .total((long) users.size())
-                .build();
+        List<User> localUsers = userService.list();
+
+        users.stream()
+                .filter(
+                        ldapUser ->
+                                localUsers.stream()
+                                        .anyMatch(
+                                                user ->
+                                                        user.getUsername()
+                                                                .equals(ldapUser.getUsername())))
+                .forEach(user -> user.setEnabled(false));
+
+        return Result.succeed(users);
+    }
+
+    @PostMapping("/importUsers")
+    public Result<Void> importUsers(@RequestBody List<User> users) {
+        boolean b = userService.saveBatch(users);
+        if (b) {
+            return Result.succeed();
+        }
+        return Result.failed();
     }
 
     /**
