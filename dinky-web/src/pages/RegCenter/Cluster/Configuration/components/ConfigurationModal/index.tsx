@@ -100,6 +100,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
       title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
       submitter={{render: () => [...renderFooter()]}}
       initialValues={value}
+      form={form}
     >
       <ConfigurationForm form={form} value={value}/>
     </ModalForm>
