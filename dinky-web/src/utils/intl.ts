@@ -17,6 +17,6 @@
 
 import { getIntl } from '@umijs/max';
 
-export const l = (id: string, defaultMessage?: string, value?: {}) => {
+export const l = (id: string, defaultMessage?: string, value?: {}) : string => {
   return getIntl().formatMessage({ id, defaultMessage }, value);
 };

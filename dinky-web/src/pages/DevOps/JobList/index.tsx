@@ -14,7 +14,7 @@ import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from
 const JobList = () => {
   const tableRef = useRef<ActionType>();
 
-  const jobListColums: ProColumns<Jobs.JobInstance>[] = [
+  const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('global.table.taskid'),
       dataIndex: 'taskId',
@@ -82,7 +82,7 @@ const JobList = () => {
     <ProTable<Jobs.JobInstance>
       {...PROTABLE_OPTIONS_PUBLIC}
       rowKey={(record => record.jid)}
-      columns={jobListColums}
+      columns={jobListColumns}
       params={{isHistory: false}}
       actionRef={tableRef}
       headerTitle={l('devops.joblist.joblist')}
@@ -93,8 +93,8 @@ const JobList = () => {
       })}
       expandable={{
         expandedRowRender: (record) => <JobHistoryList taskId={record.taskId} key={record.jid}/>,
-        expandIcon: ({expanded, onExpand, record}) => {
-          return (
+        expandIcon: ({expanded, onExpand, record}) =>
+          (
             <Button
               className={'options-button'}
               key={`${record.id}_history`}
@@ -102,8 +102,7 @@ const JobList = () => {
               title={l('devops.joblist.history')}
               icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'}/>}
             />
-          );
-        }
+          )
       }}
     />
   );

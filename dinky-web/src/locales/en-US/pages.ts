@@ -638,6 +638,7 @@ export default {
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
+  'sys.ldap.settings.loadable': 'Whether it can be imported',
 
   // process
   'sys.process.id': 'Process ID',

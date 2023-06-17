@@ -643,6 +643,7 @@ export default {
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
   'sys.ldap.settings.testLogin': '测试登录',
   'sys.ldap.settings.loadUser': '导入用户',
+  'sys.ldap.settings.loadable': '是否可以导入',
 
 
   // process
