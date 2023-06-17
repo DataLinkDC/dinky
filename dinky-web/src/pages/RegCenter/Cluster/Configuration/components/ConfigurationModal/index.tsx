@@ -25,6 +25,7 @@ import {ModalForm} from '@ant-design/pro-components';
 import {l} from '@/utils/intl';
 import {FormContextValue} from '@/components/Context/FormContext';
 import ConfigurationForm from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm";
+import {parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
 
 type ConfigurationModalProps = {
   visible: boolean;
@@ -99,10 +100,10 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
     }}
       title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
       submitter={{render: () => [...renderFooter()]}}
-      initialValues={value}
+      initialValues={parseConfigJsonToValues(value as Cluster.Config)}
       form={form}
     >
-      <ConfigurationForm form={form} value={value}/>
+      <ConfigurationForm form={form} value={parseConfigJsonToValues(value as Cluster.Config)}/>
     </ModalForm>
   </>;
 };

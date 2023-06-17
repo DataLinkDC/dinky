@@ -37,11 +37,12 @@ import FlinkK8sNative
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative";
 import FlinkK8sOperator
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sOperator";
+import {parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
 
 
 type ConfigurationFormProps = {
     form: FormInstance<Values>
-    value: Partial<Cluster.Config>;
+    value: any
 }
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     const {form, value} = props;
