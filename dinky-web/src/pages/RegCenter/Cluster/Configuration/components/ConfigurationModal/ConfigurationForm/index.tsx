@@ -60,7 +60,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
         </>;
     };
 
-    const onTypeChange = (changedValues: any,values: any) => {
+    const onTypeChange = (changedValues: any, values: any) => {
         if (values.type) setType(values.type)
     }
 
