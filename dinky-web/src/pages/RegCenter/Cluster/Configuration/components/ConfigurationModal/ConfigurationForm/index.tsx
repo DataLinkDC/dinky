@@ -20,9 +20,7 @@
 import React from 'react';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
-import {
-    ProForm,
-} from '@ant-design/pro-components';
+import {ProForm,} from '@ant-design/pro-components';
 import BaseConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/BaseConfig";
 import ApplicationConfig
@@ -39,11 +37,12 @@ import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 
 type ConfigurationFormProps = {
+    form: FormInstance<Values>
     value: any
     type: string
 }
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
-    const { value, type} = props;
+    const {form, value, type} = props;
 
 
     const renderAllForm = () => {
@@ -61,6 +60,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
 
     return <>
         <ProForm
+            form={form}
             initialValues={value}
             submitter={false}>
             {renderAllForm()}

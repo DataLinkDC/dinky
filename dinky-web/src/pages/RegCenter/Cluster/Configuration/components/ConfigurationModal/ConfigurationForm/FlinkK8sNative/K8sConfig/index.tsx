@@ -20,9 +20,7 @@
 import {Col, Divider, Row} from "antd";
 import {l} from "@/utils/intl";
 import React from "react";
-import {
-    KUBERNETES_CONFIG_LIST
-} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import {KUBERNETES_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import {ProCard, ProFormGroup, ProFormList, ProFormText} from "@ant-design/pro-components";
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 

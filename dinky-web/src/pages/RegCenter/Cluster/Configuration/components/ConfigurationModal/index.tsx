@@ -28,92 +28,92 @@ import {buildClusterConfig, parseConfigJsonToValues} from "@/pages/RegCenter/Clu
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 type ConfigurationModalProps = {
-  visible: boolean;
-  onClose: () => void;
-  value: Partial<Cluster.Config>;
-  onSubmit: (values: Partial<Cluster.Config>) => void;
+    visible: boolean;
+    onClose: () => void;
+    value: Partial<Cluster.Config>;
+    onSubmit: (values: Partial<Cluster.Config>) => void;
 }
 const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
 
-  const {visible, onClose, onSubmit, value} = props;
+    const {visible, onClose, onSubmit, value} = props;
 
 
-  const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
+    const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
 
 
-  /**
-   * init form
-   */
-  const [form] = Form.useForm();
-  /**
-   * init form context
-   */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+    /**
+     * init form
+     */
+    const [form] = Form.useForm();
+    /**
+     * init form context
+     */
+    const formContext = React.useMemo<FormContextValue>(() => ({
+        resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }), [form]);
 
-  const [submitting, setSubmitting] = React.useState<boolean>(false);
-
-
-  /**
-   * when modalVisible or values changed, set form values
-   */
-  useEffect(() => {
-    form.setFieldsValue(parseConfigJsonToValues(value as Cluster.Config));
-  }, [visible, value, form]);
-
-  /**
-   * handle cancel
-   */
-  const handleCancel = () => {
-    onClose();
-    formContext.resetForm();
-    setSubmitting(false);
-  };
-  /**
-   * submit form
-   */
-  const submitForm = async () => {
-    const fieldsValue = await form.validateFields();
-    setSubmitting(true);
-    await onSubmit({...value, ...buildClusterConfig(fieldsValue)});
-    handleCancel();
-  };
+    const [submitting, setSubmitting] = React.useState<boolean>(false);
 
 
-  /**
-   * render footer
-   * @returns {[JSX.Element, JSX.Element]}
-   */
-  const renderFooter = () => {
-    return [
-      <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
-      <Button key={'finish'} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l('button.finish')}</Button>,
-    ];
-  };
+    /**
+     * when modalVisible or values changed, set form values
+     */
+    useEffect(() => {
+        form.setFieldsValue(parseConfigJsonToValues(value as Cluster.Config));
+    }, [visible, value, form]);
 
-  const onTypeChange = (changedValues: any, values: any) => {
-    if (values.type) setType(values.type)
-  }
+    /**
+     * handle cancel
+     */
+    const handleCancel = () => {
+        onClose();
+        formContext.resetForm();
+        setSubmitting(false);
+    };
+    /**
+     * submit form
+     */
+    const submitForm = async () => {
+        const fieldsValue = await form.validateFields();
+        setSubmitting(true);
+        await onSubmit({...value, ...buildClusterConfig(fieldsValue)});
+        handleCancel();
+    };
 
-  return <>
-    <ModalForm
-      width={'80%'}
-      open={visible}
-      modalProps={{
-        onCancel: handleCancel,
-        bodyStyle: {maxHeight: '70vh', overflowY: 'auto', overflowX: 'hidden'},
-    }}
-      title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
-      submitter={{render: () => [...renderFooter()]}}
-      initialValues={parseConfigJsonToValues(value as Cluster.Config)}
-      form={form}
-      onValuesChange={onTypeChange}
-    >
-      <ConfigurationForm type={type} value={parseConfigJsonToValues(value as Cluster.Config)}/>
-    </ModalForm>
-  </>;
+
+    /**
+     * render footer
+     * @returns {[JSX.Element, JSX.Element]}
+     */
+    const renderFooter = () => {
+        return [
+            <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
+            <Button key={'finish'} loading={submitting} type="primary"
+                    onClick={() => submitForm()}>{l('button.finish')}</Button>,
+        ];
+    };
+
+    const onTypeChange = (changedValues: any, values: any) => {
+        if (values.type) setType(values.type)
+    }
+
+    return <>
+        <ModalForm
+            width={'80%'}
+            open={visible}
+            modalProps={{
+                onCancel: handleCancel,
+                bodyStyle: {maxHeight: '70vh', overflowY: 'auto', overflowX: 'hidden'},
+            }}
+            title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
+            submitter={{render: () => [...renderFooter()]}}
+            initialValues={parseConfigJsonToValues(value as Cluster.Config)}
+            form={form}
+            onValuesChange={onTypeChange}
+        >
+            <ConfigurationForm form={form} type={type} value={parseConfigJsonToValues(value as Cluster.Config)}/>
+        </ModalForm>
+    </>;
 };
 
 export default InstanceModal;

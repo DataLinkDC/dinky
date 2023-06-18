@@ -21,9 +21,7 @@ import {Col, Divider, Row} from "antd";
 import {ProCard, ProFormGroup, ProFormItem, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import React from "react";
-import {
-    KUBERNETES_CONFIG_LIST
-} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import {KUBERNETES_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
@@ -64,7 +62,8 @@ const FlinkK8sOperator = (props: any) => {
                         label={item.label}
                         tooltip={item.tooltip}
                     >
-                        <CodeEdit {...CodeEditProps} onChange={() =>{}} code={props.code}/>
+                        <CodeEdit {...CodeEditProps} onChange={() => {
+                        }} code={props.code}/>
                     </ProFormItem>
                 </>
             );

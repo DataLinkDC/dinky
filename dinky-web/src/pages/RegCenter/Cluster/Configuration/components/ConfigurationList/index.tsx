@@ -18,11 +18,7 @@
  */
 
 import {ActionType, ProList} from '@ant-design/pro-components';
-import {
-    API_CONSTANTS,
-    PRO_LIST_CARD_OPTIONS,
-    PROTABLE_OPTIONS_PUBLIC,
-} from '@/services/constants';
+import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC,} from '@/services/constants';
 import {Cluster} from '@/types/RegCenter/data';
 import {l} from '@/utils/intl';
 import {queryList} from '@/services/api';
@@ -147,6 +143,7 @@ export default () => {
      */
     const handleSubmit = async (value: Partial<Cluster.Config>) => {
         await executeAndCallbackRefresh(async () => {
+            console.log(value, 'value');
             await handleAddOrUpdate(API_CONSTANTS.CLUSTER_CONFIGURATION, value);
             await handleCancel();
         });
@@ -261,7 +258,8 @@ export default () => {
         {/*added*/}
         <ConfigurationModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit}/>
         {/*modify*/}
-        {modifyOpen && <ConfigurationModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>}
+        {modifyOpen &&
+            <ConfigurationModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>}
 
     </>;
 };

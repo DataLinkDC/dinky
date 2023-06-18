@@ -83,11 +83,12 @@ export function buildClusterConfig(values: any): Cluster.Config {
     const configJson = {
         hadoopConfigPath, flinkLibPath, flinkConfigPath, flinkVersion,
         hadoopConfig, userJarPath, kubernetesConfig, dockerConfig,
-        flinkConfig, hadoopConfigList, flinkConfigList, ...rest
+        flinkConfig, hadoopConfigList, flinkConfigList, ...rest // ...rest 代表剩余参数
     };
 
     // deep copy configJson
-    // const buildConfigJsonResult = JSON.parse(JSON.stringify(configJson));
+    const buildConfigJsonResult = JSON.stringify(configJson);
+
 
     // return values
     return {
@@ -95,7 +96,7 @@ export function buildClusterConfig(values: any): Cluster.Config {
         enabled,
         note,
         type,
-        configJson: JSON.stringify(configJson),
+        configJson: buildConfigJsonResult,
     } as Cluster.Config;
 }
 

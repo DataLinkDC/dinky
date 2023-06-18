@@ -25,7 +25,7 @@ const ApplicationConfig = () => {
 
     return <>
         <Divider>{l('rc.cc.submitSqlConfig')}</Divider>
-        <ProFormGroup labelLayout={'inline'} >
+        <ProFormGroup labelLayout={'inline'}>
             <ProFormText
                 width={'xl'}
                 name="userJarPath"
