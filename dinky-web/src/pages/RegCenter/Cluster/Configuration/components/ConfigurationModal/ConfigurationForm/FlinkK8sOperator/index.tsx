@@ -17,13 +17,15 @@
  *
  */
 
-import {Col, Divider, Row, Tag} from "antd";
-import {ProCard, ProForm, ProFormGroup, ProFormItem, ProFormSelect, ProFormText} from "@ant-design/pro-components";
+import {Col, Divider, Row} from "antd";
+import {ProCard, ProFormGroup, ProFormItem, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import React from "react";
-import {KUBERNETES_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
-import {RUN_MODE} from "@/services/constants";
+import {
+    KUBERNETES_CONFIG_LIST
+} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 
 const CodeEditProps = {
@@ -33,12 +35,12 @@ const CodeEditProps = {
     language: 'yaml',
 };
 
-const FlinkK8sOperator = () => {
+const FlinkK8sOperator = (props: any) => {
 
 
     const renderFlinkK8sOperatorConfig = () => {
         return KUBERNETES_CONFIG_LIST
-            .filter(item => item.showOnSubmitType !== RUN_MODE.KUBERNETES_APPLICATION && item.showType !== 'code')
+            .filter(item => item.showOnSubmitType !== ClusterType.KUBERNETES_NATIVE && item.showType !== 'code')
             .map(item => <>
                     <ProFormText
                         width={250}
@@ -62,8 +64,7 @@ const FlinkK8sOperator = () => {
                         label={item.label}
                         tooltip={item.tooltip}
                     >
-                        <CodeEdit {...CodeEditProps} onChange={() => {
-                        }} code={''}/>
+                        <CodeEdit {...CodeEditProps} onChange={() =>{}} code={props.code}/>
                     </ProFormItem>
                 </>
             );

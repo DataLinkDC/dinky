@@ -18,36 +18,84 @@
  */
 
 import {Cluster} from "@/types/RegCenter/data";
-import React from "react";
 
+
+/**
+ * parse values to Cluster.Config
+ * @param {Cluster.Config} values
+ * @returns {{type: string} | {[p: string]: any, [p: number]: any, [p: symbol]: any, hadoopConfigPath: any, flinkConfigPath: any, flinkConfigList: any, type: string, flinkVersion: any, enabled: boolean, flinkConfig: any, hadoopConfigList: any, dockerConfig: any, flinkLibPath: any, kubernetesConfig: any, hadoopConfig: any, name: string, id: number, userJarPath: any}}
+ */
 export function parseConfigJsonToValues(values: Cluster.Config) {
 
     if (!values.id) {
         return {type: values.type};
     }
-    const {type,id,name ,enabled, configJson} = values;
+    // base info
+    const {type, id, name, enabled, configJson} = values;
 
+    // parse configJson
     let config = JSON.parse(configJson);
-
-
-    const {hadoopConfigPath, flinkLibPath, flinkConfigPath, flinkVersion,
-        hadoopConfig, userJarPath, kubernetesConfig, dockerConfig, flinkConfig
+    // extract configJson from config
+    const {
+        hadoopConfigPath, flinkLibPath, flinkConfigPath, flinkVersion,
+        hadoopConfig, userJarPath, kubernetesConfig, dockerConfig,
+        flinkConfig, hadoopConfigList, flinkConfigList, ...rest
     } = config;
 
+    // return values
     return {
         id,
         name,
         enabled,
         type,
+        ...rest, // ...rest 代表剩余参数
         hadoopConfigPath,
         flinkLibPath,
-        ...flinkConfigPath,
+        flinkConfigPath,
         flinkVersion,
+        hadoopConfigList, // 使用此种方式 + antd 的 ProFormList 组件，可以实现动态表单 自动渲染该数组
+        flinkConfigList, // 使用此种方式 + antd 的 ProFormList 组件，可以实现动态表单 自动渲染该数组
         hadoopConfig,
         kubernetesConfig,
         dockerConfig,
         userJarPath,
         flinkConfig,
     }
+}
+
+
+/**
+ * build Cluster.Config from values
+ * @param values
+ * @returns {Cluster.Config}
+ */
+export function buildClusterConfig(values: any): Cluster.Config {
+
+    // extract values
+    const {
+        type, name, enabled, note,
+        hadoopConfigPath, flinkLibPath, flinkConfigPath, flinkVersion,
+        hadoopConfig, userJarPath, kubernetesConfig, dockerConfig,
+        flinkConfig, hadoopConfigList, flinkConfigList, ...rest
+    } = values;
+
+    // build configJson
+    const configJson = {
+        hadoopConfigPath, flinkLibPath, flinkConfigPath, flinkVersion,
+        hadoopConfig, userJarPath, kubernetesConfig, dockerConfig,
+        flinkConfig, hadoopConfigList, flinkConfigList, ...rest
+    };
+
+    // deep copy configJson
+    // const buildConfigJsonResult = JSON.parse(JSON.stringify(configJson));
+
+    // return values
+    return {
+        name,
+        enabled,
+        note,
+        type,
+        configJson: JSON.stringify(configJson),
+    } as Cluster.Config;
 }
 

@@ -19,13 +19,13 @@
 
 import {Cluster} from '@/types/RegCenter/data';
 import {Button, Form} from 'antd';
-import {MODAL_FORM_OPTIONS} from '@/services/constants';
 import React, {useEffect} from 'react';
 import {ModalForm} from '@ant-design/pro-components';
 import {l} from '@/utils/intl';
 import {FormContextValue} from '@/components/Context/FormContext';
 import ConfigurationForm from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm";
-import {parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
+import {buildClusterConfig, parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 type ConfigurationModalProps = {
   visible: boolean;
@@ -36,6 +36,10 @@ type ConfigurationModalProps = {
 const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
 
   const {visible, onClose, onSubmit, value} = props;
+
+
+  const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
+
 
   /**
    * init form
@@ -55,7 +59,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
    * when modalVisible or values changed, set form values
    */
   useEffect(() => {
-    form.setFieldsValue(value);
+    form.setFieldsValue(parseConfigJsonToValues(value as Cluster.Config));
   }, [visible, value, form]);
 
   /**
@@ -63,8 +67,8 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
    */
   const handleCancel = () => {
     onClose();
-    setSubmitting(false);
     formContext.resetForm();
+    setSubmitting(false);
   };
   /**
    * submit form
@@ -72,7 +76,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({...value, ...fieldsValue});
+    await onSubmit({...value, ...buildClusterConfig(fieldsValue)});
     handleCancel();
   };
 
@@ -89,6 +93,9 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
     ];
   };
 
+  const onTypeChange = (changedValues: any, values: any) => {
+    if (values.type) setType(values.type)
+  }
 
   return <>
     <ModalForm
@@ -102,8 +109,9 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
       submitter={{render: () => [...renderFooter()]}}
       initialValues={parseConfigJsonToValues(value as Cluster.Config)}
       form={form}
+      onValuesChange={onTypeChange}
     >
-      <ConfigurationForm form={form} value={parseConfigJsonToValues(value as Cluster.Config)}/>
+      <ConfigurationForm type={type} value={parseConfigJsonToValues(value as Cluster.Config)}/>
     </ModalForm>
   </>;
 };

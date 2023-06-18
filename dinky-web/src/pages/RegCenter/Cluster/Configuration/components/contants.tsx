@@ -15,19 +15,17 @@
  * limitations under the License.
  */
 
-import {RUN_MODE} from "@/services/constants";
-import {Tag} from 'antd';
 import {l} from '@/utils/intl';
-import React from 'react';
 import {FormConfig} from "@/pages/RegCenter/Cluster/Configuration/components/data";
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 /**
  * Cluster config type
  */
 export const CLUSTER_CONFIG_TYPE = [
-    {value: RUN_MODE.YARN, label: 'Flink On Yarn'},
-    {value: RUN_MODE.KUBERNETES_APPLICATION, label: 'Flink Kubernetes Native'},
-    {value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR, label: 'Flink Kubernetes Operator'},
+    {value: ClusterType.YARN, label: 'Flink On Yarn'},
+    {value: ClusterType.KUBERNETES_NATIVE, label: 'Kubernetes Native'},
+    {value: ClusterType.KUBERNETES_OPERATOR, label: 'Kubernetes Operator'},
 ]
 
 
@@ -136,7 +134,7 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
         label: l('rc.cc.k8s.exposed'),
         placeholder: l('rc.cc.k8s.exposedHelp'),
         tooltip: l('rc.cc.k8s.exposedHelp'),
-        showOnSubmitType: RUN_MODE.KUBERNETES_APPLICATION,
+        showOnSubmitType: ClusterType.KUBERNETES_NATIVE,
     },
     {
         name: 'kubernetes.jobmanager.cpu',
@@ -161,14 +159,14 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
         label: l('rc.cc.k8s.account'),
         placeholder: l('rc.cc.k8s.accountHelp'),
         tooltip: l('rc.cc.k8s.accountHelp'),
-        showOnSubmitType: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR
+        showOnSubmitType: ClusterType.KUBERNETES_OPERATOR,
     },
     {
         name: 'kubernetes.pod-template',
         label: l('rc.cc.k8s.podTemplate'),
         placeholder: l('rc.cc.k8s.podTemplate'),
         tooltip: l('rc.cc.k8s.podTemplateHelp'),
-        showOnSubmitType: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR,
+        showOnSubmitType: ClusterType.KUBERNETES_OPERATOR,
         showType: 'code'
     },
 ];

@@ -20,15 +20,17 @@
 import {Col, Divider, Row} from "antd";
 import {l} from "@/utils/intl";
 import React from "react";
-import {KUBERNETES_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import {
+    KUBERNETES_CONFIG_LIST
+} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 import {ProCard, ProFormGroup, ProFormList, ProFormText} from "@ant-design/pro-components";
-import {RUN_MODE} from "@/services/constants";
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 const K8sConfig = () => {
 
     const renderK8sConfig = () => {
         return KUBERNETES_CONFIG_LIST
-            .filter(item => item.showOnSubmitType !== RUN_MODE.KUBERNETES_APPLICATION_OPERATOR)
+            .filter(item => item.showOnSubmitType !== ClusterType.KUBERNETES_OPERATOR)
             .map(item => <>
                     <ProFormText
                         width={250}

@@ -20,11 +20,9 @@
 import React from 'react';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
-import {Cluster} from '@/types/RegCenter/data';
 import {
     ProForm,
 } from '@ant-design/pro-components';
-import {RUN_MODE} from "@/services/constants";
 import BaseConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/BaseConfig";
 import ApplicationConfig
@@ -37,41 +35,34 @@ import FlinkK8sNative
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative";
 import FlinkK8sOperator
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sOperator";
-import {parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 
 type ConfigurationFormProps = {
-    form: FormInstance<Values>
     value: any
+    type: string
 }
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
-    const {form, value} = props;
-
-    const [type, setType] = React.useState<string>(value.type || 'yarn');
+    const { value, type} = props;
 
 
     const renderAllForm = () => {
         return <>
-            <BaseConfig/>
-            {type === RUN_MODE.YARN && <YarnConfig/>}
-            {type === RUN_MODE.KUBERNETES_APPLICATION && <FlinkK8sNative/>}
-            {type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR && <FlinkK8sOperator/>}
+            <BaseConfig type={type}/>
+            {type === ClusterType.YARN && <YarnConfig/>}
+            {type === ClusterType.KUBERNETES_NATIVE && <FlinkK8sNative/>}
+            {type === ClusterType.KUBERNETES_OPERATOR &&
+                <FlinkK8sOperator code={value['kubernetes.pod-template'] || ''}/>}
             <HighPriorityConfig/>
             <ApplicationConfig/>
         </>;
     };
 
-    const onTypeChange = (changedValues: any, values: any) => {
-        if (values.type) setType(values.type)
-    }
 
     return <>
         <ProForm
-            form={form}
             initialValues={value}
-            submitter={false}
-            onValuesChange={onTypeChange}
-        >
+            submitter={false}>
             {renderAllForm()}
         </ProForm>
     </>;

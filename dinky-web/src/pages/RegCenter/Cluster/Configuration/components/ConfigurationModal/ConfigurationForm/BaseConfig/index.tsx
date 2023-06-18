@@ -23,7 +23,13 @@ import {l} from "@/utils/intl";
 import {ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 
-const BaseConfig: React.FC = () => {
+type BaseConfigProps = {
+    type: string
+}
+const BaseConfig: React.FC<BaseConfigProps> = (props) => {
+
+    const {type} = props;
+
     return <>
         <Divider>{l('rc.cc.baseConfig')}</Divider>
         <ProFormGroup>
@@ -32,7 +38,7 @@ const BaseConfig: React.FC = () => {
                 label={l('rc.cc.type')}
                 width="md"
                 options={CLUSTER_CONFIG_TYPE}
-                initialValue={CLUSTER_CONFIG_TYPE[0]}
+                initialValue={type}
                 rules={[{required: true, message: l('rc.cc.typePlaceholder')}]}
                 placeholder={l('rc.cc.typePlaceholder')}
             />
@@ -53,6 +59,7 @@ const BaseConfig: React.FC = () => {
             <ProFormSwitch
                 name="enabled"
                 label={l('global.table.isEnable')}
+                initialValue={false}
                 checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
             />
         </ProFormGroup>

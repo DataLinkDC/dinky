@@ -46,6 +46,7 @@ import {CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone} from "@ant
 import {ClusterConfigIcon} from "@/components/Icons/HomeIcon";
 import {imgStyle} from "@/pages/Home/constants";
 import {RunningBtn} from "@/components/CallBackButton/RunningBtn";
+import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 
 
 export default () => {
@@ -68,7 +69,6 @@ export default () => {
     const queryDataList = async () => {
         await queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then(res => setData(res.data));
     };
-
 
 
     /**
@@ -122,14 +122,13 @@ export default () => {
     };
 
 
-
     /**
      * START CLUSTER
      * @param item
      */
     const handleStartCluster = async (item: Cluster.Config) => {
         await executeAndCallbackRefresh(async () => {
-            await handlePutDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_START, l('rc.cc.start'),{id: item.id});
+            await handlePutDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_START, l('rc.cc.start'), {id: item.id});
         });
     };
 
@@ -152,7 +151,6 @@ export default () => {
             await handleCancel();
         });
     };
-
 
 
     /**
@@ -214,9 +212,9 @@ export default () => {
      */
     const renderDataContent = (item: Cluster.Config) => {
         return (
-            <Space className={'hidden-overflow'}>
+            <Space size={4} align={'baseline'} className={'hidden-overflow'}>
                 <EnableSwitchBtn record={item} onChange={() => handleEnable(item)}/>
-                <Tag color="cyan">{item.type}</Tag>
+                <Tag color="cyan">{CLUSTER_CONFIG_TYPE.find(record => item.type === record.value)?.label}</Tag>
                 <Tag
                     icon={item.isAvailable ? <CheckCircleOutlined/> : <ExclamationCircleOutlined/>}
                     color={item.isAvailable ? 'success' : 'warning'}
@@ -263,7 +261,7 @@ export default () => {
         {/*added*/}
         <ConfigurationModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit}/>
         {/*modify*/}
-        <ConfigurationModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>
+        {modifyOpen && <ConfigurationModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>}
 
     </>;
 };
