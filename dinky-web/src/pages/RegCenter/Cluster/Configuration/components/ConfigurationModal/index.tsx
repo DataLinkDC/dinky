@@ -38,7 +38,6 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
     const {visible, onClose, onSubmit, value} = props;
 
 
-    const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
 
 
     /**
@@ -93,9 +92,6 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
         ];
     };
 
-    const onValueChange = (changedValues: any, values: any) => {
-        if (values.type) setType(values.type)
-    }
 
     return <>
         <ModalForm
@@ -109,9 +105,8 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
             submitter={{render: () => [...renderFooter()]}}
             initialValues={parseConfigJsonToValues(value as Cluster.Config)}
             form={form}
-            onValuesChange={onValueChange}
         >
-            <ConfigurationForm form={form} type={type} value={parseConfigJsonToValues(value as Cluster.Config)}/>
+            <ConfigurationForm form={form} value={parseConfigJsonToValues(value as Cluster.Config)}/>
         </ModalForm>
     </>;
 };

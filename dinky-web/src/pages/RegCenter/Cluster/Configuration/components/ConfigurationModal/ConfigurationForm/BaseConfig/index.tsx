@@ -22,13 +22,8 @@ import {Divider} from "antd";
 import {l} from "@/utils/intl";
 import {ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+const BaseConfig: React.FC = () => {
 
-type BaseConfigProps = {
-    type: string
-}
-const BaseConfig: React.FC<BaseConfigProps> = (props) => {
-
-    const {type} = props;
 
     return <>
         <Divider>{l('rc.cc.baseConfig')}</Divider>
@@ -38,7 +33,6 @@ const BaseConfig: React.FC<BaseConfigProps> = (props) => {
                 label={l('rc.cc.type')}
                 width="md"
                 options={CLUSTER_CONFIG_TYPE}
-                initialValue={type}
                 rules={[{required: true, message: l('rc.cc.typePlaceholder')}]}
                 placeholder={l('rc.cc.typePlaceholder')}
             />

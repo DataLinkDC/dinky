@@ -18,14 +18,15 @@
 import {l} from '@/utils/intl';
 import {FormConfig} from "@/pages/RegCenter/Cluster/Configuration/components/data";
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
+import {DefaultOptionType} from "rc-select/es/Select";
 
 /**
  * Cluster config type
  */
-export const CLUSTER_CONFIG_TYPE = [
-    {value: ClusterType.YARN, label: 'Flink On Yarn'},
-    {value: ClusterType.KUBERNETES_NATIVE, label: 'Kubernetes Native'},
-    {value: ClusterType.KUBERNETES_OPERATOR, label: 'Kubernetes Operator'},
+export const CLUSTER_CONFIG_TYPE: DefaultOptionType[] = [
+    {value: ClusterType.YARN, label: 'Flink On Yarn', key: ClusterType.YARN},
+    {value: ClusterType.KUBERNETES_NATIVE, label: 'Kubernetes Native', key: ClusterType.KUBERNETES_NATIVE},
+    {value: ClusterType.KUBERNETES_OPERATOR, label: 'Kubernetes Operator', key: ClusterType.KUBERNETES_OPERATOR},
 ]
 
 

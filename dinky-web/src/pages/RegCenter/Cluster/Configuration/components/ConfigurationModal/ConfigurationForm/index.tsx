@@ -39,30 +39,36 @@ import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 type ConfigurationFormProps = {
     form: FormInstance<Values>
     value: any
-    type: string
 }
 const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
-    const {form, value, type} = props;
+    const {form, value} = props;
 
+    const [type, setType] = React.useState<string>(value.type || ClusterType.YARN);
 
     const renderAllForm = () => {
         return <>
-            <BaseConfig type={type}/>
-            {type === ClusterType.YARN && <YarnConfig/>}
-            {type === ClusterType.KUBERNETES_NATIVE && <FlinkK8sNative/>}
-            {type === ClusterType.KUBERNETES_OPERATOR &&
+            <BaseConfig/>
+            {(type && type === ClusterType.YARN) && <YarnConfig/>}
+            {(type && type === ClusterType.KUBERNETES_NATIVE) && <FlinkK8sNative/>}
+            {(type && type === ClusterType.KUBERNETES_OPERATOR) &&
                 <FlinkK8sOperator code={value['kubernetes.pod-template'] || ''}/>}
             <HighPriorityConfig/>
             <ApplicationConfig/>
         </>;
     };
 
+    const handleValueChange = (changedValues: any, values: any) => {
+        if (values.type) setType(values.type)
+    }
+
 
     return <>
         <ProForm
+            onValuesChange={handleValueChange}
             form={form}
-            initialValues={value}
-            submitter={false}>
+            initialValues={{...value,type}}
+            submitter={false}
+        >
             {renderAllForm()}
         </ProForm>
     </>;
