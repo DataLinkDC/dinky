@@ -93,7 +93,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
         ];
     };
 
-    const onTypeChange = (changedValues: any, values: any) => {
+    const onValueChange = (changedValues: any, values: any) => {
         if (values.type) setType(values.type)
     }
 
@@ -109,7 +109,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
             submitter={{render: () => [...renderFooter()]}}
             initialValues={parseConfigJsonToValues(value as Cluster.Config)}
             form={form}
-            onValuesChange={onTypeChange}
+            onValuesChange={onValueChange}
         >
             <ConfigurationForm form={form} type={type} value={parseConfigJsonToValues(value as Cluster.Config)}/>
         </ModalForm>

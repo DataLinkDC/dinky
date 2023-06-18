@@ -114,9 +114,14 @@ public class ClusterConfigurationController {
         return Result.succeed(clusters);
     }
 
-    /** 获取可用的集群列表 */
+    /**
+     * delete by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result}<{@link Void}>
+     */
     @DeleteMapping("/delete")
-    public Result<List<ClusterConfiguration>> deleteById(@RequestParam("id") Integer id) {
+    public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -125,6 +130,12 @@ public class ClusterConfigurationController {
         }
     }
 
+    /**
+     * enable by id
+     *
+     * @param id {@link Integer}
+     * @return {@link Result}<{@link Void}>
+     */
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.enable(id)) {
@@ -134,7 +145,12 @@ public class ClusterConfigurationController {
         }
     }
 
-    /** 测试 */
+    /**
+     * test connection
+     *
+     * @param clusterConfiguration {@link ClusterConfiguration}
+     * @return {@link Result}<{@link Void}>
+     */
     @PostMapping("/testConnect")
     public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
