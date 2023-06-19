@@ -23,10 +23,20 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.io.file.PathUtil;
+import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.extra.servlet.ServletUtil;
+import lombok.SneakyThrows;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +47,7 @@ import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
 
-@RestController()
+@Controller
 @RequestMapping(FlinkProxyController.API)
 public class FlinkProxyController {
     public static final String API = "/api/flink/";
@@ -52,42 +62,47 @@ public class FlinkProxyController {
             return;
         }
         path = path.replace(API, "");
-
+        String web = "web/";
+        if (path.contains(web)){
+            List<String> pathSplit = StrUtil.split(path, "/");
+            CollUtil.removeBlank(pathSplit);
+            if (pathSplit.size()<2){
+                return;
+            }
+            String host = pathSplit.get(1);
+            path=path.replace(web+host,"");
+            if ("/".equals(path)){
+                ServletUtil.write(resp, ResourceUtil.getStream("classpath:/static/flink/index.html"), MediaType.TEXT_HTML_VALUE);
+                return;
+            }
+            String mimeType = FileUtil.getMimeType(path);
+            if (StrUtil.isBlank(mimeType)){
+                HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), host+path);
+                writeToHttpServletResponse(httpRequest.execute(),resp);
+            }else {
+                ServletUtil.write(resp, ResourceUtil.getStream("classpath:/static/flink/"+path), mimeType);
+            }
+            return;
+        }
         String query = request.getQueryString();
         if (StrUtil.isNotBlank(query)) {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
         HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
-        HttpResponse execute = httpRequest.execute();
-        if (execute.body() != null) {
-            execute.headers()
+        try (HttpResponse httpResponse = httpRequest.execute();){
+            writeToHttpServletResponse(httpResponse,resp);
+        }
+    }
+
+    @SneakyThrows
+    public void writeToHttpServletResponse(HttpResponse httpResponse, HttpServletResponse resp){
+        if (httpResponse.body() != null) {
+            httpResponse.headers()
                     .forEach(
                             (k, v) -> {
                                 resp.addHeader(k, v.get(0));
                             });
-            execute.writeBody(resp.getOutputStream(), true, null);
+            httpResponse.writeBody(resp.getOutputStream(), true, null);
         }
-
-        //        URI newUri = new URI(target);
-        //        // 执行代理查询
-        //        String methodName = request.getMethod();
-        //        HttpMethod httpMethod = HttpMethod.resolve(methodName);
-        //        if (httpMethod == null) {
-        //            return;
-        //        }
-        //        ClientHttpRequest delegate = new
-        // SimpleClientHttpRequestFactory().createRequest(newUri, httpMethod);
-        //        Enumeration<String> headerNames = request.getHeaderNames();
-        //        // 设置请求头
-        //        while (headerNames.hasMoreElements()) {
-        //            String headerName = headerNames.nextElement();
-        //            Enumeration<String> v = request.getHeaders(headerName);
-        //            List<String> arr = new ArrayList<>();
-        //            while (v.hasMoreElements()) {
-        //                arr.add(v.nextElement());
-        //            }
-        //            delegate.getHeaders().addAll(headerName, arr);
-        //        }
-        //        List<String[]> stringsList = new LinkedList<>();
     }
 }
