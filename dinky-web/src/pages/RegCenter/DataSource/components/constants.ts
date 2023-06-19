@@ -21,7 +21,7 @@ import {l} from '@/utils/intl';
 /**
  * data source type
  */
-export const DATA_SOURCE_TYPE: any = [
+export const DATA_SOURCE_TYPE = [
   {
     type: 'MySQL',
   }, {
