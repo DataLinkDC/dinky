@@ -119,9 +119,7 @@ export async function postDataArray(url: string, params: number[]) {
 export async function postAll(url: string, params?: any) {
   return request(url, {
     method: METHOD_CONSTANTS.POST,
-    data: {
-      ...params,
-    },
+    data: params,
   });
 }
 

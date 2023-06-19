@@ -103,6 +103,7 @@ public class LdapContext {
                 user.setUsername(usernameAttr.get().toString());
                 user.setNickname(nicknameAttr.get().toString());
                 user.setUserType(UserType.LDAP.getCode());
+                user.setEnabled(true);
                 return user;
             }
 
