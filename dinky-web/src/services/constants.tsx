@@ -212,7 +212,7 @@ export const TENANT_ID = "tenantId";
 /**
  * the platform version
  */
-export const VERSION = "0.8.0";
+export const VERSION = "1.0.0-SNAPSHOT";
 
 /**
  * the platform language
