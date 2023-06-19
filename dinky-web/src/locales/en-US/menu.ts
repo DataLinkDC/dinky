@@ -51,6 +51,7 @@ export default {
   'menu.registration.fragment': 'Global Variable',
   'menu.registration.gitprojects': 'Git Project(Beta)',
   'menu.registration.udf': 'UDF Template',
+  'menu.registration.resource': 'Resource',
   'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
   'menu.auth.role': 'Role',

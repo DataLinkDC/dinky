@@ -91,9 +91,7 @@ export default {
   'tips.selected': '已选择 {total} 项',
   'tips.notSelected': '未选',
   'tips.enter': '请输入',
-  'tips.confirm.logout.session': '确认注销会话【{sessionName}】 吗？',
   'tips.confirm.delete.table': '确定删除表【{tableName}】吗？',
-  'tips.create.session.success': '创建会话【{session}】成功！',
 
   'status.enabled': '启用',
   'status.disabled': '禁用',

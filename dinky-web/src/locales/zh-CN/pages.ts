@@ -507,6 +507,12 @@ export default {
   'rc.template.create': '创建 UDF 模板',
   'rc.template.modify': '修改 UDF 模板',
 
+  // resource
+  'rc.resource.click': '点击左侧文件查看详情',
+  'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
+  'rc.resource.upload': '上传文件夹/文件',
+
+
 
   //-------------------------------- setting center --------------------------------
   //setting
