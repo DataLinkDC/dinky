@@ -55,6 +55,7 @@
             <outputDirectory>sql</outputDirectory>
             <includes>
                 <include>dinky-mysql.sql</include>
+                <include>dinky-pg.sql</include>
                 <include>upgrade/*/*/*.sql</include>
             </includes>
         </fileSet>
