@@ -1080,3 +1080,18 @@ CREATE TABLE `dinky_git_project` (
 
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', NULL, NULL, NULL, NULL, '-P flink-1.14', 1, 1, NULL, NULL, 0, 0, 1, '[]', 1);
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', NULL, NULL, NULL, NULL, '', 2, 1, NULL, NULL, 0, 0, 1, '[]',2);
+
+CREATE TABLE `dinky_metrics` (
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `task_id` int(255) DEFAULT NULL,
+                                 `vertices` varchar(255) DEFAULT NULL,
+                                 `metrics` varchar(255) DEFAULT NULL,
+                                 `position` int(11) DEFAULT NULL,
+                                 `show_type` varchar(255) DEFAULT NULL,
+                                 `show_size` varchar(255) DEFAULT NULL,
+                                 `title` varchar(255) DEFAULT NULL,
+                                 `layout_name` varchar(255) DEFAULT NULL,
+                                 `create_time` datetime DEFAULT NULL,
+                                 `update_time` datetime DEFAULT NULL,
+                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';

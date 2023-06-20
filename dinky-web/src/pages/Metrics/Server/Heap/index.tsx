@@ -21,32 +21,28 @@ import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
 import {Datum} from "@antv/g2plot";
+import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
 
 type HeapProps = {
     data: MetricsDataType[];
     max: number;
+  chartConfig: G2plotConfig;
+
 }
 type Heap = {
     time: Date;
     value: string | number;
 }
 const Heap: React.FC<HeapProps> = (props) => {
-    const {data, max} = props;
+    const {data, max,chartConfig} = props;
     const dataList: Heap[] = data.map(x => {
         return {time: x.heartTime, value: Number((x.content.jvm.heapUsed / (1024 * 1024)).toFixed(0))};
     })
 
 
     const config: AreaConfig = {
+      ...chartConfig,
         data: dataList,
-        animation: false,
-        height: 150,
-        yField: 'value',
-        xField: 'time',
-        xAxis: {
-            type: 'time',
-            mask: 'HH:mm:ss',
-        },
         yAxis: {
             min: 0,
             max: max

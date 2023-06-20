@@ -19,15 +19,24 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-public interface MonitorService {
+import com.baomidou.mybatisplus.extension.service.IService;
+
+public interface MonitorService extends IService<Metrics> {
     List<MetricsVO> getData(Date startTime, Date endTime);
 
     SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate);
+
+    void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList);
+
+    Map<String, List<Metrics>> getMetricsLayout();
 }

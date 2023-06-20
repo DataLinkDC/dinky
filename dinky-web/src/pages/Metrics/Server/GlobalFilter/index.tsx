@@ -35,10 +35,7 @@ const GlobalFilter: React.FC<GlobalFilterProps> = (props) => {
     const {custom,dateRange, startTime, endTime, handleDateRadioChange, handleRangeChange} = props;
 
     return <>
-        <LightFilter
-            layout="vertical"
-            bordered
-        >
+        <LightFilter bordered size={'small'}>
             <ProFormRadio.Group
                 name="dateRange"
                 radioType="radio"
@@ -46,7 +43,7 @@ const GlobalFilter: React.FC<GlobalFilterProps> = (props) => {
                 fieldProps={{onChange: handleDateRadioChange}}
                 options={DATE_RANGE_OPTIONS(custom)}
             />
-            {dateRange=="custom"?<ProFormDateTimeRangePicker
+            {dateRange=="custom" && <ProFormDateTimeRangePicker
                 name="datetimeRanger"
                 label={l('metrics.filter.custom.range')}
                 allowClear={false}
@@ -56,7 +53,7 @@ const GlobalFilter: React.FC<GlobalFilterProps> = (props) => {
                     style: {width: '100%'},
                     value: [startTime, endTime],
                 }}
-            />:<></>}
+            />}
 
         </LightFilter>
     </>;
