@@ -22,12 +22,9 @@ import {Radar, RadarConfig} from '@ant-design/plots';
 import {l} from "@/utils/intl";
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
+import {TaskDialectSummary} from "@/types/Home/data";
 
-type TaskDialectSummary = {
-    jobType: string;
-    jobTypeCount: number;
-    rate: number;
-}
+
 const TaskDialectRadar = () => {
 
     const [data, setData] = useState<TaskDialectSummary[]>([]);

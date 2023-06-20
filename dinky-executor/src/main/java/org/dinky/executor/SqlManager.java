@@ -41,7 +41,6 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -183,10 +182,6 @@ public final class SqlManager {
         return CustomTableResultImpl.buildTableResult(
                 Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())),
                 rows);
-    }
-
-    public Iterator getSqlFragmentsIterator() {
-        return sqlFragments.entrySet().iterator();
     }
 
     public Table getSqlFragmentsTable(CustomTableEnvironmentImpl environment) {

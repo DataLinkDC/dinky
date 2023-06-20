@@ -507,6 +507,10 @@ export default {
   'rc.template.create': 'Create UDF Template',
   'rc.template.modify': 'Modify UDF Template',
 
+  // resource
+  'rc.resource.click': 'Click left file to view details',
+  'rc.resource.noResource': '\t\tNo resources\nPlease Click the button above to upload folders/files',
+  'rc.resource.upload': 'Upload Files/Folders',
 
   //-------------------------------- setting center --------------------------------
   //setting
@@ -580,6 +584,7 @@ export default {
   'sys.ldap.settings.testConnect.success': 'Test Connect Successful, {count} users were obtained',
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
+  'sys.ldap.settings.loadable': 'Whether it can be imported',
 
   // process
   'sys.process.id': 'Process ID',

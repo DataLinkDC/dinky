@@ -507,6 +507,12 @@ export default {
   'rc.template.create': '创建 UDF 模板',
   'rc.template.modify': '修改 UDF 模板',
 
+  // resource
+  'rc.resource.click': '点击左侧文件查看详情',
+  'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
+  'rc.resource.upload': '上传文件夹/文件',
+
+
 
   //-------------------------------- setting center --------------------------------
   //setting
@@ -582,6 +588,7 @@ export default {
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
   'sys.ldap.settings.testLogin': '测试登录',
   'sys.ldap.settings.loadUser': '导入用户',
+  'sys.ldap.settings.loadable': '是否可以导入',
 
 
   // process

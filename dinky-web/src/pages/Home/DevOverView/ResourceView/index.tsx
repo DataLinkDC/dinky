@@ -32,26 +32,17 @@ import CountFormatter from "@/components/CountFormatter";
 import {l} from "@/utils/intl";
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
+import {ResourceOverView} from "@/types/Home/data";
 
-type ResourceView ={
-    flinkClusterCount: number;
-    flinkConfigCount: number;
-    dbSourceCount: number;
-    globalVarCount: number;
-    alertInstanceCount: number;
-    alertGroupCount: number;
-    gitProjectCount: number;
-}
 
 const ResourceView = () => {
 
   const [responsive, setResponsive] = useState(false);
 
-  const [data, setData] = useState<ResourceView>();
+  const [data, setData] = useState<ResourceOverView>();
 
   useEffect(() => {
       queryDataByParams(API_CONSTANTS.GET_RESOURCE_OVERVIEW).then((res) => {
-          console.log(res);
           setData(res);
       });
   }, [])

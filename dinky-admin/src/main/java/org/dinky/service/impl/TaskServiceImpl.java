@@ -55,6 +55,7 @@ import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInfoDetail;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.JobModelOverview;
 import org.dinky.data.model.JobTypeOverView;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Savepoints;
@@ -617,6 +618,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public List<JobTypeOverView> getTaskOnlineRate() {
         return baseMapper.getTaskOnlineRate();
+    }
+
+    @Override
+    public JobModelOverview getJobStreamingOrBatchModelOverview() {
+        return baseMapper.getJobStreamingOrBatchModelOverview();
     }
 
     @Override

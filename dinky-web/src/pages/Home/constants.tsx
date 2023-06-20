@@ -25,7 +25,7 @@ export const imgStyle = {
     height: 42,
 };
 
-export const MONTH_LIST :any = {
+export const MONTH_LIST  = {
     '01': l('global.month.january'),
     '02': l('global.month.february'),
     '03': l('global.month.march'),
@@ -40,7 +40,7 @@ export const MONTH_LIST :any = {
     '12': l('global.month.december'),
 };
 
-export const WEEK_LIST :any = [
+export const WEEK_LIST  = [
     l('global.week.sunday'),
     l('global.week.monday'),
     l('global.week.tuesday'),

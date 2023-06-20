@@ -153,7 +153,7 @@ public class Table implements Serializable, Comparable<Table>, Cloneable {
     @Transient
     public String getFlinkTableSql(String catalogName, String flinkConfig) {
         String createSql = getFlinkDDL(getFlinkTableWith(flinkConfig), name);
-        return String.format("DROP TABLE IF EXISTS %s;%n%s", name, createSql);
+        return String.format("DROP TABLE IF EXISTS %s;\n%s", name, createSql);
     }
 
     @Override

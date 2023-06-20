@@ -90,9 +90,7 @@ export default {
   'tips.selected': 'Selected {total} Item',
   'tips.notSelected': 'Not Select',
   'tips.enter': 'Please Enter',
-  'tips.confirm.logout.session': 'Confirm logout session [{sessionName}] ?',
   'tips.confirm.delete.table': ' Are you sure you want to delete table [{tableName}]?',
-  'tips.create.session.success': 'Create Session [{session}] success!',
 
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',

@@ -21,8 +21,8 @@ package org.dinky.job;
 
 import org.dinky.function.data.model.UDF;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * JobParam
@@ -87,11 +87,7 @@ public class JobParam {
     }
 
     public List<String> getTransStatement() {
-        List<String> statementList = new ArrayList<>();
-        for (StatementParam statementParam : trans) {
-            statementList.add(statementParam.getValue());
-        }
-        return statementList;
+        return trans.stream().map(StatementParam::getValue).collect(Collectors.toList());
     }
 
     public void setTrans(List<StatementParam> trans) {

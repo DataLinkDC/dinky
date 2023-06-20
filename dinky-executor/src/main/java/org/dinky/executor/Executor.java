@@ -238,9 +238,11 @@ public abstract class Executor {
                 reset.invoke(UserGroupInformation.class);
                 log.info("Reset kerberos authentication...");
             }
-        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (NoSuchMethodException
+                | IllegalAccessException
+                | InvocationTargetException
+                | IOException e) {
+            logger.error("Reset kerberos authentication error.", e);
             throw new RuntimeException(e);
         }
     }
@@ -284,8 +286,7 @@ public abstract class Executor {
                     "Kerberos [{}] authentication success.",
                     UserGroupInformation.getLoginUser().getUserName());
         } catch (IOException e) {
-            log.error("Kerberos authentication failed.");
-            e.printStackTrace();
+            log.error("Kerberos authentication failed. ", e);
         }
     }
 
@@ -302,14 +303,7 @@ public abstract class Executor {
         if (udfPyFilePath == null || udfPyFilePath.length == 0) {
             return;
         }
-        //        if (MapUtil.isNotEmpty(setConfig)) {
-        //            setConfig.put(PythonOptions.PYTHON_FILES.key(), String.join(",",
-        // udfPyFilePath));
-        //            setConfig.put(PythonOptions.PYTHON_CLIENT_EXECUTABLE.key(), executable);
-        //            Configuration configuration =
-        // Configuration.fromMap(executorSetting.getConfig());
-        //            environment.getConfig().configure(configuration, null);
-        //        }
+
         Configuration configuration = tableEnvironment.getConfig().getConfiguration();
         configuration.setString(PythonOptions.PYTHON_FILES, String.join(",", udfPyFilePath));
         configuration.setString(PythonOptions.PYTHON_CLIENT_EXECUTABLE, executable);
@@ -346,7 +340,7 @@ public abstract class Executor {
         try {
             objectNode = (ObjectNode) mapper.readTree(json);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            logger.error("Get stream graph json node error.", e);
         }
 
         return objectNode;
@@ -357,11 +351,8 @@ public abstract class Executor {
     }
 
     public ObjectNode getStreamGraphFromDataStream(List<String> statements) {
-        for (String statement : statements) {
-            executeSql(statement);
-        }
-        StreamGraph streamGraph = getStreamGraph();
-        return getStreamGraphJsonNode(streamGraph);
+        statements.forEach(this::executeSql);
+        return getStreamGraphJsonNode(getStreamGraph());
     }
 
     public JobPlanInfo getJobPlanInfo(List<String> statements) {
@@ -369,9 +360,7 @@ public abstract class Executor {
     }
 
     public JobPlanInfo getJobPlanInfoFromDataStream(List<String> statements) {
-        for (String statement : statements) {
-            executeSql(statement);
-        }
+        statements.forEach(this::executeSql);
         StreamGraph streamGraph = getStreamGraph();
         return new JobPlanInfo(JsonPlanGenerator.generatePlan(streamGraph.getJobGraph()));
     }
@@ -382,17 +371,13 @@ public abstract class Executor {
 
     public TableResult executeStatementSet(List<String> statements) {
         StatementSet statementSet = tableEnvironment.createStatementSet();
-        for (String item : statements) {
-            statementSet.addInsertSql(item);
-        }
+        statements.forEach(statementSet::addInsertSql);
         return statementSet.execute();
     }
 
     public String explainStatementSet(List<String> statements) {
         StatementSet statementSet = tableEnvironment.createStatementSet();
-        for (String item : statements) {
-            statementSet.addInsertSql(item);
-        }
+        statements.forEach(statementSet::addInsertSql);
         return statementSet.explain();
     }
 

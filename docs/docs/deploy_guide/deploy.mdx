@@ -10,7 +10,7 @@ title: 部署
 
 Dinky 采用 mysql 作为后端的存储库，mysql 支持 5.7+。这里假设你已经安装了 mysql 。首先需要创建 Dinky 的后端数据库，这里以配置文件中默认库创建。
 
-在 Dinky 根目录 sql 文件夹下分别放置了 dinky.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky.sql 文件在 dinky 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
+在 Dinky 根目录 sql 文件夹下分别放置了 dinky-mysql.sql 、 upgrade/${version}_schema/mysql/ddl 和 dml。如果第一次部署，可以直接将 sql/dinky-mysql.sql 文件在 dinky 数据库下执行。（如果之前已经部署，那 upgrade 目录下 存放了各版本的升级 sql ，根据版本号按需执行即可）
 
 <Tabs groupId="operating-systems">
 <TabItem value="mysq5" label="mysql-5.x" default>
@@ -60,7 +60,7 @@ flush privileges;
 mysql -h fdw1  -udinky -pdinky
 mysql>
 use dinky;
-mysql> source /opt/dinky/sql/dinky.sql
+mysql> source /opt/dinky/sql/dinky-mysql.sql
 ```
 
 
@@ -174,7 +174,7 @@ https://mvnrepository.com/artifact/org.apache.flink/flink-shaded-hadoop-3-uber?r
 │       ├── dlink-catalog-mysql-1.16-${VERSION}.jar -- dlink 的 catalog 实现
 │       └── dlink-client-1.16-${VERSION}.jar
 └── sql
-    ├── dinky.sql -- Mysql 首次初始化脚本
+    ├── dinky-mysql.sql -- Mysql 首次初始化脚本
     └── upgrade  -- 各个版本的升级 SQL
 ```
 

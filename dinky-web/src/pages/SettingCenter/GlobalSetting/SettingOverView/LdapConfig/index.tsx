@@ -17,19 +17,19 @@
 
 
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ModalForm, ProCard, ProFormText} from '@ant-design/pro-components';
+import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
 import {l} from '@/utils/intl';
 import {Space, Tag} from 'antd';
 import React from 'react';
 import {
   ApiFilled,
-  LoginOutlined,
-  UserSwitchOutlined,
 } from "@ant-design/icons";
-import {handleOption, queryDataByParams} from "@/services/BusinessCrud";
+import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {SuccessMessage} from "@/utils/messages";
+import {TestLogin} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/TestLogin";
+import {LoadUser} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig/compontents/LoadUser";
 
 interface LdapConfigProps {
   data: BaseConfigProperties[];
@@ -49,13 +49,6 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
     setLoading(false);
   }
 
-  const testLogin = async (value: any) => {
-    setLoading(true);
-    await handleOption(API_CONSTANTS.LDAP_TEST_LOGIN, l("sys.ldap.settings.testLogin"), value);
-    setLoading(false);
-  }
-
-
   const onSaveHandler = (data: BaseConfigProperties) => {
     setLoading(true);
     onSave(data);
@@ -63,21 +56,6 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
       setLoading(false);
     }, 1000);
   };
-
-  /**
-   * render ldap test login form
-   */
-  const renderTestLoginForm = () => {
-    return (
-      <ModalForm
-        width={400} onFinish={testLogin}
-        trigger={<Tag icon={<LoginOutlined/>} color="#108ee9">{l("sys.ldap.settings.testLogin")}</Tag>}
-      >
-        <ProFormText name="username" label={l("login.username.placeholder")}/>
-        <ProFormText name="password" label={l("login.password.placeholder")}/>
-      </ModalForm>
-    )
-  }
 
   /**
    * render ldap test case toolbar
@@ -88,10 +66,8 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
         <Tag icon={<ApiFilled/>} color="#87d068" onClick={() => testConnection()}>
           {l("sys.ldap.settings.testConnect")}
         </Tag>
-        {renderTestLoginForm()}
-        <Tag icon={<UserSwitchOutlined/>} color="#f50" onClick={() => {}}>
-          {l("sys.ldap.settings.loadUser")}
-        </Tag>
+        <TestLogin/>
+        <LoadUser/>
       </Space>
     ];
   };
