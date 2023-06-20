@@ -1,7 +1,7 @@
-import {JobMetrics} from "@/pages/Metrics/Job/data";
-import {getData, putData, queryList} from "@/services/api";
+import {JobMetrics, MetricsLayout} from "@/pages/Metrics/Job/data";
+import {getData, putData, putDataAsArray, queryList} from "@/services/api";
 import {API_CONSTANTS} from "@/services/constants";
-import {handlePutDataByParams} from "@/services/BusinessCrud";
+import {handlePutData, handlePutDataByParams} from "@/services/BusinessCrud";
 
 
 /**
@@ -17,6 +17,6 @@ export async function getFlinkRunTask() {
   })
 }
 
-export async function saveFlinkMetrics(jobList: JobMetrics[]) {
-  await handlePutDataByParams(API_CONSTANTS.SAVE_FLINK_METRICS, "add flink metrics", jobList)
+export async function saveFlinkMetrics(jobList: MetricsLayout[]) {
+  return await putDataAsArray(API_CONSTANTS.SAVE_FLINK_METRICS, jobList)
 }

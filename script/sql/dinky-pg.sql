@@ -2057,3 +2057,24 @@ ALTER TABLE "public"."metadata_table" ADD CONSTRAINT "metadata_table_pkey" PRIMA
 -- Primary Key structure for table metadata_table_property
 -- ----------------------------
 ALTER TABLE "public"."metadata_table_property" ADD CONSTRAINT "metadata_table_property_pkey" PRIMARY KEY ("key", "table_id");
+
+CREATE TABLE "public"."dinky_metrics" (
+                                          "id" int4 NOT NULL,
+                                          "task_id" int4,
+                                          "vertices" varchar(255) COLLATE "pg_catalog"."default",
+                                          "metrics" varchar(255) COLLATE "pg_catalog"."default",
+                                          "position" int4,
+                                          "show_type" varchar(255) COLLATE "pg_catalog"."default",
+                                          "show_size" varchar(255) COLLATE "pg_catalog"."default",
+                                          "title" varchar(255) COLLATE "pg_catalog"."default",
+                                          "layout_name" varchar(255) COLLATE "pg_catalog"."default",
+                                          "create_time" timestamp(6),
+                                          "update_time" timestamp(6),
+                                          CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
+)
+;
+
+ALTER TABLE "public"."dinky_metrics"
+    OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."dinky_metrics" IS 'metrics layout';

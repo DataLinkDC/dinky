@@ -19,11 +19,13 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -34,5 +36,7 @@ public interface MonitorService extends IService<Metrics> {
 
     SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate);
 
-    void saveFlinkMetricLayout(List<Metrics> metricsList);
+    void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList);
+
+    Map<String, List<Metrics>> getMetricsLayout();
 }

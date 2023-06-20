@@ -20,6 +20,7 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.PublicInterface;
+import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
@@ -27,11 +28,13 @@ import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -69,8 +72,12 @@ public class MonitorController {
     }
 
     @PutMapping("/saveFlinkMetrics")
-    public Result<Void> saveFlinkMetricLayout(@RequestBody List<Metrics> metricsList) {
+    public Result<Void> saveFlinkMetricLayout(@RequestBody List<MetricsLayoutDTO> metricsList) {
         monitorService.saveFlinkMetricLayout(metricsList);
         return Result.succeed();
+    }
+    @GetMapping("/getMetricsLayout")
+    public Result<Map<String, List<Metrics>>> getMetricsLayout() {
+        return Result.succeed(monitorService.getMetricsLayout());
     }
 }

@@ -95,6 +95,9 @@ const Server: React.FC<ServerProp> = (props) => {
     eventSource = getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime());
     eventSource.onmessage = e => {
       let result = JSON.parse(e.data);
+      if (result.model!=="local"){
+        return
+      }
       result.content = JSON.parse(result.content)
       data.push(result)
       setData(data)
@@ -116,7 +119,8 @@ const Server: React.FC<ServerProp> = (props) => {
       endTime: endTime.getTime()
     })
       .then(res => {
-        (res as any[]).map(x => x.content = JSON.parse(x.content))
+        (res as any[]).forEach(x=>x.content = JSON.parse(x.content))
+        res =(res as MetricsDataType[]).filter(x=>x.model=="local")
         if (!custom) {
           getLastData(res)
         } else {

@@ -30,7 +30,7 @@ import {getFlinkRunTask, saveFlinkMetrics} from "@/pages/Metrics/Job/service";
 
 
 const getJobMetrics = async (job: JobMetrics) => {
-  const url = API_CONSTANTS.FLINK_PROXY + "/" + job.url + '/jobs/' + job.flinkJobId + '/vertices/' + job.subTaskId + '/metrics' + '?get=' + encodeURIComponent(job.metricsId);
+  const url = API_CONSTANTS.FLINK_PROXY + "/" + job.url + '/jobs/' + job.flinkJobId + '/vertices/' + job.subTaskId + '/metrics' + '?get=' + encodeURIComponent(job.metrics);
   const json = await getData(url);
   json[0].time = new Date()
   return json[0] as ChartData
@@ -61,7 +61,7 @@ const Job = () => {
   },[])
 
   useEffect(() => {
-    Object.keys(timers).filter(x => !jobMetricsList.map(x => x.metricsId).includes(x)).forEach(x => clearInterval(timers[x]))
+    Object.keys(timers).filter(x => !jobMetricsList.map(x => x.metrics).includes(x)).forEach(x => clearInterval(timers[x]))
   }, [jobMetricsList]);
 
 
@@ -78,7 +78,7 @@ const Job = () => {
    * query flink job sub task
    * @param {string} url
    * @param {string} jid
-   * @returns {Promise<Vertices[]>}
+   * @returns {Promise<[]>}
    */
   const getFlinkJobSubTask = async (url: string, jid: string) => {
     const flinkJobVertices = await getData(API_CONSTANTS.FLINK_PROXY + "/" + url + "/jobs/" + jid);
@@ -139,14 +139,14 @@ const Job = () => {
 
     setMetricsData((prevState) => ({...prevState, selectMetrics: selectList}))
 
-    const d = selectList.map(item => {
+    const d:JobMetrics[] = selectList.map(item => {
       return {
         taskId: metricsData.selectTaskId,
         url: metricsData.url,
         flinkJobId: metricsData.jid,
         jobName: metricsData.flinkName,
         subTaskId: metricsData.selectSubTask,
-        metricsId: item,
+        metrics: item,
         layoutName: layoutName,
         title: item,
         showSize: '25%',
@@ -155,9 +155,9 @@ const Job = () => {
     })
     d.map(j => {
       const data: ChartData[] = [];
-      chartData[j.taskId + j.subTaskId + j.metricsId] = data
+      chartData[j.taskId + j.subTaskId + j.metrics] = data
       setChartData(chartData)
-      timers[j.metricsId] = setInterval(() => {
+      timers[j.metrics] = setInterval(() => {
         getJobMetrics(j).then(res => {
           data.push(res)
         })
@@ -176,7 +176,11 @@ const Job = () => {
       <Row gutter={[8, 16]}>
         {metricsList.map(j => {
             return <FlinkChart chartSize={j.showSize} chartType={j.showType}
-                               data={chartData[j.taskId + j.subTaskId + j.metricsId]} title={j.metricsId}></FlinkChart>
+                               onChangeJobState={(chartSize, chartType)=>{
+                                 j.showSize=chartSize
+                                 j.showType=chartType
+                               }}
+                               data={chartData[j.taskId + j.subTaskId + j.metrics]} title={j.metrics} />
           }
         )}
       </Row>
@@ -193,19 +197,25 @@ const Job = () => {
         size="small"
         onClick={(e) => {
           const saveThisLayout = () => {
-            jobMetricsList.map(job => {
-              const saveLayout: MetricsLayout = {
-                layoutName: "", position: "",
-                jobId: job.flinkJobId,
-                metrics: job.metricsId, showSize: job.showSize
+            const metricsLayouts:MetricsLayout[] = jobMetricsList.map((job,index) => {
+              return {
+                layoutName: layoutName, position: index,
+                metrics: job.metrics, showSize: job.showSize
                 , showType: job.showType, taskId: job.taskId
-                , subTask: job.subTaskId,
-                flinkUrl: job.url
+                , vertices: job.subTaskId,
+                title:job.metrics
+              }as MetricsLayout
+            })
+            saveFlinkMetrics(metricsLayouts).then(res=>{
+              if (res.success){
+                setSubTaskList([])
+                setMetrics([])
+                setJobMetricsList([])
               }
             })
           }
+          saveThisLayout()
 
-          saveFlinkMetrics(jobMetricsList)
         }}
       >
         提交

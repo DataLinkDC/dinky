@@ -19,7 +19,9 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import org.dinky.configure.MetricConfig;
+import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
@@ -32,8 +34,12 @@ import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
@@ -87,17 +93,18 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
         scheduleRefreshMonitorDataExecutor.execute(
                 () -> {
                     try {
-                        for (MetricsVO metrics : metricsQueue) {
-                            if (metrics.getHeartTime()
-                                    .isAfter(DateUtil.toLocalDateTime(lastDate))) {
-                                sseEmitter.send(metrics);
-                            }
-                        }
+                        LocalDateTime maxDate=DateUtil.toLocalDateTime(lastDate);
                         while (true) {
                             if (CollUtil.isEmpty(metricsQueue)) {
                                 continue;
                             }
-                            sseEmitter.send(CollUtil.getLast(metricsQueue));
+                            for (MetricsVO metrics : metricsQueue) {
+                                if (metrics.getHeartTime()
+                                        .isAfter(maxDate)) {
+                                    sseEmitter.send(metrics);
+                                    maxDate=metrics.getHeartTime();
+                                }
+                            }
                             ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
                         }
                     } catch (IOException e) {
@@ -112,10 +119,22 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void saveFlinkMetricLayout(List<Metrics> metricsList) {
+    public void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList) {
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
-        saveBatch(metricsList);
+        saveBatch(BeanUtil.copyToList(metricsList,Metrics.class));
+    }
+
+    @Override
+    public Map<String, List<Metrics>> getMetricsLayout() {
+        List<Metrics> list = list();
+        Map<String,List<Metrics>> result =new HashMap<>();
+        list.forEach(x->{
+            String layoutName = x.getLayoutName();
+            result.computeIfAbsent(layoutName,(k)->new ArrayList<>());
+            result.get(layoutName).add(x);
+        });
+        return result;
     }
 }

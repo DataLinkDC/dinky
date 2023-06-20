@@ -109,3 +109,18 @@ ALTER TABLE dinky_role_select_permissions RENAME TO dinky_row_permissions;
 
 ALTER TABLE dinky_user
     add  COLUMN `user_type` int default 0 not null comment 'login type（0:LOCAL,1:LDAP）' after user_type;
+
+CREATE TABLE `dinky_metrics` (
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `task_id` int(255) DEFAULT NULL,
+                                 `vertices` varchar(255) DEFAULT NULL,
+                                 `metrics` varchar(255) DEFAULT NULL,
+                                 `position` int(11) DEFAULT NULL,
+                                 `show_type` varchar(255) DEFAULT NULL,
+                                 `show_size` varchar(255) DEFAULT NULL,
+                                 `title` varchar(255) DEFAULT NULL,
+                                 `layout_name` varchar(255) DEFAULT NULL,
+                                 `create_time` datetime DEFAULT NULL,
+                                 `update_time` datetime DEFAULT NULL,
+                                 PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';

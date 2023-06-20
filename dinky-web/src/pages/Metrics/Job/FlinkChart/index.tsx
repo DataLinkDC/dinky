@@ -2,7 +2,7 @@ import {Col, Radio} from "antd";
 import {Line} from "@ant-design/charts";
 import {ProCard, StatisticCard} from "@ant-design/pro-components";
 import React, {useEffect, useState} from "react";
-import {ChartData} from "@/pages/Metrics/Job/data";
+import {ChartData, JobMetrics} from "@/pages/Metrics/Job/data";
 import {renderMetricsChartTitle} from "@/pages/Metrics/Job/function";
 
 
@@ -11,11 +11,12 @@ type FlinkChartProps = {
   data: ChartData[]
   chartType: string
   chartSize: string
+  onChangeJobState:(chartSize:string,chartType:string) => void
 }
 
 
 const FlinkChart: React.FC<FlinkChartProps> = (props) => {
-  const {data, title, chartType, chartSize} = props;
+  const {data, title, chartType, chartSize,onChangeJobState} = props;
   const [chartProps, setChartProps] = useState({
     chartType:chartType,
     chartSize:chartSize,
@@ -62,6 +63,7 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
             titleWidth: e.target.value == '25%' ? '50%' : '100%',
             chartSize: e.target.value
           }))
+          onChangeJobState(e.target.value,chartProps.chartType)
 
         }}
         style={{paddingRight: '5%', paddingTop: '2%'}}
@@ -87,6 +89,8 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
             ...prevState,
             chartType: e.target.value
           }))
+          onChangeJobState(chartProps.chartSize,e.target.value)
+
         }}
         style={{textAlign: "left", paddingLeft: '5%'}}
       >

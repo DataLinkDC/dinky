@@ -23,7 +23,7 @@ export type JobMetrics = {
   flinkJobId: string
   jobName: string
   subTaskId: string
-  metricsId: string
+  metrics: string
   url: string
   title: string
   layoutName: string
@@ -56,13 +56,12 @@ export type ChartData = {
 
 
 export type MetricsLayout = {
-  flinkUrl: string;
   taskId: number;
-  jobId: string;
-  subTask: string;
+  vertices: string;
   metrics: string;
-  position: string;
+  position: number;
   showType: string;
   showSize: string;
+  title: string;
   layoutName: string;
 }

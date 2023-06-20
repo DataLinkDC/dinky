@@ -1176,15 +1176,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public String getTaskAPIAddress() {
-        try {
-            InetAddress inetAddress = InetAddress.getLocalHost();
-            if (inetAddress != null) {
-                return inetAddress.getHostAddress() + NetConstant.COLON + serverPort;
-            }
-        } catch (UnknownHostException e) {
-            log.error(e.getMessage());
-        }
-        return "127.0.0.1:" + serverPort;
+        return SystemConfiguration.getInstances().getDinkyAddr().getValue();
     }
 
     @Override

@@ -39,12 +39,6 @@ public class Metrics extends Model<Metrics> {
     private Integer id;
 
     /** */
-    private String flinkUrl;
-
-    /** */
-    private String jobId;
-
-    /** */
     private Integer taskId;
 
     /** */
