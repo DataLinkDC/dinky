@@ -21,10 +21,12 @@ import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
 import {MetricsDataType} from "@/pages/Metrics/Server/data";
 import {Datum} from "@antv/g2plot";
+import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
 
 
 type CpuProps = {
     data: MetricsDataType[];
+  chartConfig: G2plotConfig;
 }
 type Cpu = {
     time: Date;
@@ -32,7 +34,7 @@ type Cpu = {
 }
 const CPU: React.FC<CpuProps> = (props) => {
 
-    const {data} = props;
+    const {data,chartConfig} = props;
 
     const dataList: Cpu[] = data.map(x => {
         return {time: x.heartTime, value: Number(x.content.jvm.cpuUsed.toFixed(2))};
@@ -40,15 +42,8 @@ const CPU: React.FC<CpuProps> = (props) => {
 
 
     const config: AreaConfig = {
-        animation: false,
+      ...chartConfig,
         data: dataList,
-        height: 150,
-        yField: 'value',
-        xField: 'time',
-        xAxis: {
-            type: 'time',
-            mask: 'HH:mm:ss',
-        },
         yAxis: {
             min: 0,
             max: 100

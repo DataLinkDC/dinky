@@ -21,13 +21,13 @@ import {PageLoading, Settings as LayoutSettings} from "@ant-design/pro-component
 import type {RunTimeLayoutConfig} from "@umijs/max";
 import {history} from "@umijs/max";
 import defaultSettings from "../config/defaultSettings";
+import Settings from "../config/defaultSettings";
 import {errorConfig} from "./requestErrorConfig";
 import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
 import {l} from "@/utils/intl";
-import Settings from "../config/defaultSettings";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -41,9 +41,8 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
-  const fetchUserInfo = async () => {
-    try {
-      const result = await queryCurrentUser();
+  const fetchUserInfo = async () =>
+    queryCurrentUser().then((result) => {
       const user = result.datas.user;
       const currentUser: API.CurrentUser = {
         user: {
@@ -65,11 +64,11 @@ export async function getInitialState(): Promise<{
         currentTenant: result.datas.currentTenant,
       };
       return currentUser;
-    } catch (error) {
+    }, (error) => {
       history.push(loginPath);
-    }
-    return undefined;
-  };
+      return undefined;
+    });
+
   // 如果不是登录页面，执行
   const {location} = history;
   if (location.pathname !== loginPath) {
@@ -94,19 +93,19 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
   return {
     headerTitleRender: () => {
       // 重新对 title 的设置进行设置
-      Settings.title =l('layouts.userLayout.title');
+      Settings.title = l('layouts.userLayout.title');
       // 重新对 logo 的设置进行设置 由于 logo 是一个组件，所以需要重新渲染, 重新渲染的时候，会重新执行一次 layout
       return <>
         <img height={50} width={50} src={Settings.logo}/>
-        <span style={{marginLeft: 10 ,color:'white'}}>{Settings.title}</span>
+        <span style={{marginLeft: 10, color: 'white'}}>{Settings.title}</span>
       </>;
     },
-    rightContentRender: () => <RightContent />,
-    footerRender: () => <Footer />,
+    rightContentRender: () => <RightContent/>,
+    footerRender: () => <Footer/>,
     siderWidth: 180,
     waterMarkProps: {
       content: initialState?.currentUser?.user.username + " " + new Date().toLocaleString(),
-      fontColor: theme === THEME.light|| undefined ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)",
+      fontColor: theme === THEME.light || undefined ? "rgba(0, 0, 0, 0.15)" : "rgba(255, 255, 255, 0.15)",
     },
     isChildrenLayout: true,
     onPageChange: () => {
@@ -117,10 +116,10 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
       }
     },
     // 自定义 403 页面
-    unAccessible:<UnAccessible/>,
+    unAccessible: <UnAccessible/>,
     // 增加一个 loading 的状态
     childrenRender: (children) => {
-      if (initialState?.loading) return <PageLoading />;
+      if (initialState?.loading) return <PageLoading/>;
       return (
         <>
           {children}
