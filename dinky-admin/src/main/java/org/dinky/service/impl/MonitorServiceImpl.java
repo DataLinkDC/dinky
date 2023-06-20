@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import org.dinky.configure.MetricConfig;
 import org.dinky.data.dto.MetricsLayoutDTO;
 import org.dinky.data.model.Metrics;
@@ -51,6 +50,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
@@ -93,16 +93,15 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
         scheduleRefreshMonitorDataExecutor.execute(
                 () -> {
                     try {
-                        LocalDateTime maxDate=DateUtil.toLocalDateTime(lastDate);
+                        LocalDateTime maxDate = DateUtil.toLocalDateTime(lastDate);
                         while (true) {
                             if (CollUtil.isEmpty(metricsQueue)) {
                                 continue;
                             }
                             for (MetricsVO metrics : metricsQueue) {
-                                if (metrics.getHeartTime()
-                                        .isAfter(maxDate)) {
+                                if (metrics.getHeartTime().isAfter(maxDate)) {
                                     sseEmitter.send(metrics);
-                                    maxDate=metrics.getHeartTime();
+                                    maxDate = metrics.getHeartTime();
                                 }
                             }
                             ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
@@ -123,18 +122,19 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
         if (CollUtil.isEmpty(metricsList)) {
             return;
         }
-        saveBatch(BeanUtil.copyToList(metricsList,Metrics.class));
+        saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
     }
 
     @Override
     public Map<String, List<Metrics>> getMetricsLayout() {
         List<Metrics> list = list();
-        Map<String,List<Metrics>> result =new HashMap<>();
-        list.forEach(x->{
-            String layoutName = x.getLayoutName();
-            result.computeIfAbsent(layoutName,(k)->new ArrayList<>());
-            result.get(layoutName).add(x);
-        });
+        Map<String, List<Metrics>> result = new HashMap<>();
+        list.forEach(
+                x -> {
+                    String layoutName = x.getLayoutName();
+                    result.computeIfAbsent(layoutName, (k) -> new ArrayList<>());
+                    result.get(layoutName).add(x);
+                });
         return result;
     }
 }

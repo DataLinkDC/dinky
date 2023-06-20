@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.core.util.URLUtil;
 import cn.hutool.extra.servlet.ServletUtil;
@@ -60,8 +61,8 @@ public class FlinkProxyController {
         }
         path = path.replace(API, "");
         String web = "web/";
+        List<String> pathSplit = StrUtil.split(path, "/");
         if (path.contains(web)) {
-            List<String> pathSplit = StrUtil.split(path, "/");
             CollUtil.removeBlank(pathSplit);
             if (pathSplit.size() < 2) {
                 return;
@@ -86,11 +87,18 @@ public class FlinkProxyController {
             }
             return;
         }
+        if (StrUtil.isBlank(path)) {
+            return;
+        }
         String query = request.getQueryString();
         if (StrUtil.isNotBlank(query)) {
             path = HttpUtil.urlWithForm(path, URLUtil.decode(query), StandardCharsets.UTF_8, true);
         }
-        HttpRequest httpRequest = HttpUtil.createRequest(Method.valueOf(request.getMethod()), path);
+        List<String> urls = StrUtil.split(pathSplit.remove(0), ",");
+        pathSplit.add(0, urls.get(RandomUtil.randomInt(urls.size())));
+        HttpRequest httpRequest =
+                HttpUtil.createRequest(
+                        Method.valueOf(request.getMethod()), StrUtil.join("/", pathSplit));
         try (HttpResponse httpResponse = httpRequest.execute(); ) {
             writeToHttpServletResponse(httpResponse, resp);
         }

@@ -34,7 +34,6 @@ import java.util.concurrent.TimeUnit;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,6 +75,7 @@ public class MonitorController {
         monitorService.saveFlinkMetricLayout(metricsList);
         return Result.succeed();
     }
+
     @GetMapping("/getMetricsLayout")
     public Result<Map<String, List<Metrics>>> getMetricsLayout() {
         return Result.succeed(monitorService.getMetricsLayout());
