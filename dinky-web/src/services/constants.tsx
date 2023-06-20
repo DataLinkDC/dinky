@@ -231,11 +231,11 @@ export const LANGUAGE_EN = 'en-US';
 /**
  * REQUEST METHOD CONSTANTS
  */
-export const METHOD_CONSTANTS = {
-  GET: "GET",
-  POST: "POST",
-  PUT: "PUT",
-  DELETE: "DELETE",
+export enum METHOD_CONSTANTS {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
 };
 
 
