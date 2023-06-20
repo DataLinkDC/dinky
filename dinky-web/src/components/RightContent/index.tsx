@@ -107,10 +107,10 @@ const GlobalHeaderRight: React.FC = () => {
   /**
    * full screen or exit full screen
    */
-  const screenFull = async () => {
+  const screenFull = () => {
     setFullScreen(screenfull.isFullscreen);
     if (screenfull.isEnabled) {
-      await screenfull.toggle();
+      (async () => await screenfull.toggle())();
     }
   };
 
