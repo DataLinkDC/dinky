@@ -40,7 +40,8 @@ const GlobalHeaderRight: React.FC = () => {
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
-  useEffect(() => {
+  function changeHandler(value: boolean) {
+    setTheme(value ? THEME.dark : THEME.light)
     setLangCache(STORY_LANGUAGE, language);
     setInitialState((initialStateType) => ({
       ...initialStateType,
@@ -51,8 +52,7 @@ const GlobalHeaderRight: React.FC = () => {
         colorMenuBackground: (theme === THEME.dark ? "transparent" : "#fff")
       }
     }))
-  }, [language, theme])
-
+  }
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -135,7 +135,7 @@ const GlobalHeaderRight: React.FC = () => {
         checked={theme === THEME.dark}
         checkedChildren={<ThemeCloud/>}
         unCheckedChildren={<ThemeStar/>}
-        onChange={(value) => setTheme(value ? THEME.dark : THEME.light)}/>
+        onChange={changeHandler}/>
     </>
   );
 };
