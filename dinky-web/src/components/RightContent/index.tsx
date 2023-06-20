@@ -41,7 +41,7 @@ const GlobalHeaderRight: React.FC = () => {
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
   useEffect(() => {
-    setInitialState((initialStateType) => ({
+    (async () => await setInitialState((initialStateType) => ({
       ...initialStateType,
       locale: language,
       settings: {
@@ -49,7 +49,7 @@ const GlobalHeaderRight: React.FC = () => {
         navTheme: theme,
         colorMenuBackground: (theme === THEME.dark ? "transparent" : "#fff")
       }
-    }));
+    })))();
   }, [theme, language]);
 
   function changeHandler(value: boolean) {
