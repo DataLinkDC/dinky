@@ -22,7 +22,7 @@ import {FullscreenExitOutlined, FullscreenOutlined, GlobalOutlined} from "@ant-d
 import {useEmotionCss} from "@ant-design/use-emotion-css";
 import {SelectLang, useModel} from "@umijs/max";
 import {Space, Switch, Tooltip} from "antd";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import screenfull from "screenfull";
 import Avatar from "./AvatarDropdown";
 import {ThemeCloud, ThemeStar} from "@/components/ThemeSvg/ThemeSvg";
@@ -40,15 +40,17 @@ const GlobalHeaderRight: React.FC = () => {
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
-  setInitialState((initialStateType) => ({
-    ...initialStateType,
-    locale: language,
-    settings: {
-      ...initialStateType?.settings,
-      navTheme: theme,
-      colorMenuBackground: (theme === THEME.dark ? "transparent" : "#fff")
-    }
-  }));
+  useEffect(() => {
+    setInitialState((initialStateType) => ({
+      ...initialStateType,
+      locale: language,
+      settings: {
+        ...initialStateType?.settings,
+        navTheme: theme,
+        colorMenuBackground: (theme === THEME.dark ? "transparent" : "#fff")
+      }
+    }));
+  }, [theme, language]);
 
   function changeHandler(value: boolean) {
     setTheme(value ? THEME.dark : THEME.light)
