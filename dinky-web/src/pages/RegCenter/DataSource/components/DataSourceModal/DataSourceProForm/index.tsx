@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React from 'react';
+import React, {useState} from 'react';
 import {FormInstance} from 'antd/es/form/hooks/useForm';
 import {Values} from 'async-validator';
 import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from '@ant-design/pro-components';
@@ -43,17 +43,20 @@ const CodeEditProps = {
 
 const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
-  const {values, form, flinkTemplateChange, flinkConfigChange} = props;
-  const [excludeFormItem, setExcludeFormItem] = React.useState<boolean>(false);
+    const {values, form, flinkTemplateChange, flinkConfigChange} = props;
+    const [excludeFormItem, setExcludeFormItem] = useState<boolean>(false);
+
+    const [dbType, setDbType] = useState<string>(values.type ?? 'MySQL');
 
 
-  const handleTypeChange = (type: string) => {
-    if (type === 'Hive' || type === 'Presto') {
-      setExcludeFormItem(true);
-    } else {
-      setExcludeFormItem(false);
-    }
-  };
+    const handleTypeChange = (value: any) => {
+        if (value.type) setDbType(value.type);
+        if (value.type === 'Hive' || value.type === 'Presto') {
+            setExcludeFormItem(true);
+        } else {
+            setExcludeFormItem(false);
+        }
+    };
 
   const renderDataSourceForm = () => {
     return <>
@@ -81,7 +84,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           rules={[{required: true, message: l('rc.ds.typePlaceholder')}]}
           placeholder={l('rc.ds.typePlaceholder')}
 
-        />
+                />
 
         <ProFormText
           name="username"
@@ -94,7 +97,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           name="password"
           width={'sm'}
           label={l('rc.ds.password')}
-          rules={[{required: true, message: l('rc.ds.passwordPlaceholder')}]}
+          rules={[{required: dbType !== 'Doris', message: l('rc.ds.passwordPlaceholder')}]}
           placeholder={l('rc.ds.passwordPlaceholder')}
         />
         <ProFormText
@@ -119,7 +122,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           </ProForm.Item>
         </AutoComplete>
 
-      </ProForm.Group>
+            </ProForm.Group>
 
       {!excludeFormItem &&
         <ProFormGroup>
@@ -147,7 +150,7 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
     <ProForm
       initialValues={values}
       form={form}
-      onValuesChange={(changedValues) => handleTypeChange(changedValues.type)}
+      onValuesChange={(changedValues, values) => handleTypeChange(values)}
       submitter={false}
     >
       {renderDataSourceForm()}
