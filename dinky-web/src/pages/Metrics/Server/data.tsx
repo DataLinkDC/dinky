@@ -18,39 +18,61 @@
  */
 
 export type MetricsDataType = {
-    content: {
-        jvm: JVMType,
-        cpu: CPUType,
-        mem: MemoryType,
-    },
-    metricsTotal: number,
-    model: string,
-    heartTime: Date,
+  // content: {
+  //     jvm: JVMType,
+  //     cpu: CPUType,
+  //     mem: MemoryType,
+  // },
+  content: string,
+  metricsTotal: number,
+  model: string,
+  heartTime: Date,
+}
+export type JVMMetric = {
+  jvm: JVMType,
+  cpu: CPUType,
+  mem: MemoryType,
+  time:Date
+}
+export type FlinkMetricsData = {
+  jobId: string,
+  taskId: number,
+  urls: string[],
+  verticesAndMetricsMap:Record<string, Record<string, string>>
+}
+export type JvmDataRecord = {
+  cpuLastValue: number;
+  heapMax: number;
+  heapLastValue: number;
+  nonHeapMax: number;
+  nonHeapLastValue: number;
+  threadPeakCount: number;
+  threadCount: number;
 }
 type JVMType = {
-    total: number,
-    max: number,
-    free: number,
-    cpuUsed: number,
-    nonHeapMax: number,
-    nonHeapUsed: number,
-    heapMax: number,
-    heapUsed: number,
-    threadPeakCount: number,
-    threadCount: number,
-    version: string,
-    home: string,
+  total: number,
+  max: number,
+  free: number,
+  cpuUsed: number,
+  nonHeapMax: number,
+  nonHeapUsed: number,
+  heapMax: number,
+  heapUsed: number,
+  threadPeakCount: number,
+  threadCount: number,
+  version: string,
+  home: string,
 }
 
 type CPUType = {
-    cpuNum: number,
-    sys: number,
-    wait: number,
-    free: number,
+  cpuNum: number,
+  sys: number,
+  wait: number,
+  free: number,
 }
 
 type MemoryType = {
-    total: number,
-    used: number,
-    free: number,
+  total: number,
+  used: number,
+  free: number,
 }

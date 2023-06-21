@@ -51,7 +51,7 @@ export type SubTask = {
 
 export type ChartData = {
   time: Date;
-  value: number;
+  value: number|string;
 }
 
 
