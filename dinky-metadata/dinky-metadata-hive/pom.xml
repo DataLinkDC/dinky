@@ -63,6 +63,12 @@
             <!--  If you use cdh hive comment out the previous line to open the next line and open the repositories below-->
             <!--            <version>2.1.1-cdh6.3.2</version>-->
             <scope>${scope.runtime}</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>jdk.tools</groupId>
+                    <artifactId>jdk.tools</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.apache.hive</groupId>
