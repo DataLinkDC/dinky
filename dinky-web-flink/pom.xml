@@ -9,6 +9,7 @@
     </parent>
 
     <artifactId>dinky-web-flink</artifactId>
+    <name>Dinky : Web : Flink</name>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>

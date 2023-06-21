@@ -32,7 +32,7 @@ import {
   getSubMinTime
 } from "@/pages/Metrics/Server/function";
 import {queryDataByParams} from "@/services/BusinessCrud";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {JvmDataRecord, JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
 import {API_CONSTANTS} from "@/services/constants";
 import NonHeap from "@/pages/Metrics/Server/OutHeap";
 import {getSseData} from "@/services/api";
@@ -49,22 +49,15 @@ export const imgStyle = {
   height: 24,
 };
 
-type DataRecord = {
-  cpuLastValue: number;
-  heapMax: number;
-  heapLastValue: number;
-  nonHeapMax: number;
-  nonHeapLastValue: number;
-  threadPeakCount: number;
-  threadCount: number;
-}
+
 type ServerProp = {
-  chartConfig: G2plotConfig;
+  chartConfig: G2plotConfig
+  data: JVMMetric[]
 }
 
 
 const Server: React.FC<ServerProp> = (props) => {
-  const {chartConfig}=props
+  const {chartConfig, data} = props
   const commonConfig: G2plotConfig = {
     ...chartConfig,
     yField: 'value',
@@ -74,116 +67,26 @@ const Server: React.FC<ServerProp> = (props) => {
       mask: 'HH:mm:ss',
     }
   }
-
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [dateRange, setDateRange] = useState<string>('60s');
-  const [startTime, setStartTime] = useState(getSubMinTime(currentTime, 1));
-  const [endTime, setEndTime] = useState(new Date());
-  const [data, setData] = useState<MetricsDataType[]>([]);
-  const [custom, setCustom] = useState<boolean>(false);
-
-
-  const [dataRecord, setDataRecord] = useState<DataRecord>({
-    heapLastValue: 0, cpuLastValue: 0, heapMax: 0
-    , threadCount: 0, threadPeakCount: 0
-    , nonHeapMax: 0, nonHeapLastValue: 0
-  });
-
-
-  let eventSource: EventSource;
-  const getLastData = (data: MetricsDataType[]) => {
-    eventSource = getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + "?lastTime=" + endTime.getTime());
-    eventSource.onmessage = e => {
-      let result = JSON.parse(e.data);
-      if (result.model!=="local"){
-        return
-      }
-      result.content = JSON.parse(result.content)
-      data.push(result)
-      setData(data)
-      setDataRecord({
-        cpuLastValue: result.content.jvm.cpuUsed.toFixed(2),
-        heapMax: Number((result.content.jvm.heapMax / (1024 * 1024)).toFixed(0)),
-        heapLastValue: Number((result.content.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
-        nonHeapMax: Number((result.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
-        nonHeapLastValue: Number((result.content.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
-        threadPeakCount: result.content.jvm.threadPeakCount,
-        threadCount: result.content.jvm.threadCount,
-      })
-    }
-
-  }
-  const getInitData = () => {
-    queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {
-      startTime: startTime.getTime(),
-      endTime: endTime.getTime()
-    })
-      .then(res => {
-        (res as any[]).forEach(x=>x.content = JSON.parse(x.content))
-        res =(res as MetricsDataType[]).filter(x=>x.model=="local")
-        if (!custom) {
-          getLastData(res)
-        } else {
-          setData(res)
-        }
-      })
+  const jvmMetric = data[data.length - 1];
+  const showLastData: JvmDataRecord = jvmMetric?{
+    cpuLastValue: Number(jvmMetric.jvm.cpuUsed.toFixed(2)),
+    heapMax: Number((jvmMetric.jvm.heapMax / (1024 * 1024)).toFixed(0)),
+    heapLastValue: Number((jvmMetric.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
+    nonHeapMax: Number((jvmMetric.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
+    nonHeapLastValue: Number((jvmMetric.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
+    threadPeakCount: jvmMetric.jvm.threadPeakCount,
+    threadCount: jvmMetric.jvm.threadCount,
+  }:{
+    cpuLastValue: 0,
+    heapMax: 0,
+    heapLastValue: 0,
+    nonHeapMax: 0,
+    nonHeapLastValue: 0,
+    threadPeakCount: 0,
+    threadCount: 0,
   }
 
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentTime(new Date());
-    }, 1000);
-
-    getInitData()
-
-    return () => {
-      clearInterval(timer);
-      eventSource?.close()
-    };
-
-  }, [startTime]);
-
-  const handleDateRadioChange = (e: any) => {
-    const dateKey = e.target.value;
-    setDateRange(dateKey)
-    switch (dateKey) {
-      case '60s':
-        setStartTime(getSubMinTime(currentTime, 1))
-        setEndTime(currentTime)
-        break;
-      case '5min':
-        setStartTime(getSubMinTime(currentTime, 5))
-        setEndTime(currentTime)
-        break;
-      case '10min':
-        setStartTime(getSubMinTime(currentTime, 10))
-        setEndTime(currentTime)
-        break;
-      case '1h':
-        setStartTime(getSubMinTime(currentTime, 60))
-        setEndTime(currentTime)
-        break;
-      case '2h':
-        setStartTime(getSubMinTime(currentTime, 2 * 60))
-        setEndTime(currentTime)
-        break;
-      case '5h':
-        setStartTime(getSubMinTime(currentTime, 5 * 60))
-        setEndTime(currentTime)
-        break;
-    }
-    setCustom(false)
-  }
-
-  const handleRangeChange = (dates: any) => {
-    setDateRange('custom')
-    setStartTime(new Date(dates[0]))
-    setEndTime(new Date(dates[1]))
-    setCustom(true)
-  }
-
-
-  const extraDataBuilder = (data: DataRecord) => {
+  const extraDataBuilder = (data: JvmDataRecord) => {
     return {
       cpuLastValue: data.cpuLastValue + "%",
       heapLastValue: data.heapLastValue + " / " + data.heapMax + " MB",
@@ -191,32 +94,25 @@ const Server: React.FC<ServerProp> = (props) => {
       threadCount: data.threadCount + " / " + data.threadPeakCount
     }
   }
-
-
   return <>
-    <ProCard size={'small'} colSpan={'100%'} bordered>
-      <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
-                    handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
-    </ProCard>
     <ProCard bordered split={'vertical'}>
       <ProCard title={<Space><CPUIcon style={imgStyle}/>CPU</Space>}
-               extra={extraDataBuilder(dataRecord).cpuLastValue}>
+               extra={extraDataBuilder(showLastData).cpuLastValue}>
         <CPU data={data} chartConfig={commonConfig}/>
       </ProCard>
       <ProCard title={<Space><HeapIcon style={imgStyle}/>Heap</Space>}
-               extra={extraDataBuilder(dataRecord).heapLastValue}>
-        <Heap data={data} max={dataRecord.heapMax} chartConfig={commonConfig}/>
+               extra={extraDataBuilder(showLastData).heapLastValue}>
+        <Heap data={data} max={showLastData.heapMax} chartConfig={commonConfig}/>
       </ProCard>
       <ProCard title={<Space><ThreadIcon style={imgStyle}/>Thread</Space>}
-               extra={extraDataBuilder(dataRecord).threadCount}>
+               extra={extraDataBuilder(showLastData).threadCount}>
         <Thread data={data} chartConfig={commonConfig}/>
       </ProCard>
       <ProCard title={<Space><OutHeapIcon style={imgStyle}/>Out Heap</Space>}
-               extra={extraDataBuilder(dataRecord).nonHeapLastValue}>
-        <NonHeap data={data} max={dataRecord.nonHeapMax} chartConfig={commonConfig}/>
+               extra={extraDataBuilder(showLastData).nonHeapLastValue}>
+        <NonHeap data={data} max={showLastData.nonHeapMax} chartConfig={commonConfig}/>
       </ProCard>
     </ProCard>
   </>
 }
-
 export default Server;

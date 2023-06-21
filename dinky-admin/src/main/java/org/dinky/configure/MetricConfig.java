@@ -213,11 +213,11 @@ public class MetricConfig {
                     .filter(x -> x.getTaskId().equals(taskId))
                     .forEach(
                             m -> {
-                                Map<String, List<String>> verticesAndMetricsMap =
+                                Map<String, Map<String, String>> verticesAndMetricsMap =
                                         flinkMetrics.getVerticesAndMetricsMap();
                                 verticesAndMetricsMap.putIfAbsent(
-                                        m.getVertices(), new ArrayList<>());
-                                verticesAndMetricsMap.get(m.getVertices()).add(m.getMetrics());
+                                        m.getVertices(), new ConcurrentHashMap<>());
+                                verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
                             });
             for (History jobHistory : historyList) {
                 if (jobInstance.getHistoryId().equals(jobHistory.getId())) {
@@ -251,7 +251,7 @@ public class MetricConfig {
                 .getVerticesAndMetricsMap()
                 .forEach(
                         (v, m) -> {
-                            for (String metrics : m) {
+                            for (String metrics : m.keySet()) {
                                 if (CollUtil.isEmpty(urlList)) {
                                     return;
                                 }
@@ -266,9 +266,8 @@ public class MetricConfig {
                                         REQUEST_FLINK_TIMEOUT,
                                         x -> {
                                             JSONArray array = JSONUtil.parseArray(x.body());
-                                            String key = v + metrics;
                                             String value = array.getJSONObject(0).getStr("value");
-                                            flinkMetrics.getValueMap().put(key, value);
+                                            m.put(metrics, value);
                                         });
                             }
                         });
@@ -285,8 +284,7 @@ public class MetricConfig {
         private String jobId;
         private Integer taskId;
         private List<String> urls = new CopyOnWriteArrayList<>();
-        private Map<String, List<String>> verticesAndMetricsMap = new HashMap<>();
-        /** key为 vertices+metrics */
-        private Map<String, String> valueMap = new ConcurrentHashMap<>();
+        /** jobId -> metricsId -> metricsValue */
+        private Map<String, Map<String, String>> verticesAndMetricsMap = new HashMap<>();
     }
 }

@@ -17,25 +17,25 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {JVMMetric} from "@/pages/Metrics/Server/data";
 import {Datum} from "@antv/g2plot";
 import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
 
 type NonHeapProps = {
-    data: MetricsDataType[];
+    data: JVMMetric[];
     max: number;
   chartConfig: G2plotConfig;
 }
 type NonHeap = {
     time: Date;
-    value: string | number;
+    value:  number;
 }
 const NonHeap: React.FC<NonHeapProps> = (props) => {
     const {data, max,chartConfig} = props;
-    const dataList: NonHeap[] = data.map(x => {
-        return {time: x.heartTime, value: Number((x.content.jvm.nonHeapMax / (1024 * 1024)).toFixed(0))};
+  const dataList: NonHeap[] = data.map(x=>{
+      return {time:x.time,value:parseInt(String(x.jvm.nonHeapMax / (1024 * 1024)))}
     })
 
 
