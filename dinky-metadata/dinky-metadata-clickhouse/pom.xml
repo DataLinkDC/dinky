@@ -42,6 +42,7 @@
         <dependency>
             <groupId>ru.yandex.clickhouse</groupId>
             <artifactId>clickhouse-jdbc</artifactId>
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
