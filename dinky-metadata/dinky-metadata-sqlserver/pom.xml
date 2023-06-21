@@ -42,7 +42,7 @@
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
-            <!--            <scope>test</scope>-->
+            <scope>${scope.runtime}</scope>
         </dependency>
 
     </dependencies>

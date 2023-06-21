@@ -60,7 +60,7 @@
             <groupId>com.facebook.presto</groupId>
             <artifactId>presto-jdbc</artifactId>
             <version>0.235</version>
-            <scope>compile</scope>
+            <scope>${scope.runtime}</scope>
         </dependency>
     </dependencies>
 
