@@ -188,6 +188,7 @@ export const API_CONSTANTS = {
 
   // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
+  GET_JOB_DETAIL: "/api/jobInstance/getJobInfoDetail",
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
@@ -208,6 +209,11 @@ export const API_CONSTANTS = {
   MONITOR_GET_LAST_DATA:"/api/monitor/getLastUpdateData",
   JOB_METRICS: "/api/monitor/jobMetrics",
 
+  SAVE_FLINK_METRICS: "/api/monitor/saveFlinkMetrics",
+  GET_METRICS_LAYOUT: "/api/monitor/getMetricsLayout",
+
+  // flink
+  FLINK_PROXY: "/api/flink"
 };
 
 
@@ -219,7 +225,7 @@ export const TENANT_ID = "tenantId";
 /**
  * the platform version
  */
-export const VERSION = "0.8.0";
+export const VERSION = "1.0.0-SNAPSHOT";
 
 /**
  * the platform language
@@ -232,11 +238,11 @@ export const LANGUAGE_EN = 'en-US';
 /**
  * REQUEST METHOD CONSTANTS
  */
-export const METHOD_CONSTANTS = {
-  GET: "GET",
-  POST: "POST",
-  PUT: "PUT",
-  DELETE: "DELETE",
+export enum METHOD_CONSTANTS {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
 };
 
 

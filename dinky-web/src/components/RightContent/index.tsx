@@ -15,18 +15,10 @@
  * limitations under the License.
  */
 
-import {STORY_LANGUAGE, VERSION} from '@/services/constants';
-import {
-  getLocalStorageLanguage, getValueFromLocalStorage,
-  setCookieByKey,
-  setKeyToLocalStorage,
-} from '@/utils/function';
+import {LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE, VERSION} from '@/services/constants';
 import {l} from "@/utils/intl";
-import {
-  FullscreenExitOutlined,
-  FullscreenOutlined,
-  GlobalOutlined
-} from "@ant-design/icons";
+import useCookie from 'react-use-cookie';
+import {FullscreenExitOutlined, FullscreenOutlined, GlobalOutlined} from "@ant-design/icons";
 import {useEmotionCss} from "@ant-design/use-emotion-css";
 import {SelectLang, useModel} from "@umijs/max";
 import {Space, Switch, Tooltip} from "antd";
@@ -35,6 +27,7 @@ import screenfull from "screenfull";
 import Avatar from "./AvatarDropdown";
 import {ThemeCloud, ThemeStar} from "@/components/ThemeSvg/ThemeSvg";
 import {THEME} from "@/types/Public/data";
+import {useLocalStorage} from "@/utils/hook/useLocalStorage";
 
 
 const GlobalHeaderRight: React.FC = () => {
@@ -42,38 +35,27 @@ const GlobalHeaderRight: React.FC = () => {
    * status
    */
   const [fullScreen, setFullScreen] = useState(true);
-  const [themeChecked, setThemeChecked] = useState(false);
   const {initialState, setInitialState} = useModel("@@initialState");
-  const {currentUser,settings} = initialState || {};
-
-  /**
-   * init render theme status
-   */
-  useEffect(() => {
-    const theme :any = getValueFromLocalStorage(THEME.NAV_THEME) !== undefined ? getValueFromLocalStorage(THEME.NAV_THEME) :  settings?.navTheme
-    setThemeChecked(theme === THEME.dark ? true : false);
-    setInitialState((preInitialState) => {
-      return {
-        ...preInitialState,
-        settings: {
-          ...initialState?.settings, navTheme: theme
-        }
-      };
-    });
-
-  }, []);
+  const [theme, setTheme] = useLocalStorage(THEME.NAV_THEME, initialState?.settings?.navTheme);
+  const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
+  const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
   useEffect(() => {
-    const lang = getLocalStorageLanguage();
-    if (lang) {
-      setCookieByKey(STORY_LANGUAGE, lang);
-      setInitialState((s) => ({
-        ...s,
-        locale: lang,
-      }));
-    }
-  }, [initialState?.settings]);
+    (async () => await setInitialState((initialStateType) => ({
+      ...initialStateType,
+      locale: language,
+      settings: {
+        ...initialStateType?.settings,
+        navTheme: theme,
+        colorMenuBackground: (theme === THEME.dark ? "transparent" : "#fff")
+      }
+    })))();
+  }, [theme, language]);
 
+  function changeHandler(value: boolean) {
+    setTheme(value ? THEME.dark : THEME.light)
+    setLangCache(STORY_LANGUAGE, language);
+  }
 
   if (!initialState || !initialState.settings) {
     return null;
@@ -128,10 +110,9 @@ const GlobalHeaderRight: React.FC = () => {
   const screenFull = () => {
     setFullScreen(screenfull.isFullscreen);
     if (screenfull.isEnabled) {
-      screenfull.toggle();
+      (async () => await screenfull.toggle())();
     }
   };
-
 
 
   const fullScreenProps = {
@@ -139,6 +120,7 @@ const GlobalHeaderRight: React.FC = () => {
     className: fullScreenClassName
   };
 
+  const menuVersion = l("menu.version", "", {version: VERSION});
   return (
     <>
       <Tooltip placement="bottom"
@@ -147,30 +129,16 @@ const GlobalHeaderRight: React.FC = () => {
           <FullscreenExitOutlined {...fullScreenProps} onClick={screenFull}/>}
       </Tooltip>
       <Avatar/>
-      <Tooltip
-        placement="bottom"
-        title={<span>{l("menu.version", "", {version: VERSION})}</span>}
-      >
-        <Space className={actionClassName}>{l("menu.version", "", {version: VERSION})}</Space>
+      <Tooltip placement="bottom" title={<span>{menuVersion}</span>}>
+        <Space className={actionClassName}>{menuVersion}</Space>
       </Tooltip>
       <SelectLang icon={<GlobalOutlined/>} className={actionClassName}/>
       <Switch
         key={"themeSwitch"}
-        checked={themeChecked}
+        checked={theme === THEME.dark}
         checkedChildren={<ThemeCloud/>}
         unCheckedChildren={<ThemeStar/>}
-        onChange={(value) => {
-          setKeyToLocalStorage(THEME.NAV_THEME, !value ? THEME.light : THEME.dark);
-          setInitialState((preInitialState :any) => {
-            return {
-              ...preInitialState,
-              settings: {
-                ...settings, navTheme: !value ? THEME.light : THEME.dark,colorMenuBackground: (getValueFromLocalStorage(THEME.NAV_THEME) === THEME.dark ? "transparent" : "#fff")
-              }
-            };
-          });
-          setThemeChecked(value);
-        }}/>
+        onChange={changeHandler}/>
     </>
   );
 };

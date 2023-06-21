@@ -104,7 +104,12 @@ export async function putData(url: string, params: any) {
     },
   });
 }
-
+export async function putDataAsArray(url: string, data: any[]) {
+  return request(url, {
+    method: METHOD_CONSTANTS.PUT,
+    data: data,
+  });
+}
 
 
 export async function postDataArray(url: string, params: number[]) {

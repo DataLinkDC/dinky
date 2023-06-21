@@ -155,6 +155,12 @@ export default [
         icon: 'ToolOutlined',
         component: './RegCenter/UDF',
       },
+      {
+        path: '/registration/resource',
+        name: 'resource',
+        icon: 'FileZipOutlined',
+        component: './RegCenter/Resource',
+      },
     ],
   },
   {

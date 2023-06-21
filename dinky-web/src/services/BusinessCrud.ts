@@ -38,7 +38,7 @@ const APPLICATION_JSON = 'application/json';
 export async function currentUser(options?: { [key: string]: any }) {
   return request<API.Result>(API_CONSTANTS.CURRENT_USER, {
     method: METHOD_CONSTANTS.GET,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
@@ -49,7 +49,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 export async function outLogin(options?: { [key: string]: any }) {
   return request<Record<string, any>>(API_CONSTANTS.LOGOUT, {
     method: METHOD_CONSTANTS.DELETE,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
@@ -65,7 +65,7 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
       CONTENT_TYPE: APPLICATION_JSON,
     },
     data: body,
-    ...(options || {}),
+    ...(options ?? {}),
   });
 }
 
@@ -95,9 +95,9 @@ export const handleAddOrUpdate = async (url: string, params: any) => {
   try {
     const {code, msg} = await addOrUpdateData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      await SuccessMessage(msg);
     } else {
-      WarningMessage(msg);
+      await WarningMessage(msg);
     }
     return true;
   } catch (error) {
@@ -115,9 +115,9 @@ export const handleRemoveById = async (url: string, id: number) => {
   try {
     const {code, msg} = await removeById(url, {id});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      await SuccessMessage(msg);
     } else {
-      WarningMessage(msg);
+      await WarningMessage(msg);
     }
     return true;
   } catch (error) {
@@ -134,9 +134,9 @@ export const updateEnabled = async (url: string, params: any) => {
   try {
     const {code, msg} = await updateDataByParams(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      await SuccessMessage(msg);
     } else {
-      WarningMessage(msg);
+      await WarningMessage(msg);
     }
     return true;
   } catch (error) {
@@ -149,10 +149,10 @@ export const handleOption = async (url: string, title: string, param: any) => {
   try {
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(result.msg);
+      await SuccessMessage(result.msg);
       return result;
     } else {
-      WarningMessage(result.msg);
+      await WarningMessage(result.msg);
       return false;
     }
   } catch (error) {
@@ -180,9 +180,9 @@ export const handlePutData = async (url: string, fields: any) => {
   try {
     const {code, msg} = await postAll(url, {...fields});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      await SuccessMessage(msg);
     } else {
-      WarningMessage(msg);
+      await WarningMessage(msg);
     }
     return true;
   } catch (error) {
@@ -215,10 +215,10 @@ export const handlePutDataByParams = async (url: string, title: string, params: 
   try {
     const {code, msg} = await putData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(msg);
+      await SuccessMessage(msg);
       return true;
     } else {
-      WarningMessage(msg);
+      await WarningMessage(msg);
       return false;
     }
   } catch (error) {
@@ -231,10 +231,10 @@ export const getDataByIdReturnResult = async (url: string, id: any) => {
   try {
     const result = await getInfoById(url, id);
     if (result.code === RESPONSE_CODE.SUCCESS) {
-      SuccessMessage(result.msg);
+      await SuccessMessage(result.msg);
       return result;
     } else {
-      WarningMessage(result.msg);
+      await WarningMessage(result.msg);
       return false;
     }
   } catch (error) {

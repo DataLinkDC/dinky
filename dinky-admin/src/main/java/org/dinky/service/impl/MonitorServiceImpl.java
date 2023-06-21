@@ -20,7 +20,10 @@
 package org.dinky.service.impl;
 
 import org.dinky.configure.MetricConfig;
+import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
+import org.dinky.mapper.MetricsMapper;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.MonitorService;
 import org.dinky.utils.PaimonUtil;
@@ -30,16 +33,24 @@ import org.apache.paimon.predicate.Predicate;
 import org.apache.paimon.predicate.PredicateBuilder;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.Executor;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
@@ -48,7 +59,8 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MonitorServiceImpl implements MonitorService {
+public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
+        implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
 
     @Override
@@ -81,17 +93,17 @@ public class MonitorServiceImpl implements MonitorService {
         scheduleRefreshMonitorDataExecutor.execute(
                 () -> {
                     try {
-                        for (MetricsVO metrics : metricsQueue) {
-                            if (metrics.getHeartTime()
-                                    .isAfter(DateUtil.toLocalDateTime(lastDate))) {
-                                sseEmitter.send(metrics);
-                            }
-                        }
+                        LocalDateTime maxDate = DateUtil.toLocalDateTime(lastDate);
                         while (true) {
                             if (CollUtil.isEmpty(metricsQueue)) {
                                 continue;
                             }
-                            sseEmitter.send(CollUtil.getLast(metricsQueue));
+                            for (MetricsVO metrics : metricsQueue) {
+                                if (metrics.getHeartTime().isAfter(maxDate)) {
+                                    sseEmitter.send(metrics);
+                                    maxDate = metrics.getHeartTime();
+                                }
+                            }
                             ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
                         }
                     } catch (IOException e) {
@@ -102,5 +114,27 @@ public class MonitorServiceImpl implements MonitorService {
                     }
                 });
         return sseEmitter;
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList) {
+        if (CollUtil.isEmpty(metricsList)) {
+            return;
+        }
+        saveBatch(BeanUtil.copyToList(metricsList, Metrics.class));
+    }
+
+    @Override
+    public Map<String, List<Metrics>> getMetricsLayout() {
+        List<Metrics> list = list();
+        Map<String, List<Metrics>> result = new HashMap<>();
+        list.forEach(
+                x -> {
+                    String layoutName = x.getLayoutName();
+                    result.computeIfAbsent(layoutName, (k) -> new ArrayList<>());
+                    result.get(layoutName).add(x);
+                });
+        return result;
     }
 }
