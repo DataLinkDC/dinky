@@ -213,10 +213,11 @@ public class MetricConfig {
                     .filter(x -> x.getTaskId().equals(taskId))
                     .forEach(
                             m -> {
-                                Map<String, Map<String, String>> verticesAndMetricsMap = flinkMetrics.getVerticesAndMetricsMap();
+                                Map<String, Map<String, String>> verticesAndMetricsMap =
+                                        flinkMetrics.getVerticesAndMetricsMap();
                                 verticesAndMetricsMap.putIfAbsent(
                                         m.getVertices(), new ConcurrentHashMap<>());
-                                verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(),"");
+                                verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
                             });
             for (History jobHistory : historyList) {
                 if (jobInstance.getHistoryId().equals(jobHistory.getId())) {
@@ -283,9 +284,7 @@ public class MetricConfig {
         private String jobId;
         private Integer taskId;
         private List<String> urls = new CopyOnWriteArrayList<>();
-        /**
-         * jobId -> metricsId -> metricsValue
-         */
-        private Map<String, Map<String,String>> verticesAndMetricsMap = new HashMap<>();
+        /** jobId -> metricsId -> metricsValue */
+        private Map<String, Map<String, String>> verticesAndMetricsMap = new HashMap<>();
     }
 }
