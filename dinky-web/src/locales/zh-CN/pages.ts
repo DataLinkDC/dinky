@@ -507,6 +507,12 @@ export default {
   'rc.template.create': '创建 UDF 模板',
   'rc.template.modify': '修改 UDF 模板',
 
+  // resource
+  'rc.resource.click': '点击左侧文件查看详情',
+  'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
+  'rc.resource.upload': '上传文件夹/文件',
+
+
 
   //-------------------------------- setting center --------------------------------
   //setting
@@ -606,6 +612,7 @@ export default {
 
 
   // metrics
+  // server
   'metrics.filter.60seconds': '60秒',
   'metrics.filter.5minutes': '5分钟',
   'metrics.filter.10minutes': '10分钟',
@@ -614,5 +621,16 @@ export default {
   'metrics.filter.5hours': '5小时',
   'metrics.filter.custom': '自定义',
   'metrics.filter.custom.range': '日期时间范围',
+  // flink job
+  'metrics.flink.job.name': '任务名称',
+  'metrics.flink.job.placeholder': '请选择任务名称',
+  "metrics.flink.jobId": 'Flink 任务ID',
+  'metrics.flink.taskId': 'Dinky 任务ID',
+  'metrics.flink.subTask': '子任务',
+  'metrics.flink.subTask.placeholder': '请选择子任务名称',
+  'metrics.flink.metrics.name': '指标名称',
+  'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
+
+
 
 };

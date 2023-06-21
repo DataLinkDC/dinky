@@ -54,7 +54,8 @@
             <directory>${project.parent.basedir}/script/sql</directory>
             <outputDirectory>sql</outputDirectory>
             <includes>
-                <include>dinky.sql</include>
+                <include>dinky-mysql.sql</include>
+                <include>dinky-pg.sql</include>
                 <include>upgrade/*/*/*.sql</include>
             </includes>
         </fileSet>

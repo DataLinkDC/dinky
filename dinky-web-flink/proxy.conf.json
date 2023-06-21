@@ -1,0 +1,7 @@
+[
+  {
+    "context": ["/"],
+    "target": "http://10.8.16.125:8282",
+    "secure": false
+  }
+]

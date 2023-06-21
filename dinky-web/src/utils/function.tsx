@@ -39,15 +39,15 @@ import {l} from '@/utils/intl';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
- * @param tenantId
  */
 export function getLocalStorageLanguage() {
-  return localStorage.getItem(LANGUAGE_KEY) || LANGUAGE_ZH;
+  return localStorage.getItem(LANGUAGE_KEY) ?? LANGUAGE_ZH;
 }
 
 /**
  * set key value to localStorage
- * @param tenantId
+ * @param key
+ * @param value
  */
 export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
@@ -56,16 +56,15 @@ export function setKeyToLocalStorage(key: string, value: string) {
 
 /**
  * get value by localStorage's key
- * @param tenantId
+ * @param key
  */
 export function getValueFromLocalStorage(key: string) {
-  return localStorage.getItem(key) || '';
+  return localStorage.getItem(key) ?? '';
 }
 
 
 /**
  * get tenant id
- * @param tenantId
  */
 export function getTenantByLocalStorage() {
   return getValueFromLocalStorage(TENANT_ID);
@@ -74,15 +73,17 @@ export function getTenantByLocalStorage() {
 
 /**
  * get cookie by key
- * @param tenantId
+ * @param key
  */
 export function getCookieByKey(key: string) {
-  return cookies.get(key) || '';
+  return cookies.get(key) ?? '';
 }
 
 /**
  * set cookie by key
- * @param tenantId
+ * @param key
+ * @param value
+ * @param options
  */
 export function setCookieByKey(key: string, value: string, options?: {}) {
   cookies.set(key, value, options);

@@ -507,6 +507,10 @@ export default {
   'rc.template.create': 'Create UDF Template',
   'rc.template.modify': 'Modify UDF Template',
 
+  // resource
+  'rc.resource.click': 'Click left file to view details',
+  'rc.resource.noResource': '\t\tNo resources\nPlease Click the button above to upload folders/files',
+  'rc.resource.upload': 'Upload Files/Folders',
 
   //-------------------------------- setting center --------------------------------
   //setting
@@ -603,6 +607,7 @@ export default {
 
 
   // metrics
+  // server
   'metrics.filter.60seconds': '60 Seconds',
   'metrics.filter.5minutes': '5 Minutes',
   'metrics.filter.10minutes': '10 Minutes',
@@ -611,5 +616,15 @@ export default {
   'metrics.filter.5hours': '5 Hours',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
+
+  // flink job
+  'metrics.flink.job.name': 'Job Name',
+  'metrics.flink.job.placeholder': 'Please select a job name',
+  'metrics.flink.jobId': 'Flink Job ID',
+  'metrics.flink.taskId': 'Dinky Job ID',
+  'metrics.flink.subTask': 'SubTask',
+  'metrics.flink.subTask.placeholder': 'Please select a SubTask Name',
+  'metrics.flink.metrics.name': 'Metric Name',
+  'metrics.flink.metrics.placeholder': 'Please select the Metric Name (multiple choices)',
 
 };

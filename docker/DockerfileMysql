@@ -5,4 +5,4 @@ ENV MYSQL_DATABASE=dinky
 ENV MYSQL_USER=dinky
 ENV MYSQL_PASSWORD=dinky
 
-COPY ./script/sql/dinky.sql /docker-entrypoint-initdb.d/01-dinky.sql
+COPY ./script/sql/dinky-mysql.sql /docker-entrypoint-initdb.d/01-dinky.sql
