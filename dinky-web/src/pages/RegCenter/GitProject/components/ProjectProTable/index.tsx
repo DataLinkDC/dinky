@@ -118,7 +118,6 @@ const ProjectProTable: React.FC = () => {
         if (result) {
           setFormValues(value);
           handleBuildVisible(true);
-            // todo : build success, set build modal visible and set build steps
         }
     });
   };
@@ -133,6 +132,15 @@ const ProjectProTable: React.FC = () => {
     handleUpdateModalVisible(true);
   };
 
+  /**
+   * drag sort call
+   * @param {GitProject[]} newDataSource
+   * @returns {Promise<void>}
+   */
+  const handleDragSortEnd = async (newDataSource: GitProject[]) => {
+    const updatedItems = newDataSource.map((item:GitProject, index:number) => ({...item, orderLine: index + 1,}));
+    await executeAndCallback(async () => await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'),{sortList: updatedItems}));
+  };
 
   /**
    * delete git project by id
@@ -141,6 +149,8 @@ const ProjectProTable: React.FC = () => {
    */
   const handleDeleteSubmit = async (id: number) => {
     await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id));
+    await queryList(API_CONSTANTS.GIT_PROJECT).then(res => handleDragSortEnd(res.data));
+    actionRef.current?.reload()
   };
 
   /**
@@ -292,15 +302,7 @@ const ProjectProTable: React.FC = () => {
     handleCancel();
   };
 
-  /**
-   * drag sort call
-   * @param {GitProject[]} newDataSource
-   * @returns {Promise<void>}
-   */
-  const handleDragSortEnd = async (newDataSource: GitProject[]) => {
-    const updatedItems = newDataSource.map((item:GitProject, index:number) => ({...item, orderLine: index + 1,}));
-    await executeAndCallback(async () => await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'),{sortList: updatedItems}));
-  };
+
 
   /**
    * render jar
