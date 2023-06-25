@@ -21,7 +21,9 @@ package org.dinky.data.model;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -42,6 +44,10 @@ public class Configuration<T> implements Serializable {
     private String note;
 
     private final T defaultValue;
+    @JsonIgnore private final transient List<Consumer<T>> changeEventConsumer = new LinkedList<>();
+
+    @JsonIgnore
+    private final transient List<Consumer<T>> parameterCheckConsumer = new LinkedList<>();
 
     private T value;
     private static final List<Class<?>> NUMBER_LIST =
@@ -136,5 +142,33 @@ public class Configuration<T> implements Serializable {
             tConfiguration.setValue(desensitizedHandler.apply(value));
             return tConfiguration;
         }
+    }
+
+    public void addChangeEvent(Consumer<T> consumer) {
+        getChangeEventConsumer().add(consumer);
+    }
+
+    public void addParameterCheck(Consumer<T> consumer) {
+        getParameterCheckConsumer().add(consumer);
+    }
+
+    public void runParameterCheck() {
+        getParameterCheckConsumer()
+                .forEach(
+                        x -> {
+                            x.accept(getValue());
+                        });
+    }
+
+    public void runChangeEvent() {
+        getChangeEventConsumer()
+                .forEach(
+                        x -> {
+                            try {
+                                x.accept(getValue());
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        });
     }
 }

@@ -519,11 +519,13 @@ export default {
   'sys.setting.maven': 'Maven Configuration',
   'sys.setting.ds': 'DolphinScheduler Configuration',
   'sys.setting.ldap': 'LDAP Configuration',
+  'sys.setting.metrics': 'Metrics Configuration',
   'sys.setting.dinky.tooltip': 'Mainly modify system variables to ensure stable operation of basic functions',
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
   'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
+  'sys.setting.metrics.tooltip': 'Monitor monitoring page settings, adjust Metrics detection',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
@@ -585,6 +587,16 @@ export default {
   'sys.ldap.settings.testLogin': 'Test Login',
   'sys.ldap.settings.loadUser': 'Load User',
   'sys.ldap.settings.loadable': 'Whether it can be imported',
+
+  // Metrics
+  'sys.metrics.settings.sys.enable':'Dinky JVM Monitor switch',
+  'sys.metrics.settings.sys.enable.note':'This switch is related to Dinky JVM Monitor, which determines the display of Dinky Server in the monitoring page and the collection of JVM Metrics',
+  'sys.metrics.settings.sys.gatherTiming':'Dinky JVM Metrics collection time granularity',
+  'sys.metrics.settings.sys.gatherTiming.note':'Dinky JVM Metrics collection time granularity, timed task interval trigger',
+  'sys.metrics.settings.flink.gatherTiming':'Flink Metrics collection time granularity',
+  'sys.metrics.settings.flink.gatherTiming.note':'Flink Metrics collection time granularity, scheduled task interval trigger',
+  'sys.metrics.settings.flink.gatherTimeout':'Flink Metrics collection time granularity, scheduled task interval trigger',
+  'sys.metrics.settings.flink.gatherTimeout.note':'Flink Metrics collection timeout period, scheduled task interval trigger (this configuration item should be smaller than Flink Metrics collection time granularity)',
 
   // process
   'sys.process.id': 'Process ID',

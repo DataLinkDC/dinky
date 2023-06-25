@@ -104,7 +104,7 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
                                     maxDate = metrics.getHeartTime();
                                 }
                             }
-                            ThreadUtil.sleep(MetricConfig.SCHEDULED_RATE - 200);
+                            ThreadUtil.sleep(800);
                         }
                     } catch (IOException e) {
                         sseEmitter.complete();
