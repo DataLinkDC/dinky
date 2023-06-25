@@ -43,7 +43,7 @@
             <groupId>org.apache.phoenix</groupId>
             <artifactId>phoenix-core</artifactId>
             <version>4.14.2-HBase-1.4</version>
-            <!--            <scope>test</scope>-->
+            <scope>${scope.runtime}</scope>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>

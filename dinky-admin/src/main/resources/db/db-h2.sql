@@ -1655,3 +1655,17 @@ VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-pyth
        , NULL, NULL, NULL, NULL, ''
        , 2, 1, NULL, NULL, 0
        , 0, 1, '[]', 2);
+
+CREATE TABLE `dinky_metrics` (
+                                 `id` int(11) NOT NULL AUTO_INCREMENT,
+                                 `task_id` int(255) DEFAULT NULL,
+                                 `vertices` varchar(255) DEFAULT NULL,
+                                 `metrics` varchar(255) DEFAULT NULL,
+                                 `position` int(11) DEFAULT NULL,
+                                 `show_type` varchar(255) DEFAULT NULL,
+                                 `show_size` varchar(255) DEFAULT NULL,
+                                 `title` varchar(255) DEFAULT NULL,
+                                 `layout_name` varchar(255) DEFAULT NULL,
+                                 `create_time` datetime DEFAULT NULL,
+                                 `update_time` datetime DEFAULT NULL
+) ENGINE = InnoDB;

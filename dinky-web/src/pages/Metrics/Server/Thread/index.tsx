@@ -19,13 +19,13 @@
 
 import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
 import Heap from "@/pages/Metrics/Server/Heap";
 import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
 import {Datum} from "@antv/g2plot";
 
 type ThreadProps = {
-  data: MetricsDataType[];
+  data: JVMMetric[];
   chartConfig: G2plotConfig;
 }
 type Thread = {
@@ -36,10 +36,11 @@ type Thread = {
 const Thread: React.FC<ThreadProps> = (props) => {
   const {data, chartConfig} = props;
   const dataList: Thread[] = data.map(x => {
-    return {time: x.heartTime, value: x.content.jvm.threadPeakCount, name: "Peak"};
+    return {time: x.time, value: x.jvm.threadPeakCount, name: "Peak"};
+
   })
   const dataList2: Thread[] = data.map(x => {
-    return {time: x.heartTime, value: x.content.jvm.threadCount, name: "Count"};
+    return {time: x.time, value: x.jvm.threadCount, name: "Count"};
   })
   const dataListAll = dataList.concat(dataList2);
 

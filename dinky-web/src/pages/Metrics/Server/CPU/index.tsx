@@ -19,13 +19,13 @@
 
 import React, {useEffect, useState} from "react";
 import {Area, AreaConfig} from "@ant-design/plots";
-import {MetricsDataType} from "@/pages/Metrics/Server/data";
+import {JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
 import {Datum} from "@antv/g2plot";
 import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
 
 
 type CpuProps = {
-    data: MetricsDataType[];
+    data: JVMMetric[];
   chartConfig: G2plotConfig;
 }
 type Cpu = {
@@ -37,7 +37,7 @@ const CPU: React.FC<CpuProps> = (props) => {
     const {data,chartConfig} = props;
 
     const dataList: Cpu[] = data.map(x => {
-        return {time: x.heartTime, value: Number(x.content.jvm.cpuUsed.toFixed(2))};
+        return {time: x.time, value: Number(x.jvm.cpuUsed.toFixed(2))};
     })
 
 

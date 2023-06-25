@@ -38,6 +38,7 @@
             <id>web</id>
             <modules>
                 <module>../dlink-web</module>
+                <module>../dinky-web-flink</module>
             </modules>
         </profile>
     </profiles>
