@@ -24,7 +24,6 @@ import org.dinky.data.model.SysConfig;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.mapper.SysConfigMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.service.SysConfigService;
 
 import java.util.HashMap;
@@ -39,8 +38,6 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.StrUtil;
 
 /**
  * SysConfigServiceImpl
@@ -79,7 +76,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
                 .forEach(Model::insertOrUpdate);
         Map<String, String> configMap =
                 CollUtil.toMap(list(), new HashMap<>(), SysConfig::getName, SysConfig::getValue);
-        systemConfiguration.setConfiguration(configMap);
+        systemConfiguration.initSetConfiguration(configMap);
     }
 
     @Override
@@ -88,17 +85,7 @@ public class SysConfigServiceImpl extends SuperServiceImpl<SysConfigMapper, SysC
         config.setValue(value);
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
-        if (key.equals(systemConfiguration.getDolphinschedulerEnable().getKey())
-                && Convert.toBool(value)) {
-            if (StrUtil.hasBlank(
-                    systemConfiguration.getDolphinschedulerUrl().getValue(),
-                    systemConfiguration.getDolphinschedulerProjectName().getValue(),
-                    systemConfiguration.getDolphinschedulerToken().getValue())) {
-                throw new DinkyException(
-                        "Before starting DolphinScheduler docking, please fill in the relevant configuration");
-            }
-        }
-        systemConfiguration.setConfiguration(MapUtil.of(key, value));
+        systemConfiguration.setConfiguration(key, value);
         config.updateById();
     }
 }

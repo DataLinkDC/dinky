@@ -32,12 +32,10 @@ export const MavenConfig = ({data, onSave}: MavenConfigProps) => {
 
   const [loading, setLoading] = React.useState(false);
 
-  const onSaveHandler = (data: BaseConfigProperties) => {
+  const onSaveHandler =async (data: BaseConfigProperties) => {
     setLoading(true);
-    onSave(data);
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
+    await onSave(data);
+    setLoading(false);
   };
 
 

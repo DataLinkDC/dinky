@@ -519,13 +519,15 @@ export default {
   'sys.setting.dinky': 'Dinky 环境配置',
   'sys.setting.flink': 'Flink 配置',
   'sys.setting.maven': 'Maven 配置',
-  'sys.setting.ds': 'DolphinSchuder 配置',
-  'sys.setting.ldap': 'LDAP配置',
+  'sys.setting.ds': 'DolphinScheduler 配置',
+  'sys.setting.ldap': 'LDAP 配置',
+  'sys.setting.metrics': 'Metrics 配置',
   'sys.setting.dinky.tooltip': '主要以修改系统变量为主，保证基础功能稳定运行',
   'sys.setting.flink.tooltip': 'Dinky对接 Flink 主要参数',
   'sys.setting.maven.tooltip': 'Maven 编译的主要参数',
   'sys.setting.ds.tooltip': '海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上',
   'sys.setting.ldap.tooltip': 'LDAP统一认证配置',
+  'sys.setting.metrics.tooltip': 'Monitor 监控页面设置，调整Metrics探测',
   'sys.setting.modify': '修改配置 {key}',
   'sys.setting.tag.extend': '扩展配置',
   'sys.setting.tag.core': '核心配置',
@@ -590,6 +592,15 @@ export default {
   'sys.ldap.settings.loadUser': '导入用户',
   'sys.ldap.settings.loadable': '是否可以导入',
 
+  // Metrics
+  'sys.metrics.settings.sys.enable':'Dinky JVM Monitor 开关',
+  'sys.metrics.settings.sys.enable.note':'此开关会关系到Dinky JVM Monitor，决定监控页面中的Dinky Server显示，以及JVM Metrics采集',
+  'sys.metrics.settings.sys.gatherTiming':'Dinky JVM Metrics 采集时间粒度',
+  'sys.metrics.settings.sys.gatherTiming.note':'Dinky JVM Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTiming':'Flink Metrics 采集时间粒度',
+  'sys.metrics.settings.flink.gatherTiming.note':'Flink Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTimeout':'Flink Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTimeout.note':'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
 
   // process
   'sys.process.id': '进程ID',

@@ -23,24 +23,24 @@ import {l} from '@/utils/intl';
 import {Tag} from 'antd';
 import React from 'react';
 
-interface DSConfigProps {
+interface MetricsConfigProps {
   data: BaseConfigProperties[];
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const DSConfig = ({data, onSave}: DSConfigProps) => {
+export const MetricsConfig = ({data, onSave}: MetricsConfigProps) => {
 
   const [loading, setLoading] = React.useState(false);
 
-  const onSaveHandler = async (data: BaseConfigProperties) => {
+  const onSaveHandler =async (data: BaseConfigProperties) => {
     setLoading(true);
     await onSave(data);
     setLoading(false);
   };
   return <>
     <ProCard
-      title={l('sys.setting.ds')}
-      tooltip={l('sys.setting.ds.tooltip')}
+      title={l('sys.setting.metrics')}
+      tooltip={l('sys.setting.metrics.tooltip')}
       size="small"
       headerBordered ghost collapsible
       defaultCollapsed={false}
