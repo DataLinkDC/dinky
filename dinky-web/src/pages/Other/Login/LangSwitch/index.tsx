@@ -18,22 +18,22 @@
 import {useEmotionCss} from "@ant-design/use-emotion-css";
 import {SelectLang, useModel} from '@@/exports';
 import React, {useEffect} from 'react';
-import {getLocalStorageLanguage, setCookieByKey} from '@/utils/function';
-import {STORY_LANGUAGE} from '@/services/constants';
+import {LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE} from '@/services/constants';
+import useCookie from "react-use-cookie";
+import {useLocalStorage} from "@/utils/hook/useLocalStorage";
 
 const LangSwitch = () => {
 
   const {initialState, setInitialState} = useModel("@@initialState");
+  const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
+  const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
   useEffect(() => {
-    const lang = getLocalStorageLanguage();
-    if (lang) {
-      setCookieByKey(STORY_LANGUAGE, lang);
+      setLangCache(language)
       setInitialState((s) => ({
         ...s,
-        locale: lang,
+        locale: language,
       }));
-    }
   }, [initialState]);
 
 
