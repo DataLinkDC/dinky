@@ -6,7 +6,7 @@ import {Jobs} from '@/types/DevOps/data';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import {l} from '@/utils/intl';
 import {parseSecondStr} from '@/utils/function';
-import {API_CONSTANTS} from '@/services/constants';
+import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
 import {queryList} from '@/services/api';
 import {ClockCircleTwoTone, EyeTwoTone} from '@ant-design/icons';
 import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from '@/pages/DevOps/JobList/function';
@@ -39,6 +39,7 @@ const JobList = () => {
     {
       title: l('global.table.jobid'),
       dataIndex: 'jid',
+      width: '15%',
     },
     {
       title: l('global.table.createTime'),
@@ -79,6 +80,7 @@ const JobList = () => {
 
   return (
     <ProTable<Jobs.JobInstance>
+      {...PROTABLE_OPTIONS_PUBLIC}
       rowKey={(record => record.jid)}
       columns={jobListColumns}
       params={{isHistory: false}}

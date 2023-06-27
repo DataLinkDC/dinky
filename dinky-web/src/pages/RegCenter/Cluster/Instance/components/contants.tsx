@@ -15,18 +15,18 @@
  * limitations under the License.
  */
 
-import {RUN_MODE} from "@/services/constants";
 import {Tag} from 'antd';
 import {l} from '@/utils/intl';
 import React from 'react';
+import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 /**
  * Cluster instance type
  */
 export const CLUSTER_INSTANCE_TYPE = [
-    {value: RUN_MODE.STANDALONE, label: 'Standalone'},
-    {value: RUN_MODE.YARN_SESSION, label: 'Yarn Session'},
-    {value: RUN_MODE.KUBERNETES_SESSION, label: 'Kubernetes Session'},
+    {value: ClusterType.STANDALONE, label: ClusterType.STANDALONE},
+    {value: ClusterType.YARN_SESSION, label: ClusterType.YARN_SESSION},
+    {value: ClusterType.KUBERNETES_SESSION, label: ClusterType.KUBERNETES_SESSION},
 ]
 
 /**

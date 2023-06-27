@@ -1,5 +1,4 @@
 /*
- *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -17,29 +16,27 @@
  *
  */
 
-package org.dinky.service;
+import {l} from "@/utils/intl";
+import {Button} from "antd";
+import {PlusOutlined} from "@ant-design/icons";
+import React from "react";
+import {ShowLogIcon, StartIcon, StopIcon} from "@/components/Icons/CustomIcons";
 
-import org.dinky.data.model.ClusterConfiguration;
-import org.dinky.gateway.result.TestResult;
-import org.dinky.mybatis.service.ISuperService;
+type RunningBtnProps = {
+    onClick: () => void;
+    isRunning?: boolean;
+    title?: string;
+};
 
-import java.util.List;
-import java.util.Map;
+export const RunningBtn: React.FC<RunningBtnProps> = (props) => {
+    const {onClick, isRunning = false, title = l("button.start")} = props;
 
-/**
- * ClusterConfigService
- *
- * @since 2021/11/6 20:52
- */
-public interface ClusterConfigurationService extends ISuperService<ClusterConfiguration> {
-
-    ClusterConfiguration getClusterConfigById(Integer id);
-
-    List<ClusterConfiguration> listEnabledAll();
-
-    Map<String, Object> getGatewayConfig(Integer id);
-
-    TestResult testGateway(ClusterConfiguration clusterConfiguration);
-
-    Boolean enable(Integer id);
-}
+    return (
+        <Button
+            className={"options-button"}
+            title={title}
+            icon={isRunning ? <StopIcon/> : <StartIcon/>}
+            onClick={() => onClick()}
+        />
+    );
+};

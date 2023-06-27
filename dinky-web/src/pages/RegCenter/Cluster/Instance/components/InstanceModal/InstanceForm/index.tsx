@@ -26,6 +26,7 @@ import {CLUSTER_INSTANCE_TYPE} from '@/pages/RegCenter/Cluster/Instance/componen
 import {MODAL_FORM_OPTIONS} from '@/services/constants';
 import {l} from '@/utils/intl';
 import {validatorJMHAAdderess} from '@/pages/RegCenter/Cluster/Instance/components/function';
+import {ts} from "@hapi/hoek";
 
 
 type InstanceFormProps = {
@@ -86,6 +87,7 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
 
 
   return <>
+    {/*// @ts-ignore*/}
     <ProForm
       {...MODAL_FORM_OPTIONS}
       form={form}

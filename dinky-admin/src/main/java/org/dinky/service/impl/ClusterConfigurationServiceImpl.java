@@ -141,4 +141,18 @@ public class ClusterConfigurationServiceImpl
 
         return JobManager.testGateway(gatewayConfig);
     }
+
+    /**
+     * @param id
+     * @return
+     */
+    @Override
+    public Boolean enable(Integer id) {
+        ClusterConfiguration clusterConfiguration = this.getById(id);
+        if (clusterConfiguration != null) {
+            clusterConfiguration.setEnabled(!clusterConfiguration.getEnabled());
+            return this.updateById(clusterConfiguration);
+        }
+        return false;
+    }
 }
