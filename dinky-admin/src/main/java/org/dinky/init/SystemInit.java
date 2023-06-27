@@ -19,12 +19,14 @@
 
 package org.dinky.init;
 
+import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
 import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
+import org.dinky.data.model.Task;
 import org.dinky.data.model.Tenant;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
@@ -153,11 +155,15 @@ public class SystemInit implements ApplicationRunner {
     public void registerUDF() {
         // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
         TenantContextHolder.set(1);
-        UdfCodePool.registerPool(
-                taskService.getAllUDF().stream()
-                        .map(UDFUtils::taskToUDF)
-                        .collect(Collectors.toList()));
+        List<Task> allUDF = taskService.getAllUDF();
+        if (CollUtil.isNotEmpty(allUDF)){
+            UdfCodePool.registerPool(
+                    allUDF.stream()
+                            .map(UDFUtils::taskToUDF)
+                            .collect(Collectors.toList()));
+        }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
+
         TenantContextHolder.set(null);
     }
 

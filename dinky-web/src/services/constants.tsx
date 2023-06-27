@@ -213,7 +213,10 @@ export const API_CONSTANTS = {
   GET_METRICS_LAYOUT: "/api/monitor/getMetricsLayout",
 
   // flink
-  FLINK_PROXY: "/api/flink"
+  FLINK_PROXY: "/api/flink",
+
+  // resource
+  RESOURCE_SHOW_TREE:'/api/resource/showByTree'
 };
 
 

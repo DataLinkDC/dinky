@@ -18,7 +18,7 @@
  */
 
 
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {ProCard} from "@ant-design/pro-components";
 import FileTree from "@/pages/RegCenter/Resource/components/FileTree";
 import FileShow from "@/pages/RegCenter/Resource/components/FileShow";
@@ -26,10 +26,18 @@ import {Dropdown, Menu} from "antd";
 import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import {MenuInfo} from "rc-menu/es/interface";
 import {l} from "@/utils/intl";
+import {API_CONSTANTS} from "@/services/constants";
+import {getData} from "@/services/api";
+import {queryDataByParams} from "@/services/BusinessCrud";
 
 const ResourceOverView: React.FC = () => {
 
     const [treeData, setTreeData] = useState<Partial<any>[]>([]);
+    useEffect(()=>{
+      queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE,{pid:0}).then(res=>{
+        setTreeData(res)
+      })
+    },[])
 
     const handleNodeClick = async (info: any) => {
         const {node: {path, isLeaf}} = info;
