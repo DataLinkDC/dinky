@@ -141,8 +141,8 @@ export function convertCodeEditTheme() {
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
-      'editor.background': '#141414', //  editor background color
-      'editor.lineHighlightBackground': '#141414', //  editor line highlight background color
+      'editor.background': '#5d5b5b', //  editor background color
+      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
       'editorLineNumber.foreground': '#ffffff', //   editor line number color
       'editorCursor.foreground': '#ffffff', //  editor cursor color
       'editorIndentGuide.background': '#ffffff', //  editor indent guide color
@@ -303,7 +303,7 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  * @param type file suffix
  * @param splitChar split character
  */
-export const renderLanguage = (type: string, splitChar: string) => {
+export const renderLanguage = (type = '', splitChar: string) => {
   if (trim(splitChar).length === 0) {
     return getLanguage(type);
   } else {
@@ -396,3 +396,25 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
     key: buildKey,
   };
 });
+
+
+
+/**
+ * Determine whether the file is supported
+ * @returns {boolean}
+ */
+export const unSupportView = (name: string) => {
+
+  return name.endsWith(".jar")
+      || name.endsWith(".war")
+      || name.endsWith(".zip")
+      || name.endsWith(".tar.gz")
+      || name.endsWith(".tar")
+      || name.endsWith(".jpg")
+      || name.endsWith(".png")
+      || name.endsWith(".gif")
+      || name.endsWith(".bmp")
+      || name.endsWith(".jpeg")
+      || name.endsWith(".ico")
+}
+

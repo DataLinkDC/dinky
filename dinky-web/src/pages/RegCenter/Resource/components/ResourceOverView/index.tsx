@@ -51,6 +51,10 @@ const ResourceOverView: React.FC = () => {
     }, [])
 
 
+    /**
+     * query content by id
+     * @type {(id: number) => Promise<void>}
+     */
     const queryContent = useCallback(async (id: number) => {
         await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => {
             setContent(res)
@@ -58,16 +62,18 @@ const ResourceOverView: React.FC = () => {
     }, [clickedNode])
 
 
-    const refreshContent = async () => {
-        const {id} = clickedNode;
-        await queryContent(id);
-    }
-
+    /**
+     * the node click event
+     * @param info
+     * @returns {Promise<void>}
+     */
     const handleNodeClick = async (info: any) => {
         const {node: {id, isLeaf}, node} = info;
         if (isLeaf) {
             setClickedNode(node);
             await queryContent(id);
+        }else {
+            setContent('');
         }
     };
 
@@ -141,7 +147,6 @@ const ResourceOverView: React.FC = () => {
             left: pageX,
             top: pageY,
         };
-        console.log(node)
         setRightClickedNode(node);
 
         return <>
@@ -150,7 +155,19 @@ const ResourceOverView: React.FC = () => {
         </>
     };
 
+    /**
+     * the content change
+     * @param value
+     */
+    const handleContentChange = (value: any) => {
+        setContent(value);
+        // todo: save content
+    }
 
+
+    /**
+     * render
+     */
     return <>
         <ProCard size={'small'}>
             <ProCard ghost hoverable colSpan={'18%'} className={"schemaTree"}>
@@ -163,8 +180,9 @@ const ResourceOverView: React.FC = () => {
             <ProCard.Divider type={"vertical"}/>
             <ProCard ghost hoverable className={"schemaTree"}>
                 <FileShow
+                    onChange={handleContentChange}
                     code={content}
-                    refreshLogCallback={refreshContent}
+                    item={clickedNode}
                 />
             </ProCard>
         </ProCard>
