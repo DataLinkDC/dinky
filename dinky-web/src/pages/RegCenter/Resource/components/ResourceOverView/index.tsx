@@ -18,7 +18,7 @@
  */
 
 
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ProCard} from "@ant-design/pro-components";
 import FileTree from "@/pages/RegCenter/Resource/components/FileTree";
 import FileShow from "@/pages/RegCenter/Resource/components/FileShow";
@@ -27,39 +27,66 @@ import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import {MenuInfo} from "rc-menu/es/interface";
 import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/constants";
-import {getData} from "@/services/api";
 import {queryDataByParams} from "@/services/BusinessCrud";
 
+
+type RightClickMenu = {
+    pageX: number,
+    pageY: number,
+    id: number,
+    name: string
+};
 const ResourceOverView: React.FC = () => {
 
-    const [treeData, setTreeData] = useState<Partial<any>[]>([]);
-    useEffect(()=>{
-      queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE,{pid:0}).then(res=>{
-        setTreeData(res)
-      })
-    },[])
+    const [treeData, setTreeData] = useState<Partial<any[]>>([]);
+    const [rightClickNodeTreeItem, setRightClickNodeTreeItem] = useState<RightClickMenu>();
+    const [content, setContent] = useState<string>('');
+    const [clickedNode, setClickedNode] = useState<any>({});
+
+
+    useEffect(() => {
+        queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: 0}).then(res => {
+            setTreeData(res)
+        })
+    }, [])
+
+
+    const queryContent = useCallback(async (id: number) => {
+        await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => {
+            setContent(res)
+        })
+    }, [clickedNode])
+
+
+    const refreshContent = async () => {
+        const {id} = clickedNode;
+        await queryContent(id);
+    }
 
     const handleNodeClick = async (info: any) => {
-        const {node: {path, isLeaf}} = info;
+        const {node: {id, isLeaf}, node} = info;
         if (isLeaf) {
-            console.log(path)
-            // setClickFileName(path);
-            // await queryLogContent(path);
+            setClickedNode(node);
+            await queryContent(id);
         }
     };
 
 
     const [rightClickedNode, setRightClickedNode] = useState(null);
 
-    const handleRightClick = (info: any) => {
-        // 阻止默认的右键菜单事件
-        info.event.preventDefault();
-        // 获取右键点击的节点信息
-        const {node} = info;
-        setRightClickedNode(node);
-    };
 
-
+    const contextMenuItems = [
+        {
+            key: 'upload',
+            icon: <UploadOutlined/>,
+            label: l('button.upload'),
+        },
+        {
+            key: 'delete',
+            icon: <DeleteOutlined/>,
+            label: l('button.delete'),
+        },
+    ]
     const handleUpload = () => {
         if (rightClickedNode) {
             // todo: upload
@@ -85,21 +112,6 @@ const ResourceOverView: React.FC = () => {
         }
     };
 
-
-    const contextMenuItems = [
-        {
-            key: 'upload',
-            icon: <UploadOutlined/>,
-            label: l('button.upload'),
-        },
-        {
-            key: 'delete',
-            icon: <DeleteOutlined/>,
-            label: l('button.delete'),
-        },
-    ]
-
-
     const renderContextMenu = () => {
         return (
             <Menu
@@ -111,23 +123,48 @@ const ResourceOverView: React.FC = () => {
     };
 
 
+    const handleRightClick = (info: any) => {
+        // 获取右键点击的节点信息
+        const {node: {path, isLeaf}, node, event} = info;
+
+        const {pageX, pageY} = {...rightClickNodeTreeItem};
+
+        setRightClickNodeTreeItem({
+            pageX: event.pageX,
+            pageY: event.pageY,
+            id: node.id,
+            name: node.name
+        });
+
+        const tmpStyle: any = {
+            position: 'fixed',
+            left: pageX,
+            top: pageY,
+        };
+        console.log(node)
+        setRightClickedNode(node);
+
+        return <>
+            <Dropdown arrow autoAdjustOverflow forceRender open overlayStyle={tmpStyle} overlay={renderContextMenu()}
+                      trigger={['contextMenu']}/>
+        </>
+    };
+
+
     return <>
-        <ProCard>
-            <ProCard hoverable colSpan={'18%'} className={"schemaTree"}>
-                <Dropdown overlay={renderContextMenu}>
-                    <FileTree
-                        treeData={treeData}
-                        onRightClick={handleRightClick}
-                        onNodeClick={(info: any) => handleNodeClick(info)}
-                    />
-                </Dropdown>
+        <ProCard size={'small'}>
+            <ProCard ghost hoverable colSpan={'18%'} className={"schemaTree"}>
+                <FileTree
+                    treeData={treeData}
+                    onRightClick={handleRightClick}
+                    onNodeClick={(info: any) => handleNodeClick(info)}
+                />
             </ProCard>
             <ProCard.Divider type={"vertical"}/>
-            <ProCard hoverable className={"schemaTree"}>
+            <ProCard ghost hoverable className={"schemaTree"}>
                 <FileShow
-                    code={''}
-                    refreshLogCallback={() => {
-                    }}
+                    code={content}
+                    refreshLogCallback={refreshContent}
                 />
             </ProCard>
         </ProCard>

@@ -41,7 +41,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         Resources resources = new Resources();
         resources.setPid(pid);
         resources.setFileName(fileName);
-        resources.setIsDirectory(1);
+        resources.setIsDirectory(true);
         resources.setType(0);
         resources.setFullName(pid < 1 ? path : getById(pid).getFullName() + path);
         resources.setDescription(desc);
@@ -58,7 +58,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         split.remove(split.size() - 1);
         split.add(fileName);
         String fullName = StrUtil.join("/", split);
-        if (byId.getIsDirectory() > 0) {
+        if (!byId.getIsDirectory()) {
             List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
             if (CollUtil.isNotEmpty(list)) {
                 list.forEach(x -> x.setFullName(fullName + "/" + x.getFileName()));
@@ -88,7 +88,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid));
         for (Resources resources : list) {
             TreeNodeDTO tree = convertTree(resources);
-            if (resources.getIsDirectory() > 0) {
+            if (resources.getIsDirectory()) {
                 List<TreeNodeDTO> children = new ArrayList<>();
                 tree.setChildren(children);
                 createTree(children, resources.getId(), showFloorNum, currentFloor++);
@@ -99,10 +99,19 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     private static TreeNodeDTO convertTree(Resources resources) {
         TreeNodeDTO treeNodeDTO = new TreeNodeDTO();
+        treeNodeDTO.setId(resources.getId());
         treeNodeDTO.setName(resources.getFileName());
         treeNodeDTO.setSize(resources.getSize());
+        treeNodeDTO.setParentId(resources.getPid());
         treeNodeDTO.setPath(resources.getFullName());
-        treeNodeDTO.setLeaf(resources.getIsDirectory() > 0);
+        treeNodeDTO.setLeaf(resources.getIsDirectory());
         return treeNodeDTO;
+    }
+
+    public String getContentByResourceId(Integer id) {
+
+        Resources resources = getById(id);
+        // todo: 读取文件内容
+        return "text";
     }
 }

@@ -62,7 +62,7 @@ public class Resources extends Model<Resources> {
     private String fullName;
 
     /** */
-    private Integer isDirectory;
+    private Boolean isDirectory;
 
     /** create time */
     @TableField(fill = FieldFill.INSERT)

@@ -20,7 +20,6 @@
 package org.dinky.data.dto;
 
 import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,9 +35,11 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class TreeNodeDTO {
+    private Integer id;
     private String name;
     private String path;
     private String content;
+    private Integer parentId;
     private Long size;
     private boolean isLeaf;
     private List<TreeNodeDTO> children;

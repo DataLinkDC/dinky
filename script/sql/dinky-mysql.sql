@@ -1034,19 +1034,19 @@ CREATE TABLE `metadata_table_property`  (
 -- ----------------------------
 -- Table structure for dinky_row_permissions
 -- ----------------------------
+DROP TABLE IF EXISTS dinky_row_permissions;
 CREATE TABLE dinky_row_permissions
 (
   id           int auto_increment comment 'ID'
     primary key,
-  role_id      int      not null comment '角色ID',
-  table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表名',
-  expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表达式',
+  role_id      int      not null comment 'role id',
+  table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'table name',
+  expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'expression',
   create_time  datetime null comment '创建时间',
   update_time  datetime null comment '更新时间'
 )
-  COMMENT '角色数据查询权限' COLLATE = utf8mb4_general_ci;
+  COMMENT 'row permissions of select' COLLATE = utf8mb4_general_ci;
 
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- ----------------------------
 -- Table structure for dinky_git_project
@@ -1078,20 +1078,41 @@ CREATE TABLE `dinky_git_project` (
                                    KEY `tenant_id` (`tenant_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
+-- ----------------------------
+-- Records of dinky_git_project
+-- ----------------------------
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', NULL, NULL, NULL, NULL, '-P flink-1.14', 1, 1, NULL, NULL, 0, 0, 1, '[]', 1);
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', NULL, NULL, NULL, NULL, '', 2, 1, NULL, NULL, 0, 0, 1, '[]',2);
 
+
+
+-- ----------------------------
+-- Table structure for dinky_metrics
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_metrics;
 CREATE TABLE `dinky_metrics` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `task_id` int(255) DEFAULT NULL,
-                                 `vertices` varchar(255) DEFAULT NULL,
-                                 `metrics` varchar(255) DEFAULT NULL,
-                                 `position` int(11) DEFAULT NULL,
-                                 `show_type` varchar(255) DEFAULT NULL,
-                                 `show_size` varchar(255) DEFAULT NULL,
-                                 `title` varchar(255) DEFAULT NULL,
-                                 `layout_name` varchar(255) DEFAULT NULL,
-                                 `create_time` datetime DEFAULT NULL,
-                                 `update_time` datetime DEFAULT NULL,
+                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                 `task_id` int(255) DEFAULT NULL COMMENT 'task id',
+                                 `vertices` varchar(255) DEFAULT NULL COMMENT 'vertices',
+                                 `metrics` varchar(255) DEFAULT NULL COMMENT 'metrics',
+                                 `position` int(11) DEFAULT NULL COMMENT 'position',
+                                 `show_type` varchar(255) DEFAULT NULL COMMENT 'show type',
+                                 `show_size` varchar(255) DEFAULT NULL COMMENT 'show size',
+                                 `title` varchar(255) DEFAULT NULL COMMENT 'title',
+                                 `layout_name` varchar(255) DEFAULT NULL COMMENT 'layout name',
+                                 `create_time` datetime DEFAULT NULL COMMENT 'create time',
+                                 `update_time` datetime DEFAULT NULL COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+-- ----------------------------
+-- Records of dinky_metrics
+-- ----------------------------
+
+
+
+
+
+
+
+
+SET FOREIGN_KEY_CHECKS = 1;

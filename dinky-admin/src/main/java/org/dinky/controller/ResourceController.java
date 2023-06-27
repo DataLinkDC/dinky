@@ -8,6 +8,7 @@ import org.dinky.service.ResourcesService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -51,6 +52,12 @@ public class ResourceController {
     public Result<List<TreeNodeDTO>> showByTree(Integer pid, Integer showFloorNum){
         return Result.succeed(resourcesService.showByTree(pid, showFloorNum));
     }
+
+    @GetMapping("/getContentByResourceId")
+    public Result<String> getContentByResourceId(@RequestParam Integer id){
+        return Result.data(resourcesService.getContentByResourceId(id));
+    }
+
 
 //    @PostMapping("/uploadFile")
 //    public Result<Void> uploadFile (String path,String desc){

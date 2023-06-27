@@ -373,8 +373,9 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
   if (item.children) {
     return {
       isLeaf: !item.leaf,
+      id: item?.id,
       name: item.name,
-      parentId: item.path,
+      parentId: item.path ?? item.parentId,
       icon: renderIcon(item.name, '.', item.leaf),
       content: item.content,
       path: item.path,
@@ -385,8 +386,9 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
   }
   return {
     isLeaf: !item.leaf,
+    id: item?.id,
     name: item.name,
-    parentId: item.path,
+    parentId: item.path ?? item.parentId,
     icon: renderIcon(item.name, '.', item.leaf),
     content: item.content,
     path: item.path,

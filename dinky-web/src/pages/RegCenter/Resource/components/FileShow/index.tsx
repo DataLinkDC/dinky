@@ -40,7 +40,6 @@ type FileShowProps = {
 const FileShow: React.FC<FileShowProps> = (props) => {
 
     const {code, refreshLogCallback} = props;
-
     const restLogsShowProps = {
         showFloatButton: true,
         code,

@@ -216,7 +216,8 @@ export const API_CONSTANTS = {
   FLINK_PROXY: "/api/flink",
 
   // resource
-  RESOURCE_SHOW_TREE:'/api/resource/showByTree'
+  RESOURCE_SHOW_TREE:'/api/resource/showByTree',
+  RESOURCE_GET_CONTENT_BY_ID:'/api/resource/getContentByResourceId',
 };
 
 
