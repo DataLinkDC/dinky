@@ -19,7 +19,6 @@
 
 package org.dinky.init;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
@@ -56,6 +55,7 @@ import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
@@ -156,11 +156,9 @@ public class SystemInit implements ApplicationRunner {
         // 设置admin用户 ，获取全部的udf代码，此地方没有租户隔离
         TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
-        if (CollUtil.isNotEmpty(allUDF)){
+        if (CollUtil.isNotEmpty(allUDF)) {
             UdfCodePool.registerPool(
-                    allUDF.stream()
-                            .map(UDFUtils::taskToUDF)
-                            .collect(Collectors.toList()));
+                    allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
 

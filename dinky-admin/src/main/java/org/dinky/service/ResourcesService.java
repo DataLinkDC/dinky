@@ -1,22 +1,44 @@
+/*
+ *
+ *  Licensed to the Apache Software Foundation (ASF) under one or more
+ *  contributor license agreements.  See the NOTICE file distributed with
+ *  this work for additional information regarding copyright ownership.
+ *  The ASF licenses this file to You under the Apache License, Version 2.0
+ *  (the "License"); you may not use this file except in compliance with
+ *  the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *  Unless required by applicable law or agreed to in writing, software
+ *  distributed under the License is distributed on an "AS IS" BASIS,
+ *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  See the License for the specific language governing permissions and
+ *  limitations under the License.
+ *
+ */
+
 package org.dinky.service;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.lang.Assert;
-import cn.hutool.core.lang.Opt;
-import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
 import org.dinky.data.properties.OssProperties;
 import org.dinky.mapper.ResourcesMapper;
 import org.dinky.utils.OssTemplate;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Assert;
+import cn.hutool.core.lang.Opt;
+import cn.hutool.core.util.StrUtil;
 
 @Service
 public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
@@ -29,11 +51,14 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         ossProperties.setEndpoint("http://10.8.16.137:9000");
         ossProperties.setBucketName("test");
         ossTemplate = new OssTemplate(ossProperties);
-
     }
 
     public void createFolder(Integer pid, String fileName, String desc) {
-        long count = count(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
+        long count =
+                count(
+                        new LambdaQueryWrapper<Resources>()
+                                .eq(Resources::getPid, pid)
+                                .eq(Resources::getFileName, fileName));
         if (count > 0) {
             throw new BusException("folder is exists!");
         }
@@ -52,14 +77,19 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
     public void rename(Integer id, String fileName, String desc) {
         Resources byId = getById(id);
         Assert.notNull(byId, () -> new BusException("resource is not exists!"));
-        long count = count(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getPid()).eq(Resources::getFileName, fileName));
+        long count =
+                count(
+                        new LambdaQueryWrapper<Resources>()
+                                .eq(Resources::getPid, byId.getPid())
+                                .eq(Resources::getFileName, fileName));
         Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
         List<String> split = StrUtil.split(byId.getFullName(), "/");
         split.remove(split.size() - 1);
         split.add(fileName);
         String fullName = StrUtil.join("/", split);
         if (!byId.getIsDirectory()) {
-            List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
+            List<Resources> list =
+                    list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
             if (CollUtil.isNotEmpty(list)) {
                 list.forEach(x -> x.setFullName(fullName + "/" + x.getFileName()));
                 updateBatchById(list);
@@ -81,7 +111,8 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         return data;
     }
 
-    public void createTree(List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor) {
+    public void createTree(
+            List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor) {
         if (currentFloor > showFloorNum) {
             return;
         }
