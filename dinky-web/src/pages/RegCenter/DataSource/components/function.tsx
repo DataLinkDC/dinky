@@ -16,8 +16,7 @@
  */
 
 
-import {DATA_SOURCE_TYPE, QUERY_KEYWORD} from '@/pages/RegCenter/DataSource/components/constants';
-import {DefaultOptionType} from 'antd/es/select';
+import { QUERY_KEYWORD} from '@/pages/RegCenter/DataSource/components/constants';
 import {
   ClickHouseIcons, DefaultDBIcons,
   DorisIcons, HiveIcons,
@@ -58,21 +57,6 @@ export const renderDBIcon = (type: string, size?: number) => {
     default:
       return <DefaultDBIcons size={size}/>;
   }
-};
-
-/**
- * render DataSourceType
- */
-export const renderDataSourceType = () => {
-  let dataSourceType: DefaultOptionType[] = [];
-  DATA_SOURCE_TYPE.forEach((item: { type: string }) => {
-    dataSourceType.push({
-      key: item.type,
-      value: item.type,
-      label: item.type,
-    });
-  });
-  return dataSourceType;
 };
 
 export const buildColumnsQueryKeyWord = (data: string[]) => {
