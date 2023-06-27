@@ -21,29 +21,57 @@ import {l} from '@/utils/intl';
 /**
  * data source type
  */
-export const DATA_SOURCE_TYPE = [
-  {
-    type: 'MySQL',
-  }, {
-    type: 'Oracle',
-  }, {
-    type: 'PostgreSQL',
-  }, {
-    type: 'ClickHouse',
-  }, {
-    type: 'SQLServer',
-  }, {
-    type: 'Doris',
-  }, {
-    type: 'Phoenix',
-  }, {
-    type: 'Hive',
-  }, {
-    type: 'StarRocks',
-  }, {
-    type: 'Presto',
-  }
+
+export const DATA_SOURCE_TYPE_OPTIONS = [
+    {
+        label: l('rc.ds.source'),
+        options: [
+            {
+                label: 'MySQL',
+                value: 'MySQL',
+            }, {
+                label: 'Oracle',
+                value: 'Oracle',
+            },
+        ],
+    },
+    {
+        label: l('rc.ds.source'),
+        options: [
+           {
+                label: 'PostgreSQL',
+                value: 'PostgreSQL',
+            }, {
+                label: 'ClickHouse',
+                value: 'ClickHouse',
+            }, {
+                label: 'SQLServer',
+                value: 'SQLServer',
+            },
+        ],
+    }, {
+        label: l('rc.ds.source'),
+        options: [
+             {
+                label: 'Doris',
+                value: 'Doris',
+            }, {
+                label: 'Phoenix',
+                value: 'Phoenix',
+            }, {
+                label: 'Hive',
+                value: 'Hive',
+            }, {
+                label: 'StarRocks',
+                value: 'StarRocks',
+            }, {
+                label: 'Presto',
+                value: 'Presto',
+            }
+        ],
+    }
 ];
+
 
 /**
  * data source  group type

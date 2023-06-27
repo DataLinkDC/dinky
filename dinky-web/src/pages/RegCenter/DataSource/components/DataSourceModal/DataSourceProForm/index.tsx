@@ -21,10 +21,12 @@ import {Values} from 'async-validator';
 import {ProForm, ProFormGroup, ProFormSelect, ProFormText} from '@ant-design/pro-components';
 import {l} from '@/utils/intl';
 import {DataSources} from '@/types/RegCenter/data.d';
-import {AUTO_COMPLETE_TYPE, GROUP_TYPE} from '@/pages/RegCenter/DataSource/components/constants';
+import {DATA_SOURCE_TYPE_OPTIONS,
+    AUTO_COMPLETE_TYPE,
+    GROUP_TYPE
+} from '@/pages/RegCenter/DataSource/components/constants';
 import {AutoComplete, Input} from 'antd';
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import {renderDataSourceType} from '@/pages/RegCenter/DataSource/components/function';
 
 type DataSourceProFormProps = {
   values: Partial<DataSources.DataSource>,
@@ -80,7 +82,8 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
           width={'sm'}
           label={l('rc.ds.type')}
           showSearch
-          options={renderDataSourceType()}
+          initialValue={dbType}
+          options={DATA_SOURCE_TYPE_OPTIONS}
           rules={[{required: true, message: l('rc.ds.typePlaceholder')}]}
           placeholder={l('rc.ds.typePlaceholder')}
 
