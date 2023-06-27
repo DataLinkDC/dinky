@@ -40,8 +40,7 @@ type FileShowProps = {
 
 const FileShow: React.FC<FileShowProps> = (props) => {
 
-    const {item, code, onChange} = props;
-
+    const {item: {name, isLeaf}, code, onChange} = props;
 
     /**
      * code show props
@@ -51,7 +50,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
         showFloatButton: true,
         code,
         onChange: onChange,
-        language: renderLanguage(item.name, "."),
+        language: renderLanguage(name, "."),
     };
 
     /**
@@ -59,7 +58,7 @@ const FileShow: React.FC<FileShowProps> = (props) => {
      * @returns {JSX.Element}
      */
     const renderContent = () => {
-        if (item.name && unSupportView(item.name)) {
+        if (name && unSupportView(name) && isLeaf) {
             return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.unSupportView")}/>
         } else if (code === "" || code === null || code === undefined) {
             return <Empty className={"code-content-empty"} description={l('rc.resource.click')}/>

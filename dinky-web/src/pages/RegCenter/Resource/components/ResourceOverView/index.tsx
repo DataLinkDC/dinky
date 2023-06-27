@@ -69,8 +69,8 @@ const ResourceOverView: React.FC = () => {
      */
     const handleNodeClick = async (info: any) => {
         const {node: {id, isLeaf}, node} = info;
+        setClickedNode(node);
         if (isLeaf) {
-            setClickedNode(node);
             await queryContent(id);
         }else {
             setContent('');
