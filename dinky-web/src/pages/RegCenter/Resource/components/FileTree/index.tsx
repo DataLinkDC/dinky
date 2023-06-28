@@ -50,7 +50,7 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
                 /> :
                 <>
                     <div style={{marginTop: '40vh', marginLeft: '1vw'}}>
-                        <Upload action="https://www.mocky.io/v2/5cc8019d300000980a055e76" directory>
+                        <Upload action="/api/resource/uploadFile?pid=0" directory>
                             <Button icon={<UploadOutlined/>}>{l('rc.resource.upload')}</Button>
                         </Upload><br/>
 

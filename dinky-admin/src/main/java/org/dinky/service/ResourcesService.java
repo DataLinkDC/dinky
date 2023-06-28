@@ -19,6 +19,8 @@
 
 package org.dinky.service;
 
+import cn.hutool.cache.impl.TimedCache;
+import cn.hutool.cache.impl.WeakCache;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
@@ -39,9 +41,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
+    private static final TimedCache<Integer, Resources> RESOURCES_CACHE = new TimedCache<>(30 * 1000);
     OssTemplate ossTemplate;
 
     {
@@ -69,6 +73,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         resources.setIsDirectory(true);
         resources.setType(0);
         resources.setFullName(pid < 1 ? path : getById(pid).getFullName() + path);
+        resources.setSize(0L);
         resources.setDescription(desc);
         save(resources);
     }
@@ -103,7 +108,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     public List<TreeNodeDTO> showByTree(Integer pid, Integer showFloorNum) {
         if (pid < 0) {
-            pid = 0;
+            pid = -1;
         }
         showFloorNum = Opt.ofNullable(showFloorNum).orElse(2);
         List<TreeNodeDTO> data = new ArrayList<>();
@@ -140,9 +145,87 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
     }
 
     public String getContentByResourceId(Integer id) {
-
         Resources resources = getById(id);
         // todo: 读取文件内容
         return "text";
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void uploadFile(Integer pid, String desc, MultipartFile file) {
+        Resources pResource = RESOURCES_CACHE.get(pid, () -> getById(pid));
+        long size = file.getSize();
+        String fileName = file.getOriginalFilename();
+        Resources currentUploadResource = getOne(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
+        if (currentUploadResource != null) {
+            if (desc != null) {
+                currentUploadResource.setDescription(desc);
+            }
+        } else {
+            Resources resources = new Resources();
+            resources.setPid(pid);
+            resources.setFileName(fileName);
+            resources.setIsDirectory(false);
+            resources.setType(0);
+            String prefixPath = pResource == null ? "" : pResource.getFullName();
+            resources.setFullName(prefixPath + "/" + fileName);
+            resources.setSize(size);
+            resources.setDescription(desc);
+            saveOrUpdate(resources);
+        }
+
+        List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
+        resourceByPidToParent.forEach(x -> x.setSize(x.getSize() + size));
+        updateBatchById(resourceByPidToParent);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void remove(Integer id) {
+        Resources byId = getById(id);
+        if (byId.getIsDirectory()) {
+            List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());
+            removeBatchByIds(resourceByPidToChildren);
+        }
+        List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
+        resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
+        updateBatchById(resourceByPidToParent);
+        removeById(id);
+    }
+
+
+    /**
+     * 递归获取所有的资源，从pid到0
+     *
+     * @param resourcesList data
+     * @param pid           pid
+     * @return data
+     */
+    public List<Resources> getResourceByPidToParent(List<Resources> resourcesList, Integer pid) {
+        if (pid < 1) {
+            return resourcesList;
+        }
+        Resources byId = RESOURCES_CACHE.get(pid, () -> getById(pid));
+        resourcesList.add(byId);
+        return getResourceByPidToParent(resourcesList, byId.getPid());
+    }
+
+    /**
+     * 递归获取所有的资源，从id往下穿
+     *
+     * @param resourcesList data
+     * @param pid           pid
+     * @return data
+     */
+    public List<Resources> getResourceByPidToChildren(List<Resources> resourcesList, Integer pid) {
+        List<Resources> list = list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid));
+        if (CollUtil.isEmpty(list)) {
+            return resourcesList;
+        }
+        for (Resources resources : list) {
+            resourcesList.add(resources);
+            if (resources.getIsDirectory()) {
+                getResourceByPidToChildren(resourcesList, resources.getId());
+            }
+        }
+        return resourcesList;
     }
 }

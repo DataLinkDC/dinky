@@ -25,6 +25,7 @@ import org.dinky.service.ResourcesService;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -40,6 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class ResourceController {
     private final ResourcesService resourcesService;
+
     /*
         CREATE TABLE `dinky_resources` (
       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
@@ -81,12 +84,15 @@ public class ResourceController {
         return Result.data(resourcesService.getContentByResourceId(id));
     }
 
-    //    @PostMapping("/uploadFile")
-    //    public Result<Void> uploadFile (String path,String desc){
-    //
-    //    }
-    //    @PostMapping("/createFile")
-    //    public Result<Void> createFile (String path,String desc,String content){
-    //
-    //    }
+    @PostMapping("/uploadFile")
+    public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
+        resourcesService.uploadFile(pid, desc, file);
+        return Result.succeed();
+    }
+
+    @DeleteMapping("/remove")
+    public Result<Void> remove(Integer id) {
+        resourcesService.remove(id);
+        return Result.succeed();
+    }
 }
