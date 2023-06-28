@@ -385,6 +385,7 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
       path: item.path,
       fullName: item?.fullName,
       title: buildTitleLabel(),
+      desc: item?.desc ?? item?.description,
       key: buildKey,
       children: buildTreeData(item.children)
     };
@@ -398,6 +399,7 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
     content: item.content,
     path: item.path,
     fullName: item?.fullName,
+    desc: item?.desc ?? item?.description,
     title: buildTitleLabel(),
     key: buildKey,
   };

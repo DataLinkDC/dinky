@@ -27,11 +27,16 @@ import {MenuInfo} from "rc-menu/es/interface";
 import {API_CONSTANTS} from "@/services/constants";
 import {handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {RIGHT_CONTEXT_MENU} from "@/pages/RegCenter/Resource/components/constants";
-import { ExclamationCircleOutlined } from "@ant-design/icons";
+import ResourceModal from "@/pages/RegCenter/Resource/components/ResourceModal";
 
+ export type Resource =  {
+   id: number,
+   fileName: string,
+   description: string,
+   type?: string,
+};
 
 const ResourceOverView: React.FC = () => {
-  const [modal, contextHolder] = Modal.useModal();
   const [treeData, setTreeData] = useState<Partial<any[]>>([]);
   const [content, setContent] = useState<string>('');
   const [clickedNode, setClickedNode] = useState({});
@@ -40,7 +45,8 @@ const ResourceOverView: React.FC = () => {
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [showRename, setShowRename] = useState(false);
-  const [form] = Form.useForm<{ fileName: string; desc: string }>();
+  const [formValue, setFormValue] = useState<Resource>({id: 0 ,fileName: '', description: ''});
+
 
   useEffect(() => {
     queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: -1}).then(res => setTreeData(res))
@@ -72,7 +78,6 @@ const ResourceOverView: React.FC = () => {
     }
   };
 
-
   /**
    * the node right click event OF upload,
    */
@@ -97,10 +102,11 @@ const ResourceOverView: React.FC = () => {
    */
   const handleRename = () => {
     if (rightClickedNode) {
-      // todo: rename
+      const {id, name, desc} = rightClickedNode;
       setShowRename(true)
-      console.log(rightClickedNode.name)
-      form.setFieldsValue({fileName:rightClickedNode.name,desc:rightClickedNode.desc});
+      setFormValue({id, fileName: name, description: desc})
+      setContextMenuVisible(false)
+      console.log(rightClickedNode, 'rename')
     }
   }
 
@@ -141,6 +147,20 @@ const ResourceOverView: React.FC = () => {
     });
   };
 
+  /**
+   * the rename cancel
+   */
+  const handleRenameCancel = () => {
+    setShowRename(false)
+  }
+
+  /**
+   * the rename ok
+   */
+ const handleRenameSubmit = (value : Partial<Resource>) => {
+   // todo rename submit
+    console.log(value,'rename')
+  }
 
   /**
    * render the right click menu
@@ -178,35 +198,8 @@ const ResourceOverView: React.FC = () => {
    * render
    */
   return <>
-    <ModalForm<{
-      name: string;
-      company: string;
-    }>
-      title="新建表单"
-      // form={form}
-      autoFocusFirstInput
-      modalProps={{
-        destroyOnClose: true,
-        onCancel: () => setShowRename(false),
-      }}
-      submitTimeout={2000}
-      onFinish={async (values) => {
-        // await waitTime(2000);
-        // console.log(values.name);
-        // message.success('提交成功');
-        return true;
-      }}
-      open={showRename}
-    >
-      <ProFormText required width="lg" name="fileName" label="名称" />
-      <ProFormTextArea
-        colProps={{ span: 24 }}
-        name="desc"
-        label="描述"
-      />
-    </ModalForm>
     <ProCard size={'small'}>
-      <ProCard ghost hoverable colSpan={'18%'} className={"schemaTree"}>
+      <ProCard ghost hoverable colSpan={'18%'} className={"siderTree schemaTree"}>
         <FileTree
           selectedKeys={selectedKeys}
           treeData={treeData}
@@ -224,6 +217,7 @@ const ResourceOverView: React.FC = () => {
         />
       </ProCard>
     </ProCard>
+    {showRename && <ResourceModal formValues={formValue} onOk={handleRenameSubmit} onClose={handleRenameCancel} visible={showRename}/>}
   </>
 }
 
