@@ -33,17 +33,15 @@ const ResourceOverView: React.FC = () => {
 
     const [treeData, setTreeData] = useState<Partial<any[]>>([]);
     const [content, setContent] = useState<string>('');
-    const [clickedNode, setClickedNode] = useState<any>({});
-    const [rightClickedNode, setRightClickedNode] = useState({});
+    const [clickedNode, setClickedNode] = useState({});
+    const [rightClickedNode, setRightClickedNode] = useState<any>();
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
     const [contextMenuPosition, setContextMenuPosition] = useState({});
     const [selectedKeys, setSelectedKeys] = useState([]);
 
 
     useEffect(() => {
-        queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: 0}).then(res => {
-            setTreeData(res)
-        })
+        queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: 0}).then(res => setTreeData(res))
     }, [])
 
 
@@ -52,9 +50,7 @@ const ResourceOverView: React.FC = () => {
      * @type {(id: number) => Promise<void>}
      */
     const queryContent = useCallback(async (id: number) => {
-        await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => {
-            setContent(res)
-        })
+        await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => setContent(res))
     }, [clickedNode])
 
 
@@ -145,13 +141,13 @@ const ResourceOverView: React.FC = () => {
      * @returns {JSX.Element}
      */
     const renderRightClickMenu = () => {
+        const menu = <Menu onClick={handleMenuClick} items={RIGHT_CONTEXT_MENU()}/>
         return <>
             <Dropdown
                 arrow
                 trigger={['contextMenu']}
                 overlayStyle={{...contextMenuPosition}}
-                overlay={<Menu forceSubMenuRender disabledOverflow onClick={handleMenuClick}
-                               items={RIGHT_CONTEXT_MENU}/>}
+                overlay={menu}
                 open={contextMenuVisible}
                 onVisibleChange={setContextMenuVisible}
             >

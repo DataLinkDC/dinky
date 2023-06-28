@@ -21,20 +21,30 @@ import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import React from "react";
 
-export const RIGHT_CONTEXT_MENU = [
+
+/**
+ *  the right context menu
+ * @param {boolean} isDisabled - is disabled or not , if disabled , the menu will be disabled too
+ * @returns {[{icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}]}
+ * @constructor
+ */
+export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     {
         key: 'upload',
         icon: <UploadOutlined/>,
         label: l('button.upload'),
+        disabled: isDisabled,
     },
     {
         key: 'delete',
         icon: <DeleteOutlined/>,
         label: l('right.menu.delete'),
+        disabled: isDisabled,
     },
     {
         key: 'rename',
         icon: <EditOutlined/>,
         label: l('right.menu.rename'),
+        disabled: isDisabled,
     },
 ]
