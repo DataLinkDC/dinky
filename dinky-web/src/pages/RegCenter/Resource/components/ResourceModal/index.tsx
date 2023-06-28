@@ -80,7 +80,7 @@ const ResourceModal :React.FC<ResourceModalProps> = ( props) => {
 
     return <>
         <ModalForm<Resource>
-            title={formValues.id ? '修改' : '新建'}
+            title={formValues.id ? '重命名' : '新建'}
             modalProps={{destroyOnClose: true, onCancel: handleModalVisible,}}
             onFinish={submitForm}
             form={form}

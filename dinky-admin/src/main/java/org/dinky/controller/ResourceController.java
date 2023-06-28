@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.result.Result;
 import org.dinky.service.ResourcesService;
@@ -28,6 +29,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,14 +65,14 @@ public class ResourceController {
 
          */
     @PostMapping("/createFolder")
-    public Result<Void> createFolder(Integer pid, String fileName, String desc) {
-        resourcesService.createFolder(pid, fileName, desc);
+    public Result<Void> createFolder(Integer pid, String fileName, String description) {
+        resourcesService.createFolder(pid, fileName, description);
         return Result.succeed();
     }
 
     @PostMapping("/rename")
-    public Result<Void> rename(Integer id, String fileName, String desc) {
-        resourcesService.rename(id, fileName, desc);
+    public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
+        resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
     }
 

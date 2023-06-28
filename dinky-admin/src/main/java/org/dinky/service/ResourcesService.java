@@ -86,7 +86,8 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
                 count(
                         new LambdaQueryWrapper<Resources>()
                                 .eq(Resources::getPid, byId.getPid())
-                                .eq(Resources::getFileName, fileName));
+                                .eq(Resources::getFileName, fileName)
+                                .ne(Resources::getId,id));
         Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
         List<String> split = StrUtil.split(byId.getFullName(), "/");
         split.remove(split.size() - 1);
@@ -141,6 +142,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         treeNodeDTO.setParentId(resources.getPid());
         treeNodeDTO.setPath(resources.getFullName());
         treeNodeDTO.setLeaf(resources.getIsDirectory());
+        treeNodeDTO.setDesc(resources.getDescription());
         return treeNodeDTO;
     }
 
@@ -180,6 +182,10 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     @Transactional(rollbackFor = Exception.class)
     public void remove(Integer id) {
+        if (id<1){
+            //todo 删除主目录，实际是清空
+            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId,id));
+        }
         Resources byId = getById(id);
         if (byId.getIsDirectory()) {
             List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());

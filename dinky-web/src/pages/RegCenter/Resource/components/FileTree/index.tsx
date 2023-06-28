@@ -23,43 +23,43 @@ import {buildTreeData} from "@/utils/function";
 import {Button, Tree, Typography, Upload} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
 import {l} from "@/utils/intl";
+import {Resizable} from "re-resizable";
 
 const {DirectoryTree} = Tree;
 const {Text} = Typography;
 
 
 type FileTreeProps = {
-    treeData: Partial<any>[];
-    onNodeClick: (info: any) => void
-    onRightClick: (info: any) => void
-    selectedKeys: string[]
+  treeData: Partial<any>[];
+  onNodeClick: (info: any) => void
+  onRightClick: (info: any) => void
+  selectedKeys: string[]
 }
 
 const FileTree: React.FC<FileTreeProps> = (props) => {
 
-    const {treeData,selectedKeys, onNodeClick, onRightClick} = props;
+  const {treeData, selectedKeys, onNodeClick, onRightClick} = props;
 
-    return <>
-        {
-            (treeData.length > 0) ?
-                <DirectoryTree
-                    selectedKeys={selectedKeys}
-                    onSelect={(_, info) => onNodeClick(info)}
-                    onRightClick={info => onRightClick(info)}
-                    treeData={buildTreeData(treeData)}
-                /> :
-                <>
-                    <div style={{marginTop: '40vh', marginLeft: '1vw'}}>
-                        <Upload action="/api/resource/uploadFile?pid=0" directory>
-                            <Button icon={<UploadOutlined/>}>{l('rc.resource.upload')}</Button>
-                        </Upload><br/>
+  return <>
+    {
+      (treeData.length > 0) ?
+        <DirectoryTree
+          selectedKeys={selectedKeys}
+          onSelect={(_, info) => onNodeClick(info)}
+          onRightClick={info => onRightClick(info)}
+          treeData={buildTreeData(treeData)}
+        /> : <>
+          <div style={{marginTop: '40vh', marginLeft: '1vw'}}>
+            <Upload action="/api/resource/uploadFile?pid=0" directory>
+              <Button icon={<UploadOutlined/>}>{l('rc.resource.upload')}</Button>
+            </Upload><br/>
 
-                    </div>
-                    <Text className={'needWrap'} type="warning">{l('rc.resource.noResource')}</Text>
-                </>
+          </div>
+          <Text className={'needWrap'} type="warning">{l('rc.resource.noResource')}</Text>
+        </>
 
-        }
-    </>;
+    }
+  </>;
 }
 
 export default FileTree;

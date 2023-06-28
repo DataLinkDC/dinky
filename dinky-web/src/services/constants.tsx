@@ -219,6 +219,8 @@ export const API_CONSTANTS = {
   RESOURCE_SHOW_TREE:'/api/resource/showByTree',
   RESOURCE_GET_CONTENT_BY_ID:'/api/resource/getContentByResourceId',
   RESOURCE_REMOVE:'/api/resource/remove',
+  RESOURCE_RENAME:'/api/resource/rename',
+  RESOURCE_UPLOAD:'/api/resource/uploadFile',
 };
 
 

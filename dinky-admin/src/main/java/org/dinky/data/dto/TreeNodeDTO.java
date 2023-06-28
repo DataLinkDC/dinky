@@ -43,6 +43,7 @@ public class TreeNodeDTO {
     private Integer parentId;
     private Long size;
     private boolean isLeaf;
+    private String desc;
     private List<TreeNodeDTO> children;
 
     public TreeNodeDTO(

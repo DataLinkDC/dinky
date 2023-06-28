@@ -25,15 +25,17 @@ import FileShow from "@/pages/RegCenter/Resource/components/FileShow";
 import {Dropdown, Form, Menu, Modal} from "antd";
 import {MenuInfo} from "rc-menu/es/interface";
 import {API_CONSTANTS} from "@/services/constants";
-import {handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
+import {handleOption, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {RIGHT_CONTEXT_MENU} from "@/pages/RegCenter/Resource/components/constants";
 import ResourceModal from "@/pages/RegCenter/Resource/components/ResourceModal";
+import {Resizable} from "re-resizable";
+import ResourcesUploadModal from "@/pages/RegCenter/Resource/components/ResourcesUploadModal";
 
- export type Resource =  {
-   id: number,
-   fileName: string,
-   description: string,
-   type?: string,
+export type Resource = {
+  id: number,
+  fileName: string,
+  description: string,
+  type?: string,
 };
 
 const ResourceOverView: React.FC = () => {
@@ -45,7 +47,9 @@ const ResourceOverView: React.FC = () => {
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
   const [showRename, setShowRename] = useState(false);
-  const [formValue, setFormValue] = useState<Resource>({id: 0 ,fileName: '', description: ''});
+  const [showUpload, setShowUpload] = useState(false);
+  const [formValue, setFormValue] = useState<Resource>({id: 0, fileName: '', description: ''});
+  const [uploadValue] = useState({url: API_CONSTANTS.RESOURCE_UPLOAD, pid: '', description: ''});
 
 
   useEffect(() => {
@@ -83,7 +87,9 @@ const ResourceOverView: React.FC = () => {
    */
   const handleUpload = () => {
     if (rightClickedNode) {
+      uploadValue.pid=rightClickedNode.id
       // todo: upload
+      setShowUpload(true)
     }
   };
 
@@ -157,9 +163,13 @@ const ResourceOverView: React.FC = () => {
   /**
    * the rename ok
    */
- const handleRenameSubmit = (value : Partial<Resource>) => {
-   // todo rename submit
-    console.log(value,'rename')
+  const handleRenameSubmit = (value: Partial<Resource>) => {
+    // todo rename submit
+    handleOption(API_CONSTANTS.RESOURCE_RENAME, "重命名", {...value})
+    console.log(value, 'rename')
+  }
+  const handleUploadCancel = () => {
+    setShowUpload(false)
   }
 
   /**
@@ -199,15 +209,24 @@ const ResourceOverView: React.FC = () => {
    */
   return <>
     <ProCard size={'small'}>
-      <ProCard ghost hoverable colSpan={'18%'} className={"siderTree schemaTree"}>
-        <FileTree
-          selectedKeys={selectedKeys}
-          treeData={treeData}
-          onRightClick={handleRightClick}
-          onNodeClick={(info: any) => handleNodeClick(info)}
-        />
-        {contextMenuVisible && renderRightClickMenu()}
-      </ProCard>
+      <Resizable
+        defaultSize={{
+          width: 500,
+          height: '100%'
+        }}
+        minWidth={200}
+        maxWidth={1200}
+      >
+        <ProCard ghost hoverable colSpan={'18%'} className={"siderTree schemaTree"}>
+          <FileTree
+            selectedKeys={selectedKeys}
+            treeData={treeData}
+            onRightClick={handleRightClick}
+            onNodeClick={(info: any) => handleNodeClick(info)}
+          />
+          {contextMenuVisible && renderRightClickMenu()}
+        </ProCard>
+      </Resizable>
       <ProCard.Divider type={"vertical"}/>
       <ProCard ghost hoverable className={"schemaTree"}>
         <FileShow
@@ -217,7 +236,10 @@ const ResourceOverView: React.FC = () => {
         />
       </ProCard>
     </ProCard>
-    {showRename && <ResourceModal formValues={formValue} onOk={handleRenameSubmit} onClose={handleRenameCancel} visible={showRename}/>}
+    {showRename && <ResourceModal formValues={formValue} onOk={handleRenameSubmit} onClose={handleRenameCancel}
+                                  visible={showRename}/>}
+    {showUpload &&
+      <ResourcesUploadModal onUpload={uploadValue} visible={showUpload} onOk={handleUploadCancel} onClose={handleUploadCancel}/>}
   </>
 }
 
