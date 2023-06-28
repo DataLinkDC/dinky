@@ -33,10 +33,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -45,25 +45,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ResourceController {
     private final ResourcesService resourcesService;
 
-    /*
-        CREATE TABLE `dinky_resources` (
-      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
-      `alias` varchar(64) DEFAULT NULL COMMENT 'alias',
-      `file_name` varchar(64) DEFAULT NULL COMMENT 'file name',
-      `description` varchar(255) DEFAULT NULL,
-      `user_id` int(11) DEFAULT NULL COMMENT 'user id',
-      `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
-      `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
-      `pid` int(11) DEFAULT NULL,
-      `full_name` varchar(128) DEFAULT NULL,
-      `is_directory` tinyint(4) DEFAULT NULL,
-        `create_time` datetime DEFAULT NULL COMMENT 'create time',
-      `update_time` datetime DEFAULT NULL COMMENT 'update time',
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
-    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE = utf8_bin;
-
-         */
     @PostMapping("/createFolder")
     public Result<Void> createFolder(Integer pid, String fileName, String description) {
         resourcesService.createFolder(pid, fileName, description);
@@ -72,7 +53,8 @@ public class ResourceController {
 
     @PostMapping("/rename")
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
-        resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
+        resourcesService.rename(
+                resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
     }
 
@@ -87,7 +69,8 @@ public class ResourceController {
     }
 
     @PostMapping("/uploadFile")
-    public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
+    public Result<Void> uploadFile(
+            Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
         return Result.succeed();
     }

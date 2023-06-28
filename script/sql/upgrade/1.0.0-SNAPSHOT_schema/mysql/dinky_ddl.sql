@@ -127,13 +127,31 @@ CREATE TABLE `dinky_metrics` (
                                  `show_size` varchar(255) DEFAULT NULL COMMENT 'show size',
                                  `title` varchar(255) DEFAULT NULL COMMENT 'title',
                                  `layout_name` varchar(255) DEFAULT NULL COMMENT 'layout name',
-                                 `create_time` datetime DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime DEFAULT NULL COMMENT 'update time',
+                                 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
 
 
-
+-- ----------------------------
+-- Table structure for dinky_resources
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_resources;
+CREATE TABLE `dinky_resources` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
+                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `user_id` int(11) DEFAULT NULL COMMENT 'user id',
+                                   `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
+                                   `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
+                                   `pid` int(11) DEFAULT NULL,
+                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `is_directory` tinyint(4) DEFAULT NULL,
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
 SET FOREIGN_KEY_CHECKS = 1;

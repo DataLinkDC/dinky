@@ -19,8 +19,6 @@
 
 package org.dinky.service;
 
-import cn.hutool.cache.impl.TimedCache;
-import cn.hutool.cache.impl.WeakCache;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
@@ -33,19 +31,21 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import cn.hutool.cache.impl.TimedCache;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.StrUtil;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
-    private static final TimedCache<Integer, Resources> RESOURCES_CACHE = new TimedCache<>(30 * 1000);
+    private static final TimedCache<Integer, Resources> RESOURCES_CACHE =
+            new TimedCache<>(30 * 1000);
     OssTemplate ossTemplate;
 
     {
@@ -87,7 +87,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
                         new LambdaQueryWrapper<Resources>()
                                 .eq(Resources::getPid, byId.getPid())
                                 .eq(Resources::getFileName, fileName)
-                                .ne(Resources::getId,id));
+                                .ne(Resources::getId, id));
         Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
         List<String> split = StrUtil.split(byId.getFullName(), "/");
         split.remove(split.size() - 1);
@@ -157,7 +157,11 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         Resources pResource = RESOURCES_CACHE.get(pid, () -> getById(pid));
         long size = file.getSize();
         String fileName = file.getOriginalFilename();
-        Resources currentUploadResource = getOne(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, pid).eq(Resources::getFileName, fileName));
+        Resources currentUploadResource =
+                getOne(
+                        new LambdaQueryWrapper<Resources>()
+                                .eq(Resources::getPid, pid)
+                                .eq(Resources::getFileName, fileName));
         if (currentUploadResource != null) {
             if (desc != null) {
                 currentUploadResource.setDescription(desc);
@@ -182,27 +186,28 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     @Transactional(rollbackFor = Exception.class)
     public void remove(Integer id) {
-        if (id<1){
-            //todo 删除主目录，实际是清空
-            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId,id));
+        if (id < 1) {
+            // todo 删除主目录，实际是清空
+            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, id));
         }
         Resources byId = getById(id);
         if (byId.getIsDirectory()) {
-            List<Resources> resourceByPidToChildren = getResourceByPidToChildren(new ArrayList<>(), byId.getId());
+            List<Resources> resourceByPidToChildren =
+                    getResourceByPidToChildren(new ArrayList<>(), byId.getId());
             removeBatchByIds(resourceByPidToChildren);
         }
-        List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), byId.getPid());
+        List<Resources> resourceByPidToParent =
+                getResourceByPidToParent(new ArrayList<>(), byId.getPid());
         resourceByPidToParent.forEach(x -> x.setSize(x.getSize() - byId.getSize()));
         updateBatchById(resourceByPidToParent);
         removeById(id);
     }
 
-
     /**
      * 递归获取所有的资源，从pid到0
      *
      * @param resourcesList data
-     * @param pid           pid
+     * @param pid pid
      * @return data
      */
     public List<Resources> getResourceByPidToParent(List<Resources> resourcesList, Integer pid) {
@@ -218,7 +223,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
      * 递归获取所有的资源，从id往下穿
      *
      * @param resourcesList data
-     * @param pid           pid
+     * @param pid pid
      * @return data
      */
     public List<Resources> getResourceByPidToChildren(List<Resources> resourcesList, Integer pid) {
