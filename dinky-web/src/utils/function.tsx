@@ -369,6 +369,10 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
   // build key
   let buildKey = item.path + folderSeparator() + item.name;
 
+  const buildTitleLabel = () => {
+    return  <>{item.name}<span style={{color:'gray'}}> &nbsp;&nbsp;{l('global.size','',{size:item.size})}</span></>;
+  }
+
   // if has children , recursive build
   if (item.children) {
     return {
@@ -379,7 +383,8 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
       icon: renderIcon(item.name, '.', item.leaf),
       content: item.content,
       path: item.path,
-      title: item.name,
+      fullName: item?.fullName,
+      title: buildTitleLabel(),
       key: buildKey,
       children: buildTreeData(item.children)
     };
@@ -392,7 +397,8 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
     icon: renderIcon(item.name, '.', item.leaf),
     content: item.content,
     path: item.path,
-    title: item.name,
+    fullName: item?.fullName,
+    title: buildTitleLabel(),
     key: buildKey,
   };
 });

@@ -164,6 +164,8 @@ export default {
 
   'global.item': 'Pieces',
   'global.bout': 'Times',
+  'global.size': ' Size: {size}',
+
 
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',

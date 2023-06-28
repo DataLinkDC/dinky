@@ -23,25 +23,21 @@ import {ProCard} from "@ant-design/pro-components";
 import FileTree from "@/pages/RegCenter/Resource/components/FileTree";
 import FileShow from "@/pages/RegCenter/Resource/components/FileShow";
 import {Dropdown, Menu} from "antd";
-import {DeleteOutlined, UploadOutlined} from "@ant-design/icons";
 import {MenuInfo} from "rc-menu/es/interface";
-import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/constants";
 import {queryDataByParams} from "@/services/BusinessCrud";
+import {RIGHT_CONTEXT_MENU} from "@/pages/RegCenter/Resource/components/constants";
 
 
-type RightClickMenu = {
-    pageX: number,
-    pageY: number,
-    id: number,
-    name: string
-};
 const ResourceOverView: React.FC = () => {
 
     const [treeData, setTreeData] = useState<Partial<any[]>>([]);
-    const [rightClickNodeTreeItem, setRightClickNodeTreeItem] = useState<RightClickMenu>();
     const [content, setContent] = useState<string>('');
     const [clickedNode, setClickedNode] = useState<any>({});
+    const [rightClickedNode, setRightClickedNode] = useState({});
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
+    const [contextMenuPosition, setContextMenuPosition] = useState({});
+    const [selectedKeys, setSelectedKeys] = useState([]);
 
 
     useEffect(() => {
@@ -68,43 +64,44 @@ const ResourceOverView: React.FC = () => {
      * @returns {Promise<void>}
      */
     const handleNodeClick = async (info: any) => {
-        const {node: {id, isLeaf}, node} = info;
+        const {node: {id, isLeaf, key}, node} = info;
+        setSelectedKeys([key] as any);
         setClickedNode(node);
         if (isLeaf) {
             await queryContent(id);
-        }else {
+        } else {
             setContent('');
         }
     };
 
 
-    const [rightClickedNode, setRightClickedNode] = useState(null);
-
-
-    const contextMenuItems = [
-        {
-            key: 'upload',
-            icon: <UploadOutlined/>,
-            label: l('button.upload'),
-        },
-        {
-            key: 'delete',
-            icon: <DeleteOutlined/>,
-            label: l('button.delete'),
-        },
-    ]
+    /**
+     * the node right click event OF upload,
+     */
     const handleUpload = () => {
         if (rightClickedNode) {
             // todo: upload
         }
     };
 
-
+    /**
+     * the node right click event OF delete,
+     */
     const handleDelete = () => {
         if (rightClickedNode) {
             // todo: delete
         }
     };
+
+    /**
+     * the node right click event OF rename,
+     */
+    const handleRename = () => {
+        if (rightClickedNode) {
+            // todo: rename
+        }
+    };
+
     const handleMenuClick = (node: MenuInfo) => {
         switch (node.key) {
             case 'upload':
@@ -113,47 +110,57 @@ const ResourceOverView: React.FC = () => {
             case 'delete':
                 handleDelete();
                 break;
+            case 'rename':
+                handleRename();
+                break;
             default:
                 break;
         }
     };
 
-    const renderContextMenu = () => {
-        return (
-            <Menu
-                disabledOverflow
-                onClick={handleMenuClick}
-                items={contextMenuItems}
-            />
-        );
-    };
 
-
+    /**
+     * the right click event
+     * @param info
+     */
     const handleRightClick = (info: any) => {
         // 获取右键点击的节点信息
-        const {node: {path, isLeaf}, node, event} = info;
-
-        const {pageX, pageY} = {...rightClickNodeTreeItem};
-
-        setRightClickNodeTreeItem({
-            pageX: event.pageX,
-            pageY: event.pageY,
-            id: node.id,
-            name: node.name
-        });
-
-        const tmpStyle: any = {
-            position: 'fixed',
-            left: pageX,
-            top: pageY,
-        };
+        const {node, event} = info;
+        setSelectedKeys([node.key] as any);
         setRightClickedNode(node);
-
-        return <>
-            <Dropdown arrow autoAdjustOverflow forceRender open overlayStyle={tmpStyle} overlay={renderContextMenu()}
-                      trigger={['contextMenu']}/>
-        </>
+        setContextMenuVisible(true);
+        setContextMenuPosition({
+            position: 'fixed',
+            cursor: 'context-menu',
+            width: '5vw',
+            left: event.clientX + 20, // + 20 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+            top: event.clientY + 20, // + 20 是为了让鼠标不至于在选中的节点上
+            zIndex: 888,
+        });
     };
+
+
+    /**
+     * render the right click menu
+     * @returns {JSX.Element}
+     */
+    const renderRightClickMenu = () => {
+        return <>
+            <Dropdown
+                arrow
+                trigger={['contextMenu']}
+                overlayStyle={{...contextMenuPosition}}
+                overlay={<Menu forceSubMenuRender disabledOverflow onClick={handleMenuClick}
+                               items={RIGHT_CONTEXT_MENU}/>}
+                open={contextMenuVisible}
+                onVisibleChange={setContextMenuVisible}
+            >
+                {/*占位*/}
+                <div style={{...contextMenuPosition}}/>
+            </Dropdown>
+        </>
+    }
+
 
     /**
      * the content change
@@ -172,10 +179,12 @@ const ResourceOverView: React.FC = () => {
         <ProCard size={'small'}>
             <ProCard ghost hoverable colSpan={'18%'} className={"schemaTree"}>
                 <FileTree
+                    selectedKeys={selectedKeys}
                     treeData={treeData}
                     onRightClick={handleRightClick}
                     onNodeClick={(info: any) => handleNodeClick(info)}
                 />
+                {contextMenuVisible && renderRightClickMenu()}
             </ProCard>
             <ProCard.Divider type={"vertical"}/>
             <ProCard ghost hoverable className={"schemaTree"}>

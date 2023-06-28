@@ -160,6 +160,7 @@ export default {
 
   'global.item': '个',
   'global.bout': '次',
+  'global.size': ' 大小: {size}',
 
   'global.week.sunday': '星期日',
   'global.week.monday': '星期一',

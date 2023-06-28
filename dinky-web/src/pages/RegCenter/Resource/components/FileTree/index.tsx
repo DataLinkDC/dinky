@@ -32,16 +32,18 @@ type FileTreeProps = {
     treeData: Partial<any>[];
     onNodeClick: (info: any) => void
     onRightClick: (info: any) => void
+    selectedKeys: string[]
 }
 
 const FileTree: React.FC<FileTreeProps> = (props) => {
 
-    const {treeData, onNodeClick, onRightClick} = props;
+    const {treeData,selectedKeys, onNodeClick, onRightClick} = props;
 
     return <>
         {
             (treeData.length > 0) ?
                 <DirectoryTree
+                    selectedKeys={selectedKeys}
                     onSelect={(_, info) => onNodeClick(info)}
                     onRightClick={info => onRightClick(info)}
                     treeData={buildTreeData(treeData)}
