@@ -91,9 +91,9 @@ declare namespace Cluster {
    */
   export type Config = BaseBeanColumns & {
     type: string,
-    config: any,
+    config?: any,
     configJson: string,
-    isAvailable: boolean,
+    isAvailable?: boolean,
     note: string,
   };
 }

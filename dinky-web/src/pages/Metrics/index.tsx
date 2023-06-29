@@ -51,11 +51,8 @@ export default () => {
   const [custom, setCustom] = useState<boolean>(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [startTime, setStartTime] = useState(getSubMinTime(currentTime, 1));
-  const [dataRecord, setDataRecord] = useState<JvmDataRecord>({
-    heapLastValue: 0, cpuLastValue: 0, heapMax: 0
-    , threadCount: 0, threadPeakCount: 0
-    , nonHeapMax: 0, nonHeapLastValue: 0
-  });
+  const [showDinkyServer, setShowDinkySever] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(true)
 
   /**
    * Data processing
@@ -121,12 +118,20 @@ export default () => {
     queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {
       startTime: startTime.getTime(),
       endTime: endTime.getTime()
+    }).then(res => {
+      jvmData.length = 0;
+      flinkMetricsData.length = 0;
+      (res as MetricsDataType[]).forEach(d => dataProcess(d))
     })
-      .then(res => {
-        jvmData.length = 0;
-        flinkMetricsData.length = 0;
-        (res as MetricsDataType[]).forEach(d => dataProcess(d))
-      })
+    queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then(res => {
+      for (const config of res.metrics) {
+        if (config.key === "metrics.settings.sys.enable") {
+          setShowDinkySever(config.value)
+          setLoading(false)
+          break
+        }
+      }
+    })
   }
   const handleRangeChange = (dates: any) => {
     setDateRange('custom')
@@ -167,14 +172,14 @@ export default () => {
   }
 
 
-  return <PageContainer title={false}>
+  return <PageContainer title={false} loading={loading}>
     <ProCard size={'small'} colSpan={'100%'} bordered>
       <GlobalFilter custom={custom} dateRange={dateRange} endTime={endTime} startTime={startTime}
                     handleDateRadioChange={handleDateRadioChange} handleRangeChange={handleRangeChange}/>
     </ProCard>
-    <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
+    {showDinkyServer && <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
       <Server chartConfig={commonChartConfig} data={jvmData}/>
-    </ProCard>
+    </ProCard>}
     {(layoutData != undefined) && Object.keys(layoutData).map(name => {
       return <ProCard collapsible title={name} ghost hoverable bordered headerBordered gutter={[0, 8]}>
         <Row gutter={[8, 16]}>

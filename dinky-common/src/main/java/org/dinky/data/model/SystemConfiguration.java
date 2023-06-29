@@ -27,6 +27,7 @@ import java.util.TreeMap;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Opt;
 import cn.hutool.core.util.DesensitizedUtil;
 import cn.hutool.core.util.ReflectUtil;
@@ -47,7 +48,7 @@ public class SystemConfiguration {
         return systemConfiguration;
     }
 
-    private Consumer<Configuration<?>> initMethod = null;
+    private final Consumer<Configuration<?>> initMethod = null;
 
     public static Configuration.OptionBuilder key(String key) {
         return new Configuration.OptionBuilder(key);
@@ -60,76 +61,76 @@ public class SystemConfiguration {
                                     f -> f.getType() == Configuration.class))
                     .map(f -> (Configuration<?>) ReflectUtil.getFieldValue(systemConfiguration, f))
                     .collect(Collectors.toList());
-    private Configuration<Boolean> useRestAPI =
+    private final Configuration<Boolean> useRestAPI =
             key("flink.settings.useRestAPI")
                     .booleanType()
                     .defaultValue(true)
                     .note("在运维 Flink 任务时是否使用 RestAPI");
-    private Configuration<String> sqlSeparator =
+    private final Configuration<String> sqlSeparator =
             key("flink.settings.sqlSeparator")
                     .stringType()
                     .defaultValue(";\\n")
                     .note("FlinkSQL语句分割符");
-    private Configuration<Integer> jobIdWait =
+    private final Configuration<Integer> jobIdWait =
             key("flink.settings.jobIdWait")
                     .intType()
                     .defaultValue(30)
                     .note("提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）");
 
-    private Configuration<String> mavenSettings =
+    private final Configuration<String> mavenSettings =
             key("maven.settings.settingsFilePath")
                     .stringType()
                     .defaultValue("")
                     .note("Maven Settings 文件路径");
 
-    private Configuration<String> mavenRepository =
+    private final Configuration<String> mavenRepository =
             key("maven.settings.repository")
                     .stringType()
                     .defaultValue("https://maven.aliyun.com/nexus/content/repositories/central")
                     .note("Maven private server address");
 
-    private Configuration<String> mavenRepositoryUser =
+    private final Configuration<String> mavenRepositoryUser =
             key("maven.settings.repositoryUser")
                     .stringType()
                     .defaultValue("")
                     .note("Maven private server authentication username");
 
-    private Configuration<String> mavenRepositoryPassword =
+    private final Configuration<String> mavenRepositoryPassword =
             key("maven.settings.repositoryPassword")
                     .stringType()
                     .defaultValue("")
                     .desensitizedHandler(DesensitizedUtil::password)
                     .note("Maven Central Repository Auth Password");
 
-    private Configuration<String> pythonHome =
+    private final Configuration<String> pythonHome =
             key("env.settings.pythonHome").stringType().defaultValue("python3").note("PYTHON HOME");
 
-    private Configuration<String> dinkyAddr =
+    private final Configuration<String> dinkyAddr =
             key("env.settings.dinkyAddr")
                     .stringType()
                     .defaultValue(System.getProperty("dinkyAddr"))
                     .note(
                             "the address must be the same as the address configured in the Dinky Application background url");
 
-    private Configuration<Boolean> dolphinschedulerEnable =
+    private final Configuration<Boolean> dolphinschedulerEnable =
             key("dolphinscheduler.settings.enable")
                     .booleanType()
                     .defaultValue(false)
                     .note("Dolphinscheduler ON-OFF");
 
-    private Configuration<String> dolphinschedulerUrl =
+    private final Configuration<String> dolphinschedulerUrl =
             key("dolphinscheduler.settings.url")
                     .stringType()
                     .defaultValue("")
                     .note(
                             "The address must be the same as the address configured in the DolphinScheduler background , eg: http://127.0.0.1:12345/dolphinscheduler");
-    private Configuration<String> dolphinschedulerToken =
+    private final Configuration<String> dolphinschedulerToken =
             key("dolphinscheduler.settings.token")
                     .stringType()
                     .defaultValue("")
                     .note(
                             "DolphinScheduler's Token , Please create a token in DolphinScheduler's Security Center -> Token Management, and modify the following configuration");
-    private Configuration<String> dolphinschedulerProjectName =
+    private final Configuration<String> dolphinschedulerProjectName =
             key("dolphinscheduler.settings.projectName")
                     .stringType()
                     .defaultValue("Dinky")
@@ -187,6 +188,29 @@ public class SystemConfiguration {
     private final Configuration<Boolean> ldapEnable =
             key("ldap.settings.enable").booleanType().defaultValue(false).note("LDAP ON-OFF");
 
+    private final Configuration<Boolean> metricsSysEnable =
+            key("metrics.settings.sys.enable")
+                    .booleanType()
+                    .defaultValue(false)
+                    .note("Is the collection system indicator enabled");
+
+    private final Configuration<Integer> metricsSysGatherTiming =
+            key("metrics.settings.sys.gatherTiming")
+                    .intType()
+                    .defaultValue(3000)
+                    .note("System METRICS gather Timing (unit: ms)");
+    private final Configuration<Integer> flinkMetricsGatherTiming =
+            key("metrics.settings.flink.gatherTiming")
+                    .intType()
+                    .defaultValue(3000)
+                    .note("FLINK METRICS gather Timing (unit: ms)");
+
+    private final Configuration<Integer> flinkMetricsGatherTimeout =
+            key("metrics.settings.flink.gatherTimeout")
+                    .intType()
+                    .defaultValue(1000)
+                    .note("FLINK METRICS gather timeout (unit: ms)");
+
     /** Initialize after spring bean startup */
     public void initAfterBeanStarted() {
         if (StrUtil.isBlank(dinkyAddr.getDefaultValue())) {
@@ -194,23 +218,41 @@ public class SystemConfiguration {
         }
     }
 
-    public void setConfiguration(Map<String, String> configMap) {
+    public void setConfiguration(String key, String value) {
+        CONFIGURATION_LIST.stream()
+                .filter(x -> x.getKey().equals(key))
+                .forEach(
+                        item -> {
+                            if (value == null) {
+                                item.setValue(item.getDefaultValue());
+                                item.runParameterCheck();
+                                item.runChangeEvent();
+                                return;
+                            }
+                            if (!StrUtil.equals(Convert.toStr(item.getValue()), value)) {
+                                item.setValue(value);
+                                item.runParameterCheck();
+                                item.runChangeEvent();
+                            }
+                        });
+    }
+
+    public void initSetConfiguration(Map<String, String> configMap) {
         CONFIGURATION_LIST.forEach(
                 item -> {
                     if (!configMap.containsKey(item.getKey())) {
                         return;
                     }
                     final String value = configMap.get(item.getKey());
-                    if (StrUtil.isBlank(value)) {
+                    if (value == null) {
                         item.setValue(item.getDefaultValue());
                         return;
                     }
                     item.setValue(value);
                 });
-        // initRun
-        for (Configuration<?> configuration : CONFIGURATION_LIST) {
-            Opt.ofNullable(this.initMethod).ifPresent(x -> x.accept(configuration));
-        }
+        CONFIGURATION_LIST.stream()
+                .peek(Configuration::runParameterCheck)
+                .forEach(Configuration::runChangeEvent);
     }
 
     public Map<String, List<Configuration<?>>> getAllConfiguration() {
@@ -226,10 +268,6 @@ public class SystemConfiguration {
                             });
         }
         return data;
-    }
-
-    public void setInitMethod(Consumer<Configuration<?>> initMethod) {
-        this.initMethod = initMethod;
     }
 
     public boolean isUseRestAPI() {

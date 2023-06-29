@@ -17,7 +17,7 @@
 
 import styled from "styled-components";
 
-export const DataSourceAction = styled.div`
+export const DataAction = styled.div`
   display: flex !important;
   justify-content: space-between;
   margin-left: 2vw;

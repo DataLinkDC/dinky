@@ -149,10 +149,10 @@ export const handleOption = async (url: string, title: string, param: any) => {
   try {
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
-      await SuccessMessage(result.msg);
+      SuccessMessage(result.msg);
       return result;
     } else {
-      await WarningMessage(result.msg);
+      WarningMessage(result.msg);
       return false;
     }
   } catch (error) {

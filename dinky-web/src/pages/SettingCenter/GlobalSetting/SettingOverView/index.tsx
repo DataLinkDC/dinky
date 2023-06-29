@@ -26,10 +26,18 @@ import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSCo
 import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig";
 import {l} from '@/utils/intl';
 import FadeIn from "@/components/Animation/FadeIn";
+import {MetricsConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig";
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings>({dolphinscheduler: [], env: [], flink: [], maven: [] , ldap: []});
+  const [data, setData] = React.useState<Settings>({
+    dolphinscheduler: [],
+    env: [],
+    flink: [],
+    maven: [],
+    ldap: [],
+    metrics: []
+  });
 
 
   const fetchData = async () => {
@@ -42,9 +50,20 @@ const SettingOverView = () => {
     fetchData();
   }, []);
 
-  const handleSaveSubmit = async (data: BaseConfigProperties) => {
-    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: l(`sys.${data.key}`)}), data);
-    if (code === RESPONSE_CODE.SUCCESS) await fetchData();
+  const handleSaveSubmit = async (dataConfig: BaseConfigProperties) => {
+    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: l(`sys.${dataConfig.key}`)}), dataConfig);
+
+    if (code === RESPONSE_CODE.ERROR) {
+      await fetchData()
+    } else {
+      // @ts-ignore
+      for (const d of data[dataConfig.key.split('.')[0]]) {
+        if (d.key == dataConfig.key) {
+          d.value = dataConfig.value
+          break
+        }
+      }
+    }
   };
 
   const renderData = () => {
@@ -54,13 +73,16 @@ const SettingOverView = () => {
         flink: flinkConfig,
         maven: mavenConfig,
         dolphinscheduler: dsConfig,
-        ldap: ldapConfig} = data;
-      return <div style={{paddingBottom:"20px"}}>
+        ldap: ldapConfig,
+        metrics: metricsConfig
+      } = data;
+      return <div style={{paddingBottom: "20px"}}>
         <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>
         <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>
         <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>
         <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>
         <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>
+        <MetricsConfig onSave={handleSaveSubmit} data={metricsConfig}/>
       </div>;
     }
   };

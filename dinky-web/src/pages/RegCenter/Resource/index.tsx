@@ -19,9 +19,13 @@
 
 
 import ResourceOverView from "@/pages/RegCenter/Resource/components/ResourceOverView";
+import {PageContainer} from "@ant-design/pro-components";
+import Scale from "@/components/Animation/Scale";
 
 export default () => {
-    return <>
-        <ResourceOverView/>
-    </>
+    return <Scale>
+        <PageContainer breadcrumb={{style: {display: 'none'}}} title={false}>
+            <ResourceOverView/>
+        </PageContainer>
+    </Scale>
 }

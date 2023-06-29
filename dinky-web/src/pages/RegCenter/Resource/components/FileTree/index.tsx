@@ -39,16 +39,11 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
     const {treeData, onNodeClick, onRightClick} = props;
 
     return <>
-        <DirectoryTree
-            onSelect={(_, info) => onNodeClick(info)}
-            onRightClick={info => onRightClick(info)}
-            treeData={buildTreeData(treeData)}
-        />
-
         {
             (treeData.length > 0) ?
                 <DirectoryTree
                     onSelect={(_, info) => onNodeClick(info)}
+                    onRightClick={info => onRightClick(info)}
                     treeData={buildTreeData(treeData)}
                 /> :
                 <>

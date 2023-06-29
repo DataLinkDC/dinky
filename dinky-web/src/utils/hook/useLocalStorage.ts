@@ -5,7 +5,7 @@ export function useLocalStorage(key: string, initialValue: any) {
   const readValue = React.useCallback(() => {
     try {
       const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : initialValue;
+      return item ?? initialValue;
     } catch (error) {
       console.warn(error);
       return initialValue;
@@ -19,7 +19,7 @@ export function useLocalStorage(key: string, initialValue: any) {
       try {
         const nextState =
           typeof value === "function" ? value(localState) : value;
-        window.localStorage.setItem(key, JSON.stringify(nextState));
+        window.localStorage.setItem(key, nextState);
         setLocalState(nextState);
         window.dispatchEvent(new Event("local-storage"));
       } catch (e) {

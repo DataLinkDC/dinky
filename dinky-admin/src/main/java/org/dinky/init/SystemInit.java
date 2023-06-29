@@ -54,6 +54,7 @@ import org.springframework.stereotype.Component;
 
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -104,32 +105,37 @@ public class SystemInit implements ApplicationRunner {
     /** init DolphinScheduler */
     private void initDolphinScheduler() {
         SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
-        systemConfiguration.setInitMethod(
-                c -> {
-                    if (c == systemConfiguration.getDolphinschedulerEnable()) {
-                        if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
-                            if (StrUtil.hasBlank(
-                                    systemConfiguration.getDolphinschedulerUrl().getValue(),
-                                    systemConfiguration.getDolphinschedulerProjectName().getValue(),
-                                    systemConfiguration.getDolphinschedulerToken().getValue())) {
-                                sysConfigService.updateSysConfigByKv(
-                                        systemConfiguration.getDolphinschedulerEnable().getKey(),
-                                        "false");
-                                throw new DinkyException(
-                                        "Before starting DolphinScheduler docking, please fill in the relevant configuration");
-                            }
-                            try {
-                                project = projectClient.getDinkyProject();
-                                if (Asserts.isNull(project)) {
-                                    project = projectClient.createDinkyProject();
-                                }
-                            } catch (Exception e) {
-                                log.error("Error in DolphinScheduler: ", e);
-                                throw new DinkyException(e);
-                            }
-                        }
-                    }
-                });
+        systemConfiguration
+                .getAllConfiguration()
+                .get("dolphinscheduler")
+                .forEach(
+                        c ->
+                                c.addParameterCheck(
+                                        v -> {
+                                            if (systemConfiguration
+                                                    .getDolphinschedulerEnable()
+                                                    .getValue()) {
+                                                if (StrUtil.isEmpty(Convert.toStr(v))) {
+                                                    sysConfigService.updateSysConfigByKv(
+                                                            systemConfiguration
+                                                                    .getDolphinschedulerEnable()
+                                                                    .getKey(),
+                                                            "false");
+                                                    throw new DinkyException(
+                                                            "Before starting DolphinScheduler docking, please fill in the relevant configuration");
+                                                }
+                                                try {
+                                                    project = projectClient.getDinkyProject();
+                                                    if (Asserts.isNull(project)) {
+                                                        project =
+                                                                projectClient.createDinkyProject();
+                                                    }
+                                                } catch (Exception e) {
+                                                    log.error("Error in DolphinScheduler: ", e);
+                                                    throw new DinkyException(e);
+                                                }
+                                            }
+                                        }));
     }
 
     /**

@@ -40,4 +40,6 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
     Map<String, Object> getGatewayConfig(Integer id);
 
     TestResult testGateway(ClusterConfiguration clusterConfiguration);
+
+    Boolean enable(Integer id);
 }
