@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Assert;
+import cn.hutool.core.util.EnumUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -41,6 +43,7 @@ public class Configuration<T> implements Serializable {
     @JsonIgnore private final Class<T> type;
     @JsonIgnore private transient Function<T, T> desensitizedHandler = null;
     private final String frontType;
+    private final List<String> example = new ArrayList<>();
     private String note;
 
     private final T defaultValue;
@@ -59,6 +62,10 @@ public class Configuration<T> implements Serializable {
     }
 
     public void setValue(Object value) {
+        if (getType() == Enum.class) {
+            this.value = (T) EnumUtil.fromString((Class<? extends Enum>) type, (String) value);
+            return;
+        }
         this.value = type.isInstance(value) ? (T) value : Convert.convert(getType(), value);
     }
 
@@ -80,6 +87,9 @@ public class Configuration<T> implements Serializable {
             this.frontType = "date";
         } else if (NUMBER_LIST.contains(type)) {
             this.frontType = "number";
+        } else if (type.isEnum()) {
+            this.frontType = "option";
+            this.example.addAll(EnumUtil.getNames((Class<? extends Enum<?>>) type));
         } else {
             this.frontType = type.getSimpleName();
         }
@@ -130,6 +140,10 @@ public class Configuration<T> implements Serializable {
 
         public ValueType<Date> dateType() {
             return new ValueType<>(key, Date.class);
+        }
+
+        public <E extends Enum<E>> ValueType<E> enumType(Class<E> enumClass) {
+            return new ValueType<>(key, enumClass);
         }
     }
 

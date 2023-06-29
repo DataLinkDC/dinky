@@ -27,6 +27,7 @@ import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/Ld
 import {l} from '@/utils/intl';
 import FadeIn from "@/components/Animation/FadeIn";
 import {MetricsConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig";
+import {ResourcesConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig";
 
 const SettingOverView = () => {
 
@@ -36,7 +37,8 @@ const SettingOverView = () => {
     flink: [],
     maven: [],
     ldap: [],
-    metrics: []
+    metrics: [],
+    resource: []
   });
 
 
@@ -74,7 +76,8 @@ const SettingOverView = () => {
         maven: mavenConfig,
         dolphinscheduler: dsConfig,
         ldap: ldapConfig,
-        metrics: metricsConfig
+        metrics: metricsConfig,
+        resource:resourceConfig
       } = data;
       return <div style={{paddingBottom: "20px"}}>
         <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>
@@ -83,6 +86,7 @@ const SettingOverView = () => {
         <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>
         <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>
         <MetricsConfig onSave={handleSaveSubmit} data={metricsConfig}/>
+        <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig}/>
       </div>;
     }
   };

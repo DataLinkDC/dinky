@@ -316,6 +316,10 @@ public class OssTemplate {
         return amazonS3;
     }
 
+    public String getBucketName() {
+        return ossProperties.getBucketName();
+    }
+
     public OssTemplate(OssProperties ossProperties) {
         this.ossProperties = ossProperties;
         ClientConfiguration clientConfiguration = new ClientConfiguration();

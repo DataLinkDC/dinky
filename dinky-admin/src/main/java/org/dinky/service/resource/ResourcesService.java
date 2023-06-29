@@ -17,14 +17,12 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.service.resource;
 
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.Resources;
-import org.dinky.data.properties.OssProperties;
 import org.dinky.mapper.ResourcesMapper;
-import org.dinky.utils.OssTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,16 +44,6 @@ import cn.hutool.core.util.StrUtil;
 public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
     private static final TimedCache<Integer, Resources> RESOURCES_CACHE =
             new TimedCache<>(30 * 1000);
-    OssTemplate ossTemplate;
-
-    {
-        OssProperties ossProperties = new OssProperties();
-        ossProperties.setAccessKey("minioadmin");
-        ossProperties.setSecretKey("minioadmin");
-        ossProperties.setEndpoint("http://10.8.16.137:9000");
-        ossProperties.setBucketName("test");
-        ossTemplate = new OssTemplate(ossProperties);
-    }
 
     public void createFolder(Integer pid, String fileName, String desc) {
         long count =
@@ -93,6 +81,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         split.remove(split.size() - 1);
         split.add(fileName);
         String fullName = StrUtil.join("/", split);
+        getBaseResourceManager().rename(byId.getFullName(), fullName);
         if (!byId.getIsDirectory()) {
             List<Resources> list =
                     list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
@@ -148,13 +137,20 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     public String getContentByResourceId(Integer id) {
         Resources resources = getById(id);
-        // todo: 读取文件内容
-        return "text";
+        if (resources == null) {
+            throw new BusException("resource is not exists!");
+        }
+        return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void uploadFile(Integer pid, String desc, MultipartFile file) {
         Resources pResource = RESOURCES_CACHE.get(pid, () -> getById(pid));
+        if (!pResource.getIsDirectory()) {
+            RESOURCES_CACHE.remove(pid);
+            Integer realPid = pResource.getPid();
+            pResource = RESOURCES_CACHE.get(pid, () -> getById(realPid));
+        }
         long size = file.getSize();
         String fileName = file.getOriginalFilename();
         Resources currentUploadResource =
@@ -162,10 +158,12 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
                         new LambdaQueryWrapper<Resources>()
                                 .eq(Resources::getPid, pid)
                                 .eq(Resources::getFileName, fileName));
+        String fullName;
         if (currentUploadResource != null) {
             if (desc != null) {
                 currentUploadResource.setDescription(desc);
             }
+            fullName = currentUploadResource.getFullName();
         } else {
             Resources resources = new Resources();
             resources.setPid(pid);
@@ -173,11 +171,14 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
             resources.setIsDirectory(false);
             resources.setType(0);
             String prefixPath = pResource == null ? "" : pResource.getFullName();
-            resources.setFullName(prefixPath + "/" + fileName);
+            fullName = prefixPath + "/" + fileName;
+
+            resources.setFullName(fullName);
             resources.setSize(size);
             resources.setDescription(desc);
             saveOrUpdate(resources);
         }
+        getBaseResourceManager().putFile(fullName, file);
 
         List<Resources> resourceByPidToParent = getResourceByPidToParent(new ArrayList<>(), pid);
         resourceByPidToParent.forEach(x -> x.setSize(x.getSize() + size));
@@ -187,10 +188,13 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
     @Transactional(rollbackFor = Exception.class)
     public void remove(Integer id) {
         if (id < 1) {
+            getBaseResourceManager().remove("/");
             // todo 删除主目录，实际是清空
-            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, id));
+            remove(new LambdaQueryWrapper<Resources>().ne(Resources::getId, 0));
+            return;
         }
         Resources byId = getById(id);
+        getBaseResourceManager().remove(byId.getFullName());
         if (byId.getIsDirectory()) {
             List<Resources> resourceByPidToChildren =
                     getResourceByPidToChildren(new ArrayList<>(), byId.getId());
@@ -238,5 +242,9 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
             }
         }
         return resourcesList;
+    }
+
+    private BaseResourceManager getBaseResourceManager() {
+        return BaseResourceManager.getInstance();
     }
 }

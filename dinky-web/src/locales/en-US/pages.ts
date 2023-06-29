@@ -603,12 +603,14 @@ export default {
   'sys.setting.ds': 'DolphinScheduler Configuration',
   'sys.setting.ldap': 'LDAP Configuration',
   'sys.setting.metrics': 'Metrics Configuration',
+  'sys.setting.resource': 'Resource Configuration',
   'sys.setting.dinky.tooltip': 'Mainly modify system variables to ensure stable operation of basic functions',
   'sys.setting.flink.tooltip': 'Dinky docking Flink main parameters',
   'sys.setting.maven.tooltip': 'The main parameters of Maven compilation',
   'sys.setting.ds.tooltip': 'DolphinScheduler plug-in settings that allow you to push dinky tasks to the DolphinScheduler workflow',
   'sys.setting.ldap.tooltip': 'Unified authentication service LDAP docking configuration',
   'sys.setting.metrics.tooltip': 'Monitor monitoring page settings, adjust Metrics detection',
+  'sys.setting.resource.tooltip': 'Resource storage settings',
   'sys.setting.modify': 'Modify Settings {key}',
   'sys.env.settings.pythonHome': 'Python Env variables',
   'sys.env.settings.pythonHome.note': 'Python Env variables',
@@ -700,6 +702,25 @@ export default {
   // system info of log
   'sys.info.logList.tips': 'Click left log file to viewing',
 
+  // Resource
+  'sys.resource.settings.upload.base.path':'The root path of the upload directory',
+  'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
+  'sys.resource.settings.model':'Storage mode: support HDFS, OSS',
+  'sys.resource.settings.model.note':'Storage mode: support HDFS, OSS, it will take effect after switching the option, and migrate resource files at the same time',
+  'sys.resource.settings.hdfs.root.user':'HDFS operation user name',
+  'sys.resource.settings.hdfs.root.user.note':'HDFS operation user name',
+  'sys.resource.settings.hdfs.fs.defaultFS':'HDFS defaultFS',
+  'sys.resource.settings.hdfs.fs.defaultFS.note':'fs.defaultFS configuration items, such as remote: hdfs://localhost:9000, local: file:///',
+  'sys.resource.settings.oss.endpoint':'URL of the object storage service',
+  'sys.resource.settings.oss.endpoint.note':'The URL of the object storage service, for example: https://oss-cn-hangzhou.aliyuncs.com',
+  'sys.resource.settings.oss.accessKey':'Access key is like a user ID, which can uniquely identify your account',
+  'sys.resource.settings.oss.accessKey.note':'Access key is like a user ID, which can uniquely identify your account',
+  'sys.resource.settings.oss.secretKey':'Secret key is your account password',
+  'sys.resource.settings.oss.secretKey.note':'Secret key is your account password',
+  'sys.resource.settings.oss.bucketName':'default bucket name',
+  'sys.resource.settings.oss.bucketName.note':'default bucket name',
+  'sys.resource.settings.oss.region':'region',
+  'sys.resource.settings.oss.region.note':'region',
 
   // metrics
   // server

@@ -272,9 +272,6 @@ export default {
   'rc.cc.k8sOp.unSupportBatch': '（不支持批任务）',
 
 
-
-
-
   // =============== data source =======================
   // datasource list page
   'rc.ds.management': '数据源管理',
@@ -599,7 +596,6 @@ export default {
   'rc.resource.upload': '上传文件夹/文件',
 
 
-
   //-------------------------------- setting center --------------------------------
   //setting
   'sys.setting.dinky': 'Dinky 环境配置',
@@ -608,12 +604,14 @@ export default {
   'sys.setting.ds': 'DolphinScheduler 配置',
   'sys.setting.ldap': 'LDAP 配置',
   'sys.setting.metrics': 'Metrics 配置',
+  'sys.setting.resource': 'Resource 配置',
   'sys.setting.dinky.tooltip': '主要以修改系统变量为主，保证基础功能稳定运行',
   'sys.setting.flink.tooltip': 'Dinky对接 Flink 主要参数',
   'sys.setting.maven.tooltip': 'Maven 编译的主要参数',
   'sys.setting.ds.tooltip': '海豚调度插件设置，可以让您把dinky任务丝滑推到海豚调度器工作流上',
   'sys.setting.ldap.tooltip': 'LDAP统一认证配置',
   'sys.setting.metrics.tooltip': 'Monitor 监控页面设置，调整Metrics探测',
+  'sys.setting.resource.tooltip': 'Resource 存储设置',
   'sys.setting.modify': '修改配置 {key}',
   'sys.setting.tag.extend': '扩展配置',
   'sys.setting.tag.core': '核心配置',
@@ -679,14 +677,35 @@ export default {
   'sys.ldap.settings.loadable': '是否可以导入',
 
   // Metrics
-  'sys.metrics.settings.sys.enable':'Dinky JVM Monitor 开关',
-  'sys.metrics.settings.sys.enable.note':'此开关会关系到Dinky JVM Monitor，决定监控页面中的Dinky Server显示，以及JVM Metrics采集',
-  'sys.metrics.settings.sys.gatherTiming':'Dinky JVM Metrics 采集时间粒度',
-  'sys.metrics.settings.sys.gatherTiming.note':'Dinky JVM Metrics 采集时间粒度，定时任务间隔触发',
-  'sys.metrics.settings.flink.gatherTiming':'Flink Metrics 采集时间粒度',
-  'sys.metrics.settings.flink.gatherTiming.note':'Flink Metrics 采集时间粒度，定时任务间隔触发',
-  'sys.metrics.settings.flink.gatherTimeout':'Flink Metrics 采集时间粒度，定时任务间隔触发',
-  'sys.metrics.settings.flink.gatherTimeout.note':'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
+  'sys.metrics.settings.sys.enable': 'Dinky JVM Monitor 开关',
+  'sys.metrics.settings.sys.enable.note': '此开关会关系到Dinky JVM Monitor，决定监控页面中的Dinky Server显示，以及JVM Metrics采集',
+  'sys.metrics.settings.sys.gatherTiming': 'Dinky JVM Metrics 采集时间粒度',
+  'sys.metrics.settings.sys.gatherTiming.note': 'Dinky JVM Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTiming': 'Flink Metrics 采集时间粒度',
+  'sys.metrics.settings.flink.gatherTiming.note': 'Flink Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTimeout': 'Flink Metrics 采集时间粒度，定时任务间隔触发',
+  'sys.metrics.settings.flink.gatherTimeout.note': 'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
+
+  // Resource
+  'sys.resource.settings.upload.base.path':'上传目录的根路径',
+  // 'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
+  'sys.resource.settings.upload.base.path.note':'资源存储在HDFS/OSS路径上，资源文件将存储到此基本路径，自行配置，请确保该目录存在于hdfs上并具有读写权限。推荐:/dinky',
+  'sys.resource.settings.model':'存储模式：支持HDFS、OSS',
+  'sys.resource.settings.model.note':'存储模式：支持HDFS、OSS，切换选项后即可生效，同时并迁移资源文件',
+  'sys.resource.settings.hdfs.root.user':'HDFS操作用户名',
+  'sys.resource.settings.hdfs.root.user.note':'HDFS操作用户名',
+  'sys.resource.settings.hdfs.fs.defaultFS':'HDFS defaultFS',
+  'sys.resource.settings.hdfs.fs.defaultFS.note':'fs.defaultFS 配置项，例如远程：hdfs://localhost:9000，本地：file:///',
+  'sys.resource.settings.oss.endpoint':'对象存储服务的URL',
+  'sys.resource.settings.oss.endpoint.note':'对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com',
+  'sys.resource.settings.oss.accessKey':'Access key就像用户ID，可以唯一标识你的账户',
+  'sys.resource.settings.oss.accessKey.note':'Access key就像用户ID，可以唯一标识你的账户',
+  'sys.resource.settings.oss.secretKey':'Secret key是你账户的密码',
+  'sys.resource.settings.oss.secretKey.note':'Secret key是你账户的密码',
+  'sys.resource.settings.oss.bucketName':'默认的存储桶名称',
+  'sys.resource.settings.oss.bucketName.note':'默认的存储桶名称',
+  'sys.resource.settings.oss.region':'区域',
+  'sys.resource.settings.oss.region.note':'区域',
 
   // process
   'sys.process.id': '进程ID',
@@ -727,7 +746,6 @@ export default {
   'metrics.flink.subTask.placeholder': '请选择子任务名称',
   'metrics.flink.metrics.name': '指标名称',
   'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
-
 
 
 };

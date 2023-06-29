@@ -211,6 +211,54 @@ public class SystemConfiguration {
                     .defaultValue(1000)
                     .note("FLINK METRICS gather timeout (unit: ms)");
 
+    private final Configuration<String> resourcesUploadBasePath =
+            key("resource.settings.upload.base.path")
+                    .stringType()
+                    .defaultValue("/dinky")
+                    .note(
+                            "resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. \"/dinky\" is recommended");
+    private final Configuration<ResourcesModelEnum> resourcesModel =
+            key("resource.settings.model")
+                    .enumType(ResourcesModelEnum.class)
+                    .defaultValue(ResourcesModelEnum.HDFS)
+                    .note("存储模式：支持HDFS、OSS");
+
+    private final Configuration<String> resourcesOssEndpoint =
+            key("resource.settings.oss.endpoint")
+                    .stringType()
+                    .defaultValue("http://localhost:9000")
+                    .note("对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com");
+
+    private final Configuration<String> resourcesOssAccessKey =
+            key("resource.settings.oss.accessKey")
+                    .stringType()
+                    .defaultValue("minioadmin")
+                    .note("Access key就像用户ID，可以唯一标识你的账户");
+
+    private final Configuration<String> resourcesOssSecretKey =
+            key("resource.settings.oss.secretKey")
+                    .stringType()
+                    .defaultValue("minioadmin")
+                    .note("Secret key是你账户的密码");
+
+    private final Configuration<String> resourcesOssBucketName =
+            key("resource.settings.oss.bucketName")
+                    .stringType()
+                    .defaultValue("dinky")
+                    .note("默认的存储桶名称");
+    private final Configuration<String> resourcesOssRegion =
+            key("resource.settings.oss.region").stringType().defaultValue("").note("区域");
+    private final Configuration<String> resourcesHdfsUser =
+            key("resource.settings.hdfs.root.user")
+                    .stringType()
+                    .defaultValue("hdfs")
+                    .note("HDFS操作用户名");
+    private final Configuration<String> resourcesHdfsDefaultFS =
+            key("resource.settings.hdfs.fs.defaultFS")
+                    .stringType()
+                    .defaultValue("file:///")
+                    .note("HDFS defaultFS");
+
     /** Initialize after spring bean startup */
     public void initAfterBeanStarted() {
         if (StrUtil.isBlank(dinkyAddr.getDefaultValue())) {

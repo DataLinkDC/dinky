@@ -19,6 +19,8 @@
 
 package org.dinky.init;
 
+import static org.apache.hadoop.fs.FileSystem.getDefaultUri;
+
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
@@ -27,6 +29,7 @@ import org.dinky.data.model.JobInstance;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Task;
 import org.dinky.data.model.Tenant;
+import org.dinky.data.properties.OssProperties;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.FlinkJobTask;
@@ -39,8 +42,13 @@ import org.dinky.service.JobInstanceService;
 import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
+import org.dinky.service.resource.impl.HdfsResourceManager;
 import org.dinky.utils.JSONUtil;
+import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
+
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FileSystem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +66,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Singleton;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -70,6 +79,7 @@ import lombok.RequiredArgsConstructor;
 @Order(value = 1)
 @RequiredArgsConstructor
 public class SystemInit implements ApplicationRunner {
+    private final SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
 
     private static final Logger log = LoggerFactory.getLogger(SystemInit.class);
     private final ProjectClient projectClient;
@@ -82,6 +92,8 @@ public class SystemInit implements ApplicationRunner {
 
     @Override
     public void run(ApplicationArguments args) {
+        initResources();
+
         List<Tenant> tenants = tenantService.list();
         sysConfigService.initSysConfig();
         for (Tenant tenant : tenants) {
@@ -91,6 +103,73 @@ public class SystemInit implements ApplicationRunner {
         initDolphinScheduler();
         registerUDF();
         updateGitBuildState();
+    }
+
+    private void initResources() {
+        CollUtil.newArrayList(
+                        systemConfiguration.getResourcesModel(),
+                        systemConfiguration.getResourcesOssSecretKey(),
+                        systemConfiguration.getResourcesOssEndpoint(),
+                        systemConfiguration.getResourcesHdfsUser(),
+                        systemConfiguration.getResourcesHdfsDefaultFS(),
+                        systemConfiguration.getResourcesOssAccessKey(),
+                        systemConfiguration.getResourcesOssRegion())
+                .forEach(
+                        x -> {
+                            x.addParameterCheck(
+                                    (y) -> {
+                                        switch (systemConfiguration
+                                                .getResourcesModel()
+                                                .getValue()) {
+                                            case OSS:
+                                                OssProperties ossProperties = new OssProperties();
+                                                ossProperties.setAccessKey(
+                                                        systemConfiguration
+                                                                .getResourcesOssAccessKey()
+                                                                .getValue());
+                                                ossProperties.setSecretKey(
+                                                        systemConfiguration
+                                                                .getResourcesOssSecretKey()
+                                                                .getValue());
+                                                ossProperties.setEndpoint(
+                                                        systemConfiguration
+                                                                .getResourcesOssEndpoint()
+                                                                .getValue());
+                                                ossProperties.setBucketName(
+                                                        systemConfiguration
+                                                                .getResourcesOssBucketName()
+                                                                .getValue());
+                                                ossProperties.setRegion(
+                                                        systemConfiguration
+                                                                .getResourcesOssRegion()
+                                                                .getValue());
+                                                new OssTemplate(ossProperties);
+
+                                                break;
+                                            case HDFS:
+                                                final Configuration configuration =
+                                                        new Configuration();
+                                                configuration.set(
+                                                        "fs.defaultFS",
+                                                        systemConfiguration
+                                                                .getResourcesHdfsDefaultFS()
+                                                                .getValue());
+                                                try {
+                                                    FileSystem fileSystem =
+                                                            FileSystem.get(
+                                                                    getDefaultUri(configuration),
+                                                                    configuration,
+                                                                    systemConfiguration
+                                                                            .getResourcesHdfsUser()
+                                                                            .getValue());
+                                                    Singleton.get(HdfsResourceManager.class)
+                                                            .setHdfs(fileSystem);
+                                                } catch (Exception e) {
+                                                    throw new DinkyException(e);
+                                                }
+                                        }
+                                    });
+                        });
     }
 
     /** init task monitor */
@@ -106,7 +185,6 @@ public class SystemInit implements ApplicationRunner {
 
     /** init DolphinScheduler */
     private void initDolphinScheduler() {
-        SystemConfiguration systemConfiguration = SystemConfiguration.getInstances();
         systemConfiguration
                 .getAllConfiguration()
                 .get("dolphinscheduler")

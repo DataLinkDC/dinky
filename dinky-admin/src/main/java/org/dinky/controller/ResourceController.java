@@ -22,7 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.result.Result;
-import org.dinky.service.ResourcesService;
+import org.dinky.service.resource.ResourcesService;
 
 import java.util.List;
 
