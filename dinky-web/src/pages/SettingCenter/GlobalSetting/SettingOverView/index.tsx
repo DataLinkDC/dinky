@@ -27,10 +27,21 @@ import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/Ld
 import {l} from '@/utils/intl';
 import FadeIn from "@/components/Animation/FadeIn";
 import {ResourcesConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig";
-import {Space} from "antd";
-import {LogSvg} from "@/components/Icons/CodeLanguageIcon";
 import {ProCard} from "@ant-design/pro-components";
 import {SettingConfigKeyEnum} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/constants";
+import {
+    DinkyIcon,
+    DSIcon,
+    FlinkIcon,
+    LDAPIcon,
+    MavenIcon,
+    MetricsIcon,
+    ResourceIcon
+} from "@/components/Icons/CustomIcons";
+import {TagAlignCenter} from "@/components/StyledComponents";
+
+const imgSize = 25;
+
 
 const SettingOverView = () => {
 
@@ -84,55 +95,48 @@ const SettingOverView = () => {
             const configTags = [
                 {
                     key: SettingConfigKeyEnum.DINKY,
-                    label: <><LogSvg/>{l('sys.setting.dinky')}</>,
+                    label: <TagAlignCenter><DinkyIcon size={imgSize - 5}/>{l('sys.setting.dinky')}</TagAlignCenter>,
                     children: <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.FLINK,
-                    label: <><LogSvg/>{l('sys.setting.flink')}</>,
+                    label: <TagAlignCenter><FlinkIcon size={imgSize}/>{l('sys.setting.flink')}</TagAlignCenter>,
                     children: <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.MAVEN,
-                    label: <><LogSvg/>{l('sys.setting.maven')}</>,
+                    label: <TagAlignCenter><MavenIcon size={imgSize}/>{l('sys.setting.maven')}</TagAlignCenter>,
                     children: <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.DOLPHIN_SCHEDULER,
-                    label: <><LogSvg/>{l('sys.setting.ds')}</>,
+                    label: <TagAlignCenter><DSIcon size={imgSize}/>{l('sys.setting.ds')}</TagAlignCenter>,
                     children: <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.LDAP,
-                    label: <><LogSvg/>{l('sys.setting.ldap')}</>,
+                    label: <TagAlignCenter><LDAPIcon size={imgSize}/>{l('sys.setting.ldap')}</TagAlignCenter>,
                     children: <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.METRIC,
-                    label: <><LogSvg/>{l('sys.setting.metrics')}</>,
+                    label: <TagAlignCenter><MetricsIcon size={imgSize}/>{l('sys.setting.metrics')}</TagAlignCenter>,
                     children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig}/>,
                 },
                 {
                     key: SettingConfigKeyEnum.RESOURCE,
-                    label: <><LogSvg/>{l('sys.setting.resource')}</>,
+                    label: <TagAlignCenter><ResourceIcon size={imgSize}/>{l('sys.setting.resource')}</TagAlignCenter>,
                     children: <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig}/>,
                 },
             ];
 
 
             return <div style={{paddingBottom: "20px"}}>
-                <ProCard
-                    ghost
-                    className={'schemaTree'}
-                    size="small"
-                    bordered
-                    tabs={{
-                        activeKey: activeKey,
-                        type: 'card',
-                        animated: true,
-                        onChange: (key: any) => setActiveKey(key),
-                        items: configTags,
-                    }}
+                <ProCard ghost className={'schemaTree'} size="small" bordered
+                         tabs={{
+                             activeKey: activeKey, type: 'card', animated: true,
+                             onChange: (key: any) => setActiveKey(key), items: configTags,
+                         }}
                 />
             </div>;
         }
