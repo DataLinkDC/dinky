@@ -38,7 +38,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void remove(String path) {
         try {
-            hdfs.delete(new Path(getFile(path)), true);
+            getHdfs().delete(new Path(getFile(path)), true);
         } catch (IOException e) {
             throw BusException.valueOf("file.delete.failed", e);
         }
@@ -47,7 +47,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void rename(String path, String newPath) {
         try {
-            hdfs.rename(new Path(getFile(path)), new Path(getFile(newPath)));
+            getHdfs().rename(new Path(getFile(path)), new Path(getFile(newPath)));
         } catch (IOException e) {
             throw BusException.valueOf("file.rename.failed", e);
         }
@@ -56,7 +56,7 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public void putFile(String path, MultipartFile file) {
         try {
-            FSDataOutputStream stream = hdfs.create(new Path(getFile(path)), true);
+            FSDataOutputStream stream = getHdfs().create(new Path(getFile(path)), true);
             stream.write(file.getBytes());
             stream.flush();
             stream.close();
@@ -68,10 +68,17 @@ public class HdfsResourceManager implements BaseResourceManager {
     @Override
     public String getFileContent(String path) {
         try {
-            return IoUtil.readUtf8(hdfs.open(new Path(getFile(path))));
+            return IoUtil.readUtf8(getHdfs().open(new Path(getFile(path))));
         } catch (IOException e) {
             throw BusException.valueOf("file.read.failed", e);
         }
+    }
+
+    public FileSystem getHdfs() {
+        if (hdfs == null && instances.getResourcesEnable().getValue()) {
+            throw BusException.valueOf("Resource configuration error, HDFS is not enabled");
+        }
+        return hdfs;
     }
 
     public synchronized void setHdfs(FileSystem hdfs) {

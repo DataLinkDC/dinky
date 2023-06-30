@@ -17,7 +17,7 @@
  *
  */
 
-import {DeleteOutlined, EditOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, PlusCircleOutlined, UploadOutlined} from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import React from "react";
 
@@ -29,22 +29,28 @@ import React from "react";
  * @constructor
  */
 export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
-    {
-        key: 'upload',
-        icon: <UploadOutlined/>,
-        label: l('button.upload'),
-        disabled: isDisabled,
-    },
-    {
-        key: 'delete',
-        icon: <DeleteOutlined/>,
-        label: l('right.menu.delete'),
-        disabled: isDisabled,
-    },
-    {
-        key: 'rename',
-        icon: <EditOutlined/>,
-        label: l('right.menu.rename'),
-        disabled: isDisabled,
-    },
+  {
+    key: 'createFolder',
+    icon: <PlusCircleOutlined/>,
+    label: l('right.menu.createFolder'),
+    disabled: isDisabled,
+  },
+  {
+    key: 'upload',
+    icon: <UploadOutlined/>,
+    label: l('button.upload'),
+    disabled: isDisabled,
+  },
+  {
+    key: 'delete',
+    icon: <DeleteOutlined/>,
+    label: l('right.menu.delete'),
+    disabled: isDisabled,
+  },
+  {
+    key: 'rename',
+    icon: <EditOutlined/>,
+    label: l('right.menu.rename'),
+    disabled: isDisabled,
+  },
 ]

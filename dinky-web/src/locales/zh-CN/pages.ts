@@ -687,6 +687,8 @@ export default {
   'sys.metrics.settings.flink.gatherTimeout.note': 'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
 
   // Resource
+  'sys.resource.settings.enable':'是否启用Resource',
+  'sys.resource.settings.enable.note':'启用资源管理功能，如果切换存储模式时，需关闭此开关，相关配置完成后，再开启',
   'sys.resource.settings.upload.base.path':'上传目录的根路径',
   // 'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
   'sys.resource.settings.upload.base.path.note':'资源存储在HDFS/OSS路径上，资源文件将存储到此基本路径，自行配置，请确保该目录存在于hdfs上并具有读写权限。推荐:/dinky',

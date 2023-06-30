@@ -703,6 +703,8 @@ export default {
   'sys.info.logList.tips': 'Click left log file to viewing',
 
   // Resource
+  'sys.resource.settings.enable':'Whether to enable Resource',
+  'sys.resource.settings.enable.note':'Enable the resource management function. If you switch the storage mode, you need to turn off this switch. After the relevant configuration is completed, turn it on again.',
   'sys.resource.settings.upload.base.path':'The root path of the upload directory',
   'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
   'sys.resource.settings.model':'Storage mode: support HDFS, OSS',

@@ -30,6 +30,7 @@ import {RIGHT_CONTEXT_MENU} from "@/pages/RegCenter/Resource/components/constant
 import ResourceModal from "@/pages/RegCenter/Resource/components/ResourceModal";
 import {Resizable} from "re-resizable";
 import ResourcesUploadModal from "@/pages/RegCenter/Resource/components/ResourcesUploadModal";
+import {buildTreeData} from "@/utils/function";
 
 export type Resource = {
   id: number,
@@ -46,14 +47,15 @@ const ResourceOverView: React.FC = () => {
   const [contextMenuVisible, setContextMenuVisible] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({});
   const [selectedKeys, setSelectedKeys] = useState([]);
-  const [showRename, setShowRename] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editModal, setEditModal] = useState<string>("");
   const [showUpload, setShowUpload] = useState(false);
   const [formValue, setFormValue] = useState<Resource>({id: 0, fileName: '', description: ''});
   const [uploadValue] = useState({url: API_CONSTANTS.RESOURCE_UPLOAD, pid: '', description: ''});
 
 
   useEffect(() => {
-    queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: -1}).then(res => setTreeData(res))
+    refreshTree()
   }, [])
 
 
@@ -64,7 +66,9 @@ const ResourceOverView: React.FC = () => {
   const queryContent = useCallback(async (id: number) => {
     await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => setContent(res))
   }, [clickedNode])
-
+  const refreshTree = async () => {
+    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: -1}).then(res => setTreeData(res))
+  }
 
   /**
    * the node click event
@@ -85,9 +89,18 @@ const ResourceOverView: React.FC = () => {
   /**
    * the node right click event OF upload,
    */
+  const handleCreateFolder = () => {
+    if (rightClickedNode) {
+      setEditModal("createFolder")
+      const {id, name, desc} = rightClickedNode;
+      setShowEditModal(true)
+      setFormValue({id, fileName: "", description: ""})
+      setContextMenuVisible(false)
+    }
+  };
   const handleUpload = () => {
     if (rightClickedNode) {
-      uploadValue.pid=rightClickedNode.id
+      uploadValue.pid = rightClickedNode.id
       // todo: upload
       setShowUpload(true)
     }
@@ -100,6 +113,7 @@ const ResourceOverView: React.FC = () => {
     //todo delete
     if (rightClickedNode) {
       await handleRemoveById(API_CONSTANTS.RESOURCE_REMOVE, rightClickedNode.id)
+      await refreshTree()
     }
   };
 
@@ -108,16 +122,19 @@ const ResourceOverView: React.FC = () => {
    */
   const handleRename = () => {
     if (rightClickedNode) {
+      setEditModal("rename")
       const {id, name, desc} = rightClickedNode;
-      setShowRename(true)
+      setShowEditModal(true)
       setFormValue({id, fileName: name, description: desc})
       setContextMenuVisible(false)
-      console.log(rightClickedNode, 'rename')
     }
   }
 
   const handleMenuClick = (node: MenuInfo) => {
     switch (node.key) {
+      case 'createFolder':
+        handleCreateFolder();
+        break;
       case 'upload':
         handleUpload();
         break;
@@ -156,21 +173,39 @@ const ResourceOverView: React.FC = () => {
   /**
    * the rename cancel
    */
-  const handleRenameCancel = () => {
-    setShowRename(false)
+  const handleModalCancel = () => {
+    setShowEditModal(false)
   }
 
   /**
    * the rename ok
    */
-  const handleRenameSubmit = (value: Partial<Resource>) => {
-    // todo rename submit
-    handleOption(API_CONSTANTS.RESOURCE_RENAME, "重命名", {...value})
-    console.log(value, 'rename')
+  const handleModalSubmit = async (value: Partial<Resource>) => {
+    if (editModal === "createFolder") {
+      const d = (await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, "创建文件夹", {...value})).datas
+      console.log((await handleOption(API_CONSTANTS.RESOURCE_CREATE_FOLDER, "创建文件夹", {...value})))
+      getSelectedNode().children.push(d)
+    } else if (editModal == "rename") {
+      await handleOption(API_CONSTANTS.RESOURCE_RENAME, "重命名", {...value})
+      await refreshTree()
+    }
   }
   const handleUploadCancel = () => {
     setShowUpload(false)
   }
+  const getSelectedNode = () => {
+    const indexes = (rightClickedNode.pos.split("-") as string[]).map(x => parseInt(x));
+    if (indexes.length == 1) {
+      return treeData[indexes[0]]
+    } else {
+      let temp = treeData[indexes[0]]
+      for (let i = 1; i < indexes.length - 1; i++) {
+        temp = temp.children[indexes[i]]
+      }
+      return temp
+    }
+  }
+
 
   /**
    * render the right click menu
@@ -236,10 +271,12 @@ const ResourceOverView: React.FC = () => {
         />
       </ProCard>
     </ProCard>
-    {showRename && <ResourceModal formValues={formValue} onOk={handleRenameSubmit} onClose={handleRenameCancel}
-                                  visible={showRename}/>}
+    {showEditModal &&
+      <ResourceModal title={editModal} formValues={formValue} onOk={handleModalSubmit} onClose={handleModalCancel}
+                     visible={showEditModal}/>}
     {showUpload &&
-      <ResourcesUploadModal onUpload={uploadValue} visible={showUpload} onOk={handleUploadCancel} onClose={handleUploadCancel}/>}
+      <ResourcesUploadModal onUpload={uploadValue} visible={showUpload} onOk={handleUploadCancel}
+                            onClose={handleUploadCancel}/>}
   </>
 }
 

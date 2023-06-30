@@ -43,6 +43,7 @@ import org.dinky.service.SysConfigService;
 import org.dinky.service.TaskService;
 import org.dinky.service.TenantService;
 import org.dinky.service.resource.impl.HdfsResourceManager;
+import org.dinky.service.resource.impl.OssResourceManager;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.OssTemplate;
 import org.dinky.utils.UDFUtils;
@@ -107,6 +108,7 @@ public class SystemInit implements ApplicationRunner {
 
     private void initResources() {
         CollUtil.newArrayList(
+                        systemConfiguration.getResourcesEnable(),
                         systemConfiguration.getResourcesModel(),
                         systemConfiguration.getResourcesOssSecretKey(),
                         systemConfiguration.getResourcesOssEndpoint(),
@@ -118,55 +120,57 @@ public class SystemInit implements ApplicationRunner {
                         x -> {
                             x.addParameterCheck(
                                     (y) -> {
-                                        switch (systemConfiguration
-                                                .getResourcesModel()
-                                                .getValue()) {
-                                            case OSS:
-                                                OssProperties ossProperties = new OssProperties();
-                                                ossProperties.setAccessKey(
-                                                        systemConfiguration
-                                                                .getResourcesOssAccessKey()
-                                                                .getValue());
-                                                ossProperties.setSecretKey(
-                                                        systemConfiguration
-                                                                .getResourcesOssSecretKey()
-                                                                .getValue());
-                                                ossProperties.setEndpoint(
-                                                        systemConfiguration
-                                                                .getResourcesOssEndpoint()
-                                                                .getValue());
-                                                ossProperties.setBucketName(
-                                                        systemConfiguration
-                                                                .getResourcesOssBucketName()
-                                                                .getValue());
-                                                ossProperties.setRegion(
-                                                        systemConfiguration
-                                                                .getResourcesOssRegion()
-                                                                .getValue());
-                                                new OssTemplate(ossProperties);
-
-                                                break;
-                                            case HDFS:
-                                                final Configuration configuration =
-                                                        new Configuration();
-                                                configuration.set(
-                                                        "fs.defaultFS",
-                                                        systemConfiguration
-                                                                .getResourcesHdfsDefaultFS()
-                                                                .getValue());
-                                                try {
-                                                    FileSystem fileSystem =
-                                                            FileSystem.get(
-                                                                    getDefaultUri(configuration),
-                                                                    configuration,
-                                                                    systemConfiguration
-                                                                            .getResourcesHdfsUser()
-                                                                            .getValue());
-                                                    Singleton.get(HdfsResourceManager.class)
-                                                            .setHdfs(fileSystem);
-                                                } catch (Exception e) {
-                                                    throw new DinkyException(e);
-                                                }
+                                        if(systemConfiguration.getResourcesEnable().getValue()){
+                                            switch (systemConfiguration
+                                                    .getResourcesModel()
+                                                    .getValue()) {
+                                                case OSS:
+                                                    OssProperties ossProperties = new OssProperties();
+                                                    ossProperties.setAccessKey(
+                                                            systemConfiguration
+                                                                    .getResourcesOssAccessKey()
+                                                                    .getValue());
+                                                    ossProperties.setSecretKey(
+                                                            systemConfiguration
+                                                                    .getResourcesOssSecretKey()
+                                                                    .getValue());
+                                                    ossProperties.setEndpoint(
+                                                            systemConfiguration
+                                                                    .getResourcesOssEndpoint()
+                                                                    .getValue());
+                                                    ossProperties.setBucketName(
+                                                            systemConfiguration
+                                                                    .getResourcesOssBucketName()
+                                                                    .getValue());
+                                                    ossProperties.setRegion(
+                                                            systemConfiguration
+                                                                    .getResourcesOssRegion()
+                                                                    .getValue());
+                                                    Singleton.get(OssResourceManager.class)
+                                                            .setOssTemplate(new OssTemplate(ossProperties));
+                                                    break;
+                                                case HDFS:
+                                                    final Configuration configuration =
+                                                            new Configuration();
+                                                    configuration.set(
+                                                            "fs.defaultFS",
+                                                            systemConfiguration
+                                                                    .getResourcesHdfsDefaultFS()
+                                                                    .getValue());
+                                                    try {
+                                                        FileSystem fileSystem =
+                                                                FileSystem.get(
+                                                                        getDefaultUri(configuration),
+                                                                        configuration,
+                                                                        systemConfiguration
+                                                                                .getResourcesHdfsUser()
+                                                                                .getValue());
+                                                        Singleton.get(HdfsResourceManager.class)
+                                                                .setHdfs(fileSystem);
+                                                    } catch (Exception e) {
+                                                        throw new DinkyException(e);
+                                                    }
+                                            }
                                         }
                                     });
                         });

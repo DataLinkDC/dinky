@@ -46,9 +46,8 @@ public class ResourceController {
     private final ResourcesService resourcesService;
 
     @PostMapping("/createFolder")
-    public Result<Void> createFolder(Integer pid, String fileName, String description) {
-        resourcesService.createFolder(pid, fileName, description);
-        return Result.succeed();
+    public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
+        return Result.succeed(resourcesService.createFolder(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
     }
 
     @PostMapping("/rename")

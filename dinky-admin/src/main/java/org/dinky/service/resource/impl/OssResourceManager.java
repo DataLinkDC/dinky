@@ -19,6 +19,8 @@
 
 package org.dinky.service.resource.impl;
 
+import cn.hutool.core.io.IoUtil;
+import org.dinky.data.exception.BusException;
 import org.dinky.process.exception.DinkyException;
 import org.dinky.service.resource.BaseResourceManager;
 import org.dinky.utils.OssTemplate;
@@ -33,28 +35,28 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public void remove(String path) {
-        ossTemplate.removeObject(ossTemplate.getBucketName(), getFile(path));
+        getOssTemplate().removeObject(getOssTemplate().getBucketName(), getFile(path));
     }
 
     @Override
     public void rename(String path, String newPath) {
         CopyObjectRequest copyObjectRequest =
                 new CopyObjectRequest(
-                        ossTemplate.getBucketName(),
+                        getOssTemplate().getBucketName(),
                         getFile(path),
-                        ossTemplate.getBucketName(),
+                        getOssTemplate().getBucketName(),
                         getFile(newPath));
-        ossTemplate.getAmazonS3().copyObject(copyObjectRequest);
+        getOssTemplate().getAmazonS3().copyObject(copyObjectRequest);
         DeleteObjectRequest deleteObjectRequest =
-                new DeleteObjectRequest(ossTemplate.getBucketName(), getFile(path));
-        ossTemplate.getAmazonS3().deleteObject(deleteObjectRequest);
+                new DeleteObjectRequest(getOssTemplate().getBucketName(), getFile(path));
+        getOssTemplate().getAmazonS3().deleteObject(deleteObjectRequest);
     }
 
     @Override
     public void putFile(String path, MultipartFile file) {
         try {
-            ossTemplate.putObject(
-                    ossTemplate.getBucketName(), getFile(path), file.getInputStream());
+            getOssTemplate().putObject(
+                    getOssTemplate().getBucketName(), getFile(path), file.getInputStream());
         } catch (Exception e) {
             throw new DinkyException(e);
         }
@@ -62,7 +64,14 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public String getFileContent(String path) {
-        return ossTemplate.getObjectURL(ossTemplate.getBucketName(), getFile(path));
+        return IoUtil.readUtf8(getOssTemplate().getObject(getOssTemplate().getBucketName(), getFile(path)).getObjectContent());
+    }
+
+    public OssTemplate getOssTemplate() {
+        if (ossTemplate == null && instances.getResourcesEnable().getValue()) {
+            throw BusException.valueOf("Resource configuration error, OSS is not enabled");
+        }
+        return ossTemplate;
     }
 
     public void setOssTemplate(OssTemplate ossTemplate) {

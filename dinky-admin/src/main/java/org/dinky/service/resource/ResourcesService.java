@@ -44,8 +44,9 @@ import cn.hutool.core.util.StrUtil;
 public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
     private static final TimedCache<Integer, Resources> RESOURCES_CACHE =
             new TimedCache<>(30 * 1000);
+    private static final long ALLOW_MAX_CAT_CONTENT_SIZE = 10 * 1024 * 1024;
 
-    public void createFolder(Integer pid, String fileName, String desc) {
+    public TreeNodeDTO createFolder(Integer pid, String fileName, String desc) {
         long count =
                 count(
                         new LambdaQueryWrapper<Resources>()
@@ -64,11 +65,13 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         resources.setSize(0L);
         resources.setDescription(desc);
         save(resources);
+        return convertTree(resources);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void rename(Integer id, String fileName, String desc) {
         Resources byId = getById(id);
+        String sourceFullName = byId.getFullName();
         Assert.notNull(byId, () -> new BusException("resource is not exists!"));
         long count =
                 count(
@@ -77,11 +80,15 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
                                 .eq(Resources::getFileName, fileName)
                                 .ne(Resources::getId, id));
         Assert.isFalse(count > 0, () -> new BusException("folder is exists!"));
-        List<String> split = StrUtil.split(byId.getFullName(), "/");
+        List<String> split = StrUtil.split(sourceFullName, "/");
         split.remove(split.size() - 1);
         split.add(fileName);
         String fullName = StrUtil.join("/", split);
-        getBaseResourceManager().rename(byId.getFullName(), fullName);
+
+        byId.setDescription(desc);
+        byId.setFileName(fileName);
+        byId.setFullName(fullName);
+        updateById(byId);
         if (!byId.getIsDirectory()) {
             List<Resources> list =
                     list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
@@ -89,11 +96,12 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
                 list.forEach(x -> x.setFullName(fullName + "/" + x.getFileName()));
                 updateBatchById(list);
             }
+        } else {
+            if (!isExistsChildren(id)) {
+                return;
+            }
         }
-        byId.setDescription(desc);
-        byId.setFileName(fileName);
-        byId.setFullName(fullName);
-        updateById(byId);
+        getBaseResourceManager().rename(sourceFullName, fullName);
     }
 
     public List<TreeNodeDTO> showByTree(Integer pid, Integer showFloorNum) {
@@ -137,9 +145,8 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
 
     public String getContentByResourceId(Integer id) {
         Resources resources = getById(id);
-        if (resources == null) {
-            throw new BusException("resource is not exists!");
-        }
+        Assert.notNull(resources, () -> new BusException("resource is not exists!"));
+        Assert.isFalse(resources.getSize() > ALLOW_MAX_CAT_CONTENT_SIZE, () -> new BusException("file is too large!"));
         return getBaseResourceManager().getFileContent(resources.getFullName());
     }
 
@@ -194,6 +201,10 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
             return;
         }
         Resources byId = getById(id);
+        if (!isExistsChildren(id)) {
+            removeById(id);
+            return;
+        }
         getBaseResourceManager().remove(byId.getFullName());
         if (byId.getIsDirectory()) {
             List<Resources> resourceByPidToChildren =
@@ -207,11 +218,15 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         removeById(id);
     }
 
+    private boolean isExistsChildren(Integer id) {
+        return count(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, id)) > 0;
+    }
+
     /**
      * 递归获取所有的资源，从pid到0
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     public List<Resources> getResourceByPidToParent(List<Resources> resourcesList, Integer pid) {
@@ -227,7 +242,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
      * 递归获取所有的资源，从id往下穿
      *
      * @param resourcesList data
-     * @param pid pid
+     * @param pid           pid
      * @return data
      */
     public List<Resources> getResourceByPidToChildren(List<Resources> resourcesList, Integer pid) {

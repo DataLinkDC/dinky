@@ -26,7 +26,7 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
     "oss": [] as BaseConfigProperties[]
   });
   useEffect(() => {
-    if (data.length<1){
+    if (data.length < 1) {
       return
     }
     const needDeleteIndexes: number[] = [];
@@ -35,13 +35,14 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
       if (datum.key === 'resource.settings.model'){
         enumCache.base.push(datum);
         const modelCase = datum.value.toLowerCase();
-        m=modelCase
+        m = modelCase
         setModel(modelCase);
         return
       }
-      if (datum.key !== 'resource.settings.upload.base.path') {
+      const v = datum.key.split(".").at(2);
+      if (v === "hdfs" || v === "oss"){
         // @ts-ignore
-        enumCache[datum.key.split(".").at(2)].push(datum);
+        enumCache[v].push(datum);
         needDeleteIndexes.push(index)
       } else {
         enumCache.base.push(datum);
@@ -50,7 +51,9 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
 
     const baseConfigProperties = data.filter((d, index) => !needDeleteIndexes.includes(index));
     // @ts-ignore
-    enumCache[m].forEach(x => {baseConfigProperties.push(x)});
+    enumCache[m].forEach(x => {
+      baseConfigProperties.push(x)
+    });
     setBaseData(baseConfigProperties);
   }, [data])
   useEffect(() => {
@@ -70,8 +73,9 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
     await onSave(data);
     setLoading(false);
   };
-  const selectChange = (value: RadioChangeEvent) => {
+  const selectChange = async (value: RadioChangeEvent) => {
     setModel(value.target.value)
+    await onSaveHandler({example: [], frontType: "", key: "resource.settings.model", note: "", value:value.target.value.toLocaleUpperCase() })
   }
   return <>
       {/*tooltip={l('sys.setting.resource.tooltip')}*/}
@@ -80,7 +84,7 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
         onSave={onSaveHandler}
         tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
         data={baseData}
-        selectChanges={{"resource.settings.model":selectChange}}
+        selectChanges={{"resource.settings.model": selectChange}}
       />
   </>;
 };

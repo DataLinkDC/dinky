@@ -22,6 +22,7 @@ package org.dinky.service.resource;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.service.resource.impl.HdfsResourceManager;
 
+import org.dinky.service.resource.impl.OssResourceManager;
 import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
@@ -43,13 +44,13 @@ public interface BaseResourceManager {
             case HDFS:
                 return Singleton.get(HdfsResourceManager.class);
             case OSS:
-                //                return new OssResourceManager();
+                return Singleton.get(OssResourceManager.class);
             default:
                 return null;
         }
     }
 
     default String getFile(String path) {
-        return FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path).toString();
+        return FileUtil.normalize(FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path).toString());
     }
 }

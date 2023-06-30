@@ -25,6 +25,7 @@ import {Form} from "antd";
 import {FormContextValue} from "@/components/Context/FormContext";
 
 type ResourceModalProps = {
+    title: string;
     visible: boolean;
     onClose: () => void;
     onOk: (value: Partial<Resource>) => void;
@@ -48,6 +49,7 @@ const ResourceModal :React.FC<ResourceModalProps> = ( props) => {
      * init props
      */
     const {
+      title,
         onOk: handleSubmit,
         onClose: handleModalVisible,
         visible,
@@ -80,7 +82,7 @@ const ResourceModal :React.FC<ResourceModalProps> = ( props) => {
 
     return <>
         <ModalForm<Resource>
-            title={formValues.id ? '重命名' : '新建'}
+            title={title}
             modalProps={{destroyOnClose: true, onCancel: handleModalVisible,}}
             onFinish={submitForm}
             form={form}
