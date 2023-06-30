@@ -146,7 +146,7 @@ const ResourceOverView: React.FC = () => {
     setContextMenuPosition({
       position: 'fixed',
       cursor: 'context-menu',
-      width: '5vw',
+      width: '10vw',
       left: event.clientX + 20, // + 20 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
       top: event.clientY + 20, // + 20 是为了让鼠标不至于在选中的节点上
       zIndex: 888,

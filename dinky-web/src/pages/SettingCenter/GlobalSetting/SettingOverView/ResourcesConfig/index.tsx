@@ -32,7 +32,7 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
     const needDeleteIndexes: number[] = [];
     let m;
     data.forEach((datum, index) => {
-      if (datum.key === 'resource.settings.model') {
+      if (datum.key === 'resource.settings.model'){
         enumCache.base.push(datum);
         const modelCase = datum.value.toLowerCase();
         m=modelCase
@@ -74,13 +74,7 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
     setModel(value.target.value)
   }
   return <>
-    <ProCard
-      title={l('sys.setting.resource')}
-      tooltip={l('sys.setting.resource.tooltip')}
-      size="small"
-      headerBordered ghost collapsible
-      defaultCollapsed={false}
-    >
+      {/*tooltip={l('sys.setting.resource.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
@@ -88,6 +82,5 @@ export const ResourcesConfig = ({data, onSave}: ResourcesConfigProps) => {
         data={baseData}
         selectChanges={{"resource.settings.model":selectChange}}
       />
-    </ProCard>
   </>;
 };

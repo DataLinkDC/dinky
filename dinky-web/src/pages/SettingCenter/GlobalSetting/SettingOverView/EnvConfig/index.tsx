@@ -38,19 +38,12 @@ export const EnvConfig = ({data, onSave}: EnvConfigProps) => {
   };
 
   return <>
-    <ProCard
-      title={l('sys.setting.dinky')}
-      tooltip={l('sys.setting.dinky.tooltip')}
-      size="small"
-      headerBordered collapsible ghost
-      defaultCollapsed={false}
-    >
+      {/*tooltip={l('sys.setting.dinky.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
         tag={<><Tag color={'error'}>{l('sys.setting.tag.system')}</Tag></>}
         data={data}
       />
-    </ProCard>
   </>;
 };

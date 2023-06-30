@@ -93,13 +93,11 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       return <Switch {...SWITCH_OPTIONS()} style={{width: '4vw'}} checked={entity.value}
         onChange={(checked) => handleSubmit({...entity, value: checked})}
       />;
-    } else if (entity.frontType === 'password') {
-      return <Input.Password style={{width: '30vw'}} disabled value={entity.value}/>;
-    }else if (entity.frontType === 'option') {
+    } else if (entity.frontType === 'option') {
       // @ts-ignore
       return <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
         {entity.example.map((item: any) => {
-          return <Radio.Button  value={item.toLowerCase()}>{item}</Radio.Button>
+          return <Radio.Button key={item} value={item.toLowerCase()}>{item}</Radio.Button>
         })}
       </Radio.Group>
     } else {
@@ -147,7 +145,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     editable: {
       saveText: <><SaveTwoTone title={l('button.save')}/></>,
       cancelText: <><BackIcon title={l('button.back')}/></>,
-      actionRender: (row, config, dom) => row.frontType === 'boolean'|| row.frontType=='option' ? [] : [dom.save, dom.cancel],
+      actionRender: (row, config, dom) => row.frontType === 'boolean'|| row.frontType ==='option' ? [] : [dom.save, dom.cancel],
       onSave: async (key, record) => handleSave(record),
     }
   };
