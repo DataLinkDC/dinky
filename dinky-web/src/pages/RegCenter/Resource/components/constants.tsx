@@ -17,7 +17,7 @@
  *
  */
 
-import {DeleteOutlined, EditOutlined, PlusCircleOutlined, UploadOutlined} from "@ant-design/icons";
+import {DeleteOutlined, EditOutlined, PlusCircleOutlined, UndoOutlined, UploadOutlined} from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import React from "react";
 
@@ -51,6 +51,11 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     key: 'rename',
     icon: <EditOutlined/>,
     label: l('right.menu.rename'),
+    disabled: isDisabled,
+  },{
+    key: 'refresh',
+    icon: <UndoOutlined />,
+    label: l('right.menu.refresh'),
     disabled: isDisabled,
   },
 ]

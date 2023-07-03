@@ -76,6 +76,7 @@ export default {
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
+  'right.menu.refresh': 'Refresh',
   'right.menu.createFolder': 'Create Folder',
   'right.menu.copy': 'Copy',
   'right.menu.cut': 'Cut',

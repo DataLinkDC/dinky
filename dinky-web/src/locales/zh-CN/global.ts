@@ -77,6 +77,7 @@ export default {
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
+  'right.menu.refresh': '刷新',
   'right.menu.createFolder': '创建文件夹',
   'right.menu.copy': '复制',
   'right.menu.cut': '剪切',

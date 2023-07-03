@@ -89,14 +89,19 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
         byId.setFileName(fileName);
         byId.setFullName(fullName);
         updateById(byId);
+        boolean isRunStorageMove=false;
         if (!byId.getIsDirectory()) {
             List<Resources> list =
                     list(new LambdaQueryWrapper<Resources>().eq(Resources::getPid, byId.getId()));
             if (CollUtil.isNotEmpty(list)) {
-                list.forEach(x -> x.setFullName(fullName + "/" + x.getFileName()));
+                for (Resources resources : list) {
+                    resources.setFullName(fullName + "/" + resources.getFileName());
+                    isRunStorageMove= !resources.getIsDirectory() && !isRunStorageMove;
+                }
                 updateBatchById(list);
             }
         } else {
+            isRunStorageMove=true;
             if (!isExistsChildren(id)) {
                 return;
             }
@@ -125,7 +130,7 @@ public class ResourcesService extends ServiceImpl<ResourcesMapper, Resources> {
             if (resources.getIsDirectory()) {
                 List<TreeNodeDTO> children = new ArrayList<>();
                 tree.setChildren(children);
-                createTree(children, resources.getId(), showFloorNum, currentFloor++);
+                createTree(children, resources.getId(), showFloorNum, currentFloor+1);
             }
             data.add(tree);
         }
