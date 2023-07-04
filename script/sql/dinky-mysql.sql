@@ -1127,7 +1127,7 @@ CREATE TABLE `dinky_resources` (
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
-INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/Root', 1);
+INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
 
 
 

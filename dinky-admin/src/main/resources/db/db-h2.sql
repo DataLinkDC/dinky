@@ -1656,6 +1656,7 @@ VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-pyth
        , 2, 1, NULL, NULL, 0
        , 0, 1, '[]', 2);
 
+DROP TABLE IF EXISTS dinky_metrics;
 CREATE TABLE `dinky_metrics` (
                                  `id` int(11) NOT NULL AUTO_INCREMENT,
                                  `task_id` int(255) DEFAULT NULL,
@@ -1684,3 +1685,4 @@ CREATE TABLE `dinky_resources` (
                                    `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
+INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);

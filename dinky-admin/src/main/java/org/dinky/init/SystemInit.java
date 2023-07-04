@@ -120,12 +120,13 @@ public class SystemInit implements ApplicationRunner {
                         x -> {
                             x.addParameterCheck(
                                     (y) -> {
-                                        if(systemConfiguration.getResourcesEnable().getValue()){
+                                        if (systemConfiguration.getResourcesEnable().getValue()) {
                                             switch (systemConfiguration
                                                     .getResourcesModel()
                                                     .getValue()) {
                                                 case OSS:
-                                                    OssProperties ossProperties = new OssProperties();
+                                                    OssProperties ossProperties =
+                                                            new OssProperties();
                                                     ossProperties.setAccessKey(
                                                             systemConfiguration
                                                                     .getResourcesOssAccessKey()
@@ -147,7 +148,8 @@ public class SystemInit implements ApplicationRunner {
                                                                     .getResourcesOssRegion()
                                                                     .getValue());
                                                     Singleton.get(OssResourceManager.class)
-                                                            .setOssTemplate(new OssTemplate(ossProperties));
+                                                            .setOssTemplate(
+                                                                    new OssTemplate(ossProperties));
                                                     break;
                                                 case HDFS:
                                                     final Configuration configuration =
@@ -160,7 +162,8 @@ public class SystemInit implements ApplicationRunner {
                                                     try {
                                                         FileSystem fileSystem =
                                                                 FileSystem.get(
-                                                                        getDefaultUri(configuration),
+                                                                        getDefaultUri(
+                                                                                configuration),
                                                                         configuration,
                                                                         systemConfiguration
                                                                                 .getResourcesHdfsUser()

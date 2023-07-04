@@ -2110,7 +2110,7 @@ COMMENT ON COLUMN "public"."dinky_resources"."update_time" IS 'update time';
 -- ----------------------------
 -- Records of dinky_resources
 -- ----------------------------
-INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/Root', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
+INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
 
 -- ----------------------------
 -- Indexes structure for table dinky_resources

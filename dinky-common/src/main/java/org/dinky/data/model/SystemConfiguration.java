@@ -211,11 +211,8 @@ public class SystemConfiguration {
                     .defaultValue(1000)
                     .note("FLINK METRICS gather timeout (unit: ms)");
 
-    private final Configuration<Boolean> resourcesEnable=
-            key("resource.settings.enable")
-                    .booleanType()
-                    .defaultValue(true)
-                    .note("是否启用");
+    private final Configuration<Boolean> resourcesEnable =
+            key("resource.settings.enable").booleanType().defaultValue(true).note("是否启用");
 
     private final Configuration<String> resourcesUploadBasePath =
             key("resource.settings.upload.base.path")

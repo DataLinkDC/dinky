@@ -47,7 +47,11 @@ public class ResourceController {
 
     @PostMapping("/createFolder")
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
-        return Result.succeed(resourcesService.createFolder(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
+        return Result.succeed(
+                resourcesService.createFolder(
+                        resourcesDTO.getId(),
+                        resourcesDTO.getFileName(),
+                        resourcesDTO.getDescription()));
     }
 
     @PostMapping("/rename")
