@@ -34,8 +34,11 @@ export default {
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',
 
   'menu.datastudio': '数据开发',
+
   'menu.devops': '运维中心',
   'menu.devops.job': '作业实例',
+  'menu.devops.job-detail': '作业详情',
+
   'menu.datacenter': '元数据中心',
   'menu.datacenter.metadata': '元数据',
   'menu.registration': '注册中心',

@@ -34,8 +34,11 @@ export default {
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
 
   'menu.datastudio': 'Data Studio',
+
   'menu.devops': 'Devops',
   'menu.devops.job': 'Job Instance',
+  'menu.devops.job-detail': 'Job Detail',
+
   'menu.datacenter': 'Meta Data Center',
   'menu.datacenter.metadata': 'Meta Data',
   'menu.registration': 'Registration Center',

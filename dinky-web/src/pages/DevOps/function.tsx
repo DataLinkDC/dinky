@@ -26,10 +26,16 @@ import {
   SyncOutlined
 } from "@ant-design/icons";
 import {l} from "@/utils/intl";
-import {JOB_LIFE_CYCLE, JOB_STATUS} from "@/pages/DevOps/JobList/constants";
+import {JOB_LIFE_CYCLE, JOB_STATUS} from "@/pages/DevOps/constants";
 
 
-export const TagJobLifeCycle = (step:number) => {
+/**
+ * Renders a tag for the job life cycle based on the provided step.
+ *
+ * @param {number} step - The step in the job life cycle.
+ * @returns {JSX.Element} - The tag representing the job life cycle.
+ */
+export const TagJobLifeCycle = (step?:number) => {
   switch (step) {
     case JOB_LIFE_CYCLE.DEVELOP:
       return (<Tag icon={<EditOutlined/>} color="default">{l('global.table.lifecycle.dev')}</Tag>);
@@ -42,6 +48,12 @@ export const TagJobLifeCycle = (step:number) => {
   }
 };
 
+/**
+ * Renders a tag for the job status based on the provided status.
+ *
+ * @param {string|undefined} status - The status of the job.
+ * @returns {JSX.Element} - The tag representing the job status.
+ */
 export const TagJobStatus = (status:string|undefined) => {
   switch (status) {
     case JOB_STATUS.RUNNING:
@@ -63,6 +75,11 @@ export const TagJobStatus = (status:string|undefined) => {
   }
 };
 
+/**
+ * Generates an array of options for the life cycle filter.
+ *
+ * @returns {Array} - An array of objects representing the life cycle filter options.
+ */
 export const LIFECYCLE_FILTER = () => {
   return [
     {text: l('global.table.lifecycle.dev'), value: JOB_LIFE_CYCLE.DEVELOP},
@@ -72,6 +89,11 @@ export const LIFECYCLE_FILTER = () => {
   ]
 };
 
+/**
+ * Generates an array of options for the job status filter.
+ *
+ * @returns {Array} - An array of objects representing the job status filter options.
+ */
 export const JOB_STATUS_FILTER = () => {
   return [
     {text: JOB_STATUS.FINISHED, value: JOB_STATUS.FINISHED},
@@ -88,3 +110,24 @@ export const JOB_STATUS_FILTER = () => {
   ]
 };
 
+
+/**
+ * Checks if a job status indicates that the job is done.
+ *
+ * @param {string} type - The job status.
+ * @returns {boolean} - True if the job status indicates that the job is done, false otherwise.
+ */
+export function isStatusDone(type: string) {
+  if (!type) {
+    return true;
+  }
+  switch (type) {
+    case JOB_STATUS.FAILED:
+    case JOB_STATUS.CANCELED:
+    case JOB_STATUS.FINISHED:
+    case JOB_STATUS.UNKNOWN:
+      return true;
+    default:
+      return false;
+  }
+}
