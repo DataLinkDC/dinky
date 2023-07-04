@@ -189,6 +189,9 @@ export const API_CONSTANTS = {
   // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
   GET_JOB_DETAIL: "/api/jobInstance/getJobInfoDetail",
+  CANCEL_JOB: "/api/studio/cancel",
+  OFFLINE_TASK: "/api/task/offLineTask",
+  RESTART_TASK: "/api/task/restartTask",
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",
