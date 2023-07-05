@@ -73,13 +73,7 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
   };
 
   return <>
-    <ProCard
-      title={l('sys.setting.ldap')}
-      tooltip={l('sys.setting.ldap.tooltip')}
-      size="small"
-      headerBordered ghost collapsible
-      defaultCollapsed={false}
-    >
+      {/*tooltip={l('sys.setting.ldap.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
@@ -87,6 +81,5 @@ export const LdapConfig = ({data, onSave}: LdapConfigProps) => {
         data={data}
         toolBarRender={renderToolBar}
       />
-    </ProCard>
   </>;
 };

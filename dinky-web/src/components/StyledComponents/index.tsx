@@ -42,3 +42,11 @@ export const StartButton = styled.div`
   z-index: 2;
   top: 50%;
 `;
+
+
+export const TagAlignCenter = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+`;

@@ -77,6 +77,8 @@ export default {
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
+  'right.menu.refresh': '刷新',
+  'right.menu.createFolder': '创建文件夹',
   'right.menu.copy': '复制',
   'right.menu.cut': '剪切',
   'right.menu.paste': '粘贴',
@@ -160,6 +162,7 @@ export default {
 
   'global.item': '个',
   'global.bout': '次',
+  'global.size': ' 大小: {size}',
 
   'global.week.sunday': '星期日',
   'global.week.monday': '星期一',

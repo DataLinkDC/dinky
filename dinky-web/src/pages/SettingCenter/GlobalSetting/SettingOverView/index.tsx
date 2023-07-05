@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import React, {memo, useEffect} from 'react';
+import React, {memo, useEffect, useState} from 'react';
 import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
 import {handleOption, queryDataByParams} from '@/services/BusinessCrud';
 import {BaseConfigProperties, Settings} from '@/types/SettingCenter/data';
@@ -26,71 +26,126 @@ import {DSConfig} from '@/pages/SettingCenter/GlobalSetting/SettingOverView/DSCo
 import {LdapConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/LdapConfig";
 import {l} from '@/utils/intl';
 import FadeIn from "@/components/Animation/FadeIn";
-import {MetricsConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/MetricsConfig";
+import {ResourcesConfig} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig";
+import {ProCard} from "@ant-design/pro-components";
+import {SettingConfigKeyEnum} from "@/pages/SettingCenter/GlobalSetting/SettingOverView/constants";
+import {
+    DinkyIcon,
+    DSIcon,
+    FlinkIcon,
+    LDAPIcon,
+    MavenIcon,
+    MetricsIcon,
+    ResourceIcon
+} from "@/components/Icons/CustomIcons";
+import {TagAlignCenter} from "@/components/StyledComponents";
+
+const imgSize = 25;
+
 
 const SettingOverView = () => {
 
-  const [data, setData] = React.useState<Settings>({
-    dolphinscheduler: [],
-    env: [],
-    flink: [],
-    maven: [],
-    ldap: [],
-    metrics: []
-  });
+    const [activeKey, setActiveKey] = useState(SettingConfigKeyEnum.DINKY);
 
-
-  const fetchData = async () => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
-      setData(res);
+    const [data, setData] = useState<Settings>({
+        dolphinscheduler: [],
+        env: [],
+        flink: [],
+        maven: [],
+        ldap: [],
+        metrics: [],
+        resource: []
     });
-  };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
 
-  const handleSaveSubmit = async (dataConfig: BaseConfigProperties) => {
-    const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: l(`sys.${dataConfig.key}`)}), dataConfig);
+    const fetchData = async () => {
+        await queryDataByParams(API_CONSTANTS.SYSTEM_GET_ALL_CONFIG).then((res) => {
+            setData(res);
+        });
+    };
 
-    if (code === RESPONSE_CODE.ERROR) {
-      await fetchData()
-    } else {
-      // @ts-ignore
-      for (const d of data[dataConfig.key.split('.')[0]]) {
-        if (d.key == dataConfig.key) {
-          d.value = dataConfig.value
-          break
+    useEffect(() => {
+        fetchData();
+    }, []);
+
+    const handleSaveSubmit = async (dataConfig: BaseConfigProperties) => {
+        const {code} = await handleOption(API_CONSTANTS.SYSTEM_MODIFY_CONFIG, l('sys.setting.modify', '', {key: l(`sys.${dataConfig.key}`)}), dataConfig);
+
+        if (code === RESPONSE_CODE.ERROR) {
+            await fetchData()
+        } else {
+            // @ts-ignore
+            for (const d of data[dataConfig.key.split('.')[0]]) {
+                if (d.key === dataConfig.key) {
+                    d.value = dataConfig.value
+                    break
+                }
+            }
         }
-      }
-    }
-  };
+    };
 
-  const renderData = () => {
-    if (data) {
-      const {
-        env: dinkyEnv,
-        flink: flinkConfig,
-        maven: mavenConfig,
-        dolphinscheduler: dsConfig,
-        ldap: ldapConfig,
-        metrics: metricsConfig
-      } = data;
-      return <div style={{paddingBottom: "20px"}}>
-        <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>
-        <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>
-        <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>
-        <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>
-        <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>
-        <MetricsConfig onSave={handleSaveSubmit} data={metricsConfig}/>
-      </div>;
-    }
-  };
+    const renderData = () => {
+        if (data) {
+            const {
+                env: dinkyEnv, flink: flinkConfig, maven: mavenConfig,
+                dolphinscheduler: dsConfig, ldap: ldapConfig, metrics: metricsConfig,
+                resource: resourceConfig,
+            } = data;
+
+            const configTags = [
+                {
+                    key: SettingConfigKeyEnum.DINKY,
+                    label: <TagAlignCenter><DinkyIcon size={imgSize - 5}/>{l('sys.setting.dinky')}</TagAlignCenter>,
+                    children: <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.FLINK,
+                    label: <TagAlignCenter><FlinkIcon size={imgSize}/>{l('sys.setting.flink')}</TagAlignCenter>,
+                    children: <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.MAVEN,
+                    label: <TagAlignCenter><MavenIcon size={imgSize}/>{l('sys.setting.maven')}</TagAlignCenter>,
+                    children: <MavenConfig onSave={handleSaveSubmit} data={mavenConfig}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.DOLPHIN_SCHEDULER,
+                    label: <TagAlignCenter><DSIcon size={imgSize}/>{l('sys.setting.ds')}</TagAlignCenter>,
+                    children: <DSConfig onSave={handleSaveSubmit} data={dsConfig}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.LDAP,
+                    label: <TagAlignCenter><LDAPIcon size={imgSize}/>{l('sys.setting.ldap')}</TagAlignCenter>,
+                    children: <LdapConfig onSave={handleSaveSubmit} data={ldapConfig}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.METRIC,
+                    label: <TagAlignCenter><MetricsIcon size={imgSize}/>{l('sys.setting.metrics')}</TagAlignCenter>,
+                    children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig}/>,
+                },
+                {
+                    key: SettingConfigKeyEnum.RESOURCE,
+                    label: <TagAlignCenter><ResourceIcon size={imgSize}/>{l('sys.setting.resource')}</TagAlignCenter>,
+                    children: <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig}/>,
+                },
+            ];
 
 
-  return <FadeIn>
-    {renderData()}
-  </FadeIn>;
+            return <div style={{paddingBottom: "20px"}}>
+                <ProCard ghost className={'schemaTree'} size="small" bordered
+                         tabs={{
+                             activeKey: activeKey, type: 'card', animated: true,
+                             onChange: (key: any) => setActiveKey(key), items: configTags,
+                         }}
+                />
+            </div>;
+        }
+    };
+
+
+    return <FadeIn>
+        {renderData()}
+    </FadeIn>;
 };
 
 export default memo(SettingOverView);

@@ -17,6 +17,9 @@
  *
  */
 
+ SET NAMES utf8mb4;
+ SET FOREIGN_KEY_CHECKS = 0;
+
 -- rename table
 ALTER TABLE dlink_alert_group RENAME dinky_alert_group;
 ALTER TABLE dlink_alert_history RENAME dinky_alert_history;
@@ -110,17 +113,45 @@ ALTER TABLE dinky_role_select_permissions RENAME TO dinky_row_permissions;
 ALTER TABLE dinky_user
     add  COLUMN `user_type` int default 0 not null comment 'login type（0:LOCAL,1:LDAP）' after user_type;
 
+
+-- ----------------------------
+-- Table structure for dinky_metrics
+-- ----------------------------
 CREATE TABLE `dinky_metrics` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `task_id` int(255) DEFAULT NULL,
-                                 `vertices` varchar(255) DEFAULT NULL,
-                                 `metrics` varchar(255) DEFAULT NULL,
-                                 `position` int(11) DEFAULT NULL,
-                                 `show_type` varchar(255) DEFAULT NULL,
-                                 `show_size` varchar(255) DEFAULT NULL,
-                                 `title` varchar(255) DEFAULT NULL,
-                                 `layout_name` varchar(255) DEFAULT NULL,
-                                 `create_time` datetime DEFAULT NULL,
-                                 `update_time` datetime DEFAULT NULL,
+                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                 `task_id` int(255) DEFAULT NULL COMMENT 'task id',
+                                 `vertices` varchar(255) DEFAULT NULL COMMENT 'vertices',
+                                 `metrics` varchar(255) DEFAULT NULL COMMENT 'metrics',
+                                 `position` int(11) DEFAULT NULL COMMENT 'position',
+                                 `show_type` varchar(255) DEFAULT NULL COMMENT 'show type',
+                                 `show_size` varchar(255) DEFAULT NULL COMMENT 'show size',
+                                 `title` varchar(255) DEFAULT NULL COMMENT 'title',
+                                 `layout_name` varchar(255) DEFAULT NULL COMMENT 'layout name',
+                                 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+
+
+-- ----------------------------
+-- Table structure for dinky_resources
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_resources;
+CREATE TABLE `dinky_resources` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
+                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `user_id` int(11) DEFAULT NULL COMMENT 'user id',
+                                   `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
+                                   `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
+                                   `pid` int(11) DEFAULT NULL,
+                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `is_directory` tinyint(4) DEFAULT NULL,
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+SET FOREIGN_KEY_CHECKS = 1;

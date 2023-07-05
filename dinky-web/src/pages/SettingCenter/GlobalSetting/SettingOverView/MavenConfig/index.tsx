@@ -40,19 +40,12 @@ export const MavenConfig = ({data, onSave}: MavenConfigProps) => {
 
 
   return <>
-    <ProCard
-      title={l('sys.setting.maven')}
-      tooltip={l('sys.setting.maven.tooltip')}
-      size="small"
-      headerBordered collapsible ghost
-      defaultCollapsed={false}
-    >
+      {/*tooltip={l('sys.setting.maven.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
         tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
         data={data}
       />
-    </ProCard>
   </>;
 };

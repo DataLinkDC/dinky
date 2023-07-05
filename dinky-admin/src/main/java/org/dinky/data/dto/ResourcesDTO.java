@@ -19,39 +19,15 @@
 
 package org.dinky.data.dto;
 
-import java.util.List;
+import java.io.Serializable;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * GitProjectTreeNodeDTO
- *
- * @since 0.8.0
- */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class TreeNodeDTO {
+@Getter
+@Setter
+public class ResourcesDTO implements Serializable {
     private Integer id;
-    private String name;
-    private String path;
-    private String content;
-    private Integer parentId;
-    private Long size;
-    private boolean isLeaf;
-    private String desc;
-    private List<TreeNodeDTO> children;
-
-    public TreeNodeDTO(
-            String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
-        this.name = name;
-        this.path = path;
-        this.isLeaf = isLeaf;
-        this.children = children;
-        this.size = size;
-    }
+    private String fileName;
+    private String description;
 }
