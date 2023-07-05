@@ -19,7 +19,7 @@ import React from "react";
 import {Empty} from "antd";
 import {l} from "@/utils/intl";
 import CodeShow from "@/components/CustomEditor/CodeShow";
-import {renderLanguage} from "@/utils/function";
+import {renderLanguage, unSupportView} from "@/utils/function";
 import {GitProjectTreeNode} from "@/types/RegCenter/data";
 
 
@@ -55,33 +55,13 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
         return renderLanguage(current.name, ".");
     };
 
-    /**
-     * Determine whether the file is supported
-     * @returns {boolean}
-     */
-    const unSupportView = () => {
-        const {name} = current;
-
-        return name.endsWith(".jar")
-            || name.endsWith(".war")
-            || name.endsWith(".zip")
-            || name.endsWith(".tar.gz")
-            || name.endsWith(".tar")
-            || name.endsWith(".jpg")
-            || name.endsWith(".png")
-            || name.endsWith(".gif")
-            || name.endsWith(".bmp")
-            || name.endsWith(".jpeg")
-            || name.endsWith(".ico")
-    }
-
 
     /**
      * Render the code display component
      * @returns {JSX.Element}
      */
     const render = () => {
-        if (unSupportView()) {
+        if (unSupportView(current.name)) {
             return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.unSupportView")}/>
         } else if (code === "" || code === null) {
             return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.clickShow")}/>

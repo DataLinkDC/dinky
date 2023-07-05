@@ -17,41 +17,9 @@
  *
  */
 
-package org.dinky.data.dto;
+package org.dinky.data.model;
 
-import java.util.List;
-
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-
-/**
- * GitProjectTreeNodeDTO
- *
- * @since 0.8.0
- */
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
-public class TreeNodeDTO {
-    private Integer id;
-    private String name;
-    private String path;
-    private String content;
-    private Integer parentId;
-    private Long size;
-    private boolean isLeaf;
-    private String desc;
-    private List<TreeNodeDTO> children;
-
-    public TreeNodeDTO(
-            String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
-        this.name = name;
-        this.path = path;
-        this.isLeaf = isLeaf;
-        this.children = children;
-        this.size = size;
-    }
+public enum ResourcesModelEnum {
+    HDFS,
+    OSS
 }

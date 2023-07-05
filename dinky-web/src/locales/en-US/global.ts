@@ -76,6 +76,8 @@ export default {
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
+  'right.menu.refresh': 'Refresh',
+  'right.menu.createFolder': 'Create Folder',
   'right.menu.copy': 'Copy',
   'right.menu.cut': 'Cut',
   'right.menu.paste': 'Paste',
@@ -164,6 +166,8 @@ export default {
 
   'global.item': 'Pieces',
   'global.bout': 'Times',
+  'global.size': ' Size: {size}',
+
 
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',

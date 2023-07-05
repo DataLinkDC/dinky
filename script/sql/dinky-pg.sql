@@ -2068,8 +2068,8 @@ CREATE TABLE "public"."dinky_metrics" (
                                           "show_size" varchar(255) COLLATE "pg_catalog"."default",
                                           "title" varchar(255) COLLATE "pg_catalog"."default",
                                           "layout_name" varchar(255) COLLATE "pg_catalog"."default",
-                                          "create_time" timestamp(6),
-                                          "update_time" timestamp(6),
+                                          "create_time" timestamp(6) NOT NULL,
+                                          "update_time" timestamp(6) NOT NULL
                                           CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
 )
 ;
@@ -2078,3 +2078,49 @@ ALTER TABLE "public"."dinky_metrics"
     OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."dinky_metrics" IS 'metrics layout';
+
+
+
+-- ----------------------------
+-- Table structure for dinky_resources
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dinky_resources";
+CREATE TABLE "public"."dinky_resources" (
+                                            "id" int4 NOT NULL,
+                                            "file_name" varchar(64) COLLATE "pg_catalog"."default",
+                                            "description" varchar(255) COLLATE "pg_catalog"."default",
+                                            "user_id" int4,
+                                            "type" int2,
+                                            "size" int8,
+                                            "pid" int4,
+                                            "full_name" varchar(128) COLLATE "pg_catalog"."default",
+                                            "is_directory" int2,
+                                            "create_time" timestamp(6) NOT NULL,
+                                            "update_time" timestamp(6) NOT NULL
+)
+;
+COMMENT ON COLUMN "public"."dinky_resources"."id" IS 'key';
+COMMENT ON COLUMN "public"."dinky_resources"."file_name" IS 'file name';
+COMMENT ON COLUMN "public"."dinky_resources"."user_id" IS 'user id';
+COMMENT ON COLUMN "public"."dinky_resources"."type" IS 'resource type,0:FILE，1:UDF';
+COMMENT ON COLUMN "public"."dinky_resources"."size" IS 'resource size';
+COMMENT ON COLUMN "public"."dinky_resources"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_resources"."update_time" IS 'update time';
+
+-- ----------------------------
+-- Records of dinky_resources
+-- ----------------------------
+INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
+
+-- ----------------------------
+-- Indexes structure for table dinky_resources
+-- ----------------------------
+CREATE UNIQUE INDEX "dinky_resources_un" ON "public"."dinky_resources" USING btree (
+    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+    "type" "pg_catalog"."int2_ops" ASC NULLS LAST
+    );
+
+-- ----------------------------
+-- Primary Key structure for table dinky_resources
+-- ----------------------------
+ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRIMARY KEY ("id");
