@@ -29,11 +29,8 @@ import HighPriorityConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/HighPriorityConfig";
 import YarnConfig
     from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/YarnConfig";
-import FlinkK8sNative
-    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sNative";
-import FlinkK8sOperator
-    from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8sOperator";
 import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
+import FlinkK8s from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm/FlinkK8s";
 
 
 type ConfigurationFormProps = {
@@ -48,10 +45,7 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     const renderAllForm = () => {
         return <>
             <BaseConfig/>
-            {(type && type === ClusterType.YARN) && <YarnConfig/>}
-            {(type && type === ClusterType.KUBERNETES_NATIVE) && <FlinkK8sNative/>}
-            {(type && type === ClusterType.KUBERNETES_OPERATOR) &&
-                <FlinkK8sOperator code={value['kubernetes.pod-template'] || ''}/>}
+            {(type && type === ClusterType.YARN) ? <YarnConfig/>:<FlinkK8s type={type} value={value}/>}
             <HighPriorityConfig/>
             <ApplicationConfig/>
         </>;
