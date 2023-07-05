@@ -31,7 +31,7 @@ import {KUBERNETES_CONFIG_LIST} from "@/pages/RegCenter/Cluster/Configuration/co
 
 
 const CodeEditProps = {
-  height: '30vh',
+  height: '40vh',
   width: '90vh',
   lineNumbers: 'on',
   language: 'yaml',
