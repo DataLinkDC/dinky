@@ -28,7 +28,7 @@ const HighPriorityConfig = () => {
     const renderHighPriorityConfig = () => {
         return FLINK_CONFIG_LIST.map(item => <>
             <ProFormText
-                name={item.name}
+                name={['configJson', 'flinkConfig', item.name]}
                 label={item.label}
                 width={400}
                 placeholder={item.placeholder}

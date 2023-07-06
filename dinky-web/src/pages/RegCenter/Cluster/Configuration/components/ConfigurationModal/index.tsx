@@ -24,8 +24,6 @@ import {ModalForm} from '@ant-design/pro-components';
 import {l} from '@/utils/intl';
 import {FormContextValue} from '@/components/Context/FormContext';
 import ConfigurationForm from "@/pages/RegCenter/Cluster/Configuration/components/ConfigurationModal/ConfigurationForm";
-import {buildClusterConfig, parseConfigJsonToValues} from "@/pages/RegCenter/Cluster/Configuration/components/function";
-import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
 
 type ConfigurationModalProps = {
     visible: boolean;
@@ -36,9 +34,6 @@ type ConfigurationModalProps = {
 const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
 
     const {visible, onClose, onSubmit, value} = props;
-
-
-
 
     /**
      * init form
@@ -58,7 +53,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
      * when modalVisible or values changed, set form values
      */
     useEffect(() => {
-        form.setFieldsValue(parseConfigJsonToValues(value as Cluster.Config));
+        form.setFieldsValue(value);
     }, [visible, value, form]);
 
     /**
@@ -75,7 +70,7 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
     const submitForm = async () => {
         const fieldsValue = await form.validateFields();
         setSubmitting(true);
-        await onSubmit({...value, ...buildClusterConfig(fieldsValue)});
+        await onSubmit(fieldsValue);
         handleCancel();
     };
 
@@ -103,10 +98,10 @@ const InstanceModal: React.FC<ConfigurationModalProps> = (props) => {
             }}
             title={value.id ? l('rc.cc.modify') : l('rc.cc.create')}
             submitter={{render: () => [...renderFooter()]}}
-            initialValues={parseConfigJsonToValues(value as Cluster.Config)}
+            initialValues={value}
             form={form}
         >
-            <ConfigurationForm form={form} value={parseConfigJsonToValues(value as Cluster.Config)}/>
+            <ConfigurationForm form={form} value={value}/>
         </ModalForm>
     </>;
 };
