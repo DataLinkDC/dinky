@@ -19,18 +19,22 @@
 
 package com.dlink.metadata.driver;
 
+import com.dlink.assertion.Asserts;
 import com.dlink.metadata.ast.Clickhouse20CreateTableStatement;
 import com.dlink.metadata.convert.ClickHouseTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.parser.Clickhouse20StatementParser;
 import com.dlink.metadata.query.ClickHouseQuery;
 import com.dlink.metadata.query.IDBQuery;
+import com.dlink.model.Column;
 import com.dlink.model.Table;
 import com.dlink.result.SqlExplainResult;
 import com.dlink.utils.LogUtil;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -156,5 +160,98 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     @Override
     public Map<String, String> getFlinkColumnTypeConversion() {
         return new HashMap<>();
+    }
+
+    @Override
+    public List<Column> listColumns(String schemaName, String tableName) {
+        List<Column> columns = new ArrayList<>();
+        PreparedStatement preparedStatement = null;
+        ResultSet results = null;
+        IDBQuery dbQuery = getDBQuery();
+        String tableFieldsSql = dbQuery.columnsSql(schemaName, tableName);
+        try {
+            preparedStatement = conn.get().prepareStatement(tableFieldsSql);
+            results = preparedStatement.executeQuery();
+            ResultSetMetaData metaData = results.getMetaData();
+            List<String> columnList = new ArrayList<>();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                columnList.add(metaData.getColumnLabel(i));
+            }
+            while (results.next()) {
+                Column field = new Column();
+                String columnName = results.getString(dbQuery.columnName());
+                if (columnList.contains(dbQuery.columnKey())) {
+                    String key = results.getString(dbQuery.columnKey());
+                    field.setKeyFlag(Asserts.isNotNullString(key) && Asserts.isEqualsIgnoreCase(dbQuery.isPK(), key));
+                }
+                field.setName(columnName);
+                if (columnList.contains(dbQuery.columnType())) {
+                    String columnType = results.getString(dbQuery.columnType());
+                    if (columnType.indexOf("Nullable") >= 0) {
+                        field.setNullable(true);
+                        columnType = columnType.replaceAll("Nullable\\(", "").replaceAll("\\)", "");
+                    }
+                    if (columnType.contains("(")) {
+                        String type = columnType.replaceAll("\\(.*\\)", "");
+                        if (!columnType.contains(",")) {
+                            Integer length = Integer.valueOf(columnType.replaceAll("\\D", ""));
+                            field.setLength(length);
+                        } else {
+                            // some database does not have precision
+                            if (dbQuery.precision() != null) {
+                                // 例如浮点类型的长度和精度是一样的，decimal(10,2)
+                                field.setLength(results.getInt(dbQuery.precision()));
+                            }
+                        }
+                        field.setType(type);
+                    } else {
+                        field.setType(columnType);
+                    }
+                }
+                if (columnList.contains(dbQuery.columnComment())
+                        && Asserts.isNotNull(results.getString(dbQuery.columnComment()))) {
+                    String columnComment = results.getString(dbQuery.columnComment()).replaceAll("\"|'", "");
+                    field.setComment(columnComment);
+                }
+                if (columnList.contains(dbQuery.columnLength())) {
+                    int length = results.getInt(dbQuery.columnLength());
+                    if (!results.wasNull()) {
+                        field.setLength(length);
+                    }
+                }
+                if (columnList.contains(dbQuery.characterSet())) {
+                    field.setCharacterSet(results.getString(dbQuery.characterSet()));
+                }
+                if (columnList.contains(dbQuery.collation())) {
+                    field.setCollation(results.getString(dbQuery.collation()));
+                }
+                if (columnList.contains(dbQuery.columnPosition())) {
+                    field.setPosition(results.getInt(dbQuery.columnPosition()));
+                }
+                if (columnList.contains(dbQuery.precision())) {
+                    field.setPrecision(results.getInt(dbQuery.precision()));
+                }
+                if (columnList.contains(dbQuery.scale())) {
+                    field.setScale(results.getInt(dbQuery.scale()));
+                }
+                if (columnList.contains(dbQuery.defaultValue())) {
+                    field.setDefaultValue(results.getString(dbQuery.defaultValue()));
+                }
+                if (columnList.contains(dbQuery.autoIncrement())) {
+                    field.setAutoIncrement(
+                            Asserts.isEqualsIgnoreCase(results.getString(dbQuery.autoIncrement()), "auto_increment"));
+                }
+                if (columnList.contains(dbQuery.defaultValue())) {
+                    field.setDefaultValue(results.getString(dbQuery.defaultValue()));
+                }
+                field.setJavaType(getTypeConvert().convert(field, config));
+                columns.add(field);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            close(preparedStatement, results);
+        }
+        return columns;
     }
 }
