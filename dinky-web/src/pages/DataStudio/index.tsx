@@ -15,18 +15,25 @@
  * limitations under the License.
  */
 
-import {Button, Form, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
+import {Button, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
 import {connect} from "umi";
 import {
   AppstoreAddOutlined,
-  AppstoreOutlined, BarsOutlined,
+  AppstoreOutlined,
   CaretRightOutlined,
   CloseSquareOutlined,
-  CopyOutlined, InsertRowAboveOutlined,
-  MinusOutlined, QuestionOutlined, RightSquareOutlined,
-  UploadOutlined,
-  UserOutlined,
-  VideoCameraOutlined
+  CopyOutlined,
+  DatabaseOutlined,
+  ExclamationCircleOutlined,
+  FolderOutlined,
+  HistoryOutlined,
+  InfoCircleOutlined,
+  InsertRowAboveOutlined,
+  MinusOutlined, PlayCircleOutlined,
+  QuestionOutlined,
+  RightSquareOutlined,
+  SettingOutlined,
+  TableOutlined,
 } from "@ant-design/icons";
 import {Resizable} from 're-resizable';
 import React, {Fragment, useCallback, useEffect, useState} from "react";
@@ -39,6 +46,8 @@ import {Dispatch} from "@@/plugin-dva/types";
 import {PageContainer} from "@ant-design/pro-layout";
 import {convertCodeEditTheme} from "@/utils/function";
 import MonacoEditor from "react-monaco-editor";
+import {ClusterConfigIcon} from "@/components/Icons/HomeIcon";
+import {RunningBtn} from "@/components/CallBackButton/RunningBtn";
 
 const {Header, Footer, Sider, Content} = Layout;
 
@@ -57,38 +66,38 @@ const leftSide = [
   },
   {
     key: 'structure',
-    icon: <InsertRowAboveOutlined/>,
+    icon: <TableOutlined/>,
     label: '结构',
   },
   {
     key: 'metadata',
-    icon: <AppstoreOutlined/>,
+    icon: <DatabaseOutlined/>,
     label: '元数据',
   }
 ]
 const rightSide = [
   {
-    key: '作业配置',
-    icon: <RightSquareOutlined/>,
+    key: 'jobConfig',
+    icon: <SettingOutlined/>,
     label: '作业配置',
   },
   {
-    key: '执行配置',
-    icon: <RightSquareOutlined/>,
+    key: 'executeConfig',
+    icon: <PlayCircleOutlined />,
     label: '执行配置',
   },
   {
-    key: '保存点',
-    icon: <RightSquareOutlined/>,
+    key: 'savePoint',
+    icon: <FolderOutlined/>,
     label: '保存点',
   },
   {
-    key: '版本历史',
-    icon: <RightSquareOutlined/>,
+    key: 'versionHistory',
+    icon: <HistoryOutlined/>,
     label: '版本历史',
   }, {
-    key: '作业信息',
-    icon: <RightSquareOutlined/>,
+    key: 'jobInfo',
+    icon: <InfoCircleOutlined/>,
     label: '作业信息',
   }
 ]
@@ -335,11 +344,6 @@ const DataStudio = (props: any) => {
             />
           </Sider>
         </Layout>
-
-        <PageContainer title={false}>
-
-        </PageContainer>
-
       </Layout>
     </Fragment>
   );
