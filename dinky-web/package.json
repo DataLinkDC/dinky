@@ -65,7 +65,7 @@
     "react-dev-inspector": "^1.8.1",
     "react-dom": "^18.0.0",
     "react-helmet-async": "^1.3.0",
-    "react-monaco-editor": "^0.52.0",
+    "react-monaco-editor": "^0.53.0",
     "react-spring": "^9.7.1",
     "react-use-cookie": "^1.4.0",
     "screenfull": "^6.0.2",

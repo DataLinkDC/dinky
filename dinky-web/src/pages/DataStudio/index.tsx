@@ -15,92 +15,97 @@
  * limitations under the License.
  */
 
-import {Affix, Button, Card, Col, Form, Layout, Menu, Row, Space, Tabs} from 'antd';
+import {Button, Form, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
 import {connect} from "umi";
 import {
+  AppstoreAddOutlined,
+  AppstoreOutlined, BarsOutlined,
+  CaretRightOutlined,
   CloseSquareOutlined,
-  CopyOutlined,
-  MinusOutlined, QuestionOutlined,
-  SearchOutlined,
+  CopyOutlined, InsertRowAboveOutlined,
+  MinusOutlined, QuestionOutlined, RightSquareOutlined,
   UploadOutlined,
   UserOutlined,
   VideoCameraOutlined
 } from "@ant-design/icons";
 import {Resizable} from 're-resizable';
-import {PageContainer, ProBreadcrumb, ProLayout} from '@ant-design/pro-layout';
-import React, {useCallback, useEffect, useRef, useState} from "react";
-import DraggleVerticalLayout from '@/components/DraggleLayout/DraggleVerticalLayout';
-import styles from './index.less';
-import DraggleLayout from "@/components/DraggleLayout";
+import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {StateType} from "@/pages/DataStudio/model";
 import {AndroidOutlined, AppleOutlined} from '@ant-design/icons';
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import {ProCard} from "@ant-design/pro-components";
+import MovableSidebar from "@/components/Sidebar/MovableSidebar";
+import {Dispatch} from "@@/plugin-dva/types";
+import {PageContainer} from "@ant-design/pro-layout";
+import {convertCodeEditTheme} from "@/utils/function";
+import MonacoEditor from "react-monaco-editor";
 
 const {Header, Footer, Sider, Content} = Layout;
 
 const headerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  lineHeight: '64px',
-  backgroundColor: '#7dbcea',
+  display: "inline-flex",
+  lineHeight: '32px',
+  height: "32px",
+  backgroundColor: '#fff',
 };
 
-const contentStyle: React.CSSProperties = {
-  textAlign: 'center',
-  minHeight: 120,
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#108ee9',
-  overflow: 'auto'
-};
-
-const siderStyle: React.CSSProperties = {
-  textAlign: 'center',
-  lineHeight: '120px',
-  color: '#fff',
-  backgroundColor: '#3ba0e9',
-  overflow: 'auto'
-};
-
-const footerStyle: React.CSSProperties = {
-  textAlign: 'center',
-  color: '#fff',
-  backgroundColor: '#7dbcea',
-  height: "25px",
-  paddingInline: "0px",
-  paddingBlock: "0px"
-};
 const leftSide = [
   {
-    key: '1',
-    icon: <UserOutlined/>,
+    key: 'project',
+    icon: <AppstoreAddOutlined/>,
     label: '项目',
   },
   {
-    key: '2',
-    icon: <VideoCameraOutlined/>,
-    label: 'nav 2',
+    key: 'structure',
+    icon: <InsertRowAboveOutlined/>,
+    label: '结构',
   },
   {
-    key: '3',
-    icon: <UploadOutlined/>,
-    label: 'nav 3',
+    key: 'metadata',
+    icon: <AppstoreOutlined/>,
+    label: '元数据',
+  }
+]
+const rightSide = [
+  {
+    key: '作业配置',
+    icon: <RightSquareOutlined/>,
+    label: '作业配置',
+  },
+  {
+    key: '执行配置',
+    icon: <RightSquareOutlined/>,
+    label: '执行配置',
+  },
+  {
+    key: '保存点',
+    icon: <RightSquareOutlined/>,
+    label: '保存点',
+  },
+  {
+    key: '版本历史',
+    icon: <RightSquareOutlined/>,
+    label: '版本历史',
+  }, {
+    key: '作业信息',
+    icon: <RightSquareOutlined/>,
+    label: '作业信息',
+  }
+]
+const leftBottomSide = [
+  {
+    key: 'console',
+    icon: <RightSquareOutlined/>,
+    label: '控制台',
   }
 ]
 const DataStudio = (props: any) => {
-  const {isFullScreen, rightClickMenu, toolHeight, toolLeftWidth, toolRightWidth, dispatch} = props;
-  const [contentFooterHeight,setContentFooterHeight] = useState(200)
-
-  const [contentBottomMoveHeight,setContentBottomMoveHeight] = useState(0)
-
-  const reRef=useRef(null)
-
-  const [form] = Form.useForm();
+  const {} = props;
   const VIEW = {
-    headerHeight:64,
-    headerNavHeight:55,
-    footerHeight:25,
+    headerHeight: 32,
+    headerNavHeight: 55,
+    footerHeight: 25,
+    sideWidth: 40,
     leftToolWidth: 300,
     marginTop: 84,
     topHeight: 35.6,
@@ -108,21 +113,21 @@ const DataStudio = (props: any) => {
     rightMargin: 32,
     leftMargin: 36,
     midMargin: 46,
-    otherHeight:10
+    otherHeight: 10,
+    paddingInline: 50,
   };
   const [size, setSize] = useState({
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
+    contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
   });
 
   const onResize = useCallback(() => {
-    console.log(document.documentElement.clientWidth, document.documentElement.clientHeight, VIEW)
     setSize({
       width: document.documentElement.clientWidth,
       height: document.documentElement.clientHeight,
+      contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
     })
-    console.log(size.height - VIEW.marginTop)
-    console.log(reRef.current)
   }, []);
 
   useEffect(() => {
@@ -132,327 +137,240 @@ const DataStudio = (props: any) => {
       window.removeEventListener('resize', onResize);
     };
   }, [onResize]);
-  // return (
-  //   <div >
-  //     <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>
-  //       <DraggleVerticalLayout
-  //         containerWidth={size.width}
-  //         containerHeight={(size.height - VIEW.marginTop)}
-  //         min={(VIEW.topHeight)}
-  //         max={(size.height - VIEW.bottomHeight)}
-  //         initTopHeight={VIEW.topHeight}
-  //         handler={
-  //           <div
-  //             style={{
-  //               height: 4,
-  //               width: '100%',
-  //               background: 'rgb(240, 240, 240)',
-  //             }}
-  //           />
-  //         }
-  //       >
-  //         <Row>
-  //           <DraggleLayout
-  //             containerWidth={size.width}
-  //             containerHeight={toolHeight}
-  //             min={VIEW.leftMargin + VIEW.midMargin}
-  //             max={size.width - VIEW.rightMargin}
-  //             initLeftWidth={size.width - toolRightWidth}
-  //             isLeft={false}
-  //             handler={
-  //               <div
-  //                 style={{
-  //                   width: 4,
-  //                   height: '100%',
-  //                   background: 'rgb(240, 240, 240)',
-  //                 }}
-  //               />
-  //             }
-  //           >
-  //             <DraggleLayout
-  //               containerWidth={size.width - toolRightWidth}
-  //               containerHeight={toolHeight}
-  //               min={VIEW.leftMargin}
-  //               max={size.width - VIEW.rightMargin - VIEW.midMargin}
-  //               initLeftWidth={toolLeftWidth}
-  //               isLeft={true}
-  //               handler={
-  //                 <div
-  //                   style={{
-  //                     width: 4,
-  //                     height: '100%',
-  //                     background: 'rgb(240, 240, 240)',
-  //                   }}
-  //                 />
-  //               }
-  //             >
-  //               <Col className={styles["vertical-tabs"]}>
-  //                 {/*<StudioLeftTool style={{*/}
-  //                 {/*  display: 'flex',*/}
-  //                 {/*  alignItems: 'center',*/}
-  //                 {/*  justifyContent: 'center',*/}
-  //                 {/*}}/>*/}
-  //               </Col>
-  //               <Col>
-  //                 <CodeShow code={""}/>
-  //                 {/*{!isFullScreen ? <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/> : undefined}*/}
-  //               </Col>
-  //             </DraggleLayout>
-  //             <Col id='StudioRightTool' className={styles["vertical-tabs"]}>
-  //               {/*<StudioRightTool form={form}/>*/}
-  //             </Col>
-  //           </DraggleLayout>
-  //         </Row>
-  //         <Row>
-  //           <Col span={24}>
-  //             {/*<StudioConsole height={size.height - toolHeight - VIEW.marginTop}/>*/}
-  //           </Col>
-  //         </Row>
-  //       </DraggleVerticalLayout>
-  //     </Card>
-  //   </div>
-  // )
 
-  return (
-    <Layout style={{minHeight: "60vh"}}>
-      <Header style={headerStyle}>Header</Header>
-      <Layout hasSider style={{minHeight: size.height-VIEW.headerHeight-VIEW.headerNavHeight-VIEW.footerHeight-VIEW.otherHeight}}>
-        <Sider collapsed collapsedWidth={40}>
-          <Menu
-            // theme="dark"
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            items={leftSide}
-            style={{height: '50%', borderRight: 0}}
-          />
-          <Menu
-            // theme="dark"
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            items={leftSide}
-            style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
-          />
+  const renderLeftContainer = () => {
+    return <MovableSidebar
+      contentHeight={size.contentHeight - VIEW.midMargin - props.bottomContainer.height - 10}
+      onResize={(event, direction, elementRef, delta) => {
+        props.updateLeftWidth(elementRef.offsetWidth)
+      }}
+      title={props.leftContainer.selectKey}
+      handlerMinimize={() => {
+        props.updateSelectLeftKey("")
+      }}
+      visible={props.leftContainer.selectKey !== ""}
+      defaultSize={{
+        width: props.leftContainer.width,
+        height: props.leftContainer.height
+      }}
+      minWidth={200}
+      maxWidth={size.width-2*VIEW.sideWidth-props.rightContainer.width-200}
+      enable={{right: true}}
+      content={<><Space wrap>
+        <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+        <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
+                size={"small"}/>
+        <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+      </Space>
+        <div style={{
+          height: 100,
+          overflow: 'auto'
+        }}>
 
-        </Sider>
-        <Content style={{flexDirection:"column-reverse",display:"flex",height:size.height-VIEW.headerHeight-VIEW.headerNavHeight-VIEW.footerHeight-VIEW.otherHeight}}>
-          <Resizable ref={reRef}
-                     style={{
-                       display: "flex",
-                       alignItems: "center",
-                       justifyContent: "center",
-                       border: "solid 1px #ddd",
-                       flexDirection: "column-reverse",
-                       background: "#f0f0f0"
-                     }}
-                     defaultSize={{
-                       width: "100%",
-                       height: contentFooterHeight
-                     }}
-                     onResize={(event, direction, elementRef, delta)=>{
-                       console.log(event)
-                       setContentBottomMoveHeight((origin)=>{
-                         return delta.height ;
-                       })
-                     }}
+          <ProCard
+            title="左右分栏带标题"
+            extra="2019年9月28日"
+            split={'vertical'}
+            bordered
+            headerBordered
           >
-            <div>001</div>
-          </Resizable>
-          <div style={{display: "flex"}}>
-            <Resizable
-              defaultSize={{
-                width: 500,
-                height: '100%'
+            <ProCard title="左侧详情" colSpan="50%">
+              <div style={{height: 700}}>左侧内容</div>
+            </ProCard>
+            <ProCard title="流量占用情况">
+              <div style={{height: 700}}>右侧内容</div>
+            </ProCard>
+          </ProCard>
+        </div>
+      </>}>
+    </MovableSidebar>
+  }
+  const renderRightContainer = () => {
+    return <MovableSidebar
+      contentHeight={size.contentHeight - VIEW.midMargin - props.bottomContainer.height - 10}
+      onResize={(event, direction, elementRef, delta) => {
+        props.updateRightWidth(elementRef.offsetWidth)
+      }}
+      title={props.rightContainer.selectKey}
+      handlerMinimize={() => {
+        props.updateSelectRightKey("")
+      }}
+      visible={props.rightContainer.selectKey !== ""}
+      defaultSize={{
+        width: props.rightContainer.width,
+        height: props.rightContainer.height
+      }}
+      minWidth={200}
+      maxWidth={size.width-2*VIEW.sideWidth-props.leftContainer.width-200}
+      enable={{left: true}}
+      content={<><Space wrap>
+        <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+        <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
+                size={"small"}/>
+        <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+      </Space>
+      </>}>
+    </MovableSidebar>
+  }
+  return (
+    <Fragment>
+      <Layout style={{minHeight: "60vh"}}>
+        <Header key={"h"} style={headerStyle}>
+          <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>1</div>
+          <div
+            style={{width: (size.width - 2 * VIEW.paddingInline) / 2, display: "flex", flexDirection: "row-reverse"}}>
+            <Space align={"end"} direction={"horizontal"} wrap>
+              <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
+              <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
+              <Tooltip title="search" placement="bottom">
+                <Button icon={<CaretRightOutlined/>} block type={"text"} shape={"circle"}/>
+              </Tooltip>
+            </Space>
+          </div>
+
+        </Header>
+
+        <Layout hasSider
+                style={{minHeight: size.contentHeight}}>
+          <Sider collapsed collapsedWidth={40}>
+            <Menu
+              // theme="dark"
+              mode="inline"
+              selectedKeys={[props.leftContainer.selectKey]}
+              items={leftSide}
+              style={{height: '50%', borderRight: 0}}
+              onClick={(item) => {
+                props.updateSelectLeftKey(item.key === props.leftContainer.selectKey ? '' : item.key)
               }}
-              minWidth={200}
-              maxWidth={1200}
-              enable={{right: true}}
-            >
+            />
+            <Menu
+              // theme="dark"
+              mode="inline"
+              selectedKeys={[props.bottomContainer.selectKey]}
+              items={leftBottomSide}
+              style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
+              onClick={(item) => {
+                props.updateSelectBottomKey(item.key === props.bottomContainer.selectKey ? '' : item.key)
+                props.updateBottomHeight(item.key === props.bottomContainer.selectKey ? 0 : props.bottomContainer.height)
+              }}
+            />
 
-              <PageContainer
-                fixedHeader
-                header={{
-                  title: "dd",
-                  extra: [
-                    <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
-                  ],
-                  style: {borderBottom: '1px solid black'}
-                }}
-              >
-                <Space wrap>
-                  <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-                  <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
-                          size={"small"}/>
-                  <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-                </Space>
-                <div style={{height: size.height-VIEW.headerHeight-VIEW.headerNavHeight-VIEW.footerHeight-contentFooterHeight-46-24-contentBottomMoveHeight-10-VIEW.otherHeight, overflow: 'auto'}}>
+          </Sider>
+          <Content style={{
+            flexDirection: "column-reverse",
+            display: "flex",
+            height: size.contentHeight,
+          }}>
 
-                  <ProCard
-                    title="左右分栏带标题"
-                    extra="2019年9月28日"
-                    split={'vertical'}
-                    bordered
-                    headerBordered
-                  >
-                    <ProCard title="左侧详情" colSpan="50%">
-                      <div style={{height: 700}}>左侧内容</div>
-                    </ProCard>
-                    <ProCard title="流量占用情况">
-                      <div style={{height: 700}}>右侧内容</div>
-                    </ProCard>
-                  </ProCard>
-                </div>
-              </PageContainer>
+            <MovableSidebar
+              visible={props.bottomContainer.selectKey !== ""}
+              style={{
+                border: "solid 1px #ddd",
+                background: "#f0f0f0",
+                zIndex: 999
+              }}
+              defaultSize={{
+                width: "100%",
+                height: props.bottomContainer.height
+              }}
+              minHeight={VIEW.midMargin}
+              maxHeight={size.contentHeight - 40}
+              onResize={(event, direction, elementRef, delta) => {
+                props.updateBottomHeight(elementRef.offsetHeight)
+              }}
+              enable={{top: true}}
+              handlerMinimize={() => {
+                props.updateSelectBottomKey("")
+                props.updateBottomHeight(0)
+              }}
 
-            </Resizable>
-            <Content>
-              <Tabs
-                size={"small"}
-                tabBarGutter={10}
-                defaultActiveKey="2"
-                items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
-                  const id = String(i + 1);
+            ></MovableSidebar>
+            {/*<div>001</div>*/}
+            <div style={{
+              display: "flex",
+              position: "absolute",
+              top: VIEW.headerHeight,
+              width: size.width - VIEW.sideWidth * 2
+            }}>
 
-                  return {
-                    label: (
-                      <span>
+              {renderLeftContainer()}
+
+              <Content style={{width:size.width-2*VIEW.sideWidth-props.leftContainer.width-props.rightContainer.width}}>
+                <Tabs
+                  size={"small"}
+                  tabBarGutter={10}
+                  defaultActiveKey="2"
+                  items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
+                    const id = String(i + 1);
+
+                    return {
+                      label: (
+                        <span>
                   <Icon/>
                   Tab {id}
                 </span>
-                    ),
-                    key: id,
-                  };
-                })}
-              />
-              <CodeShow code={"123"}/>
+                      ),
+                      key: id,
+                    };
+                  })}
+                />
+                <CodeShow code={"123\n1\n1\n1\n1\n1\n1\n1\n1\n1n\n1\n1\n1"}
+                          height={size.contentHeight - props.bottomContainer.height - 60 + "px"}/>
+              </Content>
 
-              {/*   <div >*/}
-              {/*     <Card bordered={false} className={styles.card} size="small" id="studio_card" style={{marginBottom: 0}}>*/}
-              {/*       <DraggleVerticalLayout*/}
-              {/*         containerWidth={size.width}*/}
-              {/*         containerHeight={(size.height - VIEW.marginTop)}*/}
-              {/*         min={(VIEW.topHeight)}*/}
-              {/*         max={(size.height - VIEW.bottomHeight)}*/}
-              {/*         initTopHeight={VIEW.topHeight}*/}
-              {/*         handler={*/}
-              {/*           <div*/}
-              {/*             style={{*/}
-              {/*               height: 4,*/}
-              {/*               width: '100%',*/}
-              {/*               background: 'rgb(240, 240, 240)',*/}
-              {/*             }}*/}
-              {/*           />*/}
-              {/*         }*/}
-              {/*       >*/}
-              {/*         <Row>*/}
-              {/*           <DraggleLayout*/}
-              {/*             containerWidth={size.width}*/}
-              {/*             containerHeight={toolHeight}*/}
-              {/*             min={VIEW.leftMargin + VIEW.midMargin}*/}
-              {/*             max={size.width - VIEW.rightMargin}*/}
-              {/*             initLeftWidth={size.width - toolRightWidth}*/}
-              {/*             isLeft={false}*/}
-              {/*             handler={*/}
-              {/*               <div*/}
-              {/*                 style={{*/}
-              {/*                   width: 4,*/}
-              {/*                   height: '100%',*/}
-              {/*                   background: 'rgb(240, 240, 240)',*/}
-              {/*                 }}*/}
-              {/*               />*/}
-              {/*             }*/}
-              {/*           >*/}
-              {/*             <DraggleLayout*/}
-              {/*               containerWidth={size.width - toolRightWidth}*/}
-              {/*               containerHeight={toolHeight}*/}
-              {/*               min={VIEW.leftMargin}*/}
-              {/*               max={size.width - VIEW.rightMargin - VIEW.midMargin}*/}
-              {/*               initLeftWidth={toolLeftWidth}*/}
-              {/*               isLeft={true}*/}
-              {/*               handler={*/}
-              {/*                 <div*/}
-              {/*                   style={{*/}
-              {/*                     width: 4,*/}
-              {/*                     height: '100%',*/}
-              {/*                     background: 'rgb(240, 240, 240)',*/}
-              {/*                   }}*/}
-              {/*                 />*/}
-              {/*               }*/}
-              {/*             >*/}
-              {/*               <Col className={styles["vertical-tabs"]}>*/}
+              {renderRightContainer()}
 
-              {/*                 /!*<StudioLeftTool style={{*!/*/}
-              {/*                 /!*  display: 'flex',*!/*/}
-              {/*                 /!*  alignItems: 'center',*!/*/}
-              {/*                 /!*  justifyContent: 'center',*!/*/}
-              {/*                 /!*}}/>*!/*/}
-              {/*               </Col>*/}
-              {/*               <Col>*/}
-              {/*                 <CodeShow code={""}/>*/}
-              {/*                 /!*{!isFullScreen ? <StudioTabs width={size.width - toolRightWidth - toolLeftWidth}/> : undefined}*!/*/}
-              {/*               </Col>*/}
-              {/*             </DraggleLayout>*/}
-              {/*             <Col id='StudioRightTool' className={styles["vertical-tabs"]}>*/}
-              {/*               /!*<StudioRightTool form={form}/>*!/*/}
-              {/*             </Col>*/}
-              {/*           </DraggleLayout>*/}
-              {/*         </Row>*/}
-              {/*         <Row>*/}
-              {/*           <Col span={24}>*/}
-              {/*             <Card title="Default size card" extra={<a href="#">More</a>} style={{ width: "100%" }}>*/}
-              {/*               <p>Card content</p>*/}
-              {/*               <p>Card content</p>*/}
-              {/*               <p>Card content</p>*/}
-              {/*             </Card>*/}
-              {/*             /!*<StudioConsole height={size.height - toolHeight - VIEW.marginTop}/>*!/*/}
-              {/*           </Col>*/}
-              {/*         </Row>*/}
-              {/*       </DraggleVerticalLayout>*/}
-              {/*     </Card>*/}
-              {/*   </div>*/}
-            </Content>
+            </div>
+          </Content>
+          <Sider collapsed collapsedWidth={40}>
+            <Menu
+              selectedKeys={[props.rightContainer.selectKey]}
+              // theme="dark"
+              mode="inline"
+              style={{height: '100%', borderRight: 0}}
+              items={rightSide}
+              onClick={(item) => {
+                props.updateSelectRightKey(item.key === props.rightContainer.selectKey ? '' : item.key)
+              }}
+            />
+          </Sider>
+        </Layout>
 
+        <PageContainer title={false}>
 
-          </div>
+        </PageContainer>
 
-
-        </Content>
-        <Sider style={siderStyle} collapsed collapsedWidth={40}>
-          <Menu
-            // theme="dark"
-            mode="inline"
-            defaultSelectedKeys={['1']}
-            items={[
-              {
-                key: '1',
-                icon: <UserOutlined/>,
-                label: 'nav 1',
-              },
-              {
-                key: '2',
-                icon: <VideoCameraOutlined/>,
-                label: 'nav 2',
-              },
-              {
-                key: '3',
-                icon: <UploadOutlined/>,
-                label: 'nav 3',
-              },
-            ]}
-          />
-        </Sider>
       </Layout>
-
-
-      <Footer style={footerStyle}>Footer</Footer>
-    </Layout>
-
+    </Fragment>
   );
 };
+const mapDispatchToProps = (dispatch: Dispatch) => ({
+  updateSelectLeftKey: (key: string) => dispatch({
+    type: "Studio/updateSelectLeftKey",
+    payload: key,
+  }),
+  updateLeftWidth: (width: number) => dispatch({
+    type: "Studio/updateLeftWidth",
+    payload: width,
+  }), updateSelectRightKey: (key: string) => dispatch({
+    type: "Studio/updateSelectRightKey",
+    payload: key,
+  }),
+  updateRightWidth: (width: number) => dispatch({
+    type: "Studio/updateRightWidth",
+    payload: width,
+  }), updateSelectBottomKey: (key: string) => dispatch({
+    type: "Studio/updateSelectBottomKey",
+    payload: key,
+  }),
+  updateBottomHeight: (height: number) => dispatch({
+    type: "Studio/updateBottomHeight",
+    payload: height,
+  }),
+});
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  isFullScreen: Studio.isFullScreen,
-  rightClickMenu: Studio.rightClickMenu,
-  toolHeight: Studio.toolHeight,
-  toolLeftWidth: Studio.toolLeftWidth,
-  toolRightWidth: Studio.toolRightWidth,
-}))(DataStudio);
+  leftContainer: Studio.leftContainer,
+  rightContainer: Studio.rightContainer,
+  bottomContainer: Studio.bottomContainer,
+}), mapDispatchToProps)(DataStudio);
