@@ -212,7 +212,7 @@ const Model: ModelType = {
       width: 500,
     },
     rightContainer: {
-      selectKey: 'project',
+      selectKey: 'jobConfig',
       height: "100%",
       width: 500,
     },
