@@ -34,6 +34,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
     >
 
       <PageContainer
+        style={{backgroundColor:'#fff',border:"1px solid rgb(240, 240, 240)"}}
         header={{
           title: props.title,
           extra: [

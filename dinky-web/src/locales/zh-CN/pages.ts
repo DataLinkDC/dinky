@@ -750,4 +750,24 @@ export default {
   'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
 
 
+  // metadata
+  'pages.metadata.NoDatabaseSelected': '未选择数据源',
+  'pages.metadata.Application': 'Application',
+  'pages.metadata.TableInfo': '表信息',
+  'pages.metadata.Description': '描述',
+  'pages.metadata.DataSearch': '数据查询',
+  'pages.metadata.GenerateSQL': 'SQL 生成',
+  'pages.metadata.FieldInformation': '字段信息',
+  'pages.metadata.catalogSelect': '选择 Catalog & Database',
+  'pages.metadata.catalogRefresh': '刷新 Catalog',
+  'pages.metadata.catalogRefreshSuccess': '刷新 Catalog 成功',
+  'pages.metadata.selectDatabase': '选择数据源',
+
+
+  'pages.metadata.Console': '控制台',
+  'pages.metadata.help.noSqlSelect': '未选择任何sql！',
+  'pages.metadata.help.selectSql': '请在编辑器内选择你要执行的sql',
+  'pages.metadata.help.exec': '执行选中sql',
+  'pages.metadata.exec.result.msg': '执行时间: {time} 秒, 总行数: {rowCount}',
+  'pages.metadata.exec.result.msghelp': '行数超过500，仅显示前500',
 };

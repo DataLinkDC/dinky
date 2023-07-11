@@ -36,12 +36,15 @@ import {
   TableOutlined,
 } from "@ant-design/icons";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
-import {StateType} from "@/pages/DataStudio/model";
+import {DataBaseType, StateType} from "@/pages/DataStudio/model";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import {ProCard} from "@ant-design/pro-components";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {Dispatch} from "@@/plugin-dva/types";
-import { PersistGate } from 'redux-persist/integration/react';
+import {PersistGate} from 'redux-persist/integration/react';
+import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
+import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
+import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 
 const {Header, Footer, Sider, Content} = Layout;
 
@@ -103,7 +106,7 @@ const leftBottomSide = [
   }
 ]
 const DataStudio = (props: any) => {
-  const {} = props;
+  const {dispatch} = props;
   const app = getDvaApp(); // 获取dva的实例
   const persistor = app._store.persist;
   const bottomHeight = props.bottomContainer.selectKey === "" ? 0 : props.bottomContainer.height;
@@ -143,7 +146,10 @@ const DataStudio = (props: any) => {
       window.removeEventListener('resize', onResize);
     };
   }, [onResize]);
-
+  useEffect(() => {
+    getDataBase().then(res=>props.saveDataBase(res))
+    onResize();
+  }, []);
   const renderLeftContainer = () => {
     return <MovableSidebar
       contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight - 10}
@@ -163,22 +169,20 @@ const DataStudio = (props: any) => {
       maxWidth={size.width - 2 * VIEW.sideWidth - props.rightContainer.width - 200}
       enable={{right: true}}
     >
-      <><Space wrap>
-        <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-        <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
-                size={"small"}/>
-        <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-      </Space>
-
-        <ProCard
-          split={'vertical'}
-          style={{height: "100%", overflow: 'auto'}}
-          bordered ghost
-          headerBordered
-        >
-
-        </ProCard>
-      </>
+      <MetaData></MetaData>
+      {/*<Space wrap>*/}
+      {/*  <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>*/}
+      {/*  <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}*/}
+      {/*          size={"small"}/>*/}
+      {/*  <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>*/}
+      {/*</Space>*/}
+      {/*  <ProCard*/}
+      {/*    split={'vertical'}*/}
+      {/*    style={{height: "100%", overflow: 'auto'}}*/}
+      {/*    bordered ghost*/}
+      {/*    headerBordered*/}
+      {/*  >*/}
+      {/*  </ProCard>*/}
     </MovableSidebar>
   }
   const renderRightContainer = () => {
@@ -210,133 +214,126 @@ const DataStudio = (props: any) => {
   }
   return (
     <PersistGate loading={null} persistor={persistor}>
-    <Fragment>
-      <Layout style={{minHeight: "60vh"}}>
-        <Header key={"h"} style={headerStyle}>
-          <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>1</div>
-          <div
-            style={{
-              width: (size.width - 2 * VIEW.paddingInline) / 2,
-              display: "flex",
-              flexDirection: "row-reverse"
-            }}>
-            <Space align={"end"} direction={"horizontal"} wrap>
-              <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
-              <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
-              <Tooltip title="search" placement="bottom">
-                <Button icon={<CaretRightOutlined/>} block type={"text"} shape={"circle"}/>
-              </Tooltip>
-            </Space>
-          </div>
-
-        </Header>
-
-        <Layout hasSider
-                style={{minHeight: size.contentHeight}}>
-          <Sider collapsed collapsedWidth={40}>
-            <Menu
-              // theme="dark"
-              mode="inline"
-              selectedKeys={[props.leftContainer.selectKey]}
-              items={leftSide}
-              style={{height: '50%', borderRight: 0}}
-              onClick={(item) => {
-                props.updateSelectLeftKey(item.key === props.leftContainer.selectKey ? '' : item.key)
-              }}
-            />
-            <Menu
-              // theme="dark"
-              mode="inline"
-              selectedKeys={[props.bottomContainer.selectKey]}
-              items={leftBottomSide}
-              style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
-              onClick={(item) => {
-                props.updateSelectBottomKey(item.key === props.bottomContainer.selectKey ? '' : item.key)
-              }}
-            />
-
-          </Sider>
-          <Content style={{
-            flexDirection: "column-reverse",
-            display: "flex",
-            height: size.contentHeight,
-          }}>
-
-            <MovableSidebar
-              visible={props.bottomContainer.selectKey !== ""}
+      <Fragment>
+        <Layout style={{minHeight: "60vh"}}>
+          <Header key={"h"} style={headerStyle}>
+            <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>1</div>
+            <div
               style={{
-                border: "solid 1px #ddd",
-                background: "#f0f0f0",
-                zIndex: 999
-              }}
-              defaultSize={{
-                width: "100%",
-                height: props.bottomContainer.height
-              }}
-              minHeight={VIEW.midMargin}
-              maxHeight={size.contentHeight - 40}
-              onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }, delta: any) => {
-                props.updateBottomHeight(elementRef.offsetHeight)
-              }}
-              enable={{top: true}}
-              handlerMinimize={() => {
-                props.updateSelectBottomKey("")
-              }}
-            >
-
-
-            </MovableSidebar>
-            {/*<div>001</div>*/}
-            <div style={{
-              display: "flex",
-              position: "absolute",
-              top: VIEW.headerHeight,
-              width: size.width - VIEW.sideWidth * 2
-            }}>
-              {renderLeftContainer()}
-              <Content
-                style={{width: size.width - 2 * VIEW.sideWidth - props.leftContainer.width - props.rightContainer.width}}>
-                <Tabs
-                  size={"small"}
-                  tabBarGutter={10}
-                  defaultActiveKey="2"
-                  items={[AppleOutlined, AndroidOutlined].map((Icon, i) => {
-                    const id = String(i + 1);
-
-                    return {
-                      label: (
-                        <span>
-                  <Icon/>
-                  Tab {id}
-                </span>
-                      ),
-                      key: id,
-                    };
-                  })}
-                />
-                <CodeShow code={"123\n1\n1\n1\n1\n1\n1\n1\n1\n1n\n1\n1\n1"}
-                          height={size.contentHeight - bottomHeight - 60 + "px"}/>
-              </Content>
-
-              {renderRightContainer()}
-
+                width: (size.width - 2 * VIEW.paddingInline) / 2,
+                display: "flex",
+                flexDirection: "row-reverse"
+              }}>
+              <Space align={"end"} direction={"horizontal"} wrap>
+                <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
+                <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
+                <Tooltip title="search" placement="bottom">
+                  <Button icon={<CaretRightOutlined/>} block type={"text"} shape={"circle"}/>
+                </Tooltip>
+              </Space>
             </div>
-          </Content>
-          <Sider collapsed collapsedWidth={40}>
-            <Menu
-              selectedKeys={[props.rightContainer.selectKey]}
-              // theme="dark"
-              mode="inline"
-              style={{height: '100%', borderRight: 0}}
-              items={rightSide}
-              onClick={(item) => {
-                props.updateSelectRightKey(item.key === props.rightContainer.selectKey ? '' : item.key)
-              }}
-            />
-          </Sider>
+
+          </Header>
+
+          <Layout hasSider
+                  style={{minHeight: size.contentHeight}}>
+            <Sider collapsed collapsedWidth={40}>
+              <Menu
+                // theme="dark"
+                mode="inline"
+                selectedKeys={[props.leftContainer.selectKey]}
+                items={leftSide}
+                style={{height: '50%', borderRight: 0}}
+                onClick={(item) => {
+                  props.updateSelectLeftKey(item.key === props.leftContainer.selectKey ? '' : item.key)
+                }}
+              />
+              <Menu
+                // theme="dark"
+                mode="inline"
+                selectedKeys={[props.bottomContainer.selectKey]}
+                items={leftBottomSide}
+                style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
+                onClick={(item) => {
+                  props.updateSelectBottomKey(item.key === props.bottomContainer.selectKey ? '' : item.key)
+                }}
+              />
+
+            </Sider>
+            <Content style={{
+              flexDirection: "column-reverse",
+              display: "flex",
+              height: size.contentHeight,
+            }}>
+
+              <MovableSidebar
+                title={<Tabs
+                  items={[{
+                    key:"test",
+                    label:"123"
+                  }]}
+                  defaultActiveKey="StudioMsg" size="small" tabPosition="top" style={{
+                  border: "1px solid #f0f0f0", height: "40px", margin: "0 32px"
+                }}>
+
+                </Tabs>}
+                visible={props.bottomContainer.selectKey !== ""}
+                style={{
+                  border: "solid 1px #ddd",
+                  background: "#f0f0f0",
+                  zIndex: 999
+                }}
+                defaultSize={{
+                  width: "100%",
+                  height: props.bottomContainer.height
+                }}
+                minHeight={VIEW.midMargin}
+                maxHeight={size.contentHeight - 40}
+                onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }, delta: any) => {
+                  props.updateBottomHeight(elementRef.offsetHeight)
+                }}
+                enable={{top: true}}
+                handlerMinimize={() => {
+                  props.updateSelectBottomKey("")
+                }}
+              >
+
+
+              </MovableSidebar>
+              {/*<div>001</div>*/}
+              <div style={{
+                display: "flex",
+                position: "absolute",
+                top: VIEW.headerHeight,
+                width: size.width - VIEW.sideWidth * 2
+              }}>
+                {renderLeftContainer()}
+                <Content
+                  style={{width: size.width - 2 * VIEW.sideWidth - props.leftContainer.width - props.rightContainer.width}}>
+                  <MiddleContainer />
+                  {/*<CodeShow code={"123\n1\n1\n1\n1\n1\n1\n1\n1\n1n\n1\n1\n1"}*/}
+                  {/*          height={size.contentHeight - bottomHeight - 60 + "px"}/>*/}
+                </Content>
+
+                {renderRightContainer()}
+
+              </div>
+            </Content>
+            <Sider collapsed collapsedWidth={40}>
+              <Menu
+                selectedKeys={[props.rightContainer.selectKey]}
+                // theme="dark"
+                mode="inline"
+                style={{height: '100%', borderRight: 0}}
+                items={rightSide}
+                onClick={(item) => {
+                  props.updateSelectRightKey(item.key === props.rightContainer.selectKey ? '' : item.key)
+                }}
+              />
+            </Sider>
+          </Layout>
         </Layout>
-      </Layout>
-    </Fragment>
+      </Fragment>
     </PersistGate>
   );
 };
@@ -363,6 +360,11 @@ const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/updateBottomHeight",
     payload: height,
   }),
+  saveDataBase: (data: DataBaseType[]) => dispatch({
+    type: "Studio/saveDataBase",
+    payload: data,
+  }),
+
 });
 
 export default connect(({Studio}: { Studio: StateType }) => ({

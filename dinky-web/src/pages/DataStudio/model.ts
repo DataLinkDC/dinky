@@ -1,5 +1,7 @@
 import {Effect} from "@umijs/max";
 import {Reducer} from "@@/plugin-dva/types";
+import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
+import React, {ReactNode} from "react";
 
 export type SqlMetaData = {
   statement?: string,
@@ -37,6 +39,7 @@ export type ClusterConfigurationType = {
   createTime: Date,
   updateTime: Date,
 }
+type TargetKey = React.MouseEvent | React.KeyboardEvent | number;
 
 export type DataBaseType = {
   id: number,
@@ -105,7 +108,7 @@ export type ConsoleType = {
 }
 
 export type TabsItemType = {
-  title: string;
+  label: string;
   key: number,
   value: string;
   icon: any;
@@ -116,12 +119,13 @@ export type TabsItemType = {
   monaco?: any;
   isModified: boolean;
   sqlMetaData?: SqlMetaData;
-  metaStore?: MetaStoreCatalogType[]
+  metaStore?: MetaStoreCatalogType[];
+  children:ReactNode
 }
 
 export type TabsType = {
   activeKey: number;
-  panes?: TabsItemType[];
+  panes: TabsItemType[];
 }
 
 export type ConnectorType = {
@@ -176,22 +180,13 @@ export type StateType = {
   leftContainer: container;
   rightContainer: container;
   bottomContainer: container;
-  // leftWidth: number;
-  // rightWidth: number;
-  // bottomHeight: number;
-  // showLeft: boolean;
-  // showRight: boolean;
-  // showBottom: boolean;
-  // selectLeftKey: string,
-  // selectLeftBottomKey: string,
-  // selectRightKey: string,
+  database: DataBaseType[];
+  tabs: TabsType;
 };
 export type ModelType = {
   namespace: string;
   state: StateType;
-  effects: {
-    saveTask: Effect;
-  };
+  effects: {};
   reducers: {
     updateSelectLeftKey: Reducer<StateType>;
     updateLeftWidth: Reducer<StateType>;
@@ -199,6 +194,10 @@ export type ModelType = {
     updateRightWidth: Reducer<StateType>;
     updateSelectBottomKey: Reducer<StateType>;
     updateBottomHeight: Reducer<StateType>;
+    saveDataBase: Reducer<StateType>;
+    updateTabsActiveKey: Reducer<StateType>;
+    closeTab: Reducer<StateType>;
+    addTab: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -221,7 +220,13 @@ const Model: ModelType = {
       height: 400,
       width: "100%",
     }
+    , database: []
+    , tabs: {
+      activeKey: 0,
+      panes: [],
+    },
   },
+  effects: {},
   reducers: {
     updateSelectLeftKey(state, {payload}) {
       return {
@@ -257,7 +262,7 @@ const Model: ModelType = {
         }
       };
     }
-    ,updateSelectBottomKey(state, {payload}) {
+    , updateSelectBottomKey(state, {payload}) {
       return {
         ...state,
         bottomContainer: {
@@ -273,7 +278,52 @@ const Model: ModelType = {
           height: payload,
         }
       };
+    },
+    saveDataBase(state, {payload}) {
+      return {
+        ...state,
+        database: [...payload],
+      };
+    },
+    updateTabsActiveKey(state, {payload}) {
+      return {
+        ...state,
+        tabs: {
+          ...state.tabs,
+          activeKey: payload
+        },
+      };
+    } ,
+    closeTab(state, {payload }) {
+      const targetKey=payload as  TargetKey;
+      const {tabs:{panes,activeKey}}= state;
+
+      const targetIndex = panes.findIndex((pane) => pane.key === targetKey);
+      const newPanes = panes.filter((pane) => pane.key !== targetKey);
+      // if ( && targetKey === activeKey) {
+      //   const {key} = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
+      //   updateActiveKey(key)
+      // }
+      return {
+        ...state,
+        tabs: {
+          panes:newPanes,
+          activeKey: newPanes.length-1
+        },
+      };
+    },
+    addTab(state, {payload }) {
+      const node=payload as  TabsItemType;
+      node.key=state.tabs.panes.length
+      return {
+        ...state,
+        tabs: {
+          panes:[...state.tabs.panes,node],
+          activeKey: state.tabs.panes.length
+        },
+      };
     }
+
   }
 }
 export default Model;
