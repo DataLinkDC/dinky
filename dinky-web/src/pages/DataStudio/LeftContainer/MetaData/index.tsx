@@ -148,8 +148,8 @@ const MetaData = (props: any) => {
                   // onChangeDataBase(e)
                   dispatch({
                     type:"Studio/addTab",
-                    payload:{label:e,children:<DataSourceDetail backClick={()=>console.log()} dataSource={{"id":e}}/> }
-                    // payload:{label:e,children:'123' }
+                    // payload:{label:e,children:<DataSourceDetail backClick={()=>console.log()} dataSource={{"id":e}}/> }
+                    payload:{label:e,children:'123' }
                   })
                 }
               }
