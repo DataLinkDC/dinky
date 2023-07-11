@@ -14,7 +14,7 @@ export type MovableSidebarProps = {
   contentHeight?: number;
   defaultSize?: Size;
   visible?: boolean;
-  content?: React.ReactNode;
+  children?: React.ReactNode;
   handlerMinimize?: () => void;
   onResize?: ResizeCallback;
   style?: React.CSSProperties;
@@ -44,7 +44,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         }}
       >
           <div style={{height: props.contentHeight}}>
-            {props.content}
+            {props.children}
           </div>
       </PageContainer>
 
