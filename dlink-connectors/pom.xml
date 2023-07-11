@@ -26,6 +26,9 @@
 
     <artifactId>dlink-connectors</artifactId>
     <packaging>pom</packaging>
+    <modules>
+        <module>dlink-connector-jdbc-1.16</module>
+    </modules>
 
     <profiles>
         <profile>

@@ -114,6 +114,7 @@
             <includes>
                 <include>dlink-catalog-mysql-1.16-${project.version}.jar</include>
                 <include>dlink-client-1.16-${project.version}.jar</include>
+                <include>dlink-connector-jdbc-1.16-${project.version}.jar</include>
             </includes>
         </fileSet>
         <fileSet>

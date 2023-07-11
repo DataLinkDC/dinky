@@ -355,6 +355,11 @@
             </dependency>
             <dependency>
                 <groupId>com.dlink</groupId>
+                <artifactId>dlink-connector-jdbc-1.16</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.dlink</groupId>
                 <artifactId>dlink-connector-phoenix-1.13</artifactId>
                 <version>${project.version}</version>
             </dependency>
