@@ -43,6 +43,7 @@ import {ClusterConfigIcon} from "@/components/Icons/HomeIcon";
 import {imgStyle} from "@/pages/Home/constants";
 import {RunningBtn} from "@/components/CallBackButton/RunningBtn";
 import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import {useRequest} from "@umijs/max";
 
 
 export default () => {
@@ -55,25 +56,8 @@ export default () => {
     const [createOpen, setCreateOpen] = useState<boolean>(false);
     const [modifyOpen, setModifyOpen] = useState<boolean>(false);
     const [formValue, setFormValue] = useState<Partial<Cluster.Config>>({});
-    const [data, setData] = useState<Cluster.Config[]>([]);
 
-
-    /**
-     * execute query  list
-     * set   list
-     */
-    const queryDataList = async () => {
-        await queryList(API_CONSTANTS.CLUSTER_CONFIGURATION).then(res => setData(res.data));
-    };
-
-
-    /**
-     * query  list
-     */
-    useEffect(() => {
-        queryDataList();
-    }, []);
-
+    const {data, run} = useRequest({url: API_CONSTANTS.CLUSTER_CONFIGURATION, method: 'POST', data: {}})
 
     /**
      * execute and callback function
@@ -83,7 +67,7 @@ export default () => {
     const executeAndCallbackRefresh = async (callback: () => void) => {
         setLoading(true);
         await callback();
-        await queryDataList();
+        await run();
         setLoading(false);
         actionRef.current?.reload?.();
     };
@@ -143,7 +127,7 @@ export default () => {
      */
     const handleSubmit = async (value: Partial<Cluster.Config>) => {
         await executeAndCallbackRefresh(async () => {
-            console.log(value, 'value');
+            value.configJson = JSON.stringify(value.configJson)
             await handleAddOrUpdate(API_CONSTANTS.CLUSTER_CONFIGURATION, value);
             await handleCancel();
         });
@@ -171,6 +155,7 @@ export default () => {
      * @param item
      */
     const editClick = (item: Cluster.Config) => {
+        item.configJson = JSON.parse(item.configJson)
         setFormValue(item);
         setModifyOpen(!modifyOpen);
     };
@@ -226,7 +211,7 @@ export default () => {
     /**
      * render data list
      */
-    const renderData = data.map((item) => ({
+    const renderData = data?.map((item: Cluster.Config) => ({
         subTitle: renderDataSubTitle(item),
         actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
         avatar: <ClusterConfigIcon style={imgStyle}/>,
@@ -244,7 +229,6 @@ export default () => {
      * render
      */
     return <>
-
         <ProList<Cluster.Config>
             {...PROTABLE_OPTIONS_PUBLIC}
             {...PRO_LIST_CARD_OPTIONS as any}

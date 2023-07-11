@@ -30,7 +30,7 @@ const YarnConfig = () => {
                 <Divider>{l('rc.cc.hadoopConfig')}</Divider>
                 <ProFormGroup>
                     <ProFormText
-                        name="hadoopConfigPath"
+                        name={['configJson', 'hadoopConfigPath']}
                         label={l('rc.cc.hadoopConfigPath')}
                         width="md"
                         rules={[{required: true, message: l('rc.cc.hadoopConfigPathPlaceholder')}]}
@@ -40,8 +40,8 @@ const YarnConfig = () => {
                 </ProFormGroup>
                 <Divider>{l('rc.cc.hadoop.defineConfig')}</Divider>
                 <ProFormList
-                    name="hadoopConfigList"
-                    copyIconProps={false}
+                  name={['configJson', 'hadoopConfigList']}
+                   copyIconProps={false}
                     deleteIconProps={{
                         tooltipText: l('rc.cc.deleteConfig'),
                     }}
@@ -63,7 +63,7 @@ const YarnConfig = () => {
                 <Divider>{l('rc.cc.flinkConfig')}</Divider>
                 <ProFormGroup>
                     <ProFormText
-                        name="flinkLibPath"
+                        name={['configJson', 'flinkLibPath']}
                         label={l('rc.cc.libPath')}
                         width="md"
                         rules={[{required: true, message: l('rc.cc.libPathPlaceholder')}]}
@@ -72,7 +72,7 @@ const YarnConfig = () => {
                     />
 
                     <ProFormText
-                        name="flinkConfigPath"
+                        name={['configJson', 'flinkConfigPath']}
                         label={l('rc.cc.flinkConfigPath')}
                         width="md"
                         rules={[{required: true, message: l('rc.cc.flinkConfigPathPlaceholder')}]}
@@ -83,7 +83,7 @@ const YarnConfig = () => {
 
                 <Divider>{l('rc.cc.flink.defineConfig')}</Divider>
                 <ProFormList
-                    name="flinkConfigList"
+                    name={['configJson', 'flinkConfigList']}
                     copyIconProps={false}
                     deleteIconProps={{
                         tooltipText: l('rc.cc.deleteConfig'),

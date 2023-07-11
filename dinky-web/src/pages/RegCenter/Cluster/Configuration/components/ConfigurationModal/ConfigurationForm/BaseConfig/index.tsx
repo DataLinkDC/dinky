@@ -20,7 +20,7 @@
 import React from "react";
 import {Divider} from "antd";
 import {l} from "@/utils/intl";
-import {ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
+import {ProFormDigit, ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
 import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
 const BaseConfig: React.FC = () => {
 
@@ -28,6 +28,10 @@ const BaseConfig: React.FC = () => {
     return <>
         <Divider>{l('rc.cc.baseConfig')}</Divider>
         <ProFormGroup>
+            <ProFormDigit
+              name="id"
+              hidden={true}
+            />
             <ProFormSelect
                 name="type"
                 label={l('rc.cc.type')}

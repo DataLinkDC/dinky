@@ -29,7 +29,7 @@ type CodeEditFormProps = {
   width?: string;
   language?: string;
   options?: any;
-  onChange: (val: string) => void;
+  onChange?: (val: string) => void;
   code: string;
   readOnly?: boolean;
   lineNumbers?: string;

@@ -125,17 +125,16 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
         tooltip: l('rc.cc.k8s.namespaceHelp'),
     },
     {
-        name: 'kubernetes.container.image',
-        label: l('rc.cc.k8s.image'),
-        placeholder: l('rc.cc.k8s.imageHelp'),
-        tooltip: l('rc.cc.k8s.imageHelp'),
+      name: 'kubernetes.service.account',
+      label: l('rc.cc.k8s.account'),
+      placeholder: l('rc.cc.k8s.accountHelp'),
+      tooltip: l('rc.cc.k8s.accountHelp'),
     },
     {
-        name: 'kubernetes.rest-service.exposed.type',
-        label: l('rc.cc.k8s.exposed'),
-        placeholder: l('rc.cc.k8s.exposedHelp'),
-        tooltip: l('rc.cc.k8s.exposedHelp'),
-        showOnSubmitType: ClusterType.KUBERNETES_NATIVE,
+      name: 'kubernetes.container.image',
+      label: l('rc.cc.k8s.image'),
+      placeholder: l('rc.cc.k8s.imageHelp'),
+      tooltip: l('rc.cc.k8s.imageHelp'),
     },
     {
         name: 'kubernetes.jobmanager.cpu',
@@ -154,20 +153,5 @@ export const KUBERNETES_CONFIG_LIST: FormConfig[] = [
         label: l('rc.cc.k8s.configFile'),
         placeholder: l('rc.cc.k8s.configFileHelp'),
         tooltip: l('rc.cc.k8s.configFileHelp'),
-    },
-    {
-        name: 'kubernetes.service.account',
-        label: l('rc.cc.k8s.account'),
-        placeholder: l('rc.cc.k8s.accountHelp'),
-        tooltip: l('rc.cc.k8s.accountHelp'),
-        showOnSubmitType: ClusterType.KUBERNETES_OPERATOR,
-    },
-    {
-        name: 'kubernetes.pod-template',
-        label: l('rc.cc.k8s.podTemplate'),
-        placeholder: l('rc.cc.k8s.podTemplate'),
-        tooltip: l('rc.cc.k8s.podTemplateHelp'),
-        showOnSubmitType: ClusterType.KUBERNETES_OPERATOR,
-        showType: 'code'
     },
 ];
