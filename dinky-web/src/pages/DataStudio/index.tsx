@@ -16,7 +16,7 @@
  */
 
 import {Button, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
-import {connect} from "umi";
+import {connect, getDvaApp} from "umi";
 import {
   AndroidOutlined,
   AppleOutlined,
@@ -41,6 +41,7 @@ import CodeShow from "@/components/CustomEditor/CodeShow";
 import {ProCard} from "@ant-design/pro-components";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {Dispatch} from "@@/plugin-dva/types";
+import { PersistGate } from 'redux-persist/integration/react';
 
 const {Header, Footer, Sider, Content} = Layout;
 
@@ -103,6 +104,8 @@ const leftBottomSide = [
 ]
 const DataStudio = (props: any) => {
   const {} = props;
+  const app = getDvaApp(); // 获取dva的实例
+  const persistor = app._store.persist;
   const bottomHeight = props.bottomContainer.selectKey === "" ? 0 : props.bottomContainer.height;
   const VIEW = {
     headerHeight: 32,
@@ -206,6 +209,7 @@ const DataStudio = (props: any) => {
     </MovableSidebar>
   }
   return (
+    <PersistGate loading={null} persistor={persistor}>
     <Fragment>
       <Layout style={{minHeight: "60vh"}}>
         <Header key={"h"} style={headerStyle}>
@@ -333,6 +337,7 @@ const DataStudio = (props: any) => {
         </Layout>
       </Layout>
     </Fragment>
+    </PersistGate>
   );
 };
 const mapDispatchToProps = (dispatch: Dispatch) => ({
