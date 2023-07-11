@@ -38,6 +38,12 @@ class SQLServerDialect extends AbstractDialect {
 
     private static final long serialVersionUID = 1L;
 
+    private static final int MAX_TIMESTAMP_PRECISION = 6;
+    private static final int MIN_TIMESTAMP_PRECISION = 1;
+
+    private static final int MAX_DECIMAL_PRECISION = 65;
+    private static final int MIN_DECIMAL_PRECISION = 1;
+
     // jdbc:sqlserver://127.0.0.1:1433;DatabaseName=test
     @Override
     public JdbcRowConverter getRowConverter(RowType rowType) {
@@ -103,6 +109,16 @@ class SQLServerDialect extends AbstractDialect {
                 .collect(Collectors.joining(", "));
         String placeholders = Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
         return "INSERT INTO " + tableName + "(" + columns + ") VALUES (" + placeholders + ")";
+    }
+
+    @Override
+    public Optional<Range> decimalPrecisionRange() {
+        return Optional.of(Range.of(MIN_DECIMAL_PRECISION, MAX_DECIMAL_PRECISION));
+    }
+
+    @Override
+    public Optional<Range> timestampPrecisionRange() {
+        return Optional.of(Range.of(MIN_TIMESTAMP_PRECISION, MAX_TIMESTAMP_PRECISION));
     }
 
     @Override
