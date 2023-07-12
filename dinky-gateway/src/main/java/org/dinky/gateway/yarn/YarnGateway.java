@@ -99,10 +99,6 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
-        final String savePoint = flinkConfig.getSavePoint();
-        if (Asserts.isNotNullString(savePoint)) {
-            configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, savePoint);
-        }
 
         configuration.set(
                 YarnConfigOptions.PROVIDED_LIB_DIRS,

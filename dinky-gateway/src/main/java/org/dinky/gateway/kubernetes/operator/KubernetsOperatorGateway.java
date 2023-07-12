@@ -64,7 +64,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
 
     @Override
     protected void init() {
-        submitConfiguration = config.getFlinkConfig().getFlinkKubetnetsConfig();
+        submitConfiguration = config.getKubernetesConfig().getConfiguration();
         flinkConfig = config.getFlinkConfig().getConfiguration();
         kubernetesClient = new DefaultKubernetesClient();
         initBase();
@@ -77,7 +77,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     @Override
     public TestResult test() {
 
-        submitConfiguration = config.getFlinkConfig().getFlinkKubetnetsConfig();
+        submitConfiguration = config.getKubernetesConfig().getConfiguration();
         flinkConfig = config.getFlinkConfig().getConfiguration();
         config.getFlinkConfig().setJobName("test");
         kubernetesClient = new DefaultKubernetesClient();
@@ -92,7 +92,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     @Override
     public boolean onJobFinishCallback(String status) {
 
-        submitConfiguration = config.getFlinkConfig().getFlinkKubetnetsConfig();
+        submitConfiguration = config.getKubernetesConfig().getConfiguration();
         kubernetesClient = new DefaultKubernetesClient();
 
         String jobName = config.getFlinkConfig().getJobName();

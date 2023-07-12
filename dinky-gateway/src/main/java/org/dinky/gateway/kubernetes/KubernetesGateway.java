@@ -45,6 +45,7 @@ import java.util.Collections;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ReflectUtil;
+import org.dinky.utils.TextUtil;
 
 /**
  * KubernetesGateway
@@ -67,27 +68,16 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     private void initConfig() {
-        configuration =
-                GlobalConfiguration.loadConfiguration(
-                        config.getClusterConfig().getFlinkConfigPath());
-
-        final FlinkConfig flinkConfig = config.getFlinkConfig();
-        if (flinkConfig.getFlinkKubetnetsConfig() != null) {
-            flinkConfig.getConfiguration().putAll(flinkConfig.getFlinkKubetnetsConfig());
-        }
-        if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
-            addConfigParas(flinkConfig.getConfiguration());
+        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+        if (!TextUtil.isEmpty(flinkConfigPath)){
+            configuration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
         }
 
+        FlinkConfig flinkConfig = config.getFlinkConfig();
+        flinkConfig.getConfiguration().putAll(config.getKubernetesConfig().getConfiguration());
+        addConfigParas(flinkConfig.getConfiguration());
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
-        if (Asserts.isNotNullString(flinkConfig.getSavePoint())) {
-            configuration.setString(
-                    SavepointConfigOptions.SAVEPOINT_PATH, flinkConfig.getSavePoint());
-        }
-
-        if (Asserts.isNotNullString(flinkConfig.getJobName())) {
-            configuration.set(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
-        }
+        configuration.set(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
 
         if (getType().isApplicationMode()) {
             resetCheckpointInApplicationMode();

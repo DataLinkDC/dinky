@@ -25,13 +25,17 @@ import static com.fasterxml.jackson.databind.DeserializationFeature.READ_UNKNOWN
 import static com.fasterxml.jackson.databind.MapperFeature.REQUIRE_SETTERS_FOR_GETTERS;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import org.dinky.assertion.Asserts;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -199,5 +203,23 @@ public class JSONUtil {
                 return node.toString();
             }
         }
+    }
+
+    public static JSONObject merge(JSONObject mergeTo, JSONObject... values) {
+        for (JSONObject value : values) {
+            Set<String> allKeys = new HashSet<>();
+            allKeys.addAll(mergeTo.keySet());
+            allKeys.addAll(value.keySet());
+            for (String key : allKeys) {
+                if (value.containsKey(key)) {
+                    if (value.get(key) instanceof JSONObject) {
+                        return merge((JSONObject) mergeTo.get(key), (JSONObject) value.get(key));
+                    } else if (value.get(key) instanceof JSONArray) {
+                        ((JSONArray) mergeTo.get(key)).addAll(((JSONArray) value.get(key)));
+                    }
+                }
+            }
+        }
+        return mergeTo;
     }
 }

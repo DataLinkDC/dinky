@@ -17,31 +17,23 @@
  *
  */
 
-package org.dinky.data.model;
-
-import java.util.Map;
+package org.dinky.gateway.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.dinky.gateway.config.AppConfig;
+import org.dinky.gateway.config.ClusterConfig;
+import org.dinky.gateway.config.FlinkConfig;
+import org.dinky.gateway.config.K8sConfig;
+import org.dinky.gateway.enums.GatewayType;
 
 /** @since */
 @Getter
 @Setter
-public class FlinkClusterConfiguration {
-    private Type type;
-    private String hadoopConfigPath;
-    private String flinkConfigPath;
-    private String flinkLibPath;
-    private String userJarPath;
-    private String flinkVersion;
-
-    Map<String, String> flinkConfig;
-    Map<String, String> kubernetesConfig;
-
-    public enum Type {
-        //
-        Yarn,
-        Kubernetes,
-        KubernetesOperator;
-    }
+public class FlinkClusterConfig {
+    private GatewayType type;
+    private ClusterConfig clusterConfig;
+    private FlinkConfig flinkConfig;
+    private AppConfig appConfig;
+    private K8sConfig kubernetesConfig;
 }
