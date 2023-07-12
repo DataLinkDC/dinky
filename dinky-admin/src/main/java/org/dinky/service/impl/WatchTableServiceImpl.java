@@ -19,11 +19,7 @@
 
 package org.dinky.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
-import org.springframework.messaging.MessagingException;
-import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -38,6 +34,12 @@ import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.springframework.messaging.MessagingException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -65,7 +67,6 @@ public class WatchTableServiceImpl implements WatchTableService {
         }
     }
 
-
     @Override
     public SseEmitter registerListenEntry(Integer userId, String table) {
         SseEmitter emitter = new SseEmitter();
@@ -88,7 +89,9 @@ public class WatchTableServiceImpl implements WatchTableService {
         String destination = getDestination(userId, fullName);
         Set<Target> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
-            destinations.stream().filter(d -> d.destination.equals(destination)).forEach(Target::complete);
+            destinations.stream()
+                    .filter(d -> d.destination.equals(destination))
+                    .forEach(Target::complete);
             destinations.removeIf(d -> d.destination.equals(destination));
         }
     }
@@ -205,6 +208,5 @@ public class WatchTableServiceImpl implements WatchTableService {
         public ExecutorService getExecutor() {
             return executor;
         }
-
     }
 }
