@@ -19,8 +19,11 @@
 
 package org.dinky.service;
 
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+
 public interface WatchTableService {
-    String registerListenEntry(Integer userId, String table);
+    SseEmitter registerListenEntry(Integer userId, String table);
 
     void unRegisterListenEntry(Integer userId, String table);
+
 }

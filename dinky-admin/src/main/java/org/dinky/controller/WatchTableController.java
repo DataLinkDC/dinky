@@ -19,15 +19,15 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.result.Result;
 import org.dinky.service.WatchTableService;
 
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.AllArgsConstructor;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @RestController
 @AllArgsConstructor
@@ -36,14 +36,15 @@ public class WatchTableController {
 
     private final WatchTableService watchTableService;
 
-    @PutMapping("/subscribe/watch")
-    public Result subscribe(@RequestParam Integer id, @RequestParam String table) {
-        String destination = watchTableService.registerListenEntry(id, table);
-        return Result.succeed(destination);
+    @GetMapping(name = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @CrossOrigin("*")
+    @PublicInterface
+    public SseEmitter subscribe(@RequestParam Integer id, @RequestParam String table) {
+        return watchTableService.registerListenEntry(id, table);
     }
 
     @PutMapping("/unSubscribe/watch")
-    public Result unsubscribe(@RequestParam Integer id, @RequestParam String table) {
+    public Result<Void> unsubscribe(@RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
         return Result.succeed();
     }

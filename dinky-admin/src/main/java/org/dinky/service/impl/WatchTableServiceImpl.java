@@ -19,7 +19,11 @@
 
 package org.dinky.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.dinky.service.WatchTableService;
+import org.springframework.messaging.MessagingException;
+import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
@@ -29,29 +33,22 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.springframework.messaging.MessagingException;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.stereotype.Service;
-
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
 public class WatchTableServiceImpl implements WatchTableService {
 
-    private final SimpMessagingTemplate messagingTemplate;
-
-    private final Map<String, Set<String>> registerTableMap = new ConcurrentHashMap<>();
+    private final Map<String, Set<Target>> registerTableMap = new ConcurrentHashMap<>();
 
     private static final Pattern FULL_TABLE_NAME_PATTERN =
             Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
 
-    public WatchTableServiceImpl(SimpMessagingTemplate messagingTemplate) {
-        this.messagingTemplate = messagingTemplate;
+    public WatchTableServiceImpl() {
         WatchTableListener watcher = new WatchTableListener(this::send);
         watcher.start();
     }
@@ -59,35 +56,40 @@ public class WatchTableServiceImpl implements WatchTableService {
     public void send(String message) {
         try {
             String[] data = message.split("\n", 2);
-            final Set<String> destinations = registerTableMap.get(data[0]);
+            final Set<Target> destinations = registerTableMap.get(data[0]);
             if (destinations != null) {
-                destinations.forEach(d -> this.messagingTemplate.convertAndSend(d, data[1]));
+                destinations.forEach(d -> d.send(data[1], data[0]));
             }
         } catch (MessagingException e) {
             log.error(e.toString());
         }
     }
 
+
     @Override
-    public String registerListenEntry(Integer userId, String table) {
+    public SseEmitter registerListenEntry(Integer userId, String table) {
+        SseEmitter emitter = new SseEmitter();
+
         String fullName = getFullTableName(table);
         String destination = getDestinationByFullName(userId, fullName);
-        Set<String> destinations = registerTableMap.get(fullName);
+        Target target = Target.of(emitter, destination);
+        Set<Target> destinations = registerTableMap.get(fullName);
         if (destinations == null) {
-            registerTableMap.put(fullName, new HashSet<>(Collections.singletonList(destination)));
+            registerTableMap.put(fullName, new HashSet<>(Collections.singleton(target)));
         } else {
-            destinations.add(destination);
+            destinations.add(target);
         }
-        return destination;
+        return emitter;
     }
 
     @Override
     public void unRegisterListenEntry(Integer userId, String table) {
         String fullName = getFullTableName(table);
         String destination = getDestination(userId, fullName);
-        Set<String> destinations = registerTableMap.get(fullName);
+        Set<Target> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
-            destinations.remove(destination);
+            destinations.stream().filter(d -> d.destination.equals(destination)).forEach(Target::complete);
+            destinations.removeIf(d -> d.destination.equals(destination));
         }
     }
 
@@ -115,17 +117,60 @@ public class WatchTableServiceImpl implements WatchTableService {
         return String.format("/topic/table/%s/%s", userId, tableFullName);
     }
 
-    public static class WatchTableListener extends Thread {
+    public static final class Target {
+        private final String destination;
+        public final SseEmitter emitter;
+
+        public Target(String destination, SseEmitter emitter) {
+            this.destination = destination;
+            this.emitter = emitter;
+        }
+
+        public static Target of(SseEmitter emitter, String destination) {
+            return new Target(destination, emitter);
+        }
+
+        public void send(String message, String type) {
+            try {
+                SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event();
+
+                emitter.send(sseEventBuilder.data(message).name("wt_" + type));
+            } catch (Exception e) {
+                log.error("send message to {} failed: {}", destination, e.getMessage());
+                emitter.complete();
+            }
+        }
+
+        public String getDestination() {
+            return destination;
+        }
+
+        public SseEmitter getEmitter() {
+            return emitter;
+        }
+
+        public void complete() {
+            emitter.complete();
+        }
+    }
+
+    public static class WatchTableListener {
 
         private final Consumer<String> consumer;
         public static final int PORT = 7125;
         private DatagramSocket socket;
-        private boolean running;
         private final byte[] buf = new byte[4096];
+
+        private final ExecutorService executor;
 
         public WatchTableListener(Consumer<String> consumer) {
             this.consumer = consumer;
             this.socket = getDatagramSocket(PORT);
+            executor = Executors.newSingleThreadExecutor();
+        }
+
+        public void start() {
+            executor.execute(this::run);
         }
 
         private static DatagramSocket getDatagramSocket(int port) {
@@ -141,31 +186,25 @@ public class WatchTableServiceImpl implements WatchTableService {
         }
 
         public void run() {
-            running = true;
-            while (running) {
-                if (socket == null) {
-                    log.warn("WatchTableListener:socket is null, try to initial it");
-                    socket = getDatagramSocket(PORT);
-                    if (socket == null) break;
-                }
-
-                DatagramPacket packet = new DatagramPacket(buf, buf.length);
-                try {
-                    socket.receive(packet);
-                    String received = new String(packet.getData(), 0, packet.getLength());
-                    consumer.accept(received);
-                } catch (Exception e) {
-                    log.error(e.getMessage());
-                }
+            if (socket == null) {
+                log.warn("WatchTableListener:socket is null, try to initial it");
+                socket = getDatagramSocket(PORT);
+                if (socket == null) return;
             }
 
-            if (socket != null) {
-                socket.close();
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            try {
+                socket.receive(packet);
+                String received = new String(packet.getData(), 0, packet.getLength());
+                consumer.accept(received);
+            } catch (Exception e) {
+                log.error(e.getMessage());
             }
         }
 
-        public void stopThread() {
-            running = false;
+        public ExecutorService getExecutor() {
+            return executor;
         }
+
     }
 }
