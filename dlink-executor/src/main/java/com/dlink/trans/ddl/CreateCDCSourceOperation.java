@@ -211,7 +211,13 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {
             return null;
         }
-        String url = sink.get("url");
+        String url="";
+        if("doris".equals(sink.get("connector"))){
+            url="jdbc:mysql://"+sink.get("fenodes").trim().split(",")[0].replace("8030","9030");
+        }else{
+             url = sink.get("url");
+        }
+
         String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);
         Driver driver = Driver.buildNewConnection(sink.get("connector"), url, sink.get("username"),
                 sink.get("password"));
