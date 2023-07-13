@@ -22,8 +22,8 @@ const MiddleContainer = (props:any) => {
             tableInfo={item.params.tableInfo}
             queryParams={item.params.queryParams} rightButtons={<DataSourceDetailBackButton>
             <Space size={'middle'}>
-              <Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"
-                      onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>
+              {/*<Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"*/}
+              {/*        onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>*/}
             </Space>
           </DataSourceDetailBackButton>} tagDisabled={false}/>
         default:
