@@ -11,6 +11,8 @@ import {l} from "@/utils/intl";
 import {ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
+import {PostgresqlIcons} from "@/components/Icons/DBIcons";
+import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 
 const MetaData = (props: any) => {
 
@@ -19,6 +21,7 @@ const MetaData = (props: any) => {
   const [databaseId, setDatabaseId] = useState<number>(0);
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
+  const [selectDb, setSelectDb] = useState("");
 
   const onRefreshTreeData = (databaseId: number) => {
     if (!databaseId) {
@@ -67,7 +70,7 @@ const MetaData = (props: any) => {
     return database.map(({id, name, type, enabled}) => (
       {
         label: <TagAlignLeft> <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>
-        , value: id
+        , value: id+"-"+type
       }
     ))
   };
@@ -95,7 +98,9 @@ const MetaData = (props: any) => {
             fieldProps={{
               onChange: (e) => {
                 if (e) {
-                  onChangeDataBase(e)
+                  const split = e.split("-");
+                  onChangeDataBase(split[0])
+                  setSelectDb(split[1])
                 }
               }
             }}
@@ -105,7 +110,7 @@ const MetaData = (props: any) => {
 
       <div style={{height: (props.toolContentHeight-64-4),backgroundColor:`#fff`}}>
         <SchemaTree onNodeClick={async (info: any) => {
-          const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
+          const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo,icon}} = info;
           if (isLeaf) {
            const queryParams =  {
               id: databaseId ,
@@ -115,7 +120,7 @@ const MetaData = (props: any) => {
 
             dispatch({
               type: "Studio/addTab",
-              payload: {id:databaseId+schemaName+tableName,label: schemaName+"\\" + tableName , params:{queryParams:queryParams,tableInfo:fullInfo},type:"metadata"}
+              payload: {icon:selectDb,id:databaseId+schemaName+tableName,label: schemaName+"\\" + tableName , params:{queryParams:queryParams,tableInfo:fullInfo},type:"metadata"}
             })
           }
 

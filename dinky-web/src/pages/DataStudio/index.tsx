@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Button, ConfigProvider, Layout, Menu, Space, Tabs, TabsProps, Tooltip} from 'antd';
+import {Breadcrumb, Button, ConfigProvider, Layout, Menu, Space, Tabs, TabsProps, Tooltip} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
   AndroidOutlined,
@@ -27,6 +27,7 @@ import {
   DatabaseOutlined,
   FolderOutlined,
   HistoryOutlined,
+  HomeOutlined,
   InfoCircleOutlined,
   MinusOutlined,
   PlayCircleOutlined,
@@ -129,7 +130,19 @@ const DataStudio = (props: any) => {
           <TestDiv>
             <Layout style={{minHeight: "60vh"}}>
               <Header key={"h"} style={headerStyle}>
-                <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>1</div>
+                <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
+                  <Breadcrumb
+                    items={[
+                      {
+                        title: <HomeOutlined />,
+                      },
+                      {
+                        title: 'Application',
+                      },
+                    ]}
+                  />
+                </div>
+
                 <div
                   style={{
                     width: (size.width - 2 * VIEW.paddingInline) / 2,

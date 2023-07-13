@@ -8,6 +8,7 @@ import DataSourceDetail from "@/pages/RegCenter/DataSource/components/DataSource
 import {DataSourceDetailBackButton, TestDiv} from "@/components/StyledComponents";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import {l} from "@/utils/intl";
+import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -20,18 +21,14 @@ const MiddleContainer = (props:any) => {
         case "metadata":
           return <RightTagsRouter
             tableInfo={item.params.tableInfo}
-            queryParams={item.params.queryParams} rightButtons={<DataSourceDetailBackButton>
-            <Space size={'middle'}>
-              {/*<Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"*/}
-              {/*        onClick={() => querySchemaTree()}>{l('button.refresh')}</Button>*/}
-            </Space>
-          </DataSourceDetailBackButton>} tagDisabled={false}/>
+            queryParams={item.params.queryParams} rightButtons={<></>} tagDisabled={false}/>
         default:
           return <></>
       }
     }
 
-    return {key:item.key,label:item.label,children:<div style={{height:activeKey===item.key?props.centerContentHeight-40:0,overflow:"auto"}}>{children()}</div>}
+    return {key:item.key,label:<span>{renderDBIcon(item.icon,20)}{item.label}</span>
+      ,children:<div style={{height:activeKey===item.key?props.centerContentHeight-40:0,overflow:"auto"}}>{children()}</div>}
   })
 
   const updateActiveKey = (key: string) => {

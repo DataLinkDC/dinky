@@ -339,20 +339,28 @@ const Model: ModelType = {
       };
     } ,
     closeTab(state, {payload }) {
-      const targetKey=payload as  TargetKey;
+      const needCloseKey=payload as  TargetKey;
       const {tabs:{panes,activeKey}}= state;
-
-      const targetIndex = panes.findIndex((pane) => pane.key === targetKey);
-      const newPanes = panes.filter((pane) => pane.key !== targetKey);
-      // if ( && targetKey === activeKey) {
-      //   const {key} = newPanes[targetIndex === newPanes.length ? targetIndex - 1 : targetIndex];
-      //   updateActiveKey(key)
-      // }
+      if (needCloseKey===activeKey){
+        for (const [index,pane] of panes.entries()) {
+          if (pane.key === needCloseKey) {
+            const newActiveKey =index+1>=panes.length?index+1>1&&index+1==panes.length?panes[index-1].key:1: panes[index+1].key;
+            return {
+              ...state,
+              tabs: {
+                panes:panes.filter(pane => pane.key !== needCloseKey),
+                activeKey: newActiveKey
+              },
+            };
+          }
+        }
+      }
+      const newPanes = panes.filter(pane => pane.key !== needCloseKey)
       return {
         ...state,
         tabs: {
           panes:newPanes,
-          activeKey: newPanes.length-1
+          activeKey: activeKey
         },
       };
     },
@@ -369,12 +377,12 @@ const Model: ModelType = {
           };
         }
       }
-        node.key=state.tabs.panes.length
+        node.key=state.tabs.panes.length===0?0:state.tabs.panes[state.tabs.panes.length-1].key+1 ;
         return {
           ...state,
           tabs: {
             panes:[...state.tabs.panes,node],
-            activeKey: state.tabs.panes.length
+            activeKey: node.key
           },
       }
     }
