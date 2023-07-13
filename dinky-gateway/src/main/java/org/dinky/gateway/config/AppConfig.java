@@ -22,7 +22,6 @@ package org.dinky.gateway.config;
 import org.dinky.data.constant.CommonConstant;
 
 import lombok.Data;
-import lombok.With;
 
 /**
  * AppConfig
@@ -30,7 +29,6 @@ import lombok.With;
  * @since 2021/11/3 21:55
  */
 @Data
-@With
 public class AppConfig {
 
     private String userJarPath;
