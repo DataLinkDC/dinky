@@ -197,7 +197,7 @@ public class Task extends SuperEntity<Task> {
         return jsonNode;
     }
 
-    public boolean isJarTask(){
+    public boolean isJarTask() {
         return Dialect.isJarDialect(dialect);
     }
 }

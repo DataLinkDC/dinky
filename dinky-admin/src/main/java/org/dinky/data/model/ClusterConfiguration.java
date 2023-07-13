@@ -52,8 +52,7 @@ public class ClusterConfiguration extends SuperEntity {
 
     public FlinkClusterConfig getFlinkClusterCfg() {
         JSONObject json = new JSONObject(getConfigJson());
-        FlinkClusterConfig flinkClusterConfig =
-                json.toBean(FlinkClusterConfig.class);
+        FlinkClusterConfig flinkClusterConfig = json.toBean(FlinkClusterConfig.class);
         flinkClusterConfig.setType(GatewayType.get(type));
         return flinkClusterConfig;
     }

@@ -26,6 +26,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
+import org.dinky.utils.TextUtil;
 
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.DeploymentOptions;
@@ -38,14 +39,12 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
 import cn.hutool.core.util.ReflectUtil;
-import org.dinky.utils.TextUtil;
 
 /**
  * KubernetesGateway
@@ -69,7 +68,7 @@ public abstract class KubernetesGateway extends AbstractGateway {
 
     private void initConfig() {
         String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
-        if (!TextUtil.isEmpty(flinkConfigPath)){
+        if (!TextUtil.isEmpty(flinkConfigPath)) {
             configuration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
         }
 

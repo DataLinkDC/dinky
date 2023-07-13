@@ -19,15 +19,15 @@
 
 package org.dinky.job;
 
-import org.apache.flink.configuration.CoreOptions;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.NetConstant;
-import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.executor.ExecutorSetting;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
+import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
 
 import java.util.HashMap;
@@ -272,10 +272,12 @@ public class JobConfig {
         gatewayConfig = GatewayConfig.build(config);
         gatewayConfig.setTaskId(getTaskId());
         gatewayConfig.getFlinkConfig().setJobName(getJobName());
-        gatewayConfig.getFlinkConfig().getConfiguration().put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
+        gatewayConfig
+                .getFlinkConfig()
+                .getConfiguration()
+                .put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
         setUseRemote(false);
     }
-
 
     public void addGatewayConfig(Map<String, Object> config) {
         if (Asserts.isNull(gatewayConfig)) {

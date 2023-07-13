@@ -19,14 +19,14 @@
 
 package org.dinky.gateway.config;
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.Assert;
 import org.dinky.assertion.Asserts;
-import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 import java.util.Map;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -56,11 +56,11 @@ public class GatewayConfig {
     public static GatewayConfig build(FlinkClusterConfig config) {
         Assert.notNull(config);
         GatewayConfig gatewayConfig = new GatewayConfig();
-        BeanUtil.copyProperties(config,gatewayConfig);
+        BeanUtil.copyProperties(config, gatewayConfig);
         for (Map<String, String> item : gatewayConfig.getFlinkConfig().getFlinkConfigList()) {
             if (Asserts.isNotNull(item)) {
-                Assert.notNull(item.get("name"),"Custer config has null item");
-                Assert.notNull(item.get("value"),"Custer config has null item");
+                Assert.notNull(item.get("name"), "Custer config has null item");
+                Assert.notNull(item.get("value"), "Custer config has null item");
                 gatewayConfig
                         .getFlinkConfig()
                         .getConfiguration()
@@ -69,5 +69,4 @@ public class GatewayConfig {
         }
         return gatewayConfig;
     }
-
 }

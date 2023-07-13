@@ -19,13 +19,14 @@
 
 package org.dinky.gateway.model;
 
-import lombok.Getter;
-import lombok.Setter;
 import org.dinky.gateway.config.AppConfig;
 import org.dinky.gateway.config.ClusterConfig;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.GatewayType;
+
+import lombok.Getter;
+import lombok.Setter;
 
 /** @since */
 @Getter

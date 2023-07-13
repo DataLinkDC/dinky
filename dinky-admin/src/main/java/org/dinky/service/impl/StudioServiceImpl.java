@@ -399,7 +399,9 @@ public class StudioServiceImpl implements StudioService {
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            FlinkClusterConfig gatewayConfig = clusterConfigurationService.getFlinkClusterCfg(cluster.getClusterConfigurationId());
+            FlinkClusterConfig gatewayConfig =
+                    clusterConfigurationService.getFlinkClusterCfg(
+                            cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
         JobManager jobManager = JobManager.build(jobConfig);
@@ -417,7 +419,9 @@ public class StudioServiceImpl implements StudioService {
         jobConfig.setType(cluster.getType());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             // 如果用户选择用dinky平台来托管集群信息 说明任务一定是从dinky发起提交的
-            FlinkClusterConfig gatewayConfig = clusterConfigurationService.getFlinkClusterCfg(cluster.getClusterConfigurationId());
+            FlinkClusterConfig gatewayConfig =
+                    clusterConfigurationService.getFlinkClusterCfg(
+                            cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());

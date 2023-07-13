@@ -19,9 +19,10 @@
 
 package org.dinky.gateway.config;
 
+import org.dinky.data.constant.CommonConstant;
+
 import lombok.Data;
 import lombok.With;
-import org.dinky.data.constant.CommonConstant;
 
 /**
  * AppConfig
@@ -35,5 +36,4 @@ public class AppConfig {
     private String userJarPath;
     private String[] userJarParas;
     private String userJarMainAppClass = CommonConstant.DINKY_APP_MAIN_CLASS;
-
 }

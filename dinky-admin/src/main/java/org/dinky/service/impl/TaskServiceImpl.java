@@ -19,9 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.json.JSONObject;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.dinky.alert.Alert;
 import org.dinky.alert.AlertConfig;
 import org.dinky.alert.AlertMsg;
@@ -53,7 +50,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.model.DataBase;
-import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.data.model.History;
 import org.dinky.data.model.Jar;
 import org.dinky.data.model.JobHistory;
@@ -79,6 +75,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.FlinkJobTask;
@@ -117,6 +114,7 @@ import org.dinky.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -152,6 +150,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
@@ -159,6 +158,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 
 /** TaskServiceImpl */
@@ -212,8 +212,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private String[] buildParas(Integer id, String dinkyAddr) {
         return String.format(
-                "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
-                id, driver(), url(), username(), password(), dinkyAddr).split(" ");
+                        "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
+                        id, driver(), url(), username(), password(), dinkyAddr)
+                .split(" ");
     }
 
     @Override
@@ -235,9 +236,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
 
-//        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-//            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
-//        }
+        //        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+        //            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
+        //        }
 
         JobManager jobManager = JobManager.build(config);
         process.start();
@@ -254,10 +255,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private void loadDocker(
             Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
-        Map<String, Object> dockerConfig = clusterCfgService
-                                .getClusterConfigById(clusterConfigurationId)
-                                .getFlinkClusterCfg()
-                                .getKubernetesConfig().getDockerConfig();
+        Map<String, Object> dockerConfig =
+                clusterCfgService
+                        .getClusterConfigById(clusterConfigurationId)
+                        .getFlinkClusterCfg()
+                        .getKubernetesConfig()
+                        .getDockerConfig();
 
         if (dockerConfig == null) {
             return;
@@ -944,11 +947,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Savepoints savepoints = buildSavepoint(config);
         if (Asserts.isNotNull(savepoints)) {
             config.setSavePointPath(savepoints.getPath());
-            config.getConfig().put(SavepointConfigOptions.SAVEPOINT_PATH.key(), savepoints.getPath());
+            config.getConfig()
+                    .put(SavepointConfigOptions.SAVEPOINT_PATH.key(), savepoints.getPath());
         }
 
         if (!GatewayType.get(task.getType()).isDeployCluster()) {
-            String address = clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId());
+            String address =
+                    clusterInstanceService.buildEnvironmentAddress(
+                            config.isUseRemote(), task.getClusterId());
             config.setAddress(address);
         } else {
             config.buildGatewayConfig(buildGatewayCfgObj(config));
@@ -959,28 +965,34 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return config;
     }
 
-    private Savepoints buildSavepoint(JobConfig config){
+    private Savepoints buildSavepoint(JobConfig config) {
         switch (config.getSavePointStrategy()) {
             case LATEST:
                 return savepointsService.getLatestSavepointByTaskId(config.getTaskId());
             case EARLIEST:
                 return savepointsService.getEarliestSavepointByTaskId(config.getTaskId());
             case CUSTOM:
-                return new Savepoints(){{setPath(config.getSavePointPath());}};
+                return new Savepoints() {
+                    {
+                        setPath(config.getSavePointPath());
+                    }
+                };
             default:
                 return null;
         }
     }
+
     private FlinkClusterConfig buildGatewayCfgObj(JobConfig config) {
-        FlinkClusterConfig flinkClusterCfg = clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
+        FlinkClusterConfig flinkClusterCfg =
+                clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
         flinkClusterCfg.getAppConfig().setUserJarParas(buildParas(config.getTaskId()));
         flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfig());
 
-//        if (config.isJarTask()) {
-//            JSONObject clusterObj = new JSONObject(flinkClusterCfg);
-//            JSONObject taskObj = new JSONObject(task.getStatement());
-//            return JSONUtil.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
-//        }
+        //        if (config.isJarTask()) {
+        //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);
+        //            JSONObject taskObj = new JSONObject(task.getStatement());
+        //            return JSONUtil.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
+        //        }
         return flinkClusterCfg;
     }
 
@@ -1022,7 +1034,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
     }
 
-
     @Override
     public JobInstance refreshJobInstance(Integer id, boolean isCoercive) {
         JobInfoDetail jobInfoDetail;
@@ -1043,8 +1054,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 ClusterConfiguration clusterConfigById =
-                        clusterCfgService.getClusterConfigById(
-                                history.getClusterConfigurationId());
+                        clusterCfgService.getClusterConfigById(history.getClusterConfigurationId());
                 jobInfoDetail.setClusterConfiguration(clusterConfigById);
                 jobInfoDetail.getInstance().setType(history.getType());
             }
@@ -1090,10 +1100,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                     .getInstance()
                     .setDuration(
                             jobInfoDetail
-                                    .getJobHistory()
-                                    .getJob()
-                                    .get(FlinkRestResultConstant.JOB_DURATION)
-                                    .asLong()
+                                            .getJobHistory()
+                                            .getJob()
+                                            .get(FlinkRestResultConstant.JOB_DURATION)
+                                            .asLong()
                                     / 1000);
             jobInfoDetail
                     .getInstance()
@@ -1123,9 +1133,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private boolean inRefreshPlan(JobInstance jobInstance) {
         return !JobStatus.isDone(jobInstance.getStatus())
                 || (Asserts.isNotNull(jobInstance.getFinishTime())
-                && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
-                .toMinutes()
-                < 1);
+                        && Duration.between(jobInstance.getFinishTime(), LocalDateTime.now())
+                                        .toMinutes()
+                                < 1);
     }
 
     @Override
@@ -1401,7 +1411,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (GatewayType.isDeployCluster(jobInstance.getType())) {
             JobConfig jobConfig = new JobConfig();
             String configJson = jobHistory.getClusterConfiguration().get("configJson").asText();
-            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
+            jobConfig.buildGatewayConfig(
+                    new JSONObject(configJson).toBean(FlinkClusterConfig.class));
             jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig())
@@ -1470,7 +1481,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
                     if (alertInstance == null
                             || (Asserts.isNotNull(alertInstance.getEnabled())
-                            && !alertInstance.getEnabled())) {
+                                    && !alertInstance.getEnabled())) {
                         continue;
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());

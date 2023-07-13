@@ -109,7 +109,7 @@ public enum Dialect {
         }
     }
 
-    public static boolean isJarDialect(String value){
+    public static boolean isJarDialect(String value) {
         Dialect dialect = Dialect.get(value);
         switch (dialect) {
             case FLINK_JAR:
