@@ -211,6 +211,17 @@ ol {
   border-bottom-color: red;
 }
 
+.treeList {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+
+  .ant-tree-list-holder-inner {
+    min-width: max-content;
+    z-index: auto;
+  }
+}
+
 .siderTree {
   height: 100%;
   overflow-x: auto;
@@ -232,12 +243,12 @@ ol {
   }
 }
 
-.gitCodeTree{
+.gitCodeTree {
   max-height: 70vh;
   min-height: 70vh;
 }
 
-.schemaTree{
+.schemaTree {
   max-height: 89vh;
   min-height: 89vh;
 }
@@ -287,20 +298,20 @@ ol {
   align-content: center;
 }
 
-.query-form{
+.query-form {
   width: max-content;
   left: 0;
   position: absolute;
 }
 
-.tiny-charts{
+.tiny-charts {
   position: absolute;
   top: 15px;
   right: 12px;
 }
 
 
-.radio-group-chart{
+.radio-group-chart {
   position: absolute;
   right: 0;
   top: 7px;

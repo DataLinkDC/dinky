@@ -41,6 +41,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
     {
       (treeData.length > 0) ?
         <DirectoryTree
+          className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           treeData={buildSchemaTree(treeData)}
         /> : <Empty className={'code-content-empty'}/>

@@ -1,9 +1,7 @@
 import React from "react";
-import {Button, ConfigProvider} from "antd";
 import {MinusOutlined} from "@ant-design/icons";
 import {Enable, Resizable, ResizeCallback, Size} from "re-resizable";
-import { PageContainer } from "@ant-design/pro-layout/es/components/PageContainer";
-import {ProLayout} from "@ant-design/pro-layout";
+import {PageContainer} from "@ant-design/pro-components";
 
 export type MovableSidebarProps = {
   title?: React.ReactNode;
@@ -22,33 +20,35 @@ export type MovableSidebarProps = {
 };
 
 const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
-  return (
-    <Resizable
-      style={{...props.style,display:props.visible?'block':'none'}}
-      onResize={props.onResize}
-      defaultSize={props.defaultSize}
-      minWidth={props.minWidth}
-      maxWidth={props.maxWidth}
-      minHeight={props.minHeight}
-      maxHeight={props.maxHeight}
-      enable={props.enable}
-    >
-      <PageContainer
-        style={{backgroundColor:'#fff',border:"1px solid rgb(240, 240, 240)"}}
-        header={{
-          title: props.title,
-          extra: [
-            <Button key={"minimize"} icon={<MinusOutlined/>} block type={"text"} shape={"circle"}
-                    onClick={props.handlerMinimize}/>
-          ],
-          style: {borderBottom: '1px solid rgb(240, 240, 240)'}
-        }}
-      >
-          <div style={{height: props.contentHeight}}>
-            {props.children}
-          </div>
-      </PageContainer>
-    </Resizable>
-  );
+
+    const {style, visible,onResize,defaultSize,
+        minWidth,maxWidth,minHeight,maxHeight,enable
+        ,children, title,contentHeight,handlerMinimize
+    } = props;
+
+    return (
+        <Resizable
+            style={{...style, display: visible ? 'block' : 'none'}}
+            onResize={onResize}
+            defaultSize={defaultSize}
+            minWidth={minWidth}
+            maxWidth={maxWidth}
+            minHeight={minHeight}
+            maxHeight={maxHeight}
+            enable={enable}
+        >
+            <PageContainer
+                style={{backgroundColor: '#fff', border: "1px solid rgb(240, 240, 240)"}}
+                title={title}
+                extra={<MinusOutlined key={"minimize"} onClick={handlerMinimize}/>}
+                fixedHeader
+                header={{
+                    style: {borderBottom: '1px solid rgb(240, 240, 240)'}
+                }}
+            >
+                <div style={{height: contentHeight}}>{children}</div>
+            </PageContainer>
+        </Resizable>
+    );
 };
 export default MovableSidebar;

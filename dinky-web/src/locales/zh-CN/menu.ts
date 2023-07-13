@@ -70,6 +70,11 @@ export default {
   'menu.datastudio.project': '项目',
   'menu.datastudio.structure': '结构',
   'menu.datastudio.metadata': '元数据',
-
   'menu.datastudio.console': '控制台',
+  'menu.datastudio.jobConfig': '作业配置',
+  'menu.datastudio.executeConfig': '执行配置',
+  'menu.datastudio.savePoint': '保存点',
+  'menu.datastudio.historyVision': '历史版本',
+  'menu.datastudio.jobInfo': '作业信息',
+
 };

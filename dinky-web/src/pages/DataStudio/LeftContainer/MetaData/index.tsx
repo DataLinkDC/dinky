@@ -81,9 +81,7 @@ const MetaData = (props: any) => {
           <Tooltip title={l('button.refresh')}>
             <Button type="text"
                     icon={<ReloadOutlined/>}
-                    onClick={() => {
-                      refreshDataBase(databaseId)
-                    }}
+                    onClick={() => refreshDataBase(databaseId)}
             />
           </Tooltip>
         </Col>

@@ -30,34 +30,34 @@ export const LeftSide = [
 ]
 export const RightSide = [
   {
-    key: 'jobConfig',
+    key: 'menu.datastudio.jobConfig',
     icon: <SettingOutlined/>,
-    label: '作业配置',
+    label: 'menu.datastudio.jobConfig',
   },
   {
-    key: 'executeConfig',
+    key: 'menu.datastudio.executeConfig',
     icon: <PlayCircleOutlined/>,
-    label: '执行配置',
+    label: 'menu.datastudio.executeConfig',
   },
   {
-    key: 'savePoint',
+    key: 'menu.datastudio.savePoint',
     icon: <FolderOutlined/>,
-    label: '保存点',
+    label: 'menu.datastudio.savePoint',
   },
   {
-    key: 'versionHistory',
+    key: 'menu.datastudio.historyVision',
     icon: <HistoryOutlined/>,
-    label: '版本历史',
+    label: 'menu.datastudio.historyVision',
   }, {
-    key: 'jobInfo',
+    key: 'menu.datastudio.jobInfo',
     icon: <InfoCircleOutlined/>,
-    label: '作业信息',
+    label: 'menu.datastudio.jobInfo',
   }
 ]
 export const LeftBottomSide = [
   {
-    key: 'console',
+    key: 'menu.datastudio.console',
     icon: <RightSquareOutlined/>,
-    label: '控制台',
+    label: 'menu.datastudio.console',
   }
 ]
