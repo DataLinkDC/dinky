@@ -66,4 +66,10 @@ export default {
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
+
+  'menu.datastudio.project': '项目',
+  'menu.datastudio.structure': '结构',
+  'menu.datastudio.metadata': '元数据',
+
+  'menu.datastudio.console': '控制台',
 };

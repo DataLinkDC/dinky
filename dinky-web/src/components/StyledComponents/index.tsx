@@ -50,3 +50,13 @@ export const TagAlignCenter = styled.div`
     align-items: center;
     height: 100%;
 `;
+export const TagAlignLeft = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  align-items: center;
+`;
+
+export const TestDiv = styled.div`
+
+`;

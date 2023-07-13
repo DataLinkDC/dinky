@@ -66,4 +66,10 @@ export default {
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
+
+  'menu.datastudio.project': 'Project',
+  'menu.datastudio.structure': 'Structure',
+  'menu.datastudio.metadata': 'Metadata',
+
+  'menu.datastudio.console': 'Console',
 };

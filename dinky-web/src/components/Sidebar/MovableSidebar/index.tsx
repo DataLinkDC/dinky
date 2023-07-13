@@ -1,8 +1,9 @@
 import React from "react";
-import {Button} from "antd";
-import {PageContainer} from "@ant-design/pro-layout";
+import {Button, ConfigProvider} from "antd";
 import {MinusOutlined} from "@ant-design/icons";
 import {Enable, Resizable, ResizeCallback, Size} from "re-resizable";
+import { PageContainer } from "@ant-design/pro-layout/es/components/PageContainer";
+import {ProLayout} from "@ant-design/pro-layout";
 
 export type MovableSidebarProps = {
   title?: React.ReactNode;
@@ -22,8 +23,8 @@ export type MovableSidebarProps = {
 
 const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
   return (
-    !props.visible ? <></> : <Resizable
-      style={props.style}
+    <Resizable
+      style={{...props.style,display:props.visible?'block':'none'}}
       onResize={props.onResize}
       defaultSize={props.defaultSize}
       minWidth={props.minWidth}
@@ -32,7 +33,6 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
       maxHeight={props.maxHeight}
       enable={props.enable}
     >
-
       <PageContainer
         style={{backgroundColor:'#fff',border:"1px solid rgb(240, 240, 240)"}}
         header={{
@@ -41,14 +41,13 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             <Button key={"minimize"} icon={<MinusOutlined/>} block type={"text"} shape={"circle"}
                     onClick={props.handlerMinimize}/>
           ],
-          style: {borderBottom: '1px solid black'}
+          style: {borderBottom: '1px solid rgb(240, 240, 240)'}
         }}
       >
           <div style={{height: props.contentHeight}}>
             {props.children}
           </div>
       </PageContainer>
-
     </Resizable>
   );
 };

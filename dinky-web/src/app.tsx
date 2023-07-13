@@ -28,9 +28,9 @@ import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
 import {l} from "@/utils/intl";
-import { persistStore, persistReducer } from 'redux-persist';
+import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import { Reducer, StoreEnhancer } from 'redux';
+import {Reducer, StoreEnhancer} from 'redux';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -149,11 +149,11 @@ const persistConfig = {
 };
 
 
-const persistEnhancer:StoreEnhancer = (next) =>
-  (reducer:Reducer<any, any>) => {
+const persistEnhancer: StoreEnhancer = (next) =>
+  (reducer: Reducer<any, any>) => {
     const store = next(persistReducer(persistConfig, reducer));
-    const persist = persistStore(store) ;
-    return { ...store, persist };
+    const persist = persistStore(store);
+    return {...store, persist};
   }
 
 export const dva = {

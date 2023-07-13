@@ -1,22 +1,16 @@
 import {connect} from "@umijs/max";
 import {DataBaseType, StateType} from "../../model";
-import {Button, Col, Empty, Modal, Row, Select, Spin, Tabs, Tag, Tooltip, Tree, TreeDataNode} from "antd";
+import {Button, Col, Row, Spin, Tag, Tooltip} from "antd";
 import React, {useState} from "react";
 import {
-  AppstoreAddOutlined,
-  CodepenOutlined,
-  DatabaseOutlined, DownOutlined,
-  OrderedListOutlined,
-  ReloadOutlined,
+  DatabaseOutlined, ReloadOutlined,
   TableOutlined
 } from "@ant-design/icons";
 import {clearMetaDataTable, showMetaDataTable} from "./service";
 import {l} from "@/utils/intl";
 import {ProFormSelect} from "@ant-design/pro-components";
-import DataSourceDetail from "@/pages/RegCenter/DataSource/components/DataSourceDetail";
-
-const {DirectoryTree} = Tree;
-const {Option} = Select;
+import {TagAlignLeft} from "@/components/StyledComponents";
+import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 
 const MetaData = (props: any) => {
 
@@ -24,8 +18,6 @@ const MetaData = (props: any) => {
   const database: DataBaseType[] = props.database;
   const [databaseId, setDatabaseId] = useState<number>(0);
   const [treeData, setTreeData] = useState<[]>([]);
-  const [modalVisit, setModalVisit] = useState(false);
-  const [row, setRow] = useState<TreeDataNode>();
   const [loadingDatabase, setLoadingDatabase] = useState(false);
 
   const onRefreshTreeData = (databaseId: number) => {
@@ -64,18 +56,6 @@ const MetaData = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
-
-  const openColumnInfo = (e: React.MouseEvent, node: TreeDataNode) => {
-    if (node.isLeaf) {
-      setRow(node);
-      setModalVisit(true);
-    }
-  }
-
-  const cancelHandle = () => {
-    setRow(undefined);
-    setModalVisit(false);
-  }
   const refreshDataBase = (value: number) => {
     if (!databaseId) return;
     setLoadingDatabase(true);
@@ -83,44 +63,16 @@ const MetaData = (props: any) => {
       onChangeDataBase(databaseId);
     })
   };
-  const tabItems = [
-    {
-      key: 'tableInfo',
-      label: <span>
-          <TableOutlined/>
-        {l('pages.metadata.TableInfo')}
-        </span>,
-      children: row ? <DataSourceDetail backClick={()=>console.log()} dataSource={{"id":1}} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-      // {row ? <Tables table={row}/> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>}
-    },
-    {
-      key: 'columnInfo',
-      label: <span>
-          <CodepenOutlined/>
-        {l('pages.metadata.FieldInformation')}
-        </span>,
-      children: row ? <></> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-      // {/*{row ? <Columns dbId={databaseId} schema={row.schema} table={row.table} scroll={{x: 1000}}/> :*/}
-    },
-    {
-      key: 'sqlGeneration',
-      label: <span>
-          <OrderedListOutlined/>
-        {l('pages.metadata.GenerateSQL')}
-        </span>,
-      children: row ? <></> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>
-      // {/*{row ? <Generation dbId={databaseId} schema={row.schema} table={row.table}/> :*/}
-    },
-
-  ]
   const getDataBaseOptions = () => {
     return database.map(({id, name, type, enabled}) => (
       {
-        label: <> <Tag style={{overflow:"initial",lineHeight:"initial"}} color={enabled ? "processing" : "error"}>{type}</Tag>{name}</>
+        label: <TagAlignLeft> <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>
         , value: id
       }
     ))
   };
+
+
   return (
 
     <Spin spinning={loadingDatabase} delay={500}>
@@ -137,20 +89,15 @@ const MetaData = (props: any) => {
         </Col>
       </Row>
       <Row>
-        <Col span={24} style={{height:"36px"}}>
+        <Col span={24} style={{height: "36px"}}>
           <ProFormSelect
             allowClear={false}
             placeholder={l('pages.metadata.selectDatabase')}
             options={getDataBaseOptions()}
             fieldProps={{
-              onChange: (e)=>{
-                if (e){
-                  // onChangeDataBase(e)
-                  dispatch({
-                    type:"Studio/addTab",
-                    // payload:{label:e,children:<DataSourceDetail backClick={()=>console.log()} dataSource={{"id":e}}/> }
-                    payload:{label:e,children:'123' }
-                  })
+              onChange: (e) => {
+                if (e) {
+                  onChangeDataBase(e)
                 }
               }
             }}
@@ -158,39 +105,30 @@ const MetaData = (props: any) => {
         </Col>
       </Row>
 
-      <div style={{height: (500 - 32)}}>
-        {treeData.length > 0 ? (
-          <DirectoryTree
-            showIcon
-            switcherIcon={<DownOutlined/>}
-            treeData={treeData}
-            onRightClick={({event, node}: any) => {
-              openColumnInfo(event, node)
-            }}
-          />) : (<Empty image={Empty.PRESENTED_IMAGE_SIMPLE}/>)}
+      <div style={{height: (props.toolContentHeight-64-4),backgroundColor:`#fff`}}>
+        <SchemaTree onNodeClick={async (info: any) => {
+          const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
+          if (isLeaf) {
+           const queryParams =  {
+              id: databaseId ,
+              schemaName,
+              tableName
+            };
+
+            dispatch({
+              type: "Studio/addTab",
+              payload: {id:databaseId+schemaName+tableName,label: schemaName+"\\" + tableName , params:{queryParams:queryParams,tableInfo:fullInfo},type:"metadata"}
+            })
+          }
+
+        }} treeData={treeData}/>
       </div>
-      <Modal
-        title={row?.key}
-        open={modalVisit}
-        width={1000}
-        onCancel={() => {
-          cancelHandle();
-        }}
-        footer={[
-          <Button key="back" onClick={() => {
-            cancelHandle();
-          }}>
-            {l('button.close')}
-          </Button>,
-        ]}
-      >
-        <Tabs items={tabItems} defaultActiveKey="tableInfo" size="small">
-        </Tabs>
-      </Modal>
+
     </Spin>
   );
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
+  toolContentHeight:Studio.toolContentHeight,
   database: Studio.database,
 }))(MetaData);

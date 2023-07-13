@@ -3,6 +3,22 @@ import {Reducer} from "@@/plugin-dva/types";
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import React, {ReactNode} from "react";
 
+export const VIEW = {
+  headerHeight: 32,
+  headerNavHeight: 55,
+  footerHeight: 25,
+  sideWidth: 40,
+  leftToolWidth: 180,
+  marginTop: 84,
+  topHeight: 35.6,
+  bottomHeight: 100,
+  rightMargin: 32,
+  leftMargin: 36,
+  midMargin: 41,
+  otherHeight: 10,
+  paddingInline: 50,
+};
+
 export type SqlMetaData = {
   statement?: string,
   metaData?: MetaData[],
@@ -108,7 +124,10 @@ export type ConsoleType = {
 }
 
 export type TabsItemType = {
+  id:string,
   label: string;
+  params: string|object;
+  type: "metadata";
   key: number,
   value: string;
   icon: any;
@@ -120,7 +139,6 @@ export type TabsItemType = {
   isModified: boolean;
   sqlMetaData?: SqlMetaData;
   metaStore?: MetaStoreCatalogType[];
-  children:ReactNode
 }
 
 export type TabsType = {
@@ -173,10 +191,13 @@ export type container = {
   selectKey: string;
   height: number | string;
   width: number | string;
+  maxWidth?: number | string;
 }
 
 export type StateType = {
   isFullScreen: boolean;
+  toolContentHeight: number;
+  centerContentHeight: number;
   leftContainer: container;
   rightContainer: container;
   bottomContainer: container;
@@ -188,6 +209,8 @@ export type ModelType = {
   state: StateType;
   effects: {};
   reducers: {
+    updateToolContentHeight: Reducer<StateType>;
+    updateCenterContentHeight: Reducer<StateType>;
     updateSelectLeftKey: Reducer<StateType>;
     updateLeftWidth: Reducer<StateType>;
     updateSelectRightKey: Reducer<StateType>;
@@ -205,8 +228,10 @@ const Model: ModelType = {
   namespace: 'Studio',
   state: {
     isFullScreen: false,
+    toolContentHeight:0,
+    centerContentHeight:0,
     leftContainer: {
-      selectKey: 'project',
+      selectKey: 'menu.datastudio.project',
       height: "100%",
       width: 500,
     },
@@ -228,6 +253,18 @@ const Model: ModelType = {
   },
   effects: {},
   reducers: {
+    updateToolContentHeight(state, {payload}) {
+      return {
+        ...state,
+        toolContentHeight: payload
+      };
+    },
+    updateCenterContentHeight(state, {payload}) {
+      return {
+        ...state,
+        centerContentHeight: payload
+      };
+    },
     updateSelectLeftKey(state, {payload}) {
       return {
         ...state,
@@ -263,6 +300,13 @@ const Model: ModelType = {
       };
     }
     , updateSelectBottomKey(state, {payload}) {
+      if (payload === '') {
+        state.centerContentHeight =(state.centerContentHeight as number)  + (state.bottomContainer.height as number);
+        state.toolContentHeight =(state.toolContentHeight as number)  + (state.bottomContainer.height as number);
+      }else {
+        state.centerContentHeight =(state.centerContentHeight as number)  - (state.bottomContainer.height as number);
+        state.toolContentHeight =(state.toolContentHeight as number)  - (state.bottomContainer.height as number);
+      }
       return {
         ...state,
         bottomContainer: {
@@ -314,14 +358,25 @@ const Model: ModelType = {
     },
     addTab(state, {payload }) {
       const node=payload as  TabsItemType;
-      node.key=state.tabs.panes.length
-      return {
-        ...state,
-        tabs: {
-          panes:[...state.tabs.panes,node],
-          activeKey: state.tabs.panes.length
-        },
-      };
+      for (const item of state.tabs.panes) {
+        if (item.id === node.id) {
+          return {
+            ...state,
+            tabs:{
+              ...state.tabs,
+              activeKey:item.key
+            }
+          };
+        }
+      }
+        node.key=state.tabs.panes.length
+        return {
+          ...state,
+          tabs: {
+            panes:[...state.tabs.panes,node],
+            activeKey: state.tabs.panes.length
+          },
+      }
     }
 
   }

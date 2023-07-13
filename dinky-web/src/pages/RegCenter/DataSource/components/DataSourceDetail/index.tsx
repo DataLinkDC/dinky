@@ -41,7 +41,6 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
-  const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
   const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
   const [params, setParams] = useState<QueryParams>({id: 0, schemaName: '', tableName: ''});
 
@@ -54,7 +53,6 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
 
   const clearState = () => {
     setDisabled(true);
-    setTableColumns([]);
     setTableInfo({});
     setParams({
       id: 0,
@@ -87,7 +85,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     if (isLeaf) {
       setParams({
-        id: dataSource.id || 0,
+        id: dataSource.id as number,
         schemaName,
         tableName
       });
@@ -95,12 +93,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
       /**
        * get table columns
        */
-      const columnsData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, {
-        id: dataSource.id,
-        schemaName,
-        tableName
-      });
-      setTableColumns(columnsData);
+
       setTableInfo(fullInfo);
     } else {
       clearState();
@@ -137,7 +130,6 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
         {/* tags */}
         <RightTagsRouter
           tableInfo={tableInfo}
-          tableColumns={tableColumns}
           queryParams={params}
           rightButtons={renderBackButton()}
           tagDisabled={disabled}
