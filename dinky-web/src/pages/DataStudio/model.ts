@@ -236,12 +236,12 @@ const Model: ModelType = {
       width: 500,
     },
     rightContainer: {
-      selectKey: 'jobConfig',
+      selectKey: 'menu.datastudio.jobConfig',
       height: "100%",
       width: 500,
     },
     bottomContainer: {
-      selectKey: 'console',
+      selectKey: 'menu.datastudio.console',
       height: 400,
       width: "100%",
     }
