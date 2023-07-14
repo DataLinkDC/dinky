@@ -1,7 +1,7 @@
 import {Card, ConfigProvider, Tabs, TabsProps} from "antd";
 import React from "react";
 import {connect} from "@@/exports";
-import {StateType, TabsItemType} from "@/pages/DataStudio/model";
+import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
@@ -16,9 +16,10 @@ const MiddleContainer = (props:any) => {
     const children = () => {
       switch (item.type) {
         case "metadata":
+          const params = item.params as MetadataParams;
           return <RightTagsRouter
-            tableInfo={item.params.tableInfo}
-            queryParams={item.params.queryParams} rightButtons={<></>} tagDisabled={false}/>
+            tableInfo={params.tableInfo}
+            queryParams={params.queryParams} rightButtons={<></>} tagDisabled={false}/>
         default:
           return <></>
       }
@@ -31,7 +32,7 @@ const MiddleContainer = (props:any) => {
   const updateActiveKey = (key: string) => {
     dispatch({
       type: 'Studio/updateTabsActiveKey',
-      payload: parseInt(key),
+      payload: key,
     })
   };
 
