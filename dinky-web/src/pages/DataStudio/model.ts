@@ -1,6 +1,7 @@
 import {Reducer} from "@@/plugin-dva/types";
 import React from "react";
 import {DataSources} from "@/types/RegCenter/data";
+import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
 
 /**
  * 初始化布局宽高度
@@ -78,21 +79,24 @@ export type TaskType = {
   useResult: boolean;
   useChangeLog: boolean;
   useAutoCancel: boolean;
-  useSession: boolean;
 };
 
 export type ConsoleType = {
   result: {};
   chart: {};
 }
+export type MetadataParams = {
+  queryParams: QueryParams;
+  tableInfo: {};
+}
 
 export type TabsItemType = {
   id:string,
   label: string;
   breadcrumbLabel: string;
-  params: string | object;
+  params: string|object|MetadataParams;
   type: "metadata";
-  key: number,
+  key: string,
   value: string;
   icon: any;
   closable: boolean;
@@ -106,7 +110,7 @@ export type TabsItemType = {
 }
 
 export type TabsType = {
-  activeKey: number;
+  activeKey: string;
   activeBreadcrumbTitle:string;
   panes: TabsItemType[];
 }
@@ -202,8 +206,8 @@ const Model: ModelType = {
     database: [],
     selectDatabaseId: null,
     tabs: {
-      activeBreadcrumbTitle: "",
-      activeKey: 0,
+      activeBreadcrumbTitle:"",
+      activeKey: "0",
       panes: [],
     },
   },
@@ -376,7 +380,7 @@ const Model: ModelType = {
      * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
      */
     closeTab(state, {payload }) {
-      const needCloseKey=payload as  TargetKey;
+      const needCloseKey=(payload as  TargetKey).toString();
       const {tabs:{panes,activeKey}}= state;
       if (needCloseKey===activeKey){
         for (const [index,pane] of panes.entries()) {
@@ -422,7 +426,7 @@ const Model: ModelType = {
           };
         }
       }
-        node.key=state.tabs.panes.length===0?0:state.tabs.panes[state.tabs.panes.length-1].key+1 ;
+        node.key=state.tabs.panes.length === 0 ? "0" :(parseInt(state.tabs.panes[state.tabs.panes.length-1].key)+1 ).toString();
         return {
           ...state,
           tabs: {
