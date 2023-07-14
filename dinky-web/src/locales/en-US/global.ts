@@ -132,11 +132,11 @@ export default {
   'global.table.status.abnormal': 'Abnormal',
 
   'global.table.jobname': 'Job Name',
-  'global.table.jobid': 'Job Id',
-  'global.table.taskid': 'Task Id',
   'global.table.lifecycle': 'Life Cycle',
   'global.table.lifecycle.all': 'All',
   'global.table.lifecycle.dev': 'Develop',
+  'global.table.execmode.batch': 'Batch Mode',
+  'global.table.execmode.streaming': 'Stream Mode',
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',

@@ -128,8 +128,6 @@ export default {
   'global.table.status.abnormal': '异常',
 
   'global.table.jobname': '任务名称',
-  'global.table.jobid': 'Job ID',
-  'global.table.taskid': '任务ID',
   'global.table.lifecycle': '生命周期',
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
@@ -137,6 +135,8 @@ export default {
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.execmode': '执行模式',
+  'global.table.execmode.batch': '批模式',
+  'global.table.execmode.streaming': '流模式',
   'global.table.runmode': '运行模式',
   'global.table.runmode.local': '本地',
   'global.table.runmode.remote': '远程',
