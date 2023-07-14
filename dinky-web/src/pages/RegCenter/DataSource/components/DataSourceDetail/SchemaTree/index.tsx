@@ -28,7 +28,7 @@ const {DirectoryTree} = Tree;
  */
 type SchemaTreeProps = {
   treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
+  onNodeClick: (keys: Key[] ,info: any) => void
   style?: React.CSSProperties
   expandKeys: string[]
   onExpand: (keys: Key[]) => void
@@ -51,7 +51,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
           onExpand={(keys) => onExpand(keys)}
           style={style}
           className={'treeList'}
-          onSelect={(_, info) => onNodeClick(info)}
+          onSelect={(keys, info) => onNodeClick(keys,info)}
           treeData={buildSchemaTree(treeData)}
         /> : <Empty className={'code-content-empty'}/>
     }

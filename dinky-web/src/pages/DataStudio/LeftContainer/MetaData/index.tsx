@@ -96,14 +96,15 @@ const MetaData = (props: any) => {
   };
   /**
    * 树节点点击事件 添加tab页 并传递参数
+   * @param keys
    * @param info
    * @returns {Promise<void>}
    */
-  const handleTreeNodeClick = async (info: any) => {
+  const handleTreeNodeClick = async (keys: Key[] ,info: any) => {
     // todo: 节点单击事件时 触发 dva 保存当前选中节点的key 但是这里的key 不会使节点高亮选中,需要处理
     dispatch({
         type: "Studio/updateDatabaseSelectKey",
-        payload: info.key
+        payload: keys
     })
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     if (isLeaf) {
@@ -163,7 +164,7 @@ const MetaData = (props: any) => {
             }}
         />
       </ProForm>
-      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData} onExpand={handleTreeExpand}/>
+      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
     </Spin>
   );
 };
