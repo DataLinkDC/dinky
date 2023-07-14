@@ -124,7 +124,8 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         String jarMainClass = config.getAppConfig().getUserJarMainAppClass();
         String userJarPath = config.getAppConfig().getUserJarPath();
         String[] userJarParas = config.getAppConfig().getUserJarParas();
-        String parallelism = flinkConfig.getConfiguration().get(CoreOptions.DEFAULT_PARALLELISM.key());
+        String parallelism =
+                flinkConfig.getConfiguration().get(CoreOptions.DEFAULT_PARALLELISM.key());
 
         logger.info(
                 "\nThe app config is : \njarMainClass:{}\n userJarPath:{}\n userJarParas:{}\n ",
@@ -168,13 +169,17 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
-        String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
+        String jbmem =
+                flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
         process.info(String.format("jobmanager resource is : cpu-->%s, mem-->%s", jbcpu, jbmem));
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
         String tmcpu = kubernetsConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
-        String tmmem = flinkConfig.getConfiguration().getOrDefault("taskmanager.memory.process.size", "1G");
+        String tmmem =
+                flinkConfig
+                        .getConfiguration()
+                        .getOrDefault("taskmanager.memory.process.size", "1G");
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         process.info(String.format("taskmanager resource is : cpu-->%s, mem-->%s", tmcpu, tmmem));
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
