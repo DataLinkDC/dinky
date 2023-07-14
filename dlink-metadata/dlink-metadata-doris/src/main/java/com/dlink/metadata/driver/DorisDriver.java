@@ -19,6 +19,13 @@
 
 package com.dlink.metadata.driver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.hutool.core.text.CharSequenceUtil;
 import com.dlink.metadata.convert.DorisTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
@@ -30,14 +37,6 @@ import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.text.CharSequenceUtil;
 
 public class DorisDriver extends AbstractJdbcDriver {
 
@@ -120,7 +119,7 @@ public class DorisDriver extends AbstractJdbcDriver {
         map.put("SMALLINT", "SMALLINT");
         map.put("INT", "INT");
         map.put("VARCHAR", "STRING");
-        map.put("TEXY", "STRING");
+        map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
     }
@@ -134,19 +133,19 @@ public class DorisDriver extends AbstractJdbcDriver {
 
     @Override
     public String getCreateTableSql(Table table) {
-        List<String> dorisTypes = Arrays.asList("BOOLEAN", "TINYINT", "SMALLINT", "SMALLINT", "INT", "BIGINT", "LARGEINT", "FLOAT", "DOUBLE", "DECIMAL", "DATE", "DATETIME", "CHAR", "VARCHAR", "TEXT", "TIMESTAMP","STRING");
-        StringBuffer keyBuffer = new StringBuffer();
-        StringBuffer ddlBuffer = new StringBuffer();
+        List<String> dorisTypes = Arrays.asList("BOOLEAN", "TINYINT", "SMALLINT", "SMALLINT", "INT", "BIGINT", "LARGEINT", "FLOAT", "DOUBLE", "DECIMAL", "DATE", "DATETIME", "CHAR", "VARCHAR", "TEXT", "TIMESTAMP", "STRING");
+        StringBuilder keyBuffer = new StringBuilder();
+        StringBuilder ddlBuffer = new StringBuilder();
         ddlBuffer.append("CREATE TABLE IF NOT EXISTS ").append(table.getSchema()).append(".").append(table.getName())
             .append(" (").append(System.lineSeparator());
         for (int i = 0; i < table.getColumns().size(); i++) {
             Column columnInfo = table.getColumns().get(i);
             String cType = columnInfo.getType().split(" ")[0].toUpperCase();
             ddlBuffer.append(" `").append(columnInfo.getName()).append("` ");
-            if (!dorisTypes.contains(cType)){
-                 cType = columnInfo.getJavaType().getFlinkType().toUpperCase();
-                if(!dorisTypes.contains(cType)){
-                    logger.error("doris does not support {} type",columnInfo.getType());
+            if (!dorisTypes.contains(cType)) {
+                cType = columnInfo.getJavaType().getFlinkType().toUpperCase();
+                if (!dorisTypes.contains(cType)) {
+                    logger.error("doris does not support {} type", columnInfo.getType());
                     return  "";
                 }
             }
@@ -179,6 +178,12 @@ public class DorisDriver extends AbstractJdbcDriver {
         ddlBuffer.append(" DISTRIBUTED BY HASH (").append(primaryKeys).append(") BUCKETS AUTO").append(System.lineSeparator());
         //
         ddlBuffer.append(" PROPERTIES ( \"replication_allocation\" = \"tag.location.default: 3\")");
-        return  ddlBuffer.toString();
+        return ddlBuffer.toString();
+    }
+
+    @Override
+    public List<Column> listColumns(String schemaName, String tableName) {
+        // Doris 中声明为 Key 的列（可能是多个）必须顺序声明在建表语句头部，因此按 Key 对列重新排序
+        return listColumnsSortByPK(schemaName, tableName);
     }
 }
