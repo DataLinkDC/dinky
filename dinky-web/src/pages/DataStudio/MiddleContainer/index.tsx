@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ConfigProvider, Dropdown, Menu, Space, Tabs} from "antd";
+import {Dropdown, Menu, Space, Tabs} from "antd";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
 import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
@@ -36,15 +36,14 @@ const MiddleContainer = (props: any) => {
     const [includeTab, setIncludeTab] = useState({});
 
 
-
     /**
      * 更新当前激活的tab
      * @param {string} key
      * @param eInfo
      */
     const updateActiveKey = (key: string, eInfo: any) => {
-        const {target : {innerText}} = eInfo;
-        const replaceLabel =  innerText.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+        const {target: {innerText}} = eInfo;
+        const replaceLabel = innerText.toString().replace('.', '/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
         setContextMenuVisible(false)
         dispatch({
             type: 'Studio/updateTabsActiveKey',
@@ -82,11 +81,11 @@ const MiddleContainer = (props: any) => {
      * @param info
      * @param item
      */
-    const handleRightClick = (info: any,item: any) => {
+    const handleRightClick = (info: any, item: any) => {
         info.preventDefault(); // 阻止默认右键事件
-        const {key,label} = item;
-        const replaceLabel =  label.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-        updateActiveKey(key,info);
+        const {key, label} = item;
+        const replaceLabel = label.toString().replace('.', '/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+        updateActiveKey(key, info);
         dispatch({
             type: 'Studio/updateDatabaseSelectKey',
             payload: [replaceLabel],
@@ -94,10 +93,10 @@ const MiddleContainer = (props: any) => {
         // 获取 选中的值
         setIncludeTab(item);
         // 获取右键点击的位置
-        const {clientX,clientY} = info;
+        const {clientX, clientY} = info;
         setContextMenuVisible(true)
         setContextMenuPosition({
-            position: 'fixed', cursor: 'context-menu', width: '10vw',zIndex: 9999,
+            position: 'fixed', cursor: 'context-menu', width: '10vw', zIndex: 9999,
             left: clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
             top: clientY + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
         });
@@ -108,7 +107,7 @@ const MiddleContainer = (props: any) => {
      * @param {MenuInfo} node
      */
     const handleMenuClick = (node: MenuInfo) => {
-          switch (node.key) {
+        switch (node.key) {
             case 'closeAll':
                 handleCloseAllTabs();
                 break;
@@ -158,7 +157,8 @@ const MiddleContainer = (props: any) => {
         }
         return {
             key: item.key,
-            label: <Space onContextMenu={(e)=> handleRightClick(e,item)} key={item.key}>{renderDBIcon(item.icon, 20)}{item.label}</Space>,
+            label: <Space onContextMenu={(e) => handleRightClick(e, item)}
+                          key={item.key}>{renderDBIcon(item.icon, 20)}{item.label}</Space>,
             children: <>
                 <div
                     style={{
@@ -197,7 +197,7 @@ const MiddleContainer = (props: any) => {
             return <>
                 <Tabs
                     hideAdd
-                    onTabClick={(active,e)=> updateActiveKey(active,e)}
+                    onTabClick={(active, e) => updateActiveKey(active, e)}
                     activeKey={activeKey}
                     type="editable-card"
                     onEdit={closeTab}
@@ -209,19 +209,9 @@ const MiddleContainer = (props: any) => {
     }
 
 
-    return (
-        <ConfigProvider
-            theme={{
-                components: {
-                    Tabs: {
-                        margin: 0
-                    }
-                }
-            }}
-        >
-            {renderMiddleContent()}
-        </ConfigProvider>
-    )
+    return <>
+        {renderMiddleContent()}
+    </>
 }
 export default connect(({Studio}: { Studio: StateType }) => ({
     tabs: Studio.tabs,

@@ -15,17 +15,18 @@
  * limitations under the License.
  */
 
-import {Breadcrumb, Button, Layout, Menu, Space, Tooltip} from 'antd';
+import {Breadcrumb, Button, Layout, Menu, Space} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
-  CaretRightOutlined, CheckSquareTwoTone,
-  CloseSquareOutlined,
-  CopyOutlined, HomeOutlined,
-  MinusOutlined,
-  QuestionOutlined, SaveTwoTone,
+    CheckSquareTwoTone,
+    CloseSquareOutlined,
+    CopyOutlined,
+    HomeOutlined,
+    QuestionOutlined,
+    SaveTwoTone,
 } from "@ant-design/icons";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
-import { StateType, VIEW} from "@/pages/DataStudio/model";
+import {StateType, VIEW} from "@/pages/DataStudio/model";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
@@ -33,7 +34,7 @@ import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import {FlexCenterDiv} from "@/components/StyledComponents";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
-import { l } from '@/utils/intl';
+import {l} from '@/utils/intl';
 import {getLocalTheme} from "@/utils/function";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
@@ -41,190 +42,197 @@ import BottomContainer from "@/pages/DataStudio/BottomContainer";
 const {Header, Sider, Content} = Layout;
 
 const headerStyle: React.CSSProperties = {
-  display: "inline-flex",
-  lineHeight: '32px',
-  height: "32px",
-  backgroundColor: '#fff',
+    display: "inline-flex",
+    lineHeight: '32px',
+    height: "32px",
+    backgroundColor: '#fff',
 };
 
 
 const DataStudio = (props: any) => {
 
-  const {
-    bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight
-    , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
-    , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle
-  } = props
+    const {
+        bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight
+        , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
+        , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle
+    } = props
 
 
+    const app = getDvaApp(); // 获取dva的实例
+    const persistor = app._store.persist;
+    const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
+    const [size, setSize] = useState({
+        width: document.documentElement.clientWidth,
+        height: document.documentElement.clientHeight,
+        contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
+    });
 
-  const app = getDvaApp(); // 获取dva的实例
-  const persistor = app._store.persist;
-  const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
-  const [size, setSize] = useState({
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
-    contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-  });
+    const onResize = useCallback(() => {
+        setSize({
+            width: document.documentElement.clientWidth,
+            height: document.documentElement.clientHeight,
+            contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
+        })
+        const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomHeight;
+        updateCenterContentHeight(centerContentHeight)
+        updateToolContentHeight(centerContentHeight - VIEW.midMargin)
+    }, []);
 
-  const onResize = useCallback(() => {
-    setSize({
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
-      contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-    })
-    const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomHeight;
-    updateCenterContentHeight(centerContentHeight)
-    updateToolContentHeight(centerContentHeight-VIEW.midMargin)
-  }, []);
-
-  useEffect(() => {
-    window.addEventListener('resize', onResize);
-    onResize();
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [onResize]);
-  useEffect(() => {
-    getDataBase().then(res => saveDataBase(res))
-    onResize();
-  }, []);
-  const renderLeftContainer = () => {
-    return <LeftContainer size={size}/>
-  }
-  const renderRightContainer = () => {
-    return <MovableSidebar
-              contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight}
-              onResize={(event: any, direction: any, elementRef: { offsetWidth: any; }) => {
-                updateRightWidth(elementRef.offsetWidth)
-              }}
-              title={rightContainer.selectKey}
-              handlerMinimize={() => {
-                updateSelectRightKey("")
-              }}
-              visible={rightContainer.selectKey !== ""}
-              defaultSize={{
-                width: rightContainer.width,
-                height: rightContainer.height
-              }}
-              minWidth={300}
-              maxWidth={size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600}
-              enable={{left: true}}
-    >
-      <Space wrap>
-        <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-        <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
-                size={"small"}/>
-        <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
-      </Space>
-    </MovableSidebar>
-  }
-  return (
-    <PersistGate loading={null} persistor={persistor}>
+    useEffect(() => {
+        window.addEventListener('resize', onResize);
+        onResize();
+        return () => {
+            window.removeEventListener('resize', onResize);
+        };
+    }, [onResize]);
+    useEffect(() => {
+        getDataBase().then(res => saveDataBase(res))
+        onResize();
+    }, []);
+    const renderLeftContainer = () => {
+        return <LeftContainer size={size}/>
+    }
+    const renderRightContainer = () => {
+        return <>
+            <MovableSidebar
+                contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight}
+                onResize={(event: any, direction: any, elementRef: {
+                    offsetWidth: any;
+                }) => updateRightWidth(elementRef.offsetWidth)}
+                title={rightContainer.selectKey}
+                handlerMinimize={() => updateSelectRightKey("")}
+                visible={rightContainer.selectKey !== ""}
+                defaultSize={{width: rightContainer.width, height: rightContainer.height}}
+                minWidth={300}
+                maxWidth={size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600}
+                enable={{left: true}}
+            >
+                <Space wrap>
+                    <Button icon={<QuestionOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+                    <Button icon={<CloseSquareOutlined/>} block type={"text"} shape={"circle"}
+                            size={"small"}/>
+                    <Button icon={<CopyOutlined/>} block type={"text"} shape={"circle"} size={"small"}/>
+                </Space>
+            </MovableSidebar>
+        </>
+    }
+    return (
+        <PersistGate loading={null} persistor={persistor}>
             <Fragment>
-              <Layout style={{minHeight: "60vh"}}>
-                <Header key={"h"} style={headerStyle}>
-                  <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
-                    <Breadcrumb
-                      separator={">"}
-                      items={
-                      [
-                        {
-                          title: <HomeOutlined />,
-                        },...(activeBreadcrumbTitle.split("/") as string[]).map(x=>{return {title:x}})
-                      ]}
-                    />
+                <Layout style={{minHeight: "60vh"}}>
+                    <Header key={"h"} style={headerStyle}>
+                        <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
+                            <Breadcrumb
+                                separator={">"}
+                                items={
+                                    [
+                                        {
+                                            title: <HomeOutlined/>,
+                                        }, ...(activeBreadcrumbTitle.split("/") as string[]).map(x => {
+                                        return {title: x}
+                                    })
+                                    ]}
+                            />
 
-                  </FlexCenterDiv>
-                  <div
-                      style={{
-                        width: (size.width - 2 * VIEW.paddingInline) / 2,
-                        display: "flex",
-                        flexDirection: "row-reverse"
-                      }}>
-                    <Space align={"center"} direction={"horizontal"} wrap>
-                      <SaveTwoTone/>
-                      <CheckSquareTwoTone/>
-                    </Space>
-                  </div>
+                        </FlexCenterDiv>
+                        <div
+                            style={{
+                                width: (size.width - 2 * VIEW.paddingInline) / 2,
+                                display: "flex",
+                                flexDirection: "row-reverse"
+                            }}>
+                            <Space align={"center"} direction={"horizontal"} wrap>
+                                <SaveTwoTone/>
+                                <CheckSquareTwoTone/>
+                            </Space>
+                        </div>
 
-                </Header>
+                    </Header>
 
-                <Layout hasSider style={{minHeight: size.contentHeight}}>
-                  <Sider collapsed collapsedWidth={40}>
-                    <Menu
-                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
-                        mode="inline"
-                        selectedKeys={[leftContainer.selectKey]}
-                        items={LeftSide.map(x=>{return {key:x.key,label:l(x.label),icon:x.icon}})}
-                        style={{height: '50%', borderRight: 0}}
-                        onClick={(item) => {
-                          updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
-                        }}
-                    />
-                    <Menu
-                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
-                        mode="inline"
-                        selectedKeys={[bottomContainer.selectKey]}
-                        items={LeftBottomSide.map(x=>{return {key:x.key,label:l(x.label),icon:x.icon}})}
-                        style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
-                        onClick={(item) => {
-                          updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
-                        }}
-                    />
+                    <Layout hasSider style={{minHeight: size.contentHeight}}>
+                        <Sider collapsed collapsedWidth={40}>
+                            <Menu
+                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                mode="inline"
+                                selectedKeys={[leftContainer.selectKey]}
+                                items={LeftSide.map(x => {
+                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                })}
+                                style={{height: '50%', borderRight: 0}}
+                                onClick={(item) => {
+                                    updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
+                                }}
+                            />
+                            <Menu
+                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                mode="inline"
+                                selectedKeys={[bottomContainer.selectKey]}
+                                items={LeftBottomSide.map(x => {
+                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                })}
+                                style={{
+                                    display: 'flex',
+                                    height: '50%',
+                                    borderRight: 0,
+                                    flexDirection: "column-reverse"
+                                }}
+                                onClick={(item) => {
+                                    updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
+                                }}
+                            />
 
-                  </Sider>
+                        </Sider>
 
-                  <Content style={{
-                    flexDirection: "column-reverse",
-                    display: "flex",
-                    height: size.contentHeight,
-                  }}>
+                        <Content style={{
+                            flexDirection: "column-reverse",
+                            display: "flex",
+                            height: size.contentHeight,
+                        }}>
 
-                    {<BottomContainer size={size}/>}
-                    {/*<div>001</div>*/}
-                    <div style={{
-                      display: "flex",
-                      position: "absolute",
-                      top: VIEW.headerHeight,
-                      width: size.width - VIEW.sideWidth * 2
-                    }}>
-                      {renderLeftContainer()}
+                            {<BottomContainer size={size}/>}
+                            {/*<div>001</div>*/}
+                            <div style={{
+                                display: "flex",
+                                position: "absolute",
+                                top: VIEW.headerHeight,
+                                width: size.width - VIEW.sideWidth * 2
+                            }}>
+                                {renderLeftContainer()}
 
-                      <Content
-                          style={{width: size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width}}>
-                        <MiddleContainer/>
-                        {/*<CodeShow code={"123\n1\n1\n1\n1\n1\n1\n1\n1\n1n\n1\n1\n1"}*/}
-                        {/*          height={size.contentHeight - bottomHeight - 60 + "px"}/>*/}
-                      </Content>
+                                <Content
+                                    style={{width: size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width}}>
+                                    <MiddleContainer/>
+                                    {/*<CodeShow code={"123\n1\n1\n1\n1\n1\n1\n1\n1\n1n\n1\n1\n1"}*/}
+                                    {/*          height={size.contentHeight - bottomHeight - 60 + "px"}/>*/}
+                                </Content>
 
-                      {renderRightContainer()}
+                                {renderRightContainer()}
 
-                    </div>
-                  </Content>
-                  <Sider collapsed collapsedWidth={40}>
-                    <Menu
-                        selectedKeys={[rightContainer.selectKey]}
-                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
-                        mode="inline"
-                        style={{height: '100%', borderRight: 0}}
-                        items={RightSide}
-                        onClick={(item) => {
-                          updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
-                        }}
-                    />
-                  </Sider>
+                            </div>
+                        </Content>
+                        <Sider collapsed collapsedWidth={40}>
+                            <Menu
+                                selectedKeys={[rightContainer.selectKey]}
+                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                mode="inline"
+                                style={{height: '100%', borderRight: 0}}
+                                items={RightSide}
+                                onClick={(item) => {
+                                    updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
+                                }}
+                            />
+                        </Sider>
+                    </Layout>
                 </Layout>
-              </Layout>
             </Fragment>
-    </PersistGate>
-  );
+        </PersistGate>
+    );
 };
 
 
 export default connect(({Studio}: { Studio: StateType }) => ({
-  leftContainer: Studio.leftContainer,
-  rightContainer: Studio.rightContainer,
-  bottomContainer: Studio.bottomContainer,
-  activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
+    leftContainer: Studio.leftContainer,
+    rightContainer: Studio.rightContainer,
+    bottomContainer: Studio.bottomContainer,
+    activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
 }), mapDispatchToProps)(DataStudio);

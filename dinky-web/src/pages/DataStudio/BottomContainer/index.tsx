@@ -71,37 +71,56 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     }
 
 
-    /**
-     * 渲染标题
-     * @returns {JSX.Element}
-     */
-    const renderTitle = () => {
-        return <>
-            <Space align={'baseline'} size={'small'}>
-                <Title>{(bottomContainer.selectKey === '' ? "" : l(bottomContainer.selectKey))}</Title>
-                <Tabs
-                    type="editable-card" hideAdd
-                    defaultActiveKey="StudioMsg" size="small" tabPosition="top"
-                    items={[
-                        {
-                            key: "test",
-                            label: "123456"
-                        }, {
-                            key: "tes2",
-                            label: "123"
-                        }
-                    ]}
-                />
-            </Space>
-        </>
-    }
+    // export interface TabPaneProps {
+    //     tab?: React.ReactNode;
+    //     className?: string;
+    //     style?: React.CSSProperties;
+    //     disabled?: boolean;
+    //     children?: React.ReactNode;
+    //     forceRender?: boolean;
+    //     closable?: boolean;
+    //     closeIcon?: React.ReactNode;
+    //     prefixCls?: string;
+    //     tabKey?: string;
+    //     id?: string;
+    //     animated?: boolean;
+    //     active?: boolean;
+    //     destroyInactiveTabPane?: boolean;
+    // }
 
+    const renderTabPane = [
+        {
+            tab: <Title>{(bottomContainer.selectKey === '' ? "" : l(bottomContainer.selectKey))}</Title>,
+            closable: false,
+            animated: false,
+            active: false,
+            disabled: true,
+        },
+        {
+            tab: "kkkk",
+            closable: true,
+            children: <div>sasas</div>,
+            tagKey: "llll",
+            animated: true,
+            active: true,
+            destroyInactiveTabPane: true,
+        },
+        {
+            tab: "444",
+            closable: true,
+            children: <div>444</div>,
+            tagKey: "444",
+            animated: true,
+            active: false,
+            destroyInactiveTabPane: true,
+        }
+    ]
 
     return (
         <MovableSidebar
-            title={renderTitle()}
+            tagList={renderTabPane}
             visible={bottomContainer.selectKey !== ""}
-            style={{zIndex: 999}}
+            style={{zIndex: 999 ,height: bottomContainer.height}}
             defaultSize={{width: "100%", height: bottomContainer.height}}
             minHeight={VIEW.midMargin + 10}
             maxHeight={size.contentHeight - 40}

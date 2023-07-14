@@ -158,9 +158,7 @@ const MetaData = (props: any) => {
             name={"selectDb"}
             placeholder={l('pages.metadata.selectDatabase')}
             options={getDataBaseOptions()}
-            fieldProps={{
-              onSelect: (selectId) => handleSelectDataBaseId(selectId),
-            }}
+            fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId)}}
         />
       </ProForm>
       <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
