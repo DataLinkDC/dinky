@@ -82,11 +82,14 @@ export type TaskType = {
 };
 
 export type ConsoleType = {
+  // eslint-disable-next-line @typescript-eslint/ban-types
   result: {};
+  // eslint-disable-next-line @typescript-eslint/ban-types
   chart: {};
 }
 export type MetadataParams = {
   queryParams: QueryParams;
+  // eslint-disable-next-line @typescript-eslint/ban-types
   tableInfo: {};
 }
 
@@ -157,8 +160,12 @@ export type StateType = {
   leftContainer: container;
   rightContainer: container;
   bottomContainer: container;
-  database: DataSources.DataSource[];
-  selectDatabaseId: number | null;
+  database: {
+    dbData: DataSources.DataSource[];
+    selectDatabaseId: number | null;
+    expandKeys: [];
+    selectKey: [];
+  };
   tabs: TabsType;
 };
 export type ModelType = {
@@ -179,6 +186,8 @@ export type ModelType = {
     closeTab: Reducer<StateType>;
     addTab: Reducer<StateType>;
     updateSelectDatabaseId: Reducer<StateType>;
+    updateDatabaseExpandKey: Reducer<StateType>;
+    updateDatabaseSelectKey: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -203,8 +212,12 @@ const Model: ModelType = {
       height: 180,
       width: "100%",
     },
-    database: [],
-    selectDatabaseId: null,
+    database: {
+      dbData : [],
+      selectDatabaseId: null,
+      expandKeys: [],
+      selectKey: [],
+    },
     tabs: {
       activeBreadcrumbTitle:"",
       activeKey: "0",
@@ -335,7 +348,7 @@ const Model: ModelType = {
       };
     },
     /**
-     * 更新数据库
+     * 更新数据库列表
      * @param {StateType} state
      * @param {any} payload
      * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
@@ -343,7 +356,7 @@ const Model: ModelType = {
     saveDataBase(state, {payload}) {
       return {
         ...state,
-        database: [...payload],
+        database: {...state.database ,dbData: payload},
       };
     },
     /**
@@ -445,12 +458,34 @@ const Model: ModelType = {
     updateSelectDatabaseId(state, {payload}) {
         return {
             ...state,
-            selectDatabaseId: payload,
+           database: {...state.database ,selectDatabaseId : payload},
+        }
+    },
+
+    /**
+     * 更新数据库展开key
+     * @param state
+     * @param payload
+     * @returns {any}
+     */
+    updateDatabaseExpandKey(state, {payload}) {
+      return {
+        ...state,
+        database: {...state.database , expandKeys: payload},
+      }
+    },
+    /**
+     * 更新数据库选中key
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectKey: [], selectKeys: any, selectDatabaseId: number | null, expandKeys: []}, tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
+    updateDatabaseSelectKey(state, {payload}) {
+        return {
+            ...state,
+            database: {...state.database , selectKeys: payload},
         }
     }
-
-
-
 
   }
 }

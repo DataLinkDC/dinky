@@ -8,17 +8,17 @@ import {
 } from "@ant-design/icons";
 import {clearMetaDataTable, showMetaDataTable} from "./service";
 import {l} from "@/utils/intl";
-import {ProForm, ProFormSelect} from "@ant-design/pro-components";
+import {Key, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
 
 const MetaData = (props: any) => {
 
-  const {dispatch ,toolContentHeight, database, selectDatabaseId} = props;
+  const {dispatch ,toolContentHeight, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
-  const selectDb = (database as DataSources.DataSource[]).filter(x=>x.id === selectDatabaseId)[0]
+  const selectDb = (dbData as DataSources.DataSource[]).filter(x=> x.id === selectDatabaseId)[0]
 
   /**
    * @description: 刷新树数据
@@ -85,7 +85,7 @@ const MetaData = (props: any) => {
    * @returns {{label: JSX.Element, value: number, key: number}[]}
    */
   const getDataBaseOptions = () => {
-    return database.map(({id, name, type, enabled,status}: DataSources.DataSource) => (
+    return dbData.map(({id, name, type, enabled,status}: DataSources.DataSource) => (
         {
           key: id,
           value: id,
@@ -100,13 +100,18 @@ const MetaData = (props: any) => {
    * @returns {Promise<void>}
    */
   const handleTreeNodeClick = async (info: any) => {
+    // todo: 节点单击事件时 触发 dva 保存当前选中节点的key 但是这里的key 不会使节点高亮选中,需要处理
+    dispatch({
+        type: "Studio/updateDatabaseSelectKey",
+        payload: info.key
+    })
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     if (isLeaf) {
       const queryParams =  {id: selectDatabaseId , schemaName, tableName};
       dispatch({
         type: "Studio/addTab",
         payload: {
-          icon:selectDb.type,
+          icon: selectDb.type,
           id: selectDatabaseId + schemaName + tableName,
           breadcrumbLabel: [selectDb.type,selectDb.name].join("/"),
           label: schemaName + '.' + tableName ,
@@ -129,6 +134,17 @@ const MetaData = (props: any) => {
     onChangeDataBase(databaseId);
   }
 
+  /**
+   * 树节点展开事件
+   * @param {Key[]} expandedKeys
+   */
+  const handleTreeExpand = (expandedKeys: Key[]) => {
+    dispatch({
+      type: "Studio/updateDatabaseExpandKey",
+      payload: expandedKeys
+    })
+  }
+
 
   return (
 
@@ -147,7 +163,7 @@ const MetaData = (props: any) => {
             }}
         />
       </ProForm>
-      <SchemaTree  style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData}/>
+      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData} onExpand={handleTreeExpand}/>
     </Spin>
   );
 };
@@ -155,5 +171,4 @@ const MetaData = (props: any) => {
 export default connect(({Studio}: { Studio: StateType }) => ({
   toolContentHeight:Studio.toolContentHeight,
   database: Studio.database,
-  selectDatabaseId: Studio.selectDatabaseId
 }))(MetaData);

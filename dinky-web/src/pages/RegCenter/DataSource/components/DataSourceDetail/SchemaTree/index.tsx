@@ -19,6 +19,7 @@
 import {Empty, Tree} from 'antd';
 import React from 'react';
 import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
+import { Key } from '@ant-design/pro-components';
 
 const {DirectoryTree} = Tree;
 
@@ -29,11 +30,14 @@ type SchemaTreeProps = {
   treeData: Partial<any>[];
   onNodeClick: (info: any) => void
   style?: React.CSSProperties
+  expandKeys: string[]
+  onExpand: (keys: Key[]) => void
+  selectKeys: string[]
 }
 
 
 const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const {treeData, onNodeClick , style} = props;
+  const {treeData, onNodeClick , style,expandKeys,onExpand ,selectKeys} = props;
 
   /**
    * render
@@ -42,6 +46,9 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
     {
       (treeData.length > 0) ?
         <DirectoryTree
+          expandedKeys={expandKeys}
+          selectedKeys={selectKeys}
+          onExpand={(keys) => onExpand(keys)}
           style={style}
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
