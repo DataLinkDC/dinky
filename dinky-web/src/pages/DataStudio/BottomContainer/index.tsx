@@ -57,41 +57,55 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         })
     }
 
+    /**
+     * 拖动回调
+     * @param event
+     * @param direction
+     * @param {{offsetHeight: any}} elementRef
+     */
+    const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any; }) => {
+        updateBottomHeight(elementRef.offsetHeight)
+        const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomContainer.height;
+        updateCenterContentHeight(centerContentHeight)
+        updateToolContentHeight(centerContentHeight - VIEW.midMargin)
+    }
+
+
+    /**
+     * 渲染标题
+     * @returns {JSX.Element}
+     */
+    const renderTitle = () => {
+        return <>
+            <Space align={'baseline'} size={'small'}>
+                <Title>{(bottomContainer.selectKey === '' ? "" : l(bottomContainer.selectKey))}</Title>
+                <Tabs
+                    type="editable-card" hideAdd
+                    defaultActiveKey="StudioMsg" size="small" tabPosition="top"
+                    items={[
+                        {
+                            key: "test",
+                            label: "123456"
+                        }, {
+                            key: "tes2",
+                            label: "123"
+                        }
+                    ]}
+                />
+            </Space>
+        </>
+    }
+
 
     return (
         <MovableSidebar
-            title={
-                <Space align={'baseline'} size={'small'}>
-                    <Title>{(bottomContainer.selectKey === '' ? "" : l(bottomContainer.selectKey))}</Title>
-                    <Tabs
-                        type="editable-card" hideAdd
-                        defaultActiveKey="StudioMsg" size="small" tabPosition="top"
-                        items={[
-                            {
-                                key: "test",
-                                label: "123456"
-                            }, {
-                                key: "tes2",
-                                label: "123"
-                            }
-                        ]}
-                    />
-                </Space>
-            }
+            title={renderTitle()}
             visible={bottomContainer.selectKey !== ""}
             style={{zIndex: 999}}
-            defaultSize={{
-                width: "100%",
-                height: bottomContainer.height
-            }}
+            defaultSize={{width: "100%", height: bottomContainer.height}}
             minHeight={VIEW.midMargin + 10}
             maxHeight={size.contentHeight - 40}
-            onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }) => {
-                updateBottomHeight(elementRef.offsetHeight)
-                const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomContainer.height;
-                updateCenterContentHeight(centerContentHeight)
-                updateToolContentHeight(centerContentHeight - VIEW.midMargin)
-            }}
+            onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }) => resizeCallback(event, direction, elementRef)}
             enable={{top: true}}
             handlerMinimize={handleMinimize}
         >
