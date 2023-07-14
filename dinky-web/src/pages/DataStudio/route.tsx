@@ -10,6 +10,7 @@ import {
 } from "@ant-design/icons";
 import React from "react";
 import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
+import Project from "@/pages/DataStudio/LeftContainer/Project";
 
 export const LeftSide = [
   {
@@ -17,7 +18,7 @@ export const LeftSide = [
     // icon: <AppstoreAddOutlined/>,
     icon: <ConsoleSqlOutlined />,
     label: 'menu.datastudio.project',
-    children: <div>project</div>
+    children: <Project/>
   },
   {
     key: 'menu.datastudio.structure',

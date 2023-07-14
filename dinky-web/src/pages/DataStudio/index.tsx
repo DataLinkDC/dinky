@@ -36,6 +36,7 @@ import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
 import { l } from '@/utils/intl';
 import {DataSources} from "@/types/RegCenter/data";
+import {getLocalTheme} from "@/utils/function";
 
 const {Header, Sider, Content} = Layout;
 
@@ -97,7 +98,7 @@ const DataStudio = (props: any) => {
                 width: props.rightContainer.width,
                 height: props.rightContainer.height
               }}
-              minWidth={200}
+              minWidth={300}
               maxWidth={size.width - 2 * VIEW.sideWidth - props.leftContainer.width - 200}
               enable={{left: true}}
     >
@@ -142,8 +143,7 @@ const DataStudio = (props: any) => {
 
                 </Header>
 
-                <Layout hasSider
-                        style={{minHeight: size.contentHeight}}>
+                <Layout hasSider style={{minHeight: size.contentHeight}}>
                   <Sider collapsed collapsedWidth={40}>
                     <Menu
                         mode="inline"
@@ -230,7 +230,7 @@ const DataStudio = (props: any) => {
                   <Sider collapsed collapsedWidth={40}>
                     <Menu
                         selectedKeys={[props.rightContainer.selectKey]}
-                        // theme="dark"
+                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
                         mode="inline"
                         style={{height: '100%', borderRight: 0}}
                         items={RightSide}

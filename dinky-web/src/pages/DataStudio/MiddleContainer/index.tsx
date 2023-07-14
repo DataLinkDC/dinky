@@ -1,14 +1,11 @@
-import {AndroidOutlined, AppleOutlined, BackwardOutlined, ReloadOutlined} from "@ant-design/icons";
-import {Button, ConfigProvider, Space, Tabs, TabsProps} from "antd";
-import React, {useRef, useState} from "react";
+import {Card, ConfigProvider, Tabs, TabsProps} from "antd";
+import React from "react";
 import {connect} from "@@/exports";
 import {StateType, TabsItemType} from "@/pages/DataStudio/model";
-import {children} from "@umijs/utils/compiled/cheerio/lib/api/traversing";
-import DataSourceDetail from "@/pages/RegCenter/DataSource/components/DataSourceDetail";
-import {DataSourceDetailBackButton, TestDiv} from "@/components/StyledComponents";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
-import {l} from "@/utils/intl";
 import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
+import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
+import {ProCard} from "@ant-design/pro-components";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -62,14 +59,23 @@ const MiddleContainer = (props:any) => {
       }
     }}
     >
-    <Tabs
-      hideAdd
-      onChange={updateActiveKey}
-      activeKey={activeKey}
-      type="editable-card"
-      onEdit={remove}
-      items={tabItems}
-    />
+      {
+        (tabItems?.length === 0) ?
+            <Card style={{height:props.centerContentHeight,overflow:"auto"}}>
+              <KeyBoard  />
+            </Card>
+            :
+            <ProCard ghost style={{height:props.centerContentHeight}}>
+              <Tabs
+                  hideAdd
+                  onChange={updateActiveKey}
+                  activeKey={activeKey}
+                  type="editable-card"
+                  onEdit={remove}
+                  items={tabItems}
+              />
+            </ProCard>
+      }
     </ConfigProvider>
   )
 }

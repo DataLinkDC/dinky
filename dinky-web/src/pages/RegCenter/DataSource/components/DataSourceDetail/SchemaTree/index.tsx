@@ -28,11 +28,12 @@ const {DirectoryTree} = Tree;
 type SchemaTreeProps = {
   treeData: Partial<any>[];
   onNodeClick: (info: any) => void
+  style?: React.CSSProperties
 }
 
 
 const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const {treeData, onNodeClick} = props;
+  const {treeData, onNodeClick , style} = props;
 
   /**
    * render
@@ -41,6 +42,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
     {
       (treeData.length > 0) ?
         <DirectoryTree
+          style={style}
           className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           treeData={buildSchemaTree(treeData)}

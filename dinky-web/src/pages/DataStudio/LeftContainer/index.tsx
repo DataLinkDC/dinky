@@ -45,7 +45,7 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
         handlerMinimize: ()=> handleMinimize(),
         visible: leftContainer.selectKey !== "",
         defaultSize: {width: leftContainer.width, height: leftContainer.height},
-        minWidth: 200,
+        minWidth: 260,
         maxWidth: size.width - 2 * VIEW.sideWidth - rightContainer.width - 200,
         enable: {right: true},
     }

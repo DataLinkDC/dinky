@@ -131,23 +131,20 @@ const MetaData = (props: any) => {
 
     <Spin spinning={loadingDatabase} delay={500}>
 
-      <ProForm  initialValues={{selectDb:selectDatabaseId}} submitter={false}>
-      <ProFormSelect
-          style={{width: '-webkit-fill-available', marginBottom: 0}}
-          addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
-          allowClear={false}
-          name={"selectDb"}
-          placeholder={l('pages.metadata.selectDatabase')}
-          options={getDataBaseOptions()}
-          fieldProps={{
-            onSelect: (selectId) => handleSelectDataBaseId(selectId),
-          }}
-      />
+      <ProForm initialValues={{selectDb:selectDatabaseId}} submitter={false}>
+        <ProFormSelect
+            width={'sm'}
+            addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
+            allowClear={false}
+            name={"selectDb"}
+            placeholder={l('pages.metadata.selectDatabase')}
+            options={getDataBaseOptions()}
+            fieldProps={{
+              onSelect: (selectId) => handleSelectDataBaseId(selectId),
+            }}
+        />
       </ProForm>
-      <div style={{height: (toolContentHeight - 64 - 4), marginTop: 0}}>
-        <SchemaTree onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData}/>
-      </div>
-
+      <SchemaTree  style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData}/>
     </Spin>
   );
 };

@@ -17,29 +17,3 @@
  *
  */
 
-
-import React, {useEffect} from "react";
-import JobTree from "@/pages/DataStudio/LeftContainer/Project/JobTree";
-
-
-
-
-
-const Project: React.FC= (props) => {
-
-
-    useEffect(() => {
-
-    },[])
-
-
-
-
-
-
-    return <>
-        <JobTree onNodeClick={()=>{}} treeData={[]} />
-    </>;
-};
-
-export default Project;

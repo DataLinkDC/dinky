@@ -17,29 +17,39 @@
  *
  */
 
-
-import React, {useEffect} from "react";
-import JobTree from "@/pages/DataStudio/LeftContainer/Project/JobTree";
-
-
+import {buildSchemaTree} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/function";
+import React from "react";
+import {Empty, Tree} from "antd";
 
 
-
-const Project: React.FC= (props) => {
-
-
-    useEffect(() => {
-
-    },[])
+const {DirectoryTree} = Tree;
 
 
+/**
+ * props
+ */
+type TreeProps = {
+    treeData: Partial<any>[];
+    onNodeClick: (info: any) => void
+    style?: React.CSSProperties
+}
+
+const JobTree: React.FC<TreeProps> = (props) => {
 
 
-
+    const {treeData, onNodeClick, style} = props;
 
     return <>
-        <JobTree onNodeClick={()=>{}} treeData={[]} />
+        {
+            (treeData.length > 0) ?
+                <DirectoryTree
+                    style={style}
+                    className={'treeList'}
+                    onSelect={(_, info) => onNodeClick(info)}
+                    treeData={buildSchemaTree(treeData)}
+                /> : <Empty className={'code-content-empty'} description={"暂无作业,请点击左上角新建目录"}/>
+        }
     </>;
 };
 
-export default Project;
+export default JobTree;
