@@ -185,6 +185,8 @@ export type ModelType = {
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     addTab: Reducer<StateType>;
+    closeAllTabs: Reducer<StateType>;
+    closeOtherTabs: Reducer<StateType>;
     updateSelectDatabaseId: Reducer<StateType>;
     updateDatabaseExpandKey: Reducer<StateType>;
     updateDatabaseSelectKey: Reducer<StateType>;
@@ -416,7 +418,7 @@ const Model: ModelType = {
         tabs: {
           panes:newPanes,
           activeKey: activeKey,
-          activeBreadcrumbTitle:state.tabs.activeBreadcrumbTitle
+          activeBreadcrumbTitle: state.tabs.activeBreadcrumbTitle,
         },
       };
     },
@@ -449,6 +451,39 @@ const Model: ModelType = {
           },
       }
     },
+
+    /**
+     * 关闭所有tab
+     */
+    closeAllTabs(state) {
+        return {
+            ...state,
+            tabs: {
+              panes:[],
+              activeKey: "",
+              activeBreadcrumbTitle:"",
+            },
+        };
+    },
+    /**
+     * 关闭其他tab
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: any}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
+    closeOtherTabs(state, {payload}) {
+      // 从 pans 中找到需要关闭的 tab
+      const tabsItem = state.tabs.panes.find(pane => pane.key === payload.key);
+      return {
+            ...state,
+            tabs: {
+              panes: tabsItem ? [tabsItem] : [],
+              activeKey: tabsItem?.key || "",
+              activeBreadcrumbTitle: tabsItem?.breadcrumbLabel || "",
+            },
+        };
+    },
+
     /**
      * 更新选中数据库id
      * @param {StateType} state
@@ -481,7 +516,7 @@ const Model: ModelType = {
      * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectKey: [], selectKeys: any, selectDatabaseId: number | null, expandKeys: []}, tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
      */
     updateDatabaseSelectKey(state, {payload}) {
-        return {
+      return {
             ...state,
             database: {...state.database , selectKeys: payload},
         }

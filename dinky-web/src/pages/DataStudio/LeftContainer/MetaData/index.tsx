@@ -75,7 +75,7 @@ const MetaData = (props: any) => {
   const refreshDataBase = () => {
     if (!selectDatabaseId) return;
     setLoadingDatabase(true);
-    clearMetaDataTable(selectDatabaseId).then(result => {
+    clearMetaDataTable(selectDatabaseId).then(() => {
       onChangeDataBase(selectDatabaseId);
     })
   };
@@ -101,7 +101,7 @@ const MetaData = (props: any) => {
    * @returns {Promise<void>}
    */
   const handleTreeNodeClick = async (keys: Key[] ,info: any) => {
-    // todo: 节点单击事件时 触发 dva 保存当前选中节点的key 但是这里的key 不会使节点高亮选中,需要处理
+    // 选中的key
     dispatch({
         type: "Studio/updateDatabaseSelectKey",
         payload: keys
@@ -150,7 +150,6 @@ const MetaData = (props: any) => {
   return (
 
     <Spin spinning={loadingDatabase} delay={500}>
-
       <ProForm initialValues={{selectDb:selectDatabaseId}} submitter={false}>
         <ProFormSelect
             width={'sm'}

@@ -1,124 +1,230 @@
-import {Card, ConfigProvider, Menu, Space, Tabs, TabsProps} from "antd";
-import React from "react";
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import {ConfigProvider, Dropdown, Menu, Space, Tabs} from "antd";
+import React, {useState} from "react";
 import {connect} from "@@/exports";
 import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
-import {ProCard} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
-import { MenuItemType } from "rc-menu/lib/interface";
+import {MenuInfo} from "rc-menu/es/interface";
+import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
-const MiddleContainer = (props:any) => {
-  const {tabs:{panes,activeKey},dispatch}= props;
+const MiddleContainer = (props: any) => {
+    const {tabs: {panes, activeKey}, dispatch} = props;
+
+    const [contextMenuPosition, setContextMenuPosition] = useState({});
+    const [contextMenuVisible, setContextMenuVisible] = useState(false);
+    const [includeTab, setIncludeTab] = useState({});
 
 
-  const handleClickMenu = (e: any, current: any) => {
-    props.closeTabs(current, e.key);
-  };
 
-  const renderRightMenu = (pane: any) => {
+    /**
+     * 更新当前激活的tab
+     * @param {string} key
+     */
+    const updateActiveKey = (key: string,eInfo?: any) => {
+        const {target : {innerText}} = eInfo;
+        const replaceLabel =  innerText.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+        setContextMenuVisible(false)
+        dispatch({
+            type: 'Studio/updateTabsActiveKey',
+            payload: key,
+        })
+        dispatch({
+            type: 'Studio/updateDatabaseSelectKey',
+            payload: [replaceLabel],
+        })
 
-      const menuItems: MenuItemType[] = [
-              {
-                  key: "CLOSE_ALL",
-                  label: l('right.menu.closeAll'),
-                  onClick: (info) => {
-                      dispatch({
-                          type: 'Studio/closeAllTabs',
-                          payload: info,
-                      });
-                  },
-              },
-              {
-                  key: "CLOSE_OTHER",
-                  label: l('right.menu.closeOther'),
-                  onClick: (info) => {
-                      dispatch({
-                          type: 'Studio/closeOtherTabs',
-                          payload: info,
-                      });
-                  },
-              }
-          ]
-
-     return <>
-         <Menu onClick={(e) => handleClickMenu(e, pane)} items={menuItems}/>
-     </>
-};
+        console.log(eInfo)
+    };
 
 
-  const tabItems = (panes).map((item: TabsItemType)=>{
-    const children = () => {
-      switch (item.type) {
-        case "metadata":
-          const params = item.params as MetadataParams;
-          return <RightTagsRouter
-            tableInfo={params.tableInfo}
-            queryParams={params.queryParams} rightButtons={<></>} tagDisabled={false}/>
-        default:
-          return <></>
-      }
+    /**
+     * 关闭所有标签
+     */
+    const handleCloseAllTabs = () => {
+        dispatch({
+            type: 'Studio/closeAllTabs',
+        });
+        setContextMenuVisible(false)
     }
-//  <TabPane tab={Tab(pane)} key={pane.key} closable={pane.closable}>
-    return {key:item.key,label:<span >{renderDBIcon(item.icon,20)}{item.label}</span>
-        ,children: <div style={{height:activeKey === item.key ? props.centerContentHeight - 40 : 0,overflow:"auto"}}>{children()}</div>}
-
-  })
-
-  const updateActiveKey = (key: string) => {
-    dispatch({
-      type: 'Studio/updateTabsActiveKey',
-      payload: key,
-    })
-  };
-
-
-  const remove = (targetKey: TargetKey) => {
-    dispatch({
-      type: 'Studio/closeTab',
-      payload: targetKey,
-    })
-  };
-
-  const onEdit = (targetKey: TargetKey, action: 'add' | 'remove') => {
-    if (action === 'add') {
-    } else {
-      // remove(targetKey);
+    /**
+     * 关闭其他标签
+     */
+    const handleCloseOtherTabs = () => {
+        dispatch({
+            type: 'Studio/closeOtherTabs',
+            payload: includeTab,
+        });
+        setContextMenuVisible(false)
     }
-  };
-  return (
-    <ConfigProvider
-      theme={{
-        components:{
-          Tabs:{
-            margin:0
-          }
+
+    /**
+     * the right click event
+     * @param info
+     * @param item
+     */
+    const handleRightClick = (info: any,item: any) => {
+        info.preventDefault(); // 阻止默认右键事件
+        const {key,label} = item;
+        const replaceLabel =  label.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+        updateActiveKey(key);
+        dispatch({
+            type: 'Studio/updateDatabaseSelectKey',
+            payload: [replaceLabel],
+        })
+        // 获取 选中的值
+        setIncludeTab(item);
+        // 获取右键点击的位置
+        const {clientX,clientY} = info;
+        setContextMenuVisible(true)
+        setContextMenuPosition({
+            position: 'fixed', cursor: 'context-menu', width: '10vw',zIndex: 9999,
+            left: clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+            top: clientY + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+        });
+    };
+
+    /**
+     * 右键菜单的点击事件
+     * @param {MenuInfo} node
+     */
+    const handleMenuClick = (node: MenuInfo) => {
+          switch (node.key) {
+            case 'closeAll':
+                handleCloseAllTabs();
+                break;
+            case 'closeOther':
+                handleCloseOtherTabs();
+                break;
+            default:
+                break;
         }
-    }}
-    >
-      {
-        (tabItems?.length === 0) ?
-            <ProCard ghost style={{height:props.centerContentHeight,overflow:"auto"}}><KeyBoard/></ProCard>
-            :
-            <ProCard ghost style={{height:props.centerContentHeight}}>
-              <Tabs
-                  hideAdd
-                  onChange={updateActiveKey}
-                  activeKey={activeKey}
-                  type="editable-card"
-                  onEdit={remove}
-                  items={tabItems}
-              />
-            </ProCard>
-      }
-    </ConfigProvider>
-  )
+    };
+
+
+    /**
+     * 右键菜单
+     * @returns {JSX.Element}
+     */
+    const renderRightClickMenu = () => {
+        const menuList = <Menu onClick={handleMenuClick} items={STUDIO_TAG_RIGHT_CONTEXT_MENU}/>
+        return <>
+            <Dropdown
+                arrow
+                trigger={['contextMenu']}
+                overlayStyle={{...contextMenuPosition}}
+                overlay={menuList}
+                open={contextMenuVisible}
+                onVisibleChange={setContextMenuVisible}
+            >
+                {/*占位*/}
+                <div style={{...contextMenuPosition}}/>
+            </Dropdown>
+        </>
+    }
+
+    /**
+     * render tabs
+     */
+    const tabItems = (panes).map((item: TabsItemType) => {
+        const renderContent = () => {
+            const params = item.params as MetadataParams
+
+            switch (item.type) {
+                case "metadata":
+                    return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>
+                default:
+                    return <></>
+            }
+        }
+        return {
+            key: item.key,
+            label: <Space onContextMenu={(e)=> handleRightClick(e,item)} key={item.key}>{renderDBIcon(item.icon, 20)}{item.label}</Space>,
+            children: <>
+                <div
+                    style={{
+                        height: activeKey === item.key ? props.centerContentHeight - 40 : 0,
+                        overflow: "auto"
+                    }}
+                >
+                    {renderContent()}
+                </div>
+            </>,
+        }
+
+    })
+
+
+    /**
+     * 关闭tab
+     * @param {TargetKey} targetKey
+     */
+    const closeTab = (targetKey: TargetKey) => {
+        dispatch({
+            type: 'Studio/closeTab',
+            payload: targetKey,
+        })
+    };
+
+
+    /**
+     * render middle content
+     * @returns {JSX.Element}
+     */
+    const renderMiddleContent = () => {
+        if (tabItems?.length === 0) {
+            return <KeyBoard/>
+        } else {
+            return <>
+                <Tabs
+                    hideAdd
+                    onTabClick={(active,e)=> updateActiveKey(active,e)}
+                    activeKey={activeKey}
+                    type="editable-card"
+                    onEdit={closeTab}
+                    items={tabItems}
+                />
+                {renderRightClickMenu()}
+            </>
+        }
+    }
+
+
+    return (
+        <ConfigProvider
+            theme={{
+                components: {
+                    Tabs: {
+                        margin: 0
+                    }
+                }
+            }}
+        >
+            {renderMiddleContent()}
+        </ConfigProvider>
+    )
 }
 export default connect(({Studio}: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
-  centerContentHeight:Studio.centerContentHeight
+    tabs: Studio.tabs,
+    centerContentHeight: Studio.centerContentHeight
 }))(MiddleContainer);

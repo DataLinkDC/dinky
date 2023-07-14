@@ -39,15 +39,15 @@ import {ProCardTabsProps} from "@ant-design/pro-card/es/typing";
  */
 type RightTagsRouterProps = {
   tableInfo: Partial<DataSources.Table>,
-  rightButtons: React.ReactNode,
+  rightButtons?: React.ReactNode,
   queryParams: QueryParams
-  tagDisabled: boolean
+  tagDisabled?: boolean
 }
 
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
-  const { tableInfo, queryParams, tagDisabled, rightButtons} = props;
+  const { tableInfo, queryParams, tagDisabled=false, rightButtons} = props;
   const [tableColumns,setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
   useEffect(() => {
     const fetchData = async () => {
