@@ -11,6 +11,7 @@ import {
 import React from "react";
 import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
 import Project from "@/pages/DataStudio/LeftContainer/Project";
+import Console from "@/pages/DataStudio/BottomContainer/Console";
 
 export const LeftSide = [
   {
@@ -64,6 +65,7 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.console',
     icon: <RightSquareOutlined/>,
     label: 'menu.datastudio.console',
+    children: <Console/>
   },
   {
     key: 'menu.datastudio.result',

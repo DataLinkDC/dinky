@@ -57,6 +57,12 @@ export const TagAlignLeft = styled.div`
   align-items: center;
 `;
 
-export const TestDiv = styled.div`
-
+export const FlexCenterDiv = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  align-items: center;
+`;
+export const Title = styled.div`
+  font-size: 16px;
 `;
