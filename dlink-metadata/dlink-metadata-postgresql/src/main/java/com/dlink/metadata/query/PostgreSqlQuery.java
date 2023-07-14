@@ -47,18 +47,15 @@ public class PostgreSqlQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-
         return "SELECT col.column_name                              as name\n"
                 + "     , col.character_maximum_length                 as length\n"
-                + "     , col.is_nullable                              as is_nullableis_nullable\n"
+                + "     , col.is_nullable                              as is_nullable\n"
                 + "     , col.numeric_precision                        as numeric_precision\n"
                 + "     , col.numeric_scale                            as numeric_scale\n"
                 + "     , col.ordinal_position                         as ordinal_position\n"
                 + "     , col.udt_name                                 as type\n"
-                + "     , (CASE\n"
-                + "            WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p') > 0\n"
-                + "                THEN 'PRI'\n"
-                + "            ELSE '' END)                            AS key\n"
+                + "     , (CASE  WHEN (SELECT COUNT(*) FROM pg_constraint AS PC WHERE b.attnum = PC.conkey[1] AND PC.contype = 'p' and PC.conrelid = c.oid) > 0 \n"
+                + "THEN 'PRI' ELSE '' END)                            AS key\n"
                 + "     , col_description(c.oid, col.ordinal_position) AS comment\n"
                 + "     , col.column_default                           AS column_default\n"
                 + "FROM information_schema.columns AS col\n"

@@ -20,9 +20,9 @@
 package com.dlink.executor;
 
 import com.dlink.assertion.Asserts;
+import com.dlink.context.DinkyClassLoaderContextHolder;
 import com.dlink.model.LineageRel;
 import com.dlink.result.SqlExplainResult;
-import com.dlink.utils.FlinkStreamProgramWithoutPhysical;
 import com.dlink.utils.LineageContext;
 
 import org.apache.flink.api.common.RuntimeExecutionMode;
@@ -59,7 +59,6 @@ import org.apache.flink.table.operations.Operation;
 import org.apache.flink.table.operations.QueryOperation;
 import org.apache.flink.table.operations.command.ResetOperation;
 import org.apache.flink.table.operations.command.SetOperation;
-import org.apache.flink.table.planner.plan.optimize.program.FlinkChainedProgram;
 import org.apache.flink.table.resource.ResourceManager;
 import org.apache.flink.table.typeutils.FieldInfoUtils;
 import org.apache.flink.util.FlinkUserCodeClassLoaders;
@@ -86,18 +85,16 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
         implements
             CustomTableEnvironment {
 
-    private final FlinkChainedProgram flinkChainedProgram;
-
     public CustomTableEnvironmentImpl(
-                                      CatalogManager catalogManager,
-                                      ModuleManager moduleManager,
-                                      ResourceManager resourceManager,
-                                      FunctionCatalog functionCatalog,
-                                      TableConfig tableConfig,
-                                      StreamExecutionEnvironment executionEnvironment,
-                                      Planner planner,
-                                      Executor executor,
-                                      boolean isStreamingMode) {
+            CatalogManager catalogManager,
+            ModuleManager moduleManager,
+            ResourceManager resourceManager,
+            FunctionCatalog functionCatalog,
+            TableConfig tableConfig,
+            StreamExecutionEnvironment executionEnvironment,
+            Planner planner,
+            Executor executor,
+            boolean isStreamingMode) {
         super(
                 catalogManager,
                 moduleManager,
@@ -108,8 +105,6 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
                 planner,
                 isStreamingMode,
                 executionEnvironment);
-        this.flinkChainedProgram =
-                FlinkStreamProgramWithoutPhysical.buildProgram((Configuration) executionEnvironment.getConfiguration());
     }
 
     public static CustomTableEnvironmentImpl create(StreamExecutionEnvironment executionEnvironment) {
@@ -125,44 +120,40 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
     }
 
     public static CustomTableEnvironmentImpl create(
-                                                    StreamExecutionEnvironment executionEnvironment,
-                                                    EnvironmentSettings settings) {
-        final MutableURLClassLoader userClassLoader =
-                FlinkUserCodeClassLoaders.create(
-                        new URL[0], settings.getUserClassLoader(), settings.getConfiguration());
+            StreamExecutionEnvironment executionEnvironment,
+            EnvironmentSettings settings) {
+        final MutableURLClassLoader userClassLoader = FlinkUserCodeClassLoaders.create(
+                new URL[0], DinkyClassLoaderContextHolder.get(), settings.getConfiguration());
         final Executor executor = lookupExecutor(userClassLoader, executionEnvironment);
 
         final TableConfig tableConfig = TableConfig.getDefault();
         tableConfig.setRootConfiguration(executor.getConfiguration());
         tableConfig.addConfiguration(settings.getConfiguration());
 
-        final ResourceManager resourceManager =
-                new ResourceManager(settings.getConfiguration(), userClassLoader);
+        final ResourceManager resourceManager = new ResourceManager(settings.getConfiguration(), userClassLoader);
         final ModuleManager moduleManager = new ModuleManager();
 
-        final CatalogManager catalogManager =
-                CatalogManager.newBuilder()
-                        .classLoader(userClassLoader)
-                        .config(tableConfig)
-                        .defaultCatalog(
+        final CatalogManager catalogManager = CatalogManager.newBuilder()
+                .classLoader(userClassLoader)
+                .config(tableConfig)
+                .defaultCatalog(
+                        settings.getBuiltInCatalogName(),
+                        new GenericInMemoryCatalog(
                                 settings.getBuiltInCatalogName(),
-                                new GenericInMemoryCatalog(
-                                        settings.getBuiltInCatalogName(),
-                                        settings.getBuiltInDatabaseName()))
-                        .executionConfig(executionEnvironment.getConfig())
-                        .build();
+                                settings.getBuiltInDatabaseName()))
+                .executionConfig(executionEnvironment.getConfig())
+                .build();
 
-        final FunctionCatalog functionCatalog =
-                new FunctionCatalog(tableConfig, resourceManager, catalogManager, moduleManager);
+        final FunctionCatalog functionCatalog = new FunctionCatalog(tableConfig, resourceManager, catalogManager,
+                moduleManager);
 
-        final Planner planner =
-                PlannerFactoryUtil.createPlanner(
-                        executor,
-                        tableConfig,
-                        userClassLoader,
-                        moduleManager,
-                        catalogManager,
-                        functionCatalog);
+        final Planner planner = PlannerFactoryUtil.createPlanner(
+                executor,
+                tableConfig,
+                userClassLoader,
+                moduleManager,
+                catalogManager,
+                functionCatalog);
 
         return new CustomTableEnvironmentImpl(
                 catalogManager,
@@ -273,7 +264,7 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
     }
 
     public boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment environment,
-                                             Map<String, Object> setMap) {
+            Map<String, Object> setMap) {
         List<Operation> operations = getParser().parse(statement);
         for (Operation operation : operations) {
             if (operation instanceof SetOperation) {
@@ -288,7 +279,7 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
     }
 
     private void callSet(SetOperation setOperation, StreamExecutionEnvironment environment,
-                         Map<String, Object> setMap) {
+            Map<String, Object> setMap) {
         if (setOperation.getKey().isPresent() && setOperation.getValue().isPresent()) {
             String key = setOperation.getKey().get().trim();
             String value = setOperation.getValue().get().trim();
@@ -305,7 +296,7 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
     }
 
     private void callReset(ResetOperation resetOperation, StreamExecutionEnvironment environment,
-                           Map<String, Object> setMap) {
+            Map<String, Object> setMap) {
         if (resetOperation.getKey().isPresent()) {
             String key = resetOperation.getKey().get().trim();
             if (Asserts.isNullString(key)) {
@@ -338,34 +329,32 @@ public class CustomTableEnvironmentImpl extends AbstractStreamTableEnvironmentIm
 
     @Override
     public List<LineageRel> getLineage(String statement) {
-        LineageContext lineageContext = new LineageContext(flinkChainedProgram, this);
-        return lineageContext.getLineage(statement);
+        LineageContext lineageContext = new LineageContext(this);
+        return lineageContext.analyzeLineage(statement);
     }
 
     @Override
     public <T> void createTemporaryView(
-                                        String path, DataStream<T> dataStream, Expression... fields) {
+            String path, DataStream<T> dataStream, Expression... fields) {
         createTemporaryView(path, fromStreamInternal(dataStream, null, null, ChangelogMode.all()));
     }
 
     protected <T> DataStreamQueryOperation<T> asQueryOperation(
-                                                               DataStream<T> dataStream,
-                                                               Optional<List<Expression>> fields) {
+            DataStream<T> dataStream,
+            Optional<List<Expression>> fields) {
         TypeInformation<T> streamType = dataStream.getType();
 
         // get field names and types for all non-replaced fields
-        FieldInfoUtils.TypeInfoSchema typeInfoSchema =
-                fields.map(
-                        f -> {
-                            FieldInfoUtils.TypeInfoSchema fieldsInfo =
-                                    FieldInfoUtils.getFieldsInfo(
-                                            streamType, f.toArray(new Expression[0]));
+        FieldInfoUtils.TypeInfoSchema typeInfoSchema = fields.map(
+                f -> {
+                    FieldInfoUtils.TypeInfoSchema fieldsInfo = FieldInfoUtils.getFieldsInfo(
+                            streamType, f.toArray(new Expression[0]));
 
-                            // check if event-time is enabled
-                            validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
-                            return fieldsInfo;
-                        })
-                        .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
+                    // check if event-time is enabled
+                    validateTimeCharacteristic(fieldsInfo.isRowtimeDefined());
+                    return fieldsInfo;
+                })
+                .orElseGet(() -> FieldInfoUtils.getFieldsInfo(streamType));
 
         return new DataStreamQueryOperation<>(
                 dataStream, typeInfoSchema.getIndices(), typeInfoSchema.toResolvedSchema());

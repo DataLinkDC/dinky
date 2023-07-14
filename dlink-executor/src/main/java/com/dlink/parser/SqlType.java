@@ -28,9 +28,8 @@ package com.dlink.parser;
 public enum SqlType {
 
     SELECT("SELECT"), CREATE("CREATE"), DROP("DROP"), ALTER("ALTER"), INSERT("INSERT"), DESC("DESC"), DESCRIBE(
-            "DESCRIBE"), EXPLAIN("EXPLAIN"), USE("USE"), SHOW("SHOW"), LOAD("LOAD"), UNLOAD(
-                    "UNLOAD"), SET("SET"), RESET("RESET"), EXECUTE("EXECUTE"), ADD("ADD"), UNKNOWN("UNKNOWN"),
-                    ;
+            "DESCRIBE"), EXPLAIN("EXPLAIN"), USE("USE"), SHOW("SHOW"), LOAD("LOAD"), UNLOAD("UNLOAD"), SET(
+                    "SET"), RESET("RESET"), EXECUTE("EXECUTE"), ADD("ADD"), WITH("WITH"), UNKNOWN("UNKNOWN"),;
 
     private String type;
 

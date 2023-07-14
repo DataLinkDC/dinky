@@ -82,7 +82,7 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                 cdcSource.getPort(), cdcSource.getUsername(), cdcSource.getPassword(), cdcSource.getCheckpoint(),
                 cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema(), cdcSource.getTable(),
                 cdcSource.getStartupMode(), cdcSource.getSplit(), cdcSource.getDebezium(), cdcSource.getSource(),
-                cdcSource.getSink(), cdcSource.getJdbc());
+                cdcSource.getSink(), cdcSource.getSinks(), cdcSource.getJdbc());
         try {
             CDCBuilder cdcBuilder = CDCBuilderFactory.buildCDCBuilder(config);
             Map<String, Map<String, String>> allConfigMap = cdcBuilder.parseMetaDataConfigs();
@@ -112,8 +112,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                     String schemaTableName = table.getSchemaTableNameList().get(0);
                     // 真实的表名
                     String tableName = schemaTableName.split("\\.")[1];
-                    table.setColumns(driver.listColumnsSortByPK(schemaName, tableName));
-                    table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                    table.setColumns(driver.listColumns(schemaName, tableName));
+                    table.setColumns(driver.listColumns(schemaName, table.getName()));
                     schemaList.add(schema);
 
                     if (null != sinkDriver) {
@@ -143,14 +143,14 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
                                 for (String tableReg : tableRegList) {
                                     if (table.getSchemaTableName().matches(tableReg.trim())
                                             && !schema.getTables().contains(Table.build(table.getName()))) {
-                                        table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                        table.setColumns(driver.listColumns(schemaName, table.getName()));
                                         schema.getTables().add(table);
                                         schemaTableNameList.add(table.getSchemaTableName());
                                         break;
                                     }
                                 }
                             } else {
-                                table.setColumns(driver.listColumnsSortByPK(schemaName, table.getName()));
+                                table.setColumns(driver.listColumns(schemaName, table.getName()));
                                 schemaTableNameList.add(table.getSchemaTableName());
                                 schema.getTables().add(table);
                             }
@@ -188,16 +188,8 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             }
             DataStreamSource<String> streamSource = cdcBuilder.build(streamExecutionEnvironment);
             logger.info("Build " + config.getType() + " successful...");
-            if (cdcSource.getSinks() == null || cdcSource.getSinks().size() == 0) {
-                sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
-                        streamSource);
-            } else {
-                for (Map<String, String> sink : cdcSource.getSinks()) {
-                    config.setSink(sink);
-                    sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
-                            streamSource);
-                }
-            }
+            sinkBuilder.build(cdcBuilder, streamExecutionEnvironment, executor.getCustomTableEnvironment(),
+                    streamSource);
             logger.info("Build CDCSOURCE Task successful!");
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
@@ -225,7 +217,9 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
             driver.createSchema(schema);
         }
         sink.put("sink.db", schema);
-        sink.put("url", url + "/" + schema);
+        if (!url.contains(schema)) {
+            sink.put("url", url + "/" + schema);
+        }
         return driver;
     }
 

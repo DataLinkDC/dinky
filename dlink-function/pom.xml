@@ -21,7 +21,7 @@
     <parent>
         <groupId>com.dlink</groupId>
         <artifactId>dlink</artifactId>
-        <version>0.7.2</version>
+        <version>0.7.3</version>
     </parent>
 
     <artifactId>dlink-function</artifactId>
@@ -161,6 +161,22 @@
                 <dependency>
                     <groupId>com.dlink</groupId>
                     <artifactId>dlink-flink-1.16</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+            </dependencies>
+        </profile>
+
+        <profile>
+            <id>flink-1.17</id>
+            <dependencies>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-client-1.17</artifactId>
+                    <scope>provided</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.dlink</groupId>
+                    <artifactId>dlink-flink-1.17</artifactId>
                     <scope>provided</scope>
                 </dependency>
             </dependencies>

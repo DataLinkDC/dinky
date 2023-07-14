@@ -199,14 +199,14 @@ public abstract class Executor {
 
         CustomTableEnvironment newestEnvironment = createCustomTableEnvironment();
         CustomTableEnvironmentContext.set(newestEnvironment);
-        if (stEnvironment != null) {
-            for (String catalog : stEnvironment.listCatalogs()) {
-                stEnvironment.getCatalog(catalog).ifPresent(t -> {
-                    newestEnvironment.getCatalogManager().unregisterCatalog(catalog, true);
-                    newestEnvironment.registerCatalog(catalog, t);
-                });
-            }
-        }
+        // if (stEnvironment != null) {
+        //     for (String catalog : stEnvironment.listCatalogs()) {
+        //         stEnvironment.getCatalog(catalog).ifPresent(t -> {
+        //             newestEnvironment.getCatalogManager().unregisterCatalog(catalog, true);
+        //             newestEnvironment.registerCatalog(catalog, t);
+        //         });
+        //     }
+        // }
         stEnvironment = newestEnvironment;
 
         final Configuration configuration = stEnvironment.getConfig().getConfiguration();

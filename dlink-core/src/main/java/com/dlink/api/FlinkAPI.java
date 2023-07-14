@@ -377,9 +377,9 @@ public class FlinkAPI {
      * @return String
      * @Author: zhumingye
      * @date: 2022/6/24
-     * @Description: getTaskManagerLogFileDeatil 获取具体日志的详细信息
+     * @Description: getTaskManagerLogFileDetail 获取具体日志的详细信息
      */
-    public String getTaskManagerLogFileDeatil(String containerId, String logName) {
+    public String getTaskManagerLogFileDetail(String containerId, String logName) {
         return getResult(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.LOGS + logName);
     }
 

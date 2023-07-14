@@ -223,7 +223,7 @@ public class LineageContext {
                     String sourceColumn = fieldNames[ordinal];
 
                     // add record
-                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
+                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn, null));
                 }
             }
         }

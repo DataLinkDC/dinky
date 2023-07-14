@@ -43,7 +43,6 @@ import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.datastream.SingleOutputStreamOperator;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.api.functions.ProcessFunction;
-import org.apache.flink.table.api.ValidationException;
 import org.apache.flink.table.data.RowData;
 import org.apache.flink.table.operations.ModifyOperation;
 import org.apache.flink.table.operations.Operation;
@@ -85,7 +84,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
 
     public static final String KEY_WORD = "sql";
     private static final long serialVersionUID = -3699685106324048226L;
-    private static AtomicInteger atomicInteger = new AtomicInteger(0);
     private ZoneId sinkTimeZone = ZoneId.of("UTC");
 
     public SQLSinkBuilder() {
@@ -163,35 +161,59 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                 }, rowTypeInfo);
     }
 
-    private void addTableSink(
-            int indexSink,
+    private String addSourceTableView(
             CustomTableEnvironment customTableEnvironment,
             DataStream<Row> rowDataDataStream,
             Table table,
             List<String> columnNameList) {
-        String sinkSchemaName = getSinkSchemaName(table);
-        String tableName = getSinkTableName(table);
-        String sinkTableName = tableName + "_" + indexSink;
-        String pkList = StringUtils.join(getPKList(table), ".");
-        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
-        try {
-            customTableEnvironment.createTemporaryView(viewName, rowDataDataStream,
-                    StringUtils.join(columnNameList, ","));
-            logger.info("Create " + viewName + " temporaryView successful...");
-        } catch (ValidationException exception) {
-            if (!exception.getMessage().contains("already exists")) {
-                logger.error(exception.getMessage(), exception);
+        String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline(); // 上游表
+        customTableEnvironment.createTemporaryView(viewName, rowDataDataStream, StringUtils.join(columnNameList, ","));
+        logger.info("Create " + viewName + " temporaryView successful...");
+        return viewName;
+    }
+
+    private void addTableSinks(
+            CustomTableEnvironment customTableEnvironment,
+            Table table,
+            String viewName) {
+
+        String sinkSchemaName = getSinkSchemaName(table); // 下游库名称
+        String sinkTableName = getSinkTableName(table); // 下游表名称
+
+        // 这个地方要根据下游表的数量进行生成
+        if (config.getSinks() != null && config.getSinks().size() > 0) {
+            boolean onlySingleSink = config.getSinks().size() == 1;
+            int index = 0;
+            for (Map<String, String> sink : config.getSinks()) {
+                String tableName = sinkTableName;
+                if (!onlySingleSink) {
+                    tableName = tableName + "_" + index++;
+                }
+                config.setSink(sink);
+                addSinkInsert(customTableEnvironment, table, viewName, tableName, sinkSchemaName, sinkTableName);
             }
+        } else {
+            String tableName = sinkTableName;
+            addSinkInsert(customTableEnvironment, table, viewName, tableName, sinkSchemaName, sinkTableName);
         }
-        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, "" + sinkTableName, config, sinkSchemaName, tableName,
+    }
+
+    private List<Operation> addSinkInsert(
+            CustomTableEnvironment customTableEnvironment,
+            Table table, String viewName, String tableName, String sinkSchemaName, String sinkTableName) {
+        String pkList = StringUtils.join(getPKList(table), ".");
+
+        String flinkDDL = FlinkBaseUtil.getFlinkDDL(table, tableName, config, sinkSchemaName, sinkTableName,
                 pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
-        logger.info("Create " + sinkTableName + " FlinkSQL DDL successful...");
-        String cdcSqlInsert = FlinkBaseUtil.getCDCSqlInsert(table, sinkTableName, viewName, config);
+        logger.info("Create " + tableName + " FlinkSQL DDL successful...");
+
+        String cdcSqlInsert = FlinkBaseUtil.getCDCSqlInsert(table, tableName, viewName, config);
         logger.info(cdcSqlInsert);
+
         List<Operation> operations = customTableEnvironment.getParser().parse(cdcSqlInsert);
-        logger.info("Create " + sinkTableName + " FlinkSQL insert into successful...");
+        logger.info("Create " + tableName + " FlinkSQL insert into successful...");
         try {
             if (operations.size() > 0) {
                 Operation operation = operations.get(0);
@@ -203,6 +225,7 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
             logger.error("Translate to plan occur exception: {}", e);
             throw e;
         }
+        return operations;
     }
 
     @Override
@@ -269,7 +292,6 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                     }
                 }
             });
-            final int indexSink = atomicInteger.getAndAdd(1);
             tagMap.forEach((table, tag) -> {
                 final String schemaTableName = table.getSchemaTableName();
                 try {
@@ -282,7 +304,9 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
                             schemaTableName).rebalance();
                     logger.info("Build " + schemaTableName + " flatMap successful...");
                     logger.info("Start build " + schemaTableName + " sink...");
-                    addTableSink(indexSink, customTableEnvironment, rowDataDataStream, table, columnNameList);
+                    String viewName = addSourceTableView(customTableEnvironment, rowDataDataStream, table,
+                            columnNameList);
+                    addTableSinks(customTableEnvironment, table, viewName);
                 } catch (Exception e) {
                     logger.error("Build " + schemaTableName + " cdc sync failed...");
                     logger.error(LogUtil.getError(e));
@@ -313,13 +337,21 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements Serializable 
         } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime();
-            } else if (value instanceof Long) {
-                return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+            } else if (value instanceof String) {
+                return Instant.parse((String) value).atZone(sinkTimeZone).toLocalDateTime();
             } else {
-                return Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime();
+                TimestampType logicalType1 = (TimestampType) logicalType;
+                // 转换为毫秒
+                if (logicalType1.getPrecision() == 3) {
+                    return Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime();
+                } else if (logicalType1.getPrecision() > 3) {
+                    return Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, logicalType1.getPrecision() - 3))
+                        .atZone(sinkTimeZone).toLocalDateTime();
+                }
+                return Instant.ofEpochSecond(((long) value)).atZone(sinkTimeZone).toLocalDateTime();
             }
         } else if (logicalType instanceof DecimalType) {
-            return new BigDecimal(value.toString());
+            return new BigDecimal(String.valueOf(value));
         } else if (logicalType instanceof FloatType) {
             if (value instanceof Float) {
                 return value;

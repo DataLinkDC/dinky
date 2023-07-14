@@ -41,6 +41,7 @@ const StudioCA = (props: any) => {
       statement: current.value,
       statementSet: current.task.statementSet,
       dialect: current.task.dialect,
+      fragment: current.task.fragment,
       envId: current.task.envId,
       databaseId: current.task.databaseId,
       type: 1,

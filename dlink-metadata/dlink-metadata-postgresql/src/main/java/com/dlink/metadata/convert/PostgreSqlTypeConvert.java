@@ -71,7 +71,7 @@ public class PostgreSqlTypeConvert implements ITypeConvert {
             }
         } else if (t.contains("numeric") || t.contains("decimal")) {
             columnType = ColumnType.DECIMAL;
-        } else if (t.contains("boolean")) {
+        } else if (t.contains("bool")) {
             if (isNullable) {
                 columnType = ColumnType.JAVA_LANG_BOOLEAN;
             } else {

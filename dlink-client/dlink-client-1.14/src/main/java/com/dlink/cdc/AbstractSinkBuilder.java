@@ -312,8 +312,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         if (logicalType instanceof VarCharType) {
             return StringData.fromString((String) value);
         } else if (logicalType instanceof DateType) {
-            return value;
-        } else if (logicalType instanceof TimestampType) {
+            return StringData.fromString(
+                Instant.ofEpochMilli((long) value).atZone(ZoneId.systemDefault()).toLocalDate().toString());        } else if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
                 return TimestampData.fromLocalDateTime(
                         Instant.ofEpochMilli(((Integer) value).longValue()).atZone(sinkTimeZone).toLocalDateTime());

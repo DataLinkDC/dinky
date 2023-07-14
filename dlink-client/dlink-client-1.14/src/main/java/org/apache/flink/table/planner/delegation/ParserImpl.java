@@ -151,4 +151,18 @@ public class ParserImpl implements Parser {
     public SqlNode parseExpression(String sqlExpression) {
         return calciteParserSupplier.get().parseExpression(sqlExpression);
     }
+
+    @Override
+    public SqlNode parseSql(String statement) {
+        CalciteParser parser = calciteParserSupplier.get();
+
+        // parse the sql query
+        return parser.parse(statement);
+    }
+
+    @Override
+    public SqlNode validate(SqlNode sqlNode) {
+        FlinkPlannerImpl flinkPlanner = validatorSupplier.get();
+        return flinkPlanner.validate(sqlNode);
+    }
 }
