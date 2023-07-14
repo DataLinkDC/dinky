@@ -22,6 +22,7 @@ package org.dinky.gateway.kubernetes.operator;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.JobStatus;
 import org.dinky.gateway.AbstractGateway;
+import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.enums.UpgradeMode;
 import org.dinky.gateway.kubernetes.operator.api.AbstractPodSpec;
@@ -59,7 +60,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
 
     private Map<String, String> kubernetsConfiguration;
     private K8sConfig k8sConfig;
-    private Map<String, String> flinkConfig;
+    private FlinkConfig flinkConfig;
     private FlinkDeployment flinkDeployment = new FlinkDeployment();
     private FlinkDeploymentSpec flinkDeploymentSpec = new FlinkDeploymentSpec();
     private KubernetesClient kubernetesClient;
@@ -70,7 +71,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     @Override
     protected void init() {
         kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        flinkConfig = config.getFlinkConfig().getConfiguration();
+        flinkConfig = config.getFlinkConfig();
         k8sConfig = config.getKubernetesConfig();
         kubernetesClient = new DefaultKubernetesClient();
         initBase();
@@ -84,7 +85,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     public TestResult test() {
 
         kubernetsConfiguration = config.getKubernetesConfig().getConfiguration();
-        flinkConfig = config.getFlinkConfig().getConfiguration();
+        flinkConfig = config.getFlinkConfig();
         config.getFlinkConfig().setJobName("test");
         kubernetesClient = new DefaultKubernetesClient();
         initBase();
@@ -123,7 +124,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         String jarMainClass = config.getAppConfig().getUserJarMainAppClass();
         String userJarPath = config.getAppConfig().getUserJarPath();
         String[] userJarParas = config.getAppConfig().getUserJarParas();
-        String parallelism = flinkConfig.get(CoreOptions.DEFAULT_PARALLELISM.key());
+        String parallelism = flinkConfig.getConfiguration().get(CoreOptions.DEFAULT_PARALLELISM.key());
 
         logger.info(
                 "\nThe app config is : \njarMainClass:{}\n userJarPath:{}\n userJarParas:{}\n ",
@@ -167,13 +168,13 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
         AbstractPodSpec jobManagerSpec = new AbstractPodSpec();
         AbstractPodSpec taskManagerSpec = new AbstractPodSpec();
         String jbcpu = kubernetsConfiguration.getOrDefault("kubernetes.jobmanager.cpu", "1");
-        String jbmem = flinkConfig.getOrDefault("jobmanager.memory.process.size", "1G");
+        String jbmem = flinkConfig.getConfiguration().getOrDefault("jobmanager.memory.process.size", "1G");
         logger.info("jobmanager resource is : cpu-->{}, mem-->{}", jbcpu, jbmem);
         process.info(String.format("jobmanager resource is : cpu-->%s, mem-->%s", jbcpu, jbmem));
         jobManagerSpec.setResource(new Resource(Double.parseDouble(jbcpu), jbmem));
 
         String tmcpu = kubernetsConfiguration.getOrDefault("kubernetes.taskmanager.cpu", "1");
-        String tmmem = flinkConfig.getOrDefault("taskmanager.memory.process.size", "1G");
+        String tmmem = flinkConfig.getConfiguration().getOrDefault("taskmanager.memory.process.size", "1G");
         logger.info("taskmanager resource is : cpu-->{}, mem-->{}", tmcpu, tmmem);
         process.info(String.format("taskmanager resource is : cpu-->%s, mem-->%s", tmcpu, tmmem));
         taskManagerSpec.setResource(new Resource(Double.parseDouble(tmcpu), tmmem));
@@ -204,7 +205,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
     }
 
     private void initSpec() {
-        String flinkVersion = kubernetsConfiguration.get("flinkVersion");
+        String flinkVersion = flinkConfig.getFlinkVersion();
         String image = kubernetsConfiguration.get("kubernetes.container.image");
         String serviceAccount = kubernetsConfiguration.get("kubernetes.service.account");
 
@@ -220,7 +221,7 @@ public abstract class KubernetsOperatorGateway extends AbstractGateway {
 
         flinkDeploymentSpec.setImage(image);
 
-        flinkDeploymentSpec.setFlinkConfiguration(flinkConfig);
+        flinkDeploymentSpec.setFlinkConfiguration(flinkConfig.getConfiguration());
         flinkDeployment.setSpec(flinkDeploymentSpec);
 
         if (Asserts.isNotNull(serviceAccount)) {
