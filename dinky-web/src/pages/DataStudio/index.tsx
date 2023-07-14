@@ -18,11 +18,11 @@
 import {Breadcrumb, Button, Layout, Menu, Space, Tooltip} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
-  CaretRightOutlined,
+  CaretRightOutlined, CheckSquareTwoTone,
   CloseSquareOutlined,
   CopyOutlined, HomeOutlined,
   MinusOutlined,
-  QuestionOutlined,
+  QuestionOutlined, SaveTwoTone,
 } from "@ant-design/icons";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import { StateType, VIEW} from "@/pages/DataStudio/model";
@@ -142,12 +142,9 @@ const DataStudio = (props: any) => {
                         display: "flex",
                         flexDirection: "row-reverse"
                       }}>
-                    <Space align={"end"} direction={"horizontal"} wrap>
-                      <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
-                      <Button icon={<MinusOutlined/>} block type={"text"} shape={"circle"}/>
-                      <Tooltip title="search" placement="bottom">
-                        <Button icon={<CaretRightOutlined/>} block type={"text"} shape={"circle"}/>
-                      </Tooltip>
+                    <Space align={"center"} direction={"horizontal"} wrap>
+                      <SaveTwoTone/>
+                      <CheckSquareTwoTone/>
                     </Space>
                   </div>
 
@@ -156,6 +153,7 @@ const DataStudio = (props: any) => {
                 <Layout hasSider style={{minHeight: size.contentHeight}}>
                   <Sider collapsed collapsedWidth={40}>
                     <Menu
+                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
                         mode="inline"
                         selectedKeys={[leftContainer.selectKey]}
                         items={LeftSide.map(x=>{return {key:x.key,label:l(x.label),icon:x.icon}})}
@@ -165,6 +163,7 @@ const DataStudio = (props: any) => {
                         }}
                     />
                     <Menu
+                        theme={getLocalTheme() === "dark" ? "dark" : "light"}
                         mode="inline"
                         selectedKeys={[bottomContainer.selectKey]}
                         items={LeftBottomSide.map(x=>{return {key:x.key,label:l(x.label),icon:x.icon}})}

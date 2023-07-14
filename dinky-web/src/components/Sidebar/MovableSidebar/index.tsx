@@ -1,7 +1,8 @@
 import React from "react";
-import {MinusOutlined} from "@ant-design/icons";
+import { MinusSquareOutlined} from "@ant-design/icons";
 import {Enable, Resizable, ResizeCallback, Size} from "re-resizable";
 import {PageContainer} from "@ant-design/pro-components";
+import {l} from "@/utils/intl";
 
 export type MovableSidebarProps = {
   title?: React.ReactNode;
@@ -38,13 +39,9 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             enable={enable}
         >
             <PageContainer
-                style={{backgroundColor: '#fff', border: "1px solid rgb(240, 240, 240)"}}
-                title={title}
-                extra={<MinusOutlined key={"minimize"} onClick={handlerMinimize}/>}
+                title={<h5>{title}</h5>}
+                extra={<MinusSquareOutlined title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>}
                 fixedHeader
-                header={{
-                    style: {borderBottom: '1px solid rgb(240, 240, 240)'}
-                }}
             >
                 <div style={{height: contentHeight}}>{children}</div>
             </PageContainer>

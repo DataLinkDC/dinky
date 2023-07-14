@@ -104,6 +104,7 @@ export default {
   'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
+  'global.mini': 'Mini Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
