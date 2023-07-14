@@ -90,7 +90,7 @@ export type TabsItemType = {
   id:string,
   label: string;
   breadcrumbLabel: string;
-  params: string|object;
+  params: string | object;
   type: "metadata";
   key: number,
   value: string;
@@ -113,19 +113,6 @@ export type TabsType = {
 
 export type ConnectorType = {
   tablename: string;
-}
-
-export type SessionType = {
-  session?: string;
-  sessionConfig?: {
-    type?: string;
-    clusterId?: number;
-    clusterName?: string;
-    address?: string;
-  }
-  createUser?: string;
-  createTime?: string;
-  connectors: ConnectorType[];
 }
 
 export type MetaStoreCatalogType = {
@@ -167,7 +154,7 @@ export type StateType = {
   rightContainer: container;
   bottomContainer: container;
   database: DataSources.DataSource[];
-  selectDatabaseId: number;
+  selectDatabaseId: number | null;
   tabs: TabsType;
 };
 export type ModelType = {
@@ -200,22 +187,22 @@ const Model: ModelType = {
     leftContainer: {
       selectKey: 'menu.datastudio.project',
       height: "100%",
-      width: 500,
+      width: 260,
     },
     rightContainer: {
       selectKey: 'menu.datastudio.jobConfig',
       height: "100%",
-      width: 500,
+      width: 260,
     },
     bottomContainer: {
       selectKey: 'menu.datastudio.console',
-      height: 400,
+      height: 180,
       width: "100%",
     },
     database: [],
-    selectDatabaseId: 0,
+    selectDatabaseId: null,
     tabs: {
-      activeBreadcrumbTitle:"",
+      activeBreadcrumbTitle: "",
       activeKey: 0,
       panes: [],
     },
@@ -394,7 +381,7 @@ const Model: ModelType = {
       if (needCloseKey===activeKey){
         for (const [index,pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
-            const item =index+1>=panes.length?index+1>1&&index+1==panes.length?panes[index-1]:panes[0]: panes[index+1];
+            const item =index+1>=panes.length?index+1>1&&index+1 === panes.length?panes[index-1]:panes[0]: panes[index+1];
             return {
               ...state,
               tabs: {

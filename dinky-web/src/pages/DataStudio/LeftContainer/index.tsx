@@ -37,7 +37,10 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
     }
 
 
-
+    /**
+     * 侧边栏属性
+     * @type {{onResize: (event: any, direction: any, elementRef: {offsetWidth: any}) => void, visible: boolean, defaultSize: {width: any, height: any}, enable: {right: boolean}, minWidth: number, title: string, handlerMinimize: () => void, contentHeight: any, maxWidth: number}}
+     */
     const restMovableSidebarProps : MovableSidebarProps  = {
         contentHeight: toolContentHeight,
         onResize: (event: any, direction: any, elementRef: { offsetWidth: any; }) => handleReSizeChange(elementRef),
@@ -46,7 +49,7 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
         visible: leftContainer.selectKey !== "",
         defaultSize: {width: leftContainer.width, height: leftContainer.height},
         minWidth: 260,
-        maxWidth: size.width - 2 * VIEW.sideWidth - rightContainer.width - 200,
+        maxWidth: size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700, //
         enable: {right: true},
     }
 

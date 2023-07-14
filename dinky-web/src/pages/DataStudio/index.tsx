@@ -27,7 +27,6 @@ import {
 import React, {useCallback, useEffect, useState} from "react";
 import { StateType, VIEW} from "@/pages/DataStudio/model";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
-import {Dispatch} from "@@/plugin-dva/types";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
@@ -35,8 +34,8 @@ import {TestDiv} from "@/components/StyledComponents";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
 import { l } from '@/utils/intl';
-import {DataSources} from "@/types/RegCenter/data";
 import {getLocalTheme} from "@/utils/function";
+import {mapDispatchToProps} from "@/pages/DataStudio/function";
 
 const {Header, Sider, Content} = Layout;
 
@@ -99,7 +98,7 @@ const DataStudio = (props: any) => {
                 height: props.rightContainer.height
               }}
               minWidth={300}
-              maxWidth={size.width - 2 * VIEW.sideWidth - props.leftContainer.width - 200}
+              maxWidth={size.width - 2 * VIEW.sideWidth - props.leftContainer.width - 600}
               enable={{left: true}}
     >
       <Space wrap>
@@ -245,43 +244,7 @@ const DataStudio = (props: any) => {
     </PersistGate>
   );
 };
-const mapDispatchToProps = (dispatch: Dispatch) => ({
-  updateToolContentHeight: (key: number) => dispatch({
-    type: "Studio/updateToolContentHeight",
-    payload: key,
-  }),
-  updateCenterContentHeight: (key: number) => dispatch({
-    type: "Studio/updateCenterContentHeight",
-    payload: key,
-  }),
-  updateSelectLeftKey: (key: string) => dispatch({
-    type: "Studio/updateSelectLeftKey",
-    payload: key,
-  }),
-  updateLeftWidth: (width: number) => dispatch({
-    type: "Studio/updateLeftWidth",
-    payload: width,
-  }), updateSelectRightKey: (key: string) => dispatch({
-    type: "Studio/updateSelectRightKey",
-    payload: key,
-  }),
-  updateRightWidth: (width: number) => dispatch({
-    type: "Studio/updateRightWidth",
-    payload: width,
-  }), updateSelectBottomKey: (key: string) => dispatch({
-    type: "Studio/updateSelectBottomKey",
-    payload: key,
-  }),
-  updateBottomHeight: (height: number) => dispatch({
-    type: "Studio/updateBottomHeight",
-    payload: height,
-  }),
-  saveDataBase: (data: DataSources.DataSource[]) => dispatch({
-    type: "Studio/saveDataBase",
-    payload: data,
-  }),
 
-});
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,

@@ -31,6 +31,7 @@ import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import {SearchOutline} from 'antd-mobile-icons';
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
+import {ProCardTabsProps} from "@ant-design/pro-card/es/typing";
 
 
 /**
@@ -53,7 +54,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
       const result = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, queryParams);
       setTableColumns(result);
     };
-    if (queryParams.id!=0) {
+    if (queryParams.id !== 0) {
       fetchData();
     }
   }, [queryParams]);
@@ -88,7 +89,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   ];
 
   // tab props
-  const restTabProps = {
+  const restTabProps : ProCardTabsProps = {
     activeKey: activeKey,
     type: 'card',
     tabBarExtraContent: rightButtons,

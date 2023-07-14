@@ -18,12 +18,8 @@ const MetaData = (props: any) => {
   const {dispatch ,toolContentHeight, database, selectDatabaseId} = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
-  const selectDb = (database as DataSources.DataSource[]).filter(x=>x.id==selectDatabaseId)[0]
-  useEffect(()=>{
-    if (selectDatabaseId){
-      onRefreshTreeData(selectDatabaseId)
-    }
-  },[])
+  const selectDb = (database as DataSources.DataSource[]).filter(x=>x.id === selectDatabaseId)[0]
+
   /**
    * @description: 刷新树数据
    * @param {number} databaseId
@@ -60,6 +56,12 @@ const MetaData = (props: any) => {
     });
   };
 
+  useEffect(()=>{
+    if (selectDatabaseId){
+      onRefreshTreeData(selectDatabaseId)
+    }
+  },[])
+
   /**
    * 数据库选择改变时间时 刷新树数据
    * @param {number} value
@@ -83,11 +85,12 @@ const MetaData = (props: any) => {
    * @returns {{label: JSX.Element, value: number, key: number}[]}
    */
   const getDataBaseOptions = () => {
-    return database.map(({id, name, type, enabled}: DataSources.DataSource) => (
+    return database.map(({id, name, type, enabled,status}: DataSources.DataSource) => (
         {
           key: id,
           value: id,
           label: <TagAlignLeft><Tag key={id} color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>,
+          disabled: !enabled || !status
         }
     ))
   };
