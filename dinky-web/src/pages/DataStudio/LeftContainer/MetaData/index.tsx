@@ -1,14 +1,14 @@
 import {connect} from "@umijs/max";
 import { StateType} from "../../model";
 import {Spin, Tag} from "antd";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   DatabaseOutlined, ReloadOutlined,
   TableOutlined
 } from "@ant-design/icons";
 import {clearMetaDataTable, showMetaDataTable} from "./service";
 import {l} from "@/utils/intl";
-import {ProFormSelect} from "@ant-design/pro-components";
+import {ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
@@ -19,6 +19,11 @@ const MetaData = (props: any) => {
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
   const selectDb = (database as DataSources.DataSource[]).filter(x=>x.id==selectDatabaseId)[0]
+  useEffect(()=>{
+    if (selectDatabaseId){
+      onRefreshTreeData(selectDatabaseId)
+    }
+  },[])
   /**
    * @description: 刷新树数据
    * @param {number} databaseId
@@ -125,17 +130,20 @@ const MetaData = (props: any) => {
   return (
 
     <Spin spinning={loadingDatabase} delay={500}>
+
+      <ProForm  initialValues={{selectDb:selectDatabaseId}} submitter={false}>
       <ProFormSelect
           style={{width: '-webkit-fill-available', marginBottom: 0}}
           addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
           allowClear={false}
-          initialValue={selectDatabaseId}
+          name={"selectDb"}
           placeholder={l('pages.metadata.selectDatabase')}
           options={getDataBaseOptions()}
           fieldProps={{
             onSelect: (selectId) => handleSelectDataBaseId(selectId),
           }}
       />
+      </ProForm>
       <div style={{height: (toolContentHeight - 64 - 4), marginTop: 0}}>
         <SchemaTree onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData}/>
       </div>
