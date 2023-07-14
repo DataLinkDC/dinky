@@ -114,7 +114,6 @@ import org.dinky.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -947,8 +946,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         Savepoints savepoints = buildSavepoint(config);
         if (Asserts.isNotNull(savepoints)) {
             config.setSavePointPath(savepoints.getPath());
-            config.getConfig()
-                    .put(SavepointConfigOptions.SAVEPOINT_PATH.key(), savepoints.getPath());
+            config.getConfig().put("execution.savepoint.path", savepoints.getPath());
         }
 
         if (!GatewayType.get(task.getType()).isDeployCluster()) {
