@@ -1,6 +1,6 @@
 import {connect} from "@umijs/max";
-import {DataBaseType, StateType} from "../../model";
-import {Button, Col, Row, Spin, Tag, Tooltip} from "antd";
+import { StateType} from "../../model";
+import {Spin, Tag} from "antd";
 import React, {useState} from "react";
 import {
   DatabaseOutlined, ReloadOutlined,
@@ -13,16 +13,19 @@ import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {PostgresqlIcons} from "@/components/Icons/DBIcons";
 import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
+import {DataSources} from "@/types/RegCenter/data";
 
 const MetaData = (props: any) => {
 
-  const {dispatch} = props;
-  const database: DataBaseType[] = props.database;
-  const [databaseId, setDatabaseId] = useState<number>(0);
+  const {dispatch ,toolContentHeight, database, selectDatabaseId} = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
   const [selectDb, setSelectDb] = useState("");
 
+  /**
+   * @description: 刷新树数据
+   * @param {number} databaseId
+   */
   const onRefreshTreeData = (databaseId: number) => {
     if (!databaseId) {
       setLoadingDatabase(false);
@@ -30,7 +33,6 @@ const MetaData = (props: any) => {
     }
     setLoadingDatabase(true);
 
-    setDatabaseId(databaseId);
     const res = showMetaDataTable(databaseId);
     res.then((tables) => {
       setLoadingDatabase(false);
@@ -56,75 +58,87 @@ const MetaData = (props: any) => {
     });
   };
 
+  /**
+   * 数据库选择改变时间时 刷新树数据
+   * @param {number} value
+   */
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
-  const refreshDataBase = (value: number) => {
-    if (!databaseId) return;
+  /**
+   * 刷新数据库列表
+   */
+  const refreshDataBase = () => {
+    if (!selectDatabaseId) return;
     setLoadingDatabase(true);
-    clearMetaDataTable(databaseId).then(result => {
-      onChangeDataBase(databaseId);
+    clearMetaDataTable(selectDatabaseId).then(result => {
+      onChangeDataBase(selectDatabaseId);
     })
   };
+
+  /**
+   * 构建数据库列表 下拉框
+   * @returns {{label: JSX.Element, value: number, key: number}[]}
+   */
   const getDataBaseOptions = () => {
-    return database.map(({id, name, type, enabled}) => (
-      {
-        label: <TagAlignLeft> <Tag color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>
-        , value: id+"-"+type
-      }
+    return database.map(({id, name, type, enabled}: DataSources.DataSource) => (
+        {
+          key: id,
+          value: id+ '-' +type,
+          label: <TagAlignLeft><Tag key={id} color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>,
+        }
     ))
   };
+  /**
+   * 树节点点击事件 添加tab页 并传递参数
+   * @param info
+   * @returns {Promise<void>}
+   */
+  const handleTreeNodeClick = async (info: any) => {
+    const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
+    if (isLeaf) {
+      const queryParams =  {id: selectDatabaseId , schemaName, tableName};
+      dispatch({
+        type: "Studio/addTab",
+        payload: {
+          id: selectDatabaseId + schemaName + tableName,
+          label: schemaName + '.' + tableName ,
+          params:{ queryParams: queryParams, tableInfo: fullInfo},
+          type: "metadata"
+        }
+      })
+    }
+  };
+
+  /**
+   * 数据库选择改变事件
+   * @param {number} databaseId
+   */
+  const handleSelectDataBaseId = (databaseId: number) => {
+    dispatch({
+      type: "Studio/updateSelectDatabaseId",
+      payload: databaseId
+    })
+    onChangeDataBase(databaseId);
+  }
 
 
   return (
 
     <Spin spinning={loadingDatabase} delay={500}>
-      <Row>
-        <Col span={24}>
-          <Tooltip title={l('button.refresh')}>
-            <Button type="text"
-                    icon={<ReloadOutlined/>}
-                    onClick={() => refreshDataBase(databaseId)}
-            />
-          </Tooltip>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24} style={{height: "36px"}}>
-          <ProFormSelect
-            allowClear={false}
-            placeholder={l('pages.metadata.selectDatabase')}
-            options={getDataBaseOptions()}
-            fieldProps={{
-              onChange: (e) => {
-                if (e) {
-                  const split = e.split("-");
-                  onChangeDataBase(split[0])
-                  setSelectDb(split[1])
-                }
-              }
-            }}
-          />
-        </Col>
-      </Row>
-
-      <div style={{height: (props.toolContentHeight-64-4),backgroundColor:`#fff`}}>
-        <SchemaTree onNodeClick={async (info: any) => {
-          const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo,icon}} = info;
-          if (isLeaf) {
-           const queryParams =  {
-              id: databaseId ,
-              schemaName,
-              tableName
-            };
-
-            dispatch({
-              type: "Studio/addTab",
-              payload: {icon:selectDb,id:databaseId+schemaName+tableName,label: schemaName+"\\" + tableName , params:{queryParams:queryParams,tableInfo:fullInfo},type:"metadata"}
-            })
-          }
-
-        }} treeData={treeData}/>
+      <ProFormSelect
+          style={{width: '-webkit-fill-available', marginBottom: 0}}
+          addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
+          allowClear={false}
+          initialValue={selectDatabaseId}
+          placeholder={l('pages.metadata.selectDatabase')}
+          options={getDataBaseOptions()}
+          fieldProps={{
+            onSelect: (selectId) => handleSelectDataBaseId(selectId),
+          }}
+      />
+      <div style={{height: (toolContentHeight - 64 - 4), marginTop: 0}}>
+        <SchemaTree onNodeClick={(info: any) => handleTreeNodeClick(info)} treeData={treeData}/>
       </div>
 
     </Spin>
@@ -134,4 +148,5 @@ const MetaData = (props: any) => {
 export default connect(({Studio}: { Studio: StateType }) => ({
   toolContentHeight:Studio.toolContentHeight,
   database: Studio.database,
+  selectDatabaseId: Studio.selectDatabaseId
 }))(MetaData);

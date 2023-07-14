@@ -1,8 +1,11 @@
-import {Effect} from "@umijs/max";
 import {Reducer} from "@@/plugin-dva/types";
-import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
-import React, {ReactNode} from "react";
+import React from "react";
+import {DataSources} from "@/types/RegCenter/data";
 
+/**
+ * 初始化布局宽高度
+ * @type {{topHeight: number, leftMargin: number, footerHeight: number, paddingInline: number, bottomHeight: number, midMargin: number, otherHeight: number, sideWidth: number, leftToolWidth: number, rightMargin: number, headerNavHeight: number, headerHeight: number, marginTop: number}}
+ */
 export const VIEW = {
   headerHeight: 32,
   headerNavHeight: 55,
@@ -32,48 +35,8 @@ export type Column = {
   name: string,
   type: string,
 };
-export type ClusterType = {
-  id: number,
-  name: string,
-  type: string,
-  hosts: string,
-  jobManagerHost: string,
-  status: number,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
-export type ClusterConfigurationType = {
-  id: number,
-  name: string,
-  type: string,
-  config: any,
-  available: boolean,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
 type TargetKey = React.MouseEvent | React.KeyboardEvent | number;
 
-export type DataBaseType = {
-  id: number,
-  name: string,
-  groupName: string,
-  type: string,
-  url: string,
-  username: string,
-  password: string,
-  note: string,
-  dbVersion: string,
-  status: boolean,
-  healthTime: Date,
-  heartbeatTime: Date,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-};
 
 export type EnvType = {
   id?: number,
@@ -201,7 +164,8 @@ export type StateType = {
   leftContainer: container;
   rightContainer: container;
   bottomContainer: container;
-  database: DataBaseType[];
+  database: DataSources.DataSource[];
+  selectDatabaseId: number;
   tabs: TabsType;
 };
 export type ModelType = {
@@ -221,6 +185,7 @@ export type ModelType = {
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     addTab: Reducer<StateType>;
+    updateSelectDatabaseId: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -244,27 +209,46 @@ const Model: ModelType = {
       selectKey: 'menu.datastudio.console',
       height: 400,
       width: "100%",
-    }
-    , database: []
-    , tabs: {
+    },
+    database: [],
+    selectDatabaseId: 0,
+    tabs: {
       activeKey: 0,
       panes: [],
     },
   },
   effects: {},
   reducers: {
+    /**
+     * 更新工具栏高度
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: any, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     updateToolContentHeight(state, {payload}) {
       return {
         ...state,
         toolContentHeight: payload
       };
     },
+    /**
+     * 更新中间内容高度
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: any, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     updateCenterContentHeight(state, {payload}) {
       return {
         ...state,
         centerContentHeight: payload
       };
     },
+    /**
+     * 更新左侧选中key
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, bottomContainer: container}}
+     */
     updateSelectLeftKey(state, {payload}) {
       return {
         ...state,
@@ -273,7 +257,14 @@ const Model: ModelType = {
           selectKey: payload,
         }
       };
-    }, updateLeftWidth(state, {payload}) {
+    },
+    /**
+     * 更新左侧宽度
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, bottomContainer: container}}
+     */
+    updateLeftWidth(state, {payload}) {
       return {
         ...state,
         leftContainer: {
@@ -282,6 +273,12 @@ const Model: ModelType = {
         }
       };
     },
+    /**
+     * 更新右侧选中key
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, leftContainer: container, bottomContainer: container}}
+     */
     updateSelectRightKey(state, {payload}) {
       return {
         ...state,
@@ -290,7 +287,14 @@ const Model: ModelType = {
           selectKey: payload,
         }
       };
-    }, updateRightWidth(state, {payload}) {
+    },
+    /**
+     * 更新右侧选中key
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, leftContainer: container, bottomContainer: container}}
+     */
+    updateRightWidth(state, {payload}) {
       return {
         ...state,
         rightContainer: {
@@ -298,8 +302,14 @@ const Model: ModelType = {
           width: payload,
         }
       };
-    }
-    , updateSelectBottomKey(state, {payload}) {
+    },
+    /**
+     * 更新底部选中key
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}}}
+     */
+    updateSelectBottomKey(state, {payload}) {
       if (payload === '') {
         state.centerContentHeight =(state.centerContentHeight as number)  + (state.bottomContainer.height as number);
         state.toolContentHeight =(state.toolContentHeight as number)  + (state.bottomContainer.height as number);
@@ -314,7 +324,14 @@ const Model: ModelType = {
           selectKey: payload,
         }
       };
-    }, updateBottomHeight(state, {payload}) {
+    },
+    /**
+     * 更新底部高度
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: {selectKey: string, width: number | string, height: any, maxWidth?: number | string}}}
+     */
+    updateBottomHeight(state, {payload}) {
       return {
         ...state,
         bottomContainer: {
@@ -323,12 +340,24 @@ const Model: ModelType = {
         }
       };
     },
+    /**
+     * 更新数据库
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     saveDataBase(state, {payload}) {
       return {
         ...state,
         database: [...payload],
       };
     },
+    /**
+     * 更新tabs activeKey
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSourceDataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: any}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     updateTabsActiveKey(state, {payload}) {
       return {
         ...state,
@@ -338,6 +367,12 @@ const Model: ModelType = {
         },
       };
     } ,
+    /**
+     *  关闭tab
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     closeTab(state, {payload }) {
       const needCloseKey=payload as  TargetKey;
       const {tabs:{panes,activeKey}}= state;
@@ -364,6 +399,12 @@ const Model: ModelType = {
         },
       };
     },
+    /**
+     * 添加tab 如果存在则不添加
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
     addTab(state, {payload }) {
       const node=payload as  TabsItemType;
       for (const item of state.tabs.panes) {
@@ -385,7 +426,22 @@ const Model: ModelType = {
             activeKey: node.key
           },
       }
+    },
+    /**
+     * 更新选中数据库id
+     * @param {StateType} state
+     * @param {any} payload
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], selectDatabaseId: any, tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     */
+    updateSelectDatabaseId(state, {payload}) {
+        return {
+            ...state,
+            selectDatabaseId: payload,
+        }
     }
+
+
+
 
   }
 }
