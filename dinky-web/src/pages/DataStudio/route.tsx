@@ -1,9 +1,12 @@
 import {
-  AppstoreAddOutlined,
-  DatabaseOutlined, FolderOutlined, HistoryOutlined, InfoCircleOutlined,
+  ApartmentOutlined,
+  AppstoreAddOutlined, BarChartOutlined, CalendarOutlined, ConsoleSqlOutlined,
+  DatabaseOutlined, DesktopOutlined, FolderOutlined, HistoryOutlined, InfoCircleOutlined,
+  LoadingOutlined, MonitorOutlined,
   PlayCircleOutlined, RightSquareOutlined,
   SettingOutlined,
-  TableOutlined
+  TableOutlined,
+  ToolOutlined
 } from "@ant-design/icons";
 import React from "react";
 import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
@@ -11,7 +14,8 @@ import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
 export const LeftSide = [
   {
     key: 'menu.datastudio.project',
-    icon: <AppstoreAddOutlined/>,
+    // icon: <AppstoreAddOutlined/>,
+    icon: <ConsoleSqlOutlined />,
     label: 'menu.datastudio.project',
     children: <div>project</div>
   },
@@ -59,5 +63,40 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.console',
     icon: <RightSquareOutlined/>,
     label: 'menu.datastudio.console',
+  },
+  {
+    key: 'menu.datastudio.result',
+    icon: <MonitorOutlined />,
+    label: 'menu.datastudio.result',
+  },
+  {
+    key: 'menu.datastudio.bi',
+    icon: <BarChartOutlined />,
+    label: 'menu.datastudio.bi',
+  },
+  {
+    key: 'menu.datastudio.lineage',
+    icon: <ApartmentOutlined />,
+    label: 'menu.datastudio.lineage',
+  },
+  {
+    key: 'menu.datastudio.process',
+    icon: <DesktopOutlined />,
+    label: 'menu.datastudio.process',
+  },
+  {
+    key: 'menu.datastudio.history',
+    icon: <CalendarOutlined/>,
+    label: 'menu.datastudio.history',
+  },
+  {
+    key: 'menu.datastudio.table-data',
+    icon: <TableOutlined />,
+    label: 'menu.datastudio.table-data',
+  },
+  {
+    key: 'menu.datastudio.tool',
+    icon: <ToolOutlined />,
+    label: 'menu.datastudio.tool',
   }
 ]
