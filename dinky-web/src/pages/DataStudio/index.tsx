@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Breadcrumb, Button, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
+import {Breadcrumb, Button, Layout, Menu, Space, Tooltip} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
   CaretRightOutlined,
@@ -24,18 +24,19 @@ import {
   MinusOutlined,
   QuestionOutlined,
 } from "@ant-design/icons";
-import React, {useCallback, useEffect, useState} from "react";
+import React, {Fragment, useCallback, useEffect, useState} from "react";
 import { StateType, VIEW} from "@/pages/DataStudio/model";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
-import {TestDiv} from "@/components/StyledComponents";
+import {FlexCenterDiv} from "@/components/StyledComponents";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
 import { l } from '@/utils/intl';
 import {getLocalTheme} from "@/utils/function";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
+import BottomContainer from "@/pages/DataStudio/BottomContainer";
 
 const {Header, Sider, Content} = Layout;
 
@@ -111,11 +112,12 @@ const DataStudio = (props: any) => {
   }
   return (
     <PersistGate loading={null} persistor={persistor}>
-            <TestDiv>
+            <Fragment>
               <Layout style={{minHeight: "60vh"}}>
                 <Header key={"h"} style={headerStyle}>
-                  <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
+                  <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
                     <Breadcrumb
+                      separator={">"}
                       items={
                       [
                         {
@@ -124,7 +126,7 @@ const DataStudio = (props: any) => {
                       ]}
                     />
 
-                  </div>
+                  </FlexCenterDiv>
                   <div
                       style={{
                         width: (size.width - 2 * VIEW.paddingInline) / 2,
@@ -156,7 +158,7 @@ const DataStudio = (props: any) => {
                     <Menu
                         mode="inline"
                         selectedKeys={[props.bottomContainer.selectKey]}
-                        items={LeftBottomSide}
+                        items={LeftBottomSide.map(x=>{return {key:x.key,label:l(x.label),icon:x.icon}})}
                         style={{display: 'flex', height: '50%', borderRight: 0, flexDirection: "column-reverse"}}
                         onClick={(item) => {
                           props.updateSelectBottomKey(item.key === props.bottomContainer.selectKey ? '' : item.key)
@@ -164,49 +166,14 @@ const DataStudio = (props: any) => {
                     />
 
                   </Sider>
+
                   <Content style={{
                     flexDirection: "column-reverse",
                     display: "flex",
                     height: size.contentHeight,
                   }}>
 
-                    <MovableSidebar
-                        title={<Tabs
-                            items={[{
-                              key: "test",
-                              label: "123"
-                            }]}
-                            defaultActiveKey="StudioMsg" size="small" tabPosition="top" style={{
-                          border: "1px solid #f0f0f0", height: "40px", margin: "0 32px"
-                        }}>
-
-                        </Tabs>}
-                        visible={props.bottomContainer.selectKey !== ""}
-                        style={{
-                          border: "solid 1px #ddd",
-                          background: "#f0f0f0",
-                          zIndex: 999
-                        }}
-                        defaultSize={{
-                          width: "100%",
-                          height: props.bottomContainer.height
-                        }}
-                        minHeight={VIEW.midMargin+10}
-                        maxHeight={size.contentHeight - 40}
-                        onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }, delta: any) => {
-                          props.updateBottomHeight(elementRef.offsetHeight)
-                          const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - props.bottomContainer.height;
-                          props.updateCenterContentHeight(centerContentHeight)
-                          props.updateToolContentHeight(centerContentHeight-VIEW.midMargin)
-                        }}
-                        enable={{top: true}}
-                        handlerMinimize={() => {
-                          props.updateSelectBottomKey("")
-                        }}
-                    >
-
-
-                    </MovableSidebar>
+                    {<BottomContainer size={size}/>}
                     {/*<div>001</div>*/}
                     <div style={{
                       display: "flex",
@@ -215,6 +182,7 @@ const DataStudio = (props: any) => {
                       width: size.width - VIEW.sideWidth * 2
                     }}>
                       {renderLeftContainer()}
+
                       <Content
                           style={{width: size.width - 2 * VIEW.sideWidth - props.leftContainer.width - props.rightContainer.width}}>
                         <MiddleContainer/>
@@ -240,7 +208,7 @@ const DataStudio = (props: any) => {
                   </Sider>
                 </Layout>
               </Layout>
-            </TestDiv>
+            </Fragment>
     </PersistGate>
   );
 };
