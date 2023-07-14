@@ -11,8 +11,6 @@ import {l} from "@/utils/intl";
 import {ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
-import {PostgresqlIcons} from "@/components/Icons/DBIcons";
-import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import {DataSources} from "@/types/RegCenter/data";
 
 const MetaData = (props: any) => {
@@ -20,8 +18,7 @@ const MetaData = (props: any) => {
   const {dispatch ,toolContentHeight, database, selectDatabaseId} = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
-  const [selectDb, setSelectDb] = useState("");
-
+  const selectDb = (database as DataSources.DataSource[]).filter(x=>x.id==selectDatabaseId)[0]
   /**
    * @description: 刷新树数据
    * @param {number} databaseId
@@ -84,7 +81,7 @@ const MetaData = (props: any) => {
     return database.map(({id, name, type, enabled}: DataSources.DataSource) => (
         {
           key: id,
-          value: id+ '-' +type,
+          value: id,
           label: <TagAlignLeft><Tag key={id} color={enabled ? "processing" : "error"}>{type}</Tag>{name}</TagAlignLeft>,
         }
     ))
@@ -101,7 +98,9 @@ const MetaData = (props: any) => {
       dispatch({
         type: "Studio/addTab",
         payload: {
+          icon:selectDb.type,
           id: selectDatabaseId + schemaName + tableName,
+          breadcrumbLabel: [selectDb.type,selectDb.name].join("/"),
           label: schemaName + '.' + tableName ,
           params:{ queryParams: queryParams, tableInfo: fullInfo},
           type: "metadata"

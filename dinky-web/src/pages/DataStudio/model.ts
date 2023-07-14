@@ -89,6 +89,7 @@ export type ConsoleType = {
 export type TabsItemType = {
   id:string,
   label: string;
+  breadcrumbLabel: string;
   params: string|object;
   type: "metadata";
   key: number,
@@ -106,6 +107,7 @@ export type TabsItemType = {
 
 export type TabsType = {
   activeKey: number;
+  activeBreadcrumbTitle:string;
   panes: TabsItemType[];
 }
 
@@ -213,6 +215,7 @@ const Model: ModelType = {
     database: [],
     selectDatabaseId: 0,
     tabs: {
+      activeBreadcrumbTitle:"",
       activeKey: 0,
       panes: [],
     },
@@ -359,6 +362,18 @@ const Model: ModelType = {
      * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSourceDataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: any}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
      */
     updateTabsActiveKey(state, {payload}) {
+      const itemTypes = state.tabs.panes.filter(x=>x.key===payload);
+      if (itemTypes.length===1){
+        const itemType = itemTypes[0];
+        return {
+          ...state,
+          tabs: {
+            ...state.tabs,
+            activeKey: payload,
+            activeBreadcrumbTitle:[itemType.type,itemType.breadcrumbLabel,itemType.label].join("/")
+          },
+        };
+      }
       return {
         ...state,
         tabs: {
@@ -379,12 +394,13 @@ const Model: ModelType = {
       if (needCloseKey===activeKey){
         for (const [index,pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
-            const newActiveKey =index+1>=panes.length?index+1>1&&index+1==panes.length?panes[index-1].key:1: panes[index+1].key;
+            const item =index+1>=panes.length?index+1>1&&index+1==panes.length?panes[index-1]:panes[0]: panes[index+1];
             return {
               ...state,
               tabs: {
                 panes:panes.filter(pane => pane.key !== needCloseKey),
-                activeKey: newActiveKey
+                activeKey: item.key,
+                activeBreadcrumbTitle:panes.length<2?"":[item.type,item.breadcrumbLabel,item.label].join("/"),
               },
             };
           }
@@ -395,7 +411,8 @@ const Model: ModelType = {
         ...state,
         tabs: {
           panes:newPanes,
-          activeKey: activeKey
+          activeKey: activeKey,
+          activeBreadcrumbTitle:state.tabs.activeBreadcrumbTitle
         },
       };
     },
@@ -423,7 +440,8 @@ const Model: ModelType = {
           ...state,
           tabs: {
             panes:[...state.tabs.panes,node],
-            activeKey: node.key
+            activeBreadcrumbTitle:[node.type,node.breadcrumbLabel,node.label].join("/"),
+            activeKey: node.key,
           },
       }
     },

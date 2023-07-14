@@ -123,7 +123,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       size={'small'}
       bordered
       columns={columns}
-      dataSource={columnInfo as DataSources.Column[]}
+      dataSource={(columnInfo as DataSources.Column[]).map(x=>{return{...x,key:x.name}})}
     />
   </>;
 };

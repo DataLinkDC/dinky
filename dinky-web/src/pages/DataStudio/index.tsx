@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import {Button, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
+import {Breadcrumb, Button, Layout, Menu, Space, Tabs, Tooltip} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
   CaretRightOutlined,
   CloseSquareOutlined,
-  CopyOutlined,
+  CopyOutlined, HomeOutlined,
   MinusOutlined,
   QuestionOutlined,
 } from "@ant-design/icons";
@@ -114,7 +114,17 @@ const DataStudio = (props: any) => {
             <TestDiv>
               <Layout style={{minHeight: "60vh"}}>
                 <Header key={"h"} style={headerStyle}>
-                  <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>1</div>
+                  <div style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
+                    <Breadcrumb
+                      items={
+                      [
+                        {
+                          title: <HomeOutlined />,
+                        },...(props.activeBreadcrumbTitle.split("/") as string[]).map(x=>{return {title:x}})
+                      ]}
+                    />
+
+                  </div>
                   <div
                       style={{
                         width: (size.width - 2 * VIEW.paddingInline) / 2,
@@ -277,4 +287,5 @@ export default connect(({Studio}: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,
   rightContainer: Studio.rightContainer,
   bottomContainer: Studio.bottomContainer,
+  activeBreadcrumbTitle: Studio.tabs.activeBreadcrumbTitle,
 }), mapDispatchToProps)(DataStudio);
