@@ -40,8 +40,9 @@ const MiddleContainer = (props: any) => {
     /**
      * 更新当前激活的tab
      * @param {string} key
+     * @param eInfo
      */
-    const updateActiveKey = (key: string,eInfo?: any) => {
+    const updateActiveKey = (key: string, eInfo: any) => {
         const {target : {innerText}} = eInfo;
         const replaceLabel =  innerText.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
         setContextMenuVisible(false)
@@ -53,8 +54,6 @@ const MiddleContainer = (props: any) => {
             type: 'Studio/updateDatabaseSelectKey',
             payload: [replaceLabel],
         })
-
-        console.log(eInfo)
     };
 
 
@@ -87,7 +86,7 @@ const MiddleContainer = (props: any) => {
         info.preventDefault(); // 阻止默认右键事件
         const {key,label} = item;
         const replaceLabel =  label.toString().replace('.','/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-        updateActiveKey(key);
+        updateActiveKey(key,info);
         dispatch({
             type: 'Studio/updateDatabaseSelectKey',
             payload: [replaceLabel],
