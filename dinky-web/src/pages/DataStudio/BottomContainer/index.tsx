@@ -120,7 +120,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         <MovableSidebar
             tagList={renderTabPane}
             visible={bottomContainer.selectKey !== ""}
-            style={{zIndex: 999 ,height: bottomContainer.height}}
+            style={{zIndex: 999 ,height: bottomContainer.height ,marginTop: 0}}
             defaultSize={{width: "100%", height: bottomContainer.height}}
             minHeight={VIEW.midMargin + 10}
             maxHeight={size.contentHeight - 40}

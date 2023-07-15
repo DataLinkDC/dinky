@@ -16,7 +16,7 @@
  */
 
 
-import {Empty, Input, Tree} from 'antd';
+import {Empty, Input, Space, Tree} from 'antd';
 import React, {useCallback, useState} from 'react';
 import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
 import {Key} from '@ant-design/pro-components';

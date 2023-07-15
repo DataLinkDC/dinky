@@ -1,9 +1,10 @@
 import React from "react";
-import { MinusSquareOutlined} from "@ant-design/icons";
+import { MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {Enable, Resizable, ResizeCallback, Size} from "re-resizable";
 import {PageContainer} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import { TabPaneProps } from "antd";
+import {MaxIcon, MinIcon} from "@/components/Icons/StudioIcon";
 
 export type MovableSidebarProps = {
   title?: React.ReactNode;
@@ -17,6 +18,7 @@ export type MovableSidebarProps = {
   visible?: boolean;
   children?: React.ReactNode;
   handlerMinimize?: () => void;
+  handlerMaxsize?: () => void;
   onResize?: ResizeCallback;
   style?: React.CSSProperties;
   tagList?: TabPaneProps[];
@@ -26,12 +28,12 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
 
     const {style, visible,onResize,defaultSize,
         minWidth,maxWidth,minHeight,maxHeight,enable
-        ,children, title,contentHeight,handlerMinimize,tagList
+        ,children, title,contentHeight,handlerMinimize, handlerMaxsize,tagList
     } = props;
 
     return (
         <Resizable
-            style={{...style, display: visible ? 'block' : 'none'}}
+            style={{...style, display: visible ? 'block' : 'none', boxShadow:"0 0 6px gray",borderRadius: 5}}
             onResize={onResize}
             defaultSize={defaultSize}
             minWidth={minWidth}
@@ -50,7 +52,10 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
                     tabBarStyle: {margin: 0, padding: 0},
                 }}
                 tabList={tagList}
-                extra={<MinusSquareOutlined title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>}
+                extra={[
+                    <MinusSquareOutlined size={15}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,
+                    <PlusSquareOutlined size={15} title={l('global.max')} key={"maximize"} onClick={handlerMaxsize}/>
+                ]}
                 fixedHeader
             >
                 <div style={{height: contentHeight}}>{children}</div>

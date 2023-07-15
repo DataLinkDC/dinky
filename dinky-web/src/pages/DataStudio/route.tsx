@@ -37,57 +37,58 @@ import ExecuteConfig from "@/pages/DataStudio/RightContainer/ExecuteConfig";
 import SavePoints from "@/pages/DataStudio/RightContainer/SavePoints";
 import HistoryVersion from "@/pages/DataStudio/RightContainer/HistoryVersion";
 import JobInfo from "@/pages/DataStudio/RightContainer/JobInfo";
+import {l} from "@/utils/intl";
 
 export const LeftSide = [
   {
-    key: 'menu.datastudio.project',
+    key: l('menu.datastudio.project'),
     icon: <ConsoleSqlOutlined />,
-    label: 'menu.datastudio.project',
+    label: l('menu.datastudio.project'),
     children: <Project/>
   },
   {
-    key: 'menu.datastudio.structure',
+    key: l('menu.datastudio.structure'),
     icon: <TableOutlined/>,
-    label: 'menu.datastudio.structure',
+    label: l('menu.datastudio.structure'),
     children: <div>structure</div>
   },
   {
-    key: 'menu.datastudio.metadata',
+    key: l('menu.datastudio.metadata'),
     icon: <DatabaseOutlined/>,
-    label: 'menu.datastudio.metadata',
+    label: l('menu.datastudio.metadata'),
     children: <MetaData/>
   }
 ];
 
 export const RightSide = [
   {
-    key: 'menu.datastudio.jobConfig',
+    key: l('menu.datastudio.jobConfig'),
     icon: <SettingOutlined/>,
-    label: 'menu.datastudio.jobConfig',
+    label: l('menu.datastudio.jobConfig'),
     children: <JobConfig/>,
   },
   {
-    key: 'menu.datastudio.executeConfig',
+    key: l('menu.datastudio.executeConfig'),
     icon: <PlayCircleOutlined/>,
-    label: 'menu.datastudio.executeConfig',
+    label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig/>,
   },
   {
-    key: 'menu.datastudio.savePoint',
+    key: l('menu.datastudio.savePoint'),
     icon: <FolderOutlined/>,
-    label: 'menu.datastudio.savePoint',
+    label: l('menu.datastudio.savePoint'),
     children: <SavePoints/>,
   },
   {
-    key: 'menu.datastudio.historyVision',
+    key: l('menu.datastudio.historyVision'),
     icon: <HistoryOutlined/>,
-    label: 'menu.datastudio.historyVision',
+    label: l('menu.datastudio.historyVision'),
     children: <HistoryVersion/>,
 
   }, {
-    key: 'menu.datastudio.jobInfo',
+    key: l('menu.datastudio.jobInfo'),
     icon: <InfoCircleOutlined/>,
-    label: 'menu.datastudio.jobInfo',
+    label: l('menu.datastudio.jobInfo'),
     children: <JobInfo/>,
   }
 ];

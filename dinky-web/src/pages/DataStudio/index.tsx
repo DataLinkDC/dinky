@@ -108,18 +108,20 @@ const DataStudio = (props: any) => {
      * @returns {JSX.Element}
      */
     const renderRightContainer = () => {
+        const maxWidth= size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600
         return <>
             <MovableSidebar
                 contentHeight={size.contentHeight - VIEW.midMargin - bottomHeight}
                 onResize={(event: any, direction: any, elementRef: {
                     offsetWidth: any;
                 }) => updateRightWidth(elementRef.offsetWidth)}
-                title={rightContainer.selectKey === '' ?'' : l(leftContainer.selectKey)}
+                title={rightContainer.selectKey}
                 handlerMinimize={() => updateSelectRightKey("")}
+                handlerMaxsize={() => updateRightWidth(maxWidth)}
                 visible={rightContainer.selectKey !== ""}
                 defaultSize={{width: rightContainer.width, height: rightContainer.height}}
                 minWidth={300}
-                maxWidth={size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600}
+                maxWidth={maxWidth}
                 enable={{left: true}}
             >
                 <Space wrap>
@@ -143,7 +145,6 @@ const DataStudio = (props: any) => {
                         {/*渲染左侧侧边栏*/}
                         <Sider collapsed collapsedWidth={40}>
                             <Menu
-                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 selectedKeys={[leftContainer.selectKey]}
                                 items={LeftSide.map(x => {
@@ -159,7 +160,6 @@ const DataStudio = (props: any) => {
 
                             {/*底部菜单*/}
                             <Menu
-                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 selectedKeys={[bottomContainer.selectKey]}
                                 items={LeftBottomSide.map(x => {
@@ -211,7 +211,6 @@ const DataStudio = (props: any) => {
                         <Sider collapsed collapsedWidth={40}>
                             <Menu
                                 selectedKeys={[rightContainer.selectKey]}
-                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 style={{height: '100%', borderRight: 0}}
                                 items={RightSide.map(x => {

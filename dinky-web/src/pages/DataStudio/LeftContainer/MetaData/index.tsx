@@ -1,6 +1,6 @@
 import {connect} from "@umijs/max";
 import { StateType} from "../../model";
-import {Spin, Tag} from "antd";
+import {Select, Space, Spin, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {
   DatabaseOutlined, ReloadOutlined,
@@ -15,7 +15,7 @@ import {DataSources} from "@/types/RegCenter/data";
 
 const MetaData = (props: any) => {
 
-  const {dispatch ,toolContentHeight, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
+  const {dispatch ,toolContentHeight,leftContainer, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [loadingDatabase, setLoadingDatabase] = useState(false);
   const selectDb = (dbData as DataSources.DataSource[]).filter(x=> x.id === selectDatabaseId)[0]
@@ -168,5 +168,6 @@ const MetaData = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   toolContentHeight:Studio.toolContentHeight,
+  leftContainer: Studio.leftContainer,
   database: Studio.database,
 }))(MetaData);
