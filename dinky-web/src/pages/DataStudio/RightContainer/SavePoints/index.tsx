@@ -17,8 +17,8 @@
  *
  */
 
-const RightContainer = () => {
-  return <div>RightContainer</div>;
+const SavePoints = () => {
+    return <div>SavePoints</div>;
 };
 
-export default RightContainer;
+export default SavePoints;

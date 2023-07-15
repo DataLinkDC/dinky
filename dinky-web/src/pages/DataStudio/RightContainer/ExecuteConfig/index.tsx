@@ -17,8 +17,9 @@
  *
  */
 
-const RightContainer = () => {
-  return <div>RightContainer</div>;
+const ExecuteConfig = () => {
+
+    return <div>ExecuteConfig</div>;
 };
 
-export default RightContainer;
+export default ExecuteConfig;

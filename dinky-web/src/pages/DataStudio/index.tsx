@@ -15,15 +15,12 @@
  * limitations under the License.
  */
 
-import {Breadcrumb, Button, Layout, Menu, Space} from 'antd';
+import {Button, Layout, Menu, Space} from 'antd';
 import {connect, getDvaApp} from "umi";
 import {
-    CheckSquareTwoTone,
     CloseSquareOutlined,
     CopyOutlined,
-    HomeOutlined,
     QuestionOutlined,
-    SaveTwoTone,
 } from "@ant-design/icons";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {StateType, VIEW} from "@/pages/DataStudio/model";
@@ -31,7 +28,6 @@ import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
-import {FlexCenterDiv} from "@/components/StyledComponents";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
 import {l} from '@/utils/intl';
@@ -39,8 +35,9 @@ import {getLocalTheme} from "@/utils/function";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
+import {THEME} from "@/types/Public/data";
 
-const {Header, Sider, Content} = Layout;
+const { Sider, Content} = Layout;
 
 
 
@@ -117,7 +114,7 @@ const DataStudio = (props: any) => {
                 onResize={(event: any, direction: any, elementRef: {
                     offsetWidth: any;
                 }) => updateRightWidth(elementRef.offsetWidth)}
-                title={rightContainer.selectKey}
+                title={rightContainer.selectKey === '' ?'' : l(leftContainer.selectKey)}
                 handlerMinimize={() => updateSelectRightKey("")}
                 visible={rightContainer.selectKey !== ""}
                 defaultSize={{width: rightContainer.width, height: rightContainer.height}}
@@ -138,12 +135,15 @@ const DataStudio = (props: any) => {
         <PersistGate loading={null} persistor={persistor}>
             <Fragment>
                 <Layout style={{minHeight: "60vh"}}>
+                    {/* 渲染 header */}
                     {renderHeaderContainer()}
 
+
                     <Layout hasSider style={{minHeight: size.contentHeight}}>
+                        {/*渲染左侧侧边栏*/}
                         <Sider collapsed collapsedWidth={40}>
                             <Menu
-                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 selectedKeys={[leftContainer.selectKey]}
                                 items={LeftSide.map(x => {
@@ -154,8 +154,12 @@ const DataStudio = (props: any) => {
                                     updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
                                 }}
                             />
+
+
+
+                            {/*底部菜单*/}
                             <Menu
-                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 selectedKeys={[bottomContainer.selectKey]}
                                 items={LeftBottomSide.map(x => {
@@ -179,9 +183,10 @@ const DataStudio = (props: any) => {
                             display: "flex",
                             height: size.contentHeight,
                         }}>
+                            {/*渲染底部内容*/}
+                            <BottomContainer size={size}/>
 
-                            {<BottomContainer size={size}/>}
-                            {/*<div>001</div>*/}
+
                             <div style={{
                                 display: "flex",
                                 position: "absolute",
@@ -201,13 +206,17 @@ const DataStudio = (props: any) => {
 
                             </div>
                         </Content>
+
+                        {/* 渲染右侧侧边栏 */}
                         <Sider collapsed collapsedWidth={40}>
                             <Menu
                                 selectedKeys={[rightContainer.selectKey]}
-                                theme={getLocalTheme() === "dark" ? "dark" : "light"}
+                                theme={getLocalTheme() === THEME.dark ? "dark" : "light"}
                                 mode="inline"
                                 style={{height: '100%', borderRight: 0}}
-                                items={RightSide}
+                                items={RightSide.map(x => {
+                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                })}
                                 onClick={(item) => {
                                     updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
                                 }}

@@ -17,8 +17,8 @@
  *
  */
 
-const RightContainer = () => {
-  return <div>RightContainer</div>;
+const HistoryVersion = () => {
+    return <div>HistoryVersion</div>;
 };
 
-export default RightContainer;
+export default HistoryVersion;

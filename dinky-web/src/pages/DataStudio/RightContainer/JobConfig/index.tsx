@@ -17,8 +17,9 @@
  *
  */
 
-const RightContainer = () => {
-  return <div>RightContainer</div>;
+const JobConfig = () => {
+    return <div>JobConfig</div>;
+
 };
 
-export default RightContainer;
+export default JobConfig;

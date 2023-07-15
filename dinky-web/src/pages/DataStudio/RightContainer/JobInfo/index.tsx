@@ -17,8 +17,10 @@
  *
  */
 
-const RightContainer = () => {
-  return <div>RightContainer</div>;
+const JobInfo = () => {
+    return <div>JobInfo</div>;
+
 };
 
-export default RightContainer;
+
+export default JobInfo;
