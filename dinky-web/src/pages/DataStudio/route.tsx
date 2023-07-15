@@ -1,8 +1,8 @@
 import {
   ApartmentOutlined,
-  AppstoreAddOutlined, BarChartOutlined, CalendarOutlined, ConsoleSqlOutlined,
+  BarChartOutlined, CalendarOutlined, ConsoleSqlOutlined,
   DatabaseOutlined, DesktopOutlined, FolderOutlined, HistoryOutlined, InfoCircleOutlined,
-  LoadingOutlined, MonitorOutlined,
+  MonitorOutlined,
   PlayCircleOutlined, RightSquareOutlined,
   SettingOutlined,
   TableOutlined,
@@ -16,7 +16,6 @@ import Console from "@/pages/DataStudio/BottomContainer/Console";
 export const LeftSide = [
   {
     key: 'menu.datastudio.project',
-    // icon: <AppstoreAddOutlined/>,
     icon: <ConsoleSqlOutlined />,
     label: 'menu.datastudio.project',
     children: <Project/>

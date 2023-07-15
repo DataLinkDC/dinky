@@ -38,15 +38,11 @@ import {l} from '@/utils/intl';
 import {getLocalTheme} from "@/utils/function";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
+import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 
 const {Header, Sider, Content} = Layout;
 
-const headerStyle: React.CSSProperties = {
-    display: "inline-flex",
-    lineHeight: '32px',
-    height: "32px",
-    backgroundColor: '#fff',
-};
+
 
 
 const DataStudio = (props: any) => {
@@ -85,13 +81,35 @@ const DataStudio = (props: any) => {
             window.removeEventListener('resize', onResize);
         };
     }, [onResize]);
+
+
     useEffect(() => {
         getDataBase().then(res => saveDataBase(res))
         onResize();
     }, []);
+
+
+    /**
+     * 渲染头部
+     * @returns {JSX.Element}
+     */
+    const renderHeaderContainer = () => {
+        return <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+    }
+
+
+    /**
+     * 渲染左侧侧边栏
+     * @returns {JSX.Element}
+     */
     const renderLeftContainer = () => {
         return <LeftContainer size={size}/>
     }
+
+    /**
+     * 渲染右侧侧边栏
+     * @returns {JSX.Element}
+     */
     const renderRightContainer = () => {
         return <>
             <MovableSidebar
@@ -120,34 +138,7 @@ const DataStudio = (props: any) => {
         <PersistGate loading={null} persistor={persistor}>
             <Fragment>
                 <Layout style={{minHeight: "60vh"}}>
-                    <Header key={"h"} style={headerStyle}>
-                        <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
-                            <Breadcrumb
-                                separator={">"}
-                                items={
-                                    [
-                                        {
-                                            title: <HomeOutlined/>,
-                                        }, ...(activeBreadcrumbTitle.split("/") as string[]).map(x => {
-                                        return {title: x}
-                                    })
-                                    ]}
-                            />
-
-                        </FlexCenterDiv>
-                        <div
-                            style={{
-                                width: (size.width - 2 * VIEW.paddingInline) / 2,
-                                display: "flex",
-                                flexDirection: "row-reverse"
-                            }}>
-                            <Space align={"center"} direction={"horizontal"} wrap>
-                                <SaveTwoTone/>
-                                <CheckSquareTwoTone/>
-                            </Space>
-                        </div>
-
-                    </Header>
+                    {renderHeaderContainer()}
 
                     <Layout hasSider style={{minHeight: size.contentHeight}}>
                         <Sider collapsed collapsedWidth={40}>
