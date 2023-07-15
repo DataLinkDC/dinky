@@ -174,35 +174,6 @@ public class CatalogueController {
         }
     }
 
-    /** 动态查询列表 */
-    @PostMapping
-    public ProTableResult<Catalogue> listCatalogues(@RequestBody JsonNode para) {
-        return catalogueService.selectForProTable(para);
-    }
-
-    /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            boolean isAdmin = false;
-            List<String> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                List<String> ids = catalogueService.removeCatalogueAndTaskById(id);
-                if (!ids.isEmpty()) {
-                    error.addAll(ids);
-                }
-            }
-            if (error.size() == 0 && !isAdmin) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除失败，请检查作业" + error + "状态。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
     public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
