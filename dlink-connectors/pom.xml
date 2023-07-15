@@ -26,9 +26,6 @@
 
     <artifactId>dlink-connectors</artifactId>
     <packaging>pom</packaging>
-    <modules>
-        <module>dlink-connector-jdbc-1.16</module>
-    </modules>
 
     <profiles>
         <profile>
@@ -64,6 +61,13 @@
         </profile>
 
         <profile>
+            <id>flink-1.16</id>
+            <modules>
+                <module>dlink-connector-jdbc-1.16</module>
+            </modules>
+        </profile>
+
+        <profile>
             <id>all</id>
             <modules>
                 <module>dlink-connector-jdbc-1.11</module>
@@ -74,6 +78,7 @@
                 <module>dlink-connector-jdbc-1.14</module>
                 <module>dlink-connector-phoenix-1.14</module>
                 <module>dlink-connector-pulsar-1.14</module>
+                <module>dlink-connector-jdbc-1.16</module>
             </modules>
         </profile>
     </profiles>
