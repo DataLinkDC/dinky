@@ -32,6 +32,7 @@ const headerStyle: React.CSSProperties = {
     fontWeight: "bold",
     fontSize: "16px",
     padding: "4px 10px",
+    borderBottom: "0.5px solid gray",
 };
 
 
