@@ -18,21 +18,21 @@
  */
 
 import {Divider, Typography} from "antd";
-import {KEY_BOARD} from "@/pages/DataStudio/MiddleContainer/KeyBoard/constant";
-import {l} from "@/utils/intl";
 import React from "react";
+import {QUICK_GUIDE} from "@/pages/DataStudio/MiddleContainer/QuickGuide/constant";
 
-const {Title, Paragraph, Text} = Typography;
-
-
-const KeyBoard = () => {
+const {Title, Paragraph, Link} = Typography;
 
 
-    const buildKeyBoard = () => {
-        return KEY_BOARD.map((item,index) => {
+
+const QuickGuide = () => {
+
+    const buildQuickGuide = () => {
+        return QUICK_GUIDE.map((item,index) => {
             return <>
-                {index % 6 === 0 ? <Divider plain orientationMargin={0}/> : <>
-                    <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
+                {index % 7 === 0 ? <Divider plain orientationMargin={0}/> : <>
+                    <Link href={item.link} key={item.key}>{item.label}</Link>
+                    <Divider type="vertical"/>
                 </>}
             </>
         });
@@ -40,13 +40,14 @@ const KeyBoard = () => {
 
     return <>
         <Typography  style={{padding: '2px', textAlign: 'center', border: 'salmon'}}>
-            <br/>
-            <Title level={4}>{l('shortcut.title')}</Title>
-            <Paragraph  style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >
-                {buildKeyBoard()}
-            </Paragraph>
+            <Title level={4}>快捷引导</Title>
+            todo: buildQuickGuide
+            {/*<Paragraph  style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >*/}
+            {/*    {buildQuickGuide()}*/}
+            {/*</Paragraph>*/}
         </Typography>
-    </>;
+    </>
 };
 
-export default KeyBoard;
+
+export default QuickGuide;

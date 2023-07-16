@@ -21,8 +21,8 @@ import {VIEW} from "@/pages/DataStudio/model";
 import {Breadcrumb, Descriptions, Space} from "antd";
 import {
     ApiTwoTone,
+    EnvironmentOutlined,
     FlagTwoTone,
-    HomeOutlined,
     PauseCircleTwoTone,
     PlayCircleTwoTone,
     RocketTwoTone,
@@ -32,6 +32,7 @@ import {
 } from "@ant-design/icons";
 import React from "react";
 import {l} from "@/utils/intl";
+import {buildBreadcrumbItems} from "@/pages/DataStudio/HeaderContainer/function";
 
 
 const headerStyle: React.CSSProperties = {
@@ -55,17 +56,13 @@ const HeaderContainer = (props: any) => {
      * @type {({title: JSX.Element} | {title: string})[]}
      */
     const renderBreadcrumbItems = () => {
-        const items = [
-            {
-                title: <HomeOutlined/>,
-            }, ...(activeBreadcrumbTitle.split("/") as string[]).map(x => {
-                return {title: x}
-            })
-        ];
+        if (!activeBreadcrumbTitle) {
+            return <Space><EnvironmentOutlined/><span>Guide Page</span></Space>
+        }
 
         return <>
             <FlexCenterDiv style={{width: (size.width - 2 * VIEW.paddingInline) / 2}}>
-                <Breadcrumb separator={">"} items={items}/>
+                <Breadcrumb separator={">"} items={buildBreadcrumbItems(activeBreadcrumbTitle)}/>
             </FlexCenterDiv>
         </>
     };

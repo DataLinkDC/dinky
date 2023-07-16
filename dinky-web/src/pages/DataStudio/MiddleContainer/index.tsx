@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Dropdown, Menu, Space, Tabs} from "antd";
+import {Divider, Dropdown, Menu, Space, Tabs} from "antd";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
 import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
@@ -24,6 +24,7 @@ import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
 import {MenuInfo} from "rc-menu/es/interface";
 import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
+import QuickGuide from "@/pages/DataStudio/MiddleContainer/QuickGuide";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -192,7 +193,11 @@ const MiddleContainer = (props: any) => {
      */
     const renderMiddleContent = () => {
         if (tabItems?.length === 0) {
-            return <KeyBoard/>
+            return <>
+                <KeyBoard/>
+                <Divider/>
+                <QuickGuide/>
+            </>
         } else {
             return <>
                 <Tabs

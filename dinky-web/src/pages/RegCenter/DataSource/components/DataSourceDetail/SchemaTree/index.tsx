@@ -58,6 +58,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
                     <Input
                         placeholder="请输入关键字搜索"
                         allowClear
+                        style={{marginBottom: 8}}
                         value={searchValue}
                         onChange={onSearchChange}
                     />

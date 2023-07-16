@@ -17,12 +17,12 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
 
     /**
      * 侧边栏大小变化
-     * @param elementRef
+     * @param width
      */
-  const handleReSizeChange = (elementRef: any) => {
+  const handleReSizeChange = (width: any) => {
       dispatch({
           type: 'Studio/updateLeftWidth',
-          payload: elementRef.offsetWidth,
+          payload: width,
       })
   }
 
@@ -41,10 +41,6 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
      */
     const handleMaxsize = (widthChangeValue: number) => {
         handleReSizeChange(widthChangeValue)
-        dispatch({
-            type: 'Studio/updateLeftWidth',
-            payload: widthChangeValue,
-        })
     }
 
     /**
@@ -53,7 +49,7 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
      */
     const restMovableSidebarProps : MovableSidebarProps  = {
         contentHeight: toolContentHeight,
-        onResize: (event: any, direction: any, elementRef: { offsetWidth: any; }) => handleReSizeChange(elementRef),
+        onResize: (event: any, direction: any, elementRef: { offsetWidth: any; }) => handleReSizeChange(elementRef.offsetWidth),
         title: (leftContainer.selectKey),
         handlerMinimize: ()=> handleMinimize(),
         handlerMaxsize: () => handleMaxsize(size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700),

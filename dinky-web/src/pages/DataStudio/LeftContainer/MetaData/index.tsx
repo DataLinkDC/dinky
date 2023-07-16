@@ -150,9 +150,9 @@ const MetaData = (props: any) => {
   return (
 
     <Spin spinning={loadingDatabase} delay={500}>
-      <ProForm initialValues={{selectDb:selectDatabaseId}} submitter={false}>
+      <ProForm style={{height: 40}} initialValues={{selectDb:selectDatabaseId}} submitter={false}>
         <ProFormSelect
-            width={'sm'}
+            width={leftContainer.width - 45 }
             addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
             allowClear={false}
             name={"selectDb"}
@@ -161,7 +161,7 @@ const MetaData = (props: any) => {
             fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId)}}
         />
       </ProForm>
-      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 4), marginTop: 0}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
+      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
     </Spin>
   );
 };
