@@ -211,6 +211,9 @@ public class SQLSinkBuilder extends AbstractSinkBuilder implements SinkBuilder, 
             DataStreamSource<String> dataStreamSource) {
         final String timeZone = config.getSink().get("timezone");
         config.getSink().remove("timezone");
+        if(config.getSink().containsKey("fenodes")){
+            config.getSink().remove("url");
+        }
         if (Asserts.isNotNullString(timeZone)) {
             sinkTimeZone = ZoneId.of(timeZone);
         }

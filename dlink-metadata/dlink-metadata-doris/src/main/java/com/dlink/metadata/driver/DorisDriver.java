@@ -19,23 +19,24 @@
 
 package com.dlink.metadata.driver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import cn.hutool.core.text.CharSequenceUtil;
 import com.dlink.metadata.convert.DorisTypeConvert;
 import com.dlink.metadata.convert.ITypeConvert;
 import com.dlink.metadata.query.DorisQuery;
 import com.dlink.metadata.query.IDBQuery;
 import com.dlink.metadata.result.JdbcSelectResult;
 import com.dlink.model.Column;
+import com.dlink.model.Table;
 import com.dlink.process.context.ProcessContextHolder;
 import com.dlink.process.model.ProcessEntity;
 import com.dlink.utils.LogUtil;
 import com.dlink.utils.SqlUtil;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import cn.hutool.core.text.CharSequenceUtil;
 
 public class DorisDriver extends AbstractJdbcDriver {
 
@@ -121,6 +122,63 @@ public class DorisDriver extends AbstractJdbcDriver {
         map.put("TEXT", "STRING");
         map.put("DATETIME", "TIMESTAMP");
         return map;
+    }
+
+    @Override
+    public String generateCreateTableSql(Table table) {
+        String createTableSql = getCreateTableSql(table);
+        logger.info("Auto generateCreateTableSql {}", createTableSql);
+        return createTableSql;
+    }
+
+    @Override
+    public String getCreateTableSql(Table table) {
+        List<String> dorisTypes = Arrays.asList("BOOLEAN", "TINYINT", "SMALLINT", "SMALLINT", "INT", "BIGINT", "LARGEINT", "FLOAT", "DOUBLE", "DECIMAL", "DATE", "DATETIME", "CHAR", "VARCHAR", "TEXT", "TIMESTAMP", "STRING");
+        StringBuilder keyBuffer = new StringBuilder();
+        StringBuilder ddlBuffer = new StringBuilder();
+        ddlBuffer.append("CREATE TABLE IF NOT EXISTS ").append(table.getSchema()).append(".").append(table.getName())
+            .append(" (").append(System.lineSeparator());
+        for (int i = 0; i < table.getColumns().size(); i++) {
+            Column columnInfo = table.getColumns().get(i);
+            String cType = columnInfo.getType().split(" ")[0].toUpperCase();
+            ddlBuffer.append(" `").append(columnInfo.getName()).append("` ");
+            if (!dorisTypes.contains(cType)) {
+                cType = columnInfo.getJavaType().getFlinkType().toUpperCase();
+                if (!dorisTypes.contains(cType)) {
+                    logger.error("doris does not support {} type", columnInfo.getType());
+                    return  "";
+                }
+            }
+            if (cType.equalsIgnoreCase("TIMESTAMP")) {
+                ddlBuffer.append("DATETIME");
+            } else if (columnInfo.getType().equalsIgnoreCase("TEXT")) {
+                ddlBuffer.append("STRING");
+            }else{
+                ddlBuffer.append(cType);
+            }
+            if(columnInfo.getLength()!=null &&columnInfo.getLength()>0 ) {
+                ddlBuffer.append("(").append(cType.equalsIgnoreCase("VARCHAR") ?columnInfo.getLength() * 3 : columnInfo.getLength()).append(")");
+            }
+            if (columnInfo.getComment()!=null) {
+                ddlBuffer.append(" COMMENT '").append(columnInfo.getComment()).append("'");
+            }
+            if (i < table.getColumns().size() - 1) {
+                ddlBuffer.append(",");
+            }
+            ddlBuffer.append(System.lineSeparator());
+            if(columnInfo.isKeyFlag()){
+                keyBuffer.append(columnInfo.getName()).append(",");
+            }
+
+        }
+        ddlBuffer.append(System.lineSeparator());
+        String primaryKeys = keyBuffer.substring(0, keyBuffer.length() - 1);
+        ddlBuffer.append(") UNIQUE KEY (").append(primaryKeys).append(")").append(System.lineSeparator());
+        ddlBuffer.append("COMMENT '").append(table.getComment()).append("'");
+        ddlBuffer.append(" DISTRIBUTED BY HASH (").append(primaryKeys).append(") BUCKETS AUTO").append(System.lineSeparator());
+        //
+        ddlBuffer.append(" PROPERTIES ( \"replication_allocation\" = \"tag.location.default: 3\")");
+        return ddlBuffer.toString();
     }
 
     @Override
