@@ -154,7 +154,9 @@ export type Container = {
   width: number | string;
   maxWidth?: number | string;
 }
-
+export type BottomContainerContent = {
+  console:string
+}
 export type StateType = {
   isFullScreen: boolean;
   toolContentHeight: number;
@@ -169,6 +171,7 @@ export type StateType = {
     selectKey: [];
   };
   tabs: TabsType;
+  bottomContainerContent:BottomContainerContent
 };
 export type ModelType = {
   namespace: string;
@@ -193,6 +196,7 @@ export type ModelType = {
     updateSelectDatabaseId: Reducer<StateType>;
     updateDatabaseExpandKey: Reducer<StateType>;
     updateDatabaseSelectKey: Reducer<StateType>;
+    updateBottomConsole: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -231,6 +235,9 @@ const Model: ModelType = {
       activeKey: "0",
       panes: [],
     },
+    bottomContainerContent:{
+      console:""
+    }
   },
   effects: {},
   reducers: {
@@ -549,6 +556,12 @@ const Model: ModelType = {
             ...state,
             database: {...state.database , selectKeys: payload},
         }
+    },
+    updateBottomConsole(state, {payload}) {
+      return {
+        ...state,
+        bottomContainerContent: {...state.bottomContainerContent , console: payload},
+      }
     }
 
   }

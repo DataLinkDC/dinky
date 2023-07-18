@@ -101,7 +101,7 @@ export const RightSide:TabProp[] = [
     icon: <InfoCircleOutlined/>,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    isShow: type => type !== TabsPageType.None,
   }
 ];
 

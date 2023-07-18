@@ -61,7 +61,7 @@ const Settings: ProLayoutProps & {
     },
     pageContainer: {
       paddingBlockPageContainerContent: 0,
-      paddingInlinePageContainerContent: 10,
+      paddingInlinePageContainerContent: 0,
     }
   },
 };

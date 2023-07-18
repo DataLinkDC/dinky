@@ -35,12 +35,13 @@ import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";
+import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
 
 const {Sider, Content} = Layout;
 
 const DataStudio = (props: any) => {
   const {
-    bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight
+    bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight,updateBottomConsole
     , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
     , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle, updateSelectBottomSubKey, tabs
   } = props
@@ -82,6 +83,7 @@ const DataStudio = (props: any) => {
 
   useEffect(() => {
     getDataBase().then(res => saveDataBase(res))
+    getConsoleData().then(res => updateBottomConsole(res))
     onResize();
   }, []);
 

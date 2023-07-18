@@ -17,19 +17,21 @@
  *
  */
 
-import MonacoEditor, {monaco} from "react-monaco-editor";
+import * as monaco from 'monaco-editor';
+
 import {MonacoEditorOptions} from "@/types/Public/data";
 import {convertCodeEditTheme} from "@/utils/function";
 import React, {useState} from "react";
 import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
 import {editor} from "monaco-editor";
+import {Editor, OnChange} from "@monaco-editor/react";
 
 type CodeEditFormProps = {
   height?: string;
   width?: string;
   language?: string;
   options?: any;
-  onChange?: (val: string) => void;
+  onChange?: OnChange;
   code: string;
   readOnly?: boolean;
   lineNumbers?: string;
@@ -126,7 +128,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
 
   return (<>
     <div className={"monaco-float"}>
-      <MonacoEditor
+      <Editor
         width={width}
         height={height}
         value={code}
@@ -138,7 +140,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
           autoDetectHighContrast: true,
           lineNumbers,
         }}
-        editorDidMount={editorDidMount}
+        onMount={editorDidMount}
         onChange={onChange}
         theme={theme ? theme : convertCodeEditTheme()}
       />

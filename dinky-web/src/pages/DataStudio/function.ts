@@ -22,42 +22,46 @@ import {Dispatch} from "@@/plugin-dva/types";
 import {DataSources} from "@/types/RegCenter/data";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
-    updateToolContentHeight: (key: number) => dispatch({
-        type: "Studio/updateToolContentHeight",
-        payload: key,
-    }),
-    updateCenterContentHeight: (key: number) => dispatch({
-        type: "Studio/updateCenterContentHeight",
-        payload: key,
-    }),
-    updateSelectLeftKey: (key: string) => dispatch({
-        type: "Studio/updateSelectLeftKey",
-        payload: key,
-    }),
-    updateLeftWidth: (width: number) => dispatch({
-        type: "Studio/updateLeftWidth",
-        payload: width,
-    }), updateSelectRightKey: (key: string) => dispatch({
-        type: "Studio/updateSelectRightKey",
-        payload: key,
-    }),
-    updateRightWidth: (width: number) => dispatch({
-        type: "Studio/updateRightWidth",
-        payload: width,
-    }), updateSelectBottomKey: (key: string) => dispatch({
-        type: "Studio/updateSelectBottomKey",
-        payload: key,
-    }),updateSelectBottomSubKey: (key: string) => dispatch({
-        type: "Studio/updateSelectBottomSubKey",
-        payload: key,
-    }),
-    updateBottomHeight: (height: number) => dispatch({
-        type: "Studio/updateBottomHeight",
-        payload: height,
-    }),
-    saveDataBase: (data: DataSources.DataSource[]) => dispatch({
-        type: "Studio/saveDataBase",
-        payload: data,
-    }),
+  updateToolContentHeight: (key: number) => dispatch({
+    type: "Studio/updateToolContentHeight",
+    payload: key,
+  }),
+  updateCenterContentHeight: (key: number) => dispatch({
+    type: "Studio/updateCenterContentHeight",
+    payload: key,
+  }),
+  updateSelectLeftKey: (key: string) => dispatch({
+    type: "Studio/updateSelectLeftKey",
+    payload: key,
+  }),
+  updateLeftWidth: (width: number) => dispatch({
+    type: "Studio/updateLeftWidth",
+    payload: width,
+  }), updateSelectRightKey: (key: string) => dispatch({
+    type: "Studio/updateSelectRightKey",
+    payload: key,
+  }),
+  updateRightWidth: (width: number) => dispatch({
+    type: "Studio/updateRightWidth",
+    payload: width,
+  }), updateSelectBottomKey: (key: string) => dispatch({
+    type: "Studio/updateSelectBottomKey",
+    payload: key,
+  }), updateSelectBottomSubKey: (key: string) => dispatch({
+    type: "Studio/updateSelectBottomSubKey",
+    payload: key,
+  }),
+  updateBottomHeight: (height: number) => dispatch({
+    type: "Studio/updateBottomHeight",
+    payload: height,
+  }),
+  saveDataBase: (data: DataSources.DataSource[]) => dispatch({
+    type: "Studio/saveDataBase",
+    payload: data,
+  }),
+  updateBottomConsole: (data: string) => dispatch({
+    type: "Studio/updateBottomConsole",
+    payload: data,
+  }),
 
 });

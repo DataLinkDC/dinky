@@ -112,7 +112,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         })
         // updateSelectBottomSubKey(items[0].key.split("/")[1])
         return (<Tabs
-            style={{height:"43px",display:"-webkit-box"}}
+            style={{height:"32px",display:"-webkit-box"}}
             items={items}
             type="card"
             onChange={(key: string) => {
