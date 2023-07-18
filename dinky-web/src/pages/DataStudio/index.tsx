@@ -29,7 +29,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
-import {LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
+import {LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
 import {l} from '@/utils/intl';
 import {getLocalTheme} from "@/utils/function";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
@@ -47,7 +47,7 @@ const DataStudio = (props: any) => {
     const {
         bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight
         , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
-        , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle
+        , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle,updateSelectBottomSubKey
     } = props
 
 
@@ -115,7 +115,7 @@ const DataStudio = (props: any) => {
                 onResize={(event: any, direction: any, elementRef: {
                     offsetWidth: any;
                 }) => updateRightWidth(elementRef.offsetWidth)}
-                title={rightContainer.selectKey}
+                title={<h5>{l(rightContainer.selectKey)}</h5>}
                 handlerMinimize={() => updateSelectRightKey("")}
                 handlerMaxsize={() => updateRightWidth(maxWidth)}
                 visible={rightContainer.selectKey !== ""}
@@ -148,7 +148,7 @@ const DataStudio = (props: any) => {
                                 mode="inline"
                                 selectedKeys={[leftContainer.selectKey]}
                                 items={LeftSide.map(x => {
-                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                    return {key: x.key, label: x.label, icon: x.icon}
                                 })}
                                 style={{height: '50%', borderRight: 0}}
                                 onClick={(item) => {
@@ -163,7 +163,7 @@ const DataStudio = (props: any) => {
                                 mode="inline"
                                 selectedKeys={[bottomContainer.selectKey]}
                                 items={LeftBottomSide.map(x => {
-                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                    return {key: x.key, label: x.label, icon: x.icon}
                                 })}
                                 style={{
                                     display: 'flex',
@@ -173,6 +173,9 @@ const DataStudio = (props: any) => {
                                 }}
                                 onClick={(item) => {
                                     updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
+                                  if (bottomContainer.selectKey!==''&&(!bottomContainer.selectSubKey[item.key] && LeftBottomMoreTabs[item.key])) {
+                                    updateSelectBottomSubKey(LeftBottomMoreTabs[item.key][0].key)
+                                  }
                                 }}
                             />
 
@@ -214,7 +217,7 @@ const DataStudio = (props: any) => {
                                 mode="inline"
                                 style={{height: '100%', borderRight: 0}}
                                 items={RightSide.map(x => {
-                                    return {key: x.key, label: l(x.label), icon: x.icon}
+                                    return {key: x.key, label: x.label, icon: x.icon}
                                 })}
                                 onClick={(item) => {
                                     updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)

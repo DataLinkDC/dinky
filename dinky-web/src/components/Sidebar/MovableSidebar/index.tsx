@@ -1,9 +1,9 @@
 import React from "react";
-import { MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
+import {MinusOutlined, MinusSquareOutlined, PlusSquareOutlined} from "@ant-design/icons";
 import {Enable, Resizable, ResizeCallback, Size} from "re-resizable";
 import {PageContainer} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
-import { TabPaneProps } from "antd";
+import {Button, TabPaneProps} from "antd";
 import {MaxIcon, MinIcon} from "@/components/Icons/StudioIcon";
 
 export type MovableSidebarProps = {
@@ -33,7 +33,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
 
     return (
         <Resizable
-            style={{...style, display: visible ? 'block' : 'none', boxShadow:"0 0 6px gray",borderRadius: 5}}
+            style={{...style, display: visible ? 'block' : 'none', boxShadow:"0 0 6px gray",borderRadius: 5,backgroundColor:"#fff"}}
             onResize={onResize}
             defaultSize={defaultSize}
             minWidth={minWidth}
@@ -43,7 +43,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             enable={enable}
         >
             <PageContainer
-                title={<h5>{title}</h5>}
+                title={title}
                 tabProps={{
                     type: "editable-card",
                     hideAdd: true,
@@ -53,8 +53,11 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
                 }}
                 tabList={tagList}
                 extra={[
-                    <MinusSquareOutlined size={15}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,
-                    <PlusSquareOutlined size={15} title={l('global.max')} key={"maximize"} onClick={handlerMaxsize}/>
+                  <Button title={l('global.mini')} key={"minimize"} icon={<MinusOutlined/>} block type={"text"} shape={"circle"}
+                          onClick={props.handlerMinimize}/>
+                    // <MinusSquareOutlined size={15}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,
+                    // <MinusOutlined size={35}  title={l('global.mini')} key={"minimize"} onClick={handlerMinimize}/>,
+                    // <PlusSquareOutlined size={15} title={l('global.max')} key={"maximize"} onClick={handlerMaxsize}/>
                 ]}
                 fixedHeader
             >

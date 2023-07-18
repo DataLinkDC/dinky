@@ -114,7 +114,7 @@ const HeaderContainer = (props: any) => {
                 {renderBreadcrumbItems()}
             </Descriptions.Item>
             <Descriptions.Item>
-                {renderRightButtons()}
+                {/*{renderRightButtons()}*/}
             </Descriptions.Item>
         </Descriptions>
     </>

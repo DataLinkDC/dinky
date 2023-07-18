@@ -2,8 +2,8 @@ import React from "react";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {l} from "@/utils/intl";
 import {StateType, VIEW} from "@/pages/DataStudio/model";
-import {Space, Tabs} from "antd";
-import {LeftBottomSide} from "@/pages/DataStudio/route";
+import {ConfigProvider, Space, Tabs} from "antd";
+import {LeftBottomMoreTabs, LeftBottomSide} from "@/pages/DataStudio/route";
 import {connect} from "@@/exports";
 import {Title} from "@/components/StyledComponents";
 
@@ -46,6 +46,13 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
         })
     }
 
+    const updateSelectBottomSubKey = (key: string) => {
+        dispatch({
+            type: "Studio/updateSelectBottomSubKey",
+            payload: key,
+        })
+    }
+
     /**
      * 更新工具栏内容高度
      * @param {number} height
@@ -55,6 +62,10 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
             type: "Studio/updateToolContentHeight",
             payload: height,
         })
+    }
+    const getSubTabs = () => {
+      // @ts-ignore
+      return Object.values(Object.keys(LeftBottomMoreTabs).map(x=>LeftBottomMoreTabs[x].map(y=>{return{...y,key:x+"/"+y.key}}))).flatMap(x=>x)
     }
 
     /**
@@ -88,39 +99,54 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     //     destroyInactiveTabPane?: boolean;
     // }
 
-    const renderTabPane = [
-        {
-            tab: <Title>{(bottomContainer.selectKey === '' ? "" : l(bottomContainer.selectKey))}</Title>,
-            closable: false,
-            animated: false,
-            active: false,
-            disabled: true,
-        },
-        {
-            tab: "kkkk",
-            closable: true,
-            children: <div>sasas</div>,
-            tagKey: "llll",
-            animated: true,
-            active: true,
-            destroyInactiveTabPane: true,
-        },
-        {
-            tab: "444",
-            closable: true,
-            children: <div>444</div>,
-            tagKey: "444",
-            animated: true,
-            active: false,
-            destroyInactiveTabPane: true,
-        }
-    ]
+    const renderTabPane = () => {
+      // @ts-ignore
+      const leftBottomMoreTab = LeftBottomMoreTabs[bottomContainer.selectKey];
+      if (leftBottomMoreTab) {
+         const items=leftBottomMoreTab.map((item: any) => {
+           return {
+             key: bottomContainer.selectKey+"/"+item.key,
+             label: <span>{item.icon}{item.label}</span>
+           }
+        })
+        // updateSelectBottomSubKey(items[0].key.split("/")[1])
+        return (<Tabs
+            style={{height:"43px",display:"-webkit-box"}}
+            items={items}
+            type="card"
+            onChange={(key: string) => {
+              updateSelectBottomSubKey(key.split("/")[1])
+            }}
+            activeKey={bottomContainer.selectKey+"/"+bottomContainer.selectSubKey[bottomContainer.selectKey]}
+            size="small" tabPosition="top"  />
+        )
+      }
+      return <></>
+    }
 
-    return (
+    // @ts-ignore
+  return (
         <MovableSidebar
-            tagList={renderTabPane}
+          title={
+            <ConfigProvider
+              theme={{
+                components:{
+                  Tabs:{
+                    horizontalMargin:"0",
+                    cardPaddingSM:"6px",
+                    horizontalItemPadding:"0",
+                  }
+                }
+              }}
+            >
+              <Space>
+                <Title >{l(bottomContainer.selectKey)}</Title>
+                {renderTabPane()}
+              </Space>
+            </ConfigProvider>
+          }
             visible={bottomContainer.selectKey !== ""}
-            style={{zIndex: 999 ,height: bottomContainer.height ,marginTop: 0}}
+            style={{zIndex: 999 ,height: bottomContainer.height ,marginTop: 0,backgroundColor:"#fff"}}
             defaultSize={{width: "100%", height: bottomContainer.height}}
             minHeight={VIEW.midMargin + 10}
             maxHeight={size.contentHeight - 40}
@@ -128,7 +154,10 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
             enable={{top: true}}
             handlerMinimize={handleMinimize}
         >
-            <Tabs activeKey={bottomContainer.selectKey} items={LeftBottomSide} tabBarStyle={{display: "none"}}/>
+            <Tabs activeKey={bottomContainer.selectKey+"/"+(bottomContainer.selectSubKey[bottomContainer.selectKey]?bottomContainer.selectSubKey[bottomContainer.selectKey]:"")}
+                  items={[...LeftBottomSide.map(x=>{return{...x,key:x.key+"/"}})
+                    ,...getSubTabs()]}
+                  tabBarStyle={{display: "none"}}/>
         </MovableSidebar>
     )
 }

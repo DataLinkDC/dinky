@@ -18,6 +18,7 @@
  */
 
 export default {
+  'global.max':'max',
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',

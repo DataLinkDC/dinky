@@ -18,6 +18,9 @@
  */
 
 export default {
+'global.max':'max',
+'button.check':'检查',
+  'button.graph':'图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',

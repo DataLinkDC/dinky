@@ -2,6 +2,7 @@ import {Reducer} from "@@/plugin-dva/types";
 import React from "react";
 import {DataSources} from "@/types/RegCenter/data";
 import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
+import {l} from "@/utils/intl";
 
 /**
  * 初始化布局宽高度
@@ -18,7 +19,7 @@ export const VIEW = {
   bottomHeight: 100,
   rightMargin: 32,
   leftMargin: 36,
-  midMargin: 41,
+  midMargin: 49,
   otherHeight: 10,
   paddingInline: 50,
 };
@@ -146,8 +147,9 @@ export type MetaStoreColumnType = {
   type: string;
 }
 
-export type container = {
+export type Container = {
   selectKey: string;
+  selectSubKey: {[c:string]:string};
   height: number | string;
   width: number | string;
   maxWidth?: number | string;
@@ -157,9 +159,9 @@ export type StateType = {
   isFullScreen: boolean;
   toolContentHeight: number;
   centerContentHeight: number;
-  leftContainer: container;
-  rightContainer: container;
-  bottomContainer: container;
+  leftContainer: Container;
+  rightContainer: Container;
+  bottomContainer: Container;
   database: {
     dbData: DataSources.DataSource[];
     selectDatabaseId: number | null;
@@ -180,6 +182,7 @@ export type ModelType = {
     updateSelectRightKey: Reducer<StateType>;
     updateRightWidth: Reducer<StateType>;
     updateSelectBottomKey: Reducer<StateType>;
+    updateSelectBottomSubKey: Reducer<StateType>;
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
@@ -201,16 +204,19 @@ const Model: ModelType = {
     centerContentHeight:0,
     leftContainer: {
       selectKey: 'menu.datastudio.project',
+      selectSubKey: {},
       height: "100%",
       width: 260,
     },
     rightContainer: {
       selectKey: 'menu.datastudio.jobConfig',
+      selectSubKey: {},
       height: "100%",
       width: 260,
     },
     bottomContainer: {
       selectKey: 'menu.datastudio.console',
+      selectSubKey: {},
       height: 180,
       width: "100%",
     },
@@ -232,7 +238,7 @@ const Model: ModelType = {
      * 更新工具栏高度
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: any, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: any, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateToolContentHeight(state, {payload}) {
       return {
@@ -244,7 +250,7 @@ const Model: ModelType = {
      * 更新中间内容高度
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: any, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: any, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateCenterContentHeight(state, {payload}) {
       return {
@@ -256,7 +262,7 @@ const Model: ModelType = {
      * 更新左侧选中key
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, bottomContainer: Container}}
      */
     updateSelectLeftKey(state, {payload}) {
       return {
@@ -264,6 +270,7 @@ const Model: ModelType = {
         leftContainer: {
           ...state.leftContainer,
           selectKey: payload,
+          label: payload.trim()===""?"":l(payload),
         }
       };
     },
@@ -271,7 +278,7 @@ const Model: ModelType = {
      * 更新左侧宽度
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, bottomContainer: Container}}
      */
     updateLeftWidth(state, {payload}) {
       return {
@@ -286,7 +293,7 @@ const Model: ModelType = {
      * 更新右侧选中key
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}, leftContainer: Container, bottomContainer: Container}}
      */
     updateSelectRightKey(state, {payload}) {
       return {
@@ -301,7 +308,7 @@ const Model: ModelType = {
      * 更新右侧选中key
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: {selectKey: string, width: any, height: number | string, maxWidth?: number | string}, leftContainer: Container, bottomContainer: Container}}
      */
     updateRightWidth(state, {payload}) {
       return {
@@ -316,21 +323,43 @@ const Model: ModelType = {
      * 更新底部选中key
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: {selectKey: any, width: number | string, height: number | string, maxWidth?: number | string}}}
      */
     updateSelectBottomKey(state, {payload}) {
+      let centerContentHeight=0;
+      let toolContentHeight=0;
       if (payload === '') {
-        state.centerContentHeight =(state.centerContentHeight as number)  + (state.bottomContainer.height as number);
-        state.toolContentHeight =(state.toolContentHeight as number)  + (state.bottomContainer.height as number);
+        centerContentHeight =(state.centerContentHeight as number)  + (state.bottomContainer.height as number);
+        toolContentHeight =(state.toolContentHeight as number)  + (state.bottomContainer.height as number);
+        console.log(2)
+      }else if (state.bottomContainer.selectKey!=='' && payload!==state.bottomContainer.selectKey){
+        centerContentHeight =(state.centerContentHeight as number);
+        toolContentHeight =(state.toolContentHeight as number);
       }else {
-        state.centerContentHeight =(state.centerContentHeight as number)  - (state.bottomContainer.height as number);
-        state.toolContentHeight =(state.toolContentHeight as number)  - (state.bottomContainer.height as number);
+        centerContentHeight =(state.centerContentHeight as number)  - (state.bottomContainer.height as number);
+        toolContentHeight =(state.toolContentHeight as number)  - (state.bottomContainer.height as number);
+        console.log(3)
       }
+
+      return {
+        ...state,
+        centerContentHeight:centerContentHeight,
+        toolContentHeight:toolContentHeight,
+        bottomContainer: {
+          ...state.bottomContainer,
+          selectKey: payload,
+        }
+      };
+    },
+    updateSelectBottomSubKey(state, {payload}) {
       return {
         ...state,
         bottomContainer: {
           ...state.bottomContainer,
-          selectKey: payload,
+          selectSubKey: {
+            ...state.bottomContainer.selectSubKey,
+            [state.bottomContainer.selectKey]: payload
+          },
         }
       };
     },
@@ -338,7 +367,7 @@ const Model: ModelType = {
      * 更新底部高度
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: {selectKey: string, width: number | string, height: any, maxWidth?: number | string}}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: {selectKey: string, width: number | string, height: any, maxWidth?: number | string}}}
      */
     updateBottomHeight(state, {payload}) {
       return {
@@ -353,7 +382,7 @@ const Model: ModelType = {
      * 更新数据库列表
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     saveDataBase(state, {payload}) {
       return {
@@ -365,7 +394,7 @@ const Model: ModelType = {
      * 更新tabs activeKey
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSourceDataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: any}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSourceDataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: any}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateTabsActiveKey(state, {payload}) {
       const itemTypes = state.tabs.panes.filter(x=>x.key===payload);
@@ -392,7 +421,7 @@ const Model: ModelType = {
      *  关闭tab
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     closeTab(state, {payload }) {
       const needCloseKey=(payload as  TargetKey).toString();
@@ -426,7 +455,7 @@ const Model: ModelType = {
      * 添加tab 如果存在则不添加
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     addTab(state, {payload }) {
       const node=payload as  TabsItemType;
@@ -469,7 +498,7 @@ const Model: ModelType = {
      * 关闭其他tab
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: any}, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: any}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     closeOtherTabs(state, {payload}) {
       // 从 pans 中找到需要关闭的 tab
@@ -488,7 +517,7 @@ const Model: ModelType = {
      * 更新选中数据库id
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], selectDatabaseId: any, tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], selectDatabaseId: any, tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateSelectDatabaseId(state, {payload}) {
         return {
@@ -513,7 +542,7 @@ const Model: ModelType = {
      * 更新数据库选中key
      * @param {StateType} state
      * @param {any} payload
-     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectKey: [], selectKeys: any, selectDatabaseId: number | null, expandKeys: []}, tabs: TabsType, isFullScreen: boolean, rightContainer: container, leftContainer: container, bottomContainer: container}}
+     * @returns {{centerContentHeight: number, toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectKey: [], selectKeys: any, selectDatabaseId: number | null, expandKeys: []}, tabs: TabsType, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     updateDatabaseSelectKey(state, {payload}) {
       return {

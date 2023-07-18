@@ -28,7 +28,7 @@ import {
   TableOutlined,
   ToolOutlined
 } from "@ant-design/icons";
-import React from "react";
+import React, {ReactNode} from "react";
 import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
 import Project from "@/pages/DataStudio/LeftContainer/Project";
 import Console from "@/pages/DataStudio/BottomContainer/Console";
@@ -41,19 +41,19 @@ import {l} from "@/utils/intl";
 
 export const LeftSide = [
   {
-    key: l('menu.datastudio.project'),
+    key: 'menu.datastudio.project',
     icon: <ConsoleSqlOutlined />,
     label: l('menu.datastudio.project'),
     children: <Project/>
   },
   {
-    key: l('menu.datastudio.structure'),
+    key: 'menu.datastudio.structure',
     icon: <TableOutlined/>,
     label: l('menu.datastudio.structure'),
     children: <div>structure</div>
   },
   {
-    key: l('menu.datastudio.metadata'),
+    key: 'menu.datastudio.metadata',
     icon: <DatabaseOutlined/>,
     label: l('menu.datastudio.metadata'),
     children: <MetaData/>
@@ -62,31 +62,31 @@ export const LeftSide = [
 
 export const RightSide = [
   {
-    key: l('menu.datastudio.jobConfig'),
+    key: 'menu.datastudio.jobConfig',
     icon: <SettingOutlined/>,
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig/>,
   },
   {
-    key: l('menu.datastudio.executeConfig'),
+    key: 'menu.datastudio.executeConfig',
     icon: <PlayCircleOutlined/>,
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig/>,
   },
   {
-    key: l('menu.datastudio.savePoint'),
+    key: 'menu.datastudio.savePoint',
     icon: <FolderOutlined/>,
     label: l('menu.datastudio.savePoint'),
     children: <SavePoints/>,
   },
   {
-    key: l('menu.datastudio.historyVision'),
+    key: 'menu.datastudio.historyVision',
     icon: <HistoryOutlined/>,
     label: l('menu.datastudio.historyVision'),
     children: <HistoryVersion/>,
 
   }, {
-    key: l('menu.datastudio.jobInfo'),
+    key: 'menu.datastudio.jobInfo',
     icon: <InfoCircleOutlined/>,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo/>,
@@ -97,42 +97,77 @@ export const LeftBottomSide = [
   {
     key: 'menu.datastudio.console',
     icon: <RightSquareOutlined/>,
-    label: 'menu.datastudio.console',
+    label: l('menu.datastudio.console'),
     children: <Console/>
   },
   {
     key: 'menu.datastudio.result',
     icon: <MonitorOutlined />,
-    label: 'menu.datastudio.result',
+    label: l('menu.datastudio.result'),
   },
   {
     key: 'menu.datastudio.bi',
     icon: <BarChartOutlined />,
-    label: 'menu.datastudio.bi',
+    label: l('menu.datastudio.bi'),
   },
   {
     key: 'menu.datastudio.lineage',
     icon: <ApartmentOutlined />,
-    label: 'menu.datastudio.lineage',
+    label: l('menu.datastudio.lineage'),
   },
   {
     key: 'menu.datastudio.process',
     icon: <DesktopOutlined />,
-    label: 'menu.datastudio.process',
+    label: l('menu.datastudio.process'),
   },
   {
     key: 'menu.datastudio.history',
     icon: <CalendarOutlined/>,
-    label: 'menu.datastudio.history',
+    label: l('menu.datastudio.history'),
   },
   {
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
-    label: 'menu.datastudio.table-data',
+    label: l('menu.datastudio.table-data'),
   },
   {
     key: 'menu.datastudio.tool',
     icon: <ToolOutlined />,
-    label: 'menu.datastudio.tool',
+    label: l('menu.datastudio.tool'),
   }
 ]
+
+export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
+  'menu.datastudio.tool':[
+    {
+      key: 'menu.datastudio.tool.datax',
+      icon: <ToolOutlined />,
+      label: ('menu.datastudio.tool.datax'),
+      children: <div>datax</div>
+    },{
+      key: 'menu.datastudio.tool.datax2',
+      icon: <ToolOutlined />,
+      label: ('menu.datastudio.tool.datax2'),
+      children: <div>datax2</div>
+    },
+  ] , 'menu.datastudio.tool2':[
+    {
+      key: 'menu.datastudio.tool.datax',
+      icon: <ToolOutlined />,
+      label: ('menu.datastudio.tool.datax'),
+      children: <div>datax</div>
+    },{
+      key: 'menu.datastudio.tool.datax2',
+      icon: <ToolOutlined />,
+      label: ('menu.datastudio.tool.datax2'),
+      children: <div>datax2</div>
+    },
+  ]
+}
+
+export type TabProp ={
+  key:string,
+    icon: ReactNode,
+    label: string,
+    children: ReactNode
+}

@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Divider, Dropdown, Menu, Space, Tabs} from "antd";
+import {ConfigProvider, Divider, Dropdown, Menu, Space, Tabs} from "antd";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
 import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
@@ -200,15 +200,26 @@ const MiddleContainer = (props: any) => {
             </>
         } else {
             return <>
+              <ConfigProvider theme={{
+                components:{
+                  Tabs:{
+                    margin:0,
+                    borderRadiusLG:0
+                  }
+                }
+              }}>
                 <Tabs
-                    hideAdd
-                    onTabClick={(active, e) => updateActiveKey(active, e)}
-                    activeKey={activeKey}
-                    type="editable-card"
-                    onEdit={closeTab}
-                    items={tabItems}
+                  // tabBarStyle={{border: '1px solid black',borderRadius: 0}}
+                  hideAdd
+                  onTabClick={(active, e) => updateActiveKey(active, e)}
+                  activeKey={activeKey}
+                  type="editable-card"
+                  onEdit={closeTab}
+                  items={tabItems}
                 />
                 {renderRightClickMenu()}
+              </ConfigProvider>
+
             </>
         }
     }

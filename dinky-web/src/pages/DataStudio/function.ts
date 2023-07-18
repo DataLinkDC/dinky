@@ -47,6 +47,9 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     }), updateSelectBottomKey: (key: string) => dispatch({
         type: "Studio/updateSelectBottomKey",
         payload: key,
+    }),updateSelectBottomSubKey: (key: string) => dispatch({
+        type: "Studio/updateSelectBottomSubKey",
+        payload: key,
     }),
     updateBottomHeight: (height: number) => dispatch({
         type: "Studio/updateBottomHeight",

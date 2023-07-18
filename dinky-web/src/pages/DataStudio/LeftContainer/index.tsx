@@ -50,7 +50,7 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
     const restMovableSidebarProps : MovableSidebarProps  = {
         contentHeight: toolContentHeight,
         onResize: (event: any, direction: any, elementRef: { offsetWidth: any; }) => handleReSizeChange(elementRef.offsetWidth),
-        title: (leftContainer.selectKey),
+        title: <h5>{l(leftContainer.selectKey)}</h5>,
         handlerMinimize: ()=> handleMinimize(),
         handlerMaxsize: () => handleMaxsize(size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700),
         visible: leftContainer.selectKey !== "",
