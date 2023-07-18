@@ -33,7 +33,8 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
 
     return (
         <Resizable
-            style={{...style, display: visible ? 'block' : 'none', boxShadow:"0 0 6px gray",borderRadius: 5,backgroundColor:"#fff"}}
+            className={'container'}
+            style={{...style, display: visible ? 'block' : 'none',borderRadius: 5}}
             onResize={onResize}
             defaultSize={defaultSize}
             minWidth={minWidth}

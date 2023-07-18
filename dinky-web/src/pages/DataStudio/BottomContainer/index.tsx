@@ -6,6 +6,7 @@ import {ConfigProvider, Space, Tabs} from "antd";
 import {LeftBottomMoreTabs, LeftBottomSide} from "@/pages/DataStudio/route";
 import {connect} from "@@/exports";
 import {Title} from "@/components/StyledComponents";
+import ContentScroll from "@/components/Scroll/ContentScroll";
 
 export type BottomContainerProps = {
     size: number
@@ -123,6 +124,16 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
       }
       return <></>
     }
+    const renderItems = () => {
+     return [...LeftBottomSide.map(x=>{return{...x,key:x.key+"/"}})
+        ,...getSubTabs()].map((item) =>{
+          return {...item,children:
+              <ContentScroll height={props.bottomContainer.height - 53} >
+                 {item.children}
+              </ContentScroll>
+        }
+      })
+    }
 
     // @ts-ignore
   return (
@@ -148,15 +159,14 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
             visible={bottomContainer.selectKey !== ""}
             style={{zIndex: 999 ,height: bottomContainer.height ,marginTop: 0,backgroundColor:"#fff"}}
             defaultSize={{width: "100%", height: bottomContainer.height}}
-            minHeight={VIEW.midMargin + 10}
+            minHeight={VIEW.midMargin}
             maxHeight={size.contentHeight - 40}
             onResize={(event: any, direction: any, elementRef: { offsetHeight: any; }) => resizeCallback(event, direction, elementRef)}
             enable={{top: true}}
             handlerMinimize={handleMinimize}
         >
             <Tabs activeKey={bottomContainer.selectKey+"/"+(bottomContainer.selectSubKey[bottomContainer.selectKey]?bottomContainer.selectSubKey[bottomContainer.selectKey]:"")}
-                  items={[...LeftBottomSide.map(x=>{return{...x,key:x.key+"/"}})
-                    ,...getSubTabs()]}
+                  items={renderItems()}
                   tabBarStyle={{display: "none"}}/>
         </MovableSidebar>
     )

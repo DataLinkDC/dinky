@@ -19,7 +19,7 @@ export const VIEW = {
   bottomHeight: 100,
   rightMargin: 32,
   leftMargin: 36,
-  midMargin: 49,
+  midMargin: 50,
   otherHeight: 10,
   paddingInline: 50,
 };
@@ -93,13 +93,13 @@ export type MetadataParams = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   tableInfo: {};
 }
-
+export enum TabsPageType {None="",metadata="metadata",flinkSql="flinkSql"}
 export type TabsItemType = {
   id:string,
   label: string;
   breadcrumbLabel: string;
   params: string|object|MetadataParams;
-  type: "metadata";
+  type: TabsPageType;
   key: string,
   value: string;
   icon: any;
@@ -209,7 +209,7 @@ const Model: ModelType = {
       width: 260,
     },
     rightContainer: {
-      selectKey: 'menu.datastudio.jobConfig',
+      selectKey: '',
       selectSubKey: {},
       height: "100%",
       width: 260,

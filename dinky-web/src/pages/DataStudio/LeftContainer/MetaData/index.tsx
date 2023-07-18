@@ -12,6 +12,7 @@ import {Key, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
+import ContentScroll from "@/components/Scroll/ContentScroll";
 
 const MetaData = (props: any) => {
 
@@ -161,7 +162,7 @@ const MetaData = (props: any) => {
             fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId)}}
         />
       </ProForm>
-      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
+        <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
     </Spin>
   );
 };

@@ -58,6 +58,7 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
         minWidth: 260,
         maxWidth: size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700, //
         enable: {right: true},
+        style:{borderInlineEnd: "1px solid #E0E2E5"}
     }
 
 

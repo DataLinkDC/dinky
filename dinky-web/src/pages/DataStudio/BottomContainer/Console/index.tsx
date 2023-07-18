@@ -11,11 +11,11 @@ const Console: React.FC= (props:any) => {
 
   },[])
 
-  console.log(props.height-51)
+  console.log(props.height-53)
 
 
   return <>
-    {props.height-51>0 && <CodeShow code={""} height={(props.height-51).toString()}/>}
+    {<CodeShow code={""} height={(props.height-53).toString()}/>}
 
   </>;
 };

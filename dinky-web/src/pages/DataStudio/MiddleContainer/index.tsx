@@ -18,13 +18,14 @@
 import {ConfigProvider, Divider, Dropdown, Menu, Space, Tabs} from "antd";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
-import {MetadataParams, StateType, TabsItemType} from "@/pages/DataStudio/model";
+import {MetadataParams, StateType, TabsItemType, TabsPageType} from "@/pages/DataStudio/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
 import {MenuInfo} from "rc-menu/es/interface";
 import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
 import QuickGuide from "@/pages/DataStudio/MiddleContainer/QuickGuide";
+import ContentScroll from "@/components/Scroll/ContentScroll";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -148,9 +149,9 @@ const MiddleContainer = (props: any) => {
     const tabItems = (panes).map((item: TabsItemType) => {
         const renderContent = () => {
             const params = item.params as MetadataParams
-
+          console.log(item.type==TabsPageType.metadata)
             switch (item.type) {
-                case "metadata":
+                case TabsPageType.metadata:
                     return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>
                 default:
                     return <></>
@@ -160,16 +161,10 @@ const MiddleContainer = (props: any) => {
             key: item.key,
             label: <Space onContextMenu={(e) => handleRightClick(e, item)}
                           key={item.key}>{renderDBIcon(item.icon, 20)}{item.label}</Space>,
-            children: <>
-                <div
-                    style={{
-                        height: activeKey === item.key ? props.centerContentHeight - 40 : 0,
-                        overflow: "auto"
-                    }}
-                >
-                    {renderContent()}
-                </div>
-            </>,
+            children:
+              <ContentScroll height={ activeKey === item.key ? props.centerContentHeight - 40 : 0}>
+                {renderContent()}
+              </ContentScroll>
         }
 
     })

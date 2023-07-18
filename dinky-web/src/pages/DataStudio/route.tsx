@@ -20,10 +20,17 @@
 
 import {
   ApartmentOutlined,
-  BarChartOutlined, CalendarOutlined, ConsoleSqlOutlined,
-  DatabaseOutlined, DesktopOutlined, FolderOutlined, HistoryOutlined, InfoCircleOutlined,
+  BarChartOutlined,
+  CalendarOutlined,
+  ConsoleSqlOutlined,
+  DatabaseOutlined,
+  DesktopOutlined,
+  FolderOutlined,
+  HistoryOutlined,
+  InfoCircleOutlined,
   MonitorOutlined,
-  PlayCircleOutlined, RightSquareOutlined,
+  PlayCircleOutlined,
+  RightSquareOutlined,
   SettingOutlined,
   TableOutlined,
   ToolOutlined
@@ -38,6 +45,7 @@ import SavePoints from "@/pages/DataStudio/RightContainer/SavePoints";
 import HistoryVersion from "@/pages/DataStudio/RightContainer/HistoryVersion";
 import JobInfo from "@/pages/DataStudio/RightContainer/JobInfo";
 import {l} from "@/utils/intl";
+import {TabsPageType} from "@/pages/DataStudio/model";
 
 export const LeftSide = [
   {
@@ -60,36 +68,40 @@ export const LeftSide = [
   }
 ];
 
-export const RightSide = [
+export const RightSide:TabProp[] = [
   {
     key: 'menu.datastudio.jobConfig',
     icon: <SettingOutlined/>,
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig/>,
+    // isShow: type => type === TabsPageType.flinkSql,
   },
   {
     key: 'menu.datastudio.executeConfig',
     icon: <PlayCircleOutlined/>,
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig/>,
+    isShow: type => type === TabsPageType.flinkSql,
   },
   {
     key: 'menu.datastudio.savePoint',
     icon: <FolderOutlined/>,
     label: l('menu.datastudio.savePoint'),
     children: <SavePoints/>,
+    isShow: type => type === TabsPageType.flinkSql,
   },
   {
     key: 'menu.datastudio.historyVision',
     icon: <HistoryOutlined/>,
     label: l('menu.datastudio.historyVision'),
     children: <HistoryVersion/>,
-
+    isShow: type => type === TabsPageType.flinkSql,
   }, {
     key: 'menu.datastudio.jobInfo',
     icon: <InfoCircleOutlined/>,
     label: l('menu.datastudio.jobInfo'),
     children: <JobInfo/>,
+    isShow: type => type === TabsPageType.flinkSql,
   }
 ];
 
@@ -166,8 +178,9 @@ export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
 }
 
 export type TabProp ={
-  key:string,
-    icon: ReactNode,
-    label: string,
-    children: ReactNode
+  key:string;
+  icon: ReactNode;
+  label: string;
+  children: ReactNode;
+  isShow?:(type:TabsPageType)=>boolean;
 }
