@@ -40,7 +40,7 @@ body,
 
 .header {
   height: 100px;
-  line-height: 144px;
+  line-height: 10vh;
   position: relative;
   font-weight: 600;
   font-size: 4rem;
@@ -60,10 +60,10 @@ body,
 
 
 .desc {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   margin-top: 2rem;
-  color: @text-color-secondary;
-  font-size: @font-size-base;
+  //color: @text-color-secondary;
+  //font-size: @font-size-base;
 }
 
 
@@ -71,7 +71,7 @@ body,
   display: flex;
   flex: auto;
   max-height: max-content;
-  padding: 0vh 6vh 30vh 2vh;
+  padding: 0 6vh 30vh 2vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -82,7 +82,7 @@ body,
 
   .form {
     position: relative;
-    height: 100%;
+    height: 100 * 100vw / 320;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
     margin-left: 60vw;
     margin-bottom: -15vh;
@@ -211,6 +211,23 @@ ol {
   border-bottom-color: red;
 }
 
+.treeList {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+  .ant-tree-list-holder-inner {
+    min-width: max-content;
+    z-index: auto;
+  }
+
+  .tree-search-value {
+    //color: #00EE76;
+    color: #c00b26;
+    background-color: rgba(3, 102, 214, 0.5);
+    font-size: 15px;
+  }
+}
+
 .siderTree {
   height: 100%;
   overflow-x: auto;
@@ -232,12 +249,12 @@ ol {
   }
 }
 
-.gitCodeTree{
+.gitCodeTree {
   max-height: 70vh;
   min-height: 70vh;
 }
 
-.schemaTree{
+.schemaTree {
   max-height: 89vh;
   min-height: 89vh;
 }
@@ -287,20 +304,20 @@ ol {
   align-content: center;
 }
 
-.query-form{
+.query-form {
   width: max-content;
   left: 0;
   position: absolute;
 }
 
-.tiny-charts{
+.tiny-charts {
   position: absolute;
   top: 15px;
   right: 12px;
 }
 
 
-.radio-group-chart{
+.radio-group-chart {
   position: absolute;
   right: 0;
   top: 7px;
@@ -310,3 +327,50 @@ ol {
   align-items: center;
   align-content: center;
 }
+
+h5{
+  margin-left: 0.5rem;
+  margin-bottom: 0;
+}
+
+
+// theme
+// light
+.side{
+  background-color: #fafaf9
+}
+
+.container{
+  background-color: #ffffff;
+}
+
+.ant-page-header{
+  border-block: 1px solid #E0E2E5;
+}
+
+// 滚动条
+.content-scroll {
+  background-color: #ffffff;
+  overflow-y: auto;
+  direction: ltr;
+  scrollbar-color: #d4aa70 #e4e4e4;
+  scrollbar-width: thin;
+}
+
+.content-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.content-scroll::-webkit-scrollbar-track {
+  background-color: #ffffff;
+  border-radius: 100px;
+}
+
+.content-scroll::-webkit-scrollbar-thumb {
+  border-radius: 100px;
+  border: 6px solid rgba(0, 0, 0, 0.18);
+  border-left: 0;
+  border-right: 0;
+  background-color: #1890ff;
+}
+

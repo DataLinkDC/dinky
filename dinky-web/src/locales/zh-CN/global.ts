@@ -18,6 +18,9 @@
  */
 
 export default {
+'global.max':'max',
+'button.check':'检查',
+  'button.graph':'图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
@@ -105,6 +108,7 @@ export default {
   'global.time.millisecond': '毫秒 ',
 
   'global.stay.tuned': '敬请期待',
+  'global.mini': '最小化',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',

@@ -192,6 +192,6 @@ export default defineConfig({
   mfsu: {
     strategy: 'normal',
   },
-  requestRecord: {},
+  // requestRecord: {},
   dva: {},
 });
