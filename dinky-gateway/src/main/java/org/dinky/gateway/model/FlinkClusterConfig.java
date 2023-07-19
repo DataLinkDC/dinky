@@ -17,21 +17,24 @@
  *
  */
 
-package org.dinky.gateway.config;
+package org.dinky.gateway.model;
 
-import org.dinky.data.constant.CommonConstant;
+import org.dinky.gateway.config.AppConfig;
+import org.dinky.gateway.config.ClusterConfig;
+import org.dinky.gateway.config.FlinkConfig;
+import org.dinky.gateway.config.K8sConfig;
+import org.dinky.gateway.enums.GatewayType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * AppConfig
- *
- * @since 2021/11/3 21:55
- */
-@Data
-public class AppConfig {
-
-    private String userJarPath;
-    private String[] userJarParas;
-    private String userJarMainAppClass = CommonConstant.DINKY_APP_MAIN_CLASS;
+/** @since */
+@Getter
+@Setter
+public class FlinkClusterConfig {
+    private GatewayType type;
+    private ClusterConfig clusterConfig;
+    private FlinkConfig flinkConfig;
+    private AppConfig appConfig;
+    private K8sConfig kubernetesConfig;
 }

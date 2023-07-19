@@ -19,11 +19,11 @@
 
 
 export const enum ClusterType {
-    STANDALONE = 'Standalone',
-    YARN = 'Yarn',
-    YARN_SESSION = 'Yarn Session',
-    KUBERNETES_SESSION = 'Kubernetes Session',
-    KUBERNETES_NATIVE = 'Kubernetes',
-    KUBERNETES_OPERATOR = 'KubernetesOperator',
+    STANDALONE = 'standalone',
+    YARN = 'yarn-application',
+    YARN_SESSION = 'yarn-session',
+    KUBERNETES_SESSION = 'kubernetes-session',
+    KUBERNETES_NATIVE = 'kubernetes-application',
+    KUBERNETES_OPERATOR = 'kubernetes-application-operator',
 };
 

@@ -44,6 +44,7 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageBuilder;
 import org.dinky.explainer.lineage.LineageResult;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.JobConfig;
@@ -398,8 +399,8 @@ public class StudioServiceImpl implements StudioService {
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(
+            FlinkClusterConfig gatewayConfig =
+                    clusterConfigurationService.getFlinkClusterCfg(
                             cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
         }
@@ -413,25 +414,22 @@ public class StudioServiceImpl implements StudioService {
         Cluster cluster = clusterInstanceService.getById(clusterId);
 
         Asserts.checkNotNull(cluster, "该集群不存在");
-        boolean useGateway = false;
         JobConfig jobConfig = new JobConfig();
         jobConfig.setAddress(cluster.getJobManagerHost());
         jobConfig.setType(cluster.getType());
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
             // 如果用户选择用dinky平台来托管集群信息 说明任务一定是从dinky发起提交的
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(
+            FlinkClusterConfig gatewayConfig =
+                    clusterConfigurationService.getFlinkClusterCfg(
                             cluster.getClusterConfigurationId());
             jobConfig.buildGatewayConfig(gatewayConfig);
             jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
             jobConfig.setTaskId(cluster.getTaskId());
-            useGateway = true;
         } else {
             // 用户选择外部的平台来托管集群信息，但是集群上的任务不一定是通过dinky提交的
             jobConfig.setTaskId(taskId);
         }
         JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setUseGateway(useGateway);
 
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult)) {

@@ -33,7 +33,6 @@ import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 
@@ -53,7 +52,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -176,33 +174,6 @@ public class Submitter {
         // 加载第三方jar
         loadDep(taskConfig.get("type"), id, dinkyAddr, executorSetting);
 
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        if (executorSetting
-                .getConfig()
-                .containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
-            executorSetting
-                    .getConfig()
-                    .put(
-                            CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                            executorSetting
-                                            .getConfig()
-                                            .get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())
-                                    + "/"
-                                    + uuid);
-        }
-        if (executorSetting
-                .getConfig()
-                .containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
-            executorSetting
-                    .getConfig()
-                    .put(
-                            CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
-                            executorSetting
-                                            .getConfig()
-                                            .get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())
-                                    + "/"
-                                    + uuid);
-        }
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
