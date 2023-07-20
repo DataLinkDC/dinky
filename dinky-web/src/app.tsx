@@ -28,6 +28,9 @@ import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
 import {l} from "@/utils/intl";
+import {persistStore, persistReducer} from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
+import {Reducer, StoreEnhancer} from 'redux';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -138,3 +141,24 @@ export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => 
 export const request = {
   ...errorConfig,
 };
+
+// 这个是redux-persist 的配置
+const persistConfig = {
+  key: 'root', // 自动框架生产的根目录id 是root。不变
+  storage, // 这个是选择用什么存储，session 还是 storage
+};
+
+
+const persistEnhancer: StoreEnhancer = (next) =>
+  (reducer: Reducer<any, any>) => {
+    const store = next(persistReducer(persistConfig, reducer));
+    const persist = persistStore(store);
+    return {...store, persist};
+  }
+
+export const dva = {
+  config: {
+    extraEnhancers: [persistEnhancer],
+  },
+};
+

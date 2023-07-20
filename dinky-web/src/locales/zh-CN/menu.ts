@@ -34,8 +34,11 @@ export default {
   'menu.account.checkTenantConfirm': '你确定切换租户【{tenantCode}】吗？',
 
   'menu.datastudio': '数据开发',
+
   'menu.devops': '运维中心',
   'menu.devops.job': '作业实例',
+  'menu.devops.job-detail': '作业详情',
+
   'menu.datacenter': '元数据中心',
   'menu.datacenter.metadata': '元数据',
   'menu.registration': '注册中心',
@@ -66,4 +69,21 @@ export default {
   'menu.metrics': '监控',
   'menu.about': '关于',
   'menu.version': '版本：{version}',
+
+  'menu.datastudio.project': '项目',
+  'menu.datastudio.structure': '结构',
+  'menu.datastudio.metadata': '元数据',
+  'menu.datastudio.console': '控制台',
+  'menu.datastudio.jobConfig': '作业配置',
+  'menu.datastudio.executeConfig': '执行配置',
+  'menu.datastudio.savePoint': '保存点',
+  'menu.datastudio.historyVision': '历史版本',
+  'menu.datastudio.jobInfo': '作业信息',
+  'menu.datastudio.tool':'工具',
+  'menu.datastudio.result':'结果',
+  'menu.datastudio.bi':'BI',
+  'menu.datastudio.lineage':'血缘',
+  'menu.datastudio.process':'进程',
+  'menu.datastudio.history':'历史',
+  'menu.datastudio.table-data':'表数据',
 };

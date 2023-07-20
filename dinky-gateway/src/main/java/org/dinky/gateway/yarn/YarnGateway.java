@@ -37,7 +37,6 @@ import org.apache.flink.client.program.ClusterClient;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.GlobalConfiguration;
 import org.apache.flink.configuration.SecurityOptions;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 import org.apache.flink.runtime.security.SecurityConfiguration;
 import org.apache.flink.runtime.security.SecurityUtils;
 import org.apache.flink.yarn.YarnClientYarnClusterInformationRetriever;
@@ -99,10 +98,6 @@ public abstract class YarnGateway extends AbstractGateway {
         }
 
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
-        final String savePoint = flinkConfig.getSavePoint();
-        if (Asserts.isNotNullString(savePoint)) {
-            configuration.setString(SavepointConfigOptions.SAVEPOINT_PATH, savePoint);
-        }
 
         configuration.set(
                 YarnConfigOptions.PROVIDED_LIB_DIRS,

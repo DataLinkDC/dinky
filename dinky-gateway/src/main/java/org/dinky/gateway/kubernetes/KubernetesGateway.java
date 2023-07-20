@@ -23,10 +23,13 @@ import org.dinky.assertion.Asserts;
 import org.dinky.gateway.AbstractGateway;
 import org.dinky.gateway.config.FlinkConfig;
 import org.dinky.gateway.config.GatewayConfig;
+import org.dinky.gateway.config.K8sConfig;
 import org.dinky.gateway.exception.GatewayException;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.gateway.result.TestResult;
+import org.dinky.utils.TextUtil;
 
+import org.apache.flink.configuration.ConfigOption;
 import org.apache.flink.configuration.Configuration;
 import org.apache.flink.configuration.DeploymentOptions;
 import org.apache.flink.configuration.DeploymentOptionsInternal;
@@ -38,12 +41,13 @@ import org.apache.flink.kubernetes.configuration.KubernetesConfigOptions;
 import org.apache.flink.kubernetes.kubeclient.Fabric8FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClient;
 import org.apache.flink.kubernetes.kubeclient.FlinkKubeClientFactory;
-import org.apache.flink.runtime.jobgraph.SavepointConfigOptions;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
 
 import cn.hutool.core.exceptions.ExceptionUtil;
+import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.util.ReflectUtil;
 
 /**
@@ -67,31 +71,43 @@ public abstract class KubernetesGateway extends AbstractGateway {
     }
 
     private void initConfig() {
-        configuration =
-                GlobalConfiguration.loadConfiguration(
-                        config.getClusterConfig().getFlinkConfigPath());
-
-        final FlinkConfig flinkConfig = config.getFlinkConfig();
-        if (flinkConfig.getFlinkKubetnetsConfig() != null) {
-            flinkConfig.getConfiguration().putAll(flinkConfig.getFlinkKubetnetsConfig());
-        }
-        if (Asserts.isNotNull(flinkConfig.getConfiguration())) {
-            addConfigParas(flinkConfig.getConfiguration());
+        String flinkConfigPath = config.getClusterConfig().getFlinkConfigPath();
+        if (!TextUtil.isEmpty(flinkConfigPath)) {
+            configuration = GlobalConfiguration.loadConfiguration(flinkConfigPath);
         }
 
+        FlinkConfig flinkConfig = config.getFlinkConfig();
+        flinkConfig.getConfiguration().putAll(config.getKubernetesConfig().getConfiguration());
+        addConfigParas(flinkConfig.getConfiguration());
         configuration.set(DeploymentOptions.TARGET, getType().getLongValue());
-        if (Asserts.isNotNullString(flinkConfig.getSavePoint())) {
-            configuration.setString(
-                    SavepointConfigOptions.SAVEPOINT_PATH, flinkConfig.getSavePoint());
-        }
+        configuration.set(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
 
-        if (Asserts.isNotNullString(flinkConfig.getJobName())) {
-            configuration.set(KubernetesConfigOptions.CLUSTER_ID, flinkConfig.getJobName());
-        }
+        K8sConfig k8sConfig = config.getKubernetesConfig();
+        preparPodTemplate(
+                k8sConfig.getPodTemplate(), KubernetesConfigOptions.KUBERNETES_POD_TEMPLATE);
+        preparPodTemplate(
+                k8sConfig.getJmPodTemplate(), KubernetesConfigOptions.JOB_MANAGER_POD_TEMPLATE);
+        preparPodTemplate(
+                k8sConfig.getTmPodTemplate(), KubernetesConfigOptions.TASK_MANAGER_POD_TEMPLATE);
 
         if (getType().isApplicationMode()) {
             resetCheckpointInApplicationMode();
         }
+    }
+
+    public void preparPodTemplate(String podTemplate, ConfigOption<String> option) {
+        if (TextUtil.isEmpty(podTemplate)) {
+            return;
+        }
+        String filePath =
+                String.format(
+                        "%s/tmp/Kubernets/%s.yaml",
+                        System.getProperty("user.dir"), config.getFlinkConfig().getJobName());
+        if (FileUtil.exist(filePath)) {
+            Assert.isTrue(FileUtil.del(filePath));
+        }
+        FileUtil.writeUtf8String(podTemplate, filePath);
+        configuration.set(option, filePath);
     }
 
     private void initKubeClient() {

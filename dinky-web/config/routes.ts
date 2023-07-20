@@ -74,6 +74,13 @@ export default [
         hideInMenu: true,
         component: './DevOps',
       },
+      {
+        path: '/devops/job-detail',
+        name: 'job-detail',
+        hideInMenu: true,
+        component: './DevOps/JobDetail',
+      },
+
     ],
   },
   {

@@ -60,7 +60,7 @@ const DataSourceTable = () => {
    * execute query  list
    * set   list
    */
-  const querDataSourceList = async () => {
+  const queryDataSourceList = async () => {
     await queryList(API_CONSTANTS.DATASOURCE).then(res => {
       setDataSource(res.data);
     });
@@ -73,7 +73,7 @@ const DataSourceTable = () => {
   const executeAndCallbackRefresh = async (callback: () => void) => {
     await setLoading(true);
     await callback();
-    await querDataSourceList();
+    await queryDataSourceList();
     await setLoading(false);
   };
 
@@ -146,7 +146,7 @@ const DataSourceTable = () => {
    * query  list
    */
   useEffect(() => {
-    querDataSourceList();
+    queryDataSourceList();
   }, []);
 
   /**

@@ -20,7 +20,8 @@ import React from "react";
 
 const defaultSvgSize = "100%";
 
-const style = {overflow: "hidden",width: "100%",height: "100%"};
+// const style = {overflow: "hidden",width: "100%",height: "100%"};
+const style = {overflow: "hidden"};
 
 
 export const MysqlIcons = (props: any) => {

@@ -62,7 +62,7 @@ public abstract class AbstractGateway implements Gateway {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractGateway.class);
     protected GatewayConfig config;
-    protected Configuration configuration;
+    protected Configuration configuration = new Configuration();
 
     public AbstractGateway() {}
 

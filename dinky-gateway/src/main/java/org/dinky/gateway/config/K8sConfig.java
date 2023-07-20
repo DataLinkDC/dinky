@@ -17,31 +17,18 @@
  *
  */
 
-package org.dinky.data.model;
+package org.dinky.gateway.config;
 
+import java.util.HashMap;
 import java.util.Map;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-/** @since */
-@Getter
-@Setter
-public class FlinkClusterConfiguration {
-    private Type type;
-    private String hadoopConfigPath;
-    private String flinkConfigPath;
-    private String flinkLibPath;
-    private String userJarPath;
-    private String flinkVersion;
-
-    Map<String, String> flinkConfig;
-    Map<String, String> kubernetesConfig;
-
-    public enum Type {
-        //
-        Yarn,
-        Kubernetes,
-        KubernetesOperator;
-    }
+@Data
+public class K8sConfig {
+    private Map<String, String> configuration = new HashMap<>();
+    private Map<String, Object> dockerConfig = new HashMap<>();
+    private String podTemplate;
+    private String jmPodTemplate;
+    private String tmPodTemplate;
 }

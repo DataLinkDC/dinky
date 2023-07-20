@@ -18,7 +18,7 @@
  */
 
 
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ProCard} from "@ant-design/pro-components";
 import FileTree from "@/pages/RegCenter/Resource/components/FileTree";
 import FileShow from "@/pages/RegCenter/Resource/components/FileShow";
@@ -52,6 +52,35 @@ const ResourceOverView: React.FC = () => {
   const [formValue, setFormValue] = useState<Resource>({id: 0, fileName: '', description: ''});
   const [uploadValue] = useState({url: API_CONSTANTS.RESOURCE_UPLOAD, pid: '', description: ''});
 
+  const updateTreeData = (list: any[], key: React.Key, children: any[]): any[] =>
+      list.map((node) => {
+        if (node.path === key) {
+          return {
+            ...node,
+            children,
+          };
+        }
+        if (node.children) {
+          return {
+            ...node,
+            children: updateTreeData(node.children, key, children),
+          };
+        }
+        return node;
+      });
+
+  const refreshTreeData = async (pid: number, path: string) => {
+    const data = await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: pid});
+    setTreeData((origin) =>
+        updateTreeData(origin, path, data)
+    );
+  }
+
+
+  const refreshTree = async () => {
+    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: -1}).then(res => setTreeData(res))
+  }
+
   useEffect(() => {
     refreshTree()
   }, [])
@@ -64,9 +93,6 @@ const ResourceOverView: React.FC = () => {
   const queryContent = useCallback(async (id: number) => {
     await queryDataByParams(API_CONSTANTS.RESOURCE_GET_CONTENT_BY_ID, {id}).then(res => setContent(res))
   }, [clickedNode])
-  const refreshTree = async () => {
-    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: -1}).then(res => setTreeData(res))
-  }
 
   /**
    * the node click event
@@ -74,7 +100,7 @@ const ResourceOverView: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleNodeClick = async (info: any) => {
-    const {node: {id, isLeaf, key, pos}, node} = info;
+    const {node: {id, isLeaf, key,}, node} = info;
     setSelectedKeys([key] as any);
     setClickedNode(node);
     if (isLeaf) {
@@ -83,6 +109,18 @@ const ResourceOverView: React.FC = () => {
       setContent('');
     }
   };
+  const getSelectedNode = () => {
+    const indexes = (rightClickedNode.pos.split("-") as string[]).map(x => parseInt(x));
+    if (indexes.length === 1) {
+      return treeData[indexes[0]]
+    } else {
+      let temp = treeData[indexes[0]]
+      for (let i = 1; i < indexes.length - 1; i++) {
+        temp = temp.children[indexes[i]]
+      }
+      return temp
+    }
+  }
 
   /**
    * the node right click event OF upload,
@@ -90,7 +128,7 @@ const ResourceOverView: React.FC = () => {
   const handleCreateFolder = () => {
     if (rightClickedNode) {
       setEditModal("createFolder")
-      const {id, name, desc} = rightClickedNode;
+      const {id} = rightClickedNode;
       setShowEditModal(true)
       setFormValue({id, fileName: "", description: ""})
       setContextMenuVisible(false)
@@ -103,6 +141,15 @@ const ResourceOverView: React.FC = () => {
       setShowUpload(true)
     }
   };
+
+  const getSelectedParentNode = () => {
+    const indexes = (rightClickedNode.pos.split("-") as string[]).map(x => parseInt(x));
+    let temp = treeData[indexes[0]]
+    for (let i = 1; i < indexes.length - 2; i++) {
+      temp = temp.children[indexes[i]]
+    }
+    return {node: temp, index: indexes[indexes.length - 2]}
+  }
 
   /**
    * the node right click event OF delete,
@@ -131,7 +178,7 @@ const ResourceOverView: React.FC = () => {
   }
   const handleRefresh = async () => {
     if (rightClickedNode) {
-      const {id, name, desc, path} = rightClickedNode;
+      // const {id, name, desc, path} = rightClickedNode;
      //todo refresh
 
     }
@@ -199,7 +246,7 @@ const ResourceOverView: React.FC = () => {
         getSelectedNode().children = [d]
       }
       setShowEditModal(false)
-    } else if (editModal == "rename") {
+    } else if (editModal === "rename") {
       await handleOption(API_CONSTANTS.RESOURCE_RENAME, "重命名", {...value})
       getSelectedNode().fileName = value.fileName
       getSelectedNode().name = value.fileName
@@ -208,26 +255,8 @@ const ResourceOverView: React.FC = () => {
   const handleUploadCancel = () => {
     setShowUpload(false)
   }
-  const getSelectedNode = () => {
-    const indexes = (rightClickedNode.pos.split("-") as string[]).map(x => parseInt(x));
-    if (indexes.length == 1) {
-      return treeData[indexes[0]]
-    } else {
-      let temp = treeData[indexes[0]]
-      for (let i = 1; i < indexes.length - 1; i++) {
-        temp = temp.children[indexes[i]]
-      }
-      return temp
-    }
-  }
-  const getSelectedParentNode = () => {
-    const indexes = (rightClickedNode.pos.split("-") as string[]).map(x => parseInt(x));
-    let temp = treeData[indexes[0]]
-    for (let i = 1; i < indexes.length - 2; i++) {
-      temp = temp.children[indexes[i]]
-    }
-    return {node: temp, index: indexes[indexes.length - 2]}
-  }
+
+
 
 
   /**
@@ -260,34 +289,14 @@ const ResourceOverView: React.FC = () => {
     setContent(value);
     // todo: save content
   }
-  const updateTreeData = (list: any[], key: React.Key, children: any[]): any[] =>
-    list.map((node) => {
-      if (node.path === key) {
-        return {
-          ...node,
-          children,
-        };
-      }
-      if (node.children) {
-        return {
-          ...node,
-          children: updateTreeData(node.children, key, children),
-        };
-      }
-      return node;
-    });
-  const asyncLoadData = async ({key, children, path, id}: any) => {
+
+  const asyncLoadData = async ({ children, path, id}: any) => {
     if (children.length > 0) {
       return;
     }
     await refreshTreeData(id, path)
   }
-  const refreshTreeData = async (pid: number, path: string) => {
-    const data = await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, {pid: pid});
-    setTreeData((origin) =>
-      updateTreeData(origin, path, data)
-    );
-  }
+
 
 
   /**

@@ -59,7 +59,7 @@ export function setKeyToLocalStorage(key: string, value: string) {
  * @param key
  */
 export function getValueFromLocalStorage(key: string) {
-  return localStorage.getItem(key) ?? '';
+    return localStorage.getItem(key) ?? '';
 }
 
 
@@ -67,7 +67,7 @@ export function getValueFromLocalStorage(key: string) {
  * get tenant id
  */
 export function getTenantByLocalStorage() {
-  return getValueFromLocalStorage(TENANT_ID);
+    return getValueFromLocalStorage(TENANT_ID);
 }
 
 
@@ -76,7 +76,7 @@ export function getTenantByLocalStorage() {
  * @param key
  */
 export function getCookieByKey(key: string) {
-  return cookies.get(key) ?? '';
+    return cookies.get(key) ?? '';
 }
 
 /**
@@ -86,7 +86,7 @@ export function getCookieByKey(key: string) {
  * @param options
  */
 export function setCookieByKey(key: string, value: string, options?: {}) {
-  cookies.set(key, value, options);
+    cookies.set(key, value, options);
 }
 
 
@@ -95,10 +95,10 @@ export function setCookieByKey(key: string, value: string, options?: {}) {
  * @param tenantId
  */
 export function setTenantStorageAndCookie(tenantId: number) {
-  // save as localStorage
-  setKeyToLocalStorage(TENANT_ID, tenantId.toString());
-  // save as cookies
-  setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
+    // save as localStorage
+    setKeyToLocalStorage(TENANT_ID, tenantId.toString());
+    // save as cookies
+    setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
 }
 
 
@@ -107,14 +107,14 @@ export function setTenantStorageAndCookie(tenantId: number) {
  * @param jsonStr
  */
 export function parseJsonStr(jsonStr: string) {
-  return JSON.parse(JSON.stringify(jsonStr));
+    return JSON.parse(JSON.stringify(jsonStr));
 }
 
 /**
  * get theme by localStorage's theme
  */
-export function getLocalTheme() {
-  return localStorage.getItem(THEME.NAV_THEME);
+export function getLocalTheme() :string {
+    return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
 }
 
 /**
@@ -123,47 +123,47 @@ export function getLocalTheme() {
  */
 export function convertCodeEditTheme() {
 
-  /**
-   * user can define a new theme by calling the defineTheme method on the editor.
-   */
-  editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
-    base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
-    inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
-    // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
-    rules: [
-      {token: 'comment', foreground: '#008800', fontStyle: 'italic'},
-      {token: 'keyword', foreground: '#064cff', fontStyle: 'bold'},
-      {token: 'string', foreground: '#507dee'},
-      {token: 'delimiter', foreground: '#041d81'},
-      {token: 'readonly', foreground: '#e73a6e', background: '#141414', fontStyle: 'italic'},
-      {token: 'number', foreground: '#ffffff'},
+    /**
+     * user can define a new theme by calling the defineTheme method on the editor.
+     */
+    editor.defineTheme(CODE_EDIT_THEME.VS_CUSTOME, {
+        base: 'vs', // 指定基础主题 , 可选值: 'vs', 'vs-dark', 'hc-black' , base theme
+        inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
+        // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
+        rules: [
+            {token: 'comment', foreground: '#008800', fontStyle: 'italic'},
+            {token: 'keyword', foreground: '#064cff', fontStyle: 'bold'},
+            {token: 'string', foreground: '#507dee'},
+            {token: 'delimiter', foreground: '#041d81'},
+            {token: 'readonly', foreground: '#e73a6e', background: '#141414', fontStyle: 'italic'},
+            {token: 'number', foreground: '#ffffff'},
 
-    ],
-    // colors is an object of color identifiers and their color values.
-    colors: {
-      'editor.background': '#5d5b5b', //  editor background color
-      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
-      'editorLineNumber.foreground': '#ffffff', //   editor line number color
-      'editorCursor.foreground': '#ffffff', //  editor cursor color
-      'editorIndentGuide.background': '#ffffff', //  editor indent guide color
-      'editor.foreground': '#ffffff', //  editor selection highlight border color
-      'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
-      'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
-      'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
-      'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
+        ],
+        // colors is an object of color identifiers and their color values.
+        colors: {
+            'editor.background': '#5d5b5b', //  editor background color
+            'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
+            'editorLineNumber.foreground': '#ffffff', //   editor line number color
+            'editorCursor.foreground': '#ffffff', //  editor cursor color
+            'editorIndentGuide.background': '#ffffff', //  editor indent guide color
+            'editor.foreground': '#ffffff', //  editor selection highlight border color
+            'editor.selectionBackground': '#4ba1ef', //  editor selection highlight color
+            'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
+            'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
+            'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
+        }
+    });
+
+
+    const theme = getLocalTheme();
+    switch (theme) {
+        case THEME.dark:
+            return CODE_EDIT_THEME.VS_CUSTOME;
+        case THEME.light:
+            return CODE_EDIT_THEME.DARK;
+        default:
+            return CODE_EDIT_THEME.HC_BLACK;
     }
-  });
-
-
-  const theme = getLocalTheme();
-  switch (theme) {
-    case THEME.dark:
-      return CODE_EDIT_THEME.VS_CUSTOME;
-    case THEME.light:
-      return CODE_EDIT_THEME.DARK;
-    default:
-      return CODE_EDIT_THEME.HC_BLACK;
-  }
 };
 
 
@@ -172,20 +172,20 @@ export function convertCodeEditTheme() {
  * @param url
  */
 export const useSSEBuildSingleData = (url: string) => {
-  const [data, setData] = useState<any>(null);
+    const [data, setData] = useState<any>(null);
 
-  useEffect(() => {
-    const eventSource = new EventSource(url);
-    eventSource.onmessage = (event) => {
-      const newData = JSON.parse(event.data);
-      setData(newData);
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, [url]);
+    useEffect(() => {
+        const eventSource = new EventSource(url);
+        eventSource.onmessage = (event) => {
+            const newData = JSON.parse(event.data);
+            setData(newData);
+        };
+        return () => {
+            eventSource.close();
+        };
+    }, [url]);
 
-  return data;
+    return data;
 };
 
 /**
@@ -193,20 +193,20 @@ export const useSSEBuildSingleData = (url: string) => {
  * @param url
  */
 export const useSSEBuildArrayData = (url: string) => {
-  const [data, setData] = useState<any[]>([]);
+    const [data, setData] = useState<any[]>([]);
 
-  useEffect(() => {
-    const eventSource = new EventSource(url);
-    eventSource.onmessage = (event) => {
-      const newData = JSON.parse(event.data);
-      setData((prevData) => [...prevData, newData]);
-    };
-    return () => {
-      eventSource.close();
-    };
-  }, [url]);
+    useEffect(() => {
+        const eventSource = new EventSource(url);
+        eventSource.onmessage = (event) => {
+            const newData = JSON.parse(event.data);
+            setData((prevData) => [...prevData, newData]);
+        };
+        return () => {
+            eventSource.close();
+        };
+    }, [url]);
 
-  return data;
+    return data;
 };
 
 
@@ -215,34 +215,34 @@ export const useSSEBuildArrayData = (url: string) => {
  * @param type
  */
 export const getLanguage = (type: string): string => {
-  switch (type) {
-    case DIALECT.JAVA:
-    case DIALECT.LOG:
-      return DIALECT.JAVA;
-    case DIALECT.MD:
-    case DIALECT.MDX:
-      return DIALECT.MARKDOWN;
-    case DIALECT.XML:
-      return DIALECT.XML;
-    case DIALECT.YAML:
-    case DIALECT.YML:
-      return DIALECT.YAML;
-    case DIALECT.JSON:
-      return DIALECT.JSON;
-    case DIALECT.SH:
-    case DIALECT.BASH:
-    case DIALECT.CMD:
-      return DIALECT.SHELL;
-    case DIALECT.SCALA:
-      return DIALECT.SCALA;
-    case DIALECT.PYTHON:
-    case DIALECT.PYTHON_LONG:
-      return DIALECT.PYTHON_LONG;
-    case DIALECT.SQL:
-      return DIALECT.SQL;
-    default:
-      return DIALECT.JAVASCRIPT;
-  }
+    switch (type) {
+        case DIALECT.JAVA:
+        case DIALECT.LOG:
+            return DIALECT.JAVA;
+        case DIALECT.MD:
+        case DIALECT.MDX:
+            return DIALECT.MARKDOWN;
+        case DIALECT.XML:
+            return DIALECT.XML;
+        case DIALECT.YAML:
+        case DIALECT.YML:
+            return DIALECT.YAML;
+        case DIALECT.JSON:
+            return DIALECT.JSON;
+        case DIALECT.SH:
+        case DIALECT.BASH:
+        case DIALECT.CMD:
+            return DIALECT.SHELL;
+        case DIALECT.SCALA:
+            return DIALECT.SCALA;
+        case DIALECT.PYTHON:
+        case DIALECT.PYTHON_LONG:
+            return DIALECT.PYTHON_LONG;
+        case DIALECT.SQL:
+            return DIALECT.SQL;
+        default:
+            return DIALECT.JAVASCRIPT;
+    }
 };
 
 /**
@@ -250,31 +250,31 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-  switch (type) {
-    case DIALECT.JAVA:
-      return <JavaSvg/>;
-    case DIALECT.SCALA:
-      return <ScalaSvg/>;
-    case DIALECT.PYTHON:
-    case DIALECT.PYTHON_LONG:
-      return <PythonSvg/>;
-    case DIALECT.MD:
-    case DIALECT.MDX:
-      return <MarkDownSvg/>;
-    case DIALECT.XML:
-      return <XMLSvg/>;
-    case DIALECT.YAML:
-    case DIALECT.YML:
-      return <YAMLSvg/>;
-    case DIALECT.SH:
-    case DIALECT.BASH:
-    case DIALECT.CMD:
-      return <ShellSvg/>;
-    case DIALECT.LOG:
-      return <LogSvg/>;
-    default:
-      return <FileIcon/>;
-  }
+    switch (type) {
+        case DIALECT.JAVA:
+            return <JavaSvg/>;
+        case DIALECT.SCALA:
+            return <ScalaSvg/>;
+        case DIALECT.PYTHON:
+        case DIALECT.PYTHON_LONG:
+            return <PythonSvg/>;
+        case DIALECT.MD:
+        case DIALECT.MDX:
+            return <MarkDownSvg/>;
+        case DIALECT.XML:
+            return <XMLSvg/>;
+        case DIALECT.YAML:
+        case DIALECT.YML:
+            return <YAMLSvg/>;
+        case DIALECT.SH:
+        case DIALECT.BASH:
+        case DIALECT.CMD:
+            return <ShellSvg/>;
+        case DIALECT.LOG:
+            return <LogSvg/>;
+        default:
+            return <FileIcon/>;
+    }
 };
 
 
@@ -285,16 +285,16 @@ export const getIcon = (type: string) => {
  * @param isLeft is left
  */
 export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
-  if (isLeft) {
-    return <FolderSvgExpand/>;
-  } else {
-    if (trim(splitChar).length === 0) {
-      return getIcon(type);
+    if (isLeft) {
+        return <FolderSvgExpand/>;
     } else {
-      let suffixOfType = type.toString().split(splitChar).reverse()[0];
-      return getIcon(suffixOfType);
+        if (trim(splitChar).length === 0) {
+            return getIcon(type);
+        } else {
+            let suffixOfType = type.toString().split(splitChar).reverse()[0];
+            return getIcon(suffixOfType);
+        }
     }
-  }
 };
 
 
@@ -304,12 +304,12 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  * @param splitChar split character
  */
 export const renderLanguage = (type = '', splitChar: string) => {
-  if (trim(splitChar).length === 0) {
-    return getLanguage(type);
-  } else {
-    let suffixOfType = type.toString().split(splitChar).reverse()[0];
-    return getLanguage(suffixOfType);
-  }
+    if (trim(splitChar).length === 0) {
+        return getLanguage(type);
+    } else {
+        let suffixOfType = type.toString().split(splitChar).reverse()[0];
+        return getLanguage(suffixOfType);
+    }
 };
 
 
@@ -317,7 +317,7 @@ export const renderLanguage = (type = '', splitChar: string) => {
  * get the folder separator according to the platform
  */
 export const folderSeparator = () => {
-  return path.sep;
+    return path.sep;
 };
 
 
@@ -326,24 +326,24 @@ export const folderSeparator = () => {
  * @param s_time datetime
  */
 export const parseSecondStr = (s_time: number) => {
-  let second_time = Math.floor(s_time);
-  let time = second_time + l('global.time.second');
-  if (second_time > 60) {
-    let second = second_time % 60;
-    let min = Math.floor(second_time / 60);
-    time = min + l('global.time.minute') + second + l('global.time.second');
-    if (min > 60) {
-      min = Math.floor(second_time / 60) % 60;
-      let hour = Math.floor(Math.floor(second_time / 60) / 60);
-      time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
-      if (hour > 24) {
-        hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
-        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
-        time = day + l('global.time.day') + hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
-      }
+    let second_time = Math.floor(s_time);
+    let time = second_time + l('global.time.second');
+    if (second_time > 60) {
+        let second = second_time % 60;
+        let min = Math.floor(second_time / 60);
+        time = min + l('global.time.minute') + second + l('global.time.second');
+        if (min > 60) {
+            min = Math.floor(second_time / 60) % 60;
+            let hour = Math.floor(Math.floor(second_time / 60) / 60);
+            time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+            if (hour > 24) {
+                hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
+                let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
+                time = day + l('global.time.day') + hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+            }
+        }
     }
-  }
-  return time;
+    return time;
 };
 
 /**
@@ -352,10 +352,10 @@ export const parseSecondStr = (s_time: number) => {
  * @returns {any}
  */
 export function parseMilliSecondStr(second_time: number) {
-  if (((second_time / 1000) % 60) < 1) {
-    return second_time + l('global.time.millisecond');
-  }
-  return parseSecondStr(second_time / 1000);
+    if (((second_time / 1000) % 60) < 1) {
+        return second_time + l('global.time.millisecond');
+    }
+    return parseSecondStr(second_time / 1000);
 }
 
 
@@ -366,45 +366,45 @@ export function parseMilliSecondStr(second_time: number) {
  */
 export const buildTreeData = (data: any): any => data?.map((item: any) => {
 
-  // build key
-  let buildKey = item.path + folderSeparator() + item.name;
+    // build key
+    let buildKey = item.path + folderSeparator() + item.name;
 
-  const buildTitleLabel = () => {
-    return  <>{item.name}<span style={{color:'gray'}}> &nbsp;&nbsp;{l('global.size','',{size:item.size})}</span></>;
-  }
+    const buildTitleLabel = () => {
+        return <>{item.name}<span
+            style={{color: 'gray'}}> &nbsp;&nbsp;{l('global.size', '', {size: item.size})}</span></>;
+    }
 
-  // if has children , recursive build
-  if (item.children) {
+    // if has children , recursive build
+    if (item.children) {
+        return {
+            isLeaf: !item.leaf,
+            id: item?.id,
+            name: item.name,
+            parentId: item.path ?? item.parentId,
+            icon: renderIcon(item.name, '.', item.leaf),
+            content: item.content,
+            path: item.path,
+            fullName: item?.fullName,
+            title: buildTitleLabel(),
+            desc: item?.desc ?? item?.description,
+            key: buildKey,
+            children: buildTreeData(item.children)
+        };
+    }
     return {
-      isLeaf: !item.leaf,
-      id: item?.id,
-      name: item.name,
-      parentId: item.path ?? item.parentId,
-      icon: renderIcon(item.name, '.', item.leaf),
-      content: item.content,
-      path: item.path,
-      fullName: item?.fullName,
-      title: buildTitleLabel(),
-      desc: item?.desc ?? item?.description,
-      key: buildKey,
-      children: buildTreeData(item.children)
+        isLeaf: !item.leaf,
+        id: item?.id,
+        name: item.name,
+        parentId: item.path ?? item.parentId,
+        icon: renderIcon(item.name, '.', item.leaf),
+        content: item.content,
+        path: item.path,
+        fullName: item?.fullName,
+        desc: item?.desc ?? item?.description,
+        title: buildTitleLabel(),
+        key: buildKey,
     };
-  }
-  return {
-    isLeaf: !item.leaf,
-    id: item?.id,
-    name: item.name,
-    parentId: item.path ?? item.parentId,
-    icon: renderIcon(item.name, '.', item.leaf),
-    content: item.content,
-    path: item.path,
-    fullName: item?.fullName,
-    desc: item?.desc ?? item?.description,
-    title: buildTitleLabel(),
-    key: buildKey,
-  };
 });
-
 
 
 /**
@@ -413,16 +413,40 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
  */
 export const unSupportView = (name: string) => {
 
-  return name.endsWith(".jar")
-      || name.endsWith(".war")
-      || name.endsWith(".zip")
-      || name.endsWith(".tar.gz")
-      || name.endsWith(".tar")
-      || name.endsWith(".jpg")
-      || name.endsWith(".png")
-      || name.endsWith(".gif")
-      || name.endsWith(".bmp")
-      || name.endsWith(".jpeg")
-      || name.endsWith(".ico")
+    return name.endsWith(".jar")
+        || name.endsWith(".war")
+        || name.endsWith(".zip")
+        || name.endsWith(".tar.gz")
+        || name.endsWith(".tar")
+        || name.endsWith(".jpg")
+        || name.endsWith(".png")
+        || name.endsWith(".gif")
+        || name.endsWith(".bmp")
+        || name.endsWith(".jpeg")
+        || name.endsWith(".ico")
 }
 
+
+
+/**
+ * search tree node
+ * @param originValue
+ * @param {string} searchValue
+ * @returns {any}
+ */
+export const searchTreeNode = (originValue :string,searchValue: string): any => {
+
+    let title = <>{originValue}</>;
+
+    // searchValue is not empty and trim() after length > 0
+    if (searchValue && searchValue.trim().length > 0) {
+        const searchIndex = originValue.indexOf(searchValue); // search index
+        const beforeStr = originValue.substr(0, searchIndex); // before search value
+        const afterStr = originValue.substr(searchIndex + searchValue.length); // after search value
+        // when search index > -1, return render title, else return origin title
+        title = searchIndex > -1 ?
+            <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
+            : <span className={'treeList'}>{title}</span> ;
+    }
+    return title
+};

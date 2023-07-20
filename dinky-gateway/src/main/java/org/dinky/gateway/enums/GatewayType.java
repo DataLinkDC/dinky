@@ -74,15 +74,7 @@ public enum GatewayType {
     }
 
     public static boolean isDeployCluster(String type) {
-        switch (get(type)) {
-            case YARN_APPLICATION:
-            case YARN_PER_JOB:
-            case KUBERNETES_APPLICATION:
-            case KUBERNETES_APPLICATION_OPERATOR:
-                return true;
-            default:
-                return false;
-        }
+        return get(type).isDeployCluster();
     }
 
     public boolean isDeployCluster() {
@@ -90,6 +82,7 @@ public enum GatewayType {
             case "ya":
             case "ypj":
             case "ka":
+            case "kao":
                 return true;
             default:
                 return false;

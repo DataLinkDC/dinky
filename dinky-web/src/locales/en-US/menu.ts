@@ -34,8 +34,11 @@ export default {
   'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
 
   'menu.datastudio': 'Data Studio',
+
   'menu.devops': 'Devops',
   'menu.devops.job': 'Job Instance',
+  'menu.devops.job-detail': 'Job Detail',
+
   'menu.datacenter': 'Meta Data Center',
   'menu.datacenter.metadata': 'Meta Data',
   'menu.registration': 'Registration Center',
@@ -66,4 +69,22 @@ export default {
   'menu.metrics': 'Metrics',
   'menu.about': 'About',
   'menu.version': 'Version: {version}',
+
+  'menu.datastudio.project': 'Project',
+  'menu.datastudio.structure': 'Structure',
+  'menu.datastudio.metadata': 'Metadata',
+  'menu.datastudio.console': 'Console',
+  'menu.datastudio.jobConfig': 'Job Config',
+  'menu.datastudio.executeConfig': 'Execute Config',
+  'menu.datastudio.savePoint': 'Save Point',
+  'menu.datastudio.historyVision': 'History Vision',
+  'menu.datastudio.jobInfo': 'Job Info',
+
+ 'menu.datastudio.tool':'Tool',
+ 'menu.datastudio.result':'Result',
+ 'menu.datastudio.bi':'BI',
+ 'menu.datastudio.lineage':'Lineage',
+ 'menu.datastudio.process':'Process',
+ 'menu.datastudio.history':'History',
+ 'menu.datastudio.table-data':'Table Data',
 };

@@ -18,6 +18,9 @@
  */
 
 export default {
+'global.max':'max',
+'button.check':'检查',
+  'button.graph':'图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
@@ -105,6 +108,7 @@ export default {
   'global.time.millisecond': '毫秒 ',
 
   'global.stay.tuned': '敬请期待',
+  'global.mini': '最小化',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
@@ -128,8 +132,6 @@ export default {
   'global.table.status.abnormal': '异常',
 
   'global.table.jobname': '任务名称',
-  'global.table.jobid': 'Job ID',
-  'global.table.taskid': '任务ID',
   'global.table.lifecycle': '生命周期',
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
@@ -137,6 +139,8 @@ export default {
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.execmode': '执行模式',
+  'global.table.execmode.batch': '批模式',
+  'global.table.execmode.streaming': '流模式',
   'global.table.runmode': '运行模式',
   'global.table.runmode.local': '本地',
   'global.table.runmode.remote': '远程',

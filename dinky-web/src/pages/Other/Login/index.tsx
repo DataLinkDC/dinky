@@ -43,13 +43,8 @@ const Login: React.FC = () => {
   const containerClassName = useEmotionCss(() => {
     return {
       display: "flex",
-      width: "100%",
       flexDirection: "column",
       height: "100%",
-      position: "relative",
-      backgroundImage: "url(/icons/footer-bg.svg)",
-      backgroundPosition: "bottom center",
-      backgroundRepeat: "no-repeat",
     };
   });
 

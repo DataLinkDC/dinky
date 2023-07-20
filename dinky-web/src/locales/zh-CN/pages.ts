@@ -90,6 +90,45 @@ export default {
   'devops.joblist.history': '历史',
   'devops.joblist.detail': '详情',
 
+  'devops.jobinfo.savepoint.trigger':'SavePoint 触发',
+  'devops.jobinfo.savepoint.stop':'SavePoint 暂停',
+  'devops.jobinfo.savepoint.cancel':'SavePoint 停止',
+  'devops.jobinfo.savepoint.canceljob':'普通停止',
+  'devops.jobinfo.localenv':'本地环境',
+  'devops.jobinfo.offline':'下线',
+  'devops.jobinfo.smart_stop':'智能停止',
+  'devops.jobinfo.reonline':'重新上线',
+  'devops.jobinfo.reonlineJob':'重新上线任务',
+  'devops.jobinfo.reonlineJobConfirm':'确定重新上线该作业吗？',
+  'devops.jobinfo.reonline.success':'重新上线成功',
+  'devops.jobinfo.reonline.failed':'重新上线失败',
+  'devops.jobinfo.restart':'重新启动',
+  'devops.jobinfo.stopJob':'停止任务',
+  'devops.jobinfo.stopJobConfirm':'确定只停止该作业，不进行 SavePoint 操作吗？',
+  'devops.jobinfo.canceljob.success':'普通停止成功',
+  'devops.jobinfo.canceljob.failed':'普通停止失败',
+  'devops.jobinfo.job.key':'{key} 任务',
+  'devops.jobinfo.job.key.success':'{key} 成功',
+  'devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
+
+  'devops.jobinfo.config.JobInfo':'作业信息',
+  'devops.jobinfo.config.JobOveriew':'作业概览',
+  'devops.jobinfo.config.JobException':'异常信息',
+  'devops.jobinfo.config.JobBaseInfo':'作业基本信息',
+  'devops.jobinfo.config.UserCustomConf':'用户自定义配置',
+  'devops.jobinfo.config.taskId':'Dinky作业ID',
+  'devops.jobinfo.config.JobId':'Flink Job ID',
+  'devops.jobinfo.config.submitType':'提交模式',
+  'devops.jobinfo.config.execmode':'执行模式',
+  'devops.jobinfo.config.ClusterInstanceName':'Flink实例',
+  'devops.jobinfo.config.ClusterConfigName':'集群配置',
+  'devops.jobinfo.config.useSqlFragment':'语句集',
+  'devops.jobinfo.config.JobType':'任务类型',
+  'devops.jobinfo.config.startFromSavePoint':'从SavePoint启动',
+  'devops.jobinfo.config.savePointPath':'savePoint路径',
+  'devops.jobinfo.config.RestartStrategy':'重启策略',
+  'devops.jobinfo.config.JobParallelism':'作业并行度',
+
 
   //-------------------------------- auth center --------------------------------
   // user
@@ -750,4 +789,24 @@ export default {
   'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
 
 
+  // metadata
+  'pages.metadata.NoDatabaseSelected': '未选择数据源',
+  'pages.metadata.Application': 'Application',
+  'pages.metadata.TableInfo': '表信息',
+  'pages.metadata.Description': '描述',
+  'pages.metadata.DataSearch': '数据查询',
+  'pages.metadata.GenerateSQL': 'SQL 生成',
+  'pages.metadata.FieldInformation': '字段信息',
+  'pages.metadata.catalogSelect': '选择 Catalog & Database',
+  'pages.metadata.catalogRefresh': '刷新 Catalog',
+  'pages.metadata.catalogRefreshSuccess': '刷新 Catalog 成功',
+  'pages.metadata.selectDatabase': '选择数据源',
+
+
+  'pages.metadata.Console': '控制台',
+  'pages.metadata.help.noSqlSelect': '未选择任何sql！',
+  'pages.metadata.help.selectSql': '请在编辑器内选择你要执行的sql',
+  'pages.metadata.help.exec': '执行选中sql',
+  'pages.metadata.exec.result.msg': '执行时间: {time} 秒, 总行数: {rowCount}',
+  'pages.metadata.exec.result.msghelp': '行数超过500，仅显示前500',
 };
