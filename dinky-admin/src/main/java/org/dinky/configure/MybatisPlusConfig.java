@@ -26,7 +26,7 @@ import org.dinky.interceptor.PostgreSQLQueryInterceptor;
 import org.dinky.mybatis.handler.DateMetaObjectHandler;
 import org.dinky.mybatis.properties.MybatisPlusFillProperties;
 
-import java.util.List;
+import java.util.Set;
 
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -40,7 +40,7 @@ import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableSet;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,8 +58,8 @@ public class MybatisPlusConfig {
 
     private final MybatisPlusFillProperties autoFillProperties;
 
-    private static final List<String> IGNORE_TABLE_NAMES =
-            Lists.newArrayList(
+    private static final Set<String> IGNORE_TABLE_NAMES =
+            ImmutableSet.of(
                     "dinky_namespace",
                     "dinky_alert_group",
                     "dinky_alert_history",
