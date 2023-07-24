@@ -108,9 +108,12 @@ public class MySqlDriver extends AbstractJdbcDriver {
             } else {
                 sb.append(column.getType());
                 // 处理浮点类型
-                if (column.getPrecision() > 0 && column.getScale() > 0) {
+                if (Asserts.isNotNullString(column.getType())
+                        && (column.getType().toLowerCase().contains("numeric")
+                                || column.getType().toLowerCase().contains("decimal")
+                                || column.getType().toLowerCase().contains("double"))) {
                     sb.append("(")
-                            .append(column.getLength())
+                            .append(column.getPrecision())
                             .append(",").append(column.getScale())
                             .append(")");
                 } else if (null != column.getLength()) { // 处理字符串类型和数值型
@@ -123,10 +126,11 @@ public class MySqlDriver extends AbstractJdbcDriver {
                     sb.append(" DEFAULT ").append("''");
                 } else {
                     // 数据类型不为 datetime/datetime(x)/timestamp/timestamp(x) 类型，应该使用单引号！
-                    if (!column.getType().toLowerCase().startsWith("datetime") || !column.getType().toLowerCase().startsWith("timestamp")) {
-                        sb.append(" DEFAULT ").append('\'').append(column.getDefaultValue()).append('\'');
-                    } else {
+                    if (column.getType().toLowerCase().startsWith("datetime")
+                            || column.getType().toLowerCase().startsWith("timestamp")) {
                         sb.append(" DEFAULT ").append(column.getDefaultValue());
+                    } else {
+                        sb.append(" DEFAULT ").append('\'').append(column.getDefaultValue()).append('\'');
                     }
                 }
             } else {

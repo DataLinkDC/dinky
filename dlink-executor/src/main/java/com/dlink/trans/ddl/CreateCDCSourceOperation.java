@@ -77,7 +77,12 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
     @Override
     public TableResult build(Executor executor) {
         logger.info("Start build CDCSOURCE Task...");
-        CDCSource cdcSource = CDCSource.build(statement);
+        CDCSource cdcSource = null;
+        try {
+            cdcSource = CDCSource.build(statement);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         FlinkCDCConfig config = new FlinkCDCConfig(cdcSource.getConnector(), cdcSource.getHostname(),
                 cdcSource.getPort(), cdcSource.getUsername(), cdcSource.getPassword(), cdcSource.getCheckpoint(),
                 cdcSource.getParallelism(), cdcSource.getDatabase(), cdcSource.getSchema(), cdcSource.getTable(),
@@ -203,11 +208,11 @@ public class CreateCDCSourceOperation extends AbstractOperation implements Opera
         if (!Asserts.isEqualsIgnoreCase(autoCreate, "true") || Asserts.isNullString(schemaName)) {
             return null;
         }
-        String url="";
-        if("doris".equals(sink.get("connector"))){
-            url="jdbc:mysql://"+sink.get("fenodes").trim().split(",")[0].replace("8030","9030");
-        }else{
-             url = sink.get("url");
+        String url = "";
+        if ("doris".equals(sink.get("connector"))) {
+            url = "jdbc:mysql://" + sink.get("fenodes").trim().split(",")[0].replace("8030", "9030");
+        } else {
+            url = sink.get("url");
         }
 
         String schema = SqlUtil.replaceAllParam(sink.get("sink.db"), "schemaName", schemaName);

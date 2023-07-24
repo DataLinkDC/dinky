@@ -19,13 +19,14 @@
 
 package com.dlink.trans.ddl;
 
-import com.dlink.assertion.Asserts;
 import com.dlink.parser.SingleSqlParserFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +37,7 @@ import java.util.regex.Pattern;
  * @since 2022/1/29 23:30
  */
 public class CDCSource {
+
     private String connector;
     private String statement;
     private String name;
@@ -56,13 +58,21 @@ public class CDCSource {
     private Map<String, String> sink;
     private List<Map<String, String>> sinks;
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, Map<String, String> jdbc) {
-        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode, split, debezium, source, sink, null, jdbc);
+    public CDCSource() {
     }
 
-    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username, String password, Integer checkpoint, Integer parallelism, String startupMode,
-                     Map<String, String> split, Map<String, String> debezium, Map<String, String> source, Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
+            String password, Integer checkpoint, Integer parallelism, String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, Map<String, String> jdbc) {
+        this(connector, statement, name, hostname, port, username, password, checkpoint, parallelism, startupMode,
+                split, debezium, source, sink, null, jdbc);
+    }
+
+    public CDCSource(String connector, String statement, String name, String hostname, Integer port, String username,
+            String password, Integer checkpoint, Integer parallelism, String startupMode,
+            Map<String, String> split, Map<String, String> debezium, Map<String, String> source,
+            Map<String, String> sink, List<Map<String, String>> sinks, Map<String, String> jdbc) {
         this.connector = connector;
         this.statement = statement;
         this.name = name;
@@ -81,11 +91,63 @@ public class CDCSource {
         this.sinks = sinks;
     }
 
-    public static CDCSource build(String statement) {
+    public static CDCSource build(String statement) throws Exception {
+        Optional.ofNullable(statement)
+                .orElseThrow(() -> new Exception("Statement can not be null. Please specify a statement."));
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
+        Optional.ofNullable(map)
+                .orElseThrow(() -> new Exception("Job configurations can not be null. Please specify configurations."));
+        Optional.ofNullable(map.get("WITH"))
+                .orElseThrow(() -> new Exception("Job configurations can not be null. Please specify configurations."));
+
         Map<String, String> config = getKeyValue(map.get("WITH"));
+        Optional.ofNullable(config)
+                .orElseThrow(() -> new Exception("Job configurations can not be null. Please specify configurations."));
+
+        CDCSource cdcSource = new CDCSource();
+
+        Optional.ofNullable(config.get("connector"))
+                .orElseThrow(() -> new Exception("Please specify connector in configurations."));
+        cdcSource.setConnector(config.get("connector"));
+        cdcSource.setStatement(config.get("statement"));
+
+        String name = Optional.ofNullable(map.get("CDCSOURCE")).orElseGet(() -> {
+            return Arrays.asList("dinky_cdcsource_task");
+        }).toString();
+        cdcSource.setName(name);
+
+        Optional.ofNullable(config.get("hostname"))
+                .orElseThrow(() -> new Exception("Please specify hostname in configurations."));
+        cdcSource.setHostname(config.get("hostname"));
+
+        Optional.ofNullable(config.get("port"))
+                .orElseThrow(() -> new Exception("Please specify port in configurations."));
+        cdcSource.setPort(Integer.valueOf(config.get("port")));
+
+        cdcSource.setUsername(config.get("username"));
+        cdcSource.setPassword(config.get("password"));
+
+        Optional.ofNullable(config.get("checkpoint")).ifPresent(s -> {
+            cdcSource.setCheckpoint(Integer.valueOf(s));
+        });
+        Optional.ofNullable(config.get("parallelism")).ifPresent(s -> {
+            cdcSource.setParallelism(Integer.valueOf(s));
+        });
+        Optional.ofNullable(config.get("scan.startup.mode")).ifPresent(s -> {
+            cdcSource.setStartupMode(s);
+        });
+        Optional.ofNullable(config.get("database-name")).ifPresent(s -> {
+            cdcSource.setDatabase(s);
+        });
+        Optional.ofNullable(config.get("schema-name")).ifPresent(s -> {
+            cdcSource.setSchema(s);
+        });
+        Optional.ofNullable(config.get("table-name")).ifPresent(s -> {
+            cdcSource.setTable(s);
+        });
+
+        // debezium params. (debezium.*)
         Map<String, String> debezium = new HashMap<>();
-        Map<String, String> split = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("debezium.")) {
                 String key = entry.getKey();
@@ -95,6 +157,10 @@ public class CDCSource {
                 }
             }
         }
+        cdcSource.setDebezium(debezium);
+
+        // partition table params. (split.*)
+        Map<String, String> split = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("split.")) {
                 String key = entry.getKey();
@@ -104,7 +170,12 @@ public class CDCSource {
                 }
             }
         }
-        splitMapInit(split);
+        if (split.size() > 0) {
+            splitMapInit(split);
+        }
+        cdcSource.setSplit(split);
+
+        // source custom params. (source.*)
         Map<String, String> source = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("source.")) {
@@ -115,7 +186,9 @@ public class CDCSource {
                 }
             }
         }
-        // jdbc参数(jdbc.properties.*)
+        cdcSource.setSource(source);
+
+        // jdbc params. (jdbc.properties.*)
         Map<String, String> jdbc = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("jdbc.properties.")) {
@@ -126,6 +199,9 @@ public class CDCSource {
                 }
             }
         }
+        cdcSource.setJdbc(jdbc);
+
+        // sink custom params. (sink.*)
         Map<String, String> sink = new HashMap<>();
         for (Map.Entry<String, String> entry : config.entrySet()) {
             if (entry.getKey().startsWith("sink.")) {
@@ -136,9 +212,8 @@ public class CDCSource {
                 }
             }
         }
-        /**
-         * 支持多目标写入功能, 从0开始顺序写入配置.
-         */
+
+        // multiple sinks custom params. (sink[i].*)
         Map<String, Map<String, String>> sinks = new HashMap<>();
         final Pattern p = Pattern.compile("sink\\[(?<index>.*)\\]");
         for (Map.Entry<String, String> entry : config.entrySet()) {
@@ -163,33 +238,9 @@ public class CDCSource {
         if (sink.isEmpty() && sinkList.size() > 0) {
             sink = sinkList.get(0);
         }
-        CDCSource cdcSource = new CDCSource(
-                config.get("connector"),
-                statement,
-                map.get("CDCSOURCE").toString(),
-                config.get("hostname"),
-                Integer.valueOf(config.get("port")),
-                config.get("username"),
-                config.get("password"),
-                Integer.valueOf(config.get("checkpoint")),
-                Integer.valueOf(config.get("parallelism")),
-                config.get("scan.startup.mode"),
-                split,
-                debezium,
-                source,
-                sink,
-                sinkList,
-                jdbc
-        );
-        if (Asserts.isNotNullString(config.get("database-name"))) {
-            cdcSource.setDatabase(config.get("database-name"));
-        }
-        if (Asserts.isNotNullString(config.get("schema-name"))) {
-            cdcSource.setSchema(config.get("schema-name"));
-        }
-        if (Asserts.isNotNullString(config.get("table-name"))) {
-            cdcSource.setTable(config.get("table-name"));
-        }
+        cdcSource.setSink(sink);
+        cdcSource.setSinks(sinkList);
+
         return cdcSource;
     }
 
