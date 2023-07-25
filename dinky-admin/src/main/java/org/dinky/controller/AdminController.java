@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -92,5 +94,15 @@ public class AdminController {
     @PostMapping("/chooseTenant")
     public Result<Tenant> switchingTenant(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
+    }
+
+    /**
+     * get tenant info
+     *
+     * @return {@link Result}{@link SaTokenInfo}
+     */
+    @GetMapping("/tokenInfo")
+    public Result<SaTokenInfo> getTokenInfo() {
+        return Result.succeed(StpUtil.getTokenInfo());
     }
 }

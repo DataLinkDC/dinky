@@ -55,6 +55,19 @@ declare namespace UserBaseInfo {
   };
 }
 
+export type SaTokenInfo = {
+  tokenName: string;
+  tokenValue: string;
+  isLogin: boolean;
+  loginId: number;
+  loginType: string;
+  tokenTimeout: number;
+  sessionTimeout: number;
+  tokenSessionTimeout: number;
+  tokenActivityTimeout: number;
+  loginDevice: string;
+  tag: string;
+}
 
 
 export type RowPermissions = ExcludeNameAndEnableColumns & {

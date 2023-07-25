@@ -20,9 +20,9 @@ import {setTenantStorageAndCookie} from "@/utils/function";
 import {l} from "@/utils/intl";
 import {useEmotionCss} from "@ant-design/use-emotion-css";
 import {useModel} from "@umijs/max";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {flushSync} from "react-dom";
-import {chooseTenantSubmit, login} from "@/services/BusinessCrud";
+import {chooseTenantSubmit, login, queryDataByParams} from "@/services/BusinessCrud";
 import {
   ErrorMessage,
   SuccessMessageAsync,
@@ -31,14 +31,18 @@ import {UserBaseInfo} from "@/types/User/data";
 import LoginForm from "./LoginForm";
 import HelmetTitle from "./HelmetTitle";
 import ChooseModal from "@/pages/Other/Login/ChooseModal";
-import {gotoRedirectUrl} from "@/pages/Other/Login/function";
+import {gotoRedirectUrl, redirectToLogin} from "@/pages/Other/Login/function";
 import LangSwitch from "@/pages/Other/Login/LangSwitch";
+import {useLocalStorage} from "@/utils/hook/useLocalStorage";
+import {API_CONSTANTS} from "@/services/constants";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
   const {initialState, setInitialState} = useModel("@@initialState");
   const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
+
+  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage("token","");
 
   const containerClassName = useEmotionCss(() => {
     return {
@@ -59,6 +63,26 @@ const Login: React.FC = () => {
       });
     }
   };
+
+  /**
+   * When the token is expired, redirect to login
+   */
+  useEffect(() => {
+    const expirationTime = JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
+    let timeRemaining  = 0;
+    let timer : NodeJS.Timeout;
+    if (expirationTime > 0) {
+    //  calculate the time difference
+      const currentTime = Date.now();
+      timeRemaining = expirationTime - currentTime;
+      //  use setInterval to set a timer
+      timer = setInterval(()=> redirectToLogin(), timeRemaining);
+    }
+    return () => {
+      clearTimeout(timer);
+    }
+  },[initialState,localStorageOfToken])
+
 
   const handleChooseTenant = async (chooseTenantResult: API.Result) => {
     if (chooseTenantResult.code === 0) {
@@ -109,6 +133,10 @@ const Login: React.FC = () => {
     try {
       // login
       const result = await login({...values});
+      if (result.code === 0 ){
+        // if login success then get token info and set it to local storage
+        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then( res => setLocalStorageOfToken(JSON.stringify(res)));
+      }
       setInitialState((s) => ({...s, currentUser: result.datas}));
       await SuccessMessageAsync(l("login.result", "", {msg: result.msg, time: result.time}));
       /**

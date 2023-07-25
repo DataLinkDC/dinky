@@ -25,6 +25,7 @@ import org.dinky.data.model.User;
 
 import java.util.List;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -38,4 +39,5 @@ public class UserDTO {
     private List<Role> roleList;
     private List<Tenant> tenantList;
     private Tenant currentTenant;
+    private SaTokenInfo tokenInfo;
 }

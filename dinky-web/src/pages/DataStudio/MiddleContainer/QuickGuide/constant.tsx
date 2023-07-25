@@ -20,12 +20,53 @@
 
 export const QUICK_GUIDE = [
     {
-        key: 'registcluster',
+        key: 'clusterInstance',
         label: '注册 Session 集群',
         link: '/registration/cluster/instance'
-    },{
-        key: 'registcluster',
-        label: '注册 Session 集群',
-        link: '/registration/cluster/instance'
+    },
+    {
+        key: 'clusterConfiguration',
+        label: '注册集群配置',
+        link: '/registration/cluster/configuration'
+    },
+    {
+        key: 'database',
+        label: '注册数据源',
+        link: '/registration/database'
+    },
+    {
+        key: 'alertInstance',
+        label: '注册告警实例',
+        link: '/registration/alert/instance'
+    },
+    {
+        key: 'alertGroup',
+        label: '注册告警组',
+        link: '/registration/alert/group'
+    },
+    {
+        key: 'fragment',
+        label: '全局变量',
+        link: '/registration/fragment'
+    },
+    {
+        key: 'document',
+        label: '文档',
+        link: '/registration/document'
+    },
+    {
+        key: 'gitprojects',
+        label: 'Git 项目',
+        link: '/registration/gitprojects'
+    },
+    {
+        key: 'udf',
+        label: 'UDF',
+        link: '/registration/udf'
+    },
+    {
+        key: 'resource',
+        label: '资源',
+        link: '/registration/resource'
     }
 ];
