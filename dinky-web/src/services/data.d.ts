@@ -15,6 +15,9 @@
  * limitations under the License.
  */
 
+
+import {SaTokenInfo} from "@/types/User/data";
+
 declare namespace API {
   type Result = {
     code: number;
@@ -28,6 +31,7 @@ declare namespace API {
     roleList?: UserBaseInfo.Role[];
     tenantList?: UserBaseInfo.Tenant[];
     currentTenant?: UserBaseInfo.Tenant;
+    tokenInfo: SaTokenInfo;
   };
 
   type PageParams = {

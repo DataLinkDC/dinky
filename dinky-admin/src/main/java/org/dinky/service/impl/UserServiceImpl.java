@@ -427,6 +427,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userInfo.setUser(user);
         userInfo.setRoleList(roleList);
         userInfo.setTenantList(tenantList);
+        userInfo.setTokenInfo(StpUtil.getTokenInfo());
         return userInfo;
     }
 }
