@@ -16,6 +16,10 @@
  */
 
 import styled from "styled-components";
+import { theme } from 'antd';
+
+const { getDesignToken } = theme;
+const token = getDesignToken();
 
 export const DataAction = styled.div`
   display: flex !important;
@@ -62,7 +66,4 @@ export const FlexCenterDiv = styled.div`
   height: 100%;
   justify-content: left;
   align-items: center;
-`;
-export const Title = styled.div`
-  font-size: 16px;
 `;

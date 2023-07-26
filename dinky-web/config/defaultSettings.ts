@@ -60,8 +60,8 @@ const Settings: ProLayoutProps & {
       colorBgMenuItemSelected: '#3399FF',
     },
     pageContainer: {
-      paddingBlockPageContainerContent: 0,
-      paddingInlinePageContainerContent: 0,
+      paddingBlockPageContainerContent: 5,
+      paddingInlinePageContainerContent: 10,
     }
   },
 };

@@ -215,6 +215,7 @@ ol {
   height: 100%;
   overflow-x: auto;
   overflow-y: auto;
+
   .ant-tree-list-holder-inner {
     min-width: max-content;
     z-index: auto;
@@ -328,7 +329,7 @@ ol {
   align-content: center;
 }
 
-h5{
+h5 {
   margin-left: 0.5rem;
   margin-bottom: 0;
 }
@@ -336,17 +337,57 @@ h5{
 
 // theme
 // light
-.side{
-  background-color: #fafaf9
+.show{
+  opacity: 1;
+  animation: show-anim 0.5s;
+}
+.hide{
+  opacity: 0;
+  animation: hide-anim 0.5s;
+}
+@keyframes show-anim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide-anim {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
-.container{
-  background-color: #ffffff;
+.title{
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "SimHei",serif;
+}
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 32px;
+  padding-inline: 10px;
+  padding-block: 5px;
+  border-block: 1px solid
 }
 
-.ant-page-header{
-  border-block: 1px solid #E0E2E5;
-}
+//.side {
+//  background-color: #fafaf9
+//}
+
+//.container {
+//  background-color: #ffffff;
+//}
+
+//.ant-page-header {
+//  border-block: 1px solid #E0E2E5;
+//}
 
 // 滚动条
 .content-scroll {
