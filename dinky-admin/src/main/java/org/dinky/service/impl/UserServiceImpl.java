@@ -412,13 +412,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
-        int userId = StpUtil.getLoginIdAsInt();
-        UserDTO userDTO = UserInfoContextHolder.get(userId);
-        loginLogService.saveLoginLog(
-                userDTO.getUser(),
-                Status.SIGN_OUT_SUCCESS.getCode(),
-                Ipv4Util.LOCAL_IP,
-                Status.SIGN_OUT_SUCCESS.getMsg());
         StpUtil.logout();
     }
 
