@@ -26,12 +26,14 @@ import React from "react";
 import {connect} from "@@/exports";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import {LeftSide, RightSide} from "@/pages/DataStudio/route";
+import useThemeValue from "@/hooks/useThemeValue";
 
 export type RightContainerProps = {
   size:number
   bottomHeight:number
 }
 const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
+  const themeValue = useThemeValue();
   const {size,leftContainer,rightContainer,bottomHeight,updateRightWidth,updateSelectRightKey}=prop
   const maxWidth= size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600
   return (
@@ -48,7 +50,7 @@ const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
       minWidth={300}
       maxWidth={maxWidth}
       enable={{left: true}}
-      style={{borderInlineStart: "1px solid #E0E2E5"}}
+      style={{borderInlineStart: "1px solid "+themeValue.borderColor}}
     >
       <Tabs activeKey={rightContainer.selectKey} items={RightSide} tabBarStyle={{display: "none"}}/>
 

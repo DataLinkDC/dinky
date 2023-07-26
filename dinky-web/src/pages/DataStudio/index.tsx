@@ -15,36 +15,34 @@
  * limitations under the License.
  */
 
-import {Button, Layout, Menu, Space} from 'antd';
+import {Layout, Menu, theme} from 'antd';
 import {connect, getDvaApp} from "umi";
-import {
-  CloseSquareOutlined,
-  CopyOutlined,
-  QuestionOutlined,
-} from "@ant-design/icons";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
-import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
-import {l} from '@/utils/intl';
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";
 import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
+import useThemeValue from "@/hooks/useThemeValue";
 
 const {Sider, Content} = Layout;
 
+const { useToken } = theme;
 const DataStudio = (props: any) => {
   const {
     bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight,updateBottomConsole
     , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
     , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle, updateSelectBottomSubKey, tabs
   } = props
+  const {token} = useToken();
+  const themeValue = useThemeValue();
+
   const getActiveTabType: () => (TabsPageType) = () => {
     if (parseInt(tabs.activeKey) < 0) {
       return TabsPageType.None
@@ -115,20 +113,19 @@ const DataStudio = (props: any) => {
   return (
     <PersistGate loading={null} persistor={persistor}>
       <Fragment>
-        <Layout style={{minHeight: "60vh"}}>
+        <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}
-          <Layout hasSider style={{minHeight: size.contentHeight}}>
+          <Layout hasSider style={{minHeight: size.contentHeight,paddingInline:0}}>
             {/*渲染左侧侧边栏*/}
             <Sider collapsed collapsedWidth={40}>
               <Menu
-                className={'side'}
                 mode="inline"
                 selectedKeys={[leftContainer.selectKey]}
                 items={LeftSide.map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
-                style={{height: '50%'}}
+                style={{height: '50%',borderBlockStart:"1px solid "+themeValue.borderColor,borderInlineEnd:"1px solid "+themeValue.borderColor}}
                 onClick={(item) => {
                   updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
                 }}
@@ -137,7 +134,6 @@ const DataStudio = (props: any) => {
 
               {/*底部菜单*/}
               <Menu
-                className={'side'}
                 mode="inline"
                 selectedKeys={[bottomContainer.selectKey]}
                 items={LeftBottomSide.map(x => {
@@ -146,7 +142,8 @@ const DataStudio = (props: any) => {
                 style={{
                   display: 'flex',
                   height: '50%',
-                  flexDirection: "column-reverse"
+                  flexDirection: "column-reverse",
+                  borderInlineEnd:"1px solid "+themeValue.borderColor
                 }}
                 onClick={(item) => {
                   updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
@@ -188,10 +185,9 @@ const DataStudio = (props: any) => {
             {/* 渲染右侧侧边栏 */}
             <Sider collapsed collapsedWidth={40}>
               <Menu
-                className={'side'}
                 selectedKeys={[rightContainer.selectKey]}
                 mode="inline"
-                style={{height: '100%', borderInlineStart: "1px solid rgba(5, 5, 5, 0.06)"}}
+                style={{height: '100%', borderInlineStart: "1px solid "+themeValue.borderColor,borderBlockStart:"1px solid "+themeValue.borderColor}}
                 items={RightSide.filter(x => {
                   if (!x.isShow) {
                     return true
@@ -206,7 +202,7 @@ const DataStudio = (props: any) => {
               />
             </Sider>
           </Layout>
-        </Layout>
+        </div>
       </Fragment>
     </PersistGate>
   );

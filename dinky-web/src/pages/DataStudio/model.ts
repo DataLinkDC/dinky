@@ -19,7 +19,7 @@ export const VIEW = {
   bottomHeight: 100,
   rightMargin: 32,
   leftMargin: 36,
-  midMargin: 50,
+  midMargin: 44,
   otherHeight: 10,
   paddingInline: 50,
 };
