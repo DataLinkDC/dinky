@@ -1686,3 +1686,23 @@ CREATE TABLE `dinky_resources` (
                                    `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time'
 ) ENGINE = InnoDB;
 INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_sys_login_log;
+CREATE TABLE `dinky_sys_login_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
+  `user_id` int(11) NOT NULL COMMENT 'user id',
+  `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
+  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:LDAP）',
+  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
+  `status` int NOT NULL COMMENT 'login status',
+  `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `access_time` datetime DEFAULT NULL COMMENT 'access time',
+  `update_time` datetime NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;

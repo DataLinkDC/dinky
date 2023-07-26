@@ -61,6 +61,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.net.Ipv4Util;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -85,6 +86,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final RowPermissionsService roleSelectPermissionsService;
 
     private final LdapServiceImpl ldapService;
+
+    private final LoginLogServiceImpl loginLogService;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -158,16 +161,33 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Check if the user is enabled
         if (!user.getEnabled()) {
+            loginLogService.saveLoginLog(
+                    user,
+                    Status.USER_DISABLED_BY_ADMIN.getCode(),
+                    Ipv4Util.LOCAL_IP,
+                    Status.USER_DISABLED_BY_ADMIN.getMsg());
             return Result.failed(Status.USER_DISABLED_BY_ADMIN);
         }
 
         UserDTO userInfo = refreshUserInfo(user);
         if (Asserts.isNullCollection(userInfo.getTenantList())) {
+            loginLogService.saveLoginLog(
+                    user,
+                    Status.USER_NOT_BINDING_TENANT.getCode(),
+                    Ipv4Util.LOCAL_IP,
+                    Status.USER_NOT_BINDING_TENANT.getMsg());
             return Result.failed(Status.USER_NOT_BINDING_TENANT);
         }
 
         // Perform login using StpUtil (Assuming it handles the session management)
         StpUtil.login(user.getId(), loginDTO.isAutoLogin());
+
+        // save login log record
+        loginLogService.saveLoginLog(
+                user,
+                Status.LOGIN_SUCCESS.getCode(),
+                Ipv4Util.LOCAL_IP,
+                Status.LOGIN_SUCCESS.getMsg());
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
@@ -184,6 +204,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         String userPassword = user.getPassword();
         // Check if the provided password is null
         if (Asserts.isNullString(loginDTO.getPassword())) {
+            loginLogService.saveLoginLog(
+                    user,
+                    Status.LOGIN_PASSWORD_NOT_NULL.getCode(),
+                    Ipv4Util.LOCAL_IP,
+                    Status.LOGIN_PASSWORD_NOT_NULL.getMsg());
             throw new AuthException(Status.LOGIN_PASSWORD_NOT_NULL);
         }
 
@@ -191,6 +216,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
             return user;
         } else {
+            loginLogService.saveLoginLog(
+                    user,
+                    Status.USER_NAME_PASSWD_ERROR.getCode(),
+                    Ipv4Util.LOCAL_IP,
+                    Status.USER_NAME_PASSWD_ERROR.getMsg());
             throw new AuthException(Status.USER_NAME_PASSWD_ERROR);
         }
     }
@@ -205,6 +235,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // User doesn't exist locally
             // Check if LDAP user autoload is enabled
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
+                loginLogService.saveLoginLog(
+                        userFromLocal,
+                        Status.USER_NAME_PASSWD_ERROR.getCode(),
+                        Ipv4Util.LOCAL_IP,
+                        Status.USER_NAME_PASSWD_ERROR.getMsg());
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -213,6 +248,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
             Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
             if (Asserts.isNull(tenant)) {
+                loginLogService.saveLoginLog(
+                        userFromLocal,
+                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getCode(),
+                        Ipv4Util.LOCAL_IP,
+                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getMsg());
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
@@ -230,6 +270,11 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
             return user;
         } else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
+            loginLogService.saveLoginLog(
+                    userFromLocal,
+                    Status.LDAP_LOGIN_FORBID.getCode(),
+                    Ipv4Util.LOCAL_IP,
+                    Status.LDAP_LOGIN_FORBID.getMsg());
             throw new AuthException(Status.LDAP_LOGIN_FORBID);
         }
 
@@ -367,6 +412,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
+        int userId = StpUtil.getLoginIdAsInt();
+        UserDTO userDTO = UserInfoContextHolder.get(userId);
+        loginLogService.saveLoginLog(
+                userDTO.getUser(),
+                Status.SIGN_OUT_SUCCESS.getCode(),
+                Ipv4Util.LOCAL_IP,
+                Status.SIGN_OUT_SUCCESS.getMsg());
         StpUtil.logout();
     }
 
