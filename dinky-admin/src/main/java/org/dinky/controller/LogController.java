@@ -17,31 +17,32 @@
  *
  */
 
-package org.dinky.context;
+package org.dinky.controller;
 
-import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.LoginLog;
+import org.dinky.data.result.Result;
+import org.dinky.service.LoginLogService;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
-/** UserInfoContextHolder */
-public class UserInfoContextHolder {
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-    private static final Map<Integer, UserDTO> USER_INFO = new ConcurrentHashMap<>();
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
-    public static void set(Integer userId, UserDTO userInfo) {
-        USER_INFO.put(userId, userInfo);
-    }
+@Slf4j
+@RestController
+@RequestMapping("/api/log")
+@RequiredArgsConstructor
+public class LogController {
 
-    public static void remove(Integer userId) {
-        USER_INFO.remove(userId);
-    }
+    private final LoginLogService loginLogService;
 
-    public static UserDTO get(Integer userId) {
-        return USER_INFO.get(userId);
-    }
-
-    public static void refresh(Integer userId, UserDTO userInfo) {
-        set(userId, userInfo);
+    @GetMapping("/loginRecord/{userId}")
+    public Result<List<LoginLog>> loginRecord(@PathVariable Integer userId) {
+        return Result.succeed(loginLogService.loginRecord(userId));
     }
 }

@@ -17,31 +17,12 @@
  *
  */
 
-package org.dinky.context;
+package org.dinky.mapper;
 
-import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.LoginLog;
+import org.dinky.mybatis.mapper.SuperMapper;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import org.apache.ibatis.annotations.Mapper;
 
-/** UserInfoContextHolder */
-public class UserInfoContextHolder {
-
-    private static final Map<Integer, UserDTO> USER_INFO = new ConcurrentHashMap<>();
-
-    public static void set(Integer userId, UserDTO userInfo) {
-        USER_INFO.put(userId, userInfo);
-    }
-
-    public static void remove(Integer userId) {
-        USER_INFO.remove(userId);
-    }
-
-    public static UserDTO get(Integer userId) {
-        return USER_INFO.get(userId);
-    }
-
-    public static void refresh(Integer userId, UserDTO userInfo) {
-        set(userId, userInfo);
-    }
-}
+@Mapper
+public interface LoginLogMapper extends SuperMapper<LoginLog> {}

@@ -17,31 +17,17 @@
  *
  */
 
-package org.dinky.context;
+package org.dinky.service;
 
-import org.dinky.data.dto.UserDTO;
+import org.dinky.data.model.LoginLog;
+import org.dinky.data.model.User;
+import org.dinky.mybatis.service.ISuperService;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.List;
 
-/** UserInfoContextHolder */
-public class UserInfoContextHolder {
+public interface LoginLogService extends ISuperService<LoginLog> {
 
-    private static final Map<Integer, UserDTO> USER_INFO = new ConcurrentHashMap<>();
+    void saveLoginLog(User user, Integer status, String ip, String msg);
 
-    public static void set(Integer userId, UserDTO userInfo) {
-        USER_INFO.put(userId, userInfo);
-    }
-
-    public static void remove(Integer userId) {
-        USER_INFO.remove(userId);
-    }
-
-    public static UserDTO get(Integer userId) {
-        return USER_INFO.get(userId);
-    }
-
-    public static void refresh(Integer userId, UserDTO userInfo) {
-        set(userId, userInfo);
-    }
+    List<LoginLog> loginRecord(Integer userId);
 }

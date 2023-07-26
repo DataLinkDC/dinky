@@ -77,3 +77,18 @@ export type RowPermissions = ExcludeNameAndEnableColumns & {
   tableName: string;
   expression: string;
 };
+
+
+export type LoginLog = {
+  id: number;
+  userId : number;
+  username: string;
+  ip: string;
+  loginType: string;
+  status: number;
+  msg: string;
+  isDeleted: boolean;
+  accessTime: Date;
+  createTime: Date;
+  updateTime: Date;
+}

@@ -2124,3 +2124,57 @@ CREATE UNIQUE INDEX "dinky_resources_un" ON "public"."dinky_resources" USING btr
 -- Primary Key structure for table dinky_resources
 -- ----------------------------
 ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRIMARY KEY ("id");
+
+
+
+create table if not exists public.dinky_sys_login_log
+(
+    id          integer,
+    user_id     integer,
+    username    varchar(60),
+    login_type  integer,
+    ip          varchar(40),
+    status      integer,
+    msg         text,
+    create_time timestamp,
+    access_time timestamp,
+    update_time timestamp,
+    is_deleted  smallint
+);
+
+comment on table public.dinky_sys_login_log is 'dinky_sys_login_log';
+
+alter table public.dinky_sys_login_log
+    owner to dinky;
+
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dinky_sys_login_log";
+CREATE TABLE "public"."dinky_sys_login_log" (
+                                            "id" int4 NOT NULL,
+                                            "user_id" int8,
+                                            "username" varchar(60) COLLATE "pg_catalog"."default",
+                                            "login_type" int2,
+                                            "ip" varchar(40) COLLATE "pg_catalog"."default",
+                                            "status" int2,
+                                            "msg" text COLLATE "pg_catalog"."default",
+                                            "create_time" timestamp(6) NOT NULL,
+                                            "access_time" timestamp(6) NOT NULL,
+                                            "update_time" timestamp(6) NOT NULL,
+                                            "is_deleted" int2
+)
+;
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."id" IS 'id';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."user_id" IS 'user id';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."username" IS 'user name';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."login_type" IS 'user type (0:LOCAL,1:LDAP,2)';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."ip" IS 'ip';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."status" IS 'login status code';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."msg" IS 'login status msg';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."access_time" IS 'access time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."is_deleted" IS 'is deleted';

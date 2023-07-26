@@ -19,7 +19,7 @@
 
 import React, {useEffect, useState} from "react";
 import {useModel} from "@@/exports";
-import {Descriptions, Divider, Empty, Form, Space, Tag} from "antd";
+import {Descriptions, Divider, Form, Tag} from "antd";
 import {PageContainer, PageLoading, ProCard} from "@ant-design/pro-components";
 import {UserBaseInfo} from "@/types/User/data";
 import {l} from "@/utils/intl";
@@ -31,13 +31,15 @@ import {API_CONSTANTS} from "@/services/constants";
 import BaseInfo from "@/pages/Other/PersonCenter/BaseInfo";
 import Pop from "@/components/Animation/Pop";
 import {flushSync} from "react-dom";
+import LoginLogRecord from "@/pages/Other/PersonCenter/LoginLogRecord";
+import OperationLogRecord from "@/pages/Other/PersonCenter/OperationLogRecord";
 
 const PersonCenter = () => {
 
     const [form] = Form.useForm();
 
     const { initialState, setInitialState } = useModel('@@initialState');
-    const [activeKey, setActiveKey] = useState('operation');
+    const [activeKey, setActiveKey] = useState('loginlog');
     const loading = <PageLoading/>;
 
     const fetchUserInfo = async () => {
@@ -112,9 +114,14 @@ const PersonCenter = () => {
      */
     const tabList = [
         {
+            key: 'loginlog',
+            label: <><LogSvg/>{l('user.loginlog')}</>,
+            children: <><LoginLogRecord userId={user?.id}/></>,
+        },
+        {
             key: 'operation',
             label: <><LogSvg/>{l('user.op')}</>,
-            children: <><Empty description={l('global.stay.tuned')} image={Empty.PRESENTED_IMAGE_DEFAULT}/></>,
+            children: <><OperationLogRecord/></>,
         },
         {
             key: 'changePassword',
