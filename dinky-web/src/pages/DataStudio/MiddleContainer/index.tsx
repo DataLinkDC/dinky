@@ -26,12 +26,14 @@ import {MenuInfo} from "rc-menu/es/interface";
 import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
 import QuickGuide from "@/pages/DataStudio/MiddleContainer/QuickGuide";
 import ContentScroll from "@/components/Scroll/ContentScroll";
+import useThemeValue from "@/hooks/useThemeValue";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const MiddleContainer = (props: any) => {
     const {tabs: {panes, activeKey}, dispatch} = props;
+    const themeValue = useThemeValue();
 
     const [contextMenuPosition, setContextMenuPosition] = useState({});
     const [contextMenuVisible, setContextMenuVisible] = useState(false);
@@ -127,15 +129,15 @@ const MiddleContainer = (props: any) => {
      * @returns {JSX.Element}
      */
     const renderRightClickMenu = () => {
-        const menuList = <Menu onClick={handleMenuClick} items={STUDIO_TAG_RIGHT_CONTEXT_MENU}/>
+        // const menuList = <Menu onClick={handleMenuClick} items={STUDIO_TAG_RIGHT_CONTEXT_MENU}/>
         return <>
             <Dropdown
                 arrow
                 trigger={['contextMenu']}
                 overlayStyle={{...contextMenuPosition}}
-                overlay={menuList}
+                menu={{items: STUDIO_TAG_RIGHT_CONTEXT_MENU,onClick:handleMenuClick}}
                 open={contextMenuVisible}
-                onVisibleChange={setContextMenuVisible}
+                onOpenChange={setContextMenuVisible}
             >
                 {/*占位*/}
                 <div style={{...contextMenuPosition}}/>
@@ -204,7 +206,7 @@ const MiddleContainer = (props: any) => {
                 }
               }}>
                 <Tabs
-                  // tabBarStyle={{border: '1px solid black',borderRadius: 0}}
+                  tabBarStyle={{borderBlock: '1px solid '+themeValue.borderColor}}
                   hideAdd
                   onTabClick={(active, e) => updateActiveKey(active, e)}
                   activeKey={activeKey}
