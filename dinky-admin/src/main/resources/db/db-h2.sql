@@ -1706,3 +1706,27 @@ CREATE TABLE `dinky_sys_login_log` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_operate_log
+-- ----------------------------
+DROP TABLE IF EXISTS `dinky_sys_operate_log`;
+CREATE TABLE `dinky_sys_operate_log`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'module name',
+  `business_type` int NULL DEFAULT 0 COMMENT 'business type',
+  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'method name',
+  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request method',
+  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate name',
+  `operate_user_id` int NOT NULL COMMENT 'operate user id',
+  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
+  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
+  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
+  `operate_param` varchar(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
+  `json_result` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `status` int NULL DEFAULT 0 COMMENT 'operate status',
+  `error_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB;

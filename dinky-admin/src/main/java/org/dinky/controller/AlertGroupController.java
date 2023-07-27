@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertHistory;
@@ -62,6 +64,7 @@ public class AlertGroupController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
+    @Log(title = "INSERT OR UPDATE AlertGroup ", businessType = BusinessType.INSERT)
     public Result<Void> saveOrUpdate(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -77,6 +80,7 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertGroup}
      */
     @PostMapping
+    @Log(title = "Query AlertGroup List", businessType = BusinessType.QUERY)
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
     }
@@ -114,6 +118,7 @@ public class AlertGroupController {
      * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @GetMapping("/listEnabledAll")
+    @Log(title = "Query AlertGroup List Of Enable", businessType = BusinessType.QUERY)
     public Result<List<AlertGroup>> listEnabledAll() {
         return Result.succeed(alertGroupService.listEnabledAll());
     }
@@ -124,6 +129,7 @@ public class AlertGroupController {
      * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @PutMapping("/enable")
+    @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
     public Result<List<AlertGroup>> enable(@RequestParam("id") Integer id) {
         if (alertGroupService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -139,6 +145,7 @@ public class AlertGroupController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
