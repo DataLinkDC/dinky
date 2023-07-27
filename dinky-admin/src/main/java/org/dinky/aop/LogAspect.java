@@ -196,8 +196,8 @@ public class LogAspect {
         if (paramsArray != null && paramsArray.length > 0) {
             for (int i = 0; i < paramsArray.length; i++) {
                 if (!isFilterObject(paramsArray[i])) {
-                    Object jsonObj = JSONUtil.toJsonStr(paramsArray[i]);
-                    params += jsonObj.toString() + " ";
+                    String jsonObj = JSONUtil.toJsonStr(paramsArray[i]);
+                    params += jsonObj + " ";
                 }
             }
         }
