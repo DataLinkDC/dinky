@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.dinky.annotation.Log;
 import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
@@ -58,6 +57,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
 /**

@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.dinky.annotation.Log;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
@@ -40,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

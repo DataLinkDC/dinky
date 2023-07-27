@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.dinky.annotation.Log;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.enums.BusinessType;
@@ -47,6 +46,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /** @since 0.7.0 */
@@ -56,7 +56,7 @@ import lombok.extern.slf4j.Slf4j;
 public class DownloadController {
 
     @GetMapping("downloadDepJar/{taskId}")
-    @Log(title = "Download UDF Jar" , businessType = BusinessType.DOWNLOAD)
+    @Log(title = "Download UDF Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
         if (Asserts.isNull(taskId)) {
@@ -113,7 +113,7 @@ public class DownloadController {
      * @param resp resp
      */
     @GetMapping("downloadAppJar/{version}")
-    @Log(title = "Download App Jar" , businessType = BusinessType.DOWNLOAD)
+    @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
         List<File> files =
