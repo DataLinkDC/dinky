@@ -64,7 +64,6 @@ public class AdminController {
      */
     @PostMapping("/login")
     @ApiOperation(value = "Login", notes = "Login")
-    @Log(title = "Login", businessType = BusinessType.GRANT)
     public Result<UserDTO> login(@RequestBody LoginDTO loginDTO) {
         return userService.loginUser(loginDTO);
     }
@@ -76,7 +75,6 @@ public class AdminController {
      */
     @DeleteMapping("/outLogin")
     @ApiOperation(value = "LogOut", notes = "LogOut")
-    @Log(title = "LogOut", businessType = BusinessType.DELETE)
     public Result<Void> outLogin() {
         userService.outLogin();
         return Result.succeed(I18nMsgUtils.getMsg(Status.SIGN_OUT_SUCCESS));
@@ -89,7 +87,6 @@ public class AdminController {
      */
     @GetMapping("/current")
     @ApiOperation(value = "Current User Info", notes = "Current User Info")
-    @Log(title = "Query Current User Info", businessType = BusinessType.QUERY)
     public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();
     }
@@ -102,7 +99,6 @@ public class AdminController {
      */
     @PostMapping("/chooseTenant")
     @ApiOperation(value = "Choose Tenant To Login", notes = "Choose Tenant To Login")
-    @Log(title = "Choose Tenant To Login", businessType = BusinessType.UPDATE)
     public Result<Tenant> switchingTenant(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
     }
@@ -114,7 +110,6 @@ public class AdminController {
      */
     @GetMapping("/tokenInfo")
     @ApiOperation(value = "Query Current User Token Info", notes = "Query Current User Token Info")
-    @Log(title = "Query Current User Token Info", businessType = BusinessType.QUERY)
     public Result<SaTokenInfo> getTokenInfo() {
         return Result.succeed(StpUtil.getTokenInfo());
     }

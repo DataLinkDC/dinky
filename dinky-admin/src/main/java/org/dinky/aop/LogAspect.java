@@ -113,8 +113,10 @@ public class LogAspect {
 
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());
+                log.error("pre doAfterThrowing Exception:{}", e.getMessage());
                 operLog.setErrorMsg(StringUtils.substring(e.getMessage(), 0, 2000));
             }
+            operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
             // 设置方法名称
             String className = joinPoint.getTarget().getClass().getName();
             String methodName = joinPoint.getSignature().getName();

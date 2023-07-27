@@ -107,7 +107,10 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
         {
             title: l('user.op.status'),
             dataIndex: 'status',
-            valueEnum: STATUS_ENUM(),
+            valueEnum: {
+                0: {text: l('global.error'), status: 'error'},
+                1: {text: l('global.success'), status: 'Success'},
+            },
             hideInSearch: true,
 
         },
@@ -138,6 +141,7 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
             ghost
             options={false}
             size={'small'}
+            {...PROTABLE_OPTIONS_PUBLIC}
             pagination={{
                 position: ['bottomCenter'],
                 pageSize: 18,
