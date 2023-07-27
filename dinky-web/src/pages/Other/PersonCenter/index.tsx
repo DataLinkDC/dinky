@@ -121,7 +121,7 @@ const PersonCenter = () => {
         {
             key: 'operation',
             label: <><LogSvg/>{l('user.op')}</>,
-            children: <><OperationLogRecord/></>,
+            children: <><OperationLogRecord userId={user?.id}/></>,
         },
         {
             key: 'changePassword',
@@ -137,13 +137,13 @@ const PersonCenter = () => {
     return <Pop>
         <PageContainer title={false}>
             <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
-                <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="30%" hoverable bordered>
+                <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="22%" hoverable bordered>
                     <BaseInfo user={user} tenant={currentTenant} />
                     <Divider orientation={'left'} plain >{l('user.tenant')}</Divider>
-                    <Descriptions size={'small'} column={4}>{renderTenantTagList(tenantList || [])}</Descriptions>
+                    <Descriptions size={'small'} column={3}>{renderTenantTagList(tenantList || [])}</Descriptions>
                     <Divider plain ></Divider>
                     <Divider orientation={'left'} plain >{l('user.role')}</Divider>
-                    <Descriptions size={'small'} column={4}>{renderRoleTagList(roleList || [])}</Descriptions>
+                    <Descriptions size={'small'} column={3}>{renderRoleTagList(roleList || [])}</Descriptions>
                 </ProCard>
 
                 <ProCard

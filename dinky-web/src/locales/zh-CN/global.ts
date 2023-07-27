@@ -156,6 +156,7 @@ export default {
   'global.no': '否',
 
   'global.info': '信息',
+  'global.result': '结果',
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',

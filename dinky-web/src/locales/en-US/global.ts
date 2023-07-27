@@ -159,6 +159,7 @@ export default {
 
   'global.info': 'Info',
   'global.error': 'Error',
+  'global.result': 'Result',
   'global.warning': 'Warning',
   'global.success': 'Success',
   'global.getdata.tips': 'Get Data',

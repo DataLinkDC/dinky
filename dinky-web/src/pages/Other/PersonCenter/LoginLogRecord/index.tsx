@@ -19,10 +19,11 @@
 
 import React, {useCallback, useEffect, useState} from "react";
 import {queryDataByParams} from "@/services/BusinessCrud";
-import {BackTop, Button, Card, Spin, Timeline} from "antd";
+import {Button, Card, Spin, Timeline} from "antd";
 import {LoginLog} from "@/types/User/data";
 import {l} from "@/utils/intl";
 import {renderTimeLineItems} from "@/pages/Other/PersonCenter/LoginLogRecord/function";
+import {API_CONSTANTS} from "@/services/constants";
 
 
 type LoginLogRecordProps = {
@@ -36,7 +37,7 @@ const LoginLogRecord: React.FC<LoginLogRecordProps> = (props) => {
 
     const queryLoginLog = useCallback(async (id: number) => {
         setRefresh(true)
-        await queryDataByParams(`/api/log/loginRecord/${id}`).then(res => {
+        await queryDataByParams(`${API_CONSTANTS.LOGIN_RECORD}/${id}`).then(res => {
             setLoginRecord(res)
             setRefresh(false)
         })

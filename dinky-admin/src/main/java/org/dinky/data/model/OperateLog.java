@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -75,5 +76,5 @@ public class OperateLog implements Serializable {
 
     /** 操作时间 */
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date operateTime;
+    private LocalDateTime operateTime;
 }

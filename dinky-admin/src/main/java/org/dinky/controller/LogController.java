@@ -19,14 +19,22 @@
 
 package org.dinky.controller;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
+import java.util.Map;
 import org.dinky.data.model.LoginLog;
+import org.dinky.data.model.OperateLog;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.LoginLogService;
 
 import java.util.List;
 
+import org.dinky.service.OperateLogService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,8 +49,15 @@ public class LogController {
 
     private final LoginLogService loginLogService;
 
+    private final OperateLogService operateLogService;
+
     @GetMapping("/loginRecord/{userId}")
     public Result<List<LoginLog>> loginRecord(@PathVariable Integer userId) {
         return Result.succeed(loginLogService.loginRecord(userId));
+    }
+
+    @PostMapping("/operateLog/{userId}")
+    public ProTableResult<OperateLog> operateRecord(@RequestBody JsonNode para, @PathVariable Integer userId) {
+        return operateLogService.operateRecord(para, userId);
     }
 }

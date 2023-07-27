@@ -19,6 +19,7 @@
 
 package org.dinky.aop;
 
+import java.time.LocalDateTime;
 import org.dinky.annotation.Log;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.enums.BusinessStatus;
@@ -122,6 +123,9 @@ public class LogAspect {
             operLog.setRequestMethod(ServletUtils.getRequest().getMethod());
             // 处理设置注解上的参数
             getControllerMethodDescription(joinPoint, controllerLog, operLog);
+
+            operLog.setOperateTime(LocalDateTime.now());
+
             // 保存数据库
             SpringUtil.getBean(OperateLogServiceImpl.class).saveLog(operLog);
 

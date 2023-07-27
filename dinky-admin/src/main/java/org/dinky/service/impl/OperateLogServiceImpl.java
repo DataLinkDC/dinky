@@ -19,7 +19,11 @@
 
 package org.dinky.service.impl;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import java.util.HashMap;
+import java.util.Map;
 import org.dinky.data.model.OperateLog;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.mapper.OperateLogMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.OperateLogService;
@@ -33,5 +37,12 @@ public class OperateLogServiceImpl extends SuperServiceImpl<OperateLogMapper, Op
     @Override
     public void saveLog(OperateLog operateLog) {
         getBaseMapper().insert(operateLog);
+    }
+
+    @Override
+    public ProTableResult<OperateLog> operateRecord(JsonNode para, Integer userId) {
+        Map<String, Object> paraMap = new HashMap<>();
+        paraMap.put("userId", userId);
+        return this.selectForProTable(para, paraMap);
     }
 }
