@@ -19,7 +19,6 @@
 
 package org.dinky.controller;
 
-import io.swagger.annotations.ApiOperation;
 import org.dinky.annotation.Log;
 import org.dinky.data.dto.APICancelDTO;
 import org.dinky.data.dto.APIExecuteJarDTO;
@@ -50,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
