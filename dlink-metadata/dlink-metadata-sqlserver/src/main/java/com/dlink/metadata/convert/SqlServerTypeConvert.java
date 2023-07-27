@@ -24,6 +24,7 @@ import com.dlink.model.Column;
 import com.dlink.model.ColumnType;
 
 public class SqlServerTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -33,8 +34,8 @@ public class SqlServerTypeConvert implements ITypeConvert {
         String t = column.getType().toLowerCase();
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (t.contains("char") || t.contains("varchar") || t.contains("text")
-            || t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
-            || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
+                || t.contains("nchar") || t.contains("nvarchar") || t.contains("ntext")
+                || t.contains("uniqueidentifier") || t.contains("sql_variant")) {
             columnType = ColumnType.STRING;
         } else if (t.contains("bigint")) {
             if (isNullable) {
@@ -48,7 +49,9 @@ public class SqlServerTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.BOOLEAN;
             }
-        } else if (t.contains("int") || t.contains("tinyint") || t.contains("smallint")) {
+        } else if (t.contains("tinyint")) {
+            columnType = ColumnType.JAVA_LANG_SHORT;
+        } else if (t.contains("int") || t.contains("smallint")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {
@@ -71,10 +74,10 @@ public class SqlServerTypeConvert implements ITypeConvert {
         } else if (t.equalsIgnoreCase("datetime") || t.equalsIgnoreCase("smalldatetime")) {
             columnType = ColumnType.TIMESTAMP;
         } else if (t.equalsIgnoreCase("datetime2")) {
-            //这里应该是纳秒
+            // 这里应该是纳秒
             columnType = ColumnType.TIMESTAMP;
         } else if (t.equalsIgnoreCase("datetimeoffset")) {
-            //这里应该是纳秒
+            // 这里应该是纳秒
             columnType = ColumnType.TIMESTAMP;
         } else if (t.equalsIgnoreCase("date")) {
             columnType = ColumnType.LOCALDATE;
