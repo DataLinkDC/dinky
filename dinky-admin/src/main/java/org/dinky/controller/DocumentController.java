@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
 import org.dinky.data.result.ProTableResult;
@@ -39,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +62,8 @@ public class DocumentController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
+    @Log(title = "Document Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Document Save Or Update")
     public Result<Void> saveOrUpdate(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -74,6 +79,8 @@ public class DocumentController {
      * @return {@link ProTableResult} of {@link Document}
      */
     @PostMapping
+    @Log(title = "Document Query List", businessType = BusinessType.QUERY)
+    @ApiOperation("Document Query List")
     public ProTableResult<Document> listDocuments(@RequestBody JsonNode para) {
         return documentService.selectForProTable(para);
     }
@@ -112,6 +119,8 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @Log(title = "Document Delete By id", businessType = BusinessType.DELETE)
+    @ApiOperation("Document Delete By id")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -127,6 +136,8 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/enable")
+    @Log(title = "Update Document Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update Document Status")
     public Result<Void> enable(@RequestParam Integer id) {
         if (documentService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -143,6 +154,8 @@ public class DocumentController {
      * @throws {@link Exception}
      */
     @GetMapping("/getFillAllByVersion")
+    @Log(title = "Get Document By Version", businessType = BusinessType.QUERY)
+    @ApiOperation("Get Document By Version")
     public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version));
     }

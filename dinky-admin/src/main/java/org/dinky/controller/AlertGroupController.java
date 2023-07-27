@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
 import org.dinky.data.model.AlertHistory;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -62,6 +65,8 @@ public class AlertGroupController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
+    @Log(title = "INSERT OR UPDATE AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("INSERT OR UPDATE AlertGroup")
     public Result<Void> saveOrUpdate(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -77,6 +82,8 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertGroup}
      */
     @PostMapping
+    @Log(title = "Query AlertGroup List", businessType = BusinessType.QUERY)
+    @ApiOperation("Query AlertGroup List")
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
     }
@@ -114,6 +121,8 @@ public class AlertGroupController {
      * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @GetMapping("/listEnabledAll")
+    @ApiOperation("Query AlertGroup List Of Enable")
+    @Log(title = "Query AlertGroup List Of Enable", businessType = BusinessType.QUERY)
     public Result<List<AlertGroup>> listEnabledAll() {
         return Result.succeed(alertGroupService.listEnabledAll());
     }
@@ -124,6 +133,8 @@ public class AlertGroupController {
      * @return {@link Result} with {@link List} of {@link AlertGroup}
      */
     @PutMapping("/enable")
+    @ApiOperation("Update AlertGroup Status")
+    @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
     public Result<List<AlertGroup>> enable(@RequestParam("id") Integer id) {
         if (alertGroupService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -139,6 +150,8 @@ public class AlertGroupController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete AlertGroup By Id")
+    @Log(title = "Delete AlertGroup By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteGroupById(@RequestParam("id") Integer id) {
         if (alertGroupService.deleteGroupById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -154,6 +167,8 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertHistory}
      */
     @PostMapping("/history")
+    @Log(title = "Query AlertHistory List", businessType = BusinessType.QUERY)
+    @ApiOperation("Query AlertHistory List")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);
     }

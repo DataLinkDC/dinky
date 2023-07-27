@@ -21,6 +21,7 @@ package org.dinky.data.model;
 
 import org.dinky.mybatis.annotation.Save;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
@@ -39,8 +40,9 @@ import lombok.Data;
 
 @Data
 @TableName("dinky_sys_login_log")
-public class LoginLog {
+public class LoginLog implements Serializable {
 
+    private static final long serialVersionUID = 1L;
     /** 主键ID */
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
