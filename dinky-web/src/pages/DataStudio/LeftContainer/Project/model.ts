@@ -17,14 +17,3 @@
  *
  */
 
-
-import {history} from "@@/core/history";
-
-/** 此方法会跳转到 redirect 参数所在的位置 */
-export const gotoRedirectUrl = () => {
-  if (!history) return;
-  setTimeout(() => {
-    const urlParams = new URL(window.location.href).searchParams;
-    history.push(urlParams.get("redirect") || "/");
-  }, 10);
-};

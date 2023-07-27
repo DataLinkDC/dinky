@@ -25,12 +25,12 @@ import org.dinky.executor.ExecutorSetting;
 import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
+import org.dinky.gateway.model.FlinkClusterConfig;
 
 import org.apache.flink.configuration.CoreOptions;
 import org.apache.flink.configuration.RestOptions;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import lombok.Getter;
@@ -233,7 +233,8 @@ public class JobConfig {
             Integer parallelism,
             Integer savePointStrategyValue,
             String savePointPath,
-            Map<String, String> config) {
+            Map<String, String> config,
+            boolean isJarTask) {
         this.type = type;
         this.step = step;
         this.useResult = useResult;
@@ -252,6 +253,7 @@ public class JobConfig {
         this.savePointStrategy = SavePointStrategy.get(savePointStrategyValue);
         this.savePointPath = savePointPath;
         this.config = config;
+        this.isJarTask = isJarTask;
     }
 
     public ExecutorSetting getExecutorSetting() {
@@ -266,29 +268,15 @@ public class JobConfig {
                 config);
     }
 
-    public void buildGatewayConfig(Map<String, Object> config) {
+    public void buildGatewayConfig(FlinkClusterConfig config) {
         gatewayConfig = GatewayConfig.build(config);
-        if (config.containsKey("flinkConfig")
-                && Asserts.isNotNullMap((Map<String, String>) config.get("flinkConfig"))) {
-            gatewayConfig
-                    .getFlinkConfig()
-                    .getConfiguration()
-                    .put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
-        }
-    }
-
-    public void addGatewayConfig(List<Map<String, String>> configList) {
-        if (Asserts.isNull(gatewayConfig)) {
-            gatewayConfig = new GatewayConfig();
-        }
-        for (Map<String, String> item : configList) {
-            if (Asserts.isNotNull(item)) {
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put(item.get("key"), item.get("value"));
-            }
-        }
+        gatewayConfig.setTaskId(getTaskId());
+        gatewayConfig.getFlinkConfig().setJobName(getJobName());
+        gatewayConfig
+                .getFlinkConfig()
+                .getConfiguration()
+                .put(CoreOptions.DEFAULT_PARALLELISM.key(), String.valueOf(parallelism));
+        setUseRemote(false);
     }
 
     public void addGatewayConfig(Map<String, Object> config) {

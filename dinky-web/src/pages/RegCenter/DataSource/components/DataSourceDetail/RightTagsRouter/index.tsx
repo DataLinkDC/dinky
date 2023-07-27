@@ -20,7 +20,7 @@ import {l} from '@/utils/intl';
 import {
   BookOutlined, ConsoleSqlOutlined, HighlightOutlined,
 } from '@ant-design/icons';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {DataSources} from '@/types/RegCenter/data';
 import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc';
 import GenSQL from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/GenSQL';
@@ -29,6 +29,9 @@ import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/R
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
 import {SearchOutline} from 'antd-mobile-icons';
+import {queryDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
+import {ProCardTabsProps} from "@ant-design/pro-card/es/typing";
 
 
 /**
@@ -36,16 +39,25 @@ import {SearchOutline} from 'antd-mobile-icons';
  */
 type RightTagsRouterProps = {
   tableInfo: Partial<DataSources.Table>,
-  tableColumns: Partial<DataSources.Column[]>,
-  rightButtons: React.ReactNode,
+  rightButtons?: React.ReactNode,
   queryParams: QueryParams
-  tagDisabled: boolean
+  tagDisabled?: boolean
 }
 
 
 const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
 
-  const {tableColumns, tableInfo, queryParams, tagDisabled, rightButtons} = props;
+  const { tableInfo, queryParams, tagDisabled=false, rightButtons} = props;
+  const [tableColumns,setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
+  useEffect(() => {
+    const fetchData = async () => {
+      const result = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, queryParams);
+      setTableColumns(result);
+    };
+    if (queryParams.id !== 0) {
+      fetchData();
+    }
+  }, [queryParams]);
   // state
   const [activeKey, setActiveKey] = useState('desc');
 
@@ -77,7 +89,7 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   ];
 
   // tab props
-  const restTabProps = {
+  const restTabProps : ProCardTabsProps = {
     activeKey: activeKey,
     type: 'card',
     tabBarExtraContent: rightButtons,

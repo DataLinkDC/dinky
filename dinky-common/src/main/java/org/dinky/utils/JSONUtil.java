@@ -30,8 +30,10 @@ import org.dinky.assertion.Asserts;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -49,6 +51,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
+
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 
 /**
  * JSONUtil
@@ -199,5 +204,23 @@ public class JSONUtil {
                 return node.toString();
             }
         }
+    }
+
+    public static JSONObject merge(JSONObject mergeTo, JSONObject... values) {
+        for (JSONObject value : values) {
+            Set<String> allKeys = new HashSet<>();
+            allKeys.addAll(mergeTo.keySet());
+            allKeys.addAll(value.keySet());
+            for (String key : allKeys) {
+                if (value.containsKey(key)) {
+                    if (value.get(key) instanceof JSONObject) {
+                        return merge((JSONObject) mergeTo.get(key), (JSONObject) value.get(key));
+                    } else if (value.get(key) instanceof JSONArray) {
+                        ((JSONArray) mergeTo.get(key)).addAll(((JSONArray) value.get(key)));
+                    }
+                }
+            }
+        }
+        return mergeTo;
     }
 }

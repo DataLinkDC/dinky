@@ -108,4 +108,15 @@ public enum Dialect {
                 return false;
         }
     }
+
+    public static boolean isJarDialect(String value) {
+        Dialect dialect = Dialect.get(value);
+        switch (dialect) {
+            case FLINK_JAR:
+            case KUBERNETES_APPLICATION:
+                return true;
+            default:
+                return false;
+        }
+    }
 }

@@ -159,11 +159,16 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  'user.login.status.code': 'Code',
+  'user.login.status.msg': 'Message',
+  'user.login.accesstime': 'Login Time',
+  'user.login.ip': 'Login IP',
   // --  personal info
   'user.info': 'Personal Info',
   'user.tenant': 'Tenant',
   'user.role': 'Role',
   'user.op': 'Operation',
+  'user.loginlog': 'Login Log',
   'user.current.tenant': 'Current Tenant',
 
   // tenant
@@ -783,4 +788,16 @@ export default {
   'metrics.flink.metrics.name': 'Metric Name',
   'metrics.flink.metrics.placeholder': 'Please select the Metric Name (multiple choices)',
 
+  // metadata
+  'pages.metadata.NoDatabaseSelected': 'No database selected',
+  'pages.metadata.Application': 'Application',
+  'pages.metadata.TableInfo': 'Table Info',
+  'pages.metadata.Description': 'Description',
+  'pages.metadata.DataSearch': 'Data Search',
+  'pages.metadata.GenerateSQL': 'Generate SQL',
+  'pages.metadata.FieldInformation': 'Field Info',
+  'pages.metadata.catalogSelect': 'Select Catalog & Database',
+  'pages.metadata.catalogRefresh': 'Refresh Catalog',
+  'pages.metadata.catalogRefreshSuccess': 'Refresh Catalog Success',
+  'pages.metadata.selectDatabase': 'Select Database',
 };

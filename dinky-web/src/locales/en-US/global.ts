@@ -18,6 +18,7 @@
  */
 
 export default {
+  'global.max':'max',
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
@@ -104,6 +105,7 @@ export default {
   'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
+  'global.mini': 'Mini Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',

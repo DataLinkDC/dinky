@@ -27,8 +27,8 @@ import org.dinky.constant.FlinkConstant;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.gateway.config.GatewayConfig;
-import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.exception.GatewayException;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.job.JobManager;
 import org.dinky.mapper.ClusterInstanceMapper;
@@ -168,13 +168,9 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
             throw new GatewayException("The cluster has been killed.");
         }
         Integer clusterConfigurationId = cluster.getClusterConfigurationId();
-        ClusterConfiguration clusterConfiguration =
-                clusterConfigurationService.getClusterConfigById(clusterConfigurationId);
-        if (Asserts.isNull(clusterConfiguration)) {
-            throw new GatewayException("The cluster configuration does not exist.");
-        }
-        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
-        gatewayConfig.setType(GatewayType.get(cluster.getType()));
+        FlinkClusterConfig flinkClusterConfig =
+                clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
+        GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
         JobManager.killCluster(gatewayConfig, cluster.getName());
     }
 
@@ -185,8 +181,8 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
         if (Asserts.isNull(clusterConfiguration)) {
             throw new GatewayException("The cluster configuration does not exist.");
         }
-        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getConfig());
-        gatewayConfig.setType(GatewayType.getSessionType(clusterConfiguration.getType()));
+        GatewayConfig gatewayConfig =
+                GatewayConfig.build(clusterConfiguration.getFlinkClusterCfg());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
         return registersCluster(
                 Cluster.autoRegistersCluster(
