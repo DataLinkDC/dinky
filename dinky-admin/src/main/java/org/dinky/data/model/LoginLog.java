@@ -19,9 +19,9 @@
 
 package org.dinky.data.model;
 
-import java.io.Serializable;
 import org.dinky.mybatis.annotation.Save;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import javax.validation.constraints.NotNull;
