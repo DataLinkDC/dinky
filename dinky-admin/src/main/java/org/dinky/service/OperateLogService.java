@@ -19,11 +19,11 @@
 
 package org.dinky.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import java.util.Map;
 import org.dinky.data.model.OperateLog;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.mybatis.service.ISuperService;
+
+import com.fasterxml.jackson.databind.JsonNode;
 
 public interface OperateLogService extends ISuperService<OperateLog> {
 
