@@ -147,6 +147,8 @@ export default {
   'global.table.runmode.local': 'Local',
   'global.table.runmode.remote': 'Remote',
 
+  'global.search.text': 'Input Key to Search',
+
   'global.savepoint.strategy.disabled': 'Disabled',
   'global.savepoint.strategy.latest': 'Latest',
   'global.savepoint.strategy.earliest': 'Earliest',
