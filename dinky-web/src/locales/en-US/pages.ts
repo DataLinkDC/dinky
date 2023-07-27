@@ -159,11 +159,16 @@ export default {
   'user.newpwdPlaceholder': 'Please enter new password',
   'user.repeatpwdPlaceholder': 'Please enter repeat new password',
   'user.oldNewPwdNoMatch': 'The new passwords do not match',
+  'user.login.status.code': 'Code',
+  'user.login.status.msg': 'Message',
+  'user.login.accesstime': 'Login Time',
+  'user.login.ip': 'Login IP',
   // --  personal info
   'user.info': 'Personal Info',
   'user.tenant': 'Tenant',
   'user.role': 'Role',
   'user.op': 'Operation',
+  'user.loginlog': 'Login Log',
   'user.current.tenant': 'Current Tenant',
 
   // tenant

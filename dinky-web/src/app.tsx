@@ -65,6 +65,7 @@ export async function getInitialState(): Promise<{
         roleList: result.datas.roleList,
         tenantList: result.datas.tenantList,
         currentTenant: result.datas.currentTenant,
+        tokenInfo: result.datas.saTokenInfo,
       };
       return currentUser;
     }, (error) => {

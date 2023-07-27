@@ -55,6 +55,19 @@ declare namespace UserBaseInfo {
   };
 }
 
+export type SaTokenInfo = {
+  tokenName: string;
+  tokenValue: string;
+  isLogin: boolean;
+  loginId: number;
+  loginType: string;
+  tokenTimeout: number;
+  sessionTimeout: number;
+  tokenSessionTimeout: number;
+  tokenActivityTimeout: number;
+  loginDevice: string;
+  tag: string;
+}
 
 
 export type RowPermissions = ExcludeNameAndEnableColumns & {
@@ -64,3 +77,18 @@ export type RowPermissions = ExcludeNameAndEnableColumns & {
   tableName: string;
   expression: string;
 };
+
+
+export type LoginLog = {
+  id: number;
+  userId : number;
+  username: string;
+  ip: string;
+  loginType: string;
+  status: number;
+  msg: string;
+  isDeleted: boolean;
+  accessTime: Date;
+  createTime: Date;
+  updateTime: Date;
+}

@@ -31,7 +31,10 @@ const KeyBoard = () => {
     const buildKeyBoard = () => {
         return KEY_BOARD.map((item,index) => {
             return <>
-                {index % 6 === 0 ? <Divider plain orientationMargin={0}/> : <>
+                {index % 6 === 0 ? <>
+                    <Divider plain orientationMargin={0}/>
+                    <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
+                </>: <>
                     <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
                 </>}
             </>

@@ -136,7 +136,6 @@ CREATE TABLE `dinky_metrics` (
 -- ----------------------------
 -- Table structure for dinky_resources
 -- ----------------------------
-DROP TABLE IF EXISTS dinky_resources;
 CREATE TABLE `dinky_resources` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
                                    `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
@@ -152,6 +151,29 @@ CREATE TABLE `dinky_resources` (
                                    PRIMARY KEY (`id`),
                                    UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_login_log
+-- ----------------------------
+CREATE TABLE `dinky_sys_login_log` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'key',
+  `user_id` int NOT NULL COMMENT 'user id',
+  `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
+  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:LDAP）',
+  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
+  `status` int NOT NULL COMMENT 'login status',
+  `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `access_time` datetime DEFAULT NULL COMMENT 'access time',
+  `update_time` datetime NOT NULL,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
+
+
+
+
 
 
 SET FOREIGN_KEY_CHECKS = 1;

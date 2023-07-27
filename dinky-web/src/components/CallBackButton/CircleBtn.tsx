@@ -1,5 +1,4 @@
 /*
- *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -17,31 +16,26 @@
  *
  */
 
-package org.dinky.context;
+import React from "react";
+import {Button} from "antd";
+import {MinusOutlined, UserSwitchOutlined} from "@ant-design/icons";
+import {l} from "@/utils/intl";
 
-import org.dinky.data.dto.UserDTO;
+type CircleButtonProps = {
+  // key: string;
+  icon: React.ReactNode;
+  onClick?: () => void;
+  title?: string;
+};
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
+export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
+  const {onClick,title,icon} = props;
 
-/** UserInfoContextHolder */
-public class UserInfoContextHolder {
-
-    private static final Map<Integer, UserDTO> USER_INFO = new ConcurrentHashMap<>();
-
-    public static void set(Integer userId, UserDTO userInfo) {
-        USER_INFO.put(userId, userInfo);
-    }
-
-    public static void remove(Integer userId) {
-        USER_INFO.remove(userId);
-    }
-
-    public static UserDTO get(Integer userId) {
-        return USER_INFO.get(userId);
-    }
-
-    public static void refresh(Integer userId, UserDTO userInfo) {
-        set(userId, userInfo);
-    }
-}
+  return (
+    <Button title={title}
+            // key={key}
+            icon={icon} block type={"text"}
+            shape={"circle"}
+            onClick={onClick}/>
+  );
+};
