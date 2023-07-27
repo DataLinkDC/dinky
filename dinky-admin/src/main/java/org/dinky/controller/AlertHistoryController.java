@@ -19,6 +19,9 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.AlertHistory;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.service.AlertHistoryService;
@@ -48,6 +51,8 @@ public class AlertHistoryController {
 
     /** 动态查询列表 */
     @PostMapping
+    @ApiOperation("Query Alert History")
+    @Log(title = "Query Alert History", businessType = BusinessType.QUERY)
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);
     }

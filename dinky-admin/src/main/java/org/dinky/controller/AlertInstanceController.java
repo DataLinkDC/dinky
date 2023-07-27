@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
 import org.dinky.alert.AlertPool;
 import org.dinky.alert.AlertResult;
 import org.dinky.annotation.Log;
@@ -62,7 +63,8 @@ public class AlertInstanceController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    @Log(title = "INSERT OR UPDATE AlertInstance", businessType = BusinessType.INSERT)
+    @Log(title = "INSERT OR UPDATE AlertInstance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("INSERT OR UPDATE AlertInstance")
     public Result<Void> saveOrUpdate(@RequestBody AlertInstance alertInstance) throws Exception {
         if (alertInstanceService.saveOrUpdate(alertInstance)) {
             AlertPool.remove(alertInstance.getName());
@@ -80,6 +82,7 @@ public class AlertInstanceController {
      */
     @PostMapping
     @Log(title = "Query AlertInstance List", businessType = BusinessType.QUERY)
+    @ApiOperation("Query AlertInstance List")
     public ProTableResult<AlertInstance> listAlertInstances(@RequestBody JsonNode para) {
         return alertInstanceService.selectForProTable(para);
     }
@@ -105,6 +108,7 @@ public class AlertInstanceController {
      */
     @DeleteMapping("/delete")
     @Log(title = "Delete AlertInstance By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete AlertInstance By Id")
     public Result<AlertInstance> deleteInstanceById(@RequestParam("id") Integer id) {
         if (alertInstanceService.deleteAlertInstance(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -121,6 +125,7 @@ public class AlertInstanceController {
      */
     @PutMapping("/enable")
     @Log(title = "Update AlertInstance Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update AlertInstance Status")
     public Result<AlertInstance> enable(@RequestParam("id") Integer id) {
         if (alertInstanceService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -136,6 +141,7 @@ public class AlertInstanceController {
      */
     @GetMapping("/listEnabledAll")
     @Log(title = "Query AlertInstance List Of Enable", businessType = BusinessType.QUERY)
+    @ApiOperation("Query AlertInstance List Of Enable")
     public Result<List<AlertInstance>> listEnabledAll() {
         return Result.succeed(alertInstanceService.listEnabledAll());
     }
@@ -148,6 +154,7 @@ public class AlertInstanceController {
      */
     @PostMapping("/sendTest")
     @Log(title = "Test Send To AlertInstance", businessType = BusinessType.TEST)
+    @ApiOperation("Test Send To AlertInstance")
     public Result<Void> sendTest(@RequestBody AlertInstance alertInstance) {
         AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
         if (alertResult.getSuccess()) {

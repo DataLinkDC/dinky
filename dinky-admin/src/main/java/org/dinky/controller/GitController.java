@@ -19,9 +19,12 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
+import org.dinky.annotation.Log;
 import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.GitProject;
 import org.dinky.data.params.GitProjectSortJarParams;
@@ -74,6 +77,8 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/saveOrUpdate")
+    @Log(title = "GitProject Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("GitProject Save Or Update")
     public Result<Void> saveOrUpdate(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
         GitRepository gitRepository =
@@ -89,6 +94,8 @@ public class GitController {
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/dragendSortProject")
+    @Log(title = "GitProject Sort", businessType = BusinessType.UPDATE)
+    @ApiOperation("GitProject Sort")
     public Result<Void> dragendSortProject(@RequestBody Map sortList) {
         if (sortList == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
@@ -104,6 +111,8 @@ public class GitController {
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/dragendSortJar")
+    @Log(title = "GitProject Jar Sort", businessType = BusinessType.UPDATE)
+    @ApiOperation("GitProject Jar Sort")
     public Result<Void> dragendSortJar(
             @RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
         GitProject gitProjectServiceById =
@@ -126,6 +135,8 @@ public class GitController {
      * @return {@link Result} of {@link List}
      */
     @PostMapping("/getBranchList")
+    @ApiOperation("GitProject Get Branch List")
+    @Log(title = "GitProject Get Branch List", businessType = BusinessType.QUERY)
     public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
@@ -138,6 +149,8 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/deleteProject")
+    @Log(title = "Delete GitProject by id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete GitProject by id")
     public Result<Void> deleteProject(@RequestParam("id") Integer id) {
         gitProjectService.removeProjectAndCodeCascade(id);
         return Result.succeed();
@@ -150,6 +163,8 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/updateEnable")
+    @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
+    @ApiOperation("Enable or Disable GitProject by id")
     public Result<Void> updateEnable(@RequestParam("id") Integer id) {
         gitProjectService.updateState(id);
         return Result.succeed();
@@ -162,6 +177,8 @@ public class GitController {
      * @return {@link ProTableResult} of {@link GitProject}
      */
     @PostMapping("/getProjectList")
+    @ApiOperation("Get GitProject List")
+    @Log(title = "Get GitProject List", businessType = BusinessType.QUERY)
     public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
         return gitProjectService.selectForProTable(params);
     }
@@ -173,6 +190,8 @@ public class GitController {
      * @return {@link Result} of {@link GitProject}
      */
     @PostMapping("/getOneDetails")
+    @ApiOperation("Get GitProject Details by id")
+    @Log(title = "Get GitProject Details by id", businessType = BusinessType.QUERY)
     public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
@@ -211,6 +230,8 @@ public class GitController {
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @CrossOrigin("*")
     @PublicInterface
+    @Log(title = "GitProject Build Step Logs", businessType = BusinessType.QUERY)
+    @ApiOperation("GitProject Build Step Logs")
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
@@ -233,6 +254,8 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping("/getProjectCode")
+    @ApiOperation("Get GitProject Code")
+    @Log(title = "Get GitProject Code", businessType = BusinessType.QUERY)
     public Result<List<TreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
 
         List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);

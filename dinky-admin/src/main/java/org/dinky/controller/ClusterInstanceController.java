@@ -19,6 +19,9 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Cluster;
 import org.dinky.data.model.JobInstance;
@@ -65,6 +68,8 @@ public class ClusterInstanceController {
      * @throws Exception exception
      */
     @PutMapping
+    @Log(title = "Save or update cluster instance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Save or update cluster instance")
     public Result<Void> saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         Integer id = cluster.getId();
@@ -79,6 +84,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Void}>
      */
     @PutMapping("/enable")
+    @Log(title = "Update Cluster Instance Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update Cluster Instance Status")
     public Result<Void> enableCluster(@RequestParam Integer id) {
         Boolean enabled = clusterInstanceService.enableClusterInstance(id);
         if (enabled) {
@@ -95,6 +102,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "Cluster Instance Delete by id", businessType = BusinessType.DELETE)
+    @ApiOperation("Cluster Instance Delete by id")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteClusterInstanceById(@RequestParam Integer id) {
         Boolean deleted = clusterInstanceService.deleteClusterInstanceById(id);
@@ -112,6 +121,8 @@ public class ClusterInstanceController {
      * @return {@link ProTableResult}<{@link Cluster}>
      */
     @PostMapping
+    @Log(title = "Cluster Instance List", businessType = BusinessType.QUERY)
+    @ApiOperation("Cluster Instance List")
     public ProTableResult<Cluster> listClusters(@RequestBody JsonNode para) {
         return clusterInstanceService.selectForProTable(para);
     }
@@ -163,6 +174,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link List}<{@link Cluster}>>
      */
     @GetMapping("/listEnabledAll")
+    @Log(title = "Get all enable cluster instances", businessType = BusinessType.QUERY)
+    @ApiOperation("Get all enable cluster instances")
     public Result<List<Cluster>> listEnabledAll() {
         List<Cluster> clusters = clusterInstanceService.listEnabledAll();
         return Result.succeed(clusters);
@@ -186,6 +199,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/heartbeats")
+    @Log(title = "Cluster Instance Heartbeat", businessType = BusinessType.UPDATE)
+    @ApiOperation("Cluster Instance Heartbeat")
     public Result<Void> heartbeat() {
         List<Cluster> clusters = clusterInstanceService.list();
         for (Cluster cluster : clusters) {
@@ -200,6 +215,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Integer}>
      */
     @DeleteMapping("/recycle")
+    @Log(title = "Cluster Instance Recycle", businessType = BusinessType.DELETE)
+    @ApiOperation("Cluster Instance Recycle")
     @Transactional(rollbackFor = Exception.class)
     public Result<Integer> recycleCluster() {
         return Result.succeed(
@@ -213,6 +230,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Void}>
      */
     @GetMapping("/killCluster")
+    @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
+    @ApiOperation("Cluster Instance Kill")
     public Result<Void> killCluster(@RequestParam("id") Integer id) {
         clusterInstanceService.killCluster(id);
         return Result.succeed("Kill Cluster Succeed.");
@@ -249,6 +268,8 @@ public class ClusterInstanceController {
     }
 
     @PutMapping("/deploySessionClusterInstance")
+    @Log(title = "Deploy Session Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Deploy Session Cluster Instance")
     public Result<Cluster> deploySessionClusterInstance(@RequestParam("id") Integer id) {
         return Result.succeed(
                 clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);

@@ -19,7 +19,10 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.ApiOperation;
+import org.dinky.annotation.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.result.Result;
@@ -60,6 +63,8 @@ public class CatalogueController {
     private final CatalogueService catalogueService;
 
     @PostMapping("/upload/{id}")
+    @Log(title = "Upload Catalogue", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload Zip Package And Create Catalogue")
     public Result<String> upload(MultipartFile file, @PathVariable Integer id) {
         // 获取上传的路径
         String filePath = PathConstant.WORK_DIR;
@@ -161,6 +166,8 @@ public class CatalogueController {
 
     /** 新增或者更新 */
     @PutMapping
+    @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Catalogue")
     public Result<Void> saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
         if (catalogueService.saveOrUpdate(catalogue)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -171,6 +178,8 @@ public class CatalogueController {
 
     /** 获取指定ID的信息 */
     @PostMapping("/getOneById")
+    @Log(title = "Get Catalogue Info By Id", businessType = BusinessType.QUERY)
+    @ApiOperation("Get Catalogue Info By Id")
     public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
         catalogue = catalogueService.getById(catalogue.getId());
         return Result.succeed(catalogue);
@@ -178,6 +187,8 @@ public class CatalogueController {
 
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
+    @Log(title = "Get Catalogue Tree Data", businessType = BusinessType.QUERY)
+    @ApiOperation("Get Catalogue Tree Data")
     public Result<List<Catalogue>> getCatalogueTreeData() {
         List<Catalogue> catalogues = catalogueService.getAllData();
         return Result.succeed(catalogues);
@@ -185,6 +196,8 @@ public class CatalogueController {
 
     /** 创建节点和作业 */
     @PutMapping("/createTask")
+    @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Create Catalogue And Task")
     public Result<Catalogue> createTask(@RequestBody CatalogueTaskDTO catalogueTaskDTO) {
         Catalogue catalogue = catalogueService.saveOrUpdateCatalogueAndTask(catalogueTaskDTO);
         if (catalogue.getId() != null) {
@@ -196,6 +209,8 @@ public class CatalogueController {
 
     /** 重命名节点和作业 */
     @PutMapping("/toRename")
+    @Log(title = "Rename Catalogue And Task", businessType = BusinessType.UPDATE)
+    @ApiOperation("Rename Catalogue And Task")
     public Result<Void> toRename(@RequestBody Catalogue catalogue) {
         if (catalogueService.toRename(catalogue)) {
             return Result.succeed(Status.RENAME_SUCCESS);
@@ -206,6 +221,8 @@ public class CatalogueController {
 
     /** 重命名节点和作业 */
     @PutMapping("/moveCatalogue")
+    @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
+    @ApiOperation("Move Catalogue")
     public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
@@ -215,6 +232,8 @@ public class CatalogueController {
     }
 
     @PostMapping("/copyTask")
+    @Log(title = "Copy Task", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Copy Task")
     public Result<Catalogue> copyTask(@RequestBody Catalogue catalogue) {
         if (catalogueService.copyTask(catalogue)) {
             return Result.succeed(Status.COPY_SUCCESS);
