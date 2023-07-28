@@ -58,6 +58,7 @@ export default {
   'menu.auth': '认证中心',
   'menu.auth.user': '用户',
   'menu.auth.role': '角色',
+  'menu.auth.menu': '菜单',
   'menu.auth.rowpermissions': '行权限',
   'menu.auth.namespace': '命名空间',
   'menu.auth.tenant': '租户',

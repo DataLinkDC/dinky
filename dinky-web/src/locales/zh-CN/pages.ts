@@ -204,6 +204,17 @@ export default {
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
 
+  // menu
+  'menu.management': '菜单管理',
+  'menu.id': '菜单编码',
+  'menu.name': '菜单名称',
+  'menu.parentId': '父级菜单',
+  'menu.path': '路径',
+  'menu.icon': '图标',
+  'menu.component': '组件',
+  'menu.orderNum': '排序',
+  'menu.type': '菜单类型',
+
 
   // rowPermissions
   'rowPermissions.management': '行权限管理',

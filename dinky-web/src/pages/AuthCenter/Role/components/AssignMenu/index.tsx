@@ -38,66 +38,13 @@ type AssignMenuProps = {
 const {DirectoryTree} = Tree;
 
 
-const buildCc = (parentId : number) => {
-    let cc: Menu[] = []
-    for (let j = 0; j < 10; j++) {
-        cc.push({
-            id: j,
-            name: `ssasss${j}`,
-            parentId: random(1, 10),
-            component: "",
-            createTime: new Date(),
-            enabled: false,
-            icon: <><TableOutlined/></>,
-            isFrame: false,
-            menuType: "",
-            orderNum: 0,
-            path: "/api" + j,
-            perms: "",
-            status: "",
-            superFlag: 0,
-            updateTime: new Date(),
-            visible: "",
-            childrens: []
-        })
-    }
-    return cc
-}
-
-const mockData = () => {
-    let menu : Menu[] =[]
-    for (let i = 0; i < 10; i++) {
-        menu.push({
-            id: i,
-            name: `name${i}`,
-            parentId: random(1,10),
-            component: "",
-            createTime: new Date(),
-            enabled: false,
-            icon: <><TableOutlined/></>,
-            isFrame: false,
-            menuType: "",
-            orderNum: 0,
-            path: "/api" + i,
-            perms: "",
-            status: "",
-            superFlag: 0,
-            updateTime: new Date(),
-            visible: "",
-            childrens: buildCc(i)
-        })
-    }
-    return menu
-}
-
-
 
 const AssignMenu: React.FC<AssignMenuProps> = (props) => {
 
     const {open, onClose, onSubmit , values} = props
 
     const [searchValue, setSearchValue] = useState('');
-    const [menuData, setMenuData] = useState<Menu[]>(mockData());
+    const [menuData, setMenuData] = useState<Menu[]>([]);
 
     useEffect(()=>{
         // todo: 获取菜单列表 通过角色 id

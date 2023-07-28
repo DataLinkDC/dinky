@@ -52,18 +52,6 @@ export const ALERT_TYPE = {
   GROUP: 'Group',
 };
 
-export const ALERT_CONFIG_LIST: AlertConfig[] = [{
-  type: ALERT_TYPE.DINGTALK,
-}, {
-  type: ALERT_TYPE.WECHAT,
-}, {
-  type: ALERT_TYPE.FEISHU,
-}, {
-  type: ALERT_TYPE.EMAIL,
-}, {
-  type: ALERT_TYPE.SMS,
-}
-];
 
 
 /**
@@ -240,12 +228,8 @@ export type Menu = BaseBeanColumns & {
   orderNum: number, // 排序
   path: string, // 路由
   component: string, // 组件
-  isFrame: boolean, // 是否是外链
-  menuType: string,// C菜单 F按钮
-  visible: string, // 菜单状态(0显示 1隐藏)
-  status: string, // 状态(0正常 1停用)
+  type: string,// C菜单 F按钮
+  display: boolean, // 菜单状态(0显示 1隐藏)
   perms: string, // 权限标识
   icon: any, // 图标
-  superFlag: number , // 是否超级
-  childrens: Menu[]
 };

@@ -20,11 +20,13 @@
 package org.dinky.controller;
 
 import org.dinky.annotation.Log;
+import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.result.Result;
-import org.dinky.service.impl.RoleMenuServiceImpl;
+import org.dinky.service.RoleMenuService;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,7 +42,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class RoleMenuController {
 
-    private RoleMenuServiceImpl roleMenuService;
+    private final RoleMenuService roleMenuService;
 
     /**
      * assign menus to role
@@ -54,11 +56,24 @@ public class RoleMenuController {
     @Log(title = "Assign Menus to Role ", businessType = BusinessType.GRANT)
     @ApiOperation("Assign Menus to Role")
     public Result<Void> assignMenuToRole(
-            @RequestParam Integer roleId, @RequestParam Integer[] menus) throws Exception {
+            @RequestParam Integer roleId, @RequestParam Integer[] menus) {
         if (roleMenuService.assignMenuToRole(roleId, menus)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
         }
+    }
+
+    /**
+     * Query menus by role ID
+     *
+     * @param roleId role ID
+     * @return {@link Result} with {@link RoleMenuDto}
+     */
+    @GetMapping("/queryMenusByRoleId")
+    @Log(title = "Query Menus by Role ID", businessType = BusinessType.QUERY)
+    @ApiOperation("Query Menus by Role ID")
+    public Result<RoleMenuDto> queryMenusByRoleId(@RequestParam Integer roleId) {
+        return Result.succeed(roleMenuService.queryMenusByRoleId(roleId));
     }
 }

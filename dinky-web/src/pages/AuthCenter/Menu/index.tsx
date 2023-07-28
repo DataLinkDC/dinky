@@ -17,23 +17,21 @@
  *
  */
 
-package org.dinky.service.impl;
 
-import org.dinky.data.model.Menu;
-import org.dinky.mapper.MenuMapper;
-import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.MenuService;
+import React from "react";
+import {PageContainer} from '@ant-design/pro-layout';
+import MenuProTable from "@/pages/AuthCenter/Menu/components/MenuProTable";
+import SlowlyAppear from "@/components/Animation/SlowlyAppear";
 
-import org.springframework.stereotype.Service;
 
-@Service
-public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implements MenuService {
+export default () => {
 
-    @Override
-    public boolean deleteMenuById(Integer id) {
-        Menu menu = getById(id);
-        // todo： 如果是父菜单，提示先删除子菜单
-
-        return false;
-    }
-}
+  /**
+   * render
+   */
+  return <SlowlyAppear>
+    <PageContainer title={false}>
+      <MenuProTable/>
+    </PageContainer>
+  </SlowlyAppear>
+};

@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.mapper.RoleMenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -26,8 +27,11 @@ import org.dinky.service.RoleMenuService;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+@Service
 public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu>
         implements RoleMenuService {
     @Override
@@ -40,6 +44,7 @@ public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMe
                                 new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
         getBaseMapper().deleteBatchIds(roleMenus);
         // 重新建立关系
+
         for (Integer id : menuId) {
             RoleMenu roleMenu = new RoleMenu();
             roleMenu.setRoleId(roleId);
@@ -47,5 +52,20 @@ public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMe
             insertSize += getBaseMapper().insert(roleMenu);
         }
         return menuId.length == insertSize;
+    }
+
+    @Override
+    public RoleMenuDto queryMenusByRoleId(Integer roleId) {
+        List<RoleMenu> roleMenuList =
+                getBaseMapper()
+                        .selectList(
+                                new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
+
+        RoleMenuDto roleMenuDto = new RoleMenuDto();
+        roleMenuDto.setRoleId(roleId);
+        roleMenuList.forEach(
+                roleMenu -> roleMenuDto.getSelectedMenuIds().add(roleMenu.getMenuId()));
+
+        return roleMenuDto;
     }
 }

@@ -58,6 +58,7 @@ export default {
   'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
   'menu.auth.role': 'Role',
+  'menu.auth.menu': 'Menu',
   'menu.auth.rowpermissions': 'Row Permissions',
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',

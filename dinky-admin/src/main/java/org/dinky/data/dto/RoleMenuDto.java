@@ -17,23 +17,23 @@
  *
  */
 
-package org.dinky.service.impl;
+package org.dinky.data.dto;
 
-import org.dinky.data.model.Menu;
-import org.dinky.mapper.MenuMapper;
-import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.MenuService;
+import java.io.Serializable;
+import java.util.List;
 
-import org.springframework.stereotype.Service;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-@Service
-public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implements MenuService {
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class RoleMenuDto implements Serializable {
 
-    @Override
-    public boolean deleteMenuById(Integer id) {
-        Menu menu = getById(id);
-        // todo： 如果是父菜单，提示先删除子菜单
+    private static final long serialVersionUID = 1L;
 
-        return false;
-    }
+    private Integer roleId;
+
+    private List<Integer> selectedMenuIds;
 }

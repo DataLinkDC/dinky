@@ -211,6 +211,17 @@ export default {
   'role.delete': 'Delete Role',
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
 
+  // menu
+  'menu.management': 'Menu Management',
+  'menu.id': 'Menu ID',
+  'menu.name': 'Menu Name',
+  'menu.parentId': 'Parent Menu',
+  'menu.path': 'Path',
+  'menu.icon': 'Icon',
+  'menu.component': 'Component',
+  'menu.orderNum': 'OrderNum',
+  'menu.type': 'Menu Type',
+
   // rowPermissions
   'rowPermissions.management': 'Row Permissions Management',
   'rowPermissions.tableName': 'Table name',
