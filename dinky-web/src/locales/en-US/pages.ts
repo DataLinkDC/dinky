@@ -221,6 +221,8 @@ export default {
   'menu.component': 'Component',
   'menu.orderNum': 'OrderNum',
   'menu.type': 'Menu Type',
+  'menu.type.menu': 'Menu',
+  'menu.type.button': 'Button',
 
   // rowPermissions
   'rowPermissions.management': 'Row Permissions Management',

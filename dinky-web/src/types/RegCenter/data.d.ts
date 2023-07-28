@@ -16,6 +16,7 @@
  */
 
 import {BaseBeanColumns} from '@/types/Public/data';
+import React from "react";
 
 /**
  * about alert
@@ -231,5 +232,5 @@ export type Menu = BaseBeanColumns & {
   type: string,// C菜单 F按钮
   display: boolean, // 菜单状态(0显示 1隐藏)
   perms: string, // 权限标识
-  icon: any, // 图标
+  icon:  React.ReactNode, // 图标
 };

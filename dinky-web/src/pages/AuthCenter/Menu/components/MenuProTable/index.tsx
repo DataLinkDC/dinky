@@ -31,6 +31,8 @@ import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteB
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {Menu} from "@/types/RegCenter/data";
 import MenuModalForm from "@/pages/AuthCenter/Menu/components/MenuModalForm";
+import {MenuOutlined} from "@ant-design/icons";
+import {ButtonIcon, MenuIcon} from "@/components/Icons/CustomIcons";
 
 
 const MenuProTable: React.FC = () => {
@@ -74,18 +76,11 @@ const MenuProTable: React.FC = () => {
         }
 
 
-        const handleAssignMenuSubmit = async (value: any) => {
-            // TODO : SAVE DATA
-            setAssignMenu(false)
-        }
-
-
-
         /**
          * edit role status
          * @param record
          */
-        const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
+        const handleEditVisible = (record: Partial<Menu>) => {
             setFormValues(record);
             handleUpdateModalVisible(true);
         }
@@ -119,6 +114,11 @@ const MenuProTable: React.FC = () => {
           {
             title: l('menu.type'),
             dataIndex: 'type',
+            valueType: 'select',
+            valueEnum: {
+              0: {text: <><MenuIcon/>  {l('menu.type.menu')}</>},
+              1: {text: <><ButtonIcon/>  {l('menu.type.button')}</>},
+            }
           },
           {
             title: l('menu.path'),
@@ -131,6 +131,11 @@ const MenuProTable: React.FC = () => {
           {
             title: l('menu.icon'),
             dataIndex: 'icon',
+            valueType: 'image',
+            hideInSearch: true,
+            render: (_, record) => {
+              return <>{record.icon}</>
+            }
           },
           {
               title: l('global.table.operate'),

@@ -214,6 +214,8 @@ export default {
   'menu.component': '组件',
   'menu.orderNum': '排序',
   'menu.type': '菜单类型',
+  'menu.type.menu': '菜单',
+  'menu.type.button': '按钮',
 
 
   // rowPermissions
