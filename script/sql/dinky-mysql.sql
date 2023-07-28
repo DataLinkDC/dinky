@@ -1173,6 +1173,40 @@ CREATE TABLE `dinky_sys_operate_log`  (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for dinky_sys_menu
+-- ----------------------------
+drop table if exists `dinky_sys_menu`;
+create table `dinky_sys_menu` (
+                                  `id` bigint not null auto_increment comment ' id',
+                                  `parent_id` bigint not null comment 'parent menu id',
+                                  `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
+                                  `path` varchar(64) collate utf8mb4_general_ci default null comment 'routing path',
+                                  `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
+                                  `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
+                                  `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
+                                  `type` char(2) collate utf8mb4_general_ci default null comment 'type 0:menu 1:button',
+                                  `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
+                                  `order_num` int default null comment 'sort',
+                                  `create_time` datetime not null default current_timestamp comment 'create time',
+                                  `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  primary key (`id`) using btree
+) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
+
+
+-- ----------------------------
+-- Table structure dinky_sys_role_menu
+-- ----------------------------
+drop table if exists `dinky_sys_role_menu`;
+CREATE TABLE `dinky_sys_role_menu` (
+                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                       `role_id` bigint NOT NULL COMMENT 'role id',
+                                       `menu_id` bigint NOT NULL COMMENT 'menu id',
+                                       `create_time` datetime not null default current_timestamp comment 'create time',
+                                       `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                       PRIMARY KEY (`id`) USING BTREE,
+                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
 
 
 
