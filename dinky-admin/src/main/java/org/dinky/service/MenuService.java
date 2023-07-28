@@ -23,5 +23,11 @@ import org.dinky.data.model.Menu;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface MenuService extends ISuperService<Menu> {
+    /**
+     * Delete menu by id
+     *
+     * @param id menu id
+     * @return boolean {@code true} if success, {@code false} if failed
+     */
     boolean deleteMenuById(Integer id);
 }
