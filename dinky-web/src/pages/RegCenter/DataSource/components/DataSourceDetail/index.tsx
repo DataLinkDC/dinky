@@ -25,24 +25,23 @@ import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter';
 import {useNavigate} from '@umijs/max';
 import {API_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
-import {getDataByIdReturnResult, queryDataByParams} from '@/services/BusinessCrud';
-import {ProCard} from '@ant-design/pro-components';
+import {getDataByIdReturnResult} from '@/services/BusinessCrud';
+import {Key, ProCard} from '@ant-design/pro-components';
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import {connect} from "@@/exports";
+import {StateType} from "@/pages/DataStudio/model";
 
-type DataSourceDetailProps = {
-  dataSource: Partial<DataSources.DataSource>;
-  backClick: () => void;
-}
-const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
+const DataSourceDetail = (props : any) => {
   const navigate = useNavigate();
 
 
-  const {dataSource, backClick} = props;
+  const {dataSource, backClick , dispatch ,database: { dbData , selectDatabaseId , expandKeys, selectKeys}} = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
   const [tableInfo, setTableInfo] = useState<Partial<DataSources.Table>>({});
   const [params, setParams] = useState<QueryParams>({id: 0, schemaName: '', tableName: ''});
+  const selectDb = (dbData as DataSources.DataSource[]).filter(x=> x.id === selectDatabaseId)[0]
 
   const handleBackClick = () => {
     // go back
@@ -81,8 +80,27 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   /**
    * tree node click
    */
-  const onSchemaTreeNodeClick = useCallback(async (info: any) => {
+  const onSchemaTreeNodeClick = useCallback(async (keys: Key[] ,info: any) => {
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
+    // 选中的key
+    dispatch({
+      type: "Studio/updateDatabaseSelectKey",
+      payload: keys
+    })
+    if (isLeaf) {
+      const queryParams =  {id: selectDatabaseId , schemaName, tableName};
+      dispatch({
+        type: "Studio/addTab",
+        payload: {
+          icon: selectDb.type,
+          id: selectDatabaseId + schemaName + tableName,
+          breadcrumbLabel: [selectDb.type,selectDb.name].join("/"),
+          label: schemaName + '.' + tableName ,
+          params:{ queryParams: queryParams, tableInfo: fullInfo},
+          type: "metadata"
+        }
+      })
+    }
     if (isLeaf) {
       setParams({
         id: dataSource.id as number,
@@ -99,6 +117,19 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
       clearState();
     }
   }, []);
+
+
+  /**
+   * 树节点展开事件
+   * @param {Key[]} expandedKeys
+   */
+  const handleTreeExpand = (expandedKeys: Key[]) => {
+    dispatch({
+      type: "Studio/updateDatabaseExpandKey",
+      payload: expandedKeys
+    })
+  }
+
 
   /**
    * render back button and refresh button
@@ -124,7 +155,7 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
     <ProCard loading={loading} ghost gutter={[16, 16]} split="vertical">
       <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan="16%">
         {/* tree */}
-        <SchemaTree onNodeClick={(info: any) => onSchemaTreeNodeClick(info)} treeData={treeData}/>
+        <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} onExpand={handleTreeExpand} onNodeClick={onSchemaTreeNodeClick} treeData={treeData}/>
       </ProCard>
       <ProCard hoverable colSpan="84%" ghost headerBordered>
         {/* tags */}
@@ -139,4 +170,6 @@ const DataSourceDetail: React.FC<DataSourceDetailProps> = (props) => {
   </>;
 };
 
-export default DataSourceDetail;
+export default connect(({Studio}: { Studio: StateType }) => ({
+  database: Studio.database,
+}))(DataSourceDetail); ;
