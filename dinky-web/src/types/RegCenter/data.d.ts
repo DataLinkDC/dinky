@@ -234,3 +234,18 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string,
   templateCode: string
 }
+
+export type Menu = BaseBeanColumns & {
+  parentId: number, // 父级
+  orderNum: number, // 排序
+  path: string, // 路由
+  component: string, // 组件
+  isFrame: boolean, // 是否是外链
+  menuType: string,// C菜单 F按钮
+  visible: string, // 菜单状态(0显示 1隐藏)
+  status: string, // 状态(0正常 1停用)
+  perms: string, // 权限标识
+  icon: any, // 图标
+  superFlag: number , // 是否超级
+  childrens: Menu[]
+};
