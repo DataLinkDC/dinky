@@ -49,9 +49,9 @@ public class SqlServerTypeConvert implements ITypeConvert {
             } else {
                 columnType = ColumnType.BOOLEAN;
             }
-        } else if (t.contains("tinyint")) {
+        } else if (t.contains("tinyint") || t.contains("smallint")) {
             columnType = ColumnType.JAVA_LANG_SHORT;
-        } else if (t.contains("int") || t.contains("smallint")) {
+        } else if (t.contains("int")) {
             if (isNullable) {
                 columnType = ColumnType.INTEGER;
             } else {
