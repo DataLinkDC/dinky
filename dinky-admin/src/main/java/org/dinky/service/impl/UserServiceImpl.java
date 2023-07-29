@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
@@ -448,12 +447,15 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public List<User> getUserListByTenantId(int id) {
         List<User> userList = new ArrayList<>();
-        List<UserTenant> userTenants = userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
-        userTenants.forEach(userTenant -> {
-            User user = getById(userTenant.getUserId());
-            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-            userList.add(user);
-        });
+        List<UserTenant> userTenants =
+                userTenantService.list(
+                        new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
+        userTenants.forEach(
+                userTenant -> {
+                    User user = getById(userTenant.getUserId());
+                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                    userList.add(user);
+                });
         return userList;
     }
 
@@ -463,12 +465,20 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      */
     @Override
     public Result<Void> updateUserToTenantAdmin(Integer userId, Integer tenantId) {
-        //query tenant admin user count
-        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId).eq(UserTenant::getTenantAdminFlag, true));
-        if(queryAdminUserByTenantCount > 1){
+        // query tenant admin user count
+        Long queryAdminUserByTenantCount =
+                userTenantService.count(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getTenantAdminFlag, true));
+        if (queryAdminUserByTenantCount > 1) {
             return Result.failed("已存在租户管理员, 租户超管只能有一个");
         }
-        UserTenant userTenant = userTenantService.getOne(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId).eq(UserTenant::getUserId, userId));
+        UserTenant userTenant =
+                userTenantService.getOne(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getUserId, userId));
         userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
         if (userTenantService.updateById(userTenant)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

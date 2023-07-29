@@ -19,17 +19,16 @@
 
 package org.dinky.controller;
 
-import cn.hutool.core.lang.Dict;
-import java.util.List;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.TenantService;
-
 import org.dinky.service.UserService;
-import org.dinky.service.UserTenantService;
+
+import java.util.List;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

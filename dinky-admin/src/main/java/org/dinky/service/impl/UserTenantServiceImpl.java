@@ -19,18 +19,13 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import java.util.ArrayList;
-import org.dinky.data.model.User;
 import org.dinky.data.model.UserTenant;
 import org.dinky.mapper.UserTenantMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.UserService;
 import org.dinky.service.UserTenantService;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service

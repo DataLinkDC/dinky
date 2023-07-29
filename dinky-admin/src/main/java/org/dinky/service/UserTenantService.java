@@ -19,7 +19,6 @@
 
 package org.dinky.service;
 
-import org.dinky.data.model.User;
 import org.dinky.data.model.UserTenant;
 import org.dinky.mybatis.service.ISuperService;
 
