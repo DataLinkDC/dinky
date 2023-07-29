@@ -491,7 +491,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles.stream()
+        userRoles
                 .forEach(
                         userRole -> {
                             Role role =
@@ -501,7 +501,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                             }
                         });
 
-        userTenants.stream()
+        userTenants
                 .forEach(
                         userTenant -> {
                             Tenant tenant = tenantService.getById(userTenant.getTenantId());
