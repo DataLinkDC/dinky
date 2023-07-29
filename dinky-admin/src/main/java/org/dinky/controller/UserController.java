@@ -215,9 +215,9 @@ public class UserController {
     }
 
     // updateUserToTenantAdmin
-//    @PutMapping("/updateUserToTenantAdmin")
-//    public Result<Void> updateUserToTenantAdmin(
-//            @RequestParam Integer userId, @RequestParam Integer tenantId) {
-//        return userService.updateUserToTenantAdmin(userId, tenantId);
-//    }
+    //    @PutMapping("/updateUserToTenantAdmin")
+    //    public Result<Void> updateUserToTenantAdmin(
+    //            @RequestParam Integer userId, @RequestParam Integer tenantId) {
+    //        return userService.updateUserToTenantAdmin(userId, tenantId);
+    //    }
 }
