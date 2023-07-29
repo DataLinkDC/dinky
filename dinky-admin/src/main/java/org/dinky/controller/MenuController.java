@@ -19,15 +19,19 @@
 
 package org.dinky.controller;
 
+import java.util.List;
 import org.dinky.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Menu;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.MenuVO;
 import org.dinky.service.MenuService;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -95,5 +99,21 @@ public class MenuController {
         } else {
             return Result.failed(Status.DELETE_FAILED);
         }
+    }
+
+    /**
+     * load role menu tree
+     * @param roleId role id
+     * @return {@link MenuVO}
+     */
+    @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
+    @ApiOperation("Load Role Menu")
+    public Result<MenuVO> roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
+        List<Menu> menus = menuService.list();
+        MenuVO menuVO =  MenuVO.builder()
+                .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
+                .menus(menus)
+                .build();
+        return Result.succeed(menuVO);
     }
 }
