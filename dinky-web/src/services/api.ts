@@ -19,6 +19,7 @@ import {request} from '@umijs/max';
 
 import {METHOD_CONSTANTS} from "@/services/constants";
 import proxy from "../../config/proxy";
+import {PublicParams} from "@/services/data";
 
 
 // ============================ CRUD REQUEST ============================

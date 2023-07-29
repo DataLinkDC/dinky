@@ -19,13 +19,19 @@
 
 package org.dinky.controller;
 
+import cn.hutool.core.lang.Dict;
+import java.util.List;
 import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.TenantService;
 
+import org.dinky.service.UserService;
+import org.dinky.service.UserTenantService;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -46,6 +52,8 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantController {
 
     private final TenantService tenantService;
+
+    private final UserService userService;
 
     /**
      * save or update tenant
@@ -115,5 +123,16 @@ public class TenantController {
     public Result<Void> assignUserToTenant(
             @RequestBody AssignUserToTenantParams assignUserToTenantParams) {
         return tenantService.assignUserToTenant(assignUserToTenantParams);
+    }
+
+    /**
+     * get user list by tenant id
+     *
+     * @param id
+     * @return {@link Result} with {@link Dict}
+     */
+    @GetMapping("/getUsersByTenantId")
+    public Result<List<User>> getUserListByTenantId(@RequestParam("id") Integer id) {
+        return Result.succeed(userService.getUserListByTenantId(id));
     }
 }

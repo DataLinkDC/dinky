@@ -29,7 +29,7 @@ import {
     handleOption,
     handlePutDataByParams,
     handleRemoveById,
-    updateEnabled
+    updateDataByParam
 } from '@/services/BusinessCrud';
 import {EditBtn} from '@/components/CallBackButton/EditBtn';
 import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
@@ -97,7 +97,7 @@ export default () => {
      */
     const handleEnable = async (item: Cluster.Config) => {
         await executeAndCallbackRefresh(async () => {
-            await updateEnabled(API_CONSTANTS.CLUSTER_CONFIGURATION_ENABLE, {id: item.id});
+            await updateDataByParam(API_CONSTANTS.CLUSTER_CONFIGURATION_ENABLE, {id: item.id});
         });
     };
 

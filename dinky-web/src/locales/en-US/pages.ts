@@ -143,6 +143,8 @@ export default {
   'user.phone': 'Phone Number',
   'user.type': 'User Type',
   'user.nickname': 'Nick Name',
+  'user.superAdminFlag': 'Super Admin',
+  'user.tenantAdminFlag': 'Tenant Admin',
   'user.create': 'Create User',
   'user.update': 'Modify User',
   'user.assignRole': 'Assign Role',

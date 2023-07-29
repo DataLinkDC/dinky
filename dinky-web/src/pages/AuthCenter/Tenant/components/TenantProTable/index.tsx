@@ -17,11 +17,11 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import TenantForm from "@/pages/AuthCenter/Tenant/components/TenantModalForm";
 import {l} from "@/utils/intl";
-import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleRemoveById, queryDataByParams, updateDataByParam} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {UserBaseInfo} from "@/types/User/data";
@@ -30,6 +30,8 @@ import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import TenantModalTransfer from "@/pages/AuthCenter/Tenant/components/TenantModalTransfer";
+import TenantUserList from "@/pages/AuthCenter/Tenant/components/TenantUserList";
+import tenant from "@/pages/AuthCenter/Tenant";
 
 const TenantProTable: React.FC = () => {
     /**
@@ -42,7 +44,13 @@ const TenantProTable: React.FC = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const actionRef = useRef<ActionType>();
     const [formValues, setFormValues] = useState<Partial<UserBaseInfo.Tenant>>({});
+    const [showUser, setShowUser] = useState<boolean>(false);
+    const [userList, setUserList] = React.useState<UserBaseInfo.User[]>([]);
 
+
+    const queryUserListByTenantId = async (id: number) => {
+        queryDataByParams(API_CONSTANTS.TENANT_USERS, {id}).then(res => setUserList(res))
+    }
 
     const executeAndCallbackRefresh = async (callback: () => void) => {
         setLoading(true);
@@ -110,6 +118,21 @@ const TenantProTable: React.FC = () => {
         setHandleGrantTenant(true);
     }
 
+    const handleShowUser = async (record: Partial<UserBaseInfo.Tenant>) => {
+        await queryUserListByTenantId(record.id as number)
+        setShowUser(true)
+        setFormValues(record);
+    }
+
+
+    const  handleSetTenantAdmin = async (value : Partial<UserBaseInfo.User>) => {
+        await executeAndCallbackRefresh(async () => {
+            await updateDataByParam(API_CONSTANTS.USER_SET_TENANT_ADMIN, {userId: value.id, tenantId: formValues.id})
+            await queryUserListByTenantId( formValues.id as number)
+        })
+    }
+
+
 
     /**
      * columns
@@ -118,6 +141,9 @@ const TenantProTable: React.FC = () => {
         {
             title: l('tenant.TenantCode'),
             dataIndex: 'tenantCode',
+            render: (text, record) => (
+                <a onClick={()=> handleShowUser(record) }> {text} </a>
+            )
         },
         {
             title: l('global.table.note'),
@@ -191,6 +217,16 @@ const TenantProTable: React.FC = () => {
             onCancel={() => handleCancel()}
             onSubmit={() => handleAssignUserSubmit()}
         />
+
+        {(formValues && Object.keys(formValues).length> 0) &&
+            <TenantUserList
+                tenant={formValues}
+                open={showUser}
+                userList={userList}
+                loading={loading}
+                onClose={() => setShowUser(false)}
+                onSubmit={handleSetTenantAdmin}
+            /> }
     </>;
 };
 

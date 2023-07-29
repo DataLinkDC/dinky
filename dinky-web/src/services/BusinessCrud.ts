@@ -26,6 +26,7 @@ import {request} from '@@/exports';
 import {
   LoadingMessageAsync, SuccessMessage, WarningMessage,
 } from '@/utils/messages';
+import { API } from './data';
 
 
 const APPLICATION_JSON = 'application/json';
@@ -129,7 +130,7 @@ export const handleRemoveById = async (url: string, id: number) => {
  * @param url
  * @param params
  */
-export const updateEnabled = async (url: string, params: any) => {
+export const updateDataByParam = async (url: string, params: any) => {
   await LoadingMessageAsync(l('app.request.update'));
   try {
     const {code, msg} = await updateDataByParams(url, {...params});

@@ -19,6 +19,7 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
@@ -259,12 +260,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // Update LDAP user properties and save
             userFromLdap.setUserType(UserType.LDAP.getCode());
             userFromLdap.setEnabled(true);
-            userFromLdap.setIsAdmin(false);
+            userFromLdap.setSuperAdminFlag(false);
+            userFromLdap.setTenantAdminFlag(false);
             userFromLdap.setIsDelete(false);
             save(userFromLdap);
 
             // Assign the user to the default tenant
-            List<Integer> userIds = getUserIdsByTeantId(tenant.getId());
+            List<Integer> userIds = getUserIdsByTenantId(tenant.getId());
             User user = getUserByUsername(loginDTO.getUsername());
             userIds.add(user.getId());
             tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
@@ -291,11 +293,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public User getUserByUsername(String username) {
-        User user = getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
-        if (Asserts.isNotNull(user)) {
-            user.setIsAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
-        }
-        return user;
+        return getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
 
     @Override
@@ -389,10 +387,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Boolean checkAdmin(Integer id) {
-
+    public Boolean checkSuperAdmin(Integer id) {
         User user = getById(id);
-        return "admin".equals(user.getUsername());
+        return user.getSuperAdminFlag();
+    }
+
+    /**
+     * check user is tenant admin
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    @Override
+    public Boolean checkTenantAdmin(Integer id) {
+        User user = getById(id);
+        return user.getTenantAdminFlag();
     }
 
     @Override
@@ -416,7 +425,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public List<Integer> getUserIdsByTeantId(int id) {
+    public List<Integer> getUserIdsByTenantId(int id) {
         List<UserTenant> userTenants =
                 userTenantService
                         .getBaseMapper()
@@ -428,6 +437,43 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userIds.add(userTenant.getUserId());
         }
         return userIds;
+    }
+
+    /**
+     * get user list by tenant id
+     *
+     * @param id
+     * @return role select permissions list
+     */
+    @Override
+    public List<User> getUserListByTenantId(int id) {
+        List<User> userList = new ArrayList<>();
+        List<UserTenant> userTenants = userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
+        userTenants.forEach(userTenant -> {
+            User user = getById(userTenant.getUserId());
+            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+            userList.add(user);
+        });
+        return userList;
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result<Void> updateUserToTenantAdmin(Integer userId, Integer tenantId) {
+        //query tenant admin user count
+        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId).eq(UserTenant::getTenantAdminFlag, true));
+        if(queryAdminUserByTenantCount > 1){
+            return Result.failed("已存在租户管理员, 租户超管只能有一个");
+        }
+        UserTenant userTenant = userTenantService.getOne(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId).eq(UserTenant::getUserId, userId));
+        userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
+        if (userTenantService.updateById(userTenant)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**
