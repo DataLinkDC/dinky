@@ -53,52 +53,47 @@ const TenantUserList:React.FC<TenantUserListProps>= (props) => {
      */
     const userColumns :ProColumns<UserBaseInfo.User>[] = [
         {
-            title: '用户ID',
-            dataIndex: 'id',
-            key: 'id',
-        },
-        {
-            title: '用户名',
+            title: l("user.username"),
             dataIndex: 'username',
             key: 'username',
         },
         {
-            title: '昵称',
+            title: l("user.nickname"),
             dataIndex: 'nickname',
             key: 'nickname',
         },
-        {
-            title: l("user.superAdminFlag"),
-            dataIndex: "superAdminFlag",
-            valueEnum: YES_OR_NO_ENUM,
-            hideInSearch: true,
-            filters: YES_OR_NO_FILTERS_MAPPING,
-            filterMultiple: false,
-        },
-        {
-            title: l("user.tenantAdminFlag"),
-            dataIndex: "tenantAdminFlag",
-            valueEnum: YES_OR_NO_ENUM,
-            hideInSearch: true,
-            filters: YES_OR_NO_FILTERS_MAPPING,
-            filterMultiple: false,
-        },
-        {
-            title: l("global.table.operate"),
-            valueType: "option",
-            width: "12vh",
-            fixed: "right",
-            render: (_: any, record: UserBaseInfo.User) => [
-               <Button
-                   type={'link'}
-                   key={`${record.id}_set_tenant_m`}
-                   title={ record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
-                   onClick={() => onSubmit(record)}
-               >
-                   { record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
-               </Button>
-            ],
-        },
+        // {
+        //     title: l("user.superAdminFlag"),
+        //     dataIndex: "superAdminFlag",
+        //     valueEnum: YES_OR_NO_ENUM,
+        //     hideInSearch: true,
+        //     filters: YES_OR_NO_FILTERS_MAPPING,
+        //     filterMultiple: false,
+        // },
+        // {
+        //     title: l("user.tenantAdminFlag"),
+        //     dataIndex: "tenantAdminFlag",
+        //     valueEnum: YES_OR_NO_ENUM,
+        //     hideInSearch: true,
+        //     filters: YES_OR_NO_FILTERS_MAPPING,
+        //     filterMultiple: false,
+        // },
+        // {
+        //     title: l("global.table.operate"),
+        //     valueType: "option",
+        //     width: "12vh",
+        //     fixed: "right",
+        //     render: (_: any, record: UserBaseInfo.User) => [
+        //        <Button
+        //            type={'link'}
+        //            key={`${record.id}_set_tenant_m`}
+        //            title={ record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
+        //            onClick={() => onSubmit(record)}
+        //        >
+        //            { record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
+        //        </Button>
+        //     ],
+        // },
     ]
 
     return <>
