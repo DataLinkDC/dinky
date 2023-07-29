@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.net.Ipv4Util;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -35,6 +34,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import cn.hutool.core.net.Ipv4Util;
 
 @Service
 public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginLog>

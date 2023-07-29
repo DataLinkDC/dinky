@@ -61,7 +61,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.net.Ipv4Util;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -161,17 +160,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Check if the user is enabled
         if (!user.getEnabled()) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_DISABLED_BY_ADMIN);
+            loginLogService.saveLoginLog(user, Status.USER_DISABLED_BY_ADMIN);
             return Result.failed(Status.USER_DISABLED_BY_ADMIN);
         }
 
         UserDTO userInfo = refreshUserInfo(user);
         if (Asserts.isNullCollection(userInfo.getTenantList())) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_NOT_BINDING_TENANT);
+            loginLogService.saveLoginLog(user, Status.USER_NOT_BINDING_TENANT);
             return Result.failed(Status.USER_NOT_BINDING_TENANT);
         }
 
@@ -179,9 +174,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         StpUtil.login(user.getId(), loginDTO.isAutoLogin());
 
         // save login log record
-        loginLogService.saveLoginLog(
-                user,
-                Status.LOGIN_SUCCESS);
+        loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
@@ -198,9 +191,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         String userPassword = user.getPassword();
         // Check if the provided password is null
         if (Asserts.isNullString(loginDTO.getPassword())) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.LOGIN_PASSWORD_NOT_NULL);
+            loginLogService.saveLoginLog(user, Status.LOGIN_PASSWORD_NOT_NULL);
             throw new AuthException(Status.LOGIN_PASSWORD_NOT_NULL);
         }
 
@@ -208,9 +199,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
             return user;
         } else {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_NAME_PASSWD_ERROR);
+            loginLogService.saveLoginLog(user, Status.USER_NAME_PASSWD_ERROR);
             throw new AuthException(Status.USER_NAME_PASSWD_ERROR);
         }
     }
@@ -225,9 +214,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // User doesn't exist locally
             // Check if LDAP user autoload is enabled
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
-                loginLogService.saveLoginLog(
-                        userFromLocal,
-                        Status.USER_NAME_PASSWD_ERROR);
+                loginLogService.saveLoginLog(userFromLocal, Status.USER_NAME_PASSWD_ERROR);
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -236,9 +223,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
             Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
             if (Asserts.isNull(tenant)) {
-                loginLogService.saveLoginLog(
-                        userFromLocal,
-                        Status.LDAP_DEFAULT_TENANT_NOFOUND);
+                loginLogService.saveLoginLog(userFromLocal, Status.LDAP_DEFAULT_TENANT_NOFOUND);
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
@@ -246,7 +231,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userFromLdap.setUserType(UserType.LDAP.getCode());
             userFromLdap.setEnabled(true);
             userFromLdap.setSuperAdminFlag(false);
-//            userFromLdap.setTenantAdminFlag(false);
+            //            userFromLdap.setTenantAdminFlag(false);
             userFromLdap.setIsDelete(false);
             save(userFromLdap);
 
@@ -257,9 +242,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
             return user;
         } else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
-            loginLogService.saveLoginLog(
-                    userFromLocal,
-                    Status.LDAP_LOGIN_FORBID);
+            loginLogService.saveLoginLog(userFromLocal, Status.LDAP_LOGIN_FORBID);
             throw new AuthException(Status.LDAP_LOGIN_FORBID);
         }
 
