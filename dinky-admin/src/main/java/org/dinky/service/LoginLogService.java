@@ -29,7 +29,9 @@ import java.util.List;
 public interface LoginLogService extends ISuperService<LoginLog> {
 
     void saveLoginLog(User user, Integer status, String ip, String msg);
-    void saveLoginLog(User user, Status status, String ip );
+
+    void saveLoginLog(User user, Status status, String ip);
+
     void saveLoginLog(User user, Status status);
 
     List<LoginLog> loginRecord(Integer userId);
