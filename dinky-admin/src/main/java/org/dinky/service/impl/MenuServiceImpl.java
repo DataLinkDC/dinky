@@ -54,7 +54,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return {@link List<Integer>}
      */
     @Override
-    public List<Integer> selectMenuListByRoleId(Long roleId) {
+    public List<Integer> selectMenuListByRoleId(Integer roleId) {
         List<RoleMenu> roleMenuList =
                 roleMenuService.list(
                         new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));

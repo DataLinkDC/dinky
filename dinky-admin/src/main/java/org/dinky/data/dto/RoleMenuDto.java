@@ -23,12 +23,15 @@ import java.io.Serializable;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.dinky.data.model.Menu;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class RoleMenuDto implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -36,4 +39,6 @@ public class RoleMenuDto implements Serializable {
     private Integer roleId;
 
     private List<Integer> selectedMenuIds;
+
+    private List<Menu> menus;
 }

@@ -20,12 +20,12 @@
 package org.dinky.controller;
 
 import org.dinky.annotation.Log;
+import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Menu;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
-import org.dinky.data.vo.MenuVO;
 import org.dinky.service.MenuService;
 
 import java.util.List;
@@ -106,14 +106,15 @@ public class MenuController {
      * load role menu tree
      *
      * @param roleId role id
-     * @return {@link MenuVO}
+     * @return {@link RoleMenuDto}
      */
     @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
     @ApiOperation("Load Role Menu")
-    public Result<MenuVO> roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
+    public Result<RoleMenuDto> roleMenuTreeSelect(@PathVariable("roleId") Integer roleId) {
         List<Menu> menus = menuService.list();
-        MenuVO menuVO =
-                MenuVO.builder()
+        RoleMenuDto menuVO =
+                RoleMenuDto.builder()
+                        .roleId(roleId)
                         .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
                         .menus(menus)
                         .build();

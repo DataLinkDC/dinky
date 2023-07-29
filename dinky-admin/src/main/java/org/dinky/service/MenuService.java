@@ -33,5 +33,5 @@ public interface MenuService extends ISuperService<Menu> {
      */
     boolean deleteMenuById(Integer id);
 
-    List<Integer> selectMenuListByRoleId(Long roleId);
+    List<Integer> selectMenuListByRoleId(Integer roleId);
 }
