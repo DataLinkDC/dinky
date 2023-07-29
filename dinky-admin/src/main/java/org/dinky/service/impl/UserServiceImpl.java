@@ -163,9 +163,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (!user.getEnabled()) {
             loginLogService.saveLoginLog(
                     user,
-                    Status.USER_DISABLED_BY_ADMIN.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_DISABLED_BY_ADMIN.getMsg());
+                    Status.USER_DISABLED_BY_ADMIN);
             return Result.failed(Status.USER_DISABLED_BY_ADMIN);
         }
 
@@ -173,9 +171,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNullCollection(userInfo.getTenantList())) {
             loginLogService.saveLoginLog(
                     user,
-                    Status.USER_NOT_BINDING_TENANT.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_NOT_BINDING_TENANT.getMsg());
+                    Status.USER_NOT_BINDING_TENANT);
             return Result.failed(Status.USER_NOT_BINDING_TENANT);
         }
 
@@ -185,9 +181,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         // save login log record
         loginLogService.saveLoginLog(
                 user,
-                Status.LOGIN_SUCCESS.getCode(),
-                Ipv4Util.LOCAL_IP,
-                Status.LOGIN_SUCCESS.getMsg());
+                Status.LOGIN_SUCCESS);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
@@ -206,9 +200,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNullString(loginDTO.getPassword())) {
             loginLogService.saveLoginLog(
                     user,
-                    Status.LOGIN_PASSWORD_NOT_NULL.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.LOGIN_PASSWORD_NOT_NULL.getMsg());
+                    Status.LOGIN_PASSWORD_NOT_NULL);
             throw new AuthException(Status.LOGIN_PASSWORD_NOT_NULL);
         }
 
@@ -218,9 +210,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         } else {
             loginLogService.saveLoginLog(
                     user,
-                    Status.USER_NAME_PASSWD_ERROR.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_NAME_PASSWD_ERROR.getMsg());
+                    Status.USER_NAME_PASSWD_ERROR);
             throw new AuthException(Status.USER_NAME_PASSWD_ERROR);
         }
     }
@@ -237,9 +227,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
                 loginLogService.saveLoginLog(
                         userFromLocal,
-                        Status.USER_NAME_PASSWD_ERROR.getCode(),
-                        Ipv4Util.LOCAL_IP,
-                        Status.USER_NAME_PASSWD_ERROR.getMsg());
+                        Status.USER_NAME_PASSWD_ERROR);
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -250,9 +238,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             if (Asserts.isNull(tenant)) {
                 loginLogService.saveLoginLog(
                         userFromLocal,
-                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getCode(),
-                        Ipv4Util.LOCAL_IP,
-                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getMsg());
+                        Status.LDAP_DEFAULT_TENANT_NOFOUND);
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
@@ -260,7 +246,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userFromLdap.setUserType(UserType.LDAP.getCode());
             userFromLdap.setEnabled(true);
             userFromLdap.setSuperAdminFlag(false);
-            userFromLdap.setTenantAdminFlag(false);
+//            userFromLdap.setTenantAdminFlag(false);
             userFromLdap.setIsDelete(false);
             save(userFromLdap);
 
@@ -273,9 +259,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         } else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
             loginLogService.saveLoginLog(
                     userFromLocal,
-                    Status.LDAP_LOGIN_FORBID.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.LDAP_LOGIN_FORBID.getMsg());
+                    Status.LDAP_LOGIN_FORBID);
             throw new AuthException(Status.LDAP_LOGIN_FORBID);
         }
 
@@ -370,7 +354,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         if (Asserts.isNotNull(userInfo)) {
             UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
-            userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            if (userInfoDto != null) {
+                userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            }
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
             return Result.succeed(userInfoDto);
         } else {

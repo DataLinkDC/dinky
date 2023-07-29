@@ -19,8 +19,10 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.net.Ipv4Util;
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.LoginLog;
 import org.dinky.data.model.User;
 import org.dinky.mapper.LoginLogMapper;
@@ -56,7 +58,41 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
         loginLog.setIp(ip);
         loginLog.setStatus(status);
         loginLog.setMsg(msg);
+        saveOrUpdate(loginLog);
+    }
 
+    /**
+     * @param user
+     * @param status
+     * @param ip
+     */
+    @Override
+    public void saveLoginLog(User user, Status status, String ip) {
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(user.getId());
+        loginLog.setUsername(user.getUsername());
+        loginLog.setLoginType(user.getUserType());
+        loginLog.setAccessTime(LocalDateTime.now());
+        loginLog.setIp(ip);
+        loginLog.setStatus(status.getCode());
+        loginLog.setMsg(status.getMsg());
+        saveOrUpdate(loginLog);
+    }
+
+    /**
+     * @param user
+     * @param status
+     */
+    @Override
+    public void saveLoginLog(User user, Status status) {
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(user.getId());
+        loginLog.setUsername(user.getUsername());
+        loginLog.setLoginType(user.getUserType());
+        loginLog.setAccessTime(LocalDateTime.now());
+        loginLog.setIp(Ipv4Util.LOCAL_IP);
+        loginLog.setStatus(status.getCode());
+        loginLog.setMsg(status.getMsg());
         saveOrUpdate(loginLog);
     }
 
