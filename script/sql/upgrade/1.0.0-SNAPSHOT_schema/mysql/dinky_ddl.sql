@@ -199,8 +199,7 @@ CREATE TABLE `dinky_sys_operate_log`  (
 alter table dinky_user
     add super_admin_flag tinyint default 0 null comment 'is super admin(0:false,1true)' after enabled;
 
-alter table dinky_user_tenant
-    add tenant_admin_flag tinyint default 0 null comment 'tenant admin flag(0:false,1:true)' after tenant_id;
+-- alter table dinky_user_tenant add tenant_admin_flag tinyint default 0 null comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
 
 

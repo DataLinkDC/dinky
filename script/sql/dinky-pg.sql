@@ -1534,7 +1534,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
                                               "id" SERIAL NOT NULL,
                                               "user_id" int4 NOT NULL,
                                               "tenant_id" int4 NOT NULL,
-                                              "tenant_admin_flag" int2 NOT NULL,
+--                                               "tenant_admin_flag" int2 NOT NULL,
                                               "create_time" timestamp(6),
                                               "update_time" timestamp(6)
 )
@@ -1542,7 +1542,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
 COMMENT ON COLUMN "public"."dinky_user_tenant"."id" IS 'ID';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."user_id" IS 'user id';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_id" IS 'tenant id';
-COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_admin_flag" IS 'tenant admin flag(0:false,1:true)';
+-- COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_admin_flag" IS 'tenant admin flag(0:false,1:true)';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."update_time" IS 'update time';
 COMMENT ON TABLE "public"."dinky_user_tenant" IS 'Relationship between users and tenants';

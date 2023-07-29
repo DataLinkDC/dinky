@@ -1539,7 +1539,7 @@ CREATE TABLE `dinky_user_tenant` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                    `user_id` int(11) NOT NULL COMMENT 'user id',
                                    `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                    `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
+--                                     `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
