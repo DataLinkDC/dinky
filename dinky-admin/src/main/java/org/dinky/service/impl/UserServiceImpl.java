@@ -453,7 +453,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userTenants.forEach(
                 userTenant -> {
                     User user = getById(userTenant.getUserId());
-//                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                    //                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
                     userList.add(user);
                 });
         return userList;
@@ -463,28 +463,28 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      * @param userId
      * @return
      */
-//    @Override
-//    public Result<Void> updateUserToTenantAdmin(Integer userId, Integer tenantId) {
-//        // query tenant admin user count
-//        Long queryAdminUserByTenantCount =
-//                userTenantService.count(
-//                        new LambdaQueryWrapper<UserTenant>()
-//                                .eq(UserTenant::getTenantId, tenantId)
-//                                .eq(UserTenant::getTenantAdminFlag, true));
-//        if (queryAdminUserByTenantCount > 1) {
-//            return Result.failed("已存在租户管理员, 租户超管只能有一个");
-//        }
-//        UserTenant userTenant =
-//                userTenantService.getOne(
-//                        new LambdaQueryWrapper<UserTenant>()
-//                                .eq(UserTenant::getTenantId, tenantId)
-//                                .eq(UserTenant::getUserId, userId));
-//        userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
-//        if (userTenantService.updateById(userTenant)) {
-//            return Result.succeed(Status.MODIFY_SUCCESS);
-//        }
-//        return Result.failed(Status.MODIFY_FAILED);
-//    }
+    //    @Override
+    //    public Result<Void> updateUserToTenantAdmin(Integer userId, Integer tenantId) {
+    //        // query tenant admin user count
+    //        Long queryAdminUserByTenantCount =
+    //                userTenantService.count(
+    //                        new LambdaQueryWrapper<UserTenant>()
+    //                                .eq(UserTenant::getTenantId, tenantId)
+    //                                .eq(UserTenant::getTenantAdminFlag, true));
+    //        if (queryAdminUserByTenantCount > 1) {
+    //            return Result.failed("已存在租户管理员, 租户超管只能有一个");
+    //        }
+    //        UserTenant userTenant =
+    //                userTenantService.getOne(
+    //                        new LambdaQueryWrapper<UserTenant>()
+    //                                .eq(UserTenant::getTenantId, tenantId)
+    //                                .eq(UserTenant::getUserId, userId));
+    //        userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
+    //        if (userTenantService.updateById(userTenant)) {
+    //            return Result.succeed(Status.MODIFY_SUCCESS);
+    //        }
+    //        return Result.failed(Status.MODIFY_FAILED);
+    //    }
 
     /**
      * build user info
