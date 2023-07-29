@@ -474,24 +474,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles
-                .forEach(
-                        userRole -> {
-                            Role role =
-                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
-                            if (Asserts.isNotNull(role)) {
-                                roleList.add(role);
-                            }
-                        });
+        userRoles.forEach(
+                userRole -> {
+                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+                    if (Asserts.isNotNull(role)) {
+                        roleList.add(role);
+                    }
+                });
 
-        userTenants
-                .forEach(
-                        userTenant -> {
-                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
-                            if (Asserts.isNotNull(tenant)) {
-                                tenantList.add(tenant);
-                            }
-                        });
+        userTenants.forEach(
+                userTenant -> {
+                    Tenant tenant = tenantService.getById(userTenant.getTenantId());
+                    if (Asserts.isNotNull(tenant)) {
+                        tenantList.add(tenant);
+                    }
+                });
 
         UserDTO userInfo = new UserDTO();
         userInfo.setUser(user);
