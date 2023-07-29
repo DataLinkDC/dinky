@@ -19,24 +19,26 @@
 
 package org.dinky.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.mapper.MenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.MenuService;
-
 import org.dinky.service.RoleMenuService;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 @Service
 public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implements MenuService {
 
-    @Autowired
-    private RoleMenuService roleMenuService;
+    @Autowired private RoleMenuService roleMenuService;
+
     @Override
     public boolean deleteMenuById(Integer id) {
         Menu menu = getById(id);
@@ -47,12 +49,15 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
 
     /**
      * query menu list by role id
+     *
      * @param roleId role id
      * @return {@link List<Integer>}
      */
     @Override
     public List<Integer> selectMenuListByRoleId(Long roleId) {
-        List<RoleMenu> roleMenuList = roleMenuService.list(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
+        List<RoleMenu> roleMenuList =
+                roleMenuService.list(
+                        new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
         return roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
     }
 }

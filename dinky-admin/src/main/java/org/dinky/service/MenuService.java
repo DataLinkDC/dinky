@@ -19,9 +19,10 @@
 
 package org.dinky.service;
 
-import java.util.List;
 import org.dinky.data.model.Menu;
 import org.dinky.mybatis.service.ISuperService;
+
+import java.util.List;
 
 public interface MenuService extends ISuperService<Menu> {
     /**
