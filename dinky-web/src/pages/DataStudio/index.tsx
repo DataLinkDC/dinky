@@ -30,13 +30,14 @@ import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";
 import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
 import useThemeValue from "@/hooks/useThemeValue";
+import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
 
 const {Sider, Content} = Layout;
 
 const { useToken } = theme;
 const DataStudio = (props: any) => {
   const {
-    bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight,updateBottomConsole
+    bottomContainer, leftContainer, rightContainer, saveDataBase,saveProject, updateToolContentHeight,updateBottomConsole
     , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
     , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle, updateSelectBottomSubKey, tabs
   } = props
@@ -82,6 +83,7 @@ const DataStudio = (props: any) => {
   useEffect(() => {
     getDataBase().then(res => saveDataBase(res))
     getConsoleData().then(res => updateBottomConsole(res))
+    getTaskData().then((res)=>saveProject(res.datas))
     onResize();
   }, []);
 

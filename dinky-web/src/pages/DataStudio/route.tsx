@@ -20,6 +20,7 @@
 
 import {
   ApartmentOutlined,
+  ArrowsAltOutlined,
   BarChartOutlined,
   CalendarOutlined,
   ConsoleSqlOutlined,
@@ -30,8 +31,9 @@ import {
   InfoCircleOutlined,
   MonitorOutlined,
   PlayCircleOutlined,
+  ReloadOutlined,
   RightSquareOutlined,
-  SettingOutlined,
+  SettingOutlined, ShrinkOutlined,
   TableOutlined,
   ToolOutlined
 } from "@ant-design/icons";
@@ -46,6 +48,7 @@ import HistoryVersion from "@/pages/DataStudio/RightContainer/HistoryVersion";
 import JobInfo from "@/pages/DataStudio/RightContainer/JobInfo";
 import {l} from "@/utils/intl";
 import {TabsPageType} from "@/pages/DataStudio/model";
+import {CircleButtonProps} from "@/components/CallBackButton/CircleBtn";
 
 export const LeftSide = [
   {
@@ -174,6 +177,31 @@ export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
       label: ('menu.datastudio.tool.datax2'),
       children: <div>datax2</div>
     },
+  ]
+}
+
+// btn route
+export const BtnRoute: { [c:string]:CircleButtonProps[] } = {
+  'menu.datastudio.metadata':[
+    {
+      icon: <ReloadOutlined />,
+      title: l('button.refresh'),
+      onClick: ()=>{}
+    }
+  ],
+  'menu.datastudio.project':[
+    {
+      icon: <ArrowsAltOutlined />,
+      title: l('button.expand-all'),
+      key: 'button.expand-all',
+      onClick: ()=>{}
+    },
+    {
+      icon: <ShrinkOutlined />,
+      title: l('button.collapse-all'),
+      key: 'button.collapse-all',
+      onClick: ()=>{}
+    }
   ]
 }
 

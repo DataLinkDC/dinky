@@ -408,6 +408,7 @@ export const SWITCH_OPTIONS =() => {
 
 export const DIALECT = {
   JAVA: "java",
+  FLINK_SQL: "FlinkSql",
   LOG: "log",
   XML: "xml",
   MD: "md",

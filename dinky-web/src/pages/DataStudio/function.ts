@@ -59,6 +59,10 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/saveDataBase",
     payload: data,
   }),
+  saveProject: (data: any[]) => dispatch({
+    type: "Studio/saveProject",
+    payload: data,
+  }),
   updateBottomConsole: (data: string) => dispatch({
     type: "Studio/updateBottomConsole",
     payload: data,

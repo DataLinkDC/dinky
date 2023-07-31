@@ -27,6 +27,7 @@ import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
 import QuickGuide from "@/pages/DataStudio/MiddleContainer/QuickGuide";
 import ContentScroll from "@/components/Scroll/ContentScroll";
 import useThemeValue from "@/hooks/useThemeValue";
+import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -150,12 +151,13 @@ const MiddleContainer = (props: any) => {
      */
     const tabItems = (panes).map((item: TabsItemType) => {
         const renderContent = () => {
-            const params = item.params as MetadataParams
-          console.log(item.type==TabsPageType.metadata)
             switch (item.type) {
                 case TabsPageType.metadata:
+                  const params = item.params as MetadataParams
                     return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>
-                default:
+              case TabsPageType.project:
+                return <Editor id={(item.params as number)}  />
+              default:
                     return <></>
             }
         }
@@ -164,7 +166,7 @@ const MiddleContainer = (props: any) => {
             label: <Space onContextMenu={(e) => handleRightClick(e, item)}
                           key={item.key}>{renderDBIcon(item.icon, 20)}{item.label}</Space>,
             children:
-              <ContentScroll height={ activeKey === item.key ? props.centerContentHeight - 40 : 0}>
+              <ContentScroll height={ activeKey === item.key ? props.centerContentHeight - 44 : 0}>
                 {renderContent()}
               </ContentScroll>
         }

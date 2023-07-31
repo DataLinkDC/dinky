@@ -93,12 +93,12 @@ export type MetadataParams = {
   // eslint-disable-next-line @typescript-eslint/ban-types
   tableInfo: {};
 }
-export enum TabsPageType {None="",metadata="metadata",flinkSql="flinkSql"}
+export enum TabsPageType {None="",metadata="metadata",project="project",flinkSql="flinkSql"}
 export type TabsItemType = {
   id:string,
   label: string;
   breadcrumbLabel: string;
-  params: string|object|MetadataParams;
+  params: number|string|object|MetadataParams;
   type: TabsPageType;
   key: string,
   value: string;
@@ -170,6 +170,12 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
+  project: {
+    data: any[];
+    // selectId: number | null;
+    expandKeys: [];
+    selectKey: [];
+  };
   tabs: TabsType;
   bottomContainerContent:BottomContainerContent
 };
@@ -188,6 +194,7 @@ export type ModelType = {
     updateSelectBottomSubKey: Reducer<StateType>;
     updateBottomHeight: Reducer<StateType>;
     saveDataBase: Reducer<StateType>;
+    saveProject: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
     addTab: Reducer<StateType>;
@@ -227,6 +234,11 @@ const Model: ModelType = {
     database: {
       dbData : [],
       selectDatabaseId: null,
+      expandKeys: [],
+      selectKey: [],
+    },
+    project: {
+      data : [],
       expandKeys: [],
       selectKey: [],
     },
@@ -395,6 +407,12 @@ const Model: ModelType = {
       return {
         ...state,
         database: {...state.database ,dbData: payload},
+      };
+    },
+    saveProject(state, {payload}) {
+      return {
+        ...state,
+        project: {...state.project ,data: payload},
       };
     },
     /**

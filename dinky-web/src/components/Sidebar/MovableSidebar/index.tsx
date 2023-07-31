@@ -22,7 +22,7 @@ export type MovableSidebarProps = {
   children?: React.ReactNode;
   handlerMinimize?: () => void;
   handlerMaxsize?: () => void;
-  btnGroup?: React.ReactNode[];
+  btnGroup?:  React.ReactNode[];
   onResize?: ResizeCallback;
   style?: React.CSSProperties;
   tagList?: TabPaneProps[];
@@ -75,7 +75,6 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
         <Fragment>
           <div style={{backgroundColor:token.colorBgBase,borderBlockColor:themeValue.borderColor}} className={"container-header"}>
             <div>{title}</div>
-            {/*<div style={{display:showBtn?"block":"none",animation: (showBtn?"show-anim":"hide-anim")+" 2s"}}>*/}
             <div className={showBtn?"show":"hide"}>
               <Space size={5}>
                 {props.btnGroup}

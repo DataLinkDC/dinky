@@ -18,28 +18,43 @@
  */
 
 
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import JobTree from "@/pages/DataStudio/LeftContainer/Project/JobTree";
+import {connect} from "umi";
+import {StateType} from "@/pages/DataStudio/model";
+import Search from "antd/es/input/Search";
+import {TreeDataNode} from "@/pages/DataStudio/LeftContainer/Project/function";
 
 
+const Project: React.FC = (props: connect) => {
+  const {dispatch}=props
+  const [search,setSearch] = useState("");
 
-
-
-const Project: React.FC= (props) => {
-
-
-    useEffect(() => {
-
-    },[])
-
-
-
-
-
-
-    return <>
-        <JobTree onNodeClick={()=>{}} treeData={[]} />
-    </>;
+  return (
+    <div style={{paddingInline: 5}}>
+      <JobTree search={search} onNodeClick={(info:any) => {
+        // 选中的key
+        const {node: {isLeaf, name, fullInfo,type,parentId,path,key}} = info;
+        console.log(info);
+        if (isLeaf) {
+          // const queryParams =  {id: selectDatabaseId , schemaName, tableName};
+          dispatch({
+            type: "Studio/addTab",
+            payload: {
+              icon: type,
+              id: parentId+name,
+              breadcrumbLabel: path.join("/"),
+              label: name ,
+              params:key,
+              type: "project"
+            }
+          })
+        }
+      }} treeData={props.data}/>
+    </div>
+  )
 };
 
-export default Project;
+export default connect(({Studio}: { Studio: StateType }) => ({
+  data: Studio.project.data,
+}))(Project);
