@@ -27,6 +27,8 @@ export const API_CONSTANTS = {
   // login path
   LOGIN_PATH: "/user/login",
   TOKEN_INFO: "/api/tokenInfo",
+  LOGIN_RECORD: "/api/log/loginRecord",
+  OPERATE_LOG: "/api/log/operateLog",
   // user login
   LOGIN: "/api/login",
   // current user info

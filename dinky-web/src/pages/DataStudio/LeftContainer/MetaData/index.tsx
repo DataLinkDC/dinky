@@ -1,6 +1,6 @@
 import {connect} from "@umijs/max";
 import { StateType} from "../../model";
-import {Select, Space, Spin, Tag} from "antd";
+import {Spin, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {
   DatabaseOutlined, ReloadOutlined,
@@ -162,7 +162,7 @@ const MetaData = (props: any) => {
             name={"selectDb"}
             placeholder={l('pages.metadata.selectDatabase')}
             options={getDataBaseOptions()}
-            fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId)}}
+            fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId as number)}}
         />
       </ProForm>
         <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>

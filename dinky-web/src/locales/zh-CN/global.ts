@@ -147,6 +147,9 @@ export default {
   'global.table.runmode.local': '本地',
   'global.table.runmode.remote': '远程',
 
+  'global.search.text': '输入关键字搜索',
+
+
   'global.savepoint.strategy.disabled': '禁用',
   'global.savepoint.strategy.latest': '最近一次',
   'global.savepoint.strategy.earliest': '最早一次',
@@ -158,6 +161,7 @@ export default {
   'global.no': '否',
 
   'global.info': '信息',
+  'global.result': '结果',
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',
