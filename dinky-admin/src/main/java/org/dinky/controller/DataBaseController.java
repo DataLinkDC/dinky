@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
@@ -49,6 +51,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,6 +75,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping
+    @Log(title = "DataBase Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("DataBase Save Or Update")
     public Result<Void> saveOrUpdate(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
@@ -88,6 +93,8 @@ public class DataBaseController {
      * @return {@link ProTableResult}< {@link DataBase}>
      */
     @PostMapping
+    @Log(title = "DataBase Get All", businessType = BusinessType.QUERY)
+    @ApiOperation("DataBase Get All")
     public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
         return databaseService.selectForProTable(para);
     }
@@ -127,6 +134,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "DataBase Delete By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("DataBase Delete By Id")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -141,6 +150,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping("/enable")
+    @Log(title = "DataBase Enable Or Disable By Id", businessType = BusinessType.UPDATE)
+    @ApiOperation("DataBase Enable Or Disable By Id")
     public Result<Void> enable(@RequestParam Integer id) {
         if (databaseService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -154,6 +165,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link List}< {@link DataBase}>>
      */
     @GetMapping("/listEnabledAll")
+    @Log(title = "Get All DataBase Enabled", businessType = BusinessType.QUERY)
+    @ApiOperation("Get All DataBase Enabled")
     public Result<List<DataBase>> listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         return Result.succeed(dataBases);
@@ -166,6 +179,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/testConnect")
+    @Log(title = "DataBase Test Connect", businessType = BusinessType.TEST)
+    @ApiOperation("DataBase Test Connect")
     public Result<Void> testConnect(@RequestBody DataBase database) {
         String msg = databaseService.testConnect(database);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
@@ -228,6 +243,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping("/checkHeartBeatByDataSourceId")
+    @Log(title = "DataBase Check Heart Beat By Id", businessType = BusinessType.TEST)
+    @ApiOperation("DataBase Check Heart Beat By Id")
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
@@ -252,6 +269,8 @@ public class DataBaseController {
      */
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
+    @Log(title = "Get All Schemas And Tables", businessType = BusinessType.QUERY)
+    @ApiOperation("Get All Schemas And Tables")
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id));
     }
@@ -264,6 +283,8 @@ public class DataBaseController {
      */
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
+    @Log(title = "Clear Cache Of Schemas And Tables", businessType = BusinessType.DELETE)
+    @ApiOperation("Clear Cache Of Schemas And Tables")
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
@@ -277,6 +298,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link List}< {@link Column}>>
      */
     @GetMapping("/listColumns")
+    @Log(title = "Get Columns Of Table", businessType = BusinessType.QUERY)
+    @ApiOperation("Get Columns Of Table")
     public Result<List<Column>> listColumns(
             @RequestParam Integer id,
             @RequestParam String schemaName,
@@ -291,6 +314,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link JdbcSelectResult}>
      */
     @PostMapping("/queryData")
+    @Log(title = "Query Data Of Table", businessType = BusinessType.QUERY)
+    @ApiOperation("Query Data Of Table")
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -307,6 +332,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link JdbcSelectResult}>
      */
     @PostMapping("/execSql")
+    @Log(title = "Exec Sql", businessType = BusinessType.EXECUTE)
+    @ApiOperation("Exec Sql")
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -325,6 +352,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link SqlGeneration}>
      */
     @GetMapping("/getSqlGeneration")
+    @Log(title = "Get Sql Generation", businessType = BusinessType.QUERY)
+    @ApiOperation("Get Sql Generation")
     public Result<SqlGeneration> getSqlGeneration(
             @RequestParam Integer id,
             @RequestParam String schemaName,
@@ -339,6 +368,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/copyDatabase")
+    @Log(title = "Copy Database", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Copy Database")
     public Result<Void> copyDatabase(@RequestBody DataBase database) {
         if (databaseService.copyDatabase(database)) {
             return Result.succeed(Status.COPY_SUCCESS);

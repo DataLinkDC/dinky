@@ -16,10 +16,11 @@
  */
 
 
-import {Empty, Input, Space, Tree} from 'antd';
+import {Empty, Input, Tree} from 'antd';
 import React, {useCallback, useState} from 'react';
 import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
 import {Key} from '@ant-design/pro-components';
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
 /**
@@ -56,7 +57,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
             (treeData.length > 0) ?
                 <>
                     <Input
-                        placeholder="请输入关键字搜索"
+                        placeholder={l('global.search.text')}
                         allowClear
                         style={{marginBottom: 8}}
                         value={searchValue}

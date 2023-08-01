@@ -91,4 +91,22 @@ export type LoginLog = {
   accessTime: Date;
   createTime: Date;
   updateTime: Date;
-}
+};
+
+export type OperateLog = {
+    id: number;
+    moduleName: string;
+    businessType: number;
+    method: string;
+    requestMethod: string;
+    operateName: string;
+    operateUserId: number;
+    operateUrl: string;
+    operateIp: string;
+    operateLocation: string;
+    operateParam: string;
+    jsonResult: string;
+    status: number;
+    errorMsg: string;
+    operateTime: Date;
+};

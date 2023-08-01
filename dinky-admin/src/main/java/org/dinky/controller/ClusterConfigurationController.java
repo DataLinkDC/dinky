@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
 import org.dinky.assertion.Asserts;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.result.ProTableResult;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,6 +62,8 @@ public class ClusterConfigurationController {
 
     /** 新增或者更新 */
     @PutMapping
+    @Log(title = "Cluster Config Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Cluster Config Save Or Update")
     public Result<Void> saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
         Integer id = clusterConfiguration.getId();
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
@@ -72,6 +77,8 @@ public class ClusterConfigurationController {
 
     /** 动态查询列表 */
     @PostMapping
+    @Log(title = "Cluster Config List", businessType = BusinessType.QUERY)
+    @ApiOperation("Cluster Config List")
     public ProTableResult<ClusterConfiguration> listClusterConfigs(@RequestBody JsonNode para) {
         return clusterConfigurationService.selectForProTable(para);
     }
@@ -109,6 +116,8 @@ public class ClusterConfigurationController {
 
     /** 获取可用的集群列表 */
     @GetMapping("/listEnabledAll")
+    @Log(title = "Cluster Config List Enabled All", businessType = BusinessType.QUERY)
+    @ApiOperation("Cluster Config List Enabled All")
     public Result<List<ClusterConfiguration>> listEnabledAll() {
         List<ClusterConfiguration> clusters = clusterConfigurationService.listEnabledAll();
         return Result.succeed(clusters);
@@ -121,6 +130,8 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "Cluster Config Delete by id", businessType = BusinessType.DELETE)
+    @ApiOperation("Cluster Config Delete by id")
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
@@ -137,6 +148,8 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @PutMapping("/enable")
+    @Log(title = "Update Cluster Config Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update Cluster Config Status")
     public Result<Void> enable(@RequestParam("id") Integer id) {
         if (clusterConfigurationService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -152,6 +165,8 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/testConnect")
+    @Log(title = "Test Connection", businessType = BusinessType.TEST)
+    @ApiOperation("Test Connection")
     public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {

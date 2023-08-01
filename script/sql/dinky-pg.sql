@@ -2127,28 +2127,6 @@ ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRI
 
 
 
-create table if not exists public.dinky_sys_login_log
-(
-    id          integer,
-    user_id     integer,
-    username    varchar(60),
-    login_type  integer,
-    ip          varchar(40),
-    status      integer,
-    msg         text,
-    create_time timestamp,
-    access_time timestamp,
-    update_time timestamp,
-    is_deleted  smallint
-);
-
-comment on table public.dinky_sys_login_log is 'dinky_sys_login_log';
-
-alter table public.dinky_sys_login_log
-    owner to dinky;
-
-
-
 -- ----------------------------
 -- Table structure for dinky_sys_login_log
 -- ----------------------------
@@ -2178,3 +2156,27 @@ COMMENT ON COLUMN "public"."dinky_sys_login_log"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."access_time" IS 'access time';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."update_time" IS 'update time';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."is_deleted" IS 'is deleted';
+
+
+DROP TABLE IF EXISTS "public"."dinky_sys_operate_log";
+
+create table  "public"."dinky_sys_operate_log" (
+  id int4,
+  module_name character varying(50),
+  business_type int4,
+  method character varying(100),
+  request_method character varying(10),
+  operate_name character varying(50),
+  operate_user_id int4,
+  operate_url character varying(255),
+  operate_ip character varying(50),
+  operate_location character varying(255),
+  operate_param character varying(2000),
+  json_result text,
+  status int4,
+  error_msg text,
+  operate_time timestamp without time zone
+);
+comment on table public.dinky_sys_operate_log is 'dinky_sys_operate_log';
+
+
