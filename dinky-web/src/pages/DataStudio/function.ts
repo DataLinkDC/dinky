@@ -20,6 +20,7 @@
 
 import {Dispatch} from "@@/plugin-dva/types";
 import {DataSources} from "@/types/RegCenter/data";
+import {ClusterConfigurationType, ClusterType, DataStudioParams, EnvType, TabsItemType} from "@/pages/DataStudio/model";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) => dispatch({
@@ -67,5 +68,23 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/updateBottomConsole",
     payload: data,
   }),
+  saveSession: (data: ClusterType[]) => dispatch({
+    type: "Studio/saveSession",
+    payload: data,
+  }),
+  saveEnv: (data: EnvType[]) => dispatch({
+    type: "Studio/saveEnv",
+    payload: data,
+  }),
+  saveClusterConfiguration: (data: ClusterConfigurationType[]) => dispatch({
+    type: "Studio/saveClusterConfiguration",
+    payload: data,
+  }),
 
 });
+
+
+export const getCurrentData = (panes: any, activeKey: string) => {
+  const v = (panes as TabsItemType[]).find(item => item.key === activeKey);
+  return (v?.params as DataStudioParams)?.taskData
+}

@@ -1,20 +1,14 @@
-import {QUICK_GUIDE} from "@/pages/DataStudio/MiddleContainer/QuickGuide/constant";
-import {Divider, Typography} from "antd";
-import {Link} from "@@/exports";
-import React, {useEffect, useState} from "react";
+import React from "react";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
-import {getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 
 export type EditorProps = {
-  id: number
+  statement: string
 }
 const Editor: React.FC<EditorProps> = (props) => {
-  const [data, setData] = useState({});
-  useEffect(() => {
-    getTaskDetails(props.id).then(setData)}
-  ,[])
+  const {statement} = props
+
   return <>
-    <CodeEdit code={data.statement} language={"sql"} />
+    <CodeEdit code={statement} language={"sql"} />
   </>
 };
 

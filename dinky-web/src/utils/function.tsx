@@ -250,7 +250,10 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-  switch (type) {
+  if (!type){
+    return <FileIcon/>;
+  }
+  switch (type.toLowerCase()) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
     case DIALECT.SCALA:

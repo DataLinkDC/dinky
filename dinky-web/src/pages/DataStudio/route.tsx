@@ -77,28 +77,28 @@ export const RightSide:TabProp[] = [
     icon: <SettingOutlined/>,
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig/>,
-    // isShow: type => type === TabsPageType.flinkSql,
+    isShow: (type,subType) => type === TabsPageType.project&&TabsPageType.flinkSql===subType,
   },
   {
     key: 'menu.datastudio.executeConfig',
     icon: <PlayCircleOutlined/>,
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    isShow: (type,subType) => type === TabsPageType.project&&TabsPageType.flinkSql===subType,
   },
   {
     key: 'menu.datastudio.savePoint',
     icon: <FolderOutlined/>,
     label: l('menu.datastudio.savePoint'),
     children: <SavePoints/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    isShow: (type,subType) => type === TabsPageType.project&&TabsPageType.flinkSql===subType,
   },
   {
     key: 'menu.datastudio.historyVision',
     icon: <HistoryOutlined/>,
     label: l('menu.datastudio.historyVision'),
     children: <HistoryVersion/>,
-    isShow: type => type === TabsPageType.flinkSql,
+    isShow: (type,subType) => type === TabsPageType.project&&TabsPageType.flinkSql===subType,
   }, {
     key: 'menu.datastudio.jobInfo',
     icon: <InfoCircleOutlined/>,
@@ -210,5 +210,5 @@ export type TabProp ={
   icon: ReactNode;
   label: string;
   children: ReactNode;
-  isShow?:(type:TabsPageType)=>boolean;
+  isShow?:(type:TabsPageType,subType?:string)=>boolean;
 }

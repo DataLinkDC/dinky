@@ -31,25 +31,41 @@ import RightContainer from "@/pages/DataStudio/RightContainer";
 import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
 import useThemeValue from "@/hooks/useThemeValue";
 import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
+import {
+  getClusterConfigurationData,
+  getEnvData,
+  getSessionData
+} from "@/pages/DataStudio/RightContainer/JobConfig/service";
 
 const {Sider, Content} = Layout;
 
-const { useToken } = theme;
+const {useToken} = theme;
 const DataStudio = (props: any) => {
   const {
-    bottomContainer, leftContainer, rightContainer, saveDataBase,saveProject, updateToolContentHeight,updateBottomConsole
-    , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
-    , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle, updateSelectBottomSubKey, tabs
+    bottomContainer,
+    leftContainer,
+    rightContainer,
+    saveDataBase,
+    saveProject,
+    updateToolContentHeight,
+    updateBottomConsole,
+    saveSession,
+    saveEnv,
+    updateCenterContentHeight,
+    updateSelectLeftKey,
+    updateLeftWidth,
+    updateSelectRightKey
+    ,
+    updateRightWidth,
+    updateSelectBottomKey,
+    updateBottomHeight,
+    saveClusterConfiguration,
+    activeBreadcrumbTitle,
+    updateSelectBottomSubKey,
+    tabs
   } = props
   const {token} = useToken();
   const themeValue = useThemeValue();
-
-  const getActiveTabType: () => (TabsPageType) = () => {
-    if (parseInt(tabs.activeKey) < 0) {
-      return TabsPageType.None
-    }
-    return (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey)?.type || TabsPageType.None
-  }
 
   const app = getDvaApp(); // 获取dva的实例
   const persistor = app._store.persist;
@@ -79,11 +95,16 @@ const DataStudio = (props: any) => {
     };
   }, [onResize]);
 
-
+  const loadData = async () => {
+    saveDataBase(await getDataBase());
+    updateBottomConsole(await getConsoleData());
+    saveProject(await getTaskData());
+    saveSession(await getSessionData());
+    saveEnv(await getEnvData());
+    saveClusterConfiguration(await getClusterConfigurationData());
+  }
   useEffect(() => {
-    getDataBase().then(res => saveDataBase(res))
-    getConsoleData().then(res => updateBottomConsole(res))
-    getTaskData().then((res)=>saveProject(res.datas))
+   loadData();
     onResize();
   }, []);
 
@@ -118,7 +139,7 @@ const DataStudio = (props: any) => {
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}
-          <Layout hasSider style={{minHeight: size.contentHeight,paddingInline:0}}>
+          <Layout hasSider style={{minHeight: size.contentHeight, paddingInline: 0}}>
             {/*渲染左侧侧边栏*/}
             <Sider collapsed collapsedWidth={40}>
               <Menu
@@ -127,7 +148,11 @@ const DataStudio = (props: any) => {
                 items={LeftSide.map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
-                style={{height: '50%',borderBlockStart:"1px solid "+themeValue.borderColor,borderInlineEnd:"1px solid "+themeValue.borderColor}}
+                style={{
+                  height: '50%',
+                  borderBlockStart: "1px solid " + themeValue.borderColor,
+                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                }}
                 onClick={(item) => {
                   updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
                 }}
@@ -145,7 +170,7 @@ const DataStudio = (props: any) => {
                   display: 'flex',
                   height: '50%',
                   flexDirection: "column-reverse",
-                  borderInlineEnd:"1px solid "+themeValue.borderColor
+                  borderInlineEnd: "1px solid " + themeValue.borderColor
                 }}
                 onClick={(item) => {
                   updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
@@ -189,12 +214,20 @@ const DataStudio = (props: any) => {
               <Menu
                 selectedKeys={[rightContainer.selectKey]}
                 mode="inline"
-                style={{height: '100%', borderInlineStart: "1px solid "+themeValue.borderColor,borderBlockStart:"1px solid "+themeValue.borderColor}}
+                style={{
+                  height: '100%',
+                  borderInlineStart: "1px solid " + themeValue.borderColor,
+                  borderBlockStart: "1px solid " + themeValue.borderColor
+                }}
                 items={RightSide.filter(x => {
                   if (!x.isShow) {
                     return true
                   }
-                  return x.isShow(getActiveTabType())
+                  if (parseInt(tabs.activeKey) < 0) {
+                    return TabsPageType.None
+                  }
+                  const v = (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey);
+                  return x.isShow(v?.type || TabsPageType.None, v?.subType)
                 }).map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
