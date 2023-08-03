@@ -48,6 +48,7 @@ const MenuList: React.FC = () => {
         const [rightClickedNode, setRightClickedNode] = useState<any>();
         const [clickedNode, setClickedNode] = useState({});
         const [treeData, setTreeData] = useState<SysMenu[]>([]);
+        const [disabled, setDisabled] = useState<boolean>(false);
 
         /**
          * query
@@ -114,9 +115,11 @@ const MenuList: React.FC = () => {
 
         const handleMenuClick = (node: MenuInfo) => {
             switch (node.key) {
-                case 'createFolder':
+                case 'addSub':
                     // handleCreateFolder();
                     break;
+                case 'delete':
+                    // handleDeleteSubmit(node.key);
                 default:
                     break;
             }
@@ -163,15 +166,50 @@ const MenuList: React.FC = () => {
         }
 
         const handleNodeClick = async (info: any) => {
-            const {node: {id, isLeaf, key,}, node} = info;
+            const {node: {id, isLeaf, key,fullInfo}, node} = info;
             setSelectedKeys([key] as any);
             setClickedNode(node);
-            if (isLeaf) {
-                // await queryContent(id);
-            } else {
-                // setContent('');
-            }
+            setFormValues(fullInfo)
+            handleUpdateModalVisible(true);
+            setDisabled(true)
         };
+
+
+        const renderRightCardExtra = () => {
+            return <>
+                {(updateModalVisible && formValues.id && disabled)  && <Button type={'primary'} onClick={() => setDisabled(false)}>编辑</Button>}
+                {(updateModalVisible && formValues.id && !disabled)  && <Button type={'dashed'} onClick={() => setDisabled(true)}>取消</Button>}
+            </>
+        };
+
+
+        const renderRightContent = () => {
+            if (formValues.id && updateModalVisible){
+                return <>
+                    <MenuCardForm
+                        modalVisible={updateModalVisible}  disabled={disabled}
+                        values={formValues} onCancel={handleCancel}
+                        onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
+                    />
+                </>
+            }else {
+                return <>
+                    <MenuCardForm modalVisible={updateModalVisible} values={{}} onCancel={handleCancel}
+                                  onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
+                </>
+            }
+        }
+
+        const renderLeftExtra = () => {
+            return <>
+                <Button size={'middle'} key={'added-menu'} icon={<PlusSquareTwoTone/>} type={'primary'} onClick={() => {
+                    handleUpdateModalVisible(false)
+                    handleModalVisible(true)
+                    setFormValues({})
+                }}>新增根菜单</Button>
+            </>
+        }
+
 
         /**
          * render
@@ -187,9 +225,7 @@ const MenuList: React.FC = () => {
                     maxWidth={1200}
                 >
                     <ProCard
-                        extra={[
-                            <Button key={'added-menu'} icon={<PlusSquareTwoTone/>} type={'primary'} onClick={() => handleModalVisible(true)}>新增根菜单</Button>,
-                        ]}
+                        extra={renderLeftExtra()}
                         title={'菜单列表'}
                         ghost hoverable colSpan={'18%'} className={"siderTree schemaTree"}>
                         <MenuTree
@@ -198,33 +234,17 @@ const MenuList: React.FC = () => {
                             onRightClick={handleRightClick}
                             onNodeClick={(info: any) => handleNodeClick(info)}
                         />
-                        {contextMenuVisible && renderRightClickMenu()}
                     </ProCard>
                 </Resizable>
                 <ProCard.Divider type={"vertical"}/>
                 <ProCard
-                    extra={
-                    <>
-                        {
-                            (!updateModalVisible && formValues.id)  && <Button type={'primary'} onClick={() => handleModalVisible(true)}>编辑</Button>
-                        }
-                    </>
-                    }
-                    title={ (formValues.id && updateModalVisible) ? '修改菜单' :  (formValues.id && modalVisible) ? '新增菜单' : ''}
+                    extra={renderRightCardExtra()}
+                    title={ (formValues.id && updateModalVisible) ? '修改菜单' :  (!formValues.id && modalVisible) ? '新增菜单' : ''}
                     ghost hoverable className={"schemaTree"}>
-                    {
-                        (formValues.id && updateModalVisible) &&
-                        <MenuCardForm modalVisible={updateModalVisible} values={formValues} onCancel={handleCancel}
-                            onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
-                    }
-                    {
-                        (!formValues.id && modalVisible) &&
-                        <MenuCardForm modalVisible={updateModalVisible} values={formValues} onCancel={handleCancel}
-                                      onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
-
-                    }
+                    {renderRightContent()}
                 </ProCard>
             </ProCard>
+            {contextMenuVisible && renderRightClickMenu()}
         </>
 }
 ;

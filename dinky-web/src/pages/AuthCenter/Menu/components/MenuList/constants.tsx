@@ -38,9 +38,15 @@ import {MenuIcon} from "@/components/Icons/CustomIcons";
  */
 export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
   {
-    key: 'createFolder',
+    key: 'addSub',
     icon: <PlusCircleOutlined/>,
-    label: l('right.menu.createFolder'),
+    label: '添加子菜单',
+    disabled: isDisabled,
+  },
+  {
+    key: 'delete',
+    icon: <DeleteOutlined/>,
+    label: '删除',
     disabled: isDisabled,
   },
 ];

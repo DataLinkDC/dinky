@@ -22,7 +22,7 @@ import React, {useEffect} from 'react';
 import {Form, Space} from 'antd';
 import {UserBaseInfo} from "@/types/User/data.d";
 import {FormContextValue} from '@/components/Context/FormContext';
-import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
+import {ProForm, ProFormText, ProFormTextArea, ProFormTreeSelect} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 
@@ -63,6 +63,9 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
      * when modalVisible or values changed, set form values
      */
     useEffect(() => {
+        if (!modalVisible){
+            formContext.resetForm();
+        }
         form.setFieldsValue(values);
     }, [modalVisible, values, form]);
 
@@ -87,18 +90,60 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
      */
     const renderMenuForm = () => {
         return <>
+            {
+                values.id &&
+                <ProFormText
+                    name="id"
+                    label={'ID'}
+                    disabled
+                />
+            }
+            {
+                !modalVisible && <>
+                <ProFormTreeSelect
+
+                    name={'parentId'}
+                    label={'父级菜单'}
+                    rules={[{required: true, message: '父级菜单'}]}
+                />
+                </>
+            }
             <ProFormText
-                name="roleCode"
-                label={l('role.roleCode')}
-                placeholder={l('role.EnterRoleCode')}
-                rules={[{required: true, message: l('role.EnterRoleCode')}]}
+                name="name"
+                label={'菜单名称'}
+                placeholder={'菜单名称'}
+                rules={[{required: true, message: '菜单名称'}]}
+            />
+            <ProFormText
+                name="component"
+                label={'组件'}
+                placeholder={'组件'}
+                rules={[{required: true, message: '组件'}]}
+            />
+            <ProFormText
+                name="path"
+                label={'路由'}
+                placeholder={'路由'}
+                rules={[{required: true, message: '路由'}]}
             />
 
             <ProFormText
-                name="roleName"
-                label={l('role.roleName')}
-                placeholder={l('role.EnterRoleName')}
-                rules={[{required: true, message: l('role.EnterRoleName')}]}
+                name="perms"
+                label={'权限标识'}
+                placeholder={'权限标识'}
+                rules={[{required: true, message: '权限标识'}]}
+            />
+            <ProFormText
+                name="icon"
+                label={'菜单图标'}
+                placeholder={'菜单图标'}
+                rules={[{required: true, message: '菜单图标'}]}
+            />
+            <ProFormText
+                name="type"
+                label={'菜单类型'}
+                placeholder={'菜单类型'}
+                rules={[{required: true, message: '菜单类型'}]}
             />
 
             <ProFormTextArea
@@ -120,9 +165,12 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
             {...FORM_LAYOUT_PUBLIC}
             form={form}
             initialValues={values}
-            onReset={handleCancel}
+            onReset={()=> formContext.resetForm()}
             onFinish={() => submitForm()}
-            submitter={{render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,}}
+            submitter={{
+                render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,
+                resetButtonProps: {style: {display: 'none'},}
+            }}
             layout={'horizontal'}
         >
             {renderMenuForm()}
