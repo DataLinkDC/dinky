@@ -68,7 +68,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                     return true;
                 }
             }
-            throw NotLoginException.newInstance("", "-1", token.get());
+            throw new NotLoginException("请先登录", "login" , "login");
         }
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }

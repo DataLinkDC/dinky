@@ -18,23 +18,69 @@
  */
 
 
-import React from 'react';
+import React, {useEffect} from 'react';
+import {Form, Space} from 'antd';
+import {UserBaseInfo} from "@/types/User/data.d";
+import {FormContextValue} from '@/components/Context/FormContext';
+import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import {UserBaseInfo} from "@/types/User/data.d";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
 
-type MenuFormProps = {
+
+type MenuCardProps = {
+    onCancel: (flag?: boolean) => void;
+    onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
+    modalVisible: boolean;
     values: Partial<UserBaseInfo.Role>;
-    form: FormInstance<Values>;
+    disabled?: boolean;
 };
 
-const MenuForm: React.FC<MenuFormProps> = (props) => {
+const MenuCard: React.FC<MenuCardProps> = (props) => {
 
-    const {values, form} = props;
+    /**
+     * init form
+     */
+    const [form] = Form.useForm();
+    /**
+     * init form context
+     */
+    const formContext = React.useMemo<FormContextValue>(() => ({
+        resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }), [form]);
 
+    /**
+     * init props
+     */
+    const {
+        onSubmit: handleSubmit,
+        onCancel: handleModalVisible,
+        modalVisible,
+        values,
+        disabled=false,
+    } = props;
+
+    /**
+     * when modalVisible or values changed, set form values
+     */
+    useEffect(() => {
+        form.setFieldsValue(values);
+    }, [modalVisible, values, form]);
+
+    /**
+     * handle cancel
+     */
+    const handleCancel = () => {
+        handleModalVisible();
+        formContext.resetForm();
+    }
+    /**
+     * submit form
+     */
+    const submitForm = async () => {
+        const fieldsValue = await form.validateFields();
+        await handleSubmit({...values, ...fieldsValue});
+        await handleCancel();
+    };
     /**
      * construct role form
      * @constructor
@@ -64,19 +110,24 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         </>
     };
 
+
     /**
      * render
      */
     return <>
         <ProForm
+            disabled={disabled}
             {...FORM_LAYOUT_PUBLIC}
             form={form}
             initialValues={values}
-            submitter={false}
+            onReset={handleCancel}
+            onFinish={() => submitForm()}
+            submitter={{render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,}}
             layout={'horizontal'}
         >
             {renderMenuForm()}
         </ProForm>
     </>
+
 };
-export default MenuForm;
+export default MenuCard;

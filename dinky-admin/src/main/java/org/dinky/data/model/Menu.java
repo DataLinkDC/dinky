@@ -19,10 +19,13 @@
 
 package org.dinky.data.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import org.dinky.mybatis.annotation.Save;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
@@ -86,4 +89,7 @@ public class Menu implements Serializable {
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime updateTime;
+
+    @TableField(exist = false)
+    private List<Menu> children = new ArrayList<>();
 }

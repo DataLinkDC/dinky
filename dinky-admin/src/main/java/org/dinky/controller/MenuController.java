@@ -78,11 +78,10 @@ public class MenuController {
      * @param para {@link JsonNode}
      * @return {@link ProTableResult} with {@link Menu}
      */
-    @PostMapping
-    @Log(title = "Query Menu List", businessType = BusinessType.QUERY)
+    @GetMapping("listMenus")
     @ApiOperation("Query Menu List")
-    public ProTableResult<Menu> listMenus(@RequestBody JsonNode para) {
-        return menuService.selectForProTable(para);
+    public Result<List<Menu>> listMenus() {
+        return Result.data( menuService.list());
     }
 
     /**

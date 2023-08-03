@@ -224,7 +224,7 @@ export type UDFTemplate = BaseBeanColumns & {
   templateCode: string
 }
 
-export type Menu = BaseBeanColumns & {
+export type SysMenu = BaseBeanColumns & {
   parentId: number, // 父级
   orderNum: number, // 排序
   path: string, // 路由
@@ -232,5 +232,6 @@ export type Menu = BaseBeanColumns & {
   type: string,// C菜单 F按钮
   display: boolean, // 菜单状态(0显示 1隐藏)
   perms: string, // 权限标识
-  icon:  React.ReactNode, // 图标
+  icon: string, // 图标
+  children: SysMenu[],
 };

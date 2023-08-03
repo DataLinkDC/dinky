@@ -20,9 +20,8 @@
 
 import React from "react";
 import {PageContainer} from '@ant-design/pro-layout';
-import MenuProTable from "@/pages/AuthCenter/Menu/components/MenuProTable";
 import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-
+import MenuList from "@/pages/AuthCenter/Menu/components/MenuList";
 
 export default () => {
 
@@ -31,7 +30,7 @@ export default () => {
    */
   return <SlowlyAppear>
     <PageContainer title={false}>
-      <MenuProTable/>
+      <MenuList/>
     </PageContainer>
   </SlowlyAppear>
 };

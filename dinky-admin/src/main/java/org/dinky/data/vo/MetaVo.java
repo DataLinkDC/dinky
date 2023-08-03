@@ -17,39 +17,35 @@
  *
  */
 
-package org.dinky.mapper;
+package org.dinky.data.vo;
 
-import org.dinky.data.model.RoleMenu;
-import org.dinky.mybatis.mapper.SuperMapper;
+public class MetaVo {
+    /** 设置该路由在侧边栏和面包屑中展示的名字 */
+    private String title;
 
-import org.apache.ibatis.annotations.Mapper;
+    /** 设置该路由的图标，对应路径src/icons/svg */
+    private String icon;
 
-import java.util.List;
+    public MetaVo() {}
 
-/** MenuMapper */
-@Mapper
-public interface RoleMenuMapper extends SuperMapper<RoleMenu> {
-    /**
-     * 查询菜单使用数量
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    public int checkMenuExistRole(Long menuId);
+    public MetaVo(String title, String icon) {
+        this.title = title;
+        this.icon = icon;
+    }
 
-    /**
-     * 通过角色ID删除角色和菜单关联
-     *
-     * @param roleId 角色ID
-     * @return 结果
-     */
-    public int deleteRoleMenuByRoleId(Long roleId);
+    public String getTitle() {
+        return title;
+    }
 
-    /**
-     * 批量新增角色菜单信息
-     *
-     * @param roleMenuList 角色菜单列表
-     * @return 结果
-     */
-    public int batchRoleMenu(List<RoleMenu> roleMenuList);
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 }

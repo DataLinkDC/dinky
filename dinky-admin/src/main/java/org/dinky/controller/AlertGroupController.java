@@ -82,7 +82,6 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertGroup}
      */
     @PostMapping
-    @Log(title = "Query AlertGroup List", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertGroup List")
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
@@ -122,7 +121,6 @@ public class AlertGroupController {
      */
     @GetMapping("/listEnabledAll")
     @ApiOperation("Query AlertGroup List Of Enable")
-    @Log(title = "Query AlertGroup List Of Enable", businessType = BusinessType.QUERY)
     public Result<List<AlertGroup>> listEnabledAll() {
         return Result.succeed(alertGroupService.listEnabledAll());
     }
@@ -167,7 +165,6 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertHistory}
      */
     @PostMapping("/history")
-    @Log(title = "Query AlertHistory List", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertHistory List")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);
