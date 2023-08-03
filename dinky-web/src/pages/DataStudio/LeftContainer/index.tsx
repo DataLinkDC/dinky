@@ -17,6 +17,8 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
 
   const {toolContentHeight ,leftContainer , rightContainer} = props
 
+  const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700
+
     /**
      * 侧边栏大小变化
      * @param width
@@ -41,8 +43,8 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
     /**
      * 侧边栏最大化
      */
-    const handleMaxsize = (widthChangeValue: number) => {
-        handleReSizeChange(widthChangeValue)
+    const handleMaxsize = () => {
+        handleReSizeChange(MAX_WIDTH)
     }
 
     /**
@@ -54,11 +56,11 @@ const LeftContainer:React.FC<LeftContainerProps> = (props:any) => {
         onResize: (event: any, direction: any, elementRef: { offsetWidth: any; }) => handleReSizeChange(elementRef.offsetWidth),
         title: <Title>{l(leftContainer.selectKey)}</Title>,
         handlerMinimize: ()=> handleMinimize(),
-        handlerMaxsize: () => handleMaxsize(size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700),
+        handlerMaxsize: () => handleMaxsize(),
         visible: leftContainer.selectKey !== "",
         defaultSize: {width: leftContainer.width, height: leftContainer.height},
         minWidth: 260,
-        maxWidth: size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700, //
+        maxWidth: MAX_WIDTH, //
         enable: {right: true},
         style:{borderInlineEnd: "1px solid "+themeValue.borderColor}
     }
