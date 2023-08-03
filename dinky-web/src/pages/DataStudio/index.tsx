@@ -15,27 +15,28 @@
  * limitations under the License.
  */
 
-import {Layout, Menu, theme} from 'antd';
+import {Layout, Menu, Modal, theme} from 'antd';
 import {connect, getDvaApp} from "umi";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
-import {StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
+import {DataStudioParams, StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
-import {mapDispatchToProps} from "@/pages/DataStudio/function";
+import {getCurrentData, getCurrentTab, mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";
 import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
 import useThemeValue from "@/hooks/useThemeValue";
-import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
+import {getTaskData, getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 import {
   getClusterConfigurationData,
   getEnvData,
   getSessionData
 } from "@/pages/DataStudio/RightContainer/JobConfig/service";
+import * as monaco from "monaco-editor";
 
 const {Sider, Content} = Layout;
 
@@ -51,6 +52,7 @@ const DataStudio = (props: any) => {
     updateBottomConsole,
     saveSession,
     saveEnv,
+    saveTabs,
     updateCenterContentHeight,
     updateSelectLeftKey,
     updateLeftWidth,
@@ -66,7 +68,8 @@ const DataStudio = (props: any) => {
   } = props
   const {token} = useToken();
   const themeValue = useThemeValue();
-
+  const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
+  const [newTabData, setNewTabData] = useState({});
   const app = getDvaApp(); // 获取dva的实例
   const persistor = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
@@ -102,9 +105,36 @@ const DataStudio = (props: any) => {
     saveSession(await getSessionData());
     saveEnv(await getEnvData());
     saveClusterConfiguration(await getClusterConfigurationData());
+
+    // 判断是否需要更新tab内容
+    if (tabs.activeKey) {
+      const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+      const params = (currentTab?.params as DataStudioParams);
+      if (currentTab?.type === "project") {
+        getTaskDetails(params.taskId).then(res => {
+          for (const key of Object.keys(res)) {
+            if (res[key] !== params.taskData[key]) {
+              if (res[key] instanceof Object) {
+                if (JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
+                  setIsModalUpdateTabContentOpen(true)
+                  setNewTabData(res)
+                  break
+                }
+              } else {
+                setIsModalUpdateTabContentOpen(true)
+                setNewTabData(res)
+                break
+              }
+            }
+
+          }
+
+        })
+      }
+    }
   }
   useEffect(() => {
-   loadData();
+    loadData();
     onResize();
   }, []);
 
@@ -115,6 +145,11 @@ const DataStudio = (props: any) => {
    */
   const renderHeaderContainer = () => {
     return <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+  }
+  const updateTabContent = () => {
+    (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
+    saveTabs({...tabs})
+    setIsModalUpdateTabContentOpen(false)
   }
 
 
@@ -136,6 +171,10 @@ const DataStudio = (props: any) => {
   return (
     <PersistGate loading={null} persistor={persistor}>
       <Fragment>
+        <Modal title="Sql内容或配置变更" open={isModalUpdateTabContentOpen} onOk={updateTabContent}
+               onCancel={() => setIsModalUpdateTabContentOpen(false)}>
+          <p>检测到当前页远程有更改，是否刷新更新数据？</p>
+        </Modal>
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}

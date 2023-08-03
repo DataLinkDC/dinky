@@ -7,6 +7,8 @@ import {DataStudioParams, StateType, TabsItemType, TabsPageType} from "@/pages/D
 import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
 import React from "react";
 import {getCurrentData} from "@/pages/DataStudio/function";
+import {useForm} from "antd/es/form/Form";
+import {c} from "@umijs/utils/compiled/tar";
 
 /*
  *
@@ -29,21 +31,21 @@ import {getCurrentData} from "@/pages/DataStudio/function";
 const JobInfo = (props: any) => {
   const { dispatch, tabs: {panes, activeKey}} = props;
   const current = getCurrentData(panes, activeKey);
+  const [form] = useForm();
+  form.setFieldsValue(current);
   const onValuesChange = (change: any, all: any) => {
-    // let newTabs = tabs;
-    // for (let i = 0; i < newTabs.panes.length; i++) {
-    //   if (newTabs.panes[i].key == newTabs.activeKey) {
-    //     for (let key in change) {
-    //       newTabs.panes[i].task[key] = change[key];
-    //     }
-    //     break;
-    //   }
-    // }
-    //
-    // dispatch && dispatch({
-    //   type: "Studio/saveTabs",
-    //   payload: newTabs,
-    // });
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].key === activeKey) {
+        for (const key in change) {
+          panes[i].params.taskData[key] = all[key];
+        }
+        break;
+      }
+    }
+    dispatch({
+      type: "Studio/saveTabs",
+      payload: {...props.tabs},
+    });
   };
 
   return (
@@ -70,6 +72,7 @@ const JobInfo = (props: any) => {
         </Descriptions>
         <Form
           layout="vertical"
+          form={form}
           // className={styles.form_setting}
           onValuesChange={onValuesChange}
         >

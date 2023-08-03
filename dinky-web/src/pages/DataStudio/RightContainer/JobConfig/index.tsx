@@ -65,7 +65,7 @@ const JobConfig = (props: any) => {
   const getClusterConfigurationOptions = () => {
     const itemList = [];
     for (const item of clusterConfiguration) {
-      if (current.type.search(item.type.toLowerCase())===-1){
+      if (current.type.search(item.type.toLowerCase()) === -1) {
         continue;
       }
       const tag = (<><Tag
@@ -103,11 +103,6 @@ const JobConfig = (props: any) => {
     return itemList;
   };
 
-  useEffect(() => {
-    form.setFieldsValue(current);
-  }, [current]);
-
-
   const onValuesChange = (change: any, all: any) => {
     for (let i = 0; i < panes.length; i++) {
       if (panes[i].key === activeKey) {
@@ -124,12 +119,20 @@ const JobConfig = (props: any) => {
   };
 
   const onChangeClusterSession = () => {
+    //todo 这里需要验证
+
     // showTables(currentSession.session, dispatch);
   };
-  return (
-    <>
 
+  return (
       <Form
+        initialValues={{
+          name: RUN_MODE.LOCAL,
+          envId: 0,
+          parallelism: 1,
+          savePointStrategy: 0,
+          alertGroupId: 0,
+        }}
         className={"data-studio-form"}
         style={{paddingInline: '10px'}}
         form={form}
@@ -140,7 +143,7 @@ const JobConfig = (props: any) => {
           label={l('global.table.execmode')} name="type"
           tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
         >
-          <Select defaultValue={RUN_MODE.LOCAL} value={RUN_MODE.LOCAL}>
+          <Select value={RUN_MODE.LOCAL}>
             <Option value={RUN_MODE.LOCAL}>Local</Option>
             <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
             <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
@@ -206,7 +209,7 @@ const JobConfig = (props: any) => {
             placeholder={l('pages.datastudio.label.jobConfig.flinksql.env.tip2')}
             allowClear
             optionLabelProp="label"
-            defaultValue={0} value={0}
+            value={0}
           >
             {getEnvOptions()}
           </Select>
@@ -218,7 +221,7 @@ const JobConfig = (props: any) => {
               name="parallelism"
               tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
             >
-              <InputNumber min={1} max={9999} defaultValue={1}/>
+              <InputNumber min={1} max={9999}/>
             </Form.Item>
           </Col>
           <Col span={12}>
@@ -265,7 +268,7 @@ const JobConfig = (props: any) => {
           name="savePointStrategy"
           tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
         >
-          <Select defaultValue={0}>
+          <Select>
             <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
             <Option value={1}>{l('global.savepoint.strategy.latest')}</Option>
             <Option value={2}>{l('global.savepoint.strategy.earliest')}</Option>
@@ -289,7 +292,6 @@ const JobConfig = (props: any) => {
                 style={{width: '100%'}}
                 placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
                 optionLabelProp="label"
-                defaultValue={0}
               >
                 {getGroupOptions()}
               </Select>
@@ -300,12 +302,12 @@ const JobConfig = (props: any) => {
           label={l('pages.datastudio.label.jobConfig.other')}
           tooltip={{title: l('pages.datastudio.label.jobConfig.other.tip'), icon: <InfoCircleOutlined/>}}
         >
-
+          {/*todo 这里需要优化，有有异常抛出*/}
           <Form.List name="config"
           >
             {(fields, {add, remove}) => (
               <>
-                {fields.map(({key, name, fieldKey, ...restField}) => (
+                {fields.map(({key, name, ...restField}) => (
                   <Space key={key} style={{display: 'flex'}} align="baseline">
                     <Form.Item
                       {...restField}
@@ -334,19 +336,13 @@ const JobConfig = (props: any) => {
           </Form.List>
         </Form.Item>
       </Form>
-    </>
   );
 };
 
 export default connect(({Studio, Alert}: { Studio: StateType, Alert: AlertStateType }) => ({
   sessionCluster: Studio.sessionCluster,
   clusterConfiguration: Studio.clusterConfiguration,
-  // current: Studio.current,
   tabs: Studio.tabs,
   env: Studio.env,
-  // currentSession: Studio.currentSession,
-  // toolHeight: Studio.toolHeight,
-  // jars: Jar.jars,
-  // env: Studio.env,
   group: Alert.group,
 }))(JobConfig);

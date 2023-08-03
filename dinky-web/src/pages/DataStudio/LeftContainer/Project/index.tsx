@@ -36,6 +36,7 @@ const Project: React.FC = (props: connect) => {
         if (isLeaf) {
           // const queryParams =  {id: selectDatabaseId , schemaName, tableName};
           getTaskDetails(taskId).then(res=>{
+            path.pop()
             dispatch({
               type: "Studio/addTab",
               payload: {

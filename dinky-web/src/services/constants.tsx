@@ -428,6 +428,19 @@ export const DIALECT = {
   JSON: "json",
   SQL: "sql",
   JAVASCRIPT: "javascript",
+  FLINKJAR: 'flinkjar',
+  FLINKSQLENV: 'flinksqlenv',
+  MYSQL: 'mysql',
+  ORACLE: 'oracle',
+  SQLSERVER: 'sqlserver',
+  POSTGRESQL: 'postgresql',
+  CLICKHOUSE: 'clickHouse',
+  DORIS: 'doris',
+  HIVE: 'hive',
+  PHOENIX: 'phoenix',
+  STARROCKS: 'starRocks',
+  PRESTO: 'presto',
+  KUBERNETES_APPLICATION: 'kubernetesapplication',
 };
 
 

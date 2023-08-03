@@ -33,23 +33,19 @@ const ExecuteConfig = (props: any) => {
   const current = getCurrentData(panes, activeKey);
 
   form.setFieldsValue(current);
-
-
   const onValuesChange = (change: any, all: any) => {
-    // let newTabs = tabs;
-    // for (let i = 0; i < newTabs.panes.length; i++) {
-    //   if (newTabs.panes[i].key == newTabs.activeKey) {
-    //     for (let key in change) {
-    //       newTabs.panes[i].task[key] = change[key];
-    //     }
-    //     break;
-    //   }
-    // }
-    //
-    // dispatch && dispatch({
-    //   type: "Studio/saveTabs",
-    //   payload: newTabs,
-    // });
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].key === activeKey) {
+        for (const key in change) {
+          panes[i].params.taskData[key] = all[key];
+        }
+        break;
+      }
+    }
+    dispatch({
+      type: "Studio/saveTabs",
+      payload: {...props.tabs},
+    });
   };
 
   return (

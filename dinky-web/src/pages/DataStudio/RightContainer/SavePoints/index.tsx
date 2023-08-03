@@ -76,7 +76,7 @@ const SavePoints = (props: any) => {
         />
         <Drawer
           width={600}
-          visible={!!row}
+          open={!!row}
           onClose={() => {
             setRow(undefined);
           }}

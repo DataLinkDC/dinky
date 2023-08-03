@@ -30,12 +30,13 @@ import useThemeValue from "@/hooks/useThemeValue";
 import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
 import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
 import {getCurrentData} from "@/pages/DataStudio/function";
+import {RightSide, TabProp} from "@/pages/DataStudio/route";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
 
 const MiddleContainer = (props: any) => {
-  const {tabs: {panes, activeKey}, dispatch} = props;
+  const {tabs: {panes, activeKey},rightKey, dispatch} = props;
   const themeValue = useThemeValue();
 
   const [contextMenuPosition, setContextMenuPosition] = useState({});
@@ -43,6 +44,52 @@ const MiddleContainer = (props: any) => {
   const [includeTab, setIncludeTab] = useState({});
 
 
+  const updateRightKey = (key:string) => {
+    let oldPane:TabsItemType;
+    let newPane:TabsItemType;
+    panes.forEach((pane: TabsItemType) => {
+      if (pane.key === key) {
+        newPane = pane
+      }
+      if (pane.key === activeKey) {
+        oldPane = pane
+      }
+    })
+    let oldRightSideAvailableKey:string[]=[];
+    let newRightSideAvailableKey:string[]=[];
+    RightSide.forEach(x=>{
+      if (x.isShow){
+        if (x.isShow(oldPane.type, oldPane.subType)) {
+          oldRightSideAvailableKey.push(x.key)
+        }if (x.isShow(newPane.type, newPane.subType)) {
+          newRightSideAvailableKey.push(x.key)
+        }
+      }else {
+        oldRightSideAvailableKey.push(x.key)
+        newRightSideAvailableKey.push(x.key)
+      }
+    });
+    if (rightKey && !newRightSideAvailableKey.includes(rightKey)){
+      if (newRightSideAvailableKey.length===0){
+        dispatch({
+          type: 'Studio/updateSelectRightKey',
+          payload: '',
+        })
+        return;
+      }
+      const oldIndex = oldRightSideAvailableKey.findIndex((value)=>value===rightKey);
+      let selectKey = newRightSideAvailableKey[0];
+      if (oldIndex >= newRightSideAvailableKey.length) {
+        selectKey= newRightSideAvailableKey.pop() as string;
+      }else {
+        selectKey= newRightSideAvailableKey[oldIndex];
+      }
+      dispatch({
+        type: 'Studio/updateSelectRightKey',
+        payload: selectKey,
+      })
+    }
+  }
   /**
    * 更新当前激活的tab
    * @param {string} key
@@ -58,6 +105,9 @@ const MiddleContainer = (props: any) => {
     }
     const replaceLabel = innerText.toString().replace('.', '/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
     setContextMenuVisible(false)
+
+    updateRightKey(key);
+
     dispatch({
       type: 'Studio/updateTabsActiveKey',
       payload: key,
@@ -167,8 +217,8 @@ const MiddleContainer = (props: any) => {
           if (parseInt(activeKey) < 0) {
             return TabsPageType.None
           }
-          const v =getCurrentData(panes,activeKey);
-          return <Editor statement={v.statement}/>
+          const v =item.params as DataStudioParams;
+          return <Editor statement={v.taskData.statement}/>
         default:
           return <></>
       }
@@ -243,5 +293,6 @@ const MiddleContainer = (props: any) => {
 }
 export default connect(({Studio}: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  centerContentHeight: Studio.centerContentHeight
+  centerContentHeight: Studio.centerContentHeight,
+  rightKey: Studio.rightContainer.selectKey
 }))(MiddleContainer);

@@ -76,6 +76,10 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/saveEnv",
     payload: data,
   }),
+  saveTabs: (data: TabsItemType[]) => dispatch({
+    type: "Studio/saveTabs",
+    payload: data,
+  }),
   saveClusterConfiguration: (data: ClusterConfigurationType[]) => dispatch({
     type: "Studio/saveClusterConfiguration",
     payload: data,
@@ -85,6 +89,8 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
 
 
 export const getCurrentData = (panes: any, activeKey: string) => {
-  const v = (panes as TabsItemType[]).find(item => item.key === activeKey);
-  return (v?.params as DataStudioParams)?.taskData
+  return (getCurrentTab(panes,activeKey)?.params as DataStudioParams)?.taskData
+}
+export const getCurrentTab = (panes: any, activeKey: string) => {
+  return (panes as TabsItemType[]).find(item => item.key === activeKey)
 }
