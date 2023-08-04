@@ -14,11 +14,10 @@ export type LeftContainerProps = {
   size: number
 }
 const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
-  const {dispatch, size} = props;
+  const {dispatch, size,toolContentHeight, leftContainer, rightContainer} = props;
   const themeValue = useThemeValue();
 
-  const {toolContentHeight, leftContainer, rightContainer} = props
-
+  const MAX_WIDTH = size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700
   /**
    * 侧边栏大小变化
    * @param width
@@ -43,8 +42,8 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
   /**
    * 侧边栏最大化
    */
-  const handleMaxsize = (widthChangeValue: number) => {
-    handleReSizeChange(widthChangeValue)
+  const handleMaxsize = () => {
+    handleReSizeChange(MAX_WIDTH)
   }
 
   const content = (
@@ -61,11 +60,11 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     }) => handleReSizeChange(elementRef.offsetWidth),
     title: <Title>{l(leftContainer.selectKey)}</Title>,
     handlerMinimize: () => handleMinimize(),
-    handlerMaxsize: () => handleMaxsize(size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700),
+    handlerMaxsize: handleMaxsize,
     visible: leftContainer.selectKey !== "",
     defaultSize: {width: leftContainer.width, height: leftContainer.height},
     minWidth: 260,
-    maxWidth: size.width - 2 * VIEW.leftToolWidth - rightContainer.width - 700, //
+    maxWidth: MAX_WIDTH, //
     enable: {right: true},
     btnGroup: BtnRoute[leftContainer.selectKey] ? BtnRoute[leftContainer.selectKey].map((item: CircleButtonProps) => {
       return <CircleBtn title={item.title} icon={item.icon} onClick={item.onClick} key={item.title}/>

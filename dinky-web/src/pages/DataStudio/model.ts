@@ -218,7 +218,7 @@ export type StateType = {
     selectKey: [];
   };
   sessionCluster: ClusterType[];
-  clusterConfiguration:ClusterConfigurationType[];
+  clusterConfiguration: ClusterConfigurationType[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
@@ -299,7 +299,7 @@ const Model: ModelType = {
       console: ""
     },
     sessionCluster: [],
-    clusterConfiguration:[],
+    clusterConfiguration: [],
     env: [],
   },
   effects: {},
@@ -491,6 +491,10 @@ const Model: ModelType = {
           ...state.tabs,
           activeKey: payload
         },
+        rightContainer: {
+          ...state.rightContainer,
+          selectKey: ""
+        }
       };
     },
     /**
@@ -502,6 +506,7 @@ const Model: ModelType = {
     closeTab(state, {payload}) {
       const needCloseKey = (payload as TargetKey).toString();
       const {tabs: {panes, activeKey}} = state;
+      // close self
       if (needCloseKey === activeKey) {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
@@ -659,4 +664,5 @@ const Model: ModelType = {
 
   }
 }
+
 export default Model;

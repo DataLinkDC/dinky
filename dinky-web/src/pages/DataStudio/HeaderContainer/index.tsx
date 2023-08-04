@@ -51,7 +51,7 @@ const headerStyle: React.CSSProperties = {
   fontSize: "16px",
   padding: "4px 10px",
 };
-type  buttonRoute = {
+type  ButtonRoute = {
   icon: React.ReactNode,
   title: string,
   click: () => void,
@@ -134,7 +134,7 @@ const HeaderContainer = (props: any) => {
     })
   }
 
-  const routes: buttonRoute[] = [
+  const routes: ButtonRoute[] = [
     // 保存按钮 icon
     {
       icon: <SaveTwoTone/>,
@@ -158,8 +158,8 @@ const HeaderContainer = (props: any) => {
           content: <Explain/>,
           cancelButtonProps: {style: {display: 'none'}},
         });
-        isShow:projectCommonShow
       },
+      isShow:projectCommonShow
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     },
     {

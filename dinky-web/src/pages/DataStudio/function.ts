@@ -21,6 +21,7 @@
 import {Dispatch} from "@@/plugin-dva/types";
 import {DataSources} from "@/types/RegCenter/data";
 import {ClusterConfigurationType, ClusterType, DataStudioParams, EnvType, TabsItemType} from "@/pages/DataStudio/model";
+import {RightSide} from "@/pages/DataStudio/route";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) => dispatch({
@@ -94,3 +95,5 @@ export const getCurrentData = (panes: any, activeKey: string) => {
 export const getCurrentTab = (panes: any, activeKey: string) => {
   return (panes as TabsItemType[]).find(item => item.key === activeKey)
 }
+
+

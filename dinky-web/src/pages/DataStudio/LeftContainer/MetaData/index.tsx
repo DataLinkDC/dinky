@@ -36,6 +36,7 @@ const MetaData = (props: any) => {
     const res = showMetaDataTable(databaseId);
     res.then((tables) => {
       setIsLoadingDatabase(false);
+      if (!tables) return;
       for (let table of tables) {
         table.title = table.name;
         table.key = table.name;
@@ -154,9 +155,10 @@ const MetaData = (props: any) => {
     <Spin spinning={isLoadingDatabase} delay={500}>
       <ProForm style={{height: 40}} initialValues={{selectDb:selectDatabaseId}} submitter={false}>
         <ProFormSelect
-            width={leftContainer.width - 45 }
-            // addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
-            addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
+          style={{paddingInline:10}}
+            // width={leftContainer.width  }
+          width={"xl"}
+            // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
             allowClear={false}
             name={"selectDb"}
             placeholder={l('pages.metadata.selectDatabase')}

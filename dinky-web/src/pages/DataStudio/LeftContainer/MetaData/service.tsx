@@ -1,8 +1,9 @@
-import {queryDataByParams} from "@/services/BusinessCrud";
+import {handleGetOption, handleOption, queryDataByParams} from "@/services/BusinessCrud";
+import {l} from "@/utils/intl";
 
 /*--- 刷新 元数据表 ---*/
 export function showMetaDataTable(id: number) {
-  return queryDataByParams('api/database/getSchemasAndTables', {id: id});
+  return handleGetOption('api/database/getSchemasAndTables',l("pages.metadata.DataSearch"), {id: id});
 }
 
 /*--- 清理 元数据表缓存 ---*/

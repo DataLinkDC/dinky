@@ -29,7 +29,7 @@ import ContentScroll from "@/components/Scroll/ContentScroll";
 import useThemeValue from "@/hooks/useThemeValue";
 import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
 import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
-import {getCurrentData} from "@/pages/DataStudio/function";
+import {getCurrentData, getCurrentTab} from "@/pages/DataStudio/function";
 import {RightSide, TabProp} from "@/pages/DataStudio/route";
 
 
@@ -78,7 +78,7 @@ const MiddleContainer = (props: any) => {
         return;
       }
       const oldIndex = oldRightSideAvailableKey.findIndex((value)=>value===rightKey);
-      let selectKey = newRightSideAvailableKey[0];
+      let selectKey: string;
       if (oldIndex >= newRightSideAvailableKey.length) {
         selectKey= newRightSideAvailableKey.pop() as string;
       }else {
@@ -241,6 +241,12 @@ const MiddleContainer = (props: any) => {
    * @param {TargetKey} targetKey
    */
   const closeTab = (targetKey: TargetKey) => {
+    if (panes.length === 1) {
+      dispatch({
+        type: 'Studio/updateSelectRightKey',
+        payload: "",
+      })
+    }
     dispatch({
       type: 'Studio/closeTab',
       payload: targetKey,

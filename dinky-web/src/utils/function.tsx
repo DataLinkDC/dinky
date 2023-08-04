@@ -35,6 +35,8 @@ import {
 } from '@/components/Icons/CodeLanguageIcon';
 import path from 'path';
 import {l} from '@/utils/intl';
+import {RightSide} from "@/pages/DataStudio/route";
+import {TabsItemType} from "@/pages/DataStudio/model";
 
 
 /**
@@ -445,8 +447,8 @@ export const searchTreeNode = (originValue: string, searchValue: string): any =>
   // searchValue is not empty and trim() after length > 0
   if (searchValue && searchValue.trim().length > 0) {
     const searchIndex = originValue.indexOf(searchValue); // search index
-    const beforeStr = originValue.substr(0, searchIndex); // before search value
-    const afterStr = originValue.substr(searchIndex + searchValue.length); // after search value
+    const beforeStr = originValue.substring(0, searchIndex); // before search value
+    const afterStr = originValue.substring(searchIndex + searchValue.length); // after search value
     // when search index > -1, return render title, else return origin title
     title = searchIndex > -1 ?
       <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
@@ -454,3 +456,4 @@ export const searchTreeNode = (originValue: string, searchValue: string): any =>
   }
   return title
 };
+
