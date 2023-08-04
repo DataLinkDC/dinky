@@ -97,8 +97,6 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
      */
     const submitForm = async (formData: FormData) => {
         await form.validateFields();
-        const parentId = isRootMenu ? 0 : form.getFieldValue('parentId');
-        form.setFieldValue('parentId',parentId)
         await handleSubmit({...values, ...formData});
         await handleCancel();
     };
@@ -118,7 +116,7 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
             }
             <ProFormTreeSelect
                 hidden={isRootMenu}
-                initialValue={!isRootMenu ? selectedKeys : [0]}
+                initialValue={!isRootMenu ? selectedKeys.pop() : 0}
                 shouldUpdate
                 name={'parentId'}
                 label={'父级菜单'}

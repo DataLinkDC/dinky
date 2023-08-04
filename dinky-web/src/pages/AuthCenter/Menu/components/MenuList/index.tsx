@@ -93,7 +93,7 @@ const MenuList: React.FC = () => {
          */
         const handleAddOrUpdateSubmit = async (value: any) => {
             await executeAndCallbackRefresh(async () => {
-                await handleAddOrUpdate('/api/menu/addOrUpdate', {value});
+                await handleAddOrUpdate('/api/menu/addOrUpdate', {...value});
                 handleModalVisible(false);
             });
         };
