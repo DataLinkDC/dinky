@@ -41,7 +41,6 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       dataIndex: 'name',
       width: '10%',
       ellipsis: true,
-      copyable: true,
     },
     {
       title: l('rc.ds.columnType'),
