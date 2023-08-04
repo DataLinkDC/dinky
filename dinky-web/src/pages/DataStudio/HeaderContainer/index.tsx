@@ -237,14 +237,16 @@ const HeaderContainer = (props: any) => {
     //     console.log("ctrl+s")
     //   },
     //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    // }, {
-    //   //
-    //   icon: <MoreOutlined/>,
-    //   title: "More",
-    //   click: () => {
-    //   },
-    //   // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     // },
+    {
+      //
+      icon: <MoreOutlined/>,
+      title: "More",
+      click: () => {
+      },
+      isShow:()=>true
+      // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
+    },
   ]
 
 
