@@ -17,12 +17,13 @@ const Editor: React.FC<EditorProps & any > = (props) => {
 
   return <>
     <CodeEdit code={statement} language={"sql"}
-              onChange={(v) => {
+              onChange={(v,d) => {
                 current.statement = v;
                 dispatch({
                   type: "Studio/saveTabs",
                   payload: {...props.tabs},
                 });
+
               }}
     />
   </>
