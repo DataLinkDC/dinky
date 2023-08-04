@@ -17,15 +17,15 @@
  *
  */
 
-import {Alert, Empty, Space} from "antd";
+import {Alert, Space} from "antd";
 import React from "react";
 
 export default () => {
   return <>
-       <Space className={'code-content-empty'} direction="horizontal" style={{ width: '100%' }}>
-          <Alert banner message="修改菜单: 点击左侧树状图中的想要修改的节点, 在此处渲染修改表单" type="success" />
-          <Alert banner message="添加根菜单: 点击树状图的右上角的按钮进行新增" type="info" />
-          <Alert banner message="新增/删除子菜单: 树状图上右键单机,进行添加/删除" type="warning" />
+       <Space className={'code-content-empty'} direction="horizontal" size={'large'} style={{ width: '100%' }}>
+          <Alert showIcon banner message="修改菜单: 点击左侧树状图中的想要修改的节点, 在此处渲染修改表单" type="success" />
+          <Alert showIcon banner message="添加根菜单: 点击树状图的右上角的按钮进行新增" type="info" />
+          <Alert showIcon banner message="新增/删除子菜单: 树状图上右键单击,进行添加/删除" type="warning" />
       </Space>
   </>
 }

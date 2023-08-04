@@ -18,38 +18,31 @@
  */
 
 
-import React, {useEffect} from 'react';
-import {Button, Form, Space, TreeSelect} from 'antd';
+import React, {useEffect, useState} from 'react';
+import {Form, Space, TreeSelect} from 'antd';
 import {UserBaseInfo} from "@/types/User/data.d";
 import {FormContextValue} from '@/components/Context/FormContext';
-import {
-    ProForm,
-    ProFormGroup,
-    ProFormRadio,
-    ProFormText,
-    ProFormTextArea,
-    ProFormTreeSelect
-} from "@ant-design/pro-components";
+import {Key, ProForm, ProFormRadio, ProFormText, ProFormTextArea, ProFormTreeSelect} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import {SysMenu} from "@/types/RegCenter/data";
-import {buildMenuTreeData} from "@/pages/AuthCenter/Role/components/AssignMenu/function";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
-import {Link} from "@umijs/max";
 
 
 type MenuCardProps = {
     onCancel: (flag?: boolean) => void;
     onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
-    modalVisible: boolean;
     values: Partial<UserBaseInfo.Role>;
+    open: boolean,
     disabled?: boolean;
+    selectedKeys: Key[]
     treeData: SysMenu[];
     isRootMenu?: boolean
 };
 
 const MenuCard: React.FC<MenuCardProps> = (props) => {
 
+    const [searchValue, setSearchValue] = useState('')
     /**
      * init form
      */
@@ -67,22 +60,21 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
     const {
         onSubmit: handleSubmit,
         onCancel: handleModalVisible,
-        modalVisible,
         values,
-        disabled=false,
+        open,
+        disabled = false,
         isRootMenu = false,
-        treeData
+        treeData,
+        selectedKeys,
     } = props;
 
     /**
      * when modalVisible or values changed, set form values
      */
     useEffect(() => {
-        if (!modalVisible){
-            formContext.resetForm();
-        }
+        if (open) form.resetFields();
         form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
+    }, [open, values, form]);
 
     /**
      * handle cancel
@@ -105,6 +97,8 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
      */
     const submitForm = async (formData: FormData) => {
         await form.validateFields();
+        const parentId = isRootMenu ? 0 : form.getFieldValue('parentId');
+        form.setFieldValue('parentId',parentId)
         await handleSubmit({...values, ...formData});
         await handleCancel();
     };
@@ -122,24 +116,22 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
                     disabled
                 />
             }
-            {
-                (modalVisible || !isRootMenu) && <>
-                <ProFormTreeSelect
-                    initialValue={['0-0-0']}
-                    name={'parentId'}
-                    label={'父级菜单'}
-                    rules={[{required: true, message: '父级菜单'}]}
-                    placeholder={'父级菜单'}
-                    fieldProps={{
-                        multiple: false,
-                        treeData : buildMenuTree(treeData),
-                        treeCheckable: true,
-                        showCheckedStrategy: TreeSelect.SHOW_PARENT,
-                    }}
-                />
-                </>
-            }
-
+            <ProFormTreeSelect
+                hidden={isRootMenu}
+                initialValue={!isRootMenu ? selectedKeys : [0]}
+                shouldUpdate
+                name={'parentId'}
+                label={'父级菜单'}
+                rules={[{required: true, message: '父级菜单'}]}
+                placeholder={'父级菜单'}
+                fieldProps={{
+                    showSearch: true,
+                    treeData: buildMenuTree(treeData, searchValue),
+                    treeCheckable: true,
+                    onSearch: value => setSearchValue(value),
+                    showCheckedStrategy: TreeSelect.SHOW_PARENT,
+                }}
+            />
             <ProFormText name="rootMenu" hidden/>
             <ProFormText
                 name="name"
@@ -171,7 +163,10 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
                 label={'菜单图标'}
                 placeholder={'菜单图标'}
                 rules={[{required: true, message: '菜单图标'}]}
-                fieldProps={{addonAfter: <a type={'link'} target={'_blank'} href={'https://ant.design/components/icon-cn'}>菜单图标参考</a>,}}
+                fieldProps={{
+                    addonAfter: <a type={'link'} target={'_blank'}
+                                   href={'https://ant.design/components/icon-cn'}>菜单图标参考</a>,
+                }}
             />
 
             <ProFormRadio.Group
@@ -218,7 +213,7 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
             initialValues={values}
             onReset={handleReset}
             onFinish={submitForm}
-            submitter={{render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,}}
+            submitter={{render: (_, dom) => <Space style={{display: 'flex', justifyContent: 'center'}}>{dom}</Space>,}}
             layout={'horizontal'}
         >
             {renderMenuForm()}

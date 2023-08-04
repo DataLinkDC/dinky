@@ -18,14 +18,13 @@
  */
 
 
-import {Button, Empty, Input, Tree, Typography, Upload} from "antd";
+import {Button, Empty, Input, Spin, Tree, Typography, Upload} from "antd";
 import React, {useCallback, useState} from "react";
 import {l} from "@/utils/intl";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
 import {SysMenu} from "@/types/RegCenter/data";
 
 const {DirectoryTree} = Tree;
-const {Text} = Typography;
 
 
 
@@ -34,9 +33,10 @@ type MenuTreeProps = {
     onNodeClick: (info: any) => void
     onRightClick: (info: any) => void
     selectedKeys: string[],
+    loading: boolean,
 }
 const MenuTree: React.FC<MenuTreeProps> = (props) => {
-    const {treeData, selectedKeys, onNodeClick, onRightClick} = props;
+    const {treeData, selectedKeys, onNodeClick, onRightClick , loading} = props;
 
     const [searchValue, setSearchValue] = useState('');
 
@@ -59,12 +59,14 @@ const MenuTree: React.FC<MenuTreeProps> = (props) => {
                         value={searchValue}
                         onChange={onSearchChange}
                     />
-                    <DirectoryTree
-                        selectedKeys={selectedKeys}
-                        onSelect={(_, info) => onNodeClick(info)}
-                        onRightClick={info => onRightClick(info)}
-                        treeData={buildMenuTree(treeData ,searchValue)}
-                    />
+                    <Spin spinning={loading}>
+                        <DirectoryTree
+                            selectedKeys={selectedKeys}
+                            onSelect={(_, info) => onNodeClick(info)}
+                            onRightClick={info => onRightClick(info)}
+                            treeData={buildMenuTree(treeData ,searchValue)}
+                        />
+                    </Spin>
                 </>
                : <Empty className={'code-content-empty'} image={Empty.PRESENTED_IMAGE_DEFAULT} />
 

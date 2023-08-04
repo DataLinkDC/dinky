@@ -33,6 +33,7 @@ import java.util.List;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -60,8 +61,8 @@ public class MenuController {
      * @return {@link Result} with {@link Void}
      * @throws Exception {@link Exception}
      */
-    @PutMapping
-    @Log(title = "INSERT OR UPDATE Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @PutMapping("addOrUpdate")
+    @Log(title = "Insert OR Update Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("INSERT OR UPDATE Menu")
     public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) throws Exception {
         if (menuService.saveOrUpdate(menu)) {
