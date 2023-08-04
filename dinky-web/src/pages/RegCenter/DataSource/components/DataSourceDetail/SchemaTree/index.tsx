@@ -66,7 +66,7 @@ const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
                     <DirectoryTree
                         expandedKeys={expandKeys}
                         selectedKeys={selectKeys}
-                        onExpand={(keys) => onExpand(keys)}
+                        onExpand={onExpand}
                         style={style}
                         className={'treeList'}
                         onSelect={onNodeClick}

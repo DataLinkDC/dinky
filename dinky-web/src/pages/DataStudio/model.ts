@@ -465,7 +465,7 @@ const Model: ModelType = {
      * @returns {{centerContentHeight: number, toolContentHeight: number, database: DataSources.DataSource[], tabs: {panes: TabsItemType[], activeKey: number}, isFullScreen: boolean, rightContainer: Container, leftContainer: Container, bottomContainer: Container}}
      */
     addTab(state, {payload }) {
-      const node=payload as  TabsItemType;
+      const node= payload as  TabsItemType;
       for (const item of state.tabs.panes) {
         if (item.id === node.id) {
           return {
@@ -477,14 +477,15 @@ const Model: ModelType = {
           };
         }
       }
-        node.key=state.tabs.panes.length === 0 ? "0" :(parseInt(state.tabs.panes[state.tabs.panes.length-1].key)+1 ).toString();
-        return {
-          ...state,
-          tabs: {
-            panes:[...state.tabs.panes,node],
-            activeBreadcrumbTitle:[node.type,node.breadcrumbLabel,node.label].join("/"),
-            activeKey: node.key,
-          },
+
+      node.key=state.tabs.panes.length === 0 ? "0" :(parseInt(state.tabs.panes[state.tabs.panes.length-1].key)+1 ).toString();
+      return {
+        ...state,
+        tabs: {
+          panes:[...state.tabs.panes,node],
+          activeBreadcrumbTitle:[node.type,node.breadcrumbLabel,node.label].join("/"),
+          activeKey: node.key,
+        },
       }
     },
 
