@@ -1,6 +1,7 @@
 import { DataNode } from "antd/es/tree";
 import {getIcon} from "@/utils/function";
 import style from "./index.less";
+import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
 
 export interface TreeDataNode extends DataNode {
   name:string;
@@ -64,7 +65,8 @@ export const loop:any= (data: TreeDataNode[],searchValue:string) =>
     const index = item.title.indexOf(searchValue);
     const beforeStr = item.name.substring(0, index);
     const afterStr = item.name.substring(index + searchValue.length);
-    item.icon = getIcon(item.type);
+
+    item.icon = getTabIcon(item.type,20);
     const title =
       index > -1 ? (
         <span>

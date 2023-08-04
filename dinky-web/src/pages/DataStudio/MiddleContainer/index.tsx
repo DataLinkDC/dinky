@@ -226,7 +226,7 @@ const MiddleContainer = (props: any) => {
     return {
       key: item.key,
       label: <Space size={0} onContextMenu={(e) => handleRightClick(e, item)}
-                    key={item.key}>{getTabIcon(item.icon, 20)}{item.label}</Space>,
+                    key={item.key}>{getTabIcon(item.icon, 16)}{item.label}</Space>,
       children:
         <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
           {renderContent()}

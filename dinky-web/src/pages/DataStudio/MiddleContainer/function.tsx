@@ -1,9 +1,24 @@
 import {DIALECT} from "@/services/constants";
-import {FileIcon, FlinkSQLSvg, JavaSvg, LogSvg, MarkDownSvg, PythonSvg, ScalaSvg, ShellSvg, XMLSvg, YAMLSvg} from "@/components/Icons/CodeLanguageIcon";
+import {
+  FileIcon,
+  FlinkSQLEnvSvg,
+  FlinkSQLSvg,
+  JavaSvg,
+  LogSvg,
+  MarkDownSvg,
+  PythonSvg,
+  ScalaSvg,
+  ShellSvg,
+  XMLSvg,
+  YAMLSvg
+} from "@/components/Icons/CodeLanguageIcon";
 import {ClickHouseIcons, DorisIcons, HiveIcons, MysqlIcons, OracleIcons, PhoenixIcons,
   PostgresqlIcons, PrestoIcons, SqlServerIcons, StarRocksIcons} from "@/components/Icons/DBIcons";
 
 export const getTabIcon = (type: string, size?: number) => {
+  if (!type){
+    return <FileIcon/>;
+  }
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
@@ -28,25 +43,27 @@ export const getTabIcon = (type: string, size?: number) => {
       return <LogSvg/>;
     case DIALECT.FLINK_SQL:
       return <FlinkSQLSvg/>;
-    case 'mysql':
+      case DIALECT.FLINKSQLENV:
+      return <FlinkSQLEnvSvg/>;
+    case DIALECT.MYSQL:
       return <MysqlIcons size={size}/>;
-    case 'oracle':
+    case DIALECT.ORACLE:
       return <OracleIcons size={size}/>;
-    case 'postgresql':
+    case DIALECT.POSTGRESQL:
       return <PostgresqlIcons size={size}/>;
-    case 'clickhouse':
+    case DIALECT.CLICKHOUSE:
       return <ClickHouseIcons size={size}/>;
-    case 'sqlserver':
+    case DIALECT.SQLSERVER:
       return <SqlServerIcons size={size}/>;
-    case 'doris':
+    case DIALECT.DORIS :
       return <DorisIcons size={size}/>;
-    case 'phoenix':
+    case DIALECT.PHOENIX :
       return <PhoenixIcons size={size}/>;
-    case 'hive':
+    case DIALECT.HIVE :
       return <HiveIcons size={size}/>;
-    case 'starrocks':
+    case DIALECT.STARROCKS :
       return <StarRocksIcons size={size}/>;
-    case 'presto':
+    case DIALECT.PRESTO :
       return <PrestoIcons size={size}/>;
     default:
       return <FileIcon/>;
