@@ -1,3 +1,15 @@
+import {Col, Descriptions, Form, Row } from "antd";
+import TextArea from "antd/es/input/TextArea";
+import {l} from "@/utils/intl";
+import Paragraph from "antd/es/typography/Paragraph";
+import {connect} from "umi";
+import {DataStudioParams, StateType, TabsItemType, TabsPageType} from "@/pages/DataStudio/model";
+import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
+import React from "react";
+import {getCurrentData} from "@/pages/DataStudio/function";
+import {useForm} from "antd/es/form/Form";
+import {c} from "@umijs/utils/compiled/tar";
+
 /*
  *
  *   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -16,11 +28,68 @@
  *   limitations under the License.
  *
  */
+const JobInfo = (props: any) => {
+  const { dispatch, tabs: {panes, activeKey}} = props;
+  const current = getCurrentData(panes, activeKey);
+  const [form] = useForm();
+  form.setFieldsValue(current);
+  const onValuesChange = (change: any, all: any) => {
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].key === activeKey) {
+        for (const key in change) {
+          panes[i].params.taskData[key] = all[key];
+        }
+        break;
+      }
+    }
+    dispatch({
+      type: "Studio/saveTabs",
+      payload: {...props.tabs},
+    });
+  };
 
-const JobInfo = () => {
-    return <div>JobInfo</div>;
-
+  return (
+    <div style={{paddingInline:8}}>
+        <Descriptions bordered size="small" column={1}>
+          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
+            <Paragraph copyable>{current.id}</Paragraph>
+          </Descriptions.Item>
+          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
+            {current.name}
+          </Descriptions.Item>
+          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
+            {current.dialect}
+          </Descriptions.Item>
+          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
+            {current.versionId}
+          </Descriptions.Item>
+          <Descriptions.Item label={l('global.table.createTime')}>
+            {current.createTime}
+          </Descriptions.Item>
+          <Descriptions.Item label={l('global.table.updateTime')}>
+            {current.updateTime}
+          </Descriptions.Item>
+        </Descriptions>
+        <Form
+          layout="vertical"
+          form={form}
+          // className={styles.form_setting}
+          onValuesChange={onValuesChange}
+        >
+          <Row>
+            <Col span={24}>
+              <Form.Item
+                label={l('global.table.note')} name="note"
+              >
+                <TextArea rows={4} maxLength={255}/>
+              </Form.Item>
+            </Col>
+          </Row>
+        </Form>
+    </div>
+  );
 };
 
-
-export default JobInfo;
+export default connect(({Studio}: { Studio: StateType }) => ({
+  tabs: Studio.tabs,
+}))(JobInfo);

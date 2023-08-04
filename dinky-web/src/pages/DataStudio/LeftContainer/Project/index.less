@@ -1,4 +1,5 @@
 /*
+ *
  *  Licensed to the Apache Software Foundation (ASF) under one or more
  *  contributor license agreements.  See the NOTICE file distributed with
  *  this work for additional information regarding copyright ownership.
@@ -16,25 +17,26 @@
  *
  */
 
-import React from "react";
-import {Button} from "antd";
 
-export type CircleButtonProps = {
-  icon: React.ReactNode;
-  loading?: boolean;
-  onClick?: () => void;
-  title?: string;
-  key?: string;
-};
+.right_click_menu li{
+  margin:0!important;
+}
 
-export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const {onClick,title,icon,loading} = props;
+.right_click_menu{
+  border: 1px solid #d2d2d2;
+  box-shadow: 1px 1px 4px rgb(0 0 0 / 8%);
+  background-color: #fff;
+  color: #666;
+  z-index: 9999;
+}
 
-  return (
-    <Button title={title}
-            loading={loading}
-            icon={icon} block type={"text"}
-            shape={"circle"}
-            onClick={onClick}/>
-  );
-};
+.tree_div{
+  padding-right: 10px;
+}
+
+.site-tree-search-value {
+  //color: #00EE76;
+  color: #c00b26;
+  background-color: rgba(3, 102, 214, 0.5);
+  font-size: 15px;
+}

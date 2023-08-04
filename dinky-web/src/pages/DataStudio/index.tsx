@@ -15,41 +15,61 @@
  * limitations under the License.
  */
 
-import {Layout, Menu, theme} from 'antd';
+import {Layout, Menu, Modal, theme} from 'antd';
 import {connect, getDvaApp} from "umi";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
-import {StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
+import {DataStudioParams, StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
 import {PersistGate} from 'redux-persist/integration/react';
 import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
-import {mapDispatchToProps} from "@/pages/DataStudio/function";
+import {getCurrentData, getCurrentTab, mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";
 import {getConsoleData} from "@/pages/DataStudio/BottomContainer/Console/service";
 import useThemeValue from "@/hooks/useThemeValue";
+import {getTaskData, getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
+import {
+  getClusterConfigurationData,
+  getEnvData,
+  getSessionData
+} from "@/pages/DataStudio/RightContainer/JobConfig/service";
+import * as monaco from "monaco-editor";
 
 const {Sider, Content} = Layout;
 
-const { useToken } = theme;
+const {useToken} = theme;
 const DataStudio = (props: any) => {
   const {
-    bottomContainer, leftContainer, rightContainer, saveDataBase, updateToolContentHeight,updateBottomConsole
-    , updateCenterContentHeight, updateSelectLeftKey, updateLeftWidth, updateSelectRightKey
-    , updateRightWidth, updateSelectBottomKey, updateBottomHeight, activeBreadcrumbTitle, updateSelectBottomSubKey, tabs
+    bottomContainer,
+    leftContainer,
+    rightContainer,
+    saveDataBase,
+    saveProject,
+    updateToolContentHeight,
+    updateBottomConsole,
+    saveSession,
+    saveEnv,
+    saveTabs,
+    updateCenterContentHeight,
+    updateSelectLeftKey,
+    updateLeftWidth,
+    updateSelectRightKey
+    ,
+    updateRightWidth,
+    updateSelectBottomKey,
+    updateBottomHeight,
+    saveClusterConfiguration,
+    activeBreadcrumbTitle,
+    updateSelectBottomSubKey,
+    tabs
   } = props
   const {token} = useToken();
   const themeValue = useThemeValue();
-
-  const getActiveTabType: () => (TabsPageType) = () => {
-    if (parseInt(tabs.activeKey) < 0) {
-      return TabsPageType.None
-    }
-    return (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey)?.type || TabsPageType.None
-  }
-
+  const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
+  const [newTabData, setNewTabData] = useState({});
   const app = getDvaApp(); // 获取dva的实例
   const persistor = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
@@ -78,10 +98,43 @@ const DataStudio = (props: any) => {
     };
   }, [onResize]);
 
+  const loadData = async () => {
+    saveDataBase(await getDataBase());
+    updateBottomConsole(await getConsoleData());
+    saveProject(await getTaskData());
+    saveSession(await getSessionData());
+    saveEnv(await getEnvData());
+    saveClusterConfiguration(await getClusterConfigurationData());
 
+    // 判断是否需要更新tab内容
+    if (tabs.activeKey) {
+      const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+      const params = (currentTab?.params as DataStudioParams);
+      if (currentTab?.type === "project") {
+        getTaskDetails(params.taskId).then(res => {
+          for (const key of Object.keys(res)) {
+            if (res[key] !== params.taskData[key]) {
+              if (res[key] instanceof Object) {
+                if (JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
+                  setIsModalUpdateTabContentOpen(true)
+                  setNewTabData(res)
+                  break
+                }
+              } else {
+                setIsModalUpdateTabContentOpen(true)
+                setNewTabData(res)
+                break
+              }
+            }
+
+          }
+
+        })
+      }
+    }
+  }
   useEffect(() => {
-    getDataBase().then(res => saveDataBase(res))
-    getConsoleData().then(res => updateBottomConsole(res))
+    loadData();
     onResize();
   }, []);
 
@@ -92,6 +145,11 @@ const DataStudio = (props: any) => {
    */
   const renderHeaderContainer = () => {
     return <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+  }
+  const updateTabContent = () => {
+    (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
+    saveTabs({...tabs})
+    setIsModalUpdateTabContentOpen(false)
   }
 
 
@@ -113,10 +171,14 @@ const DataStudio = (props: any) => {
   return (
     <PersistGate loading={null} persistor={persistor}>
       <Fragment>
+        <Modal title="Sql内容或配置变更" open={isModalUpdateTabContentOpen} onOk={updateTabContent}
+               onCancel={() => setIsModalUpdateTabContentOpen(false)}>
+          <p>检测到当前页远程有更改，是否刷新更新数据？</p>
+        </Modal>
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}
-          <Layout hasSider style={{minHeight: size.contentHeight,paddingInline:0}}>
+          <Layout hasSider style={{minHeight: size.contentHeight, paddingInline: 0}}>
             {/*渲染左侧侧边栏*/}
             <Sider collapsed collapsedWidth={40}>
               <Menu
@@ -125,7 +187,11 @@ const DataStudio = (props: any) => {
                 items={LeftSide.map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
-                style={{height: '50%',borderBlockStart:"1px solid "+themeValue.borderColor,borderInlineEnd:"1px solid "+themeValue.borderColor}}
+                style={{
+                  height: '50%',
+                  borderBlockStart: "1px solid " + themeValue.borderColor,
+                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                }}
                 onClick={(item) => {
                   updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
                 }}
@@ -143,7 +209,7 @@ const DataStudio = (props: any) => {
                   display: 'flex',
                   height: '50%',
                   flexDirection: "column-reverse",
-                  borderInlineEnd:"1px solid "+themeValue.borderColor
+                  borderInlineEnd: "1px solid " + themeValue.borderColor
                 }}
                 onClick={(item) => {
                   updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
@@ -187,12 +253,20 @@ const DataStudio = (props: any) => {
               <Menu
                 selectedKeys={[rightContainer.selectKey]}
                 mode="inline"
-                style={{height: '100%', borderInlineStart: "1px solid "+themeValue.borderColor,borderBlockStart:"1px solid "+themeValue.borderColor}}
+                style={{
+                  height: '100%',
+                  borderInlineStart: "1px solid " + themeValue.borderColor,
+                  borderBlockStart: "1px solid " + themeValue.borderColor
+                }}
                 items={RightSide.filter(x => {
                   if (!x.isShow) {
                     return true
                   }
-                  return x.isShow(getActiveTabType())
+                  if (parseInt(tabs.activeKey) < 0) {
+                    return TabsPageType.None
+                  }
+                  const v = (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey);
+                  return x.isShow(v?.type || TabsPageType.None, v?.subType)
                 }).map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}

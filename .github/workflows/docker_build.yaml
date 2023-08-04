@@ -175,6 +175,10 @@ jobs:
             FLINK_BIG_VERSION: 1.17
     steps:
       - uses: actions/checkout@v3
+      - name: Move Dockerfile
+        run: |
+          cp ./docker/Dockerfile* ./
+      - uses: actions/checkout@v3
       - name: set the flink_big_version
         run: |
           echo FLINK_BIG_VERSION=${FLINK_VERSION%.*} >> $GITHUB_ENV

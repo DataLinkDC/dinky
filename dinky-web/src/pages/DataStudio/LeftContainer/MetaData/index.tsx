@@ -12,6 +12,8 @@ import {Key, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
+import ContentScroll from "@/components/Scroll/ContentScroll";
+import {BtnRoute} from "@/pages/DataStudio/route";
 
 const MetaData = (props: any) => {
 
@@ -34,6 +36,7 @@ const MetaData = (props: any) => {
     const res = showMetaDataTable(databaseId);
     res.then((tables) => {
       setIsLoadingDatabase(false);
+      if (!tables) return;
       for (let table of tables) {
         table.title = table.name;
         table.key = table.name;
@@ -76,6 +79,8 @@ const MetaData = (props: any) => {
       onChangeDataBase(selectDatabaseId);
     })
   };
+
+  BtnRoute['menu.datastudio.metadata'][0].onClick=refreshDataBase
 
   /**
    * 构建数据库列表 下拉框
@@ -150,8 +155,10 @@ const MetaData = (props: any) => {
     <Spin spinning={isLoadingDatabase} delay={500}>
       <ProForm style={{height: 40}} initialValues={{selectDb:selectDatabaseId}} submitter={false}>
         <ProFormSelect
-            width={leftContainer.width - 45 }
-            addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
+          style={{paddingInline:10}}
+            // width={leftContainer.width  }
+          width={"xl"}
+            // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
             allowClear={false}
             name={"selectDb"}
             placeholder={l('pages.metadata.selectDatabase')}

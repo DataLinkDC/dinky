@@ -18,9 +18,9 @@
  */
 
 export default {
-'global.max':'max',
-'button.check':'检查',
-  'button.graph':'图',
+  'global.max': 'max',
+  'button.check': '检查',
+  'button.graph': '图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
@@ -53,6 +53,8 @@ export default {
   'button.heartbeat': '心跳',
   'button.recycle': '回收',
   'button.refresh': '刷新',
+  'button.expand-all': '全部展开',
+  'button.collapse-all': '全部折叠',
   'button.test': '测试',
   'button.clear': '清除',
   'button.copy': '复制',
