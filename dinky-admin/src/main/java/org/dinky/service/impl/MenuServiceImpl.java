@@ -63,8 +63,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     public boolean deleteMenuById(Integer id) {
         Menu menu = getById(id);
         // todo： 如果是父菜单，提示先删除子菜单
-
-        return false;
+        return getBaseMapper().deleteById(menu) > 0;
     }
 
     /**

@@ -19,16 +19,6 @@
 
 package org.dinky.data.model;
 
-import org.dinky.mybatis.annotation.Save;
-
-import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.validation.constraints.NotNull;
-
-import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -38,9 +28,14 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-
+import java.io.Serializable;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import javax.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dinky.mybatis.annotation.Save;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
@@ -69,15 +64,20 @@ public class Menu implements Serializable {
             groups = {Save.class})
     private String component;
 
+    @NotNull(
+            message = "perms cannot be null",
+            groups = {Save.class})
     private String perms;
 
     private String icon;
 
-    @EnumValue private String type;
+    private Integer type;
 
     private Double orderNum;
 
     private boolean display;
+
+    private String note;
 
     @TableField(fill = FieldFill.INSERT)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -91,4 +91,11 @@ public class Menu implements Serializable {
 
     @TableField(exist = false)
     private List<Menu> children = new ArrayList<>();
+
+    @TableField(exist = false)
+    private boolean rootMenu;
+
+    public boolean isRootMenu() {
+        return this.parentId == 0;
+    }
 }

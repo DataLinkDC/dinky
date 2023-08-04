@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -84,6 +85,7 @@ public class AdminController {
      * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     @GetMapping("/current")
+    @SaCheckLogin
     @ApiOperation(value = "Current User Info", notes = "Current User Info")
     public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();

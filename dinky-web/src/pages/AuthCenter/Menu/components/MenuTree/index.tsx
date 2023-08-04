@@ -21,7 +21,7 @@
 import {Button, Empty, Input, Tree, Typography, Upload} from "antd";
 import React, {useCallback, useState} from "react";
 import {l} from "@/utils/intl";
-import {buildMenuTree} from "@/pages/AuthCenter/Menu/components/MenuTree/function";
+import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
 import {SysMenu} from "@/types/RegCenter/data";
 
 const {DirectoryTree} = Tree;

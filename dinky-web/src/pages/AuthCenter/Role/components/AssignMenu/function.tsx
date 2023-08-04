@@ -17,9 +17,8 @@
  *
  */
 
-import {Menu} from "@/types/RegCenter/data";
 
-export const buildMenuTreeData = (data: Menu[], searchValue = '') => {
+export const buildMenuTreeData = (data: [], searchValue = '') => {
     return data.map((item: any) => {
         return {
             isLeaf: false,
@@ -30,7 +29,7 @@ export const buildMenuTreeData = (data: Menu[], searchValue = '') => {
             path: item.path,
             title: item.name,
             key: item.id,
-            children: item.childrens
+            children: item.children
                 // filter table by search value and map table to tree node
                 .filter((sub: any) => (sub.name.indexOf(searchValue) > -1))
                 .map((sub: any) => {

@@ -20,7 +20,7 @@
 
 import React, {useEffect, useRef, useState} from "react";
 import {ActionType} from "@ant-design/pro-table";
-import {Button, Dropdown, Menu, Space} from 'antd';
+import {Button, Dropdown, Menu, Typography} from 'antd';
 import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {getTenantByLocalStorage} from "@/utils/function";
@@ -32,7 +32,10 @@ import {SysMenu} from "@/types/RegCenter/data";
 import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
 import {PlusSquareTwoTone} from "@ant-design/icons";
 import MenuCardForm from "@/pages/AuthCenter/Menu/components/MenuCardForm";
+import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
+import {id} from "inversify";
 
+const {Text, Link} = Typography;
 
 const MenuList: React.FC = () => {
         /**
@@ -49,12 +52,13 @@ const MenuList: React.FC = () => {
         const [clickedNode, setClickedNode] = useState({});
         const [treeData, setTreeData] = useState<SysMenu[]>([]);
         const [disabled, setDisabled] = useState<boolean>(false);
+        const [isRootMenu, setIsRootMenu] = useState<boolean>(false);
 
         /**
          * query
          */
         const queryMenuData = async () => {
-          await  queryDataByParams('/api/menu/listMenus').then(res => setTreeData(res))
+            await queryDataByParams('/api/menu/listMenus').then(res => setTreeData(res))
         }
 
         useEffect(() => {
@@ -74,10 +78,11 @@ const MenuList: React.FC = () => {
          * delete role by id
          * @param id role id
          */
-        const handleDeleteSubmit = async (id: number) => {
+        const handleDeleteSubmit = async () => {
             await executeAndCallbackRefresh(async () => {
-                await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
+                await handleRemoveById('/api/menu/delete', rightClickedNode.fullInfo.id as number);
             });
+            setContextMenuVisible(false)
         }
 
         /**
@@ -113,13 +118,20 @@ const MenuList: React.FC = () => {
             handleUpdateModalVisible(false);
         }
 
-        const handleMenuClick = (node: MenuInfo) => {
+        function handleCreateSubMenu() {
+            handleModalVisible(true);
+            setIsRootMenu(false);
+            setContextMenuVisible(false);
+        }
+
+        const handleMenuClick = async (node: MenuInfo) => {
             switch (node.key) {
                 case 'addSub':
-                    // handleCreateFolder();
+                    await handleCreateSubMenu();
                     break;
                 case 'delete':
-                    // handleDeleteSubmit(node.key);
+                    console.log()
+                    await handleDeleteSubmit();
                 default:
                     break;
             }
@@ -134,6 +146,7 @@ const MenuList: React.FC = () => {
             const {node, event} = info;
             setSelectedKeys([node.key] as any);
             setRightClickedNode(node);
+            console.log(node,'node')
             setContextMenuVisible(true);
             setContextMenuPosition({
                 position: 'fixed',
@@ -166,7 +179,7 @@ const MenuList: React.FC = () => {
         }
 
         const handleNodeClick = async (info: any) => {
-            const {node: {id, isLeaf, key,fullInfo}, node} = info;
+            const {node: {id, isLeaf, key, fullInfo}, node} = info;
             setSelectedKeys([key] as any);
             setClickedNode(node);
             setFormValues(fullInfo)
@@ -177,34 +190,50 @@ const MenuList: React.FC = () => {
 
         const renderRightCardExtra = () => {
             return <>
-                {(updateModalVisible && formValues.id && disabled)  && <Button type={'primary'} onClick={() => setDisabled(false)}>编辑</Button>}
-                {(updateModalVisible && formValues.id && !disabled)  && <Button type={'dashed'} onClick={() => setDisabled(true)}>取消</Button>}
+                {(updateModalVisible && formValues.id && disabled) &&
+                    <Button type={'primary'} onClick={() => setDisabled(false)}>编辑</Button>}
+                {(updateModalVisible && formValues.id && !disabled) &&
+                    <Button type={'dashed'} onClick={() => setDisabled(true)}>取消</Button>}
             </>
         };
 
 
+        /**
+         * render the right content
+         * @returns {JSX.Element}
+         */
         const renderRightContent = () => {
-            if (formValues.id && updateModalVisible){
+            if (!updateModalVisible && !modalVisible) {
+                return <><OpHelper/></>
+            }
+            if (formValues.id && updateModalVisible) {
                 return <>
                     <MenuCardForm
-                        modalVisible={updateModalVisible}  disabled={disabled}
+                        isRootMenu={isRootMenu}
+                        treeData={treeData}
+                        modalVisible={updateModalVisible} disabled={disabled}
                         values={formValues} onCancel={handleCancel}
                         onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
                     />
                 </>
-            }else {
+            } else {
                 return <>
-                    <MenuCardForm modalVisible={updateModalVisible} values={{}} onCancel={handleCancel}
-                                  onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
+                    <MenuCardForm
+                        isRootMenu={isRootMenu}
+                        treeData={treeData}
+                        modalVisible={updateModalVisible} values={{}}
+                        onCancel={handleCancel} onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
                 </>
             }
-        }
+        };
+
 
         const renderLeftExtra = () => {
             return <>
                 <Button size={'middle'} key={'added-menu'} icon={<PlusSquareTwoTone/>} type={'primary'} onClick={() => {
                     handleUpdateModalVisible(false)
                     handleModalVisible(true)
+                    setIsRootMenu(true)
                     setFormValues({})
                 }}>新增根菜单</Button>
             </>
@@ -239,14 +268,14 @@ const MenuList: React.FC = () => {
                 <ProCard.Divider type={"vertical"}/>
                 <ProCard
                     extra={renderRightCardExtra()}
-                    title={ (formValues.id && updateModalVisible) ? '修改菜单' :  (!formValues.id && modalVisible) ? '新增菜单' : ''}
+                    title={(formValues.id && updateModalVisible) ? '修改菜单' : (!formValues.id && modalVisible) ? '新增菜单' : ''}
                     ghost hoverable className={"schemaTree"}>
                     {renderRightContent()}
                 </ProCard>
             </ProCard>
             {contextMenuVisible && renderRightClickMenu()}
         </>
-}
+    }
 ;
 
 export default MenuList;

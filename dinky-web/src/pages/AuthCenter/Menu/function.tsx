@@ -19,34 +19,18 @@
 
 import {SysMenu} from "@/types/RegCenter/data";
 import {folderSeparator, searchTreeNode} from "@/utils/function";
-import Icon from "@ant-design/icons";
-import React, {ReactNode} from "react";
-import path from "path";
-import title from "@/components/Front/Title";
-import {children} from "@umijs/utils/compiled/cheerio/lib/api/traversing";
-
-export const  RenderIcon = (props: any) => {
-    const {icon} = props
-
-    return React.createElement(
-        // @ts-ignore
-        Icon[icon],
-        {style:{ fontSize: '16px', color: '#08c' }
-        }
-    )
-}
 
 export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.map((item: SysMenu) => {
+    const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
 
     return {
         isLeaf: false,
         name: item.name,
         parentId: item.name,
-        // @ts-ignore
-        icon: Icon[item.icon],
+        // icon: parse(`${item.icon}`),
         content: item.name,
         path: item.name,
-        title: item.name,
+        title: searchTreeNode(item.name, searchValue),
         fullInfo: item,
         key: item.name,
         children: item.children
@@ -57,8 +41,7 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
                     isLeaf: true,
                     name: sub.name,
                     parentId: item.name,
-                    // @ts-ignore
-                    icon: Icon[sub.icon],
+                    // icon: parse(item.icon),
                     content: sub.name,
                     path: item.name + folderSeparator() + sub.name,
                     title: searchTreeNode(sub.name, searchValue),
@@ -69,3 +52,8 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
     }
 });
 
+const buildInitSelectValue = (data: string[]) => {
+    data.forEach((item: string) => {
+        data.push(item);
+    })
+}

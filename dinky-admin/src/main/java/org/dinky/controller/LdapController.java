@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
@@ -54,6 +55,7 @@ public class LdapController {
     @Autowired UserService userService;
 
     @GetMapping("/ldapEnableStatus")
+    @SaIgnore
     public Result<Boolean> ldapStatus() {
         return Result.succeed(
                 SystemConfiguration.getInstances().getLdapEnable().getValue(), "获取成功");

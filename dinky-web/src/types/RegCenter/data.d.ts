@@ -229,9 +229,10 @@ export type SysMenu = BaseBeanColumns & {
   orderNum: number, // 排序
   path: string, // 路由
   component: string, // 组件
-  type: string,// C菜单 F按钮
+  type: number,// C菜单 F按钮
   display: boolean, // 菜单状态(0显示 1隐藏)
   perms: string, // 权限标识
   icon: string, // 图标
+  rootMenu: boolean,
   children: SysMenu[],
 };

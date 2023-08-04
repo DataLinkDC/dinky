@@ -19,12 +19,23 @@
 
 
 import React, {useEffect} from 'react';
-import {Form, Space} from 'antd';
+import {Button, Form, Space, TreeSelect} from 'antd';
 import {UserBaseInfo} from "@/types/User/data.d";
 import {FormContextValue} from '@/components/Context/FormContext';
-import {ProForm, ProFormText, ProFormTextArea, ProFormTreeSelect} from "@ant-design/pro-components";
+import {
+    ProForm,
+    ProFormGroup,
+    ProFormRadio,
+    ProFormText,
+    ProFormTextArea,
+    ProFormTreeSelect
+} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
+import {SysMenu} from "@/types/RegCenter/data";
+import {buildMenuTreeData} from "@/pages/AuthCenter/Role/components/AssignMenu/function";
+import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
+import {Link} from "@umijs/max";
 
 
 type MenuCardProps = {
@@ -33,6 +44,8 @@ type MenuCardProps = {
     modalVisible: boolean;
     values: Partial<UserBaseInfo.Role>;
     disabled?: boolean;
+    treeData: SysMenu[];
+    isRootMenu?: boolean
 };
 
 const MenuCard: React.FC<MenuCardProps> = (props) => {
@@ -57,6 +70,8 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
         modalVisible,
         values,
         disabled=false,
+        isRootMenu = false,
+        treeData
     } = props;
 
     /**
@@ -76,12 +91,21 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
         handleModalVisible();
         formContext.resetForm();
     }
+
+    /**
+     * reset form data
+     */
+    const handleReset = () => {
+        formContext.resetForm();
+    }
+
+
     /**
      * submit form
      */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
+    const submitForm = async (formData: FormData) => {
+        await form.validateFields();
+        await handleSubmit({...values, ...formData});
         await handleCancel();
     };
     /**
@@ -99,15 +123,24 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
                 />
             }
             {
-                !modalVisible && <>
+                (modalVisible || !isRootMenu) && <>
                 <ProFormTreeSelect
-
+                    initialValue={['0-0-0']}
                     name={'parentId'}
                     label={'父级菜单'}
                     rules={[{required: true, message: '父级菜单'}]}
+                    placeholder={'父级菜单'}
+                    fieldProps={{
+                        multiple: false,
+                        treeData : buildMenuTree(treeData),
+                        treeCheckable: true,
+                        showCheckedStrategy: TreeSelect.SHOW_PARENT,
+                    }}
                 />
                 </>
             }
+
+            <ProFormText name="rootMenu" hidden/>
             <ProFormText
                 name="name"
                 label={'菜单名称'}
@@ -138,12 +171,30 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
                 label={'菜单图标'}
                 placeholder={'菜单图标'}
                 rules={[{required: true, message: '菜单图标'}]}
+                fieldProps={{addonAfter: <a type={'link'} target={'_blank'} href={'https://ant.design/components/icon-cn'}>菜单图标参考</a>,}}
             />
-            <ProFormText
-                name="type"
-                label={'菜单类型'}
-                placeholder={'菜单类型'}
+
+            <ProFormRadio.Group
+                label="菜单类型"
+                name={'type'}
+                radioType="button"
                 rules={[{required: true, message: '菜单类型'}]}
+                // fieldProps={{
+                //     value: formLayoutType,
+                //     onChange: (e) => setFormLayoutType(e.target.value),
+                // }}
+                options={[
+                    {
+                        title: '菜单',
+                        label: '菜单',
+                        value: 0,
+                    },
+                    {
+                        title: '按钮',
+                        label: '按钮',
+                        value: 1,
+                    }
+                ]}
             />
 
             <ProFormTextArea
@@ -165,12 +216,9 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
             {...FORM_LAYOUT_PUBLIC}
             form={form}
             initialValues={values}
-            onReset={()=> formContext.resetForm()}
-            onFinish={() => submitForm()}
-            submitter={{
-                render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,
-                resetButtonProps: {style: {display: 'none'},}
-            }}
+            onReset={handleReset}
+            onFinish={submitForm}
+            submitter={{render: (_, dom) => <Space style={{display:'flex',justifyContent:'center'}}>{dom}</Space>,}}
             layout={'horizontal'}
         >
             {renderMenuForm()}
