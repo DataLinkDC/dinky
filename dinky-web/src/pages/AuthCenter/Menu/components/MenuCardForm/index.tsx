@@ -116,7 +116,7 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
             }
             <ProFormTreeSelect
                 hidden={isRootMenu}
-                initialValue={!isRootMenu ? selectedKeys.pop() : 0}
+                initialValue={!isRootMenu ? selectedKeys : [0]}
                 shouldUpdate
                 name={'parentId'}
                 label={'父级菜单'}

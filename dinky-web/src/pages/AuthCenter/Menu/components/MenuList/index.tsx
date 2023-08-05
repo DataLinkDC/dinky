@@ -18,12 +18,9 @@
  */
 
 
-import React, {useEffect, useRef, useState} from "react";
-import {ActionType} from "@ant-design/pro-table";
-import {Button, Dropdown, Menu, Space, Typography} from 'antd';
+import React, {useEffect, useState} from "react";
+import {Button, Space, Typography} from 'antd';
 import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
-import {getTenantByLocalStorage} from "@/utils/function";
 import {ProCard} from "@ant-design/pro-components";
 import {Resizable} from "re-resizable";
 import {MenuInfo} from "rc-menu/es/interface";
@@ -33,8 +30,8 @@ import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
 import {PlusSquareTwoTone, ReloadOutlined} from "@ant-design/icons";
 import MenuCardForm from "@/pages/AuthCenter/Menu/components/MenuCardForm";
 import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
-import {id} from "inversify";
 import {l} from "@/utils/intl";
+import RightContextMenu from "@/components/RightContextMenu";
 
 const {Text, Link} = Typography;
 
@@ -50,7 +47,7 @@ const MenuList: React.FC = () => {
         const [selectedKeys, setSelectedKeys] = useState([]);
         const [contextMenuVisible, setContextMenuVisible] = useState(false);
         const [rightClickedNode, setRightClickedNode] = useState<any>();
-        const [clickedNode, setClickedNode] = useState({});
+        const [clickedNode, setClickedNode] = useState<any>({});
         const [treeData, setTreeData] = useState<SysMenu[]>([]);
         const [disabled, setDisabled] = useState<boolean>(false);
         const [isRootMenu, setIsRootMenu] = useState<boolean>(false);
@@ -99,13 +96,13 @@ const MenuList: React.FC = () => {
         };
 
 
-
         /**
          * cancel
          */
         const handleCancel = () => {
             handleModalVisible(false);
             handleUpdateModalVisible(false);
+            setContextMenuVisible(false)
         };
 
         function handleCreateSubMenu() {
@@ -123,6 +120,9 @@ const MenuList: React.FC = () => {
                     break;
                 case 'delete':
                     await handleDeleteSubmit();
+                    break;
+                case 'cancel':
+                    await handleCancel();
                     break;
                 default:
                     break;
@@ -148,34 +148,16 @@ const MenuList: React.FC = () => {
                 zIndex: 888,
             });
         };
-        /**
-         * render the right click menu
-         * @returns {JSX.Element}
-         */
-        const renderRightClickMenu = () => {
-            const menu = <Menu onClick={handleMenuClick} items={RIGHT_CONTEXT_MENU()}/>
-            return <>
-                <Dropdown
-                    arrow
-                    trigger={['contextMenu']}
-                    overlayStyle={{...contextMenuPosition}}
-                    overlay={menu}
-                    open={contextMenuVisible}
-                    onVisibleChange={setContextMenuVisible}
-                >
-                    {/*占位*/}
-                    <div style={{...contextMenuPosition}}/>
-                </Dropdown>
-            </>
-        }
+
 
         const handleNodeClick = async (info: any) => {
-            const {node: { key, fullInfo}, node} = info;
+            const {node: {key, fullInfo}, node} = info;
             setSelectedKeys([key] as any);
             setClickedNode(node);
             setFormValues(fullInfo)
             handleUpdateModalVisible(true);
             setDisabled(true)
+            handleModalVisible(false)
         };
 
 
@@ -195,7 +177,7 @@ const MenuList: React.FC = () => {
          */
         const renderRightContent = () => {
             // default
-            if (!updateModalVisible && !modalVisible ) {
+            if (!updateModalVisible && !modalVisible) {
                 return <><OpHelper/></>
             }
             // update
@@ -209,7 +191,8 @@ const MenuList: React.FC = () => {
                     />
                 </>
             }
-            if (modalVisible && !formValues.id ){
+            // add
+            if (modalVisible) {
                 return <>
                     <MenuCardForm
                         selectedKeys={selectedKeys}
@@ -220,12 +203,15 @@ const MenuList: React.FC = () => {
 
         };
 
+        /**
+         * create root menu
+         */
         const handleCreateRoot = () => {
             handleUpdateModalVisible(false)
             handleModalVisible(true)
             setIsRootMenu(true)
+            setFormValues({})
         }
-
 
         const renderLeftExtra = () => {
             return <Space>
@@ -251,12 +237,12 @@ const MenuList: React.FC = () => {
         }
 
 
-        const renderAddSubMenuTitle =( ) => {
+        const renderAddSubMenuTitle = () => {
             return <>
                 {(formValues.id && updateModalVisible) ?
                     '修改菜单' : (!formValues.id && modalVisible && !isRootMenu) ?
                         '新增子菜单' : (!formValues.id && modalVisible && isRootMenu) ?
-                            '新增根菜单': ''}
+                            '新增根菜单' : ''}
             </>
         }
 
@@ -274,10 +260,8 @@ const MenuList: React.FC = () => {
                     minWidth={500}
                     maxWidth={1200}
                 >
-                    <ProCard
-                        extra={renderLeftExtra()}
-                        title={'菜单列表'}
-                        ghost hoverable colSpan={'18%'} className={"siderTree schemaTree"}>
+                    <ProCard extra={renderLeftExtra()} title={'菜单列表'} ghost hoverable colSpan={'18%'}
+                             className={"siderTree schemaTree"}>
                         <MenuTree
                             loading={loading}
                             selectedKeys={selectedKeys}
@@ -295,7 +279,11 @@ const MenuList: React.FC = () => {
                     {renderRightContent()}
                 </ProCard>
             </ProCard>
-            {contextMenuVisible && renderRightClickMenu()}
+
+            <RightContextMenu
+                contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
+                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU()} onClick={handleMenuClick}
+            />
         </>
     }
 ;

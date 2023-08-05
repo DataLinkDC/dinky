@@ -18,16 +18,14 @@
  */
 
 import {
-  DeleteOutlined,
-  EditOutlined,
-  MenuOutlined,
-  PlusCircleOutlined,
-  UndoOutlined,
-  UploadOutlined
+  DeleteTwoTone,
+  EditOutlined, MenuOutlined,
+  PlusCircleTwoTone,
 } from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import React from "react";
-import {MenuIcon} from "@/components/Icons/CustomIcons";
+import {BackIcon} from "@/components/Icons/CustomIcons";
+import {MenuItemType} from "antd/es/menu/hooks/useItems";
 
 
 /**
@@ -36,17 +34,23 @@ import {MenuIcon} from "@/components/Icons/CustomIcons";
  * @returns {[{icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}, {icon: JSX.Element, disabled: boolean, label: string, key: string}]}
  * @constructor
  */
-export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
+export const RIGHT_CONTEXT_MENU = (isDisabled = false): MenuItemType[] => [
   {
     key: 'addSub',
-    icon: <PlusCircleOutlined/>,
+    icon: <PlusCircleTwoTone/>,
     label: '添加子菜单',
     disabled: isDisabled,
   },
   {
     key: 'delete',
-    icon: <DeleteOutlined/>,
-    label: '删除',
+    icon: <DeleteTwoTone twoToneColor={'red'}/>,
+    label: l('button.delete'),
+    disabled: isDisabled,
+  },
+  {
+    key: 'cancel',
+    icon: <BackIcon/>,
+    label: l('button.cancel'),
     disabled: isDisabled,
   },
 ];

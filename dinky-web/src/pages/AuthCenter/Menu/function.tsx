@@ -32,7 +32,7 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
         path: item.name,
         title: searchTreeNode(item.name, searchValue),
         fullInfo: item,
-        key: item.name,
+        key: item.id,
         children: item.children
             // filter table by search value and map table to tree node
             .filter((sub: SysMenu) => (sub.name.indexOf(searchValue) > -1))
@@ -45,15 +45,9 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
                     content: sub.name,
                     path: item.name + folderSeparator() + sub.name,
                     title: searchTreeNode(sub.name, searchValue),
-                    key: item.name + folderSeparator() + sub.name,
+                    key: sub.id,
                     fullInfo: item,
                 };
             }),
     }
 });
-
-const buildInitSelectValue = (data: string[]) => {
-    data.forEach((item: string) => {
-        data.push(item);
-    })
-}
