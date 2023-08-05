@@ -33,8 +33,6 @@ import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
 import {l} from "@/utils/intl";
 import RightContextMenu from "@/components/RightContextMenu";
 
-const {Text, Link} = Typography;
-
 const MenuList: React.FC = () => {
         /**
          * status
@@ -47,7 +45,6 @@ const MenuList: React.FC = () => {
         const [selectedKeys, setSelectedKeys] = useState([]);
         const [contextMenuVisible, setContextMenuVisible] = useState(false);
         const [rightClickedNode, setRightClickedNode] = useState<any>();
-        const [clickedNode, setClickedNode] = useState<any>({});
         const [treeData, setTreeData] = useState<SysMenu[]>([]);
         const [disabled, setDisabled] = useState<boolean>(false);
         const [isRootMenu, setIsRootMenu] = useState<boolean>(false);
@@ -151,9 +148,8 @@ const MenuList: React.FC = () => {
 
 
         const handleNodeClick = async (info: any) => {
-            const {node: {key, fullInfo}, node} = info;
+            const {node: {key, fullInfo}} = info;
             setSelectedKeys([key] as any);
-            setClickedNode(node);
             setFormValues(fullInfo)
             handleUpdateModalVisible(true);
             setDisabled(true)
