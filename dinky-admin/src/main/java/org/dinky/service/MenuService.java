@@ -141,7 +141,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menu 菜单信息
      * @return 结果
      */
-    int insertMenu(Menu menu);
+    boolean insertMenu(Menu menu);
 
     /**
      * 修改保存菜单信息
@@ -149,7 +149,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menu 菜单信息
      * @return 结果
      */
-    int updateMenu(Menu menu);
+    boolean updateMenu(Menu menu);
 
     /**
      * 删除菜单管理信息
@@ -157,7 +157,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menuId 菜单ID
      * @return 结果
      */
-    int deleteMenuById(Long menuId);
+    boolean deleteMenuById(Long menuId);
 
     /**
      * 校验菜单名称是否唯一

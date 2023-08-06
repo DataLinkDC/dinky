@@ -42,14 +42,6 @@ public interface MenuMapper extends SuperMapper<Menu> {
     List<Menu> selectMenuList(Menu menu);
 
     /**
-     * 根据superflag获取所有菜单
-     *
-     * @param superFlag
-     * @return
-     */
-    List<Menu> listBySuperFlag(Integer superFlag);
-
-    /**
      * 根据用户所有权限
      *
      * @return 权限列表
@@ -71,22 +63,6 @@ public interface MenuMapper extends SuperMapper<Menu> {
      * @return 权限列表
      */
     List<String> selectMenuPermsByUserId(Long userId);
-
-    /**
-     * 根据租户的权限模版ID查询权限
-     *
-     * @param tempId 租户的权限模版ID
-     * @return 权限列表
-     */
-    List<String> selectMenuPermsByTempId(String tempId);
-
-    /**
-     * 根据用户ID查询菜单
-     *
-     * @param temId 模板ID
-     * @return 菜单列表
-     */
-    List<Menu> listMenusByTempId(String temId);
 
     List<Menu> listMenus4SuperAdmin();
 
@@ -123,43 +99,11 @@ public interface MenuMapper extends SuperMapper<Menu> {
     int hasChildByMenuId(Long menuId);
 
     /**
-     * 新增菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    int insertMenu(Menu menu);
-
-    /**
-     * 修改菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    int updateMenu(Menu menu);
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    int deleteMenuById(Long menuId);
-
-    /**
      * 校验菜单名称是否唯一
      *
-     * @param menuName 菜单名称
+     * @param name 菜单名称
      * @param parentId 父菜单ID
      * @return 结果
      */
-    Menu checkMenuNameUnique(@Param("menuName") String menuName, @Param("parentId") Long parentId);
-
-    /**
-     * 获取已分配给模板的菜单ID
-     *
-     * @param tempId
-     * @return
-     */
-    List<Integer> listCheckedMenusByTempId(@Param("tempId") String tempId);
+    Menu checkMenuNameUnique(@Param("name") String name, @Param("parentId") Long parentId);
 }

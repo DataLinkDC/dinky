@@ -102,13 +102,12 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
         if (user.getSuperAdminFlag()) { // super-admin获取所有超管菜单（super_flag=1）
             return menuMapper.listAllMenus();
         }
-        List<Menu> menuList = menuMapper.selectMenuListByUserId(menu);
-        return menuList;
+        return menuMapper.selectMenuListByUserId(menu);
     }
 
     @Override
     public List<Menu> listMenusBySuperFlag(Integer superFlag) {
-        return menuMapper.listBySuperFlag(superFlag);
+        return this.list();
     }
 
     /**
@@ -252,7 +251,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     @Override
     public boolean hasChildByMenuId(Long menuId) {
         int result = menuMapper.hasChildByMenuId(menuId);
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
@@ -264,7 +263,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     @Override
     public boolean checkMenuExistRole(Long menuId) {
         int result = roleMenuMapper.checkMenuExistRole(menuId);
-        return result > 0 ? true : false;
+        return result > 0;
     }
 
     /**
@@ -274,8 +273,8 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 结果
      */
     @Override
-    public int insertMenu(Menu menu) {
-        return menuMapper.insertMenu(menu);
+    public boolean insertMenu(Menu menu) {
+        return this.save(menu);
     }
 
     /**
@@ -285,9 +284,8 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 结果
      */
     @Override
-    public int updateMenu(Menu menu) {
-
-        return menuMapper.updateMenu(menu);
+    public boolean updateMenu(Menu menu) {
+        return this.updateById(menu);
     }
 
     /**
@@ -297,8 +295,8 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 结果
      */
     @Override
-    public int deleteMenuById(Long menuId) {
-        return menuMapper.deleteMenuById(menuId);
+    public boolean deleteMenuById(Long menuId) {
+        return this.removeById(menuId);
     }
 
     /**
