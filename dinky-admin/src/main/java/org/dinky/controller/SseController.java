@@ -19,9 +19,7 @@
 
 package org.dinky.controller;
 
-import cn.hutool.json.JSONUtil;
 import org.dinky.data.annotation.PublicInterface;
-import org.dinky.data.metrics.Jvm;
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
 
