@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import cn.hutool.json.JSONUtil;
 import org.dinky.data.annotation.PublicInterface;
+import org.dinky.data.metrics.Jvm;
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
 
@@ -37,7 +39,7 @@ import cn.hutool.core.lang.Opt;
 import lombok.RequiredArgsConstructor;
 
 @RestController
-@RequestMapping("/sse")
+@RequestMapping("/api/sse")
 @RequiredArgsConstructor
 public class SseController {
     private final MonitorService monitorService;
@@ -49,5 +51,13 @@ public class SseController {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
                 emitter, DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
+    }
+
+    @GetMapping(value = "/getJvmInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @CrossOrigin("*")
+    @PublicInterface
+    public SseEmitter getJvmInfo(Long lastTime) {
+        SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
+        return monitorService.sendJvmInfo(emitter);
     }
 }

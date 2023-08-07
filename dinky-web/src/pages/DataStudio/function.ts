@@ -97,3 +97,15 @@ export const getCurrentTab = (panes: any, activeKey: string) => {
 }
 
 
+export const getFooterValue = (panes: any, activeKey: string)=>{
+  const currentTab = getCurrentTab(panes,activeKey);
+  let footerValue:object={};
+  if (currentTab&&currentTab.type === "project") {
+    footerValue ={
+      codePosition: [1, 1],
+      codeType: (currentTab.params as DataStudioParams).taskData.dialect,
+    }
+  }
+  return footerValue
+}
+

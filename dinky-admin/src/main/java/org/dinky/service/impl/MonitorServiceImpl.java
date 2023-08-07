@@ -19,8 +19,10 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.json.JSONUtil;
 import org.dinky.configure.MetricConfig;
 import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.metrics.Jvm;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.vo.MetricsVO;
 import org.dinky.mapper.MetricsMapper;
@@ -105,6 +107,25 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
                                 }
                             }
                             ThreadUtil.sleep(800);
+                        }
+                    } catch (IOException e) {
+                        sseEmitter.complete();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        sseEmitter.complete();
+                    }
+                });
+        return sseEmitter;
+    }
+
+    @Override
+    public SseEmitter sendJvmInfo(SseEmitter sseEmitter) {
+        scheduleRefreshMonitorDataExecutor.execute(
+                () -> {
+                    try {
+                        while (true) {
+                            sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
+                            ThreadUtil.sleep(10000);
                         }
                     } catch (IOException e) {
                         sseEmitter.complete();

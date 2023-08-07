@@ -86,4 +86,6 @@ export default {
   'menu.datastudio.process':'进程',
   'menu.datastudio.history':'历史',
   'menu.datastudio.table-data':'表数据',
+
+  'menu.datastudio.tool.text-comparison':'文本比对',
 };
