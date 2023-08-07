@@ -84,7 +84,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 
   return <>
-    <Search style={{marginBottom: 8}}  placeholder="Search" onChange={onChangeSearch} allowClear={true}/>
+    <Search style={{margin:"8px 0px"}}  placeholder="Search" onChange={onChangeSearch} allowClear={true}/>
 
     {
       (treeData.length > 0) ?
