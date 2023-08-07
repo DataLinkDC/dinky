@@ -981,4 +981,10 @@ export default {
   'pages.datastudio.explain.validate.grammar.error': '语法有误',
   'pages.datastudio.explain.validate.logic.right': '逻辑正确',
   'pages.datastudio.explain.validate.logic.error': '逻辑有误',
+
+  'pages.datastudio.footer.memDetails': "最大堆大小：{max}\n已使用：   {used}M",
+  'pages.datastudio.footer.codeType': "代码类型：",
+  'pages.datastudio.footer.lineSeparator': "行分隔符：",
+  'pages.datastudio.footer.codeEncoding': "文件编码：",
+  'pages.datastudio.footer.codePosition': "行{Ln}:列{Col} ",
 };

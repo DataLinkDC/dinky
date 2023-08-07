@@ -84,12 +84,12 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
 
 
   return <>
-    <Search style={{marginBottom: 8}}  placeholder="Search" onChange={onChangeSearch} allowClear={true}/>
+    <Search style={{margin:"8px 0px"}}  placeholder="Search" onChange={onChangeSearch} allowClear={true}/>
 
     {
       (treeData.length > 0) ?
         <DirectoryTree
-          style={{...style, height: height-40}}
+          style={{...style, height: height-40-16,overflowY:'auto'}}
           // className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           expandedKeys={expandedKeys}

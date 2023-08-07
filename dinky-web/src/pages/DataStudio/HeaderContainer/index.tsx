@@ -44,8 +44,8 @@ import {ErrorNotification, WarningMessage} from "@/utils/messages";
 
 const headerStyle: React.CSSProperties = {
   display: "inline-flex",
-  lineHeight: '32px',
-  height: "32px",
+  lineHeight: VIEW.headerHeight+'px',
+  height: VIEW.headerHeight,
   fontStyle: "normal",
   fontWeight: "bold",
   fontSize: "16px",

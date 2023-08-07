@@ -967,4 +967,12 @@ export default {
   'pages.datastudio.explain.validate.grammar.error': 'Grammar Error',
   'pages.datastudio.explain.validate.logic.right': 'Logical Right',
   'pages.datastudio.explain.validate.logic.error': 'Logical Error',
+
+  // footer
+  'pages.datastudio.footer.memDetails': "Maximum heap size: {max}\nUsed:   {used}M",
+  'pages.datastudio.footer.codeType': "Code Type: ",
+  'pages.datastudio.footer.lineSeparator': "Line Separator: ",
+  'pages.datastudio.footer.codeEncoding': "File Encoding: ",
+  'pages.datastudio.footer.codePosition': "Ln {Ln}:Col {Col} ",
+
 };

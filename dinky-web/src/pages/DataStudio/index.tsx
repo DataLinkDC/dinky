@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Layout, Menu, Modal, theme} from 'antd';
+import {Button, Layout, Menu, Modal, Progress, Space, theme} from 'antd';
 import {connect, getDvaApp} from "umi";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {DataStudioParams, StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
@@ -37,10 +37,19 @@ import {
   getSessionData
 } from "@/pages/DataStudio/RightContainer/JobConfig/service";
 import * as monaco from "monaco-editor";
+import {Footer} from "antd/es/layout/layout";
+import FooterContainer from "@/pages/DataStudio/FooterContainer";
 
 const {Sider, Content} = Layout;
 
 const {useToken} = theme;
+const format = (percent?: number, successPercent?: number) => (
+  <div style={{ position: 'relative', height: '100%' }}>
+    <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+      {`${percent}%`}
+    </div>
+  </div>
+);
 const DataStudio = (props: any) => {
   const {
     bottomContainer,
@@ -276,7 +285,11 @@ const DataStudio = (props: any) => {
               />
             </Sider>
           </Layout>
+          {/* 页脚 */}
+          {<FooterContainer token={token} />}
+
         </div>
+
       </Fragment>
     </PersistGate>
   );

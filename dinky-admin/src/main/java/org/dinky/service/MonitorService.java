@@ -36,6 +36,8 @@ public interface MonitorService extends IService<Metrics> {
 
     SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate);
 
+    SseEmitter sendJvmInfo(SseEmitter sseEmitter);
+
     void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList);
 
     Map<String, List<Metrics>> getMetricsLayout();
