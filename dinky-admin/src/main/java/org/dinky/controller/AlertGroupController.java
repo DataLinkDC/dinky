@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import org.dinky.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;

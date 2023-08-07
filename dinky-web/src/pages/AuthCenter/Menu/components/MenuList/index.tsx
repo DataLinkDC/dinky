@@ -19,7 +19,7 @@
 
 
 import React, {useEffect, useState} from "react";
-import {Button, Space, Typography} from 'antd';
+import {Button, Space} from 'antd';
 import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {ProCard} from "@ant-design/pro-components";
 import {Resizable} from "re-resizable";
@@ -28,10 +28,10 @@ import {RIGHT_CONTEXT_MENU} from "@/pages/AuthCenter/Menu/components/MenuList/co
 import {SysMenu} from "@/types/RegCenter/data";
 import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
 import {PlusSquareTwoTone, ReloadOutlined} from "@ant-design/icons";
-import MenuCardForm from "@/pages/AuthCenter/Menu/components/MenuCardForm";
 import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
 import {l} from "@/utils/intl";
 import RightContextMenu from "@/components/RightContextMenu";
+import MenuForm from "@/pages/AuthCenter/Menu/components/MenuForm";
 
 const MenuList: React.FC = () => {
         /**
@@ -179,7 +179,7 @@ const MenuList: React.FC = () => {
             // update
             if (formValues.id && updateModalVisible) {
                 return <>
-                    <MenuCardForm
+                    <MenuForm
                         selectedKeys={selectedKeys}
                         isRootMenu={isRootMenu} treeData={treeData} disabled={disabled}
                         values={formValues} onCancel={handleCancel} open={updateModalVisible}
@@ -190,7 +190,7 @@ const MenuList: React.FC = () => {
             // add
             if (modalVisible) {
                 return <>
-                    <MenuCardForm
+                    <MenuForm
                         selectedKeys={selectedKeys}
                         isRootMenu={isRootMenu} treeData={treeData} values={{}} open={modalVisible}
                         onCancel={handleCancel} onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>

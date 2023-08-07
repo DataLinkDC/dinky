@@ -29,7 +29,7 @@ import {SysMenu} from "@/types/RegCenter/data";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
 
 
-type MenuCardProps = {
+type MenuFormProps = {
     onCancel: (flag?: boolean) => void;
     onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
     values: Partial<UserBaseInfo.Role>;
@@ -40,7 +40,7 @@ type MenuCardProps = {
     isRootMenu?: boolean
 };
 
-const MenuCard: React.FC<MenuCardProps> = (props) => {
+const MenuForm: React.FC<MenuFormProps> = (props) => {
 
     const [searchValue, setSearchValue] = useState('')
     /**
@@ -219,4 +219,4 @@ const MenuCard: React.FC<MenuCardProps> = (props) => {
     </>
 
 };
-export default MenuCard;
+export default MenuForm;

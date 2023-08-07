@@ -18,7 +18,7 @@
  */
 
 
-import {Button, Empty, Input, Spin, Tree, Typography, Upload} from "antd";
+import {Empty, Input, Spin, Tree} from "antd";
 import React, {useCallback, useState} from "react";
 import {l} from "@/utils/intl";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
