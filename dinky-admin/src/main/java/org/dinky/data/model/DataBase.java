@@ -20,10 +20,12 @@
 package org.dinky.data.model;
 
 import org.dinky.metadata.driver.DriverConfig;
+import org.dinky.mybatis.crypto.CryptoTypeHandler;
 import org.dinky.mybatis.model.SuperEntity;
 
 import java.time.LocalDateTime;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -36,7 +38,7 @@ import lombok.EqualsAndHashCode;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("dinky_database")
+@TableName(value = "dinky_database", autoResultMap = true)
 public class DataBase extends SuperEntity {
 
     private static final long serialVersionUID = -5002272138861566408L;
@@ -47,6 +49,8 @@ public class DataBase extends SuperEntity {
     private String type;
     private String url;
     private String username;
+
+    @TableField(typeHandler = CryptoTypeHandler.class)
     private String password;
 
     private String note;

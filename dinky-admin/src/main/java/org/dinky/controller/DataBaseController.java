@@ -96,7 +96,14 @@ public class DataBaseController {
     @Log(title = "DataBase Get All", businessType = BusinessType.QUERY)
     @ApiOperation("DataBase Get All")
     public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
-        return databaseService.selectForProTable(para);
+        final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
+        // 密码不返回
+        if (result != null && result.getData() != null) {
+            for (DataBase data : result.getData()) {
+                data.setPassword(null);
+            }
+        }
+        return result;
     }
 
     /**
