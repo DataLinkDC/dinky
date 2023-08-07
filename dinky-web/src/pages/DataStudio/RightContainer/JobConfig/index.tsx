@@ -125,217 +125,217 @@ const JobConfig = (props: any) => {
   };
 
   return (
-      <Form
-        initialValues={{
-          name: RUN_MODE.LOCAL,
-          envId: 0,
-          parallelism: 1,
-          savePointStrategy: 0,
-          alertGroupId: 0,
-        }}
-        className={"data-studio-form"}
-        style={{paddingInline: '10px'}}
-        form={form}
-        layout="vertical"
-        onValuesChange={onValuesChange}
+    <Form
+      initialValues={{
+        name: RUN_MODE.LOCAL,
+        envId: 0,
+        parallelism: 1,
+        savePointStrategy: 0,
+        alertGroupId: 0,
+      }}
+      className={"data-studio-form"}
+      style={{paddingInline: '10px'}}
+      form={form}
+      layout="vertical"
+      onValuesChange={onValuesChange}
+    >
+      <Form.Item
+        label={l('global.table.execmode')} name="type"
+        tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
       >
-        <Form.Item
-          label={l('global.table.execmode')} name="type"
-          tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
-        >
-          <Select value={RUN_MODE.LOCAL}>
-            <Option value={RUN_MODE.LOCAL}>Local</Option>
-            <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
-            <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
-            <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
-            <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
-            <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
-            <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
-            <Option value={RUN_MODE.KUBERNETES_APPLICATION_OPERATOR}>Kubernetes Operator Application</Option>
-          </Select>
-        </Form.Item>
-        {(current.type === RUN_MODE.YARN_SESSION || current.type === RUN_MODE.KUBERNETES_SESSION || current.type === RUN_MODE.STANDALONE) ? (
-          <Row>
-            <Col span={24}>
-              <Form.Item label={l('pages.datastudio.label.jobConfig.cluster')}
-                         tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                           type: current.type
-                         })}
-                         name="clusterId"
-              >
-                {
-                  currentSession.session ?
-                    (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
-                        (<><Badge status="success"/><Text
-                          type="success">{currentSession.sessionConfig.clusterName}</Text></>)
-                        : (<><Badge status="error"/><Text type="danger">{l('pages.devops.jobinfo.localenv')}</Text></>)
-                    ) : (<Select
-                      style={{width: '100%'}}
-                      placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
-                      optionLabelProp="label"
-                      onChange={onChangeClusterSession}
-                    >
-                      {getClusterOptions()}
-                    </Select>)
-                }
-              </Form.Item>
-            </Col>
-          </Row>) : undefined}
-        {(current.type === RUN_MODE.YARN_PER_JOB || current.type === RUN_MODE.YARN_APPLICATION
-          || current.type === RUN_MODE.KUBERNETES_APPLICATION || current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) ? (
-          <Row>
-            <Col span={24}>
-              <Form.Item label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-                         tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                           type: current.type
-                         })}
-                         name="clusterConfigurationId"
-              >
-                <Select
-                  style={{width: '100%'}}
-                  placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
-                  optionLabelProp="label"
-                >
-                  {getClusterConfigurationOptions()}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>) : undefined}
-        <Form.Item label={l('pages.datastudio.label.jobConfig.flinksql.env')}
-                   tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
-                   name="envId">
-          <Select
-            style={{width: '100%'}}
-            placeholder={l('pages.datastudio.label.jobConfig.flinksql.env.tip2')}
-            allowClear
-            optionLabelProp="label"
-            value={0}
-          >
-            {getEnvOptions()}
-          </Select>
-        </Form.Item>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              label={l('pages.datastudio.label.jobConfig.parallelism')}
-              name="parallelism"
-              tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
-            >
-              <InputNumber min={1} max={9999}/>
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label={l('pages.datastudio.label.jobConfig.insert')} name="statementSet"
-              valuePropName="checked"
-              tooltip={{
-                title: l('pages.datastudio.label.jobConfig.insert.tip'),
-                icon: <InfoCircleOutlined/>
-              }}
-            >
-              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={12}>
-            <Form.Item
-              label={l('pages.datastudio.label.jobConfig.fragment')} name="fragment"
-              valuePropName="checked"
-              tooltip={{
-                title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-                icon: <InfoCircleOutlined/>
-              }}
-            >
-              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-              />
-            </Form.Item>
-          </Col>
-          <Col span={12}>
-            <Form.Item
-              label={l('pages.datastudio.label.jobConfig.batchmode')} name="batchModel"
-              valuePropName="checked"
-              tooltip={{title: l('pages.datastudio.label.jobConfig.batchmode.tip'), icon: <InfoCircleOutlined/>}}
-            >
-              <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-              />
-            </Form.Item>
-          </Col>
-        </Row>
-        <Form.Item
-          label={l('pages.datastudio.label.jobConfig.savePointStrategy')}
-          name="savePointStrategy"
-          tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
-        >
-          <Select>
-            <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
-            <Option value={1}>{l('global.savepoint.strategy.latest')}</Option>
-            <Option value={2}>{l('global.savepoint.strategy.earliest')}</Option>
-            <Option value={3}>{l('global.savepoint.strategy.custom')}</Option>
-          </Select>
-        </Form.Item>
-        {current.savePointStrategy === 3 ?
-          (<Form.Item
-            label={l('pages.datastudio.label.jobConfig.savePointpath')}
-            name="savePointPath"
-            tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
-          >
-            <Input placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}/>
-          </Form.Item>) : ''
-        }
+        <Select value={RUN_MODE.LOCAL}>
+          <Option value={RUN_MODE.LOCAL}>Local</Option>
+          <Option value={RUN_MODE.STANDALONE}>Standalone</Option>
+          <Option value={RUN_MODE.YARN_SESSION}>Yarn Session</Option>
+          <Option value={RUN_MODE.YARN_PER_JOB}>Yarn Per-Job</Option>
+          <Option value={RUN_MODE.YARN_APPLICATION}>Yarn Application</Option>
+          <Option value={RUN_MODE.KUBERNETES_SESSION}>Kubernetes Session</Option>
+          <Option value={RUN_MODE.KUBERNETES_APPLICATION}>Kubernetes Application</Option>
+          <Option value={RUN_MODE.KUBERNETES_APPLICATION_OPERATOR}>Kubernetes Operator Application</Option>
+        </Select>
+      </Form.Item>
+      {(current.type === RUN_MODE.YARN_SESSION || current.type === RUN_MODE.KUBERNETES_SESSION || current.type === RUN_MODE.STANDALONE) ? (
         <Row>
           <Col span={24}>
-            <Form.Item label={l('pages.datastudio.label.jobConfig.alertGroup')} name="alertGroupId"
+            <Form.Item label={l('pages.datastudio.label.jobConfig.cluster')}
+                       tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                         type: current.type
+                       })}
+                       name="clusterId"
+            >
+              {
+                currentSession.session ?
+                  (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
+                      (<><Badge status="success"/><Text
+                        type="success">{currentSession.sessionConfig.clusterName}</Text></>)
+                      : (<><Badge status="error"/><Text type="danger">{l('pages.devops.jobinfo.localenv')}</Text></>)
+                  ) : (<Select
+                    style={{width: '100%'}}
+                    placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
+                    optionLabelProp="label"
+                    onChange={onChangeClusterSession}
+                  >
+                    {getClusterOptions()}
+                  </Select>)
+              }
+            </Form.Item>
+          </Col>
+        </Row>) : undefined}
+      {(current.type === RUN_MODE.YARN_PER_JOB || current.type === RUN_MODE.YARN_APPLICATION
+        || current.type === RUN_MODE.KUBERNETES_APPLICATION || current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) ? (
+        <Row>
+          <Col span={24}>
+            <Form.Item label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+                       tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                         type: current.type
+                       })}
+                       name="clusterConfigurationId"
             >
               <Select
                 style={{width: '100%'}}
-                placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
+                placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
                 optionLabelProp="label"
               >
-                {getGroupOptions()}
+                {getClusterConfigurationOptions()}
               </Select>
             </Form.Item>
           </Col>
-        </Row>
-        <Form.Item
-          label={l('pages.datastudio.label.jobConfig.other')}
-          tooltip={{title: l('pages.datastudio.label.jobConfig.other.tip'), icon: <InfoCircleOutlined/>}}
+        </Row>) : undefined}
+      <Form.Item label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+                 tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+                 name="envId">
+        <Select
+          style={{width: '100%'}}
+          placeholder={l('pages.datastudio.label.jobConfig.flinksql.env.tip2')}
+          allowClear
+          optionLabelProp="label"
+          value={0}
         >
-          {/*todo 这里需要优化，有有异常抛出*/}
-          <Form.List name="config"
+          {getEnvOptions()}
+        </Select>
+      </Form.Item>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            label={l('pages.datastudio.label.jobConfig.parallelism')}
+            name="parallelism"
+            tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
           >
-            {(fields, {add, remove}) => (
-              <>
-                {fields.map(({key, name, ...restField}) => (
-                  <Space key={key} style={{display: 'flex'}} align="baseline">
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'key']}
-                      style={{marginBottom: '5px'}}
-                    >
-                      <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}/>
-                    </Form.Item>
-                    <Form.Item
-                      {...restField}
-                      name={[name, 'value']}
-                      style={{marginBottom: '5px'}}
-                    >
-                      <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}/>
-                    </Form.Item>
-                    <MinusCircleOutlined onClick={() => remove(name)}/>
-                  </Space>
-                ))}
-                <Form.Item>
-                  <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
-                    {l('pages.datastudio.label.jobConfig.addConfig')}
-                  </Button>
-                </Form.Item>
-              </>
-            )}
-          </Form.List>
-        </Form.Item>
-      </Form>
+            <InputNumber min={1} max={9999}/>
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label={l('pages.datastudio.label.jobConfig.insert')} name="statementSet"
+            valuePropName="checked"
+            tooltip={{
+              title: l('pages.datastudio.label.jobConfig.insert.tip'),
+              icon: <InfoCircleOutlined/>
+            }}
+          >
+            <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <Form.Item
+            label={l('pages.datastudio.label.jobConfig.fragment')} name="fragment"
+            valuePropName="checked"
+            tooltip={{
+              title: l('pages.datastudio.label.jobConfig.fragment.tip'),
+              icon: <InfoCircleOutlined/>
+            }}
+          >
+            <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+            />
+          </Form.Item>
+        </Col>
+        <Col span={12}>
+          <Form.Item
+            label={l('pages.datastudio.label.jobConfig.batchmode')} name="batchModel"
+            valuePropName="checked"
+            tooltip={{title: l('pages.datastudio.label.jobConfig.batchmode.tip'), icon: <InfoCircleOutlined/>}}
+          >
+            <Switch checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
+            />
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item
+        label={l('pages.datastudio.label.jobConfig.savePointStrategy')}
+        name="savePointStrategy"
+        tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
+      >
+        <Select>
+          <Option value={0}>{l('global.savepoint.strategy.disabled')}</Option>
+          <Option value={1}>{l('global.savepoint.strategy.latest')}</Option>
+          <Option value={2}>{l('global.savepoint.strategy.earliest')}</Option>
+          <Option value={3}>{l('global.savepoint.strategy.custom')}</Option>
+        </Select>
+      </Form.Item>
+      {current.savePointStrategy === 3 ?
+        (<Form.Item
+          label={l('pages.datastudio.label.jobConfig.savePointpath')}
+          name="savePointPath"
+          tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
+        >
+          <Input placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}/>
+        </Form.Item>) : ''
+      }
+      <Row>
+        <Col span={24}>
+          <Form.Item label={l('pages.datastudio.label.jobConfig.alertGroup')} name="alertGroupId"
+          >
+            <Select
+              style={{width: '100%'}}
+              placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
+              optionLabelProp="label"
+            >
+              {getGroupOptions()}
+            </Select>
+          </Form.Item>
+        </Col>
+      </Row>
+      <Form.Item
+        label={l('pages.datastudio.label.jobConfig.other')}
+        tooltip={{title: l('pages.datastudio.label.jobConfig.other.tip'), icon: <InfoCircleOutlined/>}}
+      >
+        {/*todo 这里需要优化，有有异常抛出*/}
+        <Form.List name="config"
+        >
+          {(fields, {add, remove}) => (
+            <>
+              {fields.map(({key, name, ...restField}) => (
+                <Space key={key} style={{display: 'flex'}} align="baseline">
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'key']}
+                    style={{marginBottom: '5px'}}
+                  >
+                    <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}/>
+                  </Form.Item>
+                  <Form.Item
+                    {...restField}
+                    name={[name, 'value']}
+                    style={{marginBottom: '5px'}}
+                  >
+                    <Input placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}/>
+                  </Form.Item>
+                  <MinusCircleOutlined onClick={() => remove(name)}/>
+                </Space>
+              ))}
+              <Form.Item>
+                <Button type="dashed" onClick={() => add()} block icon={<PlusOutlined/>}>
+                  {l('pages.datastudio.label.jobConfig.addConfig')}
+                </Button>
+              </Form.Item>
+            </>
+          )}
+        </Form.List>
+      </Form.Item>
+    </Form>
   );
 };
 

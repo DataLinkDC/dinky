@@ -89,7 +89,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     {
       (treeData.length > 0) ?
         <DirectoryTree
-          style={{...style, height: height-40,overflowY:'auto'}}
+          style={{...style, height: height-40-16,overflowY:'auto'}}
           // className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
           expandedKeys={expandedKeys}

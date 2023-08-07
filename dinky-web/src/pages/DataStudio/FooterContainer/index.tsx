@@ -5,6 +5,7 @@ import {connect} from "@@/exports";
 import {getCurrentTab} from "@/pages/DataStudio/function";
 import {getSseData} from "@/services/api";
 import {API_CONSTANTS} from "@/services/constants";
+import {l} from "@/utils/intl";
 
 export type FooterContainerProps = {
   token: GlobalToken
@@ -19,49 +20,55 @@ type ButtonRoute = {
 
 const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const {footContainer, token, tabs} = props;
-  const eventSource = getSseData( "/api/sse/getJvmInfo");
-  const [memDetails,setMemDetails] = useState(footContainer.memDetails);
-  useEffect(()=>{
+  const eventSource = getSseData("/api/sse/getJvmInfo");
+  const [memDetails, setMemDetails] = useState(footContainer.memDetails);
+  useEffect(() => {
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setMemDetails(Number(data["heapUsed"]/1024/1024).toFixed(0)+"/"+Number(data["total"]/1024/1024).toFixed(0)+"M")
+      setMemDetails(Number(data["heapUsed"] / 1024 / 1024).toFixed(0) + "/" + Number(data["total"] / 1024 / 1024).toFixed(0) + "M")
     }
-    return ()=>{
+    return () => {
       eventSource.close()
     }
-  },[])
+  }, [])
 
   const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
   const route: ButtonRoute[] = [
     {
       text: <span
         style={{backgroundColor: token.colorBgBase}}>{memDetails}</span>,
-      title:"最大堆大小："+memDetails.split("/")[1]+"\n已使用：   "+memDetails.split("/")[0]+"M",
+      title: l("pages.datastudio.footer.memDetails", "", {
+        max: memDetails.split("/")[1],
+        used: memDetails.split("/")[0]
+      }),
       isShow: () => true
     },
     {
       text: footContainer.codeType,
-      title:"代码类型："+footContainer.codeType,
+      title: l("pages.datastudio.footer.codeType") + footContainer.codeType,
       isShow: (type) => TabsPageType.project === type
     },
     {
       text: footContainer.lineSeparator,
-      title:"行分隔符："+footContainer.lineSeparator,
+      title: l("pages.datastudio.footer.lineSeparator") + footContainer.lineSeparator,
       isShow: (type) => TabsPageType.project === type
     },
     {
       text: footContainer.codeEncoding,
-      title:"文件编码："+footContainer.codeEncoding,
+      title: l("pages.datastudio.footer.codeEncoding") + footContainer.codeEncoding,
       isShow: (type) => TabsPageType.project === type
     },
     {
       text: "Space: " + footContainer.space,
-      title:"Space: " + footContainer.space,
+      title: "Space: " + footContainer.space,
       isShow: (type) => TabsPageType.project === type
     },
     {
-      text: "Ln " + footContainer.codePosition[0] + ", Col " + footContainer.codePosition[1],
-      title:"Ln " + footContainer.codePosition[0] + ", Col " + footContainer.codePosition[1],
+      text: footContainer.codePosition[0] + ":" + footContainer.codePosition[1],
+      title: l("pages.datastudio.footer.codePosition", "", {
+        Ln: footContainer.codePosition[0],
+        Col: footContainer.codePosition[1]
+      }),
       isShow: (type) => TabsPageType.project === type
     },
   ]
