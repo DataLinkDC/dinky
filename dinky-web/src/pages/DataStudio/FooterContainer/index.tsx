@@ -67,7 +67,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   ]
   return (
     <div style={{
-      backgroundColor: token.colorBgLayout,
+      backgroundColor: token.colorFill,
       height: VIEW.footerHeight,
       width: "100%",
       display: "flex",
@@ -87,14 +87,6 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
             return <Button size={"small"} type={"text"} block style={{paddingInline: 4}} key={index}
                            onClick={item.onClick} title={item.title}>{item.text}</Button>
           })}
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}><span*/}
-        {/*  style={{backgroundColor: token.colorBgBase}}>2232/5120M</span></Button>*/}
-
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}>FlinkSql</Button>*/}
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}>LF</Button>*/}
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}>UTF-8</Button>*/}
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}>Space: 2</Button>*/}
-        {/*<Button size={"small"} type={"text"} block style={{paddingInline: 4}}>Ln 7, Col 42</Button>*/}
       </Space>
     </div>
   )
