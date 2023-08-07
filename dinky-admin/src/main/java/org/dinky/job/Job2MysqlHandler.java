@@ -41,6 +41,8 @@ import org.dinky.utils.JSONUtil;
 
 import java.time.LocalDateTime;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.DependsOn;
 
 /**
@@ -50,7 +52,7 @@ import org.springframework.context.annotation.DependsOn;
  */
 @DependsOn("springContextUtils")
 public class Job2MysqlHandler implements JobHandler {
-
+    private static final Logger logger = LoggerFactory.getLogger(Job2MysqlHandler.class);
     private static final HistoryService historyService;
     private static final ClusterInstanceService clusterInstanceService;
     private static final ClusterConfigurationService clusterConfigurationService;
@@ -114,6 +116,8 @@ public class Job2MysqlHandler implements JobHandler {
     public boolean success() {
         Job job = JobContextHolder.getJob();
         Integer taskId = job.getJobConfig().getTaskId();
+        // 若为application模式，若执行过快，会导致k8s application模式下，查询job状态为null，导致此作业失联，只能手动刷新,后面做成系统配置
+        waitTaskManagerInitOnK8s(job.getType());
 
         History history = new History();
         history.setId(job.getId());
@@ -211,6 +215,22 @@ public class Job2MysqlHandler implements JobHandler {
 
         DaemonFactory.addTask(DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInstance.getId()));
         return true;
+    }
+
+    /**
+     * 若为application模式，若执行过快，会导致k8s application模式下，查询job状态为null，导致此作业失联，只能手动刷新,后面做成系统配置
+     * @param type 任务类型
+     */
+    private void waitTaskManagerInitOnK8s(GatewayType type) {
+        if (GatewayType.KUBERNETES_APPLICATION == type) {
+            logger.info(
+                    "若为k8s application模式，若执行过快，会导致k8s application模式下，查询job状态为null(taskmanager还在拉镜像或初始化中),因此sleep 6s...");
+            try {
+                Thread.sleep(6 * 1000);
+            } catch (Exception e) {
+                logger.debug("sleep exception...");
+            }
+        }
     }
 
     @Override
