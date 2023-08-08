@@ -18,7 +18,7 @@
  */
 
 import {SysMenu} from "@/types/RegCenter/data";
-import {folderSeparator, searchTreeNode} from "@/utils/function";
+import {searchTreeNode} from "@/utils/function";
 
 export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.map((item: SysMenu) => {
     const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
@@ -26,10 +26,10 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
     return {
         isLeaf: false,
         name: item.name,
-        parentId: item.name,
+        parentId: item.parentId,
         // icon: parse(`${item.icon}`),
-        content: item.name,
-        path: item.name,
+        content: item.note,
+        path: item.path,
         title: searchTreeNode(item.name, searchValue),
         fullInfo: item,
         key: item.id,
@@ -40,13 +40,13 @@ export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.ma
                 return {
                     isLeaf: true,
                     name: sub.name,
-                    parentId: item.name,
+                    parentId: sub.parentId,
                     // icon: parse(item.icon),
-                    content: sub.name,
-                    path: item.name + folderSeparator() + sub.name,
+                    content: sub.note,
+                    path: sub.path,
                     title: searchTreeNode(sub.name, searchValue),
                     key: sub.id,
-                    fullInfo: item,
+                    fullInfo: sub,
                 };
             }),
     }

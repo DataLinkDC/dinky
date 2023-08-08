@@ -191,6 +191,9 @@ export default {
   'tenant.EnterTenantNote': '请输入租户备注/描述信息!',
   'tenant.delete': '删除租户',
   'tenant.deleteConfirm': '您确定要删除此租户吗？',
+  'tenant.set.admin': '设置租户管理员',
+  'tenant.cancel.admin': '取消租户管理员',
+  'tenant.user.list': '租户用户列表',
 
   // role
   'role.roleManagement': '角色管理',

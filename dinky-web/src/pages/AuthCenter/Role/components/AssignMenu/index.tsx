@@ -22,11 +22,8 @@ import React, {useCallback, useEffect, useState} from "react";
 import {Button, Drawer, Empty, Input, Space, Tree} from "antd";
 import {l} from "@/utils/intl";
 import {UserBaseInfo} from "@/types/User/data";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {buildMenuTreeData} from "@/pages/AuthCenter/Role/components/AssignMenu/function";
-import {Menu} from "@/types/RegCenter/data";
-import {TableOutlined} from "@ant-design/icons";
-import {random} from "lodash";
+import {SysMenu} from "@/types/RegCenter/data";
+import { buildMenuTree } from "@/pages/AuthCenter/Menu/function";
 
 type AssignMenuProps = {
     values: Partial<UserBaseInfo.Role>,
@@ -44,7 +41,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     const {open, onClose, onSubmit , values} = props
 
     const [searchValue, setSearchValue] = useState('');
-    const [menuData, setMenuData] = useState<Menu[]>([]);
+    const [menuData, setMenuData] = useState<SysMenu[]>([]);
 
     useEffect(()=>{
         // todo: 获取菜单列表 通过角色 id
@@ -59,8 +56,8 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
     const renderExtraButtons = () => {
         return <>
             <Space>
-                <Button onClick={onClose}>Cancel</Button>
-                <Button type="primary" onClick={onSubmit}>OK</Button>
+                <Button onClick={onClose}>{l('button.cancel')}</Button>
+                <Button type="primary" onClick={onSubmit}>{l('button.submit')}</Button>
             </Space>
         </>
     }
@@ -106,7 +103,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
                             multiple={true}
                             className={'treeList'}
                             // onSelect={onNodeClick}
-                            treeData={buildMenuTreeData(menuData, searchValue)}
+                            treeData={buildMenuTree(menuData, searchValue)}
                         />
                     </> : <Empty className={'code-content-empty'}/>
             }

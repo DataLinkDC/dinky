@@ -17,30 +17,3 @@
  *
  */
 
-
-export const buildMenuTreeData = (data: [], searchValue = '') => {
-    return data.map((item: any) => {
-        return {
-            isLeaf: false,
-            name: item.name,
-            parentId: item.parentId,
-            icon: item.icon,
-            content: item.name,
-            path: item.path,
-            title: item.name,
-            key: item.id,
-            children: item.children
-                // filter table by search value and map table to tree node
-                .filter((sub: any) => (sub.name.indexOf(searchValue) > -1))
-                .map((sub: any) => {
-                    return {
-                        isLeaf: true,
-                        name: sub.name,
-                        parentId: item.parentId,
-                        icon: item.icon,
-                        content: sub.name,
-                        path: item.path
-                    }
-                })
-        }})
-}

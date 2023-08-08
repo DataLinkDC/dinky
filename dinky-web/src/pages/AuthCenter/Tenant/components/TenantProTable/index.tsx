@@ -124,10 +124,15 @@ const TenantProTable: React.FC = () => {
         setFormValues(record);
     }
 
-
     const  handleSetTenantAdmin = async (value : Partial<UserBaseInfo.User>) => {
+        let tenantAdmin =false;
+        if (value.tenantAdminFlag) {
+            tenantAdmin = true;
+        }
         await executeAndCallbackRefresh(async () => {
-            await updateDataByParam(API_CONSTANTS.USER_SET_TENANT_ADMIN, {userId: value.id, tenantId: formValues.id})
+            await updateDataByParam(API_CONSTANTS.USER_SET_TENANT_ADMIN, {userId: value.id, tenantId: formValues.id
+                ,tenantAdminFlag: tenantAdmin
+            })
             await queryUserListByTenantId( formValues.id as number)
         })
     }

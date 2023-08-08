@@ -22,9 +22,7 @@
 
 import React, {useEffect, useRef} from "react";
 import {UserBaseInfo} from "@/types/User/data";
-import {Button, Drawer, Spin} from "antd";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
+import {Button, Drawer} from "antd";
 import {l} from "@/utils/intl";
 import {YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from "@/types/Public/constants";
 import {ActionType, ProColumns, ProTable} from "@ant-design/pro-components";
@@ -62,43 +60,43 @@ const TenantUserList:React.FC<TenantUserListProps>= (props) => {
             dataIndex: 'nickname',
             key: 'nickname',
         },
-        // {
-        //     title: l("user.superAdminFlag"),
-        //     dataIndex: "superAdminFlag",
-        //     valueEnum: YES_OR_NO_ENUM,
-        //     hideInSearch: true,
-        //     filters: YES_OR_NO_FILTERS_MAPPING,
-        //     filterMultiple: false,
-        // },
-        // {
-        //     title: l("user.tenantAdminFlag"),
-        //     dataIndex: "tenantAdminFlag",
-        //     valueEnum: YES_OR_NO_ENUM,
-        //     hideInSearch: true,
-        //     filters: YES_OR_NO_FILTERS_MAPPING,
-        //     filterMultiple: false,
-        // },
-        // {
-        //     title: l("global.table.operate"),
-        //     valueType: "option",
-        //     width: "12vh",
-        //     fixed: "right",
-        //     render: (_: any, record: UserBaseInfo.User) => [
-        //        <Button
-        //            type={'link'}
-        //            key={`${record.id}_set_tenant_m`}
-        //            title={ record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
-        //            onClick={() => onSubmit(record)}
-        //        >
-        //            { record.tenantAdminFlag ? '取消租户管理员' :'设为租户管理员'}
-        //        </Button>
-        //     ],
-        // },
+        {
+            title: l("user.superAdminFlag"),
+            dataIndex: "superAdminFlag",
+            valueEnum: YES_OR_NO_ENUM,
+            hideInSearch: true,
+            filters: YES_OR_NO_FILTERS_MAPPING,
+            filterMultiple: false,
+        },
+        {
+            title: l("user.tenantAdminFlag"),
+            dataIndex: "tenantAdminFlag",
+            valueEnum: YES_OR_NO_ENUM,
+            hideInSearch: true,
+            filters: YES_OR_NO_FILTERS_MAPPING,
+            filterMultiple: false,
+        },
+        {
+            title: l("global.table.operate"),
+            valueType: "option",
+            width: "12vh",
+            fixed: "right",
+            render: (_: any, record: UserBaseInfo.User) => [
+               <Button
+                   type={'link'}
+                   key={`${record.id}_set_tenant_m`}
+                   title={ record.tenantAdminFlag ? l('tenant.cancel.admin') :l('tenant.set.admin')}
+                   onClick={() => onSubmit(record)}
+               >
+                   { record.tenantAdminFlag ? l('tenant.cancel.admin') :l('tenant.set.admin')}
+               </Button>
+            ],
+        },
     ]
 
     return <>
     <Drawer
-        title={`${tenant.tenantCode} - 用户列表`}
+        title={`${tenant.tenantCode} - ${l('tenant.user.list')}`}
         width={'50%'}
         open={open}
         maskClosable={false}

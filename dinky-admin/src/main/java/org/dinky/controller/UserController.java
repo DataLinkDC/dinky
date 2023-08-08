@@ -214,10 +214,12 @@ public class UserController {
         return Result.succeed(result);
     }
 
-    // updateUserToTenantAdmin
-    //    @PutMapping("/updateUserToTenantAdmin")
-    //    public Result<Void> updateUserToTenantAdmin(
-    //            @RequestParam Integer userId, @RequestParam Integer tenantId) {
-    //        return userService.updateUserToTenantAdmin(userId, tenantId);
-    //    }
+
+        @PutMapping("/updateUserToTenantAdmin")
+        public Result<Void> modifyUserToTenantAdmin(
+                @RequestParam Integer userId, @RequestParam Integer tenantId,
+                @RequestParam Boolean tenantAdminFlag
+        ) {
+            return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
+        }
 }

@@ -234,5 +234,6 @@ export type SysMenu = BaseBeanColumns & {
   perms: string, // 权限标识
   icon: string, // 图标
   rootMenu: boolean,
+  note: string,
   children: SysMenu[],
 };

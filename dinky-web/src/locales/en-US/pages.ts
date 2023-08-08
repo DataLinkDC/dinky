@@ -197,6 +197,10 @@ export default {
   'tenant.EnterTenantNote': 'Please enter Tenant Note!',
   'tenant.delete': 'Delete Tenant',
   'tenant.deleteConfirm': 'Are you sure you want to delete this Tenant？',
+  'tenant.set.admin': 'Set Tenant Admin',
+  'tenant.cancel.admin': 'Cancel Tenant Admin',
+  'tenant.user.list': 'User List',
+
 
   // role
   'role.roleManagement': 'Role Management',
