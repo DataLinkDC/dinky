@@ -19,24 +19,72 @@
 
 package org.dinky.service.impl;
 
+import org.dinky.crypto.CryptoComponent;
 import org.dinky.data.model.FragmentVariable;
+import org.dinky.data.result.ProTableResult;
 import org.dinky.mapper.FragmentVariableMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.FragmentVariableService;
+import org.dinky.utils.FragmentVariableUtils;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.Resource;
+
 import org.springframework.stereotype.Service;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 /** FragmentVariableServiceImpl */
 @Service
 public class FragmentVariableServiceImpl
         extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
         implements FragmentVariableService {
+
+    @Resource private CryptoComponent cryptoComponent;
+
+    @Override
+    public boolean saveOrUpdate(FragmentVariable entity) {
+        if (FragmentVariableUtils.isSensitive(entity.getName())
+                && entity.getFragmentValue() != null) {
+            entity.setFragmentValue(cryptoComponent.encryptText(entity.getFragmentValue()));
+        }
+        return super.saveOrUpdate(entity);
+    }
+
+    @Override
+    public List<FragmentVariable> list(Wrapper<FragmentVariable> queryWrapper) {
+        final List<FragmentVariable> list = super.list(queryWrapper);
+        if (list != null) {
+            for (FragmentVariable variable : list) {
+                if (FragmentVariableUtils.isSensitive(variable.getName())
+                        && variable.getFragmentValue() != null) {
+                    variable.setFragmentValue(
+                            cryptoComponent.decryptText(variable.getFragmentValue()));
+                }
+            }
+        }
+        return list;
+    }
+
+    @Override
+    public ProTableResult<FragmentVariable> selectForProTable(JsonNode para) {
+        final ProTableResult<FragmentVariable> result = super.selectForProTable(para);
+        if (result != null && result.getData() != null) {
+            for (FragmentVariable variable : result.getData()) {
+                if (FragmentVariableUtils.isSensitive(variable.getName())
+                        && variable.getFragmentValue() != null) {
+                    variable.setFragmentValue(
+                            cryptoComponent.decryptText(variable.getFragmentValue()));
+                }
+            }
+        }
+        return super.selectForProTable(para);
+    }
 
     @Override
     public List<FragmentVariable> listEnabledAll() {

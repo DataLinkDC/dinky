@@ -91,7 +91,7 @@ CREATE TABLE `dinky_database` (
                                 `port` int(11) NULL DEFAULT NULL COMMENT 'database port',
                                 `url` varchar(255) NULL DEFAULT NULL COMMENT 'database url',
                                 `username` varchar(50) NULL DEFAULT NULL COMMENT 'username',
-                                `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
+                                `password` varchar(512) NULL DEFAULT NULL COMMENT 'password',
                                 `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
                                 `flink_config` text NULL COMMENT 'Flink configuration',
                                 `flink_template` text NULL COMMENT 'Flink template',

@@ -252,7 +252,7 @@ CREATE TABLE "public"."dinky_database" (
                                            "port" int4,
                                            "url" varchar(255) COLLATE "pg_catalog"."default",
                                            "username" varchar(50) COLLATE "pg_catalog"."default",
-                                           "password" varchar(50) COLLATE "pg_catalog"."default",
+                                           "password" varchar(512) COLLATE "pg_catalog"."default",
                                            "note" varchar(255) COLLATE "pg_catalog"."default",
                                            "flink_config" text COLLATE "pg_catalog"."default",
                                            "flink_template" text COLLATE "pg_catalog"."default",

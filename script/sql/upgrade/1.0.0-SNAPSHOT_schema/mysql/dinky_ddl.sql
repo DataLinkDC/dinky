@@ -171,7 +171,7 @@ CREATE TABLE `dinky_sys_login_log` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
 
-
+ALTER TABLE dinky_database modify password varchar(512) null comment 'password';
 
 
 

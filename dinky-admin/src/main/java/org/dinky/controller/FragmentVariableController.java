@@ -26,6 +26,7 @@ import org.dinky.data.model.FragmentVariable;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.FragmentVariableService;
+import org.dinky.utils.FragmentVariableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -81,7 +82,17 @@ public class FragmentVariableController {
     @Log(title = "FragmentVariable List", businessType = BusinessType.QUERY)
     @ApiOperation("FragmentVariable List")
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
-        return fragmentVariableService.selectForProTable(para);
+        final ProTableResult<FragmentVariable> result =
+                fragmentVariableService.selectForProTable(para);
+        // 敏感值不返回
+        if (result != null && result.getData() != null) {
+            for (FragmentVariable variable : result.getData()) {
+                if (FragmentVariableUtils.isSensitive(variable.getName())) {
+                    variable.setFragmentValue(null);
+                }
+            }
+        }
+        return result;
     }
 
     /**

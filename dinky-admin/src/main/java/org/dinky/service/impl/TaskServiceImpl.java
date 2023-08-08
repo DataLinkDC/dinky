@@ -109,6 +109,7 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.utils.DockerClientUtils;
+import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
 
@@ -629,6 +630,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         JobConfig config = buildJobConfig(task);
+
+        // 加密敏感信息
+        if (config.getVariables() != null) {
+            for (Map.Entry<String, String> entry : config.getVariables().entrySet()) {
+                if (FragmentVariableUtils.isSensitive(entry.getKey())) {
+                    entry.setValue(FragmentVariableUtils.HIDDEN_CONTENT);
+                }
+            }
+        }
+
         JobManager jobManager = JobManager.build(config);
         if (config.isJarTask()) {
             return "";
