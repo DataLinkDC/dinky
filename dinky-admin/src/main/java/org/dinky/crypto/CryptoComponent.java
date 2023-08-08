@@ -22,6 +22,8 @@ package org.dinky.crypto;
 import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.stereotype.Component;
 
+import com.google.common.base.Strings;
+
 @Component
 public class CryptoComponent {
 
@@ -31,7 +33,7 @@ public class CryptoComponent {
     public CryptoComponent(CryptoProperties cryptoProperties) {
         this.enabled = cryptoProperties.getEnabled();
         this.textEncryptor = new AES256TextEncryptor();
-        if (cryptoProperties.getEncryptionPassword() != null) {
+        if (!Strings.isNullOrEmpty(cryptoProperties.getEncryptionPassword())) {
             this.textEncryptor.setPassword(cryptoProperties.getEncryptionPassword());
         }
     }
