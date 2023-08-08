@@ -55,7 +55,7 @@
         select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms,
         m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
-        left join dinky_role_menu rm on m.id = rm.menu_id
+        left join dinky_sys_role_menu rm on m.id = rm.menu_id
         left join dinky_user_role ur on rm.role_id = ur.role_id
         left join dinky_role ro on ur.role_id = ro.role_id
         where ur.user_id = #{params.userId}
@@ -71,7 +71,7 @@
     <select id="selectMenuTreeByUserId" resultMap="DinkySysMenuResult">
         select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
         from dinky_sys_menu m
-                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role ro on ur.role_id = ro.role_id
                  left join sys_user u on ur.user_id = u.user_id
@@ -84,23 +84,23 @@
     <select id="selectMenuListByRoleId" parameterType="Long" resultType="Integer">
         select m.id, m.parent_id
         from dinky_sys_menu m
-                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
         where rm.role_id = #{roleId}
-          and m.id not in (select m.parent_id from dinky_sys_menu m inner join dinky_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+          and m.id not in (select m.parent_id from dinky_sys_menu m inner join dinky_sys_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
         order by m.parent_id, m.order_num
     </select>
 
     <select id="selectMenuPerms" resultType="String">
         select distinct m.perms
         from dinky_sys_menu m
-                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
     </select>
 
     <select id="selectMenuPermsByUserId" parameterType="Integer" resultType="String">
         select distinct m.perms
         from dinky_sys_menu m
-                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role r on r.role_id = ur.role_id
         where r.is_delete = 0 and ur.user_id = #{userId}
