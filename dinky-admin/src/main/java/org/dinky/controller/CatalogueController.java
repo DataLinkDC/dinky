@@ -109,7 +109,6 @@ public class CatalogueController {
         }
     }
 
-
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")

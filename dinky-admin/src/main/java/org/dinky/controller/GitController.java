@@ -165,10 +165,10 @@ public class GitController {
     @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
     @ApiOperation("Enable or Disable GitProject by id")
     public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
-       if ( gitProjectService.modifyGitProjectStatus(id)){
-              return Result.succeed(Status.MODIFY_SUCCESS);
-       }
-       return Result.failed(Status.MODIFY_FAILED);
+        if (gitProjectService.modifyGitProjectStatus(id)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**

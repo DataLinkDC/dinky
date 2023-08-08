@@ -31,12 +31,10 @@ import org.dinky.service.TaskService;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -80,8 +78,6 @@ public class JarController {
     public ProTableResult<Jar> listJars(@RequestBody JsonNode para) {
         return jarService.selectForProTable(para);
     }
-
-
 
     /** 获取可用的jar列表 */
     @GetMapping("/listEnabledAll")

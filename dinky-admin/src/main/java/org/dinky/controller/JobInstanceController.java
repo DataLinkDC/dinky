@@ -33,12 +33,9 @@ import org.dinky.job.BuildConfiguration;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.TaskService;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,7 +68,6 @@ public class JobInstanceController {
     public ProTableResult<JobInstance> listJobInstances(@RequestBody JsonNode para) {
         return jobInstanceService.listJobInstances(para);
     }
-
 
     /** 获取状态统计信息 */
     @GetMapping("/getStatusCount")

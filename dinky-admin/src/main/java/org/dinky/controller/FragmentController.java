@@ -28,9 +28,6 @@ import org.dinky.data.result.Result;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.utils.FragmentVariableUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -128,5 +125,4 @@ public class FragmentController {
             return Result.failed(Status.MODIFY_FAILED);
         }
     }
-
 }

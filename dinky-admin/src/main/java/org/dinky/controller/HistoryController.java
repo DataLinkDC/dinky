@@ -21,13 +21,8 @@ package org.dinky.controller;
 
 import org.dinky.data.model.History;
 import org.dinky.data.result.ProTableResult;
-import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,12 +48,12 @@ public class HistoryController {
 
     /**
      * query list history
-      * @param para
+     *
+     * @param para
      * @return
      */
     @PostMapping
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {
         return historyService.selectForProTable(para);
     }
-
 }

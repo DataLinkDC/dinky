@@ -27,19 +27,14 @@ import org.dinky.data.enums.TaskOperatingSavepointSelect;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
-import org.dinky.function.pool.UdfCodePool;
 import org.dinky.job.JobResult;
 import org.dinky.service.TaskService;
 import org.dinky.utils.TaskOneClickOperatingUtil;
-import org.dinky.utils.UDFUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -84,7 +79,6 @@ public class TaskController {
     public ProTableResult<Task> listTasks(@RequestBody JsonNode para) {
         return taskService.selectForProTable(para);
     }
-
 
     /** 批量执行 */
     @PostMapping(value = "/submit")

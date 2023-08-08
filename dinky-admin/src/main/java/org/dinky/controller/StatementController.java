@@ -25,11 +25,9 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.StatementService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -71,7 +69,6 @@ public class StatementController {
     public ProTableResult<Statement> listStatements(@RequestBody JsonNode para) {
         return statementService.selectForProTable(para);
     }
-
 
     @PostMapping("/getWatchTables")
     @SuppressWarnings("unchecked")

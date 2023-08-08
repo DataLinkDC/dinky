@@ -25,9 +25,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.RowPermissionsService;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -62,7 +59,6 @@ public class RowPermissionsController {
             return Result.failed(Status.SAVE_FAILED);
         }
     }
-
 
     /**
      * delete rowPermissions by id

@@ -88,7 +88,6 @@ public class TenantController {
         return tenantService.selectForProTable(para, true);
     }
 
-
     /**
      * assign user to tenant
      *

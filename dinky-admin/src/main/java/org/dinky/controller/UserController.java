@@ -28,7 +28,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -119,7 +118,6 @@ public class UserController {
             return Result.failed(Status.DELETE_FAILED);
         }
     }
-
 
     /**
      * modify password

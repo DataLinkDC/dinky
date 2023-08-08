@@ -132,8 +132,6 @@ public class UDFController {
                 : Result.failed(Status.SAVE_FAILED);
     }
 
-
-
     /**
      * delete udf template by id
      *

@@ -19,19 +19,15 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.SavepointsService;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,13 +51,11 @@ public class SavepointsController {
 
     private final SavepointsService savepointsService;
 
-
     /** 动态查询列表 */
     @PostMapping
     public ProTableResult<Savepoints> listSavePoints(@RequestBody JsonNode para) {
         return savepointsService.selectForProTable(para);
     }
-
 
     /** 获取指定作业ID的所有savepoint */
     @GetMapping("/listSavepointsByTaskId")
