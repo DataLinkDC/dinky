@@ -20,7 +20,7 @@
 import React, {useRef} from 'react';
 import {ProList} from '@ant-design/pro-components';
 import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {Descriptions, Input, Space, Switch} from 'antd';
+import {Descriptions, Input, Radio, RadioChangeEvent, Space, Switch} from 'antd';
 import {l} from '@/utils/intl';
 import {SaveTwoTone, SettingTwoTone} from '@ant-design/icons';
 import {EditBtn} from '@/components/CallBackButton/EditBtn';
@@ -35,6 +35,7 @@ type GeneralConfigProps = {
   onSave: (data: BaseConfigProperties) => void;
   loading: boolean;
   toolBarRender?: any;
+  selectChanges?: Record<string, (value: RadioChangeEvent) => void>;
 }
 
 const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
@@ -44,7 +45,8 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     tag,
     onSave: handleSubmit,
     loading,
-    toolBarRender
+    toolBarRender,
+    selectChanges
   } = props;
 
 
@@ -61,7 +63,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
    * @param entity entity
    */
   const renderActions = (action: any, entity: BaseConfigProperties) => {
-    return entity.frontType === 'boolean' ? [] : [
+    return entity.frontType === 'boolean' || entity.frontType ==='option' ? [] : [
       <EditBtn
         key="edit"
         onClick={() => {
@@ -91,8 +93,13 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       return <Switch {...SWITCH_OPTIONS()} style={{width: '4vw'}} checked={entity.value}
         onChange={(checked) => handleSubmit({...entity, value: checked})}
       />;
-    } else if (entity.frontType === 'password') {
-      return <Input.Password style={{width: '30vw'}} disabled value={entity.value}/>;
+    } else if (entity.frontType === 'option') {
+      // @ts-ignore
+      return <Radio.Group onChange={selectChanges[entity.key]} defaultValue={entity.value.toLowerCase()}>
+        {entity.example.map((item: any) => {
+          return <Radio.Button key={item} value={item.toLowerCase()}>{item}</Radio.Button>
+        })}
+      </Radio.Group>
     } else {
       return <Input style={{width: '30vw'}} disabled value={entity.value}/>;
     }
@@ -138,7 +145,7 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
     editable: {
       saveText: <><SaveTwoTone title={l('button.save')}/></>,
       cancelText: <><BackIcon title={l('button.back')}/></>,
-      actionRender: (row, config, dom) => row.frontType === 'boolean' ? [] : [dom.save, dom.cancel],
+      actionRender: (row, config, dom) => row.frontType === 'boolean'|| row.frontType ==='option' ? [] : [dom.save, dom.cancel],
       onSave: async (key, record) => handleSave(record),
     }
   };

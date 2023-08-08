@@ -173,7 +173,7 @@ CREATE TABLE `dinky_database`  (
                                  `port` int(11) NULL DEFAULT NULL COMMENT 'database port',
                                  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'database url',
                                  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'username',
-                                 `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
+                                 `password` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
                                  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
                                  `flink_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Flink configuration',
                                  `flink_template` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Flink template',
@@ -860,21 +860,24 @@ CREATE TABLE `dinky_upload_file_record`  (
 -- Table structure for dinky_user
 -- ----------------------------
 DROP TABLE IF EXISTS `dinky_user`;
-CREATE TABLE `dinky_user`  (
-                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                             `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
-                             `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
-                             `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'nickname',
-                             `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'worknum',
-                             `user_type`   int        default 0 not null comment 'login type (0:LOCAL,1:LDAP)',
-                             `avatar` blob NULL COMMENT 'avatar',
-                             `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'mobile phone',
-                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                             `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
-                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                             PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'user' ROW_FORMAT = Dynamic;
+CREATE TABLE `dinky_user` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
+  `user_type` int DEFAULT '1',
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'password',
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'nickname',
+  `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'worknum',
+  `avatar` blob COMMENT 'avatar',
+  `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'mobile phone',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is enable',
+  `super_admin_flag` tinyint DEFAULT '0' COMMENT 'is super admin(0:false,1true)',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='user'
+
+
 
 -- ----------------------------
 -- Records of dinky_user
@@ -908,6 +911,7 @@ CREATE TABLE `dinky_user_tenant`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `user_id` int(11) NOT NULL COMMENT 'user id',
                                     `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
+                                     `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                                     `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
@@ -1034,19 +1038,19 @@ CREATE TABLE `metadata_table_property`  (
 -- ----------------------------
 -- Table structure for dinky_row_permissions
 -- ----------------------------
+DROP TABLE IF EXISTS dinky_row_permissions;
 CREATE TABLE dinky_row_permissions
 (
   id           int auto_increment comment 'ID'
     primary key,
-  role_id      int      not null comment '角色ID',
-  table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表名',
-  expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment '表达式',
+  role_id      int      not null comment 'role id',
+  table_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'table name',
+  expression varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL  comment 'expression',
   create_time  datetime null comment '创建时间',
   update_time  datetime null comment '更新时间'
 )
-  COMMENT '角色数据查询权限' COLLATE = utf8mb4_general_ci;
+  COMMENT 'row permissions of select' COLLATE = utf8mb4_general_ci;
 
-SET FOREIGN_KEY_CHECKS = 1;
 
 -- ----------------------------
 -- Table structure for dinky_git_project
@@ -1078,20 +1082,137 @@ CREATE TABLE `dinky_git_project` (
                                    KEY `tenant_id` (`tenant_id`) USING BTREE
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
 
+-- ----------------------------
+-- Records of dinky_git_project
+-- ----------------------------
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (1, 1, 'java-udf', 'https://github.com/zackyoungh/dinky-quickstart-java.git', 'master', NULL, NULL, NULL, NULL, '-P flink-1.14', 1, 1, NULL, NULL, 0, 0, 1, '[]', 1);
 INSERT INTO `dinky_git_project` (`id`, `tenant_id`, `name`, `url`, `branch`, `username`, `password`, `private_key`, `pom`, `build_args`, `code_type`, `type`, `last_build`, `description`, `build_state`, `build_step`, `enabled`, `udf_class_map_list`, `order_line`) VALUES (2, 1, 'python-udf', 'https://github.com/zackyoungh/dinky-quickstart-python.git', 'master', NULL, NULL, NULL, NULL, '', 2, 1, NULL, NULL, 0, 0, 1, '[]',2);
 
+
+
+-- ----------------------------
+-- Table structure for dinky_metrics
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_metrics;
 CREATE TABLE `dinky_metrics` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT,
-                                 `task_id` int(255) DEFAULT NULL,
-                                 `vertices` varchar(255) DEFAULT NULL,
-                                 `metrics` varchar(255) DEFAULT NULL,
-                                 `position` int(11) DEFAULT NULL,
-                                 `show_type` varchar(255) DEFAULT NULL,
-                                 `show_size` varchar(255) DEFAULT NULL,
-                                 `title` varchar(255) DEFAULT NULL,
-                                 `layout_name` varchar(255) DEFAULT NULL,
-                                 `create_time` datetime DEFAULT NULL,
-                                 `update_time` datetime DEFAULT NULL,
+                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                 `task_id` int(255) DEFAULT NULL COMMENT 'task id',
+                                 `vertices` varchar(255) DEFAULT NULL COMMENT 'vertices',
+                                 `metrics` varchar(255) DEFAULT NULL COMMENT 'metrics',
+                                 `position` int(11) DEFAULT NULL COMMENT 'position',
+                                 `show_type` varchar(255) DEFAULT NULL COMMENT 'show type',
+                                 `show_size` varchar(255) DEFAULT NULL COMMENT 'show size',
+                                 `title` varchar(255) DEFAULT NULL COMMENT 'title',
+                                 `layout_name` varchar(255) DEFAULT NULL COMMENT 'layout name',
+                                 `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                 `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
                                  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COMMENT='metrics layout';
+
+-- ----------------------------
+-- Table structure for dinky_resources
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_resources;
+CREATE TABLE `dinky_resources` (
+                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'key',
+                                   `file_name` varchar(64) COLLATE utf8_bin DEFAULT NULL COMMENT 'file name',
+                                   `description` varchar(255) COLLATE utf8_bin DEFAULT NULL,
+                                   `user_id` int(11) DEFAULT NULL COMMENT 'user id',
+                                   `type` tinyint(4) DEFAULT NULL COMMENT 'resource type,0:FILE，1:UDF',
+                                   `size` bigint(20) DEFAULT NULL COMMENT 'resource size',
+                                   `pid` int(11) DEFAULT NULL,
+                                   `full_name` varchar(128) COLLATE utf8_bin DEFAULT NULL,
+                                   `is_directory` tinyint(4) DEFAULT NULL,
+                                   `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'create time',
+                                   `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'update time',
+                                   PRIMARY KEY (`id`),
+                                   UNIQUE KEY `dinky_resources_un` (`full_name`,`type`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+-- ----------------------------
+-- Records of dinky_resources
+-- ----------------------------
+INSERT INTO `dinky_resources` (`id`, `file_name`, `description`, `user_id`, `type`, `size`, `pid`, `full_name`, `is_directory`) VALUES (0, 'Root', 'main folder', 1, 0, 0, -1, '/', 1);
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS dinky_sys_login_log;
+CREATE TABLE `dinky_sys_login_log` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'key',
+  `user_id` int NOT NULL COMMENT 'user id',
+  `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
+  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:LDAP）',
+  `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
+  `status` int NOT NULL COMMENT 'login status',
+  `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
+  `create_time` datetime NOT NULL COMMENT 'create time',
+  `access_time` datetime DEFAULT NULL COMMENT 'access time',
+  `update_time` datetime NOT NULL,
+  `is_deleted` tinyint NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_operate_log
+-- ----------------------------
+DROP TABLE IF EXISTS `dinky_sys_operate_log`;
+CREATE TABLE `dinky_sys_operate_log`  (
+  `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `module_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'module name',
+  `business_type` int NULL DEFAULT 0 COMMENT 'business type',
+  `method` varchar(100) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'method name',
+  `request_method` varchar(10) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request method',
+  `operate_name` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate name',
+  `operate_user_id` int NOT NULL COMMENT 'operate user id',
+  `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
+  `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
+  `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
+  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `status` int DEFAULT NULL COMMENT 'operate status',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for dinky_sys_menu
+-- ----------------------------
+drop table if exists `dinky_sys_menu`;
+create table `dinky_sys_menu` (
+                                  `id` bigint not null auto_increment comment ' id',
+                                  `parent_id` bigint not null comment 'parent menu id',
+                                  `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
+                                  `path` varchar(64) collate utf8mb4_general_ci default null comment 'routing path',
+                                  `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
+                                  `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
+                                  `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
+                                  `type` char(2) collate utf8mb4_general_ci default null comment 'type 0:menu 1:button',
+                                  `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
+                                  `order_num` int default null comment 'sort',
+                                  `create_time` datetime not null default current_timestamp comment 'create time',
+                                  `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  primary key (`id`) using btree
+) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
+
+
+-- ----------------------------
+-- Table structure dinky_sys_role_menu
+-- ----------------------------
+drop table if exists `dinky_sys_role_menu`;
+CREATE TABLE `dinky_sys_role_menu` (
+                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                       `role_id` bigint NOT NULL COMMENT 'role id',
+                                       `menu_id` bigint NOT NULL COMMENT 'menu id',
+                                       `create_time` datetime not null default current_timestamp comment 'create time',
+                                       `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                       PRIMARY KEY (`id`) USING BTREE,
+                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+
+
+
+
+SET FOREIGN_KEY_CHECKS = 1;

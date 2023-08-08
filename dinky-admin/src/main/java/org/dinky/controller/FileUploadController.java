@@ -19,7 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
 import org.dinky.data.constant.UploadFileConstant;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
 import org.dinky.service.FileUploadService;
 
@@ -32,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +57,8 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping
+    @Log(title = "upload file", businessType = BusinessType.UPLOAD)
+    @ApiOperation("upload file")
     public Result<Void> upload(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
@@ -83,6 +88,8 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping(value = "hdfs")
+    @Log(title = "upload hdfs file", businessType = BusinessType.UPLOAD)
+    @ApiOperation("upload hdfs file")
     public Result<Void> uploadHdfs(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,

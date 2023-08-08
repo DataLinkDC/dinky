@@ -19,16 +19,11 @@
 
 package org.dinky.data.model;
 
-import org.dinky.assertion.Asserts;
+import org.dinky.gateway.enums.GatewayType;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import cn.hutool.json.JSONObject;
 import lombok.Data;
@@ -55,27 +50,10 @@ public class ClusterConfiguration extends SuperEntity {
 
     private String note;
 
-    @TableField(exist = false)
-    private Map<String, Object> config = new HashMap<>();
-
-    public Map<String, Object> parseConfig() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        try {
-            if (Asserts.isNotNullString(configJson)) {
-                config = objectMapper.readValue(configJson, HashMap.class);
-            }
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return config;
-    }
-
-    public FlinkClusterConfiguration parse() {
+    public FlinkClusterConfig getFlinkClusterCfg() {
         JSONObject json = new JSONObject(getConfigJson());
-        config = json;
-        FlinkClusterConfiguration flinkClusterConfiguration =
-                json.toBean(FlinkClusterConfiguration.class);
-        flinkClusterConfiguration.setType(FlinkClusterConfiguration.Type.valueOf(type));
-        return flinkClusterConfiguration;
+        FlinkClusterConfig flinkClusterConfig = json.toBean(FlinkClusterConfig.class);
+        flinkClusterConfig.setType(GatewayType.get(type));
+        return flinkClusterConfig;
     }
 }

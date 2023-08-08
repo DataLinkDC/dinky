@@ -19,11 +19,14 @@
 
 package org.dinky.controller;
 
+import org.dinky.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.FragmentVariable;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.FragmentVariableService;
+import org.dinky.utils.FragmentVariableUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,6 +61,8 @@ public class FragmentVariableController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping
+    @Log(title = "FragmentVariable Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("FragmentVariable Save Or Update")
     public Result<Void> saveOrUpdate(@RequestBody FragmentVariable fragmentVariable)
             throws Exception {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
@@ -73,8 +79,20 @@ public class FragmentVariableController {
      * @return {@link ProTableResult} of {@link FragmentVariable}
      */
     @PostMapping
+    @Log(title = "FragmentVariable List", businessType = BusinessType.QUERY)
+    @ApiOperation("FragmentVariable List")
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
-        return fragmentVariableService.selectForProTable(para);
+        final ProTableResult<FragmentVariable> result =
+                fragmentVariableService.selectForProTable(para);
+        // 敏感值不返回
+        if (result != null && result.getData() != null) {
+            for (FragmentVariable variable : result.getData()) {
+                if (FragmentVariableUtils.isSensitive(variable.getName())) {
+                    variable.setFragmentValue(null);
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -84,6 +102,8 @@ public class FragmentVariableController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @Log(title = "FragmentVariable Delete", businessType = BusinessType.DELETE)
+    @ApiOperation("FragmentVariable Delete")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (fragmentVariableService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -99,6 +119,8 @@ public class FragmentVariableController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/enable")
+    @Log(title = "Update FragmentVariable Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update FragmentVariable Status")
     public Result<Void> enable(@RequestParam Integer id) {
         if (fragmentVariableService.enable(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

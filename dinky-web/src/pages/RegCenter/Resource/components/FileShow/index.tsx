@@ -20,37 +20,56 @@
 
 import React from "react";
 import {l} from "@/utils/intl";
-import CodeShow from "@/components/CustomEditor/CodeShow";
 import {Empty} from "antd";
+import CodeEdit from "@/components/CustomEditor/CodeEdit";
+import {renderLanguage, unSupportView} from "@/utils/function";
 
 
 const CodeEditProps = {
-    height: "82vh",
+    height: "88vh",
     width: "100%",
     lineNumbers: "on",
-    language: "java",
 };
 
 
 type FileShowProps = {
+    item: any;
     code: string;
-    refreshLogCallback: () => void;
+    onChange: (val: string) => void;
 }
 
 const FileShow: React.FC<FileShowProps> = (props) => {
 
-    const {code, refreshLogCallback} = props;
+    const {item: {name, isLeaf}, code, onChange} = props;
 
-    const restLogsShowProps = {
+    /**
+     * code show props
+     * @type {{code: string, onChange: (val: string) => void, language: string, showFloatButton: boolean, refreshLogCallback: () => void}}
+     */
+    const restCodeShowProps = {
         showFloatButton: true,
         code,
-        refreshLogCallback,
+        onChange: onChange,
+        language: renderLanguage(name, "."),
     };
 
-    return <>
-        { code ? <CodeShow {...restLogsShowProps} {...CodeEditProps} />
-            : <Empty className={"code-content-empty"} description={l('rc.resource.click')}/>
+    /**
+     * render content
+     * @returns {JSX.Element}
+     */
+    const renderContent = () => {
+        if (name && unSupportView(name) && isLeaf) {
+            return <Empty className={"code-content-empty"} description={l("rc.gp.codeTree.unSupportView")}/>
+        } else if (code === "" || code === null || code === undefined) {
+            return <Empty className={"code-content-empty"} description={l('rc.resource.click')}/>
+        } else {
+            return <CodeEdit {...restCodeShowProps} {...CodeEditProps} />
         }
+    }
+
+
+    return <>
+        {renderContent()}
     </>;
 }
 

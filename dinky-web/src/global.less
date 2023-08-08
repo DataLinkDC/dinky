@@ -40,7 +40,7 @@ body,
 
 .header {
   height: 100px;
-  line-height: 144px;
+  line-height: 10vh;
   position: relative;
   font-weight: 600;
   font-size: 4rem;
@@ -60,10 +60,10 @@ body,
 
 
 .desc {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   margin-top: 2rem;
-  color: @text-color-secondary;
-  font-size: @font-size-base;
+  //color: @text-color-secondary;
+  //font-size: @font-size-base;
 }
 
 
@@ -71,7 +71,7 @@ body,
   display: flex;
   flex: auto;
   max-height: max-content;
-  padding: 0vh 6vh 30vh 2vh;
+  padding: 0 6vh 30vh 2vh;
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -82,7 +82,7 @@ body,
 
   .form {
     position: relative;
-    height: 100%;
+    height: 100 * 100vw / 320;
     box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
     margin-left: 60vw;
     margin-bottom: -15vh;
@@ -103,7 +103,7 @@ body,
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: #ccc;
+  background-color: #8db7fd;
   border-radius: 10px;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
 }
@@ -118,6 +118,9 @@ body,
 
 ::-webkit-scrollbar-corner {
   background-color: #f5f5f5;
+}
+.monaco-scrollable-element > .scrollbar > .slider {
+    background: #8db7fd !important;
 }
 
 // scrollbar style --- end ----
@@ -199,6 +202,10 @@ ol {
   overflow: hidden;
 }
 
+.ant-list .ant-list-pagination {
+  margin-block-start: 0; // 去除 分页组件和 上边表格的间距
+}
+
 .ant-table-wrapper {
   overflow-y: auto;
   overflow-x: auto;
@@ -209,6 +216,24 @@ ol {
   margin-left: 4vw;
   padding: 0;
   border-bottom-color: red;
+}
+
+.treeList {
+  height: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+
+  .ant-tree-list-holder-inner {
+    min-width: max-content;
+    z-index: auto;
+  }
+
+  .tree-search-value {
+    //color: #00EE76;
+    color: #c00b26;
+    background-color: rgba(3, 102, 214, 0.5);
+    font-size: 15px;
+  }
 }
 
 .siderTree {
@@ -231,13 +256,19 @@ ol {
     }
   }
 }
+.ant-tree-node-content-wrapper {
+  display: flex;
 
-.gitCodeTree{
+  :hover {
+    color: #1eef07;
+  }
+}
+.gitCodeTree {
   max-height: 70vh;
   min-height: 70vh;
 }
 
-.schemaTree{
+.schemaTree {
   max-height: 89vh;
   min-height: 89vh;
 }
@@ -287,20 +318,20 @@ ol {
   align-content: center;
 }
 
-.query-form{
+.query-form {
   width: max-content;
   left: 0;
   position: absolute;
 }
 
-.tiny-charts{
+.tiny-charts {
   position: absolute;
   top: 15px;
   right: 12px;
 }
 
 
-.radio-group-chart{
+.radio-group-chart {
   position: absolute;
   right: 0;
   top: 7px;
@@ -310,3 +341,89 @@ ol {
   align-items: center;
   align-content: center;
 }
+
+.ant-pro-checkcard-title {
+  overflow: unset;
+}
+
+h5 {
+  margin-left: 0.5rem;
+  margin-bottom: 0;
+}
+
+
+// theme
+// light
+.show{
+  opacity: 1;
+  animation: show-anim 0.5s;
+}
+.hide{
+  opacity: 0;
+  animation: hide-anim 0.5s;
+}
+@keyframes show-anim {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes hide-anim {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.title{
+  font-size: 15px;
+  font-weight: 500;
+  font-family: "SimHei",serif;
+}
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  line-height: 32px;
+  padding-inline: 10px;
+  padding-block: 5px;
+  border-block: 1px solid
+}
+
+// 滚动条
+.content-scroll {
+  overflow-y: auto;
+  direction: ltr;
+  scrollbar-color: #d4aa70 #e4e4e4;
+  scrollbar-width: thin;
+}
+.monaco-float{
+  height: 100%;
+}
+
+.data-studio-tabs{
+  .ant-tabs-nav{
+    .ant-tabs-nav-wrap{
+      .ant-tabs-tab{
+        padding: 4px 8px;
+      }
+      .ant-tabs-tab-active{
+        border-block-end: 3px solid #8db7fd;
+        box-sizing:content-box;
+        padding-block-end: 3px;
+      }
+    }
+  }
+
+}
+
+.data-studio-form{
+    .ant-form-item{
+      margin-bottom: 5px!important;
+    }
+}
+

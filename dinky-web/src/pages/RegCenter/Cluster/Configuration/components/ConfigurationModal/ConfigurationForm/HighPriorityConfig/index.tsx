@@ -28,7 +28,7 @@ const HighPriorityConfig = () => {
     const renderHighPriorityConfig = () => {
         return FLINK_CONFIG_LIST.map(item => <>
             <ProFormText
-                name={item.name}
+                name={['configJson', 'flinkConfig','configuration', item.name]}
                 label={item.label}
                 width={400}
                 placeholder={item.placeholder}
@@ -41,6 +41,11 @@ const HighPriorityConfig = () => {
         <Divider>{l('rc.cc.defineConfig')}</Divider>
         <ProFormGroup direction={'horizontal'} align={'baseline'}>
             {renderHighPriorityConfig()}
+          <ProFormText
+            name={['configJson','clusterConfig', 'flinkConfigPath']}
+            label={"Flink Conf Yaml Path"}
+            width={400}
+          />
         </ProFormGroup>
     </>
 }

@@ -20,6 +20,7 @@
 package org.dinky.data.model;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.config.Dialect;
 import org.dinky.job.JobConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
@@ -142,11 +143,11 @@ public class Task extends SuperEntity<Task> {
     public JobConfig buildSubmitConfig() {
         boolean useRemote = clusterId != null && clusterId != 0;
         Map<String, String> map =
-                config.stream()
+                parseConfig().stream()
                         .filter(Asserts::isNotNull)
                         .collect(
                                 Collectors.toMap(
-                                        item -> item.get("key"),
+                                        item -> item.get("name"),
                                         item -> item.get("value"),
                                         (a, b) -> b));
 
@@ -171,7 +172,8 @@ public class Task extends SuperEntity<Task> {
                 parallelism,
                 savePointStrategy,
                 savePointPath,
-                map);
+                map,
+                isJarTask());
     }
 
     public JsonNode parseJsonNode(ObjectMapper mapper) {
@@ -193,5 +195,9 @@ public class Task extends SuperEntity<Task> {
         jsonNode.put("step", this.step);
         jsonNode.put("enabled", this.getEnabled());
         return jsonNode;
+    }
+
+    public boolean isJarTask() {
+        return Dialect.isJarDialect(dialect);
     }
 }

@@ -6,7 +6,7 @@ import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/constants";
 import {parseSecondStr} from "@/utils/function";
 import {queryList} from "@/services/api";
-import {TagJobStatus} from "@/pages/DevOps/JobList/function";
+import {TagJobStatus} from "@/pages/DevOps/function";
 
 
 type HistoryProps = {

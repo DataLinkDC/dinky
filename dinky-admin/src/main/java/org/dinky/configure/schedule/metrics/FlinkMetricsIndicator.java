@@ -52,8 +52,10 @@ import org.springframework.stereotype.Component;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.thread.AsyncUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.core.util.URLUtil;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -179,30 +181,37 @@ public class FlinkMetricsIndicator extends BaseSchedule {
             return;
         }
 
-        // http://10.8.16.125:8282/jobs/06ccde3ff6e53bafe729e0e50fca72fd/vertices/cbc357ccb763df2852fee8c4fc7d55f2/metrics?get=0.buffers.inputExclusiveBuffersUsage
+        // http://10.8.16.125:8282/jobs/06ccde3ff6e53bafe729e0e50fca72fd/vertices/cbc357ccb763df2852fee8c4fc7d55f2/metrics?get=0.buffers.inputExclusiveBuffersUsage,0.numRecordsInPerSecond
         flinkMetrics
                 .getVerticesAndMetricsMap()
                 .forEach(
                         (v, m) -> {
-                            for (String metrics : m.keySet()) {
-                                if (CollUtil.isEmpty(urlList)) {
-                                    return;
-                                }
-                                HttpUtils.asyncRequest(
-                                        flinkMetrics.getUrls(),
-                                        "/jobs/"
-                                                + flinkMetrics.getJobId()
-                                                + "/vertices/"
-                                                + v
-                                                + "/metrics?get="
-                                                + metrics,
-                                        flinkMetricsRequestTimeout.get(),
-                                        x -> {
-                                            JSONArray array = JSONUtil.parseArray(x.body());
-                                            String value = array.getJSONObject(0).getStr("value");
-                                            m.put(metrics, value);
-                                        });
+                            if (CollUtil.isEmpty(urlList)) {
+                                return;
                             }
+                            String metricsName = StrUtil.join(",", m.keySet());
+                            HttpUtils.asyncRequest(
+                                    flinkMetrics.getUrls(),
+                                    "/jobs/"
+                                            + flinkMetrics.getJobId()
+                                            + "/vertices/"
+                                            + v
+                                            + "/metrics?get="
+                                            + URLUtil.encode(metricsName),
+                                    flinkMetricsRequestTimeout.get(),
+                                    x -> {
+                                        JSONArray array = JSONUtil.parseArray(x.body());
+                                        if (CollUtil.isEmpty(array)) {
+                                            return;
+                                        }
+                                        array.forEach(
+                                                y -> {
+                                                    JSONObject jsonObject = JSONUtil.parseObj(y);
+                                                    String id = jsonObject.getStr("id");
+                                                    String value = jsonObject.getStr("value");
+                                                    m.put(id, value);
+                                                });
+                                    });
                         });
         FLINK_METRICS_DATA_MAP.get(now).add(flinkMetrics);
     }

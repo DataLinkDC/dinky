@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dinky.mapper.MenuMapper">
+
+
+    <resultMap type="org.dinky.data.model.Menu" id="DinkySysMenuResult">
+        <id     property="id"         column="id"        />
+        <result property="name"       column="name"      />
+        <result property="parentId"       column="parent_id"      />
+        <result property="orderNum"       column="order_num"      />
+        <result property="path"           column="path"           />
+        <result property="component"      column="component"      />
+        <result property="type"       column="type"      />
+        <result property="display"        column="display"        />
+        <result property="perms"          column="perms"          />
+        <result property="icon"           column="icon"           />
+        <result property="createTime"     column="create_time"    />
+        <result property="updateTime"     column="update_time"    />
+        <result property="note"         column="note"         />
+    </resultMap>
+
+    <sql id="selectMenuVo">
+        select id, name, parent_id, order_num,
+               path, component, type, display,
+            ifnull(perms,'') as perms, icon, create_time, update_time
+        from dinky_sys_menu
+    </sql>
+
+    <select id="listAllMenus" resultMap="DinkySysMenuResult">
+        <include refid="selectMenuVo"/>
+        order by parent_id, order_num
+    </select>
+
+    <select id="selectMenuList" parameterType="org.dinky.data.model.Menu" resultMap="DinkySysMenuResult">
+        <include refid="selectMenuVo"/>
+        <where>
+            <if test="name != null and name != ''">
+                AND `name` like concat('%', #{name}, '%')
+            </if>
+            <if test="display != null and display != ''">
+                AND display = #{display}
+            </if>
+        </where>
+        order by parent_id, order_num
+    </select>
+
+    <select id="listMenus4SuperAdmin" resultMap="DinkySysMenuResult">
+        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
+        from dinky_sys_menu m
+        where m.type in ('0', '1')
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuListByUserId" parameterType="org.dinky.data.model.Menu" resultMap="DinkySysMenuResult">
+        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms,
+        m.type, m.icon, m.order_num, m.create_time
+        from dinky_sys_menu m
+        left join dinky_role_menu rm on m.id = rm.menu_id
+        left join dinky_user_role ur on rm.role_id = ur.role_id
+        left join dinky_role ro on ur.role_id = ro.role_id
+        where ur.user_id = #{params.userId}
+        <if test="name != null and name != ''">
+            AND m.`name` like concat('%', #{name}, '%')
+        </if>
+        <if test="display != null and display != ''">
+            AND m.display = #{display}
+        </if>
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuTreeByUserId" resultMap="DinkySysMenuResult">
+        select distinct m.id, m.parent_id, m.`name`, m.path, m.component, m.display, ifnull(m.perms,'') as perms, m.type, m.icon, m.order_num, m.create_time
+        from dinky_sys_menu m
+                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_user_role ur on rm.role_id = ur.role_id
+                 left join dinky_role ro on ur.role_id = ro.role_id
+                 left join sys_user u on ur.user_id = u.user_id
+        where u.user_id = #{userId}
+          and m.type in ('0', '1')
+          AND ro.is_delete = 0
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuListByRoleId" parameterType="Long" resultType="Integer">
+        select m.id, m.parent_id
+        from dinky_sys_menu m
+                 left join dinky_role_menu rm on m.id = rm.menu_id
+        where rm.role_id = #{roleId}
+          and m.id not in (select m.parent_id from dinky_sys_menu m inner join dinky_role_menu rm on m.id = rm.menu_id and rm.role_id = #{roleId})
+        order by m.parent_id, m.order_num
+    </select>
+
+    <select id="selectMenuPerms" resultType="String">
+        select distinct m.perms
+        from dinky_sys_menu m
+                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_user_role ur on rm.role_id = ur.role_id
+    </select>
+
+    <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+        select distinct m.perms
+        from dinky_sys_menu m
+                 left join dinky_role_menu rm on m.id = rm.menu_id
+                 left join dinky_user_role ur on rm.role_id = ur.role_id
+                 left join dinky_role r on r.role_id = ur.role_id
+        where r.is_delete = '0' and ur.user_id = #{userId}
+    </select>
+
+    <select id="selectMenuById" parameterType="Long" resultMap="DinkySysMenuResult">
+        <include refid="selectMenuVo"/>
+        where id = #{menuId}
+    </select>
+
+    <select id="hasChildByMenuId" resultType="Integer">
+        select count(1) from dinky_sys_menu where parent_id = #{menuId} limit 1
+    </select>
+
+    <select id="checkMenuNameUnique" parameterType="org.dinky.data.model.Menu" resultMap="DinkySysMenuResult">
+        <include refid="selectMenuVo"/>
+        where `name`=#{name} and parent_id = #{parentId}
+    </select>
+
+    <select id="selectForProTable" resultType="org.dinky.data.model.Menu">
+        select
+        a.*
+        from
+        dinky_sys_menu a
+        <where>
+            1=1
+            <if test='param.path!=null and param.path!=""'>
+                and a.name like "%${param.name}%"
+            </if>
+            <if test='param.name!=null and param.name!=""'>
+                and a.name like "%${param.name}%"
+            </if>
+            <if test='param.type!=null and param.type!=""'>
+                and a.type = #{param.type}
+            </if>
+            <if test='param.createTime!=null and param.createTime!=""'>
+                and a.create_time <![CDATA[>=]]> str_to_date( #{param.createTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='param.updateTime!=null and param.updateTime!=""'>
+                and a.update_time <![CDATA[>=]]> str_to_date( #{param.updateTime},'%Y-%m-%d %H:%i:%s')
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!="" and !ew.sqlSegment.startsWith(" ORDER BY")'>
+                and
+            </if>
+            <if test='ew.sqlSegment!=null and ew.sqlSegment!=""'>
+                ${ew.sqlSegment}
+            </if>
+        </where>
+    </select>
+</mapper>

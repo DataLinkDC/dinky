@@ -73,7 +73,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
                 new ApplicationConfiguration(userJarParas, appConfig.getUserJarMainAppClass());
 
         KubernetesResult result = KubernetesResult.build(getType());
-        ;
+
         try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
                 new KubernetesClusterDescriptor(configuration, client)) {
             ClusterClientProvider<String> clusterClientProvider =

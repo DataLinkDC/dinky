@@ -38,19 +38,12 @@ export const DSConfig = ({data, onSave}: DSConfigProps) => {
     setLoading(false);
   };
   return <>
-    <ProCard
-      title={l('sys.setting.ds')}
-      tooltip={l('sys.setting.ds.tooltip')}
-      size="small"
-      headerBordered ghost collapsible
-      defaultCollapsed={false}
-    >
+      {/*tooltip={l('sys.setting.ds.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
         tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
         data={data}
       />
-    </ProCard>
   </>;
 };

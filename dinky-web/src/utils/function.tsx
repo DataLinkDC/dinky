@@ -22,7 +22,7 @@ import {editor} from 'monaco-editor';
 import React, {useEffect, useState} from 'react';
 import {trim} from 'lodash';
 import {
-  FileIcon,
+  FileIcon, FlinkSQLSvg,
   FolderSvgExpand,
   JavaSvg,
   LogSvg,
@@ -35,6 +35,8 @@ import {
 } from '@/components/Icons/CodeLanguageIcon';
 import path from 'path';
 import {l} from '@/utils/intl';
+import {RightSide} from "@/pages/DataStudio/route";
+import {TabsItemType} from "@/pages/DataStudio/model";
 
 
 /**
@@ -113,8 +115,8 @@ export function parseJsonStr(jsonStr: string) {
 /**
  * get theme by localStorage's theme
  */
-export function getLocalTheme() {
-  return localStorage.getItem(THEME.NAV_THEME);
+export function getLocalTheme(): string {
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
 }
 
 /**
@@ -141,8 +143,8 @@ export function convertCodeEditTheme() {
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
-      'editor.background': '#141414', //  editor background color
-      'editor.lineHighlightBackground': '#141414', //  editor line highlight background color
+      'editor.background': '#5d5b5b', //  editor background color
+      'editor.lineHighlightBackground': '#959cb6', //  editor line highlight background color
       'editorLineNumber.foreground': '#ffffff', //   editor line number color
       'editorCursor.foreground': '#ffffff', //  editor cursor color
       'editorIndentGuide.background': '#ffffff', //  editor indent guide color
@@ -250,7 +252,10 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-  switch (type) {
+  if (!type){
+    return <FileIcon/>;
+  }
+  switch (type.toLowerCase()) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
     case DIALECT.SCALA:
@@ -272,6 +277,8 @@ export const getIcon = (type: string) => {
       return <ShellSvg/>;
     case DIALECT.LOG:
       return <LogSvg/>;
+    case DIALECT.FLINK_SQL:
+      return <FlinkSQLSvg/>;
     default:
       return <FileIcon/>;
   }
@@ -303,7 +310,7 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
  * @param type file suffix
  * @param splitChar split character
  */
-export const renderLanguage = (type: string, splitChar: string) => {
+export const renderLanguage = (type = '', splitChar: string) => {
   if (trim(splitChar).length === 0) {
     return getLanguage(type);
   } else {
@@ -369,28 +376,84 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
   // build key
   let buildKey = item.path + folderSeparator() + item.name;
 
+  const buildTitleLabel = () => {
+    return <>{item.name}<span
+      style={{color: 'gray'}}> &nbsp;&nbsp;{l('global.size', '', {size: item.size})}</span></>;
+  }
+
   // if has children , recursive build
   if (item.children) {
     return {
       isLeaf: !item.leaf,
+      id: item?.id,
       name: item.name,
-      parentId: item.path,
+      parentId: item.path ?? item.parentId,
       icon: renderIcon(item.name, '.', item.leaf),
       content: item.content,
       path: item.path,
-      title: item.name,
+      fullName: item?.fullName,
+      title: buildTitleLabel(),
+      desc: item?.desc ?? item?.description,
       key: buildKey,
       children: buildTreeData(item.children)
     };
   }
   return {
     isLeaf: !item.leaf,
+    id: item?.id,
     name: item.name,
-    parentId: item.path,
+    parentId: item.path ?? item.parentId,
     icon: renderIcon(item.name, '.', item.leaf),
     content: item.content,
     path: item.path,
-    title: item.name,
+    fullName: item?.fullName,
+    desc: item?.desc ?? item?.description,
+    title: buildTitleLabel(),
     key: buildKey,
   };
 });
+
+
+/**
+ * Determine whether the file is supported
+ * @returns {boolean}
+ */
+export const unSupportView = (name: string) => {
+
+  return name.endsWith(".jar")
+    || name.endsWith(".war")
+    || name.endsWith(".zip")
+    || name.endsWith(".tar.gz")
+    || name.endsWith(".tar")
+    || name.endsWith(".jpg")
+    || name.endsWith(".png")
+    || name.endsWith(".gif")
+    || name.endsWith(".bmp")
+    || name.endsWith(".jpeg")
+    || name.endsWith(".ico")
+}
+
+
+/**
+ * search tree node
+ * @param originValue
+ * @param {string} searchValue
+ * @returns {any}
+ */
+export const searchTreeNode = (originValue: string, searchValue: string): any => {
+
+  let title = <>{originValue}</>;
+
+  // searchValue is not empty and trim() after length > 0
+  if (searchValue && searchValue.trim().length > 0) {
+    const searchIndex = originValue.indexOf(searchValue); // search index
+    const beforeStr = originValue.substring(0, searchIndex); // before search value
+    const afterStr = originValue.substring(searchIndex + searchValue.length); // after search value
+    // when search index > -1, return render title, else return origin title
+    title = searchIndex > -1 ?
+      <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
+      : <span className={'treeList'}>{title}</span>;
+  }
+  return title
+};
+

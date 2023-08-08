@@ -36,11 +36,14 @@ import lombok.ToString;
 @AllArgsConstructor
 @ToString
 public class TreeNodeDTO {
+    private Integer id;
     private String name;
     private String path;
     private String content;
+    private Integer parentId;
     private Long size;
     private boolean isLeaf;
+    private String desc;
     private List<TreeNodeDTO> children;
 
     public TreeNodeDTO(

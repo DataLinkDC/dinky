@@ -108,10 +108,10 @@
 
 
     <select id="getJobStreamingOrBatchModelOverview" resultType="org.dinky.data.model.JobModelOverview">
-        select sum(case when batch_model = 'streaming' then cnt else 0 end) as streamingJobCount,
-               sum(case when batch_model = 'batch' then cnt else 0 end)     as batchJobCount
+        select coalesce(sum(case when batch_model = 'streaming' then cnt else 0 end),0) as streamingJobCount,
+               coalesce(sum(case when batch_model = 'batch' then cnt else 0 end) ,0)    as batchJobCount
         from (select case a.batch_model when 0 then 'streaming' when 1 then 'batch' end as batch_model,
-                     count(1)                                                           as cnt
+                     coalesce(count(1), 0)                                                           as cnt
               from dinky_task a
               where a.batch_model is not null
                 and a.dialect in (

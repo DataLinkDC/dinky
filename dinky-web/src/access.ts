@@ -15,12 +15,14 @@
  * limitations under the License.
  */
 
+import { API } from "./services/data";
+
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
 export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
   const { currentUser } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.user.isAdmin,
+    canAdmin: currentUser && currentUser.user.superAdminFlag,
   };
 }

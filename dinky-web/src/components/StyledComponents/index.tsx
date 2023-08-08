@@ -16,6 +16,10 @@
  */
 
 import styled from "styled-components";
+import { theme } from 'antd';
+
+const { getDesignToken } = theme;
+const token = getDesignToken();
 
 export const DataAction = styled.div`
   display: flex !important;
@@ -41,4 +45,25 @@ export const StartButton = styled.div`
   font-size: large;
   z-index: 2;
   top: 50%;
+`;
+
+
+export const TagAlignCenter = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+`;
+export const TagAlignLeft = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  align-items: center;
+`;
+
+export const FlexCenterDiv = styled.div`
+  display: flex;
+  height: 100%;
+  justify-content: left;
+  align-items: center;
 `;

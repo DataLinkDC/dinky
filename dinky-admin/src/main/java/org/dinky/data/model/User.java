@@ -78,6 +78,8 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    private Boolean superAdminFlag;
+
     @TableField(exist = false)
-    private Boolean isAdmin;
+    private Boolean tenantAdminFlag;
 }

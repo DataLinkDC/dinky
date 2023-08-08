@@ -33,6 +33,10 @@ public class UserInfoContextHolder {
         USER_INFO.put(userId, userInfo);
     }
 
+    public static void remove(Integer userId) {
+        USER_INFO.remove(userId);
+    }
+
     public static UserDTO get(Integer userId) {
         return USER_INFO.get(userId);
     }

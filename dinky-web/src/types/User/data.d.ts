@@ -24,11 +24,12 @@ declare namespace UserBaseInfo {
     password?: string;
     avatar?: string;
     worknum?: string;
-    userType?: number;
+    userType: number;
     mobile?: string;
     enabled: boolean;
     isDelete: boolean;
-    isAdmin?: boolean;
+    superAdminFlag: boolean;
+    tenantAdminFlag: boolean;
   };
 
   export type ChangePasswordParams = {
@@ -55,6 +56,19 @@ declare namespace UserBaseInfo {
   };
 }
 
+export type SaTokenInfo = {
+  tokenName: string;
+  tokenValue: string;
+  isLogin: boolean;
+  loginId: number;
+  loginType: string;
+  tokenTimeout: number;
+  sessionTimeout: number;
+  tokenSessionTimeout: number;
+  tokenActivityTimeout: number;
+  loginDevice: string;
+  tag: string;
+}
 
 
 export type RowPermissions = ExcludeNameAndEnableColumns & {
@@ -63,4 +77,37 @@ export type RowPermissions = ExcludeNameAndEnableColumns & {
   roleName: string;
   tableName: string;
   expression: string;
+};
+
+
+export type LoginLog = {
+  id: number;
+  userId : number;
+  username: string;
+  ip: string;
+  loginType: string;
+  status: number;
+  msg: string;
+  isDeleted: boolean;
+  accessTime: Date;
+  createTime: Date;
+  updateTime: Date;
+};
+
+export type OperateLog = {
+    id: number;
+    moduleName: string;
+    businessType: number;
+    method: string;
+    requestMethod: string;
+    operateName: string;
+    operateUserId: number;
+    operateUrl: string;
+    operateIp: string;
+    operateLocation: string;
+    operateParam: string;
+    jsonResult: string;
+    status: number;
+    errorMsg: string;
+    operateTime: Date;
 };

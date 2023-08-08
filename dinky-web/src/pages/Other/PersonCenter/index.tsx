@@ -19,7 +19,7 @@
 
 import React, {useEffect, useState} from "react";
 import {useModel} from "@@/exports";
-import {Descriptions, Divider, Empty, Form, Space, Tag} from "antd";
+import {Descriptions, Divider, Form, Tag} from "antd";
 import {PageContainer, PageLoading, ProCard} from "@ant-design/pro-components";
 import {UserBaseInfo} from "@/types/User/data";
 import {l} from "@/utils/intl";
@@ -31,13 +31,15 @@ import {API_CONSTANTS} from "@/services/constants";
 import BaseInfo from "@/pages/Other/PersonCenter/BaseInfo";
 import Pop from "@/components/Animation/Pop";
 import {flushSync} from "react-dom";
+import LoginLogRecord from "@/pages/Other/PersonCenter/LoginLogRecord";
+import OperationLogRecord from "@/pages/Other/PersonCenter/OperationLogRecord";
 
 const PersonCenter = () => {
 
     const [form] = Form.useForm();
 
     const { initialState, setInitialState } = useModel('@@initialState');
-    const [activeKey, setActiveKey] = useState('operation');
+    const [activeKey, setActiveKey] = useState('loginlog');
     const loading = <PageLoading/>;
 
     const fetchUserInfo = async () => {
@@ -112,9 +114,14 @@ const PersonCenter = () => {
      */
     const tabList = [
         {
+            key: 'loginlog',
+            label: <><LogSvg/>{l('user.loginlog')}</>,
+            children: <><LoginLogRecord userId={user?.id}/></>,
+        },
+        {
             key: 'operation',
             label: <><LogSvg/>{l('user.op')}</>,
-            children: <><Empty description={l('global.stay.tuned')} image={Empty.PRESENTED_IMAGE_DEFAULT}/></>,
+            children: <><OperationLogRecord userId={user?.id}/></>,
         },
         {
             key: 'changePassword',
@@ -130,13 +137,13 @@ const PersonCenter = () => {
     return <Pop>
         <PageContainer title={false}>
             <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
-                <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="30%" hoverable bordered>
+                <ProCard style={{height: '91vh', textAlign:'center', overflowY: 'auto',}} colSpan="22%" hoverable bordered>
                     <BaseInfo user={user} tenant={currentTenant} />
                     <Divider orientation={'left'} plain >{l('user.tenant')}</Divider>
-                    <Descriptions size={'small'} column={4}>{renderTenantTagList(tenantList || [])}</Descriptions>
+                    <Descriptions size={'small'} column={3}>{renderTenantTagList(tenantList || [])}</Descriptions>
                     <Divider plain ></Divider>
                     <Divider orientation={'left'} plain >{l('user.role')}</Divider>
-                    <Descriptions size={'small'} column={4}>{renderRoleTagList(roleList || [])}</Descriptions>
+                    <Descriptions size={'small'} column={3}>{renderRoleTagList(roleList || [])}</Descriptions>
                 </ProCard>
 
                 <ProCard

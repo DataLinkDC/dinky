@@ -74,6 +74,13 @@ export default [
         hideInMenu: true,
         component: './DevOps',
       },
+      {
+        path: '/devops/job-detail',
+        name: 'job-detail',
+        hideInMenu: true,
+        component: './DevOps/JobDetail',
+      },
+
     ],
   },
   {
@@ -185,6 +192,12 @@ export default [
         name: 'role',
         icon: 'TeamOutlined',
         component: './AuthCenter/Role',
+      },
+      {
+        path: '/auth/menu',
+        name: 'menu',
+        icon: 'MenuOutlined',
+        component: './AuthCenter/Menu',
       },
       {
         path: '/auth/rowpermissions',

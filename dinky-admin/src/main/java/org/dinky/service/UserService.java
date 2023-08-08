@@ -136,7 +136,15 @@ public interface UserService extends ISuperService<User> {
      * @param id
      * @return {@link Boolean}
      */
-    Boolean checkAdmin(Integer id);
+    Boolean checkSuperAdmin(Integer id);
+
+    /**
+     * check user is tenant admin
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    Boolean checkTenantAdmin(Integer id);
 
     /**
      * get role by current user
@@ -160,5 +168,14 @@ public interface UserService extends ISuperService<User> {
      *
      * @return role select permissions list
      */
-    List<Integer> getUserIdsByTeantId(int id);
+    List<Integer> getUserIdsByTenantId(int id);
+
+    /**
+     * get user list by tenant id
+     *
+     * @return role select permissions list
+     */
+    List<User> getUserListByTenantId(int id);
+
+    Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
 }

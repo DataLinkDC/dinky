@@ -23,7 +23,7 @@ import {LockTwoTone} from "@ant-design/icons";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Button} from "antd";
 import {l} from "@/utils/intl";
-import {handleAddOrUpdate, handleOption, handlePutData, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleOption, handlePutData, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {
     API_CONSTANTS,
@@ -42,6 +42,7 @@ import PasswordModal from "@/pages/AuthCenter/User/components/PasswordModal";
 import RoleModalTransfer from "../RoleModalTransfer";
 import UserModalForm from "@/pages/AuthCenter/User/components/UserModalForm";
 import {USER_TYPE_ENUM, UserType} from "@/pages/AuthCenter/User/components/constants";
+import {YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from "@/types/Public/constants";
 
 
 const UserProTable = () => {
@@ -124,7 +125,7 @@ const UserProTable = () => {
      */
     const handleChangeEnable = async (value: UserBaseInfo.User) => {
         await executeAndCallbackRefresh(async () => {
-            await updateEnabled(API_CONSTANTS.USER_ENABLE, {id: value.id})
+            await updateDataByParam(API_CONSTANTS.USER_ENABLE, {id: value.id})
         })
     };
 
@@ -176,8 +177,17 @@ const UserProTable = () => {
     {
       title: l("user.type"),
       dataIndex: "userType",
-      valueEnum: USER_TYPE_ENUM()
+      valueEnum: USER_TYPE_ENUM(),
+      hideInSearch: true,
     },
+      {
+          title: l("user.superAdminFlag"),
+          dataIndex: "superAdminFlag",
+          valueEnum: YES_OR_NO_ENUM,
+          hideInSearch: true,
+          filters: YES_OR_NO_FILTERS_MAPPING,
+          filterMultiple: false,
+      },
     {
       title: l("global.table.isEnable"),
       dataIndex: "enabled",
@@ -209,12 +219,13 @@ const UserProTable = () => {
       title: l("global.table.operate"),
       valueType: "option",
       width: "12vh",
+      fixed: "right",
       render: (_: any, record: UserBaseInfo.User) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
         <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)}
                    title={l('user.assignRole')}/>,
         <>
-          {record.userType == UserType.LOCAL &&
+          {record.userType === UserType.LOCAL &&
             <Button
               className={"options-button"}
               key={`${record.id}_change`}

@@ -252,7 +252,7 @@ CREATE TABLE "public"."dinky_database" (
                                            "port" int4,
                                            "url" varchar(255) COLLATE "pg_catalog"."default",
                                            "username" varchar(50) COLLATE "pg_catalog"."default",
-                                           "password" varchar(50) COLLATE "pg_catalog"."default",
+                                           "password" varchar(512) COLLATE "pg_catalog"."default",
                                            "note" varchar(255) COLLATE "pg_catalog"."default",
                                            "flink_config" text COLLATE "pg_catalog"."default",
                                            "flink_template" text COLLATE "pg_catalog"."default",
@@ -1476,6 +1476,7 @@ CREATE TABLE "public"."dinky_user" (
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,
+                                       "super_admin_flag" int2 NOT NULL,
                                        "is_delete" int2 NOT NULL,
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6)
@@ -1490,7 +1491,8 @@ COMMENT ON COLUMN "public"."dinky_user"."avatar" IS 'avatar';
 COMMENT ON COLUMN "public"."dinky_user"."user_type" IS 'user_type';
 COMMENT ON COLUMN "public"."dinky_user"."mobile" IS 'mobile phone';
 COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
-COMMENT ON COLUMN "public"."dinky_user"."is_delete" IS 'is delete';
+COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
+COMMENT ON COLUMN "public"."dinky_user"."super_admin_flag" IS 'is super admin(0:false,1true)';
 COMMENT ON COLUMN "public"."dinky_user"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_user"."update_time" IS 'update time';
 COMMENT ON TABLE "public"."dinky_user" IS 'user';
@@ -1532,6 +1534,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
                                               "id" SERIAL NOT NULL,
                                               "user_id" int4 NOT NULL,
                                               "tenant_id" int4 NOT NULL,
+                                              "tenant_admin_flag" int2 NOT NULL,
                                               "create_time" timestamp(6),
                                               "update_time" timestamp(6)
 )
@@ -1539,6 +1542,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
 COMMENT ON COLUMN "public"."dinky_user_tenant"."id" IS 'ID';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."user_id" IS 'user id';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_id" IS 'tenant id';
+COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_admin_flag" IS 'tenant admin flag(0:false,1:true)';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."update_time" IS 'update time';
 COMMENT ON TABLE "public"."dinky_user_tenant" IS 'Relationship between users and tenants';
@@ -2068,8 +2072,8 @@ CREATE TABLE "public"."dinky_metrics" (
                                           "show_size" varchar(255) COLLATE "pg_catalog"."default",
                                           "title" varchar(255) COLLATE "pg_catalog"."default",
                                           "layout_name" varchar(255) COLLATE "pg_catalog"."default",
-                                          "create_time" timestamp(6),
-                                          "update_time" timestamp(6),
+                                          "create_time" timestamp(6) NOT NULL,
+                                          "update_time" timestamp(6) NOT NULL
                                           CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
 )
 ;
@@ -2078,3 +2082,128 @@ ALTER TABLE "public"."dinky_metrics"
     OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."dinky_metrics" IS 'metrics layout';
+
+
+
+-- ----------------------------
+-- Table structure for dinky_resources
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dinky_resources";
+CREATE TABLE "public"."dinky_resources" (
+                                            "id" int4 NOT NULL,
+                                            "file_name" varchar(64) COLLATE "pg_catalog"."default",
+                                            "description" varchar(255) COLLATE "pg_catalog"."default",
+                                            "user_id" int4,
+                                            "type" int2,
+                                            "size" int8,
+                                            "pid" int4,
+                                            "full_name" varchar(128) COLLATE "pg_catalog"."default",
+                                            "is_directory" int2,
+                                            "create_time" timestamp(6) NOT NULL,
+                                            "update_time" timestamp(6) NOT NULL
+)
+;
+COMMENT ON COLUMN "public"."dinky_resources"."id" IS 'key';
+COMMENT ON COLUMN "public"."dinky_resources"."file_name" IS 'file name';
+COMMENT ON COLUMN "public"."dinky_resources"."user_id" IS 'user id';
+COMMENT ON COLUMN "public"."dinky_resources"."type" IS 'resource type,0:FILE，1:UDF';
+COMMENT ON COLUMN "public"."dinky_resources"."size" IS 'resource size';
+COMMENT ON COLUMN "public"."dinky_resources"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_resources"."update_time" IS 'update time';
+
+-- ----------------------------
+-- Records of dinky_resources
+-- ----------------------------
+INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0, -1, '/', 1, '2023-06-28 20:20:13', '2023-06-28 20:20:13');
+
+-- ----------------------------
+-- Indexes structure for table dinky_resources
+-- ----------------------------
+CREATE UNIQUE INDEX "dinky_resources_un" ON "public"."dinky_resources" USING btree (
+    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+    "type" "pg_catalog"."int2_ops" ASC NULLS LAST
+    );
+
+-- ----------------------------
+-- Primary Key structure for table dinky_resources
+-- ----------------------------
+ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRIMARY KEY ("id");
+
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_login_log
+-- ----------------------------
+DROP TABLE IF EXISTS "public"."dinky_sys_login_log";
+CREATE TABLE "public"."dinky_sys_login_log" (
+                                            "id" int4 NOT NULL,
+                                            "user_id" int8,
+                                            "username" varchar(60) COLLATE "pg_catalog"."default",
+                                            "login_type" int2,
+                                            "ip" varchar(40) COLLATE "pg_catalog"."default",
+                                            "status" int2,
+                                            "msg" text COLLATE "pg_catalog"."default",
+                                            "create_time" timestamp(6) NOT NULL,
+                                            "access_time" timestamp(6) NOT NULL,
+                                            "update_time" timestamp(6) NOT NULL,
+                                            "is_deleted" int2
+)
+;
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."id" IS 'id';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."user_id" IS 'user id';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."username" IS 'user name';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."login_type" IS 'user type (0:LOCAL,1:LDAP,2)';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."ip" IS 'ip';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."status" IS 'login status code';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."msg" IS 'login status msg';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."create_time" IS 'create time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."access_time" IS 'access time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."update_time" IS 'update time';
+COMMENT ON COLUMN "public"."dinky_sys_login_log"."is_deleted" IS 'is deleted';
+
+
+DROP TABLE IF EXISTS "public"."dinky_sys_operate_log";
+create table  "public"."dinky_sys_operate_log" (
+  id int4,
+  module_name character varying(50),
+  business_type int4,
+  method character varying(100),
+  request_method character varying(10),
+  operate_name character varying(50),
+  operate_user_id int4,
+  operate_url character varying(255),
+  operate_ip character varying(50),
+  operate_location character varying(255),
+  operate_param text,
+  json_result text,
+  status int4,
+  error_msg text,
+  operate_time timestamp without time zone
+);
+comment on table public.dinky_sys_operate_log is 'dinky_sys_operate_log';
+
+DROP TABLE IF EXISTS "public"."dinky_sys_role_menu";
+create table public.dinky_sys_role_menu (
+  id bigint,
+  role_id bigint,
+  menu_id bigint,
+  create_time timestamp without time zone,
+  update_time timestamp without time zone
+);
+
+DROP TABLE IF EXISTS "public"."dinky_sys_menu";
+create table public.dinky_sys_menu (
+  id bigint,
+  parent_id bigint,
+  name character varying(64),
+  path character varying(64),
+  component character varying(64),
+  perms character varying(64),
+  icon character varying(64),
+  type character(2),
+  display smallint,
+  order_num integer,
+  create_time timestamp without time zone,
+  update_time timestamp without time zone
+);
+

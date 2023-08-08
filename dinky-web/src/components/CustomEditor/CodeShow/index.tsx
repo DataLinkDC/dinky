@@ -17,14 +17,18 @@
  *
  */
 
-import MonacoEditor, {monaco} from "react-monaco-editor";
+import {Editor }  from "@monaco-editor/react";
 import {convertCodeEditTheme} from "@/utils/function";
 import {MonacoEditorOptions} from "@/types/Public/data";
 import React, {useState} from "react";
 import {editor} from "monaco-editor";
 import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
 import FullscreenBtn from "../FullscreenBtn";
+import * as monaco from 'monaco-editor';
+import { loader } from '@monaco-editor/react';
+import {EditorLanguage} from "monaco-editor/esm/metadata";
 
+loader.config({ monaco });
 /**
  * props
  * todo:
@@ -33,9 +37,9 @@ import FullscreenBtn from "../FullscreenBtn";
  *  2. Callback for right-clicking to clear logs (optional, not required)
  */
 export type CodeShowFormProps = {
-  height?: string;
+  height?: string|number;
   width?: string;
-  language?: string;
+  language?: EditorLanguage;
   options?: any;
   code: string;
   lineNumbers?: string;
@@ -86,10 +90,10 @@ const CodeShow = (props: CodeShowFormProps) => {
   const [editorRef, setEditorRef] = useState<any>();
   const [timer, setTimer] = useState<NodeJS.Timer>();
 
-  // register TypeScript language service, if language is not set default value is typescript!
-  monaco.languages.register({
-    id: language || "typescript",
-  });
+  // // register TypeScript language service, if language is not set default value is typescript!
+  // monaco.languages.register({
+  //   id: language || "typescript",
+  // });
 
   /**
    *  handle sync log
@@ -202,13 +206,14 @@ const CodeShow = (props: CodeShowFormProps) => {
       {fullScreenBtn && <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
 
       {/* editor */}
-      <MonacoEditor
+      <Editor
         width={width}
         height={height}
         value={loading ? "loading..." : code}
         language={language}
         options={{
           ...options,
+          scrollBeyondLastLine: false,
           readOnly: true,
           wordWrap: autoWrap,
           autoDetectHighContrast: true,
@@ -216,9 +221,29 @@ const CodeShow = (props: CodeShowFormProps) => {
           fixedOverflowWidgets: true,
           autoClosingDelete: "always",
           lineNumbers,
+          scrollbar: {
+            // Subtle shadows to the left & top. Defaults to true.
+            useShadows: false,
 
+            // Render vertical arrows. Defaults to false.
+            // verticalHasArrows: true,
+            // Render horizontal arrows. Defaults to false.
+            // horizontalHasArrows: true,
+
+            // Render vertical scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            vertical: "visible",
+            // Render horizontal scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            horizontal: "visible",
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+            arrowSize: 30,
+          }
         }}
-        editorDidMount={editorDidMount}
+        onMount={editorDidMount}
         theme={theme ? theme : convertCodeEditTheme()}
       />
 

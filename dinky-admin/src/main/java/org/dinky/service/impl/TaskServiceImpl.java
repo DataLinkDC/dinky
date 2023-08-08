@@ -32,6 +32,7 @@ import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
@@ -74,6 +75,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.FlinkJobTask;
@@ -88,7 +90,6 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.enums.ProcessType;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
@@ -108,6 +109,7 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.utils.DockerClientUtils;
+import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
 
@@ -152,11 +154,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 
 /** TaskServiceImpl */
@@ -166,7 +168,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private final StatementService statementService;
     private final ClusterInstanceService clusterInstanceService;
-    private final ClusterConfigurationService clusterConfigurationService;
+    private final ClusterConfigurationService clusterCfgService;
     private final SavepointsService savepointsService;
     private final JarService jarService;
     private final DataBaseService dataBaseService;
@@ -204,14 +206,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Value("server.port")
     private String serverPort;
 
-    private String buildParas(Integer id) {
+    private String[] buildParas(Integer id) {
         return buildParas(id, StrUtil.NULL);
     }
 
-    private String buildParas(Integer id, String dinkyAddr) {
+    private String[] buildParas(Integer id, String dinkyAddr) {
         return String.format(
-                "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
-                id, driver(), url(), username(), password(), dinkyAddr);
+                        "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
+                        id, driver(), url(), username(), password(), dinkyAddr)
+                .split(" ");
     }
 
     @Override
@@ -233,9 +236,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
 
-        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
-        }
+        //        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+        //            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
+        //        }
 
         JobManager jobManager = JobManager.build(config);
         process.start();
@@ -253,20 +256,20 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private void loadDocker(
             Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
         Map<String, Object> dockerConfig =
-                (Map<String, Object>)
-                        clusterConfigurationService
-                                .getClusterConfigById(clusterConfigurationId)
-                                .getConfig()
-                                .get("dockerConfig");
+                clusterCfgService
+                        .getClusterConfigById(clusterConfigurationId)
+                        .getFlinkClusterCfg()
+                        .getKubernetesConfig()
+                        .getDockerConfig();
 
         if (dockerConfig == null) {
             return;
         }
 
-        String params =
+        String[] params =
                 buildParas(taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
 
-        gatewayConfig.getAppConfig().setUserJarParas(params.split(" "));
+        gatewayConfig.getAppConfig().setUserJarParas(params);
 
         Docker docker = Docker.build(dockerConfig);
         if (docker == null || StringUtils.isBlank(docker.getInstance())) {
@@ -588,8 +591,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Task getTaskByNameAndTenantId(String name, Integer tenantId) {
-        Task task = baseMapper.getTaskByNameAndTenantId(name, tenantId);
-        return task;
+        return baseMapper.getTaskByNameAndTenantId(name, tenantId);
     }
 
     @Override
@@ -598,18 +600,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return JobStatus.UNKNOWN;
         }
 
-        Map<String, Object> gatewayConfigMap =
-                clusterConfigurationService.getGatewayConfig(
-                        jobInfoDetail.getClusterConfiguration().getId());
+        Integer clusterId = jobInfoDetail.getClusterConfiguration().getId();
+        String appId = jobInfoDetail.getCluster().getName();
 
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.buildGatewayConfig(gatewayConfigMap);
-        GatewayConfig gatewayConfig = jobConfig.getGatewayConfig();
-        gatewayConfig.setType(GatewayType.get(jobInfoDetail.getCluster().getType()));
-        gatewayConfig.getClusterConfig().setAppId(jobInfoDetail.getCluster().getName());
+        FlinkClusterConfig clusterConfig = clusterCfgService.getFlinkClusterCfg(clusterId);
+        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfig);
+        gatewayConfig.getClusterConfig().setAppId(appId);
 
         Gateway gateway = Gateway.build(gatewayConfig);
-        return gateway.getJobStatusById(jobInfoDetail.getCluster().getName());
+        return gateway.getJobStatusById(appId);
     }
 
     @Override
@@ -631,6 +630,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         JobConfig config = buildJobConfig(task);
+
+        // 加密敏感信息
+        if (config.getVariables() != null) {
+            for (Map.Entry<String, String> entry : config.getVariables().entrySet()) {
+                if (FragmentVariableUtils.isSensitive(entry.getKey())) {
+                    entry.setValue(FragmentVariableUtils.HIDDEN_CONTENT);
+                }
+            }
+        }
+
         JobManager jobManager = JobManager.build(config);
         if (config.isJarTask()) {
             return "";
@@ -900,27 +909,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig jobConfig = task.buildSubmitConfig();
         jobConfig.setType(cluster.getType());
 
-        boolean useGateway = false;
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(
-                            cluster.getClusterConfigurationId());
-            // 如果是k8s application 模式,且不是sql任务，则需要补齐statement 内的自定义配置
-            if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())) {
-                Statement statement = statementService.getById(cluster.getTaskId());
-                Map<String, Object> statementConfig =
-                        JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
-                gatewayConfig.putAll(statementConfig);
-            }
-            jobConfig.buildGatewayConfig(gatewayConfig);
-            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
-            useGateway = true;
+            FlinkClusterConfig flinkClusterConfig = buildGatewayCfgObj(jobConfig);
+            jobConfig.buildGatewayConfig(flinkClusterConfig);
         }
-        jobConfig.setTaskId(jobInstance.getTaskId());
         jobConfig.setAddress(cluster.getJobManagerHost());
 
         JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setUseGateway(useGateway);
 
         String jobId = jobInstance.getJid();
         if ("canceljob".equals(savePointType)) {
@@ -952,97 +947,85 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private JobConfig buildJobConfig(Task task) {
-        boolean isJarTask =
-                Dialect.FLINK_JAR.equalsVal(task.getDialect())
-                        || Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect());
+        if (!task.isJarTask()) {
+            String envSql = buildEnvSql(task);
+            task.setStatement(envSql + task.getStatement());
+        }
 
+        JobConfig config = task.buildSubmitConfig();
+
+        Savepoints savepoints = buildSavepoint(config);
+        if (Asserts.isNotNull(savepoints)) {
+            config.setSavePointPath(savepoints.getPath());
+            config.getConfig().put("execution.savepoint.path", savepoints.getPath());
+        }
+
+        if (!GatewayType.get(task.getType()).isDeployCluster()) {
+            String address =
+                    clusterInstanceService.buildEnvironmentAddress(
+                            config.isUseRemote(), task.getClusterId());
+            config.setAddress(address);
+        } else {
+            config.buildGatewayConfig(buildGatewayCfgObj(config));
+        }
+
+        config.setVariables(fragmentVariableService.listEnabledVariables());
+        buildRowPermission();
+        return config;
+    }
+
+    private Savepoints buildSavepoint(JobConfig config) {
+        switch (config.getSavePointStrategy()) {
+            case LATEST:
+                return savepointsService.getLatestSavepointByTaskId(config.getTaskId());
+            case EARLIEST:
+                return savepointsService.getEarliestSavepointByTaskId(config.getTaskId());
+            case CUSTOM:
+                return new Savepoints() {
+                    {
+                        setPath(config.getSavePointPath());
+                    }
+                };
+            default:
+                return null;
+        }
+    }
+
+    private FlinkClusterConfig buildGatewayCfgObj(JobConfig config) {
+        FlinkClusterConfig flinkClusterCfg =
+                clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
+        flinkClusterCfg.getAppConfig().setUserJarParas(buildParas(config.getTaskId()));
+        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfig());
+
+        //        if (config.isJarTask()) {
+        //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);
+        //            JSONObject taskObj = new JSONObject(task.getStatement());
+        //            return JSONUtil.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
+        //        }
+        return flinkClusterCfg;
+    }
+
+    private String buildEnvSql(Task task) {
+        String sql = CommonConstant.LineSep;
         boolean fragment = Asserts.isNotNull(task.getFragment()) ? task.getFragment() : false;
-        if (!isJarTask && fragment) {
+        if (fragment) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
-                task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
+                sql += flinkWithSql + CommonConstant.LineSep;
             }
         }
 
         boolean isEnvIdValid = Asserts.isNotNull(task.getEnvId()) && task.getEnvId() != 0;
-        if (!isJarTask && isEnvIdValid) {
+        if (isEnvIdValid) {
             Task envTask = getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
-                task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
+                sql += envTask.getStatement() + CommonConstant.LineSep;
             }
         }
+        return sql;
+    }
 
-        JobConfig config = task.buildSubmitConfig();
-        config.setJarTask(isJarTask);
-        if (!JobManager.useGateway(config.getType())) {
-            config.setAddress(
-                    clusterInstanceService.buildEnvironmentAddress(
-                            config.isUseRemote(), task.getClusterId()));
-        } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
-                // support custom K8s app submit, rather than clusterConfiguration
-                && (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
-                        || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(
-                                config.getType()))) {
-            Map<String, Object> taskConfig =
-                    JSONUtil.toMap(task.getStatement(), String.class, Object.class);
-            Map<String, Object> clusterConfiguration =
-                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            clusterConfiguration.putAll((Map<String, Object>) taskConfig.get("appConfig"));
-            clusterConfiguration.put("taskCustomConfig", taskConfig);
-            config.buildGatewayConfig(clusterConfiguration);
-        } else {
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            // submit application type with clusterConfiguration
-            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())
-                    || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
-                    || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
-                if (isJarTask) {
-                    Jar jar = jarService.getById(task.getJarId());
-                    Assert.check(jar);
-                    gatewayConfig.put("userJarPath", jar.getPath());
-                    gatewayConfig.put("userJarParas", jar.getParas());
-                    gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
-                } else {
-                    Opt.ofBlankAble(gatewayConfig.get("userJarPath"))
-                            .orElseThrow(
-                                    () ->
-                                            new DinkyException(
-                                                    "application 模式支持需要在 注册中心->集群管理->集群配置管理 填写jar路径。"));
-                    gatewayConfig.put("userJarParas", buildParas(config.getTaskId()));
-                    gatewayConfig.put("userJarMainAppClass", "org.dinky.app.MainApp");
-                }
-            }
-            config.buildGatewayConfig(gatewayConfig);
-            config.addGatewayConfig(task.parseConfig());
-        }
-
-        switch (config.getSavePointStrategy()) {
-            case LATEST:
-                Savepoints latestSavepoints =
-                        savepointsService.getLatestSavepointByTaskId(task.getId());
-                if (Asserts.isNotNull(latestSavepoints)) {
-                    config.setSavePointPath(latestSavepoints.getPath());
-                    config.getConfig().put("execution.savepoint.path", latestSavepoints.getPath());
-                }
-                break;
-            case EARLIEST:
-                Savepoints earliestSavepoints =
-                        savepointsService.getEarliestSavepointByTaskId(task.getId());
-                if (Asserts.isNotNull(earliestSavepoints)) {
-                    config.setSavePointPath(earliestSavepoints.getPath());
-                    config.getConfig()
-                            .put("execution.savepoint.path", earliestSavepoints.getPath());
-                }
-                break;
-            case CUSTOM:
-                config.setSavePointPath(config.getSavePointPath());
-                config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
-                break;
-            default:
-                config.setSavePointPath(null);
-        }
-        config.setVariables(fragmentVariableService.listEnabledVariables());
+    private void buildRowPermission() {
         List<RowPermissions> currentRoleSelectPermissions =
                 userService.getCurrentRoleSelectPermissions();
         if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
@@ -1058,7 +1041,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             }
             RowLevelPermissionsContext.set(permission);
         }
-        return config;
     }
 
     @Override
@@ -1081,8 +1063,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 ClusterConfiguration clusterConfigById =
-                        clusterConfigurationService.getClusterConfigById(
-                                history.getClusterConfigurationId());
+                        clusterCfgService.getClusterConfigById(history.getClusterConfigurationId());
                 jobInfoDetail.setClusterConfiguration(clusterConfigById);
                 jobInfoDetail.getInstance().setType(history.getType());
             }
@@ -1198,7 +1179,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // clusterConfigurationName
         if (Asserts.isNotNull(task.getClusterConfigurationId())) {
             ClusterConfiguration clusterConfiguration =
-                    clusterConfigurationService.getById(task.getClusterConfigurationId());
+                    clusterCfgService.getById(task.getClusterConfigurationId());
             jsonNode.put(
                     "clusterConfigurationName",
                     Asserts.isNotNull(clusterConfiguration)
@@ -1287,7 +1268,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
             if (Asserts.isNotNull(task.getClusterConfigurationName())) {
                 ClusterConfiguration clusterConfiguration =
-                        clusterConfigurationService.getOne(
+                        clusterCfgService.getOne(
                                 new QueryWrapper<ClusterConfiguration>()
                                         .eq("name", task.getClusterConfigurationName()));
                 if (Asserts.isNotNull(clusterConfiguration)) {
@@ -1430,7 +1411,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
-        updateTask.setJobInstanceId(0);
+        updateTask.setJobInstanceId(jobInstance.getId());
 
         Integer jobInstanceId = jobInstance.getId();
         // 获取任务历史信息
@@ -1438,12 +1419,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // some job need do something on Done, example flink-kubernets-operator
         if (GatewayType.isDeployCluster(jobInstance.getType())) {
             JobConfig jobConfig = new JobConfig();
-            Map<String, Object> clusterConfig =
-                    JSONUtil.toMap(
-                            jobHistory.getClusterConfiguration().get("configJson").asText(),
-                            String.class,
-                            Object.class);
-            jobConfig.buildGatewayConfig(clusterConfig);
+            String configJson = jobHistory.getClusterConfiguration().get("configJson").asText();
+            jobConfig.buildGatewayConfig(
+                    new JSONObject(configJson).toBean(FlinkClusterConfig.class));
             jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
             Gateway.build(jobConfig.getGatewayConfig())

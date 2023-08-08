@@ -24,7 +24,7 @@ import {l} from '@/utils/intl';
 
 export const DATA_SOURCE_TYPE_OPTIONS = [
     {
-        label: l('rc.ds.source'),
+        label: 'OLTP',
         options: [
             {
                 label: 'MySQL',
@@ -32,42 +32,42 @@ export const DATA_SOURCE_TYPE_OPTIONS = [
             }, {
                 label: 'Oracle',
                 value: 'Oracle',
-            },
-        ],
-    },
-    {
-        label: l('rc.ds.source'),
-        options: [
-           {
+            }, {
                 label: 'PostgreSQL',
                 value: 'PostgreSQL',
-            }, {
-                label: 'ClickHouse',
-                value: 'ClickHouse',
-            }, {
+            },{
                 label: 'SQLServer',
                 value: 'SQLServer',
-            },
-        ],
-    }, {
-        label: l('rc.ds.source'),
-        options: [
-             {
-                label: 'Doris',
-                value: 'Doris',
             }, {
                 label: 'Phoenix',
                 value: 'Phoenix',
-            }, {
-                label: 'Hive',
-                value: 'Hive',
-            }, {
+            }
+        ],
+    },
+    {
+        label: 'OLAP',
+        options: [
+            {
+                label: 'ClickHouse',
+                value: 'ClickHouse',
+            },{
+                label: 'Doris',
+                value: 'Doris',
+            },{
                 label: 'StarRocks',
                 value: 'StarRocks',
             }, {
                 label: 'Presto',
                 value: 'Presto',
             }
+        ],
+    }, {
+        label: 'DataWarehouse/DataLake',
+        options: [
+             {
+                label: 'Hive',
+                value: 'Hive',
+            },
         ],
     }
 ];

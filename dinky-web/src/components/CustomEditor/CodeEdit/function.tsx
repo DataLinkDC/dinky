@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {monaco} from "react-monaco-editor";
+import * as monaco from 'monaco-editor';
 import keyWordJsonData from "./keyword.json";
 import {Document, GlobalVar} from "@/types/RegCenter/data.d";
 import {Column, ISuggestions, MetaData} from "@/components/CustomEditor/CodeEdit/data";

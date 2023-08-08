@@ -128,14 +128,6 @@ public class JobManager {
 
     public JobManager() {}
 
-    public void setUseGateway(boolean useGateway) {
-        this.useGateway = useGateway;
-    }
-
-    public boolean isUseGateway() {
-        return useGateway;
-    }
-
     public void setPlanMode(boolean planMode) {
         isPlanMode = planMode;
     }
@@ -179,7 +171,6 @@ public class JobManager {
     }
 
     public static JobManager build(JobConfig config) {
-        initGatewayConfig(config);
         JobManager manager = new JobManager(config);
         manager.init();
         return manager;
@@ -191,24 +182,6 @@ public class JobManager {
         manager.init();
         ProcessContextHolder.getProcess().info("Build Flink plan mode success.");
         return manager;
-    }
-
-    private static void initGatewayConfig(JobConfig config) {
-        if (useGateway(config.getType())) {
-            Asserts.checkNull(config.getGatewayConfig(), "GatewayConfig 不能为空");
-            config.getGatewayConfig().setType(GatewayType.get(config.getType()));
-            config.getGatewayConfig().setTaskId(config.getTaskId());
-            config.getGatewayConfig().getFlinkConfig().setJobName(config.getJobName());
-            config.getGatewayConfig().getFlinkConfig().setSavePoint(config.getSavePointPath());
-            config.setUseRemote(false);
-        }
-    }
-
-    public static boolean useGateway(String type) {
-        return (GatewayType.YARN_PER_JOB.equalsValue(type)
-                || GatewayType.YARN_APPLICATION.equalsValue(type)
-                || GatewayType.KUBERNETES_APPLICATION.equalsValue(type)
-                || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(type));
     }
 
     private Executor createExecutor() {
@@ -246,7 +219,7 @@ public class JobManager {
     public boolean init() {
         if (!isPlanMode) {
             runMode = GatewayType.get(config.getType());
-            useGateway = useGateway(config.getType());
+            useGateway = GatewayType.isDeployCluster(config.getType());
             handler = JobHandler.build();
         }
         useStatementSet = config.isUseStatementSet();

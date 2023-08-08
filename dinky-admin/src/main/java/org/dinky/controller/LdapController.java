@@ -40,6 +40,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +55,7 @@ public class LdapController {
     @Autowired UserService userService;
 
     @GetMapping("/ldapEnableStatus")
+    @SaIgnore
     public Result<Boolean> ldapStatus() {
         return Result.succeed(
                 SystemConfiguration.getInstances().getLdapEnable().getValue(), "获取成功");
