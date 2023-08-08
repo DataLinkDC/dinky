@@ -178,7 +178,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean enable(Integer id) {
+    public Boolean modifyAlertInstanceStatus(Integer id) {
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
         return updateById(alertInstance);

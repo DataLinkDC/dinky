@@ -53,7 +53,7 @@ public class AlertHistoryController {
     @PostMapping
     @ApiOperation("Query Alert History")
     @Log(title = "Query Alert History", businessType = BusinessType.QUERY)
-    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
+    public ProTableResult<AlertHistory> listAlertHistoryRecord(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);
     }
 }

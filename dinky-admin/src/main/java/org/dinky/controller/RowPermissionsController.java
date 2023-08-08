@@ -55,7 +55,7 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody RowPermissions roleSelectPermissions) {
+    public Result saveOrUpdateRowPermissions(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -63,34 +63,6 @@ public class RowPermissionsController {
         }
     }
 
-    /**
-     * delete roleSelectPermissions , this method is {@link Deprecated} in the future , please use
-     * {@link #delete(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!roleSelectPermissionsService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
 
     /**
      * delete rowPermissions by id

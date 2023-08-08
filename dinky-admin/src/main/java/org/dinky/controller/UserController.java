@@ -82,11 +82,11 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam("id") Integer id) {
+    public Result<Void> modifyUserStatus(@RequestParam("id") Integer id) {
         if (userService.checkSuperAdmin(id)) {
             return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
         } else {
-            if (userService.enable(id)) {
+            if (userService.modifyUserStatus(id)) {
                 return Result.succeed(Status.MODIFY_SUCCESS);
             } else {
                 return Result.failed(Status.MODIFY_FAILED);
@@ -120,50 +120,6 @@ public class UserController {
         }
     }
 
-    /**
-     * delete or batch delete user , this method is will be {@link Deprecated} in the future ，
-     * please use {@link #deleteUserById(Integer)}
-     *
-     * @param para
-     * @return {@link Result} with {@link Void}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (userService.checkSuperAdmin(id)) {
-                    error.add(id);
-                    continue;
-                }
-                if (!userService.removeUser(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /**
-     * get user by id
-     *
-     * @param user {@link User}
-     * @return {@link Result} with {@link User}
-     */
-    @PostMapping("/getOneById")
-    public Result<User> getOneById(@RequestBody User user) {
-        user = userService.getById(user.getId());
-        user.setPassword(null);
-        return Result.succeed(user);
-    }
 
     /**
      * modify password
@@ -174,19 +130,6 @@ public class UserController {
     @PostMapping("/modifyPassword")
     public Result<Void> modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO);
-    }
-
-    /**
-     * give user grant role ，the interface will be {@link Deprecated} in the future，please use
-     * {@link #assignRole(AssignRoleParams)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} with {@link Void}
-     */
-    @PutMapping(value = "/grantRole")
-    @Deprecated
-    public Result<Void> grantRole(@RequestBody JsonNode para) {
-        return userService.grantRole(para);
     }
 
     /**

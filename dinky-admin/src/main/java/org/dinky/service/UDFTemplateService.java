@@ -39,5 +39,5 @@ public interface UDFTemplateService extends ISuperService<UDFTemplate> {
      * @param id udf template id {@link UDFTemplate#id}
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyUDFTemplateStatus(Integer id);
 }

@@ -128,7 +128,7 @@ public interface UserService extends ISuperService<User> {
      * @param id
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyUserStatus(Integer id);
 
     /**
      * check user is admin

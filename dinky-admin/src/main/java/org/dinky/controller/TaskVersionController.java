@@ -53,7 +53,7 @@ public class TaskVersionController {
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<TaskVersionHistoryDTO> listTasks(@RequestBody JsonNode para) {
+    public ProTableResult<TaskVersionHistoryDTO> listTaskVersions(@RequestBody JsonNode para) {
         ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult =
                 new ProTableResult<>();
 

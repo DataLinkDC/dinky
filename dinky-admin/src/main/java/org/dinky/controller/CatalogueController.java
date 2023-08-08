@@ -28,12 +28,8 @@ import org.dinky.data.result.Result;
 import org.dinky.function.constant.PathConstant;
 import org.dinky.service.CatalogueService;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.UUID;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -85,8 +81,8 @@ public class CatalogueController {
             Thread.sleep(1L);
             if (!unzipFile.exists()) {
                 ZipUtil.unzip(zipPath, filePath);
-                Catalogue cata = getCatalogue(id, unzipFileName);
-                traverseFile(unzipPath, cata);
+                Catalogue cata = catalogueService.getCatalogue(id, unzipFileName);
+                catalogueService.traverseFile(unzipPath, cata);
             }
         } catch (Exception e) {
             return Result.failed(e.getMessage());
@@ -96,79 +92,16 @@ public class CatalogueController {
         return Result.succeed("上传zip包并创建工程成功");
     }
 
-    private void traverseFile(String sourcePath, Catalogue catalog) {
-        File file = new File(sourcePath);
-        File[] fs = file.listFiles();
-        if (fs == null) {
-            throw new RuntimeException("目录层级有误");
-        }
-        for (File fl : fs) {
-            if (fl.isFile()) {
-                CatalogueTaskDTO dto =
-                        getCatalogueTaskDTO(
-                                fl.getName(),
-                                catalogueService
-                                        .findByParentIdAndName(
-                                                catalog.getParentId(), catalog.getName())
-                                        .getId());
-                String fileText = getFileText(fl);
-                catalogueService.createCatalogAndFileTask(dto, fileText);
-            } else {
-                Catalogue newCata =
-                        getCatalogue(
-                                catalogueService
-                                        .findByParentIdAndName(
-                                                catalog.getParentId(), catalog.getName())
-                                        .getId(),
-                                fl.getName());
-                traverseFile(fl.getPath(), newCata);
-            }
-        }
-    }
-
-    private String getFileText(File sourceFile) {
-        StringBuilder sb = new StringBuilder();
-        try (InputStreamReader isr =
-                        new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
-                BufferedReader br = new BufferedReader(isr)) {
-            if (sourceFile.isFile() && sourceFile.exists()) {
-
-                String lineText;
-                while ((lineText = br.readLine()) != null) {
-                    sb.append(lineText).append("\n");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sb.toString();
-    }
-
-    private Catalogue getCatalogue(Integer parentId, String name) {
-        Catalogue subcata = new Catalogue();
-        subcata.setTaskId(null);
-        subcata.setName(name);
-        subcata.setType("null");
-        subcata.setParentId(parentId);
-        subcata.setIsLeaf(false);
-        catalogueService.saveOrUpdate(subcata);
-        return subcata;
-    }
-
-    private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {
-        CatalogueTaskDTO catalogueTaskDTO = new CatalogueTaskDTO();
-        catalogueTaskDTO.setName(UUID.randomUUID().toString().substring(0, 6) + name);
-        catalogueTaskDTO.setId(null);
-        catalogueTaskDTO.setParentId(parentId);
-        catalogueTaskDTO.setLeaf(true);
-        return catalogueTaskDTO;
-    }
-
-    /** 新增或者更新 */
+    /**
+     * insert or update catalogue
+     *
+     * @param catalogue
+     * @return Result<Void>
+     */
     @PutMapping
     @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Catalogue")
-    public Result<Void> saveOrUpdate(@RequestBody Catalogue catalogue) throws Exception {
+    public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
         if (catalogueService.saveOrUpdate(catalogue)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -176,18 +109,9 @@ public class CatalogueController {
         }
     }
 
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    @Log(title = "Get Catalogue Info By Id", businessType = BusinessType.QUERY)
-    @ApiOperation("Get Catalogue Info By Id")
-    public Result<Catalogue> getOneById(@RequestBody Catalogue catalogue) throws Exception {
-        catalogue = catalogueService.getById(catalogue.getId());
-        return Result.succeed(catalogue);
-    }
 
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
-    @Log(title = "Get Catalogue Tree Data", businessType = BusinessType.QUERY)
     @ApiOperation("Get Catalogue Tree Data")
     public Result<List<Catalogue>> getCatalogueTreeData() {
         List<Catalogue> catalogues = catalogueService.getAllData();

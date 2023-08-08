@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Namespace;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.UserTenant;
@@ -31,7 +30,6 @@ import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.TenantMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserTenantService;
@@ -58,8 +56,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
         implements TenantService {
 
     @Resource @Lazy private RoleService roleService;
-
-    @Resource @Lazy private NamespaceService namespaceService;
 
     private final UserTenantService userTenantService;
 
@@ -120,13 +116,6 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            Long tenantNamespaceCount =
-                    namespaceService
-                            .getBaseMapper()
-                            .selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
-            if (tenantNamespaceCount > 0) {
-                return Result.failed("删除租户失败，该租户已绑定名称空间");
-            }
             tenant.setIsDelete(true);
             boolean result = updateById(tenant);
             if (result) {

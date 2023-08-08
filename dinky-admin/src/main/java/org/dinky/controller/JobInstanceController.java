@@ -72,33 +72,6 @@ public class JobInstanceController {
         return jobInstanceService.listJobInstances(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!jobInstanceService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<JobInstance> getOneById(@RequestBody JobInstance jobInstance) throws Exception {
-        jobInstance = jobInstanceService.getById(jobInstance.getId());
-        return Result.succeed(jobInstance, "获取成功");
-    }
 
     /** 获取状态统计信息 */
     @GetMapping("/getStatusCount")

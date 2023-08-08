@@ -58,7 +58,7 @@ public class StatementController {
 
     /** 新增或者更新 */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Statement statement) throws Exception {
+    public Result<Void> saveOrUpdateStatement(@RequestBody Statement statement) throws Exception {
         if (statementService.saveOrUpdate(statement)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -72,34 +72,6 @@ public class StatementController {
         return statementService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            boolean isAdmin = false;
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!statementService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0 && !isAdmin) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<Statement> getOneById(@RequestBody Statement statement) throws Exception {
-        statement = statementService.getById(statement.getId());
-        return Result.succeed(statement);
-    }
 
     @PostMapping("/getWatchTables")
     @SuppressWarnings("unchecked")

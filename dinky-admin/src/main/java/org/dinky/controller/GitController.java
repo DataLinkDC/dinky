@@ -136,7 +136,6 @@ public class GitController {
      */
     @PostMapping("/getBranchList")
     @ApiOperation("GitProject Get Branch List")
-    @Log(title = "GitProject Get Branch List", businessType = BusinessType.QUERY)
     public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
@@ -165,9 +164,11 @@ public class GitController {
     @PutMapping("/updateEnable")
     @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
     @ApiOperation("Enable or Disable GitProject by id")
-    public Result<Void> updateEnable(@RequestParam("id") Integer id) {
-        gitProjectService.updateState(id);
-        return Result.succeed();
+    public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
+       if ( gitProjectService.modifyGitProjectStatus(id)){
+              return Result.succeed(Status.MODIFY_SUCCESS);
+       }
+       return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**
@@ -178,7 +179,6 @@ public class GitController {
      */
     @PostMapping("/getProjectList")
     @ApiOperation("Get GitProject List")
-    @Log(title = "Get GitProject List", businessType = BusinessType.QUERY)
     public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
         return gitProjectService.selectForProTable(params);
     }
@@ -191,7 +191,6 @@ public class GitController {
      */
     @PostMapping("/getOneDetails")
     @ApiOperation("Get GitProject Details by id")
-    @Log(title = "Get GitProject Details by id", businessType = BusinessType.QUERY)
     public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
@@ -203,7 +202,7 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/build")
-    public Result<Void> build(@RequestParam("id") Integer id) {
+    public Result<Void> buildGitProject(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
         if (gitProject.getBuildState().equals(1)) {
@@ -255,13 +254,7 @@ public class GitController {
      */
     @GetMapping("/getProjectCode")
     @ApiOperation("Get GitProject Code")
-    @Log(title = "Get GitProject Code", businessType = BusinessType.QUERY)
     public Result<List<TreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
-
-        List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
-        if (projectCode == null) {
-            return Result.failed();
-        }
-        return Result.succeed(projectCode);
+        return Result.succeed(gitProjectService.getProjectCode(id));
     }
 }

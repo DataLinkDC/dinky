@@ -54,18 +54,6 @@ public class RoleController {
     private final UserRoleService userRoleService;
 
     /**
-     * create or update role , this method will be {@link Deprecated} in the future, please use
-     * {@link #addedOrUpdateRole(Role)}
-     *
-     * @return delete result code
-     */
-    @PutMapping
-    @Deprecated
-    public Result<Void> saveOrUpdateRole(@RequestBody Role role) {
-        return roleService.saveOrUpdateRole(role);
-    }
-
-    /**
      * create or update role
      *
      * @param role {@link Role}
@@ -74,18 +62,6 @@ public class RoleController {
     @PutMapping("/addedOrUpdateRole")
     public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
         return roleService.addedOrUpdateRole(role);
-    }
-
-    /**
-     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link
-     * #deleteRoleById(Integer)}
-     *
-     * @return delete result code
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        return roleService.deleteRoles(para);
     }
 
     /**

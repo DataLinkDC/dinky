@@ -71,7 +71,7 @@ public class TaskController {
 
     /** 新增或者更新 */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Task task) throws Exception {
+    public Result<Void> saveOrUpdateTask(@RequestBody Task task) throws Exception {
         if (taskService.saveOrUpdateTask(task)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -85,34 +85,6 @@ public class TaskController {
         return taskService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            boolean isAdmin = false;
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!taskService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            CompletableFuture.runAsync(
-                    () ->
-                            UdfCodePool.registerPool(
-                                    taskService.getAllUDF().stream()
-                                            .map(UDFUtils::taskToUDF)
-                                            .collect(Collectors.toList())));
-            if (error.size() == 0 && !isAdmin) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
 
     /** 批量执行 */
     @PostMapping(value = "/submit")

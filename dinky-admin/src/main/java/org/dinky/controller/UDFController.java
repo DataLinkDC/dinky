@@ -126,39 +126,13 @@ public class UDFController {
      * @return {@link Result} <{@link String}>
      */
     @PutMapping
-    public Result<String> saveOrUpdate(@RequestBody UDFTemplate udfTemplate) {
+    public Result<String> saveOrUpdateUDFTemplate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
                 ? Result.succeed(Status.SAVE_SUCCESS)
                 : Result.failed(Status.SAVE_FAILED);
     }
 
-    /**
-     * delete udf template by id, this method is deprecated, please use {@link #delete(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} <{@link String}>
-     */
-    @DeleteMapping("/template/list")
-    @Deprecated
-    public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!udfTemplateService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
+
 
     /**
      * delete udf template by id
@@ -177,8 +151,8 @@ public class UDFController {
     }
 
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (udfTemplateService.enable(id)) {
+    public Result<Void> modifyUDFTemplateStatus(@RequestParam Integer id) {
+        if (udfTemplateService.modifyUDFTemplateStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);

@@ -63,8 +63,8 @@ public class AlertInstanceController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    @Log(title = "INSERT OR UPDATE AlertInstance", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("INSERT OR UPDATE AlertInstance")
+    @Log(title = "Insert OR Update AlertInstance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert OR Update AlertInstance")
     public Result<Void> saveOrUpdate(@RequestBody AlertInstance alertInstance) throws Exception {
         if (alertInstanceService.saveOrUpdate(alertInstance)) {
             AlertPool.remove(alertInstance.getName());
@@ -81,23 +81,9 @@ public class AlertInstanceController {
      * @return {@link ProTableResult} of {@link AlertInstance}
      */
     @PostMapping
-    @Log(title = "Query AlertInstance List", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertInstance List")
     public ProTableResult<AlertInstance> listAlertInstances(@RequestBody JsonNode para) {
         return alertInstanceService.selectForProTable(para);
-    }
-
-    /**
-     * batch Delete AlertInstance, this method is {@link Deprecated} and will be removed in the
-     * future, please use {@link #deleteInstanceById(Integer)} instead.
-     *
-     * @param para
-     * @return
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        return alertInstanceService.deleteAlertInstance(para);
     }
 
     /**
@@ -109,7 +95,7 @@ public class AlertInstanceController {
     @DeleteMapping("/delete")
     @Log(title = "Delete AlertInstance By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete AlertInstance By Id")
-    public Result<AlertInstance> deleteInstanceById(@RequestParam("id") Integer id) {
+    public Result<AlertInstance> deleteAlertInstanceById(@RequestParam("id") Integer id) {
         if (alertInstanceService.deleteAlertInstance(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         } else {
@@ -126,8 +112,8 @@ public class AlertInstanceController {
     @PutMapping("/enable")
     @Log(title = "Update AlertInstance Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update AlertInstance Status")
-    public Result<AlertInstance> enable(@RequestParam("id") Integer id) {
-        if (alertInstanceService.enable(id)) {
+    public Result<AlertInstance> modifyAlertInstanceStatus(@RequestParam("id") Integer id) {
+        if (alertInstanceService.modifyAlertInstanceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
@@ -140,7 +126,6 @@ public class AlertInstanceController {
      * @return {@link Result} of {@link AlertInstance}
      */
     @GetMapping("/listEnabledAll")
-    @Log(title = "Query AlertInstance List Of Enable", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertInstance List Of Enable")
     public Result<List<AlertInstance>> listEnabledAll() {
         return Result.succeed(alertInstanceService.listEnabledAll());
@@ -155,7 +140,7 @@ public class AlertInstanceController {
     @PostMapping("/sendTest")
     @Log(title = "Test Send To AlertInstance", businessType = BusinessType.TEST)
     @ApiOperation("Test Send To AlertInstance")
-    public Result<Void> sendTest(@RequestBody AlertInstance alertInstance) {
+    public Result<Void> sendAlertMsgTest(@RequestBody AlertInstance alertInstance) {
         AlertResult alertResult = alertInstanceService.testAlert(alertInstance);
         if (alertResult.getSuccess()) {
             return Result.succeed(Status.SEND_TEST_SUCCESS);

@@ -1268,19 +1268,7 @@ CREATE TABLE `dinky_job_instance` (
                                     `failed_restart_count` int(11) NULL DEFAULT NULL COMMENT 'failed restart count',
                                     INDEX job_instance_task_id_idx13(`task_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_namespace`;
-CREATE TABLE `dinky_namespace` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                 `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                 `namespace_code` varchar(64) NOT NULL COMMENT 'namespace code',
-                                 `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                 `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-INSERT INTO `dinky_namespace`
-VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace'
-       , '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+
 DROP TABLE IF EXISTS `dinky_role`;
 CREATE TABLE `dinky_role` (
                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -1295,16 +1283,7 @@ CREATE TABLE `dinky_role` (
 INSERT INTO `dinky_role`
 VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0
        , 'SuperAdmin of Role', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-DROP TABLE IF EXISTS `dinky_role_namespace`;
-CREATE TABLE `dinky_role_namespace` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                      `role_id` int(11) NOT NULL COMMENT 'user id',
-                                      `namespace_id` int(11) NOT NULL COMMENT 'namespace id',
-                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                      `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-INSERT INTO `dinky_role_namespace`
-VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+
 DROP TABLE IF EXISTS `dinky_savepoints`;
 CREATE TABLE `dinky_savepoints` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',

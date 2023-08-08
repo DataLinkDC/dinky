@@ -62,20 +62,8 @@ public class TenantController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Tenant tenant) {
+    public Result<Void> saveOrUpdateTenant(@RequestBody Tenant tenant) {
         return tenantService.saveOrUpdateTenant(tenant);
-    }
-
-    /**
-     * delete tenant by id , this method will be {@link Deprecated} in the future, please use {@link
-     * #removeTenantById(Integer)}
-     *
-     * @return delete result code
-     */
-    @DeleteMapping()
-    @Deprecated
-    public Result<Void> deleteTenantById(@RequestBody JsonNode para) {
-        return tenantService.deleteTenantById(para);
     }
 
     /**
@@ -100,18 +88,6 @@ public class TenantController {
         return tenantService.selectForProTable(para, true);
     }
 
-    /**
-     * give tenant grant user, this method is {@link @Deprecated} in the future, please use {@link
-     * #assignUserToTenant}
-     *
-     * @param para para
-     * @return {@link Result}
-     */
-    @PutMapping(value = "/grantTenantToUser")
-    @Deprecated
-    public Result<Void> distributeUser(@RequestBody JsonNode para) {
-        return tenantService.distributeUsers(para);
-    }
 
     /**
      * assign user to tenant

@@ -109,7 +109,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     @Override
-    public List<Cluster> listEnabledAll() {
+    public List<Cluster> listEnabledAllClusterInstance() {
         return this.list(new QueryWrapper<Cluster>().eq("enabled", 1));
     }
 
@@ -140,7 +140,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     }
 
     @Override
-    public Boolean enableClusterInstance(Integer id) {
+    public Boolean modifyClusterInstanceStatus(Integer id) {
         Cluster clusterInfo = getById(id);
         clusterInfo.setEnabled(!clusterInfo.getEnabled());
         checkHealth(clusterInfo);

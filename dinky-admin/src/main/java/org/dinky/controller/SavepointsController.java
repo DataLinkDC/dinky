@@ -55,47 +55,17 @@ public class SavepointsController {
 
     private final SavepointsService savepointsService;
 
-    /** 新增或者更新 */
-    @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Savepoints savepoints) throws Exception {
-        if (savepointsService.saveOrUpdate(savepoints)) {
-            return Result.succeed(Status.SAVE_SUCCESS);
-        } else {
-            return Result.failed(Status.SAVE_FAILED);
-        }
-    }
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<Savepoints> listSavepoints(@RequestBody JsonNode para) {
+    public ProTableResult<Savepoints> listSavePoints(@RequestBody JsonNode para) {
         return savepointsService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!savepointsService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
 
     /** 获取指定作业ID的所有savepoint */
     @GetMapping("/listSavepointsByTaskId")
-    public Result<List<Savepoints>> listSavepointsByTaskId(@RequestParam Integer taskID) {
+    public Result<List<Savepoints>> listSavePointsByTaskId(@RequestParam Integer taskID) {
         return Result.succeed(savepointsService.listSavepointsByTaskId(taskID));
     }
 }

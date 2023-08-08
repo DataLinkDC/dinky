@@ -72,5 +72,5 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
      * @param id {@link Integer}
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyAlertInstanceStatus(Integer id);
 }

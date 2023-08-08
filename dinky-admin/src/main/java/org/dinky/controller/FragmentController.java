@@ -45,12 +45,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** FragmentVariableController */
+/** FragmentController */
 @Slf4j
 @RestController
 @RequestMapping("/api/fragment")
 @RequiredArgsConstructor
-public class FragmentVariableController {
+public class FragmentController {
 
     private final FragmentVariableService fragmentVariableService;
 
@@ -129,30 +129,4 @@ public class FragmentVariableController {
         }
     }
 
-    /**
-     * batch delete , this method is deprecated, please use {@link #deleteById(Integer)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} of {@link Void}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!fragmentVariableService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
 }

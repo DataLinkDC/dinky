@@ -81,33 +81,7 @@ public class JarController {
         return jarService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!jarService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
 
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<Jar> getOneById(@RequestBody Jar jar) throws Exception {
-        jar = jarService.getById(jar.getId());
-        return Result.succeed(jar, "获取成功");
-    }
 
     /** 获取可用的jar列表 */
     @GetMapping("/listEnabledAll")

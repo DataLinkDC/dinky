@@ -23,16 +23,12 @@ import org.dinky.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Cluster;
-import org.dinky.data.model.JobInstance;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.ClusterInstanceService;
 import org.dinky.service.JobInstanceService;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -68,11 +64,10 @@ public class ClusterInstanceController {
      * @throws Exception exception
      */
     @PutMapping
-    @Log(title = "Save or update cluster instance", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("Save or update cluster instance")
-    public Result<Void> saveOrUpdate(@RequestBody Cluster cluster) throws Exception {
+    @Log(title = "Save Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Save Or Update Cluster Instance")
+    public Result<Void> saveOrUpdateClusterInstance(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
-        Integer id = cluster.getId();
         clusterInstanceService.registersCluster(cluster);
         return Result.succeed(Status.SAVE_SUCCESS);
     }
@@ -86,8 +81,8 @@ public class ClusterInstanceController {
     @PutMapping("/enable")
     @Log(title = "Update Cluster Instance Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update Cluster Instance Status")
-    public Result<Void> enableCluster(@RequestParam Integer id) {
-        Boolean enabled = clusterInstanceService.enableClusterInstance(id);
+    public Result<Void> modifyClusterInstanceStatus(@RequestParam Integer id) {
+        Boolean enabled = clusterInstanceService.modifyClusterInstanceStatus(id);
         if (enabled) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
@@ -102,8 +97,8 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link Void}>
      */
     @DeleteMapping("/delete")
-    @Log(title = "Cluster Instance Delete by id", businessType = BusinessType.DELETE)
-    @ApiOperation("Cluster Instance Delete by id")
+    @Log(title = "Delete Cluster Instance by id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete Cluster Instance by id")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteClusterInstanceById(@RequestParam Integer id) {
         Boolean deleted = clusterInstanceService.deleteClusterInstanceById(id);
@@ -121,51 +116,9 @@ public class ClusterInstanceController {
      * @return {@link ProTableResult}<{@link Cluster}>
      */
     @PostMapping
-    @Log(title = "Cluster Instance List", businessType = BusinessType.QUERY)
     @ApiOperation("Cluster Instance List")
     public ProTableResult<Cluster> listClusters(@RequestBody JsonNode para) {
         return clusterInstanceService.selectForProTable(para);
-    }
-
-    /**
-     * batch delete cluster instances , this method is {@link Deprecated}, please use {@link
-     * ClusterInstanceController#deleteClusterInstanceById(Integer id) }
-     *
-     * @param para {@link JsonNode} cluster instance ids
-     * @return {@link Result}<{@link Void}>
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<JobInstance> instances = jobInstanceService.listJobInstanceActive();
-            Set<Integer> ids =
-                    instances.stream().map(JobInstance::getClusterId).collect(Collectors.toSet());
-            List<String> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (ids.contains(id) || !clusterInstanceService.removeById(id)) {
-                    error.add(clusterInstanceService.getById(id).getName());
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                if (para.size() > error.size()) {
-                    return Result.succeed(
-                            "删除部分成功，但"
-                                    + error
-                                    + "删除失败，共"
-                                    + error.size()
-                                    + "次失败。\n请检查集群实例是否已被集群使用！");
-                } else {
-                    return Result.succeed(
-                            error + "删除失败，共" + error.size() + "次失败。\n请检查集群实例是否已被集群使用！");
-                }
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -176,8 +129,8 @@ public class ClusterInstanceController {
     @GetMapping("/listEnabledAll")
     @Log(title = "Get all enable cluster instances", businessType = BusinessType.QUERY)
     @ApiOperation("Get all enable cluster instances")
-    public Result<List<Cluster>> listEnabledAll() {
-        List<Cluster> clusters = clusterInstanceService.listEnabledAll();
+    public Result<List<Cluster>> listEnabledAllClusterInstance() {
+        List<Cluster> clusters = clusterInstanceService.listEnabledAllClusterInstance();
         return Result.succeed(clusters);
     }
 
@@ -232,39 +185,9 @@ public class ClusterInstanceController {
     @GetMapping("/killCluster")
     @Log(title = "Cluster Instance Kill", businessType = BusinessType.UPDATE)
     @ApiOperation("Cluster Instance Kill")
-    public Result<Void> killCluster(@RequestParam("id") Integer id) {
+    public Result<Void> killClusterInstance(@RequestParam("id") Integer id) {
         clusterInstanceService.killCluster(id);
         return Result.succeed("Kill Cluster Succeed.");
-    }
-
-    /**
-     * batch kill cluster instances , this method is {@link Deprecated}
-     *
-     * @param para {@link JsonNode} cluster instance ids
-     * @return {@link Result}<{@link Void}>
-     */
-    @DeleteMapping("/killMulCluster")
-    @Deprecated
-    public Result<Void> killMulCluster(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            for (final JsonNode item : para) {
-                clusterInstanceService.killCluster(item.asInt());
-            }
-        }
-        return Result.succeed(Status.CLUSTER_INSTANCE_KILL);
-    }
-
-    /**
-     * deploy session cluster by id
-     *
-     * @param id {@link Integer} cluster instance id
-     * @return {@link Result}<{@link Cluster}>
-     */
-    @GetMapping("/deploySessionCluster")
-    @Deprecated
-    public Result<Cluster> deploySessionCluster(@RequestParam("id") Integer id) {
-        return Result.succeed(
-                clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }
 
     @PutMapping("/deploySessionClusterInstance")
