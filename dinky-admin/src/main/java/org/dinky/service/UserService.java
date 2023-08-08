@@ -177,5 +177,5 @@ public interface UserService extends ISuperService<User> {
      */
     List<User> getUserListByTenantId(int id);
 
-        Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
+    Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
 }

@@ -432,28 +432,29 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      * @param userId
      * @return
      */
-        @Override
-        public Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
-            // query tenant admin user count
-            Long queryAdminUserByTenantCount =
-                    userTenantService.count(
-                            new LambdaQueryWrapper<UserTenant>()
-                                    .eq(UserTenant::getTenantId, tenantId)
-                                    .eq(UserTenant::getTenantAdminFlag, 1));
-            if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
-                return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
-            }
-            UserTenant userTenant =
-                    userTenantService.getOne(
-                            new LambdaQueryWrapper<UserTenant>()
-                                    .eq(UserTenant::getTenantId, tenantId)
-                                    .eq(UserTenant::getUserId, userId));
-            userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
-            if (userTenantService.updateById(userTenant)) {
-                return Result.succeed(Status.MODIFY_SUCCESS);
-            }
-            return Result.failed(Status.MODIFY_FAILED);
+    @Override
+    public Result<Void> modifyUserToTenantAdmin(
+            Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
+        // query tenant admin user count
+        Long queryAdminUserByTenantCount =
+                userTenantService.count(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getTenantAdminFlag, 1));
+        if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
+            return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
         }
+        UserTenant userTenant =
+                userTenantService.getOne(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getUserId, userId));
+        userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
+        if (userTenantService.updateById(userTenant)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
+    }
 
     /**
      * build user info
