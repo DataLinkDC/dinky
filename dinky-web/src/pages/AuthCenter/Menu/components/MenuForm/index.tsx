@@ -27,6 +27,7 @@ import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import {SysMenu} from "@/types/RegCenter/data";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
+import {MENU_TYPE_OPTIONS} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 
 
 type MenuFormProps = {
@@ -119,9 +120,9 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                 initialValue={!isRootMenu ? selectedKeys : [0]}
                 shouldUpdate
                 name={'parentId'}
-                label={'父级菜单'}
-                rules={[{required: true, message: '父级菜单'}]}
-                placeholder={'父级菜单'}
+                label={l('menu.parentId')}
+                rules={[{required: true, message: l('menu.parentIdPlaceholder')}]}
+                placeholder={l('menu.parentIdPlaceholder')}
                 fieldProps={{
                     showSearch: true,
                     treeData: buildMenuTree(treeData, searchValue),
@@ -133,66 +134,47 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
             <ProFormText name="rootMenu" hidden/>
             <ProFormText
                 name="name"
-                label={'菜单名称'}
-                placeholder={'菜单名称'}
-                rules={[{required: true, message: '菜单名称'}]}
+                label={l('menu.name')}
+                placeholder={l('menu.namePlaceholder')}
+                rules={[{required: true, message: l('menu.namePlaceholder')}]}
             />
             <ProFormText
                 name="component"
-                label={'组件'}
-                placeholder={'组件'}
-                rules={[{required: true, message: '组件'}]}
+                label={l('menu.component')}
+                placeholder={l('menu.componentPlaceholder')}
+                rules={[{required: true, message: l('menu.componentPlaceholder')}]}
             />
             <ProFormText
                 name="path"
-                label={'路由'}
-                placeholder={'路由'}
-                rules={[{required: true, message: '路由'}]}
+                label={l('menu.path')}
+                placeholder={l('menu.pathPlaceholder')}
+                rules={[{required: true, message: l('menu.pathPlaceholder')}]}
             />
 
             <ProFormText
                 name="perms"
-                label={'权限标识'}
-                placeholder={'权限标识'}
-                rules={[{required: true, message: '权限标识'}]}
+                label={l('menu.perms')}
+                placeholder={l('menu.permsPlaceholder')}
+                rules={[{required: true, message: l('menu.permsPlaceholder')}]}
             />
             <ProFormText
                 name="icon"
-                label={'菜单图标'}
-                placeholder={'菜单图标'}
-                rules={[{required: true, message: '菜单图标'}]}
+                label={l('menu.icon')}
+                placeholder={l('menu.iconPlaceholder')}
+                rules={[{required: true, message: l('menu.iconPlaceholder')}]}
                 fieldProps={{
                     addonAfter: <a type={'link'} target={'_blank'}
-                                   href={'https://ant.design/components/icon-cn'}>菜单图标参考</a>,
+                                   href={'https://ant.design/components/icon-cn'}>{l('menu.icon.reference')}</a>,
                 }}
             />
 
             <ProFormRadio.Group
-                label="菜单类型"
+                label={l('menu.type')}
                 name={'type'}
                 radioType="button"
-                rules={[{required: true, message: '菜单类型'}]}
-                // fieldProps={{
-                //     value: formLayoutType,
-                //     onChange: (e) => setFormLayoutType(e.target.value),
-                // }}
-                options={[
-                    {
-                        title: '目录',
-                        label: '目录',
-                        value: -1,
-                    },
-                    {
-                        title: '菜单',
-                        label: '菜单',
-                        value: 0,
-                    },
-                    {
-                        title: '按钮',
-                        label: '按钮',
-                        value: 1,
-                    }
-                ]}
+                rules={[{required: true, message: l('menu.typePlaceholder')}]}
+                placeholder={l('menu.typePlaceholder')}
+                options={MENU_TYPE_OPTIONS}
             />
 
             <ProFormTextArea

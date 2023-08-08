@@ -18,8 +18,7 @@
  */
 
 export default {
-'global.max':'max',
-'button.check':'检查',
+  'button.check':'检查',
   'button.graph':'图',
   'button.create': '新建',
   'button.close': '关闭',
@@ -74,9 +73,11 @@ export default {
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',
 
-
+  'menu.menu': '菜单',
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
+  'right.menu.addSub': '添加子菜单',
+  'right.menu.addRoot': '添加根菜单',
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
@@ -109,6 +110,8 @@ export default {
 
   'global.stay.tuned': '敬请期待',
   'global.mini': '最小化',
+  'global.max':'最大化',
+
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',

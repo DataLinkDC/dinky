@@ -211,16 +211,31 @@ export default {
 
   // menu
   'menu.management': '菜单管理',
-  'menu.id': '菜单编码',
   'menu.name': '菜单名称',
+  'menu.namePlaceholder': '请输入菜单名称',
   'menu.parentId': '父级菜单',
+  'menu.parentIdPlaceholder': '请选择父级菜单',
   'menu.path': '路径',
+  'menu.pathPlaceholder': '请输入路径',
   'menu.icon': '图标',
+  'menu.iconPlaceholder': '请输入图标',
   'menu.component': '组件',
+  'menu.componentPlaceholder': '请输入组件',
   'menu.orderNum': '排序',
+  'menu.orderNumPlaceholder': '请输入排序值',
   'menu.type': '菜单类型',
+  'menu.typePlaceholder': '请选择菜单类型',
+  'menu.perms': '权限标识',
+  'menu.permsPlaceholder': '请输入权限标识',
+  'menu.icon.reference': '菜单图标参考',
+
+  'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
   'menu.type.button': '按钮',
+  'menu.edit': '修改菜单',
+  'menu.tips.1': '修改菜单: 点击左侧树状图中的想要修改的节点, 在此处渲染修改表单',
+  'menu.tips.2': '添加根菜单: 点击树状图的右上角的按钮进行新增',
+  'menu.tips.3': '新增/删除子菜单: 树状图上右键单击,进行添加/删除',
 
 
   // rowPermissions

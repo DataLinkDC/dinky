@@ -38,7 +38,7 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false): MenuItemType[] => [
   {
     key: 'addSub',
     icon: <PlusCircleTwoTone/>,
-    label: '添加子菜单',
+    label: l('right.menu.addSub'),
     disabled: isDisabled,
   },
   {
@@ -61,13 +61,32 @@ export const MENU_ICON_OPTIONS = [
   {
     key: 'Menu',
     icon: <MenuOutlined/>,
-    label: <><MenuOutlined/> 菜单</>,
+    label: <><MenuOutlined/> {l('menu.menu')}</>,
     value: 'Menu',
   },
   {
     key: 'Edit',
     icon: <EditOutlined/>,
-    label: <><EditOutlined/> 编辑</>,
+    label: <><EditOutlined/> {l('button.edit')}</>,
     value: 'Edit',
   }
-]
+];
+
+
+export const MENU_TYPE_OPTIONS = [
+  {
+    title: l('menu.type.dir'),
+    label: l('menu.type.dir'),
+    value: -1,
+  },
+  {
+    title: l('menu.type.menu'),
+    label: l('menu.type.menu'),
+    value: 0,
+  },
+  {
+    title: l('menu.type.button'),
+    label: l('menu.type.button'),
+    value: 1,
+  }
+];

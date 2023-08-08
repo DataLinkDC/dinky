@@ -218,7 +218,7 @@ const MenuList: React.FC = () => {
                     type={'primary'}
                     onClick={() => handleCreateRoot()}
                 >
-                    新增根菜单
+                    {l('right.menu.addRoot')}
                 </Button>
                 <Button
                     size={'middle'}
@@ -236,9 +236,9 @@ const MenuList: React.FC = () => {
         const renderAddSubMenuTitle = () => {
             return <>
                 {(formValues.id && updateModalVisible) ?
-                    '修改菜单' : (!formValues.id && modalVisible && !isRootMenu) ?
-                        '新增子菜单' : (!formValues.id && modalVisible && isRootMenu) ?
-                            '新增根菜单' : ''}
+                    l('menu.edit') : (!formValues.id && modalVisible && !isRootMenu) ?
+                        l('right.menu.addSub') : (!formValues.id && modalVisible && isRootMenu) ?
+                            l('right.menu.addRoot') : ''}
             </>
         }
 
@@ -256,7 +256,7 @@ const MenuList: React.FC = () => {
                     minWidth={500}
                     maxWidth={1200}
                 >
-                    <ProCard extra={renderLeftExtra()} title={'菜单列表'} ghost hoverable colSpan={'18%'}
+                    <ProCard extra={renderLeftExtra()} title={l('menu.management')} ghost hoverable colSpan={'18%'}
                              className={"siderTree schemaTree"}>
                         <MenuTree
                             loading={loading}

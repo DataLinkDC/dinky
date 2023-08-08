@@ -18,7 +18,6 @@
  */
 
 export default {
-  'global.max':'max',
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
@@ -72,8 +71,11 @@ export default {
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
 
+  'menu.menu': 'Menu',
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
+  'right.menu.addSub': 'Add Sub Menu',
+  'right.menu.addRoot': 'Add Root Menu',
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
@@ -106,6 +108,8 @@ export default {
 
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
+  'global.max':'Max Size',
+
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
