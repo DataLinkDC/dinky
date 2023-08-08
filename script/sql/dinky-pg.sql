@@ -1476,6 +1476,7 @@ CREATE TABLE "public"."dinky_user" (
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,
+                                       "super_admin_flag" int2 NOT NULL,
                                        "is_delete" int2 NOT NULL,
                                        "create_time" timestamp(6),
                                        "update_time" timestamp(6)
@@ -1490,7 +1491,8 @@ COMMENT ON COLUMN "public"."dinky_user"."avatar" IS 'avatar';
 COMMENT ON COLUMN "public"."dinky_user"."user_type" IS 'user_type';
 COMMENT ON COLUMN "public"."dinky_user"."mobile" IS 'mobile phone';
 COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
-COMMENT ON COLUMN "public"."dinky_user"."is_delete" IS 'is delete';
+COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
+COMMENT ON COLUMN "public"."dinky_user"."super_admin_flag" IS 'is super admin(0:false,1true)';
 COMMENT ON COLUMN "public"."dinky_user"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_user"."update_time" IS 'update time';
 COMMENT ON TABLE "public"."dinky_user" IS 'user';
@@ -1532,6 +1534,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
                                               "id" SERIAL NOT NULL,
                                               "user_id" int4 NOT NULL,
                                               "tenant_id" int4 NOT NULL,
+                                              "tenant_admin_flag" int2 NOT NULL,
                                               "create_time" timestamp(6),
                                               "update_time" timestamp(6)
 )
@@ -1539,6 +1542,7 @@ CREATE TABLE "public"."dinky_user_tenant" (
 COMMENT ON COLUMN "public"."dinky_user_tenant"."id" IS 'ID';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."user_id" IS 'user id';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_id" IS 'tenant id';
+COMMENT ON COLUMN "public"."dinky_user_tenant"."tenant_admin_flag" IS 'tenant admin flag(0:false,1:true)';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."create_time" IS 'create time';
 COMMENT ON COLUMN "public"."dinky_user_tenant"."update_time" IS 'update time';
 COMMENT ON TABLE "public"."dinky_user_tenant" IS 'Relationship between users and tenants';
@@ -2159,7 +2163,6 @@ COMMENT ON COLUMN "public"."dinky_sys_login_log"."is_deleted" IS 'is deleted';
 
 
 DROP TABLE IF EXISTS "public"."dinky_sys_operate_log";
-
 create table  "public"."dinky_sys_operate_log" (
   id int4,
   module_name character varying(50),
@@ -2171,7 +2174,7 @@ create table  "public"."dinky_sys_operate_log" (
   operate_url character varying(255),
   operate_ip character varying(50),
   operate_location character varying(255),
-  operate_param character varying(2000),
+  operate_param text,
   json_result text,
   status int4,
   error_msg text,
@@ -2179,4 +2182,28 @@ create table  "public"."dinky_sys_operate_log" (
 );
 comment on table public.dinky_sys_operate_log is 'dinky_sys_operate_log';
 
+DROP TABLE IF EXISTS "public"."dinky_sys_role_menu";
+create table public.dinky_sys_role_menu (
+  id bigint,
+  role_id bigint,
+  menu_id bigint,
+  create_time timestamp without time zone,
+  update_time timestamp without time zone
+);
+
+DROP TABLE IF EXISTS "public"."dinky_sys_menu";
+create table public.dinky_sys_menu (
+  id bigint,
+  parent_id bigint,
+  name character varying(64),
+  path character varying(64),
+  component character varying(64),
+  perms character varying(64),
+  icon character varying(64),
+  type character(2),
+  display smallint,
+  order_num integer,
+  create_time timestamp without time zone,
+  update_time timestamp without time zone
+);
 

@@ -29,13 +29,6 @@ export const CLUSTER_INSTANCE_TYPE = [
     {value: ClusterType.KUBERNETES_SESSION, label: ClusterType.KUBERNETES_SESSION},
 ]
 
-/**
- * Cluster instance  is auto registers
- */
-export const CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM = {
-  true: {text: <Tag color={'success'}>{l('global.yes')}</Tag>, status: 'Success'},
-  false: {text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error'},
-}
 
 /**
  * Cluster instance status enum

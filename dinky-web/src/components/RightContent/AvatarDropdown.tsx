@@ -57,7 +57,7 @@ const Name = () => {
     };
   });
 
-  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username}</span>;
+  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username} ({currentUser?.currentTenant.tenantCode})</span>;
 };
 
 const AvatarLogo = () => {

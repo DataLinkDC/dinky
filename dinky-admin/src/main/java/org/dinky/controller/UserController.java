@@ -27,7 +27,6 @@ import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
-import org.dinky.service.UserTenantService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,8 +59,6 @@ public class UserController {
 
     private final UserService userService;
 
-    private final UserTenantService userTenantService;
-
     /**
      * add or update user
      *
@@ -86,7 +83,7 @@ public class UserController {
      */
     @PutMapping("/enable")
     public Result<Void> enable(@RequestParam("id") Integer id) {
-        if (userService.checkAdmin(id)) {
+        if (userService.checkSuperAdmin(id)) {
             return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
         } else {
             if (userService.enable(id)) {
@@ -137,7 +134,7 @@ public class UserController {
             List<Integer> error = new ArrayList<>();
             for (final JsonNode item : para) {
                 Integer id = item.asInt();
-                if (userService.checkAdmin(id)) {
+                if (userService.checkSuperAdmin(id)) {
                     error.add(id);
                     continue;
                 }
@@ -212,8 +209,16 @@ public class UserController {
     @GetMapping("/getUserListByTenantId")
     public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
-        List<Integer> userIds = userService.getUserIdsByTeantId(id);
+        List<Integer> userIds = userService.getUserIdsByTenantId(id);
         Dict result = Dict.create().set("users", userList).set("userIds", userIds);
         return Result.succeed(result);
+    }
+
+    @PutMapping("/updateUserToTenantAdmin")
+    public Result<Void> modifyUserToTenantAdmin(
+            @RequestParam Integer userId,
+            @RequestParam Integer tenantId,
+            @RequestParam Boolean tenantAdminFlag) {
+        return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
     }
 }

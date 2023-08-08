@@ -61,7 +61,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.net.Ipv4Util;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -161,21 +160,13 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         // Check if the user is enabled
         if (!user.getEnabled()) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_DISABLED_BY_ADMIN.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_DISABLED_BY_ADMIN.getMsg());
+            loginLogService.saveLoginLog(user, Status.USER_DISABLED_BY_ADMIN);
             return Result.failed(Status.USER_DISABLED_BY_ADMIN);
         }
 
         UserDTO userInfo = refreshUserInfo(user);
         if (Asserts.isNullCollection(userInfo.getTenantList())) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_NOT_BINDING_TENANT.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_NOT_BINDING_TENANT.getMsg());
+            loginLogService.saveLoginLog(user, Status.USER_NOT_BINDING_TENANT);
             return Result.failed(Status.USER_NOT_BINDING_TENANT);
         }
 
@@ -183,11 +174,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         StpUtil.login(user.getId(), loginDTO.isAutoLogin());
 
         // save login log record
-        loginLogService.saveLoginLog(
-                user,
-                Status.LOGIN_SUCCESS.getCode(),
-                Ipv4Util.LOCAL_IP,
-                Status.LOGIN_SUCCESS.getMsg());
+        loginLogService.saveLoginLog(user, Status.LOGIN_SUCCESS);
 
         // Return the user information along with a success status
         return Result.succeed(userInfo, Status.LOGIN_SUCCESS);
@@ -204,11 +191,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         String userPassword = user.getPassword();
         // Check if the provided password is null
         if (Asserts.isNullString(loginDTO.getPassword())) {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.LOGIN_PASSWORD_NOT_NULL.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.LOGIN_PASSWORD_NOT_NULL.getMsg());
+            loginLogService.saveLoginLog(user, Status.LOGIN_PASSWORD_NOT_NULL);
             throw new AuthException(Status.LOGIN_PASSWORD_NOT_NULL);
         }
 
@@ -216,11 +199,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isEquals(SaSecureUtil.md5(loginDTO.getPassword()), userPassword)) {
             return user;
         } else {
-            loginLogService.saveLoginLog(
-                    user,
-                    Status.USER_NAME_PASSWD_ERROR.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.USER_NAME_PASSWD_ERROR.getMsg());
+            loginLogService.saveLoginLog(user, Status.USER_NAME_PASSWD_ERROR);
             throw new AuthException(Status.USER_NAME_PASSWD_ERROR);
         }
     }
@@ -235,11 +214,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             // User doesn't exist locally
             // Check if LDAP user autoload is enabled
             if (!SystemConfiguration.getInstances().getLdapAutoload().getValue()) {
-                loginLogService.saveLoginLog(
-                        userFromLocal,
-                        Status.USER_NAME_PASSWD_ERROR.getCode(),
-                        Ipv4Util.LOCAL_IP,
-                        Status.USER_NAME_PASSWD_ERROR.getMsg());
+                loginLogService.saveLoginLog(userFromLocal, Status.USER_NAME_PASSWD_ERROR);
                 throw new AuthException(Status.LDAP_USER_AUTOLOAD_FORBAID);
             }
 
@@ -248,33 +223,26 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     SystemConfiguration.getInstances().getLdapDefaultTeant().getValue();
             Tenant tenant = tenantService.getTenantByTenantCode(defaultTeantCode);
             if (Asserts.isNull(tenant)) {
-                loginLogService.saveLoginLog(
-                        userFromLocal,
-                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getCode(),
-                        Ipv4Util.LOCAL_IP,
-                        Status.LDAP_DEFAULT_TENANT_NOFOUND.getMsg());
+                loginLogService.saveLoginLog(userFromLocal, Status.LDAP_DEFAULT_TENANT_NOFOUND);
                 throw new AuthException(Status.LDAP_DEFAULT_TENANT_NOFOUND);
             }
 
             // Update LDAP user properties and save
             userFromLdap.setUserType(UserType.LDAP.getCode());
             userFromLdap.setEnabled(true);
-            userFromLdap.setIsAdmin(false);
+            userFromLdap.setSuperAdminFlag(false);
+            //            userFromLdap.setTenantAdminFlag(false);
             userFromLdap.setIsDelete(false);
             save(userFromLdap);
 
             // Assign the user to the default tenant
-            List<Integer> userIds = getUserIdsByTeantId(tenant.getId());
+            List<Integer> userIds = getUserIdsByTenantId(tenant.getId());
             User user = getUserByUsername(loginDTO.getUsername());
             userIds.add(user.getId());
             tenantService.assignUserToTenant(new AssignUserToTenantParams(tenant.getId(), userIds));
             return user;
         } else if (userFromLocal.getUserType() != UserType.LDAP.getCode()) {
-            loginLogService.saveLoginLog(
-                    userFromLocal,
-                    Status.LDAP_LOGIN_FORBID.getCode(),
-                    Ipv4Util.LOCAL_IP,
-                    Status.LDAP_LOGIN_FORBID.getMsg());
+            loginLogService.saveLoginLog(userFromLocal, Status.LDAP_LOGIN_FORBID);
             throw new AuthException(Status.LDAP_LOGIN_FORBID);
         }
 
@@ -291,11 +259,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public User getUserByUsername(String username) {
-        User user = getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
-        if (Asserts.isNotNull(user)) {
-            user.setIsAdmin(Asserts.isEqualsIgnoreCase(username, "admin"));
-        }
-        return user;
+        return getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
     }
 
     @Override
@@ -373,7 +337,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         if (Asserts.isNotNull(userInfo)) {
             UserDTO userInfoDto = buildUserInfo(userInfo.getUser().getId());
-            userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            if (userInfoDto != null) {
+                userInfoDto.setCurrentTenant(userInfo.getCurrentTenant());
+            }
             UserInfoContextHolder.refresh(StpUtil.getLoginIdAsInt(), userInfoDto);
             return Result.succeed(userInfoDto);
         } else {
@@ -389,10 +355,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Boolean checkAdmin(Integer id) {
-
+    public Boolean checkSuperAdmin(Integer id) {
         User user = getById(id);
-        return "admin".equals(user.getUsername());
+        return user.getSuperAdminFlag();
+    }
+
+    /**
+     * check user is tenant admin
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    @Override
+    public Boolean checkTenantAdmin(Integer id) {
+        User user = getById(id);
+        return user.getTenantAdminFlag();
     }
 
     @Override
@@ -416,7 +393,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public List<Integer> getUserIdsByTeantId(int id) {
+    public List<Integer> getUserIdsByTenantId(int id) {
         List<UserTenant> userTenants =
                 userTenantService
                         .getBaseMapper()
@@ -428,6 +405,55 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             userIds.add(userTenant.getUserId());
         }
         return userIds;
+    }
+
+    /**
+     * get user list by tenant id
+     *
+     * @param id
+     * @return role select permissions list
+     */
+    @Override
+    public List<User> getUserListByTenantId(int id) {
+        List<User> userList = new ArrayList<>();
+        List<UserTenant> userTenants =
+                userTenantService.list(
+                        new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
+        userTenants.forEach(
+                userTenant -> {
+                    User user = getById(userTenant.getUserId());
+                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+                    userList.add(user);
+                });
+        return userList;
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result<Void> modifyUserToTenantAdmin(
+            Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
+        // query tenant admin user count
+        Long queryAdminUserByTenantCount =
+                userTenantService.count(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getTenantAdminFlag, 1));
+        if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
+            return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
+        }
+        UserTenant userTenant =
+                userTenantService.getOne(
+                        new LambdaQueryWrapper<UserTenant>()
+                                .eq(UserTenant::getTenantId, tenantId)
+                                .eq(UserTenant::getUserId, userId));
+        userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
+        if (userTenantService.updateById(userTenant)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**
@@ -449,24 +475,21 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles.stream()
-                .forEach(
-                        userRole -> {
-                            Role role =
-                                    roleService.getBaseMapper().selectById(userRole.getRoleId());
-                            if (Asserts.isNotNull(role)) {
-                                roleList.add(role);
-                            }
-                        });
+        userRoles.forEach(
+                userRole -> {
+                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+                    if (Asserts.isNotNull(role)) {
+                        roleList.add(role);
+                    }
+                });
 
-        userTenants.stream()
-                .forEach(
-                        userTenant -> {
-                            Tenant tenant = tenantService.getById(userTenant.getTenantId());
-                            if (Asserts.isNotNull(tenant)) {
-                                tenantList.add(tenant);
-                            }
-                        });
+        userTenants.forEach(
+                userTenant -> {
+                    Tenant tenant = tenantService.getById(userTenant.getTenantId());
+                    if (Asserts.isNotNull(tenant)) {
+                        tenantList.add(tenant);
+                    }
+                });
 
         UserDTO userInfo = new UserDTO();
         userInfo.setUser(user);

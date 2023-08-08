@@ -16,6 +16,7 @@
  */
 
 import {BaseBeanColumns} from '@/types/Public/data';
+import React from "react";
 
 /**
  * about alert
@@ -52,18 +53,6 @@ export const ALERT_TYPE = {
   GROUP: 'Group',
 };
 
-export const ALERT_CONFIG_LIST: AlertConfig[] = [{
-  type: ALERT_TYPE.DINGTALK,
-}, {
-  type: ALERT_TYPE.WECHAT,
-}, {
-  type: ALERT_TYPE.FEISHU,
-}, {
-  type: ALERT_TYPE.EMAIL,
-}, {
-  type: ALERT_TYPE.SMS,
-}
-];
 
 
 /**
@@ -234,3 +223,17 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string,
   templateCode: string
 }
+
+export type SysMenu = BaseBeanColumns & {
+  parentId: number, // 父级
+  orderNum: number, // 排序
+  path: string, // 路由
+  component: string, // 组件
+  type: number,// C菜单 F按钮
+  display: boolean, // 菜单状态(0显示 1隐藏)
+  perms: string, // 权限标识
+  icon: string, // 图标
+  rootMenu: boolean,
+  note: string,
+  children: SysMenu[],
+};

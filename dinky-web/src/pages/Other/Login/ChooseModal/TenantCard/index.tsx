@@ -41,11 +41,11 @@ const TenantCard: React.FC<TenantCardProps> = (props) => {
         return (
           <CheckCard
             size={"default"}
-            key={item?.id}
+            key={item.id}
             avatar="/icons/tenant_default.svg"
-            title={item?.tenantCode}
-            value={item?.id}
-            description={item?.note}
+            title={item.tenantCode}
+            value={item.id}
+            description={item.note}
           />
         );
       });

@@ -31,6 +31,8 @@ import RoleModalForm from "../RoleModalForm";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
+import AssignMenu from "@/pages/AuthCenter/Role/components/AssignMenu";
 
 
 const RoleProTable: React.FC = () => {
@@ -41,7 +43,9 @@ const RoleProTable: React.FC = () => {
         const [modalVisible, handleModalVisible] = useState<boolean>(false);
         const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
         const [loading, setLoading] = useState<boolean>(false);
-        const actionRef = useRef<ActionType>();
+        const [assignMenu ,  setAssignMenu] = useState<boolean>(false);
+
+    const actionRef = useRef<ActionType>();
 
         const executeAndCallbackRefresh = async (callback: () => void) => {
             setLoading(true);
@@ -71,9 +75,15 @@ const RoleProTable: React.FC = () => {
                 await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
                 handleModalVisible(false);
             });
-
-
         }
+
+
+        const handleAssignMenuSubmit = async (value: any) => {
+            // TODO : SAVE DATA
+            setAssignMenu(false)
+        }
+
+
 
         /**
          * edit role status
@@ -91,6 +101,16 @@ const RoleProTable: React.FC = () => {
             handleModalVisible(false);
             handleUpdateModalVisible(false);
         }
+
+    /**
+     * assign user visible change
+     * @param record
+     */
+    const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
+        setFormValues(record);
+        setAssignMenu(true);
+    }
+
 
         /**
          * columns
@@ -139,7 +159,10 @@ const RoleProTable: React.FC = () => {
                     <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                     <>{record.id !== 1 &&
                         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                                             description={l("role.deleteConfirm")}/>}</>
+                                             description={l("role.deleteConfirm")}/>}
+                        <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
+                                   title={l('role.AssignMenu')}/>
+                    </>
                 ],
             },
         ];
@@ -172,6 +195,7 @@ const RoleProTable: React.FC = () => {
                 modalVisible={updateModalVisible}
                 values={formValues}
             />
+            <AssignMenu values={formValues} open={assignMenu} onSubmit={handleAssignMenuSubmit} onClose={() => setAssignMenu(false)}/>
         </>
     }
 ;

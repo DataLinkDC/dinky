@@ -31,6 +31,7 @@ import {l} from "@/utils/intl";
 import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {Reducer, StoreEnhancer} from 'redux';
+import { API } from "./services/data";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -60,7 +61,7 @@ export async function getInitialState(): Promise<{
           isDelete: user.isDelete,
           createTime: user.createTime,
           updateTime: user.updateTime,
-          isAdmin: user.isAdmin,
+          superAdminFlag: user.superAdminFlag,
         },
         roleList: result.datas.roleList,
         tenantList: result.datas.tenantList,
@@ -70,6 +71,7 @@ export async function getInitialState(): Promise<{
       return currentUser;
     }, (error) => {
       history.push(loginPath);
+      console.log(error);
       return undefined;
     });
 
@@ -90,7 +92,7 @@ export async function getInitialState(): Promise<{
 }
 
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
-export const layout: RunTimeLayoutConfig = ({initialState, setInitialState}) => {
+export const layout: RunTimeLayoutConfig = ({initialState}) => {
 
   const theme = localStorage.getItem("navTheme");
 

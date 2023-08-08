@@ -143,6 +143,8 @@ export default {
   'user.phone': 'Phone Number',
   'user.type': 'User Type',
   'user.nickname': 'Nick Name',
+  'user.superAdminFlag': 'Super Admin',
+  'user.tenantAdminFlag': 'Tenant Admin',
   'user.create': 'Create User',
   'user.update': 'Modify User',
   'user.assignRole': 'Assign Role',
@@ -195,6 +197,10 @@ export default {
   'tenant.EnterTenantNote': 'Please enter Tenant Note!',
   'tenant.delete': 'Delete Tenant',
   'tenant.deleteConfirm': 'Are you sure you want to delete this Tenant？',
+  'tenant.set.admin': 'Set Tenant Admin',
+  'tenant.cancel.admin': 'Cancel Tenant Admin',
+  'tenant.user.list': 'User List',
+
 
   // role
   'role.roleManagement': 'Role Management',
@@ -210,6 +216,34 @@ export default {
   'role.EnterNote': 'Please enter Role Note!',
   'role.delete': 'Delete Role',
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
+
+  // menu
+  'menu.management': 'Menu Management',
+  'menu.name': 'Menu name',
+  'menu.namePlaceholder': 'Please enter the Menu name',
+  'menu.parentId': 'Parent Menu',
+  'menu.parentIdPlaceholder': 'Please select the parent menu',
+  'menu.path': 'Path',
+  'menu.pathPlaceholder': 'Please enter the path',
+  'menu.icon': 'Icon',
+  'menu.iconPlaceholder': 'Please enter an icon',
+  'menu.component': 'Component',
+  'menu.componentPlaceholder': 'Please enter the component',
+  'menu.orderNum': 'Sort',
+  'menu.orderNumPlaceholder': 'Please enter the sort value',
+  'menu.type': 'Menu Type',
+  'menu.typePlaceholder': 'Please select the menu type',
+  'menu.perms': 'Permission ID',
+  'menu.permsPlaceholder': 'Please enter the permission ID',
+  'menu.icon.reference': 'Menu icon reference',
+
+  'menu.type.dir': 'Directory',
+  'menu.type.menu': 'Menu',
+  'menu.type.button': 'Button',
+  'menu.edit': 'Edit Menu',
+  'menu.tips.1': 'Modify Menu: click on the node you want to modify in the tree view on the left, and render the modification form here',
+  'menu.tips.2': 'Add Root Menu: click the button in the upper right corner of the tree view to add',
+  'menu.tips.3': 'Add/Delete SubMenu: Right-click on the tree view to add/delete',
 
   // rowPermissions
   'rowPermissions.management': 'Row Permissions Management',

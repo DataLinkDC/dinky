@@ -23,6 +23,7 @@ import org.dinky.data.model.User;
 import org.dinky.mybatis.mapper.SuperMapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * UserMapper
@@ -30,4 +31,7 @@ import org.apache.ibatis.annotations.Mapper;
  * @since 2021/11/28 13:36
  */
 @Mapper
-public interface UserMapper extends SuperMapper<User> {}
+public interface UserMapper extends SuperMapper<User> {
+
+    Integer queryAdminUserByTenant(@Param("tenantId") Integer tenantId);
+}

@@ -26,7 +26,7 @@ import {PageContainer} from "@ant-design/pro-layout";
 import {l} from "@/utils/intl";
 import {Alert, ALERT_TYPE} from "@/types/RegCenter/data.d";
 import {queryList} from "@/services/api";
-import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
 import {connect, Dispatch} from "@umijs/max";
 import {ProList} from "@ant-design/pro-components";
 import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from "@/services/constants";
@@ -102,7 +102,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
      */
     const handleEnable = async (item: Alert.AlertGroup) => {
         await exexuteWithRefreshLoading(async () => {
-            await updateEnabled(API_CONSTANTS.ALERT_GROUP_ENABLE, {id: item.id});
+            await updateDataByParam(API_CONSTANTS.ALERT_GROUP_ENABLE, {id: item.id});
         });
     };
 

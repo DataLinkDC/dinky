@@ -138,6 +138,8 @@ export default {
   'user.phone': '手机号',
   'user.type': '注册类型',
   'user.nickname': '昵称',
+  'user.superAdminFlag': '超级管理员',
+  'user.tenantAdminFlag': '租户管理员',
   'user.create': '添加用户',
   'user.update': '修改用户',
   'user.assignRole': '分配角色',
@@ -189,6 +191,9 @@ export default {
   'tenant.EnterTenantNote': '请输入租户备注/描述信息!',
   'tenant.delete': '删除租户',
   'tenant.deleteConfirm': '您确定要删除此租户吗？',
+  'tenant.set.admin': '设置租户管理员',
+  'tenant.cancel.admin': '取消租户管理员',
+  'tenant.user.list': '租户用户列表',
 
   // role
   'role.roleManagement': '角色管理',
@@ -203,6 +208,34 @@ export default {
   'role.EnterNote': '请输入角色的备注/描述信息!',
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
+
+  // menu
+  'menu.management': '菜单管理',
+  'menu.name': '菜单名称',
+  'menu.namePlaceholder': '请输入菜单名称',
+  'menu.parentId': '父级菜单',
+  'menu.parentIdPlaceholder': '请选择父级菜单',
+  'menu.path': '路径',
+  'menu.pathPlaceholder': '请输入路径',
+  'menu.icon': '图标',
+  'menu.iconPlaceholder': '请输入图标',
+  'menu.component': '组件',
+  'menu.componentPlaceholder': '请输入组件',
+  'menu.orderNum': '排序',
+  'menu.orderNumPlaceholder': '请输入排序值',
+  'menu.type': '菜单类型',
+  'menu.typePlaceholder': '请选择菜单类型',
+  'menu.perms': '权限标识',
+  'menu.permsPlaceholder': '请输入权限标识',
+  'menu.icon.reference': '菜单图标参考',
+
+  'menu.type.dir': '目录',
+  'menu.type.menu': '菜单',
+  'menu.type.button': '按钮',
+  'menu.edit': '修改菜单',
+  'menu.tips.1': '修改菜单: 点击左侧树状图中的想要修改的节点, 在此处渲染修改表单',
+  'menu.tips.2': '添加根菜单: 点击树状图的右上角的按钮进行新增',
+  'menu.tips.3': '新增/删除子菜单: 树状图上右键单击,进行添加/删除',
 
 
   // rowPermissions

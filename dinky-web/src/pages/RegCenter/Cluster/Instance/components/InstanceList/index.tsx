@@ -26,7 +26,7 @@ import {queryList} from '@/services/api';
 import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
 import React, {useRef, useState} from 'react';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
-import {handleAddOrUpdate, handleOption, handleRemoveById, updateEnabled} from '@/services/BusinessCrud';
+import {handleAddOrUpdate, handleOption, handleRemoveById, updateDataByParam} from '@/services/BusinessCrud';
 import {EditBtn} from '@/components/CallBackButton/EditBtn';
 import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
@@ -34,9 +34,9 @@ import {Button, Popconfirm} from 'antd';
 import {ClearOutlined, HeartTwoTone} from '@ant-design/icons';
 import {renderWebUiRedirect} from '@/pages/RegCenter/Cluster/Instance/components/function';
 import {
-  CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM,
   CLUSTER_INSTANCE_STATUS_ENUM
 } from '@/pages/RegCenter/Cluster/Instance/components/contants';
+import {YES_OR_NO_ENUM} from "@/types/Public/constants";
 
 
 export default () => {
@@ -107,7 +107,7 @@ export default () => {
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
-      await updateEnabled(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id});
+      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id});
     });
   };
 
@@ -160,7 +160,7 @@ export default () => {
       dataIndex: 'autoRegisters',
       hideInSearch: true,
       width: '8%',
-      valueEnum: CLUSTER_INSTANCE_AUTO_REGISTERS_ENUM,
+      valueEnum: YES_OR_NO_ENUM,
     },
     {
       title: l('rc.ci.version'),

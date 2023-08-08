@@ -22,7 +22,7 @@ import {ActionType, DragSortTable, ProColumns} from "@ant-design/pro-table";
 import {GitProject} from "@/types/RegCenter/data";
 import {
   handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById,
-  updateEnabled
+  updateDataByParam
 } from "@/services/BusinessCrud";
 import {
   API_CONSTANTS,
@@ -82,7 +82,7 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<GitProject>) => {
-    await executeAndCallback(async () => await updateEnabled(API_CONSTANTS.GIT_PROJECT_ENABLE, {id: value.id}));
+    await executeAndCallback(async () => await updateDataByParam(API_CONSTANTS.GIT_PROJECT_ENABLE, {id: value.id}));
   };
 
 
