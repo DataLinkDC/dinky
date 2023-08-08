@@ -19,7 +19,7 @@
 
 package org.dinky.crypto;
 
-import com.facebook.presto.jdbc.internal.guava.base.Strings;
+import com.google.common.base.Strings;
 import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.stereotype.Component;
 
