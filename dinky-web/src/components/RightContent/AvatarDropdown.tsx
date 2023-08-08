@@ -17,7 +17,7 @@
 
 import {
   LogoutOutlined,
-  TeamOutlined,
+  TeamOutlined, UserOutlined,
   UserSwitchOutlined
 } from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
@@ -57,7 +57,7 @@ const Name = () => {
     };
   });
 
-  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username} ({currentUser?.currentTenant.tenantCode})</span>;
+  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username}</span>;
 };
 
 const AvatarLogo = () => {
@@ -193,9 +193,17 @@ const AvatarDropdown = () => {
 
 
   const menuItems = [
+    {
+      key: 'currentTenant',
+      icon: <TeamOutlined />,
+      label: l('menu.account.tenant','', {tenantCode: currentUser?.currentTenant.tenantCode}),
+    },
+    {
+      type: 'divider' as const,
+    },
       {
         key: 'center',
-        icon: <TeamOutlined />,
+        icon: <UserOutlined />,
         label: l('menu.account.center'),
         onClick: () => history.push('/account/center'),
       },

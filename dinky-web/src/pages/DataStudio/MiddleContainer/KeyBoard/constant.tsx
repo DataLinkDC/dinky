@@ -19,7 +19,7 @@
 
 import {l} from "@/utils/intl";
 
-export const KEY_BOARD = [
+export const KEY_BOARD_MIDDLE = [
     {
         key: 'ctrls',
         label: 'Ctrl + S',
@@ -45,6 +45,9 @@ export const KEY_BOARD = [
         label: 'Esc',
         description: l('shortcut.key.fullscreenClose'),
     },
+]
+
+export const KEY_BOARD_RIGHT_SLIDER = [
     {
         key: 'f1',
         label: 'F1',
