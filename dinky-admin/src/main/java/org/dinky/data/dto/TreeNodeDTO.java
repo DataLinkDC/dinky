@@ -54,4 +54,20 @@ public class TreeNodeDTO {
         this.children = children;
         this.size = size;
     }
+
+    public TreeNodeDTO(
+            Integer id,
+            String name,
+            String path,
+            Integer parentId,
+            String desc,
+            List<TreeNodeDTO> children) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.parentId = parentId;
+        this.desc = desc;
+        this.children = children;
+        this.isLeaf = (children == null || children.size() == 0);
+    }
 }

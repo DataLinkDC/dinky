@@ -19,10 +19,10 @@
 
 package org.dinky.service;
 
+import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.User;
 import org.dinky.data.vo.RouterVo;
-import org.dinky.data.vo.TreeSelect;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -109,7 +109,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param menus 菜单列表
      * @return 下拉树结构列表
      */
-    List<TreeSelect> buildMenuTreeSelect(List<Menu> menus);
+    List<TreeNodeDTO> buildMenuTreeSelect(List<Menu> menus);
 
     /**
      * 根据菜单ID查询信息

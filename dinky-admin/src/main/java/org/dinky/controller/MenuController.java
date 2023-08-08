@@ -21,10 +21,10 @@ package org.dinky.controller;
 
 import org.dinky.annotation.Log;
 import org.dinky.data.dto.RoleMenuDto;
+import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Menu;
-import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.MenuService;
 
@@ -38,8 +38,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -73,13 +71,13 @@ public class MenuController {
     /**
      * list Menus
      *
-     * @param para {@link JsonNode}
-     * @return {@link ProTableResult} with {@link Menu}
+     * @return {@link Result} with {@link List<TreeNodeDTO>}
      */
     @GetMapping("listMenus")
     @ApiOperation("Query Menu List")
-    public Result<List<Menu>> listMenus() {
-        return Result.data(menuService.list());
+    public Result<List<TreeNodeDTO>> listMenus() {
+        List<Menu> menus = menuService.list();
+        return Result.data(menuService.buildMenuTreeSelect(menus));
     }
 
     /**

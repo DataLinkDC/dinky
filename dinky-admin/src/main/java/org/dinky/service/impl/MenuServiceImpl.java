@@ -21,12 +21,12 @@ package org.dinky.service.impl;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.BaseConstant;
+import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.data.model.User;
 import org.dinky.data.vo.MetaVo;
 import org.dinky.data.vo.RouterVo;
-import org.dinky.data.vo.TreeSelect;
 import org.dinky.mapper.MenuMapper;
 import org.dinky.mapper.RoleMenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
@@ -49,6 +49,7 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 
 @Service
@@ -175,9 +176,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             router.setComponent(getComponent(menu));
             router.setMeta(new MetaVo(menu.getName(), menu.getIcon()));
             List<Menu> cMenus = menu.getChildren();
-            if (!cMenus.isEmpty()
-                    && cMenus.size() > 0
-                    && BaseConstant.TYPE_DIR.equals(menu.getType())) {
+            if (CollectionUtil.isNotEmpty(cMenus) && BaseConstant.TYPE_DIR.equals(menu.getType())) {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
@@ -226,9 +225,9 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 下拉树结构列表
      */
     @Override
-    public List<TreeSelect> buildMenuTreeSelect(List<Menu> menus) {
+    public List<TreeNodeDTO> buildMenuTreeSelect(List<Menu> menus) {
         List<Menu> menuTrees = buildMenuTree(menus);
-        return menuTrees.stream().map(TreeSelect::new).collect(Collectors.toList());
+        return menuTrees.stream().map(this::convertToTreeDTO).collect(Collectors.toList());
     }
 
     /**
@@ -340,7 +339,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     public String getRouterPath(Menu menu) {
         String routerPath = menu.getPath();
         // 非外链并且是一级目录（类型为目录）
-        if (0 == menu.getParentId().intValue() && BaseConstant.TYPE_DIR.equals(menu.getType())) {
+        if (menu.isRootMenu() && BaseConstant.TYPE_DIR.equals(menu.getType())) {
             routerPath = "/" + menu.getPath();
         }
         // 非外链并且是一级目录（类型为菜单）
@@ -371,7 +370,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 结果
      */
     public boolean isMeunFrame(Menu menu) {
-        return menu.getParentId().intValue() == 0 && BaseConstant.TYPE_MENU.equals(menu.getType());
+        return menu.isRootMenu() && BaseConstant.TYPE_MENU.equals(menu.getType());
     }
 
     /**
@@ -383,8 +382,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      */
     public List<Menu> getChildPerms(List<Menu> list, int parentId) {
         List<Menu> returnList = new ArrayList<Menu>();
-        for (Iterator<Menu> iterator = list.iterator(); iterator.hasNext(); ) {
-            Menu t = (Menu) iterator.next();
+        for (Menu t : list) {
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
             if (t.getParentId() == parentId) {
                 recursionFn(list, t);
@@ -407,9 +405,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
         for (Menu tChild : childList) {
             if (hasChild(list, tChild)) {
                 // 判断是否有子节点
-                Iterator<Menu> it = childList.iterator();
-                while (it.hasNext()) {
-                    Menu n = (Menu) it.next();
+                for (Menu n : childList) {
                     recursionFn(list, n);
                 }
             }
@@ -419,9 +415,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     /** 得到子节点列表 */
     private List<Menu> getChildList(List<Menu> list, Menu t) {
         List<Menu> tlist = new ArrayList<Menu>();
-        Iterator<Menu> it = list.iterator();
-        while (it.hasNext()) {
-            Menu n = (Menu) it.next();
+        for (Menu n : list) {
             if (n.getParentId().longValue() == t.getId().longValue()) {
                 tlist.add(n);
             }
@@ -431,6 +425,18 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
 
     /** 判断是否有子节点 */
     private boolean hasChild(List<Menu> list, Menu t) {
-        return getChildList(list, t).size() > 0 ? true : false;
+        return getChildList(list, t).size() > 0;
+    }
+
+    public TreeNodeDTO convertToTreeDTO(Menu menu) {
+        return new TreeNodeDTO(
+                menu.getId(),
+                menu.getName(),
+                menu.getPath(),
+                menu.getParentId(),
+                menu.getNote(),
+                menu.getChildren().stream()
+                        .map(this::convertToTreeDTO)
+                        .collect(Collectors.toList()));
     }
 }
