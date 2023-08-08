@@ -118,7 +118,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @return 权限列表
      */
     @Override
-    public Set<String> selectMenuPermsByUserId(Long userId) {
+    public Set<String> selectMenuPermsByUserId(Integer userId) {
         List<String> perms = menuMapper.selectMenuPermsByUserId(userId);
         Set<String> permsSet = new HashSet<>();
         for (String perm : perms) {
@@ -313,6 +313,24 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             return BaseConstant.NOT_UNIQUE;
         }
         return BaseConstant.UNIQUE;
+    }
+
+    /**
+     * Query permissions by role ID.
+     *
+     * @param roleId role ID
+     * @return permission List
+     */
+    @Override
+    public Set<String> selectMenuPermsByRoleId(Integer roleId) {
+        List<String> perms = menuMapper.selectMenuPermsByRoleId(roleId);
+        Set<String> permsSet = new HashSet<>();
+        for (String perm : perms) {
+            if (StringUtils.isNotEmpty(perm)) {
+                permsSet.addAll(Arrays.asList(perm.trim().split(",")));
+            }
+        }
+        return permsSet;
     }
 
     /**

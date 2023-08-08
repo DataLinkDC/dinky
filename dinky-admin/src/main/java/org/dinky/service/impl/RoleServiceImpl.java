@@ -39,7 +39,10 @@ import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
@@ -65,6 +68,7 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     private final NamespaceService namespaceService;
     private final RowPermissionsService roleSelectPermissionsService;
     @Lazy @Resource private RoleService roleService;
+    @Lazy @Resource private RoleMapper roleMapper;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -234,5 +238,34 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Override
     public List<Role> getRoleByUserId(Integer userId) {
         return userRoleService.getRoleByUserId(userId);
+    }
+
+    /**
+     * Query role permission by user ID.
+     *
+     * @param userId user ID
+     * @return permission list
+     */
+    @Override
+    public Set<String> selectRolePermissionByUserId(Integer userId) {
+        List<Role> perms = roleMapper.selectRolePermissionByUserId(userId);
+        Set<String> permsSet = new HashSet<>();
+        for (Role perm : perms) {
+            if (perm != null) {
+                permsSet.addAll(Arrays.asList(perm.getRoleCode().trim().split(",")));
+            }
+        }
+        return permsSet;
+    }
+
+    /**
+     * Query role list by user ID.
+     *
+     * @param userId user ID
+     * @return role IDs
+     */
+    @Override
+    public List<Integer> selectRoleListByUserId(Integer userId) {
+        return roleMapper.selectRoleListByUserId(userId);
     }
 }

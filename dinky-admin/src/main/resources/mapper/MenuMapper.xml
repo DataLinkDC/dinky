@@ -97,13 +97,13 @@
                  left join dinky_user_role ur on rm.role_id = ur.role_id
     </select>
 
-    <select id="selectMenuPermsByUserId" parameterType="Long" resultType="String">
+    <select id="selectMenuPermsByUserId" parameterType="Integer" resultType="String">
         select distinct m.perms
         from dinky_sys_menu m
                  left join dinky_role_menu rm on m.id = rm.menu_id
                  left join dinky_user_role ur on rm.role_id = ur.role_id
                  left join dinky_role r on r.role_id = ur.role_id
-        where r.is_delete = '0' and ur.user_id = #{userId}
+        where r.is_delete = 0 and ur.user_id = #{userId}
     </select>
 
     <select id="selectMenuById" parameterType="Long" resultMap="DinkySysMenuResult">
@@ -118,6 +118,13 @@
     <select id="checkMenuNameUnique" parameterType="org.dinky.data.model.Menu" resultMap="DinkySysMenuResult">
         <include refid="selectMenuVo"/>
         where `name`=#{name} and parent_id = #{parentId}
+    </select>
+
+    <select id="selectMenuPermsByRoleId" parameterType="Integer" resultType="String">
+        select distinct m.perms
+        from dinky_sys_menu m
+                 left join dinky_sys_role_menu rm on m.id = rm.menu_id
+        where rm.role_id = #{roleId}
     </select>
 
     <select id="selectForProTable" resultType="org.dinky.data.model.Menu">

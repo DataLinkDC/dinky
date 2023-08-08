@@ -69,7 +69,7 @@ public interface MenuService extends ISuperService<Menu> {
      * @param userId 用户ID
      * @return 权限列表
      */
-    Set<String> selectMenuPermsByUserId(Long userId);
+    Set<String> selectMenuPermsByUserId(Integer userId);
 
     /**
      * 根据用户ID查询菜单树信息
@@ -166,4 +166,12 @@ public interface MenuService extends ISuperService<Menu> {
      * @return 结果
      */
     String checkMenuNameUnique(Menu menu);
+
+    /**
+     * Query permissions by role ID.
+     *
+     * @param roleId role ID
+     * @return permission List
+     */
+    Set<String> selectMenuPermsByRoleId(Integer roleId);
 }

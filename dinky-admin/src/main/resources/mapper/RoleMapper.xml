@@ -109,4 +109,16 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectRolePermissionByUserId" parameterType="Integer" resultMap="roleResultMap">
+        select distinct r.id, r.tenant_id, r.role_name, r.role_code, r.is_delete, r.note
+        from dinky_role r
+                 left join dinky_user_role urole on urole.role_id = r.id
+                 left join dinky_user u on u.id = urole.user_id
+        WHERE r.is_delete = 0 and ur.user_id = #{userId}
+    </select>
+
+    <select id="selectRoleListByUserId" parameterType="Integer" resultType="Integer">
+        select role_id from dinky_user_role where user_id = #{userId}
+    </select>
 </mapper>
