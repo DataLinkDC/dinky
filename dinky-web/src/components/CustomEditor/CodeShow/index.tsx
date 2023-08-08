@@ -213,6 +213,7 @@ const CodeShow = (props: CodeShowFormProps) => {
         language={language}
         options={{
           ...options,
+          scrollBeyondLastLine: false,
           readOnly: true,
           wordWrap: autoWrap,
           autoDetectHighContrast: true,
@@ -220,7 +221,27 @@ const CodeShow = (props: CodeShowFormProps) => {
           fixedOverflowWidgets: true,
           autoClosingDelete: "always",
           lineNumbers,
+          scrollbar: {
+            // Subtle shadows to the left & top. Defaults to true.
+            useShadows: false,
 
+            // Render vertical arrows. Defaults to false.
+            // verticalHasArrows: true,
+            // Render horizontal arrows. Defaults to false.
+            // horizontalHasArrows: true,
+
+            // Render vertical scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            vertical: "visible",
+            // Render horizontal scrollbar.
+            // Accepted values: 'auto', 'visible', 'hidden'.
+            // Defaults to 'auto'
+            horizontal: "visible",
+            verticalScrollbarSize: 8,
+            horizontalScrollbarSize: 8,
+            arrowSize: 30,
+          }
         }}
         onMount={editorDidMount}
         theme={theme ? theme : convertCodeEditTheme()}

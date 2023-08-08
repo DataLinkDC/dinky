@@ -18,7 +18,7 @@
 import {
   addOrUpdateData, putData, getDataByRequestBody, getInfoById,
   postAll,
-  removeById, updateDataByParams, getData,
+  removeById, updateDataByParams, getData, putDataJson,
 } from '@/services/api';
 import {l} from '@/utils/intl';
 import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
@@ -27,6 +27,7 @@ import {
   LoadingMessageAsync, SuccessMessage, WarningMessage,
 } from '@/utils/messages';
 import { API } from './data';
+
 
 
 const APPLICATION_JSON = 'application/json';
@@ -176,10 +177,25 @@ export const handleOption = async (url: string, title: string, param: any) => {
       return result;
     } else {
       WarningMessage(result.msg);
-      return false;
+      return null;
     }
   } catch (error) {
-    return false;
+    return null;
+  }
+};
+export const handleGetOption = async (url: string, title: string, param: any) => {
+  await LoadingMessageAsync(l('app.request.running') + title);
+  try {
+    const result = await getData(url, param);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      SuccessMessage(result.msg);
+      return result;
+    } else {
+      WarningMessage(result.msg);
+      return null;
+    }
+  } catch (error) {
+    return null;
   }
 };
 
@@ -202,6 +218,21 @@ export const handlePutData = async (url: string, fields: any) => {
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
     const {code, msg} = await postAll(url, {...fields});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      await SuccessMessage(msg);
+    } else {
+      await WarningMessage(msg);
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+export const handlePutDataJson = async (url: string, fields: any) => {
+  const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
+  await LoadingMessageAsync(l('app.request.running') + tipsTitle);
+  try {
+    const {code, msg} = await putDataJson(url, {...fields});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
     } else {

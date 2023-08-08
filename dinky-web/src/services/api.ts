@@ -105,6 +105,14 @@ export async function putData(url: string, params: any) {
     },
   });
 }
+export async function putDataJson(url: string, params: any) {
+  return request(url, {
+    method: METHOD_CONSTANTS.PUT,
+    data: {
+      ...params,
+    },
+  });
+}
 export async function putDataAsArray(url: string, data: any[]) {
   return request(url, {
     method: METHOD_CONSTANTS.PUT,

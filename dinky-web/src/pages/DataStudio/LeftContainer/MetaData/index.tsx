@@ -12,12 +12,14 @@ import {Key, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
+import ContentScroll from "@/components/Scroll/ContentScroll";
+import {BtnRoute} from "@/pages/DataStudio/route";
 
 const MetaData = (props: any) => {
 
   const {dispatch ,toolContentHeight,leftContainer, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
   const [treeData, setTreeData] = useState<[]>([]);
-  const [loadingDatabase, setLoadingDatabase] = useState(false);
+  const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const selectDb = (dbData as DataSources.DataSource[]).filter(x=> x.id === selectDatabaseId)[0]
 
   /**
@@ -26,33 +28,30 @@ const MetaData = (props: any) => {
    */
   const onRefreshTreeData = (databaseId: number) => {
     if (!databaseId) {
-      setLoadingDatabase(false);
+      setIsLoadingDatabase(false);
       return;
     }
-    setLoadingDatabase(true);
+    setIsLoadingDatabase(true);
 
     const res = showMetaDataTable(databaseId);
     res.then((tables) => {
-      setLoadingDatabase(false);
-      if (tables) {
-        for (let i = 0; i < tables.length; i++) {
-          tables[i].title = tables[i].name;
-          tables[i].key = tables[i].name;
-          tables[i].icon = <DatabaseOutlined/>;
-          tables[i].children = tables[i].tables;
-          for (let j = 0; j < tables[i].children.length; j++) {
-            tables[i].children[j].title = tables[i].children[j].name;
-            tables[i].children[j].key = tables[i].name + '.' + tables[i].children[j].name;
-            tables[i].children[j].icon = <TableOutlined/>;
-            tables[i].children[j].isLeaf = true;
-            tables[i].children[j].schema = tables[i].name;
-            tables[i].children[j].table = tables[i].children[j].name;
-          }
+      setIsLoadingDatabase(false);
+      if (!tables) return;
+      for (let table of tables) {
+        table.title = table.name;
+        table.key = table.name;
+        table.icon = <DatabaseOutlined/>;
+        table.children = table.tables;
+        for (let child of table.children) {
+          child.title = child.name;
+          child.key = table.name + '.' + child.name;
+          child.icon = <TableOutlined/>;
+          child.isLeaf = true;
+          child.schema = table.name;
+          child.table = child.name;
         }
-        setTreeData(tables);
-      } else {
-        setTreeData([]);
       }
+      setTreeData(tables ?? []);
     });
   };
 
@@ -69,16 +68,19 @@ const MetaData = (props: any) => {
   const onChangeDataBase = (value: number) => {
     onRefreshTreeData(value);
   };
+
   /**
    * 刷新数据库列表
    */
   const refreshDataBase = () => {
     if (!selectDatabaseId) return;
-    setLoadingDatabase(true);
+    setIsLoadingDatabase(true);
     clearMetaDataTable(selectDatabaseId).then(() => {
       onChangeDataBase(selectDatabaseId);
     })
   };
+
+  BtnRoute['menu.datastudio.metadata'][0].onClick=refreshDataBase
 
   /**
    * 构建数据库列表 下拉框
@@ -94,6 +96,7 @@ const MetaData = (props: any) => {
         }
     ))
   };
+
   /**
    * 树节点点击事件 添加tab页 并传递参数
    * @param keys
@@ -106,6 +109,7 @@ const MetaData = (props: any) => {
         type: "Studio/updateDatabaseSelectKey",
         payload: keys
     })
+
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     if (isLeaf) {
       const queryParams =  {id: selectDatabaseId , schemaName, tableName};
@@ -148,12 +152,13 @@ const MetaData = (props: any) => {
 
 
   return (
-
-    <Spin spinning={loadingDatabase} delay={500}>
+    <Spin spinning={isLoadingDatabase} delay={500}>
       <ProForm style={{height: 40}} initialValues={{selectDb:selectDatabaseId}} submitter={false}>
         <ProFormSelect
-            width={leftContainer.width - 45 }
-            addonAfter={<ReloadOutlined spin={loadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
+          style={{paddingInline:10}}
+            // width={leftContainer.width  }
+          width={"xl"}
+            // addonAfter={<ReloadOutlined spin={isLoadingDatabase} title={l('button.refresh')} onClick={() => refreshDataBase()} />}
             allowClear={false}
             name={"selectDb"}
             placeholder={l('pages.metadata.selectDatabase')}
@@ -161,7 +166,7 @@ const MetaData = (props: any) => {
             fieldProps={{onSelect: (selectId) => handleSelectDataBaseId(selectId as number)}}
         />
       </ProForm>
-        <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
+      <SchemaTree selectKeys={selectKeys} expandKeys={expandKeys} style={{height: (toolContentHeight - 64 - 20 )}} onNodeClick={handleTreeNodeClick} treeData={treeData} onExpand={handleTreeExpand}/>
     </Spin>
   );
 };

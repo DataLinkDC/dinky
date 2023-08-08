@@ -18,22 +18,21 @@
 
 import React from "react";
 import {Button} from "antd";
-import {MinusOutlined, UserSwitchOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
 
-type CircleButtonProps = {
-  // key: string;
+export type CircleButtonProps = {
   icon: React.ReactNode;
+  loading?: boolean;
   onClick?: () => void;
   title?: string;
+  key?: string;
 };
 
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const {onClick,title,icon} = props;
+  const {onClick,title,icon,loading} = props;
 
   return (
     <Button title={title}
-            // key={key}
+            loading={loading}
             icon={icon} block type={"text"}
             shape={"circle"}
             onClick={onClick}/>

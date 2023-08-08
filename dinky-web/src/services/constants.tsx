@@ -420,6 +420,7 @@ export const SWITCH_OPTIONS =() => {
 
 export const DIALECT = {
   JAVA: "java",
+  FLINK_SQL: "flinksql",
   LOG: "log",
   XML: "xml",
   MD: "md",
@@ -437,6 +438,19 @@ export const DIALECT = {
   JSON: "json",
   SQL: "sql",
   JAVASCRIPT: "javascript",
+  FLINKJAR: 'flinkjar',
+  FLINKSQLENV: 'flinksqlenv',
+  MYSQL: 'mysql',
+  ORACLE: 'oracle',
+  SQLSERVER: 'sqlserver',
+  POSTGRESQL: 'postgresql',
+  CLICKHOUSE: 'clickHouse',
+  DORIS: 'doris',
+  HIVE: 'hive',
+  PHOENIX: 'phoenix',
+  STARROCKS: 'starRocks',
+  PRESTO: 'presto',
+  KUBERNETES_APPLICATION: 'kubernetesapplication',
 };
 
 

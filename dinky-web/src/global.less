@@ -119,6 +119,9 @@ body,
 ::-webkit-scrollbar-corner {
   background-color: #f5f5f5;
 }
+.monaco-scrollable-element > .scrollbar > .slider {
+    background: #8db7fd !important;
+}
 
 // scrollbar style --- end ----
 
@@ -253,7 +256,13 @@ ol {
     }
   }
 }
+.ant-tree-node-content-wrapper {
+  display: flex;
 
+  :hover {
+    color: #1eef07;
+  }
+}
 .gitCodeTree {
   max-height: 70vh;
   min-height: 70vh;
@@ -392,3 +401,29 @@ h5 {
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
 }
+.monaco-float{
+  height: 100%;
+}
+
+.data-studio-tabs{
+  .ant-tabs-nav{
+    .ant-tabs-nav-wrap{
+      .ant-tabs-tab{
+        padding: 4px 8px;
+      }
+      .ant-tabs-tab-active{
+        border-block-end: 3px solid #8db7fd;
+        box-sizing:content-box;
+        padding-block-end: 3px;
+      }
+    }
+  }
+
+}
+
+.data-studio-form{
+    .ant-form-item{
+      margin-bottom: 5px!important;
+    }
+}
+

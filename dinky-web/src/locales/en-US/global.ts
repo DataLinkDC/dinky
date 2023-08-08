@@ -50,6 +50,8 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.expand-all': 'Expand All',
+  'button.collapse-all': 'Collapse All',
   'button.test': 'Test',
   'button.clear': 'Clear',
   'button.copy': 'Copy',

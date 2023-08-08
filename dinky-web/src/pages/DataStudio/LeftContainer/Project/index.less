@@ -17,28 +17,26 @@
  *
  */
 
-package org.dinky.service;
 
-import org.dinky.data.dto.MetricsLayoutDTO;
-import org.dinky.data.model.Metrics;
-import org.dinky.data.vo.MetricsVO;
+.right_click_menu li{
+  margin:0!important;
+}
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+.right_click_menu{
+  border: 1px solid #d2d2d2;
+  box-shadow: 1px 1px 4px rgb(0 0 0 / 8%);
+  background-color: #fff;
+  color: #666;
+  z-index: 9999;
+}
 
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+.tree_div{
+  padding-right: 10px;
+}
 
-import com.baomidou.mybatisplus.extension.service.IService;
-
-public interface MonitorService extends IService<Metrics> {
-    List<MetricsVO> getData(Date startTime, Date endTime);
-
-    SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate);
-
-    SseEmitter sendJvmInfo(SseEmitter sseEmitter);
-
-    void saveFlinkMetricLayout(List<MetricsLayoutDTO> metricsList);
-
-    Map<String, List<Metrics>> getMetricsLayout();
+.site-tree-search-value {
+  //color: #00EE76;
+  color: #c00b26;
+  background-color: rgba(3, 102, 214, 0.5);
+  font-size: 15px;
 }

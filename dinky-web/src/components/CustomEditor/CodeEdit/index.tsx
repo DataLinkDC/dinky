@@ -140,6 +140,7 @@ const CodeEdit = (props: CodeEditFormProps) => {
           autoDetectHighContrast: true,
           lineNumbers,
         }}
+        className={"editor-develop"}
         onMount={editorDidMount}
         onChange={onChange}
         theme={theme ? theme : convertCodeEditTheme()}

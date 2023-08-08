@@ -27,6 +27,7 @@ import {connect} from "@@/exports";
 import {mapDispatchToProps} from "@/pages/DataStudio/function";
 import {LeftSide, RightSide} from "@/pages/DataStudio/route";
 import useThemeValue from "@/hooks/useThemeValue";
+import Title from "@/components/Front/Title";
 
 export type RightContainerProps = {
   size:number
@@ -34,7 +35,7 @@ export type RightContainerProps = {
 }
 const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
   const themeValue = useThemeValue();
-  const {size,leftContainer,rightContainer,bottomHeight,updateRightWidth,updateSelectRightKey}=prop
+  const {size,leftContainer,rightContainer,bottomHeight,updateRightWidth,updateSelectRightKey,tabs}=prop
   const maxWidth= size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600
   return (
     <MovableSidebar
@@ -42,7 +43,8 @@ const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
       onResize={(event: any, direction: any, elementRef: {
         offsetWidth: any;
       }) => updateRightWidth(elementRef.offsetWidth)}
-      title={<h5>{l(rightContainer.selectKey)}</h5>}
+
+      title={<Title>{l(rightContainer.selectKey)}</Title>}
       handlerMinimize={() => updateSelectRightKey("")}
       handlerMaxsize={() => updateRightWidth(maxWidth)}
       visible={rightContainer.selectKey !== ""}
@@ -52,7 +54,7 @@ const RightContainer:React.FC<RightContainerProps> = (prop:any) => {
       enable={{left: true}}
       style={{borderInlineStart: "1px solid "+themeValue.borderColor}}
     >
-      <Tabs activeKey={rightContainer.selectKey} items={RightSide} tabBarStyle={{display: "none"}}/>
+      {tabs.panes.length>0?<Tabs activeKey={rightContainer.selectKey} items={RightSide} tabBarStyle={{display: "none"}}/>:<> </>}
 
     </MovableSidebar>
   )
