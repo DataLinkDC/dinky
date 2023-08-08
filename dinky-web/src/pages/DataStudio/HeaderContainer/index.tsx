@@ -141,7 +141,8 @@ const HeaderContainer = (props: any) => {
       title: l('button.save'),
       click: () => {
         const current = getCurrentData(panes, activeKey);
-        handlePutDataJson("/api/task", current)
+        current.configJson = JSON.stringify(current.config)
+        handlePutDataJson("/api/task", current).then(()=>saveTabs({...props.tabs}))
       },
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
       hotKeyDesc: "Ctrl+S",

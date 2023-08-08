@@ -262,7 +262,7 @@ const MiddleContainer = (props: any) => {
     if (tabItems?.length === 0) {
       return <>
         <KeyBoard/>
-        <Divider/>
+        <Divider/><br/><br/><br/>
         <QuickGuide/>
       </>
     } else {

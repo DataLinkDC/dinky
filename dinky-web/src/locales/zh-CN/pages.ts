@@ -1020,4 +1020,17 @@ export default {
   'pages.datastudio.footer.lineSeparator': "行分隔符：",
   'pages.datastudio.footer.codeEncoding': "文件编码：",
   'pages.datastudio.footer.codePosition': "行{Ln}:列{Col} ",
+
+  'datastudio.middle.qg': '快捷引导',
+  'datastudio.middle.qg.clusterInstance': '注册 Session 集群',
+  'datastudio.middle.qg.clusterConfiguration': '注册集群配置',
+  'datastudio.middle.qg.database': '注册数据源',
+  'datastudio.middle.qg.alertInstance': '注册告警实例',
+  'datastudio.middle.qg.alertGroup': '注册告警组',
+  'datastudio.middle.qg.fragment': '全局变量',
+  'datastudio.middle.qg.document': '文档',
+  'datastudio.middle.qg.gitprojects': 'Git 项目',
+  'datastudio.middle.qg.udf': 'UDF',
+  'datastudio.middle.qg.resource': '资源',
+
 };

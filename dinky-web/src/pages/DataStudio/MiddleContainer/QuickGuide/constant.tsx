@@ -18,55 +18,57 @@
  */
 
 
+import {l} from "@/utils/intl";
+
 export const QUICK_GUIDE = [
     {
         key: 'clusterInstance',
-        label: '注册 Session 集群',
+        label: l('datastudio.middle.qg.clusterInstance'),
         link: '/registration/cluster/instance'
     },
     {
         key: 'clusterConfiguration',
-        label: '注册集群配置',
+        label: l('datastudio.middle.qg.clusterConfiguration'),
         link: '/registration/cluster/configuration'
     },
     {
         key: 'database',
-        label: '注册数据源',
+        label: l('datastudio.middle.qg.database'),
         link: '/registration/database'
     },
     {
         key: 'alertInstance',
-        label: '注册告警实例',
+        label: l('datastudio.middle.qg.alertInstance'),
         link: '/registration/alert/instance'
     },
     {
         key: 'alertGroup',
-        label: '注册告警组',
+        label: l('datastudio.middle.qg.alertGroup'),
         link: '/registration/alert/group'
     },
     {
         key: 'fragment',
-        label: '全局变量',
+        label: l('datastudio.middle.qg.fragment'),
         link: '/registration/fragment'
     },
     {
         key: 'document',
-        label: '文档',
+        label: l('datastudio.middle.qg.document'),
         link: '/registration/document'
     },
     {
         key: 'gitprojects',
-        label: 'Git 项目',
+        label: l('datastudio.middle.qg.gitprojects'),
         link: '/registration/gitprojects'
     },
     {
         key: 'udf',
-        label: 'UDF',
+        label: l('datastudio.middle.qg.udf'),
         link: '/registration/udf'
     },
     {
         key: 'resource',
-        label: '资源',
+        label: l('datastudio.middle.qg.resource'),
         link: '/registration/resource'
     }
 ];

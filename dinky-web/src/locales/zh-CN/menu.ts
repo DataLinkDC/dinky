@@ -27,6 +27,7 @@ export default {
 
   'menu.login': '登录',
   'menu.account.center': '个人中心',
+  'menu.account.tenant': '租户: {tenantCode}',
   'menu.account.settings': '个人设置',
   'menu.account.logout': '退出登录',
   'menu.account.changePassword': '修改密码',

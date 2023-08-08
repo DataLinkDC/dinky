@@ -3,7 +3,7 @@ import { StateType} from "../../model";
 import {Spin, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {
-  DatabaseOutlined, ReloadOutlined,
+  DatabaseOutlined,
   TableOutlined
 } from "@ant-design/icons";
 import {clearMetaDataTable, showMetaDataTable} from "./service";
@@ -12,7 +12,6 @@ import {Key, ProForm, ProFormSelect} from "@ant-design/pro-components";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
-import ContentScroll from "@/components/Scroll/ContentScroll";
 import {BtnRoute} from "@/pages/DataStudio/route";
 
 const MetaData = (props: any) => {
@@ -26,16 +25,16 @@ const MetaData = (props: any) => {
    * @description: 刷新树数据
    * @param {number} databaseId
    */
-  const onRefreshTreeData = (databaseId: number) => {
+  const onRefreshTreeData = async (databaseId: number) => {
     if (!databaseId) {
       setIsLoadingDatabase(false);
       return;
     }
     setIsLoadingDatabase(true);
 
-    const res = showMetaDataTable(databaseId);
-    res.then((tables) => {
+     await showMetaDataTable(databaseId).then(res => {
       setIsLoadingDatabase(false);
+      const {datas: tables} = res;
       if (!tables) return;
       for (let table of tables) {
         table.title = table.name;
