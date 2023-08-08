@@ -27,6 +27,7 @@ export default {
 
   'menu.login': 'Login',
   'menu.account.settings': 'Account Settings',
+  'menu.account.tenant': 'Tenant: {tenantCode}',
   'menu.account.center': 'Account Center',
   'menu.account.logout': 'Logout',
   'menu.account.changePassword': 'Change Password',
