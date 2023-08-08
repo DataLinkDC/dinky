@@ -118,7 +118,8 @@ public enum Status {
     TENANT_ASSIGN_USER_SUCCESS(10204, "Tenant Assign User Success", "分配用户成功"),
     TENANT_ASSIGN_USER_FAILED(10205, "Tenant Assign User Failed", "分配用户失败"),
     TENANT_BINDING_USER_DELETE_ALL(10206, "Tenant Binding User Delete All", "该租户绑定的用户已被全部删除"),
-    TENANT_ADMIN_ALREADY_EXISTS(10207, "Tenant Admin Already Exists, Only One Tenant Admin", "已存在租户管理员, 租户超管只能有一个"),
+    TENANT_ADMIN_ALREADY_EXISTS(
+            10207, "Tenant Admin Already Exists, Only One Tenant Admin", "已存在租户管理员, 租户超管只能有一个"),
 
     // tenant
     TENANT_NAME_EXIST(10101, "Tenant Already Exists", "租户已存在"),
