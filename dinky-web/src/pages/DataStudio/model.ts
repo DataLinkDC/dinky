@@ -1,9 +1,9 @@
 import {Reducer} from "@@/plugin-dva/types";
 import React from "react";
-import {DataSources} from "@/types/RegCenter/data";
+import {Cluster, DataSources} from "@/types/RegCenter/data";
 import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
 import {l} from "@/utils/intl";
-import {getCurrentTab, getFooterValue} from "@/pages/DataStudio/function";
+import {getFooterValue} from "@/pages/DataStudio/function";
 
 /**
  * 初始化布局宽高度
@@ -154,17 +154,7 @@ export type MetaStoreColumnType = {
   name: string;
   type: string;
 }
-export type ClusterConfigurationType = {
-  id: number,
-  name: string,
-  type: string,
-  config: any,
-  available: boolean,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
+
 export type Container = {
   selectKey: string;
   selectSubKey: { [c: string]: string };
@@ -187,18 +177,20 @@ export type SessionType = {
   createTime?: string;
   connectors: ConnectorType[];
 }
-export type ClusterType = {
-  id: number,
-  name: string,
-  type: string,
-  hosts: string,
-  jobManagerHost: string,
-  status: number,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
+
+/**
+ * job running type msg
+ */
+export type JobRunningMsgType = {
+  taskId: number | null ,
+  jobName: string ,
+  jobState: string ,
+  runningLog: string ,
+};
+
+/**
+ * footer
+ */
 type FooterType = {
   codePosition: [number, number],
   space: number,
@@ -206,7 +198,12 @@ type FooterType = {
   lineSeparator: string,
   codeType: string,
   memDetails: string,
+  jobRunningMsg: JobRunningMsgType,
 }
+
+/**
+ * state type overview
+ */
 export type StateType = {
   isFullScreen: boolean;
   toolContentHeight: number;
@@ -226,8 +223,8 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
-  sessionCluster: ClusterType[];
-  clusterConfiguration: ClusterConfigurationType[];
+  sessionCluster: Cluster.Instance[];
+  clusterConfiguration: Cluster.Config[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
@@ -263,6 +260,7 @@ export type ModelType = {
     saveClusterConfiguration: Reducer<StateType>;
     saveEnv: Reducer<StateType>;
     saveFooterValue: Reducer<StateType>;
+    updateJobRunningMsg: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -319,6 +317,12 @@ const Model: ModelType = {
       lineSeparator: "LF",
       codeType: "",
       memDetails: "100/500M",
+      jobRunningMsg: {
+        taskId: null,
+        jobName: '',
+        jobState: '',
+        runningLog: '',
+      },
     }
   },
   effects: {},
@@ -712,7 +716,16 @@ const Model: ModelType = {
         ...state,
         footContainer: payload,
       }
-    }
+    },
+    updateJobRunningMsg(state, {payload}) {
+      return {
+            ...state,
+          footContainer: {
+            ...state.footContainer,
+            jobRunningMsg: payload
+          },
+        }
+    },
 
   }
 }

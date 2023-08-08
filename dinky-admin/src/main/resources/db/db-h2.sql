@@ -1522,7 +1522,7 @@ CREATE TABLE `dinky_user` (
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user`
 VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0
-       , NULL, NULL, 1, 0, '2022-12-13 05:27:19'
+       , NULL, NULL, 1,1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_role`;
 CREATE TABLE `dinky_user_role` (
@@ -1544,7 +1544,7 @@ CREATE TABLE `dinky_user_tenant` (
                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user_tenant` (`id`, `user_id`, `tenant_id`, `create_time`, `update_time`)
-VALUES (1, 1, 1, current_time, current_time);
+VALUES (1, 1, 1,1, current_time, current_time);
 DROP TABLE IF EXISTS `metadata_column`;
 CREATE TABLE `metadata_column` (
                                  `column_name` varchar(255) NOT NULL COMMENT 'column name',
