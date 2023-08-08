@@ -19,9 +19,10 @@
 
 package org.dinky.crypto;
 
-import com.google.common.base.Strings;
 import org.jasypt.util.text.AES256TextEncryptor;
 import org.springframework.stereotype.Component;
+
+import com.google.common.base.Strings;
 
 @Component
 public class CryptoComponent {
