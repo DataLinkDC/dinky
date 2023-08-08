@@ -1009,4 +1009,16 @@ export default {
   'pages.datastudio.footer.codeEncoding': "File Encoding: ",
   'pages.datastudio.footer.codePosition': "Ln {Ln}:Col {Col} ",
 
+
+  'datastudio.middle.qg': 'Quick Guide',
+  'datastudio.middle.qg.clusterInstance': 'Register Session Cluster',
+  'datastudio.middle.qg.clusterConfiguration': 'Register Cluster Configuration',
+  'datastudio.middle.qg.database': 'Register DataSource',
+  'datastudio.middle.qg.alertInstance': 'Register Alert Instance',
+  'datastudio.middle.qg.alertGroup': 'Register Alert Group',
+  'datastudio.middle.qg.fragment': 'Global Variables',
+  'datastudio.middle.qg.document': 'Document',
+  'datastudio.middle.qg.gitprojects': 'Git Projects',
+  'datastudio.middle.qg.udf': 'UDF',
+  'datastudio.middle.qg.resource': 'Resource',
 };

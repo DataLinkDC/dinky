@@ -18,7 +18,7 @@
  */
 
 import {Divider, Typography} from "antd";
-import {KEY_BOARD} from "@/pages/DataStudio/MiddleContainer/KeyBoard/constant";
+import {KEY_BOARD_MIDDLE} from "@/pages/DataStudio/MiddleContainer/KeyBoard/constant";
 import {l} from "@/utils/intl";
 import React from "react";
 
@@ -29,9 +29,9 @@ const KeyBoard = () => {
 
 
     const buildKeyBoard = () => {
-        return KEY_BOARD.map((item,index) => {
+        return KEY_BOARD_MIDDLE.map((item,index) => {
             return <>
-                {index % 6 === 0 ? <>
+                {index % 5 === 0 ? <>
                     <Divider plain orientationMargin={0}/>
                     <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
                 </>: <>

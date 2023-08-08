@@ -24,7 +24,7 @@ import {getDataBase} from "@/pages/DataStudio/LeftContainer/MetaData/service";
 import MiddleContainer from "@/pages/DataStudio/MiddleContainer";
 import LeftContainer from "@/pages/DataStudio/LeftContainer";
 import {LeftBottomMoreTabs, LeftBottomSide, LeftSide, RightSide} from "@/pages/DataStudio/route";
-import {getCurrentData, getCurrentTab, mapDispatchToProps} from "@/pages/DataStudio/function";
+import {getCurrentTab, mapDispatchToProps} from "@/pages/DataStudio/function";
 import BottomContainer from "@/pages/DataStudio/BottomContainer";
 import HeaderContainer from "@/pages/DataStudio/HeaderContainer";
 import RightContainer from "@/pages/DataStudio/RightContainer";

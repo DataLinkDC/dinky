@@ -89,7 +89,6 @@ const HistoryVersion = (props: any) => {
             </Tag>
           </div>
           <br/>
-          {/*<Scrollbars style={{height: "98%"}}>*/}
             <React.StrictMode>
               <DiffEditor height={"95%"} options={{
                 readOnly: true,
@@ -99,11 +98,27 @@ const HistoryVersion = (props: any) => {
                 automaticLayout:true,
               }} language={"sql"} theme={"vs-dark"} original={originalValue} modified={currentValue}/>
             </React.StrictMode>
-          {/*</Scrollbars>*/}
         </Modal>
       </>
     )
   }
+
+
+  const onRollBackVersion = async (row: TaskHistoryTableListItem) => {
+    Modal.confirm({
+      title: l('pages.datastudio.label.version.rollback.flinksql'),
+      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm','',{versionId: row.versionId }),
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
+      onOk: async () => {
+        const TaskHistoryRollbackItem = {
+          id: current.key, versionId: row.versionId
+        }
+        await handleOption('api/task/rollbackTask', l('pages.datastudio.label.version.rollback.flinksql'), TaskHistoryRollbackItem);
+        actionRef.current?.reloadAndRest?.();
+      }
+    });
+  };
 
   const columns: ProColumns<TaskHistoryTableListItem>[] = [
     {
@@ -126,7 +141,7 @@ const HistoryVersion = (props: any) => {
       valueType: 'option',
       render: (text, record) => (
         <>
-          <Button type="link" onClick={() => onRollBackVersion(record)}>{l('pages.datastudio.label.version.rollback')}</Button>
+          <Button type="link" onClick={async () => onRollBackVersion(record)}>{l('pages.datastudio.label.version.rollback')}</Button>
           <Button type="link" title={l('pages.datastudio.label.version.diff.tip')} onClick={() => {
             setVersionDiffRow(record)
             setVersionDiffVisible(true)
@@ -138,21 +153,6 @@ const HistoryVersion = (props: any) => {
   ];
 
 
-  const onRollBackVersion = (row: TaskHistoryTableListItem) => {
-    Modal.confirm({
-      title: l('pages.datastudio.label.version.rollback.flinksql'),
-      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm','',{versionId: row.versionId }),
-      okText: l('button.confirm'),
-      cancelText: l('button.cancel'),
-      onOk: async () => {
-        const TaskHistoryRollbackItem = {
-          id: current.key, versionId: row.versionId
-        }
-        await handleOption('api/task/rollbackTask', l('pages.datastudio.label.version.rollback.flinksql'), TaskHistoryRollbackItem);
-        actionRef.current?.reloadAndRest?.();
-      }
-    });
-  };
 
   return (
     <>
