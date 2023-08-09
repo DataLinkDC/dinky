@@ -124,13 +124,11 @@ mybatis-plus:
 #################################################################################################################
 # Sa-Token basic configuration
 sa-token:
-  # token name (also cookie name)
-  token-name: satoken
   # The validity period of the token, the unit is 10 hours by default, -1 means it will never expire
   timeout: 36000
   # The temporary validity period of the token (the token will be considered as expired if there is no operation within the specified time)
-  # unit: second
-  active-timeout: -1
+  # unit: second , if you do not need to set a temporary token, you can set it to -1
+  active-timeout: 1800
   # Whether to allow the same account to log in concurrently (when true, allow login together, when false, new login squeezes out old login)
   is-concurrent: false
   # When multiple people log in to the same account, whether to share a token (if true, all logins share a token, and if false, create a new token for each login)
@@ -143,6 +141,10 @@ sa-token:
   is-print: false
   # The secret key
   jwt-secret-key: 0DA4198858E84F1AADDF846340587A85
+  # is write header
+  is-write-header: true
+  # is read header
+  is-read-header: true
 
 
 #################################################################################################################
