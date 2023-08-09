@@ -75,7 +75,7 @@ public class SchedulerController {
 
     /** 获取任务定义 */
     @GetMapping("/task")
-    @ApiOperation(value = "获取任务定义", notes = "获取任务定义")
+    @ApiOperation("Get Task Definition")
     public Result<TaskDefinition> getTaskDefinition(
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         TaskDefinition taskDefinition = null;
@@ -115,7 +115,7 @@ public class SchedulerController {
 
     /** 获取前置任务定义集合 */
     @GetMapping("/upstream/tasks")
-    @ApiOperation(value = "获取前置任务定义集合", notes = "获取前置任务定义集合")
+    @ApiOperation("Get Upstream Task Definition")
     public Result<List<TaskMainInfo>> getTaskMainInfos(
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
 
@@ -148,7 +148,7 @@ public class SchedulerController {
 
     /** 创建任务定义 */
     @PostMapping("/task")
-    @ApiOperation(value = "创建任务定义", notes = "创建任务定义")
+    @ApiOperation("Create Task Definition")
     public Result<String> createTaskDefinition(
             @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
@@ -210,7 +210,7 @@ public class SchedulerController {
 
     /** 更新任务定义 */
     @PutMapping("/task")
-    @ApiOperation(value = "更新任务定义", notes = "更新任务定义")
+    @ApiOperation("Update Task Definition")
     public Result<String> updateTaskDefinition(
             @ApiParam(value = "项目编号") @RequestParam long projectCode,
             @ApiParam(value = "工作流定义编号") @RequestParam long processCode,

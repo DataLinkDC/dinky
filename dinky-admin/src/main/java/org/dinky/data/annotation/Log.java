@@ -17,7 +17,7 @@
  *
  */
 
-package org.dinky.annotation;
+package org.dinky.data.annotation;
 
 import org.dinky.data.enums.BusinessType;
 

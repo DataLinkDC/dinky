@@ -19,5 +19,4 @@
 
 package org.dinky.service;
 
-/** @since 0.6.8 */
 public interface UDFService {}

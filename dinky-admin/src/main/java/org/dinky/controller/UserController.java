@@ -20,7 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.ModifyPasswordDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.User;
 import org.dinky.data.params.AssignRoleParams;
@@ -28,7 +30,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.UserService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -43,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -66,6 +68,8 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping
+    @ApiOperation("Insert Or Update User")
+    @Log(title = "Insert Or Update User", businessType = BusinessType.INSERT_OR_UPDATE)
     public Result<Void> saveOrUpdateUser(@RequestBody User user) {
         if (Asserts.isNull(user.getId())) {
             return userService.registerUser(user);
@@ -82,6 +86,8 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping("/enable")
+    @ApiOperation("Modify User Status")
+    @Log(title = "Modify User Status", businessType = BusinessType.UPDATE)
     public Result<Void> modifyUserStatus(@RequestParam("id") Integer id) {
         if (userService.checkSuperAdmin(id)) {
             return Result.failed(Status.USER_SUPERADMIN_CANNOT_DISABLE);
@@ -101,6 +107,7 @@ public class UserController {
      * @return {@link Result} with {@link ProTableResult}
      */
     @PostMapping
+    @ApiOperation("Get User List")
     public ProTableResult<User> listUser(@RequestBody JsonNode para) {
         return userService.selectForProTable(para, true);
     }
@@ -112,6 +119,8 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete User By Id")
+    @Log(title = "Delete User By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteUserById(@RequestParam("id") Integer id) {
         if (userService.removeUser(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -120,7 +129,6 @@ public class UserController {
         }
     }
 
-
     /**
      * modify password
      *
@@ -128,6 +136,8 @@ public class UserController {
      * @return {@link Result} with {@link Void}
      */
     @PostMapping("/modifyPassword")
+    @ApiOperation("Modify Password")
+    @Log(title = "Modify Password", businessType = BusinessType.UPDATE)
     public Result<Void> modifyPassword(@RequestBody ModifyPasswordDTO modifyPasswordDTO) {
         return userService.modifyPassword(modifyPasswordDTO);
     }
@@ -150,6 +160,7 @@ public class UserController {
      * @return {@link Result} with {@link Dict}
      */
     @GetMapping("/getUserListByTenantId")
+    @ApiOperation("Get User List By Tenant Id")
     public Result<Dict> getUserListByTenantId(@RequestParam("id") Integer id) {
         List<User> userList = userService.list();
         List<Integer> userIds = userService.getUserIdsByTenantId(id);
@@ -158,6 +169,8 @@ public class UserController {
     }
 
     @PutMapping("/updateUserToTenantAdmin")
+    @ApiOperation("Update User To Tenant Admin")
+    @Log(title = "Update User To Tenant Admin", businessType = BusinessType.UPDATE)
     public Result<Void> modifyUserToTenantAdmin(
             @RequestParam Integer userId,
             @RequestParam Integer tenantId,

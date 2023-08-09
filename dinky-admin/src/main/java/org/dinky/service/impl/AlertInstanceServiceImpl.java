@@ -41,7 +41,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -132,30 +130,6 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
         AlertMsg alertMsg = alertMsgBuilder.build();
         return alertMsg;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result<Void> deleteAlertInstance(JsonNode para) {
-        if (para.size() > 0) {
-            final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
-            final List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!this.removeById(id)) {
-                    error.add(id);
-                }
-                alertGroupInformation.remove(id);
-            }
-            writeBackGroupInformation(alertGroupInformation);
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**

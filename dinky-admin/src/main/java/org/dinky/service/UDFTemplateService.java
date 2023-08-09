@@ -22,7 +22,6 @@ package org.dinky.service;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.mybatis.service.ISuperService;
 
-/** @since 0.6.8 */
 public interface UDFTemplateService extends ISuperService<UDFTemplate> {
 
     /**

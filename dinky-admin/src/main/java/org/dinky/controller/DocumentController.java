@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
@@ -61,8 +61,8 @@ public class DocumentController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    @Log(title = "Document Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("Document Save Or Update")
+    @Log(title = "Insert Or Update Document", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Document")
     public Result<Void> saveOrUpdateDocument(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);

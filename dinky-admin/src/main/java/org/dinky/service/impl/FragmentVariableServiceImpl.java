@@ -101,7 +101,7 @@ public class FragmentVariableServiceImpl
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyFragmentStatus(Integer id) {
         FragmentVariable fragmentVariable = getById(id);
         fragmentVariable.setEnabled(!fragmentVariable.getEnabled());
         return updateById(fragmentVariable);

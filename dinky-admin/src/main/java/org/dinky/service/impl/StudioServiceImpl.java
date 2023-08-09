@@ -381,7 +381,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public List<JsonNode> listJobs(Integer clusterId) {
+    public List<JsonNode> listFlinkJobs(Integer clusterId) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         try {
@@ -393,7 +393,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean cancel(Integer clusterId, String jobId) {
+    public boolean cancelFlinkJob(Integer clusterId, String jobId) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         JobConfig jobConfig = new JobConfig();
@@ -409,7 +409,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean savepoint(
+    public boolean savepointTrigger(
             Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
 

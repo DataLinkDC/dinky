@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -71,7 +71,6 @@ public class RoleMenuController {
      * @return {@link Result} with {@link RoleMenuDto}
      */
     @GetMapping("/queryMenusByRoleId")
-    @Log(title = "Query Menus by Role ID", businessType = BusinessType.QUERY)
     @ApiOperation("Query Menus by Role ID")
     public Result<RoleMenuDto> queryMenusByRoleId(@RequestParam Integer roleId) {
         return Result.succeed(roleMenuService.queryMenusByRoleId(roleId));

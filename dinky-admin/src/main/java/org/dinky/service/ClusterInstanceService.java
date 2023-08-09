@@ -77,11 +77,10 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
     List<Cluster> listEnabledAllClusterInstance();
 
     /**
-     * list session enable cluster instances , this method is {@link @Deprecated}
+     * list session enable cluster instances
      *
      * @return {@link List<Cluster>}
      */
-    @Deprecated
     List<Cluster> listSessionEnable();
 
     /**

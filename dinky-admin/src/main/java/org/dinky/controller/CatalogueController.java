@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -108,7 +108,6 @@ public class CatalogueController {
             return Result.failed(Status.SAVE_FAILED);
         }
     }
-
 
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")

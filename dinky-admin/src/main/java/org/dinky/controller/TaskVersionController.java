@@ -51,7 +51,12 @@ public class TaskVersionController {
 
     private final TaskVersionService versionService;
 
-    /** 动态查询列表 */
+    /**
+     * query task version list
+     *
+     * @param para {@link JsonNode} params
+     * @return {@link ProTableResult}<{@link TaskVersionHistoryDTO}>
+     */
     @PostMapping
     public ProTableResult<TaskVersionHistoryDTO> listTaskVersions(@RequestBody JsonNode para) {
         ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult =

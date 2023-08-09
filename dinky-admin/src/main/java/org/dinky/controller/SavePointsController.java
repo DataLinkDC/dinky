@@ -19,19 +19,15 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.enums.Status;
 import org.dinky.data.model.Savepoints;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.SavepointsService;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -39,11 +35,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * SavepointsController
+ * SavePointsController
  *
  * @since 2021/11/21
  */
@@ -51,20 +48,30 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 @RequestMapping("/api/savepoints")
 @RequiredArgsConstructor
-public class SavepointsController {
+public class SavePointsController {
 
     private final SavepointsService savepointsService;
 
-
-    /** 动态查询列表 */
+    /**
+     * query all savepoint list
+     *
+     * @param para {@link JsonNode} params
+     * @return {@link ProTableResult}<{@link Savepoints}>
+     */
     @PostMapping
+    @ApiOperation("Query SavePoint List")
     public ProTableResult<Savepoints> listSavePoints(@RequestBody JsonNode para) {
         return savepointsService.selectForProTable(para);
     }
 
-
-    /** 获取指定作业ID的所有savepoint */
+    /**
+     * query savepoint list by task id
+     *
+     * @param taskID {@link Integer}
+     * @return {@link Result}<{@link List}<{@link Savepoints}>>
+     */
     @GetMapping("/listSavepointsByTaskId")
+    @ApiOperation("Query SavePoint List By TaskId")
     public Result<List<Savepoints>> listSavePointsByTaskId(@RequestParam Integer taskID) {
         return Result.succeed(savepointsService.listSavepointsByTaskId(taskID));
     }

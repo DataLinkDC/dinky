@@ -19,8 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -74,8 +74,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping
-    @Log(title = "Save Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("Save Or Update DataBase")
+    @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update DataBase")
     public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());

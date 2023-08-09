@@ -19,14 +19,13 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.RowPermissionsService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,6 +55,8 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @PutMapping
+    @ApiOperation("Insert Or Update RowPermissions")
+    @Log(title = "Insert Or Update RowPermissions", businessType = BusinessType.INSERT)
     public Result saveOrUpdateRowPermissions(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -63,7 +65,6 @@ public class RowPermissionsController {
         }
     }
 
-
     /**
      * delete rowPermissions by id
      *
@@ -71,6 +72,8 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete RowPermissions By Id")
+    @Log(title = "Delete RowPermissions By Id", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("id") Integer id) {
 
         if (roleSelectPermissionsService.removeById(id)) {
@@ -86,7 +89,8 @@ public class RowPermissionsController {
      * @return {@link ProTableResult} of {@link RowPermissions}
      */
     @PostMapping
-    public ProTableResult<RowPermissions> listRoles(@RequestBody JsonNode para) {
+    @ApiOperation("Query RowPermissions List")
+    public ProTableResult<RowPermissions> listRowPermissions(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);
     }
 }

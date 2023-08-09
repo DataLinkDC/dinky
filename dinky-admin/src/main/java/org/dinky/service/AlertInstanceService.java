@@ -24,10 +24,7 @@ import org.dinky.data.model.AlertInstance;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
-import java.io.Serializable;
 import java.util.List;
-
-import com.fasterxml.jackson.databind.JsonNode;
 
 /** AlertInstanceService */
 public interface AlertInstanceService extends ISuperService<AlertInstance> {
@@ -46,17 +43,6 @@ public interface AlertInstanceService extends ISuperService<AlertInstance> {
      * @return {@link AlertResult}
      */
     AlertResult testAlert(AlertInstance alertInstance);
-
-    /**
-     * batch delete alert instance , this method is{@link Deprecated} , will be removed in the
-     * future, please use {@link
-     * com.baomidou.mybatisplus.core.mapper.BaseMapper#deleteById(Serializable id)} instead
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result<Void>}
-     */
-    @Deprecated
-    Result<Void> deleteAlertInstance(JsonNode para);
 
     /**
      * delete alert instance

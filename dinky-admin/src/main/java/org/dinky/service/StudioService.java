@@ -61,11 +61,11 @@ public interface StudioService {
 
     LineageResult getLineage(StudioCADTO studioCADTO);
 
-    List<JsonNode> listJobs(Integer clusterId);
+    List<JsonNode> listFlinkJobs(Integer clusterId);
 
-    boolean cancel(Integer clusterId, String jobId);
+    boolean cancelFlinkJob(Integer clusterId, String jobId);
 
-    boolean savepoint(
+    boolean savepointTrigger(
             Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);

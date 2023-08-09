@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Cluster;
@@ -64,8 +64,8 @@ public class ClusterInstanceController {
      * @throws Exception exception
      */
     @PutMapping
-    @Log(title = "Save Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("Save Or Update Cluster Instance")
+    @Log(title = "Insert Or Update Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Cluster Instance")
     public Result<Void> saveOrUpdateClusterInstance(@RequestBody Cluster cluster) throws Exception {
         cluster.setAutoRegisters(false);
         clusterInstanceService.registersCluster(cluster);
@@ -127,7 +127,6 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link List}<{@link Cluster}>>
      */
     @GetMapping("/listEnabledAll")
-    @Log(title = "Get all enable cluster instances", businessType = BusinessType.QUERY)
     @ApiOperation("Get all enable cluster instances")
     public Result<List<Cluster>> listEnabledAllClusterInstance() {
         List<Cluster> clusters = clusterInstanceService.listEnabledAllClusterInstance();
@@ -140,7 +139,7 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link List}<{@link Cluster}>>
      */
     @GetMapping("/listSessionEnable")
-    @Deprecated
+    @ApiOperation("Get session enable cluster instances")
     public Result<List<Cluster>> listSessionEnable() {
         List<Cluster> clusters = clusterInstanceService.listSessionEnable();
         return Result.succeed(clusters);

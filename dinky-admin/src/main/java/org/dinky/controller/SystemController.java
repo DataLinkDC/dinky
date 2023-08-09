@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 /** SystemController */
@@ -47,6 +48,7 @@ public class SystemController {
      * @return {@link Result} <{@link List}<{@link TreeNodeDTO}>>
      */
     @GetMapping("/listLogDir")
+    @ApiOperation("List Log Files")
     public Result<List<TreeNodeDTO>> listLogDir() {
         return Result.succeed(systemService.listLogDir());
     }
@@ -57,6 +59,7 @@ public class SystemController {
      * @return {@link Result} <{@link String}>
      */
     @GetMapping("/getRootLog")
+    @ApiOperation("Get Root Log File Content")
     public Result<String> getRootLog() {
         return Result.data(systemService.readFile(DirConstant.ROOT_LOG_PATH));
     }
@@ -68,6 +71,7 @@ public class SystemController {
      * @return {@link Result} <{@link String}>
      */
     @GetMapping("/readFile")
+    @ApiOperation("Read File By File Path")
     public Result<String> readFile(@RequestParam String path) {
         return Result.data(systemService.readFile(path));
     }

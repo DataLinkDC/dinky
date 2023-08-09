@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.ProTableResult;
@@ -45,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,7 +60,13 @@ public class UDFController {
 
     private final UDFTemplateService udfTemplateService;
 
+    /**
+     * build udf tree
+     *
+     * @return
+     */
     @PostMapping("/tree")
+    @ApiOperation("Build UDF Tree")
     public Result<List<Object>> listUdfTemplates() {
         List<UDFTemplate> list = udfTemplateService.list();
         Map<String, Dict> one = new HashMap<>(3);
@@ -115,6 +124,7 @@ public class UDFController {
      * @return {@link ProTableResult} <{@link UDFTemplate}>
      */
     @PostMapping("/list")
+    @ApiOperation("Get UDF Template List")
     public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode params) {
         return udfTemplateService.selectForProTable(params);
     }
@@ -126,13 +136,13 @@ public class UDFController {
      * @return {@link Result} <{@link String}>
      */
     @PutMapping
+    @ApiOperation("Insert or Update UDF Template")
+    @Log(title = "Insert or Update UDF Template", businessType = BusinessType.INSERT_OR_UPDATE)
     public Result<String> saveOrUpdateUDFTemplate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
                 ? Result.succeed(Status.SAVE_SUCCESS)
                 : Result.failed(Status.SAVE_FAILED);
     }
-
-
 
     /**
      * delete udf template by id
@@ -141,6 +151,8 @@ public class UDFController {
      * @return {@link Result} <{@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "Delete UDF Template By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete UDF Template By Id")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> delete(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
@@ -151,6 +163,8 @@ public class UDFController {
     }
 
     @PutMapping("/enable")
+    @ApiOperation("Modify UDF Template Status")
+    @Log(title = "Modify UDF Template Status", businessType = BusinessType.UPDATE)
     public Result<Void> modifyUDFTemplateStatus(@RequestParam Integer id) {
         if (udfTemplateService.modifyUDFTemplateStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);

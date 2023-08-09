@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
@@ -77,9 +77,9 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/saveOrUpdate")
-    @Log(title = "GitProject Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("GitProject Save Or Update")
-    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProjectDTO gitProject) {
+    @Log(title = "Insert Or Update GitProject", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update GitProject")
+    public Result<Void> saveOrUpdateGitProject(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
         GitRepository gitRepository =
                 new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
@@ -165,10 +165,10 @@ public class GitController {
     @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
     @ApiOperation("Enable or Disable GitProject by id")
     public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
-       if ( gitProjectService.modifyGitProjectStatus(id)){
-              return Result.succeed(Status.MODIFY_SUCCESS);
-       }
-       return Result.failed(Status.MODIFY_FAILED);
+        if (gitProjectService.modifyGitProjectStatus(id)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**

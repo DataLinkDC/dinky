@@ -31,12 +31,10 @@ import org.dinky.service.TaskService;
 
 import org.apache.flink.table.catalog.FunctionLanguage;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -47,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -81,16 +80,16 @@ public class JarController {
         return jarService.selectForProTable(para);
     }
 
-
-
     /** 获取可用的jar列表 */
     @GetMapping("/listEnabledAll")
+    @ApiOperation("Query jar list enabled all")
     public Result<List<Jar>> listEnabledAll() {
         List<Jar> jars = jarService.listEnabledAll();
         return Result.succeed(jars, "获取成功");
     }
 
     @PostMapping("/udf/generateJar")
+    @ApiOperation("Generate jar")
     public Result<Map<String, List<String>>> generateJar() {
         List<Task> allUDF = taskService.getAllUDF();
         List<UDF> udfCodes =
