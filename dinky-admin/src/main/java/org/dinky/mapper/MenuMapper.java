@@ -62,7 +62,7 @@ public interface MenuMapper extends SuperMapper<Menu> {
      * @param userId 用户ID
      * @return 权限列表
      */
-    List<String> selectMenuPermsByUserId(Long userId);
+    List<String> selectMenuPermsByUserId(Integer userId);
 
     List<Menu> listMenus4SuperAdmin();
 
@@ -106,4 +106,12 @@ public interface MenuMapper extends SuperMapper<Menu> {
      * @return 结果
      */
     Menu checkMenuNameUnique(@Param("name") String name, @Param("parentId") Long parentId);
+
+    /**
+     * Query permissions based on role ID.
+     *
+     * @param roleId role ID
+     * @return permission List
+     */
+    List<String> selectMenuPermsByRoleId(Integer roleId);
 }

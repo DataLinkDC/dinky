@@ -2123,7 +2123,7 @@ create table public.dinky_sys_menu (
   component character varying(64),
   perms character varying(64),
   icon character varying(64),
-  type character(2),
+  type character(1),
   display smallint,
   order_num integer,
   create_time timestamp without time zone,

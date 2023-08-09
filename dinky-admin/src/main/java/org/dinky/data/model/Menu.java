@@ -79,7 +79,7 @@ public class Menu implements Serializable {
 
     private String icon;
 
-    private Integer type;
+    private String type;
 
     private Double orderNum;
 

@@ -77,4 +77,6 @@ public class BaseConstant {
     public static final String UNIQUE = "0";
 
     public static final String NOT_UNIQUE = "1";
+    /** admin user id */
+    public static final int ADMIN_ID = 1;
 }

@@ -1726,7 +1726,7 @@ create table `dinky_sys_menu` (
                                   `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
                                   `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
                                   `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
-                                  `type` char(2) collate utf8mb4_general_ci default null comment 'type 0:menu 1:button',
+                                  `type` char(1) collate utf8mb4_general_ci default null comment 'type(M:directory C:menu F:button)',
                                   `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
                                   `order_num` int default null comment 'sort',
                                   `create_time` datetime not null default current_timestamp comment 'create time',

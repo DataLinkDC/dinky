@@ -25,6 +25,7 @@ import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -56,4 +57,20 @@ public interface RoleService extends ISuperService<Role> {
      * @return role list
      */
     List<Role> getRoleByUserId(Integer userId);
+
+    /**
+     * Query role permissions based on user ID.
+     *
+     * @param userId user ID
+     * @return permissions
+     */
+    Set<String> selectRolePermissionByUserId(Integer userId);
+
+    /**
+     * Query user role list by user ID.
+     *
+     * @param userId user ID
+     * @return role list
+     */
+    List<Integer> selectRoleListByUserId(Integer userId);
 }
