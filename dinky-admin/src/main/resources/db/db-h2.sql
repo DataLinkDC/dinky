@@ -1487,10 +1487,10 @@ DROP TABLE IF EXISTS `dinky_user`;
 CREATE TABLE `dinky_user` (
                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                             `username` varchar(50) NOT NULL COMMENT 'username',
+                             `user_type`   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
                             `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
                             `nickname` varchar(50) NULL DEFAULT NULL COMMENT 'nickname',
                             `worknum` varchar(50) NULL DEFAULT NULL COMMENT 'worknum',
-                            `user_type`   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
                             `avatar` blob NULL COMMENT 'avatar',
                             `mobile` varchar(20) NULL DEFAULT NULL COMMENT 'mobile phone',
                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
@@ -1500,8 +1500,8 @@ CREATE TABLE `dinky_user` (
                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user`
-VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0
-       , NULL, NULL, 1,1, 0, '2022-12-13 05:27:19'
+VALUES (1, 'admin', 1,'21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001'
+       , NULL, '17777777777', 1,1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_role`;
 CREATE TABLE `dinky_user_role` (

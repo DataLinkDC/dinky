@@ -190,16 +190,15 @@ CREATE TABLE `dinky_sys_operate_log`  (
   `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
   `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
   `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
 
-
 alter table dinky_user
-    add super_admin_flag tinyint default 0 null comment 'is super admin(0:false,1true)' after enabled;
+    add super_admin_flag tinyint default 0 comment 'is super admin(0:false,1true)' after enabled;
 
-alter table dinky_user_tenant add tenant_admin_flag tinyint default 0 null comment 'tenant admin flag(0:false,1:true)' after tenant_id;
+alter table dinky_user_tenant add tenant_admin_flag tinyint default 0  comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
 
 drop table dinky_namespace;
