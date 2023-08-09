@@ -32,6 +32,7 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 
@@ -56,6 +57,8 @@ public interface StudioService {
     ObjectNode getStreamGraph(StudioExecuteDTO studioExecuteDTO);
 
     ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO);
+
+    JdbcSelectResult getCommonSqlData(Integer taskId);
 
     SelectResult getJobData(String jobId);
 

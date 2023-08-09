@@ -97,6 +97,7 @@ export type MetadataParams = {
 export type DataStudioParams = {
   taskId: number;
   taskData: Record<string, any>
+  resultData: Record<string, any>
 }
 
 export enum TabsPageType {None = "", metadata = "metadata", project = "project", flinkSql = "flinksql"}
