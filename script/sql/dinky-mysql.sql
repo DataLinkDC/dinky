@@ -882,7 +882,7 @@ CREATE TABLE `dinky_user` (
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1,1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -911,7 +911,7 @@ CREATE TABLE `dinky_user_tenant`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `user_id` int(11) NOT NULL COMMENT 'user id',
                                     `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                     `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
+                                    `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                                     `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
@@ -921,7 +921,7 @@ CREATE TABLE `dinky_user_tenant`  (
 -- ----------------------------
 -- Records of dinky_user_tenant
 -- ----------------------------
-INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1,1, current_time, current_time);
 
 -- ----------------------------
 -- Table structure for metadata_column
