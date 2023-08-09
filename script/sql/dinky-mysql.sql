@@ -843,7 +843,9 @@ CREATE TABLE `dinky_user` (
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1,1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO dinky.dinky_user
+    (id, username, user_type, password, nickname, worknum, avatar, mobile, enabled, super_admin_flag, is_delete, create_time, update_time)
+VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -1112,7 +1114,7 @@ CREATE TABLE `dinky_sys_login_log` (
   `update_time` datetime NOT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record';
 
 
 -- ----------------------------
@@ -1171,7 +1173,7 @@ CREATE TABLE `dinky_sys_role_menu` (
                                        `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
                                        PRIMARY KEY (`id`) USING BTREE,
                                        UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 
