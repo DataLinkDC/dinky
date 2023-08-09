@@ -97,7 +97,7 @@ mybatis-plus:
     ##### mybatis-plus prints complete sql (only for development environment)
     #log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     log-impl: org.apache.ibatis.logging.nologging.NoLoggingImpl
-
+  type-handlers-package: org.dinky.data.typehandler
 #################################################################################################################
 ################################################# SMS Config ####################################################
 #################################################################################################################

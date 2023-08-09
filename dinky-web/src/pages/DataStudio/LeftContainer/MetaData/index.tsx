@@ -13,11 +13,10 @@ import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
 import {BtnRoute} from "@/pages/DataStudio/route";
-import {transformTreeData} from "@/utils/function";
 
 const MetaData = (props: any) => {
 
-  const {dispatch ,toolContentHeight,leftContainer, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
+  const {dispatch ,toolContentHeight, database: { dbData , selectDatabaseId , expandKeys, selectKeys} } = props;
   const [treeData, setTreeData] = useState<[]>([]);
   const [isLoadingDatabase, setIsLoadingDatabase] = useState(false);
   const selectDb = (dbData as DataSources.DataSource[]).filter(x=> x.id === selectDatabaseId)[0]
