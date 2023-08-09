@@ -115,7 +115,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
      * @return
      */
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyDataSourceStatus(Integer id) {
         DataBase dataBase = getById(id);
         if (Asserts.isNull(dataBase)) {
             return false;

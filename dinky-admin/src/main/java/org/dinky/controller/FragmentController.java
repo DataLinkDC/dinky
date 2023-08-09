@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.FragmentVariable;
@@ -27,9 +27,6 @@ import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.FragmentVariableService;
 import org.dinky.utils.FragmentVariableUtils;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,12 +42,12 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/** FragmentVariableController */
+/** FragmentController */
 @Slf4j
 @RestController
 @RequestMapping("/api/fragment")
 @RequiredArgsConstructor
-public class FragmentVariableController {
+public class FragmentController {
 
     private final FragmentVariableService fragmentVariableService;
 
@@ -61,10 +58,9 @@ public class FragmentVariableController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping
-    @Log(title = "FragmentVariable Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("FragmentVariable Save Or Update")
-    public Result<Void> saveOrUpdate(@RequestBody FragmentVariable fragmentVariable)
-            throws Exception {
+    @Log(title = "Insert Or Update Fragment", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Fragment")
+    public Result<Void> saveOrUpdateFragment(@RequestBody FragmentVariable fragmentVariable) {
         if (fragmentVariableService.saveOrUpdate(fragmentVariable)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -121,38 +117,11 @@ public class FragmentVariableController {
     @PutMapping("/enable")
     @Log(title = "Update FragmentVariable Status", businessType = BusinessType.UPDATE)
     @ApiOperation("Update FragmentVariable Status")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (fragmentVariableService.enable(id)) {
+    public Result<Void> modifyFragmentStatus(@RequestParam Integer id) {
+        if (fragmentVariableService.modifyFragmentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
-        }
-    }
-
-    /**
-     * batch delete , this method is deprecated, please use {@link #deleteById(Integer)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} of {@link Void}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!fragmentVariableService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
         }
     }
 }

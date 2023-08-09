@@ -62,7 +62,7 @@ public interface GitProjectService extends ISuperService<GitProject> {
      *
      * @param id id
      */
-    void updateState(Integer id);
+    Boolean modifyGitProjectStatus(Integer id);
 
     /**
      * get project code tree

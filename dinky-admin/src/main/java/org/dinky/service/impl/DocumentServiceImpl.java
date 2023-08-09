@@ -47,7 +47,7 @@ public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Docume
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyDocumentStatus(Integer id) {
         Document document = baseMapper.selectById(id);
         document.setEnabled(!document.getEnabled());
         return updateById(document);

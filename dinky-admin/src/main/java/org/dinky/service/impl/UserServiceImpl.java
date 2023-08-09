@@ -348,7 +348,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyUserStatus(Integer id) {
         User user = getById(id);
         user.setEnabled(!user.getEnabled());
         return updateById(user);

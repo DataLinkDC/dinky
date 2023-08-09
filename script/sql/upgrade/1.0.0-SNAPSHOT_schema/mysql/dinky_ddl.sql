@@ -202,6 +202,9 @@ alter table dinky_user
 alter table dinky_user_tenant add tenant_admin_flag tinyint default 0 null comment 'tenant admin flag(0:false,1:true)' after tenant_id;
 
 
+drop table dinky_namespace;
+drop table dinky_role_namespace;
+
 
 
 SET FOREIGN_KEY_CHECKS = 1;

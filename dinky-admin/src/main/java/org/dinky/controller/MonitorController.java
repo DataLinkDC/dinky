@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
 import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.MetricsLayoutDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Metrics;
 import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetricsVO;
@@ -43,6 +45,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,6 +57,7 @@ public class MonitorController {
     private final MonitorService monitorService;
 
     @GetMapping("/getSysData")
+    @ApiOperation("Get System Data")
     public Result<List<MetricsVO>> getData(@RequestParam Long startTime, Long endTime) {
         return Result.succeed(
                 monitorService.getData(
@@ -64,6 +68,7 @@ public class MonitorController {
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @CrossOrigin("*")
     @PublicInterface
+    @ApiOperation("Get Last Update Data")
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
@@ -71,12 +76,15 @@ public class MonitorController {
     }
 
     @PutMapping("/saveFlinkMetrics")
+    @ApiOperation("Save Flink Metrics")
+    @Log(title = "Save Flink Metrics", businessType = BusinessType.INSERT)
     public Result<Void> saveFlinkMetricLayout(@RequestBody List<MetricsLayoutDTO> metricsList) {
         monitorService.saveFlinkMetricLayout(metricsList);
         return Result.succeed();
     }
 
     @GetMapping("/getMetricsLayout")
+    @ApiOperation("Get Metrics Layout to Display")
     public Result<Map<String, List<Metrics>>> getMetricsLayout() {
         return Result.succeed(monitorService.getMetricsLayout());
     }

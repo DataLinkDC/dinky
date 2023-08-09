@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.ResourcesDTO;
 import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
 import org.dinky.service.resource.ResourcesService;
 
@@ -35,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,6 +49,8 @@ public class ResourceController {
     private final ResourcesService resourcesService;
 
     @PostMapping("/createFolder")
+    @ApiOperation("Create Folder")
+    @Log(title = "Create Folder", businessType = BusinessType.INSERT)
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
         return Result.succeed(
                 resourcesService.createFolder(
@@ -55,6 +60,8 @@ public class ResourceController {
     }
 
     @PostMapping("/rename")
+    @ApiOperation("Rename Folder/File")
+    @Log(title = "Rename Folder/File", businessType = BusinessType.UPDATE)
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
         resourcesService.rename(
                 resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
@@ -62,16 +69,20 @@ public class ResourceController {
     }
 
     @GetMapping("/showByTree")
+    @ApiOperation("Query Folder/File Tree")
     public Result<List<TreeNodeDTO>> showByTree(Integer pid, Integer showFloorNum) {
         return Result.succeed(resourcesService.showByTree(pid, showFloorNum));
     }
 
     @GetMapping("/getContentByResourceId")
+    @ApiOperation("Query Resource Content")
     public Result<String> getContentByResourceId(@RequestParam Integer id) {
         return Result.data(resourcesService.getContentByResourceId(id));
     }
 
     @PostMapping("/uploadFile")
+    @ApiOperation("Upload File")
+    @Log(title = "Upload File To Resource", businessType = BusinessType.UPLOAD)
     public Result<Void> uploadFile(
             Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
