@@ -19,9 +19,8 @@
 
 
 import {Dispatch} from "@@/plugin-dva/types";
-import {DataSources} from "@/types/RegCenter/data";
-import {ClusterConfigurationType, ClusterType, DataStudioParams, EnvType, TabsItemType} from "@/pages/DataStudio/model";
-import {RightSide} from "@/pages/DataStudio/route";
+import {Cluster, DataSources} from "@/types/RegCenter/data";
+import {DataStudioParams, EnvType, JobRunningMsgType, TabsItemType} from "@/pages/DataStudio/model";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) => dispatch({
@@ -69,7 +68,7 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/updateBottomConsole",
     payload: data,
   }),
-  saveSession: (data: ClusterType[]) => dispatch({
+  saveSession: (data: Cluster.Instance[]) => dispatch({
     type: "Studio/saveSession",
     payload: data,
   }),
@@ -81,20 +80,25 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     type: "Studio/saveTabs",
     payload: data,
   }),
-  saveClusterConfiguration: (data: ClusterConfigurationType[]) => dispatch({
+  saveClusterConfiguration: (data: Cluster.Config[]) => dispatch({
     type: "Studio/saveClusterConfiguration",
+    payload: data,
+  }),
+  updateJobRunningMsg: (data: JobRunningMsgType) => dispatch({
+    type: "Studio/updateJobRunningMsg",
     payload: data,
   }),
 
 });
 
+export const getCurrentTab = (panes: any, activeKey: string) => {
+  return (panes as TabsItemType[]).find(item => item.key === activeKey)
+}
 
 export const getCurrentData = (panes: any, activeKey: string) => {
   return (getCurrentTab(panes,activeKey)?.params as DataStudioParams)?.taskData
 }
-export const getCurrentTab = (panes: any, activeKey: string) => {
-  return (panes as TabsItemType[]).find(item => item.key === activeKey)
-}
+
 
 
 export const getFooterValue = (panes: any, activeKey: string)=>{

@@ -1500,7 +1500,7 @@ COMMENT ON TABLE "public"."dinky_user" IS 'user';
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO "public"."dinky_user" VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO "public"."dinky_user" VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1,1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -1550,7 +1550,7 @@ COMMENT ON TABLE "public"."dinky_user_tenant" IS 'Relationship between users and
 -- ----------------------------
 -- Records of dinky_user_tenant
 -- ----------------------------
-INSERT INTO "public"."dinky_user_tenant" VALUES (1, 1, 1, '2023-05-29 21:25:42', '2023-05-29 21:25:42');
+INSERT INTO "public"."dinky_user_tenant" VALUES (1, 1, 1,1, '2023-05-29 21:25:42', '2023-05-29 21:25:42');
 
 -- ----------------------------
 -- Table structure for metadata_column
