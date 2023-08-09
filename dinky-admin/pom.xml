@@ -424,7 +424,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>../dlink-web/dist</directory>
+                                    <directory>../dinky-web/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

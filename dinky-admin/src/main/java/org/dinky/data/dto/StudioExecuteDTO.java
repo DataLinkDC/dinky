@@ -19,14 +19,11 @@
 
 package org.dinky.data.dto;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.job.JobConfig;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import lombok.Getter;
@@ -65,24 +62,10 @@ public class StudioExecuteDTO extends AbstractStatementDTO {
     private Integer parallelism;
     private Integer savePointStrategy;
     private String savePointPath;
-    private String configJson;
+    private Map<String, String> config = new HashMap<>();
     private static final ObjectMapper mapper = new ObjectMapper();
 
     public JobConfig getJobConfig() {
-        Map<String, String> config = new HashMap<>();
-        if (Asserts.isNotNullString(configJson)) {
-            try {
-                JsonNode paras = mapper.readTree(configJson);
-                paras.forEach(
-                        (JsonNode node) -> {
-                            if (!node.isNull()) {
-                                config.put(node.get("key").asText(), node.get("value").asText());
-                            }
-                        });
-            } catch (JsonProcessingException e) {
-                log.error(e.getMessage());
-            }
-        }
         return new JobConfig(
                 type,
                 useResult,

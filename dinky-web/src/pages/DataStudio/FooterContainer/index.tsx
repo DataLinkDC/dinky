@@ -6,6 +6,7 @@ import {getCurrentTab} from "@/pages/DataStudio/function";
 import {getSseData} from "@/services/api";
 import {l} from "@/utils/intl";
 import JobRunningModal from "@/pages/DataStudio/FooterContainer/JobRunningModal";
+import useThemeValue from "@/hooks/useThemeValue";
 
 export type FooterContainerProps = {
   token: GlobalToken
@@ -30,16 +31,16 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
       jobRunningMsg,
     }, token, tabs
   } = props;
+  const themeValue = useThemeValue();
 
   const [viewJobRunning, setViewJobRunning] = useState(false);
-
 
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
   useEffect(() => {
     const eventSource = getSseData("/api/sse/getJvmInfo");
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setMemDetailInfo(Number(data["heapUsed"] / 1024 / 1024).toFixed(0) + "/" + Number(data["total"] / 1024 / 1024).toFixed(0) + "M")
+      setMemDetailInfo(Number(data["heapUsed"] / 1024 / 1024).toFixed(0) + "/" + Number(data["max"] / 1024 / 1024).toFixed(0) + "M")
     }
     return () => {
       eventSource.close()
@@ -112,7 +113,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
 
   return <>
     <div style={{
-      backgroundColor: token.colorFill,
+      backgroundColor: themeValue.footerColor,
       height: VIEW.footerHeight,
       width: "100%",
       display: "flex",

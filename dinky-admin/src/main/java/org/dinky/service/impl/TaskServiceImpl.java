@@ -411,8 +411,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (task == null) {
             return null;
         }
-
-        task.parseConfig();
         if (task.getClusterId() != null) {
             Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (cluster != null) {
@@ -444,10 +442,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         if (Dialect.isUDF(task.getDialect())) {
-            if (CollUtil.isNotEmpty(task.getConfig())
+            if (CollUtil.isNotEmpty(task.getConfigJson())
                     && Asserts.isNullString(task.getStatement())
-                    && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
-                Map<String, String> config = task.getConfig().get(0);
+                    && Convert.toInt(task.getConfigJson().get(0).get("templateId"), 0) != 0) {
+                Map<String, String> config = task.getConfigJson().get(0);
                 UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
                 if (template != null) {
                     String code =

@@ -20,21 +20,22 @@
 
 CREATE OR REPLACE FUNCTION boolean_to_smallint(b boolean) RETURNS smallint AS $$
 BEGIN
-RETURN (b::boolean)::bool::int;
+    RETURN (b::boolean)::bool::int;
 END;
 $$LANGUAGE plpgsql;
 
-CREATE CAST (boolean AS smallint) WITH FUNCTION boolean_to_smallint(boolean) AS implicit;
+CREATE IF NOT EXISTS CAST (boolean AS smallint) WITH FUNCTION boolean_to_smallint(boolean) AS implicit;
+
 -- ----------------------------
 -- Sequence structure for dinky_alert_group_seq
 -- ----------------------------
 DROP SEQUENCE IF EXISTS "public"."dinky_alert_group_seq";
 CREATE SEQUENCE "public"."dinky_alert_group_seq"
     INCREMENT 1
-MINVALUE  1
-MAXVALUE 9223372036854775807
-START 1
-CACHE 1;
+    MINVALUE  1
+    MAXVALUE 9223372036854775807
+    START 1
+    CACHE 1;
 
 -- ----------------------------
 -- Table structure for dinky_alert_group
@@ -1014,12 +1015,12 @@ INSERT INTO "public"."dinky_role" VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, '
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_row_permissions";
 CREATE TABLE "public"."dinky_row_permissions" (
-                                                          "id" SERIAL NOT NULL,
-                                                          "role_id" int4 NOT NULL,
-                                                          "table_name" varchar(255) COLLATE "pg_catalog"."default",
-                                                          "expression" varchar(255) COLLATE "pg_catalog"."default",
-                                                          "create_time" timestamp(6),
-                                                          "update_time" timestamp(6)
+                                                  "id" SERIAL NOT NULL,
+                                                  "role_id" int4 NOT NULL,
+                                                  "table_name" varchar(255) COLLATE "pg_catalog"."default",
+                                                  "expression" varchar(255) COLLATE "pg_catalog"."default",
+                                                  "create_time" timestamp(6),
+                                                  "update_time" timestamp(6)
 )
 ;
 COMMENT ON COLUMN "public"."dinky_row_permissions"."id" IS 'ID';
@@ -1417,10 +1418,10 @@ DROP TABLE IF EXISTS "public"."dinky_user";
 CREATE TABLE "public"."dinky_user" (
                                        "id" SERIAL NOT NULL,
                                        "username" varchar(50) COLLATE "pg_catalog"."default" NOT NULL,
+                                        "user_type" int2 DEFAULT 1,
                                        "password" varchar(50) COLLATE "pg_catalog"."default",
                                        "nickname" varchar(50) COLLATE "pg_catalog"."default",
                                        "worknum" varchar(50) COLLATE "pg_catalog"."default",
-                                       "user_type" int2 NOT NULL,
                                        "avatar" bytea,
                                        "mobile" varchar(20) COLLATE "pg_catalog"."default",
                                        "enabled" int2 NOT NULL,
@@ -1432,11 +1433,11 @@ CREATE TABLE "public"."dinky_user" (
 ;
 COMMENT ON COLUMN "public"."dinky_user"."id" IS 'ID';
 COMMENT ON COLUMN "public"."dinky_user"."username" IS 'username';
+COMMENT ON COLUMN "public"."dinky_user"."user_type" IS 'user_type 1:LOCAL,2:LDAP';
 COMMENT ON COLUMN "public"."dinky_user"."password" IS 'password';
 COMMENT ON COLUMN "public"."dinky_user"."nickname" IS 'nickname';
 COMMENT ON COLUMN "public"."dinky_user"."worknum" IS 'worknum';
 COMMENT ON COLUMN "public"."dinky_user"."avatar" IS 'avatar';
-COMMENT ON COLUMN "public"."dinky_user"."user_type" IS 'user_type';
 COMMENT ON COLUMN "public"."dinky_user"."mobile" IS 'mobile phone';
 COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
 COMMENT ON COLUMN "public"."dinky_user"."enabled" IS 'is enable';
@@ -1448,7 +1449,7 @@ COMMENT ON TABLE "public"."dinky_user" IS 'user';
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO "public"."dinky_user" VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1,1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO "public"."dinky_user" VALUES (1, 'admin', 1 , '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001',null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -1663,8 +1664,8 @@ SELECT setval('"public"."dinky_alert_group_seq"', 1, false);
 -- Indexes structure for table dinky_alert_group
 -- ----------------------------
 CREATE UNIQUE INDEX "alert_group_un_idx1" ON "public"."dinky_alert_group" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1681,8 +1682,8 @@ ALTER TABLE "public"."dinky_alert_history" ADD CONSTRAINT "dinky_alert_history_p
 -- Indexes structure for table dinky_alert_instance
 -- ----------------------------
 CREATE UNIQUE INDEX "alert_instance_un_idx1" ON "public"."dinky_alert_instance" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                             "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1694,9 +1695,9 @@ ALTER TABLE "public"."dinky_alert_instance" ADD CONSTRAINT "dinky_alert_instance
 -- Indexes structure for table dinky_catalogue
 -- ----------------------------
 CREATE UNIQUE INDEX "catalogue_un_idx1" ON "public"."dinky_catalogue" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "parent_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                   "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                   "parent_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                   "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1708,8 +1709,8 @@ ALTER TABLE "public"."dinky_catalogue" ADD CONSTRAINT "dinky_catalogue_pkey" PRI
 -- Indexes structure for table dinky_cluster
 -- ----------------------------
 CREATE UNIQUE INDEX "cluster_un_idx1" ON "public"."dinky_cluster" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                               "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                               "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1721,8 +1722,8 @@ ALTER TABLE "public"."dinky_cluster" ADD CONSTRAINT "dinky_cluster_pkey" PRIMARY
 -- Indexes structure for table dinky_cluster_configuration
 -- ----------------------------
 CREATE UNIQUE INDEX "cluster_configuration_un_idx1" ON "public"."dinky_cluster_configuration" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                                           "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                                           "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1734,8 +1735,8 @@ ALTER TABLE "public"."dinky_cluster_configuration" ADD CONSTRAINT "dinky_cluster
 -- Indexes structure for table dinky_database
 -- ----------------------------
 CREATE UNIQUE INDEX "database_un_idx1" ON "public"."dinky_database" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1752,8 +1753,8 @@ ALTER TABLE "public"."dinky_flink_document" ADD CONSTRAINT "dinky_flink_document
 -- Indexes structure for table dinky_fragment
 -- ----------------------------
 CREATE UNIQUE INDEX "fragment_un_idx1" ON "public"."dinky_fragment" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                 "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                 "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1765,7 +1766,7 @@ ALTER TABLE "public"."dinky_fragment" ADD CONSTRAINT "dinky_fragment_pkey" PRIMA
 -- Indexes structure for table dinky_git_project
 -- ----------------------------
 CREATE INDEX "tenant_id" ON "public"."dinky_git_project" USING btree (
-    "tenant_id" "pg_catalog"."int8_ops" ASC NULLS LAST
+                                                                      "tenant_id" "pg_catalog"."int8_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1777,10 +1778,10 @@ ALTER TABLE "public"."dinky_git_project" ADD CONSTRAINT "dinky_git_project_pkey"
 -- Indexes structure for table dinky_history
 -- ----------------------------
 CREATE INDEX "cluster_index" ON "public"."dinky_history" USING btree (
-    "cluster_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                      "cluster_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 CREATE INDEX "task_index" ON "public"."dinky_history" USING btree (
-    "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                   "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1792,8 +1793,8 @@ ALTER TABLE "public"."dinky_history" ADD CONSTRAINT "dinky_history_pkey" PRIMARY
 -- Indexes structure for table dinky_jar
 -- ----------------------------
 CREATE UNIQUE INDEX "jar_un_idx1" ON "public"."dinky_jar" USING btree (
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                       "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1810,13 +1811,13 @@ ALTER TABLE "public"."dinky_job_history" ADD CONSTRAINT "dinky_job_history_pkey"
 -- Indexes structure for table dinky_job_instance
 -- ----------------------------
 CREATE INDEX "job_instance_task_id_idx1" ON "public"."dinky_job_instance" USING btree (
-    "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 CREATE UNIQUE INDEX "job_instance_un_idx1" ON "public"."dinky_job_instance" USING btree (
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "history_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                         "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                         "history_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1829,7 +1830,7 @@ ALTER TABLE "public"."dinky_job_instance" ADD CONSTRAINT "dinky_job_instance_pke
 -- Indexes structure for table dinky_role
 -- ----------------------------
 CREATE UNIQUE INDEX "role_un_idx1" ON "public"."dinky_role" USING btree (
-    "role_code" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
+                                                                         "role_code" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1838,9 +1839,9 @@ CREATE UNIQUE INDEX "role_un_idx1" ON "public"."dinky_role" USING btree (
 ALTER TABLE "public"."dinky_role" ADD CONSTRAINT "dinky_role_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
--- Primary Key structure for table dinky_role_select_permissions
+-- Primary Key structure for table dinky_row_permissions
 -- ----------------------------
-ALTER TABLE "public"."dinky_role_select_permissions" ADD CONSTRAINT "dinky_role_select_permissions_pkey" PRIMARY KEY ("id");
+ALTER TABLE "public"."dinky_row_permissions" ADD CONSTRAINT "dinky_row_permissions_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table dinky_savepoints
@@ -1851,7 +1852,7 @@ ALTER TABLE "public"."dinky_savepoints" ADD CONSTRAINT "dinky_savepoints_pkey" P
 -- Indexes structure for table dinky_schema_history
 -- ----------------------------
 CREATE INDEX "schema_history_idx" ON "public"."dinky_schema_history" USING btree (
-    "success" "pg_catalog"."int2_ops" ASC NULLS LAST
+                                                                                  "success" "pg_catalog"."int2_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1868,8 +1869,8 @@ ALTER TABLE "public"."dinky_sys_config" ADD CONSTRAINT "dinky_sys_config_pkey" P
 -- Indexes structure for table dinky_task
 -- ----------------------------
 CREATE UNIQUE INDEX "task_un_idx1" ON "public"."dinky_task" USING btree (
-    "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                         "name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1881,8 +1882,8 @@ ALTER TABLE "public"."dinky_task" ADD CONSTRAINT "dinky_task_pkey" PRIMARY KEY (
 -- Indexes structure for table dinky_task_statement
 -- ----------------------------
 CREATE UNIQUE INDEX "task_statement_un_idx1" ON "public"."dinky_task_statement" USING btree (
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                             "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                             "id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1894,9 +1895,9 @@ ALTER TABLE "public"."dinky_task_statement" ADD CONSTRAINT "dinky_task_statement
 -- Indexes structure for table dinky_task_version
 -- ----------------------------
 CREATE UNIQUE INDEX "task_version_un_idx1" ON "public"."dinky_task_version" USING btree (
-    "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "version_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                         "task_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                         "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                         "version_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1933,8 +1934,8 @@ ALTER TABLE "public"."dinky_user" ADD CONSTRAINT "dinky_user_pkey" PRIMARY KEY (
 -- Indexes structure for table dinky_user_role
 -- ----------------------------
 CREATE UNIQUE INDEX "user_role_un_idx1" ON "public"."dinky_user_role" USING btree (
-    "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "role_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+       "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+       "role_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1946,8 +1947,8 @@ ALTER TABLE "public"."dinky_user_role" ADD CONSTRAINT "dinky_user_role_pkey" PRI
 -- Indexes structure for table dinky_user_tenant
 -- ----------------------------
 CREATE UNIQUE INDEX "user_tenant_un_idx1" ON "public"."dinky_user_tenant" USING btree (
-    "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
+                                                                                       "user_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
+                                                                                       "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -1985,6 +1986,8 @@ ALTER TABLE "public"."metadata_table" ADD CONSTRAINT "metadata_table_pkey" PRIMA
 -- ----------------------------
 ALTER TABLE "public"."metadata_table_property" ADD CONSTRAINT "metadata_table_property_pkey" PRIMARY KEY ("key", "table_id");
 
+
+DROP TABLE IF EXISTS "public"."dinky_metrics";
 CREATE TABLE "public"."dinky_metrics" (
                                           "id" int4 NOT NULL,
                                           "task_id" int4,
@@ -1996,15 +1999,24 @@ CREATE TABLE "public"."dinky_metrics" (
                                           "title" varchar(255) COLLATE "pg_catalog"."default",
                                           "layout_name" varchar(255) COLLATE "pg_catalog"."default",
                                           "create_time" timestamp(6) NOT NULL,
-                                          "update_time" timestamp(6) NOT NULL
-                                          CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
+                                          "update_time" timestamp(6) NOT NULL,
+                                              CONSTRAINT "dinky_metrics_pkey" PRIMARY KEY ("id")
 )
 ;
 
-ALTER TABLE "public"."dinky_metrics"
-    OWNER TO "postgres";
 
 COMMENT ON TABLE "public"."dinky_metrics" IS 'metrics layout';
+comment on column "public"."dinky_metrics"."task_id" is 'task id';
+comment on column "public"."dinky_metrics"."vertices" is 'vertices';
+comment on column "public"."dinky_metrics"."metrics" is 'metrics';
+comment on column "public"."dinky_metrics"."position" is 'position';
+comment on column "public"."dinky_metrics"."show_type" is 'show type';
+comment on column "public"."dinky_metrics"."show_size" is 'show size';
+comment on column "public"."dinky_metrics"."title" is 'title';
+comment on column "public"."dinky_metrics"."layout_name" is 'layout name';
+comment on column "public"."dinky_metrics"."create_time" is 'create time';
+comment on column "public"."dinky_metrics"."update_time" is 'update time';
+
 
 
 
@@ -2026,6 +2038,7 @@ CREATE TABLE "public"."dinky_resources" (
                                             "update_time" timestamp(6) NOT NULL
 )
 ;
+comment on table "public"."dinky_resources" is 'resources management';
 COMMENT ON COLUMN "public"."dinky_resources"."id" IS 'key';
 COMMENT ON COLUMN "public"."dinky_resources"."file_name" IS 'file name';
 COMMENT ON COLUMN "public"."dinky_resources"."user_id" IS 'user id';
@@ -2043,8 +2056,8 @@ INSERT INTO "public"."dinky_resources" VALUES (1, 'Root', 'main folder', 1, 0, 0
 -- Indexes structure for table dinky_resources
 -- ----------------------------
 CREATE UNIQUE INDEX "dinky_resources_un" ON "public"."dinky_resources" USING btree (
-    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "type" "pg_catalog"."int2_ops" ASC NULLS LAST
+                                                                                    "full_name" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
+                                                                                    "type" "pg_catalog"."int2_ops" ASC NULLS LAST
     );
 
 -- ----------------------------
@@ -2059,19 +2072,19 @@ ALTER TABLE "public"."dinky_resources" ADD CONSTRAINT "dinky_resources_pkey" PRI
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_sys_login_log";
 CREATE TABLE "public"."dinky_sys_login_log" (
-                                            "id" int4 NOT NULL,
-                                            "user_id" int8,
-                                            "username" varchar(60) COLLATE "pg_catalog"."default",
-                                            "login_type" int2,
-                                            "ip" varchar(40) COLLATE "pg_catalog"."default",
-                                            "status" int2,
-                                            "msg" text COLLATE "pg_catalog"."default",
-                                            "create_time" timestamp(6) NOT NULL,
-                                            "access_time" timestamp(6) NOT NULL,
-                                            "update_time" timestamp(6) NOT NULL,
-                                            "is_deleted" int2
-)
-;
+                                                "id" int4 NOT NULL,
+                                                "user_id" int8,
+                                                "username" varchar(60) COLLATE "pg_catalog"."default",
+                                                "login_type" int2,
+                                                "ip" varchar(40) COLLATE "pg_catalog"."default",
+                                                "status" int2,
+                                                "msg" text COLLATE "pg_catalog"."default",
+                                                "create_time" timestamp(6) NOT NULL,
+                                                "access_time" timestamp(6) NOT NULL,
+                                                "update_time" timestamp(6) NOT NULL,
+                                                "is_deleted" int2
+);
+COMMENT on table "public"."dinky_sys_login_log" is 'login log';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."id" IS 'id';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."user_id" IS 'user id';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."username" IS 'user name';
@@ -2085,34 +2098,81 @@ COMMENT ON COLUMN "public"."dinky_sys_login_log"."update_time" IS 'update time';
 COMMENT ON COLUMN "public"."dinky_sys_login_log"."is_deleted" IS 'is deleted';
 
 
+
+-- ----------------------------
+-- Primary Key structure for table dinky_sys_login_log
+-- ----------------------------
+ALTER TABLE "public"."dinky_sys_login_log" ADD CONSTRAINT "dinky_sys_login_log_pkey" PRIMARY KEY ("id");
+
+
+
 DROP TABLE IF EXISTS "public"."dinky_sys_operate_log";
 create table  "public"."dinky_sys_operate_log" (
-  id int4,
-  module_name character varying(50),
-  business_type int4,
-  method character varying(100),
-  request_method character varying(10),
-  operate_name character varying(50),
-  operate_user_id int4,
-  operate_url character varying(255),
-  operate_ip character varying(50),
-  operate_location character varying(255),
-  operate_param text,
-  json_result text,
-  status int4,
-  error_msg text,
-  operate_time timestamp without time zone
+                                                   id int4,
+                                                   module_name character varying(50),
+                                                   business_type int4,
+                                                   method character varying(100),
+                                                   request_method character varying(10),
+                                                   operate_name character varying(50),
+                                                   operate_user_id int4,
+                                                   operate_url character varying(255),
+                                                   operate_ip character varying(50),
+                                                   operate_location character varying(255),
+                                                   operate_param text,
+                                                   json_result text,
+                                                   status int4,
+                                                   error_msg text,
+                                                   operate_time timestamp without time zone
 );
 comment on table public.dinky_sys_operate_log is 'dinky_sys_operate_log';
+comment on column public.dinky_sys_operate_log.id is 'id';
+comment on column public.dinky_sys_operate_log.module_name is 'module name';
+comment on column public.dinky_sys_operate_log.business_type is 'business type';
+comment on column public.dinky_sys_operate_log.method is 'method';
+comment on column public.dinky_sys_operate_log.request_method is 'request method';
+comment on column public.dinky_sys_operate_log.operate_name is 'operate name';
+comment on column public.dinky_sys_operate_log.operate_user_id is 'operate user id';
+comment on column public.dinky_sys_operate_log.operate_url is 'operate url';
+comment on column public.dinky_sys_operate_log.operate_ip is 'operate ip';
+comment on column public.dinky_sys_operate_log.operate_location is 'operate location';
+comment on column public.dinky_sys_operate_log.operate_param is 'operate param';
+comment on column public.dinky_sys_operate_log.json_result is 'json result';
+comment on column public.dinky_sys_operate_log.status is 'status';
+comment on column public.dinky_sys_operate_log.error_msg is 'error msg';
+comment on column public.dinky_sys_operate_log.operate_time is 'operate time';
+
+
+-- ----------------------------
+-- Primary Key structure for table dinky_sys_operate_log
+-- ----------------------------
+ALTER TABLE "public"."dinky_sys_operate_log" ADD CONSTRAINT "dinky_sys_operate_log_pkey" PRIMARY KEY ("id");
+
+
+
+
 
 DROP TABLE IF EXISTS "public"."dinky_sys_role_menu";
 create table public.dinky_sys_role_menu (
-  id bigint,
-  role_id bigint,
-  menu_id bigint,
-  create_time timestamp without time zone,
-  update_time timestamp without time zone
+                                            id bigint,
+                                            role_id bigint,
+                                            menu_id bigint,
+                                            create_time timestamp without time zone,
+                                            update_time timestamp without time zone
 );
+COMMENT on table public.dinky_sys_role_menu is 'dinky_sys_role_menu';
+COMMENT on column public.dinky_sys_role_menu.id is 'id';
+COMMENT on column public.dinky_sys_role_menu.role_id is 'role id';
+COMMENT on column public.dinky_sys_role_menu.menu_id is 'menu id';
+COMMENT on column public.dinky_sys_role_menu.create_time is 'create time';
+COMMENT on column public.dinky_sys_role_menu.update_time is 'update time';
+
+-- ----------------------------
+-- Primary Key structure for table dinky_sys_role_menu
+-- ----------------------------
+ALTER TABLE "public"."dinky_sys_role_menu" ADD CONSTRAINT "dinky_sys_role_menu_pkey" PRIMARY KEY ("id");
+
+
+
 
 DROP TABLE IF EXISTS "public"."dinky_sys_menu";
 create table public.dinky_sys_menu (
@@ -2129,4 +2189,22 @@ create table public.dinky_sys_menu (
   create_time timestamp without time zone,
   update_time timestamp without time zone
 );
+COMMENT on table public.dinky_sys_menu is 'dinky_sys_menu';
+COMMENT on column public.dinky_sys_menu.id is 'id';
+COMMENT on column public.dinky_sys_menu.parent_id is 'parent id';
+COMMENT on column public.dinky_sys_menu.name is 'name';
+COMMENT on column public.dinky_sys_menu.path is 'path';
+COMMENT on column public.dinky_sys_menu.component is 'component';
+COMMENT on column public.dinky_sys_menu.perms is 'perms';
+COMMENT on column public.dinky_sys_menu.icon is 'icon';
+COMMENT on column public.dinky_sys_menu.type is 'type';
+COMMENT on column public.dinky_sys_menu.display is 'display';
+COMMENT on column public.dinky_sys_menu.order_num is 'order num';
+COMMENT on column public.dinky_sys_menu.create_time is 'create time';
+COMMENT on column public.dinky_sys_menu.update_time is 'update time';
 
+
+-- ----------------------------
+-- Primary Key structure for table dinky_sys_menu
+-- ----------------------------
+ALTER TABLE "public"."dinky_sys_menu" ADD CONSTRAINT "dinky_sys_menu_pkey" PRIMARY KEY ("id");
