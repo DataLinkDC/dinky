@@ -97,7 +97,6 @@ const HeaderContainer = (props: any) => {
             ...current,
             jobName: current.name,
             taskId: current.id,
-            configJson: JSON.stringify(current.config),
         };
         const key = current.key;
         const taskKey = (Math.random() * 1000) + '';
@@ -148,7 +147,6 @@ const HeaderContainer = (props: any) => {
       title: l('button.save'),
       click: () => {
         const current = getCurrentData(panes, activeKey);
-        current.configJson = JSON.stringify(current.config)
         handlePutDataJson("/api/task", current).then(()=>saveTabs({...props.tabs}))
       },
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
@@ -176,11 +174,7 @@ const HeaderContainer = (props: any) => {
       title: l('button.graph'),
       click: () => {
         const currentData = getCurrentData(panes, activeKey);
-        const param = {
-          ...currentData,
-          configJson: JSON.stringify(currentData.config),
-        };
-        const res = getJobPlan(l("pages.datastudio.editor.explan.tip"), param);
+        const res = getJobPlan(l("pages.datastudio.editor.explan.tip"), currentData);
         res.then((result) => {
           if (result) {
             modal.confirm({

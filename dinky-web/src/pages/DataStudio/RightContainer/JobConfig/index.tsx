@@ -226,7 +226,7 @@ const JobConfig = (props: any) => {
             <ProFormList
                 label={l('pages.datastudio.label.jobConfig.other')}
                 tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
-                name={'config'}
+                name={'configJson'}
                 copyIconProps={false}
                 creatorButtonProps={{
                     style: {width: '100%'},
