@@ -24,7 +24,8 @@ BEGIN
 END;
 $$LANGUAGE plpgsql;
 
--- CREATE IF NOT EXISTS CAST (boolean AS smallint) WITH FUNCTION boolean_to_smallint(boolean) AS implicit;
+CREATE IF NOT EXISTS CAST (boolean AS smallint) WITH FUNCTION boolean_to_smallint(boolean) AS implicit;
+
 -- ----------------------------
 -- Sequence structure for dinky_alert_group_seq
 -- ----------------------------

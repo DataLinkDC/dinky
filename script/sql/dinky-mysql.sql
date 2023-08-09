@@ -843,7 +843,7 @@ CREATE TABLE `dinky_user` (
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO dinky.dinky_user
+INSERT INTO dinky_user
     (id, username, user_type, password, nickname, worknum, avatar, mobile, enabled, super_admin_flag, is_delete, create_time, update_time)
 VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
