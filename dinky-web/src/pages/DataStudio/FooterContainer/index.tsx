@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {StateType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
 import {Button, GlobalToken, Space} from "antd";
+import {connect} from "@@/exports";
 import {getCurrentTab} from "@/pages/DataStudio/function";
 import {getSseData} from "@/services/api";
 import {l} from "@/utils/intl";
 import JobRunningModal from "@/pages/DataStudio/FooterContainer/JobRunningModal";
-import {connect} from "umi";
 
 export type FooterContainerProps = {
   token: GlobalToken
@@ -34,9 +34,9 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const [viewJobRunning, setViewJobRunning] = useState(false);
 
 
+  const eventSource = getSseData("/api/sse/getJvmInfo");
   const [memDetailInfo, setMemDetailInfo] = useState(memDetails);
   useEffect(() => {
-    const eventSource = getSseData("/api/sse/getJvmInfo");
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setMemDetailInfo(Number(data["heapUsed"] / 1024 / 1024).toFixed(0) + "/" + Number(data["total"] / 1024 / 1024).toFixed(0) + "M")
@@ -52,9 +52,9 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     {
       text: <span
         style={{backgroundColor: token.colorBgContainer}}><div style={{
-        width: (1 - (parseInt(memDetailInfo.split("/")[0]) / parseInt(memDetailInfo.split("/")[1]))) * 100 + "%",
+        width: (1 - (parseInt(memDetails.split("/")[0]) / parseInt(memDetails.split("/")[1]))) * 100 + "%",
         backgroundColor: token.colorFill
-      }}>{memDetailInfo}</div></span>,
+      }}>{memDetails}</div></span>,
       title: l("pages.datastudio.footer.memDetails", "", {
         max: memDetailInfo.split("/")[1],
         used: memDetailInfo.split("/")[0]

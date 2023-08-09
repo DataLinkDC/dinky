@@ -13,6 +13,7 @@ import {TagAlignLeft} from "@/components/StyledComponents";
 import SchemaTree from "@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree";
 import {DataSources} from "@/types/RegCenter/data";
 import {BtnRoute} from "@/pages/DataStudio/route";
+import {transformTreeData} from "@/utils/function";
 
 const MetaData = (props: any) => {
 

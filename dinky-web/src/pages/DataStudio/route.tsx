@@ -50,6 +50,7 @@ import {l} from "@/utils/intl";
 import {TabsPageType} from "@/pages/DataStudio/model";
 import {CircleButtonProps} from "@/components/CallBackButton/CircleBtn";
 import {DiffEditor} from "@monaco-editor/react";
+import Result from "@/pages/DataStudio/BottomContainer/Result";
 
 export const LeftSide = [
   {
@@ -120,6 +121,7 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.result',
     icon: <MonitorOutlined />,
     label: l('menu.datastudio.result'),
+    children: <Result/>
   },
   {
     key: 'menu.datastudio.bi',

@@ -36,6 +36,7 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
+import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.StudioService;
 
 import java.util.List;
@@ -126,6 +127,11 @@ public class StudioController {
     @ApiOperation("Get Job Plan")
     public Result<SelectResult> getJobData(@RequestParam String jobId) {
         return Result.succeed(studioService.getJobData(jobId));
+    }
+    /** 根据jobId获取数据 */
+    @GetMapping("/getCommonSqlData")
+    public Result<JdbcSelectResult> getJobData(@RequestParam Integer taskId) {
+        return Result.succeed(studioService.getCommonSqlData(taskId));
     }
 
     /** 获取单任务实例的血缘分析 */

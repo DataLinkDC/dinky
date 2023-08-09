@@ -1021,6 +1021,9 @@ export default {
   'pages.datastudio.footer.codeEncoding': "文件编码：",
   'pages.datastudio.footer.codePosition': "行{Ln}:列{Col} ",
 
+  'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+
+
   'datastudio.middle.qg': '快捷引导',
   'datastudio.middle.qg.clusterInstance': '注册 Session 集群',
   'datastudio.middle.qg.clusterConfiguration': '注册集群配置',
