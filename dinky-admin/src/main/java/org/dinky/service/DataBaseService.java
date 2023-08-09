@@ -66,7 +66,7 @@ public interface DataBaseService extends ISuperService<DataBase> {
      * @param id {@link Integer}
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyDataSourceStatus(Integer id);
 
     /**
      * list all enable database

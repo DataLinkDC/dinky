@@ -21,6 +21,7 @@ import {l} from '@/utils/intl';
 import {CheckSquareOutlined, KeyOutlined} from '@ant-design/icons';
 import {ProTable} from '@ant-design/pro-components';
 import {ProColumns} from '@ant-design/pro-table/es/typing';
+import {transformTreeData} from "@/utils/function";
 
 type ColumnInfoProps = {
   columnInfo: Partial<DataSources.Column[]>;
@@ -122,7 +123,7 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       size={'small'}
       bordered
       columns={columns}
-      dataSource={columnInfo as DataSources.Column[]}
+      dataSource={transformTreeData(columnInfo) as DataSources.Column[]}
     />
   </>;
 };

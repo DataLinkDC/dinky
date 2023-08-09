@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -33,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -54,6 +57,7 @@ public class ProcessController {
      * @return {@link ProTableResult}<{@link ProcessEntity}>
      */
     @GetMapping("/listAllProcess")
+    @ApiOperation("List all process")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {
         List<ProcessEntity> processEntities = processService.listAllProcess(active);
         return ProTableResult.<ProcessEntity>builder().success(true).data(processEntities).build();
@@ -65,6 +69,7 @@ public class ProcessController {
      * @return {@link ProTableResult} <{@link String} >
      */
     @GetMapping("/getConsoleByUserId")
+    @ApiOperation("Get Log from Process by user id")
     public Result<String> getConsoleByUserId() {
         return Result.data(processService.getConsoleByUserId(StpUtil.getLoginIdAsInt()));
     }
@@ -75,6 +80,8 @@ public class ProcessController {
      * @return {@link Result} <{@link String}>
      */
     @GetMapping("/clearConsole")
+    @ApiOperation("Clear console by user id")
+    @Log(title = "Clear console by user id", businessType = BusinessType.DELETE)
     public Result<String> clearConsole() {
         processService.clearConsoleByUserId(StpUtil.getLoginIdAsInt());
         return Result.succeed(Status.CLEAR_SUCCESS);

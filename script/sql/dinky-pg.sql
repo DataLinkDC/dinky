@@ -980,34 +980,6 @@ COMMENT ON TABLE "public"."dinky_job_instance" IS 'job instance';
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for dinky_namespace
--- ----------------------------
-DROP TABLE IF EXISTS "public"."dinky_namespace";
-CREATE TABLE "public"."dinky_namespace" (
-                                            "id" SERIAL NOT NULL,
-                                            "tenant_id" int4 NOT NULL,
-                                            "namespace_code" varchar(64) COLLATE "pg_catalog"."default" NOT NULL,
-                                            "enabled" int2 NOT NULL,
-                                            "note" varchar(255) COLLATE "pg_catalog"."default",
-                                            "create_time" timestamp(6),
-                                            "update_time" timestamp(6)
-)
-;
-COMMENT ON COLUMN "public"."dinky_namespace"."id" IS 'ID';
-COMMENT ON COLUMN "public"."dinky_namespace"."tenant_id" IS 'tenant id';
-COMMENT ON COLUMN "public"."dinky_namespace"."namespace_code" IS 'namespace code';
-COMMENT ON COLUMN "public"."dinky_namespace"."enabled" IS 'is enable';
-COMMENT ON COLUMN "public"."dinky_namespace"."note" IS 'note';
-COMMENT ON COLUMN "public"."dinky_namespace"."create_time" IS 'create time';
-COMMENT ON COLUMN "public"."dinky_namespace"."update_time" IS 'update time';
-COMMENT ON TABLE "public"."dinky_namespace" IS 'namespace';
-
--- ----------------------------
--- Records of dinky_namespace
--- ----------------------------
-INSERT INTO "public"."dinky_namespace" VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-
--- ----------------------------
 -- Table structure for dinky_role
 -- ----------------------------
 DROP TABLE IF EXISTS "public"."dinky_role";
@@ -1036,30 +1008,6 @@ COMMENT ON TABLE "public"."dinky_role" IS 'role';
 -- Records of dinky_role
 -- ----------------------------
 INSERT INTO "public"."dinky_role" VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, 'SuperAdmin of Role', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-
--- ----------------------------
--- Table structure for dinky_role_namespace
--- ----------------------------
-DROP TABLE IF EXISTS "public"."dinky_role_namespace";
-CREATE TABLE "public"."dinky_role_namespace" (
-                                                 "id" SERIAL NOT NULL,
-                                                 "role_id" int4 NOT NULL,
-                                                 "namespace_id" int4 NOT NULL,
-                                                 "create_time" timestamp(6),
-                                                 "update_time" timestamp(6)
-)
-;
-COMMENT ON COLUMN "public"."dinky_role_namespace"."id" IS 'ID';
-COMMENT ON COLUMN "public"."dinky_role_namespace"."role_id" IS 'user id';
-COMMENT ON COLUMN "public"."dinky_role_namespace"."namespace_id" IS 'namespace id';
-COMMENT ON COLUMN "public"."dinky_role_namespace"."create_time" IS 'create time';
-COMMENT ON COLUMN "public"."dinky_role_namespace"."update_time" IS 'update time';
-COMMENT ON TABLE "public"."dinky_role_namespace" IS 'Role and namespace relationship';
-
--- ----------------------------
--- Records of dinky_role_namespace
--- ----------------------------
-INSERT INTO "public"."dinky_role_namespace" VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_row_permissions
@@ -1876,18 +1824,6 @@ CREATE UNIQUE INDEX "job_instance_un_idx1" ON "public"."dinky_job_instance" USIN
 -- ----------------------------
 ALTER TABLE "public"."dinky_job_instance" ADD CONSTRAINT "dinky_job_instance_pkey" PRIMARY KEY ("id");
 
--- ----------------------------
--- Indexes structure for table dinky_namespace
--- ----------------------------
-CREATE UNIQUE INDEX "namespace_un_idx1" ON "public"."dinky_namespace" USING btree (
-    "namespace_code" COLLATE "pg_catalog"."default" "pg_catalog"."text_ops" ASC NULLS LAST,
-    "tenant_id" "pg_catalog"."int4_ops" ASC NULLS LAST
-    );
-
--- ----------------------------
--- Primary Key structure for table dinky_namespace
--- ----------------------------
-ALTER TABLE "public"."dinky_namespace" ADD CONSTRAINT "dinky_namespace_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Indexes structure for table dinky_role
@@ -1900,19 +1836,6 @@ CREATE UNIQUE INDEX "role_un_idx1" ON "public"."dinky_role" USING btree (
 -- Primary Key structure for table dinky_role
 -- ----------------------------
 ALTER TABLE "public"."dinky_role" ADD CONSTRAINT "dinky_role_pkey" PRIMARY KEY ("id");
-
--- ----------------------------
--- Indexes structure for table dinky_role_namespace
--- ----------------------------
-CREATE UNIQUE INDEX "role_namespace_un_idx1" ON "public"."dinky_role_namespace" USING btree (
-    "role_id" "pg_catalog"."int4_ops" ASC NULLS LAST,
-    "namespace_id" "pg_catalog"."int4_ops" ASC NULLS LAST
-    );
-
--- ----------------------------
--- Primary Key structure for table dinky_role_namespace
--- ----------------------------
-ALTER TABLE "public"."dinky_role_namespace" ADD CONSTRAINT "dinky_role_namespace_pkey" PRIMARY KEY ("id");
 
 -- ----------------------------
 -- Primary Key structure for table dinky_role_select_permissions

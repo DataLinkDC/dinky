@@ -35,11 +35,11 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     ClusterConfiguration getClusterConfigById(Integer id);
 
-    List<ClusterConfiguration> listEnabledAll();
+    List<ClusterConfiguration> listEnabledAllClusterConfig();
 
     FlinkClusterConfig getFlinkClusterCfg(Integer id);
 
     TestResult testGateway(ClusterConfiguration clusterConfiguration);
 
-    Boolean enable(Integer id);
+    Boolean modifyClusterConfigStatus(Integer id);
 }

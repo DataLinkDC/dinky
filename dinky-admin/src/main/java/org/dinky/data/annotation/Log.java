@@ -17,26 +17,27 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.annotation;
 
-import org.dinky.data.model.Namespace;
-import org.dinky.data.result.ProTableResult;
-import org.dinky.data.result.Result;
-import org.dinky.mybatis.service.ISuperService;
+import org.dinky.data.enums.BusinessType;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-@Deprecated
-public interface NamespaceService extends ISuperService<Namespace> {
+/** 自定义操作日志记录注解 */
+@Target({ElementType.PARAMETER, ElementType.METHOD})
+@Retention(RetentionPolicy.RUNTIME)
+@Documented
+public @interface Log {
+    /** 模块 */
+    public String title() default "";
 
-    /**
-     * delete namespace by id
-     *
-     * @param para namespace id
-     * @return delete result code
-     */
-    Result<Void> deleteNamespaceById(JsonNode para);
+    /** 功能 */
+    public BusinessType businessType() default BusinessType.OTHER;
 
-    @Override
-    ProTableResult<Namespace> selectForProTable(JsonNode para);
+    /** 是否保存请求的参数 */
+    public boolean isSaveRequestData() default true;
 }

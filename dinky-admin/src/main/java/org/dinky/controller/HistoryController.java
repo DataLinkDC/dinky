@@ -21,13 +21,8 @@ package org.dinky.controller;
 
 import org.dinky.data.model.History;
 import org.dinky.data.result.ProTableResult;
-import org.dinky.data.result.Result;
 import org.dinky.service.HistoryService;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,39 +47,15 @@ public class HistoryController {
 
     private final HistoryService historyService;
 
-    /** 动态查询列表 */
+    /**
+     * query list history
+     *
+     * @param para
+     * @return
+     */
     @PostMapping
+    @ApiOperation("Query History List")
     public ProTableResult<History> listHistory(@RequestBody JsonNode para) {
         return historyService.selectForProTable(para);
-    }
-
-    /** 批量删除 */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!historyService.removeHistoryById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<History> getOneById(@RequestBody History history) throws Exception {
-        history = historyService.getById(history.getId());
-        return Result.succeed(history);
     }
 }

@@ -56,7 +56,7 @@ public class ClusterConfigurationServiceImpl
     }
 
     @Override
-    public List<ClusterConfiguration> listEnabledAll() {
+    public List<ClusterConfiguration> listEnabledAllClusterConfig() {
         return this.list(new QueryWrapper<ClusterConfiguration>().eq("enabled", 1));
     }
 
@@ -79,7 +79,7 @@ public class ClusterConfigurationServiceImpl
      * @return
      */
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyClusterConfigStatus(Integer id) {
         ClusterConfiguration clusterConfiguration = this.getById(id);
         if (clusterConfiguration != null) {
             clusterConfiguration.setEnabled(!clusterConfiguration.getEnabled());

@@ -19,8 +19,10 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.LoginDTO;
 import org.dinky.data.dto.UserDTO;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.AuthException;
 import org.dinky.data.model.SystemConfiguration;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,12 +59,14 @@ public class LdapController {
 
     @GetMapping("/ldapEnableStatus")
     @SaIgnore
+    @ApiOperation("Get LDAP enable status")
     public Result<Boolean> ldapStatus() {
-        return Result.succeed(
-                SystemConfiguration.getInstances().getLdapEnable().getValue(), "获取成功");
+        return Result.succeed(SystemConfiguration.getInstances().getLdapEnable().getValue());
     }
 
     @GetMapping("/testConnection")
+    @ApiOperation("Test connection to LDAP server")
+    @Log(title = "Test connection to LDAP server", businessType = BusinessType.TEST)
     public Result<Integer> testConnection() {
         List<User> users = ldapService.listUsers();
         if (users.size() > 0) {
@@ -72,6 +77,7 @@ public class LdapController {
     }
 
     @GetMapping("/listUser")
+    @ApiOperation("List user from LDAP server")
     public Result<List<User>> listUser() {
         List<User> users = ldapService.listUsers();
         List<User> localUsers = userService.list();
@@ -90,6 +96,8 @@ public class LdapController {
     }
 
     @PostMapping("/importUsers")
+    @ApiOperation("Import users from LDAP server")
+    @Log(title = "Import users from LDAP server", businessType = BusinessType.IMPORT)
     public Result<Void> importUsers(@RequestBody List<User> users) {
         boolean b = userService.saveBatch(users);
         if (b) {
@@ -105,6 +113,8 @@ public class LdapController {
      * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
      */
     @PostMapping("/testLogin")
+    @ApiOperation("Test login to LDAP server")
+    @Log(title = "Test login to LDAP server", businessType = BusinessType.TEST)
     public Result<User> login(@RequestBody LoginDTO loginDTO) {
         try {
             return Result.succeed(ldapService.authenticate(loginDTO));

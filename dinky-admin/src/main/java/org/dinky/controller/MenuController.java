@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.RoleMenuDto;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
@@ -60,8 +60,8 @@ public class MenuController {
      * @return {@link Result} with {@link Void}
      */
     @PutMapping("addOrUpdate")
-    @Log(title = "Insert OR Update Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("INSERT OR UPDATE Menu")
+    @Log(title = "Insert Or Update Menu ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Menu")
     public Result<Void> saveOrUpdateMenu(@RequestBody Menu menu) {
         if (menuService.saveOrUpdate(menu)) {
             return Result.succeed(Status.SAVE_SUCCESS);

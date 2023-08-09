@@ -71,6 +71,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,6 +83,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.cache.Cache;
+import cn.hutool.cache.impl.TimedCache;
 import lombok.RequiredArgsConstructor;
 
 /** StudioServiceImpl */
@@ -90,6 +93,9 @@ import lombok.RequiredArgsConstructor;
 public class StudioServiceImpl implements StudioService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudioServiceImpl.class);
+    /** Common sql query result cache */
+    private static final Cache<Integer, JdbcSelectResult> COMMON_SQL_SEARCH_CACHE =
+            new TimedCache<>(TimeUnit.MINUTES.toMillis(10));
 
     private final ClusterInstanceService clusterInstanceService;
     private final ClusterConfigurationService clusterConfigurationService;
@@ -165,11 +171,15 @@ public class StudioServiceImpl implements StudioService {
     @Override
     public JobResult executeSql(StudioExecuteDTO studioExecuteDTO) {
         if (Dialect.notFlinkSql(studioExecuteDTO.getDialect())) {
-            return executeCommonSql(
-                    SqlDTO.build(
-                            studioExecuteDTO.getStatement(),
-                            studioExecuteDTO.getDatabaseId(),
-                            studioExecuteDTO.getMaxRowNum()));
+            JobResult jobResult =
+                    executeCommonSql(
+                            SqlDTO.build(
+                                    studioExecuteDTO.getStatement(),
+                                    studioExecuteDTO.getDatabaseId(),
+                                    studioExecuteDTO.getMaxRowNum()));
+            COMMON_SQL_SEARCH_CACHE.put(
+                    studioExecuteDTO.getTaskId(), (JdbcSelectResult) jobResult.getResult());
+            return jobResult;
         } else {
             return executeFlinkSql(studioExecuteDTO);
         }
@@ -345,6 +355,11 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
+    public JdbcSelectResult getCommonSqlData(Integer taskId) {
+        return COMMON_SQL_SEARCH_CACHE.get(taskId);
+    }
+
+    @Override
     public SelectResult getJobData(String jobId) {
         return JobManager.getJobData(jobId);
     }
@@ -381,7 +396,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public List<JsonNode> listJobs(Integer clusterId) {
+    public List<JsonNode> listFlinkJobs(Integer clusterId) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         try {
@@ -393,7 +408,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean cancel(Integer clusterId, String jobId) {
+    public boolean cancelFlinkJob(Integer clusterId, String jobId) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
         Asserts.checkNotNull(cluster, "该集群不存在");
         JobConfig jobConfig = new JobConfig();
@@ -409,7 +424,7 @@ public class StudioServiceImpl implements StudioService {
     }
 
     @Override
-    public boolean savepoint(
+    public boolean savepointTrigger(
             Integer taskId, Integer clusterId, String jobId, String savePointType, String name) {
         Cluster cluster = clusterInstanceService.getById(clusterId);
 

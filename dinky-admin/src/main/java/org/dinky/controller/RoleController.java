@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.UserRole;
 import org.dinky.data.result.ProTableResult;
@@ -41,6 +43,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -54,38 +57,16 @@ public class RoleController {
     private final UserRoleService userRoleService;
 
     /**
-     * create or update role , this method will be {@link Deprecated} in the future, please use
-     * {@link #addedOrUpdateRole(Role)}
-     *
-     * @return delete result code
-     */
-    @PutMapping
-    @Deprecated
-    public Result<Void> saveOrUpdateRole(@RequestBody Role role) {
-        return roleService.saveOrUpdateRole(role);
-    }
-
-    /**
      * create or update role
      *
      * @param role {@link Role}
      * @return {@link Role} of {@link Void}
      */
     @PutMapping("/addedOrUpdateRole")
+    @ApiOperation("Insert Or Update Role")
+    @Log(title = "Insert Or Update Role", businessType = BusinessType.INSERT_OR_UPDATE)
     public Result<Void> addedOrUpdateRole(@RequestBody Role role) {
         return roleService.addedOrUpdateRole(role);
-    }
-
-    /**
-     * delete role by ids , this method will be {@link Deprecated} in the future, please use {@link
-     * #deleteRoleById(Integer)}
-     *
-     * @return delete result code
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        return roleService.deleteRoles(para);
     }
 
     /**
@@ -94,18 +75,32 @@ public class RoleController {
      * @return delete result code
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete Role By Id")
+    @Log(title = "Delete Role By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteRoleById(@RequestParam Integer id) {
         return roleService.deleteRoleById(id);
     }
 
-    /** query role list */
+    /**
+     * query role list
+     *
+     * @param para {@link JsonNode}
+     * @return {@link ProTableResult}<{@link Role}>
+     */
     @PostMapping
+    @ApiOperation("Query Role List")
     public ProTableResult<Role> listRoles(@RequestBody JsonNode para) {
         return roleService.selectForProTable(para, true);
     }
 
-    /** 获取所有的角色列表以及当前用户的角色 ids */
+    /**
+     * query all role list by user id
+     *
+     * @param id {@link Integer} user id
+     * @return {@link Result}<{@link Dict}>
+     */
     @GetMapping(value = "/getRolesAndIdsByUserId")
+    @ApiOperation("Query Role List By UserId")
     public Result<Dict> getRolesAndIdsByUserId(@RequestParam Integer id) {
         List<Role> roleList = roleService.list();
 

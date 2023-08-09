@@ -51,7 +51,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     @Lazy @Resource private AlertHistoryService alertHistoryService;
 
     @Override
-    public List<AlertGroup> listEnabledAll() {
+    public List<AlertGroup> listEnabledAllAlertGroups() {
         return list(new LambdaQueryWrapper<AlertGroup>().eq(AlertGroup::getEnabled, 1));
     }
 
@@ -74,7 +74,7 @@ public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, Al
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyAlertGroupStatus(Integer id) {
         AlertGroup alertGroup = getById(id);
         alertGroup.setEnabled(!alertGroup.getEnabled());
         return updateById(alertGroup);

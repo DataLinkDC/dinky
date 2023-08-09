@@ -19,14 +19,13 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.RowPermissionsService;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -55,40 +55,13 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @PutMapping
-    public Result saveOrUpdateRole(@RequestBody RowPermissions roleSelectPermissions) {
+    @ApiOperation("Insert Or Update RowPermissions")
+    @Log(title = "Insert Or Update RowPermissions", businessType = BusinessType.INSERT)
+    public Result saveOrUpdateRowPermissions(@RequestBody RowPermissions roleSelectPermissions) {
         if (roleSelectPermissionsService.saveOrUpdate(roleSelectPermissions)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
-        }
-    }
-
-    /**
-     * delete roleSelectPermissions , this method is {@link Deprecated} in the future , please use
-     * {@link #delete(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result}
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!roleSelectPermissionsService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
         }
     }
 
@@ -99,6 +72,8 @@ public class RowPermissionsController {
      * @return {@link Result}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete RowPermissions By Id")
+    @Log(title = "Delete RowPermissions By Id", businessType = BusinessType.DELETE)
     public Result delete(@RequestParam("id") Integer id) {
 
         if (roleSelectPermissionsService.removeById(id)) {
@@ -114,7 +89,8 @@ public class RowPermissionsController {
      * @return {@link ProTableResult} of {@link RowPermissions}
      */
     @PostMapping
-    public ProTableResult<RowPermissions> listRoles(@RequestBody JsonNode para) {
+    @ApiOperation("Query RowPermissions List")
+    public ProTableResult<RowPermissions> listRowPermissions(@RequestBody JsonNode para) {
         return roleSelectPermissionsService.selectForProTable(para);
     }
 }

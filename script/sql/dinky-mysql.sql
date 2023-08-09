@@ -562,27 +562,6 @@ CREATE TABLE `dinky_job_instance`  (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for dinky_namespace
--- ----------------------------
-DROP TABLE IF EXISTS `dinky_namespace`;
-CREATE TABLE `dinky_namespace`  (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                  `namespace_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'namespace code',
-                                  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                  PRIMARY KEY (`id`) USING BTREE,
-                                  UNIQUE INDEX `namespace_un_idx1`(`namespace_code`, `tenant_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'namespace' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_namespace
--- ----------------------------
-INSERT INTO `dinky_namespace` VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-
--- ----------------------------
 -- Table structure for dinky_role
 -- ----------------------------
 DROP TABLE IF EXISTS `dinky_role`;
@@ -604,24 +583,6 @@ CREATE TABLE `dinky_role`  (
 -- ----------------------------
 INSERT INTO `dinky_role` VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, 'SuperAdmin of Role', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
--- ----------------------------
--- Table structure for dinky_role_namespace
--- ----------------------------
-DROP TABLE IF EXISTS `dinky_role_namespace`;
-CREATE TABLE `dinky_role_namespace`  (
-                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                       `role_id` int(11) NOT NULL COMMENT 'user id',
-                                       `namespace_id` int(11) NOT NULL COMMENT 'namespace id',
-                                       `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                       `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                       PRIMARY KEY (`id`) USING BTREE,
-                                       UNIQUE INDEX `role_namespace_un_idx1`(`role_id`, `namespace_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Role and namespace relationship' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_role_namespace
--- ----------------------------
-INSERT INTO `dinky_role_namespace` VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_savepoints

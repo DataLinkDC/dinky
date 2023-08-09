@@ -21,6 +21,7 @@ package org.dinky.data.enums;
 
 /** menu type */
 public enum MenuType {
+    DIRECTORY,
     MENU,
 
     BUTTON,

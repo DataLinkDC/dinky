@@ -67,16 +67,6 @@ public interface TenantService extends ISuperService<Tenant> {
     boolean modifyTenant(Tenant tenant);
 
     /**
-     * distribute users to tenant , this method will be {@link Deprecated} in the future, please use
-     * {@link #assignUserToTenant(AssignUserToTenantParams)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} of {@link Void}
-     */
-    @Deprecated
-    Result<Void> distributeUsers(JsonNode para);
-
-    /**
      * assignUserToTenant users to tenant
      *
      * @param assignUserToTenantParams {@link AssignUserToTenantParams}

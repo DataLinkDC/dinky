@@ -21,7 +21,6 @@ package org.dinky.data.model;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
@@ -66,16 +65,6 @@ public class Role implements Serializable {
     /** update time */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-
-    /** this field is deprecated , it's will be delete in the future namespace list */
-    @TableField(exist = false)
-    @Deprecated
-    private List<Namespace> namespaces;
-
-    /** this field is deprecated , it's will be delete in the future namespace namespaceIds */
-    @Deprecated
-    @TableField(exist = false)
-    private String namespaceIds;
 
     /** tenant */
     @TableField(exist = false)

@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.APICancelDTO;
 import org.dinky.data.dto.APIExecuteJarDTO;
 import org.dinky.data.dto.APIExecuteSqlDTO;

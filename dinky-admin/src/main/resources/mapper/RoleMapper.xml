@@ -10,18 +10,9 @@
         <result property="note" column="note"/>
         <result property="createTime" column="create_time"/>
         <result property="updateTime" column="update_time"/>
-        <collection property="namespaces" ofType="org.dinky.data.model.Namespace"
-                    resultMap="namespaceResultMap"></collection>
+
     </resultMap>
-    <resultMap id="namespaceResultMap" type="org.dinky.data.model.Namespace">
-        <id property="id" column="id"/>
-        <result property="tenantId" column="tenant_id"/>
-        <result property="namespaceCode" column="namespace_code"/>
-        <result property="enabled" column="enabled"/>
-        <result property="note" column="note"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
-    </resultMap>
+
     <sql id="role">
         select dr.id
              , dr.tenant_id
@@ -30,17 +21,8 @@
              , dr.note
              , dr.create_time
              , dr.update_time
-             , dn.id          as dn_id
-             , dn.namespace_code
-             , dn.enabled
-             , dn.note           dn_note
-             , dn.create_time as dn_create_time
-             , dn.update_time    dn_update_time
         from dinky_role dr
-                 join dinky_role_namespace drn
-                      on dr.id = drn.role_id
-                 join dinky_namespace dn
-                      on drn.namespace_id = dn.id
+
     </sql>
     <select id="selectForProTable" resultType="org.dinky.data.model.Role">
         select

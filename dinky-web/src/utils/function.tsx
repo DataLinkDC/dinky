@@ -37,6 +37,7 @@ import path from 'path';
 import {l} from '@/utils/intl';
 import {RightSide} from "@/pages/DataStudio/route";
 import {TabsItemType} from "@/pages/DataStudio/model";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
 
 /**
@@ -252,7 +253,7 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-  if (!type){
+  if (!type) {
     return <FileIcon/>;
   }
   switch (type.toLowerCase()) {
@@ -456,4 +457,28 @@ export const searchTreeNode = (originValue: string, searchValue: string): any =>
   }
   return title
 };
+
+export const transformTreeData = <T, >(data: T[]): T[] => {
+  return data.map((item: T, index) => {
+    return {...item, key: index}
+  });
+}
+
+export const transformTableDataToCsv = <T, >(column: string[], data: T[]): string => {
+  let row = "";
+  let csvData = "";
+  for (const title of column) {
+    row += '"' + title + '",';
+  }
+  const delimiter = "\r\n";
+  csvData += row + delimiter; // 添加换行符号
+  for (const item of data) {
+    row = "";
+    for (let key in item) {
+      row += '"' + (item[key] ?? '') + '",';
+    }
+    csvData += row + delimiter; // 添加换行符号
+  }
+  return csvData;
+}
 

@@ -1008,6 +1008,8 @@ export default {
   'pages.datastudio.footer.lineSeparator': "Line Separator: ",
   'pages.datastudio.footer.codeEncoding': "File Encoding: ",
   'pages.datastudio.footer.codePosition': "Ln {Ln}:Col {Col} ",
+  'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
+
 
 
   'datastudio.middle.qg': 'Quick Guide',
