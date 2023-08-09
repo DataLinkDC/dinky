@@ -62,7 +62,6 @@ public class MonitorController {
     }
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
     @PublicInterface
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
