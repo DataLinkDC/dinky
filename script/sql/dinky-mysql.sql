@@ -836,7 +836,7 @@ CREATE TABLE `dinky_user` (
   `create_time` datetime DEFAULT NULL COMMENT 'create time',
   `update_time` datetime DEFAULT NULL COMMENT 'update time',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='user'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='user';
 
 
 
@@ -884,7 +884,7 @@ CREATE TABLE `dinky_user_tenant`  (
 -- ----------------------------
 -- Records of dinky_user_tenant
 -- ----------------------------
-INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1,1, current_time, current_time);
+INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`,`tenant_admin_flag` , `create_time`, `update_time`) VALUES (1, 1, 1,1, current_time, current_time);
 
 -- ----------------------------
 -- Table structure for metadata_column
@@ -1132,10 +1132,10 @@ CREATE TABLE `dinky_sys_operate_log`  (
   `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
   `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
   `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
-  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'request param',
+  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'return json result',
   `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'error msg',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;

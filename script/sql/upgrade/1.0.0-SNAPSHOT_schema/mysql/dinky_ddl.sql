@@ -153,6 +153,9 @@ CREATE TABLE `dinky_resources` (
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
+ALTER TABLE dinky_database modify password varchar(512) null comment 'password';
+
+
 -- ----------------------------
 -- Table structure for dinky_sys_login_log
 -- ----------------------------
@@ -169,9 +172,8 @@ CREATE TABLE `dinky_sys_login_log` (
   `update_time` datetime NOT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record';
 
-ALTER TABLE dinky_database modify password varchar(512) null comment 'password';
 
 -- ----------------------------
 -- Table structure for dinky_sys_operate_log
@@ -187,10 +189,10 @@ CREATE TABLE `dinky_sys_operate_log`  (
   `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
   `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
   `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
-  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'request param',
+  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'return json result',
   `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'error msg',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
