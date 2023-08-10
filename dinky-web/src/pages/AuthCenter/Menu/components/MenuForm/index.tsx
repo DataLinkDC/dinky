@@ -33,7 +33,7 @@ import {
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import {SysMenu} from "@/types/RegCenter/data";
-import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
+import {buildMenuFormTree} from "@/pages/AuthCenter/Menu/function";
 import {
     MENU_TYPE_OPTIONS,
     MENU_ICON_OPTIONS
@@ -106,10 +106,10 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     /**
      * submit form
      */
-    const submitForm = async () => {
+    const submitForm = async (formData: SysMenu) => {
         await form.validateFields();
-        await handleSubmit({...values, ...form.getFieldsValue()});
-        await handleCancel();
+        handleSubmit({...values, ...formData});
+        handleCancel();
     };
     /**
      * construct role form
@@ -117,22 +117,24 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
      */
     const renderMenuForm = () => {
         return <>
-            <ProFormTreeSelect
-                hidden={isRootMenu}
-                shouldUpdate
-                name={'parentId'}
-                label={l('menu.parentId')}
-                rules={[{required: true, message: l('menu.parentIdPlaceholder')}]}
-                placeholder={l('menu.parentIdPlaceholder')}
-                fieldProps={{
-                    showSearch: true,
-                    treeData: buildMenuTree(treeData, searchValue),
-                    treeCheckable: true,
-                    onSearch: value => setSearchValue(value),
-                    showCheckedStrategy: TreeSelect.SHOW_PARENT,
-                }}
-            />
-            <ProFormText name="rootMenu" hidden/>
+            {
+               <>
+                    <ProFormTreeSelect
+                        shouldUpdate
+                        name={'parentId'}
+                        label={l('menu.parentId')}
+                        rules={[{required: true, message: l('menu.parentIdPlaceholder')}]}
+                        placeholder={l('menu.parentIdPlaceholder')}
+                        fieldProps={{
+                            labelInValue: false,
+                            value: selectedKeys,
+                            treeData: buildMenuFormTree(treeData, searchValue,true),
+                            onSearch: value => setSearchValue(value),
+                            treeDefaultExpandAll: true,
+                        }}
+                    />
+                </>
+            }
             <ProFormText
                 name="name"
                 label={l('menu.name')}
@@ -163,6 +165,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                 addonAfter={
                     <a key={'reference'} href={'https://ant.design/components/icon-cn'}>{l('menu.icon.reference')}</a>
                 }
+                cacheForSwr
                 name="icon" allowClear showSearch
                 mode={'single'} width={'md'}
                 options={MENU_ICON_OPTIONS()}

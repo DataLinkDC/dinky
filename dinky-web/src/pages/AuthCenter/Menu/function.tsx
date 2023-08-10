@@ -20,6 +20,7 @@
 import {SysMenu} from "@/types/RegCenter/data";
 import {searchTreeNode} from "@/utils/function";
 import * as Icons from '@ant-design/icons';
+import * as React from "react";
 
 /**
  * render icon
@@ -36,21 +37,51 @@ const renderIcon = (iconName: string) => {
  * build menu tree
  * @param {SysMenu[]} data
  * @param {string} searchValue
+ * @param filterButton
  * @returns {any}
  */
-export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.indexOf(searchValue) > -1)).map((item: SysMenu) => {
+export const buildMenuTree = (data: SysMenu[], searchValue: string = ''): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).map((item: SysMenu) => {
     // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
 
     return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
         parentId: item.parentId,
+        label: searchTreeNode(item.name, searchValue),
         icon: renderIcon(item.icon),//
         content: item.note,
         path: item.path,
+        value: item.id,
         title: searchTreeNode(item.name, searchValue),
         fullInfo: item,
         key: item.id,
-        children: buildMenuTree(item.children,searchValue),
+        children: buildMenuTree(item.children, searchValue),
     }
 });
+
+/**
+ * build menu form tree (filter button)
+ * @param {SysMenu[]} data
+ * @param {string} searchValue
+ * @param {boolean} filterButton
+ * @returns {any}
+ */
+
+export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', filterButton = false): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false)).map((item: SysMenu) => {
+        // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
+
+        return {
+            isLeaf: !item.children || item.children.length === 0,
+            name: item.name,
+            parentId: item.parentId,
+            label: searchTreeNode(item.name, searchValue),
+            icon: renderIcon(item.icon),//
+            content: item.note,
+            path: item.path,
+            value: item.id,
+            title: searchTreeNode(item.name, searchValue),
+            fullInfo: item,
+            key: item.id,
+            children: buildMenuFormTree(item.children, searchValue, filterButton),
+        }
+    });

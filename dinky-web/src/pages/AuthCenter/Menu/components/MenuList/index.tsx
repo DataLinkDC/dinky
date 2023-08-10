@@ -22,7 +22,6 @@ import React, {useEffect, useState} from "react";
 import {Button, Space} from 'antd';
 import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {ProCard} from "@ant-design/pro-components";
-import {Resizable} from "re-resizable";
 import {MenuInfo} from "rc-menu/es/interface";
 import {RIGHT_CONTEXT_MENU} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 import {SysMenu} from "@/types/RegCenter/data";
@@ -252,25 +251,16 @@ const MenuList: React.FC = () => {
          */
         return <>
             <ProCard size={'small'}>
-                <Resizable
-                    defaultSize={{
-                        width: 500,
-                        height: '100%'
-                    }}
-                    minWidth={500}
-                    maxWidth={1200}
-                >
-                    <ProCard extra={renderLeftExtra()} title={l('menu.management')} ghost hoverable colSpan={'18%'}
-                             className={"siderTree schemaTree"}>
-                        <MenuTree
-                            loading={loading}
-                            selectedKeys={selectedKeys}
-                            treeData={treeData}
-                            onRightClick={handleRightClick}
-                            onNodeClick={(info: any) => handleNodeClick(info)}
-                        />
-                    </ProCard>
-                </Resizable>
+                <ProCard extra={renderLeftExtra()} title={l('menu.management')} ghost hoverable colSpan={'30%'}
+                         className={"siderTree schemaTree"}>
+                    <MenuTree
+                        loading={loading}
+                        selectedKeys={selectedKeys}
+                        treeData={treeData}
+                        onRightClick={handleRightClick}
+                        onNodeClick={(info: any) => handleNodeClick(info)}
+                    />
+                </ProCard>
                 <ProCard.Divider type={"vertical"}/>
                 <ProCard
                     extra={renderRightCardExtra()}

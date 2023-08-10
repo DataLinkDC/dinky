@@ -24,6 +24,7 @@ import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessStatus;
 import org.dinky.data.model.OperateLog;
 import org.dinky.data.model.User;
+import org.dinky.data.result.Result;
 import org.dinky.service.impl.OperateLogServiceImpl;
 import org.dinky.utils.IpUtils;
 import org.dinky.utils.ServletUtils;
@@ -97,7 +98,8 @@ public class LogAspect {
 
             // *========数据库日志=========*//
             OperateLog operLog = new OperateLog();
-            operLog.setStatus(BusinessStatus.SUCCESS.ordinal());
+            Result result = JSONUtil.toBean(JSONUtil.parseObj(jsonResult), Result.class);
+            operLog.setStatus(result.isSuccess()? BusinessStatus.SUCCESS.ordinal():BusinessStatus.FAIL.ordinal());
             // 请求的地址
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
             operLog.setOperateIp(ip);

@@ -108,8 +108,8 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
             title: l('user.op.status'),
             dataIndex: 'status',
             valueEnum: {
-                0: {text: l('global.error'), status: 'error'},
-                1: {text: l('global.success'), status: 'Success'},
+                1: {text: l('global.error'), status: 'error'},
+                0: {text: l('global.success'), status: 'Success'},
             },
             hideInSearch: true,
 
