@@ -76,7 +76,7 @@ export default {
   'menu.menu': 'Menu',
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
-  'right.menu.addSub': 'Add Sub Menu',
+  'right.menu.addSub': 'Add Sub Item',
   'right.menu.addRoot': 'Add Root Menu',
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',

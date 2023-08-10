@@ -239,8 +239,8 @@ const MenuList: React.FC = () => {
         const renderAddSubMenuTitle = () => {
             return <>
                 {(formValues.id && updateModalVisible) ?
-                    l('menu.edit') : (!formValues.id && modalVisible) ?
-                        l('right.menu.addSub') : (!formValues.id && modalVisible) ?
+                    l('menu.edit') : (!formValues.id && modalVisible && !isRootMenu) ?
+                        l('right.menu.addSub') : (!formValues.id && modalVisible && isRootMenu) ?
                             l('right.menu.addRoot') : ''}
             </>
         }
