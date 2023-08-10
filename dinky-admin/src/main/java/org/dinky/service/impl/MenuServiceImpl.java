@@ -222,7 +222,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             Menu menu = iterator.next();
             //  get all child menu of parent menu id , the -1 is root menu
             if (menu.getParentId() == -1) {
-                recursionFn(menus, menu);
+                recursionBuildMenusAndChildren(menus, menu);
                 returnList.add(menu);
             }
         }
@@ -355,7 +355,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
         for (Menu t : list) {
             // According to a parent node ID passed in, traverse all child nodes of the parent node
             if (t.getParentId() == parentId) {
-                recursionFn(list, t);
+                recursionBuildMenusAndChildren(list, t);
                 returnList.add(t);
             }
         }
@@ -368,7 +368,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
      * @param list menu list
      * @param menu menu
      */
-    private void recursionFn(List<Menu> list, Menu menu) {
+    private void recursionBuildMenusAndChildren(List<Menu> list, Menu menu) {
         // 得到子节点列表
         List<Menu> childList = getChildList(list, menu);
         menu.setChildren(childList);
@@ -376,7 +376,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
             if (hasChild(list, tChild)) {
                 // Determine whether there are child nodes
                 for (Menu n : childList) {
-                    recursionFn(list, n);
+                    recursionBuildMenusAndChildren(list, n);
                 }
             }
         }
