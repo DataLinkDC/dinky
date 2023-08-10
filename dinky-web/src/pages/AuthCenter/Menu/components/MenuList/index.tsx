@@ -22,7 +22,6 @@ import React, {useEffect, useState} from "react";
 import {Button, Space} from 'antd';
 import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
 import {ProCard} from "@ant-design/pro-components";
-import {Resizable} from "re-resizable";
 import {MenuInfo} from "rc-menu/es/interface";
 import {RIGHT_CONTEXT_MENU} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 import {SysMenu} from "@/types/RegCenter/data";
@@ -38,14 +37,15 @@ const MenuList: React.FC = () => {
          * status
          */
         const [formValues, setFormValues] = useState<Partial<SysMenu>>({});
+        const [contextMenuPosition, setContextMenuPosition] = useState({});
+        const [selectedKeys, setSelectedKeys] = useState([]);
+        const [rightClickedNode, setRightClickedNode] = useState<any>();
+        const [treeData, setTreeData] = useState<SysMenu[]>([]);
+
         const [modalVisible, handleModalVisible] = useState<boolean>(false);
         const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
         const [loading, setLoading] = useState<boolean>(false);
-        const [contextMenuPosition, setContextMenuPosition] = useState({});
-        const [selectedKeys, setSelectedKeys] = useState([]);
         const [contextMenuVisible, setContextMenuVisible] = useState(false);
-        const [rightClickedNode, setRightClickedNode] = useState<any>();
-        const [treeData, setTreeData] = useState<SysMenu[]>([]);
         const [disabled, setDisabled] = useState<boolean>(false);
         const [isRootMenu, setIsRootMenu] = useState<boolean>(false);
 
@@ -76,7 +76,7 @@ const MenuList: React.FC = () => {
          */
         const handleDeleteSubmit = async () => {
             await executeAndCallbackRefresh(async () => {
-                await handleRemoveById('/api/menu/delete', rightClickedNode.fullInfo.id as number);
+                await handleRemoveById('/api/menu/delete', rightClickedNode.key as number);
             });
             setContextMenuVisible(false)
         }
@@ -85,7 +85,7 @@ const MenuList: React.FC = () => {
          * add or update role submit callback
          * @param value
          */
-        const handleAddOrUpdateSubmit = async (value: any) => {
+        const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
             await executeAndCallbackRefresh(async () => {
                 await handleAddOrUpdate('/api/menu/addOrUpdate', {...value});
                 handleModalVisible(false);
@@ -102,7 +102,10 @@ const MenuList: React.FC = () => {
             setContextMenuVisible(false)
         };
 
-        function handleCreateSubMenu() {
+        /**
+         * create sub menu callback
+         */
+        const handleCreateSubMenu = () => {
             handleModalVisible(true);
             setIsRootMenu(false);
             handleUpdateModalVisible(false)
@@ -153,15 +156,16 @@ const MenuList: React.FC = () => {
             setFormValues(fullInfo)
             handleUpdateModalVisible(true);
             setDisabled(true)
+            setIsRootMenu(fullInfo.parentId === -1)
             handleModalVisible(false)
         };
 
 
         const renderRightCardExtra = () => {
             return <>
-                {(updateModalVisible && formValues.id && disabled) &&
+                {(updateModalVisible && formValues && disabled) &&
                     <Button type={'primary'} onClick={() => setDisabled(false)}>{l('button.edit')}</Button>}
-                {(updateModalVisible && formValues.id && !disabled) &&
+                {(updateModalVisible && formValues && !disabled) &&
                     <Button type={'dashed'} onClick={() => setDisabled(true)}>{l('button.cancel')}</Button>}
             </>
         };
@@ -177,13 +181,13 @@ const MenuList: React.FC = () => {
                 return <><OpHelper/></>
             }
             // update
-            if (formValues.id && updateModalVisible) {
+            if (formValues && updateModalVisible) {
                 return <>
                     <MenuForm
                         selectedKeys={selectedKeys}
                         isRootMenu={isRootMenu} treeData={treeData} disabled={disabled}
                         values={formValues} onCancel={handleCancel} open={updateModalVisible}
-                        onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
+                        onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}
                     />
                 </>
             }
@@ -193,10 +197,9 @@ const MenuList: React.FC = () => {
                     <MenuForm
                         selectedKeys={selectedKeys}
                         isRootMenu={isRootMenu} treeData={treeData} values={{}} open={modalVisible}
-                        onCancel={handleCancel} onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}/>
+                        onCancel={handleCancel} onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}/>
                 </>
             }
-
         };
 
         /**
@@ -248,25 +251,16 @@ const MenuList: React.FC = () => {
          */
         return <>
             <ProCard size={'small'}>
-                <Resizable
-                    defaultSize={{
-                        width: 500,
-                        height: '100%'
-                    }}
-                    minWidth={500}
-                    maxWidth={1200}
-                >
-                    <ProCard extra={renderLeftExtra()} title={l('menu.management')} ghost hoverable colSpan={'18%'}
-                             className={"siderTree schemaTree"}>
-                        <MenuTree
-                            loading={loading}
-                            selectedKeys={selectedKeys}
-                            treeData={treeData}
-                            onRightClick={handleRightClick}
-                            onNodeClick={(info: any) => handleNodeClick(info)}
-                        />
-                    </ProCard>
-                </Resizable>
+                <ProCard extra={renderLeftExtra()} title={l('menu.management')} ghost hoverable colSpan={'30%'}
+                         className={"siderTree schemaTree"}>
+                    <MenuTree
+                        loading={loading}
+                        selectedKeys={selectedKeys}
+                        treeData={treeData}
+                        onRightClick={handleRightClick}
+                        onNodeClick={(info: any) => handleNodeClick(info)}
+                    />
+                </ProCard>
                 <ProCard.Divider type={"vertical"}/>
                 <ProCard
                     extra={renderRightCardExtra()}
@@ -278,7 +272,8 @@ const MenuList: React.FC = () => {
 
             <RightContextMenu
                 contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
-                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU()} onClick={handleMenuClick}
+                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.isLeaf)}
+                onClick={handleMenuClick}
             />
         </>
     }

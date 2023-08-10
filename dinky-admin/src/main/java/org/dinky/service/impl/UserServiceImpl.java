@@ -28,7 +28,9 @@ import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.enums.UserType;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.model.Menu;
 import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleMenu;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Tenant;
@@ -40,6 +42,8 @@ import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.service.MenuService;
+import org.dinky.service.RoleMenuService;
 import org.dinky.service.RoleService;
 import org.dinky.service.RowPermissionsService;
 import org.dinky.service.TenantService;
@@ -56,8 +60,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
@@ -87,6 +89,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final LdapServiceImpl ldapService;
 
     private final LoginLogServiceImpl loginLogService;
+
+    private final RoleMenuService roleMenuService;
+
+    private final MenuService menuService;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -260,35 +266,6 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public User getUserByUsername(String username) {
         return getOne(new LambdaQueryWrapper<User>().eq(User::getUsername, username));
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result<Void> grantRole(JsonNode param) {
-        if (param.size() > 0) {
-            List<UserRole> userRoleList = new ArrayList<>();
-            Integer userId = param.get("userId").asInt();
-            userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
-            JsonNode userRoleJsonNode = param.get("roles");
-            for (JsonNode ids : userRoleJsonNode) {
-                UserRole userRole = new UserRole();
-                userRole.setUserId(userId);
-                userRole.setRoleId(ids.asInt());
-                userRoleList.add(userRole);
-            }
-            // save or update user role
-            boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
-            if (result) {
-                return Result.succeed("用户授权角色成功");
-            } else {
-                if (userRoleList.size() == 0) {
-                    return Result.succeed("该用户绑定的角色已被全部删除");
-                }
-                return Result.failed("用户授权角色失败");
-            }
-        } else {
-            return Result.failed("请选择要授权的角色");
-        }
     }
 
     @Override
@@ -471,6 +448,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         List<Role> roleList = new LinkedList<>();
         List<Tenant> tenantList = new LinkedList<>();
+        List<Menu> menuList = new LinkedList<>();
 
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
@@ -480,6 +458,18 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                     Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
                     if (Asserts.isNotNull(role)) {
                         roleList.add(role);
+                        // query role menu
+                        List<RoleMenu> roleMenus =
+                                roleMenuService.list(
+                                        new LambdaQueryWrapper<RoleMenu>()
+                                                .eq(RoleMenu::getRoleId, role.getId()));
+                        roleMenus.forEach(
+                                roleMenu -> {
+                                    Menu menu = menuService.getById(roleMenu.getMenuId());
+                                    if (Asserts.isNotNull(menu) && !menu.getType().equals("M")) {
+                                        menuList.add(menu);
+                                    }
+                                });
                     }
                 });
 
@@ -495,6 +485,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         userInfo.setUser(user);
         userInfo.setRoleList(roleList);
         userInfo.setTenantList(tenantList);
+        userInfo.setMenuList(menuList);
         userInfo.setTokenInfo(StpUtil.getTokenInfo());
         return userInfo;
     }

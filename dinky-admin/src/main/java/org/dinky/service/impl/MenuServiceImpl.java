@@ -19,12 +19,12 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.assertion.Asserts;
 import org.dinky.data.constant.BaseConstant;
-import org.dinky.data.dto.TreeNodeDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.RoleMenu;
 import org.dinky.data.model.User;
+import org.dinky.data.result.Result;
 import org.dinky.data.vo.MetaVo;
 import org.dinky.data.vo.RouterVo;
 import org.dinky.mapper.MenuMapper;
@@ -37,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -60,11 +61,27 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     @Autowired private MenuMapper menuMapper;
     @Autowired private RoleMenuMapper roleMenuMapper;
 
+    /**
+     * Delete menu by id
+     *
+     * @param id menu id
+     * @return boolean {@code true} if success, {@code false} if failed
+     */
     @Override
-    public boolean deleteMenuById(Integer id) {
+    public Result<Void> deleteMenuById(Integer id) {
         Menu menu = getById(id);
-        // todo： 如果是父菜单，提示先删除子菜单
-        return getBaseMapper().deleteById(menu) > 0;
+        // if it is parent menu, prompt to delete child menu first
+        if (hasChildByMenuId(menu.getId())) {
+            return Result.failed(Status.MENU_HAS_CHILD);
+        }
+        // if the menu is assigned, it is not allowed to delete
+        if (checkMenuExistRole(id)) {
+            return Result.failed(Status.MENU_HAS_ASSIGN);
+        }
+        if (removeById(id)) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
     }
 
     /**
@@ -82,10 +99,10 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 根据用户查询系统菜单列表
+     * query menu list by user
      *
-     * @param user 用户
-     * @return 菜单列表
+     * @param user login user
+     * @return {@link List<Menu>} menu list
      */
     @Override
     public List<Menu> selectMenuList(User user) {
@@ -93,10 +110,10 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 查询系统菜单列表)
+     * query menu list by menu and user
      *
-     * @param menu 菜单信息
-     * @return 菜单列表
+     * @param menu menu
+     * @return {@link List<Menu>} menu list
      */
     @Override
     public List<Menu> selectMenuList(Menu menu, User user) {
@@ -112,10 +129,10 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 根据用户ID查询权限
+     * query menu permission by user id
      *
-     * @param userId 用户ID
-     * @return 权限列表
+     * @param userId user id
+     * @return {@link Set<String>} menu permission set
      */
     @Override
     public Set<String> selectMenuPermsByUserId(Integer userId) {
@@ -130,14 +147,14 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 根据用户ID查询菜单
+     * query menu by id
      *
-     * @param user 登录用户
-     * @return 菜单列表
+     * @param user login user
+     * @return {@link Menu} menu
      */
     @Override
     public List<Menu> selectMenuTreeByUserId(User user) {
-        List<Menu> menus = null;
+        List<Menu> menus;
 
         if (user.getSuperAdminFlag()) {
             menus = menuMapper.listMenus4SuperAdmin();
@@ -149,21 +166,10 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 根据角色ID查询菜单树信息
+     * build menu tree of router
      *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
-     */
-    @Override
-    public List<Integer> selectMenuListByRoleId(Long roleId) {
-        return menuMapper.selectMenuListByRoleId(roleId);
-    }
-
-    /**
-     * 构建前端路由所需要的菜单
-     *
-     * @param menus 菜单列表
-     * @return 路由列表
+     * @param menus menu list
+     * @return {@link List<RouterVo>} router list
      */
     @Override
     public List<RouterVo> buildMenus(List<Menu> menus) {
@@ -180,7 +186,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
-            } else if (isMeunFrame(menu)) {
+            } else if (isMenuFrame(menu)) {
                 List<RouterVo> childrenList = new ArrayList<RouterVo>();
                 RouterVo children = new RouterVo();
                 children.setPath(menu.getPath());
@@ -196,20 +202,28 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 构建前端所需要树结构
+     * build menu tree
      *
-     * @param menus 菜单列表
-     * @return 树结构列表
+     * @param menus menu list
+     * @return {@link List<Menu>} menu list
      */
     @Override
     public List<Menu> buildMenuTree(List<Menu> menus) {
-        List<Menu> returnList = new ArrayList<Menu>();
+        // sort
+        if (CollectionUtil.isNotEmpty(menus)) {
+            menus =
+                    menus.stream()
+                            .sorted(Comparator.comparing(Menu::getId))
+                            .collect(Collectors.toList());
+        }
+
+        List<Menu> returnList = new ArrayList<>();
         for (Iterator<Menu> iterator = menus.iterator(); iterator.hasNext(); ) {
-            Menu t = (Menu) iterator.next();
-            // 根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == 0) {
-                recursionFn(menus, t);
-                returnList.add(t);
+            Menu menu = iterator.next();
+            //  get all child menu of parent menu id , the -1 is root menu
+            if (menu.getParentId() == -1) {
+                recursionBuildMenusAndChildren(menus, menu);
+                returnList.add(menu);
             }
         }
         if (returnList.isEmpty()) {
@@ -219,100 +233,38 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 构建前端所需要下拉树结构
+     * build menu tree
      *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
+     * @param menus menu list
+     * @return menu list tree
      */
     @Override
-    public List<TreeNodeDTO> buildMenuTreeSelect(List<Menu> menus) {
-        List<Menu> menuTrees = buildMenuTree(menus);
-        return menuTrees.stream().map(this::convertToTreeDTO).collect(Collectors.toList());
+    public List<Menu> buildMenuTreeSelect(List<Menu> menus) {
+        return buildMenuTree(menus);
     }
 
     /**
-     * 根据菜单ID查询信息
+     * check menu has child menu
      *
-     * @param menuId 菜单ID
-     * @return 菜单信息
+     * @param menuId menu ID
+     * @return {@link Boolean} if true, menu has child menu else not
      */
     @Override
-    public Menu selectMenuById(Long menuId) {
-        return menuMapper.selectMenuById(menuId);
-    }
-
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public boolean hasChildByMenuId(Long menuId) {
+    public boolean hasChildByMenuId(Integer menuId) {
         int result = menuMapper.hasChildByMenuId(menuId);
         return result > 0;
     }
 
     /**
-     * 查询菜单使用数量
+     * check menu is assigned to role
      *
-     * @param menuId 菜单ID
-     * @return 结果
+     * @param menuId menu ID
+     * @return {@link Boolean} if true, menu is assigned to role else not assigned to role
      */
     @Override
-    public boolean checkMenuExistRole(Long menuId) {
+    public boolean checkMenuExistRole(Integer menuId) {
         int result = roleMenuMapper.checkMenuExistRole(menuId);
         return result > 0;
-    }
-
-    /**
-     * 新增保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public boolean insertMenu(Menu menu) {
-        return this.save(menu);
-    }
-
-    /**
-     * 修改保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public boolean updateMenu(Menu menu) {
-        return this.updateById(menu);
-    }
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    @Override
-    public boolean deleteMenuById(Long menuId) {
-        return this.removeById(menuId);
-    }
-
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    @Override
-    public String checkMenuNameUnique(Menu menu) {
-        Long menuId = Asserts.isNull(menu.getId()) ? -1L : menu.getId();
-        Menu info =
-                menuMapper.checkMenuNameUnique(menu.getName(), Long.valueOf(menu.getParentId()));
-        if (Asserts.isNotNull(info) && info.getId().longValue() != menuId) {
-            return BaseConstant.NOT_UNIQUE;
-        }
-        return BaseConstant.UNIQUE;
     }
 
     /**
@@ -334,76 +286,76 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 获取路由名称
+     * get route name
      *
-     * @param menu 菜单信息
-     * @return 路由名称
+     * @param menu menu info
+     * @return route name
      */
     public String getRouteName(Menu menu) {
         String routerName = StringUtils.capitalize(menu.getPath());
-        // 非外链并且是一级目录（类型为目录）
-        if (isMeunFrame(menu)) {
+        // is not external link and is root menu (type is dir)
+        if (isMenuFrame(menu)) {
             routerName = StrUtil.EMPTY;
         }
         return routerName;
     }
 
     /**
-     * 获取路由地址
+     * get router path
      *
-     * @param menu 菜单信息
-     * @return 路由地址
+     * @param menu menu info
+     * @return router path
      */
     public String getRouterPath(Menu menu) {
         String routerPath = menu.getPath();
-        // 非外链并且是一级目录（类型为目录）
+        //  is not external link and is root menu (type is dir)
         if (menu.isRootMenu() && BaseConstant.TYPE_DIR.equals(menu.getType())) {
             routerPath = "/" + menu.getPath();
         }
-        // 非外链并且是一级目录（类型为菜单）
-        else if (isMeunFrame(menu)) {
+        //   is not external link and is root menu (type is menu)
+        else if (isMenuFrame(menu)) {
             routerPath = "/";
         }
         return routerPath;
     }
 
     /**
-     * 获取组件信息
+     * get component name
      *
-     * @param menu 菜单信息
-     * @return 组件信息
+     * @param menu menu info
+     * @return component name
      */
     public String getComponent(Menu menu) {
         String component = BaseConstant.LAYOUT;
-        if (StrUtil.isNotEmpty(menu.getComponent()) && !isMeunFrame(menu)) {
+        if (StrUtil.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
             component = menu.getComponent();
         }
         return component;
     }
 
     /**
-     * 是否为菜单内部跳转
+     * is menu frame jump or not
      *
-     * @param menu 菜单信息
-     * @return 结果
+     * @param menu menu info
+     * @return if true, menu is frame jump else not
      */
-    public boolean isMeunFrame(Menu menu) {
+    public boolean isMenuFrame(Menu menu) {
         return menu.isRootMenu() && BaseConstant.TYPE_MENU.equals(menu.getType());
     }
 
     /**
-     * 根据父节点的ID获取所有子节点
+     * get all child menu by parent menu id
      *
-     * @param list 分类表
-     * @param parentId 传入的父节点ID
-     * @return String
+     * @param list all menu list
+     * @param parentId parent menu id
+     * @return {@link List<Menu>} child menu list
      */
     public List<Menu> getChildPerms(List<Menu> list, int parentId) {
         List<Menu> returnList = new ArrayList<Menu>();
         for (Menu t : list) {
-            // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
+            // According to a parent node ID passed in, traverse all child nodes of the parent node
             if (t.getParentId() == parentId) {
-                recursionFn(list, t);
+                recursionBuildMenusAndChildren(list, t);
                 returnList.add(t);
             }
         }
@@ -411,50 +363,50 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     }
 
     /**
-     * 递归列表
+     * get child menus by recursion
      *
-     * @param list
-     * @param t
+     * @param list menu list
+     * @param menu menu
      */
-    private void recursionFn(List<Menu> list, Menu t) {
+    private void recursionBuildMenusAndChildren(List<Menu> list, Menu menu) {
         // 得到子节点列表
-        List<Menu> childList = getChildList(list, t);
-        t.setChildren(childList);
+        List<Menu> childList = getChildList(list, menu);
+        menu.setChildren(childList);
         for (Menu tChild : childList) {
             if (hasChild(list, tChild)) {
-                // 判断是否有子节点
+                // Determine whether there are child nodes
                 for (Menu n : childList) {
-                    recursionFn(list, n);
+                    recursionBuildMenusAndChildren(list, n);
                 }
             }
         }
     }
 
-    /** 得到子节点列表 */
-    private List<Menu> getChildList(List<Menu> list, Menu t) {
+    /**
+     * get child menu list
+     *
+     * @param list menu list
+     * @param menu menu
+     * @return {@link List<Menu>} child menu list
+     */
+    private List<Menu> getChildList(List<Menu> list, Menu menu) {
         List<Menu> tlist = new ArrayList<Menu>();
         for (Menu n : list) {
-            if (n.getParentId().longValue() == t.getId().longValue()) {
+            if (n.getParentId().longValue() == menu.getId().longValue()) {
                 tlist.add(n);
             }
         }
         return tlist;
     }
 
-    /** 判断是否有子节点 */
-    private boolean hasChild(List<Menu> list, Menu t) {
-        return getChildList(list, t).size() > 0;
-    }
-
-    public TreeNodeDTO convertToTreeDTO(Menu menu) {
-        return new TreeNodeDTO(
-                menu.getId(),
-                menu.getName(),
-                menu.getPath(),
-                menu.getParentId(),
-                menu.getNote(),
-                menu.getChildren().stream()
-                        .map(this::convertToTreeDTO)
-                        .collect(Collectors.toList()));
+    /**
+     * Determine whether there are child nodes
+     *
+     * @param list menu list
+     * @param menu menu
+     * @return {@link Boolean} if true, has child menu else not
+     */
+    private boolean hasChild(List<Menu> list, Menu menu) {
+        return getChildList(list, menu).size() > 0;
     }
 }

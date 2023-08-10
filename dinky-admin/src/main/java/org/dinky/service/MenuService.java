@@ -19,9 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.model.Menu;
 import org.dinky.data.model.User;
+import org.dinky.data.result.Result;
 import org.dinky.data.vo.RouterVo;
 import org.dinky.mybatis.service.ISuperService;
 
@@ -29,143 +29,96 @@ import java.util.List;
 import java.util.Set;
 
 public interface MenuService extends ISuperService<Menu> {
+
     /**
      * Delete menu by id
      *
      * @param id menu id
      * @return boolean {@code true} if success, {@code false} if failed
      */
-    boolean deleteMenuById(Integer id);
-
-    List<Integer> selectMenuListByRoleId(Integer roleId);
+    Result<Void> deleteMenuById(Integer id);
 
     /**
-     * 根据用户查询系统菜单列表
+     * query menu list by user
      *
-     * @param user 用户
-     * @return 菜单列表
+     * @param user login user
+     * @return {@link List<Menu>} menu list
      */
     public List<Menu> selectMenuList(User user);
 
     /**
-     * 根据用户查询系统菜单列表
+     * query menu list by menu and user
      *
-     * @param menu 菜单信息
-     * @param user 用户
-     * @return 菜单列表
+     * @param menu menu
+     * @return {@link List<Menu>} menu list
      */
     public List<Menu> selectMenuList(Menu menu, User user);
 
-    /**
-     * 查询所有菜单
-     *
-     * @return
-     */
     List<Menu> listMenusBySuperFlag(Integer superFlag);
 
     /**
-     * 根据用户ID查询权限
+     * query menu permission by user id
      *
-     * @param userId 用户ID
-     * @return 权限列表
+     * @param userId user id
+     * @return {@link Set<String>} menu permission set
      */
     Set<String> selectMenuPermsByUserId(Integer userId);
 
     /**
-     * 根据用户ID查询菜单树信息
+     * query menu by id
      *
-     * @param user 用户
-     * @return 菜单列表
+     * @param user login user
+     * @return {@link Menu} menu
      */
     List<Menu> selectMenuTreeByUserId(User user);
 
     /**
-     * 根据角色ID查询菜单树信息
+     * query menu list by role id
      *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
+     * @param roleId role id
+     * @return {@link List<Integer>}
      */
-    List<Integer> selectMenuListByRoleId(Long roleId);
+    List<Integer> selectMenuListByRoleId(Integer roleId);
 
     /**
-     * 构建前端路由所需要的菜单
+     * build menu tree of router
      *
-     * @param menus 菜单列表
-     * @return 路由列表
+     * @param menus menu list
+     * @return {@link List<RouterVo>} router list
      */
     List<RouterVo> buildMenus(List<Menu> menus);
 
     /**
-     * 构建前端所需要树结构
+     * build menu tree
      *
-     * @param menus 菜单列表
-     * @return 树结构列表
+     * @param menus menu list
+     * @return {@link List<Menu>} menu list
      */
     List<Menu> buildMenuTree(List<Menu> menus);
 
     /**
-     * 构建前端所需要下拉树结构
+     * build menu tree
      *
-     * @param menus 菜单列表
-     * @return 下拉树结构列表
+     * @param menus menu list
+     * @return menu list tree
      */
-    List<TreeNodeDTO> buildMenuTreeSelect(List<Menu> menus);
+    List<Menu> buildMenuTreeSelect(List<Menu> menus);
 
     /**
-     * 根据菜单ID查询信息
+     * check menu has child menu
      *
-     * @param menuId 菜单ID
-     * @return 菜单信息
+     * @param menuId menu ID
+     * @return {@link Boolean} if true, menu has child menu else not
      */
-    Menu selectMenuById(Long menuId);
+    boolean hasChildByMenuId(Integer menuId);
 
     /**
-     * 是否存在菜单子节点
+     * check menu is assigned to role
      *
-     * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
+     * @param menuId menu ID
+     * @return {@link Boolean} if true, menu is assigned to role else not assigned to role
      */
-    boolean hasChildByMenuId(Long menuId);
-
-    /**
-     * 查询菜单是否存在角色
-     *
-     * @param menuId 菜单ID
-     * @return 结果 true 存在 false 不存在
-     */
-    boolean checkMenuExistRole(Long menuId);
-
-    /**
-     * 新增保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    boolean insertMenu(Menu menu);
-
-    /**
-     * 修改保存菜单信息
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    boolean updateMenu(Menu menu);
-
-    /**
-     * 删除菜单管理信息
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    boolean deleteMenuById(Long menuId);
-
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param menu 菜单信息
-     * @return 结果
-     */
-    String checkMenuNameUnique(Menu menu);
+    boolean checkMenuExistRole(Integer menuId);
 
     /**
      * Query permissions by role ID.

@@ -235,7 +235,7 @@ export default {
   'menu.typePlaceholder': 'Please select the menu type',
   'menu.perms': 'Permission ID',
   'menu.permsPlaceholder': 'Please enter the permission ID',
-  'menu.icon.reference': 'Menu icon reference',
+  'menu.icon.reference': 'Icon reference',
 
   'menu.type.dir': 'Directory',
   'menu.type.menu': 'Menu',

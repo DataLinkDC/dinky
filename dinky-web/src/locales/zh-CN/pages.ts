@@ -227,7 +227,7 @@ export default {
   'menu.typePlaceholder': '请选择菜单类型',
   'menu.perms': '权限标识',
   'menu.permsPlaceholder': '请输入权限标识',
-  'menu.icon.reference': '菜单图标参考',
+  'menu.icon.reference': '图标参考',
 
   'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
