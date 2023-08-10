@@ -33,85 +33,23 @@ public interface MenuMapper extends SuperMapper<Menu> {
 
     List<Menu> listAllMenus();
 
-    /**
-     * 查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
-     */
     List<Menu> selectMenuList(Menu menu);
 
-    /**
-     * 根据用户所有权限
-     *
-     * @return 权限列表
-     */
     List<String> selectMenuPerms();
 
-    /**
-     * 根据用户查询系统菜单列表
-     *
-     * @param menu 菜单信息
-     * @return 菜单列表
-     */
     List<Menu> selectMenuListByUserId(Menu menu);
 
-    /**
-     * 根据用户ID查询权限
-     *
-     * @param userId 用户ID
-     * @return 权限列表
-     */
     List<String> selectMenuPermsByUserId(Integer userId);
 
     List<Menu> listMenus4SuperAdmin();
 
-    /**
-     * 根据用户ID查询菜单
-     *
-     * @param userId 用户ID
-     * @return 菜单列表
-     */
     List<Menu> selectMenuTreeByUserId(@Param("userId") Integer userId);
 
-    /**
-     * 根据角色ID查询菜单树信息
-     *
-     * @param roleId 角色ID
-     * @return 选中菜单列表
-     */
-    List<Integer> selectMenuListByRoleId(Long roleId);
+    List<Integer> selectMenuListByRoleId(Integer roleId);
 
-    /**
-     * 根据菜单ID查询信息
-     *
-     * @param menuId 菜单ID
-     * @return 菜单信息
-     */
-    Menu selectMenuById(Long menuId);
+    int hasChildByMenuId(Integer menuId);
 
-    /**
-     * 是否存在菜单子节点
-     *
-     * @param menuId 菜单ID
-     * @return 结果
-     */
-    int hasChildByMenuId(Long menuId);
+    Menu checkMenuNameUnique(@Param("name") String name, @Param("parentId") Integer parentId);
 
-    /**
-     * 校验菜单名称是否唯一
-     *
-     * @param name 菜单名称
-     * @param parentId 父菜单ID
-     * @return 结果
-     */
-    Menu checkMenuNameUnique(@Param("name") String name, @Param("parentId") Long parentId);
-
-    /**
-     * Query permissions based on role ID.
-     *
-     * @param roleId role ID
-     * @return permission List
-     */
     List<String> selectMenuPermsByRoleId(Integer roleId);
 }

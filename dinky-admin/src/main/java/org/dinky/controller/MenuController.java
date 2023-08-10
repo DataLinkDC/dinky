@@ -75,7 +75,7 @@ public class MenuController {
      */
     @GetMapping("listMenus")
     @ApiOperation("Query Menu List")
-    public Result<List<TreeNodeDTO>> listMenus() {
+    public Result<List<Menu>> listMenus() {
         List<Menu> menus = menuService.list();
         return Result.data(menuService.buildMenuTreeSelect(menus));
     }
@@ -90,11 +90,7 @@ public class MenuController {
     @ApiOperation("Delete Menu By Id")
     @Log(title = "Delete Menu By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteMenuById(@RequestParam("id") Integer id) {
-        if (menuService.deleteMenuById(id)) {
-            return Result.succeed(Status.DELETE_SUCCESS);
-        } else {
-            return Result.failed(Status.DELETE_FAILED);
-        }
+        return menuService.deleteMenuById(id);
     }
 
     /**

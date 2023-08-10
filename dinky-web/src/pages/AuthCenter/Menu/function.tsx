@@ -19,35 +19,38 @@
 
 import {SysMenu} from "@/types/RegCenter/data";
 import {searchTreeNode} from "@/utils/function";
+import * as Icons from '@ant-design/icons';
 
-export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.map((item: SysMenu) => {
-    const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
+/**
+ * render icon
+ * @param {string} iconName
+ * @returns {JSX.Element}
+ */
+const renderIcon = (iconName: string) => {
+    // @ts-ignore
+    const RenderIcon = Icons[iconName]; // get icon component
+    return <RenderIcon key={iconName}/>;
+}
+
+/**
+ * build menu tree
+ * @param {SysMenu[]} data
+ * @param {string} searchValue
+ * @returns {any}
+ */
+export  const buildMenuTree = (data: SysMenu[],searchValue = ''): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.indexOf(searchValue) > -1)).map((item: SysMenu) => {
+    // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
 
     return {
-        isLeaf: false,
+        isLeaf: !item.children || item.children.length === 0,
         name: item.name,
         parentId: item.parentId,
-        // icon: parse(`${item.icon}`),
+        icon: renderIcon(item.icon),//
         content: item.note,
         path: item.path,
         title: searchTreeNode(item.name, searchValue),
         fullInfo: item,
         key: item.id,
-        children: item.children
-            // filter table by search value and map table to tree node
-            .filter((sub: SysMenu) => (sub.name.indexOf(searchValue) > -1))
-            .map((sub: SysMenu) => {
-                return {
-                    isLeaf: true,
-                    name: sub.name,
-                    parentId: sub.parentId,
-                    // icon: parse(item.icon),
-                    content: sub.note,
-                    path: sub.path,
-                    title: searchTreeNode(sub.name, searchValue),
-                    key: sub.id,
-                    fullInfo: sub,
-                };
-            }),
+        children: buildMenuTree(item.children,searchValue),
     }
 });

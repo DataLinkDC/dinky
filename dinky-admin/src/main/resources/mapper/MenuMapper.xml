@@ -106,10 +106,7 @@
         where r.is_delete = 0 and ur.user_id = #{userId}
     </select>
 
-    <select id="selectMenuById" parameterType="Long" resultMap="DinkySysMenuResult">
-        <include refid="selectMenuVo"/>
-        where id = #{menuId}
-    </select>
+
 
     <select id="hasChildByMenuId" resultType="Integer">
         select count(1) from dinky_sys_menu where parent_id = #{menuId} limit 1

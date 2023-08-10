@@ -20,20 +20,30 @@
 
 import React, {useEffect, useState} from 'react';
 import {Form, Space, TreeSelect} from 'antd';
-import {UserBaseInfo} from "@/types/User/data.d";
 import {FormContextValue} from '@/components/Context/FormContext';
-import {Key, ProForm, ProFormRadio, ProFormText, ProFormTextArea, ProFormTreeSelect} from "@ant-design/pro-components";
+import {
+    Key,
+    ProForm,
+    ProFormRadio,
+    ProFormSelect,
+    ProFormText,
+    ProFormTextArea,
+    ProFormTreeSelect
+} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
 import {SysMenu} from "@/types/RegCenter/data";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
-import {MENU_TYPE_OPTIONS} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
+import {
+    MENU_TYPE_OPTIONS,
+    MENU_ICON_OPTIONS
+} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 
 
 type MenuFormProps = {
     onCancel: (flag?: boolean) => void;
-    onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
-    values: Partial<UserBaseInfo.Role>;
+    onSubmit: (values: SysMenu) => void;
+    values: Partial<SysMenu>;
     open: boolean,
     disabled?: boolean;
     selectedKeys: Key[]
@@ -96,9 +106,9 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     /**
      * submit form
      */
-    const submitForm = async (formData: FormData) => {
+    const submitForm = async () => {
         await form.validateFields();
-        await handleSubmit({...values, ...formData});
+        await handleSubmit({...values, ...form.getFieldsValue()});
         await handleCancel();
     };
     /**
@@ -107,17 +117,8 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
      */
     const renderMenuForm = () => {
         return <>
-            {
-                values.id &&
-                <ProFormText
-                    name="id"
-                    label={'ID'}
-                    disabled
-                />
-            }
             <ProFormTreeSelect
                 hidden={isRootMenu}
-                initialValue={!isRootMenu ? selectedKeys : [0]}
                 shouldUpdate
                 name={'parentId'}
                 label={l('menu.parentId')}
@@ -157,15 +158,17 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
                 placeholder={l('menu.permsPlaceholder')}
                 rules={[{required: true, message: l('menu.permsPlaceholder')}]}
             />
-            <ProFormText
-                name="icon"
+
+            <ProFormSelect
+                addonAfter={
+                    <a key={'reference'} href={'https://ant.design/components/icon-cn'}>{l('menu.icon.reference')}</a>
+                }
+                name="icon" allowClear showSearch
+                mode={'single'} width={'md'}
+                options={MENU_ICON_OPTIONS()}
                 label={l('menu.icon')}
                 placeholder={l('menu.iconPlaceholder')}
                 rules={[{required: true, message: l('menu.iconPlaceholder')}]}
-                fieldProps={{
-                    addonAfter: <a type={'link'} target={'_blank'}
-                                   href={'https://ant.design/components/icon-cn'}>{l('menu.icon.reference')}</a>,
-                }}
             />
 
             <ProFormRadio.Group
@@ -195,7 +198,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
             disabled={disabled}
             {...FORM_LAYOUT_PUBLIC}
             form={form}
-            initialValues={values}
+            initialValues={{...values}} // init form data
             onReset={handleReset}
             onFinish={submitForm}
             submitter={{render: (_, dom) => <Space style={{display: 'flex', justifyContent: 'center'}}>{dom}</Space>,}}
