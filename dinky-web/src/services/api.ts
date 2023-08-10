@@ -87,12 +87,7 @@ export async function removeData(url: string, params: [any]) {
   });
 }
 export  function getSseData(url: string) {
-  const {REACT_APP_ENV = 'dev'} = process.env;
-
-  // @ts-ignore
-  const address = proxy[REACT_APP_ENV]["/api/"].target || ""
-
-  return new EventSource(address + url);
+  return new EventSource(url);
 }
 
 
