@@ -117,24 +117,19 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
      */
     const renderMenuForm = () => {
         return <>
-            {
-               <>
-                    <ProFormTreeSelect
-                        shouldUpdate
-                        name={'parentId'}
-                        label={l('menu.parentId')}
-                        rules={[{required: true, message: l('menu.parentIdPlaceholder')}]}
-                        placeholder={l('menu.parentIdPlaceholder')}
-                        fieldProps={{
-                            labelInValue: false,
-                            value: selectedKeys,
-                            treeData: buildMenuFormTree(treeData, searchValue,true),
-                            onSearch: value => setSearchValue(value),
-                            treeDefaultExpandAll: true,
-                        }}
-                    />
-                </>
-            }
+            <ProFormTreeSelect
+                shouldUpdate
+                name={'parentId'}
+                label={l('menu.parentId')}
+                rules={[{required: true, message: l('menu.parentIdPlaceholder')}]}
+                placeholder={l('menu.parentIdPlaceholder')}
+                fieldProps={{
+                    labelInValue: false,
+                    treeData: buildMenuFormTree(treeData, searchValue,true),
+                    onSearch: value => setSearchValue(value),
+                    treeDefaultExpandAll: true,
+                }}
+            />
             <ProFormText
                 name="name"
                 label={l('menu.name')}

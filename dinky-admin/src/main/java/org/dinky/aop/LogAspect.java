@@ -99,7 +99,11 @@ public class LogAspect {
             // *========数据库日志=========*//
             OperateLog operLog = new OperateLog();
             Result result = JSONUtil.toBean(JSONUtil.parseObj(jsonResult), Result.class);
-            operLog.setStatus(result.isSuccess()? BusinessStatus.SUCCESS.ordinal():BusinessStatus.FAIL.ordinal());
+            operLog.setStatus(
+                    result.isSuccess()
+                            ? BusinessStatus.SUCCESS.ordinal()
+                            : BusinessStatus.FAIL.ordinal());
+
             // 请求的地址
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
             operLog.setOperateIp(ip);
