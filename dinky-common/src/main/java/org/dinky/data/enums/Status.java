@@ -128,6 +128,12 @@ public enum Status {
     ROLE_NAME_EXIST(10201, "Role Already Exists", "角色已存在"),
     ROLE_NOT_EXIST(10202, "Role Not Exists", "角色不存在"),
 
+    // menu
+    MENU_NAME_EXIST(10301, "Menu Already Exists", "菜单已存在"),
+    MENU_NOT_EXIST(10302, "Menu Not Exists", "菜单不存在"),
+    MENU_HAS_CHILD(10303, "Menu Has Child, Can Not Delete", "存在子菜单 不允许删除"),
+    MENU_HAS_ASSIGN(10304, "Menu Has Assign , Can Not Delete", "菜单已分配,不允许删除"),
+
     /** database */
     DATASOURCE_CONNECT_SUCCESS(11001, "DataSource Connect Success", "数据源连接测试成功"),
     // 状态刷新完成

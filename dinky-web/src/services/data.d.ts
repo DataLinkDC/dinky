@@ -16,7 +16,8 @@
  */
 
 
-import {SaTokenInfo} from "@/types/User/data";
+import {SaTokenInfo, UserBaseInfo} from "@/types/User/data";
+import {SysMenu} from "@/types/RegCenter/data";
 
 declare namespace API {
   type Result = {
@@ -31,6 +32,7 @@ declare namespace API {
     roleList?: UserBaseInfo.Role[];
     tenantList?: UserBaseInfo.Tenant[];
     currentTenant?: UserBaseInfo.Tenant;
+    menuList?: SysMenu[];
     tokenInfo: SaTokenInfo;
   };
 
