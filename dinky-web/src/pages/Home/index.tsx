@@ -16,23 +16,24 @@
  *   limitations under the License.
  *
  */
-
-import {Col, Row} from 'antd';
-import JobOverView from "@/pages/Home/JobOverView";
-import {PageContainer} from "@ant-design/pro-components";
-import DevOverView from "@/pages/Home/DevOverView";
+import DevOverView from '@/pages/Home/DevOverView';
+import JobOverView from '@/pages/Home/JobOverView';
+import { PageContainer } from '@ant-design/pro-components';
+import { Col, Row } from 'antd';
 
 export default () => {
-  return <PageContainer title={false}>
-    <Row style={{marginTop: '5px', marginBottom: '10px'}}>
-      <Col span={24}>
-        <JobOverView/>
-      </Col>
-    </Row>
-    <Row>
-      <Col span={24}>
-        <DevOverView/>
-      </Col>
-    </Row>
-  </PageContainer>
-}
+  return (
+    <PageContainer title={false}>
+      <Row style={{ marginTop: '5px', marginBottom: '10px' }}>
+        <Col span={24}>
+          <JobOverView />
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <DevOverView />
+        </Col>
+      </Row>
+    </PageContainer>
+  );
+};
