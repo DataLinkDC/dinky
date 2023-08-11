@@ -33,5 +33,17 @@ public interface DorisConstant {
     /**
      * 查询指定schema.table下的所有列信息
      */
-    String QUERY_COLUMNS_BY_TABLE_AND_SCHEMA = "  show full columns from `%s`.`%s` ";
+    String QUERY_COLUMNS_BY_TABLE_AND_SCHEMA = "SELECT\n" +
+            "\tCOLUMN_NAME `Field`,\n" +
+            "\tCOLUMN_COMMENT `Comment`,\n" +
+            "\tCOLUMN_TYPE Type,\n" +
+            "\tDATA_TYPE,\n" +
+            "\tNUMERIC_PRECISION NUMERIC_PRECISION,\n" +
+            "\tNUMERIC_SCALE NUMERIC_SCALE,\n" +
+            "\tIF( COLUMN_KEY = 'UNI', 'YES', 'NO' ) `Key`,\n" +
+            "\tIS_NULLABLE `Null`,\n" +
+            "\tCOLUMN_DEFAULT `Default ` \n" +
+            " FROM information_schema.COLUMNS \n" +
+            " WHERE table_schema = '%s' AND table_name = '%s'";
+
 }

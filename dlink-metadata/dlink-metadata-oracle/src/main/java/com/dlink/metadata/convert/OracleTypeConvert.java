@@ -30,6 +30,7 @@ import com.dlink.model.ColumnType;
  * @since 2021/7/21 16:00
  **/
 public class OracleTypeConvert implements ITypeConvert {
+
     @Override
     public ColumnType convert(Column column) {
         ColumnType columnType = ColumnType.STRING;
@@ -70,6 +71,8 @@ public class OracleTypeConvert implements ITypeConvert {
             columnType = ColumnType.STRING;
         } else if (t.contains("blob")) {
             columnType = ColumnType.BYTES;
+        } else if (t.contains("binary_double")) {
+            columnType = ColumnType.JAVA_LANG_DOUBLE;
         }
         return columnType;
     }
