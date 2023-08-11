@@ -78,11 +78,10 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
             printIdentifier = objectIdentifier.asSerializableString();
         }
 
-        staticPartitions.forEach(
-                (key, value) -> {
-                    printIdentifier = null != printIdentifier ? printIdentifier + ":" : "";
-                    printIdentifier += key + "=" + value;
-                });
+        staticPartitions.forEach((key, value) -> {
+            printIdentifier = null != printIdentifier ? printIdentifier + ":" : "";
+            printIdentifier += key + "=" + value;
+        });
 
         return SinkFunctionProvider.of(
                 new PrintNetSinkFunction(hostname, port, serializer, converter, printIdentifier));
@@ -91,13 +90,7 @@ public class PrintNetDynamicTableSink implements DynamicTableSink, SupportsParti
     @Override
     public DynamicTableSink copy() {
         return new PrintNetDynamicTableSink(
-                type,
-                partitionKeys,
-                encodingFormat,
-                hostname,
-                port,
-                printIdentifier,
-                objectIdentifier);
+                type, partitionKeys, encodingFormat, hostname, port, printIdentifier, objectIdentifier);
     }
 
     @Override

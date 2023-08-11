@@ -46,7 +46,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/rowPermissions")
 public class RowPermissionsController {
 
-    @Autowired private RowPermissionsService roleSelectPermissionsService;
+    @Autowired
+    private RowPermissionsService roleSelectPermissionsService;
 
     /**
      * save or update roleSelectPermissions

@@ -101,27 +101,21 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                         Matcher m = Pattern.compile(",\\s*\\)").matcher(sql);
                         if (m.find()) {
                             sqlExplainResults.add(
-                                    SqlExplainResult.fail(
-                                            sql,
-                                            "No comma can be added to the last field of Table! "));
+                                    SqlExplainResult.fail(sql, "No comma can be added to the last field of Table! "));
                             break;
                         }
-                        sqlExplainResults.add(
-                                checkCreateTable((Clickhouse20CreateTableStatement) item));
+                        sqlExplainResults.add(checkCreateTable((Clickhouse20CreateTableStatement) item));
                     } else if (item instanceof SQLDropTableStatement) {
-                        sqlExplainResults.add(
-                                checkDropTable((SQLDropTableStatement) item, initialSql));
+                        sqlExplainResults.add(checkDropTable((SQLDropTableStatement) item, initialSql));
                     } else {
-                        sqlExplainResults.add(
-                                SqlExplainResult.success(type, current, explain.toString()));
+                        sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
                     }
                     continue;
                 }
                 preparedStatement = conn.get().prepareStatement("explain " + current);
                 results = preparedStatement.executeQuery();
                 while (results.next()) {
-                    explain.append(
-                            getTypeConvert().convertValue(results, "explain", "string") + "\r\n");
+                    explain.append(getTypeConvert().convertValue(results, "explain", "string") + "\r\n");
                 }
                 sqlExplainResults.add(SqlExplainResult.success(type, current, explain.toString()));
             }
@@ -136,18 +130,14 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
     private SqlExplainResult checkCreateTable(Clickhouse20CreateTableStatement sqlStatement) {
         if (existTable(Table.build(sqlStatement.getTableName()))) {
             if (sqlStatement.isIfNotExists()) {
-                return SqlExplainResult.success(
-                        sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+                return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
             } else {
-                String schema =
-                        null == sqlStatement.getSchema() ? "" : sqlStatement.getSchema() + ".";
+                String schema = null == sqlStatement.getSchema() ? "" : sqlStatement.getSchema() + ".";
                 return SqlExplainResult.fail(
-                        sqlStatement.toString(),
-                        "Table " + schema + sqlStatement.getTableName() + " already exists.");
+                        sqlStatement.toString(), "Table " + schema + sqlStatement.getTableName() + " already exists.");
             }
         } else {
-            return SqlExplainResult.success(
-                    sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+            return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
     }
 
@@ -155,8 +145,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
         SQLExprTableSource sqlExprTableSource = sqlStatement.getTableSources().get(0);
         if (!existTable(Table.build(sqlExprTableSource.getTableName()))) {
             if (Pattern.compile("(?i)if exists").matcher(sql).find()) {
-                return SqlExplainResult.success(
-                        sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+                return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
             } else {
                 return SqlExplainResult.fail(
                         sqlStatement.toString(),
@@ -167,8 +156,7 @@ public class ClickHouseDriver extends AbstractJdbcDriver {
                                 + " not exists.");
             }
         } else {
-            return SqlExplainResult.success(
-                    sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
+            return SqlExplainResult.success(sqlStatement.getClass().getSimpleName(), sqlStatement.toString(), null);
         }
     }
 

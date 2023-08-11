@@ -37,8 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 public class TenantInterceptor implements AsyncHandlerInterceptor {
 
     @Override
-    public boolean preHandle(
-            HttpServletRequest request, HttpServletResponse response, Object handler)
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws Exception {
         boolean isPass = false;
         Cookie[] cookies = request.getCookies();
@@ -48,8 +47,7 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                 switch (cookie.getName()) {
                     case "satoken":
                         token = Opt.ofBlankAble(cookie.getValue());
-                        if (SaManager.getSaTokenDao().get("satoken:login:token:" + token.get())
-                                != null) {
+                        if (SaManager.getSaTokenDao().get("satoken:login:token:" + token.get()) != null) {
                             isPass = true;
                         }
                         break;

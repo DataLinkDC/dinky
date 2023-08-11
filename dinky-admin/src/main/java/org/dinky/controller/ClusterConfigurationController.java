@@ -65,8 +65,7 @@ public class ClusterConfigurationController {
     @PutMapping
     @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Cluster Config")
-    public Result<Void> saveOrUpdateClusterConfig(
-            @RequestBody ClusterConfiguration clusterConfiguration) {
+    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfiguration clusterConfiguration) {
         Integer id = clusterConfiguration.getId();
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());

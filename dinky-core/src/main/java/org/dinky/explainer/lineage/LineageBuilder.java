@@ -49,8 +49,7 @@ public class LineageBuilder {
             if (tableMap.containsKey(sourceTablePath)) {
                 LineageTable lineageTable = tableMap.get(sourceTablePath);
                 LineageColumn lineageColumn =
-                        LineageColumn.build(
-                                lineageRel.getSourceColumn(), lineageRel.getSourceColumn());
+                        LineageColumn.build(lineageRel.getSourceColumn(), lineageRel.getSourceColumn());
                 if (!lineageTable.getColumns().contains(lineageColumn)) {
                     lineageTable.getColumns().add(lineageColumn);
                 }
@@ -60,10 +59,7 @@ public class LineageBuilder {
                 LineageTable lineageTable = LineageTable.build(tableIndex + "", sourceTablePath);
                 lineageTable
                         .getColumns()
-                        .add(
-                                LineageColumn.build(
-                                        lineageRel.getSourceColumn(),
-                                        lineageRel.getSourceColumn()));
+                        .add(LineageColumn.build(lineageRel.getSourceColumn(), lineageRel.getSourceColumn()));
                 tableMap.put(sourceTablePath, lineageTable);
                 sourceTableId = lineageTable.getId();
             }
@@ -71,8 +67,7 @@ public class LineageBuilder {
             if (tableMap.containsKey(targetTablePath)) {
                 LineageTable lineageTable = tableMap.get(targetTablePath);
                 LineageColumn lineageColumn =
-                        LineageColumn.build(
-                                lineageRel.getTargetColumn(), lineageRel.getTargetColumn());
+                        LineageColumn.build(lineageRel.getTargetColumn(), lineageRel.getTargetColumn());
                 if (!lineageTable.getColumns().contains(lineageColumn)) {
                     lineageTable.getColumns().add(lineageColumn);
                 }
@@ -82,19 +77,12 @@ public class LineageBuilder {
                 LineageTable lineageTable = LineageTable.build(tableIndex + "", targetTablePath);
                 lineageTable
                         .getColumns()
-                        .add(
-                                LineageColumn.build(
-                                        lineageRel.getTargetColumn(),
-                                        lineageRel.getTargetColumn()));
+                        .add(LineageColumn.build(lineageRel.getTargetColumn(), lineageRel.getTargetColumn()));
                 tableMap.put(targetTablePath, lineageTable);
                 targetTableId = lineageTable.getId();
             }
-            LineageRelation lineageRelation =
-                    LineageRelation.build(
-                            sourceTableId,
-                            targetTableId,
-                            lineageRel.getSourceColumn(),
-                            lineageRel.getTargetColumn());
+            LineageRelation lineageRelation = LineageRelation.build(
+                    sourceTableId, targetTableId, lineageRel.getSourceColumn(), lineageRel.getTargetColumn());
             if (!relations.contains(lineageRelation)) {
                 relIndex++;
                 lineageRelation.setId(relIndex + "");

@@ -80,8 +80,8 @@ public class PhoenixTableSourceSinkFactory
     @Override
     public Map<String, String> requiredContext() {
         Map<String, String> context = new HashMap<>();
-        //context.put(CONNECTOR_TYPE, CONNECTOR_TYPE_VALUE_JDBC); // jdbc
-        context.put(CONNECTOR_TYPE,CONNECTOR_TYPE_VALUE_JDBC); // phoenix
+        // context.put(CONNECTOR_TYPE, CONNECTOR_TYPE_VALUE_JDBC); // jdbc
+        context.put(CONNECTOR_TYPE, CONNECTOR_TYPE_VALUE_JDBC); // phoenix
         context.put(CONNECTOR_PROPERTY_VERSION, "1"); // backwards compatibility
 
         return context;
@@ -91,7 +91,7 @@ public class PhoenixTableSourceSinkFactory
     public List<String> supportedProperties() {
         List<String> properties = new ArrayList<>();
 
-        //phoenix
+        // phoenix
         properties.add(PHOENIX_SCHEMA_NAMESPACE_MAPPING_ENABLE);
         properties.add(PHOENIX_SCHEMA_MAP_SYSTEMTABLE_ENABLE);
 
@@ -138,7 +138,7 @@ public class PhoenixTableSourceSinkFactory
         properties.add(SCHEMA + "." + DescriptorProperties.PRIMARY_KEY_COLUMNS);
 
         // comment
-        //properties.add(COMMENT);
+        // properties.add(COMMENT);
 
         return properties;
     }
@@ -146,8 +146,7 @@ public class PhoenixTableSourceSinkFactory
     @Override
     public StreamTableSource<Row> createStreamTableSource(Map<String, String> properties) {
         DescriptorProperties descriptorProperties = getValidatedProperties(properties);
-        TableSchema schema =
-                TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
+        TableSchema schema = TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
 
         return PhoenixTableSource.builder()
                 .setOptions(getJdbcOptions(descriptorProperties))
@@ -158,26 +157,19 @@ public class PhoenixTableSourceSinkFactory
     }
 
     @Override
-    public StreamTableSink<Tuple2<Boolean, Row>> createStreamTableSink(
-            Map<String, String> properties) {
+    public StreamTableSink<Tuple2<Boolean, Row>> createStreamTableSink(Map<String, String> properties) {
         DescriptorProperties descriptorProperties = getValidatedProperties(properties);
-        TableSchema schema =
-                TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
+        TableSchema schema = TableSchemaUtils.getPhysicalSchema(descriptorProperties.getTableSchema(SCHEMA));
 
-        final PhoenixUpsertTableSink.Builder builder =
-                PhoenixUpsertTableSink.builder()
-                        .setOptions(getJdbcOptions(descriptorProperties))
-                        .setTableSchema(schema);
+        final PhoenixUpsertTableSink.Builder builder = PhoenixUpsertTableSink.builder()
+                .setOptions(getJdbcOptions(descriptorProperties))
+                .setTableSchema(schema);
 
-        descriptorProperties
-                .getOptionalInt(CONNECTOR_WRITE_FLUSH_MAX_ROWS)
-                .ifPresent(builder::setFlushMaxSize);
+        descriptorProperties.getOptionalInt(CONNECTOR_WRITE_FLUSH_MAX_ROWS).ifPresent(builder::setFlushMaxSize);
         descriptorProperties
                 .getOptionalDuration(CONNECTOR_WRITE_FLUSH_INTERVAL)
                 .ifPresent(s -> builder.setFlushIntervalMills(s.toMillis()));
-        descriptorProperties
-                .getOptionalInt(CONNECTOR_WRITE_MAX_RETRIES)
-                .ifPresent(builder::setMaxRetryTimes);
+        descriptorProperties.getOptionalInt(CONNECTOR_WRITE_MAX_RETRIES).ifPresent(builder::setMaxRetryTimes);
 
         return builder.build();
     }
@@ -194,13 +186,14 @@ public class PhoenixTableSourceSinkFactory
 
     private JdbcOptions getJdbcOptions(DescriptorProperties descriptorProperties) {
         final String url = descriptorProperties.getString(CONNECTOR_URL);
-        final JdbcOptions.Builder builder =
-                JdbcOptions.builder()
-                        .setDBUrl(url)
-                        .setTableName(descriptorProperties.getString(CONNECTOR_TABLE))
-                        .setDialect(JdbcDialects.get(url).get())
-                        .setNamespaceMappingEnabled(Boolean.parseBoolean(descriptorProperties.getString(PHOENIX_SCHEMA_NAMESPACE_MAPPING_ENABLE)))
-                        .setMapSystemTablesEnabled(Boolean.parseBoolean(descriptorProperties.getString(PHOENIX_SCHEMA_MAP_SYSTEMTABLE_ENABLE)));
+        final JdbcOptions.Builder builder = JdbcOptions.builder()
+                .setDBUrl(url)
+                .setTableName(descriptorProperties.getString(CONNECTOR_TABLE))
+                .setDialect(JdbcDialects.get(url).get())
+                .setNamespaceMappingEnabled(
+                        Boolean.parseBoolean(descriptorProperties.getString(PHOENIX_SCHEMA_NAMESPACE_MAPPING_ENABLE)))
+                .setMapSystemTablesEnabled(
+                        Boolean.parseBoolean(descriptorProperties.getString(PHOENIX_SCHEMA_MAP_SYSTEMTABLE_ENABLE)));
 
         descriptorProperties
                 .getOptionalDuration(CONNECTOR_CONNECTION_MAX_RETRY_TIMEOUT)
@@ -220,8 +213,7 @@ public class PhoenixTableSourceSinkFactory
                 descriptorProperties.getOptionalLong(CONNECTOR_READ_PARTITION_LOWER_BOUND);
         final Optional<Long> partitionUpper =
                 descriptorProperties.getOptionalLong(CONNECTOR_READ_PARTITION_UPPER_BOUND);
-        final Optional<Integer> numPartitions =
-                descriptorProperties.getOptionalInt(CONNECTOR_READ_PARTITION_NUM);
+        final Optional<Integer> numPartitions = descriptorProperties.getOptionalInt(CONNECTOR_READ_PARTITION_NUM);
 
         final JdbcReadOptions.Builder builder = JdbcReadOptions.builder();
         if (query.isPresent()) {
@@ -233,9 +225,7 @@ public class PhoenixTableSourceSinkFactory
             builder.setPartitionUpperBound(partitionUpper.get());
             builder.setNumPartitions(numPartitions.get());
         }
-        descriptorProperties
-                .getOptionalInt(CONNECTOR_READ_FETCH_SIZE)
-                .ifPresent(builder::setFetchSize);
+        descriptorProperties.getOptionalInt(CONNECTOR_READ_FETCH_SIZE).ifPresent(builder::setFetchSize);
 
         return builder.build();
     }
@@ -243,15 +233,11 @@ public class PhoenixTableSourceSinkFactory
     private JdbcLookupOptions getJdbcLookupOptions(DescriptorProperties descriptorProperties) {
         final JdbcLookupOptions.Builder builder = JdbcLookupOptions.builder();
 
-        descriptorProperties
-                .getOptionalLong(CONNECTOR_LOOKUP_CACHE_MAX_ROWS)
-                .ifPresent(builder::setCacheMaxSize);
+        descriptorProperties.getOptionalLong(CONNECTOR_LOOKUP_CACHE_MAX_ROWS).ifPresent(builder::setCacheMaxSize);
         descriptorProperties
                 .getOptionalDuration(CONNECTOR_LOOKUP_CACHE_TTL)
                 .ifPresent(s -> builder.setCacheExpireMs(s.toMillis()));
-        descriptorProperties
-                .getOptionalInt(CONNECTOR_LOOKUP_MAX_RETRIES)
-                .ifPresent(builder::setMaxRetryTimes);
+        descriptorProperties.getOptionalInt(CONNECTOR_LOOKUP_MAX_RETRIES).ifPresent(builder::setMaxRetryTimes);
 
         return builder.build();
     }

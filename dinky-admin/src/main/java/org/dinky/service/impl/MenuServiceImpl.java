@@ -56,10 +56,14 @@ import cn.hutool.core.util.StrUtil;
 @Service
 public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implements MenuService {
 
-    @Autowired private RoleMenuService roleMenuService;
+    @Autowired
+    private RoleMenuService roleMenuService;
 
-    @Autowired private MenuMapper menuMapper;
-    @Autowired private RoleMenuMapper roleMenuMapper;
+    @Autowired
+    private MenuMapper menuMapper;
+
+    @Autowired
+    private RoleMenuMapper roleMenuMapper;
 
     /**
      * Delete menu by id
@@ -93,8 +97,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     @Override
     public List<Integer> selectMenuListByRoleId(Integer roleId) {
         List<RoleMenu> roleMenuList =
-                roleMenuService.list(
-                        new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
+                roleMenuService.list(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
         return roleMenuList.stream().map(RoleMenu::getMenuId).collect(Collectors.toList());
     }
 
@@ -211,10 +214,7 @@ public class MenuServiceImpl extends SuperServiceImpl<MenuMapper, Menu> implemen
     public List<Menu> buildMenuTree(List<Menu> menus) {
         // sort
         if (CollectionUtil.isNotEmpty(menus)) {
-            menus =
-                    menus.stream()
-                            .sorted(Comparator.comparing(Menu::getId))
-                            .collect(Collectors.toList());
+            menus = menus.stream().sorted(Comparator.comparing(Menu::getId)).collect(Collectors.toList());
         }
 
         List<Menu> returnList = new ArrayList<>();

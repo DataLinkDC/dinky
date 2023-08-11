@@ -34,8 +34,7 @@ import org.slf4j.LoggerFactory;
  */
 public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValuesProvider {
 
-    protected static final Logger logger =
-            LoggerFactory.getLogger(JdbcDatetimeBetweenParametersProvider.class);
+    protected static final Logger logger = LoggerFactory.getLogger(JdbcDatetimeBetweenParametersProvider.class);
     private final long minVal;
     private final long maxVal;
     private long batchSize;
@@ -93,7 +92,7 @@ public class JdbcDatetimeBetweenParametersProvider implements JdbcParameterValue
     public Serializable[][] getParameterValues() {
         Preconditions.checkState(
                 batchSize > 0,
-                "Batch size and batch number must be positive. Have you called `ofBatchSize` or `ofBatchNum`?");
+                "Batch size and batch number must be positive. Have you called `ofBatchSize` or" + " `ofBatchNum`?");
         long maxElemCount = (maxVal - minVal) + 1;
         long bigBatchNum = maxElemCount - (batchSize - 1) * batchNum;
         Serializable[][] parameters = new Serializable[batchNum][2];

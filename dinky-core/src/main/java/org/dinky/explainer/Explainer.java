@@ -117,8 +117,7 @@ public class Explainer {
             }
             SqlType operationType = Operations.getOperationType(statement);
             if (operationType.equals(SqlType.ADD)) {
-                AddJarSqlParser.getAllFilePath(statement)
-                        .forEach(FlinkUdfPathContextHolder::addOtherPlugins);
+                AddJarSqlParser.getAllFilePath(statement).forEach(FlinkUdfPathContextHolder::addOtherPlugins);
                 DinkyClassLoaderContextHolder.get()
                         .addURL(URLUtils.getURLs(FlinkUdfPathContextHolder.getOtherPluginsFiles()));
             } else if (operationType.equals(SqlType.ADD_JAR)) {
@@ -139,15 +138,11 @@ public class Explainer {
             } else if (operationType.equals(SqlType.EXECUTE)) {
                 execute.add(new StatementParam(statement, operationType));
             } else if (operationType.equals(SqlType.WATCH)) {
-                WatchStatementExplainer watchStatementExplainer =
-                        new WatchStatementExplainer(statement);
+                WatchStatementExplainer watchStatementExplainer = new WatchStatementExplainer(statement);
 
                 String[] tableNames = watchStatementExplainer.getTableNames();
                 for (String tableName : tableNames) {
-                    trans.add(
-                            new StatementParam(
-                                    WatchStatementExplainer.getCreateStatement(tableName),
-                                    SqlType.CTAS));
+                    trans.add(new StatementParam(WatchStatementExplainer.getCreateStatement(tableName), SqlType.CTAS));
                 }
             } else {
                 UDF udf = UDFUtil.toUDF(statement);
@@ -301,9 +296,7 @@ public class Explainer {
             record.setIndex(index++);
             sqlExplainRecords.add(record);
         }
-        process.info(
-                StrUtil.format(
-                        "A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
+        process.info(StrUtil.format("A total of {} FlinkSQL have been Explained.", sqlExplainRecords.size()));
         return new ExplainResult(correct, sqlExplainRecords.size(), sqlExplainRecords);
     }
 
@@ -317,9 +310,7 @@ public class Explainer {
 
         if (!jobParam.getExecute().isEmpty()) {
             List<String> datastreamPlans =
-                    jobParam.getExecute().stream()
-                            .map(StatementParam::getValue)
-                            .collect(Collectors.toList());
+                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
             return executor.getStreamGraphFromDataStream(datastreamPlans);
         }
         return mapper.createObjectNode();
@@ -335,25 +326,21 @@ public class Explainer {
 
         if (!jobParam.getExecute().isEmpty()) {
             List<String> datastreamPlans =
-                    jobParam.getExecute().stream()
-                            .map(StatementParam::getValue)
-                            .collect(Collectors.toList());
+                    jobParam.getExecute().stream().map(StatementParam::getValue).collect(Collectors.toList());
             return executor.getJobPlanInfoFromDataStream(datastreamPlans);
         }
-        throw new RuntimeException(
-                "Creating job plan fails because this job doesn't contain an insert statement.");
+        throw new RuntimeException("Creating job plan fails because this job doesn't contain an insert statement.");
     }
 
     public List<LineageRel> getLineage(String statement) {
-        JobConfig jobConfig =
-                new JobConfig(
-                        "local",
-                        false,
-                        false,
-                        true,
-                        useStatementSet,
-                        1,
-                        executor.getTableConfig().getConfiguration().toMap());
+        JobConfig jobConfig = new JobConfig(
+                "local",
+                false,
+                false,
+                true,
+                useStatementSet,
+                1,
+                executor.getTableConfig().getConfiguration().toMap());
         this.initialize(JobManager.buildPlanMode(jobConfig), jobConfig, statement);
 
         List<LineageRel> lineageRelList = new ArrayList<>();
@@ -366,8 +353,7 @@ public class Explainer {
                 SqlType operationType = Operations.getOperationType(sql);
                 if (operationType.equals(SqlType.INSERT)) {
                     lineageRelList.addAll(executor.getLineage(sql));
-                } else if (!operationType.equals(SqlType.SELECT)
-                        && !operationType.equals(SqlType.WATCH)) {
+                } else if (!operationType.equals(SqlType.SELECT) && !operationType.equals(SqlType.WATCH)) {
                     executor.executeSql(sql);
                 }
             } catch (Exception e) {

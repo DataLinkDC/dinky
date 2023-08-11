@@ -47,48 +47,40 @@ import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
 public class MybatisPlusCustomizer implements SqlSessionFactoryBeanCustomizer {
 
     // must keep this injection, otherwise the springContextUtils and cryptoComponent will be null
-    @Resource private SpringContextUtils springContextUtils;
-    @Resource private CryptoComponent cryptoComponent;
+    @Resource
+    private SpringContextUtils springContextUtils;
+
+    @Resource
+    private CryptoComponent cryptoComponent;
 
     @Override
     public void customize(MybatisSqlSessionFactoryBean factoryBean) {
-        factoryBean.setConfiguration(
-                new MybatisConfiguration() {
-                    @Override
-                    public void addMappedStatement(MappedStatement ms) {
-                        final String ns = ms.getId().replaceAll("(.*Mapper)\\.\\w+$", "$1");
-                        final MapperBuilderAssistant builderAssistant =
-                                new MapperBuilderAssistant(ms.getConfiguration(), "");
+        factoryBean.setConfiguration(new MybatisConfiguration() {
+            @Override
+            public void addMappedStatement(MappedStatement ms) {
+                final String ns = ms.getId().replaceAll("(.*Mapper)\\.\\w+$", "$1");
+                final MapperBuilderAssistant builderAssistant = new MapperBuilderAssistant(ms.getConfiguration(), "");
 
-                        builderAssistant.setCurrentNamespace(ns);
-                        boolean[] changes = new boolean[] {false};
-                        final List<ResultMap> collect =
-                                ms.getResultMaps().stream()
-                                        .map(
-                                                m ->
-                                                        MybatisPlusCustomizer.getResultMap(
-                                                                ms, builderAssistant, changes, m))
-                                        .collect(Collectors.toList());
+                builderAssistant.setCurrentNamespace(ns);
+                boolean[] changes = new boolean[] {false};
+                final List<ResultMap> collect = ms.getResultMaps().stream()
+                        .map(m -> MybatisPlusCustomizer.getResultMap(ms, builderAssistant, changes, m))
+                        .collect(Collectors.toList());
 
-                        if (changes[0]) {
-                            final Field field =
-                                    ReflectionUtils.findField(ms.getClass(), "resultMaps");
-                            if (field != null) {
-                                ReflectionUtils.makeAccessible(field);
-                                ReflectionUtils.setField(
-                                        field, ms, Collections.unmodifiableList(collect));
-                            }
-                        }
-                        super.addMappedStatement(ms);
+                if (changes[0]) {
+                    final Field field = ReflectionUtils.findField(ms.getClass(), "resultMaps");
+                    if (field != null) {
+                        ReflectionUtils.makeAccessible(field);
+                        ReflectionUtils.setField(field, ms, Collections.unmodifiableList(collect));
                     }
-                });
+                }
+                super.addMappedStatement(ms);
+            }
+        });
     }
 
     private static ResultMap getResultMap(
-            MappedStatement ms,
-            MapperBuilderAssistant builderAssistant,
-            boolean[] changes,
-            ResultMap m) {
+            MappedStatement ms, MapperBuilderAssistant builderAssistant, boolean[] changes, ResultMap m) {
         // 仅ResultType为Table且包含TypeHandler时，替换ResultMap为MybatisPlus生成的
         if (m.getType().getAnnotation(TableName.class) == null) {
             return m;

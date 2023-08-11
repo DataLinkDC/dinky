@@ -105,11 +105,8 @@ public class APIServiceImpl implements APIService {
     public SavePointResult savepoint(APISavePointDTO apiSavePointDTO) {
         JobConfig jobConfig = apiSavePointDTO.getJobConfig();
         JobManager jobManager = JobManager.build(jobConfig);
-        SavePointResult savepoint =
-                jobManager.savepoint(
-                        apiSavePointDTO.getJobId(),
-                        apiSavePointDTO.getSavePointType(),
-                        apiSavePointDTO.getSavePoint());
+        SavePointResult savepoint = jobManager.savepoint(
+                apiSavePointDTO.getJobId(), apiSavePointDTO.getSavePointType(), apiSavePointDTO.getSavePoint());
         RunTimeUtil.recovery(jobManager);
         return savepoint;
     }

@@ -41,8 +41,7 @@ public class ProTableUtil {
      * @Author wenmo @Description 自动装载表格分页排序参数 @Date 2021/5/18 @Param [para, wrapper,
      * camelToUnderscore, isDelete]
      */
-    public static void autoQuery(
-            JsonNode para, QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
+    public static void autoQuery(JsonNode para, QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
         buildDelete(wrapper, camelToUnderscore, isDelete);
         JsonNode sortField = para.get("sorter");
         if (sortField != null) {
@@ -62,8 +61,7 @@ public class ProTableUtil {
         }
     }
 
-    private static void buildDelete(
-            QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
+    private static void buildDelete(QueryWrapper<?> wrapper, boolean camelToUnderscore, boolean isDelete) {
         if (isDelete) {
             if (camelToUnderscore) {
                 wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, "is_delete"), 0);
@@ -74,10 +72,7 @@ public class ProTableUtil {
     }
 
     private static void buildSort(
-            String sortField,
-            String sortValue,
-            QueryWrapper<?> wrapper,
-            boolean camelToUnderscore) {
+            String sortField, String sortValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
         if (sortField != null && sortValue != null) {
             if (camelToUnderscore) {
                 sortField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, sortField);
@@ -95,10 +90,7 @@ public class ProTableUtil {
     }
 
     private static void buildFilter(
-            String searchField,
-            JsonNode searchValue,
-            QueryWrapper<?> wrapper,
-            boolean camelToUnderscore) {
+            String searchField, JsonNode searchValue, QueryWrapper<?> wrapper, boolean camelToUnderscore) {
         if (searchField != null && !searchField.equals("") && searchValue != null) {
             if (camelToUnderscore) {
                 searchField = CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, searchField);
@@ -116,27 +108,25 @@ public class ProTableUtil {
             }
             if (searchValues.size() > 0) {
                 if ("Number".equals(type)) {
-                    wrapper.and(
-                            qw -> {
-                                for (int i = 0; i < searchValues.size(); i++) {
-                                    Double itemField = Double.parseDouble(searchValues.get(i));
-                                    if (i > 0) {
-                                        qw.or();
-                                    }
-                                    qw.eq("a." + field, itemField);
-                                }
-                            });
+                    wrapper.and(qw -> {
+                        for (int i = 0; i < searchValues.size(); i++) {
+                            Double itemField = Double.parseDouble(searchValues.get(i));
+                            if (i > 0) {
+                                qw.or();
+                            }
+                            qw.eq("a." + field, itemField);
+                        }
+                    });
                 } else {
-                    wrapper.and(
-                            qw -> {
-                                for (int i = 0; i < searchValues.size(); i++) {
-                                    String itemField = searchValues.get(i);
-                                    if (i > 0) {
-                                        qw.or();
-                                    }
-                                    qw.eq("a." + field, itemField);
-                                }
-                            });
+                    wrapper.and(qw -> {
+                        for (int i = 0; i < searchValues.size(); i++) {
+                            String itemField = searchValues.get(i);
+                            if (i > 0) {
+                                qw.or();
+                            }
+                            qw.eq("a." + field, itemField);
+                        }
+                    });
                 }
             }
         }
@@ -147,11 +137,7 @@ public class ProTableUtil {
      *     blackarr, writearr, camelToUnderscore]
      */
     public static void autoSetFromPara(
-            QueryWrapper<?> wrapper,
-            JsonNode para,
-            String[] blackarr,
-            String[] writearr,
-            boolean camelToUnderscore) {
+            QueryWrapper<?> wrapper, JsonNode para, String[] blackarr, String[] writearr, boolean camelToUnderscore) {
         List<String> blacklist = Arrays.asList(blackarr);
         List<String> writelist = Arrays.asList(writearr);
         if (para.isObject()) {
@@ -164,10 +150,7 @@ public class ProTableUtil {
                         Double mapValue = entry.getValue().asDouble();
                         if (mapValue != null) {
                             if (camelToUnderscore) {
-                                wrapper.eq(
-                                        CaseFormat.LOWER_CAMEL.to(
-                                                CaseFormat.LOWER_UNDERSCORE, mapKey),
-                                        mapValue);
+                                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapKey), mapValue);
                             } else {
                                 wrapper.eq(mapKey, mapValue);
                             }
@@ -176,10 +159,7 @@ public class ProTableUtil {
                         String mapValue = entry.getValue().asText();
                         if (mapValue != null && !"".equals(mapValue)) {
                             if (camelToUnderscore) {
-                                wrapper.eq(
-                                        CaseFormat.LOWER_CAMEL.to(
-                                                CaseFormat.LOWER_UNDERSCORE, mapKey),
-                                        mapValue);
+                                wrapper.eq(CaseFormat.LOWER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, mapKey), mapValue);
                             } else {
                                 wrapper.eq(mapKey, mapValue);
                             }

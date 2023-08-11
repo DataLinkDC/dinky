@@ -61,17 +61,12 @@ public class Job2MysqlHandler implements JobHandler {
 
     static {
         historyService = SpringContextUtils.getBean("historyServiceImpl", HistoryService.class);
-        clusterInstanceService =
-                SpringContextUtils.getBean(
-                        "clusterInstanceServiceImpl", ClusterInstanceService.class);
+        clusterInstanceService = SpringContextUtils.getBean("clusterInstanceServiceImpl", ClusterInstanceService.class);
         clusterConfigurationService =
-                SpringContextUtils.getBean(
-                        "clusterConfigurationServiceImpl", ClusterConfigurationService.class);
+                SpringContextUtils.getBean("clusterConfigurationServiceImpl", ClusterConfigurationService.class);
         jarService = SpringContextUtils.getBean("jarServiceImpl", JarService.class);
-        jobInstanceService =
-                SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
-        jobHistoryService =
-                SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
+        jobInstanceService = SpringContextUtils.getBean("jobInstanceServiceImpl", JobInstanceService.class);
+        jobHistoryService = SpringContextUtils.getBean("jobHistoryServiceImpl", JobHistoryService.class);
         taskService = SpringContextUtils.getBean("taskServiceImpl", TaskService.class);
     }
 
@@ -136,29 +131,25 @@ public class Job2MysqlHandler implements JobHandler {
         Cluster cluster;
         final Integer clusterConfigurationId = job.getJobConfig().getClusterConfigurationId();
         if (job.isUseGateway()) {
-            cluster =
-                    clusterInstanceService.registersCluster(
-                            Cluster.autoRegistersCluster(
-                                    job.getJobManagerAddress(),
-                                    job.getJobId(),
-                                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                                    job.getType().getLongValue(),
-                                    clusterConfigurationId,
-                                    taskId));
+            cluster = clusterInstanceService.registersCluster(Cluster.autoRegistersCluster(
+                    job.getJobManagerAddress(),
+                    job.getJobId(),
+                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
+                    job.getType().getLongValue(),
+                    clusterConfigurationId,
+                    taskId));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
         } else if (GatewayType.LOCAL.equalsValue(job.getJobConfig().getType())
                 && Asserts.isNotNullString(job.getJobManagerAddress())) {
-            cluster =
-                    clusterInstanceService.registersCluster(
-                            Cluster.autoRegistersCluster(
-                                    job.getJobManagerAddress(),
-                                    job.getJobId(),
-                                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
-                                    job.getType().getLongValue(),
-                                    null,
-                                    taskId));
+            cluster = clusterInstanceService.registersCluster(Cluster.autoRegistersCluster(
+                    job.getJobManagerAddress(),
+                    job.getJobId(),
+                    job.getJobConfig().getJobName() + "_" + LocalDateTime.now(),
+                    job.getType().getLongValue(),
+                    null,
+                    taskId));
             if (Asserts.isNotNull(cluster)) {
                 clusterId = cluster.getId();
             }
@@ -198,14 +189,14 @@ public class Job2MysqlHandler implements JobHandler {
 
         jobHistory.setJarJson(
                 Asserts.isNotNull(job.getJobConfig().getJarId())
-                        ? JSONUtil.toJsonString(jarService.getById(job.getJobConfig().getJarId()))
+                        ? JSONUtil.toJsonString(
+                                jarService.getById(job.getJobConfig().getJarId()))
                         : null);
 
         jobHistory.setClusterConfigurationJson(
                 Asserts.isNotNull(clusterConfigurationId)
                         ? JSONUtil.toJsonString(
-                                clusterConfigurationService.getClusterConfigById(
-                                        clusterConfigurationId))
+                                clusterConfigurationService.getClusterConfigById(clusterConfigurationId))
                         : null);
         jobHistoryService.save(jobHistory);
 

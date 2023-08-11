@@ -99,28 +99,15 @@ public class FlinkConfig {
                 e.printStackTrace();
             }
             Objects.requireNonNull(paras)
-                    .forEach(
-                            node ->
-                                    configMap.put(
-                                            node.get("key").asText(), node.get("value").asText()));
+                    .forEach(node -> configMap.put(
+                            node.get("key").asText(), node.get("value").asText()));
         }
         return new FlinkConfig(
-                jobName,
-                jobId,
-                ActionType.get(actionStr),
-                SavePointType.get(savePointTypeStr),
-                savePoint,
-                configMap);
+                jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, configMap);
     }
 
-    public static FlinkConfig build(
-            String jobId, String actionStr, String savePointTypeStr, String savePoint) {
+    public static FlinkConfig build(String jobId, String actionStr, String savePointTypeStr, String savePoint) {
         return new FlinkConfig(
-                null,
-                jobId,
-                ActionType.get(actionStr),
-                SavePointType.get(savePointTypeStr),
-                savePoint,
-                null);
+                null, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, null);
     }
 }

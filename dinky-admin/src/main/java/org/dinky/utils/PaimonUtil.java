@@ -68,11 +68,9 @@ public class PaimonUtil {
     private static final String DINKY_DB = "dinky_db";
     private static final Map<Identifier, Schema> SCHEMA_MAP = new HashMap<>();
     private static final CatalogContext CONTEXT =
-            CatalogContext.create(
-                    new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
+            CatalogContext.create(new Path(URLUtil.toURI(URLUtil.url(PathConstant.TMP_PATH + "paimon"))));
     private static final Catalog CATALOG = CatalogFactory.createCatalog(CONTEXT);
-    public static final Identifier METRICS_IDENTIFIER =
-            Identifier.create(DINKY_DB, "dinky_metrics");
+    public static final Identifier METRICS_IDENTIFIER = Identifier.create(DINKY_DB, "dinky_metrics");
 
     static {
         try {
@@ -118,10 +116,7 @@ public class PaimonUtil {
                 writer.writeTimestamp(0, Timestamp.fromLocalDateTime(now), 0);
                 writer.writeString(1, BinaryString.fromString(metrics.getModel()));
                 writer.writeString(2, BinaryString.fromString(metrics.getContent()));
-                writer.writeString(
-                        3,
-                        BinaryString.fromString(
-                                now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
+                writer.writeString(3, BinaryString.fromString(now.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"))));
                 write.write(row);
             }
             List<CommitMessage> messages = write.prepareCommit();
@@ -141,13 +136,12 @@ public class PaimonUtil {
     }
 
     public static <T> List<T> batchReadTable(
-            Identifier identifier,
-            Class<T> clazz,
-            Function<PredicateBuilder, List<Predicate>> filter) {
+            Identifier identifier, Class<T> clazz, Function<PredicateBuilder, List<Predicate>> filter) {
         TimeInterval timer = DateUtil.timer();
         List<T> dataList = new ArrayList<>();
 
-        PredicateBuilder builder = new PredicateBuilder(SCHEMA_MAP.get(identifier).rowType());
+        PredicateBuilder builder =
+                new PredicateBuilder(SCHEMA_MAP.get(identifier).rowType());
 
         ReadBuilder readBuilder;
         try {
@@ -173,23 +167,19 @@ public class PaimonUtil {
         try (RecordReader<InternalRow> reader = read.createReader(splits)) {
 
             Schema schema = SCHEMA_MAP.get(METRICS_IDENTIFIER);
-            reader.forEachRemaining(
-                    x -> {
-                        T t = ReflectUtil.newInstance(clazz);
-                        schema.fields()
-                                .forEach(
-                                        f -> {
-                                            Object value =
-                                                    InternalRow.createFieldGetter(f.type(), f.id())
-                                                            .getFieldOrNull(x);
-                                            String fieldName = StrUtil.toCamelCase(f.name());
-                                            try {
-                                                ReflectUtil.setFieldValue(t, fieldName, value);
-                                            } catch (Exception ignored) {
-                                            }
-                                        });
-                        dataList.add(t);
-                    });
+            reader.forEachRemaining(x -> {
+                T t = ReflectUtil.newInstance(clazz);
+                schema.fields().forEach(f -> {
+                    Object value =
+                            InternalRow.createFieldGetter(f.type(), f.id()).getFieldOrNull(x);
+                    String fieldName = StrUtil.toCamelCase(f.name());
+                    try {
+                        ReflectUtil.setFieldValue(t, fieldName, value);
+                    } catch (Exception ignored) {
+                    }
+                });
+                dataList.add(t);
+            });
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

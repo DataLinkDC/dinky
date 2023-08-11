@@ -33,8 +33,7 @@ public class SelectResultBuilder implements ResultBuilder {
     private final boolean isAutoCancel;
     private final String timeZone;
 
-    public SelectResultBuilder(
-            Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
+    public SelectResultBuilder(Integer maxRowNum, boolean isChangeLog, boolean isAutoCancel, String timeZone) {
         this.maxRowNum = maxRowNum;
         this.isChangeLog = isChangeLog;
         this.isAutoCancel = isAutoCancel;
@@ -45,8 +44,7 @@ public class SelectResultBuilder implements ResultBuilder {
     public IResult getResult(TableResult tableResult) {
         if (tableResult.getJobClient().isPresent()) {
             String jobId = tableResult.getJobClient().get().getJobID().toHexString();
-            ResultRunnable runnable =
-                    new ResultRunnable(tableResult, maxRowNum, isChangeLog, isAutoCancel, timeZone);
+            ResultRunnable runnable = new ResultRunnable(tableResult, maxRowNum, isChangeLog, isAutoCancel, timeZone);
             Thread thread = new Thread(runnable, jobId);
             thread.start();
             return SelectResult.buildSuccess(jobId);

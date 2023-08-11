@@ -57,10 +57,9 @@ public class MonitorController {
     @GetMapping("/getSysData")
     @ApiOperation("Get System Data")
     public Result<List<MetricsVO>> getData(@RequestParam Long startTime, Long endTime) {
-        return Result.succeed(
-                monitorService.getData(
-                        DateUtil.date(startTime),
-                        DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime()))));
+        return Result.succeed(monitorService.getData(
+                DateUtil.date(startTime),
+                DateUtil.date(Opt.ofNullable(endTime).orElse(DateUtil.date().getTime()))));
     }
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
@@ -68,7 +67,8 @@ public class MonitorController {
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
-                emitter, DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
+                emitter,
+                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
     }
 
     @PutMapping("/saveFlinkMetrics")

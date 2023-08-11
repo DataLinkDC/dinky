@@ -97,8 +97,7 @@ public interface DefaultTableEnvironment extends TableEnvironment, TableEnvironm
     }
 
     @Override
-    default void createTemporarySystemFunction(
-            String s, Class<? extends UserDefinedFunction> aClass) {
+    default void createTemporarySystemFunction(String s, Class<? extends UserDefinedFunction> aClass) {
         getTableEnvironment().createTemporarySystemFunction(s, aClass);
     }
 

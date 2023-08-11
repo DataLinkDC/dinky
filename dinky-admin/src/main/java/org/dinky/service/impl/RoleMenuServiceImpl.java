@@ -36,8 +36,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.collection.CollUtil;
 
 @Service
-public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu>
-        implements RoleMenuService {
+public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu> implements RoleMenuService {
     @Override
     public Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto) {
 
@@ -47,21 +46,15 @@ public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMe
 
         int insertSize = 0;
         // 先删除原有的关系
-        List<RoleMenu> roleMenus =
-                getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<RoleMenu>()
-                                        .eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
+        List<RoleMenu> roleMenus = getBaseMapper()
+                .selectList(
+                        new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
 
         // if not empty , delete all role menus
         if (CollUtil.isNotEmpty(roleMenus)) {
-            roleMenus.forEach(
-                    rm -> {
-                        getBaseMapper()
-                                .delete(
-                                        new LambdaQueryWrapper<RoleMenu>()
-                                                .eq(RoleMenu::getMenuId, rm.getMenuId()));
-                    });
+            roleMenus.forEach(rm -> {
+                getBaseMapper().delete(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getMenuId, rm.getMenuId()));
+            });
         }
 
         // then insert new role menus

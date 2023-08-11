@@ -50,9 +50,7 @@
 
         <profile>
             <id>flink-1.15</id>
-            <modules>
-
-            </modules>
+            <modules />
         </profile>
 
         <profile>

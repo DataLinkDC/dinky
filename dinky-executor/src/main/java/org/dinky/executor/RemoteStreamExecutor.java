@@ -31,18 +31,15 @@ import org.apache.flink.streaming.api.environment.RemoteStreamEnvironment;
  */
 public class RemoteStreamExecutor extends Executor {
 
-    public RemoteStreamExecutor(
-            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public RemoteStreamExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         this.environmentSetting = environmentSetting;
         this.executorSetting = executorSetting;
 
-        Configuration configuration =
-                Asserts.isNotNull(executorSetting.getConfig())
-                        ? Configuration.fromMap(executorSetting.getConfig())
-                        : null;
+        Configuration configuration = Asserts.isNotNull(executorSetting.getConfig())
+                ? Configuration.fromMap(executorSetting.getConfig())
+                : null;
         this.environment =
-                new RemoteStreamEnvironment(
-                        environmentSetting.getHost(), environmentSetting.getPort(), configuration);
+                new RemoteStreamEnvironment(environmentSetting.getHost(), environmentSetting.getPort(), configuration);
         init();
     }
 

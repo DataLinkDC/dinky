@@ -42,8 +42,7 @@ public class DefaultHTMLTemplate implements AlertTemplate {
     public static final Logger logger = LoggerFactory.getLogger(DefaultHTMLTemplate.class);
 
     @Override
-    public String getMessageFromTemplate(
-            String title, String content, ShowType showType, boolean showAll) {
+    public String getMessageFromTemplate(String title, String content, ShowType showType, boolean showAll) {
 
         switch (showType) {
             case TABLE:
@@ -86,12 +85,8 @@ public class DefaultHTMLTemplate implements AlertTemplate {
                 while (iterator.hasNext()) {
 
                     Map.Entry<String, Object> entry = iterator.next();
-                    t.append(EmailConstants.TH)
-                            .append(entry.getKey())
-                            .append(EmailConstants.TH_END);
-                    cs.append(EmailConstants.TD)
-                            .append(entry.getValue())
-                            .append(EmailConstants.TD_END);
+                    t.append(EmailConstants.TH).append(entry.getKey()).append(EmailConstants.TH_END);
+                    cs.append(EmailConstants.TD).append(entry.getValue()).append(EmailConstants.TD_END);
                 }
                 t.append(EmailConstants.TR_END);
                 cs.append(EmailConstants.TR_END);
@@ -161,12 +156,8 @@ public class DefaultHTMLTemplate implements AlertTemplate {
     private String getMessageFromHtmlTemplate(String title, String content) {
 
         requireNonNull(content, "content must not null");
-        String htmlTableThead =
-                StringUtils.isEmpty(title) ? "" : String.format("<thead>%s</thead>\n", title);
+        String htmlTableThead = StringUtils.isEmpty(title) ? "" : String.format("<thead>%s</thead>\n", title);
 
-        return EmailConstants.HTML_HEADER_PREFIX
-                + htmlTableThead
-                + content
-                + EmailConstants.TABLE_BODY_HTML_TAIL;
+        return EmailConstants.HTML_HEADER_PREFIX + htmlTableThead + content + EmailConstants.TABLE_BODY_HTML_TAIL;
     }
 }

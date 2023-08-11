@@ -78,10 +78,9 @@ public class PrintNetSinkFunction extends RichSinkFunction<RowData> {
     public void invoke(RowData value, Context context) throws IOException {
 
         try {
-            byte[] buf =
-                    serializer != null
-                            ? serializer.serialize(value)
-                            : converter.toExternal(value).toString().getBytes();
+            byte[] buf = serializer != null
+                    ? serializer.serialize(value)
+                    : converter.toExternal(value).toString().getBytes();
 
             byte[] target = new byte[printHeader.length + buf.length];
             System.arraycopy(printHeader, 0, target, 0, printHeader.length);

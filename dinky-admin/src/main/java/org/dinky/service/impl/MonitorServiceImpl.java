@@ -61,8 +61,7 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
-        implements MonitorService {
+public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics> implements MonitorService {
     private final Executor scheduleRefreshMonitorDataExecutor;
 
     @Override
@@ -74,13 +73,12 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
         if (endTime.compareTo(startTime) < 1) {
             throw new DinkyException("The end date must be greater than the start date!");
         }
-        Function<PredicateBuilder, List<Predicate>> filter =
-                p -> {
-                    Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
-                    Predicate lessOrEqual = p.lessOrEqual(0, endTS);
-                    Predicate local = p.equal(2, "local");
-                    return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
-                };
+        Function<PredicateBuilder, List<Predicate>> filter = p -> {
+            Predicate greaterOrEqual = p.greaterOrEqual(0, startTS);
+            Predicate lessOrEqual = p.lessOrEqual(0, endTS);
+            Predicate local = p.equal(2, "local");
+            return CollUtil.newArrayList(local, greaterOrEqual, lessOrEqual);
+        };
         List<MetricsVO> metricsVOList =
                 PaimonUtil.batchReadTable(PaimonUtil.METRICS_IDENTIFIER, MetricsVO.class, filter);
         return metricsVOList.stream()
@@ -92,48 +90,46 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
     @Override
     public SseEmitter sendLatestData(SseEmitter sseEmitter, Date lastDate) {
         Queue<MetricsVO> metricsQueue = MetricConfig.getMetricsQueue();
-        scheduleRefreshMonitorDataExecutor.execute(
-                () -> {
-                    try {
-                        LocalDateTime maxDate = DateUtil.toLocalDateTime(lastDate);
-                        while (true) {
-                            if (CollUtil.isEmpty(metricsQueue)) {
-                                continue;
-                            }
-                            for (MetricsVO metrics : metricsQueue) {
-                                if (metrics.getHeartTime().isAfter(maxDate)) {
-                                    sseEmitter.send(metrics);
-                                    maxDate = metrics.getHeartTime();
-                                }
-                            }
-                            ThreadUtil.sleep(800);
-                        }
-                    } catch (IOException e) {
-                        sseEmitter.complete();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        sseEmitter.complete();
+        scheduleRefreshMonitorDataExecutor.execute(() -> {
+            try {
+                LocalDateTime maxDate = DateUtil.toLocalDateTime(lastDate);
+                while (true) {
+                    if (CollUtil.isEmpty(metricsQueue)) {
+                        continue;
                     }
-                });
+                    for (MetricsVO metrics : metricsQueue) {
+                        if (metrics.getHeartTime().isAfter(maxDate)) {
+                            sseEmitter.send(metrics);
+                            maxDate = metrics.getHeartTime();
+                        }
+                    }
+                    ThreadUtil.sleep(800);
+                }
+            } catch (IOException e) {
+                sseEmitter.complete();
+            } catch (Exception e) {
+                e.printStackTrace();
+                sseEmitter.complete();
+            }
+        });
         return sseEmitter;
     }
 
     @Override
     public SseEmitter sendJvmInfo(SseEmitter sseEmitter) {
-        scheduleRefreshMonitorDataExecutor.execute(
-                () -> {
-                    try {
-                        while (true) {
-                            sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
-                            ThreadUtil.sleep(10000);
-                        }
-                    } catch (IOException e) {
-                        sseEmitter.complete();
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        sseEmitter.complete();
-                    }
-                });
+        scheduleRefreshMonitorDataExecutor.execute(() -> {
+            try {
+                while (true) {
+                    sseEmitter.send(JSONUtil.toJsonStr(Jvm.of()));
+                    ThreadUtil.sleep(10000);
+                }
+            } catch (IOException e) {
+                sseEmitter.complete();
+            } catch (Exception e) {
+                e.printStackTrace();
+                sseEmitter.complete();
+            }
+        });
         return sseEmitter;
     }
 
@@ -150,12 +146,11 @@ public class MonitorServiceImpl extends ServiceImpl<MetricsMapper, Metrics>
     public Map<String, List<Metrics>> getMetricsLayout() {
         List<Metrics> list = list();
         Map<String, List<Metrics>> result = new HashMap<>();
-        list.forEach(
-                x -> {
-                    String layoutName = x.getLayoutName();
-                    result.computeIfAbsent(layoutName, (k) -> new ArrayList<>());
-                    result.get(layoutName).add(x);
-                });
+        list.forEach(x -> {
+            String layoutName = x.getLayoutName();
+            result.computeIfAbsent(layoutName, (k) -> new ArrayList<>());
+            result.get(layoutName).add(x);
+        });
         return result;
     }
 }

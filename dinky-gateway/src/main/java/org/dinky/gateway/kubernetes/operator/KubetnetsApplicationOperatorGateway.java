@@ -43,8 +43,7 @@ import io.fabric8.kubernetes.client.KubernetesClientException;
 
 public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGateway {
 
-    private static final Logger logger =
-            LoggerFactory.getLogger(KubetnetsApplicationOperatorGateway.class);
+    private static final Logger logger = LoggerFactory.getLogger(KubetnetsApplicationOperatorGateway.class);
 
     @Override
     public GatewayType getType() {
@@ -67,56 +66,44 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
 
             process.info("start delete old cluster ");
             kubernetesClient.resource(flinkDeployment).delete();
-            kubernetesClient
-                    .resource(flinkDeployment)
-                    .waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
+            kubernetesClient.resource(flinkDeployment).waitUntilCondition(Objects::isNull, 1, TimeUnit.MINUTES);
 
             process.info("start create cluster ");
 
             kubernetesClient.resource(flinkDeployment).createOrReplace();
 
-            FlinkDeployment flinkDeploymentResult =
-                    kubernetesClient
-                            .resource(flinkDeployment)
-                            .waitUntilCondition(
-                                    flinkDeployment1 -> {
-                                        if (Asserts.isNull(flinkDeployment1.getStatus())) {
-                                            return false;
-                                        }
-                                        String status =
-                                                String.valueOf(
-                                                        flinkDeployment1
-                                                                .getStatus()
-                                                                .getJobManagerDeploymentStatus());
-                                        logger.info("deploy kubernetes , status is : {}", status);
-                                        process.info(
-                                                String.format(
-                                                        "deploy kubernetes , status is : %s",
-                                                        status));
+            FlinkDeployment flinkDeploymentResult = kubernetesClient
+                    .resource(flinkDeployment)
+                    .waitUntilCondition(
+                            flinkDeployment1 -> {
+                                if (Asserts.isNull(flinkDeployment1.getStatus())) {
+                                    return false;
+                                }
+                                String status = String.valueOf(
+                                        flinkDeployment1.getStatus().getJobManagerDeploymentStatus());
+                                logger.info("deploy kubernetes , status is : {}", status);
+                                process.info(String.format("deploy kubernetes , status is : %s", status));
 
-                                        String error = flinkDeployment1.getStatus().getError();
-                                        if (Asserts.isNotNullString(error)) {
-                                            logger.info("deploy kubernetes error :{}", error);
-                                            process.info(
-                                                    String.format(
-                                                            "deploy kubernetes error :%s", error));
-                                            throw new RuntimeException(error);
-                                        }
-                                        if (status.equals("READY")) {
-                                            logger.info("deploy kubernetes success ");
-                                            process.info("deploy kubernetes success ");
-                                            String jobId =
-                                                    flinkDeployment1
-                                                            .getStatus()
-                                                            .getJobStatus()
-                                                            .getJobId();
-                                            result.setJids(Collections.singletonList(jobId));
-                                            return true;
-                                        }
-                                        return false;
-                                    },
-                                    2,
-                                    TimeUnit.MINUTES);
+                                String error = flinkDeployment1.getStatus().getError();
+                                if (Asserts.isNotNullString(error)) {
+                                    logger.info("deploy kubernetes error :{}", error);
+                                    process.info(String.format("deploy kubernetes error :%s", error));
+                                    throw new RuntimeException(error);
+                                }
+                                if (status.equals("READY")) {
+                                    logger.info("deploy kubernetes success ");
+                                    process.info("deploy kubernetes success ");
+                                    String jobId = flinkDeployment1
+                                            .getStatus()
+                                            .getJobStatus()
+                                            .getJobId();
+                                    result.setJids(Collections.singletonList(jobId));
+                                    return true;
+                                }
+                                return false;
+                            },
+                            2,
+                            TimeUnit.MINUTES);
 
             // sleep a time ,because some time the service will not be found
             try {
@@ -150,14 +137,9 @@ public class KubetnetsApplicationOperatorGateway extends KubernetsOperatorGatewa
             e.printStackTrace();
         }
         logger.info(
-                "submit {} job finish, web url is {}, jobid is {}",
-                getType(),
-                result.getWebURL(),
-                result.getJids());
-        process.info(
-                String.format(
-                        "submit %s job finish, web url is %s, jobid is %s",
-                        getType(), result.getWebURL(), result.getJids()));
+                "submit {} job finish, web url is {}, jobid is {}", getType(), result.getWebURL(), result.getJids());
+        process.info(String.format(
+                "submit %s job finish, web url is %s, jobid is %s", getType(), result.getWebURL(), result.getJids()));
 
         return result;
     }

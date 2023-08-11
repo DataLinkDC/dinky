@@ -129,8 +129,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNull(user)) {
             return Result.failed(Status.USER_NOT_EXIST);
         }
-        if (!Asserts.isEquals(
-                SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
+        if (!Asserts.isEquals(SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(Status.USER_OLD_PASSWORD_INCORRECT);
         }
         user.setPassword(SaSecureUtil.md5(modifyPasswordDTO.getNewPassword()));
@@ -275,8 +274,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public Result<Void> assignRole(AssignRoleParams assignRoleParams) {
         List<UserRole> userRoleList = new ArrayList<>();
         userRoleService.remove(
-                new LambdaQueryWrapper<UserRole>()
-                        .eq(UserRole::getUserId, assignRoleParams.getUserId()));
+                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, assignRoleParams.getUserId()));
         for (Integer roleId : assignRoleParams.getRoleIds()) {
             UserRole userRole = new UserRole();
             userRole.setUserId(assignRoleParams.getUserId());
@@ -373,12 +371,9 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public List<Integer> getUserIdsByTenantId(int id) {
-        List<UserTenant> userTenants =
-                userTenantService
-                        .getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<UserTenant>()
-                                        .eq(UserTenant::getTenantId, id));
+        List<UserTenant> userTenants = userTenantService
+                .getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
         List<Integer> userIds = new ArrayList<>();
         for (UserTenant userTenant : userTenants) {
             userIds.add(userTenant.getUserId());
@@ -396,14 +391,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public List<User> getUserListByTenantId(int id) {
         List<User> userList = new ArrayList<>();
         List<UserTenant> userTenants =
-                userTenantService.list(
-                        new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
-        userTenants.forEach(
-                userTenant -> {
-                    User user = getById(userTenant.getUserId());
-                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-                    userList.add(user);
-                });
+                userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
+        userTenants.forEach(userTenant -> {
+            User user = getById(userTenant.getUserId());
+            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+            userList.add(user);
+        });
         return userList;
     }
 
@@ -412,22 +405,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      * @return
      */
     @Override
-    public Result<Void> modifyUserToTenantAdmin(
-            Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
+    public Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
         // query tenant admin user count
-        Long queryAdminUserByTenantCount =
-                userTenantService.count(
-                        new LambdaQueryWrapper<UserTenant>()
-                                .eq(UserTenant::getTenantId, tenantId)
-                                .eq(UserTenant::getTenantAdminFlag, 1));
+        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
+                .eq(UserTenant::getTenantId, tenantId)
+                .eq(UserTenant::getTenantAdminFlag, 1));
         if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
             return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
         }
-        UserTenant userTenant =
-                userTenantService.getOne(
-                        new LambdaQueryWrapper<UserTenant>()
-                                .eq(UserTenant::getTenantId, tenantId)
-                                .eq(UserTenant::getUserId, userId));
+        UserTenant userTenant = userTenantService.getOne(new LambdaQueryWrapper<UserTenant>()
+                .eq(UserTenant::getTenantId, tenantId)
+                .eq(UserTenant::getUserId, userId));
         userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
         if (userTenantService.updateById(userTenant)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -455,34 +443,28 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles.forEach(
-                userRole -> {
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleList.add(role);
-                        // query role menu
-                        List<RoleMenu> roleMenus =
-                                roleMenuService.list(
-                                        new LambdaQueryWrapper<RoleMenu>()
-                                                .eq(RoleMenu::getRoleId, role.getId()));
-                        roleMenus.forEach(
-                                roleMenu -> {
-                                    Menu menu = menuService.getById(roleMenu.getMenuId());
-                                    if (Asserts.isNotNull(menu)
-                                            && !StrUtil.equals("M", menu.getType())) {
-                                        menuList.add(menu);
-                                    }
-                                });
+        userRoles.forEach(userRole -> {
+            Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+            if (Asserts.isNotNull(role)) {
+                roleList.add(role);
+                // query role menu
+                List<RoleMenu> roleMenus =
+                        roleMenuService.list(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, role.getId()));
+                roleMenus.forEach(roleMenu -> {
+                    Menu menu = menuService.getById(roleMenu.getMenuId());
+                    if (Asserts.isNotNull(menu) && !StrUtil.equals("M", menu.getType())) {
+                        menuList.add(menu);
                     }
                 });
+            }
+        });
 
-        userTenants.forEach(
-                userTenant -> {
-                    Tenant tenant = tenantService.getById(userTenant.getTenantId());
-                    if (Asserts.isNotNull(tenant)) {
-                        tenantList.add(tenant);
-                    }
-                });
+        userTenants.forEach(userTenant -> {
+            Tenant tenant = tenantService.getById(userTenant.getTenantId());
+            if (Asserts.isNotNull(tenant)) {
+                tenantList.add(tenant);
+            }
+        });
 
         UserDTO userInfo = new UserDTO();
         userInfo.setUser(user);

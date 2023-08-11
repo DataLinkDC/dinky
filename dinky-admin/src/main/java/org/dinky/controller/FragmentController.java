@@ -78,8 +78,7 @@ public class FragmentController {
     @Log(title = "FragmentVariable List", businessType = BusinessType.QUERY)
     @ApiOperation("FragmentVariable List")
     public ProTableResult<FragmentVariable> listFragmentVariable(@RequestBody JsonNode para) {
-        final ProTableResult<FragmentVariable> result =
-                fragmentVariableService.selectForProTable(para);
+        final ProTableResult<FragmentVariable> result = fragmentVariableService.selectForProTable(para);
         // 敏感值不返回
         if (result != null && result.getData() != null) {
             for (FragmentVariable variable : result.getData()) {

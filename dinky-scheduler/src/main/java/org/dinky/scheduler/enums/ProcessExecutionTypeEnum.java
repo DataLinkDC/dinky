@@ -35,8 +35,7 @@ public enum ProcessExecutionTypeEnum {
     private final int code;
     private final String descp;
 
-    private static HashMap<Integer, ProcessExecutionTypeEnum> EXECUTION_STATUS_MAP =
-            new HashMap<>();
+    private static HashMap<Integer, ProcessExecutionTypeEnum> EXECUTION_STATUS_MAP = new HashMap<>();
 
     static {
         for (ProcessExecutionTypeEnum executionType : ProcessExecutionTypeEnum.values()) {

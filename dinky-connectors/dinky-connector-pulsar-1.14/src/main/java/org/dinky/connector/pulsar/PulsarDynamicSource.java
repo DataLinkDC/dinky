@@ -132,8 +132,7 @@ public class PulsarDynamicSource implements ScanTableSource, SupportsWatermarkPu
                 }
 
                 DataStreamSource<RowData> rowDataDataStreamSource =
-                        execEnv.fromSource(
-                                pulsarSource, watermarkStrategy, "PulsarSource-" + tableIdentifier);
+                        execEnv.fromSource(pulsarSource, watermarkStrategy, "PulsarSource-" + tableIdentifier);
 
                 // 设置source并行度
                 if (sourceParallelism != null) {
@@ -172,8 +171,7 @@ public class PulsarDynamicSource implements ScanTableSource, SupportsWatermarkPu
     }
 
     // ---------------------------------------------------------------------------------------------
-    protected PulsarSource<RowData> createPulsarSource(
-            DeserializationSchema<RowData> deserializer) {
+    protected PulsarSource<RowData> createPulsarSource(DeserializationSchema<RowData> deserializer) {
 
         final PulsarSourceBuilder<RowData> pulsarSourceBuilder = PulsarSource.builder();
 
@@ -200,8 +198,7 @@ public class PulsarDynamicSource implements ScanTableSource, SupportsWatermarkPu
                 pulsarSourceBuilder.setSubscriptionType(SubscriptionType.Failover);
                 break;
             default:
-                throw new TableException(
-                        "Unsupported subscriptionType. Validator should have checked that.");
+                throw new TableException("Unsupported subscriptionType. Validator should have checked that.");
         }
 
         switch (startupMode) {
@@ -216,8 +213,7 @@ public class PulsarDynamicSource implements ScanTableSource, SupportsWatermarkPu
                 pulsarSourceBuilder.setStartCursor(StartCursor.fromMessageTime(timestamp));
                 break;
             default:
-                throw new TableException(
-                        "Unsupported startup mode. Validator should have checked that.");
+                throw new TableException("Unsupported startup mode. Validator should have checked that.");
         }
 
         return pulsarSourceBuilder.build();

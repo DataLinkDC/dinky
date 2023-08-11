@@ -122,14 +122,9 @@ public class Task extends SuperEntity<Task> {
 
     public JobConfig buildSubmitConfig() {
         boolean useRemote = clusterId != null && clusterId != 0;
-        Map<String, String> map =
-                configJson.stream()
-                        .filter(Asserts::isNotNull)
-                        .collect(
-                                Collectors.toMap(
-                                        item -> item.get("name"),
-                                        item -> item.get("value"),
-                                        (a, b) -> b));
+        Map<String, String> map = configJson.stream()
+                .filter(Asserts::isNotNull)
+                .collect(Collectors.toMap(item -> item.get("name"), item -> item.get("value"), (a, b) -> b));
 
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNotNull(fragment) && fragment;

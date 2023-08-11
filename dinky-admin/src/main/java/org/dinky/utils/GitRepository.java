@@ -84,15 +84,11 @@ public class GitRepository {
         return cloneAndPull(projectName, branch, null, null);
     }
 
-    public File cloneAndPull(
-            String projectName, String branch, File logFile, Consumer<String> consumer) {
+    public File cloneAndPull(String projectName, String branch, File logFile, Consumer<String> consumer) {
         List<String> branchList = getBranchList();
         if (!branchList.contains(branch)) {
             throw new DinkyException(
-                    StrUtil.format(
-                            "Branch: {} does not exist, optional branch is: {}",
-                            branch,
-                            branchList));
+                    StrUtil.format("Branch: {} does not exist, optional branch is: {}", branch, branchList));
         }
 
         File targetFile = getProjectDir(projectName);
@@ -108,32 +104,26 @@ public class GitRepository {
 
             if (writeFile.exists()) {
                 FileRepositoryBuilder builder = new FileRepositoryBuilder();
-                Repository repository =
-                        builder.setGitDir(
-                                        new File(
-                                                writeFile.getAbsolutePath()
-                                                        + File.separator
-                                                        + ".git"))
-                                .readEnvironment()
-                                .findGitDir()
-                                .build();
+                Repository repository = builder.setGitDir(
+                                new File(writeFile.getAbsolutePath() + File.separator + ".git"))
+                        .readEnvironment()
+                        .findGitDir()
+                        .build();
                 git = new Git(repository);
                 git.pull()
-                        .setProgressMonitor(
-                                new TextProgressMonitor(
-                                        new StringWriter() {
-                                            @Override
-                                            public void write(String str) {
-                                                if (logFile != null) {
-                                                    FileUtil.appendUtf8String(str, logFile);
-                                                }
-                                                if (consumer != null) {
-                                                    consumer.accept(str);
-                                                }
-                                                System.out.println(str);
-                                                super.write(str);
-                                            }
-                                        }))
+                        .setProgressMonitor(new TextProgressMonitor(new StringWriter() {
+                            @Override
+                            public void write(String str) {
+                                if (logFile != null) {
+                                    FileUtil.appendUtf8String(str, logFile);
+                                }
+                                if (consumer != null) {
+                                    consumer.accept(str);
+                                }
+                                System.out.println(str);
+                                super.write(str);
+                            }
+                        }))
                         .call();
                 git.close();
             } else {
@@ -164,38 +154,32 @@ public class GitRepository {
 
         LsRemoteCommand lsRemoteCommand = initCommand(Git.lsRemoteRepository().setRemote(url));
         try {
-            lsRemoteCommand
-                    .call()
-                    .forEach(
-                            x -> {
-                                if (StrUtil.contains(x.getName(), BRANCH_PREFIX)) {
-                                    branchList.add(
-                                            StrUtil.removePrefix(x.getName(), BRANCH_PREFIX));
-                                }
-                            });
+            lsRemoteCommand.call().forEach(x -> {
+                if (StrUtil.contains(x.getName(), BRANCH_PREFIX)) {
+                    branchList.add(StrUtil.removePrefix(x.getName(), BRANCH_PREFIX));
+                }
+            });
         } catch (GitAPIException e) {
             throw new RuntimeException(e);
         }
         return CollUtil.reverse(CollUtil.sortByPinyin(branchList));
     }
 
-    private static TransportConfigCallback getTransportConfigCallback(
-            String sshKey, String password) {
-        JschConfigSessionFactory jschConfigSessionFactory =
-                new JschConfigSessionFactory() {
-                    @Override
-                    protected void configure(OpenSshConfig.Host host, Session session) {
-                        session.setConfig("StrictHostKeyChecking", "no");
-                    }
+    private static TransportConfigCallback getTransportConfigCallback(String sshKey, String password) {
+        JschConfigSessionFactory jschConfigSessionFactory = new JschConfigSessionFactory() {
+            @Override
+            protected void configure(OpenSshConfig.Host host, Session session) {
+                session.setConfig("StrictHostKeyChecking", "no");
+            }
 
-                    @Override
-                    protected JSch createDefaultJSch(FS fs) throws JSchException {
-                        JSch defaultJSch = super.createDefaultJSch(fs);
-                        // 配置 ssh key
-                        defaultJSch.addIdentity(sshKey, sshKey + ".pub", StrUtil.bytes(password));
-                        return defaultJSch;
-                    }
-                };
+            @Override
+            protected JSch createDefaultJSch(FS fs) throws JSchException {
+                JSch defaultJSch = super.createDefaultJSch(fs);
+                // 配置 ssh key
+                defaultJSch.addIdentity(sshKey, sshKey + ".pub", StrUtil.bytes(password));
+                return defaultJSch;
+            }
+        };
         return transport -> {
             SshTransport sshTransport = (SshTransport) transport;
             sshTransport.setSshSessionFactory(jschConfigSessionFactory);
@@ -213,14 +197,12 @@ public class GitRepository {
             Assert.notBlank(privateKey, "The private key address cannot be empty.");
             Assert.isTrue(FileUtil.exist(privateKey), "The private key address does not exist.");
 
-            TransportConfigCallback sshSessionFactory =
-                    getTransportConfigCallback(privateKey, password);
+            TransportConfigCallback sshSessionFactory = getTransportConfigCallback(privateKey, password);
             command.setTransportConfigCallback(sshSessionFactory);
             return command;
         } else if (HttpUtil.isHttp(url) || HttpUtil.isHttps(url)) {
             if (StrUtil.isAllNotBlank(username, password)) {
-                command.setCredentialsProvider(
-                        new UsernamePasswordCredentialsProvider(username, password));
+                command.setCredentialsProvider(new UsernamePasswordCredentialsProvider(username, password));
                 return command;
             }
         } else {

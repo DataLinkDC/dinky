@@ -85,8 +85,7 @@ public final class EmailSender {
     public EmailSender(Map<String, String> config) {
         String receiversConfig = config.get(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS);
         if (receiversConfig == null || "".equals(receiversConfig)) {
-            throw new AlertException(
-                    EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
+            throw new AlertException(EmailConstants.NAME_PLUGIN_DEFAULT_EMAIL_RECEIVERS + mustNotNull);
         }
 
         receivers = Arrays.asList(receiversConfig.split(","));
@@ -150,8 +149,7 @@ public final class EmailSender {
      * @param title title
      * @param content content
      */
-    public AlertResult send(
-            List<String> receivers, List<String> receiverCcs, String title, String content) {
+    public AlertResult send(List<String> receivers, List<String> receiverCcs, String title, String content) {
         AlertResult alertResult = new AlertResult();
         alertResult.setSuccess(false);
 
@@ -163,8 +161,7 @@ public final class EmailSender {
         receivers.removeIf(StringUtils::isEmpty);
         Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
 
-        if (showType.equals(ShowType.TABLE.getValue())
-                || showType.equals(ShowType.TEXT.getValue())) {
+        if (showType.equals(ShowType.TABLE.getValue()) || showType.equals(ShowType.TEXT.getValue())) {
             // send email
             HtmlEmail email = new HtmlEmail();
 
@@ -195,12 +192,9 @@ public final class EmailSender {
                 || showType.equals(ShowType.TABLE_ATTACHMENT.getValue())) {
             try {
 
-                String partContent =
-                        (showType.equals(ShowType.ATTACHMENT.getValue())
-                                ? "Please see the attachment "
-                                        + title
-                                        + EmailConstants.EXCEL_SUFFIX_XLSX
-                                : htmlTable(title, content, false));
+                String partContent = (showType.equals(ShowType.ATTACHMENT.getValue())
+                        ? "Please see the attachment " + title + EmailConstants.EXCEL_SUFFIX_XLSX
+                        : htmlTable(title, content, false));
 
                 attachment(title, content, partContent);
 
@@ -283,8 +277,7 @@ public final class EmailSender {
         mc.addMailcap("text/xml;; x-java-content-handler=com.sun.mail.handlers.text_xml");
         mc.addMailcap("text/plain;; x-java-content-handler=com.sun.mail.handlers.text_plain");
         mc.addMailcap("multipart/*;; x-java-content-handler=com.sun.mail.handlers.multipart_mixed");
-        mc.addMailcap(
-                "message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
+        mc.addMailcap("message/rfc822;; x-java-content-handler=com.sun.mail.handlers.message_rfc822");
         CommandMap.setDefaultCommandMap(mc);
 
         Properties props = new Properties();
@@ -310,15 +303,14 @@ public final class EmailSender {
             props.setProperty(EmailConstants.MAIL_SMTP_SSL_TRUST, sslTrust);
         }
 
-        Authenticator auth =
-                new Authenticator() {
+        Authenticator auth = new Authenticator() {
 
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        // mail username and password
-                        return new PasswordAuthentication(mailUser, mailPasswd);
-                    }
-                };
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                // mail username and password
+                return new PasswordAuthentication(mailUser, mailPasswd);
+            }
+        };
 
         Session session = Session.getInstance(props, auth);
         session.addProvider(new SMTPProvider());
@@ -345,12 +337,7 @@ public final class EmailSender {
         part1.setContent(partContent, EmailConstants.TEXT_HTML_CHARSET_UTF_8);
         // set attach file
         MimeBodyPart part2 = new MimeBodyPart();
-        File file =
-                new File(
-                        xlsFilePath
-                                + EmailConstants.SINGLE_SLASH
-                                + title
-                                + EmailConstants.EXCEL_SUFFIX_XLSX);
+        File file = new File(xlsFilePath + EmailConstants.SINGLE_SLASH + title + EmailConstants.EXCEL_SUFFIX_XLSX);
         if (!file.getParentFile().exists()) {
             file.getParentFile().mkdirs();
         }
@@ -360,8 +347,7 @@ public final class EmailSender {
 
         part2.attachFile(file);
         part2.setFileName(
-                MimeUtility.encodeText(
-                        title + EmailConstants.EXCEL_SUFFIX_XLSX, EmailConstants.CHARSET, "B"));
+                MimeUtility.encodeText(title + EmailConstants.EXCEL_SUFFIX_XLSX, EmailConstants.CHARSET, "B"));
         // add components to collection
         partList.addBodyPart(part1);
         partList.addBodyPart(part2);
@@ -373,8 +359,7 @@ public final class EmailSender {
     }
 
     /** the string object map */
-    private AlertResult getStringObjectMap(
-            String title, String content, AlertResult alertResult, HtmlEmail email)
+    private AlertResult getStringObjectMap(String title, String content, AlertResult alertResult, HtmlEmail email)
             throws EmailException {
 
         /*
@@ -419,7 +404,6 @@ public final class EmailSender {
     /** handle exception */
     private void handleException(AlertResult alertResult, Exception e) {
         logger.error("Send email to {} failed", receivers, e);
-        alertResult.setMessage(
-                "Send email to {" + String.join(",", receivers) + "} failed，" + e.toString());
+        alertResult.setMessage("Send email to {" + String.join(",", receivers) + "} failed，" + e.toString());
     }
 }

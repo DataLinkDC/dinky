@@ -68,9 +68,7 @@ public class DorisDriver extends AbstractJdbcDriver {
         ProcessEntity process = ProcessContextHolder.getProcess();
         process.info("Start parse sql...");
         String[] statements = SqlUtil.getStatements(SqlUtil.removeNote(sql));
-        process.info(
-                CharSequenceUtil.format(
-                        "A total of {} statement have been Parsed.", statements.length));
+        process.info(CharSequenceUtil.format("A total of {} statement have been Parsed.", statements.length));
         List<Object> resList = new ArrayList<>();
         JdbcSelectResult result = JdbcSelectResult.buildResult();
         process.info("Start execute sql...");
@@ -79,9 +77,7 @@ public class DorisDriver extends AbstractJdbcDriver {
             if (type.startsWith("SELECT") || type.startsWith("SHOW") || type.startsWith("DESC")) {
                 process.info("Execute query.");
                 result = query(item, limit);
-            } else if (type.startsWith("INSERT")
-                    || type.startsWith("UPDATE")
-                    || type.startsWith("DELETE")) {
+            } else if (type.startsWith("INSERT") || type.startsWith("UPDATE") || type.startsWith("DELETE")) {
                 try {
                     process.info("Execute update.");
                     resList.add(executeUpdate(item));

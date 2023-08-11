@@ -97,9 +97,8 @@ public class ParserImpl implements Parser {
         // parse the sql query
         SqlNode parsed = parser.parse(statement);
 
-        Operation operation =
-                SqlToOperationConverter.convert(planner, catalogManager, parsed)
-                        .orElseThrow(() -> new TableException("Unsupported query: " + statement));
+        Operation operation = SqlToOperationConverter.convert(planner, catalogManager, parsed)
+                .orElseThrow(() -> new TableException("Unsupported query: " + statement));
         return Collections.singletonList(operation);
     }
 
@@ -120,16 +119,11 @@ public class ParserImpl implements Parser {
         // expand expression for serializable expression strings similar to views
         final String sqlExpressionExpanded = sqlExprToRexConverter.expand(sqlExpression);
         return new RexNodeExpression(
-                rexNode,
-                TypeConversions.fromLogicalToDataType(logicalType),
-                sqlExpression,
-                sqlExpressionExpanded);
+                rexNode, TypeConversions.fromLogicalToDataType(logicalType), sqlExpression, sqlExpressionExpanded);
     }
 
     public String[] getCompletionHints(String statement, int cursor) {
-        List<String> candidates =
-                new ArrayList<>(
-                        Arrays.asList(EXTENDED_PARSER.getCompletionHints(statement, cursor)));
+        List<String> candidates = new ArrayList<>(Arrays.asList(EXTENDED_PARSER.getCompletionHints(statement, cursor)));
 
         // use sql advisor
         SqlAdvisorValidator validator = validatorSupplier.get().getSqlAdvisorValidator();
@@ -137,10 +131,9 @@ public class ParserImpl implements Parser {
                 new SqlAdvisor(validator, validatorSupplier.get().config().getParserConfig());
         String[] replaced = new String[1];
 
-        List<String> sqlHints =
-                advisor.getCompletionHints(statement, cursor, replaced).stream()
-                        .map(item -> item.toIdentifier().toString())
-                        .collect(Collectors.toList());
+        List<String> sqlHints = advisor.getCompletionHints(statement, cursor, replaced).stream()
+                .map(item -> item.toIdentifier().toString())
+                .collect(Collectors.toList());
 
         candidates.addAll(sqlHints);
 

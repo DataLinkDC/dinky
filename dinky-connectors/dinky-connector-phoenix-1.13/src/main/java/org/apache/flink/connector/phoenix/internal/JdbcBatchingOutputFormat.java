@@ -56,8 +56,7 @@ import org.slf4j.LoggerFactory;
 
 /** A JDBC outputFormat that supports batching records before writing records to database. */
 @Internal
-public class JdbcBatchingOutputFormat<
-        I, J, E extends JdbcBatchStatementExecutor<J>>
+public class JdbcBatchingOutputFormat<I, J, E extends JdbcBatchStatementExecutor<J>>
         extends AbstractJdbcOutputFormat<I> {
 
     /**
@@ -115,7 +114,7 @@ public class JdbcBatchingOutputFormat<
      */
     @Override
     public void open(int taskNumber, int numTasks) throws IOException {
-        //super.open(taskNumber, numTasks);
+        // super.open(taskNumber, numTasks);
         try {
             conn = connectionProvider.getOrEstablishConnection();
         } catch (Exception e) {
@@ -125,33 +124,29 @@ public class JdbcBatchingOutputFormat<
         jdbcStatementExecutor = createAndOpenStatementExecutor(statementExecutorFactory);
         if (executionOptions.getBatchIntervalMs() != 0 && executionOptions.getBatchSize() != 1) {
             this.scheduler =
-                    Executors.newScheduledThreadPool(
-                            1, new ExecutorThreadFactory("jdbc-upsert-output-format"));
-            this.scheduledFuture =
-                    this.scheduler.scheduleWithFixedDelay(
-                            () -> {
-                                synchronized (JdbcBatchingOutputFormat.this) {
-                                    if (!closed) {
-                                        //if batch count > 0  to flush
-                                        if (batchCount > 0) {
-                                            try {
-                                                flush();
-                                            } catch (Exception e) {
-                                                flushException = e;
-                                            }
-                                        }
+                    Executors.newScheduledThreadPool(1, new ExecutorThreadFactory("jdbc-upsert-output-format"));
+            this.scheduledFuture = this.scheduler.scheduleWithFixedDelay(
+                    () -> {
+                        synchronized (JdbcBatchingOutputFormat.this) {
+                            if (!closed) {
+                                // if batch count > 0  to flush
+                                if (batchCount > 0) {
+                                    try {
+                                        flush();
+                                    } catch (Exception e) {
+                                        flushException = e;
                                     }
                                 }
-                            },
-                            executionOptions.getBatchIntervalMs(),
-                            executionOptions.getBatchIntervalMs(),
-                            TimeUnit.MILLISECONDS);
+                            }
+                        }
+                    },
+                    executionOptions.getBatchIntervalMs(),
+                    executionOptions.getBatchIntervalMs(),
+                    TimeUnit.MILLISECONDS);
         }
-
     }
 
-    private E createAndOpenStatementExecutor(
-            StatementExecutorFactory<E> statementExecutorFactory) throws IOException {
+    private E createAndOpenStatementExecutor(StatementExecutorFactory<E> statementExecutorFactory) throws IOException {
         E exec = statementExecutorFactory.apply(getRuntimeContext());
         try {
             exec.prepareStatements(connectionProvider.getConnection());
@@ -174,10 +169,8 @@ public class JdbcBatchingOutputFormat<
         try {
             addToBatch(record, jdbcRecordExtractor.apply(record));
             batchCount++;
-            if (executionOptions.getBatchSize() > 0
-                    && batchCount >= executionOptions.getBatchSize()) {
+            if (executionOptions.getBatchSize() > 0 && batchCount >= executionOptions.getBatchSize()) {
                 flush();
-
             }
         } catch (Exception e) {
             throw new IOException("Writing records to JDBC failed.", e);
@@ -195,7 +188,7 @@ public class JdbcBatchingOutputFormat<
         for (int i = 0; i <= executionOptions.getMaxRetries(); i++) {
             try {
                 attemptFlush();
-                //conn.commit();
+                // conn.commit();
                 batchCount = 0;
                 break;
             } catch (SQLException e) {
@@ -208,17 +201,14 @@ public class JdbcBatchingOutputFormat<
                         updateExecutor(true);
                     }
                 } catch (Exception exception) {
-                    LOG.error(
-                            "JDBC connection is not valid, and reestablish connection failed.",
-                            exception);
+                    LOG.error("JDBC connection is not valid, and reestablish connection failed.", exception);
                     throw new IOException("Reestablish JDBC connection failed", exception);
                 }
                 try {
                     Thread.sleep(1000 * i);
                 } catch (InterruptedException ex) {
                     Thread.currentThread().interrupt();
-                    throw new IOException(
-                            "unable to flush; interrupted while doing another attempt", e);
+                    throw new IOException("unable to flush; interrupted while doing another attempt", e);
                 }
             }
         }
@@ -271,8 +261,7 @@ public class JdbcBatchingOutputFormat<
         private String[] fieldNames;
         private String[] keyFields;
         private int[] fieldTypes;
-        private JdbcExecutionOptions.Builder executionOptionsBuilder =
-                JdbcExecutionOptions.builder();
+        private JdbcExecutionOptions.Builder executionOptionsBuilder = JdbcExecutionOptions.builder();
 
         /** required, jdbc options. */
         public Builder setOptions(JdbcOptions options) {
@@ -324,40 +313,40 @@ public class JdbcBatchingOutputFormat<
          *
          * @return Configured JdbcUpsertOutputFormat
          */
-        public JdbcBatchingOutputFormat<Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>>
-                build() {
+        public JdbcBatchingOutputFormat<Tuple2<Boolean, Row>, Row, JdbcBatchStatementExecutor<Row>> build() {
             checkNotNull(options, "No options supplied.");
             checkNotNull(fieldNames, "No fieldNames supplied.");
-            JdbcDmlOptions dml =
-                    JdbcDmlOptions.builder()
-                            .withTableName(options.getTableName())
-                            .withDialect(options.getDialect())
-                            .withFieldNames(fieldNames)
-                            .withKeyFields(keyFields)
-                            .withFieldTypes(fieldTypes)
-                            .build();
+            JdbcDmlOptions dml = JdbcDmlOptions.builder()
+                    .withTableName(options.getTableName())
+                    .withDialect(options.getDialect())
+                    .withFieldNames(fieldNames)
+                    .withKeyFields(keyFields)
+                    .withFieldTypes(fieldTypes)
+                    .build();
 
             if (dml.getKeyFields().isPresent() && dml.getKeyFields().get().length > 0) {
                 return new TableJdbcUpsertOutputFormat(
-                        new PhoneixJdbcConnectionProvider(options,this.options.isNamespaceMappingEnabled(),this.options.isMapSystemTablesEnabled()),
+                        new PhoneixJdbcConnectionProvider(
+                                options,
+                                this.options.isNamespaceMappingEnabled(),
+                                this.options.isMapSystemTablesEnabled()),
                         dml,
                         executionOptionsBuilder.build());
             } else {
                 // warn: don't close over builder fields
-                String sql =
-                        FieldNamedPreparedStatementImpl.parseNamedStatement(
-                                options.getDialect()
-                                        .getInsertIntoStatement(
-                                                dml.getTableName(), dml.getFieldNames()),
-                                new HashMap<>());
+                String sql = FieldNamedPreparedStatementImpl.parseNamedStatement(
+                        options.getDialect().getInsertIntoStatement(dml.getTableName(), dml.getFieldNames()),
+                        new HashMap<>());
                 return new JdbcBatchingOutputFormat<>(
-                        new PhoneixJdbcConnectionProvider(options,this.options.isNamespaceMappingEnabled(),this.options.isMapSystemTablesEnabled()),
+                        new PhoneixJdbcConnectionProvider(
+                                options,
+                                this.options.isNamespaceMappingEnabled(),
+                                this.options.isMapSystemTablesEnabled()),
                         executionOptionsBuilder.build(),
-                        ctx ->
-                                createSimpleRowExecutor(
-                                        sql,
-                                        dml.getFieldTypes(),
-                                        ctx.getExecutionConfig().isObjectReuseEnabled()),
+                        ctx -> createSimpleRowExecutor(
+                                sql,
+                                dml.getFieldTypes(),
+                                ctx.getExecutionConfig().isObjectReuseEnabled()),
                         tuple2 -> {
                             Preconditions.checkArgument(tuple2.f0);
                             return tuple2.f1;
@@ -366,12 +355,9 @@ public class JdbcBatchingOutputFormat<
         }
     }
 
-    static JdbcBatchStatementExecutor<Row> createSimpleRowExecutor(
-            String sql, int[] fieldTypes, boolean objectReuse) {
+    static JdbcBatchStatementExecutor<Row> createSimpleRowExecutor(String sql, int[] fieldTypes, boolean objectReuse) {
         return JdbcBatchStatementExecutor.simple(
-                sql,
-                createRowJdbcStatementBuilder(fieldTypes),
-                objectReuse ? Row::copy : Function.identity());
+                sql, createRowJdbcStatementBuilder(fieldTypes), objectReuse ? Row::copy : Function.identity());
     }
 
     /**
@@ -385,8 +371,6 @@ public class JdbcBatchingOutputFormat<
     public void updateExecutor(boolean reconnect) throws SQLException, ClassNotFoundException {
         jdbcStatementExecutor.closeStatements();
         jdbcStatementExecutor.prepareStatements(
-                reconnect
-                        ? connectionProvider.reestablishConnection()
-                        : connectionProvider.getConnection());
+                reconnect ? connectionProvider.reestablishConnection() : connectionProvider.getConnection());
     }
 }

@@ -60,20 +60,17 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     @Override
     protected void initTypeConverterList() {
-        typeConverterList =
-                Lists.newArrayList(
-                        this::convertDateType,
-                        this::convertTimestampType,
-                        this::convertFloatType,
-                        this::convertDecimalType,
-                        this::convertBigIntType,
-                        this::convertVarBinaryType);
+        typeConverterList = Lists.newArrayList(
+                this::convertDateType,
+                this::convertTimestampType,
+                this::convertFloatType,
+                this::convertDecimalType,
+                this::convertBigIntType,
+                this::convertVarBinaryType);
     }
 
     private String addSourceTableView(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table) {
+            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
         // 上游表名称
         String viewName = "VIEW_" + table.getSchemaTableNameWithUnderline();
         List<String> columnNameList =
@@ -85,9 +82,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
     @Override
     protected void addTableSink(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table) {
+            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table) {
         String viewName = addSourceTableView(customTableEnvironment, rowDataDataStream, table);
 
         // 下游库名称
@@ -97,13 +92,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
 
         // 这个地方要根据下游表的数量进行生成
         if (CollectionUtils.isEmpty(config.getSinks())) {
-            addSinkInsert(
-                    customTableEnvironment,
-                    table,
-                    viewName,
-                    sinkTableName,
-                    sinkSchemaName,
-                    sinkTableName);
+            addSinkInsert(customTableEnvironment, table, viewName, sinkTableName, sinkSchemaName, sinkTableName);
         } else {
             for (int index = 0; index < config.getSinks().size(); index++) {
                 String tableName = sinkTableName;
@@ -112,13 +101,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                 }
 
                 config.setSink(config.getSinks().get(index));
-                addSinkInsert(
-                        customTableEnvironment,
-                        table,
-                        viewName,
-                        tableName,
-                        sinkSchemaName,
-                        sinkTableName);
+                addSinkInsert(customTableEnvironment, table, viewName, tableName, sinkSchemaName, sinkTableName);
             }
         }
     }
@@ -133,8 +116,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
         String pkList = StringUtils.join(getPKList(table), ".");
 
         String flinkDDL =
-                FlinkStatementUtil.getFlinkDDL(
-                        table, tableName, config, sinkSchemaName, sinkTableName, pkList);
+                FlinkStatementUtil.getFlinkDDL(table, tableName, config, sinkSchemaName, sinkTableName, pkList);
         logger.info(flinkDDL);
         customTableEnvironment.executeSql(flinkDDL);
         logger.info("Create {} FlinkSQL DDL successful...", tableName);
@@ -153,8 +135,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     }
 
     @Override
-    protected String createTableName(
-            LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
+    protected String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split) {
         return SplitUtil.getReValue(source.get(schemaFieldName).toString(), split)
                 + "."
                 + SplitUtil.getReValue(source.get("table").toString(), split);
@@ -170,7 +151,8 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
                 return Optional.of(
                         Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDate());
             }
-            return Optional.of(Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate());
+            return Optional.of(
+                    Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDate());
         }
         return Optional.empty();
     }
@@ -179,10 +161,9 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(
-                        Instant.ofEpochMilli(((Integer) value).longValue())
-                                .atZone(sinkTimeZone)
-                                .toLocalDateTime());
+                return Optional.of(Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime());
             }
 
             if (value instanceof String) {
@@ -194,12 +175,7 @@ public class SQLSinkBuilder extends AbstractSqlSinkBuilder implements Serializab
             // 转换为毫秒
             if (timestampType.getPrecision() > 3) {
                 return Optional.of(
-                        Instant.ofEpochMilli(
-                                        ((long) value)
-                                                / (long)
-                                                        Math.pow(
-                                                                10,
-                                                                timestampType.getPrecision() - 3.0))
+                        Instant.ofEpochMilli(((long) value) / (long) Math.pow(10, timestampType.getPrecision() - 3.0))
                                 .atZone(sinkTimeZone)
                                 .toLocalDateTime());
             }

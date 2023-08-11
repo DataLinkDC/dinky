@@ -38,8 +38,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import cn.hutool.core.net.Ipv4Util;
 
 @Service
-public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginLog>
-        implements LoginLogService {
+public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginLog> implements LoginLogService {
 
     /**
      * insert login log record
@@ -104,11 +103,9 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
     @Override
     public List<LoginLog> loginRecord(Integer userId) {
         UserDTO userDTO = UserInfoContextHolder.get(userId);
-        List<LoginLog> loginLogList =
-                getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<LoginLog>()
-                                        .eq(LoginLog::getUserId, userDTO.getUser().getId()));
+        List<LoginLog> loginLogList = getBaseMapper()
+                .selectList(new LambdaQueryWrapper<LoginLog>()
+                        .eq(LoginLog::getUserId, userDTO.getUser().getId()));
         return loginLogList;
     }
 }
