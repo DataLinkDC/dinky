@@ -31,6 +31,7 @@ import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
 import {l} from "@/utils/intl";
 import RightContextMenu from "@/components/RightContextMenu";
 import MenuForm from "@/pages/AuthCenter/Menu/components/MenuForm";
+import { buildMenuFormTree } from "../../function";
 
 const MenuList: React.FC = () => {
         /**
@@ -245,7 +246,7 @@ const MenuList: React.FC = () => {
             </>
         }
 
-
+console.log(treeData,buildMenuFormTree(treeData,'',true))
         /**
          * render
          */

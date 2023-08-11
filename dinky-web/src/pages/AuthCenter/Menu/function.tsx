@@ -29,8 +29,7 @@ import * as React from "react";
  */
 const renderIcon = (iconName: string) => {
     // @ts-ignore
-    const RenderIcon = Icons[iconName]; // get icon component
-    return <RenderIcon key={iconName}/>;
+    return iconName ? React.createElement(Icons[iconName]) : null;
 }
 
 /**

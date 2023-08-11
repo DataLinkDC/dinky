@@ -36,6 +36,24 @@ import { API } from "./services/data";
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
+const whiteList = ['/user','/user/login']
+
+
+/**
+ * 初始化路由鉴权
+ * @param param0
+ */
+export function patchRoutes ({ routes }: any) {
+  Object.keys(routes).forEach(key=>{
+    let route = routes[key];
+    if(!whiteList.includes(route.path)){
+      routes[key] = {...route,access: 'canAuth'}
+    }
+  })
+}
+
+
+
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
