@@ -124,9 +124,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+import java.util.*;
 
 import javax.annotation.Resource;
 
@@ -240,8 +240,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (config.isJarTask()) {
             jobResult = jobManager.executeJar();
             if (jobResult.isSuccess()) {
-                process.finish("Submit Flink SQL finished, JobManager Web Interface: http://"
-                        + jobResult.getJobManagerAddress());
+                process.finish(
+                        "Submit Flink SQL finished, JobManager Web Interface: http://"
+                                + jobResult.getJobManagerAddress());
             } else {
                 // 如果提交失败，则只打印出关键的错误信息
                 process.error("Submit Flink SQL " + jobResult.getStatus());

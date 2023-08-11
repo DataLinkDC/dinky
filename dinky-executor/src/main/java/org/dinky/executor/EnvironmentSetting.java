@@ -69,7 +69,8 @@ public class EnvironmentSetting {
     }
 
     /**
-     * 修复地址，解决无只有域名无端口的情况
+     * 修复地址，解决无只有域名无端口的情况,具体情况，请看测试用例
+     *
      * @param address flink地址（前端配置）
      * @return String[]{域名，端口}
      */
@@ -79,14 +80,16 @@ public class EnvironmentSetting {
 
         // 兼容直接填写域名情况(走k8s ingress时没有端口号)
         if (address.startsWith("http//")) {
-            strs = new String[]{strs[0].replace("http//", ""), strs.length == 1 ? "80" : strs[1]};
+            String port = strs.length == 1 ? "80" : strs[1];
+            strs = new String[] {strs[0].replace("http//", ""), port};
         }
         if (address.startsWith("https//")) {
-            strs = new String[]{strs[0].replace("https//", ""), strs.length == 1 ? "443" : strs[1]};
+            String port = strs.length == 1 ? "443" : strs[1];
+            strs = new String[] {strs[0].replace("https//", ""), port};
         }
         // 如果没有填端口，则默认80
         if (strs.length == 1) {
-            strs = new String[]{address, "80"};
+            strs = new String[] {address, "80"};
         }
         return strs;
     }

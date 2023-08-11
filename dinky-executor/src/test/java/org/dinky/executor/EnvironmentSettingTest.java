@@ -19,7 +19,6 @@
 
 package org.dinky.executor;
 
-
 import org.junit.Assert;
 
 import junit.framework.TestCase;
@@ -41,5 +40,4 @@ public class EnvironmentSettingTest extends TestCase {
         Assert.assertEquals(hostAndPort.length, 2);
         Assert.assertEquals(hostAndPort[0] + ":" + hostAndPort[1], expect);
     }
-
 }
