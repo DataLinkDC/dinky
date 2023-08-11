@@ -19,7 +19,6 @@
 
 package org.dinky.configure;
 
-import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.interceptor.LocaleChangeInterceptor;
 import org.dinky.interceptor.TenantInterceptor;
@@ -28,7 +27,6 @@ import java.util.Locale;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -105,18 +103,7 @@ public class AppConfig implements WebMvcConfigurer {
         //                .excludePathPatterns("/druid/**")
         //                .excludePathPatterns("/openapi/**");
 
-        registry.addInterceptor(
-                        new SaInterceptor(
-                                handler -> {
-                                    if (handler instanceof HandlerMethod) {
-                                        if (((HandlerMethod) handler)
-                                                        .getMethodAnnotation(PublicInterface.class)
-                                                != null) {
-                                            return;
-                                        }
-                                        StpUtil.checkLogin();
-                                    }
-                                }))
+        registry.addInterceptor(new SaInterceptor(handler -> StpUtil.checkLogin()))
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(
                         "/api/login", "/api/ldap/ldapEnableStatus",

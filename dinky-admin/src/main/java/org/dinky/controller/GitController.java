@@ -20,7 +20,6 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
-import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -41,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -227,8 +225,6 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
     @Log(title = "GitProject Build Step Logs", businessType = BusinessType.QUERY)
     @ApiOperation("GitProject Build Step Logs")
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
