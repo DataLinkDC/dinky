@@ -21,17 +21,14 @@ package org.dinky.interceptor;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
-import org.dinky.data.annotation.PublicInterface;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.AsyncHandlerInterceptor;
 
 import cn.dev33.satoken.SaManager;
-import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.lang.Opt;
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,14 +58,6 @@ public class TenantInterceptor implements AsyncHandlerInterceptor {
                         break;
                 }
             }
-        }
-        if (!isPass) {
-            if (handler instanceof HandlerMethod) {
-                if (((HandlerMethod) handler).getMethodAnnotation(PublicInterface.class) != null) {
-                    return true;
-                }
-            }
-            throw new NotLoginException("请先登录", "login", "login");
         }
         return AsyncHandlerInterceptor.super.preHandle(request, response, handler);
     }

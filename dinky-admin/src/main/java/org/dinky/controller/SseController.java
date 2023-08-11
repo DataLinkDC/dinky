@@ -19,14 +19,12 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.PublicInterface;
 import org.dinky.service.MonitorService;
 import org.dinky.sse.SseEmitterUTF8;
 
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -44,8 +42,6 @@ public class SseController {
     private final MonitorService monitorService;
 
     @GetMapping(value = "/getLastUpdateData", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
     @ApiOperation("Get Last Update Data")
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
@@ -54,8 +50,6 @@ public class SseController {
     }
 
     @GetMapping(value = "/getJvmInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
     @ApiOperation("Get JVM Info")
     public SseEmitter getJvmInfo(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
