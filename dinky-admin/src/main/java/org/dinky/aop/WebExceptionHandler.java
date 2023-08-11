@@ -19,6 +19,7 @@
 
 package org.dinky.aop;
 
+import cn.hutool.core.map.MapUtil;
 import org.dinky.data.enums.CodeEnum;
 import org.dinky.data.enums.Status;
 import org.dinky.data.exception.BusException;
@@ -27,7 +28,9 @@ import org.dinky.utils.I18nMsgUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -67,6 +70,16 @@ public class WebExceptionHandler {
         return Result.failed(e.getMsg());
     }
 
+    final static Map<String, Status> ERR_CODE_MAPPING = MapUtil.<String, Status>builder()
+            .put(NotLoginException.NOT_TOKEN, Status.NOT_TOKEN)
+            .put(NotLoginException.INVALID_TOKEN, Status.INVALID_TOKEN)
+            .put(NotLoginException.TOKEN_TIMEOUT, Status.EXPIRED_TOKEN)
+            .put(NotLoginException.BE_REPLACED, Status.BE_REPLACED)
+            .put(NotLoginException.KICK_OUT, Status.KICK_OUT)
+            .put(NotLoginException.TOKEN_FREEZE, Status.TOKEN_FREEZED)
+            .put(NotLoginException.NO_PREFIX, Status.NO_PREFIX)
+            .build();
+
     @ExceptionHandler
     public Result<Void> notLoginException(NotLoginException notLoginException) {
         ServletRequestAttributes servletRequestAttributes =
@@ -75,23 +88,10 @@ public class WebExceptionHandler {
         if (response != null) {
             response.setStatus(CodeEnum.NOTLOGIN.getCode());
         }
-        if (notLoginException.getType().equals(NotLoginException.NOT_TOKEN)) {
-            return Result.failed(Status.NOT_TOKEN);
-        } else if (notLoginException.getType().equals(NotLoginException.INVALID_TOKEN)) {
-            return Result.failed(Status.INVALID_TOKEN);
-        } else if (notLoginException.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
-            return Result.failed(Status.EXPIRED_TOKEN);
-        } else if (notLoginException.getType().equals(NotLoginException.BE_REPLACED)) {
-            return Result.failed(Status.BE_REPLACED);
-        } else if (notLoginException.getType().equals(NotLoginException.KICK_OUT)) {
-            return Result.failed(Status.KICK_OUT);
-        } else if (notLoginException.getType().equals(NotLoginException.TOKEN_FREEZE)) {
-            return Result.failed(Status.TOKEN_FREEZED);
-        } else if (notLoginException.getType().equals(NotLoginException.NO_PREFIX)) {
-            return Result.failed(Status.NO_PREFIX);
-        } else {
-            return Result.failed(Status.USER_NOT_LOGIN);
-        }
+        
+        String type = notLoginException.getType();
+        Status status = ERR_CODE_MAPPING.getOrDefault(type, Status.NOT_TOKEN);
+        return Result.failed(status);
     }
 
     /**
