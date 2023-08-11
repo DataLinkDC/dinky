@@ -713,7 +713,7 @@
                         </goals>
                         <configuration>
                             <rules>
-                                <banDuplicatePomDependencyVersions/>
+                                <banDuplicatePomDependencyVersions />
                             </rules>
                         </configuration>
                     </execution>
@@ -761,7 +761,7 @@
                             <version>2.34.0</version>
                         </palantirJavaFormat>
 
-                        <removeUnusedImports/>
+                        <removeUnusedImports />
                         <importOrder>
                             <order>\#,org.dinky,org.apache,java,javassist,javax,org,com,</order>
                         </importOrder>
@@ -998,8 +998,7 @@
                             <artifactId>maven-javadoc-plugin</artifactId>
                             <configuration>
                                 <additionalJOptions>
-                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED
-                                    </additionalJOption>
+                                    <additionalJOption>--add-exports=java.base/sun.net.util=ALL-UNNAMED</additionalJOption>
                                 </additionalJOptions>
                             </configuration>
                         </plugin>
