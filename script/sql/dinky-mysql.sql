@@ -1157,9 +1157,46 @@ create table `dinky_sys_menu` (
                                   `order_num` int default null comment 'sort',
                                   `create_time` datetime not null default current_timestamp comment 'create time',
                                   `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  `note` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
                                   primary key (`id`) using btree
 ) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
 
+-- ----------------------------
+-- Records of dinky_sys_menu
+-- ----------------------------
+BEGIN;
+INSERT INTO `dinky_sys_menu` VALUES (1, -1, '首页', '/home', './Home', NULL, 'HomeOutlined', 'C', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (2, -1, '运维中心', '/devops', NULL, NULL, 'ControlOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (3, -1, '注册中心', '/registration', NULL, NULL, 'AppstoreOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (4, -1, '认证中心', '/auth', NULL, NULL, 'SafetyCertificateOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (5, -1, '数据开发', '/datastudio', './DataStudio', NULL, 'CodeOutlined', 'C', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (6, -1, '配置中心', '/settings', NULL, NULL, 'SettingOutlined', 'M', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (7, -1, '关于', '/about', './Other/About', NULL, 'SmileOutlined', 'C', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (8, -1, '监控', '/metrics', './Metrics', NULL, 'DashboardOutlined', 'C', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (9, 3, 'cluster', '/registration/cluster', NULL, NULL, 'GoldOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (10, 3, 'database', '/registration/database', './RegCenter/DataSource', NULL, 'DatabaseOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (11, -1, 'center', '/account/center', './Other/PersonCenter', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (12, 3, 'alert', '/registration/alert', NULL, NULL, 'AlertOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (13, 3, 'document', '/registration/document', './RegCenter/Document', NULL, 'BookOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (14, 3, 'fragment', '/registration/fragment', './RegCenter/GlobalVar', NULL, 'RocketOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (15, 3, 'gitprojects', '/registration/gitprojects', './RegCenter/GitProject', NULL, 'GithubOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (16, 3, 'udf', '/registration/udf', './RegCenter/UDF', NULL, 'ToolOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (17, 2, 'job-detail', '/devops/job-detail', './DevOps/JobDetail', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (18, 2, 'job', '/devops/joblist', './DevOps', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (19, 3, 'resource', '/registration/resource', './RegCenter/Resource', NULL, 'FileZipOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (20, 4, 'role', '/auth/role', './AuthCenter/Role', NULL, 'TeamOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (21, 4, 'user', '/auth/user', './AuthCenter/User', NULL, 'UserOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (22, 4, '菜单', '/auth/menu', './AuthCenter/Menu', NULL, 'MenuOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (23, 4, 'tenant', '/auth/tenant', './AuthCenter/Tenant', NULL, 'SecurityScanOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (24, 6, 'globalsetting', '/settings/globalsetting', './SettingCenter/GlobalSetting', NULL, 'SettingOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (25, 6, 'systemlog', '/settings/systemlog', './SettingCenter/SystemLogs', NULL, 'InfoCircleOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (26, 6, 'process', '/settings/process', './SettingCenter/Process', NULL, 'ReconciliationOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (27, 4, 'rowpermissions', '/auth/rowpermissions', './AuthCenter/RowPermissions', NULL, 'SafetyCertificateOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (28, 9, 'cluster-instance', '/registration/cluster/instance', './RegCenter/Cluster/Instance', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (29, 12, 'group', '/registration/alert/group', './RegCenter/Alert/AlertGroup', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (30, 9, 'cluster-config', '/registration/cluster/config', './RegCenter/Cluster/Configuration', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+COMMIT;
 
 -- ----------------------------
 -- Table structure dinky_sys_role_menu

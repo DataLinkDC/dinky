@@ -17,21 +17,18 @@
  *
  */
 
-package org.dinky.service;
+package org.dinky.data.dto;
 
-import org.dinky.data.dto.AssignMenuToRoleDto;
-import org.dinky.data.model.RoleMenu;
-import org.dinky.data.result.Result;
-import org.dinky.mybatis.service.ISuperService;
+import java.util.List;
 
-public interface RoleMenuService extends ISuperService<RoleMenu> {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-    /**
-     * Assign menu to role
-     *
-     * @param roleId role id
-     * @param menuId menu id
-     * @return boolean {@code true} if success, {@code false} if failed
-     */
-    Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto);
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class AssignMenuToRoleDto {
+    private Integer roleId;
+    private List<Integer> menuIds;
 }

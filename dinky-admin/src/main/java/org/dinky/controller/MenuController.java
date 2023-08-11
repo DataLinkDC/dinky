@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -99,10 +98,10 @@ public class MenuController {
      * @param roleId role id
      * @return {@link RoleMenuDto}
      */
-    @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
+    @GetMapping(value = "/roleMenus/")
     @ApiOperation("Load Role Menu")
-    public Result<RoleMenuDto> roleMenuTreeSelect(@PathVariable("roleId") Integer roleId) {
-        List<Menu> menus = menuService.list();
+    public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
+        List<Menu> menus = menuService.buildMenuTree(menuService.list());
         RoleMenuDto menuVO =
                 RoleMenuDto.builder()
                         .roleId(roleId)

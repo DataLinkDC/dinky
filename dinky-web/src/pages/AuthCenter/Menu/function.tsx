@@ -29,7 +29,7 @@ import * as React from "react";
  */
 const renderIcon = (iconName: string) => {
     // @ts-ignore
-    return iconName ? React.createElement(Icons[iconName]) : null;
+    return iconName ? React.createElement(Icons[iconName]): null;
 }
 
 /**

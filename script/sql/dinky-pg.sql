@@ -2187,7 +2187,8 @@ create table public.dinky_sys_menu (
   display smallint,
   order_num integer,
   create_time timestamp without time zone,
-  update_time timestamp without time zone
+  update_time timestamp without time zone,
+  note character varying(500),
 );
 COMMENT on table public.dinky_sys_menu is 'dinky_sys_menu';
 COMMENT on column public.dinky_sys_menu.id is 'id';
@@ -2202,6 +2203,7 @@ COMMENT on column public.dinky_sys_menu.display is 'display';
 COMMENT on column public.dinky_sys_menu.order_num is 'order num';
 COMMENT on column public.dinky_sys_menu.create_time is 'create time';
 COMMENT on column public.dinky_sys_menu.update_time is 'update time';
+COMMENT on column public.dinky_sys_menu.note is 'note';
 
 
 -- ----------------------------

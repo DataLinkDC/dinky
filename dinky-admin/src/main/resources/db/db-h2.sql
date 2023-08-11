@@ -1731,6 +1731,7 @@ create table `dinky_sys_menu` (
                                   `order_num` int default null comment 'sort',
                                   `create_time` datetime not null default current_timestamp comment 'create time',
                                   `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  `note` varchar(255) collate utf8mb4_general_ci default null comment 'note',
                                   primary key (`id`) using btree
 ) engine=innodb ;
 

@@ -216,6 +216,7 @@ export default {
   'role.EnterNote': 'Please enter Role Note!',
   'role.delete': 'Delete Role',
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
+  'role.assignMenu': 'Role: [{roleName}] Assign Permissions',
 
   // menu
   'menu.management': 'Menu Management',

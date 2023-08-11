@@ -208,6 +208,7 @@ export default {
   'role.EnterNote': '请输入角色的备注/描述信息!',
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
+  'role.assignMenu': '角色: [{roleName}] 分配权限',
 
   // menu
   'menu.management': '菜单管理',

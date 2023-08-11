@@ -68,8 +68,6 @@ export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
 
 
   const contentStyle: React.CSSProperties = {
-    lineHeight: "300px",
-    // textAlign: "center",
     color: token.colorTextTertiary,
     backgroundColor: token.colorFillAlter,
     borderRadius: token.borderRadiusLG,
