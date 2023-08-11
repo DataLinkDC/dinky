@@ -116,67 +116,52 @@ public class SystemInit implements ApplicationRunner {
                         systemConfiguration.getResourcesHdfsDefaultFS(),
                         systemConfiguration.getResourcesOssAccessKey(),
                         systemConfiguration.getResourcesOssRegion())
-                .forEach(
-                        x -> {
-                            x.addParameterCheck(
-                                    (y) -> {
-                                        if (systemConfiguration.getResourcesEnable().getValue()) {
-                                            switch (systemConfiguration
-                                                    .getResourcesModel()
-                                                    .getValue()) {
-                                                case OSS:
-                                                    OssProperties ossProperties =
-                                                            new OssProperties();
-                                                    ossProperties.setAccessKey(
-                                                            systemConfiguration
-                                                                    .getResourcesOssAccessKey()
-                                                                    .getValue());
-                                                    ossProperties.setSecretKey(
-                                                            systemConfiguration
-                                                                    .getResourcesOssSecretKey()
-                                                                    .getValue());
-                                                    ossProperties.setEndpoint(
-                                                            systemConfiguration
-                                                                    .getResourcesOssEndpoint()
-                                                                    .getValue());
-                                                    ossProperties.setBucketName(
-                                                            systemConfiguration
-                                                                    .getResourcesOssBucketName()
-                                                                    .getValue());
-                                                    ossProperties.setRegion(
-                                                            systemConfiguration
-                                                                    .getResourcesOssRegion()
-                                                                    .getValue());
-                                                    Singleton.get(OssResourceManager.class)
-                                                            .setOssTemplate(
-                                                                    new OssTemplate(ossProperties));
-                                                    break;
-                                                case HDFS:
-                                                    final Configuration configuration =
-                                                            new Configuration();
-                                                    configuration.set(
-                                                            "fs.defaultFS",
-                                                            systemConfiguration
-                                                                    .getResourcesHdfsDefaultFS()
-                                                                    .getValue());
-                                                    try {
-                                                        FileSystem fileSystem =
-                                                                FileSystem.get(
-                                                                        getDefaultUri(
-                                                                                configuration),
-                                                                        configuration,
-                                                                        systemConfiguration
-                                                                                .getResourcesHdfsUser()
-                                                                                .getValue());
-                                                        Singleton.get(HdfsResourceManager.class)
-                                                                .setHdfs(fileSystem);
-                                                    } catch (Exception e) {
-                                                        throw new DinkyException(e);
-                                                    }
-                                            }
-                                        }
-                                    });
-                        });
+                .forEach(x -> {
+                    x.addParameterCheck((y) -> {
+                        if (systemConfiguration.getResourcesEnable().getValue()) {
+                            switch (systemConfiguration.getResourcesModel().getValue()) {
+                                case OSS:
+                                    OssProperties ossProperties = new OssProperties();
+                                    ossProperties.setAccessKey(systemConfiguration
+                                            .getResourcesOssAccessKey()
+                                            .getValue());
+                                    ossProperties.setSecretKey(systemConfiguration
+                                            .getResourcesOssSecretKey()
+                                            .getValue());
+                                    ossProperties.setEndpoint(systemConfiguration
+                                            .getResourcesOssEndpoint()
+                                            .getValue());
+                                    ossProperties.setBucketName(systemConfiguration
+                                            .getResourcesOssBucketName()
+                                            .getValue());
+                                    ossProperties.setRegion(systemConfiguration
+                                            .getResourcesOssRegion()
+                                            .getValue());
+                                    Singleton.get(OssResourceManager.class)
+                                            .setOssTemplate(new OssTemplate(ossProperties));
+                                    break;
+                                case HDFS:
+                                    final Configuration configuration = new Configuration();
+                                    configuration.set(
+                                            "fs.defaultFS",
+                                            systemConfiguration
+                                                    .getResourcesHdfsDefaultFS()
+                                                    .getValue());
+                                    try {
+                                        FileSystem fileSystem = FileSystem.get(
+                                                getDefaultUri(configuration),
+                                                configuration,
+                                                systemConfiguration
+                                                        .getResourcesHdfsUser()
+                                                        .getValue());
+                                        Singleton.get(HdfsResourceManager.class).setHdfs(fileSystem);
+                                    } catch (Exception e) {
+                                        throw new DinkyException(e);
+                                    }
+                            }
+                        }
+                    });
+                });
     }
 
     /** init task monitor */
@@ -195,34 +180,29 @@ public class SystemInit implements ApplicationRunner {
         systemConfiguration
                 .getAllConfiguration()
                 .get("dolphinscheduler")
-                .forEach(
-                        c ->
-                                c.addParameterCheck(
-                                        v -> {
-                                            if (systemConfiguration
-                                                    .getDolphinschedulerEnable()
-                                                    .getValue()) {
-                                                if (StrUtil.isEmpty(Convert.toStr(v))) {
-                                                    sysConfigService.updateSysConfigByKv(
-                                                            systemConfiguration
-                                                                    .getDolphinschedulerEnable()
-                                                                    .getKey(),
-                                                            "false");
-                                                    throw new DinkyException(
-                                                            "Before starting DolphinScheduler docking, please fill in the relevant configuration");
-                                                }
-                                                try {
-                                                    project = projectClient.getDinkyProject();
-                                                    if (Asserts.isNull(project)) {
-                                                        project =
-                                                                projectClient.createDinkyProject();
-                                                    }
-                                                } catch (Exception e) {
-                                                    log.error("Error in DolphinScheduler: ", e);
-                                                    throw new DinkyException(e);
-                                                }
-                                            }
-                                        }));
+                .forEach(c -> c.addParameterCheck(v -> {
+                    if (systemConfiguration.getDolphinschedulerEnable().getValue()) {
+                        if (StrUtil.isEmpty(Convert.toStr(v))) {
+                            sysConfigService.updateSysConfigByKv(
+                                    systemConfiguration
+                                            .getDolphinschedulerEnable()
+                                            .getKey(),
+                                    "false");
+                            throw new DinkyException("Before starting DolphinScheduler"
+                                    + " docking, please fill in the"
+                                    + " relevant configuration");
+                        }
+                        try {
+                            project = projectClient.getDinkyProject();
+                            if (Asserts.isNull(project)) {
+                                project = projectClient.createDinkyProject();
+                            }
+                        } catch (Exception e) {
+                            log.error("Error in DolphinScheduler: ", e);
+                            throw new DinkyException(e);
+                        }
+                    }
+                }));
     }
 
     /**
@@ -242,8 +222,7 @@ public class SystemInit implements ApplicationRunner {
         TenantContextHolder.set(1);
         List<Task> allUDF = taskService.getAllUDF();
         if (CollUtil.isNotEmpty(allUDF)) {
-            UdfCodePool.registerPool(
-                    allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
+            UdfCodePool.registerPool(allUDF.stream().map(UDFUtils::taskToUDF).collect(Collectors.toList()));
         }
         UdfCodePool.updateGitPool(gitProjectService.getGitPool());
 
@@ -253,8 +232,7 @@ public class SystemInit implements ApplicationRunner {
     public void updateGitBuildState() {
         String path = PathConstant.TMP_PATH + "/build.list";
         if (FileUtil.exist(path)) {
-            List<Integer> runningList =
-                    JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
+            List<Integer> runningList = JSONUtil.toList(FileUtil.readUtf8String(path), Integer.class);
             gitProjectService.list().stream()
                     .filter(x -> x.getBuildState().equals(1))
                     .filter(x -> runningList.contains(x.getId()))

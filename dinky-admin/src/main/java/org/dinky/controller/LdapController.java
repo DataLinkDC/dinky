@@ -53,9 +53,11 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class LdapController {
 
-    @Autowired LdapService ldapService;
+    @Autowired
+    LdapService ldapService;
 
-    @Autowired UserService userService;
+    @Autowired
+    UserService userService;
 
     @GetMapping("/ldapEnableStatus")
     @SaIgnore
@@ -83,13 +85,8 @@ public class LdapController {
         List<User> localUsers = userService.list();
 
         users.stream()
-                .filter(
-                        ldapUser ->
-                                localUsers.stream()
-                                        .anyMatch(
-                                                user ->
-                                                        user.getUsername()
-                                                                .equals(ldapUser.getUsername())))
+                .filter(ldapUser ->
+                        localUsers.stream().anyMatch(user -> user.getUsername().equals(ldapUser.getUsername())))
                 .forEach(user -> user.setEnabled(false));
 
         return Result.succeed(users);

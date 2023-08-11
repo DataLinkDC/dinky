@@ -171,8 +171,7 @@ public class ClusterInstanceController {
     @ApiOperation("Cluster Instance Recycle")
     @Transactional(rollbackFor = Exception.class)
     public Result<Integer> recycleCluster() {
-        return Result.succeed(
-                clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
+        return Result.succeed(clusterInstanceService.recycleCluster(), Status.CLUSTER_INSTANCE_RECYCLE_SUCCESS);
     }
 
     /**
@@ -193,7 +192,6 @@ public class ClusterInstanceController {
     @Log(title = "Deploy Session Cluster Instance", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Deploy Session Cluster Instance")
     public Result<Cluster> deploySessionClusterInstance(@RequestParam("id") Integer id) {
-        return Result.succeed(
-                clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
+        return Result.succeed(clusterInstanceService.deploySessionCluster(id), Status.CLUSTER_INSTANCE_DEPLOY);
     }
 }

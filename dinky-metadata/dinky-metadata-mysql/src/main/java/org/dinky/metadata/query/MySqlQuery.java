@@ -33,10 +33,11 @@ public class MySqlQuery extends AbstractDBQuery {
 
     @Override
     public String tablesSql(String schemaName) {
-        return "select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS COMMENT,TABLE_CATALOG AS `CATALOG`"
-                + ",TABLE_TYPE AS `TYPE`,ENGINE AS `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS `ROWS`"
-                + ",CREATE_TIME,UPDATE_TIME from information_schema.tables"
-                + " where TABLE_SCHEMA = '"
+        return "select TABLE_NAME AS `NAME`,TABLE_SCHEMA AS `Database`,TABLE_COMMENT AS"
+                + " COMMENT,TABLE_CATALOG AS `CATALOG`,TABLE_TYPE AS `TYPE`,ENGINE AS"
+                + " `ENGINE`,CREATE_OPTIONS AS `OPTIONS`,TABLE_ROWS AS"
+                + " `ROWS`,CREATE_TIME,UPDATE_TIME from information_schema.tables where"
+                + " TABLE_SCHEMA = '"
                 + schemaName
                 + "'";
     }

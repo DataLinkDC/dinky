@@ -30,8 +30,7 @@ import org.apache.flink.util.Preconditions;
 
 import javax.annotation.Nonnull;
 
-public class GenericDorisSinkFunction<T> extends RichSinkFunction<T>
-        implements CheckpointedFunction {
+public class GenericDorisSinkFunction<T> extends RichSinkFunction<T> implements CheckpointedFunction {
 
     private static final long serialVersionUID = 1L;
     private final DorisDynamicOutputFormat outputFormat;
@@ -54,8 +53,7 @@ public class GenericDorisSinkFunction<T> extends RichSinkFunction<T>
     }
 
     @Override
-    public void initializeState(FunctionInitializationContext context) throws Exception {
-    }
+    public void initializeState(FunctionInitializationContext context) throws Exception {}
 
     @Override
     public void snapshotState(FunctionSnapshotContext context) throws Exception {
@@ -67,5 +65,4 @@ public class GenericDorisSinkFunction<T> extends RichSinkFunction<T>
         outputFormat.close();
         super.close();
     }
-
 }

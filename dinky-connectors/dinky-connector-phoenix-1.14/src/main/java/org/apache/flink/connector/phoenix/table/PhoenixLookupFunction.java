@@ -94,33 +94,24 @@ public class PhoenixLookupFunction extends TableFunction<Row> {
         this.fieldTypes = fieldTypes;
         this.keyNames = keyNames;
         List<String> nameList = Arrays.asList(fieldNames);
-        this.keyTypes =
-                Arrays.stream(keyNames)
-                        .map(
-                                s -> {
-                                    checkArgument(
-                                            nameList.contains(s),
-                                            "keyName %s can't find in fieldNames %s.",
-                                            s,
-                                            nameList);
-                                    return fieldTypes[nameList.indexOf(s)];
-                                })
-                        .toArray(TypeInformation[]::new);
+        this.keyTypes = Arrays.stream(keyNames)
+                .map(s -> {
+                    checkArgument(nameList.contains(s), "keyName %s can't find in fieldNames %s.", s, nameList);
+                    return fieldTypes[nameList.indexOf(s)];
+                })
+                .toArray(TypeInformation[]::new);
         this.cacheMaxSize = lookupOptions.getCacheMaxSize();
         this.cacheExpireMs = lookupOptions.getCacheExpireMs();
         this.maxRetryTimes = lookupOptions.getMaxRetryTimes();
-        this.keySqlTypes =
-                Arrays.stream(keyTypes).mapToInt(JdbcTypeUtil::typeInformationToSqlType).toArray();
-        this.outputSqlTypes =
-                Arrays.stream(fieldTypes)
-                        .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
-                        .toArray();
-        this.query =
-                FieldNamedPreparedStatementImpl.parseNamedStatement(
-                        options.getDialect()
-                                .getSelectFromStatement(
-                                        options.getTableName(), fieldNames, keyNames),
-                        new HashMap<>());
+        this.keySqlTypes = Arrays.stream(keyTypes)
+                .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
+                .toArray();
+        this.outputSqlTypes = Arrays.stream(fieldTypes)
+                .mapToInt(JdbcTypeUtil::typeInformationToSqlType)
+                .toArray();
+        this.query = FieldNamedPreparedStatementImpl.parseNamedStatement(
+                options.getDialect().getSelectFromStatement(options.getTableName(), fieldNames, keyNames),
+                new HashMap<>());
     }
 
     public static Builder builder() {
@@ -131,13 +122,12 @@ public class PhoenixLookupFunction extends TableFunction<Row> {
     public void open(FunctionContext context) throws Exception {
         try {
             establishConnectionAndStatement();
-            this.cache =
-                    cacheMaxSize == -1 || cacheExpireMs == -1
-                            ? null
-                            : CacheBuilder.newBuilder()
-                                    .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
-                                    .maximumSize(cacheMaxSize)
-                                    .build();
+            this.cache = cacheMaxSize == -1 || cacheExpireMs == -1
+                    ? null
+                    : CacheBuilder.newBuilder()
+                            .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
+                            .maximumSize(cacheMaxSize)
+                            .build();
         } catch (SQLException sqe) {
             throw new IllegalArgumentException("open() failed.", sqe);
         } catch (ClassNotFoundException cnfe) {
@@ -193,9 +183,7 @@ public class PhoenixLookupFunction extends TableFunction<Row> {
                         establishConnectionAndStatement();
                     }
                 } catch (SQLException | ClassNotFoundException excpetion) {
-                    LOG.error(
-                            "JDBC connection is not valid, and reestablish connection failed",
-                            excpetion);
+                    LOG.error("JDBC connection is not valid, and reestablish connection failed", excpetion);
                     throw new RuntimeException("Reestablish JDBC connection failed", excpetion);
                 }
 

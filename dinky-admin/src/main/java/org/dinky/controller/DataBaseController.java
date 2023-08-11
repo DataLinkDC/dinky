@@ -229,9 +229,7 @@ public class DataBaseController {
     @GetMapping("/listColumns")
     @ApiOperation("Get Columns Of Table")
     public Result<List<Column>> listColumns(
-            @RequestParam Integer id,
-            @RequestParam String schemaName,
-            @RequestParam String tableName) {
+            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
     }
 
@@ -281,9 +279,7 @@ public class DataBaseController {
     @GetMapping("/getSqlGeneration")
     @ApiOperation("Get Sql Generation")
     public Result<SqlGeneration> getSqlGeneration(
-            @RequestParam Integer id,
-            @RequestParam String schemaName,
-            @RequestParam String tableName) {
+            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
     }
 

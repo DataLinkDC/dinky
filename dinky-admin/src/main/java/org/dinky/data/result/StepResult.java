@@ -64,8 +64,7 @@ public class StepResult implements Serializable {
                 .build();
     }
 
-    public static StepResult genLog(
-            Integer currentStep, Integer status, String log, Boolean history) {
+    public static StepResult genLog(Integer currentStep, Integer status, String log, Boolean history) {
         StepResult stepResult = new StepResult();
         stepResult.setHistory(history);
         stepResult.setData(log);

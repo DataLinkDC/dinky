@@ -85,8 +85,7 @@ public abstract class Executor {
         return new LocalStreamExecutor(ExecutorSetting.DEFAULT);
     }
 
-    public static Executor build(
-            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public static Executor build(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         if (environmentSetting.isUseRemote()) {
             return buildRemoteExecutor(environmentSetting, executorSetting);
         } else {
@@ -110,8 +109,7 @@ public abstract class Executor {
         }
     }
 
-    public static Executor buildRemoteExecutor(
-            EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
+    public static Executor buildRemoteExecutor(EnvironmentSetting environmentSetting, ExecutorSetting executorSetting) {
         environmentSetting.setUseRemote(true);
         if (executorSetting.isUseBatchModel()) {
             return new RemoteBatchExecutor(environmentSetting, executorSetting);
@@ -174,9 +172,7 @@ public abstract class Executor {
             environment.setParallelism(executorSetting.getParallelism());
         }
         if (executorSetting.isValidConfig()) {
-            environment
-                    .getConfig()
-                    .configure(Configuration.fromMap(executorSetting.getConfig()), null);
+            environment.getConfig().configure(Configuration.fromMap(executorSetting.getConfig()), null);
         }
     }
 
@@ -238,10 +234,7 @@ public abstract class Executor {
                 reset.invoke(UserGroupInformation.class);
                 log.info("Reset kerberos authentication...");
             }
-        } catch (NoSuchMethodException
-                | IllegalAccessException
-                | InvocationTargetException
-                | IOException e) {
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IOException e) {
             logger.error("Reset kerberos authentication error.", e);
             throw new RuntimeException(e);
         }

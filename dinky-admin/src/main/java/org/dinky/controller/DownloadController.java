@@ -70,23 +70,13 @@ public class DownloadController {
         FlinkUdfManifest flinkUdfManifest =
                 JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
         List<String> filePath =
-                flinkUdfManifest.getJars().stream()
-                        .map(Convert::toStr)
-                        .collect(Collectors.toList());
+                flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
         List<String> pyFilePath =
-                flinkUdfManifest.getPythonFiles().stream()
-                        .map(Convert::toStr)
-                        .collect(Collectors.toList());
+                flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
         String[] jarNameList =
-                filePath.stream()
-                        .map(FileUtil::getName)
-                        .map(x -> "jar/" + x)
-                        .toArray(String[]::new);
+                filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
         String[] pyFileNameList =
-                pyFilePath.stream()
-                        .map(FileUtil::getName)
-                        .map(x -> "py/" + x)
-                        .toArray(String[]::new);
+                pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
 
         File zipFile = FileUtil.file(udfPackagePath + PathConstant.DEP_ZIP);
         InputStream[] inputStreams =
@@ -116,10 +106,8 @@ public class DownloadController {
     @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
     @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
-        List<File> files =
-                FileUtil.loopFiles(
-                        PathConstant.WORK_DIR + "/jar",
-                        pathname -> pathname.getName().contains("dinky-app-" + version));
+        List<File> files = FileUtil.loopFiles(
+                PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }

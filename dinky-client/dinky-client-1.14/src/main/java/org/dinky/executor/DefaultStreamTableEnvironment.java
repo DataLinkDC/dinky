@@ -54,8 +54,7 @@ public interface DefaultStreamTableEnvironment
     }
 
     @Override
-    default <T, A> void registerFunction(
-            String s, TableAggregateFunction<T, A> tableAggregateFunction) {
+    default <T, A> void registerFunction(String s, TableAggregateFunction<T, A> tableAggregateFunction) {
         getStreamTableEnvironment().registerFunction(s, tableAggregateFunction);
     }
 
@@ -80,8 +79,7 @@ public interface DefaultStreamTableEnvironment
     }
 
     @Override
-    default Table fromChangelogStream(
-            DataStream<Row> dataStream, Schema schema, ChangelogMode changelogMode) {
+    default Table fromChangelogStream(DataStream<Row> dataStream, Schema schema, ChangelogMode changelogMode) {
         return getStreamTableEnvironment().fromChangelogStream(dataStream, schema, changelogMode);
     }
 
@@ -121,8 +119,7 @@ public interface DefaultStreamTableEnvironment
     }
 
     @Override
-    default DataStream<Row> toChangelogStream(
-            Table table, Schema schema, ChangelogMode changelogMode) {
+    default DataStream<Row> toChangelogStream(Table table, Schema schema, ChangelogMode changelogMode) {
         return getStreamTableEnvironment().toChangelogStream(table, schema, changelogMode);
     }
 
@@ -157,8 +154,7 @@ public interface DefaultStreamTableEnvironment
     }
 
     @Override
-    default <T> void createTemporaryView(
-            String s, DataStream<T> dataStream, Expression... expressions) {
+    default <T> void createTemporaryView(String s, DataStream<T> dataStream, Expression... expressions) {
         getStreamTableEnvironment().createTemporaryView(s, dataStream, expressions);
     }
 
@@ -178,8 +174,7 @@ public interface DefaultStreamTableEnvironment
     }
 
     @Override
-    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(
-            Table table, TypeInformation<T> typeInformation) {
+    default <T> DataStream<Tuple2<Boolean, T>> toRetractStream(Table table, TypeInformation<T> typeInformation) {
         return getStreamTableEnvironment().toRetractStream(table, typeInformation);
     }
 

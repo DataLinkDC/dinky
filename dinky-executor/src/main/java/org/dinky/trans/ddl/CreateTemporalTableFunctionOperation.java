@@ -34,8 +34,7 @@ import org.apache.flink.table.functions.TemporalTableFunction;
 
 import java.util.Optional;
 
-public class CreateTemporalTableFunctionOperation extends AbstractOperation
-        implements ExtendOperation {
+public class CreateTemporalTableFunctionOperation extends AbstractOperation implements ExtendOperation {
 
     public CreateTemporalTableFunctionOperation() {}
 
@@ -55,17 +54,14 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation
         CustomTableEnvironmentImpl customTableEnvironmentImpl = ((CustomTableEnvironmentImpl) env);
         Expression timeColumn = new ValueLiteralExpression(temporalTable.getTimeColumn());
         Expression targetColumn = new ValueLiteralExpression(temporalTable.getTargetColumn());
-        TemporalTableFunction ttf =
-                customTableEnvironmentImpl
-                        .from(temporalTable.getTableName())
-                        .createTemporalTableFunction(timeColumn, targetColumn);
+        TemporalTableFunction ttf = customTableEnvironmentImpl
+                .from(temporalTable.getTableName())
+                .createTemporalTableFunction(timeColumn, targetColumn);
 
         if (temporalTable.getFunctionType().toUpperCase().equals("TEMPORARY SYSTEM")) {
-            customTableEnvironmentImpl.createTemporarySystemFunction(
-                    temporalTable.getFunctionName(), ttf);
+            customTableEnvironmentImpl.createTemporarySystemFunction(temporalTable.getFunctionName(), ttf);
         } else {
-            customTableEnvironmentImpl.createTemporaryFunction(
-                    temporalTable.getFunctionName(), ttf);
+            customTableEnvironmentImpl.createTemporaryFunction(temporalTable.getFunctionName(), ttf);
         }
         return Optional.of(CustomTableResultImpl.TABLE_RESULT_OK);
     }
@@ -98,8 +94,7 @@ public class CreateTemporalTableFunctionOperation extends AbstractOperation
 
         public static TemporalTable build(String statement) {
             String[] info = CreateTemporalTableFunctionParseStrategy.getInfo(statement);
-            return new TemporalTable(
-                    statement, info[0], info[1], info[2], info[3], info[4], info[5]);
+            return new TemporalTable(statement, info[0], info[1], info[2], info[3], info[4], info[5]);
         }
 
         public String getStatement() {

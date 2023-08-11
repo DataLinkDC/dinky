@@ -39,9 +39,11 @@ import cn.hutool.core.collection.CollectionUtil;
 /** Permission service by sa-token. TODO add cache */
 @Component
 public class PermissionService implements StpInterface {
-    @Autowired private RoleService roleService;
+    @Autowired
+    private RoleService roleService;
 
-    @Autowired private MenuService menuService;
+    @Autowired
+    private MenuService menuService;
 
     /**
      * Get permission list by user ID.
@@ -82,9 +84,7 @@ public class PermissionService implements StpInterface {
     public List<String> getRoleList(Object userId, String loginType) {
         Preconditions.checkArgument(userId != null);
         Set<String> roles =
-                new HashSet<String>(
-                        roleService.selectRolePermissionByUserId(
-                                Integer.valueOf(userId.toString())));
+                new HashSet<String>(roleService.selectRolePermissionByUserId(Integer.valueOf(userId.toString())));
         return new ArrayList<>(roles);
     }
 }

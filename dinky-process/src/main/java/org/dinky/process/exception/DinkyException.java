@@ -42,11 +42,7 @@ public class DinkyException extends RuntimeException {
         ProcessContextHolder.getProcess().error(cause.toString());
     }
 
-    public DinkyException(
-            String message,
-            Throwable cause,
-            boolean enableSuppression,
-            boolean writableStackTrace) {
+    public DinkyException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
         ProcessContextHolder.getProcess().error(LogUtil.getError(cause));
     }

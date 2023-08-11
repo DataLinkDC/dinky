@@ -69,8 +69,7 @@ public interface Parser {
      * @return resolved expression
      * @throws SqlParserException when failed to parse the sql expression
      */
-    ResolvedExpression parseSqlExpression(
-            String sqlExpression, RowType inputRowType, @Nullable LogicalType outputType);
+    ResolvedExpression parseSqlExpression(String sqlExpression, RowType inputRowType, @Nullable LogicalType outputType);
 
     /**
      * Returns completion hints for the given statement at the given cursor position. The completion

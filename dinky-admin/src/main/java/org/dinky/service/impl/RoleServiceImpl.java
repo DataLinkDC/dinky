@@ -60,17 +60,21 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     private final UserRoleService userRoleService;
     private final TenantService tenantService;
     private final RowPermissionsService roleSelectPermissionsService;
-    @Lazy @Resource private RoleService roleService;
-    @Lazy @Resource private RoleMapper roleMapper;
+
+    @Lazy
+    @Resource
+    private RoleService roleService;
+
+    @Lazy
+    @Resource
+    private RoleMapper roleMapper;
 
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> addedOrUpdateRole(Role role) {
         if (Asserts.isNull(role.getId())) {
             Role roleCode =
-                    roleService.getOne(
-                            new LambdaQueryWrapper<Role>()
-                                    .eq(Role::getRoleCode, role.getRoleCode()));
+                    roleService.getOne(new LambdaQueryWrapper<Role>().eq(Role::getRoleCode, role.getRoleCode()));
             if (Asserts.isNotNull(roleCode)) {
                 return Result.failed(Status.ROLE_ALREADY_EXISTS);
             }
@@ -87,20 +91,15 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> deleteRoleById(Integer id) {
         Role role = getById(id);
-        Long selectUserRoleCnt =
-                userRoleService
-                        .getBaseMapper()
-                        .selectCount(
-                                new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
+        Long selectUserRoleCnt = userRoleService
+                .getBaseMapper()
+                .selectCount(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, id));
         if (selectUserRoleCnt > 0) {
             return Result.failed(Status.ROLE_BINDING_USER);
         }
-        Long selectedRowPermissionsCount =
-                roleSelectPermissionsService
-                        .getBaseMapper()
-                        .selectCount(
-                                new LambdaQueryWrapper<RowPermissions>()
-                                        .eq(RowPermissions::getRoleId, id));
+        Long selectedRowPermissionsCount = roleSelectPermissionsService
+                .getBaseMapper()
+                .selectCount(new LambdaQueryWrapper<RowPermissions>().eq(RowPermissions::getRoleId, id));
         if (selectedRowPermissionsCount > 0) {
             return Result.failed(Status.ROLE_BINDING_ROW_PERMISSION);
         }
@@ -116,19 +115,12 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Override
     public ProTableResult<Role> selectForProTable(JsonNode params, boolean isDelete) {
         ProTableResult<Role> roleProTableResult = super.selectForProTable(params, isDelete);
-        roleProTableResult
-                .getData()
-                .forEach(
-                        role -> {
-                            List<Integer> idsList = new ArrayList<>();
-                            Tenant tenant =
-                                    tenantService.getBaseMapper().selectById(role.getTenantId());
-                            role.setTenant(tenant);
-                            String result =
-                                    idsList.stream()
-                                            .map(Object::toString)
-                                            .collect(Collectors.joining(","));
-                        });
+        roleProTableResult.getData().forEach(role -> {
+            List<Integer> idsList = new ArrayList<>();
+            Tenant tenant = tenantService.getBaseMapper().selectById(role.getTenantId());
+            role.setTenant(tenant);
+            String result = idsList.stream().map(Object::toString).collect(Collectors.joining(","));
+        });
 
         return roleProTableResult;
     }

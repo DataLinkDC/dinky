@@ -99,10 +99,7 @@ public class LogAspect {
             // *========数据库日志=========*//
             OperateLog operLog = new OperateLog();
             Result result = JSONUtil.toBean(JSONUtil.parseObj(jsonResult), Result.class);
-            operLog.setStatus(
-                    result.isSuccess()
-                            ? BusinessStatus.SUCCESS.ordinal()
-                            : BusinessStatus.FAIL.ordinal());
+            operLog.setStatus(result.isSuccess() ? BusinessStatus.SUCCESS.ordinal() : BusinessStatus.FAIL.ordinal());
 
             // 请求的地址
             String ip = IpUtils.getIpAddr(ServletUtils.getRequest());
@@ -150,8 +147,7 @@ public class LogAspect {
      * @param operLog 操作日志
      * @throws Exception
      */
-    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperateLog operLog)
-            throws Exception {
+    public void getControllerMethodDescription(JoinPoint joinPoint, Log log, OperateLog operLog) throws Exception {
         // 设置action动作
         operLog.setBusinessType(log.businessType().ordinal());
         // 设置标题
@@ -177,9 +173,7 @@ public class LogAspect {
             operLog.setOperateParam(StringUtils.substring(params, 0, 2000));
         } else {
             Map<?, ?> paramsMap =
-                    (Map<?, ?>)
-                            ServletUtils.getRequest()
-                                    .getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
+                    (Map<?, ?>) ServletUtils.getRequest().getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
             operLog.setOperateParam(StringUtils.substring(paramsMap.toString(), 0, 2000));
         }
     }
@@ -217,8 +211,6 @@ public class LogAspect {
      * @return 如果是需要过滤的对象，则返回true；否则返回false。
      */
     public boolean isFilterObject(final Object o) {
-        return o instanceof MultipartFile
-                || o instanceof HttpServletRequest
-                || o instanceof HttpServletResponse;
+        return o instanceof MultipartFile || o instanceof HttpServletRequest || o instanceof HttpServletResponse;
     }
 }

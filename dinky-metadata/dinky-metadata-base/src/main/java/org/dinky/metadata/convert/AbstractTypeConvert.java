@@ -30,8 +30,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class AbstractTypeConvert implements ITypeConvert {
-    protected Map<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> convertMap =
-            new LinkedHashMap<>();
+    protected Map<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> convertMap = new LinkedHashMap<>();
 
     @Override
     public String convertToDB(ColumnType columnType) {
@@ -48,8 +47,7 @@ public class AbstractTypeConvert implements ITypeConvert {
         if (Asserts.isNull(column)) {
             return ColumnType.STRING;
         }
-        for (Map.Entry<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> entry :
-                convertMap.entrySet()) {
+        for (Map.Entry<String, BiFunction<Column, DriverConfig, Optional<ColumnType>>> entry : convertMap.entrySet()) {
             if (column.getType().contains(entry.getKey())) {
                 Optional<ColumnType> columnType = entry.getValue().apply(column, driverConfig);
                 if (columnType.isPresent()) {
@@ -69,13 +67,11 @@ public class AbstractTypeConvert implements ITypeConvert {
         this.convertMap.put(type, (c, d) -> getColumnType(c, notNullType, nullType));
     }
 
-    protected void register(
-            String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
+    protected void register(String type, BiFunction<Column, DriverConfig, Optional<ColumnType>> func) {
         this.convertMap.put(type, func);
     }
 
-    private static Optional<ColumnType> getColumnType(
-            Column column, ColumnType notNullType, ColumnType nullType) {
+    private static Optional<ColumnType> getColumnType(Column column, ColumnType notNullType, ColumnType nullType) {
         boolean isNullable = !column.isKeyFlag() && column.isNullable();
         if (isNullable) {
             return Optional.of(nullType);

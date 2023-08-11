@@ -98,15 +98,14 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
             }
         }
         if (Asserts.isNotNullString(table.getComment())) {
-            sb.append(
-                    " FROM \""
-                            + table.getSchema()
-                            + "\".\""
-                            + table.getName()
-                            + "\";"
-                            + " -- "
-                            + table.getComment()
-                            + "\n");
+            sb.append(" FROM \""
+                    + table.getSchema()
+                    + "\".\""
+                    + table.getName()
+                    + "\";"
+                    + " -- "
+                    + table.getComment()
+                    + "\n");
         } else {
             sb.append(" FROM \"" + table.getSchema() + "\".\"" + table.getName() + "\";\n");
         }
@@ -124,40 +123,31 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
 
         // comment table:COMMENT ON TABLE "schemaName"."tableName" IS 'comment';
         String comment =
-                String.format(
-                        "COMMENT ON TABLE \"%s\".\"%s\" IS '%s';\n",
-                        schema, tableName, table.getComment());
+                String.format("COMMENT ON TABLE \"%s\".\"%s\" IS '%s';\n", schema, tableName, table.getComment());
 
         // get primaryKeys
-        List<String> columnKeys =
-                table.getColumns().stream()
-                        .filter(Column::isKeyFlag)
-                        .map(Column::getName)
-                        .map(t -> String.format("\"%s\"", t))
-                        .collect(Collectors.toList());
+        List<String> columnKeys = table.getColumns().stream()
+                .filter(Column::isKeyFlag)
+                .map(Column::getName)
+                .map(t -> String.format("\"%s\"", t))
+                .collect(Collectors.toList());
 
         // add primaryKey
-        String primaryKeyStr =
-                columnKeys.isEmpty()
-                        ? ""
-                        : columnKeys.stream()
-                                .collect(Collectors.joining(",", ", \n\tPRIMARY KEY (", ")\n"));
+        String primaryKeyStr = columnKeys.isEmpty()
+                ? ""
+                : columnKeys.stream().collect(Collectors.joining(",", ", \n\tPRIMARY KEY (", ")\n"));
 
         // CREATE TABLE "schemaName"."tableName" ( columnDefinitions ); comment
-        String ddl =
-                String.format(
-                        "CREATE TABLE \"%s\".\"%s\" (\n%s%s);\n%s",
-                        schema, tableName, columnDefinitions, primaryKeyStr, comment);
+        String ddl = String.format(
+                "CREATE TABLE \"%s\".\"%s\" (\n%s%s);\n%s",
+                schema, tableName, columnDefinitions, primaryKeyStr, comment);
 
-        ddl +=
-                columns.stream()
-                        // COMMENT ON COLUMN "schemaName"."tableName"."columnName" IS 'comment'
-                        .map(
-                                c ->
-                                        String.format(
-                                                "COMMENT ON COLUMN \"%s\".\"%s\".\"%s\" IS '%s';\n",
-                                                schema, tableName, c.getName(), c.getComment()))
-                        .collect(Collectors.joining());
+        ddl += columns.stream()
+                // COMMENT ON COLUMN "schemaName"."tableName"."columnName" IS 'comment'
+                .map(c -> String.format(
+                        "COMMENT ON COLUMN \"%s\".\"%s\".\"%s\" IS '%s';\n",
+                        schema, tableName, c.getName(), c.getComment()))
+                .collect(Collectors.joining());
 
         return ddl;
     }
@@ -170,12 +160,11 @@ public class PostgreSqlDriver extends AbstractJdbcDriver {
         String limitStart = queryData.getOption().getLimitStart();
         String limitEnd = queryData.getOption().getLimitEnd();
 
-        StringBuilder optionBuilder =
-                new StringBuilder()
-                        .append("select * from ")
-                        .append(queryData.getSchemaName())
-                        .append(".")
-                        .append(queryData.getTableName());
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);

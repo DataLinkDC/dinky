@@ -46,7 +46,6 @@ public class AlertBaseConstant {
     public static final String PASSWORD = "password";
 
     public AlertBaseConstant() {
-        throw new UnsupportedOperationException(
-                "This is a utility class and cannot be instantiated");
+        throw new UnsupportedOperationException("This is a utility class and cannot be instantiated");
     }
 }

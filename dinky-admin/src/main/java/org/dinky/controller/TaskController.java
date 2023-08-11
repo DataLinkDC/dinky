@@ -104,8 +104,7 @@ public class TaskController {
             if (error.size() == 0) {
                 return Result.succeed(results, "执行成功");
             } else {
-                return Result.succeed(
-                        results, "执行部分成功，但" + error + "执行失败，共" + error.size() + "次失败。");
+                return Result.succeed(results, "执行部分成功，但" + error + "执行失败，共" + error.size() + "次失败。");
             }
         } else {
             return Result.failed("请选择要执行的记录");
@@ -207,14 +206,11 @@ public class TaskController {
     @ApiOperation("Select Save Point Restart Task")
     @Log(title = "Select Save Point Restart Task", businessType = BusinessType.REMOTE_OPERATION)
     public Result<JobResult> selectSavePointRestartTask(
-            @RequestParam Integer id,
-            @RequestParam Boolean isOnLine,
-            @RequestParam String savePointPath) {
+            @RequestParam Integer id, @RequestParam Boolean isOnLine, @RequestParam String savePointPath) {
         if (isOnLine) {
             return taskService.reOnLineTask(id, savePointPath);
         } else {
-            return Result.succeed(
-                    taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
+            return Result.succeed(taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
         }
     }
 
@@ -270,8 +266,7 @@ public class TaskController {
     @GetMapping("/queryOnClickOperatingTask")
     @ApiOperation("Query On Click Operating Task")
     public Result<List<Task>> queryOnClickOperatingTask(
-            @RequestParam("operating") Integer operating,
-            @RequestParam("catalogueId") Integer catalogueId) {
+            @RequestParam("operating") Integer operating, @RequestParam("catalogueId") Integer catalogueId) {
         if (operating == null) {
             return Result.failed(Status.OPERATE_FAILED);
         }
@@ -313,8 +308,7 @@ public class TaskController {
                         TaskOperatingSavepointSelect.valueByCode(
                                 savepointSelect == null ? 0 : savepointSelect.asInt()));
             case 2:
-                return TaskOneClickOperatingUtil.onClickOffline(
-                        TaskOneClickOperatingUtil.parseJsonNode(operating));
+                return TaskOneClickOperatingUtil.onClickOffline(TaskOneClickOperatingUtil.parseJsonNode(operating));
             default:
                 return Result.failed(Status.OPERATE_FAILED);
         }

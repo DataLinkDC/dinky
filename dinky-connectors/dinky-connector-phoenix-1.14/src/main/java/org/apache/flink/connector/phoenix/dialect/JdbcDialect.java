@@ -99,58 +99,37 @@ public interface JdbcDialect extends Serializable {
      * @return None if dialect does not support upsert statement, the writer will degrade to the use
      *     of select + update/insert, this performance is poor.
      */
-    default Optional<String> getUpsertStatement(
-            String tableName, String[] fieldNames, String[] uniqueKeyFields) {
+    default Optional<String> getUpsertStatement(String tableName, String[] fieldNames, String[] uniqueKeyFields) {
         return Optional.empty();
     }
 
     /** Get row exists statement by condition fields. Default use SELECT. */
     default String getRowExistsStatement(String tableName, String[] conditionFields) {
-        String fieldExpressions =
-                Arrays.stream(conditionFields)
-                        .map(f -> format("%s = :%s", quoteIdentifier(f), f))
-                        .collect(Collectors.joining(" AND "));
+        String fieldExpressions = Arrays.stream(conditionFields)
+                .map(f -> format("%s = :%s", quoteIdentifier(f), f))
+                .collect(Collectors.joining(" AND "));
         return "SELECT 1 FROM " + quoteIdentifier(tableName) + " WHERE " + fieldExpressions;
     }
 
     /** Get insert into statement. */
     default String getInsertIntoStatement(String tableName, String[] fieldNames) {
-        String columns =
-                Arrays.stream(fieldNames)
-                        .map(this::quoteIdentifier)
-                        .collect(Collectors.joining(", "));
-        String placeholders =
-                Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
-        return "INSERT INTO "
-                + quoteIdentifier(tableName)
-                + "("
-                + columns
-                + ")"
-                + " VALUES ("
-                + placeholders
-                + ")";
+        String columns = Arrays.stream(fieldNames).map(this::quoteIdentifier).collect(Collectors.joining(", "));
+        String placeholders = Arrays.stream(fieldNames).map(f -> ":" + f).collect(Collectors.joining(", "));
+        return "INSERT INTO " + quoteIdentifier(tableName) + "(" + columns + ")" + " VALUES (" + placeholders + ")";
     }
 
     /**
      * Get update one row statement by condition fields, default not use limit 1, because limit 1 is
      * a sql dialect.
      */
-    default String getUpdateStatement(
-            String tableName, String[] fieldNames, String[] conditionFields) {
-        String setClause =
-                Arrays.stream(fieldNames)
-                        .map(f -> format("%s = :%s", quoteIdentifier(f), f))
-                        .collect(Collectors.joining(", "));
-        String conditionClause =
-                Arrays.stream(conditionFields)
-                        .map(f -> format("%s = :%s", quoteIdentifier(f), f))
-                        .collect(Collectors.joining(" AND "));
-        return "UPDATE "
-                + quoteIdentifier(tableName)
-                + " SET "
-                + setClause
-                + " WHERE "
-                + conditionClause;
+    default String getUpdateStatement(String tableName, String[] fieldNames, String[] conditionFields) {
+        String setClause = Arrays.stream(fieldNames)
+                .map(f -> format("%s = :%s", quoteIdentifier(f), f))
+                .collect(Collectors.joining(", "));
+        String conditionClause = Arrays.stream(conditionFields)
+                .map(f -> format("%s = :%s", quoteIdentifier(f), f))
+                .collect(Collectors.joining(" AND "));
+        return "UPDATE " + quoteIdentifier(tableName) + " SET " + setClause + " WHERE " + conditionClause;
     }
 
     /**
@@ -158,24 +137,19 @@ public interface JdbcDialect extends Serializable {
      * a sql dialect.
      */
     default String getDeleteStatement(String tableName, String[] conditionFields) {
-        String conditionClause =
-                Arrays.stream(conditionFields)
-                        .map(f -> format("%s = :%s", quoteIdentifier(f), f))
-                        .collect(Collectors.joining(" AND "));
+        String conditionClause = Arrays.stream(conditionFields)
+                .map(f -> format("%s = :%s", quoteIdentifier(f), f))
+                .collect(Collectors.joining(" AND "));
         return "DELETE FROM " + quoteIdentifier(tableName) + " WHERE " + conditionClause;
     }
 
     /** Get select fields statement by condition fields. Default use SELECT. */
-    default String getSelectFromStatement(
-            String tableName, String[] selectFields, String[] conditionFields) {
+    default String getSelectFromStatement(String tableName, String[] selectFields, String[] conditionFields) {
         String selectExpressions =
-                Arrays.stream(selectFields)
-                        .map(this::quoteIdentifier)
-                        .collect(Collectors.joining(", "));
-        String fieldExpressions =
-                Arrays.stream(conditionFields)
-                        .map(f -> format("%s = :%s", quoteIdentifier(f), f))
-                        .collect(Collectors.joining(" AND "));
+                Arrays.stream(selectFields).map(this::quoteIdentifier).collect(Collectors.joining(", "));
+        String fieldExpressions = Arrays.stream(conditionFields)
+                .map(f -> format("%s = :%s", quoteIdentifier(f), f))
+                .collect(Collectors.joining(" AND "));
         return "SELECT "
                 + selectExpressions
                 + " FROM "

@@ -39,55 +39,52 @@ class TableTest {
 
     @BeforeEach
     void setUp() {
-        List<Column> columns =
-                Arrays.asList(
-                        Column.builder()
-                                .name("column1")
-                                .type("int")
-                                .javaType(ColumnType.INT)
-                                .comment("comment abc")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column2")
-                                .type("varchar")
-                                .javaType(ColumnType.STRING)
-                                .comment("comment 'abc'")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column3")
-                                .type("double")
-                                .javaType(ColumnType.DOUBLE)
-                                .comment("comment \"abc\"")
-                                .build());
+        List<Column> columns = Arrays.asList(
+                Column.builder()
+                        .name("column1")
+                        .type("int")
+                        .javaType(ColumnType.INT)
+                        .comment("comment abc")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column2")
+                        .type("varchar")
+                        .javaType(ColumnType.STRING)
+                        .comment("comment 'abc'")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column3")
+                        .type("double")
+                        .javaType(ColumnType.DOUBLE)
+                        .comment("comment \"abc\"")
+                        .build());
 
-        List<Column> columnWithoutKey =
-                Arrays.asList(
-                        Column.builder()
-                                .name("column1")
-                                .type("int")
-                                .javaType(ColumnType.INT)
-                                .comment("comment abc")
-                                .build(),
-                        Column.builder()
-                                .name("column2")
-                                .type("varchar")
-                                .javaType(ColumnType.STRING)
-                                .comment("comment 'abc'")
-                                .build(),
-                        Column.builder()
-                                .name("column3")
-                                .type("double")
-                                .javaType(ColumnType.DOUBLE)
-                                .comment("comment \"abc\"")
-                                .build());
+        List<Column> columnWithoutKey = Arrays.asList(
+                Column.builder()
+                        .name("column1")
+                        .type("int")
+                        .javaType(ColumnType.INT)
+                        .comment("comment abc")
+                        .build(),
+                Column.builder()
+                        .name("column2")
+                        .type("varchar")
+                        .javaType(ColumnType.STRING)
+                        .comment("comment 'abc'")
+                        .build(),
+                Column.builder()
+                        .name("column3")
+                        .type("double")
+                        .javaType(ColumnType.DOUBLE)
+                        .comment("comment \"abc\"")
+                        .build());
 
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
         tableWithoutKey = new Table("TableNameOrigin", "SchemaOrigin", columnWithoutKey);
 
-        flinkConfig =
-                "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd";
+        flinkConfig = "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd";
     }
 
     @Test
@@ -95,25 +92,24 @@ class TableTest {
         String result = table.getFlinkDDL(flinkConfig, "NewTableName");
         assertThat(
                 result,
-                equalTo(
-                        "CREATE TABLE IF NOT EXISTS NewTableName (\n"
-                                + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                                + "    `column2` STRING COMMENT 'comment abc',\n"
-                                + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
-                                + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
-                                + ") WITH (\n"
-                                + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)"
-                                + "\n"));
+                equalTo("CREATE TABLE IF NOT EXISTS NewTableName (\n"
+                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
+                        + "    `column2` STRING COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
+                        + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
+                        + ") WITH (\n"
+                        + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc,"
+                        + " ${}=null, bcd=bcd)\n"));
 
         result = tableWithoutKey.getFlinkDDL(flinkConfig, "NewTableNameWithoutKey");
         assertThat(
                 result,
-                equalTo(
-                        "CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n"
-                                + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                                + "    `column2` STRING COMMENT 'comment abc',\n"
-                                + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n"
-                                + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc, ${}=null, bcd=bcd)\n"));
+                equalTo("CREATE TABLE IF NOT EXISTS NewTableNameWithoutKey (\n"
+                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
+                        + "    `column2` STRING COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc') WITH (\n"
+                        + "${schemaName}=schemaName, ${tableName}=tableName, ${abc}=abc,"
+                        + " ${}=null, bcd=bcd)\n"));
     }
 
     @Test
@@ -121,9 +117,7 @@ class TableTest {
         String result = table.getFlinkTableWith(flinkConfig);
         assertThat(
                 result,
-                equalTo(
-                        "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, "
-                                + "bcd=bcd"));
+                equalTo("SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, " + "bcd=bcd"));
     }
 
     @Test
@@ -131,15 +125,14 @@ class TableTest {
         String result = table.getFlinkTableSql("CatalogName", flinkConfig);
         assertThat(
                 result,
-                equalTo(
-                        "DROP TABLE IF EXISTS TableNameOrigin;\n"
-                                + "CREATE TABLE IF NOT EXISTS TableNameOrigin (\n"
-                                + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
-                                + "    `column2` STRING COMMENT 'comment abc',\n"
-                                + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
-                                + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
-                                + ") WITH (\n"
-                                + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc, ${}=null, bcd=bcd)"
-                                + "\n"));
+                equalTo("DROP TABLE IF EXISTS TableNameOrigin;\n"
+                        + "CREATE TABLE IF NOT EXISTS TableNameOrigin (\n"
+                        + "    `column1` INT NOT NULL COMMENT 'comment abc',\n"
+                        + "    `column2` STRING COMMENT 'comment abc',\n"
+                        + "    `column3` DOUBLE NOT NULL COMMENT 'comment abc',\n"
+                        + "    PRIMARY KEY ( `column1`,`column2` ) NOT ENFORCED\n"
+                        + ") WITH (\n"
+                        + "SchemaOrigin=schemaName, TableNameOrigin=tableName, ${abc}=abc,"
+                        + " ${}=null, bcd=bcd)\n"));
     }
 }

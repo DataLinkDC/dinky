@@ -44,7 +44,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/uploadFileRecord")
 public class UploadFileRecordController {
 
-    @Resource private UploadFileRecordService uploadFileRecordService;
+    @Resource
+    private UploadFileRecordService uploadFileRecordService;
 
     /** @param record {@link UploadFileRecord} */
     @PostMapping("/list")

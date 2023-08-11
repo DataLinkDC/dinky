@@ -51,26 +51,25 @@ public class ProjectClient {
         Map<String, Object> map = new HashMap<>();
         map.put(
                 "projectName",
-                SystemConfiguration.getInstances().getDolphinschedulerProjectName().getValue());
+                SystemConfiguration.getInstances()
+                        .getDolphinschedulerProjectName()
+                        .getValue());
         map.put("description", "自动创建");
 
-        String content =
-                HttpRequest.post(
-                                SystemConfiguration.getInstances()
-                                                .getDolphinschedulerUrl()
-                                                .getValue()
-                                        + "/projects")
-                        .header(
-                                Constants.TOKEN,
-                                SystemConfiguration.getInstances()
-                                        .getDolphinschedulerToken()
-                                        .getValue())
-                        .form(map)
-                        .timeout(5000)
-                        .execute()
-                        .body();
-        return MyJSONUtil.verifyResult(
-                MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {}));
+        String content = HttpRequest.post(SystemConfiguration.getInstances()
+                                .getDolphinschedulerUrl()
+                                .getValue()
+                        + "/projects")
+                .header(
+                        Constants.TOKEN,
+                        SystemConfiguration.getInstances()
+                                .getDolphinschedulerToken()
+                                .getValue())
+                .form(map)
+                .timeout(5000)
+                .execute()
+                .body();
+        return MyJSONUtil.verifyResult(MyJSONUtil.toBean(content, new TypeReference<Result<Project>>() {}));
     }
 
     /**
@@ -80,35 +79,30 @@ public class ProjectClient {
      */
     public Project getDinkyProject() {
 
-        String content =
-                HttpRequest.get(
-                                SystemConfiguration.getInstances()
-                                                .getDolphinschedulerUrl()
-                                                .getValue()
-                                        + "/projects")
-                        .header(
-                                Constants.TOKEN,
-                                SystemConfiguration.getInstances()
-                                        .getDolphinschedulerToken()
-                                        .getValue())
-                        .form(
-                                ParamUtil.getPageParams(
-                                        SystemConfiguration.getInstances()
-                                                .getDolphinschedulerProjectName()
-                                                .getValue()))
-                        .timeout(5000)
-                        .execute()
-                        .body();
+        String content = HttpRequest.get(SystemConfiguration.getInstances()
+                                .getDolphinschedulerUrl()
+                                .getValue()
+                        + "/projects")
+                .header(
+                        Constants.TOKEN,
+                        SystemConfiguration.getInstances()
+                                .getDolphinschedulerToken()
+                                .getValue())
+                .form(ParamUtil.getPageParams(SystemConfiguration.getInstances()
+                        .getDolphinschedulerProjectName()
+                        .getValue()))
+                .timeout(5000)
+                .execute()
+                .body();
 
         Project pageBeanAndFindByName = null;
         try {
-            pageBeanAndFindByName =
-                    MyJSONUtil.toPageBeanAndFindByName(
-                            content,
-                            SystemConfiguration.getInstances()
-                                    .getDolphinschedulerProjectName()
-                                    .getValue(),
-                            Project.class);
+            pageBeanAndFindByName = MyJSONUtil.toPageBeanAndFindByName(
+                    content,
+                    SystemConfiguration.getInstances()
+                            .getDolphinschedulerProjectName()
+                            .getValue(),
+                    Project.class);
         } catch (Exception e) {
             SystemConfiguration.getInstances().getDolphinschedulerEnable().setValue(false);
             throw new RuntimeException(content);

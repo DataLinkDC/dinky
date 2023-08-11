@@ -52,6 +52,7 @@ public interface BaseResourceManager {
 
     default String getFile(String path) {
         return FileUtil.normalize(
-                FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path).toString());
+                FileUtil.file(instances.getResourcesUploadBasePath().getValue(), path)
+                        .toString());
     }
 }

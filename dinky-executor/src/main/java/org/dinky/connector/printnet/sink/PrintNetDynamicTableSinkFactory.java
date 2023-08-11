@@ -46,17 +46,14 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
     public static final ConfigOption<Integer> PORT =
             ConfigOptions.key("port").intType().noDefaultValue();
 
-    public static final ConfigOption<String> PRINT_IDENTIFIER =
-            key("print-identifier")
-                    .stringType()
-                    .noDefaultValue()
-                    .withDescription(
-                            "Message that identify print and is prefixed to the output of the value.");
+    public static final ConfigOption<String> PRINT_IDENTIFIER = key("print-identifier")
+            .stringType()
+            .noDefaultValue()
+            .withDescription("Message that identify print and is prefixed to the output of the" + " value.");
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
-        final FactoryUtil.TableFactoryHelper helper =
-                FactoryUtil.createTableFactoryHelper(this, context);
+        final FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
 
         ObjectIdentifier objectIdentifier = context.getObjectIdentifier();
 
@@ -68,9 +65,7 @@ public class PrintNetDynamicTableSinkFactory implements DynamicTableSinkFactory 
 
         try {
             // TODO: 2023/3/17 maybe not right
-            serializingFormat =
-                    helper.discoverEncodingFormat(
-                            SerializationFormatFactory.class, FactoryUtil.FORMAT);
+            serializingFormat = helper.discoverEncodingFormat(SerializationFormatFactory.class, FactoryUtil.FORMAT);
         } catch (Exception ignored) {
         }
 

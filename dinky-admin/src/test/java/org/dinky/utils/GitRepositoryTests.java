@@ -32,10 +32,8 @@ import org.junit.jupiter.api.Test;
 @Disabled
 public class GitRepositoryTests {
     // ssh-keygen -m PEM -t ecdsa
-    GitRepository sshRepository =
-            new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
-    GitRepository httpRepository =
-            new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
+    GitRepository sshRepository = new GitRepository("git@gitee.com:DataLinkDC/dinky.git", null, null, "");
+    GitRepository httpRepository = new GitRepository("https://github.com/DataLinkDC/dinky", null, null, null);
 
     @Test
     public void httpTest() {

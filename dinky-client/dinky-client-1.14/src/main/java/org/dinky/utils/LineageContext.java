@@ -96,76 +96,73 @@ public class LineageContext {
 
     /** Calling each program's optimize method in sequence. */
     private RelNode optimize(RelNode relNode) {
-        return flinkChainedProgram.optimize(
-                relNode,
-                new StreamOptimizeContext() {
+        return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
 
-                    @Override
-                    public boolean isBatchMode() {
-                        return false;
-                    }
+            @Override
+            public boolean isBatchMode() {
+                return false;
+            }
 
-                    @Override
-                    public TableConfig getTableConfig() {
-                        return tableEnv.getConfig();
-                    }
+            @Override
+            public TableConfig getTableConfig() {
+                return tableEnv.getConfig();
+            }
 
-                    @Override
-                    public FunctionCatalog getFunctionCatalog() {
-                        return getPlanner().getFlinkContext().getFunctionCatalog();
-                    }
+            @Override
+            public FunctionCatalog getFunctionCatalog() {
+                return getPlanner().getFlinkContext().getFunctionCatalog();
+            }
 
-                    @Override
-                    public CatalogManager getCatalogManager() {
-                        return tableEnv.getCatalogManager();
-                    }
+            @Override
+            public CatalogManager getCatalogManager() {
+                return tableEnv.getCatalogManager();
+            }
 
-                    @Override
-                    public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
-                        return getPlanner().getFlinkContext().getSqlExprToRexConverterFactory();
-                    }
+            @Override
+            public SqlExprToRexConverterFactory getSqlExprToRexConverterFactory() {
+                return getPlanner().getFlinkContext().getSqlExprToRexConverterFactory();
+            }
 
-                    @Override
-                    public <C> C unwrap(Class<C> clazz) {
-                        return getPlanner().getFlinkContext().unwrap(clazz);
-                    }
+            @Override
+            public <C> C unwrap(Class<C> clazz) {
+                return getPlanner().getFlinkContext().unwrap(clazz);
+            }
 
-                    @Override
-                    public FlinkRelBuilder getFlinkRelBuilder() {
-                        return getPlanner().getRelBuilder();
-                    }
+            @Override
+            public FlinkRelBuilder getFlinkRelBuilder() {
+                return getPlanner().getRelBuilder();
+            }
 
-                    @Override
-                    public boolean needFinalTimeIndicatorConversion() {
-                        return true;
-                    }
+            @Override
+            public boolean needFinalTimeIndicatorConversion() {
+                return true;
+            }
 
-                    @Override
-                    public boolean isUpdateBeforeRequired() {
-                        return false;
-                    }
+            @Override
+            public boolean isUpdateBeforeRequired() {
+                return false;
+            }
 
-                    @Override
-                    public MiniBatchInterval getMiniBatchInterval() {
-                        return MiniBatchInterval.NONE;
-                    }
+            @Override
+            public MiniBatchInterval getMiniBatchInterval() {
+                return MiniBatchInterval.NONE;
+            }
 
-                    private PlannerBase getPlanner() {
-                        return (PlannerBase) tableEnv.getPlanner();
-                    }
-                });
+            private PlannerBase getPlanner() {
+                return (PlannerBase) tableEnv.getPlanner();
+            }
+        });
     }
 
     /** Check the size of query and sink fields match */
     private void validateSchema(String sinkTable, RelNode relNode, List<String> sinkFieldList) {
         List<String> queryFieldList = relNode.getRowType().getFieldNames();
         if (queryFieldList.size() != sinkFieldList.size()) {
-            throw new ValidationException(
-                    String.format(
-                            "Column types of query result and sink for %s do not match.\n"
-                                    + "Query schema: %s\n"
-                                    + "Sink schema:  %s",
-                            sinkTable, queryFieldList, sinkFieldList));
+            throw new ValidationException(String.format(
+                    "Column types of query result and sink for %s do not match.\n"
+                            + "Query schema: %s\n"
+                            + "Sink schema:  %s",
+                    sinkTable, queryFieldList, sinkFieldList));
         }
     }
 
@@ -183,8 +180,7 @@ public class LineageContext {
         for (int index = 0; index < targetColumnList.size(); index++) {
             String targetColumn = targetColumnList.get(index);
 
-            Set<RelColumnOrigin> relColumnOriginSet =
-                    metadataQuery.getColumnOrigins(optRelNode, index);
+            Set<RelColumnOrigin> relColumnOriginSet = metadataQuery.getColumnOrigins(optRelNode, index);
 
             if (CollectionUtils.isNotEmpty(relColumnOriginSet)) {
                 for (RelColumnOrigin relColumnOrigin : relColumnOriginSet) {
@@ -194,16 +190,14 @@ public class LineageContext {
 
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
-                    List<String> fieldNames =
-                            ((TableSourceTable) table)
-                                    .catalogTable()
-                                    .getResolvedSchema()
-                                    .getColumnNames();
+                    List<String> fieldNames = ((TableSourceTable) table)
+                            .catalogTable()
+                            .getResolvedSchema()
+                            .getColumnNames();
                     String sourceColumn = fieldNames.get(ordinal);
 
                     // add record
-                    resultList.add(
-                            LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
+                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
                 }
             }
         }

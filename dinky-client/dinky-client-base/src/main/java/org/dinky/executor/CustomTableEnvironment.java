@@ -58,8 +58,7 @@ public interface CustomTableEnvironment
 
     SqlExplainResult explainSqlRecord(String statement, ExplainDetail... extraDetails);
 
-    boolean parseAndLoadConfiguration(
-            String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
+    boolean parseAndLoadConfiguration(String statement, StreamExecutionEnvironment config, Map<String, Object> setMap);
 
     StreamExecutionEnvironment getStreamExecutionEnvironment();
 

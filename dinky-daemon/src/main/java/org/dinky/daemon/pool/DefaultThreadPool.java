@@ -82,8 +82,7 @@ public class DefaultThreadPool implements ThreadPool {
             for (int i = 0; i < num; i++) {
                 TaskWorker worker = new TaskWorker(queue);
                 workers.add(worker);
-                Thread thread =
-                        new Thread(worker, "ThreadPool-Worker-" + workerNum.incrementAndGet());
+                Thread thread = new Thread(worker, "ThreadPool-Worker-" + workerNum.incrementAndGet());
                 thread.start();
             }
         }

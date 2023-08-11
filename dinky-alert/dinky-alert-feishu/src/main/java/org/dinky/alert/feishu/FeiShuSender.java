@@ -88,10 +88,9 @@ public final class FeiShuSender {
         msgType = config.get(FeiShuConstants.MSG_TYPE);
         requireNonNull(msgType, FeiShuConstants.MSG_TYPE + " must not null");
 
-        keyword =
-                config.get(FeiShuConstants.KEYWORD) != null
-                        ? config.get(FeiShuConstants.KEYWORD).replace("\r\n", "")
-                        : "";
+        keyword = config.get(FeiShuConstants.KEYWORD) != null
+                ? config.get(FeiShuConstants.KEYWORD).replace("\r\n", "")
+                : "";
         enableProxy = Boolean.valueOf(config.get(FeiShuConstants.PROXY_ENABLE));
         secret = config.get(FeiShuConstants.SECRET);
         if (Boolean.TRUE.equals(enableProxy)) {
@@ -185,24 +184,18 @@ public final class FeiShuSender {
         String contentResult = StringUtils.newStringUtf8(byt);
         String userIdsToText = buildAtUserList(Asserts.isNullString(atUserIds) ? "all" : atUserIds);
         if (StringUtils.equals(ShowType.TEXT.getValue(), msgType)) {
-            jsonResult =
-                    FeiShuConstants.FEI_SHU_TEXT_TEMPLATE
-                            .replace(MSG_TYPE_REGX, msgType)
-                            .replace(
-                                    MSG_RESULT_REGX,
-                                    keyword
-                                            + FeiShuConstants.MARKDOWN_ENTER_BACK_SLASH
-                                            + contentResult)
-                            .replace(FEI_SHU_USER_REGX, userIdsToText)
-                            .replaceAll("/n", "\\\\n");
+            jsonResult = FeiShuConstants.FEI_SHU_TEXT_TEMPLATE
+                    .replace(MSG_TYPE_REGX, msgType)
+                    .replace(MSG_RESULT_REGX, keyword + FeiShuConstants.MARKDOWN_ENTER_BACK_SLASH + contentResult)
+                    .replace(FEI_SHU_USER_REGX, userIdsToText)
+                    .replaceAll("/n", "\\\\n");
         } else {
-            jsonResult =
-                    FeiShuConstants.FEI_SHU_POST_TEMPLATE
-                            .replace(MSG_TYPE_REGX, msgType)
-                            .replace(FEI_SHU_KEYWORD_REGX, keyword)
-                            .replace(MSG_RESULT_REGX, contentResult)
-                            .replace(FEI_SHU_USER_REGX, userIdsToText)
-                            .replaceAll("/n", "\\\\n");
+            jsonResult = FeiShuConstants.FEI_SHU_POST_TEMPLATE
+                    .replace(MSG_TYPE_REGX, msgType)
+                    .replace(FEI_SHU_KEYWORD_REGX, keyword)
+                    .replace(MSG_RESULT_REGX, contentResult)
+                    .replace(FEI_SHU_USER_REGX, userIdsToText)
+                    .replaceAll("/n", "\\\\n");
         }
 
         if (Asserts.isNotNullString(secret)) {
@@ -227,9 +220,7 @@ public final class FeiShuSender {
         String sign = "";
         try {
             Mac mac = Mac.getInstance("HmacSHA256");
-            mac.init(
-                    new SecretKeySpec(
-                            stringToSign.getBytes(FeiShuConstants.CHARSET), "HmacSHA256"));
+            mac.init(new SecretKeySpec(stringToSign.getBytes(FeiShuConstants.CHARSET), "HmacSHA256"));
             byte[] signData = mac.doFinal(new byte[] {});
             sign = new String(Base64.encodeBase64(signData));
         } catch (Exception e) {
@@ -283,8 +274,7 @@ public final class FeiShuSender {
                 Map.Entry<String, Object> entry = iterator.next();
                 String key = entry.getKey();
                 String value = entry.getValue().toString();
-                contents.append(key + "：" + value)
-                        .append(FeiShuConstants.MARKDOWN_ENTER_BACK_SLASH);
+                contents.append(key + "：" + value).append(FeiShuConstants.MARKDOWN_ENTER_BACK_SLASH);
             }
             return contents.toString();
         }
@@ -314,8 +304,7 @@ public final class FeiShuSender {
             logger.info("send fei shu msg error,fei shu server resp is null");
             return alertResult;
         }
-        FeiShuSendMsgResponse sendMsgResponse =
-                JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
+        FeiShuSendMsgResponse sendMsgResponse = JSONUtil.parseObject(result, FeiShuSendMsgResponse.class);
 
         if (null == sendMsgResponse) {
             alertResult.setMessage("send fei shu msg fail");
@@ -327,9 +316,7 @@ public final class FeiShuSender {
             alertResult.setMessage("send fei shu msg success");
             return alertResult;
         }
-        alertResult.setMessage(
-                String.format(
-                        "alert send fei shu msg error : %s", sendMsgResponse.getStatusMessage()));
+        alertResult.setMessage(String.format("alert send fei shu msg error : %s", sendMsgResponse.getStatusMessage()));
         logger.info(
                 "alert send fei shu msg error : {} ,Extra : {} ",
                 sendMsgResponse.getStatusMessage(),
@@ -347,9 +334,9 @@ public final class FeiShuSender {
         CloseableHttpClient httpClient;
         HttpHost httpProxy = new HttpHost(proxy, port);
         CredentialsProvider provider = new BasicCredentialsProvider();
-        provider.setCredentials(
-                new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
-        httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
+        provider.setCredentials(new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+        httpClient =
+                HttpClients.custom().setDefaultCredentialsProvider(provider).build();
         RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
         httpPost.setConfig(rcf);
         return httpClient;
@@ -411,9 +398,7 @@ public final class FeiShuSender {
             }
             final Object this$statusCode = this.getStatusCode();
             final Object other$statusCode = other.getStatusCode();
-            if (this$statusCode == null
-                    ? other$statusCode != null
-                    : !this$statusCode.equals(other$statusCode)) {
+            if (this$statusCode == null ? other$statusCode != null : !this$statusCode.equals(other$statusCode)) {
                 return false;
             }
             final Object this$statusMessage = this.getStatusMessage();

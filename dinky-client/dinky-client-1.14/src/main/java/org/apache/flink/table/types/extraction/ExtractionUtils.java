@@ -106,13 +106,11 @@ public final class ExtractionUtils {
             final Class<?> param = executable.getParameterTypes()[currentParam];
             // last parameter is a vararg that needs to consume remaining classes
             if (currentParam == paramCount - 1 && executable.isVarArgs()) {
-                final Class<?> paramComponent =
-                        executable.getParameterTypes()[currentParam].getComponentType();
+                final Class<?> paramComponent = executable.getParameterTypes()[currentParam].getComponentType();
                 // we have more than 1 classes left so the vararg needs to consume them all
                 if (classCount - currentClass > 1) {
                     while (currentClass < classCount
-                            && ExtractionUtils.isAssignable(
-                                    classes[currentClass], paramComponent, true)) {
+                            && ExtractionUtils.isAssignable(classes[currentClass], paramComponent, true)) {
                         currentClass++;
                     }
                 } else if (currentClass < classCount
@@ -142,19 +140,17 @@ public final class ExtractionUtils {
             builder.append(returnType.getCanonicalName()).append(" ");
         }
         builder.append(methodName)
-                .append(
-                        Stream.of(parameters)
-                                .map(
-                                        parameter -> {
-                                            // in case we don't know the parameter at this location
-                                            // (i.e. for accumulators)
-                                            if (parameter == null) {
-                                                return "_";
-                                            } else {
-                                                return parameter.getCanonicalName();
-                                            }
-                                        })
-                                .collect(Collectors.joining(", ", "(", ")")));
+                .append(Stream.of(parameters)
+                        .map(parameter -> {
+                            // in case we don't know the parameter at this location
+                            // (i.e. for accumulators)
+                            if (parameter == null) {
+                                return "_";
+                            } else {
+                                return parameter.getCanonicalName();
+                            }
+                        })
+                        .collect(Collectors.joining(", ", "(", ")")));
         return builder.toString();
     }
 
@@ -169,10 +165,8 @@ public final class ExtractionUtils {
         if (!Modifier.isPublic(m)) {
             throw extractionError("Class '%s' is not public.", clazz.getName());
         }
-        if (clazz.getEnclosingClass() != null
-                && (clazz.getDeclaringClass() == null || !Modifier.isStatic(m))) {
-            throw extractionError(
-                    "Class '%s' is a not a static, globally accessible class.", clazz.getName());
+        if (clazz.getEnclosingClass() != null && (clazz.getDeclaringClass() == null || !Modifier.isStatic(m))) {
+            throw extractionError("Class '%s' is a not a static, globally accessible class.", clazz.getName());
         }
     }
 
@@ -190,8 +184,7 @@ public final class ExtractionUtils {
             }
         }
         throw extractionError(
-                "Could not find a field named '%s' in class '%s' for structured type.",
-                fieldName, clazz.getName());
+                "Could not find a field named '%s' in class '%s' for structured type.", fieldName, clazz.getName());
     }
 
     /**
@@ -208,10 +201,9 @@ public final class ExtractionUtils {
             // is<Name>()
             // <Name>() for Scala
             final String normalizedMethodName = normalizeAccessorName(method.getName());
-            final boolean hasName =
-                    normalizedMethodName.equals("GET" + normalizedFieldName)
-                            || normalizedMethodName.equals("IS" + normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName);
+            final boolean hasName = normalizedMethodName.equals("GET" + normalizedFieldName)
+                    || normalizedMethodName.equals("IS" + normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName);
             if (!hasName) {
                 continue;
             }
@@ -254,10 +246,9 @@ public final class ExtractionUtils {
             // <Name>(type)
             // <Name>_$eq(type) for Scala
             final String normalizedMethodName = normalizeAccessorName(method.getName());
-            final boolean hasName =
-                    normalizedMethodName.equals("SET" + normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName)
-                            || normalizedMethodName.equals(normalizedFieldName + "$EQ");
+            final boolean hasName = normalizedMethodName.equals("SET" + normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName)
+                    || normalizedMethodName.equals(normalizedFieldName + "$EQ");
             if (!hasName) {
                 continue;
             }
@@ -272,11 +263,10 @@ public final class ExtractionUtils {
 
             // check parameters:
             // one parameter that has the same (or primitive) type of the field
-            final boolean hasParameter =
-                    method.getParameterCount() == 1
-                            && (method.getGenericParameterTypes()[0].equals(field.getGenericType())
-                                    || primitiveToWrapper(method.getGenericParameterTypes()[0])
-                                            .equals(field.getGenericType()));
+            final boolean hasParameter = method.getParameterCount() == 1
+                    && (method.getGenericParameterTypes()[0].equals(field.getGenericType())
+                            || primitiveToWrapper(method.getGenericParameterTypes()[0])
+                                    .equals(field.getGenericType()));
             if (!hasParameter) {
                 continue;
             }
@@ -335,15 +325,12 @@ public final class ExtractionUtils {
      * DataTypeExtractor#extractFromGeneric(DataTypeFactory, Class, int, Type)} should be more
      * appropriate.
      */
-    public static Optional<Class<?>> extractSimpleGeneric(
-            Class<?> baseClass, Class<?> clazz, int pos) {
+    public static Optional<Class<?>> extractSimpleGeneric(Class<?> baseClass, Class<?> clazz, int pos) {
         try {
             if (clazz.getSuperclass() != baseClass) {
                 return Optional.empty();
             }
-            final Type t =
-                    ((ParameterizedType) clazz.getGenericSuperclass())
-                            .getActualTypeArguments()[pos];
+            final Type t = ((ParameterizedType) clazz.getGenericSuperclass()).getActualTypeArguments()[pos];
             return Optional.ofNullable(toClass(t));
         } catch (Exception unused) {
             return Optional.empty();
@@ -408,8 +395,7 @@ public final class ExtractionUtils {
             @Nullable Class<?> conversionClass) {
         if (rawSerializer != null) {
             return DataTypes.RAW(
-                    (Class) createConversionClass(conversionClass),
-                    instantiateRawSerializer(rawSerializer));
+                    (Class) createConversionClass(conversionClass), instantiateRawSerializer(rawSerializer));
         }
         return typeFactory.createRawDataType(createConversionClass(conversionClass));
     }
@@ -421,15 +407,14 @@ public final class ExtractionUtils {
         return Object.class;
     }
 
-    private static TypeSerializer<?> instantiateRawSerializer(
-            Class<? extends TypeSerializer<?>> rawSerializer) {
+    private static TypeSerializer<?> instantiateRawSerializer(Class<? extends TypeSerializer<?>> rawSerializer) {
         try {
             return rawSerializer.newInstance();
         } catch (Exception e) {
             throw extractionError(
                     e,
-                    "Cannot instantiate type serializer '%s' for RAW type. "
-                            + "Make sure the class is publicly accessible and has a default constructor.",
+                    "Cannot instantiate type serializer '%s' for RAW type. Make sure the class is"
+                            + " publicly accessible and has a default constructor.",
                     rawSerializer.getName());
         }
     }
@@ -442,9 +427,7 @@ public final class ExtractionUtils {
             final Type currentType = typeHierarchy.get(i);
 
             if (currentType instanceof ParameterizedType) {
-                final Type resolvedType =
-                        resolveVariableInParameterizedType(
-                                variable, (ParameterizedType) currentType);
+                final Type resolvedType = resolveVariableInParameterizedType(variable, (ParameterizedType) currentType);
                 if (resolvedType instanceof TypeVariable) {
                     // follow type variables transitively
                     variable = (TypeVariable<?>) resolvedType;
@@ -470,8 +453,7 @@ public final class ExtractionUtils {
         return null;
     }
 
-    private static boolean typeVariableEquals(
-            TypeVariable<?> variable, TypeVariable<?> currentVariable) {
+    private static boolean typeVariableEquals(TypeVariable<?> variable, TypeVariable<?> currentVariable) {
         return currentVariable.getGenericDeclaration().equals(variable.getGenericDeclaration())
                 && currentVariable.getName().equals(variable.getName());
     }
@@ -484,13 +466,10 @@ public final class ExtractionUtils {
      */
     static void validateStructuredSelfReference(Type t, List<Type> typeHierarchy) {
         final Class<?> clazz = toClass(t);
-        if (clazz != null
-                && !clazz.isInterface()
-                && clazz != Object.class
-                && typeHierarchy.contains(t)) {
+        if (clazz != null && !clazz.isInterface() && clazz != Object.class && typeHierarchy.contains(t)) {
             throw extractionError(
-                    "Cyclic reference detected for class '%s'. Attributes of structured types must not "
-                            + "(transitively) reference the structured type itself.",
+                    "Cyclic reference detected for class '%s'. Attributes of structured types must"
+                            + " not (transitively) reference the structured type itself.",
                     clazz.getName());
         }
     }
@@ -501,11 +480,10 @@ public final class ExtractionUtils {
         while (clazz != Object.class) {
             final Field[] declaredFields = clazz.getDeclaredFields();
             Stream.of(declaredFields)
-                    .filter(
-                            field -> {
-                                final int m = field.getModifiers();
-                                return !Modifier.isStatic(m) && !Modifier.isTransient(m);
-                            })
+                    .filter(field -> {
+                        final int m = field.getModifiers();
+                        return !Modifier.isStatic(m) && !Modifier.isTransient(m);
+                    })
                     .forEach(fields::add);
             clazz = clazz.getSuperclass();
         }
@@ -550,8 +528,8 @@ public final class ExtractionUtils {
         }
 
         throw extractionError(
-                "Field '%s' of class '%s' is mutable but is neither publicly accessible nor does it have "
-                        + "a corresponding setter method.",
+                "Field '%s' of class '%s' is mutable but is neither publicly accessible nor does"
+                        + " it have a corresponding setter method.",
                 field.getName(), clazz.getName());
     }
 
@@ -569,13 +547,10 @@ public final class ExtractionUtils {
         while (clazz != Object.class) {
             final Method[] declaredMethods = clazz.getDeclaredMethods();
             Stream.of(declaredMethods)
-                    .filter(
-                            field -> {
-                                final int m = field.getModifiers();
-                                return Modifier.isPublic(m)
-                                        && !Modifier.isNative(m)
-                                        && !Modifier.isAbstract(m);
-                            })
+                    .filter(field -> {
+                        final int m = field.getModifiers();
+                        return Modifier.isPublic(m) && !Modifier.isNative(m) && !Modifier.isAbstract(m);
+                    })
                     .forEach(methods::add);
             clazz = clazz.getSuperclass();
         }
@@ -586,8 +561,7 @@ public final class ExtractionUtils {
      * Collects all annotations of the given type defined in the current class or superclasses.
      * Duplicates are ignored.
      */
-    static <T extends Annotation> Set<T> collectAnnotationsOfClass(
-            Class<T> annotation, Class<?> annotatedClass) {
+    static <T extends Annotation> Set<T> collectAnnotationsOfClass(Class<T> annotation, Class<?> annotatedClass) {
         final List<Class<?>> classHierarchy = new ArrayList<>();
         Class<?> currentClass = annotatedClass;
         while (currentClass != null) {
@@ -605,8 +579,7 @@ public final class ExtractionUtils {
      * Collects all annotations of the given type defined in the given method. Duplicates are
      * ignored.
      */
-    static <T extends Annotation> Set<T> collectAnnotationsOfMethod(
-            Class<T> annotation, Method annotatedMethod) {
+    static <T extends Annotation> Set<T> collectAnnotationsOfMethod(Class<T> annotation, Method annotatedMethod) {
         return new LinkedHashSet<>(Arrays.asList(annotatedMethod.getAnnotationsByType(annotation)));
     }
 
@@ -630,23 +603,19 @@ public final class ExtractionUtils {
      * Checks whether the given constructor takes all of the given fields with matching (possibly
      * primitive) type and name. An assigning constructor can define the order of fields.
      */
-    public static @Nullable AssigningConstructor extractAssigningConstructor(
-            Class<?> clazz, List<Field> fields) {
+    public static @Nullable AssigningConstructor extractAssigningConstructor(Class<?> clazz, List<Field> fields) {
         AssigningConstructor foundConstructor = null;
         for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-            final boolean qualifyingConstructor =
-                    Modifier.isPublic(constructor.getModifiers())
-                            && constructor.getParameterTypes().length == fields.size();
+            final boolean qualifyingConstructor = Modifier.isPublic(constructor.getModifiers())
+                    && constructor.getParameterTypes().length == fields.size();
             if (!qualifyingConstructor) {
                 continue;
             }
-            final List<String> parameterNames =
-                    extractConstructorParameterNames(constructor, fields);
+            final List<String> parameterNames = extractConstructorParameterNames(constructor, fields);
             if (parameterNames != null) {
                 if (foundConstructor != null) {
                     throw extractionError(
-                            "Multiple constructors found that assign all fields for class '%s'.",
-                            clazz.getName());
+                            "Multiple constructors found that assign all fields for class '%s'.", clazz.getName());
                 }
                 foundConstructor = new AssigningConstructor(constructor, parameterNames);
             }
@@ -673,11 +642,7 @@ public final class ExtractionUtils {
         }
 
         final Map<String, Field> fieldMap =
-                fields.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        f -> normalizeAccessorName(f.getName()),
-                                        Function.identity()));
+                fields.stream().collect(Collectors.toMap(f -> normalizeAccessorName(f.getName()), Function.identity()));
 
         // check that all fields are represented in the parameters of the constructor
         final List<String> fieldNames = new ArrayList<>();
@@ -711,9 +676,7 @@ public final class ExtractionUtils {
         // by default parameter names are "arg0, arg1, arg2, ..." if compiler flag is not set
         // so we need to extract them manually if possible
         List<String> parameterNames =
-                Stream.of(executable.getParameters())
-                        .map(Parameter::getName)
-                        .collect(Collectors.toList());
+                Stream.of(executable.getParameters()).map(Parameter::getName).collect(Collectors.toList());
         if (parameterNames.stream().allMatch(n -> n.startsWith("arg"))) {
             final ParameterExtractor extractor;
             if (executable instanceof Constructor) {
@@ -728,12 +691,8 @@ public final class ExtractionUtils {
             }
             // remove "this" and additional local variables
             // select less names if class file has not the required information
-            parameterNames =
-                    extractedNames.subList(
-                            offset,
-                            Math.min(
-                                    executable.getParameterCount() + offset,
-                                    extractedNames.size()));
+            parameterNames = extractedNames.subList(
+                    offset, Math.min(executable.getParameterCount() + offset, extractedNames.size()));
         }
 
         if (parameterNames.size() != executable.getParameterCount()) {
@@ -801,12 +760,7 @@ public final class ExtractionUtils {
 
                     @Override
                     public void visitLocalVariable(
-                            String name,
-                            String descriptor,
-                            String signature,
-                            Label start,
-                            Label end,
-                            int index) {
+                            String name, String descriptor, String signature, Label start, Label end, int index) {
                         parameterNames.add(name);
                     }
                 };
@@ -844,8 +798,7 @@ public final class ExtractionUtils {
      * @param autoboxing whether to use implicit autoboxing/unboxing between primitives and wrappers
      * @return {@code true} if assignment possible
      */
-    public static boolean isAssignable(
-            Class<?> cls, final Class<?> toClass, final boolean autoboxing) {
+    public static boolean isAssignable(Class<?> cls, final Class<?> toClass, final boolean autoboxing) {
         if (toClass == null) {
             return false;
         }
@@ -876,9 +829,7 @@ public final class ExtractionUtils {
                 return false;
             }
             if (Integer.TYPE.equals(cls)) {
-                return Long.TYPE.equals(toClass)
-                        || Float.TYPE.equals(toClass)
-                        || Double.TYPE.equals(toClass);
+                return Long.TYPE.equals(toClass) || Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
             }
             if (Long.TYPE.equals(cls)) {
                 return Float.TYPE.equals(toClass) || Double.TYPE.equals(toClass);
