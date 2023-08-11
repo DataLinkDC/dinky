@@ -19,8 +19,9 @@
 
 package org.dinky.service;
 
-import org.dinky.data.dto.RoleMenuDto;
+import org.dinky.data.dto.AssignMenuToRoleDto;
 import org.dinky.data.model.RoleMenu;
+import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
 public interface RoleMenuService extends ISuperService<RoleMenu> {
@@ -32,13 +33,6 @@ public interface RoleMenuService extends ISuperService<RoleMenu> {
      * @param menuId menu id
      * @return boolean {@code true} if success, {@code false} if failed
      */
-    boolean assignMenuToRole(Integer roleId, Integer[] menuId);
+    Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto);
 
-    /**
-     * Query menus by role id
-     *
-     * @param roleId role id
-     * @return {@link RoleMenuDto}
-     */
-    RoleMenuDto queryMenusByRoleId(Integer roleId);
 }

@@ -19,8 +19,11 @@
 
 package org.dinky.service.impl;
 
-import org.dinky.data.dto.RoleMenuDto;
+import cn.hutool.core.collection.CollUtil;
+import org.dinky.data.dto.AssignMenuToRoleDto;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.RoleMenu;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.RoleMenuMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.RoleMenuService;
@@ -35,37 +38,38 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu>
         implements RoleMenuService {
     @Override
-    public boolean assignMenuToRole(Integer roleId, Integer[] menuId) {
+    public Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto) {
+
+        if (CollUtil.isEmpty(assignMenuToRoleDto.getMenuIds())) {
+            return Result.failed(Status.SELECT_MENU);
+        }
+
         int insertSize = 0;
         // 先删除原有的关系
         List<RoleMenu> roleMenus =
                 getBaseMapper()
                         .selectList(
-                                new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
-        getBaseMapper().deleteBatchIds(roleMenus);
-        // 重新建立关系
+                                new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
 
-        for (Integer id : menuId) {
+        // if not empty , delete all role menus
+        if (CollUtil.isNotEmpty(roleMenus)) {
+            roleMenus.forEach(rm -> {
+                getBaseMapper().delete(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getMenuId, rm.getMenuId()));
+            });
+        }
+
+        // then insert new role menus
+        for (Integer id : assignMenuToRoleDto.getMenuIds()) {
             RoleMenu roleMenu = new RoleMenu();
-            roleMenu.setRoleId(roleId);
+            roleMenu.setRoleId(assignMenuToRoleDto.getRoleId());
             roleMenu.setMenuId(id);
             insertSize += getBaseMapper().insert(roleMenu);
         }
-        return menuId.length == insertSize;
+
+        if (assignMenuToRoleDto.getMenuIds().size() == insertSize) {
+            return Result.succeed(Status.ASSIGN_MENU_SUCCESS);
+        }
+        return Result.failed(Status.ASSIGN_MENU_FAILED);
     }
 
-    @Override
-    public RoleMenuDto queryMenusByRoleId(Integer roleId) {
-        List<RoleMenu> roleMenuList =
-                getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, roleId));
-
-        RoleMenuDto roleMenuDto = new RoleMenuDto();
-        roleMenuDto.setRoleId(roleId);
-        roleMenuList.forEach(
-                roleMenu -> roleMenuDto.getSelectedMenuIds().add(roleMenu.getMenuId()));
-
-        return roleMenuDto;
-    }
 }

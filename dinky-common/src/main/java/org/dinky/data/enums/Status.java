@@ -101,8 +101,15 @@ public enum Status {
     USER_ASSIGN_ROLE_FAILED(10016, "User Assign Role Failed", "用户分配角色失败"),
     GET_TENANT_FAILED(10017, "Get Tenant Info Failed", "获取租户信息失败"),
     SWITCHING_TENANT_SUCCESS(10018, "Select Tenant Success", "选择租户成功"),
-    // user.superadmin.cannot.disable
     USER_SUPERADMIN_CANNOT_DISABLE(10019, "User SuperAdmin Cannot Disable", "超级管理员用户不能停用"),
+    NOT_TOKEN(10020, "Can Not Read Token", "未能读取到有效 Token"),
+    INVALID_TOKEN(10021, "Invalid Token", "无效的 Token"),
+    EXPIRED_TOKEN(10022, "Expired Token", "Token 已过期"),
+    BE_REPLACED(10023, "token has been pushed offline", "token 已被顶下线"),
+    KICK_OUT(10024, "token has been kicked offline", "token 已被踢下线"),
+    TOKEN_FREEZED(10025, "token has been frozen", "token 已被冻结"),
+    NO_PREFIX(10026, "The token was not submitted according to the specified prefix", "未按照指定前缀提交 token"),
+
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),
@@ -133,6 +140,10 @@ public enum Status {
     MENU_NOT_EXIST(10302, "Menu Not Exists", "菜单不存在"),
     MENU_HAS_CHILD(10303, "Menu Has Child, Can Not Delete", "存在子菜单 不允许删除"),
     MENU_HAS_ASSIGN(10304, "Menu Has Assign , Can Not Delete", "菜单已分配,不允许删除"),
+    SELECT_MENU(10305, "Please Select Menu", "请选择菜单"),
+    ASSIGN_MENU_SUCCESS(10306, "Assign Menu Success", "分配菜单成功"),
+    ASSIGN_MENU_FAILED(10307, "Assign Menu Failed", "分配菜单失败"),
+
 
     /** database */
     DATASOURCE_CONNECT_SUCCESS(11001, "DataSource Connect Success", "数据源连接测试成功"),
