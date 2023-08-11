@@ -9,7 +9,7 @@ const Console: React.FC= (props:any) => {
 
   },[])
 
-  return <CodeShow code={props.console} height={(props.height-53)} language={"kotlin"} lineNumbers={"off"}/>
+  return <CodeShow code={props.console} height={(props.height-53)} language={"kotlin"} lineNumbers={"off"} showFloatButton/>
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({

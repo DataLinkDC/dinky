@@ -18,11 +18,17 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {Key, useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Tag} from 'antd';
 import {l} from "@/utils/intl";
-import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
+import {
+    handleAddOrUpdate,
+    handleOption,
+    handlePutDataByParams,
+    handleRemoveById,
+    queryDataByParams
+} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {getTenantByLocalStorage} from "@/utils/function";
@@ -33,6 +39,7 @@ import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteB
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
 import AssignMenu from "@/pages/AuthCenter/Role/components/AssignMenu";
+import {SysMenu} from "@/types/RegCenter/data";
 
 
 const RoleProTable: React.FC = () => {
@@ -44,6 +51,7 @@ const RoleProTable: React.FC = () => {
         const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
         const [loading, setLoading] = useState<boolean>(false);
         const [assignMenu ,  setAssignMenu] = useState<boolean>(false);
+
 
     const actionRef = useRef<ActionType>();
 
@@ -71,16 +79,28 @@ const RoleProTable: React.FC = () => {
          */
         const handleAddOrUpdateSubmit = async (value: any) => {
             await executeAndCallbackRefresh(async () => {
-                // TODO: added or update role interface is use /api/role/addedOrUpdateRole  , because of the backend interface 'saveOrUpdate' is repeat , in the future, we need to change the interface to /api/role (ROLE)
                 await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
                 handleModalVisible(false);
             });
         }
 
+    /**
+     * cancel
+     */
+    const handleCancel = () => {
+        handleModalVisible(false);
+        handleUpdateModalVisible(false);
+        setAssignMenu(false);
+    }
 
-        const handleAssignMenuSubmit = async (value: any) => {
-            // TODO : SAVE DATA
-            setAssignMenu(false)
+        const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
+            await executeAndCallbackRefresh(async () => {
+                await handleOption('/api/roleMenu/assignMenuToRole', '分配菜单',{
+                    roleId: formValues.id,
+                    menuIds: selectKeys
+                });
+                handleCancel();
+            });
         }
 
 
@@ -94,13 +114,7 @@ const RoleProTable: React.FC = () => {
             handleUpdateModalVisible(true);
         }
 
-        /**
-         * cancel
-         */
-        const handleCancel = () => {
-            handleModalVisible(false);
-            handleUpdateModalVisible(false);
-        }
+
 
     /**
      * assign user visible change
@@ -109,7 +123,7 @@ const RoleProTable: React.FC = () => {
     const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
         setFormValues(record);
         setAssignMenu(true);
-    }
+    };
 
 
         /**
@@ -161,7 +175,7 @@ const RoleProTable: React.FC = () => {
                         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
                                              description={l("role.deleteConfirm")}/>}
                         <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
-                                   title={l('role.AssignMenu')}/>
+                                   title={l('role.assignMenu','',{roleName: record.roleName})}/>
                     </>
                 ],
             },
@@ -195,7 +209,14 @@ const RoleProTable: React.FC = () => {
                 modalVisible={updateModalVisible}
                 values={formValues}
             />
-            <AssignMenu values={formValues} open={assignMenu} onSubmit={handleAssignMenuSubmit} onClose={() => setAssignMenu(false)}/>
+            {Object.keys(formValues).length> 0 &&
+                <AssignMenu
+                    values={formValues}
+                    open={assignMenu}
+                    onSubmit={handleAssignMenuSubmit}
+                    onClose={() => setAssignMenu(false)}
+                />
+            }
         </>
     }
 ;

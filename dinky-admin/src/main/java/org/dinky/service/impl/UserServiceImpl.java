@@ -63,6 +63,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -134,6 +135,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         }
         user.setPassword(SaSecureUtil.md5(modifyPasswordDTO.getNewPassword()));
         if (updateById(user)) {
+            StpUtil.logout(user.getId());
             return Result.succeed(Status.CHANGE_PASSWORD_SUCCESS);
         }
         return Result.failed(Status.CHANGE_PASSWORD_FAILED);
@@ -161,7 +163,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.failed(e.getStatus());
+            return Result.failed(e.getStatus() + e.getMessage());
         }
 
         // Check if the user is enabled
@@ -366,7 +368,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
-        StpUtil.logout();
+        StpUtil.logout(StpUtil.getLoginIdAsInt());
     }
 
     @Override
@@ -466,7 +468,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                         roleMenus.forEach(
                                 roleMenu -> {
                                     Menu menu = menuService.getById(roleMenu.getMenuId());
-                                    if (Asserts.isNotNull(menu) && !menu.getType().equals("M")) {
+                                    if (Asserts.isNotNull(menu)
+                                            && !StrUtil.equals("M", menu.getType())) {
                                         menuList.add(menu);
                                     }
                                 });

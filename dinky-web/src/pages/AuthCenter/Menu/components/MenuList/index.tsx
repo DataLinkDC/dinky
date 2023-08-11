@@ -25,12 +25,12 @@ import {ProCard} from "@ant-design/pro-components";
 import {MenuInfo} from "rc-menu/es/interface";
 import {RIGHT_CONTEXT_MENU} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 import {SysMenu} from "@/types/RegCenter/data";
-import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
 import {PlusSquareTwoTone, ReloadOutlined} from "@ant-design/icons";
 import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
 import {l} from "@/utils/intl";
 import RightContextMenu from "@/components/RightContextMenu";
 import MenuForm from "@/pages/AuthCenter/Menu/components/MenuForm";
+import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
 
 const MenuList: React.FC = () => {
         /**
