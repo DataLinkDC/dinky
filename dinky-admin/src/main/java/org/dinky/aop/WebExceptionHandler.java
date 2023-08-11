@@ -69,7 +69,7 @@ public class WebExceptionHandler {
         return Result.failed(e.getMsg());
     }
 
-    static final Map<String, Status> ERR_CODE_MAPPING =
+    private static final Map<String, Status> ERR_CODE_MAPPING =
             MapUtil.<String, Status>builder()
                     .put(NotLoginException.NOT_TOKEN, Status.NOT_TOKEN)
                     .put(NotLoginException.INVALID_TOKEN, Status.INVALID_TOKEN)
