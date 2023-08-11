@@ -149,7 +149,10 @@ public class MavenUtil {
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
         commandLine.add("-Dmaven.home=" + StrUtil.wrap(mavenHome, "\""));
         Opt.ofBlankAble(repositoryDir)
-                .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
+                .ifPresent(
+                        x ->
+                                commandLine.add(
+                                        "-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
         commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
         commandLine.add("-s " + settingsPath);
