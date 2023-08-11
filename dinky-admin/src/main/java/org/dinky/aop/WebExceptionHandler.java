@@ -68,12 +68,30 @@ public class WebExceptionHandler {
     }
 
     @ExceptionHandler
-    public Result<Void> notLoginException(NotLoginException e) {
+    public Result<Void> notLoginException(NotLoginException notLoginException) {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
-        response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.failed(Status.USER_NOT_LOGIN);
+        if (response != null) {
+            response.setStatus(CodeEnum.NOTLOGIN.getCode());
+        }
+        if (notLoginException.getType().equals(NotLoginException.NOT_TOKEN)) {
+            return Result.failed(Status.NOT_TOKEN);
+        } else if (notLoginException.getType().equals(NotLoginException.INVALID_TOKEN)) {
+            return Result.failed(Status.INVALID_TOKEN);
+        } else if (notLoginException.getType().equals(NotLoginException.TOKEN_TIMEOUT)) {
+            return Result.failed(Status.EXPIRED_TOKEN);
+        } else if (notLoginException.getType().equals(NotLoginException.BE_REPLACED)) {
+            return Result.failed(Status.BE_REPLACED);
+        } else if (notLoginException.getType().equals(NotLoginException.KICK_OUT)) {
+            return Result.failed(Status.KICK_OUT);
+        } else if (notLoginException.getType().equals(NotLoginException.TOKEN_FREEZE)) {
+            return Result.failed(Status.TOKEN_FREEZED);
+        } else if (notLoginException.getType().equals(NotLoginException.NO_PREFIX)) {
+            return Result.failed(Status.NO_PREFIX);
+        } else {
+            return Result.failed(Status.USER_NOT_LOGIN);
+        }
     }
 
     /**

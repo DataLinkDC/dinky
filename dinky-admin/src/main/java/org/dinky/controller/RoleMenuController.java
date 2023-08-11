@@ -20,16 +20,14 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
-import org.dinky.data.dto.RoleMenuDto;
+import org.dinky.data.dto.AssignMenuToRoleDto;
 import org.dinky.data.enums.BusinessType;
-import org.dinky.data.enums.Status;
 import org.dinky.data.result.Result;
 import org.dinky.service.RoleMenuService;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.annotations.ApiOperation;
@@ -52,27 +50,10 @@ public class RoleMenuController {
      * @return {@link Result} with {@link Void}
      * @throws Exception {@link Exception}
      */
-    @PutMapping
+    @PostMapping("assignMenuToRole")
     @Log(title = "Assign Menus to Role ", businessType = BusinessType.GRANT)
     @ApiOperation("Assign Menus to Role")
-    public Result<Void> assignMenuToRole(
-            @RequestParam Integer roleId, @RequestParam Integer[] menus) {
-        if (roleMenuService.assignMenuToRole(roleId, menus)) {
-            return Result.succeed(Status.SAVE_SUCCESS);
-        } else {
-            return Result.failed(Status.SAVE_FAILED);
-        }
-    }
-
-    /**
-     * Query menus by role ID
-     *
-     * @param roleId role ID
-     * @return {@link Result} with {@link RoleMenuDto}
-     */
-    @GetMapping("/queryMenusByRoleId")
-    @ApiOperation("Query Menus by Role ID")
-    public Result<RoleMenuDto> queryMenusByRoleId(@RequestParam Integer roleId) {
-        return Result.succeed(roleMenuService.queryMenusByRoleId(roleId));
+    public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDto assignMenuToRoleDto) {
+        return roleMenuService.assignMenuToRole(assignMenuToRoleDto);
     }
 }
