@@ -56,5 +56,4 @@ public class RoleMenuController {
     public Result<Void> assignMenuToRole(@RequestBody AssignMenuToRoleDto assignMenuToRoleDto) {
         return roleMenuService.assignMenuToRole(assignMenuToRoleDto);
     }
-
 }

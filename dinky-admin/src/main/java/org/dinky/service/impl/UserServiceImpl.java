@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.util.StrUtil;
 import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.context.UserInfoContextHolder;
@@ -64,6 +63,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -468,7 +468,8 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
                         roleMenus.forEach(
                                 roleMenu -> {
                                     Menu menu = menuService.getById(roleMenu.getMenuId());
-                                    if (Asserts.isNotNull(menu) && !StrUtil.equals("M",menu.getType())) {
+                                    if (Asserts.isNotNull(menu)
+                                            && !StrUtil.equals("M", menu.getType())) {
                                         menuList.add(menu);
                                     }
                                 });

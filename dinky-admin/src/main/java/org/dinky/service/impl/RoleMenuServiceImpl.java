@@ -19,7 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import org.dinky.data.dto.AssignMenuToRoleDto;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.RoleMenu;
@@ -33,6 +32,8 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+
+import cn.hutool.core.collection.CollUtil;
 
 @Service
 public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMenu>
@@ -49,13 +50,18 @@ public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMe
         List<RoleMenu> roleMenus =
                 getBaseMapper()
                         .selectList(
-                                new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
+                                new LambdaQueryWrapper<RoleMenu>()
+                                        .eq(RoleMenu::getRoleId, assignMenuToRoleDto.getRoleId()));
 
         // if not empty , delete all role menus
         if (CollUtil.isNotEmpty(roleMenus)) {
-            roleMenus.forEach(rm -> {
-                getBaseMapper().delete(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getMenuId, rm.getMenuId()));
-            });
+            roleMenus.forEach(
+                    rm -> {
+                        getBaseMapper()
+                                .delete(
+                                        new LambdaQueryWrapper<RoleMenu>()
+                                                .eq(RoleMenu::getMenuId, rm.getMenuId()));
+                    });
         }
 
         // then insert new role menus
@@ -71,5 +77,4 @@ public class RoleMenuServiceImpl extends SuperServiceImpl<RoleMenuMapper, RoleMe
         }
         return Result.failed(Status.ASSIGN_MENU_FAILED);
     }
-
 }

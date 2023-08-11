@@ -108,8 +108,10 @@ public enum Status {
     BE_REPLACED(10023, "token has been pushed offline", "token 已被顶下线"),
     KICK_OUT(10024, "token has been kicked offline", "token 已被踢下线"),
     TOKEN_FREEZED(10025, "token has been frozen", "token 已被冻结"),
-    NO_PREFIX(10026, "The token was not submitted according to the specified prefix", "未按照指定前缀提交 token"),
-
+    NO_PREFIX(
+            10026,
+            "The token was not submitted according to the specified prefix",
+            "未按照指定前缀提交 token"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),
@@ -143,7 +145,6 @@ public enum Status {
     SELECT_MENU(10305, "Please Select Menu", "请选择菜单"),
     ASSIGN_MENU_SUCCESS(10306, "Assign Menu Success", "分配菜单成功"),
     ASSIGN_MENU_FAILED(10307, "Assign Menu Failed", "分配菜单失败"),
-
 
     /** database */
     DATASOURCE_CONNECT_SUCCESS(11001, "DataSource Connect Success", "数据源连接测试成功"),

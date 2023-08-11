@@ -34,5 +34,4 @@ public interface RoleMenuService extends ISuperService<RoleMenu> {
      * @return boolean {@code true} if success, {@code false} if failed
      */
     Result<Void> assignMenuToRole(AssignMenuToRoleDto assignMenuToRoleDto);
-
 }
