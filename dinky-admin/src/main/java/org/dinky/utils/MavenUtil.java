@@ -133,20 +133,27 @@ public class MavenUtil {
             String settingsPath,
             List<String> goals,
             List<String> args) {
+        projectDir = StrUtil.wrap(projectDir, "\"");
+        settingsPath = StrUtil.wrap(settingsPath, "\"");
         List<String> commandLine = new LinkedList<>();
 
         String classpath =
                 FileUtil.loopFiles(mavenHome + "/boot").stream()
-                        .filter(x -> FileUtil.getSuffix(x).equals("jar"))
-                        .map(x -> x.getAbsolutePath())
+                        .filter(x -> "jar".equals(FileUtil.getSuffix(x)))
+                        .map(File::getAbsolutePath)
                         .collect(Collectors.joining(File.pathSeparator));
+        classpath = StrUtil.wrap(classpath, "\"");
+
         commandLine.add(javaExecutor);
         commandLine.add("-Dfile.encoding=UTF-8");
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
-        commandLine.add("-Dmaven.home=" + mavenHome);
+        commandLine.add("-Dmaven.home=" + StrUtil.wrap(mavenHome, "\""));
         Opt.ofBlankAble(repositoryDir)
-                .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + repositoryDir));
-        commandLine.add("-Dclassworlds.conf=" + mavenHome + "/bin/m2.conf");
+                .ifPresent(
+                        x ->
+                                commandLine.add(
+                                        "-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
+        commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
         commandLine.add("-s " + settingsPath);
         commandLine.add("-f " + projectDir);

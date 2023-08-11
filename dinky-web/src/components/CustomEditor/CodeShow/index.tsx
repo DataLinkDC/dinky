@@ -17,7 +17,7 @@
  *
  */
 
-import {Editor }  from "@monaco-editor/react";
+import {Editor} from "@monaco-editor/react";
 import {convertCodeEditTheme} from "@/utils/function";
 import {MonacoEditorOptions} from "@/types/Public/data";
 import React, {useState} from "react";
@@ -25,10 +25,13 @@ import {editor} from "monaco-editor";
 import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
 import FullscreenBtn from "../FullscreenBtn";
 import * as monaco from 'monaco-editor';
-import { loader } from '@monaco-editor/react';
+import {loader} from '@monaco-editor/react';
 import {EditorLanguage} from "monaco-editor/esm/metadata";
+import {Space} from "antd";
+import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
+import {DownCircleTwoTone} from "@ant-design/icons";
 
-loader.config({ monaco });
+loader.config({monaco});
 /**
  * props
  * todo:
@@ -37,7 +40,7 @@ loader.config({ monaco });
  *  2. Callback for right-clicking to clear logs (optional, not required)
  */
 export type CodeShowFormProps = {
-  height?: string|number;
+  height?: string | number;
   width?: string;
   language?: EditorLanguage;
   options?: any;
@@ -169,12 +172,12 @@ const CodeShow = (props: CodeShowFormProps) => {
     setEditorRef(editor);
     editor.layout();
     editor.focus();
-    if (scrollBeyondLastLine){
-      editor.onDidChangeModelContent(()=>{
+    if (scrollBeyondLastLine) {
+      editor.onDidChangeModelContent(() => {
         const lineCount = editor.getModel()?.getLineCount() as number;
-        if (lineCount>20){
+        if (lineCount > 20) {
           editor.revealLine(lineCount);
-        }else {
+        } else {
           editor.revealLine(1);
         }
       });
@@ -203,7 +206,8 @@ const CodeShow = (props: CodeShowFormProps) => {
   return (<>
     <div className={"monaco-float"}>
       {/* fullScreen button */}
-      {fullScreenBtn && <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
+      {fullScreenBtn &&
+        <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)}/>}
 
       {/* editor */}
       <Editor
@@ -248,7 +252,9 @@ const CodeShow = (props: CodeShowFormProps) => {
       />
 
       {/* float button */}
-      {showFloatButton && <EditorFloatBtn {...restEditBtnProps}/>}
+      {showFloatButton && (<div style={{width: 35, height: height, backgroundColor: "#f4f4f4", paddingBlock: 10}}>
+        <EditorFloatBtn {...restEditBtnProps}/>
+      </div>)}
     </div>
   </>);
 };
