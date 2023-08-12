@@ -126,6 +126,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -245,7 +246,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobResult jobResult;
         if (config.isJarTask()) {
             jobResult = jobManager.executeJar();
-            process.finish("Submit Flink Jar finished.");
+            if (jobResult.isSuccess()) {
+                process.finish("Submit Flink SQL finished, JobManager Web Interface: http://"
+                        + jobResult.getJobManagerAddress());
+            } else {
+                // 如果提交失败，则只打印出关键的错误信息
+                process.error("Submit Flink SQL " + jobResult.getStatus());
+                if (Asserts.isNotNull(jobResult.getError())) {
+                    process.error(jobResult.getError().split("\n")[0]);
+                    Arrays.stream(jobResult.getError().split("\n"))
+                            .filter(row -> row.contains("Caused by"))
+                            .forEach(row -> process.error(row));
+                }
+            }
         } else {
             jobResult = jobManager.executeSql(task.getStatement());
             process.finish("Submit Flink SQL finished.");
