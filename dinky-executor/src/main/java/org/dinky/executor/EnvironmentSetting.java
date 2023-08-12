@@ -77,7 +77,6 @@ public class EnvironmentSetting {
     static String[] getHostAndPort(String address) {
         address = address.toLowerCase().replace("://", "//");
         String[] strs = address.split(NetConstant.COLON);
-
         // 兼容直接填写域名情况(走k8s ingress时没有端口号)
         if (address.startsWith("http//")) {
             String port = strs.length == 1 ? "80" : strs[1];
