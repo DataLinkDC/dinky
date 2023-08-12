@@ -21,6 +21,7 @@ import {Divider, Typography} from "antd";
 import React from "react";
 import {QUICK_GUIDE} from "@/pages/DataStudio/MiddleContainer/QuickGuide/constant";
 import { Link } from "@umijs/max";
+import { l } from "@/utils/intl";
 
 const {Title, Paragraph} = Typography;
 
@@ -31,7 +32,7 @@ const QuickGuide = () => {
     const buildQuickGuide = () => {
         return QUICK_GUIDE.map((item,index) => {
             return <>
-                {index % 10 === 0 ? <>
+                {index % 5 === 0 ? <>
                     <Divider plain orientationMargin={0}/>
                     <Link to={item.link} key={item.key}>{item.label}</Link>
                 </> : <>
@@ -44,7 +45,7 @@ const QuickGuide = () => {
 
     return <>
         <Typography style={{padding: '2px', textAlign: 'center', border: 'salmon'}}>
-            <Title level={4}>快捷引导</Title>
+            <Title level={4}>{l('datastudio.middle.qg')}</Title>
             <Paragraph style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >
                 {buildQuickGuide()}
             </Paragraph>

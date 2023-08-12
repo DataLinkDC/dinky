@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
 @RestController
@@ -37,12 +38,14 @@ public class WatchTableController {
     private final WatchTableService watchTableService;
 
     @PutMapping("/subscribe/watch")
+    @ApiOperation("Subscribe watch table")
     public Result subscribe(@RequestParam Integer id, @RequestParam String table) {
         String destination = watchTableService.registerListenEntry(id, table);
         return Result.succeed(destination);
     }
 
     @PutMapping("/unSubscribe/watch")
+    @ApiOperation("UnSubscribe watch table")
     public Result unsubscribe(@RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
         return Result.succeed();

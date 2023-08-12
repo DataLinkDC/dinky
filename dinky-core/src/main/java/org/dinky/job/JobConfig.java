@@ -88,8 +88,7 @@ public class JobConfig {
             if (colonIndex == -1) {
                 this.address = address + NetConstant.COLON + config.get(RestOptions.PORT.key());
             } else {
-                this.address =
-                        address.replaceAll("(?<=:)\\d{0,6}$", config.get(RestOptions.PORT.key()));
+                this.address = address.replaceAll("(?<=:)\\d{0,6}$", config.get(RestOptions.PORT.key()));
             }
         } else {
             this.address = address;
@@ -284,10 +283,7 @@ public class JobConfig {
             gatewayConfig = new GatewayConfig();
         }
         for (Map.Entry<String, Object> entry : config.entrySet()) {
-            gatewayConfig
-                    .getFlinkConfig()
-                    .getConfiguration()
-                    .put(entry.getKey(), (String) entry.getValue());
+            gatewayConfig.getFlinkConfig().getConfiguration().put(entry.getKey(), (String) entry.getValue());
         }
     }
 

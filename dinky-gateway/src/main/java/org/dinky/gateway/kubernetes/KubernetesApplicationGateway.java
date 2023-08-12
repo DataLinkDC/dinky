@@ -66,9 +66,7 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
         combineFlinkConfig();
         AppConfig appConfig = config.getAppConfig();
         String[] userJarParas =
-                Asserts.isNotNull(appConfig.getUserJarParas())
-                        ? appConfig.getUserJarParas()
-                        : new String[0];
+                Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
@@ -79,12 +77,11 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
 
         try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
                 new KubernetesClusterDescriptor(configuration, client)) {
-            ClusterClientProvider<String> clusterClientProvider =
-                    kubernetesClusterDescriptor.deployApplicationCluster(
-                            clusterSpecificationBuilder.createClusterSpecification(),
-                            applicationConfiguration);
+            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deployApplicationCluster(
+                    clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+            Collection<JobStatusMessage> jobStatusMessages =
+                    clusterClient.listJobs().get();
 
             int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (jobStatusMessages.size() == 0 && counts > 0) {

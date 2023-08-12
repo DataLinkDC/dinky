@@ -37,8 +37,7 @@ import org.apache.flink.table.sources.TableSource;
 import java.util.List;
 
 /** */
-public interface DefaultTableEnvironmentInternal
-        extends TableEnvironmentInternal, TableEnvironmentInstance {
+public interface DefaultTableEnvironmentInternal extends TableEnvironmentInternal, TableEnvironmentInstance {
 
     default TableEnvironmentInternal getTableEnvironmentInternal() {
         return (TableEnvironmentInternal) getTableEnvironment();
@@ -106,8 +105,7 @@ public interface DefaultTableEnvironmentInternal
     }
 
     @Override
-    default String explainInternal(
-            List<Operation> operations, ExplainFormat format, ExplainDetail... extraDetails) {
+    default String explainInternal(List<Operation> operations, ExplainFormat format, ExplainDetail... extraDetails) {
         return getTableEnvironmentInternal().explainInternal(operations, format, extraDetails);
     }
     // endregion

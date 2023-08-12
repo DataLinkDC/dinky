@@ -33,7 +33,14 @@ public class PhoenixJdbcReadOptions implements Serializable {
     private final int fetchSize;
     private final boolean autoCommit;
 
-    private PhoenixJdbcReadOptions(String query, String partitionColumnName, Long partitionLowerBound, Long partitionUpperBound, Integer numPartitions, int fetchSize, boolean autoCommit) {
+    private PhoenixJdbcReadOptions(
+            String query,
+            String partitionColumnName,
+            Long partitionLowerBound,
+            Long partitionUpperBound,
+            Integer numPartitions,
+            int fetchSize,
+            boolean autoCommit) {
         this.query = query;
         this.partitionColumnName = partitionColumnName;
         this.partitionLowerBound = partitionLowerBound;
@@ -79,7 +86,7 @@ public class PhoenixJdbcReadOptions implements Serializable {
         if (!(o instanceof JdbcReadOptions)) {
             return false;
         } else {
-            PhoenixJdbcReadOptions options = (PhoenixJdbcReadOptions)o;
+            PhoenixJdbcReadOptions options = (PhoenixJdbcReadOptions) o;
             return Objects.equals(this.query, options.query)
                     && Objects.equals(this.partitionColumnName, options.partitionColumnName)
                     && Objects.equals(this.partitionLowerBound, options.partitionLowerBound)
@@ -99,8 +106,7 @@ public class PhoenixJdbcReadOptions implements Serializable {
         protected int fetchSize = 0;
         protected boolean autoCommit = true;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public Builder setQuery(String query) {
             this.query = query;
@@ -138,7 +144,14 @@ public class PhoenixJdbcReadOptions implements Serializable {
         }
 
         public PhoenixJdbcReadOptions build() {
-            return new PhoenixJdbcReadOptions(this.query, this.partitionColumnName, this.partitionLowerBound, this.partitionUpperBound, this.numPartitions, this.fetchSize, this.autoCommit);
+            return new PhoenixJdbcReadOptions(
+                    this.query,
+                    this.partitionColumnName,
+                    this.partitionLowerBound,
+                    this.partitionUpperBound,
+                    this.numPartitions,
+                    this.fetchSize,
+                    this.autoCommit);
         }
     }
 }

@@ -20,7 +20,7 @@
 
 import {StateType} from "@/pages/DataStudio/model";
 import {connect} from "umi";
-import {Modal, Space, Tag, Typography,} from 'antd';
+import {Space, Tag, Typography,} from 'antd';
 import {ConsoleSqlOutlined} from "@ant-design/icons";
 import ProList from '@ant-design/pro-list';
 import React, {useEffect, useState} from "react";

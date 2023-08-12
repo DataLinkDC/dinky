@@ -34,7 +34,7 @@ import {
 } from "@/pages/RegCenter/Document/constans";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING,} from "@/services/constants";
 import CodeShow from "@/components/CustomEditor/CodeShow";
-import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
 import TextArea from "antd/es/input/TextArea";
 import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
@@ -83,7 +83,7 @@ const DocumentTableList: React.FC = () => {
    */
   const handleChangeEnable = async (value: Partial<Document>) => {
     await executeAndCallbackRefresh(async () => {
-      await updateEnabled(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
+      await updateDataByParam(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
     })
   };
 

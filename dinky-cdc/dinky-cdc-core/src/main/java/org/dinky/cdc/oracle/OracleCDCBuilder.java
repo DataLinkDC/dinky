@@ -65,21 +65,18 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     @Override
     public DataStreamSource<String> build(StreamExecutionEnvironment env) {
         Properties properties = new Properties();
-        config.getDebezium()
-                .forEach(
-                        (key, value) -> {
-                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                                properties.setProperty(key, value);
-                            }
-                        });
+        config.getDebezium().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                properties.setProperty(key, value);
+            }
+        });
 
-        OracleSource.Builder<String> sourceBuilder =
-                OracleSource.<String>builder()
-                        .hostname(config.getHostname())
-                        .port(config.getPort())
-                        .username(config.getUsername())
-                        .password(config.getPassword())
-                        .database(config.getDatabase());
+        OracleSource.Builder<String> sourceBuilder = OracleSource.<String>builder()
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword())
+                .database(config.getDatabase());
 
         String schema = config.getSchema();
         if (Asserts.isNotNullString(schema)) {
@@ -129,7 +126,6 @@ public class OracleCDCBuilder extends AbstractCDCBuilder implements CDCBuilder {
     @Override
     protected String generateUrl(String schema) {
         return String.format(
-                "jdbc:oracle:thin:@%s:%s:%s",
-                config.getHostname(), config.getPort(), config.getDatabase());
+                "jdbc:oracle:thin:@%s:%s:%s", config.getHostname(), config.getPort(), config.getDatabase());
     }
 }

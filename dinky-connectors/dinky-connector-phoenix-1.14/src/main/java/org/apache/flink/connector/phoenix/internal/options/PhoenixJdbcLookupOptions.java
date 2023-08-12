@@ -53,8 +53,10 @@ public class PhoenixJdbcLookupOptions implements Serializable {
         if (!(o instanceof PhoenixJdbcLookupOptions)) {
             return false;
         } else {
-            PhoenixJdbcLookupOptions options = (PhoenixJdbcLookupOptions)o;
-            return Objects.equals(this.cacheMaxSize, options.cacheMaxSize) && Objects.equals(this.cacheExpireMs, options.cacheExpireMs) && Objects.equals(this.maxRetryTimes, options.maxRetryTimes);
+            PhoenixJdbcLookupOptions options = (PhoenixJdbcLookupOptions) o;
+            return Objects.equals(this.cacheMaxSize, options.cacheMaxSize)
+                    && Objects.equals(this.cacheExpireMs, options.cacheExpireMs)
+                    && Objects.equals(this.maxRetryTimes, options.maxRetryTimes);
         }
     }
 
@@ -63,8 +65,7 @@ public class PhoenixJdbcLookupOptions implements Serializable {
         private long cacheExpireMs = -1L;
         private int maxRetryTimes = 3;
 
-        public Builder() {
-        }
+        public Builder() {}
 
         public Builder setCacheMaxSize(long cacheMaxSize) {
             this.cacheMaxSize = cacheMaxSize;

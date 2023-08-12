@@ -61,10 +61,7 @@ public class GatewayConfig {
             if (Asserts.isNotNull(item)) {
                 Assert.notNull(item.get("name"), "Custer config has null item");
                 Assert.notNull(item.get("value"), "Custer config has null item");
-                gatewayConfig
-                        .getFlinkConfig()
-                        .getConfiguration()
-                        .put(item.get("name"), item.get("value"));
+                gatewayConfig.getFlinkConfig().getConfiguration().put(item.get("name"), item.get("value"));
             }
         }
         return gatewayConfig;

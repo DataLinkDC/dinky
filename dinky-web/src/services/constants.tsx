@@ -59,12 +59,20 @@ export const API_CONSTANTS = {
   TENANT_DELETE: "/api/tenant/delete",
   // get user list by tenantId
   GET_USER_LIST_BY_TENANTID: "/api/user/getUserListByTenantId",
+  //tenant users
+  TENANT_USERS: "/api/tenant/getUsersByTenantId",
+  USER_SET_TENANT_ADMIN: "/api/user/updateUserToTenantAdmin",
 
   // --- role ---
   // role list
   ROLE: "/api/role",
   ROLE_ADDED_OR_UPDATE: "/api/role/addedOrUpdateRole",
   ROLE_DELETE: "/api/role/delete",
+
+  // menu
+  MENU: "/api/menu",
+  MENU_DELETE: "/api/menu/delete",
+  MENU_TREE: "/api/menu/tree",
 
   // --- row Permissions ---
      // row permissions list
@@ -191,6 +199,7 @@ export const API_CONSTANTS = {
 
   // ---- devops
   GET_JOB_LIST: "/api/jobInstance",
+  GET_JOB_BY_ID: "/api/jobInstance/getOneById",
   GET_JOB_DETAIL: "/api/jobInstance/getJobInfoDetail",
   CANCEL_JOB: "/api/studio/cancel",
   OFFLINE_TASK: "/api/task/offLineTask",
@@ -228,6 +237,8 @@ export const API_CONSTANTS = {
   RESOURCE_CREATE_FOLDER:'/api/resource/createFolder',
   RESOURCE_RENAME:'/api/resource/rename',
   RESOURCE_UPLOAD:'/api/resource/uploadFile',
+
+
 };
 
 

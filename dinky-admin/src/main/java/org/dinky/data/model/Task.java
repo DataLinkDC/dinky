@@ -21,17 +21,16 @@ package org.dinky.data.model;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.config.Dialect;
+import org.dinky.data.typehandler.ListTypeHandler;
 import org.dinky.job.JobConfig;
 import org.dinky.mybatis.model.SuperEntity;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -83,9 +82,6 @@ public class Task extends SuperEntity<Task> {
     private Integer envId;
 
     private Integer alertGroupId;
-
-    private String configJson;
-
     private String note;
 
     private Integer step;
@@ -103,8 +99,8 @@ public class Task extends SuperEntity<Task> {
     @TableField(exist = false)
     private List<Savepoints> savePoints;
 
-    @TableField(exist = false)
-    private List<Map<String, String>> config = new ArrayList<>();
+    @TableField(typeHandler = ListTypeHandler.class)
+    private List<Map<String, String>> configJson;
 
     @TableField(exist = false)
     private String path;
@@ -124,32 +120,11 @@ public class Task extends SuperEntity<Task> {
     @TableField(exist = false)
     private String alertGroupName;
 
-    public static final ObjectMapper objectMapper = new ObjectMapper();
-
-    @SuppressWarnings("unchecked")
-    public List<Map<String, String>> parseConfig() {
-        if (Asserts.isNullString(configJson)) {
-            return config;
-        }
-
-        try {
-            config = objectMapper.readValue(configJson, ArrayList.class);
-        } catch (JsonProcessingException e) {
-            log.error(e.getMessage());
-        }
-        return config;
-    }
-
     public JobConfig buildSubmitConfig() {
         boolean useRemote = clusterId != null && clusterId != 0;
-        Map<String, String> map =
-                parseConfig().stream()
-                        .filter(Asserts::isNotNull)
-                        .collect(
-                                Collectors.toMap(
-                                        item -> item.get("name"),
-                                        item -> item.get("value"),
-                                        (a, b) -> b));
+        Map<String, String> map = configJson.stream()
+                .filter(Asserts::isNotNull)
+                .collect(Collectors.toMap(item -> item.get("name"), item -> item.get("value"), (a, b) -> b));
 
         int jid = Asserts.isNull(jarId) ? 0 : jarId;
         boolean fg = Asserts.isNotNull(fragment) && fragment;
@@ -190,7 +165,6 @@ public class Task extends SuperEntity<Task> {
         jsonNode.put("statementSet", this.statementSet);
         jsonNode.put("batchModel", this.batchModel);
         jsonNode.put("clusterName", this.clusterName);
-        jsonNode.put("configJson", this.configJson);
         jsonNode.put("note", this.note);
         jsonNode.put("step", this.step);
         jsonNode.put("enabled", this.getEnabled());

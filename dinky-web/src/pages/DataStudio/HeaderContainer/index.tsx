@@ -17,20 +17,19 @@
  *
  */
 import {FlexCenterDiv} from "@/components/StyledComponents";
-import {DataStudioParams, StateType, TabsPageType, TaskType, VIEW} from "@/pages/DataStudio/model";
-import {Breadcrumb, Button, Descriptions, Modal, Space, App, notification, message} from "antd";
+import {DataStudioParams, StateType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
+import {Breadcrumb, Button, Descriptions, message, Modal, notification, Space} from "antd";
 import {
-  CloseOutlined,
-  EnvironmentOutlined, FlagTwoTone,
+  EnvironmentOutlined,
+  FlagTwoTone,
   MoreOutlined,
   PauseCircleTwoTone,
   PlayCircleTwoTone,
-  RocketTwoTone,
   SafetyCertificateTwoTone,
   SaveTwoTone,
-  SendOutlined, SmileOutlined
+  SmileOutlined
 } from "@ant-design/icons";
-import React, {useState} from "react";
+import React from "react";
 import {l} from "@/utils/intl";
 import {buildBreadcrumbItems, projectCommonShow} from "@/pages/DataStudio/HeaderContainer/function";
 import {connect} from "@@/exports";
@@ -40,12 +39,12 @@ import Explain from "@/pages/DataStudio/HeaderContainer/Explain";
 import {executeSql, getJobPlan, isOnline, isSql, offLineTask} from "@/pages/DataStudio/HeaderContainer/service";
 import FlinkGraph from "@/pages/DataStudio/HeaderContainer/FlinkGraph";
 import {buildGraphData} from "@/pages/DataStudio/HeaderContainer/FlinkGraph/function";
-import {ErrorNotification, WarningMessage} from "@/utils/messages";
+import {ErrorNotification} from "@/utils/messages";
 
 const headerStyle: React.CSSProperties = {
   display: "inline-flex",
-  lineHeight: '32px',
-  height: "32px",
+  lineHeight: VIEW.headerHeight + 'px',
+  height: VIEW.headerHeight,
   fontStyle: "normal",
   fontWeight: "bold",
   fontSize: "16px",
@@ -64,7 +63,8 @@ const HeaderContainer = (props: any) => {
   const {
     size, activeBreadcrumbTitle,
     tabs: {panes, activeKey},
-    saveTabs
+    saveTabs,
+    updateJobRunningMsg,
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
@@ -92,14 +92,15 @@ const HeaderContainer = (props: any) => {
       messageApi.warning(l('pages.datastudio.editor.execute.warn', '', {type: current.type}));
       return;
     }
+
     const param: any = {
       ...current,
       jobName: current.name,
       taskId: current.id,
-      configJson: JSON.stringify(current.config),
     };
     const key = current.key;
     const taskKey = (Math.random() * 1000) + '';
+
     notificationApi.success({
       message: l('pages.datastudio.editor.submiting', '', {jobName: param.name}),
       description: param.statement.substring(0, 40) + '...',
@@ -107,12 +108,19 @@ const HeaderContainer = (props: any) => {
       key: taskKey,
       icon: <SmileOutlined style={{color: '#108ee9'}}/>,
     });
-    // setTimeout(() => {
-    //   refs?.history?.current?.reload();
-    // }, 2000);
+
+
     executeSql(l('pages.datastudio.editor.submiting', '', {jobName: param.name}), param).then(res => {
-      // notification.close(taskKey);
       notificationApi.destroy(taskKey)
+      if (!res) {
+        return
+      }
+      updateJobRunningMsg({
+        taskId: current.id,
+        jobName: current.name,
+        jobState: res.datas.status,
+        runningLog: res.msg,
+      })
       if (res.datas.success) {
         messageApi.success(l('pages.datastudio.editor.exec.success'));
         (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = res.datas.jobInstanceId;
@@ -141,7 +149,7 @@ const HeaderContainer = (props: any) => {
       title: l('button.save'),
       click: () => {
         const current = getCurrentData(panes, activeKey);
-        handlePutDataJson("/api/task", current)
+        handlePutDataJson("/api/task", current).then(() => saveTabs({...props.tabs}))
       },
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
       hotKeyDesc: "Ctrl+S",
@@ -159,7 +167,7 @@ const HeaderContainer = (props: any) => {
           cancelButtonProps: {style: {display: 'none'}},
         });
       },
-      isShow:projectCommonShow
+      isShow: projectCommonShow
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     },
     {
@@ -168,11 +176,7 @@ const HeaderContainer = (props: any) => {
       title: l('button.graph'),
       click: () => {
         const currentData = getCurrentData(panes, activeKey);
-        const param = {
-          ...currentData,
-          configJson: JSON.stringify(currentData.config),
-        };
-        const res = getJobPlan(l("pages.datastudio.editor.explan.tip"), param);
+        const res = getJobPlan(l("pages.datastudio.editor.explan.tip"), currentData);
         res.then((result) => {
           if (result) {
             modal.confirm({
@@ -244,7 +248,7 @@ const HeaderContainer = (props: any) => {
       title: "More",
       click: () => {
       },
-      isShow:()=>true
+      isShow: () => true
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     },
   ]

@@ -49,6 +49,8 @@ import JobInfo from "@/pages/DataStudio/RightContainer/JobInfo";
 import {l} from "@/utils/intl";
 import {TabsPageType} from "@/pages/DataStudio/model";
 import {CircleButtonProps} from "@/components/CallBackButton/CircleBtn";
+import {DiffEditor} from "@monaco-editor/react";
+import Result from "@/pages/DataStudio/BottomContainer/Result";
 
 export const LeftSide = [
   {
@@ -119,6 +121,7 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.result',
     icon: <MonitorOutlined />,
     label: l('menu.datastudio.result'),
+    children: <Result/>
   },
   {
     key: 'menu.datastudio.bi',
@@ -155,10 +158,24 @@ export const LeftBottomSide = [
 export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
   'menu.datastudio.tool':[
     {
-      key: 'menu.datastudio.tool.datax',
+      key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax'),
-      children: <div>datax</div>
+      label: l('menu.datastudio.tool.text-comparison'),
+      children: <DiffEditor height={"100%"} options={{
+        readOnly: false,
+        originalEditable: true,
+        selectOnLineNumbers: true,
+        lineDecorationsWidth: 20,
+        mouseWheelZoom: true,
+        automaticLayout:true,
+        scrollBeyondLastLine: false,
+        scrollbar: {
+          useShadows: false,
+          verticalScrollbarSize: 8,
+          horizontalScrollbarSize: 8,
+          arrowSize: 30,
+        }
+      }} language={"text"}  />
     },{
       key: 'menu.datastudio.tool.datax2',
       icon: <ToolOutlined />,
@@ -167,10 +184,16 @@ export const LeftBottomMoreTabs:{[c:string]:TabProp[]} = {
     },
   ] , 'menu.datastudio.tool2':[
     {
-      key: 'menu.datastudio.tool.datax',
+      key: 'menu.datastudio.tool.text-comparison',
       icon: <ToolOutlined />,
-      label: ('menu.datastudio.tool.datax'),
-      children: <div>datax</div>
+      label: ('menu.datastudio.tool.text-comparison'),
+      children: <DiffEditor height={"95%"} options={{
+        readOnly: true,
+        selectOnLineNumbers: true,
+        lineDecorationsWidth: 20,
+        mouseWheelZoom: true,
+        automaticLayout:true,
+      }} language={"sql"} original={""} modified={""}/>
     },{
       key: 'menu.datastudio.tool.datax2',
       icon: <ToolOutlined />,

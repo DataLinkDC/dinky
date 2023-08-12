@@ -29,7 +29,7 @@ import {
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
-  updateEnabled
+  updateDataByParam
 } from '@/services/BusinessCrud';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import {CheckCircleOutlined, CopyTwoTone, ExclamationCircleOutlined, HeartTwoTone} from '@ant-design/icons';
@@ -112,7 +112,7 @@ const DataSourceTable = () => {
    */
   const handleEnable = async (item: DataSources.DataSource) => {
     await executeAndCallbackRefresh(async () => {
-      await updateEnabled(API_CONSTANTS.DATASOURCE_ENABLE, {id: item.id});
+      await updateDataByParam(API_CONSTANTS.DATASOURCE_ENABLE, {id: item.id});
     });
   };
 

@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.AlertGroup;
@@ -29,7 +29,6 @@ import org.dinky.data.result.Result;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -65,9 +64,9 @@ public class AlertGroupController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    @Log(title = "INSERT OR UPDATE AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("INSERT OR UPDATE AlertGroup")
-    public Result<Void> saveOrUpdate(@RequestBody AlertGroup alertGroup) throws Exception {
+    @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert OR Update AlertGroup")
+    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -82,37 +81,9 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertGroup}
      */
     @PostMapping
-    @Log(title = "Query AlertGroup List", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertGroup List")
     public ProTableResult<AlertGroup> listAlertGroups(@RequestBody JsonNode para) {
         return alertGroupService.selectForProTable(para);
-    }
-
-    /**
-     * batch Delete alert group , this method is {@link Deprecated} in the future , please use
-     * {@link #deleteGroupById(Integer)} instead
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} with {@link Void}
-     */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!alertGroupService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -122,9 +93,8 @@ public class AlertGroupController {
      */
     @GetMapping("/listEnabledAll")
     @ApiOperation("Query AlertGroup List Of Enable")
-    @Log(title = "Query AlertGroup List Of Enable", businessType = BusinessType.QUERY)
-    public Result<List<AlertGroup>> listEnabledAll() {
-        return Result.succeed(alertGroupService.listEnabledAll());
+    public Result<List<AlertGroup>> listEnabledAllAlertGroups() {
+        return Result.succeed(alertGroupService.listEnabledAllAlertGroups());
     }
 
     /**
@@ -135,8 +105,8 @@ public class AlertGroupController {
     @PutMapping("/enable")
     @ApiOperation("Update AlertGroup Status")
     @Log(title = "Update AlertGroup Status", businessType = BusinessType.UPDATE)
-    public Result<List<AlertGroup>> enable(@RequestParam("id") Integer id) {
-        if (alertGroupService.enable(id)) {
+    public Result<List<AlertGroup>> modifyAlertGroupStatus(@RequestParam("id") Integer id) {
+        if (alertGroupService.modifyAlertGroupStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
@@ -167,7 +137,6 @@ public class AlertGroupController {
      * @return {@link ProTableResult} with {@link AlertHistory}
      */
     @PostMapping("/history")
-    @Log(title = "Query AlertHistory List", businessType = BusinessType.QUERY)
     @ApiOperation("Query AlertHistory List")
     public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);

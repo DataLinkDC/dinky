@@ -27,6 +27,7 @@ export default {
 
   'menu.login': 'Login',
   'menu.account.settings': 'Account Settings',
+  'menu.account.tenant': 'Tenant: {tenantCode}',
   'menu.account.center': 'Account Center',
   'menu.account.logout': 'Logout',
   'menu.account.changePassword': 'Change Password',
@@ -58,6 +59,7 @@ export default {
   'menu.auth': 'Auth Center',
   'menu.auth.user': 'User',
   'menu.auth.role': 'Role',
+  'menu.auth.menu': 'Menu',
   'menu.auth.rowpermissions': 'Row Permissions',
   'menu.auth.namespace': 'NameSpace',
   'menu.auth.tenant': 'Tenant',
@@ -87,4 +89,6 @@ export default {
  'menu.datastudio.process':'Process',
  'menu.datastudio.history':'History',
  'menu.datastudio.table-data':'Table Data',
+
+  'menu.datastudio.tool.text-comparison':'Text Comparison',
 };

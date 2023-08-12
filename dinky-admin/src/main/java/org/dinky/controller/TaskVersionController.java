@@ -51,19 +51,22 @@ public class TaskVersionController {
 
     private final TaskVersionService versionService;
 
-    /** 动态查询列表 */
+    /**
+     * query task version list
+     *
+     * @param para {@link JsonNode} params
+     * @return {@link ProTableResult}<{@link TaskVersionHistoryDTO}>
+     */
     @PostMapping
-    public ProTableResult<TaskVersionHistoryDTO> listTasks(@RequestBody JsonNode para) {
-        ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult =
-                new ProTableResult<>();
+    public ProTableResult<TaskVersionHistoryDTO> listTaskVersions(@RequestBody JsonNode para) {
+        ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult = new ProTableResult<>();
 
         ProTableResult<TaskVersion> versionProTableResult = versionService.selectForProTable(para);
 
         BeanUtil.copyProperties(versionProTableResult, versionHistoryDTOProTableResult);
-        List<TaskVersionHistoryDTO> collect =
-                versionProTableResult.getData().stream()
-                        .map(t -> BeanUtil.copyProperties(t, TaskVersionHistoryDTO.class))
-                        .collect(Collectors.toList());
+        List<TaskVersionHistoryDTO> collect = versionProTableResult.getData().stream()
+                .map(t -> BeanUtil.copyProperties(t, TaskVersionHistoryDTO.class))
+                .collect(Collectors.toList());
 
         versionHistoryDTOProTableResult.setData(collect);
 

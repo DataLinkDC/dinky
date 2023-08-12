@@ -173,8 +173,7 @@ public class OssTemplate {
      * @see AmazonS3#generatePresignedUrl(String bucketName, String key, Date expiration, HttpMethod
      *     method)
      */
-    public String getObjectURL(
-            String bucketName, String objectName, int minutes, HttpMethod method) {
+    public String getObjectURL(String bucketName, String objectName, int minutes, HttpMethod method) {
         return getObjectURL(bucketName, objectName, Duration.ofMinutes(minutes), method);
     }
 
@@ -189,17 +188,14 @@ public class OssTemplate {
      * @see AmazonS3#generatePresignedUrl(String bucketName, String key, Date expiration, HttpMethod
      *     method)
      */
-    public String getObjectURL(
-            String bucketName, String objectName, Duration expires, HttpMethod method) {
+    public String getObjectURL(String bucketName, String objectName, Duration expires, HttpMethod method) {
         // Set the pre-signed URL to expire after `expires`.
         Date expiration = Date.from(Instant.now().plus(expires));
 
         // Generate the pre-signed URL.
-        URL url =
-                amazonS3.generatePresignedUrl(
-                        new GeneratePresignedUrlRequest(bucketName, objectName)
-                                .withMethod(method)
-                                .withExpiration(expiration));
+        URL url = amazonS3.generatePresignedUrl(new GeneratePresignedUrlRequest(bucketName, objectName)
+                .withMethod(method)
+                .withExpiration(expiration));
         return url.toString();
     }
 
@@ -240,8 +236,7 @@ public class OssTemplate {
      * @param stream 文件流
      * @throws IOException IOException
      */
-    public void putObject(String bucketName, String objectName, InputStream stream)
-            throws IOException {
+    public void putObject(String bucketName, String objectName, InputStream stream) throws IOException {
         putObject(bucketName, objectName, stream, stream.available(), "application/octet-stream");
     }
 
@@ -254,8 +249,7 @@ public class OssTemplate {
      * @param contextType 文件类型
      * @throws IOException IOException
      */
-    public void putObject(
-            String bucketName, String objectName, String contextType, InputStream stream)
+    public void putObject(String bucketName, String objectName, String contextType, InputStream stream)
             throws IOException {
         putObject(bucketName, objectName, stream, stream.available(), contextType);
     }
@@ -272,19 +266,16 @@ public class OssTemplate {
      *     Documentation</a>
      */
     public PutObjectResult putObject(
-            String bucketName,
-            String objectName,
-            InputStream stream,
-            long size,
-            String contextType) {
+            String bucketName, String objectName, InputStream stream, long size, String contextType) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(size);
         objectMetadata.setContentType(contextType);
-        PutObjectRequest putObjectRequest =
-                new PutObjectRequest(bucketName, objectName, stream, objectMetadata);
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, objectName, stream, objectMetadata);
         // Setting the read limit value to one byte greater than the size of stream will
         // reliably avoid a ResetException
-        putObjectRequest.getRequestClientOptions().setReadLimit(Long.valueOf(size).intValue() + 1);
+        putObjectRequest
+                .getRequestClientOptions()
+                .setReadLimit(Long.valueOf(size).intValue() + 1);
         return amazonS3.putObject(putObjectRequest);
     }
 
@@ -324,19 +315,16 @@ public class OssTemplate {
         this.ossProperties = ossProperties;
         ClientConfiguration clientConfiguration = new ClientConfiguration();
         AwsClientBuilder.EndpointConfiguration endpointConfiguration =
-                new AwsClientBuilder.EndpointConfiguration(
-                        ossProperties.getEndpoint(), ossProperties.getRegion());
+                new AwsClientBuilder.EndpointConfiguration(ossProperties.getEndpoint(), ossProperties.getRegion());
         AWSCredentials awsCredentials =
                 new BasicAWSCredentials(ossProperties.getAccessKey(), ossProperties.getSecretKey());
-        AWSCredentialsProvider awsCredentialsProvider =
-                new AWSStaticCredentialsProvider(awsCredentials);
-        this.amazonS3 =
-                AmazonS3Client.builder()
-                        .withEndpointConfiguration(endpointConfiguration)
-                        .withClientConfiguration(clientConfiguration)
-                        .withCredentials(awsCredentialsProvider)
-                        .disableChunkedEncoding()
-                        .withPathStyleAccessEnabled(ossProperties.getPathStyleAccess())
-                        .build();
+        AWSCredentialsProvider awsCredentialsProvider = new AWSStaticCredentialsProvider(awsCredentials);
+        this.amazonS3 = AmazonS3Client.builder()
+                .withEndpointConfiguration(endpointConfiguration)
+                .withClientConfiguration(clientConfiguration)
+                .withCredentials(awsCredentialsProvider)
+                .disableChunkedEncoding()
+                .withPathStyleAccessEnabled(ossProperties.getPathStyleAccess())
+                .build();
     }
 }

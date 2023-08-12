@@ -86,54 +86,38 @@ public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
         checkNotNull(fieldNames, "No fieldNames supplied.");
         checkNotNull(fieldTypes, "No fieldTypes supplied.");
         checkNotNull(keyNames, "No keyNames supplied.");
-        this.connectionProvider = new PhoneixJdbcConnectionProvider(options,options.getNamespaceMappingEnabled(),options.getMapSystemTablesToNamespace());
+        this.connectionProvider = new PhoneixJdbcConnectionProvider(
+                options, options.getNamespaceMappingEnabled(), options.getMapSystemTablesToNamespace());
         this.keyNames = keyNames;
         List<String> nameList = Arrays.asList(fieldNames);
-        this.keyTypes =
-                Arrays.stream(keyNames)
-                        .map(
-                                s -> {
-                                    checkArgument(
-                                            nameList.contains(s),
-                                            "keyName %s can't find in fieldNames %s.",
-                                            s,
-                                            nameList);
-                                    return fieldTypes[nameList.indexOf(s)];
-                                })
-                        .toArray(DataType[]::new);
+        this.keyTypes = Arrays.stream(keyNames)
+                .map(s -> {
+                    checkArgument(nameList.contains(s), "keyName %s can't find in fieldNames %s.", s, nameList);
+                    return fieldTypes[nameList.indexOf(s)];
+                })
+                .toArray(DataType[]::new);
         this.cacheMaxSize = lookupOptions.getCacheMaxSize();
         this.cacheExpireMs = lookupOptions.getCacheExpireMs();
         this.maxRetryTimes = lookupOptions.getMaxRetryTimes();
-        this.query =
-                options.getDialect()
-                        .getSelectFromStatement(options.getTableName(), fieldNames, keyNames);
+        this.query = options.getDialect().getSelectFromStatement(options.getTableName(), fieldNames, keyNames);
         String dbURL = options.getDbURL();
-        this.jdbcDialect =
-                JdbcDialects.get(dbURL)
-                        .orElseThrow(
-                                () ->
-                                        new UnsupportedOperationException(
-                                                String.format("Unknown dbUrl:%s", dbURL)));
+        this.jdbcDialect = JdbcDialects.get(dbURL)
+                .orElseThrow(() -> new UnsupportedOperationException(String.format("Unknown dbUrl:%s", dbURL)));
         this.jdbcRowConverter = jdbcDialect.getRowConverter(rowType);
-        this.lookupKeyRowConverter =
-                jdbcDialect.getRowConverter(
-                        RowType.of(
-                                Arrays.stream(keyTypes)
-                                        .map(DataType::getLogicalType)
-                                        .toArray(LogicalType[]::new)));
+        this.lookupKeyRowConverter = jdbcDialect.getRowConverter(
+                RowType.of(Arrays.stream(keyTypes).map(DataType::getLogicalType).toArray(LogicalType[]::new)));
     }
 
     @Override
     public void open(FunctionContext context) throws Exception {
         try {
             establishConnectionAndStatement();
-            this.cache =
-                    cacheMaxSize == -1 || cacheExpireMs == -1
-                            ? null
-                            : CacheBuilder.newBuilder()
-                                    .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
-                                    .maximumSize(cacheMaxSize)
-                                    .build();
+            this.cache = cacheMaxSize == -1 || cacheExpireMs == -1
+                    ? null
+                    : CacheBuilder.newBuilder()
+                            .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
+                            .maximumSize(cacheMaxSize)
+                            .build();
         } catch (SQLException sqe) {
             throw new IllegalArgumentException("open() failed.", sqe);
         } catch (ClassNotFoundException cnfe) {
@@ -192,9 +176,7 @@ public class PhoenixRowDataLookupFunction extends TableFunction<RowData> {
                         establishConnectionAndStatement();
                     }
                 } catch (SQLException | ClassNotFoundException excpetion) {
-                    LOG.error(
-                            "JDBC connection is not valid, and reestablish connection failed",
-                            excpetion);
+                    LOG.error("JDBC connection is not valid, and reestablish connection failed", excpetion);
                     throw new RuntimeException("Reestablish JDBC connection failed", excpetion);
                 }
 

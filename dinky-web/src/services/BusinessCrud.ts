@@ -26,7 +26,8 @@ import {request} from '@@/exports';
 import {
   LoadingMessageAsync, SuccessMessage, WarningMessage,
 } from '@/utils/messages';
-import {never} from "@umijs/utils/compiled/zod";
+import { API } from './data';
+
 
 
 const APPLICATION_JSON = 'application/json';
@@ -130,6 +131,26 @@ export const handleRemoveById = async (url: string, id: number) => {
  * @param url
  * @param params
  */
+export const updateDataByParam = async (url: string, params: any) => {
+  await LoadingMessageAsync(l('app.request.update'));
+  try {
+    const {code, msg} = await updateDataByParams(url, {...params});
+    if (code === RESPONSE_CODE.SUCCESS) {
+      await SuccessMessage(msg);
+    } else {
+      await WarningMessage(msg);
+    }
+    return true;
+  } catch (error) {
+    return false;
+  }
+};
+
+/**
+ * update enabled status
+ * @param url
+ * @param params
+ */
 export const updateEnabled = async (url: string, params: any) => {
   await LoadingMessageAsync(l('app.request.update'));
   try {
@@ -144,6 +165,8 @@ export const updateEnabled = async (url: string, params: any) => {
     return false;
   }
 };
+
+
 
 export const handleOption = async (url: string, title: string, param: any) => {
   await LoadingMessageAsync(l('app.request.running') + title);

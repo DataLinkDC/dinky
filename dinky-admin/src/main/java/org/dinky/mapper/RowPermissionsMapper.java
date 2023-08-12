@@ -45,6 +45,5 @@ public interface RowPermissionsMapper extends SuperMapper<RowPermissions> {
      * @param roleIds role ids
      * @return List<RowPermissions>
      */
-    List<RowPermissions> listRoleSelectPermissionsByRoleIds(
-            @Param("roleIds") List<Integer> roleIds);
+    List<RowPermissions> listRoleSelectPermissionsByRoleIds(@Param("roleIds") List<Integer> roleIds);
 }

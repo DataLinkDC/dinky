@@ -127,14 +127,9 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
             while (results.next()) {
                 String schemaName = results.getString(getDBQuery().schemaName());
                 // !PrestoConstant.EXTRA_SCHEMA.equals(schemaName) filter system catalog
-                if (Asserts.isNotNullString(schemaName)
-                        && !PrestoConstant.EXTRA_SCHEMA.equals(schemaName)) {
-                    ps =
-                            conn.get()
-                                    .prepareStatement(
-                                            String.format(
-                                                    PrestoConstant.QUERY_TABLE_COLUMNS_ONLY,
-                                                    schemaName));
+                if (Asserts.isNotNullString(schemaName) && !PrestoConstant.EXTRA_SCHEMA.equals(schemaName)) {
+                    ps = conn.get()
+                            .prepareStatement(String.format(PrestoConstant.QUERY_TABLE_COLUMNS_ONLY, schemaName));
                     rs = ps.executeQuery();
                     while (rs.next()) {
                         String db = rs.getString(PrestoConstant.SCHEMA);
@@ -215,7 +210,9 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
             results = preparedStatement.executeQuery();
             ResultSetMetaData metaData = results.getMetaData();
             while (results.next()) {
-                createTable.append(results.getString(getDBQuery().createTableName())).append("\n");
+                createTable
+                        .append(results.getString(getDBQuery().createTableName()))
+                        .append("\n");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -304,12 +301,11 @@ public class PrestoDriver extends AbstractJdbcDriver implements Driver {
         String where = queryData.getOption().getWhere();
         String order = queryData.getOption().getOrder();
 
-        StringBuilder optionBuilder =
-                new StringBuilder()
-                        .append("select * from ")
-                        .append(queryData.getSchemaName())
-                        .append(".")
-                        .append(queryData.getTableName());
+        StringBuilder optionBuilder = new StringBuilder()
+                .append("select * from ")
+                .append(queryData.getSchemaName())
+                .append(".")
+                .append(queryData.getTableName());
 
         if (where != null && !where.equals("")) {
             optionBuilder.append(" where ").append(where);

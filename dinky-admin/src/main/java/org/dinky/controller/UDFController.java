@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.UDFTemplate;
 import org.dinky.data.result.ProTableResult;
@@ -45,6 +47,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,54 +60,51 @@ public class UDFController {
 
     private final UDFTemplateService udfTemplateService;
 
+    /**
+     * build udf tree
+     *
+     * @return
+     */
     @PostMapping("/tree")
+    @ApiOperation("Build UDF Tree")
     public Result<List<Object>> listUdfTemplates() {
         List<UDFTemplate> list = udfTemplateService.list();
         Map<String, Dict> one = new HashMap<>(3);
         Map<String, Dict> two = new HashMap<>(3);
         Map<String, Dict> three = new HashMap<>(3);
         Map<String, Object> result = new HashMap<>(3);
-        list.forEach(
-                t -> {
-                    one.putIfAbsent(
-                            t.getCodeType(),
-                            Dict.create()
-                                    .set("label", t.getCodeType())
-                                    .set("value", t.getCodeType()));
-                    two.putIfAbsent(
-                            t.getCodeType() + t.getFunctionType(),
-                            Dict.create()
-                                    .set("label", t.getFunctionType())
-                                    .set("value", t.getFunctionType()));
-                    three.putIfAbsent(
-                            t.getCodeType() + t.getFunctionType() + t.getId(),
-                            Dict.create().set("label", t.getName()).set("value", t.getId()));
-                });
+        list.forEach(t -> {
+            one.putIfAbsent(
+                    t.getCodeType(), Dict.create().set("label", t.getCodeType()).set("value", t.getCodeType()));
+            two.putIfAbsent(
+                    t.getCodeType() + t.getFunctionType(),
+                    Dict.create().set("label", t.getFunctionType()).set("value", t.getFunctionType()));
+            three.putIfAbsent(
+                    t.getCodeType() + t.getFunctionType() + t.getId(),
+                    Dict.create().set("label", t.getName()).set("value", t.getId()));
+        });
         Set<String> twoKeys = two.keySet();
         Set<String> threeKeys = three.keySet();
-        one.forEach(
-                (k1, v1) -> {
-                    result.put(k1, v1);
-                    ArrayList<Dict> c1 = new ArrayList<>();
-                    v1.put("children", c1);
-                    twoKeys.stream()
-                            .filter(x -> x.contains(k1))
-                            .map(x -> StrUtil.strip(x, k1))
-                            .forEach(
-                                    k2 -> {
-                                        Dict v2 = two.get(k1 + k2);
-                                        c1.add(v2);
-                                        ArrayList<Dict> c2 = new ArrayList<>();
-                                        v2.put("children", c2);
-                                        threeKeys.stream()
-                                                .filter(x -> x.contains(k1 + k2))
-                                                .map(x -> StrUtil.strip(x, k1 + k2))
-                                                .forEach(
-                                                        k3 -> {
-                                                            c2.add(three.get(k1 + k2 + k3));
-                                                        });
-                                    });
-                });
+        one.forEach((k1, v1) -> {
+            result.put(k1, v1);
+            ArrayList<Dict> c1 = new ArrayList<>();
+            v1.put("children", c1);
+            twoKeys.stream()
+                    .filter(x -> x.contains(k1))
+                    .map(x -> StrUtil.strip(x, k1))
+                    .forEach(k2 -> {
+                        Dict v2 = two.get(k1 + k2);
+                        c1.add(v2);
+                        ArrayList<Dict> c2 = new ArrayList<>();
+                        v2.put("children", c2);
+                        threeKeys.stream()
+                                .filter(x -> x.contains(k1 + k2))
+                                .map(x -> StrUtil.strip(x, k1 + k2))
+                                .forEach(k3 -> {
+                                    c2.add(three.get(k1 + k2 + k3));
+                                });
+                    });
+        });
         return Result.succeed(CollUtil.newArrayList(result.values()));
     }
 
@@ -115,6 +115,7 @@ public class UDFController {
      * @return {@link ProTableResult} <{@link UDFTemplate}>
      */
     @PostMapping("/list")
+    @ApiOperation("Get UDF Template List")
     public ProTableResult<UDFTemplate> listUdfTemplates(@RequestBody JsonNode params) {
         return udfTemplateService.selectForProTable(params);
     }
@@ -126,38 +127,12 @@ public class UDFController {
      * @return {@link Result} <{@link String}>
      */
     @PutMapping
-    public Result<String> saveOrUpdate(@RequestBody UDFTemplate udfTemplate) {
+    @ApiOperation("Insert or Update UDF Template")
+    @Log(title = "Insert or Update UDF Template", businessType = BusinessType.INSERT_OR_UPDATE)
+    public Result<String> saveOrUpdateUDFTemplate(@RequestBody UDFTemplate udfTemplate) {
         return udfTemplateService.saveOrUpdate(udfTemplate)
                 ? Result.succeed(Status.SAVE_SUCCESS)
                 : Result.failed(Status.SAVE_FAILED);
-    }
-
-    /**
-     * delete udf template by id, this method is deprecated, please use {@link #delete(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result} <{@link String}>
-     */
-    @DeleteMapping("/template/list")
-    @Deprecated
-    public Result deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!udfTemplateService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed(
-                        "删除部分成功，但" + error.toString() + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -167,6 +142,8 @@ public class UDFController {
      * @return {@link Result} <{@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "Delete UDF Template By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("Delete UDF Template By Id")
     @Transactional(rollbackFor = Exception.class)
     public Result<Void> delete(@RequestParam Integer id) {
         if (udfTemplateService.removeById(id)) {
@@ -177,8 +154,10 @@ public class UDFController {
     }
 
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (udfTemplateService.enable(id)) {
+    @ApiOperation("Modify UDF Template Status")
+    @Log(title = "Modify UDF Template Status", businessType = BusinessType.UPDATE)
+    public Result<Void> modifyUDFTemplateStatus(@RequestParam Integer id) {
+        if (udfTemplateService.modifyUDFTemplateStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);

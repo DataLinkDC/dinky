@@ -38,8 +38,7 @@ import java.util.function.Function;
  * and inserting otherwise. Only used in Table/SQL API.
  */
 @Internal
-public final class TableInsertOrUpdateStatementExecutor
-        implements JdbcBatchStatementExecutor<RowData> {
+public final class TableInsertOrUpdateStatementExecutor implements JdbcBatchStatementExecutor<RowData> {
 
     private final StatementFactory existStmtFactory;
     private final StatementFactory insertStmtFactory;
@@ -108,8 +107,7 @@ public final class TableInsertOrUpdateStatementExecutor
 
     @Override
     public void closeStatements() throws SQLException {
-        for (FieldNamedPreparedStatement s :
-                Arrays.asList(existStatement, insertStatement, updateStatement)) {
+        for (FieldNamedPreparedStatement s : Arrays.asList(existStatement, insertStatement, updateStatement)) {
             if (s != null) {
                 s.close();
             }

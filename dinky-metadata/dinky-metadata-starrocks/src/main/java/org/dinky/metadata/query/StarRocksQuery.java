@@ -39,8 +39,7 @@ public class StarRocksQuery extends AbstractDBQuery {
 
     @Override
     public String columnsSql(String schemaName, String tableName) {
-        return String.format(
-                StarRocksConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
+        return String.format(StarRocksConstant.QUERY_COLUMNS_BY_TABLE_AND_SCHEMA, schemaName, tableName);
     }
 
     @Override

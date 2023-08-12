@@ -47,25 +47,20 @@ public final class ThreadFactoryBuilder {
     }
 
     public ThreadFactoryBuilder setPriority(int priority) {
-        Preconditions.checkArgument(
-                priority >= 1, "Thread priority (%s) must be >= %s", new Object[] {priority, 1});
-        Preconditions.checkArgument(
-                priority <= 10, "Thread priority (%s) must be <= %s", new Object[] {priority, 10});
+        Preconditions.checkArgument(priority >= 1, "Thread priority (%s) must be >= %s", new Object[] {priority, 1});
+        Preconditions.checkArgument(priority <= 10, "Thread priority (%s) must be <= %s", new Object[] {priority, 10});
         this.priority = priority;
         return this;
     }
 
-    public ThreadFactoryBuilder setUncaughtExceptionHandler(
-            Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
+    public ThreadFactoryBuilder setUncaughtExceptionHandler(Thread.UncaughtExceptionHandler uncaughtExceptionHandler) {
         this.uncaughtExceptionHandler =
-                (Thread.UncaughtExceptionHandler)
-                        Preconditions.checkNotNull(uncaughtExceptionHandler);
+                (Thread.UncaughtExceptionHandler) Preconditions.checkNotNull(uncaughtExceptionHandler);
         return this;
     }
 
     public ThreadFactoryBuilder setThreadFactory(ThreadFactory backingThreadFactory) {
-        this.backingThreadFactory =
-                (ThreadFactory) Preconditions.checkNotNull(backingThreadFactory);
+        this.backingThreadFactory = (ThreadFactory) Preconditions.checkNotNull(backingThreadFactory);
         return this;
     }
 
@@ -77,12 +72,9 @@ public final class ThreadFactoryBuilder {
         final String nameFormat = builder.nameFormat;
         final Boolean daemon = builder.daemon;
         final Integer priority = builder.priority;
-        final Thread.UncaughtExceptionHandler uncaughtExceptionHandler =
-                builder.uncaughtExceptionHandler;
+        final Thread.UncaughtExceptionHandler uncaughtExceptionHandler = builder.uncaughtExceptionHandler;
         final ThreadFactory backingThreadFactory =
-                builder.backingThreadFactory != null
-                        ? builder.backingThreadFactory
-                        : Executors.defaultThreadFactory();
+                builder.backingThreadFactory != null ? builder.backingThreadFactory : Executors.defaultThreadFactory();
         final AtomicLong count = nameFormat != null ? new AtomicLong(0L) : null;
         return new ThreadFactory() {
 

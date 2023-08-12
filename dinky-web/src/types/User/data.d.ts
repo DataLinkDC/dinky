@@ -24,11 +24,12 @@ declare namespace UserBaseInfo {
     password?: string;
     avatar?: string;
     worknum?: string;
-    userType?: number;
+    userType: number;
     mobile?: string;
     enabled: boolean;
     isDelete: boolean;
-    isAdmin?: boolean;
+    superAdminFlag: boolean;
+    tenantAdminFlag: boolean;
   };
 
   export type ChangePasswordParams = {

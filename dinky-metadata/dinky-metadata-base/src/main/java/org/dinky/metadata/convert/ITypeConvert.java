@@ -46,8 +46,7 @@ public interface ITypeConvert {
 
     String convertToDB(ColumnType columnType);
 
-    default Object convertValue(ResultSet results, String columnName, String javaType)
-            throws SQLException {
+    default Object convertValue(ResultSet results, String columnName, String javaType) throws SQLException {
         if (Asserts.isNull(javaType)) {
             return results.getString(columnName);
         }

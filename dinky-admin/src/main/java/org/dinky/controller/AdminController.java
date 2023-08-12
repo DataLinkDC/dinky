@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.annotations.ApiOperation;
@@ -73,6 +75,7 @@ public class AdminController {
      */
     @DeleteMapping("/outLogin")
     @ApiOperation(value = "LogOut", notes = "LogOut")
+    @SaIgnore
     public Result<Void> outLogin() {
         userService.outLogin();
         return Result.succeed(I18nMsgUtils.getMsg(Status.SIGN_OUT_SUCCESS));
@@ -84,6 +87,7 @@ public class AdminController {
      * @return {@link Result}{@link UserDTO} obtain the current user's UserDTO
      */
     @GetMapping("/current")
+    @SaCheckLogin
     @ApiOperation(value = "Current User Info", notes = "Current User Info")
     public Result<UserDTO> getCurrentUserInfo() {
         return userService.queryCurrentUserInfo();
@@ -96,6 +100,7 @@ public class AdminController {
      * @return {@link Result}{@link Tenant} the specified tenant
      */
     @PostMapping("/chooseTenant")
+    @SaCheckLogin
     @ApiOperation(value = "Choose Tenant To Login", notes = "Choose Tenant To Login")
     public Result<Tenant> switchingTenant(@RequestParam("tenantId") Integer tenantId) {
         return userService.chooseTenant(tenantId);
@@ -107,6 +112,7 @@ public class AdminController {
      * @return {@link Result}{@link SaTokenInfo}
      */
     @GetMapping("/tokenInfo")
+    @SaCheckLogin
     @ApiOperation(value = "Query Current User Token Info", notes = "Query Current User Token Info")
     public Result<SaTokenInfo> getTokenInfo() {
         return Result.succeed(StpUtil.getTokenInfo());

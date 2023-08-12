@@ -1,14 +1,3 @@
-import {Col, Descriptions, Form, Row } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import {l} from "@/utils/intl";
-import Paragraph from "antd/es/typography/Paragraph";
-import {connect} from "umi";
-import {DataStudioParams, StateType, TabsItemType, TabsPageType} from "@/pages/DataStudio/model";
-import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
-import React from "react";
-import {getCurrentData} from "@/pages/DataStudio/function";
-import {useForm} from "antd/es/form/Form";
-import {c} from "@umijs/utils/compiled/tar";
 
 /*
  *
@@ -28,6 +17,17 @@ import {c} from "@umijs/utils/compiled/tar";
  *   limitations under the License.
  *
  */
+
+import {Col, Descriptions, Form, Row } from "antd";
+import TextArea from "antd/es/input/TextArea";
+import {l} from "@/utils/intl";
+import Paragraph from "antd/es/typography/Paragraph";
+import {connect} from "umi";
+import { StateType } from "@/pages/DataStudio/model";
+import React from "react";
+import {getCurrentData} from "@/pages/DataStudio/function";
+import {useForm} from "antd/es/form/Form";
+
 const JobInfo = (props: any) => {
   const { dispatch, tabs: {panes, activeKey}} = props;
   const current = getCurrentData(panes, activeKey);

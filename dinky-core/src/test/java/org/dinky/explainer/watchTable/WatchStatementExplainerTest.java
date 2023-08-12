@@ -34,7 +34,6 @@ class WatchStatementExplainerTest {
         sql = "watch VersionT, Buyers, r, rr, vvv";
         WatchStatementExplainer wse = new WatchStatementExplainer(sql);
 
-        assertArrayEquals(
-                new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, wse.getTableNames());
+        assertArrayEquals(new String[] {"VersionT", "Buyers", "r", "rr", "vvv"}, wse.getTableNames());
     }
 }

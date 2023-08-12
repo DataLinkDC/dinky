@@ -30,6 +30,7 @@ import {RIGHT_CONTEXT_MENU} from "@/pages/RegCenter/Resource/components/constant
 import ResourceModal from "@/pages/RegCenter/Resource/components/ResourceModal";
 import {Resizable} from "re-resizable";
 import ResourcesUploadModal from "@/pages/RegCenter/Resource/components/ResourcesUploadModal";
+import RightContextMenu from "@/components/RightContextMenu";
 
 export type Resource = {
   id: number,
@@ -258,29 +259,6 @@ const ResourceOverView: React.FC = () => {
 
 
 
-
-  /**
-   * render the right click menu
-   * @returns {JSX.Element}
-   */
-  const renderRightClickMenu = () => {
-    const menu = <Menu onClick={handleMenuClick} items={RIGHT_CONTEXT_MENU()}/>
-    return <>
-      <Dropdown
-        arrow
-        trigger={['contextMenu']}
-        overlayStyle={{...contextMenuPosition}}
-        overlay={menu}
-        open={contextMenuVisible}
-        onVisibleChange={setContextMenuVisible}
-      >
-        {/*占位*/}
-        <div style={{...contextMenuPosition}}/>
-      </Dropdown>
-    </>
-  }
-
-
   /**
    * the content change
    * @param value
@@ -320,7 +298,10 @@ const ResourceOverView: React.FC = () => {
             onRightClick={handleRightClick}
             onNodeClick={(info: any) => handleNodeClick(info)}
           />
-          {contextMenuVisible && renderRightClickMenu()}
+          <RightContextMenu
+              contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
+              openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU()} onClick={handleMenuClick}
+          />
         </ProCard>
       </Resizable>
       <ProCard.Divider type={"vertical"}/>

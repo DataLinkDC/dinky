@@ -173,7 +173,7 @@ CREATE TABLE `dinky_database`  (
                                  `port` int(11) NULL DEFAULT NULL COMMENT 'database port',
                                  `url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'database url',
                                  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'username',
-                                 `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
+                                 `password` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
                                  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
                                  `flink_config` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Flink configuration',
                                  `flink_template` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Flink template',
@@ -562,27 +562,6 @@ CREATE TABLE `dinky_job_instance`  (
 -- ----------------------------
 
 -- ----------------------------
--- Table structure for dinky_namespace
--- ----------------------------
-DROP TABLE IF EXISTS `dinky_namespace`;
-CREATE TABLE `dinky_namespace`  (
-                                  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                  `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                  `namespace_code` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'namespace code',
-                                  `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                  `note` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'note',
-                                  `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                  `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                  PRIMARY KEY (`id`) USING BTREE,
-                                  UNIQUE INDEX `namespace_un_idx1`(`namespace_code`, `tenant_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'namespace' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_namespace
--- ----------------------------
-INSERT INTO `dinky_namespace` VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-
--- ----------------------------
 -- Table structure for dinky_role
 -- ----------------------------
 DROP TABLE IF EXISTS `dinky_role`;
@@ -604,24 +583,6 @@ CREATE TABLE `dinky_role`  (
 -- ----------------------------
 INSERT INTO `dinky_role` VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0, 'SuperAdmin of Role', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
--- ----------------------------
--- Table structure for dinky_role_namespace
--- ----------------------------
-DROP TABLE IF EXISTS `dinky_role_namespace`;
-CREATE TABLE `dinky_role_namespace`  (
-                                       `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                       `role_id` int(11) NOT NULL COMMENT 'user id',
-                                       `namespace_id` int(11) NOT NULL COMMENT 'namespace id',
-                                       `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                       `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                                       PRIMARY KEY (`id`) USING BTREE,
-                                       UNIQUE INDEX `role_namespace_un_idx1`(`role_id`, `namespace_id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'Role and namespace relationship' ROW_FORMAT = Dynamic;
-
--- ----------------------------
--- Records of dinky_role_namespace
--- ----------------------------
-INSERT INTO `dinky_role_namespace` VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
 
 -- ----------------------------
 -- Table structure for dinky_savepoints
@@ -860,26 +821,31 @@ CREATE TABLE `dinky_upload_file_record`  (
 -- Table structure for dinky_user
 -- ----------------------------
 DROP TABLE IF EXISTS `dinky_user`;
-CREATE TABLE `dinky_user`  (
-                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                             `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
-                             `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'password',
-                             `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'nickname',
-                             `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'worknum',
-                             `user_type`   int        default 0 not null comment 'login type (0:LOCAL,1:LDAP)',
-                             `avatar` blob NULL COMMENT 'avatar',
-                             `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'mobile phone',
-                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                             `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
-                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
-                             PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = 'user' ROW_FORMAT = Dynamic;
+CREATE TABLE `dinky_user` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `username` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
+  `user_type` int DEFAULT '1',
+  `password` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'password',
+  `nickname` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'nickname',
+  `worknum` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'worknum',
+  `avatar` blob COMMENT 'avatar',
+  `mobile` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT 'mobile phone',
+  `enabled` tinyint(1) NOT NULL DEFAULT '1' COMMENT 'is enable',
+  `super_admin_flag` tinyint DEFAULT '0' COMMENT 'is super admin(0:false,1true)',
+  `is_delete` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'is delete',
+  `create_time` datetime DEFAULT NULL COMMENT 'create time',
+  `update_time` datetime DEFAULT NULL COMMENT 'update time',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci ROW_FORMAT=DYNAMIC COMMENT='user';
+
+
 
 -- ----------------------------
 -- Records of dinky_user
 -- ----------------------------
-INSERT INTO `dinky_user` VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0, NULL, NULL, 1, 0, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+INSERT INTO dinky_user
+    (id, username, user_type, password, nickname, worknum, avatar, mobile, enabled, super_admin_flag, is_delete, create_time, update_time)
+VALUES (1, 'admin', 0, '21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001', null, '17777777777', 1, 1, 0, '2022-12-13 05:27:19', '2023-07-28 23:22:52');
 
 -- ----------------------------
 -- Table structure for dinky_user_role
@@ -908,6 +874,7 @@ CREATE TABLE `dinky_user_tenant`  (
                                     `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                     `user_id` int(11) NOT NULL COMMENT 'user id',
                                     `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
+                                    `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
                                     `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                                     `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time',
                                     PRIMARY KEY (`id`) USING BTREE,
@@ -917,7 +884,7 @@ CREATE TABLE `dinky_user_tenant`  (
 -- ----------------------------
 -- Records of dinky_user_tenant
 -- ----------------------------
-INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`, `create_time`, `update_time`) VALUES (1, 1, 1, current_time, current_time);
+INSERT INTO `dinky_user_tenant`(`id`, `user_id`, `tenant_id`,`tenant_admin_flag` , `create_time`, `update_time`) VALUES (1, 1, 1,1, current_time, current_time);
 
 -- ----------------------------
 -- Table structure for metadata_column
@@ -1147,7 +1114,7 @@ CREATE TABLE `dinky_sys_login_log` (
   `update_time` datetime NOT NULL,
   `is_deleted` tinyint NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record'
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='system login log record';
 
 
 -- ----------------------------
@@ -1165,14 +1132,85 @@ CREATE TABLE `dinky_sys_operate_log`  (
   `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
   `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
   `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` varchar(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
-  `json_result` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL COMMENT 'request param',
+  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'return json result',
   `status` int DEFAULT NULL COMMENT 'operate status',
-  `error_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  COMMENT 'error msg',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8 COLLATE = utf8_general_ci COMMENT = 'operate log record' ROW_FORMAT = Dynamic;
 
+-- ----------------------------
+-- Table structure for dinky_sys_menu
+-- ----------------------------
+drop table if exists `dinky_sys_menu`;
+create table `dinky_sys_menu` (
+                                  `id` bigint not null auto_increment comment ' id',
+                                  `parent_id` bigint not null comment 'parent menu id',
+                                  `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
+                                  `path` varchar(64) collate utf8mb4_general_ci default null comment 'routing path',
+                                  `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
+                                  `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
+                                  `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
+                                  `type` char(1) collate utf8mb4_general_ci default null comment 'type(M:directory C:menu F:button)',
+                                  `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
+                                  `order_num` int default null comment 'sort',
+                                  `create_time` datetime not null default current_timestamp comment 'create time',
+                                  `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  `note` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+                                  primary key (`id`) using btree
+) engine=innodb auto_increment=1 default charset=utf8mb4 collate=utf8mb4_general_ci;
+
+-- ----------------------------
+-- Records of dinky_sys_menu
+-- ----------------------------
+BEGIN;
+INSERT INTO `dinky_sys_menu` VALUES (1, -1, '首页', '/home', './Home', NULL, 'HomeOutlined', 'C', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (2, -1, '运维中心', '/devops', NULL, NULL, 'ControlOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (3, -1, '注册中心', '/registration', NULL, NULL, 'AppstoreOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (4, -1, '认证中心', '/auth', NULL, NULL, 'SafetyCertificateOutlined', 'M', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (5, -1, '数据开发', '/datastudio', './DataStudio', NULL, 'CodeOutlined', 'C', 0, NULL, '2023-08-11 14:06:52', '2023-08-11 14:06:52', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (6, -1, '配置中心', '/settings', NULL, NULL, 'SettingOutlined', 'M', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (7, -1, '关于', '/about', './Other/About', NULL, 'SmileOutlined', 'C', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (8, -1, '监控', '/metrics', './Metrics', NULL, 'DashboardOutlined', 'C', 0, NULL, '2023-08-11 14:06:53', '2023-08-11 14:06:53', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (9, 3, 'cluster', '/registration/cluster', NULL, NULL, 'GoldOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (10, 3, 'database', '/registration/database', './RegCenter/DataSource', NULL, 'DatabaseOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (11, -1, 'center', '/account/center', './Other/PersonCenter', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (12, 3, 'alert', '/registration/alert', NULL, NULL, 'AlertOutlined', 'M', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (13, 3, 'document', '/registration/document', './RegCenter/Document', NULL, 'BookOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (14, 3, 'fragment', '/registration/fragment', './RegCenter/GlobalVar', NULL, 'RocketOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (15, 3, 'gitprojects', '/registration/gitprojects', './RegCenter/GitProject', NULL, 'GithubOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (16, 3, 'udf', '/registration/udf', './RegCenter/UDF', NULL, 'ToolOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (17, 2, 'job-detail', '/devops/job-detail', './DevOps/JobDetail', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (18, 2, 'job', '/devops/joblist', './DevOps', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (19, 3, 'resource', '/registration/resource', './RegCenter/Resource', NULL, 'FileZipOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (20, 4, 'role', '/auth/role', './AuthCenter/Role', NULL, 'TeamOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (21, 4, 'user', '/auth/user', './AuthCenter/User', NULL, 'UserOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (22, 4, '菜单', '/auth/menu', './AuthCenter/Menu', NULL, 'MenuOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (23, 4, 'tenant', '/auth/tenant', './AuthCenter/Tenant', NULL, 'SecurityScanOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (24, 6, 'globalsetting', '/settings/globalsetting', './SettingCenter/GlobalSetting', NULL, 'SettingOutlined', 'C', 0, NULL, '2023-08-11 14:06:54', '2023-08-11 14:06:54', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (25, 6, 'systemlog', '/settings/systemlog', './SettingCenter/SystemLogs', NULL, 'InfoCircleOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (26, 6, 'process', '/settings/process', './SettingCenter/Process', NULL, 'ReconciliationOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (27, 4, 'rowpermissions', '/auth/rowpermissions', './AuthCenter/RowPermissions', NULL, 'SafetyCertificateOutlined', 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (28, 9, 'cluster-instance', '/registration/cluster/instance', './RegCenter/Cluster/Instance', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (29, 12, 'group', '/registration/alert/group', './RegCenter/Alert/AlertGroup', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (30, 9, 'cluster-config', '/registration/cluster/config', './RegCenter/Cluster/Configuration', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+COMMIT;
+
+-- ----------------------------
+-- Table structure dinky_sys_role_menu
+-- ----------------------------
+drop table if exists `dinky_sys_role_menu`;
+CREATE TABLE `dinky_sys_role_menu` (
+                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                       `role_id` bigint NOT NULL COMMENT 'role id',
+                                       `menu_id` bigint NOT NULL COMMENT 'menu id',
+                                       `create_time` datetime not null default current_timestamp comment 'create time',
+                                       `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                       PRIMARY KEY (`id`) USING BTREE,
+                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 
 

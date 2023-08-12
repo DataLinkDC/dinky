@@ -19,6 +19,7 @@
 
 package org.dinky.service;
 
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.LoginLog;
 import org.dinky.data.model.User;
 import org.dinky.mybatis.service.ISuperService;
@@ -28,6 +29,10 @@ import java.util.List;
 public interface LoginLogService extends ISuperService<LoginLog> {
 
     void saveLoginLog(User user, Integer status, String ip, String msg);
+
+    void saveLoginLog(User user, Status status, String ip);
+
+    void saveLoginLog(User user, Status status);
 
     List<LoginLog> loginRecord(Integer userId);
 }

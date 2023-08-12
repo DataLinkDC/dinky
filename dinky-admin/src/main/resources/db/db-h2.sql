@@ -91,7 +91,7 @@ CREATE TABLE `dinky_database` (
                                 `port` int(11) NULL DEFAULT NULL COMMENT 'database port',
                                 `url` varchar(255) NULL DEFAULT NULL COMMENT 'database url',
                                 `username` varchar(50) NULL DEFAULT NULL COMMENT 'username',
-                                `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
+                                `password` varchar(512) NULL DEFAULT NULL COMMENT 'password',
                                 `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
                                 `flink_config` text NULL COMMENT 'Flink configuration',
                                 `flink_template` text NULL COMMENT 'Flink template',
@@ -1268,19 +1268,7 @@ CREATE TABLE `dinky_job_instance` (
                                     `failed_restart_count` int(11) NULL DEFAULT NULL COMMENT 'failed restart count',
                                     INDEX job_instance_task_id_idx13(`task_id`)
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-DROP TABLE IF EXISTS `dinky_namespace`;
-CREATE TABLE `dinky_namespace` (
-                                 `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                 `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
-                                 `namespace_code` varchar(64) NOT NULL COMMENT 'namespace code',
-                                 `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
-                                 `note` varchar(255) NULL DEFAULT NULL COMMENT 'note',
-                                 `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                 `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-INSERT INTO `dinky_namespace`
-VALUES (1, 1, 'DefaultNameSpace', 1, 'DefaultNameSpace'
-       , '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+
 DROP TABLE IF EXISTS `dinky_role`;
 CREATE TABLE `dinky_role` (
                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -1295,16 +1283,7 @@ CREATE TABLE `dinky_role` (
 INSERT INTO `dinky_role`
 VALUES (1, 1, 'SuperAdmin', 'SuperAdmin', 0
        , 'SuperAdmin of Role', '2022-12-13 05:27:19', '2022-12-13 05:27:19');
-DROP TABLE IF EXISTS `dinky_role_namespace`;
-CREATE TABLE `dinky_role_namespace` (
-                                      `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-                                      `role_id` int(11) NOT NULL COMMENT 'user id',
-                                      `namespace_id` int(11) NOT NULL COMMENT 'namespace id',
-                                      `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
-                                      `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
-) ENGINE = InnoDB ROW_FORMAT = Dynamic;
-INSERT INTO `dinky_role_namespace`
-VALUES (1, 1, 1, '2022-12-13 05:27:19', '2022-12-13 05:27:19');
+
 DROP TABLE IF EXISTS `dinky_savepoints`;
 CREATE TABLE `dinky_savepoints` (
                                   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
@@ -1508,20 +1487,21 @@ DROP TABLE IF EXISTS `dinky_user`;
 CREATE TABLE `dinky_user` (
                             `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                             `username` varchar(50) NOT NULL COMMENT 'username',
+                             `user_type`   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
                             `password` varchar(50) NULL DEFAULT NULL COMMENT 'password',
                             `nickname` varchar(50) NULL DEFAULT NULL COMMENT 'nickname',
                             `worknum` varchar(50) NULL DEFAULT NULL COMMENT 'worknum',
-                            user_type   int    DEFAULT 0 NOT NULL COMMENT 'login type (0:LOCAL,1:LDAP)',
                             `avatar` blob NULL COMMENT 'avatar',
                             `mobile` varchar(20) NULL DEFAULT NULL COMMENT 'mobile phone',
                             `enabled` tinyint(1) NOT NULL DEFAULT 1 COMMENT 'is enable',
+                            `super_admin_flag` tinyint(1) DEFAULT '0' COMMENT 'is super admin(0:false,1true)',
                             `is_delete` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'is delete',
                             `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                             `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user`
-VALUES (1, 'admin', '21232f297a57a5a743894a0e4a801fc3', 'Admin', NULL,0
-       , NULL, NULL, 1, 0, '2022-12-13 05:27:19'
+VALUES (1, 'admin', 1,'21232f297a57a5a743894a0e4a801fc3', 'Admin', 'Dinky-001'
+       , NULL, '17777777777', 1,1, 0, '2022-12-13 05:27:19'
        , '2022-12-13 05:27:19');
 DROP TABLE IF EXISTS `dinky_user_role`;
 CREATE TABLE `dinky_user_role` (
@@ -1538,11 +1518,12 @@ CREATE TABLE `dinky_user_tenant` (
                                    `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
                                    `user_id` int(11) NOT NULL COMMENT 'user id',
                                    `tenant_id` int(11) NOT NULL COMMENT 'tenant id',
+                                    `tenant_admin_flag` tinyint DEFAULT '0' COMMENT 'tenant admin flag(0:false,1:true)',
                                    `create_time` datetime(0) NULL DEFAULT NULL COMMENT 'create time',
                                    `update_time` datetime(0) NULL DEFAULT NULL COMMENT 'update time'
 ) ENGINE = InnoDB ROW_FORMAT = Dynamic;
 INSERT INTO `dinky_user_tenant` (`id`, `user_id`, `tenant_id`, `create_time`, `update_time`)
-VALUES (1, 1, 1, current_time, current_time);
+VALUES (1, 1, 1,1, current_time, current_time);
 DROP TABLE IF EXISTS `metadata_column`;
 CREATE TABLE `metadata_column` (
                                  `column_name` varchar(255) NOT NULL COMMENT 'column name',
@@ -1723,10 +1704,49 @@ CREATE TABLE `dinky_sys_operate_log`  (
   `operate_url` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate url',
   `operate_ip` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'ip',
   `operate_location` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'operate location',
-  `operate_param` varchar(2000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
-  `json_result` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
+  `operate_param` longtext CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' COMMENT 'request param',
+  `json_result` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT null COMMENT 'return json result',
   `status` int NULL DEFAULT NULL COMMENT 'operate status',
-  `error_msg` text CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
+  `error_msg` longtext CHARACTER SET utf8 COLLATE utf8_general_ci  DEFAULT NULL COMMENT 'error msg',
   `operate_time` datetime(0) NULL DEFAULT NULL COMMENT 'operate time',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB;
+
+
+
+-- ----------------------------
+-- Table structure for dinky_sys_menu
+-- ----------------------------
+drop table if exists `dinky_sys_menu`;
+create table `dinky_sys_menu` (
+                                  `id` bigint not null auto_increment comment ' id',
+                                  `parent_id` bigint not null comment 'parent menu id',
+                                  `name` varchar(64) collate utf8mb4_general_ci not null comment 'menu button name',
+                                  `path` varchar(64) collate utf8mb4_general_ci default null comment 'routing path',
+                                  `component` varchar(64) collate utf8mb4_general_ci default null comment 'routing component component',
+                                  `perms` varchar(64) collate utf8mb4_general_ci default null comment 'authority id',
+                                  `icon` varchar(64) collate utf8mb4_general_ci default null comment 'icon',
+                                  `type` char(1) collate utf8mb4_general_ci default null comment 'type(M:directory C:menu F:button)',
+                                  `display` tinyint collate utf8mb4_general_ci not null default 1 comment 'whether the menu is displayed',
+                                  `order_num` int default null comment 'sort',
+                                  `create_time` datetime not null default current_timestamp comment 'create time',
+                                  `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                  `note` varchar(255) collate utf8mb4_general_ci default null comment 'note',
+                                  primary key (`id`) using btree
+) engine=innodb ;
+
+
+-- ----------------------------
+-- Table structure dinky_sys_role_menu
+-- ----------------------------
+drop table if exists `dinky_sys_role_menu`;
+CREATE TABLE `dinky_sys_role_menu` (
+                                       `id` bigint NOT NULL AUTO_INCREMENT COMMENT 'id',
+                                       `role_id` bigint NOT NULL COMMENT 'role id',
+                                       `menu_id` bigint NOT NULL COMMENT 'menu id',
+                                       `create_time` datetime not null default current_timestamp comment 'create time',
+                                       `update_time` datetime not null default current_timestamp on update current_timestamp comment 'modify time',
+                                       PRIMARY KEY (`id`) USING BTREE,
+                                       UNIQUE KEY `un_role_menu_inx` (`role_id`,`menu_id`) USING BTREE
+) ENGINE=InnoDB ;
+

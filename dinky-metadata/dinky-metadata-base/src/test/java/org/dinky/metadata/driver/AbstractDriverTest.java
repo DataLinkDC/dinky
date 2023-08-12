@@ -45,49 +45,47 @@ class AbstractDriverTest {
 
     @BeforeEach
     void setUp() {
-        List<Column> columns =
-                Arrays.asList(
-                        Column.builder()
-                                .name("column1")
-                                .type("int")
-                                .javaType(ColumnType.INT)
-                                .comment("comment abc")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column2")
-                                .type("varchar")
-                                .javaType(ColumnType.STRING)
-                                .comment("comment 'abc'")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column3")
-                                .type("double")
-                                .javaType(ColumnType.DOUBLE)
-                                .comment("comment \"abc\"")
-                                .build());
+        List<Column> columns = Arrays.asList(
+                Column.builder()
+                        .name("column1")
+                        .type("int")
+                        .javaType(ColumnType.INT)
+                        .comment("comment abc")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column2")
+                        .type("varchar")
+                        .javaType(ColumnType.STRING)
+                        .comment("comment 'abc'")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column3")
+                        .type("double")
+                        .javaType(ColumnType.DOUBLE)
+                        .comment("comment \"abc\"")
+                        .build());
 
-        List<Column> columnWithoutKey =
-                Arrays.asList(
-                        Column.builder()
-                                .name("column1")
-                                .type("int")
-                                .javaType(ColumnType.INT)
-                                .comment("comment abc")
-                                .build(),
-                        Column.builder()
-                                .name("column2")
-                                .type("varchar")
-                                .javaType(ColumnType.STRING)
-                                .comment("comment 'abc'")
-                                .build(),
-                        Column.builder()
-                                .name("column3")
-                                .type("double")
-                                .javaType(ColumnType.DOUBLE)
-                                .comment("comment \"abc\"")
-                                .build());
+        List<Column> columnWithoutKey = Arrays.asList(
+                Column.builder()
+                        .name("column1")
+                        .type("int")
+                        .javaType(ColumnType.INT)
+                        .comment("comment abc")
+                        .build(),
+                Column.builder()
+                        .name("column2")
+                        .type("varchar")
+                        .javaType(ColumnType.STRING)
+                        .comment("comment 'abc'")
+                        .build(),
+                Column.builder()
+                        .name("column3")
+                        .type("double")
+                        .javaType(ColumnType.DOUBLE)
+                        .comment("comment \"abc\"")
+                        .build());
 
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
     }
@@ -98,11 +96,10 @@ class AbstractDriverTest {
         String result = ad.getSqlSelect(table);
         assertThat(
                 result,
-                equalTo(
-                        "SELECT\n    `column1`  --  comment abc \n"
-                                + "    ,`column2`  --  comment abc \n"
-                                + "    ,`column3`  --  comment abc \n"
-                                + " FROM SchemaOrigin.TableNameOrigin;\n"));
+                equalTo("SELECT\n    `column1`  --  comment abc \n"
+                        + "    ,`column2`  --  comment abc \n"
+                        + "    ,`column3`  --  comment abc \n"
+                        + " FROM SchemaOrigin.TableNameOrigin;\n"));
     }
 
     private static class SubAbstractDriver extends AbstractDriver {

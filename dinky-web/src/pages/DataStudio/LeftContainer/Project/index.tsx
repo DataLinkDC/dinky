@@ -37,6 +37,8 @@ const Project: React.FC = (props: connect) => {
           // const queryParams =  {id: selectDatabaseId , schemaName, tableName};
           getTaskDetails(taskId).then(res=>{
             path.pop()
+            res['useResult']=true
+            res['maxRowNum']=100
             dispatch({
               type: "Studio/addTab",
               payload: {

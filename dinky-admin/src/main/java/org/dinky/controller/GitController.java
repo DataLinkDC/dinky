@@ -19,8 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
-import org.dinky.data.annotation.PublicInterface;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -41,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -77,12 +75,11 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/saveOrUpdate")
-    @Log(title = "GitProject Save Or Update", businessType = BusinessType.INSERT_OR_UPDATE)
-    @ApiOperation("GitProject Save Or Update")
-    public Result<Void> saveOrUpdate(@Validated @RequestBody GitProjectDTO gitProject) {
+    @Log(title = "Insert Or Update GitProject", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update GitProject")
+    public Result<Void> saveOrUpdateGitProject(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
-        GitRepository gitRepository =
-                new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
+        GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
         gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
         return Result.succeed();
     }
@@ -113,10 +110,8 @@ public class GitController {
     @PostMapping("/dragendSortJar")
     @Log(title = "GitProject Jar Sort", businessType = BusinessType.UPDATE)
     @ApiOperation("GitProject Jar Sort")
-    public Result<Void> dragendSortJar(
-            @RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
-        GitProject gitProjectServiceById =
-                gitProjectService.getById(gitProjectSortJarParams.getProjectId());
+    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
+        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarParams.getProjectId());
         if (gitProjectServiceById == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         } else {
@@ -136,7 +131,6 @@ public class GitController {
      */
     @PostMapping("/getBranchList")
     @ApiOperation("GitProject Get Branch List")
-    @Log(title = "GitProject Get Branch List", businessType = BusinessType.QUERY)
     public Result<List<String>> getBranchList(@RequestBody GitProjectDTO gitProjectDTO) {
         GitRepository gitRepository = new GitRepository(gitProjectDTO);
         return Result.succeed(gitRepository.getBranchList());
@@ -165,9 +159,11 @@ public class GitController {
     @PutMapping("/updateEnable")
     @Log(title = "Enable or Disable GitProject by id", businessType = BusinessType.UPDATE)
     @ApiOperation("Enable or Disable GitProject by id")
-    public Result<Void> updateEnable(@RequestParam("id") Integer id) {
-        gitProjectService.updateState(id);
-        return Result.succeed();
+    public Result<Void> modifyGitProjectStatus(@RequestParam("id") Integer id) {
+        if (gitProjectService.modifyGitProjectStatus(id)) {
+            return Result.succeed(Status.MODIFY_SUCCESS);
+        }
+        return Result.failed(Status.MODIFY_FAILED);
     }
 
     /**
@@ -178,7 +174,6 @@ public class GitController {
      */
     @PostMapping("/getProjectList")
     @ApiOperation("Get GitProject List")
-    @Log(title = "Get GitProject List", businessType = BusinessType.QUERY)
     public ProTableResult<GitProject> getAllProject(@RequestBody JsonNode params) {
         return gitProjectService.selectForProTable(params);
     }
@@ -191,7 +186,6 @@ public class GitController {
      */
     @PostMapping("/getOneDetails")
     @ApiOperation("Get GitProject Details by id")
-    @Log(title = "Get GitProject Details by id", businessType = BusinessType.QUERY)
     public Result<GitProject> getOneDetails(@RequestParam("id") Integer id) {
         return Result.succeed(gitProjectService.getById(id));
     }
@@ -203,7 +197,7 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/build")
-    public Result<Void> build(@RequestParam("id") Integer id) {
+    public Result<Void> buildGitProject(@RequestParam("id") Integer id) {
 
         GitProject gitProject = gitProjectService.getById(id);
         if (gitProject.getBuildState().equals(1)) {
@@ -211,10 +205,7 @@ public class GitController {
         }
 
         Dict params = new Dict();
-        File logDir =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()),
-                        gitProject.getBranch() + "_log");
+        File logDir = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch() + "_log");
         params.set("gitProject", gitProject).set("logDir", logDir);
         GitProjectStepSseFactory.build(gitProject, params);
 
@@ -228,18 +219,13 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
     @Log(title = "GitProject Build Step Logs", businessType = BusinessType.QUERY)
     @ApiOperation("GitProject Build Step Logs")
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
         Dict params = new Dict();
-        File logDir =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()),
-                        gitProject.getBranch() + "_log");
+        File logDir = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch() + "_log");
         params.set("gitProject", gitProject).set("logDir", logDir);
 
         GitProjectStepSseFactory.observe(emitter, gitProject, params);
@@ -255,13 +241,7 @@ public class GitController {
      */
     @GetMapping("/getProjectCode")
     @ApiOperation("Get GitProject Code")
-    @Log(title = "Get GitProject Code", businessType = BusinessType.QUERY)
     public Result<List<TreeNodeDTO>> getProjectCode(@RequestParam("id") Integer id) {
-
-        List<TreeNodeDTO> projectCode = gitProjectService.getProjectCode(id);
-        if (projectCode == null) {
-            return Result.failed();
-        }
-        return Result.succeed(projectCode);
+        return Result.succeed(gitProjectService.getProjectCode(id));
     }
 }

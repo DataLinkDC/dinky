@@ -38,6 +38,12 @@ dlink-web/node_modules/*
 dlink-web/node/*
 dlink-web/dist/*
 dlink-web/.mfsu-production
+
+dinky-web/node_modules/*
+dinky-web/node/*
+dinky-web/dist/*
+dinky-web/.mfsu-production
+
 dinky-admin/src/main/resources/static/*
 dinky-admin/tmp/*
 dependency-reduced-pom.xml

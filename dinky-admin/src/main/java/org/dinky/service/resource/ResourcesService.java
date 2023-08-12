@@ -36,8 +36,7 @@ public interface ResourcesService extends IService<Resources> {
 
     List<TreeNodeDTO> showByTree(Integer pid, Integer showFloorNum);
 
-    void createTree(
-            List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor);
+    void createTree(List<TreeNodeDTO> data, Integer pid, Integer showFloorNum, Integer currentFloor);
 
     String getContentByResourceId(Integer id);
 

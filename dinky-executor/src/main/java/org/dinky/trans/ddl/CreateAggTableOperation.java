@@ -58,19 +58,16 @@ public class CreateAggTableOperation extends AbstractOperation implements Operat
     @Override
     public TableResult build(Executor executor) {
         AggTable aggTable = AggTable.build(statement);
-        Table source =
-                executor.getCustomTableEnvironment()
-                        .sqlQuery("select * from " + aggTable.getTable());
+        Table source = executor.getCustomTableEnvironment().sqlQuery("select * from " + aggTable.getTable());
         List<String> wheres = aggTable.getWheres();
         if (wheres != null && wheres.size() > 0) {
             for (String s : wheres) {
                 source = source.filter($(s));
             }
         }
-        Table sink =
-                source.groupBy($(aggTable.getGroupBy()))
-                        .flatAggregate($(aggTable.getAggBy()))
-                        .select($(aggTable.getColumns()));
+        Table sink = source.groupBy($(aggTable.getGroupBy()))
+                .flatAggregate($(aggTable.getAggBy()))
+                .select($(aggTable.getColumns()));
         executor.getCustomTableEnvironment().registerTable(aggTable.getName(), sink);
         return null;
     }

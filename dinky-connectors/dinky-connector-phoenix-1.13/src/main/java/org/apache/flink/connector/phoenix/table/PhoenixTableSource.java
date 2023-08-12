@@ -62,10 +62,7 @@ public class PhoenixTableSource
     private final DataType producedDataType;
 
     private PhoenixTableSource(
-            JdbcOptions options,
-            JdbcReadOptions readOptions,
-            JdbcLookupOptions lookupOptions,
-            TableSchema schema) {
+            JdbcOptions options, JdbcReadOptions readOptions, JdbcLookupOptions lookupOptions, TableSchema schema) {
         this(options, readOptions, lookupOptions, schema, null);
     }
 
@@ -105,8 +102,7 @@ public class PhoenixTableSource
 
     @Override
     public DataStream<Row> getDataStream(StreamExecutionEnvironment execEnv) {
-        return execEnv.createInput(
-                        getInputFormat(), (RowTypeInfo) fromDataTypeToLegacyInfo(producedDataType))
+        return execEnv.createInput(getInputFormat(), (RowTypeInfo) fromDataTypeToLegacyInfo(producedDataType))
                 .name(explainSource());
     }
 
@@ -159,16 +155,13 @@ public class PhoenixTableSource
 
     private PhoenixInputFormat getInputFormat() {
         final RowTypeInfo rowTypeInfo = (RowTypeInfo) fromDataTypeToLegacyInfo(producedDataType);
-        PhoenixInputFormat.PhoenixInputFormatBuilder builder =
-                PhoenixInputFormat.buildJdbcInputFormat()
-                        .setDrivername(options.getDriverName())
-                        .setDBUrl(options.getDbURL())
-                        .setRowTypeInfo(
-                                new RowTypeInfo(
-                                        rowTypeInfo.getFieldTypes(), rowTypeInfo.getFieldNames()))
-                        // 添加phoenix配置支持
-                        .setMapSystemTablesEnabled(options.isMapSystemTablesEnabled())
-                        .setNamespaceMappingEnabled(options.isNamespaceMappingEnabled());
+        PhoenixInputFormat.PhoenixInputFormatBuilder builder = PhoenixInputFormat.buildJdbcInputFormat()
+                .setDrivername(options.getDriverName())
+                .setDBUrl(options.getDbURL())
+                .setRowTypeInfo(new RowTypeInfo(rowTypeInfo.getFieldTypes(), rowTypeInfo.getFieldNames()))
+                // 添加phoenix配置支持
+                .setMapSystemTablesEnabled(options.isMapSystemTablesEnabled())
+                .setNamespaceMappingEnabled(options.isNamespaceMappingEnabled());
         options.getUsername().ifPresent(builder::setUsername);
         options.getPassword().ifPresent(builder::setPassword);
 
@@ -183,12 +176,11 @@ public class PhoenixTableSource
             long upperBound = readOptions.getPartitionUpperBound().get();
             int numPartitions = readOptions.getNumPartitions().get();
             builder.setParametersProvider(
-                    new JdbcNumericBetweenParametersProvider(lowerBound, upperBound)
-                            .ofBatchNum(numPartitions));
-            query +=
-                    " WHERE "
-                            + dialect.quoteIdentifier(readOptions.getPartitionColumnName().get())
-                            + " BETWEEN ? AND ?";
+                    new JdbcNumericBetweenParametersProvider(lowerBound, upperBound).ofBatchNum(numPartitions));
+            query += " WHERE "
+                    + dialect.quoteIdentifier(
+                            readOptions.getPartitionColumnName().get())
+                    + " BETWEEN ? AND ?";
         }
         builder.setQuery(query);
 
@@ -198,15 +190,11 @@ public class PhoenixTableSource
     private String getBaseQueryStatement(RowTypeInfo rowTypeInfo) {
         return readOptions
                 .getQuery()
-                .orElseGet(
-                        () ->
-                                FieldNamedPreparedStatementImpl.parseNamedStatement(
-                                        options.getDialect()
-                                                .getSelectFromStatement(
-                                                        options.getTableName(),
-                                                        rowTypeInfo.getFieldNames(),
-                                                        new String[0]),
-                                        new HashMap<>()));
+                .orElseGet(() -> FieldNamedPreparedStatementImpl.parseNamedStatement(
+                        options.getDialect()
+                                .getSelectFromStatement(
+                                        options.getTableName(), rowTypeInfo.getFieldNames(), new String[0]),
+                        new HashMap<>()));
     }
 
     @Override

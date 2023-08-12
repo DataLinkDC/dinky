@@ -29,4 +29,18 @@
             </if>
         </where>
     </select>
+
+    <select id="queryAdminUserByTenant" resultType="java.lang.Integer">
+        select
+         count(*)
+        from dinky_user_tenant a
+        join dinky_user du on a.user_id = du.id
+        join dinky_tenant c on a.tenant_id = c.id
+        <where>
+            1=1 and du.tenant_admin_flag = 1
+            <if test='tenantId!=null and tenantId!=""'>
+                and a.tenant_id = #{tenantId}
+            </if>
+        </where>
+    </select>
 </mapper>

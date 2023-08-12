@@ -23,7 +23,6 @@ import org.dinky.assertion.Asserts;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.data.constant.BaseConstant;
 import org.dinky.data.enums.Status;
-import org.dinky.data.model.Namespace;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.UserTenant;
@@ -31,7 +30,6 @@ import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.TenantMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.NamespaceService;
 import org.dinky.service.RoleService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserTenantService;
@@ -54,12 +52,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
-        implements TenantService {
+public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
 
-    @Resource @Lazy private RoleService roleService;
-
-    @Resource @Lazy private NamespaceService namespaceService;
+    @Resource
+    @Lazy
+    private RoleService roleService;
 
     private final UserTenantService userTenantService;
 
@@ -88,10 +85,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
 
     @Override
     public Tenant getTenantByTenantCode(String tenantCode) {
-        return getOne(
-                new LambdaQueryWrapper<Tenant>()
-                        .eq(Tenant::getTenantCode, tenantCode)
-                        .eq(Tenant::getIsDelete, 0));
+        return getOne(new LambdaQueryWrapper<Tenant>()
+                .eq(Tenant::getTenantCode, tenantCode)
+                .eq(Tenant::getIsDelete, 0));
     }
 
     @Override
@@ -113,20 +109,11 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             }
 
             Long tenantRoleCount =
-                    roleService
-                            .getBaseMapper()
-                            .selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+                    roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
             if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
 
-            Long tenantNamespaceCount =
-                    namespaceService
-                            .getBaseMapper()
-                            .selectCount(new QueryWrapper<Namespace>().eq("tenant_id", id));
-            if (tenantNamespaceCount > 0) {
-                return Result.failed("删除租户失败，该租户已绑定名称空间");
-            }
             tenant.setIsDelete(true);
             boolean result = updateById(tenant);
             if (result) {
@@ -146,12 +133,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             return Result.failed(Status.TENANT_NOT_EXIST);
         }
 
-        List<UserTenant> userTenants =
-                userTenantService
-                        .getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<UserTenant>()
-                                        .eq(UserTenant::getTenantId, tenantId));
+        List<UserTenant> userTenants = userTenantService
+                .getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
         if (CollectionUtil.isNotEmpty(userTenants)) {
             return Result.failed(Status.TENANT_BINDING_USER);
         }
@@ -165,41 +149,10 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> distributeUsers(JsonNode para) {
-        if (para.size() > 0) {
-            List<UserTenant> tenantUserList = new ArrayList<>();
-            Integer tenantId = para.get("tenantId").asInt();
-            userTenantService.remove(new QueryWrapper<UserTenant>().eq("tenant_id", tenantId));
-            JsonNode tenantUserJsonNode = para.get("users");
-            for (JsonNode ids : tenantUserJsonNode) {
-                UserTenant userTenant = new UserTenant();
-                userTenant.setTenantId(tenantId);
-                userTenant.setUserId(ids.asInt());
-                tenantUserList.add(userTenant);
-            }
-            // save or update user role
-
-            boolean result = userTenantService.saveOrUpdateBatch(tenantUserList, 1000);
-            if (result) {
-                return Result.succeed("分配用户成功");
-            } else {
-                if (tenantUserList.size() == 0) {
-                    return Result.succeed("该租户下的用户已被全部删除");
-                }
-                return Result.failed("分配用户失败");
-            }
-        } else {
-            return Result.failed("请选择要分配的用户");
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams) {
         List<UserTenant> tenantUserList = new ArrayList<>();
         Integer tenantId = assignUserToTenantParams.getTenantId();
-        userTenantService.remove(
-                new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
+        userTenantService.remove(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
         List<Integer> userIds = assignUserToTenantParams.getUserIds();
         for (Integer userId : userIds) {
             UserTenant userTenant = new UserTenant();
@@ -208,9 +161,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             tenantUserList.add(userTenant);
         }
         // save or update user role
-        boolean result =
-                userTenantService.saveOrUpdateBatch(
-                        tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
+        boolean result = userTenantService.saveOrUpdateBatch(tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
         if (result) {
             return Result.succeed(Status.TENANT_ASSIGN_USER_SUCCESS);
         } else {

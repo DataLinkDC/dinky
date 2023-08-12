@@ -48,120 +48,102 @@ public class SmsConfigLoader {
         JSONObject fullConfigParams = JSONUtil.parseObj(config);
         switch (manufacturersType) {
             case 1:
-                AlibabaConfig alibabaConfig =
-                        AlibabaConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                                .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                                .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                                .version(fullConfigParams.getStr(SmsConstants.VERSION))
-                                .regionId(fullConfigParams.getStr(SmsConstants.REGION_ID))
-                                .build();
+                AlibabaConfig alibabaConfig = AlibabaConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
+                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
+                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
+                        .version(fullConfigParams.getStr(SmsConstants.VERSION))
+                        .regionId(fullConfigParams.getStr(SmsConstants.REGION_ID))
+                        .build();
                 return alibabaConfig;
             case 2:
-                HuaweiConfig huaweiConfig =
-                        HuaweiConfig.builder()
-                                .appKey(fullConfigParams.getStr(SmsConstants.APP_KEY))
-                                .appSecret(fullConfigParams.getStr(SmsConstants.APP_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .sender(fullConfigParams.getStr(SmsConstants.SENDER))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .statusCallBack(
-                                        fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
-                                .url(fullConfigParams.getStr(SmsConstants.URL))
-                                .build();
+                HuaweiConfig huaweiConfig = HuaweiConfig.builder()
+                        .appKey(fullConfigParams.getStr(SmsConstants.APP_KEY))
+                        .appSecret(fullConfigParams.getStr(SmsConstants.APP_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .sender(fullConfigParams.getStr(SmsConstants.SENDER))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .statusCallBack(fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
+                        .url(fullConfigParams.getStr(SmsConstants.URL))
+                        .build();
                 return huaweiConfig;
             case 3:
-                YunpianConfig yunpianConfig =
-                        YunpianConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                                .callbackUrl(fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
-                                .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                                .build();
+                YunpianConfig yunpianConfig = YunpianConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
+                        .callbackUrl(fullConfigParams.getStr(SmsConstants.STATUS_CALLBACK))
+                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
+                        .build();
                 return yunpianConfig;
             case 4:
-                TencentConfig tencentConfig =
-                        TencentConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .sdkAppId(fullConfigParams.getStr(SmsConstants.SDK_APP_ID))
-                                .territory(fullConfigParams.getStr(SmsConstants.TERRITORY))
-                                .connTimeout(fullConfigParams.getInt(SmsConstants.CONN_TIMEOUT))
-                                .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                                .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                                .version(fullConfigParams.getStr(SmsConstants.VERSION))
-                                .build();
+                TencentConfig tencentConfig = TencentConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .sdkAppId(fullConfigParams.getStr(SmsConstants.SDK_APP_ID))
+                        .territory(fullConfigParams.getStr(SmsConstants.TERRITORY))
+                        .connTimeout(fullConfigParams.getInt(SmsConstants.CONN_TIMEOUT))
+                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
+                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
+                        .version(fullConfigParams.getStr(SmsConstants.VERSION))
+                        .build();
                 return tencentConfig;
             case 5:
-                UniConfig uniConfig =
-                        UniConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .isSimple(fullConfigParams.getBool(SmsConstants.IS_SIMPLE))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                                .build();
+                UniConfig uniConfig = UniConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .isSimple(fullConfigParams.getBool(SmsConstants.IS_SIMPLE))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
+                        .build();
                 return uniConfig;
             case 6:
-                JdCloudConfig jdCloudConfig =
-                        JdCloudConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .region(fullConfigParams.getStr(SmsConstants.REGION))
-                                .build();
+                JdCloudConfig jdCloudConfig = JdCloudConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .region(fullConfigParams.getStr(SmsConstants.REGION))
+                        .build();
                 return jdCloudConfig;
             case 7:
-                CloopenConfig cloopenConfig =
-                        CloopenConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
-                                .baseUrl(fullConfigParams.getStr(SmsConstants.BASE_URL))
-                                .build();
+                CloopenConfig cloopenConfig = CloopenConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
+                        .baseUrl(fullConfigParams.getStr(SmsConstants.BASE_URL))
+                        .build();
                 return cloopenConfig;
             case 8:
-                EmayConfig emayConfig =
-                        EmayConfig.builder()
-                                .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
-                                .secretKey(fullConfigParams.getStr(SmsConstants.SECRET_KEY))
-                                .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                                .build();
+                EmayConfig emayConfig = EmayConfig.builder()
+                        .appId(fullConfigParams.getStr(SmsConstants.APP_ID))
+                        .secretKey(fullConfigParams.getStr(SmsConstants.SECRET_KEY))
+                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
+                        .build();
                 return emayConfig;
             case 9:
-                CtyunConfig ctyunConfig =
-                        CtyunConfig.builder()
-                                .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
-                                .accessKeySecret(
-                                        fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
-                                .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
-                                .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
-                                .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
-                                .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
-                                .action(fullConfigParams.getStr(SmsConstants.ACTION))
-                                .build();
+                CtyunConfig ctyunConfig = CtyunConfig.builder()
+                        .accessKeyId(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_ID))
+                        .accessKeySecret(fullConfigParams.getStr(SmsConstants.ACCESS_KEY_SECRET))
+                        .signature(fullConfigParams.getStr(SmsConstants.SIGNATURE))
+                        .templateId(fullConfigParams.getStr(SmsConstants.TEMPLATE_ID))
+                        .templateName(fullConfigParams.getStr(SmsConstants.TEMPLATE_NAME))
+                        .requestUrl(fullConfigParams.getStr(SmsConstants.REQUEST_URL))
+                        .action(fullConfigParams.getStr(SmsConstants.ACTION))
+                        .build();
                 return ctyunConfig;
             default:
                 throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: "
-                                + ManuFacturers.getManuFacturers(manufacturersType));
+                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
         }
     }
 
@@ -187,8 +169,7 @@ public class SmsConfigLoader {
                 return SmsFactory.createSmsBlend(SupplierType.CTYUN);
             default:
                 throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: "
-                                + ManuFacturers.getManuFacturers(manufacturersType));
+                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
         }
     }
 }

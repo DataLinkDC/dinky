@@ -99,15 +99,14 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     }
 
     protected void initTypeConverterList() {
-        typeConverterList =
-                Lists.newArrayList(
-                        this::convertVarCharType,
-                        this::convertDateType,
-                        this::convertVarBinaryType,
-                        this::convertBigIntType,
-                        this::convertFloatType,
-                        this::convertDecimalType,
-                        this::convertTimestampType);
+        typeConverterList = Lists.newArrayList(
+                this::convertVarCharType,
+                this::convertDateType,
+                this::convertVarBinaryType,
+                this::convertBigIntType,
+                this::convertFloatType,
+                this::convertDecimalType,
+                this::convertTimestampType);
     }
 
     public FlinkCDCConfig getConfig() {
@@ -131,27 +130,22 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return properties;
     }
 
-    protected SingleOutputStreamOperator<Map> deserialize(
-            DataStreamSource<String> dataStreamSource) {
-        return dataStreamSource.map(
-                (MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
+    protected SingleOutputStreamOperator<Map> deserialize(DataStreamSource<String> dataStreamSource) {
+        return dataStreamSource.map((MapFunction<String, Map>) value -> objectMapper.readValue(value, Map.class));
     }
 
     protected SingleOutputStreamOperator<Map> shunt(
             SingleOutputStreamOperator<Map> mapOperator, Table table, String schemaFieldName) {
         final String tableName = table.getName();
         final String schemaName = table.getSchema();
-        return mapOperator.filter(
-                (FilterFunction<Map>)
-                        value -> {
-                            LinkedHashMap source = (LinkedHashMap) value.get("source");
-                            return tableName.equals(source.get("table").toString())
-                                    && schemaName.equals(source.get(schemaFieldName).toString());
-                        });
+        return mapOperator.filter((FilterFunction<Map>) value -> {
+            LinkedHashMap source = (LinkedHashMap) value.get("source");
+            return tableName.equals(source.get("table").toString())
+                    && schemaName.equals(source.get(schemaFieldName).toString());
+        });
     }
 
-    protected DataStream<Map> shunt(
-            SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
+    protected DataStream<Map> shunt(SingleOutputStreamOperator<Map> processOperator, Table table, OutputTag<Map> tag) {
 
         return processOperator.getSideOutput(tag);
     }
@@ -162,8 +156,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        return filterOperator.flatMap(
-                sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
+        return filterOperator.flatMap(sinkRowDataFunction(columnNameList, columnTypeList, schemaTableName));
     }
 
     @SuppressWarnings("rawtypes")
@@ -180,10 +173,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                         rowDataCollect(columnNameList, columnTypeList, out, RowKind.DELETE, value);
                         break;
                     case "u":
-                        rowDataCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
-                        rowDataCollect(
-                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
+                        rowDataCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, value);
                         break;
                     default:
                 }
@@ -208,16 +199,13 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         GenericRowData genericRowData = new GenericRowData(rowKind, columnNameList.size());
         for (int i = 0; i < columnNameList.size(); i++) {
             genericRowData.setField(
-                    i,
-                    buildRowDataValues(
-                            value, rowKind, columnNameList.get(i), columnTypeList.get(i)));
+                    i, buildRowDataValues(value, rowKind, columnNameList.get(i), columnTypeList.get(i)));
         }
         out.collect(genericRowData);
     }
 
     @SuppressWarnings("rawtypes")
-    protected Object buildRowDataValues(
-            Map value, RowKind rowKind, String columnName, LogicalType columnType) {
+    protected Object buildRowDataValues(Map value, RowKind rowKind, String columnName, LogicalType columnType) {
         Map data = getOriginRowData(rowKind, value);
         return convertValue(data.get(columnName), columnType);
     }
@@ -245,10 +233,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             List<LogicalType> columnTypeList) {}
 
     protected List<Operation> createInsertOperations(
-            CustomTableEnvironment customTableEnvironment,
-            Table table,
-            String viewName,
-            String tableName) {
+            CustomTableEnvironment customTableEnvironment, Table table, String viewName, String tableName) {
         String cdcSqlInsert = FlinkStatementUtil.getCDCInsertSql(table, tableName, viewName);
         logger.info(cdcSqlInsert);
 
@@ -288,8 +273,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
             SingleOutputStreamOperator<Map> mapOperator = deserialize(dataStreamSource);
             for (Schema schema : schemaList) {
                 for (Table table : schema.getTables()) {
-                    SingleOutputStreamOperator<Map> filterOperator =
-                            shunt(mapOperator, table, schemaFieldName);
+                    SingleOutputStreamOperator<Map> filterOperator = shunt(mapOperator, table, schemaFieldName);
 
                     List<String> columnNameList = new ArrayList<>();
                     List<LogicalType> columnTypeList = new ArrayList<>();
@@ -297,11 +281,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
                     buildColumn(columnNameList, columnTypeList, table.getColumns());
 
                     DataStream<RowData> rowDataDataStream =
-                            buildRowData(
-                                    filterOperator,
-                                    columnNameList,
-                                    columnTypeList,
-                                    table.getSchemaTableName());
+                            buildRowData(filterOperator, columnNameList, columnTypeList, table.getSchemaTableName());
 
                     addSink(env, rowDataDataStream, table, columnNameList, columnTypeList);
                 }
@@ -310,8 +290,7 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
         return dataStreamSource;
     }
 
-    protected void buildColumn(
-            List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
+    protected void buildColumn(List<String> columnNameList, List<LogicalType> columnTypeList, List<Column> columns) {
         for (Column column : columns) {
             columnNameList.add(column.getName());
             columnTypeList.add(getLogicalType(column));
@@ -417,11 +396,8 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected Optional<Object> convertDecimalType(Object value, LogicalType logicalType) {
         if (logicalType instanceof DecimalType) {
             final DecimalType decimalType = (DecimalType) logicalType;
-            return Optional.ofNullable(
-                    DecimalData.fromBigDecimal(
-                            new BigDecimal((String) value),
-                            decimalType.getPrecision(),
-                            decimalType.getScale()));
+            return Optional.ofNullable(DecimalData.fromBigDecimal(
+                    new BigDecimal((String) value), decimalType.getPrecision(), decimalType.getScale()));
         }
         return Optional.empty();
     }
@@ -429,38 +405,28 @@ public abstract class AbstractSinkBuilder implements SinkBuilder {
     protected Optional<Object> convertTimestampType(Object value, LogicalType logicalType) {
         if (logicalType instanceof TimestampType) {
             if (value instanceof Integer) {
-                return Optional.of(
-                        TimestampData.fromLocalDateTime(
-                                Instant.ofEpochMilli(((Integer) value).longValue())
-                                        .atZone(sinkTimeZone)
-                                        .toLocalDateTime()));
+                return Optional.of(TimestampData.fromLocalDateTime(Instant.ofEpochMilli(((Integer) value).longValue())
+                        .atZone(sinkTimeZone)
+                        .toLocalDateTime()));
             }
 
             if (value instanceof Long) {
-                return Optional.of(
-                        TimestampData.fromLocalDateTime(
-                                Instant.ofEpochMilli((long) value)
-                                        .atZone(sinkTimeZone)
-                                        .toLocalDateTime()));
+                return Optional.of(TimestampData.fromLocalDateTime(
+                        Instant.ofEpochMilli((long) value).atZone(sinkTimeZone).toLocalDateTime()));
             }
 
-            return Optional.of(
-                    TimestampData.fromLocalDateTime(
-                            Instant.parse(value.toString())
-                                    .atZone(sinkTimeZone)
-                                    .toLocalDateTime()));
+            return Optional.of(TimestampData.fromLocalDateTime(
+                    Instant.parse(value.toString()).atZone(sinkTimeZone).toLocalDateTime()));
         }
         return Optional.empty();
     }
 
     protected Optional<Object> convertDateType(Object target, LogicalType logicalType) {
         if (logicalType instanceof DateType) {
-            return Optional.of(
-                    StringData.fromString(
-                            Instant.ofEpochMilli((long) target)
-                                    .atZone(ZoneId.systemDefault())
-                                    .toLocalDate()
-                                    .toString()));
+            return Optional.of(StringData.fromString(Instant.ofEpochMilli((long) target)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+                    .toString()));
         }
         return Optional.empty();
     }

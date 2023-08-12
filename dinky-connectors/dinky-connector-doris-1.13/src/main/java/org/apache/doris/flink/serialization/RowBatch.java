@@ -51,9 +51,7 @@ import java.util.NoSuchElementException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
- * row batch data container.
- */
+/** row batch data container. */
 public class RowBatch {
     private static Logger logger = LoggerFactory.getLogger(RowBatch.class);
 
@@ -91,10 +89,7 @@ public class RowBatch {
     public RowBatch(TScanBatchResult nextResult, Schema schema) {
         this.schema = schema;
         this.rootAllocator = new RootAllocator(Integer.MAX_VALUE);
-        this.arrowStreamReader = new ArrowStreamReader(
-                new ByteArrayInputStream(nextResult.getRows()),
-                rootAllocator
-        );
+        this.arrowStreamReader = new ArrowStreamReader(new ByteArrayInputStream(nextResult.getRows()), rootAllocator);
         this.offsetInRowBatch = 0;
     }
 
@@ -104,8 +99,10 @@ public class RowBatch {
             while (arrowStreamReader.loadNextBatch()) {
                 fieldVectors = root.getFieldVectors();
                 if (fieldVectors.size() != schema.size()) {
-                    logger.error("Schema size '{}' is not equal to arrow field size '{}'.",
-                            fieldVectors.size(), schema.size());
+                    logger.error(
+                            "Schema size '{}' is not equal to arrow field size '{}'.",
+                            fieldVectors.size(),
+                            schema.size());
                     throw new DorisException("Load Doris data failed, schema size of fetch data is wrong.");
                 }
                 if (fieldVectors.size() == 0 || root.getRowCount() == 0) {
@@ -161,8 +158,8 @@ public class RowBatch {
                         }
                         break;
                     case "BOOLEAN":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.BIT),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.BIT), typeMismatchMessage(currentType, mt));
                         BitVector bitVector = (BitVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = bitVector.isNull(rowIndex) ? null : bitVector.get(rowIndex) != 0;
@@ -170,8 +167,8 @@ public class RowBatch {
                         }
                         break;
                     case "TINYINT":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.TINYINT),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.TINYINT), typeMismatchMessage(currentType, mt));
                         TinyIntVector tinyIntVector = (TinyIntVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = tinyIntVector.isNull(rowIndex) ? null : tinyIntVector.get(rowIndex);
@@ -179,8 +176,8 @@ public class RowBatch {
                         }
                         break;
                     case "SMALLINT":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.SMALLINT),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.SMALLINT), typeMismatchMessage(currentType, mt));
                         SmallIntVector smallIntVector = (SmallIntVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = smallIntVector.isNull(rowIndex) ? null : smallIntVector.get(rowIndex);
@@ -188,8 +185,8 @@ public class RowBatch {
                         }
                         break;
                     case "INT":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.INT),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.INT), typeMismatchMessage(currentType, mt));
                         IntVector intVector = (IntVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = intVector.isNull(rowIndex) ? null : intVector.get(rowIndex);
@@ -197,9 +194,8 @@ public class RowBatch {
                         }
                         break;
                     case "BIGINT":
-
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.BIGINT),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.BIGINT), typeMismatchMessage(currentType, mt));
                         BigIntVector bigIntVector = (BigIntVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = bigIntVector.isNull(rowIndex) ? null : bigIntVector.get(rowIndex);
@@ -207,8 +203,8 @@ public class RowBatch {
                         }
                         break;
                     case "FLOAT":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.FLOAT4),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.FLOAT4), typeMismatchMessage(currentType, mt));
                         Float4Vector float4Vector = (Float4Vector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = float4Vector.isNull(rowIndex) ? null : float4Vector.get(rowIndex);
@@ -217,8 +213,8 @@ public class RowBatch {
                         break;
                     case "TIME":
                     case "DOUBLE":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.FLOAT8),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.FLOAT8), typeMismatchMessage(currentType, mt));
                         Float8Vector float8Vector = (Float8Vector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = float8Vector.isNull(rowIndex) ? null : float8Vector.get(rowIndex);
@@ -226,8 +222,8 @@ public class RowBatch {
                         }
                         break;
                     case "BINARY":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.VARBINARY),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.VARBINARY), typeMismatchMessage(currentType, mt));
                         VarBinaryVector varBinaryVector = (VarBinaryVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             Object fieldValue = varBinaryVector.isNull(rowIndex) ? null : varBinaryVector.get(rowIndex);
@@ -236,8 +232,8 @@ public class RowBatch {
                         break;
                     case "DECIMAL":
                     case "DECIMALV2":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.DECIMAL),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.DECIMAL), typeMismatchMessage(currentType, mt));
                         DecimalVector decimalVector = (DecimalVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             if (decimalVector.isNull(rowIndex)) {
@@ -245,7 +241,8 @@ public class RowBatch {
                                 continue;
                             }
                             BigDecimal value = decimalVector.getObject(rowIndex).stripTrailingZeros();
-                            addValueToRow(rowIndex, DecimalData.fromBigDecimal(value, value.precision(), value.scale()));
+                            addValueToRow(
+                                    rowIndex, DecimalData.fromBigDecimal(value, value.precision(), value.scale()));
                         }
                         break;
                     case "DATE":
@@ -254,8 +251,8 @@ public class RowBatch {
                     case "CHAR":
                     case "VARCHAR":
                     case "STRING":
-                        Preconditions.checkArgument(mt.equals(Types.MinorType.VARCHAR),
-                                typeMismatchMessage(currentType, mt));
+                        Preconditions.checkArgument(
+                                mt.equals(Types.MinorType.VARCHAR), typeMismatchMessage(currentType, mt));
                         VarCharVector varCharVector = (VarCharVector) curFieldVector;
                         for (int rowIndex = 0; rowIndex < rowCountInOneBatch; rowIndex++) {
                             if (varCharVector.isNull(rowIndex)) {

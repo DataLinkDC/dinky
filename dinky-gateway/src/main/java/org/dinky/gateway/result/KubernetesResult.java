@@ -40,11 +40,7 @@ public class KubernetesResult extends AbstractGatewayResult {
     }
 
     public KubernetesResult(
-            String clusterId,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            boolean isSuccess,
-            String exceptionMsg) {
+            String clusterId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
         this.clusterId = clusterId;
     }

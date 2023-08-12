@@ -31,7 +31,7 @@ import {
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
 import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
 import TemplateModal from "@/pages/RegCenter/UDF/components/TemplateModal";
 import UDFTemplateDrawer from "../UDFTemplateDrawer";
@@ -104,7 +104,7 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleChangeEnable = async (value: Partial<UDFTemplate>) => {
-    await executeAndCallback(async () => await updateEnabled(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {id: value.id}));
+    await executeAndCallback(async () => await updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {id: value.id}));
   };
 
   /**

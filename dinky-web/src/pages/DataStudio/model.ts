@@ -1,8 +1,9 @@
 import {Reducer} from "@@/plugin-dva/types";
 import React from "react";
-import {DataSources} from "@/types/RegCenter/data";
+import {Cluster, DataSources} from "@/types/RegCenter/data";
 import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
 import {l} from "@/utils/intl";
+import {getFooterValue} from "@/pages/DataStudio/function";
 
 /**
  * 初始化布局宽高度
@@ -20,7 +21,7 @@ export const VIEW = {
   rightMargin: 32,
   leftMargin: 36,
   midMargin: 44,
-  otherHeight: 10,
+  otherHeight: 1,
   paddingInline: 50,
 };
 
@@ -96,6 +97,7 @@ export type MetadataParams = {
 export type DataStudioParams = {
   taskId: number;
   taskData: Record<string, any>
+  resultData: Record<string, any>
 }
 
 export enum TabsPageType {None = "", metadata = "metadata", project = "project", flinkSql = "flinksql"}
@@ -153,17 +155,7 @@ export type MetaStoreColumnType = {
   name: string;
   type: string;
 }
-export type ClusterConfigurationType = {
-  id: number,
-  name: string,
-  type: string,
-  config: any,
-  available: boolean,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
-}
+
 export type Container = {
   selectKey: string;
   selectSubKey: { [c: string]: string };
@@ -186,18 +178,33 @@ export type SessionType = {
   createTime?: string;
   connectors: ConnectorType[];
 }
-export type ClusterType = {
-  id: number,
-  name: string,
-  type: string,
-  hosts: string,
-  jobManagerHost: string,
-  status: number,
-  note: string,
-  enabled: boolean,
-  createTime: Date,
-  updateTime: Date,
+
+/**
+ * job running type msg
+ */
+export type JobRunningMsgType = {
+  taskId: number | null ,
+  jobName: string ,
+  jobState: string ,
+  runningLog: string ,
+};
+
+/**
+ * footer
+ */
+type FooterType = {
+  codePosition: [number, number],
+  space: number,
+  codeEncoding: string,
+  lineSeparator: string,
+  codeType: string,
+  memDetails: string,
+  jobRunningMsg: JobRunningMsgType,
 }
+
+/**
+ * state type overview
+ */
 export type StateType = {
   isFullScreen: boolean;
   toolContentHeight: number;
@@ -217,11 +224,12 @@ export type StateType = {
     expandKeys: [];
     selectKey: [];
   };
-  sessionCluster: ClusterType[];
-  clusterConfiguration: ClusterConfigurationType[];
+  sessionCluster: Cluster.Instance[];
+  clusterConfiguration: Cluster.Config[];
   env: EnvType[];
   tabs: TabsType;
   bottomContainerContent: BottomContainerContent;
+  footContainer: FooterType;
 };
 export type ModelType = {
   namespace: string;
@@ -252,6 +260,8 @@ export type ModelType = {
     saveSession: Reducer<StateType>;
     saveClusterConfiguration: Reducer<StateType>;
     saveEnv: Reducer<StateType>;
+    saveFooterValue: Reducer<StateType>;
+    updateJobRunningMsg: Reducer<StateType>;
   };
 };
 const Model: ModelType = {
@@ -301,6 +311,20 @@ const Model: ModelType = {
     sessionCluster: [],
     clusterConfiguration: [],
     env: [],
+    footContainer: {
+      codePosition: [1, 1],
+      space: 2,
+      codeEncoding:"UTF-8",
+      lineSeparator: "LF",
+      codeType: "",
+      memDetails: "100/500M",
+      jobRunningMsg: {
+        taskId: null,
+        jobName: '',
+        jobState: '',
+        runningLog: '',
+      },
+    }
   },
   effects: {},
   reducers: {
@@ -475,6 +499,7 @@ const Model: ModelType = {
     updateTabsActiveKey(state, {payload}) {
       const itemTypes = state.tabs.panes.filter(x => x.key === payload);
       if (itemTypes.length === 1) {
+        let footerValue:object=getFooterValue(state.tabs.panes,payload);
         const itemType = itemTypes[0];
         return {
           ...state,
@@ -483,6 +508,10 @@ const Model: ModelType = {
             activeKey: payload,
             activeBreadcrumbTitle: [itemType.type, itemType.breadcrumbLabel, itemType.label].join("/")
           },
+          footContainer:{
+            ...state.footContainer,
+            ...footerValue
+          }
         };
       }
       return {
@@ -511,18 +540,25 @@ const Model: ModelType = {
         for (const [index, pane] of panes.entries()) {
           if (pane.key === needCloseKey) {
             const item = index + 1 >= panes.length ? index + 1 > 1 && index + 1 === panes.length ? panes[index - 1] : panes[0] : panes[index + 1];
+            const newPanes=panes.filter(pane => pane.key !== needCloseKey);
+            let footerValue:object=getFooterValue(panes,item.key);
             return {
               ...state,
               tabs: {
-                panes: panes.filter(pane => pane.key !== needCloseKey),
+                panes: newPanes,
                 activeKey: item.key,
                 activeBreadcrumbTitle: panes.length < 2 ? "" : [item.type, item.breadcrumbLabel, item.label].join("/"),
               },
+              footContainer: {
+                ...state.footContainer,
+                ...footerValue
+              }
             };
           }
         }
       }
       const newPanes = panes.filter(pane => pane.key !== needCloseKey)
+      let footerValue:object=getFooterValue(newPanes,activeKey);
       return {
         ...state,
         tabs: {
@@ -530,6 +566,10 @@ const Model: ModelType = {
           activeKey: activeKey,
           activeBreadcrumbTitle: state.tabs.activeBreadcrumbTitle,
         },
+        footContainer:{
+          ...state.footContainer,
+          ...footerValue
+        }
       };
     },
     /**
@@ -542,23 +582,34 @@ const Model: ModelType = {
       const node = payload as TabsItemType;
       for (const item of state.tabs.panes) {
         if (item.id === node.id) {
+          let footerValue:object=getFooterValue(state.tabs.panes,item.key);
           return {
             ...state,
             tabs: {
               ...state.tabs,
               activeKey: item.key
+            },
+            footContainer:{
+              ...state.footContainer,
+              ...footerValue
             }
           };
         }
       }
       node.key = state.tabs.panes.length === 0 ? "0" : (parseInt(state.tabs.panes[state.tabs.panes.length - 1].key) + 1).toString();
+      const panes = [...state.tabs.panes, node];
+      let footerValue:object=getFooterValue(panes,node.key);
       return {
         ...state,
         tabs: {
-          panes: [...state.tabs.panes, node],
+          panes: panes,
           activeBreadcrumbTitle: [node.type, node.breadcrumbLabel, node.label].join("/"),
           activeKey: node.key,
         },
+        footContainer: {
+          ...state.footContainer,
+          ...footerValue
+        }
       }
     },
 
@@ -660,7 +711,22 @@ const Model: ModelType = {
         ...state,
         clusterConfiguration: payload,
       }
-    }
+    },
+    saveFooterValue(state, {payload}) {
+      return {
+        ...state,
+        footContainer: payload,
+      }
+    },
+    updateJobRunningMsg(state, {payload}) {
+      return {
+            ...state,
+          footContainer: {
+            ...state.footContainer,
+            jobRunningMsg: payload
+          },
+        }
+    },
 
   }
 }

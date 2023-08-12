@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,13 +52,14 @@ public class LogController {
     private final OperateLogService operateLogService;
 
     @GetMapping("/loginRecord/{userId}")
-    public Result<List<LoginLog>> loginRecord(@PathVariable Integer userId) {
+    @ApiOperation("Query Login Log List")
+    public Result<List<LoginLog>> queryLoginLogRecord(@PathVariable Integer userId) {
         return Result.succeed(loginLogService.loginRecord(userId));
     }
 
     @PostMapping("/operateLog/{userId}")
-    public ProTableResult<OperateLog> operateRecord(
-            @RequestBody JsonNode para, @PathVariable Integer userId) {
+    @ApiOperation("Query Operate Log List")
+    public ProTableResult<OperateLog> queryOperateLogRecord(@RequestBody JsonNode para, @PathVariable Integer userId) {
         return operateLogService.operateRecord(para, userId);
     }
 }

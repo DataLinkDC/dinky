@@ -20,7 +20,6 @@ import React, {useState} from "react";
 import {connect} from "@@/exports";
 import {DataStudioParams, MetadataParams, StateType, TabsItemType, TabsPageType} from "@/pages/DataStudio/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
-import {renderDBIcon} from "@/pages/RegCenter/DataSource/components/function";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
 import {MenuInfo} from "rc-menu/es/interface";
 import {STUDIO_TAG_RIGHT_CONTEXT_MENU} from "@/pages/DataStudio/constants";
@@ -29,8 +28,7 @@ import ContentScroll from "@/components/Scroll/ContentScroll";
 import useThemeValue from "@/hooks/useThemeValue";
 import Editor from "@/pages/DataStudio/MiddleContainer/Editor";
 import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
-import {getCurrentData, getCurrentTab} from "@/pages/DataStudio/function";
-import {RightSide, TabProp} from "@/pages/DataStudio/route";
+import {RightSide} from "@/pages/DataStudio/route";
 
 
 type TargetKey = React.MouseEvent | React.KeyboardEvent | string;
@@ -211,7 +209,8 @@ const MiddleContainer = (props: any) => {
     const renderContent = () => {
       switch (item.type) {
         case TabsPageType.metadata:
-          const params = item.params as MetadataParams
+          let params: MetadataParams;
+          params = item.params as MetadataParams;
           return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>
         case TabsPageType.project:
           if (parseInt(activeKey) < 0) {
@@ -225,12 +224,17 @@ const MiddleContainer = (props: any) => {
     }
     return {
       key: item.key,
-      label: <Space size={0} onContextMenu={(e) => handleRightClick(e, item)}
-                    key={item.key}>{getTabIcon(item.icon, 16)}{item.label}</Space>,
-      children:
+      label: <>
+        <Space
+            onClick={()=> updateActiveKey(item.key, {target: {innerText: item.label}})}
+            size={0} onContextMenu={(e) => handleRightClick(e, item)}
+            key={item.key}>{getTabIcon(item.icon, 16)}{item.label}</Space>
+      </>,
+      children:<>
         <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
           {renderContent()}
         </ContentScroll>
+      </>
     }
 
   })
@@ -262,7 +266,7 @@ const MiddleContainer = (props: any) => {
     if (tabItems?.length === 0) {
       return <>
         <KeyBoard/>
-        <Divider/>
+        <Divider/><br/><br/><br/>
         <QuickGuide/>
       </>
     } else {

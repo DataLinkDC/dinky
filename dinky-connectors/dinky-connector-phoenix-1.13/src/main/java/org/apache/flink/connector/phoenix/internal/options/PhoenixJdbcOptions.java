@@ -38,7 +38,9 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
     private static final long serialVersionUID = 1L;
     private String tableName;
     private JdbcDialect dialect;
-    @Nullable private final Integer parallelism;
+
+    @Nullable
+    private final Integer parallelism;
     // setting phoenix schema isEnabled
     private Boolean isNamespaceMappingEnabled;
     private Boolean mapSystemTablesToNamespace;
@@ -97,32 +99,28 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
                     && Objects.equals(this.username, options.username)
                     && Objects.equals(this.password, options.password)
                     && Objects.equals(
-                            this.dialect.getClass().getName(), options.dialect.getClass().getName())
+                            this.dialect.getClass().getName(),
+                            options.dialect.getClass().getName())
                     && Objects.equals(this.parallelism, options.parallelism)
-                    && Objects.equals(
-                            this.connectionCheckTimeoutSeconds,
-                            options.connectionCheckTimeoutSeconds)
-                    && Objects.equals(
-                            this.isNamespaceMappingEnabled, options.isNamespaceMappingEnabled)
-                    && Objects.equals(
-                            this.mapSystemTablesToNamespace, options.mapSystemTablesToNamespace);
+                    && Objects.equals(this.connectionCheckTimeoutSeconds, options.connectionCheckTimeoutSeconds)
+                    && Objects.equals(this.isNamespaceMappingEnabled, options.isNamespaceMappingEnabled)
+                    && Objects.equals(this.mapSystemTablesToNamespace, options.mapSystemTablesToNamespace);
         }
     }
 
     public int hashCode() {
-        return Objects.hash(
-                new Object[] {
-                    this.url,
-                    this.tableName,
-                    this.driverName,
-                    this.username,
-                    this.password,
-                    this.dialect.getClass().getName(),
-                    this.parallelism,
-                    this.connectionCheckTimeoutSeconds,
-                    this.isNamespaceMappingEnabled,
-                    this.mapSystemTablesToNamespace
-                });
+        return Objects.hash(new Object[] {
+            this.url,
+            this.tableName,
+            this.driverName,
+            this.username,
+            this.password,
+            this.dialect.getClass().getName(),
+            this.parallelism,
+            this.connectionCheckTimeoutSeconds,
+            this.isNamespaceMappingEnabled,
+            this.mapSystemTablesToNamespace
+        });
     }
 
     public static class Builder {
@@ -195,24 +193,16 @@ public class PhoenixJdbcOptions extends JdbcConnectionOptions {
             Optional optional;
             if (this.dialect == null) {
                 optional = JdbcDialects.get(this.dbURL);
-                this.dialect =
-                        (JdbcDialect)
-                                optional.orElseGet(
-                                        () -> {
-                                            throw new NullPointerException(
-                                                    "Unknown dbURL,can not find proper dialect.");
-                                        });
+                this.dialect = (JdbcDialect) optional.orElseGet(() -> {
+                    throw new NullPointerException("Unknown dbURL,can not find proper dialect.");
+                });
             }
 
             if (this.driverName == null) {
                 optional = this.dialect.defaultDriverName();
-                this.driverName =
-                        (String)
-                                optional.orElseGet(
-                                        () -> {
-                                            throw new NullPointerException(
-                                                    "No driverName supplied.");
-                                        });
+                this.driverName = (String) optional.orElseGet(() -> {
+                    throw new NullPointerException("No driverName supplied.");
+                });
             }
 
             return new PhoenixJdbcOptions(

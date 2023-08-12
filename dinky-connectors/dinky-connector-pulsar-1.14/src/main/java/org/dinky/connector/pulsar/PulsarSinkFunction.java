@@ -135,31 +135,25 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
             throw new RuntimeException("Cannot create connection to Pulsar.", ex);
         }
 
-        if (flushOnCheckpoint
-                && !((StreamingRuntimeContext) this.getRuntimeContext()).isCheckpointingEnabled()) {
-            log.warn(
-                    "Flushing on checkpoint is enabled, but checkpointing is not enabled. Disabling flushing.");
+        if (flushOnCheckpoint && !((StreamingRuntimeContext) this.getRuntimeContext()).isCheckpointingEnabled()) {
+            log.warn("Flushing on checkpoint is enabled, but checkpointing is not enabled." + " Disabling flushing.");
             flushOnCheckpoint = false;
         }
 
         if (logFailuresOnly) {
-            this.sendCallback =
-                    (t, u) -> {
-                        if (u != null) {
-                            log.error(
-                                    "Error while sending message to Pulsar: {}",
-                                    ExceptionUtils.stringifyException(u));
-                        }
-                        acknowledgeMessage();
-                    };
+            this.sendCallback = (t, u) -> {
+                if (u != null) {
+                    log.error("Error while sending message to Pulsar: {}", ExceptionUtils.stringifyException(u));
+                }
+                acknowledgeMessage();
+            };
         } else {
-            this.sendCallback =
-                    (t, u) -> {
-                        if (asyncException == null && u != null) {
-                            asyncException = new Exception(u);
-                        }
-                        acknowledgeMessage();
-                    };
+            this.sendCallback = (t, u) -> {
+                if (asyncException == null && u != null) {
+                    asyncException = new Exception(u);
+                }
+                acknowledgeMessage();
+            };
         }
         log.info("end open.");
     }
@@ -210,8 +204,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
                         // this can be interrupted when the Task has been cancelled.
                         // by throwing an exception, we ensure that this checkpoint doesn't get
                         // confirmed
-                        throw new IllegalStateException(
-                                "Flushing got interrupted while checkpointing", e);
+                        throw new IllegalStateException("Flushing got interrupted while checkpointing", e);
                     }
                 }
             }
@@ -237,18 +230,17 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
         log.info("current pulsar version is {}", PulsarVersion.getVersion());
 
         ClientBuilder builder = PulsarClient.builder();
-        ProducerBuilder producerBuilder =
-                builder.serviceUrl(serviceUrl)
-                        .maxNumberOfRejectedRequestPerConnection(50)
-                        .loadConf((Map) pulsarClientProperties)
-                        .build()
-                        .newProducer()
-                        .topic(topic)
-                        .blockIfQueueFull(Boolean.TRUE)
-                        .compressionType(CompressionType.LZ4)
-                        .hashingScheme(HashingScheme.JavaStringHash)
-                        // .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
-                        .loadConf((Map) pulsarProducerProperties); // 实现配置透传功能
+        ProducerBuilder producerBuilder = builder.serviceUrl(serviceUrl)
+                .maxNumberOfRejectedRequestPerConnection(50)
+                .loadConf((Map) pulsarClientProperties)
+                .build()
+                .newProducer()
+                .topic(topic)
+                .blockIfQueueFull(Boolean.TRUE)
+                .compressionType(CompressionType.LZ4)
+                .hashingScheme(HashingScheme.JavaStringHash)
+                // .batchingMaxPublishDelay(100, TimeUnit.MILLISECONDS)
+                .loadConf((Map) pulsarProducerProperties); // 实现配置透传功能
         Producer producer = producerBuilder.create();
         return producer;
     }
@@ -256,8 +248,7 @@ public class PulsarSinkFunction<T> extends RichSinkFunction<T> implements Checkp
     // 获取复用的Pulsar Producer
     public Producer createReusedProducer() throws Exception {
         log.info("now create client, serviceUrl is : {}", serviceUrl);
-        PulsarClientImpl client =
-                PulsarConnectionHolder.getProducerClient(serviceUrl, pulsarClientProperties);
+        PulsarClientImpl client = PulsarConnectionHolder.getProducerClient(serviceUrl, pulsarClientProperties);
 
         log.info("current pulsar version is {} , topic is : {}", PulsarVersion.getVersion(), topic);
 

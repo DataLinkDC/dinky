@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.dto.APICancelDTO;
 import org.dinky.data.dto.APIExecuteJarDTO;
 import org.dinky.data.dto.APIExecuteSqlDTO;
@@ -139,9 +139,7 @@ public class APIController {
     @ApiOperation("Savepoint task")
     public Result<Boolean> savepointTask(@RequestBody APISavePointTaskDTO apiSavePointTaskDTO) {
         return Result.succeed(
-                taskService.savepointTask(
-                        apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()),
-                "执行成功");
+                taskService.savepointTask(apiSavePointTaskDTO.getTaskId(), apiSavePointTaskDTO.getType()), "执行成功");
     }
 
     /** 重启任务 */
@@ -157,8 +155,7 @@ public class APIController {
     @GetMapping("/selectSavePointRestartTask")
     @ApiOperation("Select save point restart task")
     @Log(title = "Select save point restart task", businessType = BusinessType.EXECUTE)
-    public Result<JobResult> restartTask(
-            @RequestParam Integer id, @RequestParam String savePointPath) {
+    public Result<JobResult> restartTask(@RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return Result.succeed(taskService.restartTask(id, savePointPath), Status.RESTART_SUCCESS);
     }
@@ -194,8 +191,7 @@ public class APIController {
     @GetMapping("/selectSavePointReOnLineTask")
     @ApiOperation("Select save point re on line task")
     @Log(title = "Select save point re on line task", businessType = BusinessType.EXECUTE)
-    public Result<JobResult> selectSavePointReOnLineTask(
-            @RequestParam Integer id, @RequestParam String savePointPath) {
+    public Result<JobResult> selectSavePointReOnLineTask(@RequestParam Integer id, @RequestParam String savePointPath) {
         taskService.initTenantByTaskId(id);
         return taskService.reOnLineTask(id, savePointPath);
     }

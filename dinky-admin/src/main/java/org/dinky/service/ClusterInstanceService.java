@@ -74,14 +74,13 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
      *
      * @return {@link List<Cluster>}
      */
-    List<Cluster> listEnabledAll();
+    List<Cluster> listEnabledAllClusterInstance();
 
     /**
-     * list session enable cluster instances , this method is {@link @Deprecated}
+     * list session enable cluster instances
      *
      * @return {@link List<Cluster>}
      */
-    @Deprecated
     List<Cluster> listSessionEnable();
 
     /**
@@ -113,7 +112,7 @@ public interface ClusterInstanceService extends ISuperService<Cluster> {
      * @param id {@link Integer} cluster id
      * @return {@link Boolean}
      */
-    Boolean enableClusterInstance(Integer id);
+    Boolean modifyClusterInstanceStatus(Integer id);
 
     /**
      * recycle cluster instance

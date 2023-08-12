@@ -194,6 +194,12 @@ export default [
         component: './AuthCenter/Role',
       },
       {
+        path: '/auth/menu',
+        name: 'menu',
+        icon: 'MenuOutlined',
+        component: './AuthCenter/Menu',
+      },
+      {
         path: '/auth/rowpermissions',
         name: 'rowpermissions',
         icon: 'SafetyCertificateOutlined',
@@ -255,6 +261,8 @@ export default [
   {
     path: '/account/center',
     footerRender: false,
+    name: 'center',
+    hideInMenu: true,
     component: './Other/PersonCenter',
   },
   {

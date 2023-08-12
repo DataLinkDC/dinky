@@ -27,6 +27,7 @@ export default {
 
   'menu.login': '登录',
   'menu.account.center': '个人中心',
+  'menu.account.tenant': '租户: {tenantCode}',
   'menu.account.settings': '个人设置',
   'menu.account.logout': '退出登录',
   'menu.account.changePassword': '修改密码',
@@ -58,6 +59,7 @@ export default {
   'menu.auth': '认证中心',
   'menu.auth.user': '用户',
   'menu.auth.role': '角色',
+  'menu.auth.menu': '菜单',
   'menu.auth.rowpermissions': '行权限',
   'menu.auth.namespace': '命名空间',
   'menu.auth.tenant': '租户',
@@ -86,4 +88,6 @@ export default {
   'menu.datastudio.process':'进程',
   'menu.datastudio.history':'历史',
   'menu.datastudio.table-data':'表数据',
+
+  'menu.datastudio.tool.text-comparison':'文本比对',
 };

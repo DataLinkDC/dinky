@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.annotation.Log;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.UploadFileConstant;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.result.Result;
@@ -57,13 +57,12 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping
-    @Log(title = "upload file", businessType = BusinessType.UPLOAD)
-    @ApiOperation("upload file")
+    @Log(title = "Upload Files", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload Files")
     public Result<Void> upload(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-            @RequestParam(value = "fileType", defaultValue = "-1", required = false)
-                    Byte fileType) {
+            @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
         if (!StringUtils.isEmpty(dir) && fileType != -1) {
             return Result.failed("不要同时指定 dir 和 fileType 参数");
         } else if (StringUtils.isEmpty(dir) && fileType == -1) {
@@ -88,8 +87,8 @@ public class FileUploadController {
      * @return {@link Result}
      */
     @PostMapping(value = "hdfs")
-    @Log(title = "upload hdfs file", businessType = BusinessType.UPLOAD)
-    @ApiOperation("upload hdfs file")
+    @Log(title = "Upload File to Hdfs", businessType = BusinessType.UPLOAD)
+    @ApiOperation("Upload File to Hdfs")
     public Result<Void> uploadHdfs(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,

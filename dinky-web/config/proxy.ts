@@ -36,9 +36,19 @@ export default {
       // target: 'https://preview.pro.ant.design',
       // 配置了这个可以从 http 代理到 https
       // 依赖 origin 的功能可能需要这个，比如 cookie
+      secure: false,
       changeOrigin: true,
+      logLevel: 'debug',
       pathRewrite: { '^': '' },
-    }
+      onProxyRes: (proxyRes, req, res) => {
+        res.header({
+          'Content-Type': 'text/event-stream',
+          'Cache-Control': 'no-cache, no-transform',
+          Connection: 'keep-alive',
+          'X-Accel-Buffering': 'noe',
+        });
+      },
+    },
   },
 
   /**

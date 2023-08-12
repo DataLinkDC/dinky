@@ -9,8 +9,7 @@ const Console: React.FC= (props:any) => {
 
   },[])
 
-  return <CodeShow code={props.console} height={(props.height-53)} theme={"vs-dark"} language={"kotlin"}/>
-  // return <MonacoEditor width={"100%"} height={props.height-53} theme={"dark"} value={props.console} />
+  return <CodeShow code={props.console} height={(props.height-53)} language={"kotlin"} lineNumbers={"off"} showFloatButton/>
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({

@@ -21,6 +21,7 @@ package org.dinky.service.impl;
 
 import org.dinky.context.UserInfoContextHolder;
 import org.dinky.data.dto.UserDTO;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.LoginLog;
 import org.dinky.data.model.User;
 import org.dinky.mapper.LoginLogMapper;
@@ -34,9 +35,10 @@ import org.springframework.stereotype.Service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
+import cn.hutool.core.net.Ipv4Util;
+
 @Service
-public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginLog>
-        implements LoginLogService {
+public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginLog> implements LoginLogService {
 
     /**
      * insert login log record
@@ -56,7 +58,41 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
         loginLog.setIp(ip);
         loginLog.setStatus(status);
         loginLog.setMsg(msg);
+        saveOrUpdate(loginLog);
+    }
 
+    /**
+     * @param user
+     * @param status
+     * @param ip
+     */
+    @Override
+    public void saveLoginLog(User user, Status status, String ip) {
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(user.getId());
+        loginLog.setUsername(user.getUsername());
+        loginLog.setLoginType(user.getUserType());
+        loginLog.setAccessTime(LocalDateTime.now());
+        loginLog.setIp(ip);
+        loginLog.setStatus(status.getCode());
+        loginLog.setMsg(status.getMsg());
+        saveOrUpdate(loginLog);
+    }
+
+    /**
+     * @param user
+     * @param status
+     */
+    @Override
+    public void saveLoginLog(User user, Status status) {
+        LoginLog loginLog = new LoginLog();
+        loginLog.setUserId(user.getId());
+        loginLog.setUsername(user.getUsername());
+        loginLog.setLoginType(user.getUserType());
+        loginLog.setAccessTime(LocalDateTime.now());
+        loginLog.setIp(Ipv4Util.LOCAL_IP);
+        loginLog.setStatus(status.getCode());
+        loginLog.setMsg(status.getMsg());
         saveOrUpdate(loginLog);
     }
 
@@ -67,11 +103,9 @@ public class LoginLogServiceImpl extends SuperServiceImpl<LoginLogMapper, LoginL
     @Override
     public List<LoginLog> loginRecord(Integer userId) {
         UserDTO userDTO = UserInfoContextHolder.get(userId);
-        List<LoginLog> loginLogList =
-                getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<LoginLog>()
-                                        .eq(LoginLog::getUserId, userDTO.getUser().getId()));
+        List<LoginLog> loginLogList = getBaseMapper()
+                .selectList(new LambdaQueryWrapper<LoginLog>()
+                        .eq(LoginLog::getUserId, userDTO.getUser().getId()));
         return loginLogList;
     }
 }

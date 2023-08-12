@@ -34,8 +34,21 @@ public interface RoleMapper extends SuperMapper<Role> {
 
     List<Role> getRoleByIds(@Param("roleIds") Set<Integer> roleIds);
 
-    List<Role> getRoleByTenantIdAndIds(
-            @Param("tenantId") String tenantId, @Param("roleIds") Set<Integer> roleIds);
+    List<Role> getRoleByTenantIdAndIds(@Param("tenantId") String tenantId, @Param("roleIds") Set<Integer> roleIds);
 
-    int deleteByIds(@Param("ids") List<Integer> ids);
+    /**
+     * Query roles by user ID.
+     *
+     * @param userId user ID
+     * @return role list
+     */
+    List<Role> selectRolePermissionByUserId(Integer userId);
+
+    /**
+     * Obtain a list of role selection boxes by user ID.
+     *
+     * @param userId user ID
+     * @return result
+     */
+    List<Integer> selectRoleListByUserId(Integer userId);
 }

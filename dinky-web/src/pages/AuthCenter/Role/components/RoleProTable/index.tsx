@@ -18,11 +18,17 @@
  */
 
 
-import React, {useRef, useState} from "react";
+import React, {Key, useRef, useState} from "react";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {Tag} from 'antd';
 import {l} from "@/utils/intl";
-import {handleAddOrUpdate, handleRemoveById} from "@/services/BusinessCrud";
+import {
+    handleAddOrUpdate,
+    handleOption,
+    handlePutDataByParams,
+    handleRemoveById,
+    queryDataByParams
+} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
 import {getTenantByLocalStorage} from "@/utils/function";
@@ -31,6 +37,9 @@ import RoleModalForm from "../RoleModalForm";
 import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
 import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
 import {EditBtn} from "@/components/CallBackButton/EditBtn";
+import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
+import AssignMenu from "@/pages/AuthCenter/Role/components/AssignMenu";
+import {SysMenu} from "@/types/RegCenter/data";
 
 
 const RoleProTable: React.FC = () => {
@@ -41,7 +50,10 @@ const RoleProTable: React.FC = () => {
         const [modalVisible, handleModalVisible] = useState<boolean>(false);
         const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
         const [loading, setLoading] = useState<boolean>(false);
-        const actionRef = useRef<ActionType>();
+        const [assignMenu ,  setAssignMenu] = useState<boolean>(false);
+
+
+    const actionRef = useRef<ActionType>();
 
         const executeAndCallbackRefresh = async (callback: () => void) => {
             setLoading(true);
@@ -67,13 +79,31 @@ const RoleProTable: React.FC = () => {
          */
         const handleAddOrUpdateSubmit = async (value: any) => {
             await executeAndCallbackRefresh(async () => {
-                // TODO: added or update role interface is use /api/role/addedOrUpdateRole  , because of the backend interface 'saveOrUpdate' is repeat , in the future, we need to change the interface to /api/role (ROLE)
                 await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
                 handleModalVisible(false);
             });
-
-
         }
+
+    /**
+     * cancel
+     */
+    const handleCancel = () => {
+        handleModalVisible(false);
+        handleUpdateModalVisible(false);
+        setAssignMenu(false);
+    }
+
+        const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
+            await executeAndCallbackRefresh(async () => {
+                await handleOption('/api/roleMenu/assignMenuToRole', '分配菜单',{
+                    roleId: formValues.id,
+                    menuIds: selectKeys
+                });
+                handleCancel();
+            });
+        }
+
+
 
         /**
          * edit role status
@@ -84,13 +114,17 @@ const RoleProTable: React.FC = () => {
             handleUpdateModalVisible(true);
         }
 
-        /**
-         * cancel
-         */
-        const handleCancel = () => {
-            handleModalVisible(false);
-            handleUpdateModalVisible(false);
-        }
+
+
+    /**
+     * assign user visible change
+     * @param record
+     */
+    const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
+        setFormValues(record);
+        setAssignMenu(true);
+    };
+
 
         /**
          * columns
@@ -139,7 +173,10 @@ const RoleProTable: React.FC = () => {
                     <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
                     <>{record.id !== 1 &&
                         <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                                             description={l("role.deleteConfirm")}/>}</>
+                                             description={l("role.deleteConfirm")}/>}
+                        <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
+                                   title={l('role.assignMenu','',{roleName: record.roleName})}/>
+                    </>
                 ],
             },
         ];
@@ -172,6 +209,14 @@ const RoleProTable: React.FC = () => {
                 modalVisible={updateModalVisible}
                 values={formValues}
             />
+            {Object.keys(formValues).length> 0 &&
+                <AssignMenu
+                    values={formValues}
+                    open={assignMenu}
+                    onSubmit={handleAssignMenuSubmit}
+                    onClose={() => setAssignMenu(false)}
+                />
+            }
         </>
     }
 ;

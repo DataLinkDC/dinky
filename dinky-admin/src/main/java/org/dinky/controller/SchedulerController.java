@@ -75,15 +75,13 @@ public class SchedulerController {
 
     /** 获取任务定义 */
     @GetMapping("/task")
-    @ApiOperation(value = "获取任务定义", notes = "获取任务定义")
-    public Result<TaskDefinition> getTaskDefinition(
-            @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
+    @ApiOperation("Get Task Definition")
+    public Result<TaskDefinition> getTaskDefinition(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
         TaskDefinition taskDefinition = null;
         Project dinkyProject = SystemInit.getProject();
 
         Catalogue catalogue =
-                catalogueService.getOne(
-                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+                catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
@@ -103,8 +101,7 @@ public class SchedulerController {
             if (taskDefinition != null) {
                 taskDefinition.setProcessDefinitionCode(taskMainInfo.getProcessDefinitionCode());
                 taskDefinition.setProcessDefinitionName(taskMainInfo.getProcessDefinitionName());
-                taskDefinition.setProcessDefinitionVersion(
-                        taskMainInfo.getProcessDefinitionVersion());
+                taskDefinition.setProcessDefinitionVersion(taskMainInfo.getProcessDefinitionVersion());
                 taskDefinition.setUpstreamTaskMap(taskMainInfo.getUpstreamTaskMap());
             } else {
                 return Result.failed(Status.DS_WORK_FLOW_NOT_SAVE);
@@ -115,15 +112,13 @@ public class SchedulerController {
 
     /** 获取前置任务定义集合 */
     @GetMapping("/upstream/tasks")
-    @ApiOperation(value = "获取前置任务定义集合", notes = "获取前置任务定义集合")
-    public Result<List<TaskMainInfo>> getTaskMainInfos(
-            @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
+    @ApiOperation("Get Upstream Task Definition")
+    public Result<List<TaskMainInfo>> getTaskMainInfos(@ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId) {
 
         Project dinkyProject = SystemInit.getProject();
 
         Catalogue catalogue =
-                catalogueService.getOne(
-                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+                catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
@@ -135,35 +130,32 @@ public class SchedulerController {
 
         long projectCode = dinkyProject.getCode();
 
-        List<TaskMainInfo> taskMainInfos =
-                taskClient.getTaskMainInfos(projectCode, processName, "");
+        List<TaskMainInfo> taskMainInfos = taskClient.getTaskMainInfos(projectCode, processName, "");
         // 去掉本身
-        taskMainInfos.removeIf(
-                taskMainInfo ->
-                        (catalogue.getName() + ":" + catalogue.getId())
-                                .equalsIgnoreCase(taskMainInfo.getTaskName()));
+        taskMainInfos.removeIf(taskMainInfo ->
+                (catalogue.getName() + ":" + catalogue.getId()).equalsIgnoreCase(taskMainInfo.getTaskName()));
 
         return Result.succeed(taskMainInfos);
     }
 
     /** 创建任务定义 */
     @PostMapping("/task")
-    @ApiOperation(value = "创建任务定义", notes = "创建任务定义")
+    @ApiOperation("Create Task Definition")
     public Result<String> createTaskDefinition(
             @ApiParam(value = "前置任务编号 逗号隔开") @RequestParam(required = false) String upstreamCodes,
             @ApiParam(value = "dinky任务id") @RequestParam Long dinkyTaskId,
             @Valid @RequestBody TaskRequest taskRequest) {
         DinkyTaskParams dinkyTaskParams = new DinkyTaskParams();
         dinkyTaskParams.setTaskId(dinkyTaskId.toString());
-        dinkyTaskParams.setAddress(SystemConfiguration.getInstances().getDinkyAddr().getValue());
+        dinkyTaskParams.setAddress(
+                SystemConfiguration.getInstances().getDinkyAddr().getValue());
         taskRequest.setTaskParams(JSONUtil.parseObj(dinkyTaskParams).toString());
         taskRequest.setTaskType("DINKY");
 
         Project dinkyProject = SystemInit.getProject();
 
         Catalogue catalogue =
-                catalogueService.getOne(
-                        new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
+                catalogueService.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, dinkyTaskId));
         if (catalogue == null) {
             return Result.failed(Status.DS_GET_NODE_LIST_ERROR);
         }
@@ -175,8 +167,7 @@ public class SchedulerController {
         String taskName = catalogue.getName() + ":" + catalogue.getId();
 
         long projectCode = dinkyProject.getCode();
-        ProcessDefinition process =
-                processClient.getProcessDefinitionInfo(projectCode, processName);
+        ProcessDefinition process = processClient.getProcessDefinitionInfo(projectCode, processName);
         taskRequest.setName(taskName);
         if (process == null) {
             Long taskCode = taskClient.genTaskCode(projectCode);
@@ -184,8 +175,7 @@ public class SchedulerController {
             JSONObject jsonObject = JSONUtil.parseObj(taskRequest);
             JSONArray array = new JSONArray();
             array.set(jsonObject);
-            processClient.createProcessDefinition(
-                    projectCode, processName, taskCode, array.toString());
+            processClient.createProcessDefinition(projectCode, processName, taskCode, array.toString());
 
             return Result.succeed(Status.DS_ADD_WORK_FLOW_DEFINITION_SUCCESS);
         } else {
@@ -193,16 +183,13 @@ public class SchedulerController {
                 return Result.failed(Status.DS_WORK_FLOW_DEFINITION_ONLINE, (Object) processName);
             }
             long processCode = process.getCode();
-            TaskMainInfo taskDefinitionInfo =
-                    taskClient.getTaskMainInfo(projectCode, processName, taskName);
+            TaskMainInfo taskDefinitionInfo = taskClient.getTaskMainInfo(projectCode, processName, taskName);
             if (taskDefinitionInfo != null) {
-                return Result.failed(
-                        Status.DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST, processName, taskName);
+                return Result.failed(Status.DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST, processName, taskName);
             }
 
             String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
-            taskClient.createTaskDefinition(
-                    projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
+            taskClient.createTaskDefinition(projectCode, processCode, upstreamCodes, taskDefinitionJsonObj);
 
             return Result.succeed(Status.DS_ADD_TASK_DEFINITION_SUCCESS);
         }
@@ -210,7 +197,7 @@ public class SchedulerController {
 
     /** 更新任务定义 */
     @PutMapping("/task")
-    @ApiOperation(value = "更新任务定义", notes = "更新任务定义")
+    @ApiOperation("Update Task Definition")
     public Result<String> updateTaskDefinition(
             @ApiParam(value = "项目编号") @RequestParam long projectCode,
             @ApiParam(value = "工作流定义编号") @RequestParam long processCode,
@@ -223,8 +210,7 @@ public class SchedulerController {
             return Result.failed(Status.DS_TASK_NOT_EXIST);
         }
         if (!"DINKY".equals(taskDefinition.getTaskType())) {
-            return Result.failed(
-                    Status.DS_TASK_TYPE_NOT_SUPPORT, (Object) taskDefinition.getTaskType());
+            return Result.failed(Status.DS_TASK_TYPE_NOT_SUPPORT, (Object) taskDefinition.getTaskType());
         }
         DagData dagData = processClient.getProcessDefinitionInfo(projectCode, processCode);
         if (dagData == null) {
@@ -243,8 +229,7 @@ public class SchedulerController {
         taskRequest.setTaskType("DINKY");
 
         String taskDefinitionJsonObj = JSONUtil.toJsonStr(taskRequest);
-        taskClient.updateTaskDefinition(
-                projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
+        taskClient.updateTaskDefinition(projectCode, taskCode, upstreamCodes, taskDefinitionJsonObj);
         return Result.succeed(Status.MODIFY_SUCCESS);
     }
 

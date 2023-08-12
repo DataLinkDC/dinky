@@ -108,6 +108,8 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
     resetButtonProps: false,
     submitButtonProps: {
       loading: submitting,
+      autoFocus: true,
+      htmlType: 'submit',
       size: "large",
       shape: "round",
       style: {width: "100%"}

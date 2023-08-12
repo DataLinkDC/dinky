@@ -70,7 +70,8 @@ public class User implements Serializable {
 
     private Boolean enabled;
 
-    @TableLogic private Boolean isDelete;
+    @TableLogic
+    private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;
@@ -78,6 +79,8 @@ public class User implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
+    private Boolean superAdminFlag;
+
     @TableField(exist = false)
-    private Boolean isAdmin;
+    private Boolean tenantAdminFlag;
 }
