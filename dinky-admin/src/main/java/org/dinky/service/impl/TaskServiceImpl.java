@@ -247,9 +247,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (config.isJarTask()) {
             jobResult = jobManager.executeJar();
             if (jobResult.isSuccess()) {
-                process.finish(
-                        "Submit Flink SQL finished, JobManager Web Interface: http://"
-                                + jobResult.getJobManagerAddress());
+                process.finish("Submit Flink SQL finished, JobManager Web Interface: http://"
+                        + jobResult.getJobManagerAddress());
             } else {
                 // 如果提交失败，则只打印出关键的错误信息
                 process.error("Submit Flink SQL " + jobResult.getStatus());
