@@ -297,6 +297,10 @@ public class FlinkAPI {
     public String getJobManagerLog() {
         return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.LOG);
     }
+    /** @return JsonNode */
+    public String getJobManagerThreadDump() {
+        return getResult(FlinkRestAPIConstant.JOB_MANAGER + FlinkRestAPIConstant.THREAD_DUMP);
+    }
 
     /** @return String */
     public String getJobManagerStdOut() {

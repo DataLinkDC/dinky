@@ -22,14 +22,17 @@ package org.dinky.controller;
 import org.dinky.data.dto.TaskVersionHistoryDTO;
 import org.dinky.data.model.TaskVersion;
 import org.dinky.data.result.ProTableResult;
+import org.dinky.data.result.Result;
 import org.dinky.service.TaskVersionService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -54,24 +57,15 @@ public class TaskVersionController {
     /**
      * query task version list
      *
-     * @param para {@link JsonNode} params
      * @return {@link ProTableResult}<{@link TaskVersionHistoryDTO}>
      */
-    @PostMapping
-    public ProTableResult<TaskVersionHistoryDTO> listTaskVersions(@RequestBody JsonNode para) {
-        ProTableResult<TaskVersionHistoryDTO> versionHistoryDTOProTableResult =
-                new ProTableResult<>();
-
-        ProTableResult<TaskVersion> versionProTableResult = versionService.selectForProTable(para);
-
-        BeanUtil.copyProperties(versionProTableResult, versionHistoryDTOProTableResult);
+    @GetMapping
+    public Result<List<TaskVersionHistoryDTO>> listTaskVersions(@RequestParam int taskId) {
+        List<TaskVersion> taskVersions = versionService.getTaskVersionByTaskId(taskId);
         List<TaskVersionHistoryDTO> collect =
-                versionProTableResult.getData().stream()
+                taskVersions.stream()
                         .map(t -> BeanUtil.copyProperties(t, TaskVersionHistoryDTO.class))
                         .collect(Collectors.toList());
-
-        versionHistoryDTOProTableResult.setData(collect);
-
-        return versionHistoryDTOProTableResult;
+        return Result.succeed(collect);
     }
 }

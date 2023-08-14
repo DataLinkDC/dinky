@@ -117,10 +117,28 @@ public class JobInstanceController {
         return Result.succeed(jobManagerConfiguration);
     }
 
-    /** 获取 TaskManager 的信息 */
-    @GetMapping("/getTaskManagerInfo")
-    @ApiOperation("Get task manager info")
-    public Result<Set<TaskManagerConfiguration>> getTaskManagerInfo(@RequestParam String address) {
+    @GetMapping("/getJobManagerLog")
+    @ApiOperation("Get job manager log")
+    public Result<String> getJobManagerLog(@RequestParam String address) {
+        return Result.succeed(FlinkAPI.build(address).getJobManagerLog(),"");
+    }
+
+    @GetMapping("/getJobManagerStdOut")
+    @ApiOperation("Get job manager stdout")
+    public Result<String> getJobManagerStdOut(@RequestParam String address) {
+        return Result.succeed(FlinkAPI.build(address).getJobManagerStdOut(),"");
+    }
+
+
+    @GetMapping("/getJobManagerThreadDump")
+    @ApiOperation("Get job manager ThreadDump")
+    public Result<String> getJobManagerThreadDump(@RequestParam String address) {
+        return Result.succeed(FlinkAPI.build(address).getJobManagerThreadDump(),"");
+    }
+
+    @GetMapping("/getTaskManagerList")
+    @ApiOperation("Get task manager List")
+    public Result<Set<TaskManagerConfiguration>> getTaskManagerList(@RequestParam String address) {
         Set<TaskManagerConfiguration> taskManagerConfigurationList = new HashSet<>();
         if (Asserts.isNotNullString(address)) {
             FlinkAPI flinkAPI = FlinkAPI.build(address);
@@ -129,5 +147,12 @@ public class JobInstanceController {
                     taskManagerConfigurationList, flinkAPI, taskManagerContainers);
         }
         return Result.succeed(taskManagerConfigurationList);
+    }
+
+    /** 获取 TaskManager 的信息 */
+    @GetMapping("/getTaskManagerLog")
+    @ApiOperation("Get task manager log")
+    public Result<String> getTaskManagerLog(@RequestParam String address,@RequestParam String containerId) {
+        return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId),"");
     }
 }

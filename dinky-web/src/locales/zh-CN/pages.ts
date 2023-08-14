@@ -112,8 +112,12 @@ export default {
   'devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
 
   'devops.jobinfo.config.JobInfo':'作业信息',
-  'devops.jobinfo.config.JobOveriew':'作业概览',
-  'devops.jobinfo.config.JobException':'异常信息',
+  'devops.jobinfo.config.JobLogs':'作业日志',
+  'devops.jobinfo.config.JobHistory':'版本信息',
+  'devops.jobinfo.config.JobCheckpoints':'作业快照',
+  'devops.jobinfo.config.JobMonitor':'监控',
+  'devops.jobinfo.config.JobLineage':'Sql 血缘',
+  'devops.jobinfo.config.JobAlert':'告警记录',
   'devops.jobinfo.config.JobBaseInfo':'作业基本信息',
   'devops.jobinfo.config.UserCustomConf':'用户自定义配置',
   'devops.jobinfo.config.taskId':'Dinky作业ID',
@@ -129,6 +133,32 @@ export default {
   'devops.jobinfo.config.RestartStrategy':'重启策略',
   'devops.jobinfo.config.JobParallelism':'作业并行度',
 
+  'devops.jobinfo.ck.id':'ID',
+  'devops.jobinfo.ck.taskid':'任务ID',
+  'devops.jobinfo.ck.status':'状态',
+  'devops.jobinfo.ck.name':'名称',
+  'devops.jobinfo.ck.duration':'耗时',
+  'devops.jobinfo.ck.checkpoint_type':'类型',
+  'devops.jobinfo.ck.external_path':'存储位置',
+  'devops.jobinfo.ck.latest_ack_timestamp':'最后响应时间',
+  'devops.jobinfo.ck.state_size':'状态大小',
+  'devops.jobinfo.ck.trigger_timestamp':'触发时间',
+  'devops.jobinfo.ck.recovery' :'从检查点恢复！',
+  'devops.jobinfo.ck.recoveryConfirm' :'确定从检查点【{path}】恢复吗?',
+  'devops.jobinfo.ck.recovery.success' :'恢复作业成功',
+  'devops.jobinfo.ck.recovery.failed' :'恢复作业失败',
+
+
+  'devops.baseinfo.taskid': '任务ID',
+  'devops.baseinfo.name': '任务名称',
+  'devops.baseinfo.status': '状态',
+  'devops.baseinfo.readbytes': '接收字节',
+  'devops.baseinfo.readrecords': '接收记录',
+  'devops.baseinfo.writebytes': '发送字节',
+  'devops.baseinfo.writerecords': '发送记录',
+  'devops.baseinfo.parallelism': '并行度',
+  'devops.baseinfo.tasks': '算子',
+  'devops.baseinfo.restart_number': '重启次数',
 
   //-------------------------------- auth center --------------------------------
   // user
