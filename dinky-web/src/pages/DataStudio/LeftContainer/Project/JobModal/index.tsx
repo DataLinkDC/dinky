@@ -40,8 +40,10 @@ const JobModal:React.FC<JobModalProps> = ( props ) => {
         <ModalForm<Catalogue>
             title={l('datastudio.project.create.rootFolder')}
             form={form}
+            width={'30%'}
             open={modalVisible}
-            layout={'horizontal'}
+            layout={'inline'}
+            style={{display: 'flex', flexDirection: 'column', alignItems: 'center',}}
             autoFocusFirstInput
             modalProps={{destroyOnClose: true, maskClosable: false, onCancel: onCancel}}
             onFinish={async (values) => onSubmit(values)}

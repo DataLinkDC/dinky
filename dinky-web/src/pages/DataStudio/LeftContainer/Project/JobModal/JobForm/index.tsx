@@ -18,17 +18,18 @@
  */
 
 import React from "react";
-import {ProFormText} from "@ant-design/pro-components";
+import {ProForm, ProFormText} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 
 const JobForm = () => {
     return <>
-        <ProFormText
-            name="name"
-            label={l('datastudio.project.create.folder.name')}
-            placeholder={l('datastudio.project.create.folder.name.placeholder')}
-            rules={[ {required: true, message: l('datastudio.project.create.folder.name.placeholder')} ]}
-        />
+            <ProFormText
+                name="name"
+                width={'md'}
+                label={l('datastudio.project.create.folder.name')}
+                placeholder={l('datastudio.project.create.folder.name.placeholder')}
+                rules={[ {required: true, message: l('datastudio.project.create.folder.name.placeholder')} ]}
+            />
     </>
 };
 
