@@ -32,8 +32,6 @@ import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * UserService
  *
@@ -90,16 +88,6 @@ public interface UserService extends ISuperService<User> {
     User getUserByUsername(String username);
 
     /**
-     * grantRole will be {@link Deprecated} please use {@link
-     * UserService#assignRole(AssignRoleParams)}
-     *
-     * @param param param
-     * @return {@link Result}<{@link Void}>
-     */
-    @Deprecated
-    Result<Void> grantRole(JsonNode param);
-
-    /**
      * grantRole
      *
      * @param assignRoleParams {@link AssignRoleParams}
@@ -128,7 +116,7 @@ public interface UserService extends ISuperService<User> {
      * @param id
      * @return {@link Boolean}
      */
-    Boolean enable(Integer id);
+    Boolean modifyUserStatus(Integer id);
 
     /**
      * check user is admin
@@ -136,7 +124,15 @@ public interface UserService extends ISuperService<User> {
      * @param id
      * @return {@link Boolean}
      */
-    Boolean checkAdmin(Integer id);
+    Boolean checkSuperAdmin(Integer id);
+
+    /**
+     * check user is tenant admin
+     *
+     * @param id
+     * @return {@link Boolean}
+     */
+    Boolean checkTenantAdmin(Integer id);
 
     /**
      * get role by current user
@@ -160,5 +156,14 @@ public interface UserService extends ISuperService<User> {
      *
      * @return role select permissions list
      */
-    List<Integer> getUserIdsByTeantId(int id);
+    List<Integer> getUserIdsByTenantId(int id);
+
+    /**
+     * get user list by tenant id
+     *
+     * @return role select permissions list
+     */
+    List<User> getUserListByTenantId(int id);
+
+    Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
 }

@@ -67,6 +67,8 @@ public class UserTenant implements Serializable {
     /** tenant id */
     private Integer tenantId;
 
+    private Boolean tenantAdminFlag;
+
     /** create time */
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

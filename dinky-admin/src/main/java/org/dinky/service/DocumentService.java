@@ -41,5 +41,5 @@ public interface DocumentService extends ISuperService<Document> {
      * @param id
      * @return
      */
-    Boolean enable(Integer id);
+    Boolean modifyDocumentStatus(Integer id);
 }

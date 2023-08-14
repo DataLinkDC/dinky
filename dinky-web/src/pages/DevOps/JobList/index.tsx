@@ -9,14 +9,15 @@ import {parseSecondStr} from '@/utils/function';
 import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from '@/services/constants';
 import {queryList} from '@/services/api';
 import {ClockCircleTwoTone, EyeTwoTone} from '@ant-design/icons';
-import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from '@/pages/DevOps/JobList/function';
+import {JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus} from '@/pages/DevOps/function';
+import { history } from 'umi';
 
 const JobList = () => {
   const tableRef = useRef<ActionType>();
 
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
-      title: l('global.table.taskid'),
+      title: l('devops.jobinfo.config.taskId'),
       dataIndex: 'taskId',
     },
     {
@@ -37,7 +38,7 @@ const JobList = () => {
       hideInSearch: true
     },
     {
-      title: l('global.table.jobid'),
+      title: l('devops.jobinfo.config.JobId'),
       dataIndex: 'jid',
       width: '15%',
     },
@@ -49,7 +50,7 @@ const JobList = () => {
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_: any, row: { duration: number; }) => parseSecondStr(row.duration)
+      render: (_: any, row: Jobs.JobInstance) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.status'),
@@ -57,18 +58,19 @@ const JobList = () => {
       filterMultiple: false,
       hideInSearch: true,
       dataIndex: 'status',
-      render: (_: any, row: { status: string | undefined; }) => TagJobStatus(row.status)
+      render: (_: any, row: Jobs.JobInstance) => TagJobStatus(row.status)
     },
     Table.EXPAND_COLUMN,
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      render: (text: any, record: { id: any; }) => [
+      render: (text: any, record: Jobs.JobInstance) => [
         <Button
           className={'options-button'}
           key={`${record.id}_history`}
           title={l('devops.joblist.detail')}
           icon={<EyeTwoTone/>}
+          onClick={()=>history.push(`/devops/job-detail?id=${record.id}`)}
         />
       ],
     },

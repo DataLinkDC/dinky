@@ -73,34 +73,15 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 switch (value.get("op").toString()) {
                     case "r":
                     case "c":
-                        rowCollect(
-                                columnNameList,
-                                columnTypeList,
-                                out,
-                                RowKind.INSERT,
-                                (Map) value.get("after"));
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.INSERT, (Map) value.get("after"));
                         break;
                     case "d":
-                        rowCollect(
-                                columnNameList,
-                                columnTypeList,
-                                out,
-                                RowKind.DELETE,
-                                (Map) value.get("before"));
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.DELETE, (Map) value.get("before"));
                         break;
                     case "u":
                         rowCollect(
-                                columnNameList,
-                                columnTypeList,
-                                out,
-                                RowKind.UPDATE_BEFORE,
-                                (Map) value.get("before"));
-                        rowCollect(
-                                columnNameList,
-                                columnTypeList,
-                                out,
-                                RowKind.UPDATE_AFTER,
-                                (Map) value.get("after"));
+                                columnNameList, columnTypeList, out, RowKind.UPDATE_BEFORE, (Map) value.get("before"));
+                        rowCollect(columnNameList, columnTypeList, out, RowKind.UPDATE_AFTER, (Map) value.get("after"));
                         break;
                     default:
                 }
@@ -135,10 +116,8 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             List<String> columnNameList,
             List<LogicalType> columnTypeList,
             String schemaTableName) {
-        TypeInformation<?>[] typeInformation =
-                TypeConversions.fromDataTypeToLegacyInfo(
-                        TypeConversions.fromLogicalToDataType(
-                                columnTypeList.toArray(new LogicalType[0])));
+        TypeInformation<?>[] typeInformation = TypeConversions.fromDataTypeToLegacyInfo(
+                TypeConversions.fromLogicalToDataType(columnTypeList.toArray(new LogicalType[0])));
 
         return filterOperator.flatMap(
                 sqlSinkRowFunction(columnNameList, columnTypeList, schemaTableName),
@@ -158,64 +137,53 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
             CustomTableEnvironment customTableEnvironment,
             Map<Table, OutputTag<Map>> tagMap,
             SingleOutputStreamOperator<Map> processOperator) {
-        tagMap.forEach(
-                (table, tag) -> {
-                    final String schemaTableName = table.getSchemaTableName();
-                    try {
-                        DataStream<Map> filterOperator = shunt(processOperator, table, tag);
-                        logger.info("Build {} shunt successful...", schemaTableName);
-                        List<String> columnNameList = new ArrayList<>();
-                        List<LogicalType> columnTypeList = new ArrayList<>();
-                        buildColumn(columnNameList, columnTypeList, table.getColumns());
-                        DataStream<Row> rowDataDataStream =
-                                buildRow(
-                                                filterOperator,
-                                                columnNameList,
-                                                columnTypeList,
-                                                schemaTableName)
-                                        .rebalance();
-                        logger.info("Build {} flatMap successful...", schemaTableName);
-                        logger.info("Start build {} sink...", schemaTableName);
+        tagMap.forEach((table, tag) -> {
+            final String schemaTableName = table.getSchemaTableName();
+            try {
+                DataStream<Map> filterOperator = shunt(processOperator, table, tag);
+                logger.info("Build {} shunt successful...", schemaTableName);
+                List<String> columnNameList = new ArrayList<>();
+                List<LogicalType> columnTypeList = new ArrayList<>();
+                buildColumn(columnNameList, columnTypeList, table.getColumns());
+                DataStream<Row> rowDataDataStream = buildRow(
+                                filterOperator, columnNameList, columnTypeList, schemaTableName)
+                        .rebalance();
+                logger.info("Build {} flatMap successful...", schemaTableName);
+                logger.info("Start build {} sink...", schemaTableName);
 
-                        addTableSink(customTableEnvironment, rowDataDataStream, table);
-                    } catch (Exception e) {
-                        logger.error("Build {} cdc sync failed...", schemaTableName);
-                        logger.error(LogUtil.getError(e));
-                    }
-                });
+                addTableSink(customTableEnvironment, rowDataDataStream, table);
+            } catch (Exception e) {
+                logger.error("Build {} cdc sync failed...", schemaTableName);
+                logger.error(LogUtil.getError(e));
+            }
+        });
     }
 
     @SuppressWarnings("rawtypes")
     protected SingleOutputStreamOperator<Map> createMapSingleOutputStreamOperator(
-            DataStreamSource<String> dataStreamSource,
-            Map<Table, OutputTag<Map>> tagMap,
-            Map<String, Table> tableMap) {
+            DataStreamSource<String> dataStreamSource, Map<Table, OutputTag<Map>> tagMap, Map<String, Table> tableMap) {
         final String schemaFieldName = config.getSchemaFieldName();
         SingleOutputStreamOperator<Map> mapOperator =
                 dataStreamSource.map(x -> objectMapper.readValue(x, Map.class)).returns(Map.class);
         Map<String, String> split = config.getSplit();
-        return mapOperator.process(
-                new ProcessFunction<Map, Map>() {
-                    @Override
-                    public void processElement(
-                            Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) {
-                        LinkedHashMap source = (LinkedHashMap) map.get("source");
-                        try {
-                            String tableName = createTableName(source, schemaFieldName, split);
-                            OutputTag<Map> outputTag = tagMap.get(tableMap.get(tableName));
-                            ctx.output(outputTag, map);
-                        } catch (Exception e) {
-                            logger.error(e.getMessage(), e);
-                            out.collect(map);
-                        }
-                    }
-                });
+        return mapOperator.process(new ProcessFunction<Map, Map>() {
+            @Override
+            public void processElement(Map map, ProcessFunction<Map, Map>.Context ctx, Collector<Map> out) {
+                LinkedHashMap source = (LinkedHashMap) map.get("source");
+                try {
+                    String tableName = createTableName(source, schemaFieldName, split);
+                    OutputTag<Map> outputTag = tagMap.get(tableMap.get(tableName));
+                    ctx.output(outputTag, map);
+                } catch (Exception e) {
+                    logger.error(e.getMessage(), e);
+                    out.collect(map);
+                }
+            }
+        });
     }
 
     protected abstract void addTableSink(
-            CustomTableEnvironment customTableEnvironment,
-            DataStream<Row> rowDataDataStream,
-            Table table);
+            CustomTableEnvironment customTableEnvironment, DataStream<Row> rowDataDataStream, Table table);
 
     /**
      * @param source
@@ -223,8 +191,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
      * @param split must keep for flink use.
      * @return
      */
-    protected abstract String createTableName(
-            LinkedHashMap source, String schemaFieldName, Map<String, String> split);
+    protected abstract String createTableName(LinkedHashMap source, String schemaFieldName, Map<String, String> split);
 
     @SuppressWarnings("rawtypes")
     @Override
@@ -263,8 +230,7 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
                 createMapSingleOutputStreamOperator(dataStreamSource, tagMap, tableMap);
         addTableSinkForTags(customTableEnvironment, tagMap, processOperator);
 
-        List<Transformation<?>> trans =
-                customTableEnvironment.getPlanner().translate(modifyOperations);
+        List<Transformation<?>> trans = customTableEnvironment.getPlanner().translate(modifyOperations);
         for (Transformation<?> item : trans) {
             env.addOperator(item);
         }
@@ -272,5 +238,6 @@ public abstract class AbstractSqlSinkBuilder extends AbstractSinkBuilder impleme
         return dataStreamSource;
     }
 
-    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {};
+    protected void executeCatalogStatement(CustomTableEnvironment customTableEnvironment) {}
+    ;
 }

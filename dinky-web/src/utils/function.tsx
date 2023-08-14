@@ -22,7 +22,7 @@ import {editor} from 'monaco-editor';
 import React, {useEffect, useState} from 'react';
 import {trim} from 'lodash';
 import {
-  FileIcon,
+  FileIcon, FlinkSQLSvg,
   FolderSvgExpand,
   JavaSvg,
   LogSvg,
@@ -35,6 +35,9 @@ import {
 } from '@/components/Icons/CodeLanguageIcon';
 import path from 'path';
 import {l} from '@/utils/intl';
+import {RightSide} from "@/pages/DataStudio/route";
+import {TabsItemType} from "@/pages/DataStudio/model";
+import {ProColumns} from "@ant-design/pro-table/es/typing";
 
 
 /**
@@ -113,8 +116,8 @@ export function parseJsonStr(jsonStr: string) {
 /**
  * get theme by localStorage's theme
  */
-export function getLocalTheme() {
-  return localStorage.getItem(THEME.NAV_THEME);
+export function getLocalTheme(): string {
+  return localStorage.getItem(THEME.NAV_THEME) ?? THEME.dark;
 }
 
 /**
@@ -250,7 +253,10 @@ export const getLanguage = (type: string): string => {
  * @param type file type
  */
 export const getIcon = (type: string) => {
-  switch (type) {
+  if (!type) {
+    return <FileIcon/>;
+  }
+  switch (type.toLowerCase()) {
     case DIALECT.JAVA:
       return <JavaSvg/>;
     case DIALECT.SCALA:
@@ -272,6 +278,8 @@ export const getIcon = (type: string) => {
       return <ShellSvg/>;
     case DIALECT.LOG:
       return <LogSvg/>;
+    case DIALECT.FLINK_SQL:
+      return <FlinkSQLSvg/>;
     default:
       return <FileIcon/>;
   }
@@ -370,7 +378,8 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
   let buildKey = item.path + folderSeparator() + item.name;
 
   const buildTitleLabel = () => {
-    return  <>{item.name}<span style={{color:'gray'}}> &nbsp;&nbsp;{l('global.size','',{size:item.size})}</span></>;
+    return <>{item.name}<span
+      style={{color: 'gray'}}> &nbsp;&nbsp;{l('global.size', '', {size: item.size})}</span></>;
   }
 
   // if has children , recursive build
@@ -406,7 +415,6 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
 });
 
 
-
 /**
  * Determine whether the file is supported
  * @returns {boolean}
@@ -414,15 +422,63 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
 export const unSupportView = (name: string) => {
 
   return name.endsWith(".jar")
-      || name.endsWith(".war")
-      || name.endsWith(".zip")
-      || name.endsWith(".tar.gz")
-      || name.endsWith(".tar")
-      || name.endsWith(".jpg")
-      || name.endsWith(".png")
-      || name.endsWith(".gif")
-      || name.endsWith(".bmp")
-      || name.endsWith(".jpeg")
-      || name.endsWith(".ico")
+    || name.endsWith(".war")
+    || name.endsWith(".zip")
+    || name.endsWith(".tar.gz")
+    || name.endsWith(".tar")
+    || name.endsWith(".jpg")
+    || name.endsWith(".png")
+    || name.endsWith(".gif")
+    || name.endsWith(".bmp")
+    || name.endsWith(".jpeg")
+    || name.endsWith(".ico")
+}
+
+
+/**
+ * search tree node
+ * @param originValue
+ * @param {string} searchValue
+ * @returns {any}
+ */
+export const searchTreeNode = (originValue: string, searchValue: string): any => {
+
+  let title = <>{originValue}</>;
+
+  // searchValue is not empty and trim() after length > 0
+  if (searchValue && searchValue.trim().length > 0) {
+    const searchIndex = originValue.indexOf(searchValue); // search index
+    const beforeStr = originValue.substring(0, searchIndex); // before search value
+    const afterStr = originValue.substring(searchIndex + searchValue.length); // after search value
+    // when search index > -1, return render title, else return origin title
+    title = searchIndex > -1 ?
+      <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
+      : <span className={'treeList'}>{title}</span>;
+  }
+  return title
+};
+
+export const transformTreeData = <T, >(data: T[]): T[] => {
+  return data.map((item: T, index) => {
+    return {...item, key: index}
+  });
+}
+
+export const transformTableDataToCsv = <T, >(column: string[], data: T[]): string => {
+  let row = "";
+  let csvData = "";
+  for (const title of column) {
+    row += '"' + title + '",';
+  }
+  const delimiter = "\r\n";
+  csvData += row + delimiter; // 添加换行符号
+  for (const item of data) {
+    row = "";
+    for (let key in item) {
+      row += '"' + (item[key] ?? '') + '",';
+    }
+    csvData += row + delimiter; // 添加换行符号
+  }
+  return csvData;
 }
 

@@ -32,6 +32,7 @@ import org.dinky.data.result.SelectResult;
 import org.dinky.data.result.SqlExplainResult;
 import org.dinky.explainer.lineage.LineageResult;
 import org.dinky.job.JobResult;
+import org.dinky.metadata.result.JdbcSelectResult;
 
 import java.util.List;
 
@@ -57,16 +58,17 @@ public interface StudioService {
 
     ObjectNode getJobPlan(StudioExecuteDTO studioExecuteDTO);
 
+    JdbcSelectResult getCommonSqlData(Integer taskId);
+
     SelectResult getJobData(String jobId);
 
     LineageResult getLineage(StudioCADTO studioCADTO);
 
-    List<JsonNode> listJobs(Integer clusterId);
+    List<JsonNode> listFlinkJobs(Integer clusterId);
 
-    boolean cancel(Integer clusterId, String jobId);
+    boolean cancelFlinkJob(Integer clusterId, String jobId);
 
-    boolean savepoint(
-            Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
+    boolean savepointTrigger(Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);
 

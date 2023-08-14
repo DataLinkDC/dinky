@@ -41,7 +41,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -55,7 +54,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -75,42 +73,36 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     public AlertResult testAlert(AlertInstance alertInstance) {
-        AlertConfig alertConfig =
-                AlertConfig.build(
-                        alertInstance.getName(),
-                        alertInstance.getType(),
-                        JSONUtil.toMap(alertInstance.getParams()));
+        AlertConfig alertConfig = AlertConfig.build(
+                alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.buildTest(alertConfig);
 
         AlertMsg alertMsg = getAlertMsg(alertInstance);
-        String title =
-                Status.TEST_MSG_JOB_NAME_TITLE.getMsg()
-                        + "【"
-                        + alertMsg.getJobName()
-                        + "】："
-                        + alertMsg.getJobStatus()
-                        + "!";
+        String title = Status.TEST_MSG_JOB_NAME_TITLE.getMsg()
+                + "【"
+                + alertMsg.getJobName()
+                + "】："
+                + alertMsg.getJobStatus()
+                + "!";
         return alert.send(title, alertMsg.toString());
     }
 
     private static AlertMsg getAlertMsg(AlertInstance alertInstance) {
         String currentDateTime =
-                LocalDateTime.now()
-                        .format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
+                LocalDateTime.now().format(DateTimeFormatter.ofPattern(BaseConstant.YYYY_MM_DD_HH_MM_SS));
 
         String uuid = UUID.randomUUID().toString();
 
-        AlertMsg.AlertMsgBuilder alertMsgBuilder =
-                AlertMsg.builder()
-                        .alertType(Status.TEST_MSG_TITLE.getMsg())
-                        .alertTime(currentDateTime)
-                        .jobID(uuid)
-                        .jobName(Status.TEST_MSG_JOB_NAME.getMsg())
-                        .jobType("SQL")
-                        .jobStatus("FAILED")
-                        .jobStartTime(currentDateTime)
-                        .jobEndTime(currentDateTime)
-                        .jobDuration("1 Seconds");
+        AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
+                .alertType(Status.TEST_MSG_TITLE.getMsg())
+                .alertTime(currentDateTime)
+                .jobID(uuid)
+                .jobName(Status.TEST_MSG_JOB_NAME.getMsg())
+                .jobType("SQL")
+                .jobStatus("FAILED")
+                .jobStartTime(currentDateTime)
+                .jobEndTime(currentDateTime)
+                .jobDuration("1 Seconds");
 
         String linkUrl = "http://cdh1:8081/#/job/" + uuid + "/overview";
         String exceptionUrl = "http://cdh1:8081/#/job/" + uuid + "/exceptions";
@@ -118,10 +110,8 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
         if (!alertInstance.getType().equals("Sms")) {
             if (map.get("msgtype").equals(ShowType.MARKDOWN.getValue())) {
-                alertMsgBuilder.linkUrl(
-                        "[" + Status.TEST_MSG_JOB_URL.getMsg() + " FlinkWeb](" + linkUrl + ")");
-                alertMsgBuilder.exceptionUrl(
-                        "[" + Status.TEST_MSG_JOB_LOG_URL.getMsg() + "](" + exceptionUrl + ")");
+                alertMsgBuilder.linkUrl("[" + Status.TEST_MSG_JOB_URL.getMsg() + " FlinkWeb](" + linkUrl + ")");
+                alertMsgBuilder.exceptionUrl("[" + Status.TEST_MSG_JOB_LOG_URL.getMsg() + "](" + exceptionUrl + ")");
             } else {
                 alertMsgBuilder.linkUrl(linkUrl);
                 alertMsgBuilder.exceptionUrl(exceptionUrl);
@@ -132,30 +122,6 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
         }
         AlertMsg alertMsg = alertMsgBuilder.build();
         return alertMsg;
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
-    public Result<Void> deleteAlertInstance(JsonNode para) {
-        if (para.size() > 0) {
-            final Map<Integer, Set<Integer>> alertGroupInformation = getAlertGroupInformation();
-            final List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!this.removeById(id)) {
-                    error.add(id);
-                }
-                alertGroupInformation.remove(id);
-            }
-            writeBackGroupInformation(alertGroupInformation);
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -178,7 +144,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean enable(Integer id) {
+    public Boolean modifyAlertInstanceStatus(Integer id) {
         AlertInstance alertInstance = getById(id);
         alertInstance.setEnabled(!alertInstance.getEnabled());
         return updateById(alertInstance);
@@ -198,9 +164,7 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
                 final String instanceIdString = result.get(groupId);
                 result.put(
                         groupId,
-                        instanceIdString == null
-                                ? "" + entry.getKey()
-                                : instanceIdString + "," + entry.getKey());
+                        instanceIdString == null ? "" + entry.getKey() : instanceIdString + "," + entry.getKey());
             }
         }
         updateAlertGroupInformation(result, alertGroupInformation.get(null));
@@ -208,26 +172,22 @@ public class AlertInstanceServiceImpl extends SuperServiceImpl<AlertInstanceMapp
 
     private void updateAlertGroupInformation(Map<Integer, String> result, Set<Integer> groupIdSet) {
         final LocalDateTime now = LocalDateTime.now();
-        final List<AlertGroup> list =
-                groupIdSet.stream()
-                        .filter(Objects::nonNull)
-                        .map(
-                                groupId -> {
-                                    final AlertGroup alertGroup = new AlertGroup();
-                                    alertGroup.setId(groupId);
-                                    final String groupIds = result.get(groupId);
-                                    alertGroup.setAlertInstanceIds(
-                                            groupIds == null ? "" : groupIds);
-                                    return alertGroup;
-                                })
-                        .collect(Collectors.toList());
+        final List<AlertGroup> list = groupIdSet.stream()
+                .filter(Objects::nonNull)
+                .map(groupId -> {
+                    final AlertGroup alertGroup = new AlertGroup();
+                    alertGroup.setId(groupId);
+                    final String groupIds = result.get(groupId);
+                    alertGroup.setAlertInstanceIds(groupIds == null ? "" : groupIds);
+                    return alertGroup;
+                })
+                .collect(Collectors.toList());
         alertGroupService.updateBatchById(list);
     }
 
     private Map<Integer, Set<Integer>> getAlertGroupInformation() {
         final LambdaQueryWrapper<AlertGroup> select =
-                new LambdaQueryWrapper<AlertGroup>()
-                        .select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
+                new LambdaQueryWrapper<AlertGroup>().select(AlertGroup::getId, AlertGroup::getAlertInstanceIds);
         final List<AlertGroup> list = alertGroupService.list(select);
         if (CollectionUtils.isEmpty(list)) {
             return new HashMap<>(0);

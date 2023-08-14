@@ -78,27 +78,14 @@ public class WeChatSender {
 
     WeChatSender(Map<String, String> config) {
         sendType = config.get(WeChatConstants.SEND_TYPE);
-        weChatAgentId =
-                sendType.equals(WeChatType.CHAT.getValue())
-                        ? ""
-                        : config.get(WeChatConstants.AGENT_ID);
+        weChatAgentId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.AGENT_ID);
         atAll = Boolean.valueOf(config.get(WeChatConstants.AT_ALL));
-        weChatUsers =
-                sendType.equals(WeChatType.CHAT.getValue())
-                        ? (atAll && config.get(WeChatConstants.AT_USERS) == null
-                                ? ""
-                                : config.get(WeChatConstants.AT_USERS))
-                        : config.get(WeChatConstants.AT_USERS);
-        String weChatCorpId =
-                sendType.equals(WeChatType.CHAT.getValue())
-                        ? ""
-                        : config.get(WeChatConstants.CORP_ID);
-        String weChatSecret =
-                sendType.equals(WeChatType.CHAT.getValue())
-                        ? ""
-                        : config.get(WeChatConstants.SECRET);
-        String weChatTokenUrl =
-                sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.WECHAT_TOKEN_URL;
+        weChatUsers = sendType.equals(WeChatType.CHAT.getValue())
+                ? (atAll && config.get(WeChatConstants.AT_USERS) == null ? "" : config.get(WeChatConstants.AT_USERS))
+                : config.get(WeChatConstants.AT_USERS);
+        String weChatCorpId = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.CORP_ID);
+        String weChatSecret = sendType.equals(WeChatType.CHAT.getValue()) ? "" : config.get(WeChatConstants.SECRET);
+        String weChatTokenUrl = sendType.equals(WeChatType.CHAT.getValue()) ? "" : WeChatConstants.WECHAT_TOKEN_URL;
         weChatUserSendMsg = WeChatConstants.WECHAT_APP_TEMPLATE;
 
         msgType = config.get(WeChatConstants.MSG_TYPE);
@@ -110,9 +97,7 @@ public class WeChatSender {
             requireNonNull(webhookUrl, WeChatConstants.WEB_HOOK + " must not null");
         }
         weChatTokenUrlReplace =
-                weChatTokenUrl
-                        .replace(CORP_ID_REGEX, weChatCorpId)
-                        .replace(SECRET_REGEX, weChatSecret);
+                weChatTokenUrl.replace(CORP_ID_REGEX, weChatCorpId).replace(SECRET_REGEX, weChatSecret);
         weChatToken = getToken();
     }
 
@@ -161,8 +146,7 @@ public class WeChatSender {
      * @param sendMsgOfResult
      * @return
      */
-    private String replaceParamsToBuildSendMsgTemplate(
-            List<String> userList, String sendMsgOfResult) {
+    private String replaceParamsToBuildSendMsgTemplate(List<String> userList, String sendMsgOfResult) {
         if (sendType.equals(WeChatType.APP.getValue())) {
             return weChatUserSendMsg
                     .replace(USER_REG_EXP, buildAtUserList(userList))
@@ -248,14 +232,13 @@ public class WeChatSender {
 
         StringBuilder builder = new StringBuilder("\n");
         if (Asserts.isNotNull(userList)) {
-            userList.forEach(
-                    value -> {
-                        if ("all".equals(value) && msgType.equals(ShowType.TEXT.getValue())) {
-                            builder.append("@all ");
-                        } else {
-                            builder.append("<@").append(value).append("> ");
-                        }
-                    });
+            userList.forEach(value -> {
+                if ("all".equals(value) && msgType.equals(ShowType.TEXT.getValue())) {
+                    builder.append("@all ");
+                } else {
+                    builder.append("<@").append(value).append("> ");
+                }
+            });
         }
         return builder.toString();
     }
@@ -282,8 +265,7 @@ public class WeChatSender {
         for (LinkedHashMap mapItems : mapItemsList) {
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-            StringBuilder t =
-                    new StringBuilder(String.format("`%s`%s", title, WeChatConstants.ENTER_LINE));
+            StringBuilder t = new StringBuilder(String.format("`%s`%s", title, WeChatConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 

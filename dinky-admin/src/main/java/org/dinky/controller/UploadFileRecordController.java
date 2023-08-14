@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /** FileUploadController */
@@ -43,11 +44,13 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/api/uploadFileRecord")
 public class UploadFileRecordController {
 
-    @Resource private UploadFileRecordService uploadFileRecordService;
+    @Resource
+    private UploadFileRecordService uploadFileRecordService;
 
     /** @param record {@link UploadFileRecord} */
     @PostMapping("/list")
-    public Result<String> get(@RequestBody UploadFileRecord record) {
+    @ApiOperation("Get Upload List")
+    public Result<String> getUploadFileRecord(@RequestBody UploadFileRecord record) {
         List<UploadFileRecord> records = uploadFileRecordService.list(new QueryWrapper<>(record));
         return Result.succeed(JSONUtil.toJsonStr(records));
     }

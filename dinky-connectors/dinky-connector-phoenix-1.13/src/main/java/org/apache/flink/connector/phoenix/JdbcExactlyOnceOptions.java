@@ -118,8 +118,7 @@ public class JdbcExactlyOnceOptions implements Serializable {
          * transactions from being blocked by the older ones. Each subtask rollbacks its own
          * transaction. This flag must be disabled when rescaling to prevent data loss.
          */
-        public JDBCExactlyOnceOptionsBuilder withRecoveredAndRollback(
-                boolean recoveredAndRollback) {
+        public JDBCExactlyOnceOptionsBuilder withRecoveredAndRollback(boolean recoveredAndRollback) {
             this.recoveredAndRollback = recoveredAndRollback;
             return this;
         }
@@ -137,8 +136,7 @@ public class JdbcExactlyOnceOptions implements Serializable {
          * Set whether transactions may be committed out-of-order in case of retries and this option
          * is enabled.
          */
-        public JDBCExactlyOnceOptionsBuilder withAllowOutOfOrderCommits(
-                boolean allowOutOfOrderCommits) {
+        public JDBCExactlyOnceOptionsBuilder withAllowOutOfOrderCommits(boolean allowOutOfOrderCommits) {
             this.allowOutOfOrderCommits = allowOutOfOrderCommits;
             return this;
         }
@@ -163,8 +161,7 @@ public class JdbcExactlyOnceOptions implements Serializable {
          *
          * <p>Disabled by default.
          */
-        public JDBCExactlyOnceOptionsBuilder withTransactionPerConnection(
-                boolean transactionPerConnection) {
+        public JDBCExactlyOnceOptionsBuilder withTransactionPerConnection(boolean transactionPerConnection) {
             this.transactionPerConnection = transactionPerConnection;
             return this;
         }

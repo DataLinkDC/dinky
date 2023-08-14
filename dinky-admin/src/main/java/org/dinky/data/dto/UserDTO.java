@@ -19,12 +19,14 @@
 
 package org.dinky.data.dto;
 
+import org.dinky.data.model.Menu;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
 
 import java.util.List;
 
+import cn.dev33.satoken.stp.SaTokenInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,5 +39,7 @@ public class UserDTO {
     private User user;
     private List<Role> roleList;
     private List<Tenant> tenantList;
+    private List<Menu> menuList;
     private Tenant currentTenant;
+    private SaTokenInfo tokenInfo;
 }

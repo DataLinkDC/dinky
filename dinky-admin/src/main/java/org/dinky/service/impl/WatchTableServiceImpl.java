@@ -45,8 +45,7 @@ public class WatchTableServiceImpl implements WatchTableService {
 
     private final Map<String, Set<Target>> registerTableMap = new ConcurrentHashMap<>();
 
-    private static final Pattern FULL_TABLE_NAME_PATTERN =
-            Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
+    private static final Pattern FULL_TABLE_NAME_PATTERN = Pattern.compile("^`(\\w+)`\\.`(\\w+)`\\.`(\\w+)`$");
 
     public WatchTableServiceImpl() {
         WatchTableListener watcher = new WatchTableListener(this::send);
@@ -177,10 +176,7 @@ public class WatchTableServiceImpl implements WatchTableService {
             try {
                 return new DatagramSocket(port);
             } catch (SocketException e) {
-                log.error(
-                        "WatchTableListener:DatagramSocket init failed, port {}: {}",
-                        PORT,
-                        e.getMessage());
+                log.error("WatchTableListener:DatagramSocket init failed, port {}: {}", PORT, e.getMessage());
             }
             return null;
         }

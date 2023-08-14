@@ -19,6 +19,9 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Configuration;
 import org.dinky.data.result.Result;
 import org.dinky.service.SysConfigService;
@@ -35,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -51,21 +55,31 @@ public class SysConfigController {
 
     private final SysConfigService sysConfigService;
 
-    /** 批量删除 */
+    /**
+     * modify system config
+     *
+     * @param params {@link Dict}
+     * @return {@link Result}<{@link Void}>
+     */
     @PostMapping("/modifyConfig")
+    @ApiOperation("Modify System Config")
+    @Log(title = "Modify System Config", businessType = BusinessType.UPDATE)
     public Result<Void> modifyConfig(@RequestBody Dict params) {
         sysConfigService.updateSysConfigByKv(params.getStr("key"), params.getStr("value"));
-        return Result.succeed();
+        return Result.succeed(Status.MODIFY_SUCCESS);
     }
 
-    /** 获取所有配置 */
+    /**
+     * query all system config
+     *
+     * @return {@link Result}<{@link Map}>
+     */
     @GetMapping("/getAll")
+    @ApiOperation("Query All System Config List")
     public Result<Map<String, List<Configuration<?>>>> getAll() {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
         Map<String, List<Configuration<?>>> map =
-                MapUtil.map(
-                        all,
-                        (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
+                MapUtil.map(all, (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
         return Result.succeed(map);
     }
 }

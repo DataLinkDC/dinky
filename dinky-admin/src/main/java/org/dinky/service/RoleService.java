@@ -25,30 +25,11 @@ import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 public interface RoleService extends ISuperService<Role> {
-
-    /**
-     * delete role by ids , the method will be {@link Deprecated} in the future , please use {@link
-     * #deleteRoleById(Integer)}
-     *
-     * @param para role id
-     * @return delete result code
-     */
-    @Deprecated
-    Result<Void> deleteRoles(JsonNode para);
-
-    /**
-     * create or update role , the method will be {@link Deprecated} in the future , please use
-     * {@link #addedOrUpdateRole(Role)}
-     *
-     * @param role
-     * @return
-     */
-    @Deprecated
-    Result<Void> saveOrUpdateRole(Role role);
 
     /**
      * create or update role
@@ -76,4 +57,20 @@ public interface RoleService extends ISuperService<Role> {
      * @return role list
      */
     List<Role> getRoleByUserId(Integer userId);
+
+    /**
+     * Query role permissions based on user ID.
+     *
+     * @param userId user ID
+     * @return permissions
+     */
+    Set<String> selectRolePermissionByUserId(Integer userId);
+
+    /**
+     * Query user role list by user ID.
+     *
+     * @param userId user ID
+     * @return role list
+     */
+    List<Integer> selectRoleListByUserId(Integer userId);
 }

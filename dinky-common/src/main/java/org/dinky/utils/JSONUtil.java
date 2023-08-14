@@ -30,8 +30,10 @@ import org.dinky.assertion.Asserts;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TimeZone;
 
 import org.slf4j.Logger;
@@ -50,6 +52,9 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.fasterxml.jackson.databind.type.CollectionType;
 
+import cn.hutool.json.JSONArray;
+import cn.hutool.json.JSONObject;
+
 /**
  * JSONUtil
  *
@@ -59,13 +64,12 @@ public class JSONUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JSONUtil.class);
 
-    private static final ObjectMapper objectMapper =
-            new ObjectMapper()
-                    .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
-                    .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-                    .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
-                    .setTimeZone(TimeZone.getDefault());
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+            .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+            .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
+            .setTimeZone(TimeZone.getDefault());
 
     public static ArrayNode createArrayNode() {
         return objectMapper.createArrayNode();
@@ -115,8 +119,7 @@ public class JSONUtil {
             return Collections.emptyList();
         }
         try {
-            CollectionType listType =
-                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
+            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
             return objectMapper.readValue(json, listType);
         } catch (Exception e) {
             logger.error("parse list exception!", e);
@@ -199,5 +202,23 @@ public class JSONUtil {
                 return node.toString();
             }
         }
+    }
+
+    public static JSONObject merge(JSONObject mergeTo, JSONObject... values) {
+        for (JSONObject value : values) {
+            Set<String> allKeys = new HashSet<>();
+            allKeys.addAll(mergeTo.keySet());
+            allKeys.addAll(value.keySet());
+            for (String key : allKeys) {
+                if (value.containsKey(key)) {
+                    if (value.get(key) instanceof JSONObject) {
+                        return merge((JSONObject) mergeTo.get(key), (JSONObject) value.get(key));
+                    } else if (value.get(key) instanceof JSONArray) {
+                        ((JSONArray) mergeTo.get(key)).addAll(((JSONArray) value.get(key)));
+                    }
+                }
+            }
+        }
+        return mergeTo;
     }
 }

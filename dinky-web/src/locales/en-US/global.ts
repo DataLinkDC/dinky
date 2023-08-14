@@ -50,6 +50,8 @@ export default {
   'button.heartbeat': 'Heartbeat',
   'button.recycle': 'Recycle',
   'button.refresh': 'Refresh',
+  'button.expand-all': 'Expand All',
+  'button.collapse-all': 'Collapse All',
   'button.test': 'Test',
   'button.clear': 'Clear',
   'button.copy': 'Copy',
@@ -71,8 +73,11 @@ export default {
   'button.stopRefresh': 'Stop Auto Refresh',
   'button.startRefresh': 'Start Auto Refresh(5s/e)',
 
+  'menu.menu': 'Menu',
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
+  'right.menu.addSub': 'Add Sub Item',
+  'right.menu.addRoot': 'Add Root Menu',
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
@@ -83,7 +88,6 @@ export default {
   'right.menu.paste': 'Paste',
   'right.menu.delete': 'Delete',
   'right.menu.createCatalogue': 'Create Directory',
-  'right.menu.createRootCatalogue': 'Create Root Directory',
   'right.menu.uploadZipToCreate': 'Upload Zip To Create',
   'right.menu.createTask': 'Create Task',
   'right.menu.closeAll': 'Close All',
@@ -104,6 +108,9 @@ export default {
   'global.time.millisecond': 'ms ',
 
   'global.stay.tuned': 'Stay tuned',
+  'global.mini': 'Mini Size',
+  'global.max':'Max Size',
+
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -132,11 +139,11 @@ export default {
   'global.table.status.abnormal': 'Abnormal',
 
   'global.table.jobname': 'Job Name',
-  'global.table.jobid': 'Job Id',
-  'global.table.taskid': 'Task Id',
   'global.table.lifecycle': 'Life Cycle',
   'global.table.lifecycle.all': 'All',
   'global.table.lifecycle.dev': 'Develop',
+  'global.table.execmode.batch': 'Batch Mode',
+  'global.table.execmode.streaming': 'Stream Mode',
   'global.table.lifecycle.publish': 'Publish',
   'global.table.lifecycle.online': 'Online',
   'global.table.lifecycle.unknown': 'Unknown',
@@ -144,6 +151,8 @@ export default {
   'global.table.runmode': 'Run Mode',
   'global.table.runmode.local': 'Local',
   'global.table.runmode.remote': 'Remote',
+
+  'global.search.text': 'Input Key to Search',
 
   'global.savepoint.strategy.disabled': 'Disabled',
   'global.savepoint.strategy.latest': 'Latest',
@@ -157,6 +166,7 @@ export default {
 
   'global.info': 'Info',
   'global.error': 'Error',
+  'global.result': 'Result',
   'global.warning': 'Warning',
   'global.success': 'Success',
   'global.getdata.tips': 'Get Data',

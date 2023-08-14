@@ -28,7 +28,7 @@ import {
     STATUS_ENUM,
     STATUS_MAPPING,
 } from "@/services/constants";
-import {handleAddOrUpdate, handleRemoveById, updateEnabled} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import GlobalVarModal from "@/pages/RegCenter/GlobalVar/components/GlobalVarModal";
@@ -73,7 +73,7 @@ const GlobalVarProTable = () => {
      */
     const handleChangeEnable = async (value: Partial<GlobalVar>) => {
       await executeAndCallbackRefresh(async () => {
-            await updateEnabled(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
+            await updateDataByParam(API_CONSTANTS.GLOBAL_VARIABLE_ENABLE, {id: value.id});
         })
     };
 

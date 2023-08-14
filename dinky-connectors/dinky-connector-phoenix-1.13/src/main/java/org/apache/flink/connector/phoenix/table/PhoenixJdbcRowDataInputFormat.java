@@ -109,9 +109,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                 dbConn.setAutoCommit(this.autoCommit);
             }
 
-            this.statement =
-                    dbConn.prepareStatement(
-                            this.queryTemplate, this.resultSetType, this.resultSetConcurrency);
+            this.statement = dbConn.prepareStatement(this.queryTemplate, this.resultSetType, this.resultSetConcurrency);
             if (this.fetchSize == -2147483648 || this.fetchSize > 0) {
                 this.statement.setFetchSize(this.fetchSize);
             }
@@ -119,8 +117,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
         } catch (SQLException var2) {
             throw new IllegalArgumentException("open() failed." + var2.getMessage(), var2);
         } catch (ClassNotFoundException var3) {
-            throw new IllegalArgumentException(
-                    "JDBC-Class not found. - " + var3.getMessage(), var3);
+            throw new IllegalArgumentException("JDBC-Class not found. - " + var3.getMessage(), var3);
         }
     }
 
@@ -170,12 +167,11 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                         this.statement.setTimestamp(i + 1, (Timestamp) param);
                     } else {
                         if (!(param instanceof Array)) {
-                            throw new IllegalArgumentException(
-                                    "open() failed. Parameter "
-                                            + i
-                                            + " of type "
-                                            + param.getClass()
-                                            + " is not handled (yet).");
+                            throw new IllegalArgumentException("open() failed. Parameter "
+                                    + i
+                                    + " of type "
+                                    + param.getClass()
+                                    + " is not handled (yet).");
                         }
 
                         this.statement.setArray(i + 1, (Array) param);
@@ -183,12 +179,10 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                            String.format(
-                                    "Executing '%s' with parameters %s",
-                                    this.queryTemplate,
-                                    Arrays.deepToString(
-                                            this.parameterValues[inputSplit.getSplitNumber()])));
+                    LOG.debug(String.format(
+                            "Executing '%s' with parameters %s",
+                            this.queryTemplate,
+                            Arrays.deepToString(this.parameterValues[inputSplit.getSplitNumber()])));
                 }
             }
 
@@ -357,7 +351,7 @@ public class PhoenixJdbcRowDataInputFormat extends RichInputFormat<RowData, Inpu
             } else {
                 if (this.parameterValues == null) {
                     PhoenixJdbcRowDataInputFormat.LOG.debug(
-                            "No input splitting configured (data will be read with parallelism 1).");
+                            "No input splitting configured (data will be read with parallelism" + " 1).");
                 }
 
                 return new PhoenixJdbcRowDataInputFormat(

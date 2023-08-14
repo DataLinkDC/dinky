@@ -83,10 +83,7 @@ public class LineageColumn implements Comparable<LineageColumn> {
     private Boolean isEnd = false;
 
     public void setSourceTableName(String sourceTableName) {
-        sourceTableName =
-                Asserts.isNotNullString(sourceTableName)
-                        ? sourceTableName.replace("`", "")
-                        : sourceTableName;
+        sourceTableName = Asserts.isNotNullString(sourceTableName) ? sourceTableName.replace("`", "") : sourceTableName;
         if (sourceTableName.contains(" ")) {
             sourceTableName = sourceTableName.substring(0, sourceTableName.indexOf(" "));
         }
@@ -102,8 +99,7 @@ public class LineageColumn implements Comparable<LineageColumn> {
     }
 
     public int compareTo(LineageColumn o) {
-        if (Asserts.isNotNullString(this.getSourceDbName())
-                && Asserts.isNotNullString(this.getSourceTableName())) {
+        if (Asserts.isNotNullString(this.getSourceDbName()) && Asserts.isNotNullString(this.getSourceTableName())) {
             if (this.getSourceDbName().equals(o.getSourceDbName())
                     && this.getSourceTableName().equals(o.getSourceTableName())
                     && this.getTargetColumnName().equals(o.getTargetColumnName())) {
@@ -138,8 +134,7 @@ public class LineageColumn implements Comparable<LineageColumn> {
             return false;
         }
 
-        if (Asserts.isNotNullString(sourceTableName)
-                && !sourceTableName.equals(myColumn.sourceTableName)) {
+        if (Asserts.isNotNullString(sourceTableName) && !sourceTableName.equals(myColumn.sourceTableName)) {
             return false;
         }
 

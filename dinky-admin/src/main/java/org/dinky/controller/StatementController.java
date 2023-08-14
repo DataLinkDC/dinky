@@ -19,17 +19,17 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Statement;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.StatementService;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,9 +57,16 @@ public class StatementController {
     private final StatementService statementService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    /** 新增或者更新 */
+    /**
+     * Insert or update statement
+     *
+     * @param statement {@link Statement}
+     * @return {@link Result}<{@link Void}>
+     */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Statement statement) throws Exception {
+    @ApiOperation("Insert Or Update Statement")
+    @Log(title = "Insert Or Update Statement", businessType = BusinessType.INSERT_OR_UPDATE)
+    public Result<Void> saveOrUpdateStatement(@RequestBody Statement statement) {
         if (statementService.saveOrUpdate(statement)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -66,42 +74,20 @@ public class StatementController {
         }
     }
 
-    /** 动态查询列表 */
+    /**
+     * query statement list
+     *
+     * @param para {@link JsonNode} params
+     * @return {@link ProTableResult}<{@link Statement}>
+     */
     @PostMapping
+    @ApiOperation("Query Statement List")
     public ProTableResult<Statement> listStatements(@RequestBody JsonNode para) {
         return statementService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            boolean isAdmin = false;
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!statementService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0 && !isAdmin) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    public Result<Statement> getOneById(@RequestBody Statement statement) throws Exception {
-        statement = statementService.getById(statement.getId());
-        return Result.succeed(statement);
-    }
-
     @PostMapping("/getWatchTables")
+    @ApiOperation("Get Watch Tables")
     @SuppressWarnings("unchecked")
     public Result<List<String>> getWatchTables(@RequestBody String statement) {
         try {

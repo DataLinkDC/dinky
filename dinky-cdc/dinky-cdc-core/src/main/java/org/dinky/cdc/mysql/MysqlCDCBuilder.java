@@ -71,10 +71,8 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         String connectionPoolSize = source.get("connection.pool.size");
         String heartbeatInterval = source.get("heartbeat.interval");
         String chunkSize = source.get("scan.incremental.snapshot.chunk.size");
-        String distributionFactorLower =
-                source.get("chunk-key.even-distribution.factor.upper-bound");
-        String distributionFactorUpper =
-                source.get("chunk-key.even-distribution.factor.lower-bound");
+        String distributionFactorLower = source.get("chunk-key.even-distribution.factor.upper-bound");
+        String distributionFactorUpper = source.get("chunk-key.even-distribution.factor.lower-bound");
         String scanNewlyAddedTableEnabled = source.get("scan.newly-added-table.enabled");
         String schemaChanges = source.get("schema.changes");
 
@@ -83,30 +81,25 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
         debeziumProperties.setProperty("bigint.unsigned.handling.mode", "long");
         debeziumProperties.setProperty("decimal.handling.mode", "string");
 
-        config.getDebezium()
-                .forEach(
-                        (key, value) -> {
-                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                                debeziumProperties.setProperty(key, value);
-                            }
-                        });
+        config.getDebezium().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                debeziumProperties.setProperty(key, value);
+            }
+        });
 
         // 添加jdbc参数注入
         Properties jdbcProperties = new Properties();
-        config.getJdbc()
-                .forEach(
-                        (key, value) -> {
-                            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
-                                jdbcProperties.setProperty(key, value);
-                            }
-                        });
+        config.getJdbc().forEach((key, value) -> {
+            if (Asserts.isNotNullString(key) && Asserts.isNotNullString(value)) {
+                jdbcProperties.setProperty(key, value);
+            }
+        });
 
-        MySqlSourceBuilder<String> sourceBuilder =
-                MySqlSource.<String>builder()
-                        .hostname(config.getHostname())
-                        .port(config.getPort())
-                        .username(config.getUsername())
-                        .password(config.getPassword());
+        MySqlSourceBuilder<String> sourceBuilder = MySqlSource.<String>builder()
+                .hostname(config.getHostname())
+                .port(config.getPort())
+                .username(config.getUsername())
+                .password(config.getPassword());
 
         String database = config.getDatabase();
         if (Asserts.isNotNullString(database)) {
@@ -189,8 +182,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
             sourceBuilder.includeSchemaChanges(true);
         }
 
-        return env.fromSource(
-                sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
+        return env.fromSource(sourceBuilder.build(), WatermarkStrategy.noWatermarks(), "MySQL CDC Source");
     }
 
     @Override
@@ -218,10 +210,7 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
     protected String generateUrl(String schema) {
         return String.format(
                 "jdbc:mysql://%s:%d/%s%s",
-                config.getHostname(),
-                config.getPort(),
-                schema,
-                composeJdbcProperties(config.getJdbc()));
+                config.getHostname(), config.getPort(), schema, composeJdbcProperties(config.getJdbc()));
     }
 
     private String composeJdbcProperties(Map<String, String> jdbcProperties) {
@@ -231,13 +220,12 @@ public class MysqlCDCBuilder extends AbstractCDCBuilder {
 
         StringBuilder sb = new StringBuilder();
         sb.append('?');
-        jdbcProperties.forEach(
-                (k, v) -> {
-                    sb.append(k);
-                    sb.append("=");
-                    sb.append(v);
-                    sb.append("&");
-                });
+        jdbcProperties.forEach((k, v) -> {
+            sb.append(k);
+            sb.append("=");
+            sb.append(v);
+            sb.append("&");
+        });
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
     }

@@ -15,12 +15,26 @@
  * limitations under the License.
  */
 
+import { API } from './services/data';
+
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
 export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
   const { currentUser } = initialState ?? {};
   return {
-    canAdmin: currentUser && currentUser.user.isAdmin,
+    canAdmin: currentUser && currentUser.user.superAdminFlag,
+    canAuth({ path, ...route }) {
+      if (currentUser && currentUser.user.superAdminFlag) {
+        return true;
+      }
+
+      //TODO根据path判断应用、目录、菜单、按钮，判断返回true,false
+      //TODOpath可以是window.location.href、key
+
+      return currentUser?.menuList?.some?.(
+        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path),
+      );
+    },
   };
 }

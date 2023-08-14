@@ -62,7 +62,7 @@ public abstract class AbstractGateway implements Gateway {
 
     protected static final Logger logger = LoggerFactory.getLogger(AbstractGateway.class);
     protected GatewayConfig config;
-    protected Configuration configuration;
+    protected Configuration configuration = new Configuration();
 
     public AbstractGateway() {}
 
@@ -86,9 +86,7 @@ public abstract class AbstractGateway implements Gateway {
         if (Asserts.isNotNull(configMap)) {
             configMap.entrySet().stream()
                     .filter(entry -> Asserts.isAllNotNullString(entry.getKey(), entry.getValue()))
-                    .forEach(
-                            entry ->
-                                    this.configuration.setString(entry.getKey(), entry.getValue()));
+                    .forEach(entry -> this.configuration.setString(entry.getKey(), entry.getValue()));
         }
     }
 
@@ -100,8 +98,7 @@ public abstract class AbstractGateway implements Gateway {
         return savepointJob(null);
     }
 
-    protected <T> void runSavePointJob(
-            List<JobInfo> jobInfos, ClusterClient<T> clusterClient, String savePoint)
+    protected <T> void runSavePointJob(List<JobInfo> jobInfos, ClusterClient<T> clusterClient, String savePoint)
             throws Exception {
         for (JobInfo jobInfo : jobInfos) {
             if (ActionType.CANCEL == config.getFlinkConfig().getAction()) {
@@ -111,20 +108,14 @@ public abstract class AbstractGateway implements Gateway {
             }
             switch (config.getFlinkConfig().getSavePointType()) {
                 case TRIGGER:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.triggerSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.triggerSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     break;
                 case STOP:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.stopWithSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.stopWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.STOP);
                     break;
                 case CANCEL:
-                    jobInfo.setSavePoint(
-                            FlinkUtil.cancelWithSavepoint(
-                                    clusterClient, jobInfo.getJobId(), savePoint));
+                    jobInfo.setSavePoint(FlinkUtil.cancelWithSavepoint(clusterClient, jobInfo.getJobId(), savePoint));
                     jobInfo.setStatus(JobInfo.JobStatus.CANCEL);
                     break;
                 default:
@@ -137,10 +128,8 @@ public abstract class AbstractGateway implements Gateway {
         SavePointResult result = SavePointResult.build(getType());
         try (ClusterClient<T> clusterClient =
                 clusterDescriptor.retrieve(applicationId).getClusterClient()) {
-            List<JobInfo> jobInfos =
-                    Collections.singletonList(
-                            new JobInfo(
-                                    config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
+            List<JobInfo> jobInfos = Collections.singletonList(
+                    new JobInfo(config.getFlinkConfig().getJobId(), JobInfo.JobStatus.FAIL));
             runSavePointJob(jobInfos, clusterClient, savePoint);
             result.setJobInfos(jobInfos);
         } catch (Exception e) {
@@ -155,8 +144,7 @@ public abstract class AbstractGateway implements Gateway {
         try (ClusterClient<T> clusterClient =
                 clusterDescriptor.retrieve(applicationId).getClusterClient()) {
             List<JobInfo> jobInfos = new ArrayList<>();
-            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture =
-                    clusterClient.listJobs();
+            CompletableFuture<Collection<JobStatusMessage>> listJobsFuture = clusterClient.listJobs();
             for (JobStatusMessage jobStatusMessage : listJobsFuture.get()) {
                 JobInfo jobInfo = new JobInfo(jobStatusMessage.getJobId().toHexString());
                 jobInfo.setStatus(JobInfo.JobStatus.RUN);
@@ -190,9 +178,7 @@ public abstract class AbstractGateway implements Gateway {
         if (configuration.contains(CheckpointingOptions.CHECKPOINTS_DIRECTORY)) {
             configuration.set(
                     CheckpointingOptions.CHECKPOINTS_DIRECTORY,
-                    configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY)
-                            + "/"
-                            + uuid);
+                    configuration.getString(CheckpointingOptions.CHECKPOINTS_DIRECTORY) + "/" + uuid);
         }
 
         if (configuration.contains(CheckpointingOptions.SAVEPOINT_DIRECTORY)) {

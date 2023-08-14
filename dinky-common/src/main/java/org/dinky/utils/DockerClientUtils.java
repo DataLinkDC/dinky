@@ -49,30 +49,26 @@ public class DockerClientUtils {
 
     public DockerClientUtils(Docker docker) {
         this.docker = docker;
-        this.dockerfile =
-                FileUtil.writeUtf8String(
-                        docker.getDockerfile(),
-                        System.getProperty("user.dir") + "/tmp/dockerfile/" + UUID.randomUUID());
-        dockerClient =
-                DockerClientBuilder.getInstance(
-                                DefaultDockerClientConfig.createDefaultConfigBuilder()
-                                        .withDockerHost(docker.getInstance())
-                                        .withRegistryUrl(docker.getRegistryUrl())
-                                        .withRegistryUsername(docker.getRegistryUsername())
-                                        .withRegistryPassword(docker.getRegistryPassword())
-                                        .build())
-                        .build();
+        this.dockerfile = FileUtil.writeUtf8String(
+                docker.getDockerfile(), System.getProperty("user.dir") + "/tmp/dockerfile/" + UUID.randomUUID());
+        dockerClient = DockerClientBuilder.getInstance(DefaultDockerClientConfig.createDefaultConfigBuilder()
+                        .withDockerHost(docker.getInstance())
+                        .withRegistryUrl(docker.getRegistryUrl())
+                        .withRegistryUsername(docker.getRegistryUsername())
+                        .withRegistryPassword(docker.getRegistryPassword())
+                        .build())
+                .build();
         try {
-            log.info(
-                    "===============================  Initializing docker  ===============================");
+            log.info("===============================  Initializing docker " + " ===============================");
             Info info = dockerClient.infoCmd().exec();
-            log.info(
-                    "===============================  The docker connection is successful, the relevant information is as follows  ===============================");
+            log.info("===============================  The docker connection is successful, the"
+                    + " relevant information is as follows  ===============================");
             log.info(info.toString());
         } catch (Exception e) {
             e.printStackTrace();
             log.error(
-                    "The docker initialization failed. If k8s application mode must be used, please check the configuration and try again! reason:{}",
+                    "The docker initialization failed. If k8s application mode must be used,"
+                            + " please check the configuration and try again! reason:{}",
                     e.getMessage());
         }
     }
@@ -115,14 +111,13 @@ public class DockerClientUtils {
         dockerClient.listImagesCmd().exec().stream()
                 .filter(x -> x.getRepoTags() == null || "<none>:<none>".equals(x.getRepoTags()[0]))
                 .map(Image::getId)
-                .forEach(
-                        id -> {
-                            try {
-                                dockerClient.removeImageCmd(id).exec();
-                            } catch (Exception ignored) {
-                                log.warn("容器删除失败，id:{}", id);
-                            }
-                        });
+                .forEach(id -> {
+                    try {
+                        dockerClient.removeImageCmd(id).exec();
+                    } catch (Exception ignored) {
+                        log.warn("容器删除失败，id:{}", id);
+                    }
+                });
     }
 
     /**
@@ -131,8 +126,7 @@ public class DockerClientUtils {
      * @param client client
      * @return 创建容器
      */
-    public CreateContainerResponse createContainers(
-            DockerClient client, String containerName, String imageName) {
+    public CreateContainerResponse createContainers(DockerClient client, String containerName, String imageName) {
         return client.createContainerCmd(imageName).withName(containerName).exec();
     }
 

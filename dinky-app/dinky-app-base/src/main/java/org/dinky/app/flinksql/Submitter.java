@@ -33,7 +33,6 @@ import org.dinky.utils.ZipUtils;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.flink.configuration.CheckpointingOptions;
 import org.apache.flink.configuration.PipelineOptions;
 import org.apache.flink.python.PythonOptions;
 
@@ -53,7 +52,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -84,9 +82,10 @@ public class Submitter {
         if (id == null) {
             throw new SQLException("请指定任务ID");
         }
-        return "select id, name as jobName, type,check_point as checkPoint,"
-                + "save_point_path as savePointPath, parallelism,fragment as useSqlFragment,statement_set as useStatementSet,config_json as config,"
-                + " env_id as envId,batch_model AS useBatchModel from dinky_task where id = "
+        return "select id, name as jobName, type,check_point as checkPoint,save_point_path as"
+                + " savePointPath, parallelism,fragment as useSqlFragment,statement_set as"
+                + " useStatementSet,config_json as config, env_id as envId,batch_model AS"
+                + " useBatchModel from dinky_task where id = "
                 + id;
     }
 
@@ -176,33 +175,6 @@ public class Submitter {
         // 加载第三方jar
         loadDep(taskConfig.get("type"), id, dinkyAddr, executorSetting);
 
-        String uuid = UUID.randomUUID().toString().replace("-", "");
-        if (executorSetting
-                .getConfig()
-                .containsKey(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())) {
-            executorSetting
-                    .getConfig()
-                    .put(
-                            CheckpointingOptions.CHECKPOINTS_DIRECTORY.key(),
-                            executorSetting
-                                            .getConfig()
-                                            .get(CheckpointingOptions.CHECKPOINTS_DIRECTORY.key())
-                                    + "/"
-                                    + uuid);
-        }
-        if (executorSetting
-                .getConfig()
-                .containsKey(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())) {
-            executorSetting
-                    .getConfig()
-                    .put(
-                            CheckpointingOptions.SAVEPOINT_DIRECTORY.key(),
-                            executorSetting
-                                            .getConfig()
-                                            .get(CheckpointingOptions.SAVEPOINT_DIRECTORY.key())
-                                    + "/"
-                                    + uuid);
-        }
         logger.info("作业配置如下： {}", executorSetting);
         Executor executor = Executor.buildAppStreamExecutor(executorSetting);
         List<StatementParam> ddl = new ArrayList<>();
@@ -241,8 +213,7 @@ public class Submitter {
                         inserts.add(item.getValue());
                     }
                 }
-                logger.info(
-                        "正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
+                logger.info("正在执行 FlinkSQL 语句集： " + String.join(FlinkSQLConstant.SEPARATOR, inserts));
                 executor.submitStatementSet(inserts);
                 logger.info("执行成功");
             } else {
@@ -274,8 +245,7 @@ public class Submitter {
         logger.info("{}任务提交成功", LocalDateTime.now());
     }
 
-    private static void loadDep(
-            String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
+    private static void loadDep(String type, Integer taskId, String dinkyAddr, ExecutorSetting executorSetting) {
         if (StringUtils.isBlank(dinkyAddr)) {
             return;
         }
@@ -293,31 +263,23 @@ public class Submitter {
                     String depPath = flinkHome + "/dep";
                     ZipUtils.unzip(depZip, depPath);
                     // move all jar
-                    FileUtil.listFileNames(depPath + "/jar")
-                            .forEach(
-                                    f -> {
-                                        FileUtil.moveContent(
-                                                FileUtil.file(depPath + "/jar/" + f),
-                                                FileUtil.file(usrlib + "/" + f),
-                                                true);
-                                    });
-                    URL[] jarUrls =
-                            FileUtil.listFileNames(usrlib).stream()
-                                    .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
-                                    .toArray(URL[]::new);
-                    URL[] pyUrls =
-                            FileUtil.listFileNames(depPath + "/py/").stream()
-                                    .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
-                                    .toArray(URL[]::new);
+                    FileUtil.listFileNames(depPath + "/jar").forEach(f -> {
+                        FileUtil.moveContent(
+                                FileUtil.file(depPath + "/jar/" + f), FileUtil.file(usrlib + "/" + f), true);
+                    });
+                    URL[] jarUrls = FileUtil.listFileNames(usrlib).stream()
+                            .map(f -> URLUtil.getURL(FileUtil.file(usrlib, f)))
+                            .toArray(URL[]::new);
+                    URL[] pyUrls = FileUtil.listFileNames(depPath + "/py/").stream()
+                            .map(f -> URLUtil.getURL(FileUtil.file(depPath + "/py/", f)))
+                            .toArray(URL[]::new);
 
                     addURLs(jarUrls);
                     executorSetting
                             .getConfig()
                             .put(
                                     PipelineOptions.JARS.key(),
-                                    Arrays.stream(jarUrls)
-                                            .map(URL::toString)
-                                            .collect(Collectors.joining(";")));
+                                    Arrays.stream(jarUrls).map(URL::toString).collect(Collectors.joining(";")));
                     if (ArrayUtil.isNotEmpty(pyUrls)) {
                         executorSetting
                                 .getConfig()

@@ -33,6 +33,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +51,7 @@ public class HomeController {
      * @return {@link Result}<{@link HomeResource}>
      */
     @GetMapping("/getResourceOverview")
+    @ApiOperation("Query resource overview")
     public Result<HomeResource> getResourceOverview() {
         HomeResource resourceOverview = homeService.getResourceOverview();
         if (Asserts.isNull(resourceOverview)) {
@@ -64,6 +66,7 @@ public class HomeController {
      * @return {@link Result}<{@link JobStatusOverView}>
      */
     @GetMapping("/getJobStatusOverView")
+    @ApiOperation("Query job status overview")
     public Result<JobStatusOverView> getJobStatusOverView() {
         JobStatusOverView jobStatusOverView = homeService.getJobStatusOverView();
         if (Asserts.isNull(jobStatusOverView)) {
@@ -78,6 +81,7 @@ public class HomeController {
      * @return {@link Result}<{@link JobTypeOverView}>
      */
     @GetMapping("/getJobTypeOverview")
+    @ApiOperation("Query job type overview")
     public Result<List<JobTypeOverView>> getJobTypeOverView() {
         List<JobTypeOverView> jobTypeOverView = homeService.getJobTypeOverView();
         if (Asserts.isNull(jobTypeOverView)) {
@@ -92,6 +96,7 @@ public class HomeController {
      * @return {@link Result}<{@link JobModelOverview}>
      */
     @GetMapping("/getJobModelOverview")
+    @ApiOperation("Query job model overview")
     public Result<JobModelOverview> getJobModelOverview() {
         JobModelOverview jobModelOverview = homeService.getJobModelOverview();
         if (Asserts.isNull(jobModelOverview)) {

@@ -20,7 +20,9 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
 import org.dinky.data.constant.CommonConstant;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Column;
 import org.dinky.data.model.DataBase;
@@ -33,7 +35,6 @@ import org.dinky.metadata.driver.DriverPool;
 import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.service.DataBaseService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.cache.annotation.CacheEvict;
@@ -49,6 +50,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -72,7 +74,9 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody DataBase database) {
+    @Log(title = "Insert Or Update DataBase", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update DataBase")
+    public Result<Void> saveOrUpdateDataBase(@RequestBody DataBase database) {
         if (databaseService.saveOrUpdateDataBase(database)) {
             DriverPool.remove(database.getName());
             return Result.succeed(Status.SAVE_SUCCESS);
@@ -88,36 +92,16 @@ public class DataBaseController {
      * @return {@link ProTableResult}< {@link DataBase}>
      */
     @PostMapping
+    @ApiOperation("DataBase Get All")
     public ProTableResult<DataBase> listDataBases(@RequestBody JsonNode para) {
-        return databaseService.selectForProTable(para);
-    }
-
-    /**
-     * batch delete database , this method is {@link @Deprecated} , please use {@link
-     * #deleteById(Integer id)}
-     *
-     * @param para {@link JsonNode}
-     * @return {@link Result}< {@link Void}>
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!databaseService.removeById(id)) {
-                    error.add(id);
-                }
+        final ProTableResult<DataBase> result = databaseService.selectForProTable(para);
+        // 密码不返回
+        if (result != null && result.getData() != null) {
+            for (DataBase data : result.getData()) {
+                data.setPassword(null);
             }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
         }
+        return result;
     }
 
     /**
@@ -127,7 +111,9 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @DeleteMapping("/delete")
-    public Result<Void> deleteById(@RequestParam Integer id) {
+    @Log(title = "DataBase Delete By Id", businessType = BusinessType.DELETE)
+    @ApiOperation("DataBase Delete By Id")
+    public Result<Void> deleteDataBaseById(@RequestParam Integer id) {
         if (databaseService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
         }
@@ -141,8 +127,10 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (databaseService.enable(id)) {
+    @Log(title = "DataBase Enable Or Disable By Id", businessType = BusinessType.UPDATE)
+    @ApiOperation("DataBase Enable Or Disable By Id")
+    public Result<Void> modifyDataSourceStatus(@RequestParam Integer id) {
+        if (databaseService.modifyDataSourceStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         }
         return Result.failed(Status.MODIFY_FAILED);
@@ -154,6 +142,7 @@ public class DataBaseController {
      * @return {@link Result}< {@link List}< {@link DataBase}>>
      */
     @GetMapping("/listEnabledAll")
+    @ApiOperation("Get All DataBase Enabled")
     public Result<List<DataBase>> listEnabledAll() {
         List<DataBase> dataBases = databaseService.listEnabledAll();
         return Result.succeed(dataBases);
@@ -166,6 +155,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/testConnect")
+    @Log(title = "DataBase Test Connect", businessType = BusinessType.TEST)
+    @ApiOperation("DataBase Test Connect")
     public Result<Void> testConnect(@RequestBody DataBase database) {
         String msg = databaseService.testConnect(database);
         boolean isHealthy = Asserts.isEquals(CommonConstant.HEALTHY, msg);
@@ -177,57 +168,14 @@ public class DataBaseController {
     }
 
     /**
-     * heart beat check all database, this method is {@link @Deprecated} , please use {@link
-     * #checkHeartBeatById(Integer id)}
-     *
-     * @return {@link Result}< {@link Void}>
-     */
-    @PostMapping("/checkHeartBeats")
-    @Deprecated
-    public Result<Void> checkHeartBeats() {
-        List<DataBase> dataBases = databaseService.listEnabledAll();
-        for (DataBase dataBase : dataBases) {
-            try {
-                databaseService.checkHeartBeat(dataBase);
-            } finally {
-                databaseService.updateById(dataBase);
-            }
-        }
-        return Result.succeed("状态刷新完成");
-    }
-
-    /**
-     * heart beat check by id, this method is {@link @Deprecated} , please use {@link
-     * #checkHeartBeatByDataSourceId(Integer id)}
-     *
-     * @param id {@link Integer}
-     * @return {@link Result}< {@link Void}>
-     */
-    @GetMapping("/checkHeartBeatById")
-    @Deprecated
-    public Result<Void> checkHeartBeatById(@RequestParam Integer id) {
-        DataBase dataBase = databaseService.getById(id);
-        Asserts.checkNotNull(dataBase, "该数据源不存在！");
-        String error = "";
-        try {
-            databaseService.checkHeartBeat(dataBase);
-        } catch (Exception e) {
-            error = e.getMessage();
-        }
-        databaseService.updateById(dataBase);
-        if (Asserts.isNotNullString(error)) {
-            return Result.failed(error);
-        }
-        return Result.succeed("数据源连接正常");
-    }
-
-    /**
      * heart beat check by id
      *
      * @param id {@link Integer}
      * @return {@link Result}< {@link Void}>
      */
     @PutMapping("/checkHeartBeatByDataSourceId")
+    @Log(title = "DataBase Check Heart Beat By Id", businessType = BusinessType.TEST)
+    @ApiOperation("DataBase Check Heart Beat By Id")
     public Result<Void> checkHeartBeatByDataSourceId(@RequestParam Integer id) {
         DataBase dataBase = databaseService.getById(id);
         Asserts.checkNotNull(dataBase, Status.DATASOURCE_NOT_EXIST.getMsg());
@@ -252,6 +200,7 @@ public class DataBaseController {
      */
     @Cacheable(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/getSchemasAndTables")
+    @ApiOperation("Get All Schemas And Tables")
     public Result<List<Schema>> getSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(databaseService.getSchemasAndTables(id));
     }
@@ -264,6 +213,7 @@ public class DataBaseController {
      */
     @CacheEvict(cacheNames = "metadata_schema", key = "#id")
     @GetMapping("/unCacheSchemasAndTables")
+    @ApiOperation("Clear Cache Of Schemas And Tables")
     public Result<String> unCacheSchemasAndTables(@RequestParam Integer id) {
         return Result.succeed(Status.DATASOURCE_CLEAR_CACHE_SUCCESS);
     }
@@ -277,10 +227,9 @@ public class DataBaseController {
      * @return {@link Result}< {@link List}< {@link Column}>>
      */
     @GetMapping("/listColumns")
+    @ApiOperation("Get Columns Of Table")
     public Result<List<Column>> listColumns(
-            @RequestParam Integer id,
-            @RequestParam String schemaName,
-            @RequestParam String tableName) {
+            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.listColumns(id, schemaName, tableName));
     }
 
@@ -291,6 +240,7 @@ public class DataBaseController {
      * @return {@link Result}< {@link JdbcSelectResult}>
      */
     @PostMapping("/queryData")
+    @ApiOperation("Query Data Of Table")
     public Result<JdbcSelectResult> queryData(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.queryData(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -307,6 +257,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link JdbcSelectResult}>
      */
     @PostMapping("/execSql")
+    @Log(title = "Exec Sql", businessType = BusinessType.EXECUTE)
+    @ApiOperation("Exec Sql")
     public Result<JdbcSelectResult> execSql(@RequestBody QueryData queryData) {
         JdbcSelectResult jdbcSelectResult = databaseService.execSql(queryData);
         if (jdbcSelectResult.isSuccess()) {
@@ -325,10 +277,9 @@ public class DataBaseController {
      * @return {@link Result}< {@link SqlGeneration}>
      */
     @GetMapping("/getSqlGeneration")
+    @ApiOperation("Get Sql Generation")
     public Result<SqlGeneration> getSqlGeneration(
-            @RequestParam Integer id,
-            @RequestParam String schemaName,
-            @RequestParam String tableName) {
+            @RequestParam Integer id, @RequestParam String schemaName, @RequestParam String tableName) {
         return Result.succeed(databaseService.getSqlGeneration(id, schemaName, tableName));
     }
 
@@ -339,6 +290,8 @@ public class DataBaseController {
      * @return {@link Result}< {@link Void}>
      */
     @PostMapping("/copyDatabase")
+    @Log(title = "Copy Database", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Copy Database")
     public Result<Void> copyDatabase(@RequestBody DataBase database) {
         if (databaseService.copyDatabase(database)) {
             return Result.succeed(Status.COPY_SUCCESS);

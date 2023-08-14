@@ -30,7 +30,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 public abstract class BaseSchedule {
     private static final HashMap<String, ScheduledFuture<?>> SCHEDULE_MAP = new HashMap<>();
 
-    @Resource private ThreadPoolTaskScheduler threadPoolTaskScheduler;
+    @Resource
+    private ThreadPoolTaskScheduler threadPoolTaskScheduler;
 
     protected void addSchedule(String key, Runnable runnable, Trigger trigger) {
         ScheduledFuture<?> schedule = threadPoolTaskScheduler.schedule(runnable, trigger);

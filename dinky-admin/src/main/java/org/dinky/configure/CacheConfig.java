@@ -41,12 +41,9 @@ public class CacheConfig {
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 // 序列化为json
-                .serializeValuesWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(
-                                RedisSerializer.json()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json()))
                 .serializeKeysWith(
-                        RedisSerializationContext.SerializationPair.fromSerializer(
-                                new StringRedisSerializer()));
+                        RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()));
     }
 
     // /**

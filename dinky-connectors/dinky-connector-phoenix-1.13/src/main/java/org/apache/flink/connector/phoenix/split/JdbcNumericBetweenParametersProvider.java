@@ -102,7 +102,7 @@ public class JdbcNumericBetweenParametersProvider implements JdbcParameterValues
     public Serializable[][] getParameterValues() {
         Preconditions.checkState(
                 batchSize > 0,
-                "Batch size and batch number must be positive. Have you called `ofBatchSize` or `ofBatchNum`?");
+                "Batch size and batch number must be positive. Have you called `ofBatchSize` or" + " `ofBatchNum`?");
 
         long maxElemCount = (maxVal - minVal) + 1;
         long bigBatchNum = maxElemCount - (batchSize - 1) * batchNum;

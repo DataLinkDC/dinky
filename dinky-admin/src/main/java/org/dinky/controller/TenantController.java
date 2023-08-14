@@ -19,13 +19,20 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.TenantService;
+import org.dinky.service.UserService;
+
+import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +42,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -47,6 +56,8 @@ public class TenantController {
 
     private final TenantService tenantService;
 
+    private final UserService userService;
+
     /**
      * save or update tenant
      *
@@ -54,20 +65,10 @@ public class TenantController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Tenant tenant) {
+    @ApiOperation("Insert Or Update Tenant")
+    @Log(title = "Insert Or Update Tenant", businessType = BusinessType.INSERT_OR_UPDATE)
+    public Result<Void> saveOrUpdateTenant(@RequestBody Tenant tenant) {
         return tenantService.saveOrUpdateTenant(tenant);
-    }
-
-    /**
-     * delete tenant by id , this method will be {@link Deprecated} in the future, please use {@link
-     * #removeTenantById(Integer)}
-     *
-     * @return delete result code
-     */
-    @DeleteMapping()
-    @Deprecated
-    public Result<Void> deleteTenantById(@RequestBody JsonNode para) {
-        return tenantService.deleteTenantById(para);
     }
 
     /**
@@ -77,6 +78,8 @@ public class TenantController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @ApiOperation("Delete Tenant By Id")
+    @Log(title = "Delete Tenant By Id", businessType = BusinessType.DELETE)
     public Result<Void> removeTenantById(@RequestParam("id") Integer tenantId) {
         return tenantService.removeTenantById(tenantId);
     }
@@ -88,21 +91,9 @@ public class TenantController {
      * @return {@link ProTableResult} of {@link Tenant}
      */
     @PostMapping
+    @ApiOperation("List Tenants")
     public ProTableResult<Tenant> listTenants(@RequestBody JsonNode para) {
         return tenantService.selectForProTable(para, true);
-    }
-
-    /**
-     * give tenant grant user, this method is {@link @Deprecated} in the future, please use {@link
-     * #assignUserToTenant}
-     *
-     * @param para para
-     * @return {@link Result}
-     */
-    @PutMapping(value = "/grantTenantToUser")
-    @Deprecated
-    public Result<Void> distributeUser(@RequestBody JsonNode para) {
-        return tenantService.distributeUsers(para);
     }
 
     /**
@@ -112,8 +103,21 @@ public class TenantController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping(value = "/assignUserToTenant")
-    public Result<Void> assignUserToTenant(
-            @RequestBody AssignUserToTenantParams assignUserToTenantParams) {
+    @ApiOperation("Assign User To Tenant")
+    @Log(title = "Assign User To Tenant", businessType = BusinessType.INSERT)
+    public Result<Void> assignUserToTenant(@RequestBody AssignUserToTenantParams assignUserToTenantParams) {
         return tenantService.assignUserToTenant(assignUserToTenantParams);
+    }
+
+    /**
+     * get user list by tenant id
+     *
+     * @param id
+     * @return {@link Result} with {@link Dict}
+     */
+    @GetMapping("/getUsersByTenantId")
+    @ApiOperation("Get User List By Tenant Id")
+    public Result<List<User>> getUserListByTenantId(@RequestParam("id") Integer id) {
+        return Result.succeed(userService.getUserListByTenantId(id));
     }
 }

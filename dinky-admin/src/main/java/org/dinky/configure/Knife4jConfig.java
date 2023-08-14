@@ -109,7 +109,6 @@ public class Knife4jConfig {
             WebEndpointProperties webEndpointProperties, Environment environment, String basePath) {
         return webEndpointProperties.getDiscovery().isEnabled()
                 && (StringUtils.hasText(basePath)
-                        || ManagementPortType.get(environment)
-                                .equals(ManagementPortType.DIFFERENT));
+                        || ManagementPortType.get(environment).equals(ManagementPortType.DIFFERENT));
     }
 }

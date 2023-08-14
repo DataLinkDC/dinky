@@ -44,11 +44,7 @@ public class SavePointResult extends AbstractGatewayResult {
         super(type, startTime);
     }
 
-    public SavePointResult(
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            boolean isSuccess,
-            String exceptionMsg) {
+    public SavePointResult(LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
     }
 

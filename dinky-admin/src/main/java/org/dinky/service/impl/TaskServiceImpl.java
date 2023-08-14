@@ -32,6 +32,7 @@ import org.dinky.context.RowLevelPermissionsContext;
 import org.dinky.context.TenantContextHolder;
 import org.dinky.daemon.task.DaemonFactory;
 import org.dinky.daemon.task.DaemonTaskConfig;
+import org.dinky.data.constant.CommonConstant;
 import org.dinky.data.constant.FlinkRestResultConstant;
 import org.dinky.data.dto.SqlDTO;
 import org.dinky.data.dto.TaskRollbackVersionDTO;
@@ -74,6 +75,7 @@ import org.dinky.gateway.config.GatewayConfig;
 import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.enums.SavePointStrategy;
 import org.dinky.gateway.enums.SavePointType;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.model.JobInfo;
 import org.dinky.gateway.result.SavePointResult;
 import org.dinky.job.FlinkJobTask;
@@ -88,7 +90,6 @@ import org.dinky.metadata.result.JdbcSelectResult;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.process.context.ProcessContextHolder;
 import org.dinky.process.enums.ProcessType;
-import org.dinky.process.exception.DinkyException;
 import org.dinky.process.model.ProcessEntity;
 import org.dinky.service.AlertGroupService;
 import org.dinky.service.AlertHistoryService;
@@ -108,6 +109,7 @@ import org.dinky.service.TaskVersionService;
 import org.dinky.service.UDFTemplateService;
 import org.dinky.service.UserService;
 import org.dinky.utils.DockerClientUtils;
+import org.dinky.utils.FragmentVariableUtils;
 import org.dinky.utils.JSONUtil;
 import org.dinky.utils.UDFUtils;
 
@@ -124,6 +126,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -152,11 +155,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Opt;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONObject;
 import lombok.RequiredArgsConstructor;
 
 /** TaskServiceImpl */
@@ -166,7 +169,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private final StatementService statementService;
     private final ClusterInstanceService clusterInstanceService;
-    private final ClusterConfigurationService clusterConfigurationService;
+    private final ClusterConfigurationService clusterCfgService;
     private final SavepointsService savepointsService;
     private final JarService jarService;
     private final DataBaseService dataBaseService;
@@ -181,7 +184,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     private final DataSourceProperties dataSourceProperties;
     private final UserService userService;
 
-    @Resource @Lazy private CatalogueService catalogueService;
+    @Resource
+    @Lazy
+    private CatalogueService catalogueService;
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -204,14 +209,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Value("server.port")
     private String serverPort;
 
-    private String buildParas(Integer id) {
+    private String[] buildParas(Integer id) {
         return buildParas(id, StrUtil.NULL);
     }
 
-    private String buildParas(Integer id, String dinkyAddr) {
+    private String[] buildParas(Integer id, String dinkyAddr) {
         return String.format(
-                "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
-                id, driver(), url(), username(), password(), dinkyAddr);
+                        "--id %d --driver %s --url %s --username %s --password %s --dinkyAddr %s",
+                        id, driver(), url(), username(), password(), dinkyAddr)
+                .split(" ");
     }
 
     @Override
@@ -223,26 +229,36 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return executeCommonSql(SqlDTO.build(task.getStatement(), task.getDatabaseId(), null));
         }
 
-        ProcessEntity process =
-                StpUtil.isLogin()
-                        ? ProcessContextHolder.registerProcess(
-                                ProcessEntity.init(
-                                        ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
-                        : ProcessEntity.NULL_PROCESS;
+        ProcessEntity process = StpUtil.isLogin()
+                ? ProcessContextHolder.registerProcess(
+                        ProcessEntity.init(ProcessType.FLINK_SUBMIT, StpUtil.getLoginIdAsInt()))
+                : ProcessEntity.NULL_PROCESS;
 
         process.info("Initializing Flink job config...");
         JobConfig config = buildJobConfig(task);
 
-        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
-            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
-        }
+        //        if (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())) {
+        //            loadDocker(id, config.getClusterConfigurationId(), config.getGatewayConfig());
+        //        }
 
         JobManager jobManager = JobManager.build(config);
         process.start();
         JobResult jobResult;
         if (config.isJarTask()) {
             jobResult = jobManager.executeJar();
-            process.finish("Submit Flink Jar finished.");
+            if (jobResult.isSuccess()) {
+                process.finish("Submit Flink SQL finished, JobManager Web Interface: http://"
+                        + jobResult.getJobManagerAddress());
+            } else {
+                // 如果提交失败，则只打印出关键的错误信息
+                process.error("Submit Flink SQL " + jobResult.getStatus());
+                if (Asserts.isNotNull(jobResult.getError())) {
+                    process.error(jobResult.getError().split("\n")[0]);
+                    Arrays.stream(jobResult.getError().split("\n"))
+                            .filter(row -> row.contains("Caused by"))
+                            .forEach(row -> process.error(row));
+                }
+            }
         } else {
             jobResult = jobManager.executeSql(task.getStatement());
             process.finish("Submit Flink SQL finished.");
@@ -250,23 +266,21 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return jobResult;
     }
 
-    private void loadDocker(
-            Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
-        Map<String, Object> dockerConfig =
-                (Map<String, Object>)
-                        clusterConfigurationService
-                                .getClusterConfigById(clusterConfigurationId)
-                                .getConfig()
-                                .get("dockerConfig");
+    private void loadDocker(Integer taskId, Integer clusterConfigurationId, GatewayConfig gatewayConfig) {
+        Map<String, Object> dockerConfig = clusterCfgService
+                .getClusterConfigById(clusterConfigurationId)
+                .getFlinkClusterCfg()
+                .getKubernetesConfig()
+                .getDockerConfig();
 
         if (dockerConfig == null) {
             return;
         }
 
-        String params =
-                buildParas(taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
+        String[] params = buildParas(
+                taskId, dockerConfig.getOrDefault("dinky.remote.addr", "").toString());
 
-        gatewayConfig.getAppConfig().setUserJarParas(params.split(" "));
+        gatewayConfig.getAppConfig().setUserJarParas(params);
 
         Docker docker = Docker.build(dockerConfig);
         if (docker == null || StringUtils.isBlank(docker.getInstance())) {
@@ -276,10 +290,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         DockerClientUtils dockerClientUtils = new DockerClientUtils(docker);
         String tag = dockerClientUtils.getDocker().getTag();
         if (StrUtil.isNotBlank(tag)) {
-            gatewayConfig
-                    .getFlinkConfig()
-                    .getConfiguration()
-                    .put("kubernetes.container.image", tag);
+            gatewayConfig.getFlinkConfig().getConfiguration().put("kubernetes.container.image", tag);
         }
     }
 
@@ -385,14 +396,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     private List<SqlExplainResult> explainCommonSqlTask(Task task) {
         if (Asserts.isNull(task.getDatabaseId())) {
-            return Collections.singletonList(
-                    SqlExplainResult.fail(task.getStatement(), "please assign data source."));
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "please assign data source."));
         }
 
         DataBase dataBase = dataBaseService.getById(task.getDatabaseId());
         if (Asserts.isNull(dataBase)) {
-            return Collections.singletonList(
-                    SqlExplainResult.fail(task.getStatement(), "data source not exist."));
+            return Collections.singletonList(SqlExplainResult.fail(task.getStatement(), "data source not exist."));
         }
 
         List<SqlExplainResult> sqlExplainResults;
@@ -408,8 +417,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         if (task == null) {
             return null;
         }
-
-        task.parseConfig();
         if (task.getClusterId() != null) {
             Cluster cluster = clusterInstanceService.getById(task.getClusterId());
             if (cluster != null) {
@@ -441,17 +448,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public boolean saveOrUpdateTask(Task task) {
         if (Dialect.isUDF(task.getDialect())) {
-            if (CollUtil.isNotEmpty(task.getConfig())
+            if (CollUtil.isNotEmpty(task.getConfigJson())
                     && Asserts.isNullString(task.getStatement())
-                    && Convert.toInt(task.getConfig().get(0).get("templateId"), 0) != 0) {
-                Map<String, String> config = task.getConfig().get(0);
+                    && Convert.toInt(task.getConfigJson().get(0).get("templateId"), 0) != 0) {
+                Map<String, String> config = task.getConfigJson().get(0);
                 UDFTemplate template = udfTemplateService.getById(config.get("templateId"));
                 if (template != null) {
-                    String code =
-                            UDFUtil.templateParse(
-                                    task.getDialect(),
-                                    template.getTemplateCode(),
-                                    config.get("className"));
+                    String code = UDFUtil.templateParse(
+                            task.getDialect(), template.getTemplateCode(), config.get("className"));
                     task.setStatement(code);
                 }
             }
@@ -459,12 +463,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Asserts.isNotNullString(task.getDialect())
                     && Dialect.JAVA.equalsVal(task.getDialect())
                     && Asserts.isNotNullString(task.getStatement())) {
-                CustomStringJavaCompiler compiler =
-                        new CustomStringJavaCompiler(task.getStatement());
+                CustomStringJavaCompiler compiler = new CustomStringJavaCompiler(task.getStatement());
                 task.setSavePointPath(compiler.getFullClassName());
             } else if (Dialect.PYTHON.equalsVal(task.getDialect())) {
-                task.setSavePointPath(
-                        task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
+                task.setSavePointPath(task.getName() + "." + UDFUtil.getPyUDFAttr(task.getStatement()));
             } else if (Dialect.SCALA.equalsVal(task.getDialect())) {
                 task.setSavePointPath(UDFUtil.getScalaFullClassName(task.getStatement()));
             }
@@ -514,10 +516,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> listFlinkSQLEnv() {
-        return this.list(
-                new QueryWrapper<Task>()
-                        .eq("dialect", Dialect.FLINK_SQL_ENV.getValue())
-                        .eq("enabled", 1));
+        return this.list(new QueryWrapper<Task>()
+                .eq("dialect", Dialect.FLINK_SQL_ENV.getValue())
+                .eq("enabled", 1));
     }
 
     @Override
@@ -528,16 +529,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task defaultFlinkSQLEnvTask = getTaskByNameAndTenantId(name, tenantId);
 
-        String sql =
-                String.format(
-                        "create catalog my_catalog with(\n    "
-                                + "'type' = 'dinky_mysql',\n"
-                                + "    'username' = "
-                                + "'%s',\n    "
-                                + "'password' = '%s',\n"
-                                + "    'url' = '%s'\n"
-                                + ")%suse catalog my_catalog%s",
-                        username(), password(), url(), separator, separator);
+        String sql = String.format(
+                "create catalog my_catalog with(\n    "
+                        + "'type' = 'dinky_mysql',\n"
+                        + "    'username' = "
+                        + "'%s',\n    "
+                        + "'password' = '%s',\n"
+                        + "    'url' = '%s'\n"
+                        + ")%suse catalog my_catalog%s",
+                username(), password(), url(), separator, separator);
 
         if (null != defaultFlinkSQLEnvTask) {
             statementEquals(tenantId, defaultFlinkSQLEnvTask, sql);
@@ -573,10 +573,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         TenantContextHolder.set(tenantId);
 
         // 对比catalog ddl,不相同则更新dinky_task_statement表
-        boolean equals =
-                StringUtils.equals(
-                        sql,
-                        statementService.getById(defaultFlinkSQLEnvTask.getId()).getStatement());
+        boolean equals = StringUtils.equals(
+                sql, statementService.getById(defaultFlinkSQLEnvTask.getId()).getStatement());
         if (!equals) {
             Statement statement = new Statement();
             statement.setId(defaultFlinkSQLEnvTask.getId());
@@ -588,8 +586,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Task getTaskByNameAndTenantId(String name, Integer tenantId) {
-        Task task = baseMapper.getTaskByNameAndTenantId(name, tenantId);
-        return task;
+        return baseMapper.getTaskByNameAndTenantId(name, tenantId);
     }
 
     @Override
@@ -598,18 +595,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return JobStatus.UNKNOWN;
         }
 
-        Map<String, Object> gatewayConfigMap =
-                clusterConfigurationService.getGatewayConfig(
-                        jobInfoDetail.getClusterConfiguration().getId());
+        Integer clusterId = jobInfoDetail.getClusterConfiguration().getId();
+        String appId = jobInfoDetail.getCluster().getName();
 
-        JobConfig jobConfig = new JobConfig();
-        jobConfig.buildGatewayConfig(gatewayConfigMap);
-        GatewayConfig gatewayConfig = jobConfig.getGatewayConfig();
-        gatewayConfig.setType(GatewayType.get(jobInfoDetail.getCluster().getType()));
-        gatewayConfig.getClusterConfig().setAppId(jobInfoDetail.getCluster().getName());
+        FlinkClusterConfig clusterConfig = clusterCfgService.getFlinkClusterCfg(clusterId);
+        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfig);
+        gatewayConfig.getClusterConfig().setAppId(appId);
 
         Gateway gateway = Gateway.build(gatewayConfig);
-        return gateway.getJobStatusById(jobInfoDetail.getCluster().getName());
+        return gateway.getJobStatusById(appId);
     }
 
     @Override
@@ -631,6 +625,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         JobConfig config = buildJobConfig(task);
+
+        // 加密敏感信息
+        if (config.getVariables() != null) {
+            for (Map.Entry<String, String> entry : config.getVariables().entrySet()) {
+                if (FragmentVariableUtils.isSensitive(entry.getKey())) {
+                    entry.setValue(FragmentVariableUtils.HIDDEN_CONTENT);
+                }
+            }
+        }
+
         JobManager jobManager = JobManager.build(config);
         if (config.isJarTask()) {
             return "";
@@ -641,12 +645,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Task getUDFByClassName(String className) {
-        Task task =
-                getOne(
-                        new QueryWrapper<Task>()
-                                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
-                                .eq("enabled", 1)
-                                .eq("save_point_path", className));
+        Task task = getOne(new QueryWrapper<Task>()
+                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+                .eq("enabled", 1)
+                .eq("save_point_path", className));
         Asserts.checkNull(task, StrUtil.format("class: {} ,not exists!", className));
         task.setStatement(statementService.getById(task.getId()).getStatement());
         return task;
@@ -654,19 +656,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public List<Task> getAllUDF() {
-        List<Task> tasks =
-                list(
-                        new QueryWrapper<Task>()
-                                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
-                                .eq("enabled", 1)
-                                .isNotNull("save_point_path"));
+        List<Task> tasks = list(new QueryWrapper<Task>()
+                .in("dialect", Dialect.JAVA, Dialect.SCALA, Dialect.PYTHON)
+                .eq("enabled", 1)
+                .isNotNull("save_point_path"));
         return tasks.stream()
-                .peek(
-                        task -> {
-                            Assert.check(task);
-                            task.setStatement(
-                                    statementService.getById(task.getId()).getStatement());
-                        })
+                .peek(task -> {
+                    Assert.check(task);
+                    task.setStatement(statementService.getById(task.getId()).getStatement());
+                })
                 .collect(Collectors.toList());
     }
 
@@ -744,15 +742,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
                 || JobLifeCycle.ONLINE.equalsValue(taskInfo.getStep())
                 || JobLifeCycle.CANCEL.equalsValue(taskInfo.getStep())) {
             return Result.failed(
-                    "this job had"
-                            + JobLifeCycle.get(taskInfo.getStep()).getLabel()
-                            + ", refuse to rollback！");
+                    "this job had" + JobLifeCycle.get(taskInfo.getStep()).getLabel() + ", refuse to rollback！");
         }
 
-        LambdaQueryWrapper<TaskVersion> queryWrapper =
-                new LambdaQueryWrapper<TaskVersion>()
-                        .eq(TaskVersion::getTaskId, dto.getId())
-                        .eq(TaskVersion::getVersionId, dto.getVersionId());
+        LambdaQueryWrapper<TaskVersion> queryWrapper = new LambdaQueryWrapper<TaskVersion>()
+                .eq(TaskVersion::getTaskId, dto.getId())
+                .eq(TaskVersion::getVersionId, dto.getVersionId());
 
         TaskVersion taskVersion = taskVersionService.getOne(queryWrapper);
 
@@ -900,27 +895,13 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         JobConfig jobConfig = task.buildSubmitConfig();
         jobConfig.setType(cluster.getType());
 
-        boolean useGateway = false;
         if (Asserts.isNotNull(cluster.getClusterConfigurationId())) {
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(
-                            cluster.getClusterConfigurationId());
-            // 如果是k8s application 模式,且不是sql任务，则需要补齐statement 内的自定义配置
-            if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())) {
-                Statement statement = statementService.getById(cluster.getTaskId());
-                Map<String, Object> statementConfig =
-                        JSONUtil.toMap(statement.getStatement(), String.class, Object.class);
-                gatewayConfig.putAll(statementConfig);
-            }
-            jobConfig.buildGatewayConfig(gatewayConfig);
-            jobConfig.getGatewayConfig().getClusterConfig().setAppId(cluster.getName());
-            useGateway = true;
+            FlinkClusterConfig flinkClusterConfig = buildGatewayCfgObj(jobConfig);
+            jobConfig.buildGatewayConfig(flinkClusterConfig);
         }
-        jobConfig.setTaskId(jobInstance.getTaskId());
         jobConfig.setAddress(cluster.getJobManagerHost());
 
         JobManager jobManager = JobManager.build(jobConfig);
-        jobManager.setUseGateway(useGateway);
 
         String jobId = jobInstance.getJid();
         if ("canceljob".equals(savePointType)) {
@@ -930,8 +911,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         SavePointResult savePointResult = jobManager.savepoint(jobId, savePointType, null);
         if (Asserts.isNotNull(savePointResult.getJobInfos())) {
             for (JobInfo item : savePointResult.getJobInfos()) {
-                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId())
-                        && Asserts.isNotNull(jobConfig.getTaskId())) {
+                if (Asserts.isEqualsIgnoreCase(jobId, item.getJobId()) && Asserts.isNotNull(jobConfig.getTaskId())) {
                     Savepoints savepoints = new Savepoints();
                     savepoints.setName(savePointType);
                     savepoints.setType(savePointType);
@@ -952,113 +932,93 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     }
 
     private JobConfig buildJobConfig(Task task) {
-        boolean isJarTask =
-                Dialect.FLINK_JAR.equalsVal(task.getDialect())
-                        || Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect());
+        if (!task.isJarTask()) {
+            String envSql = buildEnvSql(task);
+            task.setStatement(envSql + task.getStatement());
+        }
 
+        JobConfig config = task.buildSubmitConfig();
+
+        Savepoints savepoints = buildSavepoint(config);
+        if (Asserts.isNotNull(savepoints)) {
+            config.setSavePointPath(savepoints.getPath());
+            config.getConfig().put("execution.savepoint.path", savepoints.getPath());
+        }
+
+        if (!GatewayType.get(task.getType()).isDeployCluster()) {
+            String address = clusterInstanceService.buildEnvironmentAddress(config.isUseRemote(), task.getClusterId());
+            config.setAddress(address);
+        } else {
+            config.buildGatewayConfig(buildGatewayCfgObj(config));
+        }
+
+        config.setVariables(fragmentVariableService.listEnabledVariables());
+        buildRowPermission();
+        return config;
+    }
+
+    private Savepoints buildSavepoint(JobConfig config) {
+        switch (config.getSavePointStrategy()) {
+            case LATEST:
+                return savepointsService.getLatestSavepointByTaskId(config.getTaskId());
+            case EARLIEST:
+                return savepointsService.getEarliestSavepointByTaskId(config.getTaskId());
+            case CUSTOM:
+                return new Savepoints() {
+                    {
+                        setPath(config.getSavePointPath());
+                    }
+                };
+            default:
+                return null;
+        }
+    }
+
+    private FlinkClusterConfig buildGatewayCfgObj(JobConfig config) {
+        FlinkClusterConfig flinkClusterCfg = clusterCfgService.getFlinkClusterCfg(config.getClusterConfigurationId());
+        flinkClusterCfg.getAppConfig().setUserJarParas(buildParas(config.getTaskId()));
+        flinkClusterCfg.getFlinkConfig().getConfiguration().putAll(config.getConfig());
+
+        //        if (config.isJarTask()) {
+        //            JSONObject clusterObj = new JSONObject(flinkClusterCfg);
+        //            JSONObject taskObj = new JSONObject(task.getStatement());
+        //            return JSONUtil.merge(clusterObj,taskObj).toBean(FlinkClusterConfig.class);
+        //        }
+        return flinkClusterCfg;
+    }
+
+    private String buildEnvSql(Task task) {
+        String sql = CommonConstant.LineSep;
         boolean fragment = Asserts.isNotNull(task.getFragment()) ? task.getFragment() : false;
-        if (!isJarTask && fragment) {
+        if (fragment) {
             String flinkWithSql = dataBaseService.getEnabledFlinkWithSql();
             if (Asserts.isNotNullString(flinkWithSql)) {
-                task.setStatement(flinkWithSql + "\r\n" + task.getStatement());
+                sql += flinkWithSql + CommonConstant.LineSep;
             }
         }
 
         boolean isEnvIdValid = Asserts.isNotNull(task.getEnvId()) && task.getEnvId() != 0;
-        if (!isJarTask && isEnvIdValid) {
+        if (isEnvIdValid) {
             Task envTask = getTaskInfoById(task.getEnvId());
             if (Asserts.isNotNull(envTask) && Asserts.isNotNullString(envTask.getStatement())) {
-                task.setStatement(envTask.getStatement() + "\r\n" + task.getStatement());
+                sql += envTask.getStatement() + CommonConstant.LineSep;
             }
         }
+        return sql;
+    }
 
-        JobConfig config = task.buildSubmitConfig();
-        config.setJarTask(isJarTask);
-        if (!JobManager.useGateway(config.getType())) {
-            config.setAddress(
-                    clusterInstanceService.buildEnvironmentAddress(
-                            config.isUseRemote(), task.getClusterId()));
-        } else if (Dialect.KUBERNETES_APPLICATION.equalsVal(task.getDialect())
-                // support custom K8s app submit, rather than clusterConfiguration
-                && (GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
-                        || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(
-                                config.getType()))) {
-            Map<String, Object> taskConfig =
-                    JSONUtil.toMap(task.getStatement(), String.class, Object.class);
-            Map<String, Object> clusterConfiguration =
-                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            clusterConfiguration.putAll((Map<String, Object>) taskConfig.get("appConfig"));
-            clusterConfiguration.put("taskCustomConfig", taskConfig);
-            config.buildGatewayConfig(clusterConfiguration);
-        } else {
-            Map<String, Object> gatewayConfig =
-                    clusterConfigurationService.getGatewayConfig(task.getClusterConfigurationId());
-            // submit application type with clusterConfiguration
-            if (GatewayType.YARN_APPLICATION.equalsValue(config.getType())
-                    || GatewayType.KUBERNETES_APPLICATION.equalsValue(config.getType())
-                    || GatewayType.KUBERNETES_APPLICATION_OPERATOR.equalsValue(config.getType())) {
-                if (isJarTask) {
-                    Jar jar = jarService.getById(task.getJarId());
-                    Assert.check(jar);
-                    gatewayConfig.put("userJarPath", jar.getPath());
-                    gatewayConfig.put("userJarParas", jar.getParas());
-                    gatewayConfig.put("userJarMainAppClass", jar.getMainClass());
-                } else {
-                    Opt.ofBlankAble(gatewayConfig.get("userJarPath"))
-                            .orElseThrow(
-                                    () ->
-                                            new DinkyException(
-                                                    "application 模式支持需要在 注册中心->集群管理->集群配置管理 填写jar路径。"));
-                    gatewayConfig.put("userJarParas", buildParas(config.getTaskId()));
-                    gatewayConfig.put("userJarMainAppClass", "org.dinky.app.MainApp");
-                }
-            }
-            config.buildGatewayConfig(gatewayConfig);
-            config.addGatewayConfig(task.parseConfig());
-        }
-
-        switch (config.getSavePointStrategy()) {
-            case LATEST:
-                Savepoints latestSavepoints =
-                        savepointsService.getLatestSavepointByTaskId(task.getId());
-                if (Asserts.isNotNull(latestSavepoints)) {
-                    config.setSavePointPath(latestSavepoints.getPath());
-                    config.getConfig().put("execution.savepoint.path", latestSavepoints.getPath());
-                }
-                break;
-            case EARLIEST:
-                Savepoints earliestSavepoints =
-                        savepointsService.getEarliestSavepointByTaskId(task.getId());
-                if (Asserts.isNotNull(earliestSavepoints)) {
-                    config.setSavePointPath(earliestSavepoints.getPath());
-                    config.getConfig()
-                            .put("execution.savepoint.path", earliestSavepoints.getPath());
-                }
-                break;
-            case CUSTOM:
-                config.setSavePointPath(config.getSavePointPath());
-                config.getConfig().put("execution.savepoint.path", config.getSavePointPath());
-                break;
-            default:
-                config.setSavePointPath(null);
-        }
-        config.setVariables(fragmentVariableService.listEnabledVariables());
-        List<RowPermissions> currentRoleSelectPermissions =
-                userService.getCurrentRoleSelectPermissions();
+    private void buildRowPermission() {
+        List<RowPermissions> currentRoleSelectPermissions = userService.getCurrentRoleSelectPermissions();
         if (Asserts.isNotNullCollection(currentRoleSelectPermissions)) {
             ConcurrentHashMap<String, String> permission = new ConcurrentHashMap<>();
             for (RowPermissions roleSelectPermissions : currentRoleSelectPermissions) {
                 if (Asserts.isAllNotNullString(
-                        roleSelectPermissions.getTableName(),
-                        roleSelectPermissions.getExpression())) {
-                    permission.put(
-                            roleSelectPermissions.getTableName(),
-                            roleSelectPermissions.getExpression());
+                        roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression())) {
+                    permission.put(roleSelectPermissions.getTableName(), roleSelectPermissions.getExpression());
                 }
             }
             RowLevelPermissionsContext.set(permission);
         }
-        return config;
     }
 
     @Override
@@ -1081,8 +1041,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             history.setConfig(JSONUtil.parseObject(history.getConfigJson()));
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 ClusterConfiguration clusterConfigById =
-                        clusterConfigurationService.getClusterConfigById(
-                                history.getClusterConfigurationId());
+                        clusterCfgService.getClusterConfigById(history.getClusterConfigurationId());
                 jobInfoDetail.setClusterConfiguration(clusterConfigById);
                 jobInfoDetail.getInstance().setType(history.getType());
             }
@@ -1095,12 +1054,11 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return jobInfoDetail.getInstance();
         }
 
-        JobHistory jobHistoryJson =
-                jobHistoryService.refreshJobHistory(
-                        id,
-                        jobInfoDetail.getCluster().getJobManagerHost(),
-                        jobInfoDetail.getInstance().getJid(),
-                        jobInfoDetail.isNeedSave());
+        JobHistory jobHistoryJson = jobHistoryService.refreshJobHistory(
+                id,
+                jobInfoDetail.getCluster().getJobManagerHost(),
+                jobInfoDetail.getInstance().getJid(),
+                jobInfoDetail.isNeedSave());
         JobHistory jobHistory = jobHistoryService.getJobHistoryInfo(jobHistoryJson);
         jobInfoDetail.setJobHistory(jobHistory);
         JobStatus checkStatus = null;
@@ -1126,21 +1084,19 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             jobInfoDetail
                     .getInstance()
-                    .setDuration(
-                            jobInfoDetail
-                                            .getJobHistory()
-                                            .getJob()
-                                            .get(FlinkRestResultConstant.JOB_DURATION)
-                                            .asLong()
-                                    / 1000);
-            jobInfoDetail
-                    .getInstance()
-                    .setStatus(
-                            jobInfoDetail
+                    .setDuration(jobInfoDetail
                                     .getJobHistory()
                                     .getJob()
-                                    .get(FlinkRestResultConstant.JOB_STATE)
-                                    .asText());
+                                    .get(FlinkRestResultConstant.JOB_DURATION)
+                                    .asLong()
+                            / 1000);
+            jobInfoDetail
+                    .getInstance()
+                    .setStatus(jobInfoDetail
+                            .getJobHistory()
+                            .getJob()
+                            .get(FlinkRestResultConstant.JOB_STATE)
+                            .asText());
         }
         if (JobStatus.isDone(jobInfoDetail.getInstance().getStatus())
                 && !status.equals(jobInfoDetail.getInstance().getStatus())) {
@@ -1148,8 +1104,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             jobInfoDetail.getInstance().setFinishTime(LocalDateTime.now());
         }
         if (isCoercive) {
-            DaemonFactory.addTask(
-                    DaemonTaskConfig.build(FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
+            DaemonFactory.addTask(DaemonTaskConfig.build(
+                    FlinkJobTask.TYPE, jobInfoDetail.getInstance().getId()));
         }
         if (jobStatusChanged || jobInfoDetail.isNeedSave()) {
             jobInstanceService.updateById(jobInfoDetail.getInstance());
@@ -1197,13 +1153,10 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         // clusterConfigurationName
         if (Asserts.isNotNull(task.getClusterConfigurationId())) {
-            ClusterConfiguration clusterConfiguration =
-                    clusterConfigurationService.getById(task.getClusterConfigurationId());
+            ClusterConfiguration clusterConfiguration = clusterCfgService.getById(task.getClusterConfigurationId());
             jsonNode.put(
                     "clusterConfigurationName",
-                    Asserts.isNotNull(clusterConfiguration)
-                            ? clusterConfiguration.getName()
-                            : null);
+                    Asserts.isNotNull(clusterConfiguration) ? clusterConfiguration.getName() : null);
         }
 
         // databaseName
@@ -1227,8 +1180,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // alertGroupName
         if (Asserts.isNotNull(task.getAlertGroupId())) {
             AlertGroup alertGroup = alertGroupService.getById(task.getAlertGroupId());
-            jsonNode.put(
-                    "alertGroupName", Asserts.isNotNull(alertGroup) ? alertGroup.getName() : null);
+            jsonNode.put("alertGroupName", Asserts.isNotNull(alertGroup) ? alertGroup.getName() : null);
         }
         return jsonNode.toString();
     }
@@ -1261,8 +1213,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         return buildTaskByJsonNode(jsonNode, mapper);
     }
 
-    public Result<Void> buildTaskByJsonNode(JsonNode jsonNode, ObjectMapper mapper)
-            throws JsonProcessingException {
+    public Result<Void> buildTaskByJsonNode(JsonNode jsonNode, ObjectMapper mapper) throws JsonProcessingException {
         List<JsonNode> jsonNodes = new ArrayList<>();
         if (jsonNode.isArray()) {
             for (JsonNode a : jsonNode) {
@@ -1278,18 +1229,15 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             Task task = mapper.treeToValue(json, Task.class);
             if (Asserts.isNotNull(task.getClusterName())) {
                 Cluster cluster =
-                        clusterInstanceService.getOne(
-                                new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
+                        clusterInstanceService.getOne(new QueryWrapper<Cluster>().eq("name", task.getClusterName()));
                 if (Asserts.isNotNull(cluster)) {
                     task.setClusterId(cluster.getId());
                 }
             }
 
             if (Asserts.isNotNull(task.getClusterConfigurationName())) {
-                ClusterConfiguration clusterConfiguration =
-                        clusterConfigurationService.getOne(
-                                new QueryWrapper<ClusterConfiguration>()
-                                        .eq("name", task.getClusterConfigurationName()));
+                ClusterConfiguration clusterConfiguration = clusterCfgService.getOne(
+                        new QueryWrapper<ClusterConfiguration>().eq("name", task.getClusterConfigurationName()));
                 if (Asserts.isNotNull(clusterConfiguration)) {
                     task.setClusterConfigurationId(clusterConfiguration.getId());
                 }
@@ -1297,8 +1245,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
             if (Asserts.isNotNull(task.getDatabaseName())) {
                 DataBase dataBase =
-                        dataBaseService.getOne(
-                                new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
+                        dataBaseService.getOne(new QueryWrapper<DataBase>().eq("name", task.getDatabaseName()));
                 if (Asserts.isNotNull(dataBase)) {
                     task.setDatabaseId(dataBase.getId());
                 }
@@ -1313,9 +1260,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
             if (Asserts.isNotNull(task.getAlertGroupName())) {
                 AlertGroup alertGroup =
-                        alertGroupService.getOne(
-                                new QueryWrapper<AlertGroup>()
-                                        .eq("name", task.getAlertGroupName()));
+                        alertGroupService.getOne(new QueryWrapper<AlertGroup>().eq("name", task.getAlertGroupName()));
                 if (Asserts.isNotNull(alertGroup)) {
                     task.setAlertGroupId(alertGroup.getId());
                 }
@@ -1339,8 +1284,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Asserts.isNotNull(task.getEnvName())) {
                 tasks.add(task);
             }
-            Catalogue catalogue =
-                    new Catalogue(task.getName(), task.getId(), task.getDialect(), parentId, true);
+            Catalogue catalogue = new Catalogue(task.getName(), task.getId(), task.getDialect(), parentId, true);
             catalogueService.saveOrUpdate(catalogue);
         }
 
@@ -1357,10 +1301,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         }
 
         if (errorNumber > 0) {
-            return Result.failed(
-                    String.format(
-                            "一共%d个作业,其中成功导入%d个,失败%d个",
-                            jsonNodes.size(), jsonNode.size() - errorNumber, errorNumber));
+            return Result.failed(String.format(
+                    "一共%d个作业,其中成功导入%d个,失败%d个", jsonNodes.size(), jsonNode.size() - errorNumber, errorNumber));
         }
         return Result.succeed("成功导入" + jsonNodes.size() + "个作业");
     }
@@ -1368,8 +1310,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String getStrByJsonFile(MultipartFile jsonFile) {
         String jsonStr = "";
         try {
-            Reader reader =
-                    new InputStreamReader(jsonFile.getInputStream(), StandardCharsets.UTF_8);
+            Reader reader = new InputStreamReader(jsonFile.getInputStream(), StandardCharsets.UTF_8);
             int ch = 0;
             StringBuffer sb = new StringBuffer();
             while ((ch = reader.read()) != -1) {
@@ -1387,8 +1328,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     public String getTaskPathByTaskId(Integer taskId) {
         StringBuilder path = new StringBuilder();
         path.append(getById(taskId).getName());
-        Catalogue catalogue =
-                catalogueService.getOne(new QueryWrapper<Catalogue>().eq("task_id", taskId));
+        Catalogue catalogue = catalogueService.getOne(new QueryWrapper<Catalogue>().eq("task_id", taskId));
         if (Asserts.isNull(catalogue)) {
             return path.toString();
         }
@@ -1412,13 +1352,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         long hours = ChronoUnit.HOURS.between(startTime, endTime);
         long minutes = ChronoUnit.MINUTES.between(startTime, endTime);
         long seconds = ChronoUnit.SECONDS.between(startTime, endTime);
-        String duration =
-                String.format(
-                        "%d天 %d小时 %d分 %d秒",
-                        days,
-                        hours - (days * 24),
-                        minutes - (hours * 60),
-                        seconds - (minutes * 60));
+        String duration = String.format(
+                "%d天 %d小时 %d分 %d秒", days, hours - (days * 24), minutes - (hours * 60), seconds - (minutes * 60));
         return duration;
     }
 
@@ -1430,7 +1365,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
         Task updateTask = new Task();
         updateTask.setId(jobInstance.getTaskId());
-        updateTask.setJobInstanceId(0);
+        updateTask.setJobInstanceId(jobInstance.getId());
 
         Integer jobInstanceId = jobInstance.getId();
         // 获取任务历史信息
@@ -1438,16 +1373,12 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         // some job need do something on Done, example flink-kubernets-operator
         if (GatewayType.isDeployCluster(jobInstance.getType())) {
             JobConfig jobConfig = new JobConfig();
-            Map<String, Object> clusterConfig =
-                    JSONUtil.toMap(
-                            jobHistory.getClusterConfiguration().get("configJson").asText(),
-                            String.class,
-                            Object.class);
-            jobConfig.buildGatewayConfig(clusterConfig);
+            String configJson =
+                    jobHistory.getClusterConfiguration().get("configJson").asText();
+            jobConfig.buildGatewayConfig(new JSONObject(configJson).toBean(FlinkClusterConfig.class));
             jobConfig.getGatewayConfig().setType(GatewayType.get(jobInstance.getType()));
             jobConfig.getGatewayConfig().getFlinkConfig().setJobName(jobInstance.getName());
-            Gateway.build(jobConfig.getGatewayConfig())
-                    .onJobFinishCallback(jobInstance.getStatus());
+            Gateway.build(jobConfig.getGatewayConfig()).onJobFinishCallback(jobInstance.getStatus());
         }
 
         if (!JobLifeCycle.ONLINE.equalsValue(jobInstance.getStep())) {
@@ -1486,33 +1417,26 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Asserts.isNotNull(alertGroup)) {
 
                 // build alert msg of flink job link url
-                String linkUrl =
-                        String.format(
-                                "http://%s/#/job/%s/overview",
-                                jobManagerHost, jobInstance.getJid());
+                String linkUrl = String.format("http://%s/#/job/%s/overview", jobManagerHost, jobInstance.getJid());
 
                 // build alert msg of flink job exception url
                 String exceptionUrl =
-                        String.format(
-                                "http://%s/#/job/%s/exceptions",
-                                jobManagerHost, jobInstance.getJid());
+                        String.format("http://%s/#/job/%s/exceptions", jobManagerHost, jobInstance.getJid());
 
-                AlertMsg.AlertMsgBuilder alertMsgBuilder =
-                        AlertMsg.builder()
-                                .alertType("Flink 实时监控")
-                                .alertTime(dateFormat.format(new Date()))
-                                .jobID(jobInstance.getJid())
-                                .jobName(task.getName())
-                                .jobType(task.getDialect())
-                                .jobStatus(jobInstance.getStatus())
-                                .jobStartTime(startTime)
-                                .jobEndTime(endTime)
-                                .jobDuration(duration);
+                AlertMsg.AlertMsgBuilder alertMsgBuilder = AlertMsg.builder()
+                        .alertType("Flink 实时监控")
+                        .alertTime(dateFormat.format(new Date()))
+                        .jobID(jobInstance.getJid())
+                        .jobName(task.getName())
+                        .jobType(task.getDialect())
+                        .jobStatus(jobInstance.getStatus())
+                        .jobStartTime(startTime)
+                        .jobEndTime(endTime)
+                        .jobDuration(duration);
 
                 for (AlertInstance alertInstance : alertGroup.getInstances()) {
                     if (alertInstance == null
-                            || (Asserts.isNotNull(alertInstance.getEnabled())
-                                    && !alertInstance.getEnabled())) {
+                            || (Asserts.isNotNull(alertInstance.getEnabled()) && !alertInstance.getEnabled())) {
                         continue;
                     }
                     Map<String, String> map = JSONUtil.toMap(alertInstance.getParams());
@@ -1533,13 +1457,9 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         updateById(updateTask);
     }
 
-    private void sendAlert(
-            AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
-        AlertConfig alertConfig =
-                AlertConfig.build(
-                        alertInstance.getName(),
-                        alertInstance.getType(),
-                        JSONUtil.toMap(alertInstance.getParams()));
+    private void sendAlert(AlertInstance alertInstance, JobInstance jobInstance, Task task, AlertMsg alertMsg) {
+        AlertConfig alertConfig = AlertConfig.build(
+                alertInstance.getName(), alertInstance.getType(), JSONUtil.toMap(alertInstance.getParams()));
         Alert alert = Alert.build(alertConfig);
         String title = "Task[" + task.getName() + "]: " + jobInstance.getStatus();
         String content = alertMsg.toString();
@@ -1557,14 +1477,14 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public Result<Tree<Integer>> queryAllCatalogue() {
-        final LambdaQueryWrapper<Catalogue> queryWrapper =
-                new LambdaQueryWrapper<Catalogue>()
-                        .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
-                        .eq(Catalogue::getIsLeaf, 0)
-                        .eq(Catalogue::getEnabled, 1)
-                        .isNull(Catalogue::getTaskId);
+        final LambdaQueryWrapper<Catalogue> queryWrapper = new LambdaQueryWrapper<Catalogue>()
+                .select(Catalogue::getId, Catalogue::getName, Catalogue::getParentId)
+                .eq(Catalogue::getIsLeaf, 0)
+                .eq(Catalogue::getEnabled, 1)
+                .isNull(Catalogue::getTaskId);
         final List<Catalogue> catalogueList = catalogueService.list(queryWrapper);
-        return Result.succeed(TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
+        return Result.succeed(
+                TreeUtil.build(dealWithCatalogue(catalogueList), -1).get(0));
     }
 
     private List<TreeNode<Integer>> dealWithCatalogue(List<Catalogue> catalogueList) {
@@ -1579,26 +1499,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             if (Objects.isNull(catalogue)) {
                 continue;
             }
-            treeNodes.add(
-                    new TreeNode<>(
-                            catalogue.getId(),
-                            catalogue.getParentId(),
-                            catalogue.getName(),
-                            i + 1));
+            treeNodes.add(new TreeNode<>(catalogue.getId(), catalogue.getParentId(), catalogue.getName(), i + 1));
         }
         return treeNodes;
     }
 
     @Override
     public Result<List<Task>> queryOnLineTaskByDoneStatus(
-            List<JobLifeCycle> jobLifeCycle,
-            List<JobStatus> jobStatuses,
-            boolean includeNull,
-            Integer catalogueId) {
+            List<JobLifeCycle> jobLifeCycle, List<JobStatus> jobStatuses, boolean includeNull, Integer catalogueId) {
         final Tree<Integer> node =
-                queryAllCatalogue()
-                        .getDatas()
-                        .getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
+                queryAllCatalogue().getDatas().getNode(Objects.isNull(catalogueId) ? 0 : catalogueId);
         final List<Integer> parentIds = new ArrayList<>(0);
         parentIds.add(node.getId());
         childrenNodeParse(node, parentIds);
@@ -1638,8 +1548,8 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
 
     @Override
     public void selectSavepointOnLineTask(TaskOperatingResult taskOperatingResult) {
-        final JobInstance jobInstanceByTaskId =
-                jobInstanceService.getJobInstanceByTaskId(taskOperatingResult.getTask().getId());
+        final JobInstance jobInstanceByTaskId = jobInstanceService.getJobInstanceByTaskId(
+                taskOperatingResult.getTask().getId());
         if (jobInstanceByTaskId == null) {
             startGoingLiveTask(taskOperatingResult, null);
             return;
@@ -1650,9 +1560,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
             return;
         }
 
-        if (taskOperatingResult
-                .getTaskOperatingSavepointSelect()
-                .equals(TaskOperatingSavepointSelect.DEFAULT_CONFIG)) {
+        if (taskOperatingResult.getTaskOperatingSavepointSelect().equals(TaskOperatingSavepointSelect.DEFAULT_CONFIG)) {
             startGoingLiveTask(taskOperatingResult, null);
             return;
         }
@@ -1704,8 +1612,7 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public void selectSavepointOffLineTask(TaskOperatingResult taskOperatingResult) {
         taskOperatingResult.setStatus(TaskOperatingStatus.OPERATING);
-        final Result result =
-                offLineTask(taskOperatingResult.getTask().getId(), SavePointType.CANCEL.getValue());
+        final Result result = offLineTask(taskOperatingResult.getTask().getId(), SavePointType.CANCEL.getValue());
         taskOperatingResult.parseResult(result);
     }
 }

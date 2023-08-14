@@ -58,47 +58,39 @@ public class LdapServiceImpl implements LdapService {
     public User authenticate(LoginDTO loginDTO) throws AuthException {
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
         // Build LDAP filter, The LdapCastUsername is map to Dinky UserName
-        String filter =
-                String.format(
-                        "(&%s(%s=%s))",
-                        configuration.getLdapFilter().getValue(),
-                        configuration.getLdapCastUsername().getValue(),
-                        loginDTO.getUsername());
+        String filter = String.format(
+                "(&%s(%s=%s))",
+                configuration.getLdapFilter().getValue(),
+                configuration.getLdapCastUsername().getValue(),
+                loginDTO.getUsername());
         // Perform search operation, we have alreday config baseDn in global
         // so the param base has config ""
         List<LdapUserIdentification> result =
-                ldapTemplate.search(
-                        "", filter, LdapContext.getControls(), new LdapContext.UserContextMapper());
+                ldapTemplate.search("", filter, LdapContext.getControls(), new LdapContext.UserContextMapper());
         // Only if the returned result is one is correct,
         // otherwise the corresponding exception is thrown
         if (result.size() == 0) {
-            log.info(
-                    String.format(
-                            "No results found for search, base: '%s'; filter: '%s'",
-                            configuration.getLdapBaseDn(), filter));
+            log.info(String.format(
+                    "No results found for search, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
             throw new AuthException(Status.USER_NOT_EXIST);
         } else if (result.size() > 1) {
-            log.error(
-                    String.format(
-                            "IncorrectResultSize, base: '%s'; filter: '%s'",
-                            configuration.getLdapBaseDn(), filter));
+            log.error(String.format(
+                    "IncorrectResultSize, base: '%s'; filter: '%s'", configuration.getLdapBaseDn(), filter));
             throw new AuthException(Status.LDAP_USER_DUPLICAT);
         } else {
             LdapUserIdentification ldapUserIdentification = result.get(0);
             try {
                 Attributes attributes = ldapUserIdentification.getAttributes();
                 // Validate username and password
-                LdapContext.getLdapContext()
-                        .getContext(ldapUserIdentification.getAbsoluteDn(), loginDTO.getPassword());
+                LdapContext.getLdapContext().getContext(ldapUserIdentification.getAbsoluteDn(), loginDTO.getPassword());
                 // If no exception is thrown, then the login is successful，
                 // Build the User with cast
                 User user = new User();
                 user.setUsername(loginDTO.getUsername());
-                user.setNickname(
-                        attributes
-                                .get(configuration.getLdapCastNickname().getValue())
-                                .get()
-                                .toString());
+                user.setNickname(attributes
+                        .get(configuration.getLdapCastNickname().getValue())
+                        .get()
+                        .toString());
                 return user;
             } catch (Exception e) {
                 if (e instanceof AuthenticationException) {
@@ -122,12 +114,11 @@ public class LdapServiceImpl implements LdapService {
         Assert.notBlank(filter, Status.LDAP_FILTER_INCORRECT.getMsg());
 
         LdapTemplate ldapTemplate = new LdapTemplate(LdapContext.getLdapContext());
-        List<User> result =
-                ldapTemplate.search(
-                        "",
-                        configuration.getLdapFilter().getValue(),
-                        LdapContext.getControls(),
-                        new LdapContext.UserAttributesMapperMapper());
+        List<User> result = ldapTemplate.search(
+                "",
+                configuration.getLdapFilter().getValue(),
+                LdapContext.getControls(),
+                new LdapContext.UserAttributesMapperMapper());
 
         // User is empty representative not matched to relevant attribute, filtered out
         return result.stream().filter(Objects::nonNull).collect(Collectors.toList());

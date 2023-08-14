@@ -28,6 +28,7 @@ import org.dinky.utils.I18nMsgUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -46,6 +47,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.StrUtil;
 
 /**
@@ -67,13 +69,28 @@ public class WebExceptionHandler {
         return Result.failed(e.getMsg());
     }
 
+    private static final Map<String, Status> ERR_CODE_MAPPING = MapUtil.<String, Status>builder()
+            .put(NotLoginException.NOT_TOKEN, Status.NOT_TOKEN)
+            .put(NotLoginException.INVALID_TOKEN, Status.INVALID_TOKEN)
+            .put(NotLoginException.TOKEN_TIMEOUT, Status.EXPIRED_TOKEN)
+            .put(NotLoginException.BE_REPLACED, Status.BE_REPLACED)
+            .put(NotLoginException.KICK_OUT, Status.KICK_OUT)
+            .put(NotLoginException.TOKEN_FREEZE, Status.TOKEN_FREEZED)
+            .put(NotLoginException.NO_PREFIX, Status.NO_PREFIX)
+            .build();
+
     @ExceptionHandler
-    public Result<Void> notLoginException(NotLoginException e) {
+    public Result<Void> notLoginException(NotLoginException notLoginException) {
         ServletRequestAttributes servletRequestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletResponse response = servletRequestAttributes.getResponse();
-        response.setStatus(CodeEnum.NOTLOGIN.getCode());
-        return Result.failed(Status.USER_NOT_LOGIN);
+        if (response != null) {
+            response.setStatus(CodeEnum.NOTLOGIN.getCode());
+        }
+
+        String type = notLoginException.getType();
+        Status status = ERR_CODE_MAPPING.getOrDefault(type, Status.NOT_TOKEN);
+        return Result.failed(status);
     }
 
     /**
@@ -94,14 +111,10 @@ public class WebExceptionHandler {
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
                     return Result.failed(
-                            Status.GLOBAL_PARAMS_CHECK_ERROR,
-                            fieldError.getField(),
-                            fieldError.getDefaultMessage());
+                            Status.GLOBAL_PARAMS_CHECK_ERROR, fieldError.getField(), fieldError.getDefaultMessage());
                 }
                 return Result.failed(
-                        Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE,
-                        fieldError.getField(),
-                        fieldError.getRejectedValue());
+                        Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE, fieldError.getField(), fieldError.getRejectedValue());
             }
         }
         return Result.failed(Status.REQUEST_PARAMS_ERROR);

@@ -20,11 +20,11 @@
 package org.dinky.service;
 
 import org.dinky.data.model.ClusterConfiguration;
+import org.dinky.gateway.model.FlinkClusterConfig;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * ClusterConfigService
@@ -35,11 +35,11 @@ public interface ClusterConfigurationService extends ISuperService<ClusterConfig
 
     ClusterConfiguration getClusterConfigById(Integer id);
 
-    List<ClusterConfiguration> listEnabledAll();
+    List<ClusterConfiguration> listEnabledAllClusterConfig();
 
-    Map<String, Object> getGatewayConfig(Integer id);
+    FlinkClusterConfig getFlinkClusterCfg(Integer id);
 
     TestResult testGateway(ClusterConfiguration clusterConfiguration);
 
-    Boolean enable(Integer id);
+    Boolean modifyClusterConfigStatus(Integer id);
 }

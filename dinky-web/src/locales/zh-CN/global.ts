@@ -18,6 +18,8 @@
  */
 
 export default {
+  'button.check':'检查',
+  'button.graph':'图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
@@ -50,6 +52,8 @@ export default {
   'button.heartbeat': '心跳',
   'button.recycle': '回收',
   'button.refresh': '刷新',
+  'button.expand-all': '全部展开',
+  'button.collapse-all': '全部折叠',
   'button.test': '测试',
   'button.clear': '清除',
   'button.copy': '复制',
@@ -71,9 +75,10 @@ export default {
   'button.stopRefresh': '停止自动刷新',
   'button.startRefresh': '开始自动刷新(5s/次)',
 
-
+  'menu.menu': '菜单',
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
+  'right.menu.addSub': '添加子项',
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
@@ -105,6 +110,9 @@ export default {
   'global.time.millisecond': '毫秒 ',
 
   'global.stay.tuned': '敬请期待',
+  'global.mini': '最小化',
+  'global.max':'最大化',
+
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
@@ -128,8 +136,6 @@ export default {
   'global.table.status.abnormal': '异常',
 
   'global.table.jobname': '任务名称',
-  'global.table.jobid': 'Job ID',
-  'global.table.taskid': '任务ID',
   'global.table.lifecycle': '生命周期',
   'global.table.lifecycle.all': '全部',
   'global.table.lifecycle.dev': '开发中',
@@ -137,9 +143,14 @@ export default {
   'global.table.lifecycle.online': '已上线',
   'global.table.lifecycle.unknown': '未知',
   'global.table.execmode': '执行模式',
+  'global.table.execmode.batch': '批模式',
+  'global.table.execmode.streaming': '流模式',
   'global.table.runmode': '运行模式',
   'global.table.runmode.local': '本地',
   'global.table.runmode.remote': '远程',
+
+  'global.search.text': '输入关键字搜索',
+
 
   'global.savepoint.strategy.disabled': '禁用',
   'global.savepoint.strategy.latest': '最近一次',
@@ -152,6 +163,7 @@ export default {
   'global.no': '否',
 
   'global.info': '信息',
+  'global.result': '结果',
   'global.error': '错误',
   'global.warning': '警告',
   'global.success': '成功',

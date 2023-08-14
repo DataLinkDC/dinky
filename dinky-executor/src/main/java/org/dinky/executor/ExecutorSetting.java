@@ -85,16 +85,11 @@ public class ExecutorSetting {
     }
 
     public ExecutorSetting(
-            Integer checkpoint,
-            Integer parallelism,
-            boolean useSqlFragment,
-            String savePointPath,
-            String jobName) {
+            Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath, String jobName) {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, jobName, null);
     }
 
-    public ExecutorSetting(
-            Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
+    public ExecutorSetting(Integer checkpoint, Integer parallelism, boolean useSqlFragment, String savePointPath) {
         this(checkpoint, parallelism, useSqlFragment, savePointPath, null, null);
     }
 
@@ -147,8 +142,7 @@ public class ExecutorSetting {
 
         Map<String, String> config = new HashMap<>();
         for (Map<String, String> item : configList) {
-            if (Asserts.isNotNull(item)
-                    && Asserts.isAllNotNullString(item.get("key"), item.get("value"))) {
+            if (Asserts.isNotNull(item) && Asserts.isAllNotNullString(item.get("key"), item.get("value"))) {
                 config.put(item.get("key"), item.get("value"));
             }
         }
@@ -192,13 +186,8 @@ public class ExecutorSetting {
     @Override
     public String toString() {
         return String.format(
-                "ExecutorSetting{checkpoint=%d, parallelism=%d, useSqlFragment=%s, useStatementSet=%s, savePointPath='%s', jobName='%s', config=%s}",
-                checkpoint,
-                parallelism,
-                useSqlFragment,
-                useStatementSet,
-                savePointPath,
-                jobName,
-                config);
+                "ExecutorSetting{checkpoint=%d, parallelism=%d, useSqlFragment=%s,"
+                        + " useStatementSet=%s, savePointPath='%s', jobName='%s', config=%s}",
+                checkpoint, parallelism, useSqlFragment, useStatementSet, savePointPath, jobName, config);
     }
 }

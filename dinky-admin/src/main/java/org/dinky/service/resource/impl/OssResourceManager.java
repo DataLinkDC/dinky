@@ -41,12 +41,11 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public void rename(String path, String newPath) {
-        CopyObjectRequest copyObjectRequest =
-                new CopyObjectRequest(
-                        getOssTemplate().getBucketName(),
-                        getFile(path),
-                        getOssTemplate().getBucketName(),
-                        getFile(newPath));
+        CopyObjectRequest copyObjectRequest = new CopyObjectRequest(
+                getOssTemplate().getBucketName(),
+                getFile(path),
+                getOssTemplate().getBucketName(),
+                getFile(newPath));
         getOssTemplate().getAmazonS3().copyObject(copyObjectRequest);
         DeleteObjectRequest deleteObjectRequest =
                 new DeleteObjectRequest(getOssTemplate().getBucketName(), getFile(path));
@@ -56,9 +55,7 @@ public class OssResourceManager implements BaseResourceManager {
     @Override
     public void putFile(String path, MultipartFile file) {
         try {
-            getOssTemplate()
-                    .putObject(
-                            getOssTemplate().getBucketName(), getFile(path), file.getInputStream());
+            getOssTemplate().putObject(getOssTemplate().getBucketName(), getFile(path), file.getInputStream());
         } catch (Exception e) {
             throw new DinkyException(e);
         }
@@ -66,10 +63,9 @@ public class OssResourceManager implements BaseResourceManager {
 
     @Override
     public String getFileContent(String path) {
-        return IoUtil.readUtf8(
-                getOssTemplate()
-                        .getObject(getOssTemplate().getBucketName(), getFile(path))
-                        .getObjectContent());
+        return IoUtil.readUtf8(getOssTemplate()
+                .getObject(getOssTemplate().getBucketName(), getFile(path))
+                .getObjectContent());
     }
 
     public OssTemplate getOssTemplate() {

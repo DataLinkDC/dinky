@@ -20,6 +20,8 @@
 package org.dinky.controller;
 
 import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.exception.BusException;
 import org.dinky.data.model.FlinkUdfManifest;
 import org.dinky.function.constant.PathConstant;
@@ -44,6 +46,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /** @since 0.7.0 */
@@ -53,6 +56,8 @@ import lombok.extern.slf4j.Slf4j;
 public class DownloadController {
 
     @GetMapping("downloadDepJar/{taskId}")
+    @Log(title = "Download UDF Jar", businessType = BusinessType.DOWNLOAD)
+    @ApiOperation("Download UDF Jar")
     public void downloadJavaUDF(@PathVariable Integer taskId, HttpServletResponse resp) {
         if (Asserts.isNull(taskId)) {
             throw new BusException("task id can not null!");
@@ -65,23 +70,13 @@ public class DownloadController {
         FlinkUdfManifest flinkUdfManifest =
                 JSONUtil.toBean(FileUtil.readUtf8String(depManifestFile), FlinkUdfManifest.class);
         List<String> filePath =
-                flinkUdfManifest.getJars().stream()
-                        .map(Convert::toStr)
-                        .collect(Collectors.toList());
+                flinkUdfManifest.getJars().stream().map(Convert::toStr).collect(Collectors.toList());
         List<String> pyFilePath =
-                flinkUdfManifest.getPythonFiles().stream()
-                        .map(Convert::toStr)
-                        .collect(Collectors.toList());
+                flinkUdfManifest.getPythonFiles().stream().map(Convert::toStr).collect(Collectors.toList());
         String[] jarNameList =
-                filePath.stream()
-                        .map(FileUtil::getName)
-                        .map(x -> "jar/" + x)
-                        .toArray(String[]::new);
+                filePath.stream().map(FileUtil::getName).map(x -> "jar/" + x).toArray(String[]::new);
         String[] pyFileNameList =
-                pyFilePath.stream()
-                        .map(FileUtil::getName)
-                        .map(x -> "py/" + x)
-                        .toArray(String[]::new);
+                pyFilePath.stream().map(FileUtil::getName).map(x -> "py/" + x).toArray(String[]::new);
 
         File zipFile = FileUtil.file(udfPackagePath + PathConstant.DEP_ZIP);
         InputStream[] inputStreams =
@@ -108,11 +103,11 @@ public class DownloadController {
      * @param resp resp
      */
     @GetMapping("downloadAppJar/{version}")
+    @Log(title = "Download App Jar", businessType = BusinessType.DOWNLOAD)
+    @ApiOperation("Download App Jar")
     public void downloadAppJar(@PathVariable String version, HttpServletResponse resp) {
-        List<File> files =
-                FileUtil.loopFiles(
-                        PathConstant.WORK_DIR + "/jar",
-                        pathname -> pathname.getName().contains("dinky-app-" + version));
+        List<File> files = FileUtil.loopFiles(
+                PathConstant.WORK_DIR + "/jar", pathname -> pathname.getName().contains("dinky-app-" + version));
         if (CollUtil.isNotEmpty(files)) {
             ServletUtil.write(resp, files.get(0));
         }

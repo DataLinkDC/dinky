@@ -31,8 +31,7 @@ import org.springframework.stereotype.Service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 @Service
-public class RoleSelectPermissionsServiceImpl
-        extends SuperServiceImpl<RowPermissionsMapper, RowPermissions>
+public class RoleSelectPermissionsServiceImpl extends SuperServiceImpl<RowPermissionsMapper, RowPermissions>
         implements RowPermissionsService {
 
     @Override

@@ -19,6 +19,8 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.AlertHistory;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.service.AlertHistoryService;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -48,7 +51,9 @@ public class AlertHistoryController {
 
     /** 动态查询列表 */
     @PostMapping
-    public ProTableResult<AlertHistory> listAlertHistory(@RequestBody JsonNode para) {
+    @ApiOperation("Query Alert History")
+    @Log(title = "Query Alert History", businessType = BusinessType.QUERY)
+    public ProTableResult<AlertHistory> listAlertHistoryRecord(@RequestBody JsonNode para) {
         return alertHistoryService.selectForProTable(para);
     }
 }

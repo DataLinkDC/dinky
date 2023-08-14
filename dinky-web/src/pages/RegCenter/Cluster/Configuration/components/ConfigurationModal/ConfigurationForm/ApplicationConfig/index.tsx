@@ -28,7 +28,7 @@ const ApplicationConfig = () => {
         <ProFormGroup labelLayout={'inline'}>
             <ProFormText
                 width={'xl'}
-                name={["configJson","userJarPath"]}
+                name={["configJson",'appConfig',"userJarPath"]}
                 placeholder={l('rc.cc.sqlSubmitJarPathHelp')}
                 label={l('rc.cc.sqlSubmitJarPath')}
                 tooltip={l('rc.cc.sqlSubmitJarPathHelp')}

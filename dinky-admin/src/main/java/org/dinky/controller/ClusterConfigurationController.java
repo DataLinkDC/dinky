@@ -19,7 +19,8 @@
 
 package org.dinky.controller;
 
-import org.dinky.assertion.Asserts;
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.ClusterConfiguration;
 import org.dinky.data.result.ProTableResult;
@@ -27,7 +28,6 @@ import org.dinky.data.result.Result;
 import org.dinky.gateway.result.TestResult;
 import org.dinky.service.ClusterConfigurationService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -57,61 +58,45 @@ public class ClusterConfigurationController {
 
     private final ClusterConfigurationService clusterConfigurationService;
 
-    /** 新增或者更新 */
+    /**
+     * @param clusterConfiguration
+     * @return
+     */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody ClusterConfiguration clusterConfiguration) {
+    @Log(title = "Insert Or Update Cluster Config", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Cluster Config")
+    public Result<Void> saveOrUpdateClusterConfig(@RequestBody ClusterConfiguration clusterConfiguration) {
         Integer id = clusterConfiguration.getId();
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         clusterConfiguration.setIsAvailable(testResult.isAvailable());
         if (clusterConfigurationService.saveOrUpdate(clusterConfiguration)) {
-            return Result.succeed(Asserts.isNotNull(id) ? "修改成功" : "新增成功");
+            return Result.succeed(Status.SAVE_SUCCESS);
         } else {
-            return Result.failed(Asserts.isNotNull(id) ? "修改失败" : "新增失败");
+            return Result.failed(Status.SAVE_FAILED);
         }
     }
 
-    /** 动态查询列表 */
+    /**
+     * query cluster config list
+     *
+     * @param para
+     * @return
+     */
     @PostMapping
-    public ProTableResult<ClusterConfiguration> listClusterConfigs(@RequestBody JsonNode para) {
+    @ApiOperation("Cluster Config List")
+    public ProTableResult<ClusterConfiguration> listClusterConfigList(@RequestBody JsonNode para) {
         return clusterConfigurationService.selectForProTable(para);
     }
 
-    /** 批量删除 */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!clusterConfigurationService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
-    }
-
-    /** 获取指定ID的信息 */
-    @PostMapping("/getOneById")
-    @Deprecated
-    public Result<ClusterConfiguration> getOneById(
-            @RequestBody ClusterConfiguration clusterConfiguration) {
-        clusterConfiguration = clusterConfigurationService.getById(clusterConfiguration.getId());
-        return Result.succeed(clusterConfiguration);
-    }
-
-    /** 获取可用的集群列表 */
+    /**
+     * query cluster config list of enabled
+     *
+     * @return
+     */
     @GetMapping("/listEnabledAll")
-    public Result<List<ClusterConfiguration>> listEnabledAll() {
-        List<ClusterConfiguration> clusters = clusterConfigurationService.listEnabledAll();
-        return Result.succeed(clusters);
+    @ApiOperation("Cluster Config List Enabled All")
+    public Result<List<ClusterConfiguration>> listEnabledAllClusterConfig() {
+        return Result.succeed(clusterConfigurationService.listEnabledAllClusterConfig());
     }
 
     /**
@@ -121,6 +106,8 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @DeleteMapping("/delete")
+    @Log(title = "Cluster Config Delete by id", businessType = BusinessType.DELETE)
+    @ApiOperation("Cluster Config Delete by id")
     public Result<Void> deleteById(@RequestParam("id") Integer id) {
         boolean removeById = clusterConfigurationService.removeById(id);
         if (removeById) {
@@ -137,8 +124,10 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam("id") Integer id) {
-        if (clusterConfigurationService.enable(id)) {
+    @Log(title = "Modify Cluster Config Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Modify Cluster Config Status")
+    public Result<Void> modifyClusterConfigStatus(@RequestParam("id") Integer id) {
+        if (clusterConfigurationService.modifyClusterConfigStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
@@ -152,6 +141,8 @@ public class ClusterConfigurationController {
      * @return {@link Result}<{@link Void}>
      */
     @PostMapping("/testConnect")
+    @Log(title = "Test Connection", businessType = BusinessType.TEST)
+    @ApiOperation("Test Connection")
     public Result<Void> testConnect(@RequestBody ClusterConfiguration clusterConfiguration) {
         TestResult testResult = clusterConfigurationService.testGateway(clusterConfiguration);
         if (testResult.isAvailable()) {

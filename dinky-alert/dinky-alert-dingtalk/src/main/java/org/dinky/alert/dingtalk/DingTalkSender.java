@@ -185,9 +185,9 @@ public class DingTalkSender {
         CloseableHttpClient httpClient;
         HttpHost httpProxy = new HttpHost(proxy, port);
         CredentialsProvider provider = new BasicCredentialsProvider();
-        provider.setCredentials(
-                new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
-        httpClient = HttpClients.custom().setDefaultCredentialsProvider(provider).build();
+        provider.setCredentials(new AuthScope(httpProxy), new UsernamePasswordCredentials(user, password));
+        httpClient =
+                HttpClients.custom().setDefaultCredentialsProvider(provider).build();
         RequestConfig rcf = RequestConfig.custom().setProxy(httpProxy).build();
         httpPost.setConfig(rcf);
         return httpClient;
@@ -247,22 +247,18 @@ public class DingTalkSender {
         }
         builder.append("\n\n");
         if (Asserts.isNotNullString(atMobiles)) {
-            Arrays.stream(atMobiles.split(","))
-                    .forEach(
-                            value -> {
-                                builder.append("@");
-                                builder.append(value);
-                                builder.append(" ");
-                            });
+            Arrays.stream(atMobiles.split(",")).forEach(value -> {
+                builder.append("@");
+                builder.append(value);
+                builder.append(" ");
+            });
         }
         if (Asserts.isNotNullString(atUserIds)) {
-            Arrays.stream(atUserIds.split(","))
-                    .forEach(
-                            value -> {
-                                builder.append("@");
-                                builder.append(value);
-                                builder.append(" ");
-                            });
+            Arrays.stream(atUserIds.split(",")).forEach(value -> {
+                builder.append("@");
+                builder.append(value);
+                builder.append(" ");
+            });
         }
         builder.append("\n\n");
         String finalResultMsgBody = buildFinalResultMsgBody(title, content, builder);
@@ -288,8 +284,7 @@ public class DingTalkSender {
 
             Set<Map.Entry<String, Object>> entries = mapItems.entrySet();
             Iterator<Map.Entry<String, Object>> iterator = entries.iterator();
-            StringBuilder t =
-                    new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
+            StringBuilder t = new StringBuilder(String.format("`%s`%s", title, DingTalkConstants.ENTER_LINE));
 
             while (iterator.hasNext()) {
 
@@ -318,9 +313,7 @@ public class DingTalkSender {
             Mac mac = Mac.getInstance("HmacSHA256");
             mac.init(new SecretKeySpec(secret.getBytes(DingTalkConstants.CHARSET), "HmacSHA256"));
             byte[] signData = mac.doFinal(stringToSign.getBytes(DingTalkConstants.CHARSET));
-            sign =
-                    URLEncoder.encode(
-                            new String(Base64.encodeBase64(signData)), DingTalkConstants.CHARSET);
+            sign = URLEncoder.encode(new String(Base64.encodeBase64(signData)), DingTalkConstants.CHARSET);
         } catch (Exception e) {
             logger.error("generate sign error, message:{}", e);
         }
@@ -334,10 +327,8 @@ public class DingTalkSender {
      */
     private void buildAtUserList(Map<String, Object> items) {
         Map<String, Object> at = new HashMap<>();
-        String[] atMobileArray =
-                Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
-        String[] atUserArray =
-                Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
+        String[] atMobileArray = Asserts.isNotNullString(atMobiles) ? atMobiles.split(",") : new String[0];
+        String[] atUserArray = Asserts.isNotNullString(atUserIds) ? atUserIds.split(",") : new String[0];
         boolean isAtAll = Objects.isNull(atAll) ? false : atAll;
         at.put(DingTalkConstants.AT_ALL, isAtAll);
         if (atMobileArray.length > 0) {
@@ -375,8 +366,7 @@ public class DingTalkSender {
             alertResult.setMessage("send ding talk msg success");
             return alertResult;
         }
-        alertResult.setMessage(
-                String.format("alert send ding talk msg error : %s", response.getErrmsg()));
+        alertResult.setMessage(String.format("alert send ding talk msg error : %s", response.getErrmsg()));
         logger.info("alert send ding talk msg error : {}", response.getErrmsg());
         return alertResult;
     }

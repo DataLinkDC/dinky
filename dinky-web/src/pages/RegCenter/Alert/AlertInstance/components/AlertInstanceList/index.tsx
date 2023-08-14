@@ -23,7 +23,7 @@ import {Button, Descriptions, Modal, Space, Switch, Tag, Tooltip} from 'antd';
 import {l} from '@/utils/intl';
 import {Alert} from '@/types/RegCenter/data.d';
 import {queryList} from '@/services/api';
-import {handleRemoveById, updateEnabled} from '@/services/BusinessCrud';
+import {handleRemoveById, updateDataByParam} from '@/services/BusinessCrud';
 import {ProList} from '@ant-design/pro-components';
 import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from '@/services/constants';
 import {DangerDeleteIcon} from '@/components/Icons/CustomIcons';
@@ -87,7 +87,7 @@ const AlertInstanceList: React.FC = () => {
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
     await executeAndCallbackRefresh(async () => {
-      await updateEnabled(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
+      await updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
     });
   };
 

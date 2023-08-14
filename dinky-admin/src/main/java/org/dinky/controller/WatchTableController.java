@@ -19,7 +19,7 @@
 
 package org.dinky.controller;
 
-import org.dinky.data.annotation.PublicInterface;
+import io.swagger.annotations.ApiOperation;
 import org.dinky.data.result.Result;
 import org.dinky.service.WatchTableService;
 
@@ -37,13 +37,13 @@ public class WatchTableController {
     private final WatchTableService watchTableService;
 
     @GetMapping(name = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
+    @ApiOperation("Subscribe watch table")
     public SseEmitter subscribe(@RequestParam Integer id, @RequestParam String table) {
         return watchTableService.registerListenEntry(id, table);
     }
 
     @PutMapping("/unSubscribe/watch")
+    @ApiOperation("UnSubscribe watch table")
     public Result<Void> unsubscribe(@RequestParam Integer id, @RequestParam String table) {
         watchTableService.unRegisterListenEntry(id, table);
         return Result.succeed();

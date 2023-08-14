@@ -19,13 +19,14 @@
 
 package org.dinky.controller;
 
+import org.dinky.data.annotation.Log;
+import org.dinky.data.enums.BusinessType;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Document;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.service.DocumentService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,6 +40,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -59,7 +61,9 @@ public class DocumentController {
      * @throws Exception {@link Exception}
      */
     @PutMapping
-    public Result<Void> saveOrUpdate(@RequestBody Document document) throws Exception {
+    @Log(title = "Insert Or Update Document", businessType = BusinessType.INSERT_OR_UPDATE)
+    @ApiOperation("Insert Or Update Document")
+    public Result<Void> saveOrUpdateDocument(@RequestBody Document document) throws Exception {
         if (documentService.saveOrUpdate(document)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
@@ -74,35 +78,9 @@ public class DocumentController {
      * @return {@link ProTableResult} of {@link Document}
      */
     @PostMapping
+    @ApiOperation("Document Query List")
     public ProTableResult<Document> listDocuments(@RequestBody JsonNode para) {
         return documentService.selectForProTable(para);
-    }
-
-    /**
-     * batch delete, this method is deprecated, please use {@link #deleteMul(JsonNode)} instead.
-     *
-     * @param para
-     * @return
-     */
-    @DeleteMapping
-    @Deprecated
-    public Result<Void> deleteMul(@RequestBody JsonNode para) {
-        if (para.size() > 0) {
-            List<Integer> error = new ArrayList<>();
-            for (final JsonNode item : para) {
-                Integer id = item.asInt();
-                if (!documentService.removeById(id)) {
-                    error.add(id);
-                }
-            }
-            if (error.size() == 0) {
-                return Result.succeed("删除成功");
-            } else {
-                return Result.succeed("删除部分成功，但" + error + "删除失败，共" + error.size() + "次失败。");
-            }
-        } else {
-            return Result.failed("请选择要删除的记录");
-        }
     }
 
     /**
@@ -112,6 +90,8 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @DeleteMapping("/delete")
+    @Log(title = "Document Delete By id", businessType = BusinessType.DELETE)
+    @ApiOperation("Document Delete By id")
     public Result<Void> deleteById(@RequestParam Integer id) {
         if (documentService.removeById(id)) {
             return Result.succeed(Status.DELETE_SUCCESS);
@@ -127,8 +107,10 @@ public class DocumentController {
      * @return {@link Result} of {@link Void}
      */
     @PutMapping("/enable")
-    public Result<Void> enable(@RequestParam Integer id) {
-        if (documentService.enable(id)) {
+    @Log(title = "Update Document Status", businessType = BusinessType.UPDATE)
+    @ApiOperation("Update Document Status")
+    public Result<Void> modifyDocumentStatus(@RequestParam Integer id) {
+        if (documentService.modifyDocumentStatus(id)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
         } else {
             return Result.failed(Status.MODIFY_FAILED);
@@ -143,6 +125,7 @@ public class DocumentController {
      * @throws {@link Exception}
      */
     @GetMapping("/getFillAllByVersion")
+    @ApiOperation("Get Document By Version")
     public Result<List<Document>> getFillAllByVersion(@RequestParam String version) {
         return Result.succeed(documentService.getFillAllByVersion(version));
     }

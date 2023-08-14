@@ -37,11 +37,10 @@ import java.util.regex.Pattern;
  */
 public class CreateTemporalTableFunctionParseStrategy extends AbstractRegexParseStrategy {
     private static final String PATTERN_STR =
-            "^CREATE\\s+TEMPORAL(?:\\s+(TEMPORARY|TEMPORARY SYSTEM))?\\s+FUNCTION"
-                    + "(?:\\s(IF NOT EXISTS))?\\s+([.\\w]+)\\s+AS\\s+SELECT\\s+(\\w+)\\s*,\\s*(\\w+)\\s+FROM\\s+"
+            "^CREATE\\s+TEMPORAL(?:\\s+(TEMPORARY|TEMPORARY SYSTEM))?\\s+FUNCTION(?:\\s(IF NOT"
+                    + " EXISTS))?\\s+([.\\w]+)\\s+AS\\s+SELECT\\s+(\\w+)\\s*,\\s*(\\w+)\\s+FROM\\s+"
                     + "(\\w+)\\s*$";
-    private static final Pattern PATTERN =
-            Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private static final Pattern PATTERN = Pattern.compile(PATTERN_STR, Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
 
     public static final CreateTemporalTableFunctionParseStrategy INSTANCE =
             new CreateTemporalTableFunctionParseStrategy();
@@ -60,9 +59,7 @@ public class CreateTemporalTableFunctionParseStrategy extends AbstractRegexParse
         String timeColumn = matcher.group(4).trim();
         String targetColumn = matcher.group(5).trim();
         String tableName = matcher.group(6).trim();
-        return new String[] {
-            functionType, exist, functionName, timeColumn, targetColumn, tableName
-        };
+        return new String[] {functionType, exist, functionName, timeColumn, targetColumn, tableName};
     }
 
     @Override

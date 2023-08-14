@@ -37,17 +37,16 @@ public class WeChatSenderTest {
 
     private static Map<String, String> weChatConfig = new HashMap<>();
 
-    private String contentTest =
-            "[{\"id\":\"70\","
-                    + "\"name\":\"UserBehavior-0--1193959466\","
-                    + "\"Job name\":\"Start workflow\","
-                    + "\"State\":\"SUCCESS\","
-                    + "\"Recovery\":\"NO\","
-                    + "\"Run time\":\"1\","
-                    + "\"Start time\": \"2018-08-06 10:31:34.0\","
-                    + "\"End time\": \"2018-08-06 10:31:49.0\","
-                    + "\"Host\": \"192.168.xx.xx\","
-                    + "\"Notify group\" :\"4\"}]";
+    private String contentTest = "[{\"id\":\"70\","
+            + "\"name\":\"UserBehavior-0--1193959466\","
+            + "\"Job name\":\"Start workflow\","
+            + "\"State\":\"SUCCESS\","
+            + "\"Recovery\":\"NO\","
+            + "\"Run time\":\"1\","
+            + "\"Start time\": \"2018-08-06 10:31:34.0\","
+            + "\"End time\": \"2018-08-06 10:31:49.0\","
+            + "\"Host\": \"192.168.xx.xx\","
+            + "\"Notify group\" :\"4\"}]";
 
     /** init WeChatConfig */
     @Before
@@ -63,8 +62,7 @@ public class WeChatSenderTest {
                         + ",\"msgtype\":\"{showType}\",\"{showType}\":{\"content\":\"{msg}\"}}");
         weChatConfig.put(WeChatConstants.AT_USERS, "all");
         weChatConfig.put(WeChatConstants.TEAM_SEND_MSG, "msg");
-        weChatConfig.put(
-                WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
+        weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue()); // default is "table"
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.APP.getValue());
     }
 
@@ -92,8 +90,7 @@ public class WeChatSenderTest {
                 WeChatConstants.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=8xxxxxxxxxxxxxxxxx6fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(
-                WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
         weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.MARKDOWN.getValue());
         weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  MarkDown方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);
@@ -108,8 +105,7 @@ public class WeChatSenderTest {
                 WeChatConstants.WEB_HOOK,
                 "https://qyapi.weixin.qq.com/cgi-bin/webhook/send?key=822d17a1-d6e5-43c2-a566-4846fe13396c");
         weChatConfig.put(WeChatConstants.SEND_TYPE, WeChatType.CHAT.getValue());
-        weChatConfig.put(
-                WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
+        weChatConfig.put(WeChatConstants.WECHAT_APP_TEMPLATE, WeChatConstants.WECHAT_WEBHOOK_TEMPLATE);
         weChatConfig.put(WeChatConstants.MSG_TYPE, ShowType.TEXT.getValue());
         weChatConfig.put(WeChatConstants.KEYWORD, "Dinky企微WEBHOOK  TEXT方式 告警测试");
         WeChatSender weChatSender = new WeChatSender(weChatConfig);

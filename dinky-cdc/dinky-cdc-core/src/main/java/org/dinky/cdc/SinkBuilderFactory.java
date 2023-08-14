@@ -76,12 +76,8 @@ public class SinkBuilderFactory {
             }
         }
 
-        Map<String, Supplier<SinkBuilder>> plusSinkBuilder =
-                sinkBuilders.stream()
-                        .collect(
-                                Collectors.toMap(
-                                        SinkBuilderFactory::getKeyWord,
-                                        SinkBuilderFactory::getSupplier));
+        Map<String, Supplier<SinkBuilder>> plusSinkBuilder = sinkBuilders.stream()
+                .collect(Collectors.toMap(SinkBuilderFactory::getKeyWord, SinkBuilderFactory::getSupplier));
         map.putAll(plusSinkBuilder);
         return map;
     }
@@ -104,10 +100,7 @@ public class SinkBuilderFactory {
         try {
             Field f = c.getClass().getDeclaredField(fieldName);
             result = (String) f.get(null);
-        } catch (NoSuchFieldException
-                | SecurityException
-                | IllegalArgumentException
-                | IllegalAccessException e) {
+        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
             logger.error("Could not find KEY_WORD in class : {}", e.getMessage());
         }
 

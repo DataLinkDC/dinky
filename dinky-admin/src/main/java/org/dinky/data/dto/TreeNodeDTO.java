@@ -46,12 +46,22 @@ public class TreeNodeDTO {
     private String desc;
     private List<TreeNodeDTO> children;
 
-    public TreeNodeDTO(
-            String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
+    public TreeNodeDTO(String name, String path, boolean isLeaf, List<TreeNodeDTO> children, Long size) {
         this.name = name;
         this.path = path;
         this.isLeaf = isLeaf;
         this.children = children;
         this.size = size;
+    }
+
+    public TreeNodeDTO(
+            Integer id, String name, String path, Integer parentId, String desc, List<TreeNodeDTO> children) {
+        this.id = id;
+        this.name = name;
+        this.path = path;
+        this.parentId = parentId;
+        this.desc = desc;
+        this.children = children;
+        this.isLeaf = (children == null || children.size() == 0);
     }
 }

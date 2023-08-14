@@ -40,7 +40,7 @@ const AsyncDuration = 0.5
  * @param duration The duration (in milliseconds) that the notification should be displayed for.
  *                  This parameter is optional, and if no value is provided, it defaults to a default duration.
  */
-export const ErrorNotification = (description: string, message = l('global.error'), duration = defaultDuration) => {
+export const ErrorNotification = (description: string, message = l('global.error'), duration:number|null = defaultDuration) => {
 
   /** The title of the notification, with an icon and the provided message. */
   const title = (

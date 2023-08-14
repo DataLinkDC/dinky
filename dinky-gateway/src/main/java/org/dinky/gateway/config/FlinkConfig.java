@@ -23,7 +23,9 @@ import org.dinky.assertion.Asserts;
 import org.dinky.gateway.enums.ActionType;
 import org.dinky.gateway.enums.SavePointType;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -45,11 +47,12 @@ public class FlinkConfig {
 
     private String jobName;
     private String jobId;
+    private String flinkVersion;
     private ActionType action;
     private SavePointType savePointType;
     private String savePoint;
     private Map<String, String> configuration = new HashMap<>();
-    private Map<String, String> FlinkKubetnetsConfig = new HashMap<>();
+    private List<Map<String, String>> flinkConfigList = new ArrayList<>();
 
     private static final ObjectMapper mapper = new ObjectMapper();
 
@@ -96,28 +99,15 @@ public class FlinkConfig {
                 e.printStackTrace();
             }
             Objects.requireNonNull(paras)
-                    .forEach(
-                            node ->
-                                    configMap.put(
-                                            node.get("key").asText(), node.get("value").asText()));
+                    .forEach(node -> configMap.put(
+                            node.get("key").asText(), node.get("value").asText()));
         }
         return new FlinkConfig(
-                jobName,
-                jobId,
-                ActionType.get(actionStr),
-                SavePointType.get(savePointTypeStr),
-                savePoint,
-                configMap);
+                jobName, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, configMap);
     }
 
-    public static FlinkConfig build(
-            String jobId, String actionStr, String savePointTypeStr, String savePoint) {
+    public static FlinkConfig build(String jobId, String actionStr, String savePointTypeStr, String savePoint) {
         return new FlinkConfig(
-                null,
-                jobId,
-                ActionType.get(actionStr),
-                SavePointType.get(savePointTypeStr),
-                savePoint,
-                null);
+                null, jobId, ActionType.get(actionStr), SavePointType.get(savePointTypeStr), savePoint, null);
     }
 }

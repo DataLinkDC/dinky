@@ -33,8 +33,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 
 /** DocumentServiceImpl */
 @Service
-public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Document>
-        implements DocumentService {
+public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Document> implements DocumentService {
 
     @Override
     public List<Document> getFillAllByVersion(String version) {
@@ -47,7 +46,7 @@ public class DocumentServiceImpl extends SuperServiceImpl<DocumentMapper, Docume
     }
 
     @Override
-    public Boolean enable(Integer id) {
+    public Boolean modifyDocumentStatus(Integer id) {
         Document document = baseMapper.selectById(id);
         document.setEnabled(!document.getEnabled());
         return updateById(document);

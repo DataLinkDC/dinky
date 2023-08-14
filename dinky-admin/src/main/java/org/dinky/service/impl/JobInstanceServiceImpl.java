@@ -156,8 +156,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             jobInfoDetail.setHistory(history);
             if (Asserts.isNotNull(history.getClusterConfigurationId())) {
                 jobInfoDetail.setClusterConfiguration(
-                        clusterConfigurationService.getClusterConfigById(
-                                history.getClusterConfigurationId()));
+                        clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
             }
             return jobInfoDetail;
         }
@@ -181,8 +180,7 @@ public class JobInstanceServiceImpl extends SuperServiceImpl<JobInstanceMapper, 
             jobInfoDetail.setHistory(history);
 
             jobInfoDetail.setClusterConfiguration(
-                    clusterConfigurationService.getClusterConfigById(
-                            history.getClusterConfigurationId()));
+                    clusterConfigurationService.getClusterConfigById(history.getClusterConfigurationId()));
         }
         if (pool.containsKey(key)) {
             pool.refresh(jobInfoDetail);

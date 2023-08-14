@@ -38,6 +38,10 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.jasypt</groupId>
+            <artifactId>jasypt</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.amazonaws</groupId>
             <artifactId>aws-java-sdk-s3</artifactId>
             <version>1.12.481</version>
@@ -45,6 +49,10 @@
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-jwt</artifactId>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -119,6 +127,11 @@
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
+            <scope>${scope.runtime}</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
             <scope>${scope.runtime}</scope>
         </dependency>
         <!-- postgresql -->
@@ -411,7 +424,7 @@
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
-                                    <directory>../dlink-web/dist</directory>
+                                    <directory>../dinky-web/dist</directory>
                                 </resource>
                             </resources>
                         </configuration>

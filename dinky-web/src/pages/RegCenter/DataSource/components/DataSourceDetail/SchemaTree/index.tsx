@@ -16,36 +16,65 @@
  */
 
 
-import {Empty, Tree} from 'antd';
-import React from 'react';
+import {Empty, Input, Tree} from 'antd';
+import React, {useCallback, useState} from 'react';
 import {buildSchemaTree} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/function';
+import {Key} from '@ant-design/pro-components';
+import {l} from "@/utils/intl";
 
 const {DirectoryTree} = Tree;
-
 /**
  * props
  */
 type SchemaTreeProps = {
-  treeData: Partial<any>[];
-  onNodeClick: (info: any) => void
+    treeData: Partial<any>[];
+    onNodeClick: (keys: Key[], info: any) => void
+    style?: React.CSSProperties
+    expandKeys: Key[]
+    onExpand: (keys: Key[]) => void
+    selectKeys: Key[]
 }
 
 
 const SchemaTree: React.FC<SchemaTreeProps> = (props) => {
-  const {treeData, onNodeClick} = props;
+    const {treeData, onNodeClick, style, expandKeys, onExpand, selectKeys} = props;
 
-  /**
-   * render
-   */
-  return <>
-    {
-      (treeData.length > 0) ?
-        <DirectoryTree
-          onSelect={(_, info) => onNodeClick(info)}
-          treeData={buildSchemaTree(treeData)}
-        /> : <Empty className={'code-content-empty'}/>
-    }
-  </>;
+    const [searchValue, setSearchValue] = useState('');
+
+    /**
+     * search tree node
+     * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
+     */
+    const onSearchChange = useCallback((e: { target: { value: React.SetStateAction<string>; }; }) => {
+        setSearchValue(e.target.value)
+    },[searchValue])
+
+    /**
+     * render
+     */
+    return <>
+        {
+            (treeData.length > 0) ?
+                <>
+                    <Input
+                        placeholder={l('global.search.text')}
+                        allowClear
+                        style={{marginBottom: 8}}
+                        value={searchValue}
+                        onChange={onSearchChange}
+                    />
+                    <DirectoryTree
+                        expandedKeys={expandKeys}
+                        selectedKeys={selectKeys}
+                        onExpand={onExpand}
+                        style={style}
+                        className={'treeList'}
+                        onSelect={onNodeClick}
+                        treeData={buildSchemaTree(treeData, searchValue)}
+                    />
+                </> : <Empty className={'code-content-empty'}/>
+        }
+    </>;
 };
 
 export default SchemaTree;
