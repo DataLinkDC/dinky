@@ -119,14 +119,15 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     return (
       <>
         <ProFormTreeSelect
+          initialValue={selectedKeys}
           shouldUpdate
           name={'parentId'}
           label={l('menu.parentId')}
           rules={[{ required: true, message: l('menu.parentIdPlaceholder') }]}
           placeholder={l('menu.parentIdPlaceholder')}
           fieldProps={{
-            labelInValue: false,
-            treeData: [{ label: '根菜单', value: '-1' }].concat(
+              labelInValue: false,
+              treeData: [{ label: <>Root  <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;Root Folder</span></>, value: '-1' }].concat(
               buildMenuFormTree(treeData, searchValue, true),
             ),
             onSearch: (value) => setSearchValue(value),

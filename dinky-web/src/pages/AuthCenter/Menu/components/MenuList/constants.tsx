@@ -17,7 +17,7 @@
  *
  */
 
-import {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
+import Icon, {DeleteTwoTone, PlusCircleTwoTone} from '@ant-design/icons';
 import {l} from "@/utils/intl";
 import React from "react";
 import {BackIcon} from "@/components/Icons/CustomIcons";
@@ -26,14 +26,10 @@ import {DefaultOptionType} from "antd/es/select";
 import {Space} from "antd";
 import {TagAlignLeft} from "@/components/StyledComponents";
 import * as Icons from '@ant-design/icons';
+import {IconRender} from "@/pages/AuthCenter/Menu/function";
 
 
-const IconRender = ({icon}:{icon: string}) => {
 
-    // @ts-ignore
-    const IconComponent = Icons[icon];
-    return <IconComponent style={{marginRight: 8}}/>;
-}
 
 /**
  * menu icon options

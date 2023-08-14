@@ -88,8 +88,8 @@ const MenuList: React.FC = () => {
         const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
             await executeAndCallbackRefresh(async () => {
                 await handleAddOrUpdate('/api/menu/addOrUpdate', {...value});
-                handleModalVisible(false);
             });
+            handleModalVisible(false);
         };
 
 
@@ -245,7 +245,6 @@ const MenuList: React.FC = () => {
             </>
         }
 
-console.log(treeData,buildMenuFormTree(treeData,'',true))
         /**
          * render
          */
@@ -272,7 +271,7 @@ console.log(treeData,buildMenuFormTree(treeData,'',true))
 
             <RightContextMenu
                 contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
-                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.isLeaf)}
+                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.type === 'F')}
                 onClick={handleMenuClick}
             />
         </>

@@ -90,14 +90,16 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
  * add or update data
  * @param url
  * @param params
+ * @param afterCallBack
  */
-export const handleAddOrUpdate = async (url: string, params: any) => {
+export const handleAddOrUpdate = async (url: string, params: any, afterCallBack? : ()=> void) => {
   const tipsTitle = params.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
     const {code, msg} = await addOrUpdateData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
+      afterCallBack && afterCallBack();
     } else {
       await WarningMessage(msg);
     }

@@ -1036,5 +1036,10 @@ export default {
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.middle.qg.resource': '资源',
+  // project
+  'datastudio.project.create.rootFolder': '创建根目录',
+  'datastudio.project.create.folder.name': '目录名称',
+  'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
+
 
 };

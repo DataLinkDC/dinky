@@ -18,20 +18,15 @@
  */
 
 import {SysMenu} from "@/types/RegCenter/data";
-import {searchTreeNode} from "@/utils/function";
+import {renderIcon, searchTreeNode} from "@/utils/function";
 import * as Icons from '@ant-design/icons';
 import * as React from "react";
 import {Space} from "antd";
 import {l} from "@/utils/intl";
 
-/**
- * render icon
- * @param {string} iconName
- * @returns {JSX.Element}
- */
-const renderIcon = (iconName: string) => {
+export const IconRender = ({icon}:{icon: string}) => {
     // @ts-ignore
-    return iconName ? React.createElement(Icons[iconName]) : null;
+    return icon ? React.createElement(Icons[icon]) : null;
 }
 
 const renderMenuType = (menuYype: string) => {
@@ -69,10 +64,11 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = ''): any =>
         name: item.name,
         parentId: item.parentId,
         label: searchTreeNode(item.name, searchValue),
-        icon: renderIcon(item.icon),//
+        icon: <IconRender icon={item.icon}/>,
         content: item.note,
         path: item.path,
         value: item.id,
+        type: item.type,
         title: <>{searchTreeNode(item.name, searchValue)}{renderTitle(item)}</>,
         fullInfo: item,
         key: item.id,
@@ -96,7 +92,7 @@ export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', fil
         name: item.name,
         parentId: item.parentId,
         label: searchTreeNode(item.name, searchValue),
-        icon: renderIcon(item.icon),//
+        icon: <IconRender icon={item.icon}/>,
         content: item.note,
         path: item.path,
         value: item.id,
