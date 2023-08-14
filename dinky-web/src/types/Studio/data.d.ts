@@ -16,16 +16,6 @@
  *   limitations under the License.
  *
  */
-//
-// private Integer tenantId;
-//
-// private Integer taskId;
-//
-// private String type;
-//
-// private Integer parentId;
-//
-// private Boolean isLeaf;
 
 export type Catalogue = {
     id: number;
