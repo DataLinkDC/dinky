@@ -127,7 +127,11 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
             // if JobStatusMessage not have job id, use timestamp
             // and... it`s maybe wrong with submit
             if (TextUtils.isEmpty(jobId)) {
-                jobId = "unknown" + System.currentTimeMillis();
+                int cost = SystemConfiguration.getInstances().getJobIdWait() - counts;
+                String clusterId = clusterClient.getClusterId();
+                throw new Exception(
+                        "Unable to obtain jobId. Please contact management to troubleshoot the issue,Waiting time："
+                                + cost + "s,job name:" + clusterId);
             }
             result.setClusterId(jobId);
             result.setWebURL(clusterClient.getWebInterfaceURL());
