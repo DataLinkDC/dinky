@@ -79,7 +79,6 @@ export default {
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
   'right.menu.addSub': '添加子项',
-  'right.menu.addRoot': '添加根菜单',
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',

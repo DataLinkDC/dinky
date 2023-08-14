@@ -25,7 +25,6 @@ import {StateType} from "@/pages/DataStudio/model";
 import {Key} from "@ant-design/pro-components";
 import {BtnRoute} from "@/pages/DataStudio/route";
 import Search from "antd/es/input/Search";
-import {never} from "@umijs/utils/compiled/zod";
 
 
 const {DirectoryTree} = Tree;

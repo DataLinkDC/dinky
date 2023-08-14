@@ -1024,4 +1024,9 @@ export default {
   'datastudio.middle.qg.gitprojects': 'Git Projects',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.middle.qg.resource': 'Resource',
+
+  // project
+  'datastudio.project.create.rootFolder': 'Create Root Folder',
+  'datastudio.project.create.folder.name': 'Folder Name',
+  'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
 };
