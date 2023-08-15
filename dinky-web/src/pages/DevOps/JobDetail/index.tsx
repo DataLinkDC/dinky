@@ -6,13 +6,13 @@ import {ClusterOutlined, FireOutlined, RocketOutlined} from "@ant-design/icons";
 import {useLocation} from 'umi';
 import {useRequest} from "@umijs/max";
 import {API_CONSTANTS} from "@/services/constants";
-import JobOperator from "@/pages/DevOps/JobDetail/JobOperator";
+import JobOperator from "@/pages/DevOps/JobDetail/JobOperator/JobOperator";
 import type {FC} from 'react';
 import {useState} from "react";
 import JobConfigTab from "@/pages/DevOps/JobDetail/JobOverview/JobOverview";
 import {l} from "@/utils/intl";
-import JobLogsTab from "@/pages/DevOps/JobDetail/JobLogsTab";
-import JobHistoryTab from "@/pages/DevOps/JobDetail/JobHistoryTab";
+import JobLogsTab from "@/pages/DevOps/JobDetail/JobLogs/JobLogsTab";
+import JobVersionTab from "@/pages/DevOps/JobDetail/JobVersion/JobVersionTab";
 import CheckPoints from "@/pages/DevOps/JobDetail/CheckPointsTab";
 
 /**
@@ -21,7 +21,7 @@ import CheckPoints from "@/pages/DevOps/JobDetail/CheckPointsTab";
 const OperatorEnum = {
   JOB_BASE_INFO:"job_base_info",
   JOB_LOGS:"job_logs",
-  JOB_HISTORY:"job_history",
+  JOB_VERSION:"job_version",
   JOB_CHECKPOINTS:"job_checkpoints",
   JOB_ALERT:"job_alert",
   JOB_MONITOR:"job_monitor",
@@ -58,18 +58,18 @@ const JobDetail:FC = (props: any) => {
   const JobOperatorItems = {
     [OperatorEnum.JOB_BASE_INFO]: <JobConfigTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_LOGS]: <JobLogsTab jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_HISTORY]: <JobHistoryTab jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints job={jobInfoDetail} />,
-    [OperatorEnum.JOB_MONITOR]: <CheckPoints job={jobInfoDetail} />,
-    [OperatorEnum.JOB_LINEAGE]: <CheckPoints job={jobInfoDetail} />,
-    [OperatorEnum.JOB_ALERT]: <CheckPoints job={jobInfoDetail} />,
+    [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_MONITOR]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
   };
 
   // Define the tabs config for job operators
   const JobOperatorTabs = [
     { tab: l('devops.jobinfo.config.JobInfo'), key: OperatorEnum.JOB_BASE_INFO, },
     { tab: l('devops.jobinfo.config.JobLogs'), key: OperatorEnum.JOB_LOGS, },
-    { tab: l('devops.jobinfo.config.JobHistory'), key: OperatorEnum.JOB_HISTORY, },
+    { tab: l('devops.jobinfo.config.JobVersion'), key: OperatorEnum.JOB_VERSION, },
     { tab: l('devops.jobinfo.config.JobCheckpoints'), key: OperatorEnum.JOB_CHECKPOINTS, },
     { tab: l('devops.jobinfo.config.JobMonitor'), key: OperatorEnum.JOB_MONITOR, },
     { tab: l('devops.jobinfo.config.JobLineage'), key: OperatorEnum.JOB_LINEAGE, },

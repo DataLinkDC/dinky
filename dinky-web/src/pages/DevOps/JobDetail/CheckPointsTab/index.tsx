@@ -24,30 +24,27 @@ import {ProCard} from "@ant-design/pro-components";
 import CkDesc from "@/pages/DevOps/JobDetail/CheckPointsTab/components/CkDesc";
 import CheckpointTable from "@/pages/DevOps/JobDetail/CheckPointsTab/components/CheckpointTable";
 import SavepointTable from "@/pages/DevOps/JobDetail/CheckPointsTab/components/SavePointTable";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const {TabPane} = Tabs;
 
-type JobProps = {
-  job: Jobs.JobInfoDetail;
-};
-
 const CheckPoints = (props: JobProps) => {
 
-  const {job} = props;
+  const {jobDetail} = props;
 
   return (
     <>
       <ProCard>
-        <CkDesc jobDetail={job}/>
+        <CkDesc jobDetail={jobDetail}/>
       </ProCard>
       <br/>
       <ProCard>
         <Tabs defaultActiveKey="history" size="small">
           <TabPane tab={"History"} key="history">
-            <CheckpointTable jobDetail={job}/>
+            <CheckpointTable jobDetail={jobDetail}/>
           </TabPane>
           <TabPane tab={"SavePoint"} key="savepoint">
-            <SavepointTable jobDetail={job} />
+            <SavepointTable jobDetail={jobDetail} />
           </TabPane>
         </Tabs>
       </ProCard>

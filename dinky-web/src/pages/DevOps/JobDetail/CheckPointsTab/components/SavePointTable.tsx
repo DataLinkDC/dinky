@@ -19,29 +19,20 @@
 
 
 
-import {Jobs} from "@/types/DevOps/data";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
 import {l} from "@/utils/intl";
 import {useRef} from "react";
 import {SavePointTableListItem} from "@/pages/DataStudio/RightContainer/SavePoints";
 import {queryList} from "@/services/api";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
+import {API_CONSTANTS} from "@/services/constants";
 
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
 
-/**
- * Renders the JobConfigTab component.
- *
- * @param {JobProps} props - The component props containing the job detail.
- * @returns {JSX.Element} - The rendered JobConfigTab component.
- */
 const SavepointTable = (props: JobProps) => {
 
   const {jobDetail} = props;
 
   const actionRef = useRef<ActionType>();
-  const url = '/api/savepoints';
 
   const columns: ProColumns<SavePointTableListItem>[] = [
     {
@@ -86,7 +77,7 @@ const SavepointTable = (props: JobProps) => {
       <ProTable<SavePointTableListItem>
         columns={columns}
         style={{width: '100%'}}
-        request={(params, sorter, filter) => queryList(url, {
+        request={(params, sorter, filter) => queryList(API_CONSTANTS.GET_SAVEPOINTS, {
           ...params,
           sorter,
           filter:{taskId: [jobDetail?.instance.taskId]}

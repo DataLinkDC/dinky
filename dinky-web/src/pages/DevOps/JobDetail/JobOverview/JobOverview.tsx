@@ -28,19 +28,8 @@ import {RocketOutlined} from "@ant-design/icons";
 import { parseSecondStr } from '@/utils/function';
 import JobDesc from "@/pages/DevOps/JobDetail/JobOverview/components/JobDesc";
 import FlinkTable from "@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
-const {Text,Paragraph } = Typography;
-
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
-
-/**
- * Renders the JobConfigTab component.
- *
- * @param {JobProps} props - The component props containing the job detail.
- * @returns {JSX.Element} - The rendered JobConfigTab component.
- */
 const JobConfigTab = (props: JobProps) => {
 
   const {jobDetail} = props;

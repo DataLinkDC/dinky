@@ -18,8 +18,7 @@
  */
 
 
-
-import {Button, Descriptions, Modal, Tag} from "antd";
+import {Button, Descriptions, message, Modal, Tag} from "antd";
 import {
   CheckCircleOutlined,
   CloseCircleOutlined,
@@ -36,10 +35,9 @@ import {useRef} from "react";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
 import {useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/constants";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
+import {getData} from "@/services/api";
 
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
 
 export  type CheckPointsDetailInfo = {
   id: number,
@@ -52,12 +50,7 @@ export  type CheckPointsDetailInfo = {
   trigger_timestamp: number,
 }
 
-/**
- * Renders the JobConfigTab component.
- *
- * @param {JobProps} props - The component props containing the job detail.
- * @returns {JSX.Element} - The rendered JobConfigTab component.
- */
+
 const CheckpointTable = (props: JobProps) => {
 
   const {jobDetail} = props;
@@ -66,13 +59,13 @@ const CheckpointTable = (props: JobProps) => {
 
   const checkpoints = jobDetail?.jobHistory?.checkpoints;
 
-  const restartFromCheckpoint = useRequest((id: number, isOnLine: boolean, savePointPath: string) => (
-      {
-        url: API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT,
-        params: {id: id, isOnLine: isOnLine, savePointPath: savePointPath}
-      }
-    ),
-    {manual: true});
+  // const restartFromCheckpoint = useRequest((id: number, isOnLine: boolean, savePointPath: string) => (
+  //     {
+  //       url: API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT,
+  //       params: {id: id, isOnLine: isOnLine, savePointPath: savePointPath}
+  //     }
+  //   ),
+  //   {manual: true});
 
   function recoveryCheckPoint(row: CheckPointsDetailInfo) {
     Modal.confirm({
@@ -81,15 +74,17 @@ const CheckpointTable = (props: JobProps) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        restartFromCheckpoint.run(jobDetail?.instance?.taskId, jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE, row.external_path);
-        // res.then((result) => {
-        //   if (result.code == CODE.SUCCESS) {
-        //     message.success(l('devops.jobinfo.ck.recovery.success'));
-        //     history.goBack();
-        //   } else {
-        //     message.error(l('devops.jobinfo.ck.recovery.failed'));
-        //   }
-        // });
+        const param = {
+          id: jobDetail?.instance?.taskId,
+          isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE,
+          savePointPath: row.external_path
+        }
+        const result = await getData(API_CONSTANTS.RESTART_TASK_FROM_CHECKPOINT, param);
+        if (result.code == 0) {
+          message.success(l('devops.jobinfo.ck.recovery.success'));
+        } else {
+          message.error(l('devops.jobinfo.ck.recovery.failed'));
+        }
       }
     });
   }
@@ -122,9 +117,7 @@ const CheckpointTable = (props: JobProps) => {
       title: l('devops.jobinfo.ck.duration'),
       align: 'center',
       copyable: true,
-      render: (dom, entity) => {
-        return entity.end_to_end_duration === null ? 'None' : parseMilliSecondStr(entity.end_to_end_duration);
-      },
+      render: (_, entity) => parseMilliSecondStr(entity.end_to_end_duration),
     },
     {
       title: l('devops.jobinfo.ck.checkpoint_type'),
@@ -146,9 +139,7 @@ const CheckpointTable = (props: JobProps) => {
     {
       title: l('devops.jobinfo.ck.state_size'),
       align: 'center',
-      render: (dom, entity) => {
-        return entity.state_size === null ? 'None' : parseByteStr(entity.state_size);
-      },
+      render: (dom, entity) => parseByteStr(entity.state_size),
     },
     {
       title: l('devops.jobinfo.ck.trigger_timestamp'),
@@ -162,7 +153,7 @@ const CheckpointTable = (props: JobProps) => {
       render: (dom, entity) => {
         return <>
           {entity.status === 'COMPLETED' ?
-            <Button onClick={() => recoveryCheckPoint(entity)}>此处恢复</Button> : undefined}
+            <Button onClick={() => recoveryCheckPoint(entity)}>{l('devops.jobinfo.ck.recovery.recoveryTo')}</Button> : undefined}
         </>
       },
     },
@@ -175,9 +166,7 @@ const CheckpointTable = (props: JobProps) => {
         columns={columns}
         style={{width: '100%'}}
         dataSource={checkpoints?.history}
-        onDataSourceChange={(dataSource) => {
-          actionRef.current?.reload();
-        }}
+        onDataSourceChange={(_) => actionRef.current?.reload()}
         actionRef={actionRef}
         rowKey="id"
         pagination={{

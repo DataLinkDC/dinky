@@ -26,54 +26,50 @@ import React, {useState} from "react";
 import {useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/constants";
 import {getData} from "@/services/api";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const {Text, Paragraph} = Typography;
 
-type JobProps = {
-    jobDetail: Jobs.JobInfoDetail;
-};
-
 const JobManagerLogsTab = (props: JobProps) => {
 
-    const {jobDetail} = props;
-    const jmaddr = jobDetail?.history?.jobManagerAddress;
+  const {jobDetail} = props;
+  const jmaddr = jobDetail?.history?.jobManagerAddress;
 
-    const log = useRequest({
-        url: API_CONSTANTS.GET_JOBMANAGER_LOG,
-        params: {address: jmaddr},
-    });
+  const log = useRequest({
+    url: API_CONSTANTS.GET_JOBMANAGER_LOG,
+    params: {address: jmaddr},
+  });
 
-    const stdout = useRequest({
-        url: API_CONSTANTS.GET_JOBMANAGER_STDOUT,
-        params: {address: jmaddr},
-    });
+  const stdout = useRequest({
+    url: API_CONSTANTS.GET_JOBMANAGER_STDOUT,
+    params: {address: jmaddr},
+  });
 
-    const dump = useRequest({
-        url: API_CONSTANTS.GET_JOBMANAGER_THREAD_DUMP,
-        params: {address: jmaddr},
-    });
+  const dump = useRequest({
+    url: API_CONSTANTS.GET_JOBMANAGER_THREAD_DUMP,
+    params: {address: jmaddr},
+  });
 
-    const getLog = (ur: any) => {
-        return <CodeShow
-            code={ur.data}
-            height={600}
-        />
-    }
+  const getLog = (ur: any) => {
+    return <CodeShow
+      code={ur.data}
+      height={600}
+    />
+  }
 
-    return <>
-        <ProCard>
-            <Tabs
-                size={"small"}
-                items={[
-                    {label: 'Log', key: "LOG", children: getLog(log)},
-                    {label: 'Std Out', key: "STDOUT", children: getLog(stdout)},
-                    {label: 'Thread Dump', key: "DUMP", children: getLog(dump)},
-                ]}
-                // onTabClick={(key) => log.run()}
-            />
+  return <>
+    <ProCard>
+      <Tabs
+        size={"small"}
+        items={[
+          {label: 'Log', key: "LOG", children: getLog(log)},
+          {label: 'Std Out', key: "STDOUT", children: getLog(stdout)},
+          {label: 'Thread Dump', key: "DUMP", children: getLog(dump)},
+        ]}
+      />
 
-        </ProCard>
-    </>
+    </ProCard>
+  </>
 };
 
 export default JobManagerLogsTab;

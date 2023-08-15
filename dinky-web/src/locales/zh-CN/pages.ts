@@ -113,7 +113,7 @@ export default {
 
   'devops.jobinfo.config.JobInfo':'作业信息',
   'devops.jobinfo.config.JobLogs':'作业日志',
-  'devops.jobinfo.config.JobHistory':'版本信息',
+  'devops.jobinfo.config.JobVersion':'版本信息',
   'devops.jobinfo.config.JobCheckpoints':'作业快照',
   'devops.jobinfo.config.JobMonitor':'监控',
   'devops.jobinfo.config.JobLineage':'Sql 血缘',
@@ -133,6 +133,9 @@ export default {
   'devops.jobinfo.config.RestartStrategy':'重启策略',
   'devops.jobinfo.config.JobParallelism':'作业并行度',
 
+  'devops.jobinfo.version.versionList':'版本列表',
+  'devops.jobinfo.version.latestVersion':'当前版本',
+
   'devops.jobinfo.ck.id':'ID',
   'devops.jobinfo.ck.taskid':'任务ID',
   'devops.jobinfo.ck.status':'状态',
@@ -147,6 +150,7 @@ export default {
   'devops.jobinfo.ck.recoveryConfirm' :'确定从检查点【{path}】恢复吗?',
   'devops.jobinfo.ck.recovery.success' :'恢复作业成功',
   'devops.jobinfo.ck.recovery.failed' :'恢复作业失败',
+  'devops.jobinfo.ck.recovery.recoveryTo' : '此处恢复',
 
 
   'devops.baseinfo.taskid': '任务ID',

@@ -19,7 +19,6 @@
 
 
 
-import {Jobs} from "@/types/DevOps/data";
 import {Descriptions, Tag} from "antd";
 import {
   CheckCircleOutlined,
@@ -28,18 +27,8 @@ import {
   RocketOutlined,
   SyncOutlined
 } from "@ant-design/icons";
-import moment from "moment/moment";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
-
-/**
- * Renders the JobConfigTab component.
- *
- * @param {JobProps} props - The component props containing the job detail.
- * @returns {JSX.Element} - The rendered JobConfigTab component.
- */
 const CkDesc = (props: JobProps) => {
 
   const {jobDetail} = props;
@@ -47,7 +36,6 @@ const CkDesc = (props: JobProps) => {
   let counts = jobDetail?.jobHistory?.checkpoints.counts
   let latest = jobDetail?.jobHistory?.checkpoints.latest
   let checkpointsConfigInfo = jobDetail?.jobHistory?.checkpointsConfig
-  console.log(jobDetail)
   return (
     <>
       <Descriptions bordered size="small" column={3}>

@@ -6,12 +6,11 @@ import {TagJobStatus} from "@/pages/DevOps/function";
 import {RocketOutlined} from "@ant-design/icons";
 import {Link} from "@@/exports";
 import {parseSecondStr} from "@/utils/function";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const {Text,Paragraph } = Typography;
 
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
+
 
 /**
  * Renders the JobConfigTab component.

@@ -26,12 +26,9 @@ import CodeShow from "@/components/CustomEditor/CodeShow";
 import React, {useState} from "react";
 import {useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/constants";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const {Paragraph, Text} = Typography;
-
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
 
 type Taskmanager = {
   containerId: string;
@@ -61,16 +58,14 @@ const TaskManagerLogsTab = (props: JobProps) => {
     params: {address: jmaddr},
   });
 
-  const tmLog = useRequest((cid)=>(
-      {
+  const tmLog = useRequest((cid) => ({
         url: API_CONSTANTS.GET_TASKMANAGER_LOG,
         params: {address: jmaddr, containerId: cid}
       }
     ),
-    {manual:true});
+    {manual: true});
 
   const refeshLog = (tm: Taskmanager) => {
-    // setLogRequestData();
     setCurrentTm(tm);
     tmLog.run(tm.containerId);
   }
@@ -82,7 +77,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
           <div id="scrollableDiv">
             <List
               size={"small"}
-              header={'TaskManager列表'}
+              header={'TaskManager List'}
               dataSource={taskManagerList.data}
               renderItem={(item: Taskmanager) => (
                 <List.Item onClick={() => refeshLog(item)}>
@@ -104,7 +99,6 @@ const TaskManagerLogsTab = (props: JobProps) => {
       </Row>
     );
   };
-
 
   return <>
     <ProCard>

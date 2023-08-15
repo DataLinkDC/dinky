@@ -4,12 +4,10 @@ import {Descriptions, Tag, Typography} from "antd";
 import {l} from "@/utils/intl";
 import {TagJobStatus} from "@/pages/DevOps/function";
 import {parseByteStr, parseMilliSecondStr, parseNumStr} from "@/utils/function";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const {Text,Link } = Typography;
 
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
 
 export type VerticesTableListItem = {
   name: string,
@@ -29,7 +27,6 @@ export type VerticesTableListItem = {
  * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
 const FlinkTable = (props: JobProps) => {
-
 
   const {jobDetail} = props;
 

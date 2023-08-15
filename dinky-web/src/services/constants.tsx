@@ -211,6 +211,7 @@ export const API_CONSTANTS = {
   OFFLINE_TASK: "/api/task/offLineTask",
   RESTART_TASK: "/api/task/restartTask",
   RESTART_TASK_FROM_CHECKPOINT: "/api/task/selectSavePointRestartTask",
+  GET_SAVEPOINTS: "/api/savepoints",
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",

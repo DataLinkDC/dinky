@@ -119,7 +119,7 @@ export default {
 
   'devops.jobinfo.config.JobInfo':'Job Info',
   'devops.jobinfo.config.JobLogs':'Job Logs',
-  'devops.jobinfo.config.JobHistory':'History Info',
+  'devops.jobinfo.config.JobVersion':'History Info',
   'devops.jobinfo.config.JobCheckpoints':'Checkpoints Info',
   'devops.jobinfo.config.JobMonitor':'Monitor',
   'devops.jobinfo.config.JobLineage':'Lineage',
@@ -139,6 +139,9 @@ export default {
   'devops.jobinfo.config.RestartStrategy':'RestartStrategy',
   'devops.jobinfo.config.JobParallelism':'JobParallelism',
 
+  'devops.jobinfo.version.versionList':'Job Version',
+  'devops.jobinfo.version.latestVersion':'Current Version',
+
   'devops.jobinfo.ck.id':'ID',
   'devops.jobinfo.ck.taskid':'Task ID',
   'devops.jobinfo.ck.status': 'Status',
@@ -153,6 +156,7 @@ export default {
   'devops.jobinfo.ck.recoveryConfirm' : 'Are you sure to Recover from Checkpoint [{path}]?',
   'devops.jobinfo.ck.recovery.success' : 'Recovery job succeeded',
   'devops.jobinfo.ck.recovery.failed' : 'Recovery job failed',
+  'devops.jobinfo.ck.recovery.recoveryTo' : 'Recovery Here',
 
   'devops.baseinfo.taskid': 'Task Id',
   'devops.baseinfo.name': 'Job Name',

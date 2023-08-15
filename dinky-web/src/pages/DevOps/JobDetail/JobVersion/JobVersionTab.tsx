@@ -27,12 +27,8 @@ import React, {useState} from "react";
 import {useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/constants";
 import {RocketOutlined} from "@ant-design/icons";
-
-const {Paragraph, Text} = Typography;
-
-type JobProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
+import {l} from "@/utils/intl";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 type Version = {
   id?: number,
@@ -43,10 +39,10 @@ type Version = {
   statement: string,
   versionId?: string,
   createTime?: string
-  isLatest?:boolean
+  isLatest?: boolean
 }
 
-const JobHistoryTab = (props: JobProps) => {
+const JobVersionTab = (props: JobProps) => {
 
   const {jobDetail} = props;
   const latestVersion: Version = {
@@ -54,7 +50,7 @@ const JobHistoryTab = (props: JobProps) => {
     statement: jobDetail.history.statement,
     createTime: jobDetail.history.startTime,
     versionId: "LATEST",
-    isLatest:true
+    isLatest: true
   };
 
   const [currentVersion, setCurrentVersion] = useState<Version>({statement: ""})
@@ -64,7 +60,7 @@ const JobHistoryTab = (props: JobProps) => {
     params: {taskId: jobDetail.history.taskId},
   }, {
     onSuccess: (data: Version[], params) => {
-      data.splice(0,0,latestVersion)
+      data.splice(0, 0, latestVersion)
     }
   });
 
@@ -75,7 +71,7 @@ const JobHistoryTab = (props: JobProps) => {
           <div id="scrollableDiv">
             <List
               size={"small"}
-              header={'版本列表'}
+              header={l('devops.jobinfo.version.versionList')}
               dataSource={version_list.data}
               renderItem={(item: Version) => (<>
                   <List.Item onClick={() => {
@@ -84,7 +80,7 @@ const JobHistoryTab = (props: JobProps) => {
                     <Skeleton avatar title={false} loading={version_list.loading} active>
                       <List.Item.Meta
                         title={<a>{!item.isLatest ? "V" + item.versionId :
-                          <Tag key={"v-latest"} color="green">{"当前版本"}</Tag>}</a>}
+                          <Tag key={"v-latest"} color="green">{l('devops.jobinfo.version.latestVersion')}</Tag>}</a>}
                         description={item.createTime}
                       />
                     </Skeleton>
@@ -120,4 +116,4 @@ const JobHistoryTab = (props: JobProps) => {
   </>
 };
 
-export default JobHistoryTab;
+export default JobVersionTab;
