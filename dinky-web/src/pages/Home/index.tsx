@@ -16,6 +16,7 @@
  *   limitations under the License.
  *
  */
+import { Authorized } from '@/hooks/useAccess';
 import DevOverView from '@/pages/Home/DevOverView';
 import JobOverView from '@/pages/Home/JobOverView';
 import { PageContainer } from '@ant-design/pro-components';
@@ -24,16 +25,20 @@ import { Col, Row } from 'antd';
 export default () => {
   return (
     <PageContainer title={false}>
-      <Row style={{ marginTop: '5px', marginBottom: '10px' }}>
-        <Col span={24}>
-          <JobOverView />
-        </Col>
-      </Row>
-      <Row>
-        <Col span={24}>
-          <DevOverView />
-        </Col>
-      </Row>
+      <Authorized path="/home/jobOverView">
+        <Row style={{ marginTop: '5px', marginBottom: '10px' }}>
+          <Col span={24}>
+            <JobOverView />
+          </Col>
+        </Row>
+      </Authorized>
+      <Authorized path="/home/devOverView">
+        <Row>
+          <Col span={24}>
+            <DevOverView />
+          </Col>
+        </Row>
+      </Authorized>
     </PageContainer>
   );
 };

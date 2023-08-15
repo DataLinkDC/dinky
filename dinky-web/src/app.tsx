@@ -32,6 +32,7 @@ import {persistStore, persistReducer} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import {Reducer, StoreEnhancer} from 'redux';
 import { API } from "./services/data";
+import {AccessContextProvider} from '@/hooks/useAccess';
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -146,9 +147,9 @@ export const layout: RunTimeLayoutConfig = ({initialState}) => {
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading/>;
       return (
-        <>
+        <AccessContextProvider currentUser={initialState?.currentUser}>
           {children}
-        </>
+        </AccessContextProvider>
       );
     },
     ...initialState?.settings,
