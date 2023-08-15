@@ -22,3 +22,4 @@
 [submodule ".github/actions/translate-on-issue"]
 	path = .github/actions/translate-on-issue
 	url = https://github.com/xingchun-chen/translation-helper
+
