@@ -28,6 +28,7 @@ import org.dinky.service.TaskVersionService;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,4 +64,10 @@ public class TaskVersionController {
                 .collect(Collectors.toList());
         return Result.succeed(collect);
     }
+    @DeleteMapping
+    public Result<Boolean> deleteVersion(@RequestParam int versionId) {
+        boolean b = versionService.removeById(versionId);
+        return Result.succeed(b);
+    }
+
 }
