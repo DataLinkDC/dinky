@@ -118,20 +118,19 @@ public class JobInstanceController {
     @GetMapping("/getJobManagerLog")
     @ApiOperation("Get job manager log")
     public Result<String> getJobManagerLog(@RequestParam String address) {
-        return Result.succeed(FlinkAPI.build(address).getJobManagerLog(),"");
+        return Result.succeed(FlinkAPI.build(address).getJobManagerLog(), "");
     }
 
     @GetMapping("/getJobManagerStdOut")
     @ApiOperation("Get job manager stdout")
     public Result<String> getJobManagerStdOut(@RequestParam String address) {
-        return Result.succeed(FlinkAPI.build(address).getJobManagerStdOut(),"");
+        return Result.succeed(FlinkAPI.build(address).getJobManagerStdOut(), "");
     }
-
 
     @GetMapping("/getJobManagerThreadDump")
     @ApiOperation("Get job manager ThreadDump")
     public Result<String> getJobManagerThreadDump(@RequestParam String address) {
-        return Result.succeed(FlinkAPI.build(address).getJobManagerThreadDump(),"");
+        return Result.succeed(FlinkAPI.build(address).getJobManagerThreadDump(), "");
     }
 
     @GetMapping("/getTaskManagerList")
@@ -150,7 +149,7 @@ public class JobInstanceController {
     /** 获取 TaskManager 的信息 */
     @GetMapping("/getTaskManagerLog")
     @ApiOperation("Get task manager log")
-    public Result<String> getTaskManagerLog(@RequestParam String address,@RequestParam String containerId) {
-        return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId),"");
+    public Result<String> getTaskManagerLog(@RequestParam String address, @RequestParam String containerId) {
+        return Result.succeed(FlinkAPI.build(address).getTaskManagerLog(containerId), "");
     }
 }

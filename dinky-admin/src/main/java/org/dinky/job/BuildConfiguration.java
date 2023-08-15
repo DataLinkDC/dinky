@@ -112,30 +112,30 @@ public class BuildConfiguration {
                 // memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
                 // 获取taskManager metrics
-//                JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);
+                //                JsonNode taskManagerMetrics = flinkAPI.getTaskManagerMetrics(containerId);
                 // 获取taskManager日志
-//                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);
+                //                String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);
                 // 获取taskManager线程dumps
-//                String taskManagerThreadDumps =
-//                        JSONUtil.toJsonString(
-//                                flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
+                //                String taskManagerThreadDumps =
+                //                        JSONUtil.toJsonString(
+                //                                flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
                 // 获取taskManager标准输出日志
-//                String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);
+                //                String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);
 
                 // 获取taskManager metrics
-//                Map<String, String> taskManagerMetricsMap = new HashMap<>(8);
-//                List<LinkedHashMap> taskManagerMetricsItemsList =
-//                        JSONUtil.toList(
-//                                JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
-//                taskManagerMetricsItemsList.forEach(
-//                        mapItems -> {
-//                            String configKey = (String) mapItems.get("id");
-//                            String configValue = (String) mapItems.get("value");
-//                            if (Asserts.isNotNullString(configKey)
-//                                    && Asserts.isNotNullString(configValue)) {
-//                                taskManagerMetricsMap.put(configKey, configValue);
-//                            }
-//                        });
+                //                Map<String, String> taskManagerMetricsMap = new HashMap<>(8);
+                //                List<LinkedHashMap> taskManagerMetricsItemsList =
+                //                        JSONUtil.toList(
+                //                                JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
+                //                taskManagerMetricsItemsList.forEach(
+                //                        mapItems -> {
+                //                            String configKey = (String) mapItems.get("id");
+                //                            String configValue = (String) mapItems.get("value");
+                //                            if (Asserts.isNotNullString(configKey)
+                //                                    && Asserts.isNotNullString(configValue)) {
+                //                                taskManagerMetricsMap.put(configKey, configValue);
+                //                            }
+                //                        });
 
                 /* TaskManagerConfiguration 赋值 */
                 taskManagerConfiguration.setContainerId(containerId);
@@ -152,10 +152,10 @@ public class BuildConfiguration {
 
                 /* TaskContainerConfigInfo 赋值 */
                 TaskContainerConfigInfo taskContainerConfigInfo = new TaskContainerConfigInfo();
-//                taskContainerConfigInfo.setMetrics(taskManagerMetricsMap);
-//                taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);
-//                taskContainerConfigInfo.setTaskManagerThreadDump(taskManagerThreadDumps);
-//                taskContainerConfigInfo.setTaskManagerStdout(taskManagerStdOut);
+                //                taskContainerConfigInfo.setMetrics(taskManagerMetricsMap);
+                //                taskContainerConfigInfo.setTaskManagerLog(taskManagerLog);
+                //                taskContainerConfigInfo.setTaskManagerThreadDump(taskManagerThreadDumps);
+                //                taskContainerConfigInfo.setTaskManagerStdout(taskManagerStdOut);
 
                 taskManagerConfiguration.setTaskContainerConfigInfo(taskContainerConfigInfo);
 
