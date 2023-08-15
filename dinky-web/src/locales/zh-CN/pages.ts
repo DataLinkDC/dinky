@@ -1040,8 +1040,9 @@ export default {
   'datastudio.project.create.rootFolder': '创建根目录',
   'datastudio.project.create.folder.name': '目录名称',
   'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
-  // 暂无作业,请点击左上角新建目录
-    'datastudio.project.create.folder.tip': '暂无作业,请点击左上角新建目录',
+   'datastudio.project.create.folder.tip': '暂无作业,请点击左上角新建目录',
+    'datastudio.project.delete.job': '删除 [{type}] 作业 [{name}]',
+    'datastudio.project.delete.job.confirm': '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
 
 
 };

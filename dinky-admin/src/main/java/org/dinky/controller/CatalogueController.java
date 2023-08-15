@@ -111,7 +111,10 @@ public class CatalogueController {
         }
     }
 
-    /** 获取所有目录 */
+    /**
+     * query catalogue tree data
+     * @return {@link Result}< {@link List}< {@link Catalogue}>>}
+     */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")
     public Result<List<Catalogue>> getCatalogueTree() {
@@ -119,7 +122,11 @@ public class CatalogueController {
         return Result.succeed(catalogues);
     }
 
-    /** 创建节点和作业 */
+    /**
+     * create catalogue and task
+     * @param catalogueTaskDTO {@link CatalogueTaskDTO}
+     * @return {@link Result}< {@link Catalogue}>}
+     */
     @PutMapping("/createTask")
     @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Create Catalogue And Task")
@@ -132,18 +139,29 @@ public class CatalogueController {
         }
     }
 
-    /** 移动 */
+    /**
+     *  move catalogue
+     * @param originCatalogueId origin catalogue id
+     * @param targetParentId target parent id
+     * @return  {@link Result}< {@link Boolean}>}
+     */
     @PutMapping("/moveCatalogue")
     @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
     @ApiOperation("Move Catalogue")
-    public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
-        if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
+    public Result<Boolean> moveCatalogue(@RequestParam("originCatalogueId" ) Integer originCatalogueId,
+                                         @RequestParam("targetParentId" ) Integer targetParentId) {
+        if (catalogueService.moveCatalogue(originCatalogueId,targetParentId)) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
         } else {
             return Result.failed(false, Status.MOVE_FAILED);
         }
     }
 
+    /**
+     * copy task
+     * @param catalogue {@link Catalogue}
+     * @return {@link Result}< {@link Catalogue}>}
+     */
     @PostMapping("/copyTask")
     @Log(title = "Copy Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Copy Task")
@@ -155,6 +173,11 @@ public class CatalogueController {
         }
     }
 
+    /**
+     * delete catalogue by id
+     * @param id catalogue id
+     * @return {@link Result}< {@link Void}>}
+     */
     @DeleteMapping("deleteCatalogueById")
     @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
     @ApiOperation("Delete Catalogue By Id")

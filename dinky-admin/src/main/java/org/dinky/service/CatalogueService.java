@@ -33,8 +33,6 @@ import java.util.List;
  */
 public interface CatalogueService extends ISuperService<Catalogue> {
 
-    List<Catalogue> getAllData();
-
     List<Catalogue> getCatalogueTree();
 
     Catalogue findByParentIdAndName(Integer parentId, String name);
@@ -45,10 +43,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     boolean toRename(Catalogue catalogue);
 
-    @Deprecated
-    List<String> removeCatalogueAndTaskById(Integer id);
-
-    boolean moveCatalogue(Integer id, Integer parentId);
+    boolean moveCatalogue(Integer originCatalogueId, Integer targetParentId);
 
     boolean copyTask(Catalogue catalogue);
 

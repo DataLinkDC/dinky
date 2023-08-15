@@ -44,7 +44,7 @@ import {DIALECT} from "@/services/constants";
 
  * @type {({icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string})[]}
  */
-export const FOLDER_RIGHT_MENU: MenuItemType[] = [
+export const FOLDER_RIGHT_MENU =(disabled = false) : MenuItemType[] =>[
     {
         key: 'addSubFolder',
         icon: <PlusCircleTwoTone/>,
@@ -69,6 +69,7 @@ export const FOLDER_RIGHT_MENU: MenuItemType[] = [
         key: 'paste',
         icon: <CompassTwoTone />,
         label: l('right.menu.paste'),
+        disabled: !disabled
     },
 ];
 
@@ -83,7 +84,7 @@ export const FOLDER_RIGHT_MENU: MenuItemType[] = [
  *    删除
  * @type {({icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string})[]}
  */
-export const JOB_RIGHT_MENU: MenuItemType[] = [
+export const JOB_RIGHT_MENU =(disabled = false) : MenuItemType[] => [
     {
         key: 'edit',
         icon: <EditTwoTone />,
@@ -103,6 +104,7 @@ export const JOB_RIGHT_MENU: MenuItemType[] = [
         key: 'cut',
         icon: <CopyrightTwoTone />,
         label: l('right.menu.cut'),
+        disabled: disabled
     },
     {
         key: 'delete',

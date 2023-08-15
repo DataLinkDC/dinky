@@ -18,7 +18,7 @@
  */
 
 
-import React, {Key, useState} from "react";
+import React, {Key, useEffect, useState} from "react";
 import JobTree from "@/pages/DataStudio/LeftContainer/Project/JobTree";
 import {connect} from "umi";
 import {StateType} from "@/pages/DataStudio/model";
@@ -27,7 +27,7 @@ import RightContextMenu from "@/components/RightContextMenu";
 import {MenuInfo} from "rc-menu/es/interface";
 import {FOLDER_RIGHT_MENU, JOB_RIGHT_MENU} from "@/pages/DataStudio/LeftContainer/Project/constants";
 import {MenuItemType} from "antd/es/menu/hooks/useItems";
-import {handleAddOrUpdate, handleOption, handleRemoveById} from "@/services/BusinessCrud";
+import {handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById} from "@/services/BusinessCrud";
 import {Catalogue} from "@/types/Studio/data";
 import {Modal, Typography} from "antd";
 import {l} from "@/utils/intl";
@@ -41,11 +41,13 @@ const Project: React.FC = (props: connect) => {
     const {dispatch} = props;
 
     const [rightActiveKey, setRightActiveKey] = useState<string>('');
+    const [cutId , setCutId] = useState<number>();
     const [contextMenu, setContext] = useState<{
         visible: boolean;
         position: any;
         item: MenuItemType[];
         selectedKeys: Key[];
+        isLeaf: boolean;
         rightClickedNode?: any;
     }>({
         visible: false,
@@ -57,6 +59,7 @@ const Project: React.FC = (props: connect) => {
             top: 0,
             zIndex: 999, // 搞大点, 用来置顶
         },
+        isLeaf: false,
         item: [],
         selectedKeys: [],
         rightClickedNode: null,
@@ -67,6 +70,7 @@ const Project: React.FC = (props: connect) => {
         isEdit: boolean;
         isRename: boolean;
         isCreateTask: boolean;
+        isCut: boolean;
         value: any;
     }>({
         isCreateSub: false,
@@ -74,7 +78,17 @@ const Project: React.FC = (props: connect) => {
         isRename: false,
         value: {},
         isCreateTask: false,
+        isCut: false,
     })
+
+
+    useEffect(() => {
+        setContext((prevState) => ({
+            ...prevState,
+            item: prevState.isLeaf ? JOB_RIGHT_MENU(modalAllVisible.isCut && cutId !== undefined) : FOLDER_RIGHT_MENU(modalAllVisible.isCut && cutId !== undefined)
+        }))
+    }, [modalAllVisible.isCut,cutId])
+
 
     /**
      * the right click event
@@ -91,9 +105,10 @@ const Project: React.FC = (props: connect) => {
                 left: event.clientX + 10,
                 top: event.clientY + 5,
             },
+            isLeaf: isLeaf,
             selectedKeys: [key],
             rightClickedNode: node,
-            item: isLeaf ? JOB_RIGHT_MENU : FOLDER_RIGHT_MENU
+            item: isLeaf ? JOB_RIGHT_MENU(modalAllVisible.isCut) : FOLDER_RIGHT_MENU(modalAllVisible.isCut)
         }))
         setModalAllVisible((prevState) => ({...prevState, value: fullInfo}))
     };
@@ -168,10 +183,10 @@ const Project: React.FC = (props: connect) => {
             isLeaf: options.isLeaf,
             parentId: options.parentId,
         }, () => {
-            setModalAllVisible((prevState) => ({...prevState, isCreateSub: false, isRename: false, isEdit: false,isCreateTask: false}));
+            setModalAllVisible((prevState) => ({...prevState, isCreateSub: false, isRename: false, isEdit: false,isCreateTask: false,isCut: false}));
             dispatch({type: 'Studio/queryProject'});
             if (modalAllVisible.isRename) {
-                // todo: 如果是重命名/修改(修改了名字), 则需要 tag
+                // todo: 如果是重命名/修改(修改了名字), 则需要 更新 tab 的 label
 
             }
         });
@@ -195,15 +210,13 @@ const Project: React.FC = (props: connect) => {
             const renderContent = () => {
                 return <>
                     <Text className={'needWrap'} type="danger">
-                        此操作会将该任务的执行历史, 以及任务的所有信息全部删除.{'\n'}
-                        请谨慎操作! 该操作不可逆!!!{'\n'}
+                        {l('datastudio.project.delete.job.confirm')}
                     </Text>
-                    确认删除吗?
                 </>
             };
 
             Modal.confirm({
-                title: '删除 [' + type + '] 作业 [' + name + ']',
+                title: l('datastudio.project.delete.job','',{type,name}),
                 width: '30%',
                 content: renderContent(),
                 okText: l('button.confirm'),
@@ -240,11 +253,30 @@ const Project: React.FC = (props: connect) => {
     }
 
     const handleCopy = async () => {
-       await handleOption('/api/catalogue/copyTask', '拷贝',{
+       await handleOption('/api/catalogue/copyTask', l('right.menu.copy'),{
               ...modalAllVisible.value,
        },()=>{
            dispatch({type: 'Studio/queryProject'});
        });
+        handleContextCancel();
+    }
+
+    const handleCut = async () => {
+        setModalAllVisible(prevState => ({...prevState, isCut: true}));
+        setCutId(contextMenu.rightClickedNode.key);
+        handleContextCancel();
+    }
+
+    const handlePaste = async () => {
+        await handlePutDataByParams('/api/catalogue/moveCatalogue', l('right.menu.paste'),{
+           originCatalogueId: cutId,
+           targetParentId: contextMenu.selectedKeys[0],
+        },()=>{
+            dispatch({type: 'Studio/queryProject'});
+            // 重置 cutId
+            setCutId(undefined);
+            setModalAllVisible(prevState => ({...prevState, isCut: false}));
+        });
         handleContextCancel();
     }
 
@@ -267,16 +299,17 @@ const Project: React.FC = (props: connect) => {
                 await handleEdit();
                 break;
             case 'exportJson':
+                // todo: 导出 json
                 // await handleCancel();
                 break;
             case 'copy':
                 await handleCopy();
                 break;
             case 'cut':
-                // await handleCancel();
+                await handleCut();
                 break;
             case 'paste':
-                // await handleCancel();
+                await handlePaste();
                 break;
             default:
                 await handleContextCancel();

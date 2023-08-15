@@ -269,12 +269,13 @@ export const queryDataByParams = async (url: string, params?: any) => {
 };
 
 
-export const handlePutDataByParams = async (url: string, title: string, params: any) => {
+export const handlePutDataByParams = async (url: string, title: string, params: any,afterCallBack?: ()=> void) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const {code, msg} = await putData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
+        afterCallBack && afterCallBack();
       return true;
     } else {
       await WarningMessage(msg);

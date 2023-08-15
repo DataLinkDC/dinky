@@ -1029,4 +1029,7 @@ export default {
   'datastudio.project.create.rootFolder': 'Create Root Folder',
   'datastudio.project.create.folder.name': 'Folder Name',
   'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
+  'datastudio.project.create.folder.tip': 'No job, please click the new directory in the upper left corner',
+  'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
+  'datastudio.project.delete.job.confirm': 'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
 };
