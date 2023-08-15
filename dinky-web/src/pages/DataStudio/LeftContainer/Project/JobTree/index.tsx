@@ -19,12 +19,16 @@
 
 import React, {useState} from "react";
 import {Empty, Tree} from "antd";
-import {convertToTreeData, generateList, getParentKey, loop, TreeDataNode} from "@/pages/DataStudio/LeftContainer/Project/function";
+import {
+  buildProjectTree, generateList, getParentKey,
+} from "@/pages/DataStudio/LeftContainer/Project/function";
 import {connect} from "@@/exports";
 import {StateType} from "@/pages/DataStudio/model";
 import {Key} from "@ant-design/pro-components";
 import {BtnRoute} from "@/pages/DataStudio/route";
 import Search from "antd/es/input/Search";
+import {l} from "@/utils/intl";
+import {Catalogue} from "@/types/Studio/data";
 
 
 const {DirectoryTree} = Tree;
@@ -34,16 +38,18 @@ const {DirectoryTree} = Tree;
  * props
  */
 type TreeProps = {
-  treeData: TreeDataNode[];
+  treeData: Catalogue[];
   onNodeClick: (info: any) => void
+  onRightClick: (info: any) => void
   style?: React.CSSProperties
+  selectedKeys: Key[]
 }
 
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const {treeData, onNodeClick, style, height} = props;
+  const {treeData, onNodeClick, style, height,onRightClick,selectedKeys} = props;
   const [searchValue,setSearchValueValue] = useState("");
-  const data = loop(convertToTreeData(JSON.parse(JSON.stringify(treeData)), 0), searchValue);
+  const data = buildProjectTree(treeData, searchValue);
 
   const [expandedKeys, setExpandedKeys] = useState<Key[]>();
   const [autoExpandParent, setAutoExpandParent] = useState(true);
@@ -73,29 +79,32 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     setExpandedKeys(expandedKeys);
   };
   const expandAll = () => {
-    const map = (data as TreeDataNode[]).filter(x=>!x.isLeaf).map(x => x.key);
+    const map = (data).filter((x: { isLeaf: any; })=>!x.isLeaf).map((x: { key: any; }) => x.key);
     setExpandedKeys(map);
   }
   const btn = BtnRoute['menu.datastudio.project'];
-  btn[0].onClick = expandAll
 
-  btn[1].onClick = () => setExpandedKeys([]);
+  btn[1].onClick = expandAll
+
+  btn[2].onClick = () => setExpandedKeys([]);
 
 
   return <>
-    <Search style={{margin:"8px 0px"}}  placeholder="Search" onChange={onChangeSearch} allowClear={true}/>
+    <Search style={{margin:"8px 0px"}}  placeholder={l('global.search.text')} onChange={onChangeSearch} allowClear={true}/>
 
     {
       (treeData.length > 0) ?
         <DirectoryTree
           style={{...style, height: height-40-16,overflowY:'auto'}}
-          // className={'treeList'}
+          className={'treeList'}
           onSelect={(_, info) => onNodeClick(info)}
+          onRightClick={onRightClick}
           expandedKeys={expandedKeys}
+          selectedKeys={selectedKeys}
           onExpand={onExpand}
           treeData={data}
           autoExpandParent={autoExpandParent}
-        /> : <Empty className={'code-content-empty'} description={"暂无作业,请点击左上角新建目录"}/>
+        /> : <Empty className={'code-content-empty'} description={l('datastudio.project.create.folder.tip')}/>
     }
   </>;
 };

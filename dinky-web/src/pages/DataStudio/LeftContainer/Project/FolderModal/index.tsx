@@ -17,14 +17,12 @@
  *
  */
 
-import {ModalForm} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
+import { ModalForm } from "@ant-design/pro-components";
 import {Form} from "antd";
-import {Catalogue} from "@/types/Studio/data";
 import React, {useEffect} from "react";
+import {Catalogue} from "@/types/Studio/data";
 import {FormContextValue} from "@/components/Context/FormContext";
 import FolderForm from "@/pages/DataStudio/LeftContainer/Project/FolderModal/FolderForm";
-import JobForm from "@/pages/DataStudio/LeftContainer/Project/JobModal/JobForm";
 
 type JobModalProps = {
     onCancel: () => void
@@ -33,7 +31,7 @@ type JobModalProps = {
     title: React.ReactNode
     values: Partial<Catalogue>
 }
-const JobModal : React.FC<JobModalProps> = (props) => {
+const FolderModal:React.FC<JobModalProps> = ( props ) => {
 
     const {onCancel, onSubmit, modalVisible,title,values} = props;
 
@@ -71,7 +69,8 @@ const JobModal : React.FC<JobModalProps> = (props) => {
      */
     const submitForm = async (formData: Catalogue ) => {
         await form.validateFields();
-        onSubmit({...values, ...formData} as Catalogue);
+        const newValue = await form.getFieldsValue();
+        onSubmit({...values, name: newValue.name} as Catalogue);
     };
 
     return <>
@@ -86,9 +85,10 @@ const JobModal : React.FC<JobModalProps> = (props) => {
             modalProps={{destroyOnClose: true, maskClosable: false, onCancel: handleCancel}}
             onFinish={async (values) => submitForm(values)}
         >
-            <JobForm />
+            <FolderForm />
         </ModalForm>
     </>
 };
 
-export default JobModal
+
+export default FolderModal;

@@ -1040,6 +1040,8 @@ export default {
   'datastudio.project.create.rootFolder': '创建根目录',
   'datastudio.project.create.folder.name': '目录名称',
   'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
+  // 暂无作业,请点击左上角新建目录
+    'datastudio.project.create.folder.tip': '暂无作业,请点击左上角新建目录',
 
 
 };

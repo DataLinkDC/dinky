@@ -1,18 +1,9 @@
-import { DataNode } from "antd/es/tree";
-import {getIcon} from "@/utils/function";
-import style from "./index.less";
+import {searchTreeNode} from "@/utils/function";
 import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
+import {SysMenu} from "@/types/RegCenter/data";
+import {Catalogue} from "@/types/Studio/data";
+import path from "path";
 
-export interface TreeDataNode extends DataNode {
-  name:string;
-  type?:string;
-  id:number;
-  taskId:number;
-  parentId:number;
-  path:string[];
-  schema:string;
-  table:string;
-}
 
 export const generateList = (data: any, list: any[]) => {
   for (const element of data) {
@@ -39,71 +30,39 @@ export const getParentKey = (key: number | string, tree: any): any => {
   }
   return parentKey;
 };
-export function convertToTreeData(data:TreeDataNode[], pid:number,path?:string[]) {
-  !path&&(path=[]);
-  const result:TreeDataNode[] = [];
-  let temp:TreeDataNode[] = [];
-  for (let i = 0; i < data?.length; i++) {
-    if (data[i].parentId === pid) {
-      let obj = data[i];
-      obj.title = obj.name;
-      obj.key = obj.id;
-      obj.path = path.slice();
-      obj.path.push(obj.name);
-      temp = convertToTreeData(data, data[i].id,obj.path);
-      if (temp.length > 0) {
-        obj.children = temp
-      }
-      result.push(obj)
+
+
+
+/**
+ * build menu tree
+ * @param {SysMenu[]} data
+ * @param {string} searchValue
+ * @param path
+ * @returns {any}
+ */
+
+export const buildProjectTree = (data: Catalogue[], searchValue: string = '', path?: string[]): any => data.filter((ca: Catalogue) => (ca.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).map((item: Catalogue) => {
+
+  // 使用 name 拼接 path todo: 有 bug ，需要修复
+    if (path) {
+        path.push(...path,item.name)
     }
+
+  return {
+    // isLeaf: (item.type && item.children.length === 0) ,
+    isLeaf: item.isLeaf ,
+    name: item.name,
+    parentId: item.parentId,
+    label: searchTreeNode(item.name, searchValue),
+    icon:  (item.type && item.children.length === 0) && getTabIcon(item.type,20),
+    value: item.id,
+    path: path || [],
+    type: item.type,
+    title: <>{searchTreeNode(item.name, searchValue)}</>,
+    fullInfo: item,
+    key: item.id,
+    id: item.id,
+    taskId: item.taskId,
+    children: buildProjectTree(item.children, searchValue , path),
   }
-  return result
-}
-
-export const loop:any= (data: TreeDataNode[],searchValue:string) =>
-  data?.map((item: any) => {
-    const index = item.title.indexOf(searchValue);
-    const beforeStr = item.name.substring(0, index);
-    const afterStr = item.name.substring(index + searchValue.length);
-
-    item.icon = getTabIcon(item.type,20);
-    const title =
-      index > -1 ? (
-        <span>
-            {beforeStr}
-          <span className={style['site-tree-search-value']}>{searchValue}</span>
-          {afterStr}
-            </span>
-      ) : (
-        <div>
-          <span>{item.name}</span>
-        </div>
-      );
-    if (item.children) {
-      return {
-        isLeaf: item.isLeaf,
-        name: item.name,
-        id: item.id,
-        taskId: item.taskId,
-        type: item.type,
-        parentId: item.parentId,
-        path: item.path,
-        icon: item.isLeaf ? item.icon : '',
-        title,
-        key: item.key,
-        children: loop(item.children,searchValue)
-      };
-    }
-    return {
-      isLeaf: item.isLeaf,
-      name: item.name,
-      id: item.id,
-      taskId: item.taskId,
-      type: item.type,
-      parentId: item.parentId,
-      path: item.path,
-      icon: item.isLeaf ? item.icon : '',
-      title: title,
-      key: item.key,
-    };
-  });
+});

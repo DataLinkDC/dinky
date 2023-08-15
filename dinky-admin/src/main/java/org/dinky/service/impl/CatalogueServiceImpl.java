@@ -19,6 +19,10 @@
 
 package org.dinky.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.collection.CollectionUtil;
+import java.util.Comparator;
+import java.util.Iterator;
 import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
 
@@ -26,15 +30,20 @@ import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
 import org.dinky.data.enums.JobStatus;
+import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.History;
+import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInstance;
+import org.dinky.data.model.Menu;
 import org.dinky.data.model.Statement;
 import org.dinky.data.model.Task;
+import org.dinky.data.result.Result;
 import org.dinky.mapper.CatalogueMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.CatalogueService;
 import org.dinky.service.HistoryService;
+import org.dinky.service.JobHistoryService;
 import org.dinky.service.JobInstanceService;
 import org.dinky.service.StatementService;
 import org.dinky.service.TaskService;
@@ -76,12 +85,73 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private final HistoryService historyService;
 
+    private final JobHistoryService jobHistoryService;
+
     private final StatementService statementService;
 
     @Override
     public List<Catalogue> getAllData() {
         return this.list();
     }
+
+    /**
+     * @return
+     */
+    @Override
+    public List<Catalogue> getCatalogueTree() {
+        return buildCatalogueTree(this.list());
+    }
+
+
+    public List<Catalogue> buildCatalogueTree(List<Catalogue> catalogueList) {
+        // sort
+        if (CollectionUtil.isNotEmpty(catalogueList)) {
+            catalogueList = catalogueList.stream().sorted(Comparator.comparing(Catalogue::getId)).collect(Collectors.toList());
+        }
+
+        List<Catalogue> returnList = new ArrayList<>();
+        for (Iterator<Catalogue> iterator = catalogueList.iterator(); iterator.hasNext(); ) {
+            Catalogue menu = iterator.next();
+            //  get all child menu of parent menu id , the -1 is root menu
+            if (menu.getParentId() == 0) {
+                recursionBuildCatalogueAndChildren(catalogueList, menu);
+                returnList.add(menu);
+            }
+        }
+        if (returnList.isEmpty()) {
+            returnList = catalogueList;
+        }
+        return returnList;
+    }
+
+
+    private void recursionBuildCatalogueAndChildren(List<Catalogue> list, Catalogue catalogues) {
+        // 得到子节点列表
+        List<Catalogue> childList = getChildList(list, catalogues);
+        catalogues.setChildren(childList);
+        for (Catalogue tChild : childList) {
+            if (hasChild(list, tChild)) {
+                // Determine whether there are child nodes
+                for (Catalogue n : childList) {
+                    recursionBuildCatalogueAndChildren(list, n);
+                }
+            }
+        }
+    }
+
+    private boolean hasChild(List<Catalogue> list, Catalogue menu) {
+        return getChildList(list, menu).size() > 0;
+    }
+    private List<Catalogue> getChildList(List<Catalogue> list, Catalogue catalogue) {
+        List<Catalogue> tlist = new ArrayList<>();
+        for (Catalogue n : list) {
+            if (n.getParentId().longValue() == catalogue.getId().longValue()) {
+                tlist.add(n);
+            }
+        }
+        return tlist;
+    }
+
 
     @Override
     public Catalogue findByParentIdAndName(Integer parentId, String name) {
@@ -102,7 +172,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             task = taskService.getById(catalogue.getTaskId());
         }
         task.setName(catalogueTaskDTO.getName());
-        task.setDialect(catalogueTaskDTO.getDialect());
+        task.setDialect(catalogueTaskDTO.getType());
         task.setConfigJson(Collections.singletonList(catalogueTaskDTO.getConfig()));
         taskService.saveOrUpdateTask(task);
 
@@ -110,7 +180,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         catalogue.setName(catalogueTaskDTO.getName());
         catalogue.setIsLeaf(true);
         catalogue.setTaskId(task.getId());
-        catalogue.setType(catalogueTaskDTO.getDialect());
+        catalogue.setType(catalogueTaskDTO.getType());
         catalogue.setParentId(catalogueTaskDTO.getParentId());
         this.saveOrUpdate(catalogue);
         return catalogue;
@@ -251,6 +321,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Task newTask = new Task();
         BeanUtil.copyProperties(oldTask, newTask);
         newTask.setId(null);
+        newTask.setType(oldTask.getType());
         // 设置复制后的作业名称为：原名称+自增序列
         size = size + 1;
         newTask.setName(oldTask.getName() + "_" + size);
@@ -264,14 +335,15 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         statement.setId(newTask.getId());
         statementService.save(statement);
 
-        Catalogue one =
+        Catalogue singleCatalogue =
                 this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getName());
-        catalogue.setIsLeaf(one.getIsLeaf());
+        catalogue.setIsLeaf(singleCatalogue.getIsLeaf());
         catalogue.setTaskId(newTask.getId());
-        catalogue.setType(one.getType());
-        catalogue.setParentId(one.getParentId());
+        catalogue.setType(singleCatalogue.getType());
+        catalogue.setParentId(singleCatalogue.getParentId());
+        catalogue.setId(null);
 
         return this.save(catalogue);
     }
@@ -351,6 +423,66 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         subcata.setIsLeaf(false);
         saveOrUpdate(subcata);
         return subcata;
+    }
+
+    /**
+     * @param catalogueId
+     * @return
+     */
+    @Override
+    public Result<Void> deleteCatalogueById(Integer catalogueId) {
+        List<Catalogue> catalogues = list(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, catalogueId));
+        if (catalogues.size() > 0) {
+            return Result.failed(Status.FOLDER_NOT_EMPTY);
+        }
+        // 获取 catalogue 表中的作业
+        Catalogue catalogue = getById(catalogueId);
+        // 如果是文件夹 , 且下边没有子文件夹 , 则删除
+        if (catalogue.getIsLeaf()) {
+            return removeById(catalogueId) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
+        }
+       // TODO: cascade delete jobInstance && jobHistory && history && statement
+        // 获取 task 表中的作业
+        Task task = taskService.getById(catalogue.getTaskId());
+        // 获取 statement 表中的作业
+        Statement statement = statementService.getById(catalogue.getTaskId());
+        // 获取 job instance 表中的作业
+        List<JobInstance> jobInstanceList = jobInstanceService.list(new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
+        //  获取 history 表中的作业
+        List<History> historyList = historyService.list(new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
+        historyList.forEach(history -> {
+            //查询 job history 表中的作业 通过 id 关联查询
+            JobHistory historyServiceById = jobHistoryService.getById(history.getId());
+            // 删除 job history 表中的作业
+            jobHistoryService.removeById(historyServiceById.getId());
+            // 删除 history 表中的作业
+            historyService.removeById(history.getId());
+        });
+        jobInstanceList.forEach(jobInstance -> {
+            // 删除 job instance 表中的作业
+            jobInstanceService.removeById(jobInstance.getId());
+        });
+        // 删除 task 表中的作业
+        boolean removeTask = taskService.removeById(task.getId());
+        // 删除 statement 表中的作业
+        boolean removeStatement = statementService.removeById(statement.getId());
+        boolean removeById = removeById(catalogueId);
+        if (removeById && removeTask && removeStatement) {
+            return Result.succeed(Status.DELETE_SUCCESS);
+        }
+        return Result.failed(Status.DELETE_FAILED);
+    }
+
+    /**
+     * @param catalogue
+     * @return
+     */
+    @Override
+    public Boolean saveOrUpdateOrRename(Catalogue catalogue) {
+        if (taskService.getById(catalogue.getTaskId()) != null) {
+            toRename(catalogue);
+        }
+        return saveOrUpdate(catalogue);
     }
 
     private CatalogueTaskDTO getCatalogueTaskDTO(String name, Integer parentId) {

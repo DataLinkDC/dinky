@@ -17,21 +17,26 @@
  *
  */
 
-import React from "react";
-import {ProForm, ProFormText} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
+import {ProFormSelect, ProFormText} from "@ant-design/pro-components";
+import {JOB_TYPE} from "@/pages/DataStudio/LeftContainer/Project/constants";
 
 const JobForm = () => {
+
     return <>
-            <ProFormText
-                name="name"
-                width={'md'}
-                label={l('datastudio.project.create.folder.name')}
-                placeholder={l('datastudio.project.create.folder.name.placeholder')}
-                rules={[ {required: true, message: l('datastudio.project.create.folder.name.placeholder')} ]}
-            />
+        <ProFormSelect
+            name={'type'}
+            label="作业类型"
+            options={JOB_TYPE}
+            placeholder="请选择作业类型"
+            rules={[{required: true , message: '请选择作业类型'}]}
+        />
+        <ProFormText
+            name="name"
+            label="作业名称"
+            placeholder="请输入作业名称"
+            rules={[{required: true , message: '请输入作业名称'}]}
+        />
     </>
 };
-
 
 export default JobForm;

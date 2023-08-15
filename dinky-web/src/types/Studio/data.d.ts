@@ -27,4 +27,5 @@ export type Catalogue = {
     isLeaf: boolean;
     createTime: Date;
     updateTime: Date;
+    children: Catalogue[];
 }
