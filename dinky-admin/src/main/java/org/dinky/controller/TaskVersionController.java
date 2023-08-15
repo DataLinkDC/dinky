@@ -64,10 +64,10 @@ public class TaskVersionController {
                 .collect(Collectors.toList());
         return Result.succeed(collect);
     }
+
     @DeleteMapping
     public Result<Boolean> deleteVersion(@RequestParam int versionId) {
         boolean b = versionService.removeById(versionId);
         return Result.succeed(b);
     }
-
 }
