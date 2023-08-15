@@ -105,8 +105,7 @@ public class TenantController {
     @PutMapping(value = "/assignUserToTenant")
     @ApiOperation("Assign User To Tenant")
     @Log(title = "Assign User To Tenant", businessType = BusinessType.INSERT)
-    public Result<Void> assignUserToTenant(
-            @RequestBody AssignUserToTenantParams assignUserToTenantParams) {
+    public Result<Void> assignUserToTenant(@RequestBody AssignUserToTenantParams assignUserToTenantParams) {
         return tenantService.assignUserToTenant(assignUserToTenantParams);
     }
 

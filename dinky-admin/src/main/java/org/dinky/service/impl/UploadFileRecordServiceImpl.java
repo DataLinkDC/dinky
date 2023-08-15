@@ -32,8 +32,7 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 
 /** UploadFileRecordServiceImpl */
 @Service
-public class UploadFileRecordServiceImpl
-        extends SuperServiceImpl<UploadFileRecordMapper, UploadFileRecord>
+public class UploadFileRecordServiceImpl extends SuperServiceImpl<UploadFileRecordMapper, UploadFileRecord>
         implements UploadFileRecordService {
 
     @Override

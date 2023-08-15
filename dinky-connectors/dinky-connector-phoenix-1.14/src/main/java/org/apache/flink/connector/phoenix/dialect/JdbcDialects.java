@@ -26,8 +26,7 @@ import java.util.Optional;
 /** Default JDBC dialects. */
 public final class JdbcDialects {
 
-    private static final List<JdbcDialect> DIALECTS =
-            Arrays.asList(new PhoenixDialect());
+    private static final List<JdbcDialect> DIALECTS = Arrays.asList(new PhoenixDialect());
 
     /** Fetch the JdbcDialect class corresponding to a given database url. */
     public static Optional<JdbcDialect> get(String url) {

@@ -89,8 +89,7 @@ public class StudioController {
     /** 解释Sql */
     @PostMapping("/explainSql")
     @ApiOperation("Explain Sql")
-    public Result<List<SqlExplainResult>> explainSql(
-            @RequestBody StudioExecuteDTO studioExecuteDTO) {
+    public Result<List<SqlExplainResult>> explainSql(@RequestBody StudioExecuteDTO studioExecuteDTO) {
         return Result.succeed(studioService.explainSql(studioExecuteDTO), "解释成功");
     }
 
@@ -139,9 +138,7 @@ public class StudioController {
     @ApiOperation("Get Job Lineage")
     public Result<LineageResult> getLineage(@RequestBody StudioCADTO studioCADTO) {
         LineageResult lineage = studioService.getLineage(studioCADTO);
-        return Asserts.isNull(lineage)
-                ? Result.failed("血缘分析异常")
-                : Result.succeed(lineage, "血缘分析成功");
+        return Asserts.isNull(lineage) ? Result.failed("血缘分析异常") : Result.succeed(lineage, "血缘分析成功");
     }
 
     /** 获取flinkJobs列表 */
@@ -156,8 +153,7 @@ public class StudioController {
     @GetMapping("/cancel")
     @ApiOperation("Cancel Flink Job")
     @Log(title = "Cancel Flink Job", businessType = BusinessType.REMOTE_OPERATION)
-    public Result<Boolean> cancelFlinkJob(
-            @RequestParam Integer clusterId, @RequestParam String jobId) {
+    public Result<Boolean> cancelFlinkJob(@RequestParam Integer clusterId, @RequestParam String jobId) {
         return Result.succeed(studioService.cancelFlinkJob(clusterId, jobId), Status.STOP_SUCCESS);
     }
 
@@ -172,8 +168,7 @@ public class StudioController {
             @RequestParam String name,
             @RequestParam Integer taskId) {
         return Result.succeed(
-                studioService.savepointTrigger(taskId, clusterId, jobId, savePointType, name),
-                "savepoint 成功");
+                studioService.savepointTrigger(taskId, clusterId, jobId, savePointType, name), "savepoint 成功");
     }
 
     /** 获取 Meta Store Catalog 和 Database */

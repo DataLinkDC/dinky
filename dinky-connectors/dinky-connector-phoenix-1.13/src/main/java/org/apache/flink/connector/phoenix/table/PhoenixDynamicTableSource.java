@@ -45,10 +45,7 @@ import java.util.Objects;
  * @since 2022/3/17 10:40
  */
 public class PhoenixDynamicTableSource
-        implements ScanTableSource,
-                LookupTableSource,
-                SupportsProjectionPushDown,
-                SupportsLimitPushDown {
+        implements ScanTableSource, LookupTableSource, SupportsProjectionPushDown, SupportsLimitPushDown {
 
     private final PhoenixJdbcOptions options;
     private final JdbcReadOptions readOptions;
@@ -70,65 +67,55 @@ public class PhoenixDynamicTableSource
     }
 
     @Override
-    public LookupTableSource.LookupRuntimeProvider getLookupRuntimeProvider(
-            LookupTableSource.LookupContext context) {
+    public LookupTableSource.LookupRuntimeProvider getLookupRuntimeProvider(LookupTableSource.LookupContext context) {
         // JDBC only support non-nested look up keys
         String[] keyNames = new String[context.getKeys().length];
         for (int i = 0; i < keyNames.length; i++) {
             int[] innerKeyArr = context.getKeys()[i];
-            Preconditions.checkArgument(
-                    innerKeyArr.length == 1, "JDBC only support non-nested look up keys");
+            Preconditions.checkArgument(innerKeyArr.length == 1, "JDBC only support non-nested look up keys");
             keyNames[i] = physicalSchema.getFieldNames()[innerKeyArr[0]];
         }
         final RowType rowType = (RowType) physicalSchema.toRowDataType().getLogicalType();
 
-        return TableFunctionProvider.of(
-                new PhoenixRowDataLookupFunction(
-                        options,
-                        lookupOptions,
-                        physicalSchema.getFieldNames(),
-                        physicalSchema.getFieldDataTypes(),
-                        keyNames,
-                        rowType));
+        return TableFunctionProvider.of(new PhoenixRowDataLookupFunction(
+                options,
+                lookupOptions,
+                physicalSchema.getFieldNames(),
+                physicalSchema.getFieldDataTypes(),
+                keyNames,
+                rowType));
     }
 
     @Override
     public ScanRuntimeProvider getScanRuntimeProvider(ScanContext runtimeProviderContext) {
-        PhoenixJdbcRowDataInputFormat.Builder builder =
-                PhoenixJdbcRowDataInputFormat.builder()
-                        .setDrivername(this.options.getDriverName())
-                        .setDBUrl(this.options.getDbURL())
-                        .setUsername((String) this.options.getUsername().orElse((String) null))
-                        .setPassword((String) this.options.getPassword().orElse((String) null))
-                        .setAutoCommit(this.readOptions.getAutoCommit())
-                        // setting phoenix schema
-                        .setNamespaceMappingEnabled(this.options.getNamespaceMappingEnabled())
-                        .setMapSystemTablesToNamespace(
-                                this.options.getMapSystemTablesToNamespace());
+        PhoenixJdbcRowDataInputFormat.Builder builder = PhoenixJdbcRowDataInputFormat.builder()
+                .setDrivername(this.options.getDriverName())
+                .setDBUrl(this.options.getDbURL())
+                .setUsername((String) this.options.getUsername().orElse((String) null))
+                .setPassword((String) this.options.getPassword().orElse((String) null))
+                .setAutoCommit(this.readOptions.getAutoCommit())
+                // setting phoenix schema
+                .setNamespaceMappingEnabled(this.options.getNamespaceMappingEnabled())
+                .setMapSystemTablesToNamespace(this.options.getMapSystemTablesToNamespace());
 
         if (this.readOptions.getFetchSize() != 0) {
             builder.setFetchSize(this.readOptions.getFetchSize());
         }
 
         JdbcDialect dialect = this.options.getDialect();
-        String query =
-                dialect.getSelectFromStatement(
-                        this.options.getTableName(),
-                        this.physicalSchema.getFieldNames(),
-                        new String[0]);
+        String query = dialect.getSelectFromStatement(
+                this.options.getTableName(), this.physicalSchema.getFieldNames(), new String[0]);
         if (this.readOptions.getPartitionColumnName().isPresent()) {
             long lowerBound = (Long) this.readOptions.getPartitionLowerBound().get();
             long upperBound = (Long) this.readOptions.getPartitionUpperBound().get();
             int numPartitions = (Integer) this.readOptions.getNumPartitions().get();
             builder.setParametersProvider(
-                    (new JdbcNumericBetweenParametersProvider(lowerBound, upperBound))
-                            .ofBatchNum(numPartitions));
-            query =
-                    query
-                            + " WHERE "
-                            + dialect.quoteIdentifier(
-                                    (String) this.readOptions.getPartitionColumnName().get())
-                            + " BETWEEN ? AND ?";
+                    (new JdbcNumericBetweenParametersProvider(lowerBound, upperBound)).ofBatchNum(numPartitions));
+            query = query
+                    + " WHERE "
+                    + dialect.quoteIdentifier(
+                            (String) this.readOptions.getPartitionColumnName().get())
+                    + " BETWEEN ? AND ?";
         }
 
         if (this.limit >= 0L) {
@@ -138,8 +125,7 @@ public class PhoenixDynamicTableSource
         builder.setQuery(query);
         RowType rowType = (RowType) this.physicalSchema.toRowDataType().getLogicalType();
         builder.setRowConverter(dialect.getRowConverter(rowType));
-        builder.setRowDataTypeInfo(
-                runtimeProviderContext.createTypeInformation(this.physicalSchema.toRowDataType()));
+        builder.setRowDataTypeInfo(runtimeProviderContext.createTypeInformation(this.physicalSchema.toRowDataType()));
         return InputFormatProvider.of(builder.build());
     }
 
@@ -159,8 +145,7 @@ public class PhoenixDynamicTableSource
     }
 
     public DynamicTableSource copy() {
-        return new PhoenixDynamicTableSource(
-                this.options, this.readOptions, this.lookupOptions, this.physicalSchema);
+        return new PhoenixDynamicTableSource(this.options, this.readOptions, this.lookupOptions, this.physicalSchema);
     }
 
     public String asSummaryString() {
@@ -182,15 +167,9 @@ public class PhoenixDynamicTableSource
     }
 
     public int hashCode() {
-        return Objects.hash(
-                new Object[] {
-                    this.options,
-                    this.readOptions,
-                    this.lookupOptions,
-                    this.physicalSchema,
-                    this.dialectName,
-                    this.limit
-                });
+        return Objects.hash(new Object[] {
+            this.options, this.readOptions, this.lookupOptions, this.physicalSchema, this.dialectName, this.limit
+        });
     }
 
     public void applyLimit(long limit) {

@@ -37,23 +37,21 @@ public class BatchTest {
     @Ignore
     @Test
     public void batchTest() {
-        String source =
-                "CREATE TABLE Orders (\n"
-                        + "    order_number BIGINT,\n"
-                        + "    price        DECIMAL(32,2),\n"
-                        + "    buyer        ROW<first_name STRING, last_name STRING>,\n"
-                        + "    order_time   TIMESTAMP(3)\n"
-                        + ") WITH (\n"
-                        + "  'connector' = 'datagen',\n"
-                        + "  'number-of-rows' = '100'\n"
-                        + ")";
+        String source = "CREATE TABLE Orders (\n"
+                + "    order_number BIGINT,\n"
+                + "    price        DECIMAL(32,2),\n"
+                + "    buyer        ROW<first_name STRING, last_name STRING>,\n"
+                + "    order_time   TIMESTAMP(3)\n"
+                + ") WITH (\n"
+                + "  'connector' = 'datagen',\n"
+                + "  'number-of-rows' = '100'\n"
+                + ")";
         String select = "select order_number,price,order_time from Orders";
         // LocalEnvironment environment = ExecutionEnvironment.createLocalEnvironment();
-        EnvironmentSettings settings =
-                EnvironmentSettings.newInstance()
-                        // .inStreamingMode() // 声明为流任务
-                        .inBatchMode() // 声明为批任务
-                        .build();
+        EnvironmentSettings settings = EnvironmentSettings.newInstance()
+                // .inStreamingMode() // 声明为流任务
+                .inBatchMode() // 声明为批任务
+                .build();
 
         TableEnvironment tEnv = TableEnvironment.create(settings);
         tEnv.executeSql(source);

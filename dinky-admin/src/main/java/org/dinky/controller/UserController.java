@@ -172,9 +172,7 @@ public class UserController {
     @ApiOperation("Update User To Tenant Admin")
     @Log(title = "Update User To Tenant Admin", businessType = BusinessType.UPDATE)
     public Result<Void> modifyUserToTenantAdmin(
-            @RequestParam Integer userId,
-            @RequestParam Integer tenantId,
-            @RequestParam Boolean tenantAdminFlag) {
+            @RequestParam Integer userId, @RequestParam Integer tenantId, @RequestParam Boolean tenantAdminFlag) {
         return userService.modifyUserToTenantAdmin(userId, tenantId, tenantAdminFlag);
     }
 }

@@ -44,11 +44,8 @@ public class AlertHistoryServiceImpl extends SuperServiceImpl<AlertHistoryMapper
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteByAlertGroupId(Integer alertGroupId) {
-        List<AlertHistory> alertHistoryList =
-                getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<AlertHistory>()
-                                        .eq(AlertHistory::getAlertGroupId, alertGroupId));
+        List<AlertHistory> alertHistoryList = getBaseMapper()
+                .selectList(new LambdaQueryWrapper<AlertHistory>().eq(AlertHistory::getAlertGroupId, alertGroupId));
         return baseMapper.deleteBatchIds(alertHistoryList) > 0;
     }
 }

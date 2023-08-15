@@ -37,8 +37,7 @@ import org.springframework.web.util.WebUtils;
 public class LocaleChangeInterceptor implements AsyncHandlerInterceptor {
 
     @Override
-    public boolean preHandle(
-            HttpServletRequest request, HttpServletResponse response, Object handler) {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
         Cookie cookie = WebUtils.getCookie(request, BaseConstant.LOCALE_LANGUAGE_COOKIE);
         if (Asserts.isNotNull(cookie)) {
             // Proceed in cookie

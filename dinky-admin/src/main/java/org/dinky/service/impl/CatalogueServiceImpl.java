@@ -69,8 +69,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Service
 @RequiredArgsConstructor
-public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue>
-        implements CatalogueService {
+public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Catalogue> implements CatalogueService {
 
     private final TaskService taskService;
     private final JobInstanceService jobInstanceService;
@@ -168,8 +167,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
                     this.removeById(id);
                 } else if (job != null && !JobStatus.RUNNING.getValue().equals(job.getStatus())) {
                     historyService.remove(new QueryWrapper<History>().eq("task_id", taskId));
-                    jobInstanceService.remove(
-                            new QueryWrapper<JobInstance>().eq("task_id", taskId));
+                    jobInstanceService.remove(new QueryWrapper<JobInstance>().eq("task_id", taskId));
                     taskService.removeById(taskId);
                     statementService.removeById(taskId);
                     this.removeById(id);
@@ -197,38 +195,27 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     }
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
-        List<Catalogue> relatedList =
-                all.stream()
-                        .filter(
-                                catalogue ->
-                                        id.equals(catalogue.getId())
-                                                || id.equals(catalogue.getParentId()))
-                        .collect(Collectors.toList());
-        List<Catalogue> subDirCatalogue =
-                relatedList.stream()
-                        .filter(catalogue -> catalogue.getType() == null)
-                        .collect(Collectors.toList());
-        subDirCatalogue.forEach(
-                catalogue -> {
-                    if (!id.equals(catalogue.getId())) {
-                        findAllCatalogueInDir(catalogue.getId(), all, del);
-                    }
-                });
+        List<Catalogue> relatedList = all.stream()
+                .filter(catalogue -> id.equals(catalogue.getId()) || id.equals(catalogue.getParentId()))
+                .collect(Collectors.toList());
+        List<Catalogue> subDirCatalogue = relatedList.stream()
+                .filter(catalogue -> catalogue.getType() == null)
+                .collect(Collectors.toList());
+        subDirCatalogue.forEach(catalogue -> {
+            if (!id.equals(catalogue.getId())) {
+                findAllCatalogueInDir(catalogue.getId(), all, del);
+            }
+        });
         del.addAll(relatedList);
     }
 
     private List<String> analysisActiveCatalogues(Set<Catalogue> del) {
-        List<Integer> actives =
-                jobInstanceService.listJobInstanceActive().stream()
-                        .map(JobInstance::getTaskId)
-                        .collect(Collectors.toList());
-        List<Catalogue> activeCatalogue =
-                del.stream()
-                        .filter(
-                                catalogue ->
-                                        catalogue.getTaskId() != null
-                                                && actives.contains(catalogue.getTaskId()))
-                        .collect(Collectors.toList());
+        List<Integer> actives = jobInstanceService.listJobInstanceActive().stream()
+                .map(JobInstance::getTaskId)
+                .collect(Collectors.toList());
+        List<Catalogue> activeCatalogue = del.stream()
+                .filter(catalogue -> catalogue.getTaskId() != null && actives.contains(catalogue.getTaskId()))
+                .collect(Collectors.toList());
         return activeCatalogue.stream()
                 .map(catalogue -> taskService.getById(catalogue.getTaskId()).getName())
                 .collect(Collectors.toList());
@@ -278,9 +265,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         statementService.save(statement);
 
         Catalogue one =
-                this.getOne(
-                        new LambdaQueryWrapper<Catalogue>()
-                                .eq(Catalogue::getTaskId, catalogue.getTaskId()));
+                this.getOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getTaskId, catalogue.getTaskId()));
 
         catalogue.setName(newTask.getName());
         catalogue.setIsLeaf(one.getIsLeaf());
@@ -296,12 +281,10 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Integer parentId = 0;
         for (int i = 0; i < catalogueNames.length - 1; i++) {
             String catalogueName = catalogueNames[i];
-            Catalogue catalogue =
-                    getOne(
-                            new QueryWrapper<Catalogue>()
-                                    .eq("name", catalogueName)
-                                    .eq("parent_id", parentId)
-                                    .last(" limit 1"));
+            Catalogue catalogue = getOne(new QueryWrapper<Catalogue>()
+                    .eq("name", catalogueName)
+                    .eq("parent_id", parentId)
+                    .last(" limit 1"));
             if (Asserts.isNotNull(catalogue)) {
                 parentId = catalogue.getId();
                 continue;
@@ -325,19 +308,17 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         for (File fl : fs) {
             if (fl.isFile()) {
-                CatalogueTaskDTO dto =
-                        getCatalogueTaskDTO(
-                                fl.getName(),
-                                findByParentIdAndName(catalog.getParentId(), catalog.getName())
-                                        .getId());
+                CatalogueTaskDTO dto = getCatalogueTaskDTO(
+                        fl.getName(),
+                        findByParentIdAndName(catalog.getParentId(), catalog.getName())
+                                .getId());
                 String fileText = getFileText(fl);
                 createCatalogAndFileTask(dto, fileText);
             } else {
-                Catalogue newCata =
-                        getCatalogue(
-                                findByParentIdAndName(catalog.getParentId(), catalog.getName())
-                                        .getId(),
-                                fl.getName());
+                Catalogue newCata = getCatalogue(
+                        findByParentIdAndName(catalog.getParentId(), catalog.getName())
+                                .getId(),
+                        fl.getName());
                 traverseFile(fl.getPath(), newCata);
             }
         }
@@ -345,8 +326,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     private String getFileText(File sourceFile) {
         StringBuilder sb = new StringBuilder();
-        try (InputStreamReader isr =
-                        new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
+        try (InputStreamReader isr = new InputStreamReader(Files.newInputStream(sourceFile.toPath()));
                 BufferedReader br = new BufferedReader(isr)) {
             if (sourceFile.isFile() && sourceFile.exists()) {
 

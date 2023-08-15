@@ -32,8 +32,6 @@ import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 /**
  * UserService
  *
@@ -88,16 +86,6 @@ public interface UserService extends ISuperService<User> {
      * @return {@link User}
      */
     User getUserByUsername(String username);
-
-    /**
-     * grantRole will be {@link Deprecated} please use {@link
-     * UserService#assignRole(AssignRoleParams)}
-     *
-     * @param param param
-     * @return {@link Result}<{@link Void}>
-     */
-    @Deprecated
-    Result<Void> grantRole(JsonNode param);
 
     /**
      * grantRole

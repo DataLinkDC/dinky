@@ -32,9 +32,7 @@ import cn.hutool.core.util.ReflectUtil;
 
 /** */
 public abstract class AbstractCustomTableEnvironment
-        implements CustomTableEnvironment,
-                DefaultTableEnvironmentInternal,
-                DefaultStreamTableEnvironment {
+        implements CustomTableEnvironment, DefaultTableEnvironmentInternal, DefaultStreamTableEnvironment {
 
     protected StreamTableEnvironment streamTableEnvironment;
 
@@ -66,11 +64,9 @@ public abstract class AbstractCustomTableEnvironment
     public void injectExtendedExecutor(CustomExtendedOperationExecutor extendedExecutor) {
         PlannerBase plannerBase = (PlannerBase) getPlanner();
         ExtendedOperationExecutor extendedOperationExecutor =
-                new ExtendedOperationExecutorWrapper(
-                        plannerBase.getExtendedOperationExecutor(), extendedExecutor);
+                new ExtendedOperationExecutorWrapper(plannerBase.getExtendedOperationExecutor(), extendedExecutor);
 
-        ReflectUtil.setFieldValue(
-                getPlanner(), "extendedOperationExecutor", extendedOperationExecutor);
+        ReflectUtil.setFieldValue(getPlanner(), "extendedOperationExecutor", extendedOperationExecutor);
     }
 
     @Override

@@ -54,8 +54,7 @@ public class ProcessEntity {
 
     public ProcessEntity() {}
 
-    public ProcessEntity(
-            String pid, String name, Integer taskId, ProcessType type, Integer userId) {
+    public ProcessEntity(String pid, String name, Integer taskId, ProcessType type, Integer userId) {
         this(pid, name, taskId, type, null, null, null, 0, null, userId);
     }
 
@@ -103,10 +102,8 @@ public class ProcessEntity {
         return init(type.getValue() + taskId, taskId, type, userId);
     }
 
-    public static ProcessEntity init(
-            String name, Integer taskId, ProcessType type, Integer userId) {
-        ProcessEntity process =
-                new ProcessEntity(UUID.randomUUID().toString(), name, taskId, type, userId);
+    public static ProcessEntity init(String name, Integer taskId, ProcessType type, Integer userId) {
+        ProcessEntity process = new ProcessEntity(UUID.randomUUID().toString(), name, taskId, type, userId);
         process.setStatus(ProcessStatus.INITIALIZING);
         process.setStartTime(LocalDateTime.now());
         process.setSteps(new ArrayList<>());
@@ -140,9 +137,7 @@ public class ProcessEntity {
             return;
         }
         steps.get(stepIndex - 1).setEndTime(LocalDateTime.now());
-        String message =
-                CharSequenceUtil.format(
-                        "\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         setStatus(ProcessStatus.FINISHED);
         setEndTime(LocalDateTime.now());
@@ -154,9 +149,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message =
-                CharSequenceUtil.format(
-                        "\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} CONFIG: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         ConsolePool.write(message, userId);
     }
@@ -165,9 +158,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message =
-                CharSequenceUtil.format(
-                        "\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} INFO: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         ConsolePool.write(message, userId);
     }
@@ -192,9 +183,7 @@ public class ProcessEntity {
         if (isNullProcess()) {
             return;
         }
-        String message =
-                CharSequenceUtil.format(
-                        "\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str);
+        String message = CharSequenceUtil.format("\n[{}] {} ERROR: {}", type.getValue(), LocalDateTime.now(), str);
         steps.get(stepIndex - 1).appendInfo(message);
         steps.get(stepIndex - 1).appendError(message);
         ConsolePool.write(message, userId);

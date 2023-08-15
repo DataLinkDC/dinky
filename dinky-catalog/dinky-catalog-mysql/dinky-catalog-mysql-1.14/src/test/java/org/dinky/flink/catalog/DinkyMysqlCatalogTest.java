@@ -42,25 +42,21 @@ public class DinkyMysqlCatalogTest {
 
     @Before
     public void setup() {
-        url =
-                "jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
+        url = "jdbc:mysql://127.0.0.1:3306/dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC";
         catalog = new DinkyMysqlCatalog(TEST_CATALOG_NAME, url, TEST_USERNAME, TEST_PWD);
 
         this.tableEnv = TableEnvironment.create(EnvironmentSettings.inStreamingMode());
-        tableEnv.getConfig()
-                .getConfiguration()
-                .setInteger(TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM.key(), 1);
+        tableEnv.getConfig().getConfiguration().setInteger(TABLE_EXEC_RESOURCE_DEFAULT_PARALLELISM.key(), 1);
     }
 
     @Test
     public void testSqlCatalog() {
-        String createSql =
-                "create catalog myCatalog \n"
-                        + " with('type'='dinky_mysql',\n"
-                        + " 'username'='dinky',\n"
-                        + " 'password'='dinky',\n"
-                        + " 'url'='jdbc:mysql://127.0.0.1:3306/"
-                        + "dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
+        String createSql = "create catalog myCatalog \n"
+                + " with('type'='dinky_mysql',\n"
+                + " 'username'='dinky',\n"
+                + " 'password'='dinky',\n"
+                + " 'url'='jdbc:mysql://127.0.0.1:3306/"
+                + "dinky?useUnicode=true&characterEncoding=utf8&serverTimezone=UTC')";
         tableEnv.executeSql(createSql);
         tableEnv.executeSql("use catalog myCatalog");
     }

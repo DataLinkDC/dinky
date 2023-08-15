@@ -250,6 +250,7 @@ export default {
   'role.EnterNote': 'Please enter Role Note!',
   'role.delete': 'Delete Role',
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
+  'role.assignMenu': 'Role: [{roleName}] Assign Permissions',
 
   // menu
   'menu.management': 'Menu Management',
@@ -269,7 +270,7 @@ export default {
   'menu.typePlaceholder': 'Please select the menu type',
   'menu.perms': 'Permission ID',
   'menu.permsPlaceholder': 'Please enter the permission ID',
-  'menu.icon.reference': 'Menu icon reference',
+  'menu.icon.reference': 'Icon reference',
 
   'menu.type.dir': 'Directory',
   'menu.type.menu': 'Menu',
@@ -1057,4 +1058,9 @@ export default {
   'datastudio.middle.qg.gitprojects': 'Git Projects',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.middle.qg.resource': 'Resource',
+
+  // project
+  'datastudio.project.create.rootFolder': 'Create Root Folder',
+  'datastudio.project.create.folder.name': 'Folder Name',
+  'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
 };

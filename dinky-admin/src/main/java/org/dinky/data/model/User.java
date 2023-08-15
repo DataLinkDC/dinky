@@ -70,7 +70,8 @@ public class User implements Serializable {
 
     private Boolean enabled;
 
-    @TableLogic private Boolean isDelete;
+    @TableLogic
+    private Boolean isDelete;
 
     @TableField(fill = FieldFill.INSERT)
     private LocalDateTime createTime;

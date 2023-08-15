@@ -29,8 +29,7 @@ import org.apache.flink.util.Collector;
  * @since 2021/12/17 18:55
  */
 public class Top2WithRetract
-        extends TableAggregateFunction<
-                Tuple2<Integer, Integer>, Top2WithRetract.Top2WithRetractAccumulator> {
+        extends TableAggregateFunction<Tuple2<Integer, Integer>, Top2WithRetract.Top2WithRetractAccumulator> {
 
     public static class Top2WithRetractAccumulator {
 

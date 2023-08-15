@@ -62,8 +62,7 @@ public class FileUploadController {
     public Result<Void> upload(
             @RequestPart("files") MultipartFile[] files,
             @RequestParam(value = "dir", defaultValue = "", required = false) String dir,
-            @RequestParam(value = "fileType", defaultValue = "-1", required = false)
-                    Byte fileType) {
+            @RequestParam(value = "fileType", defaultValue = "-1", required = false) Byte fileType) {
         if (!StringUtils.isEmpty(dir) && fileType != -1) {
             return Result.failed("不要同时指定 dir 和 fileType 参数");
         } else if (StringUtils.isEmpty(dir) && fileType == -1) {

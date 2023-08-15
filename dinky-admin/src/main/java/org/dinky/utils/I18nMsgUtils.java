@@ -43,8 +43,7 @@ public class I18nMsgUtils {
      * @return {@link String} internationalization information
      */
     public static String getMsg(Object code) {
-        return messageSource.getMessage(
-                code.toString(), null, code.toString(), LocaleContextHolder.getLocale());
+        return messageSource.getMessage(code.toString(), null, code.toString(), LocaleContextHolder.getLocale());
     }
 
     /**
@@ -56,8 +55,7 @@ public class I18nMsgUtils {
      */
     public static String getMsg(Object code, Object... messageArgs) {
         Object[] objs = Arrays.stream(messageArgs).map(I18nMsgUtils::getMsg).toArray();
-        return messageSource.getMessage(
-                code.toString(), objs, code.toString(), LocaleContextHolder.getLocale());
+        return messageSource.getMessage(code.toString(), objs, code.toString(), LocaleContextHolder.getLocale());
     }
 
     /**
@@ -69,13 +67,9 @@ public class I18nMsgUtils {
     public static String getMsg(Status status) {
         Optional<Status> statusByCode = Status.findStatusByCode(status.getCode());
         if (statusByCode.isPresent()) {
-            return messageSource.getMessage(
-                    "", null, status.getMsg(), LocaleContextHolder.getLocale());
+            return messageSource.getMessage("", null, status.getMsg(), LocaleContextHolder.getLocale());
         }
         return messageSource.getMessage(
-                "unknown.i18n",
-                null,
-                "Unknown i18n information, please check. . .",
-                LocaleContextHolder.getLocale());
+                "unknown.i18n", null, "Unknown i18n information, please check. . .", LocaleContextHolder.getLocale());
     }
 }

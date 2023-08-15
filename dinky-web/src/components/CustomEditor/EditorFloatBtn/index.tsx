@@ -16,10 +16,17 @@
  */
 
 import React from "react";
-import {FloatButton, Space} from "antd";
+import {Space} from "antd";
 import {l} from "@/utils/intl";
-import {DownCircleFilled, StopFilled, SyncOutlined, UpCircleFilled} from "@ant-design/icons";
+import {
+  DownCircleFilled,
+  StopFilled,
+  SyncOutlined,
+  UpCircleFilled, VerticalAlignBottomOutlined,
+  VerticalAlignTopOutlined
+} from "@ant-design/icons";
 import {PlayCircleFilled} from "@ant-design/icons/lib/icons";
+import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
 
 /**
  * props
@@ -61,61 +68,24 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
    * render
    */
   return <>
-    <FloatButton.Group
-      shape="circle"
-      className={"float-button"}
-    >
-      <Space direction={"vertical"}>
-        {/* if refreshLogCallback is not null, then show sync button , auto refresh button and stop auto refresh button  */}
-        {refreshLogCallback &&
-          <>
-            <FloatButton
-              tooltip={l("button.refresh")}
-              icon={<SyncOutlined spin={loading}/>}
-              onClick={handleSyncLog}
-            />
-
-            {autoRefresh ?
-              <FloatButton
-                icon={<StopFilled spin={stopping}/>}
-                tooltip={l("button.stopRefresh")}
-                onClick={handleStopAutoRefresh}
-              /> :
-              <FloatButton
-                icon={<PlayCircleFilled/>}
-                tooltip={l("button.startRefresh")}
-                onClick={handleStartAutoRefresh}
-              />
-            }
-          </>
-        }
-        {/* back top */}
-        <FloatButton.BackTop
-          tooltip={l("button.backTop")}
-          onClick={handleBackTop}
-          visibilityHeight={0}
-        />
-        {/* go bottom */}
-        <FloatButton.BackTop
-          className={"back-bottom"}
-          tooltip={l("button.backBottom")}
-          onClick={handleBackBottom}
-          visibilityHeight={0}
-        />
-        {/* scroll up */}
-        <FloatButton
-          icon={<UpCircleFilled/>}
-          tooltip={l("button.upScroll")}
-          onClick={handleUpScroll}
-        />
-        {/* scroll down */}
-        <FloatButton
-          icon={<DownCircleFilled/>}
-          tooltip={l("button.downScroll")}
-          onClick={handleDownScroll}
-        />
-      </Space>
-    </FloatButton.Group>
+    <Space direction={"vertical"} size={0}>
+      {
+        refreshLogCallback && <>
+          <CircleBtn icon={<SyncOutlined spin={loading}/>} onClick={handleSyncLog} title={l("button.refresh")}/>
+          {autoRefresh ?
+            <CircleBtn icon={<StopFilled spin={stopping}/>} onClick={handleStopAutoRefresh}
+                       title={l("button.stopRefresh")}/>
+            :
+            <CircleBtn icon={<PlayCircleFilled spin={loading}/>} onClick={handleStartAutoRefresh}
+                       title={l("button.startRefresh")}/>
+          }
+        </>
+      }
+      <CircleBtn icon={<VerticalAlignTopOutlined/>} onClick={handleBackTop} title={l("button.backTop")}/>
+      <CircleBtn icon={<VerticalAlignBottomOutlined/>} onClick={handleBackBottom} title={l("button.backBottom")}/>
+      <CircleBtn icon={<UpCircleFilled/>} onClick={handleUpScroll} title={l("button.upScroll")}/>
+      <CircleBtn icon={<DownCircleFilled/>} onClick={handleDownScroll} title={l("button.downScroll")}/>
+    </Space>
   </>;
 
 };

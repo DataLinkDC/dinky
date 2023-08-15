@@ -52,19 +52,15 @@ public class ResourceController {
     @ApiOperation("Create Folder")
     @Log(title = "Create Folder", businessType = BusinessType.INSERT)
     public Result<TreeNodeDTO> createFolder(@RequestBody ResourcesDTO resourcesDTO) {
-        return Result.succeed(
-                resourcesService.createFolder(
-                        resourcesDTO.getId(),
-                        resourcesDTO.getFileName(),
-                        resourcesDTO.getDescription()));
+        return Result.succeed(resourcesService.createFolder(
+                resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription()));
     }
 
     @PostMapping("/rename")
     @ApiOperation("Rename Folder/File")
     @Log(title = "Rename Folder/File", businessType = BusinessType.UPDATE)
     public Result<Void> rename(@RequestBody ResourcesDTO resourcesDTO) {
-        resourcesService.rename(
-                resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
+        resourcesService.rename(resourcesDTO.getId(), resourcesDTO.getFileName(), resourcesDTO.getDescription());
         return Result.succeed();
     }
 
@@ -83,8 +79,7 @@ public class ResourceController {
     @PostMapping("/uploadFile")
     @ApiOperation("Upload File")
     @Log(title = "Upload File To Resource", businessType = BusinessType.UPLOAD)
-    public Result<Void> uploadFile(
-            Integer pid, String desc, @RequestParam("file") MultipartFile file) {
+    public Result<Void> uploadFile(Integer pid, String desc, @RequestParam("file") MultipartFile file) {
         resourcesService.uploadFile(pid, desc, file);
         return Result.succeed();
     }

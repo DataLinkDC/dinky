@@ -31,10 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class HttpUtils {
     public static void asyncRequest(
-            List<String> addressList,
-            String urlParams,
-            int timeout,
-            Consumer<HttpResponse> consumer) {
+            List<String> addressList, String urlParams, int timeout, Consumer<HttpResponse> consumer) {
         if (CollUtil.isEmpty(addressList)) {
             return;
         }

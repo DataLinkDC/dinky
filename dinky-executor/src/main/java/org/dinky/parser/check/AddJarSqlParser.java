@@ -37,8 +37,7 @@ import cn.hutool.core.util.StrUtil;
 public class AddJarSqlParser {
 
     private static final String ADD_JAR = "(add\\s+customjar)\\s+'(.*.jar)'";
-    private static final Pattern ADD_JAR_PATTERN =
-            Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
+    private static final Pattern ADD_JAR_PATTERN = Pattern.compile(ADD_JAR, Pattern.CASE_INSENSITIVE);
 
     protected static List<String> patternStatements(String[] statements) {
         return Stream.of(statements)
@@ -52,14 +51,12 @@ public class AddJarSqlParser {
         patternStatements(statements).stream()
                 .map(x -> ReUtil.findAll(ADD_JAR_PATTERN, x, 2).get(0))
                 .distinct()
-                .forEach(
-                        path -> {
-                            if (!FileUtil.exist(path)) {
-                                throw new DinkyException(
-                                        StrUtil.format("file : {} not exists!", path));
-                            }
-                            fileSet.add(FileUtil.file(path));
-                        });
+                .forEach(path -> {
+                    if (!FileUtil.exist(path)) {
+                        throw new DinkyException(StrUtil.format("file : {} not exists!", path));
+                    }
+                    fileSet.add(FileUtil.file(path));
+                });
         return fileSet;
     }
 

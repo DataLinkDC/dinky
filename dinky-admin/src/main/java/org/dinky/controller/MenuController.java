@@ -32,7 +32,6 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -75,7 +74,7 @@ public class MenuController {
      */
     @GetMapping("listMenus")
     @ApiOperation("Query Menu List")
-    public Result<List<TreeNodeDTO>> listMenus() {
+    public Result<List<Menu>> listMenus() {
         List<Menu> menus = menuService.list();
         return Result.data(menuService.buildMenuTreeSelect(menus));
     }
@@ -90,11 +89,7 @@ public class MenuController {
     @ApiOperation("Delete Menu By Id")
     @Log(title = "Delete Menu By Id", businessType = BusinessType.DELETE)
     public Result<Void> deleteMenuById(@RequestParam("id") Integer id) {
-        if (menuService.deleteMenuById(id)) {
-            return Result.succeed(Status.DELETE_SUCCESS);
-        } else {
-            return Result.failed(Status.DELETE_FAILED);
-        }
+        return menuService.deleteMenuById(id);
     }
 
     /**
@@ -103,16 +98,15 @@ public class MenuController {
      * @param roleId role id
      * @return {@link RoleMenuDto}
      */
-    @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
+    @GetMapping(value = "/roleMenus/")
     @ApiOperation("Load Role Menu")
-    public Result<RoleMenuDto> roleMenuTreeSelect(@PathVariable("roleId") Integer roleId) {
-        List<Menu> menus = menuService.list();
-        RoleMenuDto menuVO =
-                RoleMenuDto.builder()
-                        .roleId(roleId)
-                        .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
-                        .menus(menus)
-                        .build();
+    public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
+        List<Menu> menus = menuService.buildMenuTree(menuService.list());
+        RoleMenuDto menuVO = RoleMenuDto.builder()
+                .roleId(roleId)
+                .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
+                .menus(menus)
+                .build();
         return Result.succeed(menuVO);
     }
 }

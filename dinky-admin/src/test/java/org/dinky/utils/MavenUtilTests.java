@@ -59,11 +59,7 @@ public class MavenUtilTests {
         String logFile = "/Users/zackyoung/Desktop/test/git/api-monitor/" + branch + "_log/3.log";
         File pom = new File(gitFile, "pom.xml");
 
-        MavenUtil.build(
-                "/Volumes/文档及虚拟机/company/数宜信/OpenApi/settings2.xml",
-                pom.getAbsolutePath(),
-                logFile,
-                null);
+        MavenUtil.build("/Volumes/文档及虚拟机/company/数宜信/OpenApi/settings2.xml", pom.getAbsolutePath(), logFile, null);
     }
 
     @Test
@@ -77,12 +73,10 @@ public class MavenUtilTests {
 
         List<File> jars = MavenUtil.getJars(pom);
         System.out.println(jars);
-        jars.parallelStream()
-                .forEach(
-                        jar -> {
-                            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(jar);
-                            System.out.println(udfClassByJar);
-                        });
+        jars.parallelStream().forEach(jar -> {
+            List<Class<?>> udfClassByJar = UDFUtil.getUdfClassByJar(jar);
+            System.out.println(udfClassByJar);
+        });
     }
 
     @Test

@@ -66,8 +66,7 @@ public class AlertGroupController {
     @PutMapping
     @Log(title = "Insert OR Update AlertGroup ", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert OR Update AlertGroup")
-    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup)
-            throws Exception {
+    public Result<Void> saveOrUpdateAlertGroup(@RequestBody AlertGroup alertGroup) throws Exception {
         if (alertGroupService.saveOrUpdate(alertGroup)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {

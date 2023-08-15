@@ -60,7 +60,10 @@ public class ProcessController {
     @ApiOperation("List all process")
     public ProTableResult<ProcessEntity> listAllProcess(@RequestParam boolean active) {
         List<ProcessEntity> processEntities = processService.listAllProcess(active);
-        return ProTableResult.<ProcessEntity>builder().success(true).data(processEntities).build();
+        return ProTableResult.<ProcessEntity>builder()
+                .success(true)
+                .data(processEntities)
+                .build();
     }
 
     /**

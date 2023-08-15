@@ -78,8 +78,7 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
 
     @Override
     public DynamicTableSink createDynamicTableSink(Context context) {
-        final FactoryUtil.TableFactoryHelper helper =
-                FactoryUtil.createTableFactoryHelper(this, context);
+        final FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
         final ReadableConfig config = helper.getOptions();
 
         helper.validate();
@@ -97,8 +96,7 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
 
     @Override
     public DynamicTableSource createDynamicTableSource(Context context) {
-        final FactoryUtil.TableFactoryHelper helper =
-                FactoryUtil.createTableFactoryHelper(this, context);
+        final FactoryUtil.TableFactoryHelper helper = FactoryUtil.createTableFactoryHelper(this, context);
         final ReadableConfig config = helper.getOptions();
 
         helper.validate();
@@ -114,14 +112,13 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
 
     private JdbcConnectorOptions getJdbcOptions(ReadableConfig readableConfig) {
         final String url = readableConfig.get(URL);
-        final JdbcConnectorOptions.Builder builder =
-                JdbcConnectorOptions.builder()
-                        .setDBUrl(url)
-                        .setTableName(readableConfig.get(TABLE_NAME))
-                        .setDialect(JdbcDialects.get(url).get())
-                        .setParallelism(readableConfig.getOptional(SINK_PARALLELISM).orElse(null))
-                        .setConnectionCheckTimeoutSeconds(
-                                (int) readableConfig.get(MAX_RETRY_TIMEOUT).getSeconds());
+        final JdbcConnectorOptions.Builder builder = JdbcConnectorOptions.builder()
+                .setDBUrl(url)
+                .setTableName(readableConfig.get(TABLE_NAME))
+                .setDialect(JdbcDialects.get(url).get())
+                .setParallelism(readableConfig.getOptional(SINK_PARALLELISM).orElse(null))
+                .setConnectionCheckTimeoutSeconds(
+                        (int) readableConfig.get(MAX_RETRY_TIMEOUT).getSeconds());
 
         readableConfig.getOptional(DRIVER).ifPresent(builder::setDriverName);
         readableConfig.getOptional(USERNAME).ifPresent(builder::setUsername);
@@ -130,8 +127,7 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
     }
 
     private JdbcReadOptions getJdbcReadOptions(ReadableConfig readableConfig) {
-        final Optional<String> partitionColumnName =
-                readableConfig.getOptional(SCAN_PARTITION_COLUMN);
+        final Optional<String> partitionColumnName = readableConfig.getOptional(SCAN_PARTITION_COLUMN);
         final JdbcReadOptions.Builder builder = JdbcReadOptions.builder();
         if (partitionColumnName.isPresent()) {
             builder.setPartitionColumnName(partitionColumnName.get());
@@ -162,10 +158,9 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
     }
 
     private JdbcDmlOptions getJdbcDmlOptions(JdbcConnectorOptions jdbcOptions, TableSchema schema) {
-        String[] keyFields =
-                schema.getPrimaryKey()
-                        .map(pk -> pk.getColumns().toArray(new String[0]))
-                        .orElse(null);
+        String[] keyFields = schema.getPrimaryKey()
+                .map(pk -> pk.getColumns().toArray(new String[0]))
+                .orElse(null);
 
         return JdbcDmlOptions.builder()
                 .withTableName(jdbcOptions.getTableName())
@@ -218,57 +213,45 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
         final Optional<JdbcDialect> dialect = JdbcDialects.get(jdbcUrl);
         checkState(dialect.isPresent(), "Cannot handle such jdbc url: " + jdbcUrl);
 
-        checkAllOrNone(config, new ConfigOption[]{USERNAME, PASSWORD});
+        checkAllOrNone(config, new ConfigOption[] {USERNAME, PASSWORD});
 
-        checkAllOrNone(
-                config,
-                new ConfigOption[]{
-                        SCAN_PARTITION_COLUMN,
-                        SCAN_PARTITION_NUM,
-                        SCAN_PARTITION_LOWER_BOUND,
-                        SCAN_PARTITION_UPPER_BOUND
-                });
+        checkAllOrNone(config, new ConfigOption[] {
+            SCAN_PARTITION_COLUMN, SCAN_PARTITION_NUM, SCAN_PARTITION_LOWER_BOUND, SCAN_PARTITION_UPPER_BOUND
+        });
 
         if (config.getOptional(SCAN_PARTITION_LOWER_BOUND).isPresent()
                 && config.getOptional(SCAN_PARTITION_UPPER_BOUND).isPresent()) {
             long lowerBound = config.get(SCAN_PARTITION_LOWER_BOUND);
             long upperBound = config.get(SCAN_PARTITION_UPPER_BOUND);
             if (lowerBound > upperBound) {
-                throw new IllegalArgumentException(
-                        String.format(
-                                "'%s'='%s' must not be larger than '%s'='%s'.",
-                                SCAN_PARTITION_LOWER_BOUND.key(),
-                                lowerBound,
-                                SCAN_PARTITION_UPPER_BOUND.key(),
-                                upperBound));
+                throw new IllegalArgumentException(String.format(
+                        "'%s'='%s' must not be larger than '%s'='%s'.",
+                        SCAN_PARTITION_LOWER_BOUND.key(), lowerBound, SCAN_PARTITION_UPPER_BOUND.key(), upperBound));
             }
         }
 
-        checkAllOrNone(config, new ConfigOption[]{LOOKUP_CACHE_MAX_ROWS, LOOKUP_CACHE_TTL});
+        checkAllOrNone(config, new ConfigOption[] {LOOKUP_CACHE_MAX_ROWS, LOOKUP_CACHE_TTL});
 
         if (config.get(LOOKUP_MAX_RETRIES) < 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option shouldn't be negative, but is %s.",
-                            LOOKUP_MAX_RETRIES.key(), config.get(LOOKUP_MAX_RETRIES)));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option shouldn't be negative, but is %s.",
+                    LOOKUP_MAX_RETRIES.key(), config.get(LOOKUP_MAX_RETRIES)));
         }
 
         if (config.get(SINK_MAX_RETRIES) < 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option shouldn't be negative, but is %s.",
-                            SINK_MAX_RETRIES.key(), config.get(SINK_MAX_RETRIES)));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option shouldn't be negative, but is %s.",
+                    SINK_MAX_RETRIES.key(), config.get(SINK_MAX_RETRIES)));
         }
 
         if (config.get(MAX_RETRY_TIMEOUT).getSeconds() <= 0) {
-            throw new IllegalArgumentException(
-                    String.format(
-                            "The value of '%s' option must be in second granularity and shouldn't be smaller than 1 second, but is %s.",
-                            MAX_RETRY_TIMEOUT.key(),
-                            config.get(
-                                    ConfigOptions.key(MAX_RETRY_TIMEOUT.key())
-                                            .stringType()
-                                            .noDefaultValue())));
+            throw new IllegalArgumentException(String.format(
+                    "The value of '%s' option must be in second granularity and shouldn't"
+                            + " be smaller than 1 second, but is %s.",
+                    MAX_RETRY_TIMEOUT.key(),
+                    config.get(ConfigOptions.key(MAX_RETRY_TIMEOUT.key())
+                            .stringType()
+                            .noDefaultValue())));
         }
     }
 
@@ -283,7 +266,6 @@ public class JdbcDynamicTableFactory implements DynamicTableSourceFactory, Dynam
                 Arrays.stream(configOptions).map(ConfigOption::key).toArray(String[]::new);
         Preconditions.checkArgument(
                 configOptions.length == presentCount || presentCount == 0,
-                "Either all or none of the following options should be provided:\n"
-                        + String.join("\n", propertyNames));
+                "Either all or none of the following options should be provided:\n" + String.join("\n", propertyNames));
     }
 }

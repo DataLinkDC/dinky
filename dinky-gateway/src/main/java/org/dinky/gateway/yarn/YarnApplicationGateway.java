@@ -63,8 +63,7 @@ public class YarnApplicationGateway extends YarnGateway {
         }
 
         AppConfig appConfig = config.getAppConfig();
-        configuration.set(
-                PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
+        configuration.set(PipelineOptions.JARS, Collections.singletonList(appConfig.getUserJarPath()));
 
         configuration.setString(
                 "python.files",
@@ -73,9 +72,7 @@ public class YarnApplicationGateway extends YarnGateway {
                         .collect(Collectors.joining(",")));
 
         String[] userJarParas =
-                Asserts.isNotNull(appConfig.getUserJarParas())
-                        ? appConfig.getUserJarParas()
-                        : new String[0];
+                Asserts.isNotNull(appConfig.getUserJarParas()) ? appConfig.getUserJarParas() : new String[0];
 
         ClusterSpecification.ClusterSpecificationBuilder clusterSpecificationBuilder =
                 createClusterSpecificationBuilder();
@@ -84,12 +81,11 @@ public class YarnApplicationGateway extends YarnGateway {
 
         YarnResult result = YarnResult.build(getType());
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
-            ClusterClientProvider<ApplicationId> clusterClientProvider =
-                    yarnClusterDescriptor.deployApplicationCluster(
-                            clusterSpecificationBuilder.createClusterSpecification(),
-                            applicationConfiguration);
+            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deployApplicationCluster(
+                    clusterSpecificationBuilder.createClusterSpecification(), applicationConfiguration);
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
-            Collection<JobStatusMessage> jobStatusMessages = clusterClient.listJobs().get();
+            Collection<JobStatusMessage> jobStatusMessages =
+                    clusterClient.listJobs().get();
 
             int counts = SystemConfiguration.getInstances().getJobIdWait();
             while (jobStatusMessages.size() == 0 && counts > 0) {

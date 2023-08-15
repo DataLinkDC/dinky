@@ -68,8 +68,7 @@ public interface StudioService {
 
     boolean cancelFlinkJob(Integer clusterId, String jobId);
 
-    boolean savepointTrigger(
-            Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
+    boolean savepointTrigger(Integer taskId, Integer clusterId, String jobId, String savePointType, String name);
 
     List<Catalog> getMSCatalogs(StudioMetaStoreDTO studioMetaStoreDTO);
 

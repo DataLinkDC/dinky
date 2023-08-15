@@ -20,7 +20,6 @@
 package org.dinky.controller;
 
 import org.dinky.data.annotation.Log;
-import org.dinky.data.annotation.PublicInterface;
 import org.dinky.data.dto.GitProjectDTO;
 import org.dinky.data.dto.TreeNodeDTO;
 import org.dinky.data.enums.BusinessType;
@@ -41,7 +40,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -81,8 +79,7 @@ public class GitController {
     @ApiOperation("Insert Or Update GitProject")
     public Result<Void> saveOrUpdateGitProject(@Validated @RequestBody GitProjectDTO gitProject) {
         gitProjectService.saveOrUpdate(gitProject);
-        GitRepository gitRepository =
-                new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
+        GitRepository gitRepository = new GitRepository(BeanUtil.copyProperties(gitProject, GitProjectDTO.class));
         gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch());
         return Result.succeed();
     }
@@ -113,10 +110,8 @@ public class GitController {
     @PostMapping("/dragendSortJar")
     @Log(title = "GitProject Jar Sort", businessType = BusinessType.UPDATE)
     @ApiOperation("GitProject Jar Sort")
-    public Result<Void> dragendSortJar(
-            @RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
-        GitProject gitProjectServiceById =
-                gitProjectService.getById(gitProjectSortJarParams.getProjectId());
+    public Result<Void> dragendSortJar(@RequestBody GitProjectSortJarParams gitProjectSortJarParams) {
+        GitProject gitProjectServiceById = gitProjectService.getById(gitProjectSortJarParams.getProjectId());
         if (gitProjectServiceById == null) {
             return Result.failed(Status.GIT_PROJECT_NOT_FOUND);
         } else {
@@ -210,10 +205,7 @@ public class GitController {
         }
 
         Dict params = new Dict();
-        File logDir =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()),
-                        gitProject.getBranch() + "_log");
+        File logDir = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch() + "_log");
         params.set("gitProject", gitProject).set("logDir", logDir);
         GitProjectStepSseFactory.build(gitProject, params);
 
@@ -227,18 +219,13 @@ public class GitController {
      * @return {@link Result} of {@link Void}
      */
     @GetMapping(path = "/build-step-logs", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    @CrossOrigin("*")
-    @PublicInterface
     @Log(title = "GitProject Build Step Logs", businessType = BusinessType.QUERY)
     @ApiOperation("GitProject Build Step Logs")
     public SseEmitter buildStepLogs(@RequestParam("id") Integer id) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         GitProject gitProject = gitProjectService.getById(id);
         Dict params = new Dict();
-        File logDir =
-                FileUtil.file(
-                        GitRepository.getProjectDir(gitProject.getName()),
-                        gitProject.getBranch() + "_log");
+        File logDir = FileUtil.file(GitRepository.getProjectDir(gitProject.getName()), gitProject.getBranch() + "_log");
         params.set("gitProject", gitProject).set("logDir", logDir);
 
         GitProjectStepSseFactory.observe(emitter, gitProject, params);

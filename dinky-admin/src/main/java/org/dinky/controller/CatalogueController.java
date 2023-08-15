@@ -98,7 +98,7 @@ public class CatalogueController {
      * @param catalogue
      * @return Result<Void>
      */
-    @PutMapping
+    @PutMapping("saveOrUpdateCatalogue")
     @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Catalogue")
     public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {

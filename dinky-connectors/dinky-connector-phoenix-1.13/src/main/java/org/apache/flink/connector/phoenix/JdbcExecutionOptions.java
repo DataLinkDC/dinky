@@ -64,9 +64,7 @@ public class JdbcExecutionOptions implements Serializable {
             return false;
         }
         JdbcExecutionOptions that = (JdbcExecutionOptions) o;
-        return batchIntervalMs == that.batchIntervalMs
-                && batchSize == that.batchSize
-                && maxRetries == that.maxRetries;
+        return batchIntervalMs == that.batchIntervalMs && batchSize == that.batchSize && maxRetries == that.maxRetries;
     }
 
     @Override

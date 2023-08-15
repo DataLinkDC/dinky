@@ -28,7 +28,9 @@ import org.dinky.data.dto.UserDTO;
 import org.dinky.data.enums.Status;
 import org.dinky.data.enums.UserType;
 import org.dinky.data.exception.AuthException;
+import org.dinky.data.model.Menu;
 import org.dinky.data.model.Role;
+import org.dinky.data.model.RoleMenu;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.SystemConfiguration;
 import org.dinky.data.model.Tenant;
@@ -40,6 +42,8 @@ import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
+import org.dinky.service.MenuService;
+import org.dinky.service.RoleMenuService;
 import org.dinky.service.RoleService;
 import org.dinky.service.RowPermissionsService;
 import org.dinky.service.TenantService;
@@ -56,11 +60,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.fasterxml.jackson.databind.JsonNode;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -87,6 +90,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     private final LdapServiceImpl ldapService;
 
     private final LoginLogServiceImpl loginLogService;
+
+    private final RoleMenuService roleMenuService;
+
+    private final MenuService menuService;
 
     @Override
     public Result<Void> registerUser(User user) {
@@ -122,12 +129,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
         if (Asserts.isNull(user)) {
             return Result.failed(Status.USER_NOT_EXIST);
         }
-        if (!Asserts.isEquals(
-                SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
+        if (!Asserts.isEquals(SaSecureUtil.md5(modifyPasswordDTO.getPassword()), user.getPassword())) {
             return Result.failed(Status.USER_OLD_PASSWORD_INCORRECT);
         }
         user.setPassword(SaSecureUtil.md5(modifyPasswordDTO.getNewPassword()));
         if (updateById(user)) {
+            StpUtil.logout(user.getId());
             return Result.succeed(Status.CHANGE_PASSWORD_SUCCESS);
         }
         return Result.failed(Status.CHANGE_PASSWORD_FAILED);
@@ -155,7 +162,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             user = loginDTO.isLdapLogin() ? ldapLogin(loginDTO) : localLogin(loginDTO);
         } catch (AuthException e) {
             // Handle authentication exceptions and return the corresponding error status
-            return Result.failed(e.getStatus());
+            return Result.failed(e.getStatus() + e.getMessage());
         }
 
         // Check if the user is enabled
@@ -264,40 +271,10 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Result<Void> grantRole(JsonNode param) {
-        if (param.size() > 0) {
-            List<UserRole> userRoleList = new ArrayList<>();
-            Integer userId = param.get("userId").asInt();
-            userRoleService.remove(new QueryWrapper<UserRole>().eq("user_id", userId));
-            JsonNode userRoleJsonNode = param.get("roles");
-            for (JsonNode ids : userRoleJsonNode) {
-                UserRole userRole = new UserRole();
-                userRole.setUserId(userId);
-                userRole.setRoleId(ids.asInt());
-                userRoleList.add(userRole);
-            }
-            // save or update user role
-            boolean result = userRoleService.saveOrUpdateBatch(userRoleList, 1000);
-            if (result) {
-                return Result.succeed("用户授权角色成功");
-            } else {
-                if (userRoleList.size() == 0) {
-                    return Result.succeed("该用户绑定的角色已被全部删除");
-                }
-                return Result.failed("用户授权角色失败");
-            }
-        } else {
-            return Result.failed("请选择要授权的角色");
-        }
-    }
-
-    @Override
-    @Transactional(rollbackFor = Exception.class)
     public Result<Void> assignRole(AssignRoleParams assignRoleParams) {
         List<UserRole> userRoleList = new ArrayList<>();
         userRoleService.remove(
-                new LambdaQueryWrapper<UserRole>()
-                        .eq(UserRole::getUserId, assignRoleParams.getUserId()));
+                new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, assignRoleParams.getUserId()));
         for (Integer roleId : assignRoleParams.getRoleIds()) {
             UserRole userRole = new UserRole();
             userRole.setUserId(assignRoleParams.getUserId());
@@ -389,17 +366,14 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
     @Override
     public void outLogin() {
-        StpUtil.logout();
+        StpUtil.logout(StpUtil.getLoginIdAsInt());
     }
 
     @Override
     public List<Integer> getUserIdsByTenantId(int id) {
-        List<UserTenant> userTenants =
-                userTenantService
-                        .getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<UserTenant>()
-                                        .eq(UserTenant::getTenantId, id));
+        List<UserTenant> userTenants = userTenantService
+                .getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
         List<Integer> userIds = new ArrayList<>();
         for (UserTenant userTenant : userTenants) {
             userIds.add(userTenant.getUserId());
@@ -417,14 +391,12 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     public List<User> getUserListByTenantId(int id) {
         List<User> userList = new ArrayList<>();
         List<UserTenant> userTenants =
-                userTenantService.list(
-                        new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
-        userTenants.forEach(
-                userTenant -> {
-                    User user = getById(userTenant.getUserId());
-                    user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
-                    userList.add(user);
-                });
+                userTenantService.list(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, id));
+        userTenants.forEach(userTenant -> {
+            User user = getById(userTenant.getUserId());
+            user.setTenantAdminFlag(userTenant.getTenantAdminFlag());
+            userList.add(user);
+        });
         return userList;
     }
 
@@ -433,22 +405,17 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
      * @return
      */
     @Override
-    public Result<Void> modifyUserToTenantAdmin(
-            Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
+    public Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
         // query tenant admin user count
-        Long queryAdminUserByTenantCount =
-                userTenantService.count(
-                        new LambdaQueryWrapper<UserTenant>()
-                                .eq(UserTenant::getTenantId, tenantId)
-                                .eq(UserTenant::getTenantAdminFlag, 1));
+        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
+                .eq(UserTenant::getTenantId, tenantId)
+                .eq(UserTenant::getTenantAdminFlag, 1));
         if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
             return Result.failed(Status.TENANT_ADMIN_ALREADY_EXISTS);
         }
-        UserTenant userTenant =
-                userTenantService.getOne(
-                        new LambdaQueryWrapper<UserTenant>()
-                                .eq(UserTenant::getTenantId, tenantId)
-                                .eq(UserTenant::getUserId, userId));
+        UserTenant userTenant = userTenantService.getOne(new LambdaQueryWrapper<UserTenant>()
+                .eq(UserTenant::getTenantId, tenantId)
+                .eq(UserTenant::getUserId, userId));
         userTenant.setTenantAdminFlag(!userTenant.getTenantAdminFlag());
         if (userTenantService.updateById(userTenant)) {
             return Result.succeed(Status.MODIFY_SUCCESS);
@@ -471,30 +438,39 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
 
         List<Role> roleList = new LinkedList<>();
         List<Tenant> tenantList = new LinkedList<>();
+        List<Menu> menuList = new LinkedList<>();
 
         List<UserRole> userRoles = userRoleService.getUserRoleByUserId(user.getId());
         List<UserTenant> userTenants = userTenantService.getUserTenantByUserId(user.getId());
 
-        userRoles.forEach(
-                userRole -> {
-                    Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
-                    if (Asserts.isNotNull(role)) {
-                        roleList.add(role);
+        userRoles.forEach(userRole -> {
+            Role role = roleService.getBaseMapper().selectById(userRole.getRoleId());
+            if (Asserts.isNotNull(role)) {
+                roleList.add(role);
+                // query role menu
+                List<RoleMenu> roleMenus =
+                        roleMenuService.list(new LambdaQueryWrapper<RoleMenu>().eq(RoleMenu::getRoleId, role.getId()));
+                roleMenus.forEach(roleMenu -> {
+                    Menu menu = menuService.getById(roleMenu.getMenuId());
+                    if (Asserts.isNotNull(menu) && !StrUtil.equals("M", menu.getType())) {
+                        menuList.add(menu);
                     }
                 });
+            }
+        });
 
-        userTenants.forEach(
-                userTenant -> {
-                    Tenant tenant = tenantService.getById(userTenant.getTenantId());
-                    if (Asserts.isNotNull(tenant)) {
-                        tenantList.add(tenant);
-                    }
-                });
+        userTenants.forEach(userTenant -> {
+            Tenant tenant = tenantService.getById(userTenant.getTenantId());
+            if (Asserts.isNotNull(tenant)) {
+                tenantList.add(tenant);
+            }
+        });
 
         UserDTO userInfo = new UserDTO();
         userInfo.setUser(user);
         userInfo.setRoleList(roleList);
         userInfo.setTenantList(tenantList);
+        userInfo.setMenuList(menuList);
         userInfo.setTokenInfo(StpUtil.getTokenInfo());
         return userInfo;
     }

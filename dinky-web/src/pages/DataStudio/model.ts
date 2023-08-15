@@ -1,9 +1,10 @@
-import {Reducer} from "@@/plugin-dva/types";
+import {Effect, Reducer} from "@@/plugin-dva/types";
 import React from "react";
 import {Cluster, DataSources} from "@/types/RegCenter/data";
 import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data";
 import {l} from "@/utils/intl";
 import {getFooterValue} from "@/pages/DataStudio/function";
+import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
 
 /**
  * 初始化布局宽高度
@@ -234,7 +235,9 @@ export type StateType = {
 export type ModelType = {
   namespace: string;
   state: StateType;
-  effects: {};
+  effects: {
+    queryProject: Effect;
+  };
   reducers: {
     updateToolContentHeight: Reducer<StateType>;
     updateCenterContentHeight: Reducer<StateType>;
@@ -326,7 +329,15 @@ const Model: ModelType = {
       },
     }
   },
-  effects: {},
+  effects: {
+    *queryProject({payload}, {call, put}) {
+      const response : [] = yield call(getTaskData, payload);
+      yield put({
+        type: 'saveProject',
+        payload: response,
+      });
+    },
+  },
   reducers: {
     /**
      * 更新工具栏高度

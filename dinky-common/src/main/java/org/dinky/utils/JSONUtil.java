@@ -64,13 +64,12 @@ public class JSONUtil {
 
     private static final Logger logger = LoggerFactory.getLogger(JSONUtil.class);
 
-    private static final ObjectMapper objectMapper =
-            new ObjectMapper()
-                    .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
-                    .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
-                    .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
-                    .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
-                    .setTimeZone(TimeZone.getDefault());
+    private static final ObjectMapper objectMapper = new ObjectMapper()
+            .configure(FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .configure(ACCEPT_EMPTY_ARRAY_AS_NULL_OBJECT, true)
+            .configure(READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+            .configure(REQUIRE_SETTERS_FOR_GETTERS, true)
+            .setTimeZone(TimeZone.getDefault());
 
     public static ArrayNode createArrayNode() {
         return objectMapper.createArrayNode();
@@ -120,8 +119,7 @@ public class JSONUtil {
             return Collections.emptyList();
         }
         try {
-            CollectionType listType =
-                    objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
+            CollectionType listType = objectMapper.getTypeFactory().constructCollectionType(ArrayList.class, clazz);
             return objectMapper.readValue(json, listType);
         } catch (Exception e) {
             logger.error("parse list exception!", e);

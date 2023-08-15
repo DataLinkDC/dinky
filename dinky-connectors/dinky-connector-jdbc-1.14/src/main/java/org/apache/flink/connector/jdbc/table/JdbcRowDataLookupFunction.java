@@ -76,12 +76,12 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
     private transient Cache<RowData, List<RowData>> cache;
 
     public JdbcRowDataLookupFunction(
-                                     JdbcConnectorOptions options,
-                                     JdbcLookupOptions lookupOptions,
-                                     String[] fieldNames,
-                                     DataType[] fieldTypes,
-                                     String[] keyNames,
-                                     RowType rowType) {
+            JdbcConnectorOptions options,
+            JdbcLookupOptions lookupOptions,
+            String[] fieldNames,
+            DataType[] fieldTypes,
+            String[] keyNames,
+            RowType rowType) {
         checkNotNull(options, "No JdbcOptions supplied.");
         checkNotNull(fieldNames, "No fieldNames supplied.");
         checkNotNull(fieldTypes, "No fieldTypes supplied.");
@@ -89,18 +89,12 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
         this.connectionProvider = new SimpleJdbcConnectionProvider(options);
         this.keyNames = keyNames;
         List<String> nameList = Arrays.asList(fieldNames);
-        this.keyTypes =
-                Arrays.stream(keyNames)
-                        .map(
-                                s -> {
-                                    checkArgument(
-                                            nameList.contains(s),
-                                            "keyName %s can't find in fieldNames %s.",
-                                            s,
-                                            nameList);
-                                    return fieldTypes[nameList.indexOf(s)];
-                                })
-                        .toArray(DataType[]::new);
+        this.keyTypes = Arrays.stream(keyNames)
+                .map(s -> {
+                    checkArgument(nameList.contains(s), "keyName %s can't find in fieldNames %s.", s, nameList);
+                    return fieldTypes[nameList.indexOf(s)];
+                })
+                .toArray(DataType[]::new);
         this.cacheMaxSize = lookupOptions.getCacheMaxSize();
         this.cacheExpireMs = lookupOptions.getCacheExpireMs();
         this.maxRetryTimes = lookupOptions.getMaxRetryTimes();
@@ -108,35 +102,25 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
         String[] finalKeyNames = new String[keyNames.length + preFilterCondition.length];
         System.arraycopy(keyNames, 0, finalKeyNames, 0, keyNames.length);
         System.arraycopy(preFilterCondition, 0, finalKeyNames, keyNames.length, preFilterCondition.length);
-        this.query =
-                options.getDialect()
-                        .getSelectFromStatement(options.getTableName(), fieldNames, finalKeyNames);
+        this.query = options.getDialect().getSelectFromStatement(options.getTableName(), fieldNames, finalKeyNames);
         String dbURL = options.getDbURL();
-        this.jdbcDialect =
-                JdbcDialects.get(dbURL)
-                        .orElseThrow(
-                                () -> new UnsupportedOperationException(
-                                        String.format("Unknown dbUrl:%s", dbURL)));
+        this.jdbcDialect = JdbcDialects.get(dbURL)
+                .orElseThrow(() -> new UnsupportedOperationException(String.format("Unknown dbUrl:%s", dbURL)));
         this.jdbcRowConverter = jdbcDialect.getRowConverter(rowType);
-        this.lookupKeyRowConverter =
-                jdbcDialect.getRowConverter(
-                        RowType.of(
-                                Arrays.stream(keyTypes)
-                                        .map(DataType::getLogicalType)
-                                        .toArray(LogicalType[]::new)));
+        this.lookupKeyRowConverter = jdbcDialect.getRowConverter(
+                RowType.of(Arrays.stream(keyTypes).map(DataType::getLogicalType).toArray(LogicalType[]::new)));
     }
 
     @Override
     public void open(FunctionContext context) throws Exception {
         try {
             establishConnectionAndStatement();
-            this.cache =
-                    cacheMaxSize == -1 || cacheExpireMs == -1
-                            ? null
-                            : CacheBuilder.newBuilder()
-                                    .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
-                                    .maximumSize(cacheMaxSize)
-                                    .build();
+            this.cache = cacheMaxSize == -1 || cacheExpireMs == -1
+                    ? null
+                    : CacheBuilder.newBuilder()
+                            .expireAfterWrite(cacheExpireMs, TimeUnit.MILLISECONDS)
+                            .maximumSize(cacheMaxSize)
+                            .build();
         } catch (SQLException sqe) {
             throw new IllegalArgumentException("open() failed.", sqe);
         } catch (ClassNotFoundException cnfe) {
@@ -195,9 +179,7 @@ public class JdbcRowDataLookupFunction extends TableFunction<RowData> {
                         establishConnectionAndStatement();
                     }
                 } catch (SQLException | ClassNotFoundException exception) {
-                    LOG.error(
-                            "JDBC connection is not valid, and reestablish connection failed",
-                            exception);
+                    LOG.error("JDBC connection is not valid, and reestablish connection failed", exception);
                     throw new RuntimeException("Reestablish JDBC connection failed", exception);
                 }
 

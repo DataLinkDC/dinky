@@ -43,12 +43,15 @@ import cn.hutool.core.util.StrUtil;
 
 /** AlertGroupServiceImpl */
 @Service
-public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup>
-        implements AlertGroupService {
+public class AlertGroupServiceImpl extends SuperServiceImpl<AlertGroupMapper, AlertGroup> implements AlertGroupService {
 
-    @Lazy @Resource private AlertInstanceService alertInstanceService;
+    @Lazy
+    @Resource
+    private AlertInstanceService alertInstanceService;
 
-    @Lazy @Resource private AlertHistoryService alertHistoryService;
+    @Lazy
+    @Resource
+    private AlertHistoryService alertHistoryService;
 
     @Override
     public List<AlertGroup> listEnabledAllAlertGroups() {

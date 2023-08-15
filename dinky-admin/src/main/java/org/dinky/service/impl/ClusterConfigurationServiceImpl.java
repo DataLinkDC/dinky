@@ -43,8 +43,7 @@ import cn.hutool.core.lang.Assert;
  * @since 2021/11/6 20:54
  */
 @Service
-public class ClusterConfigurationServiceImpl
-        extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration>
+public class ClusterConfigurationServiceImpl extends SuperServiceImpl<ClusterConfigurationMapper, ClusterConfiguration>
         implements ClusterConfigurationService {
 
     @Value("classpath:DinkyFlinkDockerfile")

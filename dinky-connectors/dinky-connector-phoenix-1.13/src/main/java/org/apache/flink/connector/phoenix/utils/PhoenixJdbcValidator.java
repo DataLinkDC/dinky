@@ -40,21 +40,17 @@ public class PhoenixJdbcValidator extends ConnectorDescriptorValidator {
     public static final String PHOENIX_SCHEMA_NAMESPACE_MAPPING_ENABLE = "phoenix.schema.isnamespacemappingenabled";
     public static final String PHOENIX_SCHEMA_MAP_SYSTEMTABLE_ENABLE = "phoenix.schema.mapsystemtablestonamespace";
 
-
     public static final String CONNECTOR_URL = "connector.url";
     public static final String CONNECTOR_TABLE = "connector.table";
     public static final String CONNECTOR_DRIVER = "connector.driver";
     public static final String CONNECTOR_USERNAME = "connector.username";
     public static final String CONNECTOR_PASSWORD = "connector.password";
-    public static final String CONNECTOR_CONNECTION_MAX_RETRY_TIMEOUT =
-            "connector.connection.max-retry-timeout";
+    public static final String CONNECTOR_CONNECTION_MAX_RETRY_TIMEOUT = "connector.connection.max-retry-timeout";
 
     public static final String CONNECTOR_READ_QUERY = "connector.read.query";
     public static final String CONNECTOR_READ_PARTITION_COLUMN = "connector.read.partition.column";
-    public static final String CONNECTOR_READ_PARTITION_LOWER_BOUND =
-            "connector.read.partition.lower-bound";
-    public static final String CONNECTOR_READ_PARTITION_UPPER_BOUND =
-            "connector.read.partition.upper-bound";
+    public static final String CONNECTOR_READ_PARTITION_LOWER_BOUND = "connector.read.partition.lower-bound";
+    public static final String CONNECTOR_READ_PARTITION_UPPER_BOUND = "connector.read.partition.upper-bound";
     public static final String CONNECTOR_READ_PARTITION_NUM = "connector.read.partition.num";
     public static final String CONNECTOR_READ_FETCH_SIZE = "connector.read.fetch-size";
 
@@ -109,10 +105,8 @@ public class PhoenixJdbcValidator extends ConnectorDescriptorValidator {
         properties.validateInt(CONNECTOR_READ_PARTITION_NUM, true);
         properties.validateInt(CONNECTOR_READ_FETCH_SIZE, true);
 
-        Optional<Long> lowerBound =
-                properties.getOptionalLong(CONNECTOR_READ_PARTITION_LOWER_BOUND);
-        Optional<Long> upperBound =
-                properties.getOptionalLong(CONNECTOR_READ_PARTITION_UPPER_BOUND);
+        Optional<Long> lowerBound = properties.getOptionalLong(CONNECTOR_READ_PARTITION_LOWER_BOUND);
+        Optional<Long> upperBound = properties.getOptionalLong(CONNECTOR_READ_PARTITION_UPPER_BOUND);
         if (lowerBound.isPresent() && upperBound.isPresent()) {
             Preconditions.checkArgument(
                     lowerBound.get() <= upperBound.get(),
@@ -121,14 +115,12 @@ public class PhoenixJdbcValidator extends ConnectorDescriptorValidator {
                             + CONNECTOR_READ_PARTITION_UPPER_BOUND);
         }
 
-        checkAllOrNone(
-                properties,
-                new String[] {
-                    CONNECTOR_READ_PARTITION_COLUMN,
-                    CONNECTOR_READ_PARTITION_LOWER_BOUND,
-                    CONNECTOR_READ_PARTITION_UPPER_BOUND,
-                    CONNECTOR_READ_PARTITION_NUM
-                });
+        checkAllOrNone(properties, new String[] {
+            CONNECTOR_READ_PARTITION_COLUMN,
+            CONNECTOR_READ_PARTITION_LOWER_BOUND,
+            CONNECTOR_READ_PARTITION_UPPER_BOUND,
+            CONNECTOR_READ_PARTITION_NUM
+        });
     }
 
     private void validateLookupProperties(DescriptorProperties properties) {
@@ -136,9 +128,7 @@ public class PhoenixJdbcValidator extends ConnectorDescriptorValidator {
         properties.validateDuration(CONNECTOR_LOOKUP_CACHE_TTL, true, 1);
         properties.validateInt(CONNECTOR_LOOKUP_MAX_RETRIES, true, 0);
 
-        checkAllOrNone(
-                properties,
-                new String[] {CONNECTOR_LOOKUP_CACHE_MAX_ROWS, CONNECTOR_LOOKUP_CACHE_TTL});
+        checkAllOrNone(properties, new String[] {CONNECTOR_LOOKUP_CACHE_MAX_ROWS, CONNECTOR_LOOKUP_CACHE_TTL});
     }
 
     private void validateSinkProperties(DescriptorProperties properties) {

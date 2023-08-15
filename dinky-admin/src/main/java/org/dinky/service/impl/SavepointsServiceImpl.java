@@ -36,8 +36,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/11/21
  */
 @Service
-public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Savepoints>
-        implements SavepointsService {
+public class SavepointsServiceImpl extends SuperServiceImpl<SavepointsMapper, Savepoints> implements SavepointsService {
 
     @Override
     public List<Savepoints> listSavepointsByTaskId(Integer taskId) {

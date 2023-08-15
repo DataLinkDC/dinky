@@ -33,8 +33,7 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.JsonNode;
 
 @Service
-public class OperateLogServiceImpl extends SuperServiceImpl<OperateLogMapper, OperateLog>
-        implements OperateLogService {
+public class OperateLogServiceImpl extends SuperServiceImpl<OperateLogMapper, OperateLog> implements OperateLogService {
     /** @param operateLog */
     @Override
     public void saveLog(OperateLog operateLog) {

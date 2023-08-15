@@ -242,6 +242,7 @@ export default {
   'role.EnterNote': '请输入角色的备注/描述信息!',
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
+  'role.assignMenu': '角色: [{roleName}] 分配权限',
 
   // menu
   'menu.management': '菜单管理',
@@ -261,7 +262,7 @@ export default {
   'menu.typePlaceholder': '请选择菜单类型',
   'menu.perms': '权限标识',
   'menu.permsPlaceholder': '请输入权限标识',
-  'menu.icon.reference': '菜单图标参考',
+  'menu.icon.reference': '图标参考',
 
   'menu.type.dir': '目录',
   'menu.type.menu': '菜单',
@@ -1069,5 +1070,10 @@ export default {
   'datastudio.middle.qg.gitprojects': 'Git 项目',
   'datastudio.middle.qg.udf': 'UDF',
   'datastudio.middle.qg.resource': '资源',
+  // project
+  'datastudio.project.create.rootFolder': '创建根目录',
+  'datastudio.project.create.folder.name': '目录名称',
+  'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
+
 
 };

@@ -46,8 +46,7 @@ public class TaskOperatingResult {
         this.taskOperatingSavepointSelect = TaskOperatingSavepointSelect.DEFAULT_CONFIG;
     }
 
-    public TaskOperatingResult(
-            Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
+    public TaskOperatingResult(Task task, TaskOperatingSavepointSelect taskOperatingSavepointSelect) {
         this.task = task;
         this.status = TaskOperatingStatus.INIT;
         this.taskOperatingSavepointSelect = taskOperatingSavepointSelect;

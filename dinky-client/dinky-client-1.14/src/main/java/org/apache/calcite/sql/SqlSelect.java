@@ -79,14 +79,12 @@ public class SqlSelect extends SqlCall {
             SqlNode fetch,
             SqlNodeList hints) {
         super(pos);
-        this.keywordList =
-                Objects.requireNonNull(keywordList != null ? keywordList : new SqlNodeList(pos));
+        this.keywordList = Objects.requireNonNull(keywordList != null ? keywordList : new SqlNodeList(pos));
         this.selectList = selectList;
         this.from = from;
         this.groupBy = groupBy;
         this.having = having;
-        this.windowDecls =
-                Objects.requireNonNull(windowDecls != null ? windowDecls : new SqlNodeList(pos));
+        this.windowDecls = Objects.requireNonNull(windowDecls != null ? windowDecls : new SqlNodeList(pos));
         this.orderBy = orderBy;
         this.offset = offset;
         this.fetch = fetch;
@@ -134,20 +132,15 @@ public class SqlSelect extends SqlCall {
         if (permissionsMap != null) {
             String permissionsStatement = permissionsMap.get(tableName);
             if (permissionsStatement != null && !"".equals(permissionsStatement)) {
-                permissions =
-                        (SqlBasicCall)
-                                CustomTableEnvironmentContext.get()
-                                        .getParser()
-                                        .parseExpression(permissionsStatement);
+                permissions = (SqlBasicCall)
+                        CustomTableEnvironmentContext.get().getParser().parseExpression(permissionsStatement);
             }
         }
 
         // add an alias
         if (permissions != null && tableAlias != null) {
-            ImmutableList<String> namesList =
-                    ImmutableList.of(tableAlias, permissions.getOperands()[0].toString());
-            permissions.getOperands()[0] =
-                    new SqlIdentifier(namesList, null, new SqlParserPos(0, 0), null);
+            ImmutableList<String> namesList = ImmutableList.of(tableAlias, permissions.getOperands()[0].toString());
+            permissions.getOperands()[0] = new SqlIdentifier(namesList, null, new SqlParserPos(0, 0), null);
         }
 
         return buildWhereClause(where, permissions);
@@ -160,8 +153,7 @@ public class SqlSelect extends SqlCall {
                 return permissions;
             }
             SqlBinaryOperator sqlBinaryOperator =
-                    new SqlBinaryOperator(
-                            SqlKind.AND.name(), SqlKind.AND, 0, true, null, null, null);
+                    new SqlBinaryOperator(SqlKind.AND.name(), SqlKind.AND, 0, true, null, null, null);
             SqlNode[] operands = new SqlNode[2];
             operands[0] = where;
             operands[1] = permissions;
@@ -184,17 +176,7 @@ public class SqlSelect extends SqlCall {
     @Override
     public List<SqlNode> getOperandList() {
         return ImmutableNullableList.of(
-                keywordList,
-                selectList,
-                from,
-                where,
-                groupBy,
-                having,
-                windowDecls,
-                orderBy,
-                offset,
-                fetch,
-                hints);
+                keywordList, selectList, from, where, groupBy, having, windowDecls, orderBy, offset, fetch, hints);
     }
 
     @Override
@@ -343,8 +325,7 @@ public class SqlSelect extends SqlCall {
             // If this SELECT is the topmost item in a sub-query, introduce a new
             // frame. (The topmost item in the sub-query might be a UNION or
             // ORDER. In this case, we don't need a wrapper frame.)
-            final SqlWriter.Frame frame =
-                    writer.startList(SqlWriter.FrameTypeEnum.SUB_QUERY, "(", ")");
+            final SqlWriter.Frame frame = writer.startList(SqlWriter.FrameTypeEnum.SUB_QUERY, "(", ")");
             writer.getDialect().unparseCall(writer, this, 0, 0);
             writer.endList(frame);
         } else {

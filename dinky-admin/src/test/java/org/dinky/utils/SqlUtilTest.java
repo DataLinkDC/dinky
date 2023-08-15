@@ -29,18 +29,17 @@ public class SqlUtilTest {
 
     @Test
     public void testRemoveNote() {
-        String testSql =
-                "/**\n"
-                        + "test1\n"
-                        + "*/\n"
-                        + "//test2\n"
-                        + "-- test3\n"
-                        + "--test4\n"
-                        + "select 1 --test5\n"
-                        + " from test # test9\n"
-                        + " where '1'  <> '-- ::.' //test6\n"
-                        + " and 1=1 --test7\n"
-                        + " and 'zz' <> null; /**test8*/";
+        String testSql = "/**\n"
+                + "test1\n"
+                + "*/\n"
+                + "//test2\n"
+                + "-- test3\n"
+                + "--test4\n"
+                + "select 1 --test5\n"
+                + " from test # test9\n"
+                + " where '1'  <> '-- ::.' //test6\n"
+                + " and 1=1 --test7\n"
+                + " and 'zz' <> null; /**test8*/";
 
         String removedNoteSql = SqlUtil.removeNote(testSql);
         Assertions.assertThat(removedNoteSql).isNotNull();

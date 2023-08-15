@@ -76,10 +76,9 @@ public class JobInstanceController {
     @GetMapping("/getStatusCount")
     @ApiOperation("Get status count")
     public Result<Dict> getStatusCount() {
-        Dict result =
-                Dict.create()
-                        .set("history", jobInstanceService.getStatusCount(true))
-                        .set("instance", jobInstanceService.getStatusCount(false));
+        Dict result = Dict.create()
+                .set("history", jobInstanceService.getStatusCount(true))
+                .set("instance", jobInstanceService.getStatusCount(false));
         return Result.succeed(result);
     }
 
@@ -111,8 +110,7 @@ public class JobInstanceController {
     public Result<JobManagerConfiguration> getJobManagerInfo(@RequestParam String address) {
         JobManagerConfiguration jobManagerConfiguration = new JobManagerConfiguration();
         if (Asserts.isNotNullString(address)) {
-            BuildConfiguration.buildJobManagerConfiguration(
-                    jobManagerConfiguration, FlinkAPI.build(address));
+            BuildConfiguration.buildJobManagerConfiguration(jobManagerConfiguration, FlinkAPI.build(address));
         }
         return Result.succeed(jobManagerConfiguration);
     }
