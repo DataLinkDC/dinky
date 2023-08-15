@@ -19,13 +19,11 @@
 
 package org.dinky.service.impl;
 
-import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
 
 import org.dinky.assertion.Asserts;
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.enums.JobLifeCycle;
-import org.dinky.data.enums.JobStatus;
 import org.dinky.data.enums.Status;
 import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.History;
@@ -50,7 +48,6 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -62,7 +59,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
@@ -86,8 +82,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private final JobHistoryService jobHistoryService;
 
     private final StatementService statementService;
-
-
 
     /**
      * @return
@@ -178,7 +172,9 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
 
     @Override
     public Catalogue findByParentIdAndName(Integer parentId, String name) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<Catalogue>().eq(Catalogue::getParentId, parentId).eq(Catalogue::getName, name));
+        return baseMapper.selectOne(new LambdaQueryWrapper<Catalogue>()
+                .eq(Catalogue::getParentId, parentId)
+                .eq(Catalogue::getName, name));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -241,7 +237,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             return true;
         }
     }
-
 
     private void findAllCatalogueInDir(Integer id, List<Catalogue> all, Set<Catalogue> del) {
         List<Catalogue> relatedList = all.stream()
@@ -448,11 +443,11 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             jobInstanceService.removeById(jobInstance.getId());
         });
         // 删除 task 表中的作业
-         taskService.removeById(task.getId());
+        taskService.removeById(task.getId());
         // 删除 statement 表中的作业
-         statementService.removeById(statement.getId());
+        statementService.removeById(statement.getId());
         removeById(catalogueId);
-       return Result.succeed(Status.DELETE_SUCCESS);
+        return Result.succeed(Status.DELETE_SUCCESS);
     }
 
     /**

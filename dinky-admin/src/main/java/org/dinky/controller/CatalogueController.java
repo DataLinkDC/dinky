@@ -148,9 +148,10 @@ public class CatalogueController {
     @PutMapping("/moveCatalogue")
     @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
     @ApiOperation("Move Catalogue")
-    public Result<Boolean> moveCatalogue(@RequestParam("originCatalogueId" ) Integer originCatalogueId,
-                                         @RequestParam("targetParentId" ) Integer targetParentId) {
-        if (catalogueService.moveCatalogue(originCatalogueId,targetParentId)) {
+    public Result<Boolean> moveCatalogue(
+            @RequestParam("originCatalogueId") Integer originCatalogueId,
+            @RequestParam("targetParentId") Integer targetParentId) {
+        if (catalogueService.moveCatalogue(originCatalogueId, targetParentId)) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
         } else {
             return Result.failed(false, Status.MOVE_FAILED);
