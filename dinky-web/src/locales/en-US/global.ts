@@ -88,7 +88,6 @@ export default {
   'right.menu.paste': 'Paste',
   'right.menu.delete': 'Delete',
   'right.menu.createCatalogue': 'Create Directory',
-  'right.menu.createRootCatalogue': 'Create Root Directory',
   'right.menu.uploadZipToCreate': 'Upload Zip To Create',
   'right.menu.createTask': 'Create Task',
   'right.menu.closeAll': 'Close All',

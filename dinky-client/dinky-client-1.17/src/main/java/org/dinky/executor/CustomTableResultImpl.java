@@ -57,12 +57,11 @@ import javax.annotation.Nullable;
 @Internal
 public class CustomTableResultImpl implements TableResultInternal {
 
-    public static final TableResult TABLE_RESULT_OK =
-            CustomTableResultImpl.builder()
-                    .resultKind(ResultKind.SUCCESS)
-                    .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
-                    .data(Collections.singletonList(Row.of("OK")))
-                    .build();
+    public static final TableResult TABLE_RESULT_OK = CustomTableResultImpl.builder()
+            .resultKind(ResultKind.SUCCESS)
+            .schema(ResolvedSchema.of(Column.physical("result", DataTypes.STRING())))
+            .data(Collections.singletonList(Row.of("OK")))
+            .build();
 
     private final JobClient jobClient;
     private final ResolvedSchema resolvedSchema;
@@ -77,8 +76,7 @@ public class CustomTableResultImpl implements TableResultInternal {
             ResultProvider resultProvider,
             PrintStyle printStyle) {
         this.jobClient = jobClient;
-        this.resolvedSchema =
-                Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
+        this.resolvedSchema = Preconditions.checkNotNull(resolvedSchema, "resolvedSchema should not be null");
         this.resultKind = Preconditions.checkNotNull(resultKind, "resultKind should not be null");
         Preconditions.checkNotNull(resultProvider, "result provider should not be null");
         this.resultProvider = resultProvider;
@@ -114,8 +112,7 @@ public class CustomTableResultImpl implements TableResultInternal {
     }
 
     @Override
-    public void await(long timeout, TimeUnit unit)
-            throws InterruptedException, ExecutionException, TimeoutException {
+    public void await(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
         awaitInternal(timeout, unit);
     }
 
@@ -125,21 +122,19 @@ public class CustomTableResultImpl implements TableResultInternal {
             return;
         }
 
-        ExecutorService executor =
-                Executors.newFixedThreadPool(1, r -> new Thread(r, "TableResult-await-thread"));
+        ExecutorService executor = Executors.newFixedThreadPool(1, r -> new Thread(r, "TableResult-await-thread"));
         try {
-            CompletableFuture<Void> future =
-                    CompletableFuture.runAsync(
-                            () -> {
-                                while (!resultProvider.isFirstRowReady()) {
-                                    try {
-                                        Thread.sleep(100);
-                                    } catch (InterruptedException e) {
-                                        throw new TableException("Thread is interrupted");
-                                    }
-                                }
-                            },
-                            executor);
+            CompletableFuture<Void> future = CompletableFuture.runAsync(
+                    () -> {
+                        while (!resultProvider.isFirstRowReady()) {
+                            try {
+                                Thread.sleep(100);
+                            } catch (InterruptedException e) {
+                                throw new TableException("Thread is interrupted");
+                            }
+                        }
+                    },
+                    executor);
 
             if (timeout >= 0) {
                 future.get(timeout, unit);
@@ -258,8 +253,7 @@ public class CustomTableResultImpl implements TableResultInternal {
             if (printStyle == null) {
                 printStyle = PrintStyle.rawContent(resultProvider.getRowDataStringConverter());
             }
-            return new CustomTableResultImpl(
-                    jobClient, resolvedSchema, resultKind, resultProvider, printStyle);
+            return new CustomTableResultImpl(jobClient, resolvedSchema, resultKind, resultProvider, printStyle);
         }
     }
 }

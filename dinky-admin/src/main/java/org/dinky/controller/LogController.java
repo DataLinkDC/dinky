@@ -59,8 +59,7 @@ public class LogController {
 
     @PostMapping("/operateLog/{userId}")
     @ApiOperation("Query Operate Log List")
-    public ProTableResult<OperateLog> queryOperateLogRecord(
-            @RequestBody JsonNode para, @PathVariable Integer userId) {
+    public ProTableResult<OperateLog> queryOperateLogRecord(@RequestBody JsonNode para, @PathVariable Integer userId) {
         return operateLogService.operateRecord(para, userId);
     }
 }

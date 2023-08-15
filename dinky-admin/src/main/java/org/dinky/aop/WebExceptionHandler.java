@@ -69,16 +69,15 @@ public class WebExceptionHandler {
         return Result.failed(e.getMsg());
     }
 
-    private static final Map<String, Status> ERR_CODE_MAPPING =
-            MapUtil.<String, Status>builder()
-                    .put(NotLoginException.NOT_TOKEN, Status.NOT_TOKEN)
-                    .put(NotLoginException.INVALID_TOKEN, Status.INVALID_TOKEN)
-                    .put(NotLoginException.TOKEN_TIMEOUT, Status.EXPIRED_TOKEN)
-                    .put(NotLoginException.BE_REPLACED, Status.BE_REPLACED)
-                    .put(NotLoginException.KICK_OUT, Status.KICK_OUT)
-                    .put(NotLoginException.TOKEN_FREEZE, Status.TOKEN_FREEZED)
-                    .put(NotLoginException.NO_PREFIX, Status.NO_PREFIX)
-                    .build();
+    private static final Map<String, Status> ERR_CODE_MAPPING = MapUtil.<String, Status>builder()
+            .put(NotLoginException.NOT_TOKEN, Status.NOT_TOKEN)
+            .put(NotLoginException.INVALID_TOKEN, Status.INVALID_TOKEN)
+            .put(NotLoginException.TOKEN_TIMEOUT, Status.EXPIRED_TOKEN)
+            .put(NotLoginException.BE_REPLACED, Status.BE_REPLACED)
+            .put(NotLoginException.KICK_OUT, Status.KICK_OUT)
+            .put(NotLoginException.TOKEN_FREEZE, Status.TOKEN_FREEZED)
+            .put(NotLoginException.NO_PREFIX, Status.NO_PREFIX)
+            .build();
 
     @ExceptionHandler
     public Result<Void> notLoginException(NotLoginException notLoginException) {
@@ -112,14 +111,10 @@ public class WebExceptionHandler {
                 FieldError fieldError = (FieldError) errors.get(0);
                 if (StringUtils.isNotBlank(fieldError.getDefaultMessage())) {
                     return Result.failed(
-                            Status.GLOBAL_PARAMS_CHECK_ERROR,
-                            fieldError.getField(),
-                            fieldError.getDefaultMessage());
+                            Status.GLOBAL_PARAMS_CHECK_ERROR, fieldError.getField(), fieldError.getDefaultMessage());
                 }
                 return Result.failed(
-                        Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE,
-                        fieldError.getField(),
-                        fieldError.getRejectedValue());
+                        Status.GLOBAL_PARAMS_CHECK_ERROR_VALUE, fieldError.getField(), fieldError.getRejectedValue());
             }
         }
         return Result.failed(Status.REQUEST_PARAMS_ERROR);

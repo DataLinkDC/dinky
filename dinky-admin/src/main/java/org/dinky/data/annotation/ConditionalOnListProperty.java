@@ -45,16 +45,11 @@ class CustomListCondition implements Condition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        String propertyName =
-                (String)
-                        metadata.getAnnotationAttributes(ConditionalOnListProperty.class.getName())
-                                .get("name");
-        String requiredValue =
-                (String)
-                        metadata.getAnnotationAttributes(ConditionalOnListProperty.class.getName())
-                                .get("havingValue");
-        String[] propertyValues =
-                context.getEnvironment().getProperty(propertyName, String[].class);
+        String propertyName = (String) metadata.getAnnotationAttributes(ConditionalOnListProperty.class.getName())
+                .get("name");
+        String requiredValue = (String) metadata.getAnnotationAttributes(ConditionalOnListProperty.class.getName())
+                .get("havingValue");
+        String[] propertyValues = context.getEnvironment().getProperty(propertyName, String[].class);
         return Arrays.asList(propertyValues).contains(requiredValue);
     }
 }

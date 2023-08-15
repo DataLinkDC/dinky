@@ -46,7 +46,8 @@ public class SseController {
     public SseEmitter getLastUpdateData(Long lastTime) {
         SseEmitter emitter = new SseEmitterUTF8(TimeUnit.MINUTES.toMillis(30));
         return monitorService.sendLatestData(
-                emitter, DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
+                emitter,
+                DateUtil.date(Opt.ofNullable(lastTime).orElse(DateUtil.date().getTime())));
     }
 
     @GetMapping(value = "/getJvmInfo", produces = MediaType.TEXT_EVENT_STREAM_VALUE)

@@ -261,6 +261,8 @@ export default [
   {
     path: '/account/center',
     footerRender: false,
+    name: 'center',
+    hideInMenu: true,
     component: './Other/PersonCenter',
   },
   {

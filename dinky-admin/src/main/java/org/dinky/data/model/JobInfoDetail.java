@@ -83,8 +83,7 @@ public class JobInfoDetail {
         return jobManagerConfiguration;
     }
 
-    public void setTaskManagerConfiguration(
-            Set<TaskManagerConfiguration> taskManagerConfiguration) {
+    public void setTaskManagerConfiguration(Set<TaskManagerConfiguration> taskManagerConfiguration) {
         this.taskManagerConfiguration = taskManagerConfiguration;
     }
 

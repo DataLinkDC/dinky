@@ -41,16 +41,15 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 /** FragmentVariableServiceImpl */
 @Service
-public class FragmentVariableServiceImpl
-        extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
+public class FragmentVariableServiceImpl extends SuperServiceImpl<FragmentVariableMapper, FragmentVariable>
         implements FragmentVariableService {
 
-    @Resource private CryptoComponent cryptoComponent;
+    @Resource
+    private CryptoComponent cryptoComponent;
 
     @Override
     public boolean saveOrUpdate(FragmentVariable entity) {
-        if (FragmentVariableUtils.isSensitive(entity.getName())
-                && entity.getFragmentValue() != null) {
+        if (FragmentVariableUtils.isSensitive(entity.getName()) && entity.getFragmentValue() != null) {
             entity.setFragmentValue(cryptoComponent.encryptText(entity.getFragmentValue()));
         }
         return super.saveOrUpdate(entity);
@@ -61,10 +60,8 @@ public class FragmentVariableServiceImpl
         final List<FragmentVariable> list = super.list(queryWrapper);
         if (list != null) {
             for (FragmentVariable variable : list) {
-                if (FragmentVariableUtils.isSensitive(variable.getName())
-                        && variable.getFragmentValue() != null) {
-                    variable.setFragmentValue(
-                            cryptoComponent.decryptText(variable.getFragmentValue()));
+                if (FragmentVariableUtils.isSensitive(variable.getName()) && variable.getFragmentValue() != null) {
+                    variable.setFragmentValue(cryptoComponent.decryptText(variable.getFragmentValue()));
                 }
             }
         }
@@ -76,10 +73,8 @@ public class FragmentVariableServiceImpl
         final ProTableResult<FragmentVariable> result = super.selectForProTable(para);
         if (result != null && result.getData() != null) {
             for (FragmentVariable variable : result.getData()) {
-                if (FragmentVariableUtils.isSensitive(variable.getName())
-                        && variable.getFragmentValue() != null) {
-                    variable.setFragmentValue(
-                            cryptoComponent.decryptText(variable.getFragmentValue()));
+                if (FragmentVariableUtils.isSensitive(variable.getName()) && variable.getFragmentValue() != null) {
+                    variable.setFragmentValue(cryptoComponent.decryptText(variable.getFragmentValue()));
                 }
             }
         }

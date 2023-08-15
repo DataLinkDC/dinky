@@ -52,10 +52,11 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
-        implements TenantService {
+public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant> implements TenantService {
 
-    @Resource @Lazy private RoleService roleService;
+    @Resource
+    @Lazy
+    private RoleService roleService;
 
     private final UserTenantService userTenantService;
 
@@ -84,10 +85,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
 
     @Override
     public Tenant getTenantByTenantCode(String tenantCode) {
-        return getOne(
-                new LambdaQueryWrapper<Tenant>()
-                        .eq(Tenant::getTenantCode, tenantCode)
-                        .eq(Tenant::getIsDelete, 0));
+        return getOne(new LambdaQueryWrapper<Tenant>()
+                .eq(Tenant::getTenantCode, tenantCode)
+                .eq(Tenant::getIsDelete, 0));
     }
 
     @Override
@@ -109,9 +109,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             }
 
             Long tenantRoleCount =
-                    roleService
-                            .getBaseMapper()
-                            .selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
+                    roleService.getBaseMapper().selectCount(new QueryWrapper<Role>().eq("tenant_id", id));
             if (tenantRoleCount > 0) {
                 return Result.failed("删除租户失败，该租户已绑定角色");
             }
@@ -135,12 +133,9 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             return Result.failed(Status.TENANT_NOT_EXIST);
         }
 
-        List<UserTenant> userTenants =
-                userTenantService
-                        .getBaseMapper()
-                        .selectList(
-                                new LambdaQueryWrapper<UserTenant>()
-                                        .eq(UserTenant::getTenantId, tenantId));
+        List<UserTenant> userTenants = userTenantService
+                .getBaseMapper()
+                .selectList(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
         if (CollectionUtil.isNotEmpty(userTenants)) {
             return Result.failed(Status.TENANT_BINDING_USER);
         }
@@ -157,8 +152,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
     public Result<Void> assignUserToTenant(AssignUserToTenantParams assignUserToTenantParams) {
         List<UserTenant> tenantUserList = new ArrayList<>();
         Integer tenantId = assignUserToTenantParams.getTenantId();
-        userTenantService.remove(
-                new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
+        userTenantService.remove(new LambdaQueryWrapper<UserTenant>().eq(UserTenant::getTenantId, tenantId));
         List<Integer> userIds = assignUserToTenantParams.getUserIds();
         for (Integer userId : userIds) {
             UserTenant userTenant = new UserTenant();
@@ -167,9 +161,7 @@ public class TenantServiceImpl extends SuperServiceImpl<TenantMapper, Tenant>
             tenantUserList.add(userTenant);
         }
         // save or update user role
-        boolean result =
-                userTenantService.saveOrUpdateBatch(
-                        tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
+        boolean result = userTenantService.saveOrUpdateBatch(tenantUserList, BaseConstant.DEFAULT_BATCH_INSERT_SIZE);
         if (result) {
             return Result.succeed(Status.TENANT_ASSIGN_USER_SUCCESS);
         } else {

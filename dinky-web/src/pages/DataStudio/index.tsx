@@ -193,17 +193,13 @@ const DataStudio = (props: any) => {
               <Menu
                 mode="inline"
                 selectedKeys={[leftContainer.selectKey]}
-                items={LeftSide.map(x => {
-                  return {key: x.key, label: x.label, icon: x.icon}
-                })}
+                items={LeftSide.map(x => ({key: x.key, label: x.label, icon: x.icon}))}
                 style={{
                   height: '50%',
                   borderBlockStart: "1px solid " + themeValue.borderColor,
                   borderInlineEnd: "1px solid " + themeValue.borderColor
                 }}
-                onClick={(item) => {
-                  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
-                }}
+                onClick={(item) =>  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)}
               />
 
 
@@ -211,9 +207,7 @@ const DataStudio = (props: any) => {
               <Menu
                 mode="inline"
                 selectedKeys={[bottomContainer.selectKey]}
-                items={LeftBottomSide.map(x => {
-                  return {key: x.key, label: x.label, icon: x.icon}
-                })}
+                items={LeftBottomSide.map(x => ({key: x.key, label: x.label, icon: x.icon}))}
                 style={{
                   display: 'flex',
                   height: '50%',
@@ -279,9 +273,7 @@ const DataStudio = (props: any) => {
                 }).map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
-                onClick={(item) => {
-                  updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
-                }}
+                onClick={(item) => updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)}
               />
             </Sider>
           </Layout>

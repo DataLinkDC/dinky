@@ -69,26 +69,20 @@ public class FlinkMetricsIndicator extends BaseSchedule {
     private final HistoryService historyService;
     private final JobInstanceService jobInstanceService;
     private final MonitorService monitorService;
-    public AtomicReference<Integer> flinkMetricsRequestTimeout =
-            new AtomicReference<>(
-                    SystemConfiguration.getInstances()
-                            .getFlinkMetricsGatherTimeout()
-                            .getDefaultValue());
+    public AtomicReference<Integer> flinkMetricsRequestTimeout = new AtomicReference<>(
+            SystemConfiguration.getInstances().getFlinkMetricsGatherTimeout().getDefaultValue());
 
     /** task可用的url */
-    private static final Map<Integer, FlinkMetrics> TASK_FLINK_METRICS_MAP =
-            new ConcurrentHashMap<>();
+    private static final Map<Integer, FlinkMetrics> TASK_FLINK_METRICS_MAP = new ConcurrentHashMap<>();
 
-    private static final Map<LocalDateTime, List<FlinkMetrics>> FLINK_METRICS_DATA_MAP =
-            new ConcurrentHashMap<>();
+    private static final Map<LocalDateTime, List<FlinkMetrics>> FLINK_METRICS_DATA_MAP = new ConcurrentHashMap<>();
 
     public void writeFlinkMetrics() {
         LocalDateTime now = LocalDateTime.now();
         FLINK_METRICS_DATA_MAP.put(now, new CopyOnWriteArrayList<>());
-        CompletableFuture<?>[] array =
-                TASK_FLINK_METRICS_MAP.values().stream()
-                        .map((f) -> CompletableFuture.runAsync(() -> addFlinkMetrics(f, now)))
-                        .toArray(CompletableFuture[]::new);
+        CompletableFuture<?>[] array = TASK_FLINK_METRICS_MAP.values().stream()
+                .map((f) -> CompletableFuture.runAsync(() -> addFlinkMetrics(f, now)))
+                .toArray(CompletableFuture[]::new);
         AsyncUtil.waitAll(array);
         MetricsVO metricsVO = new MetricsVO();
         metricsVO.setModel("flink");
@@ -109,11 +103,10 @@ public class FlinkMetricsIndicator extends BaseSchedule {
         Configuration<Integer> flinkMetricsGatherTiming =
                 SystemConfiguration.getInstances().getFlinkMetricsGatherTiming();
         final String key = flinkMetricsGatherTiming.getKey();
-        flinkMetricsGatherTiming.addChangeEvent(
-                time -> {
-                    removeSchedule(key);
-                    addSchedule(key, this::writeFlinkMetrics, new PeriodicTrigger(time));
-                });
+        flinkMetricsGatherTiming.addChangeEvent(time -> {
+            removeSchedule(key);
+            addSchedule(key, this::writeFlinkMetrics, new PeriodicTrigger(time));
+        });
     }
 
     public void getAndCheckFlinkUrlAvailable() {
@@ -122,14 +115,10 @@ public class FlinkMetricsIndicator extends BaseSchedule {
         if (CollUtil.isEmpty(jobInstances)) {
             return;
         }
-        List<History> historyList =
-                historyService.listByIds(
-                        jobInstances.stream()
-                                .map(JobInstance::getHistoryId)
-                                .collect(Collectors.toList()));
+        List<History> historyList = historyService.listByIds(
+                jobInstances.stream().map(JobInstance::getHistoryId).collect(Collectors.toList()));
         List<Metrics> metricsList = monitorService.list();
-        Set<Integer> taskIdSet =
-                metricsList.stream().map(Metrics::getTaskId).collect(Collectors.toSet());
+        Set<Integer> taskIdSet = metricsList.stream().map(Metrics::getTaskId).collect(Collectors.toSet());
         for (JobInstance jobInstance : jobInstances) {
             Integer taskId = jobInstance.getTaskId();
             if (!taskIdSet.contains(taskId)) {
@@ -139,16 +128,11 @@ public class FlinkMetricsIndicator extends BaseSchedule {
             flinkMetrics.setTaskId(taskId);
             flinkMetrics.setJobId(jobInstance.getJid());
             TASK_FLINK_METRICS_MAP.put(taskId, flinkMetrics);
-            metricsList.stream()
-                    .filter(x -> x.getTaskId().equals(taskId))
-                    .forEach(
-                            m -> {
-                                Map<String, Map<String, String>> verticesAndMetricsMap =
-                                        flinkMetrics.getVerticesAndMetricsMap();
-                                verticesAndMetricsMap.putIfAbsent(
-                                        m.getVertices(), new ConcurrentHashMap<>());
-                                verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
-                            });
+            metricsList.stream().filter(x -> x.getTaskId().equals(taskId)).forEach(m -> {
+                Map<String, Map<String, String>> verticesAndMetricsMap = flinkMetrics.getVerticesAndMetricsMap();
+                verticesAndMetricsMap.putIfAbsent(m.getVertices(), new ConcurrentHashMap<>());
+                verticesAndMetricsMap.get(m.getVertices()).put(m.getMetrics(), "");
+            });
             for (History jobHistory : historyList) {
                 if (jobInstance.getHistoryId().equals(jobHistory.getId())) {
                     String hosts = jobHistory.getJobManagerAddress();
@@ -157,12 +141,10 @@ public class FlinkMetricsIndicator extends BaseSchedule {
                         try {
                             HttpUtil.createGet(host + "/config")
                                     .timeout(flinkMetricsRequestTimeout.get())
-                                    .then(
-                                            resp ->
-                                                    TASK_FLINK_METRICS_MAP
-                                                            .get(taskId)
-                                                            .getUrls()
-                                                            .add(host));
+                                    .then(resp -> TASK_FLINK_METRICS_MAP
+                                            .get(taskId)
+                                            .getUrls()
+                                            .add(host));
                         } catch (Exception e) {
                             log.warn("host read Timeout:{}", host);
                         }
@@ -182,37 +164,33 @@ public class FlinkMetricsIndicator extends BaseSchedule {
         }
 
         // http://10.8.16.125:8282/jobs/06ccde3ff6e53bafe729e0e50fca72fd/vertices/cbc357ccb763df2852fee8c4fc7d55f2/metrics?get=0.buffers.inputExclusiveBuffersUsage,0.numRecordsInPerSecond
-        flinkMetrics
-                .getVerticesAndMetricsMap()
-                .forEach(
-                        (v, m) -> {
-                            if (CollUtil.isEmpty(urlList)) {
-                                return;
-                            }
-                            String metricsName = StrUtil.join(",", m.keySet());
-                            HttpUtils.asyncRequest(
-                                    flinkMetrics.getUrls(),
-                                    "/jobs/"
-                                            + flinkMetrics.getJobId()
-                                            + "/vertices/"
-                                            + v
-                                            + "/metrics?get="
-                                            + URLUtil.encode(metricsName),
-                                    flinkMetricsRequestTimeout.get(),
-                                    x -> {
-                                        JSONArray array = JSONUtil.parseArray(x.body());
-                                        if (CollUtil.isEmpty(array)) {
-                                            return;
-                                        }
-                                        array.forEach(
-                                                y -> {
-                                                    JSONObject jsonObject = JSONUtil.parseObj(y);
-                                                    String id = jsonObject.getStr("id");
-                                                    String value = jsonObject.getStr("value");
-                                                    m.put(id, value);
-                                                });
-                                    });
+        flinkMetrics.getVerticesAndMetricsMap().forEach((v, m) -> {
+            if (CollUtil.isEmpty(urlList)) {
+                return;
+            }
+            String metricsName = StrUtil.join(",", m.keySet());
+            HttpUtils.asyncRequest(
+                    flinkMetrics.getUrls(),
+                    "/jobs/"
+                            + flinkMetrics.getJobId()
+                            + "/vertices/"
+                            + v
+                            + "/metrics?get="
+                            + URLUtil.encode(metricsName),
+                    flinkMetricsRequestTimeout.get(),
+                    x -> {
+                        JSONArray array = JSONUtil.parseArray(x.body());
+                        if (CollUtil.isEmpty(array)) {
+                            return;
+                        }
+                        array.forEach(y -> {
+                            JSONObject jsonObject = JSONUtil.parseObj(y);
+                            String id = jsonObject.getStr("id");
+                            String value = jsonObject.getStr("value");
+                            m.put(id, value);
                         });
+                    });
+        });
         FLINK_METRICS_DATA_MAP.get(now).add(flinkMetrics);
     }
 

@@ -58,27 +58,26 @@ public class MybatisPlusConfig {
 
     private final MybatisPlusFillProperties autoFillProperties;
 
-    private static final Set<String> IGNORE_TABLE_NAMES =
-            ImmutableSet.of(
-                    "dinky_namespace",
-                    "dinky_alert_group",
-                    "dinky_alert_history",
-                    "dinky_alert_instance",
-                    "dinky_catalogue",
-                    "dinky_cluster",
-                    "dinky_cluster_configuration",
-                    "dinky_database",
-                    "dinky_fragment",
-                    "dinky_history",
-                    "dinky_jar",
-                    "dinky_job_history",
-                    "dinky_job_instance",
-                    "dinky_role",
-                    "dinky_savepoints",
-                    "dinky_task",
-                    "dinky_task_statement",
-                    "dinky_git_project",
-                    "dinky_task_version");
+    private static final Set<String> IGNORE_TABLE_NAMES = ImmutableSet.of(
+            "dinky_namespace",
+            "dinky_alert_group",
+            "dinky_alert_history",
+            "dinky_alert_instance",
+            "dinky_catalogue",
+            "dinky_cluster",
+            "dinky_cluster_configuration",
+            "dinky_database",
+            "dinky_fragment",
+            "dinky_history",
+            "dinky_jar",
+            "dinky_job_history",
+            "dinky_job_instance",
+            "dinky_role",
+            "dinky_savepoints",
+            "dinky_task",
+            "dinky_task_statement",
+            "dinky_git_project",
+            "dinky_task_version");
 
     @Bean
     //    @ConditionalOnProperty(name = "spring.profiles.active", havingValue = "pgsql , jmx")
@@ -103,24 +102,22 @@ public class MybatisPlusConfig {
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         log.info("mybatis plus interceptor execute");
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
-        interceptor.addInnerInterceptor(
-                new TenantLineInnerInterceptor(
-                        new TenantLineHandler() {
+        interceptor.addInnerInterceptor(new TenantLineInnerInterceptor(new TenantLineHandler() {
 
-                            @Override
-                            public Expression getTenantId() {
-                                Integer tenantId = (Integer) TenantContextHolder.get();
-                                if (tenantId == null) {
-                                    return new NullValue();
-                                }
-                                return new LongValue(tenantId);
-                            }
+            @Override
+            public Expression getTenantId() {
+                Integer tenantId = (Integer) TenantContextHolder.get();
+                if (tenantId == null) {
+                    return new NullValue();
+                }
+                return new LongValue(tenantId);
+            }
 
-                            @Override
-                            public boolean ignoreTable(String tableName) {
-                                return !IGNORE_TABLE_NAMES.contains(tableName);
-                            }
-                        }));
+            @Override
+            public boolean ignoreTable(String tableName) {
+                return !IGNORE_TABLE_NAMES.contains(tableName);
+            }
+        }));
 
         return interceptor;
     }

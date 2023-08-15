@@ -35,8 +35,11 @@ public interface JdbcBatchStatementExecutor<T> {
 
     void addToBatch(T record) throws SQLException;
 
-    /** Submits a batch of commands to the database for execution.
-     * @param conn*/
+    /**
+     * Submits a batch of commands to the database for execution.
+     *
+     * @param conn
+     */
     void executeBatch(Connection conn) throws SQLException;
 
     /** Close JDBC related statements. */

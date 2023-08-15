@@ -33,21 +33,17 @@ import org.slf4j.LoggerFactory;
 /** * @version 1.0 * @Desc: */
 public class PulsarConnectionHolder {
     private static final Logger LOG = LoggerFactory.getLogger(PulsarConnectionHolder.class);
-    private static final Map<String, PulsarClientImpl> PULSAR_CLIENT_MAP =
-            new ConcurrentHashMap<>();
+    private static final Map<String, PulsarClientImpl> PULSAR_CLIENT_MAP = new ConcurrentHashMap<>();
 
-    public static PulsarClientImpl getConsumerClient(String serviceUrl, Properties properties)
-            throws Exception {
+    public static PulsarClientImpl getConsumerClient(String serviceUrl, Properties properties) throws Exception {
         return get(serviceUrl, true, properties);
     }
 
-    public static PulsarClientImpl getProducerClient(String serviceUrl, Properties properties)
-            throws Exception {
+    public static PulsarClientImpl getProducerClient(String serviceUrl, Properties properties) throws Exception {
         return get(serviceUrl, false, properties);
     }
 
-    private static PulsarClientImpl get(String serviceUrl, boolean consumer, Properties properties)
-            throws Exception {
+    private static PulsarClientImpl get(String serviceUrl, boolean consumer, Properties properties) throws Exception {
         synchronized (PulsarConnectionHolder.class) {
             String pulsarClientCacheKey = getPulsarClientCacheKey(serviceUrl, consumer);
             PulsarClientImpl pulsarClient = PULSAR_CLIENT_MAP.get(pulsarClientCacheKey);
@@ -73,18 +69,16 @@ public class PulsarConnectionHolder {
 
     private static PulsarClientImpl createPulsarClient(String serviceUrl, Properties properties) {
         try {
-            LOG.info(
-                    "create client, and ID is "
-                            + UUID.randomUUID()
-                            + ", and cache map size is "
-                            + PULSAR_CLIENT_MAP.size());
+            LOG.info("create client, and ID is "
+                    + UUID.randomUUID()
+                    + ", and cache map size is "
+                    + PULSAR_CLIENT_MAP.size());
 
-            return (PulsarClientImpl)
-                    PulsarClient.builder()
-                            .serviceUrl(serviceUrl)
-                            .maxNumberOfRejectedRequestPerConnection(50)
-                            .loadConf((Map) properties)
-                            .build();
+            return (PulsarClientImpl) PulsarClient.builder()
+                    .serviceUrl(serviceUrl)
+                    .maxNumberOfRejectedRequestPerConnection(50)
+                    .loadConf((Map) properties)
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("创建PulsarClient失败", e);

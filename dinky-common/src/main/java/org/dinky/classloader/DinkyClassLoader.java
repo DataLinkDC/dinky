@@ -60,17 +60,15 @@ public class DinkyClassLoader extends URLClassLoader {
     }
 
     public void addURL(Collection<File> fileSet) {
-        URL[] urls =
-                fileSet.stream()
-                        .map(
-                                x -> {
-                                    try {
-                                        return x.toURI().toURL();
-                                    } catch (MalformedURLException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                })
-                        .toArray(URL[]::new);
+        URL[] urls = fileSet.stream()
+                .map(x -> {
+                    try {
+                        return x.toURI().toURL();
+                    } catch (MalformedURLException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
+                .toArray(URL[]::new);
         addURL(urls);
     }
 
@@ -79,17 +77,15 @@ public class DinkyClassLoader extends URLClassLoader {
             File file = new File(path);
             try {
                 if (file.isDirectory()) {
-                    FileUtil.walkFiles(
-                            file,
-                            f -> {
-                                if (FileUtil.getSuffix(f).equals("jar")) {
-                                    try {
-                                        super.addURL(f.toURI().toURL());
-                                    } catch (MalformedURLException e) {
-                                        throw new RuntimeException(e);
-                                    }
-                                }
-                            });
+                    FileUtil.walkFiles(file, f -> {
+                        if (FileUtil.getSuffix(f).equals("jar")) {
+                            try {
+                                super.addURL(f.toURI().toURL());
+                            } catch (MalformedURLException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    });
                     continue;
                 }
                 if (!file.exists()) {

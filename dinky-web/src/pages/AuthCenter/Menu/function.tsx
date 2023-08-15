@@ -18,19 +18,36 @@
  */
 
 import {SysMenu} from "@/types/RegCenter/data";
-import {searchTreeNode} from "@/utils/function";
+import {renderIcon, searchTreeNode} from "@/utils/function";
 import * as Icons from '@ant-design/icons';
 import * as React from "react";
+import {Space} from "antd";
+import {l} from "@/utils/intl";
 
-/**
- * render icon
- * @param {string} iconName
- * @returns {JSX.Element}
- */
-const renderIcon = (iconName: string) => {
+export const IconRender = ({icon}:{icon: string}) => {
     // @ts-ignore
-    return iconName ? React.createElement(Icons[iconName]): null;
+    return icon ? React.createElement(Icons[icon]) : null;
 }
+
+const renderMenuType = (menuYype: string) => {
+    switch (menuYype) {
+        case 'F':
+            return <>{l('menu.type.button')}</>
+        case 'M':
+            return <>{l('menu.type.dir')}</>
+        case 'C':
+            return <>{l('menu.type.menu')}</>
+        default:
+            return null
+    }
+}
+
+const renderTitle = (value: SysMenu) => (<Space>
+        {value.perms && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
+        {value.type && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>}
+        {value.note && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
+    </Space>
+);
 
 /**
  * build menu tree
@@ -40,18 +57,19 @@ const renderIcon = (iconName: string) => {
  * @returns {any}
  */
 export const buildMenuTree = (data: SysMenu[], searchValue: string = ''): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).map((item: SysMenu) => {
-    // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
+
 
     return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
         parentId: item.parentId,
         label: searchTreeNode(item.name, searchValue),
-        icon: renderIcon(item.icon),//
+        icon: <IconRender icon={item.icon}/>,
         content: item.note,
         path: item.path,
         value: item.id,
-        title: searchTreeNode(item.name, searchValue),
+        type: item.type,
+        title: <>{searchTreeNode(item.name, searchValue)}{renderTitle(item)}</>,
         fullInfo: item,
         key: item.id,
         children: buildMenuTree(item.children, searchValue),
@@ -67,20 +85,20 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = ''): any =>
  */
 
 export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', filterButton = false): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false)).map((item: SysMenu) => {
-        // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
+    // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
 
-        return {
-            isLeaf: !item.children || item.children.length === 0,
-            name: item.name,
-            parentId: item.parentId,
-            label: searchTreeNode(item.name, searchValue),
-            icon: renderIcon(item.icon),//
-            content: item.note,
-            path: item.path,
-            value: item.id,
-            title: searchTreeNode(item.name, searchValue),
-            fullInfo: item,
-            key: item.id,
-            children: buildMenuFormTree(item.children, searchValue, filterButton),
-        }
-    });
+    return {
+        isLeaf: !item.children || item.children.length === 0,
+        name: item.name,
+        parentId: item.parentId,
+        label: searchTreeNode(item.name, searchValue),
+        icon: <IconRender icon={item.icon}/>,
+        content: item.note,
+        path: item.path,
+        value: item.id,
+        title: <>{searchTreeNode(item.name, searchValue)}{renderTitle(item)}</>,
+        fullInfo: item,
+        key: item.id,
+        children: buildMenuFormTree(item.children, searchValue, filterButton),
+    }
+});

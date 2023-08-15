@@ -65,21 +65,16 @@ public class TaskOneClickOperatingUtil {
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult =
-                    taskService.queryOnLineTaskByDoneStatus(
-                            Collections.singletonList(JobLifeCycle.RELEASE),
-                            JobStatus.getAllDoneStatus(),
-                            true,
-                            0);
+            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(
+                    Collections.singletonList(JobLifeCycle.RELEASE), JobStatus.getAllDoneStatus(), true, 0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要上线的任务");
             }
             tasks = listResult.getDatas();
         }
-        oneClickOnlineCache =
-                tasks.stream()
-                        .map(task -> new TaskOperatingResult(task, taskOperatingSavepointSelect))
-                        .collect(Collectors.toList());
+        oneClickOnlineCache = tasks.stream()
+                .map(task -> new TaskOperatingResult(task, taskOperatingSavepointSelect))
+                .collect(Collectors.toList());
         new OneClickOperatingThread(
                         "oneClickOnlineThread",
                         oneClickOnlineCache,
@@ -95,19 +90,17 @@ public class TaskOneClickOperatingUtil {
         }
         final TaskService taskService = SpringContextUtils.getBeanByClass(TaskService.class);
         if (CollectionUtils.isEmpty(tasks)) {
-            final Result<List<Task>> listResult =
-                    taskService.queryOnLineTaskByDoneStatus(
-                            Collections.singletonList(JobLifeCycle.ONLINE),
-                            Collections.singletonList(JobStatus.RUNNING),
-                            false,
-                            0);
+            final Result<List<Task>> listResult = taskService.queryOnLineTaskByDoneStatus(
+                    Collections.singletonList(JobLifeCycle.ONLINE),
+                    Collections.singletonList(JobStatus.RUNNING),
+                    false,
+                    0);
             if (CollectionUtils.isEmpty(listResult.getDatas())) {
                 return Result.succeed("没有需要下线的任务");
             }
             tasks = listResult.getDatas();
         }
-        oneClickOfflineCache =
-                tasks.stream().map(TaskOperatingResult::new).collect(Collectors.toList());
+        oneClickOfflineCache = tasks.stream().map(TaskOperatingResult::new).collect(Collectors.toList());
         new OneClickOperatingThread(
                         "oneClickOfflineThread",
                         oneClickOfflineCache,
@@ -118,12 +111,11 @@ public class TaskOneClickOperatingUtil {
     }
 
     public static Result<Dict> queryOneClickOperatingTaskStatus() {
-        Dict dict =
-                Dict.create()
-                        .set("online", oneClickOnlineCache)
-                        .set("onlineStatus", oneClickOnlineThreadStatus.get())
-                        .set("offline", oneClickOfflineCache)
-                        .set("offlineStatus", oneClickOfflineThreadStatus.get());
+        Dict dict = Dict.create()
+                .set("online", oneClickOnlineCache)
+                .set("onlineStatus", oneClickOnlineThreadStatus.get())
+                .set("offline", oneClickOfflineCache)
+                .set("offlineStatus", oneClickOfflineThreadStatus.get());
 
         return Result.succeed(dict);
     }

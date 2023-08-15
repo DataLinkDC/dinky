@@ -24,8 +24,7 @@ import org.dinky.executor.CustomTableEnvironment;
 /** CustomTableEnvironmentContext */
 public class CustomTableEnvironmentContext {
 
-    private static final ThreadLocal<CustomTableEnvironment> CUSTOM_TABLE_ENVIRONMENT_CONTEXT =
-            new ThreadLocal<>();
+    private static final ThreadLocal<CustomTableEnvironment> CUSTOM_TABLE_ENVIRONMENT_CONTEXT = new ThreadLocal<>();
 
     public static void set(CustomTableEnvironment value) {
         CUSTOM_TABLE_ENVIRONMENT_CONTEXT.set(value);

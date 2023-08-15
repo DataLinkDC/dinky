@@ -32,16 +32,13 @@ import com.alibaba.druid.sql.ast.statement.SQLSelectItem;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitor;
 import com.alibaba.druid.sql.visitor.ExportParameterVisitorUtils;
 
-public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisitor
-        implements ExportParameterVisitor {
+public class Clickhouse20ExportParameterVisitor extends Clickhouse20OutputVisitor implements ExportParameterVisitor {
 
     /** true= if require parameterized sql output */
     private final boolean requireParameterizedOutput;
 
     public Clickhouse20ExportParameterVisitor(
-            final List<Object> parameters,
-            final Appendable appender,
-            final boolean wantParameterizedOutput) {
+            final List<Object> parameters, final Appendable appender, final boolean wantParameterizedOutput) {
         super(appender, true);
         this.parameters = parameters;
         this.requireParameterizedOutput = wantParameterizedOutput;

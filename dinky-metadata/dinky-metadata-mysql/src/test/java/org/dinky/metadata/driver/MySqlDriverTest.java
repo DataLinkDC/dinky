@@ -38,28 +38,27 @@ class MySqlDriverTest {
 
     @BeforeEach
     void setUp() {
-        List<Column> columns =
-                Arrays.asList(
-                        Column.builder()
-                                .name("column1")
-                                .type("int")
-                                .javaType(ColumnType.INT)
-                                .comment("comment abc")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column2")
-                                .type("varchar")
-                                .javaType(ColumnType.STRING)
-                                .comment("comment 'abc'")
-                                .keyFlag(true)
-                                .build(),
-                        Column.builder()
-                                .name("column3")
-                                .type("double")
-                                .javaType(ColumnType.DOUBLE)
-                                .comment("comment \"abc\"")
-                                .build());
+        List<Column> columns = Arrays.asList(
+                Column.builder()
+                        .name("column1")
+                        .type("int")
+                        .javaType(ColumnType.INT)
+                        .comment("comment abc")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column2")
+                        .type("varchar")
+                        .javaType(ColumnType.STRING)
+                        .comment("comment 'abc'")
+                        .keyFlag(true)
+                        .build(),
+                Column.builder()
+                        .name("column3")
+                        .type("double")
+                        .javaType(ColumnType.DOUBLE)
+                        .comment("comment \"abc\"")
+                        .build());
 
         table = new Table("TableNameOrigin", "SchemaOrigin", columns);
     }
@@ -69,14 +68,13 @@ class MySqlDriverTest {
         MySqlDriver sqlDriver = new MySqlDriver();
         String gen_table_sql = sqlDriver.getCreateTableSql(table);
 
-        String expect =
-                "CREATE TABLE IF NOT EXISTS `SchemaOrigin`.`TableNameOrigin` (\n"
-                        + "  `column1`  int NOT  NULL  COMMENT 'comment abc',\n"
-                        + "  `column2`  varchar NOT  NULL  COMMENT 'comment 'abc'',\n"
-                        + "  `column3`  double NOT  NULL  COMMENT 'comment \"abc\"',\n"
-                        + "  PRIMARY KEY (`column1`,`column2`)\n"
-                        + ")\n"
-                        + " ENGINE=null;";
+        String expect = "CREATE TABLE IF NOT EXISTS `SchemaOrigin`.`TableNameOrigin` (\n"
+                + "  `column1`  int NOT  NULL  COMMENT 'comment abc',\n"
+                + "  `column2`  varchar NOT  NULL  COMMENT 'comment 'abc'',\n"
+                + "  `column3`  double NOT  NULL  COMMENT 'comment \"abc\"',\n"
+                + "  PRIMARY KEY (`column1`,`column2`)\n"
+                + ")\n"
+                + " ENGINE=null;";
         assertThat(gen_table_sql, equalTo(expect));
     }
 }

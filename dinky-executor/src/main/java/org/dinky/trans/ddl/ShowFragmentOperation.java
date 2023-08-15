@@ -61,8 +61,7 @@ public class ShowFragmentOperation extends AbstractOperation implements Operatio
         Map<String, List<String>> map = SingleSqlParserFactory.generateParser(statement);
         if (Asserts.isNotNullMap(map)) {
             if (map.containsKey("FRAGMENT")) {
-                return executor.getSqlManager()
-                        .getSqlFragmentResult(StringUtils.join(map.get("FRAGMENT"), ""));
+                return executor.getSqlManager().getSqlFragmentResult(StringUtils.join(map.get("FRAGMENT"), ""));
             }
         }
         return executor.getSqlManager().getSqlFragmentResult(null);

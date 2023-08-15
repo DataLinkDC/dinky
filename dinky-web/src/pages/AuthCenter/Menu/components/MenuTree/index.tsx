@@ -36,7 +36,7 @@ type MenuTreeProps = {
     loading: boolean,
 }
 const MenuTree: React.FC<MenuTreeProps> = (props) => {
-    const {treeData, selectedKeys, onNodeClick, onRightClick , loading} = props;
+    const {treeData = [], selectedKeys, onNodeClick, onRightClick , loading} = props;
 
     const [searchValue, setSearchValue] = useState('');
 

@@ -40,11 +40,7 @@ public class YarnResult extends AbstractGatewayResult {
     }
 
     public YarnResult(
-            String appId,
-            LocalDateTime startTime,
-            LocalDateTime endTime,
-            boolean isSuccess,
-            String exceptionMsg) {
+            String appId, LocalDateTime startTime, LocalDateTime endTime, boolean isSuccess, String exceptionMsg) {
         super(startTime, endTime, isSuccess, exceptionMsg);
         this.appId = appId;
     }

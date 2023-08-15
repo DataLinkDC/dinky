@@ -38,13 +38,12 @@ public class PulsarProducerHolder {
     private static final Logger LOG = LoggerFactory.getLogger(PulsarProducerHolder.class);
     private static final Map<String, Producer> PULSAR_PRODUCER_MAP = new ConcurrentHashMap<>();
 
-    public static Producer getProducer(
-            String defaultTopicName, Properties properties, PulsarClient client) throws Exception {
+    public static Producer getProducer(String defaultTopicName, Properties properties, PulsarClient client)
+            throws Exception {
         return get(defaultTopicName, properties, client);
     }
 
-    private static Producer get(String defaultTopicName, Properties properties, PulsarClient client)
-            throws Exception {
+    private static Producer get(String defaultTopicName, Properties properties, PulsarClient client) throws Exception {
         synchronized (PulsarProducerHolder.class) {
             String pulsarProducerCacheKey = defaultTopicName;
             Producer pulsarProducer = PULSAR_PRODUCER_MAP.get(pulsarProducerCacheKey);
@@ -54,8 +53,7 @@ public class PulsarProducerHolder {
             }
 
             Producer producer = createPulsarProducer(defaultTopicName, properties, client);
-            Producer newPulsarProducer =
-                    PULSAR_PRODUCER_MAP.putIfAbsent(pulsarProducerCacheKey, producer);
+            Producer newPulsarProducer = PULSAR_PRODUCER_MAP.putIfAbsent(pulsarProducerCacheKey, producer);
             if (newPulsarProducer == null) {
                 return producer;
             }
@@ -63,19 +61,16 @@ public class PulsarProducerHolder {
         }
     }
 
-    private static Producer createPulsarProducer(
-            String defaultTopicName, Properties properties, PulsarClient client) {
+    private static Producer createPulsarProducer(String defaultTopicName, Properties properties, PulsarClient client) {
         try {
-            LOG.info(
-                    "create producer, and ID is "
-                            + UUID.randomUUID()
-                            + ", and cache map size is "
-                            + PULSAR_PRODUCER_MAP.size());
-            LOG.info(
-                    "now defaultTopicName is "
-                            + defaultTopicName
-                            + ", and map content is "
-                            + PULSAR_PRODUCER_MAP.get(defaultTopicName));
+            LOG.info("create producer, and ID is "
+                    + UUID.randomUUID()
+                    + ", and cache map size is "
+                    + PULSAR_PRODUCER_MAP.size());
+            LOG.info("now defaultTopicName is "
+                    + defaultTopicName
+                    + ", and map content is "
+                    + PULSAR_PRODUCER_MAP.get(defaultTopicName));
 
             ProducerBuilder<byte[]> producerBuilder = client.newProducer();
             producerBuilder

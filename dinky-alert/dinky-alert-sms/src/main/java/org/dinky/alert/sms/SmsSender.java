@@ -50,8 +50,7 @@ public class SmsSender {
     private Integer manufacturers;
 
     SmsSender(String config) {
-        int manufacturersId =
-                Integer.parseInt(JSONUtil.parseObj(config).getStr(SmsConstants.MANU_FACTURERS));
+        int manufacturersId = Integer.parseInt(JSONUtil.parseObj(config).getStr(SmsConstants.MANU_FACTURERS));
         this.manufacturers = manufacturersId;
         requireNonNull(manufacturers, "manufacturers is null");
         configLoader = SmsConfigLoader.getConfigLoader(config, manufacturers);
@@ -95,8 +94,7 @@ public class SmsSender {
                 return SupplierType.CTYUN;
             default:
                 throw new IllegalArgumentException(
-                        "Unsupported manufacturers type: "
-                                + ManuFacturers.getManuFacturers(manufacturersType));
+                        "Unsupported manufacturers type: " + ManuFacturers.getManuFacturers(manufacturersType));
         }
     }
 }

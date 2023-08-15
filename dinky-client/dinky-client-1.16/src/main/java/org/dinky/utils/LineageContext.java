@@ -90,8 +90,7 @@ public class LineageContext {
             PlannerQueryOperation queryOperation = (PlannerQueryOperation) sinkOperation.getChild();
             RelNode relNode = queryOperation.getCalciteTree();
             return new Tuple2<>(
-                    sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(),
-                    relNode);
+                    sinkOperation.getContextResolvedTable().getIdentifier().asSummaryString(), relNode);
         } else {
             throw new TableException("Only insert is supported now.");
         }
@@ -99,81 +98,78 @@ public class LineageContext {
 
     /** Calling each program's optimize method in sequence. */
     private RelNode optimize(RelNode relNode) {
-        return flinkChainedProgram.optimize(
-                relNode,
-                new StreamOptimizeContext() {
+        return flinkChainedProgram.optimize(relNode, new StreamOptimizeContext() {
 
-                    @Override
-                    public boolean isBatchMode() {
-                        return false;
-                    }
+            @Override
+            public boolean isBatchMode() {
+                return false;
+            }
 
-                    @Override
-                    public TableConfig getTableConfig() {
-                        return tableEnv.getConfig();
-                    }
+            @Override
+            public TableConfig getTableConfig() {
+                return tableEnv.getConfig();
+            }
 
-                    @Override
-                    public FunctionCatalog getFunctionCatalog() {
-                        return getPlanner().getFlinkContext().getFunctionCatalog();
-                    }
+            @Override
+            public FunctionCatalog getFunctionCatalog() {
+                return getPlanner().getFlinkContext().getFunctionCatalog();
+            }
 
-                    @Override
-                    public CatalogManager getCatalogManager() {
-                        return tableEnv.getCatalogManager();
-                    }
+            @Override
+            public CatalogManager getCatalogManager() {
+                return tableEnv.getCatalogManager();
+            }
 
-                    @Override
-                    public ModuleManager getModuleManager() {
-                        return getPlanner().getFlinkContext().getModuleManager();
-                    }
+            @Override
+            public ModuleManager getModuleManager() {
+                return getPlanner().getFlinkContext().getModuleManager();
+            }
 
-                    @Override
-                    public RexFactory getRexFactory() {
-                        return getPlanner().getFlinkContext().getRexFactory();
-                    }
+            @Override
+            public RexFactory getRexFactory() {
+                return getPlanner().getFlinkContext().getRexFactory();
+            }
 
-                    @Override
-                    public FlinkRelBuilder getFlinkRelBuilder() {
-                        return getPlanner().createRelBuilder();
-                    }
+            @Override
+            public FlinkRelBuilder getFlinkRelBuilder() {
+                return getPlanner().createRelBuilder();
+            }
 
-                    @Override
-                    public boolean isUpdateBeforeRequired() {
-                        return false;
-                    }
+            @Override
+            public boolean isUpdateBeforeRequired() {
+                return false;
+            }
 
-                    @Override
-                    public MiniBatchInterval getMiniBatchInterval() {
-                        return MiniBatchInterval.NONE;
-                    }
+            @Override
+            public MiniBatchInterval getMiniBatchInterval() {
+                return MiniBatchInterval.NONE;
+            }
 
-                    @Override
-                    public boolean needFinalTimeIndicatorConversion() {
-                        return true;
-                    }
+            @Override
+            public boolean needFinalTimeIndicatorConversion() {
+                return true;
+            }
 
-                    @Override
-                    public ClassLoader getClassLoader() {
-                        return getPlanner().getFlinkContext().getClassLoader();
-                    }
+            @Override
+            public ClassLoader getClassLoader() {
+                return getPlanner().getFlinkContext().getClassLoader();
+            }
 
-                    private PlannerBase getPlanner() {
-                        return (PlannerBase) tableEnv.getPlanner();
-                    }
-                });
+            private PlannerBase getPlanner() {
+                return (PlannerBase) tableEnv.getPlanner();
+            }
+        });
     }
 
     /** Check the size of query and sink fields match */
     private void validateSchema(String sinkTable, RelNode relNode, List<String> sinkFieldList) {
         List<String> queryFieldList = relNode.getRowType().getFieldNames();
         if (queryFieldList.size() != sinkFieldList.size()) {
-            throw new ValidationException(
-                    String.format(
-                            "Column types of query result and sink for %s do not match.\n"
-                                    + "Query schema: %s\n"
-                                    + "Sink schema:  %s",
-                            sinkTable, queryFieldList, sinkFieldList));
+            throw new ValidationException(String.format(
+                    "Column types of query result and sink for %s do not match.\n"
+                            + "Query schema: %s\n"
+                            + "Sink schema:  %s",
+                    sinkTable, queryFieldList, sinkFieldList));
         }
     }
 
@@ -191,8 +187,7 @@ public class LineageContext {
         for (int index = 0; index < targetColumnList.size(); index++) {
             String targetColumn = targetColumnList.get(index);
 
-            Set<RelColumnOrigin> relColumnOriginSet =
-                    metadataQuery.getColumnOrigins(optRelNode, index);
+            Set<RelColumnOrigin> relColumnOriginSet = metadataQuery.getColumnOrigins(optRelNode, index);
 
             if (CollectionUtils.isNotEmpty(relColumnOriginSet)) {
                 for (RelColumnOrigin relColumnOrigin : relColumnOriginSet) {
@@ -202,16 +197,14 @@ public class LineageContext {
 
                     // filed
                     int ordinal = relColumnOrigin.getOriginColumnOrdinal();
-                    List<String> fieldNames =
-                            ((TableSourceTable) table)
-                                    .contextResolvedTable()
-                                    .getResolvedSchema()
-                                    .getColumnNames();
+                    List<String> fieldNames = ((TableSourceTable) table)
+                            .contextResolvedTable()
+                            .getResolvedSchema()
+                            .getColumnNames();
                     String sourceColumn = fieldNames.get(ordinal);
 
                     // add record
-                    resultList.add(
-                            LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
+                    resultList.add(LineageRel.build(sourceTable, sourceColumn, sinkTable, targetColumn));
                 }
             }
         }

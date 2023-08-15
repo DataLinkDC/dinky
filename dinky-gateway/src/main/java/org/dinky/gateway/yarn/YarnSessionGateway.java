@@ -54,9 +54,8 @@ public class YarnSessionGateway extends YarnGateway {
 
         YarnResult result = YarnResult.build(getType());
         try (YarnClusterDescriptor yarnClusterDescriptor = createYarnClusterDescriptorWithJar()) {
-            ClusterClientProvider<ApplicationId> clusterClientProvider =
-                    yarnClusterDescriptor.deploySessionCluster(
-                            clusterSpecificationBuilder.createClusterSpecification());
+            ClusterClientProvider<ApplicationId> clusterClientProvider = yarnClusterDescriptor.deploySessionCluster(
+                    clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<ApplicationId> clusterClient = clusterClientProvider.getClusterClient();
             ApplicationId applicationId = clusterClient.getClusterId();
             result.setId(applicationId.toString());

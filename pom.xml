@@ -756,10 +756,10 @@
                 <configuration>
                     <ratchetFrom>${spotless.ratchetFrom}</ratchetFrom>
                     <java>
-                        <googleJavaFormat>
-                            <version>1.7</version>
-                            <style>AOSP</style>
-                        </googleJavaFormat>
+                        <palantirJavaFormat>
+                            <!-- Optionally specify a version -->
+                            <version>2.34.0</version>
+                        </palantirJavaFormat>
 
                         <removeUnusedImports />
                         <importOrder>

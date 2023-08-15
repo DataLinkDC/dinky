@@ -17,20 +17,19 @@
  *
  */
 
-
-import React from "react";
-import {PageContainer} from '@ant-design/pro-layout';
-import SlowlyAppear from "@/components/Animation/SlowlyAppear";
-import MenuList from "@/pages/AuthCenter/Menu/components/MenuList";
+import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import MenuList from '@/pages/AuthCenter/Menu/components/MenuList';
+import { PageContainer } from '@ant-design/pro-layout';
 
 export default () => {
-
   /**
    * render
    */
-  return <SlowlyAppear>
-    <PageContainer title={false}>
-      <MenuList/>
-    </PageContainer>
-  </SlowlyAppear>
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <MenuList />
+      </PageContainer>
+    </SlowlyAppear>
+  );
 };

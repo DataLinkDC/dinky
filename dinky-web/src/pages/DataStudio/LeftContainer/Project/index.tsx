@@ -28,32 +28,36 @@ import {getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 const Project: React.FC = (props: connect) => {
   const {dispatch}=props
 
+
+  const onNodeClick = (info: any) => {
+    // 选中的key
+    const {node: {isLeaf, name,type,parentId,path,key,taskId}} = info;
+    if (isLeaf) {
+      // const queryParams =  {id: selectDatabaseId , schemaName, tableName};
+      getTaskDetails(taskId).then(res=>{
+        path.pop()
+        res['useResult']=true
+        res['maxRowNum']=100
+        dispatch({
+          type: "Studio/addTab",
+          payload: {
+            icon: type,
+            id: parentId + name,
+            breadcrumbLabel: path.join("/"),
+            label: name ,
+            params:{taskId:taskId,taskData:res},
+            type: "project",
+            subType: type.toLowerCase()
+          }
+        })
+      })
+    }
+  }
+
+
   return (
     <div style={{paddingInline: 5}}>
-      <JobTree onNodeClick={(info:any) => {
-        // 选中的key
-        const {node: {isLeaf, name, fullInfo,type,parentId,path,key,taskId}} = info;
-        if (isLeaf) {
-          // const queryParams =  {id: selectDatabaseId , schemaName, tableName};
-          getTaskDetails(taskId).then(res=>{
-            path.pop()
-            res['useResult']=true
-            res['maxRowNum']=100
-            dispatch({
-              type: "Studio/addTab",
-              payload: {
-                icon: type,
-                id: parentId+name,
-                breadcrumbLabel: path.join("/"),
-                label: name ,
-                params:{taskId:taskId,taskData:res},
-                type: "project",
-                subType: type.toLowerCase()
-              }
-            })
-          })
-        }
-      }} treeData={props.data}/>
+      <JobTree onNodeClick={(info:any) => onNodeClick(info)} treeData={props.data}/>
     </div>
   )
 };

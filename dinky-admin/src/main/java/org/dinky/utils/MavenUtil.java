@@ -51,12 +51,9 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MavenUtil {
-    static final String javaExecutor =
-            FileUtil.file(
-                            FileUtil.file(SystemUtil.getJavaRuntimeInfo().getHomeDir())
-                                    .getParentFile(),
-                            "/bin/java")
-                    .getAbsolutePath();
+    static final String javaExecutor = FileUtil.file(
+                    FileUtil.file(SystemUtil.getJavaRuntimeInfo().getHomeDir()).getParentFile(), "/bin/java")
+            .getAbsolutePath();
     private static final String EXECTOR = SystemUtil.getOsInfo().isWindows() ? "mvn.cmd" : "mvn";
 
     //    /home/zackyoung/.jdks/corretto-1.8.0_372/bin/java
@@ -67,12 +64,10 @@ public class MavenUtil {
     // --update-snapshots -s /home/zackyoung/settings2.xml
     // -Dmaven.repo.local=/home/zackyoung/.m2/repository -DskipTests=true package
     private static final TemplateEngine ENGINE =
-            new FreemarkerEngine(
-                    new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
+            new FreemarkerEngine(new TemplateConfig("templates", TemplateConfig.ResourceMode.CLASSPATH));
 
     public static boolean build(String setting, String pom, String logFile, List<String> args) {
-        return build(
-                setting, pom, null, null, logFile, CollUtil.newArrayList("package"), args, null);
+        return build(setting, pom, null, null, logFile, CollUtil.newArrayList("package"), args, null);
     }
 
     public static boolean build(
@@ -89,8 +84,7 @@ public class MavenUtil {
         // maven安装路径
         mavenHome = Opt.ofBlankAble(mavenHome).orElse(getMavenHome());
         Opt.ofBlankAble(mavenHome)
-                .orElseThrow(
-                        () -> new DinkyException("Please set the environment variable:MAVEN_HOME"));
+                .orElseThrow(() -> new DinkyException("Please set the environment variable:MAVEN_HOME"));
 
         String localRepositoryDirectory;
         if (StrUtil.isBlank(setting)) {
@@ -99,19 +93,16 @@ public class MavenUtil {
         } else {
             localRepositoryDirectory = repositoryDir;
         }
-        String mavenCommandLine =
-                getMavenCommandLine(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
-        Opt.ofNullable(consumer)
-                .ifPresent(c -> c.accept("Executing command: " + mavenCommandLine + "\n"));
+        String mavenCommandLine = getMavenCommandLine(pom, mavenHome, localRepositoryDirectory, setting, goals, args);
+        Opt.ofNullable(consumer).ifPresent(c -> c.accept("Executing command: " + mavenCommandLine + "\n"));
 
-        int waitValue =
-                RuntimeUtils.run(
-                        mavenCommandLine,
-                        s -> {
-                            s = DateUtil.date().toMsStr() + " - " + s + "\n";
-                            consumer.accept(s);
-                        },
-                        log::error);
+        int waitValue = RuntimeUtils.run(
+                mavenCommandLine,
+                s -> {
+                    s = DateUtil.date().toMsStr() + " - " + s + "\n";
+                    consumer.accept(s);
+                },
+                log::error);
         return waitValue == 0;
     }
 
@@ -137,11 +128,10 @@ public class MavenUtil {
         settingsPath = StrUtil.wrap(settingsPath, "\"");
         List<String> commandLine = new LinkedList<>();
 
-        String classpath =
-                FileUtil.loopFiles(mavenHome + "/boot").stream()
-                        .filter(x -> "jar".equals(FileUtil.getSuffix(x)))
-                        .map(File::getAbsolutePath)
-                        .collect(Collectors.joining(File.pathSeparator));
+        String classpath = FileUtil.loopFiles(mavenHome + "/boot").stream()
+                .filter(x -> "jar".equals(FileUtil.getSuffix(x)))
+                .map(File::getAbsolutePath)
+                .collect(Collectors.joining(File.pathSeparator));
         classpath = StrUtil.wrap(classpath, "\"");
 
         commandLine.add(javaExecutor);
@@ -149,10 +139,7 @@ public class MavenUtil {
         commandLine.add("-Dmaven.multiModuleProjectDirectory=" + projectDir);
         commandLine.add("-Dmaven.home=" + StrUtil.wrap(mavenHome, "\""));
         Opt.ofBlankAble(repositoryDir)
-                .ifPresent(
-                        x ->
-                                commandLine.add(
-                                        "-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
+                .ifPresent(x -> commandLine.add("-Dmaven.repo.local=" + StrUtil.wrap(repositoryDir, "\"")));
         commandLine.add("-Dclassworlds.conf=" + StrUtil.wrap(mavenHome + "/bin/m2.conf", "\""));
         commandLine.add("-classpath " + classpath + " org.codehaus.classworlds.Launcher");
         commandLine.add("-s " + settingsPath);
@@ -175,7 +162,12 @@ public class MavenUtil {
         mavenHome = RuntimeUtil.execForStr(searchCmd + " " + EXECTOR).trim();
         if (StrUtil.isNotBlank(mavenHome)) {
             try {
-                return new File(mavenHome).toPath().toRealPath().getParent().getParent().toString();
+                return new File(mavenHome)
+                        .toPath()
+                        .toRealPath()
+                        .getParent()
+                        .getParent()
+                        .toString();
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -221,19 +213,14 @@ public class MavenUtil {
         if (StrUtil.isNotBlank(mavenSettings) && !FileUtil.isFile(mavenSettings)) {
             throw new DinkyException("settings file is not exists,path: " + mavenSettings);
         } else if (StrUtil.isBlank(mavenSettings)) {
-            Dict render =
-                    Dict.create()
-                            .set("tmpDir", PathConstant.TMP_PATH)
-                            .set("repositoryUrl", systemConfiguration.getMavenRepository())
-                            .set("repositoryUser", systemConfiguration.getMavenRepositoryUser())
-                            .set(
-                                    "repositoryPassword",
-                                    systemConfiguration.getMavenRepositoryPassword());
+            Dict render = Dict.create()
+                    .set("tmpDir", PathConstant.TMP_PATH)
+                    .set("repositoryUrl", systemConfiguration.getMavenRepository())
+                    .set("repositoryUser", systemConfiguration.getMavenRepositoryUser())
+                    .set("repositoryPassword", systemConfiguration.getMavenRepositoryPassword());
             String content = ENGINE.getTemplate("settings.xml").render(render);
-            File file =
-                    FileUtil.writeUtf8String(
-                            content,
-                            FileUtil.file(PathConstant.TMP_PATH, "maven", "conf", "settings.xml"));
+            File file = FileUtil.writeUtf8String(
+                    content, FileUtil.file(PathConstant.TMP_PATH, "maven", "conf", "settings.xml"));
             return file.getAbsolutePath();
         }
         return mavenSettings;

@@ -56,10 +56,9 @@ class SqlTypeTest {
         test("ADD customjar ...", SqlType.ADD, true);
         test("WATCH...", SqlType.WATCH, true);
 
-        String sql =
-                "CREATE TABLE print_OrdersView WITH ('connector' = 'printnet', 'port'='7125', 'hostName' = '172"
-                        + ".26.16.1', 'sink.parallelism'='1')\n"
-                        + "AS SELECT * FROM OrdersView; ";
+        String sql = "CREATE TABLE print_OrdersView WITH ('connector' = 'printnet', 'port'='7125',"
+                + " 'hostName' = '172.26.16.1', 'sink.parallelism'='1')\n"
+                + "AS SELECT * FROM OrdersView; ";
         test(sql, SqlType.CTAS, true);
         test(sql, SqlType.CREATE, false);
     }

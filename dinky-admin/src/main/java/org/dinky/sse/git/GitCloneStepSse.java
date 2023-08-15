@@ -52,9 +52,7 @@ public class GitCloneStepSse extends StepSse {
     public void exec() {
         GitProject gitProject = (GitProject) params.get("gitProject");
 
-        GitRepository gitRepository =
-                new GitRepository(BeanUtil.toBean(gitProject, GitProjectDTO.class));
-        gitRepository.cloneAndPull(
-                gitProject.getName(), gitProject.getBranch(), getLogFile(), this::addMsg);
+        GitRepository gitRepository = new GitRepository(BeanUtil.toBean(gitProject, GitProjectDTO.class));
+        gitRepository.cloneAndPull(gitProject.getName(), gitProject.getBranch(), getLogFile(), this::addMsg);
     }
 }

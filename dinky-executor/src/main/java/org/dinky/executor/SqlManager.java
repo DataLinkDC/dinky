@@ -80,13 +80,11 @@ public final class SqlManager {
      */
     public void registerSqlFragment(String sqlFragmentName, String sqlFragment) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragment name cannot be null or empty.");
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragment name cannot be null or empty.");
         checkNotNull(sqlFragment, "sql fragment cannot be null");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
-            throw new CatalogException(
-                    format("The fragment of sql %s already exists.", sqlFragmentName));
+            throw new CatalogException(format("The fragment of sql %s already exists.", sqlFragmentName));
         }
 
         sqlFragments.put(sqlFragmentName, sqlFragment);
@@ -116,14 +114,12 @@ public final class SqlManager {
      */
     public void unregisterSqlFragment(String sqlFragmentName, boolean ignoreIfNotExists) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragmentName name cannot be null or empty.");
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             sqlFragments.remove(sqlFragmentName);
         } else if (!ignoreIfNotExists) {
-            throw new CatalogException(
-                    format("The fragment of sql %s does not exist.", sqlFragmentName));
+            throw new CatalogException(format("The fragment of sql %s does not exist.", sqlFragmentName));
         }
     }
 
@@ -136,8 +132,7 @@ public final class SqlManager {
      */
     public String getSqlFragment(String sqlFragmentName) {
         checkArgument(
-                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName),
-                "sql fragmentName name cannot be null or empty.");
+                !StringUtils.isNullOrWhitespaceOnly(sqlFragmentName), "sql fragmentName name cannot be null or empty.");
 
         if (sqlFragments.containsKey(sqlFragmentName)) {
             return sqlFragments.get(sqlFragmentName);
@@ -147,15 +142,13 @@ public final class SqlManager {
             return parseDateVar(sqlFragmentName);
         }
 
-        throw new CatalogException(
-                format("The fragment of sql %s does not exist.", sqlFragmentName));
+        throw new CatalogException(format("The fragment of sql %s does not exist.", sqlFragmentName));
     }
 
     public TableResult getSqlFragmentResult(String sqlFragmentName) {
         if (Asserts.isNullString(sqlFragmentName)) {
             return CustomTableResultImpl.buildTableResult(
-                    Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())),
-                    new ArrayList<>());
+                    Collections.singletonList(new TableSchemaField(FRAGMENT, DataTypes.STRING())), new ArrayList<>());
         }
 
         String sqlFragment = getSqlFragment(sqlFragmentName);
@@ -180,8 +173,7 @@ public final class SqlManager {
             rows.add(Row.of(key));
         }
         return CustomTableResultImpl.buildTableResult(
-                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())),
-                rows);
+                Collections.singletonList(new TableSchemaField("fragmentName", DataTypes.STRING())), rows);
     }
 
     public Table getSqlFragmentsTable(CustomTableEnvironmentImpl environment) {

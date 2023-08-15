@@ -67,8 +67,7 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
     @Override
     public String getJobManagerAddress(Cluster cluster) {
         Assert.check(cluster);
-        FlinkClusterInfo info =
-                FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
+        FlinkClusterInfo info = FlinkCluster.testFlinkJobManagerIP(cluster.getHosts(), cluster.getJobManagerHost());
         String host = null;
         if (info.isEffective()) {
             host = info.getJobManagerAddress();
@@ -168,30 +167,26 @@ public class ClusterInstanceServiceImpl extends SuperServiceImpl<ClusterInstance
             throw new GatewayException("The cluster has been killed.");
         }
         Integer clusterConfigurationId = cluster.getClusterConfigurationId();
-        FlinkClusterConfig flinkClusterConfig =
-                clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
+        FlinkClusterConfig flinkClusterConfig = clusterConfigurationService.getFlinkClusterCfg(clusterConfigurationId);
         GatewayConfig gatewayConfig = GatewayConfig.build(flinkClusterConfig);
         JobManager.killCluster(gatewayConfig, cluster.getName());
     }
 
     @Override
     public Cluster deploySessionCluster(Integer id) {
-        ClusterConfiguration clusterConfiguration =
-                clusterConfigurationService.getClusterConfigById(id);
+        ClusterConfiguration clusterConfiguration = clusterConfigurationService.getClusterConfigById(id);
         if (Asserts.isNull(clusterConfiguration)) {
             throw new GatewayException("The cluster configuration does not exist.");
         }
-        GatewayConfig gatewayConfig =
-                GatewayConfig.build(clusterConfiguration.getFlinkClusterCfg());
+        GatewayConfig gatewayConfig = GatewayConfig.build(clusterConfiguration.getFlinkClusterCfg());
         GatewayResult gatewayResult = JobManager.deploySessionCluster(gatewayConfig);
-        return registersCluster(
-                Cluster.autoRegistersCluster(
-                        gatewayResult.getWebURL().replace("http://", ""),
-                        gatewayResult.getId(),
-                        clusterConfiguration.getName() + "_" + LocalDateTime.now(),
-                        clusterConfiguration.getName() + LocalDateTime.now(),
-                        id,
-                        null));
+        return registersCluster(Cluster.autoRegistersCluster(
+                gatewayResult.getWebURL().replace("http://", ""),
+                gatewayResult.getId(),
+                clusterConfiguration.getName() + "_" + LocalDateTime.now(),
+                clusterConfiguration.getName() + LocalDateTime.now(),
+                id,
+                null));
     }
 
     private boolean checkHealth(Cluster cluster) {

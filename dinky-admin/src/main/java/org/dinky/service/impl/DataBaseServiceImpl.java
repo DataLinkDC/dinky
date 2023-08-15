@@ -51,8 +51,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
  * @since 2021/7/20 23:47
  */
 @Service
-public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase>
-        implements DataBaseService {
+public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBase> implements DataBaseService {
 
     @Override
     public String testConnect(DataBase dataBase) {
@@ -64,10 +63,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         boolean isHealthy = false;
         dataBase.setHeartbeatTime(LocalDateTime.now());
         try {
-            isHealthy =
-                    Asserts.isEquals(
-                            CommonConstant.HEALTHY,
-                            Driver.buildUnconnected(dataBase.getDriverConfig()).test());
+            isHealthy = Asserts.isEquals(
+                    CommonConstant.HEALTHY,
+                    Driver.buildUnconnected(dataBase.getDriverConfig()).test());
             if (isHealthy) {
                 dataBase.setHealthTime(LocalDateTime.now());
             }
@@ -208,8 +206,7 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
         Driver driver = Driver.build(dataBase.getDriverConfig());
         Table table = driver.getTable(schemaName, tableName);
         SqlGeneration sqlGeneration = new SqlGeneration();
-        sqlGeneration.setFlinkSqlCreate(
-                table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
+        sqlGeneration.setFlinkSqlCreate(table.getFlinkTableSql(dataBase.getName(), dataBase.getFlinkTemplate()));
         sqlGeneration.setSqlSelect(driver.getSqlSelect(table));
         sqlGeneration.setSqlCreate(driver.getCreateTableSql(table));
         driver.close();
@@ -237,12 +234,9 @@ public class DataBaseServiceImpl extends SuperServiceImpl<DataBaseMapper, DataBa
     public Boolean copyDatabase(DataBase database) {
         String name = UUID.randomUUID().toString().replaceAll("-", "").substring(0, 10);
         database.setId(null);
-        database.setName(
-                (database.getName().length() > 10
-                                ? database.getName().substring(0, 10)
-                                : database.getName())
-                        + "_"
-                        + name);
+        database.setName((database.getName().length() > 10 ? database.getName().substring(0, 10) : database.getName())
+                + "_"
+                + name);
         database.setCreateTime(null);
         return this.save(database);
     }

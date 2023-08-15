@@ -102,12 +102,11 @@ public class MenuController {
     @ApiOperation("Load Role Menu")
     public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
         List<Menu> menus = menuService.buildMenuTree(menuService.list());
-        RoleMenuDto menuVO =
-                RoleMenuDto.builder()
-                        .roleId(roleId)
-                        .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
-                        .menus(menus)
-                        .build();
+        RoleMenuDto menuVO = RoleMenuDto.builder()
+                .roleId(roleId)
+                .selectedMenuIds(menuService.selectMenuListByRoleId(roleId))
+                .menus(menus)
+                .build();
         return Result.succeed(menuVO);
     }
 }

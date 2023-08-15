@@ -42,32 +42,25 @@ public class BuildConfiguration {
         // 获取jobManager metrics
         Map<String, String> jobManagerMetricsMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerMetricsItemsList =
-                JSONUtil.toList(
-                        JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()),
-                        LinkedHashMap.class);
-        jobManagerMetricsItemsList.forEach(
-                mapItems -> {
-                    String configKey = (String) mapItems.get("id");
-                    String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString(configKey)
-                            && Asserts.isNotNullString(configValue)) {
-                        jobManagerMetricsMap.put(configKey, configValue);
-                    }
-                });
+                JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerMetrics()), LinkedHashMap.class);
+        jobManagerMetricsItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("id");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerMetricsMap.put(configKey, configValue);
+            }
+        });
         // 获取jobManager配置信息
         Map<String, String> jobManagerConfigMap = new HashMap<>(8);
         List<LinkedHashMap> jobManagerConfigMapItemsList =
-                JSONUtil.toList(
-                        JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
-        jobManagerConfigMapItemsList.forEach(
-                mapItems -> {
-                    String configKey = (String) mapItems.get("key");
-                    String configValue = (String) mapItems.get("value");
-                    if (Asserts.isNotNullString(configKey)
-                            && Asserts.isNotNullString(configValue)) {
-                        jobManagerConfigMap.put(configKey, configValue);
-                    }
-                });
+                JSONUtil.toList(JSONUtil.toJsonString(flinkAPI.getJobManagerConfig()), LinkedHashMap.class);
+        jobManagerConfigMapItemsList.forEach(mapItems -> {
+            String configKey = (String) mapItems.get("key");
+            String configValue = (String) mapItems.get("value");
+            if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                jobManagerConfigMap.put(configKey, configValue);
+            }
+        });
         // 获取jobManager日志
         String jobMangerLog = flinkAPI.getJobManagerLog();
         // 获取jobManager标准输出日志
@@ -99,7 +92,8 @@ public class BuildConfiguration {
                 // 获取container jmxPort
                 Integer jmxPort = taskManagers.get("jmxPort").asInt();
                 // 获取container
-                Long timeSinceLastHeartbeat = taskManagers.get("timeSinceLastHeartbeat").asLong();
+                Long timeSinceLastHeartbeat =
+                        taskManagers.get("timeSinceLastHeartbeat").asLong();
                 // timeSinceLastHeartbeat
                 // 获取container slotsNumber
                 Integer slotsNumber = taskManagers.get("slotsNumber").asInt();
@@ -114,8 +108,7 @@ public class BuildConfiguration {
                 // 获取container hardware
                 String hardware = JSONUtil.toJsonString(taskManagers.get("hardware"));
                 // 获取container
-                String memoryConfiguration =
-                        JSONUtil.toJsonString(taskManagers.get("memoryConfiguration"));
+                String memoryConfiguration = JSONUtil.toJsonString(taskManagers.get("memoryConfiguration"));
                 // memoryConfiguration
                 Asserts.checkNull(containerId, "获取不到 containerId , containerId不能为空");
                 // 获取taskManager metrics
@@ -123,26 +116,22 @@ public class BuildConfiguration {
                 // 获取taskManager日志
                 String taskManagerLog = flinkAPI.getTaskManagerLog(containerId);
                 // 获取taskManager线程dumps
-                String taskManagerThreadDumps =
-                        JSONUtil.toJsonString(
-                                flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
+                String taskManagerThreadDumps = JSONUtil.toJsonString(
+                        flinkAPI.getTaskManagerThreadDump(containerId).get("threadInfos"));
                 // 获取taskManager标准输出日志
                 String taskManagerStdOut = flinkAPI.getTaskManagerStdOut(containerId);
 
                 // 获取taskManager metrics
                 Map<String, String> taskManagerMetricsMap = new HashMap<>(8);
                 List<LinkedHashMap> taskManagerMetricsItemsList =
-                        JSONUtil.toList(
-                                JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
-                taskManagerMetricsItemsList.forEach(
-                        mapItems -> {
-                            String configKey = (String) mapItems.get("id");
-                            String configValue = (String) mapItems.get("value");
-                            if (Asserts.isNotNullString(configKey)
-                                    && Asserts.isNotNullString(configValue)) {
-                                taskManagerMetricsMap.put(configKey, configValue);
-                            }
-                        });
+                        JSONUtil.toList(JSONUtil.toJsonString(taskManagerMetrics), LinkedHashMap.class);
+                taskManagerMetricsItemsList.forEach(mapItems -> {
+                    String configKey = (String) mapItems.get("id");
+                    String configValue = (String) mapItems.get("value");
+                    if (Asserts.isNotNullString(configKey) && Asserts.isNotNullString(configValue)) {
+                        taskManagerMetricsMap.put(configKey, configValue);
+                    }
+                });
 
                 /* TaskManagerConfiguration 赋值 */
                 taskManagerConfiguration.setContainerId(containerId);

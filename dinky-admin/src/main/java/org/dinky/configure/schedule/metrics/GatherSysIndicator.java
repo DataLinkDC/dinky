@@ -65,21 +65,19 @@ public class GatherSysIndicator extends BaseSchedule {
                 SystemConfiguration.getInstances().getMetricsSysEnable();
         String key = metricsSysEnable.getKey();
 
-        metricsSysEnable.addChangeEvent(
-                x -> {
-                    if (x) {
-                        addSchedule(
-                                key,
-                                this::updateState,
-                                new PeriodicTrigger(
-                                        SystemConfiguration.getInstances()
-                                                .getMetricsSysGatherTiming()
-                                                .getValue()));
-                    } else {
-                        removeSchedule(key);
-                        log.info("Information collection for jvm is turned off（已关闭对jvm的信息收集）");
-                    }
-                });
+        metricsSysEnable.addChangeEvent(x -> {
+            if (x) {
+                addSchedule(
+                        key,
+                        this::updateState,
+                        new PeriodicTrigger(SystemConfiguration.getInstances()
+                                .getMetricsSysGatherTiming()
+                                .getValue()));
+            } else {
+                removeSchedule(key);
+                log.info("Information collection for jvm is turned off（已关闭对jvm的信息收集）");
+            }
+        });
     }
 
     public void updateState() {
@@ -102,34 +100,22 @@ public class GatherSysIndicator extends BaseSchedule {
 
     private void registerMetrics(BaseMetrics baseMetrics) {
         Field[] baseFields = ReflectUtil.getFields(this.getClass());
-        Field baseField =
-                Arrays.stream(baseFields)
-                        .filter(field -> field.getType().equals(baseMetrics.getClass()))
-                        .findFirst()
-                        .orElse(null);
+        Field baseField = Arrays.stream(baseFields)
+                .filter(field -> field.getType().equals(baseMetrics.getClass()))
+                .findFirst()
+                .orElse(null);
         if (baseField == null) {
             return;
         }
         Field[] fields = ReflectUtil.getFields(baseMetrics.getClass());
         for (Field field : fields) {
             GaugeM gaugeM = AnnotationUtil.getAnnotation(field, GaugeM.class);
-            Opt.ofNullable(gaugeM)
-                    .ifPresent(
-                            g ->
-                                    Gauge.builder(
-                                                    gaugeM.name(),
-                                                    () ->
-                                                            (Number)
-                                                                    ReflectUtil.getFieldValue(
-                                                                            ReflectUtil
-                                                                                    .getFieldValue(
-                                                                                            this,
-                                                                                            baseField),
-                                                                            field))
-                                            .baseUnit(g.baseUnit())
-                                            .tags(g.tags())
-                                            .description(gaugeM.description())
-                                            .register(registry));
+            Opt.ofNullable(gaugeM).ifPresent(g -> Gauge.builder(gaugeM.name(), () ->
+                            (Number) ReflectUtil.getFieldValue(ReflectUtil.getFieldValue(this, baseField), field))
+                    .baseUnit(g.baseUnit())
+                    .tags(g.tags())
+                    .description(gaugeM.description())
+                    .register(registry));
         }
     }
 }

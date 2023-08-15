@@ -18,19 +18,19 @@
  */
 
 
-import React, {useEffect, useState} from "react";
-import {Button, Space} from 'antd';
-import {handleAddOrUpdate, handleRemoveById, queryDataByParams} from "@/services/BusinessCrud";
-import {ProCard} from "@ant-design/pro-components";
-import {MenuInfo} from "rc-menu/es/interface";
-import {RIGHT_CONTEXT_MENU} from "@/pages/AuthCenter/Menu/components/MenuList/constants";
-import {SysMenu} from "@/types/RegCenter/data";
-import {PlusSquareTwoTone, ReloadOutlined} from "@ant-design/icons";
-import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
-import {l} from "@/utils/intl";
 import RightContextMenu from "@/components/RightContextMenu";
 import MenuForm from "@/pages/AuthCenter/Menu/components/MenuForm";
+import OpHelper from "@/pages/AuthCenter/Menu/components/MenuList/OpHelper";
+import { RIGHT_CONTEXT_MENU } from "@/pages/AuthCenter/Menu/components/MenuList/constants";
 import MenuTree from "@/pages/AuthCenter/Menu/components/MenuTree";
+import { handleAddOrUpdate, handleRemoveById, queryDataByParams } from "@/services/BusinessCrud";
+import { SysMenu } from "@/types/RegCenter/data";
+import { l } from "@/utils/intl";
+import { PlusSquareTwoTone, ReloadOutlined } from "@ant-design/icons";
+import { ProCard } from "@ant-design/pro-components";
+import { Button, Space } from 'antd';
+import { MenuInfo } from "rc-menu/es/interface";
+import React, { useEffect, useState } from "react";
 
 const MenuList: React.FC = () => {
         /**
@@ -88,8 +88,8 @@ const MenuList: React.FC = () => {
         const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
             await executeAndCallbackRefresh(async () => {
                 await handleAddOrUpdate('/api/menu/addOrUpdate', {...value});
-                handleModalVisible(false);
             });
+            handleModalVisible(false);
         };
 
 
@@ -245,7 +245,6 @@ const MenuList: React.FC = () => {
             </>
         }
 
-
         /**
          * render
          */
@@ -272,7 +271,7 @@ const MenuList: React.FC = () => {
 
             <RightContextMenu
                 contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
-                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.isLeaf)}
+                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.type === 'F')}
                 onClick={handleMenuClick}
             />
         </>

@@ -79,9 +79,7 @@ public class SysConfigController {
     public Result<Map<String, List<Configuration<?>>>> getAll() {
         Map<String, List<Configuration<?>>> all = sysConfigService.getAll();
         Map<String, List<Configuration<?>>> map =
-                MapUtil.map(
-                        all,
-                        (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
+                MapUtil.map(all, (k, v) -> v.stream().map(Configuration::show).collect(Collectors.toList()));
         return Result.succeed(map);
     }
 }

@@ -108,17 +108,13 @@ public enum Status {
     BE_REPLACED(10023, "token has been pushed offline", "token 已被顶下线"),
     KICK_OUT(10024, "token has been kicked offline", "token 已被踢下线"),
     TOKEN_FREEZED(10025, "token has been frozen", "token 已被冻结"),
-    NO_PREFIX(
-            10026,
-            "The token was not submitted according to the specified prefix",
-            "未按照指定前缀提交 token"),
+    NO_PREFIX(10026, "The token was not submitted according to the specified prefix", "未按照指定前缀提交 token"),
 
     // role
     ROLE_ALREADY_EXISTS(10101, "Role Already Exists", "角色已存在"),
     ROLE_BINDING_USER(10112, "Role Already Binding User , Can Not Delete", "该角色已绑定用户，无法删除"),
     // 该角色已绑定行权限，无法删除
-    ROLE_BINDING_ROW_PERMISSION(
-            10113, "Role Already Binding Row Permission , Can Not Delete", "该角色已绑定行权限，无法删除"),
+    ROLE_BINDING_ROW_PERMISSION(10113, "Role Already Binding Row Permission , Can Not Delete", "该角色已绑定行权限，无法删除"),
 
     // tenant
     TENANT_ALREADY_EXISTS(10201, "Tenant Already Exists", "租户已存在"),
@@ -127,8 +123,7 @@ public enum Status {
     TENANT_ASSIGN_USER_SUCCESS(10204, "Tenant Assign User Success", "分配用户成功"),
     TENANT_ASSIGN_USER_FAILED(10205, "Tenant Assign User Failed", "分配用户失败"),
     TENANT_BINDING_USER_DELETE_ALL(10206, "Tenant Binding User Delete All", "该租户绑定的用户已被全部删除"),
-    TENANT_ADMIN_ALREADY_EXISTS(
-            10207, "Tenant Admin Already Exists, Only One Tenant Admin", "已存在租户管理员, 租户超管只能有一个"),
+    TENANT_ADMIN_ALREADY_EXISTS(10207, "Tenant Admin Already Exists, Only One Tenant Admin", "已存在租户管理员, 租户超管只能有一个"),
 
     // tenant
     TENANT_NAME_EXIST(10101, "Tenant Already Exists", "租户已存在"),
@@ -159,8 +154,7 @@ public enum Status {
     DATASOURCE_CLEAR_CACHE_SUCCESS(11005, "DataSource Clear Cache Success", "清除库表缓存成功"),
 
     /** job or task about */
-    JOB_RELEASE_DISABLED_UPDATE(
-            12001, "Assignment Has Been Published, Modification is Prohibited", "作业已发布，禁止修改"),
+    JOB_RELEASE_DISABLED_UPDATE(12001, "Assignment Has Been Published, Modification is Prohibited", "作业已发布，禁止修改"),
     SCHEDULE_STATUS_UNKNOWN(12002, "Unknown Status: {0}", "未知状态: {0}"),
     TASK_NOT_EXIST(12003, "Task Not Exist", "任务不存在"),
     JOB_INSTANCE_NOT_EXIST(12004, "Job Instance Not Exist", "作业实例不存在"),
@@ -199,18 +193,15 @@ public enum Status {
     DS_WORK_FLOW_NOT_SAVE(17002, "Please Save Workflow First", "请先保存工作流"),
     // 添加工作流定义成功
     DS_ADD_WORK_FLOW_DEFINITION_SUCCESS(17003, "Add Workflow Definition Success", "添加工作流定义成功"),
-    DS_WORK_FLOW_DEFINITION_ONLINE(
-            17004, "Workflow Definition [{}] Has Been Online", "工作流定义 [{}] 已经上线"),
+    DS_WORK_FLOW_DEFINITION_ONLINE(17004, "Workflow Definition [{}] Has Been Online", "工作流定义 [{}] 已经上线"),
     DS_WORK_FLOW_DEFINITION_TASK_NAME_EXIST(
             17005,
-            "Add Failed, Workflow Definition [{}] Already Exists Task Definition [{}] Please Refresh",
+            "Add Failed, Workflow Definition [{}] Already Exists Task Definition [{}] Please" + " Refresh",
             "添加失败,工作流定义 [{}] 已存在任务定义 [{}] 请刷新"),
     DS_ADD_TASK_DEFINITION_SUCCESS(17006, "Add Task Definition Success", "添加任务定义成功"),
     DS_TASK_NOT_EXIST(17007, "Task Not Exist", "任务不存在"),
     DS_TASK_TYPE_NOT_SUPPORT(
-            17008,
-            "DolphinScheduler Type Is [{}] Not Support, Not DINKY Type",
-            "海豚调度类型为 [{}] 不支持,非DINKY类型"),
+            17008, "DolphinScheduler Type Is [{}] Not Support, Not DINKY Type", "海豚调度类型为 [{}] 不支持,非DINKY类型"),
     DS_WORK_FLOW_DEFINITION_NOT_EXIST(17009, "Workflow Definition Not Exist", "工作流定义不存在"),
 
     /** LDAP About * */
@@ -222,17 +213,14 @@ public enum Status {
     LDAP_DEFAULT_TENANT_NOFOUND(18003, "The LDAP default tenant does not exist", "LDAP默认租户不存在"),
     LDAP_USER_INCORRECT(18004, "The LDAP user name (DN) Incorrect", "LDAP用户名（DN）不正确"),
     LDAP_NO_USER_FOUND(
-            18005,
-            "The LDAP connection was successful, but it did not match to any users",
-            "LDAP连接成功，但未匹配到任何用户"),
+            18005, "The LDAP connection was successful, but it did not match to any users", "LDAP连接成功，但未匹配到任何用户"),
     LDAP_FILTER_INCORRECT(
-            18006,
-            "If the user filter rule cannot be empty, enter the relevant configuration",
-            "用户过滤规则不能为空，请填写相关配置"),
+            18006, "If the user filter rule cannot be empty, enter the relevant configuration", "用户过滤规则不能为空，请填写相关配置"),
 
     LDAP_LOGIN_FORBID(
             18007,
-            "If the current user login mode is not LDAP, contact the administrator to modify it, or do not use LDAP to log in",
+            "If the current user login mode is not LDAP, contact the administrator to modify it,"
+                    + " or do not use LDAP to log in",
             "当前用户登录模式不是LDAP，请联系管理员修改,或不使用LDAP登录"),
 
     /** global exception */

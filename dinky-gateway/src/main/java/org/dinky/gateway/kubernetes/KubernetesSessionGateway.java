@@ -55,9 +55,8 @@ public class KubernetesSessionGateway extends KubernetesGateway {
         KubernetesResult result = KubernetesResult.build(getType());
         try (KubernetesClusterDescriptor kubernetesClusterDescriptor =
                 new KubernetesClusterDescriptor(configuration, client)) {
-            ClusterClientProvider<String> clusterClientProvider =
-                    kubernetesClusterDescriptor.deploySessionCluster(
-                            clusterSpecificationBuilder.createClusterSpecification());
+            ClusterClientProvider<String> clusterClientProvider = kubernetesClusterDescriptor.deploySessionCluster(
+                    clusterSpecificationBuilder.createClusterSpecification());
             ClusterClient<String> clusterClient = clusterClientProvider.getClusterClient();
             result.setId(clusterClient.getClusterId());
             result.setWebURL(clusterClient.getWebInterfaceURL());

@@ -33,12 +33,15 @@ import lombok.Setter;
 public class GitProjectDTO {
     private Long id;
     /** */
-    @NotNull private String name;
+    @NotNull
+    private String name;
 
-    @NotNull private String url;
+    @NotNull
+    private String url;
 
     /** */
-    @NotNull private String branch;
+    @NotNull
+    private String branch;
 
     /** */
     private String username;
@@ -63,7 +66,8 @@ public class GitProjectDTO {
     private String description;
 
     /** */
-    @NotNull private Boolean enabled;
+    @NotNull
+    private Boolean enabled;
 
     private Integer orderLine;
 }
