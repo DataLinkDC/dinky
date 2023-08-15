@@ -138,6 +138,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
             if (hasChild(list, tChild)) {
                 // Determine whether there are child nodes
                 for (Catalogue n : childList) {
+                    if(n.getIsLeaf()){
+                        Task task = taskService.getById(n.getTaskId());
+                        if (task != null) {
+                            n.setTask(task);
+                        }
+                    }
                     recursionBuildCatalogueAndChildren(list, n);
                 }
             }

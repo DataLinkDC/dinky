@@ -55,7 +55,8 @@ public class Catalogue extends SuperEntity {
     @TableField(exist = false)
     private List<Catalogue> children = new ArrayList<>();
 
-    ;
+    @TableField(exist = false)
+    private Task task;
 
     public Catalogue() {}
 

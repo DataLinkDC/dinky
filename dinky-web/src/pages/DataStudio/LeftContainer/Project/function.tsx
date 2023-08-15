@@ -3,6 +3,7 @@ import {getTabIcon} from "@/pages/DataStudio/MiddleContainer/function";
 import {SysMenu} from "@/types/RegCenter/data";
 import {Catalogue} from "@/types/Studio/data";
 import path from "path";
+import {DIALECT} from "@/services/constants";
 
 
 export const generateList = (data: any, list: any[]) => {
@@ -66,3 +67,12 @@ export const buildProjectTree = (data: Catalogue[], searchValue: string = '', pa
     children: buildProjectTree(item.children, searchValue , path),
   }
 });
+
+
+export const isUDF = (jobType: string) => {
+  return (jobType === 'Scala' || jobType === 'Python' || jobType === 'Java')
+}
+
+export const buildUDFTree = (data: []) => {
+
+}

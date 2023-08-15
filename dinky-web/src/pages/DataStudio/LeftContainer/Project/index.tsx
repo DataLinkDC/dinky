@@ -33,6 +33,7 @@ import {Modal, Typography} from "antd";
 import {l} from "@/utils/intl";
 import FolderModal from "@/pages/DataStudio/LeftContainer/Project/FolderModal";
 import JobModal from "@/pages/DataStudio/LeftContainer/Project/JobModal";
+import {SuccessMessage} from "@/utils/messages";
 
 const {Text} = Typography;
 
@@ -107,7 +108,7 @@ const Project: React.FC = (props: connect) => {
             },
             isLeaf: isLeaf,
             selectedKeys: [key],
-            rightClickedNode: node,
+            rightClickedNode: {...node, ...fullInfo},
             item: isLeaf ? JOB_RIGHT_MENU(modalAllVisible.isCut) : FOLDER_RIGHT_MENU(modalAllVisible.isCut)
         }))
         setModalAllVisible((prevState) => ({...prevState, value: fullInfo}))
@@ -204,7 +205,7 @@ const Project: React.FC = (props: connect) => {
         if (!isLeaf) {
             await handleRemoveById('/api/catalogue/deleteCatalogueById', key, () => {
                 dispatch({type: 'Studio/queryProject'});
-                // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
+                // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
             });
         } else {
             const renderContent = () => {
@@ -234,7 +235,7 @@ const Project: React.FC = (props: connect) => {
 
 
     /**
-     * rename
+     * rename handle
      * @returns {Promise<void>}
      */
     const handleRename = async () => {
@@ -242,16 +243,26 @@ const Project: React.FC = (props: connect) => {
         handleContextCancel();
     }
 
+    /**
+     * create task handle
+     */
     const handleCreateTask = () => {
         setModalAllVisible(prevState => ({...prevState, isCreateTask: true}));
         handleContextCancel();
     };
 
+    /**
+     * edit task handle
+     */
     const handleEdit = () => {
         setModalAllVisible(prevState => ({...prevState, isEdit: true}));
         handleContextCancel();
     }
 
+    /**
+     * copy task handle and submit to server and refresh the tree
+     * @returns {Promise<void>}
+     */
     const handleCopy = async () => {
        await handleOption('/api/catalogue/copyTask', l('right.menu.copy'),{
               ...modalAllVisible.value,
@@ -261,12 +272,20 @@ const Project: React.FC = (props: connect) => {
         handleContextCancel();
     }
 
+    /**
+     * cut task handle
+     * @returns {Promise<void>}
+     */
     const handleCut = async () => {
         setModalAllVisible(prevState => ({...prevState, isCut: true}));
         setCutId(contextMenu.rightClickedNode.key);
         handleContextCancel();
     }
 
+    /**
+     * paste task handle and submit to server and refresh the tree
+     * @returns {Promise<void>}
+     */
     const handlePaste = async () => {
         await handlePutDataByParams('/api/catalogue/moveCatalogue', l('right.menu.paste'),{
            originCatalogueId: cutId,
@@ -280,6 +299,11 @@ const Project: React.FC = (props: connect) => {
         handleContextCancel();
     }
 
+    /**
+     *  all context menu click handle
+     * @param {MenuInfo} node
+     * @returns {Promise<void>}
+     */
     const handleMenuClick = async (node: MenuInfo) => {
         setRightActiveKey(node.key);
         switch (node.key) {
@@ -332,7 +356,7 @@ const Project: React.FC = (props: connect) => {
                 title={l('right.menu.createSubFolder')}
                 values={{}}
                 modalVisible={modalAllVisible.isCreateSub}
-                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isCreateSub: false,}))}
+                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isCreateSub: false,value: {}}))}
                 onSubmit={handleSubmit}
             />
 
@@ -341,7 +365,7 @@ const Project: React.FC = (props: connect) => {
                 title={l('right.menu.rename')}
                 values={modalAllVisible.value}
                 modalVisible={modalAllVisible.isRename}
-                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isRename: false,}))}
+                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isRename: false,value: {}}))}
                 onSubmit={handleSubmit}
             />
 
@@ -350,17 +374,22 @@ const Project: React.FC = (props: connect) => {
                 title={l('right.menu.createTask')}
                 values={{}}
                 modalVisible={modalAllVisible.isCreateTask}
-                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isCreateTask: false,}))}
+                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isCreateTask: false,value: {}}))}
                 onSubmit={handleSubmit}
             />
             {/*  edit task  */}
-            <JobModal
-                title={l('button.edit')}
-                values={modalAllVisible.value}
-                modalVisible={modalAllVisible.isEdit}
-                onCancel={() => setModalAllVisible((prevState) => ({...prevState, isEdit: false,}))}
-                onSubmit={handleSubmit}
-            />
+            {
+                Object.keys(modalAllVisible.value).length > 0 && <>
+                    <JobModal
+                        title={l('button.edit')}
+                        values={modalAllVisible.value}
+                        modalVisible={modalAllVisible.isEdit}
+                        onCancel={() => setModalAllVisible((prevState) => ({...prevState, isEdit: false,value: {}}))}
+                        onSubmit={handleSubmit}
+                    />
+                </>
+            }
+
 
         </div>
     )
