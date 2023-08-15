@@ -19,10 +19,6 @@
 
 package org.dinky.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.collection.CollectionUtil;
-import java.util.Comparator;
-import java.util.Iterator;
 import static org.dinky.assertion.Asserts.isNotNull;
 import static org.dinky.assertion.Asserts.isNull;
 
@@ -35,7 +31,6 @@ import org.dinky.data.model.Catalogue;
 import org.dinky.data.model.History;
 import org.dinky.data.model.JobHistory;
 import org.dinky.data.model.JobInstance;
-import org.dinky.data.model.Menu;
 import org.dinky.data.model.Statement;
 import org.dinky.data.model.Task;
 import org.dinky.data.result.Result;
@@ -54,7 +49,9 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -68,6 +65,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 
 import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -102,11 +100,12 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         return buildCatalogueTree(this.list());
     }
 
-
     public List<Catalogue> buildCatalogueTree(List<Catalogue> catalogueList) {
         // sort
         if (CollectionUtil.isNotEmpty(catalogueList)) {
-            catalogueList = catalogueList.stream().sorted(Comparator.comparing(Catalogue::getId)).collect(Collectors.toList());
+            catalogueList = catalogueList.stream()
+                    .sorted(Comparator.comparing(Catalogue::getId))
+                    .collect(Collectors.toList());
         }
 
         List<Catalogue> returnList = new ArrayList<>();
@@ -123,7 +122,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         return returnList;
     }
-
 
     private void recursionBuildCatalogueAndChildren(List<Catalogue> list, Catalogue catalogues) {
         // 得到子节点列表
@@ -142,6 +140,7 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
     private boolean hasChild(List<Catalogue> list, Catalogue menu) {
         return getChildList(list, menu).size() > 0;
     }
+
     private List<Catalogue> getChildList(List<Catalogue> list, Catalogue catalogue) {
         List<Catalogue> tlist = new ArrayList<>();
         for (Catalogue n : list) {
@@ -151,7 +150,6 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         }
         return tlist;
     }
-
 
     @Override
     public Catalogue findByParentIdAndName(Integer parentId, String name) {
@@ -439,19 +437,23 @@ public class CatalogueServiceImpl extends SuperServiceImpl<CatalogueMapper, Cata
         Catalogue catalogue = getById(catalogueId);
         // 如果是文件夹 , 且下边没有子文件夹 , 则删除
         if (catalogue.getIsLeaf()) {
-            return removeById(catalogueId) ? Result.succeed(Status.DELETE_SUCCESS) : Result.failed(Status.DELETE_FAILED);
+            return removeById(catalogueId)
+                    ? Result.succeed(Status.DELETE_SUCCESS)
+                    : Result.failed(Status.DELETE_FAILED);
         }
-       // TODO: cascade delete jobInstance && jobHistory && history && statement
+        // TODO: cascade delete jobInstance && jobHistory && history && statement
         // 获取 task 表中的作业
         Task task = taskService.getById(catalogue.getTaskId());
         // 获取 statement 表中的作业
         Statement statement = statementService.getById(catalogue.getTaskId());
         // 获取 job instance 表中的作业
-        List<JobInstance> jobInstanceList = jobInstanceService.list(new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
+        List<JobInstance> jobInstanceList = jobInstanceService.list(
+                new LambdaQueryWrapper<JobInstance>().eq(JobInstance::getTaskId, catalogue.getTaskId()));
         //  获取 history 表中的作业
-        List<History> historyList = historyService.list(new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
+        List<History> historyList =
+                historyService.list(new LambdaQueryWrapper<History>().eq(History::getTaskId, catalogue.getTaskId()));
         historyList.forEach(history -> {
-            //查询 job history 表中的作业 通过 id 关联查询
+            // 查询 job history 表中的作业 通过 id 关联查询
             JobHistory historyServiceById = jobHistoryService.getById(history.getId());
             // 删除 job history 表中的作业
             jobHistoryService.removeById(historyServiceById.getId());
