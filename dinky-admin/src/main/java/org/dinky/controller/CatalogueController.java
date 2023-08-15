@@ -111,7 +111,6 @@ public class CatalogueController {
         }
     }
 
-
     /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")
@@ -162,5 +161,4 @@ public class CatalogueController {
     public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
         return catalogueService.deleteCatalogueById(id);
     }
-
 }

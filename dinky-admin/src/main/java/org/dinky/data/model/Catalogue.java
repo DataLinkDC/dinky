@@ -19,11 +19,12 @@
 
 package org.dinky.data.model;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import java.util.ArrayList;
-import java.util.List;
 import org.dinky.mybatis.model.SuperEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -52,7 +53,9 @@ public class Catalogue extends SuperEntity {
     private Boolean isLeaf;
 
     @TableField(exist = false)
-    private List<Catalogue> children  = new ArrayList<>();;
+    private List<Catalogue> children = new ArrayList<>();
+
+    ;
 
     public Catalogue() {}
 
@@ -62,6 +65,5 @@ public class Catalogue extends SuperEntity {
         this.type = type;
         this.parentId = parentId;
         this.isLeaf = isLeaf;
-
     }
 }
