@@ -18,7 +18,7 @@
  */
 
 
-import {Descriptions, Tabs, Tag, Typography} from 'antd';
+import {Descriptions, Spin, Tabs, Tag, Typography} from 'antd';
 import {ProCard} from "@ant-design/pro-components";
 import {Jobs} from "@/types/DevOps/data";
 import CodeShow from "@/components/CustomEditor/CodeShow";
@@ -51,10 +51,12 @@ const JobManagerLogsTab = (props: JobProps) => {
   });
 
   const getLog = (ur: any) => {
-    return <CodeShow
-      code={ur.data}
-      height={600}
-    />
+    return <Spin spinning={ur.loading}>
+      <CodeShow
+        code={ur.data ? ur.data : "No Log"}
+        height={600}
+      />
+    </Spin>
   }
 
   return <>

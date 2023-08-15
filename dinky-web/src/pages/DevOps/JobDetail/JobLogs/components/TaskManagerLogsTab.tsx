@@ -20,7 +20,7 @@
 
 import {Jobs} from "@/types/DevOps/data";
 import {ProCard} from "@ant-design/pro-components";
-import {Card, Col, List, Row, Tabs, Typography} from "antd";
+import {Card, Col, List, Row, Spin, Tabs, Typography} from "antd";
 import moment from "moment";
 import CodeShow from "@/components/CustomEditor/CodeShow";
 import React, {useState} from "react";
@@ -90,10 +90,12 @@ const TaskManagerLogsTab = (props: JobProps) => {
         <Col span={21}>
           <Card title={currentTM.containerId} bordered={false}
                 extra={<Paragraph>{currentTM.containerPath}</Paragraph>}>
-            <CodeShow
-              code={tmLog.data}
-              height={500}
-            />
+            <Spin spinning={tmLog.loading}>
+              <CodeShow
+                code={tmLog.data}
+                height={500}
+              />
+            </Spin>
           </Card>
         </Col>
       </Row>

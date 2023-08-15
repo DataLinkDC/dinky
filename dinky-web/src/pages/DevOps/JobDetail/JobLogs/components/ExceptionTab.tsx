@@ -77,7 +77,7 @@ const ExceptionTab = (props: JobProps) => {
               <blockquote>{currentLog.exceptionName}</blockquote>
             </Paragraph>
             <CodeShow
-              code={currentLog.stacktrace}
+              code={currentLog.stacktrace?currentLog.stacktrace:"No Exception"}
               height={500}
             />
           </Card>
