@@ -201,9 +201,17 @@ export const API_CONSTANTS = {
   GET_JOB_LIST: "/api/jobInstance",
   GET_JOB_BY_ID: "/api/jobInstance/getOneById",
   GET_JOB_DETAIL: "/api/jobInstance/getJobInfoDetail",
+  GET_JOB_VERSION: "/api/task/version",
+  GET_JOBMANAGER_LOG: "api/jobInstance/getJobManagerLog",
+  GET_JOBMANAGER_STDOUT: "api/jobInstance/getJobManagerStdOut",
+  GET_JOBMANAGER_THREAD_DUMP: "api/jobInstance/getJobManagerThreadDump",
+  GET_TASKMANAGER_LIST: "api/jobInstance/getTaskManagerList",
+  GET_TASKMANAGER_LOG: "api/jobInstance/getTaskManagerLog",
   CANCEL_JOB: "/api/studio/cancel",
   OFFLINE_TASK: "/api/task/offLineTask",
   RESTART_TASK: "/api/task/restartTask",
+  RESTART_TASK_FROM_CHECKPOINT: "/api/task/selectSavePointRestartTask",
+  GET_SAVEPOINTS: "/api/savepoints",
 
   // -- LDAP
   GET_LDAP_ENABLE: "/api/ldap/ldapEnableStatus",

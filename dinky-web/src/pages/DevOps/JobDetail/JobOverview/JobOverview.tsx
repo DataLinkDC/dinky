@@ -17,28 +17,27 @@
  *
  */
 
-package org.dinky.service.impl;
 
-import org.dinky.data.model.TaskVersion;
-import org.dinky.mapper.TaskVersionMapper;
-import org.dinky.mybatis.service.impl.SuperServiceImpl;
-import org.dinky.service.TaskVersionService;
+import {Descriptions, Tag, Typography} from 'antd';
+import {Link} from 'umi';
+import {Jobs} from "@/types/DevOps/data";
+import {l} from '@/utils/intl';
+import {ProCard} from "@ant-design/pro-components";
+import {TagJobStatus} from "@/pages/DevOps/function";
+import {RocketOutlined} from "@ant-design/icons";
+import { parseSecondStr } from '@/utils/function';
+import JobDesc from "@/pages/DevOps/JobDetail/JobOverview/components/JobDesc";
+import FlinkTable from "@/pages/DevOps/JobDetail/JobOverview/components/FlinkTable";
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
-import java.util.List;
+const JobConfigTab = (props: JobProps) => {
 
-import org.springframework.stereotype.Service;
+  const {jobDetail} = props;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+  return <>
+    <JobDesc jobDetail={jobDetail}/>
+    <FlinkTable jobDetail={jobDetail}/>
+  </>
+};
 
-@Service
-public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, TaskVersion>
-        implements TaskVersionService {
-
-    @Override
-    public List<TaskVersion> getTaskVersionByTaskId(Integer taskId) {
-
-        return baseMapper.selectList(new LambdaQueryWrapper<TaskVersion>()
-                .eq(TaskVersion::getTaskId, taskId)
-                .orderByDesc(true, TaskVersion::getVersionId));
-    }
-}
+export default JobConfigTab;
