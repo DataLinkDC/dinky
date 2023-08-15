@@ -55,9 +55,14 @@ public class WatchTableServiceImpl implements WatchTableService {
     public void send(String message) {
         try {
             String[] data = message.split("\n", 2);
-            final Set<Target> destinations = registerTableMap.get(data[0]);
-            if (destinations != null) {
-                destinations.forEach(d -> d.send(data[1], data[0]));
+            final Set<Target> targets = registerTableMap.get(data[0]);
+            if (targets != null) {
+                targets.forEach(d -> {
+                    if (!d.send(data[1], "data")) {
+                        // maybe closed
+                        targets.remove(d);
+                    }
+                });
             }
         } catch (MessagingException e) {
             log.error(e.toString());
@@ -66,25 +71,24 @@ public class WatchTableServiceImpl implements WatchTableService {
 
 
     @Override
-    public SseEmitter registerListenEntry(Integer userId, String table) {
+    public SseEmitter registerListenEntry(String table) {
         SseEmitter emitter = new SseEmitter();
-
         String fullName = getFullTableName(table);
-        String destination = getDestinationByFullName(userId, fullName);
+        String destination = getDestinationByFullName(fullName);
         Target target = Target.of(emitter, destination);
-        Set<Target> destinations = registerTableMap.get(fullName);
-        if (destinations == null) {
+        Set<Target> targets = registerTableMap.get(fullName);
+        if (targets == null) {
             registerTableMap.put(fullName, new HashSet<>(Collections.singleton(target)));
         } else {
-            destinations.add(target);
+            targets.add(target);
         }
         return emitter;
     }
 
     @Override
-    public void unRegisterListenEntry(Integer userId, String table) {
+    public void unRegisterListenEntry(String table) {
         String fullName = getFullTableName(table);
-        String destination = getDestination(userId, fullName);
+        String destination = getDestination(fullName);
         Set<Target> destinations = registerTableMap.get(fullName);
         if (destinations != null) {
             destinations.stream().filter(d -> d.destination.equals(destination)).forEach(Target::complete);
@@ -107,13 +111,13 @@ public class WatchTableServiceImpl implements WatchTableService {
         return result;
     }
 
-    public static String getDestination(Integer userId, String table) {
+    public static String getDestination(String table) {
         String fn = getFullTableName(table);
-        return String.format("/topic/table/%s/%s", userId, fn);
+        return String.format("/topic/table/%s",fn);
     }
 
-    public static String getDestinationByFullName(Integer userId, String tableFullName) {
-        return String.format("/topic/table/%s/%s", userId, tableFullName);
+    public static String getDestinationByFullName(String tableFullName) {
+        return String.format("/topic/table/%s",tableFullName);
     }
 
     public static final class Target {
@@ -129,14 +133,15 @@ public class WatchTableServiceImpl implements WatchTableService {
             return new Target(destination, emitter);
         }
 
-        public void send(String message, String type) {
+        public boolean send(String message, String type) {
             try {
                 SseEmitter.SseEventBuilder sseEventBuilder = SseEmitter.event();
-
                 emitter.send(sseEventBuilder.data(message).name("wt_" + type));
+                return true;
             } catch (Exception e) {
                 log.error("send message to {} failed: {}", destination, e.getMessage());
                 emitter.complete();
+                return false;
             }
         }
 

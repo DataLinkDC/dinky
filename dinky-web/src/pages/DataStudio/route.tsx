@@ -41,6 +41,7 @@ import React, {ReactNode} from "react";
 import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
 import Project from "@/pages/DataStudio/LeftContainer/Project";
 import Console from "@/pages/DataStudio/BottomContainer/Console";
+import TableData from "@/pages/DataStudio/BottomContainer/TableData";
 import JobConfig from "@/pages/DataStudio/RightContainer/JobConfig";
 import ExecuteConfig from "@/pages/DataStudio/RightContainer/ExecuteConfig";
 import SavePoints from "@/pages/DataStudio/RightContainer/SavePoints";
@@ -147,6 +148,7 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
     label: l('menu.datastudio.table-data'),
+    children: <TableData/>
   },
   {
     key: 'menu.datastudio.tool',

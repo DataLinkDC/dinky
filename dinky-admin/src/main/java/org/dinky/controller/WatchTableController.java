@@ -38,14 +38,14 @@ public class WatchTableController {
 
     @GetMapping(name = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Subscribe watch table")
-    public SseEmitter subscribe(@RequestParam Integer id, @RequestParam String table) {
-        return watchTableService.registerListenEntry(id, table);
+    public SseEmitter subscribe(@RequestParam String table) {
+        return watchTableService.registerListenEntry(table);
     }
 
     @PutMapping("/unSubscribe/watch")
     @ApiOperation("UnSubscribe watch table")
-    public Result<Void> unsubscribe(@RequestParam Integer id, @RequestParam String table) {
-        watchTableService.unRegisterListenEntry(id, table);
+    public Result<Void> unsubscribe(@RequestParam String table) {
+        watchTableService.unRegisterListenEntry(table);
         return Result.succeed();
     }
 }

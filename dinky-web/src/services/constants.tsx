@@ -229,6 +229,7 @@ export const API_CONSTANTS = {
 
   // flink
   FLINK_PROXY: "/api/flink",
+  FLINK_TABLE_DATA: "/subscribe/watch",
 
   // resource
   RESOURCE_SHOW_TREE:'/api/resource/showByTree',
