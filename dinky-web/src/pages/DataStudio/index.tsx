@@ -64,12 +64,8 @@ const DataStudio = (props: any) => {
     saveTabs,
     updateCenterContentHeight,
     updateSelectLeftKey,
-    updateLeftWidth,
-    updateSelectRightKey
-    ,
-    updateRightWidth,
+    updateSelectRightKey,
     updateSelectBottomKey,
-    updateBottomHeight,
     saveClusterConfiguration,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
@@ -82,30 +78,27 @@ const DataStudio = (props: any) => {
   const app = getDvaApp(); // 获取dva的实例
   const persistor = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
-  const [size, setSize] = useState({
+
+  const getClientSize = () => ({
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
     contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-  });
+  })
 
-  const onResize = useCallback(() => {
-    setSize({
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
-      contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-    })
-    const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomHeight;
+  const [size, setSize] = useState(getClientSize());
+
+  const onResize = () => {
+    setSize(getClientSize())
+    const centerContentHeight = getClientSize().contentHeight - bottomHeight;
     updateCenterContentHeight(centerContentHeight)
     updateToolContentHeight(centerContentHeight - VIEW.midMargin)
-  }, []);
+  };
 
   useEffect(() => {
     window.addEventListener('resize', onResize);
     onResize();
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [onResize]);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const loadData = async () => {
     saveDataBase(await getDataBase());
@@ -135,13 +128,12 @@ const DataStudio = (props: any) => {
                 break
               }
             }
-
           }
-
         })
       }
     }
   }
+
   useEffect(() => {
     loadData();
     onResize();
@@ -269,7 +261,7 @@ const DataStudio = (props: any) => {
                     return TabsPageType.None
                   }
                   const v = (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey);
-                  return x.isShow(v?.type || TabsPageType.None, v?.subType)
+                  return x.isShow(v?.type ?? TabsPageType.None, v?.subType)
                 }).map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
