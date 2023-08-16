@@ -103,7 +103,6 @@ const UserProTable = () => {
      */
     const handleDeleteUser = async (value: UserBaseInfo.User) => {
         await executeAndCallbackRefresh(async () => {
-            // TODO: delete user interface is use /api/users/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/users (USER)
             await handleRemoveById(API_CONSTANTS.USER_DELETE, value.id)
         })
     };

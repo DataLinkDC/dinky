@@ -252,6 +252,8 @@ export default {
   'role.delete': 'Delete Role',
   'role.deleteConfirm': 'Are you sure you want to delete this Role？',
   'role.assignMenu': 'Role: [{roleName}] Assign Permissions',
+  'role.assign': 'Assign Permissions',
+  'role.user.list': 'Role of User List',
 
   // menu
   'menu.management': 'Menu Management',

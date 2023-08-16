@@ -18,10 +18,12 @@
 
 
 import {TransferProps} from "antd/es/transfer";
-import {ColumnsType, TableRowSelection} from "antd/es/table/interface";
-import {Table, Transfer} from "antd";
-import {NORMAL_TABLE_OPTIONS} from "@/services/constants";
+import {TableRowSelection} from "antd/es/table/interface";
+import {Transfer} from "antd";
 import {difference} from "lodash";
+import {UserBaseInfo} from "@/types/User/data";
+import {ProColumns, ProTable} from "@ant-design/pro-components";
+import selected from "@antv/g2/src/interaction/action/element/selected";
 
 
 /**
@@ -29,8 +31,8 @@ import {difference} from "lodash";
  */
 interface TableTransferProps extends TransferProps<any> {
   dataSource: any[];
-  leftColumns: ColumnsType<any>;
-  rightColumns: ColumnsType<any>;
+  leftColumns: ProColumns< UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
+  rightColumns: ProColumns< UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
 }
 
 
@@ -57,43 +59,41 @@ const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferP
          selectedKeys: listSelectedKeys,
          disabled: enableFlag,
        }) => {
+
         const columns = direction === "left" ? leftColumns : rightColumns;
         const rowSelection: TableRowSelection<any> = {
           getCheckboxProps: item => ({disabled: enableFlag || item.isDelete || (item.hasOwnProperty("enabled") ? !item.enabled : false)}),
-          onSelectAll: function (selected, selectedRows) {
+          onSelectAll:  (selected, selectedRows) => {
 
-            const treeSelectedKeys = selectedRows
-              .filter(item => !item.isDelete || !item.enabled)
-              .map(({id}) => id);
+            const treeSelectedKeys = selectedRows.filter(item => !item.isDelete || !item.enabled).map(({id}) => id);
 
-            const diffKeys = selected
-              ? difference(treeSelectedKeys, listSelectedKeys as any)
-              : difference(listSelectedKeys, treeSelectedKeys as any);
+            const diffKeys = selected ? difference(treeSelectedKeys, listSelectedKeys ) : difference(listSelectedKeys, treeSelectedKeys);
 
-            onItemSelectAll(diffKeys as string[], selected);
+            onItemSelectAll(diffKeys, selected);
           },
-
-          onSelect(item, selected) {
-            onItemSelect(item.id as any, selected);
+          onSelect:  (item, selected) => {
+            onItemSelect(item.id, selected);
           },
           selectedRowKeys: listSelectedKeys,
         };
         return (<>
-              <Table
-                {...NORMAL_TABLE_OPTIONS}
-                size="large"
+              <ProTable
+                size="small" ghost
+                toolBarRender={undefined}
                 rowSelection={rowSelection}
+                rowKey={record => record.id}
                 columns={columns}
+                search={false}
+                options={false}
+                tableAlertRender={false}
                 dataSource={filteredItems}
-                style={{
-                  height: "50vh",
-                  pointerEvents: enableFlag ? "none" : undefined
-                }}
-                onRow={(item) => ({
+                pagination={{pageSize: 10, showSizeChanger: false, hideOnSinglePage: true,}}
+                style={{height: "50vh", overflowY: "auto", pointerEvents: enableFlag ? "none" : undefined}}
+                onRow={ item => ({
                   onClick: () => {
                     // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
-                    if ((item.hasOwnProperty("isDelete") ? item.isDelete : true) || (item.hasOwnProperty("enabled") ? !item.enabled : false)) return;
-                    onItemSelect(item.id as any, !listSelectedKeys.includes(item.id as any));
+                    if ((item.hasOwnProperty("isDelete") ? item.isDelete : true) || ((item.hasOwnProperty("enabled") ? !item.enabled : false))) return;
+                    onItemSelect(item.id, !listSelectedKeys.includes(item.id));
                   },
                 })}
               />

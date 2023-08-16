@@ -1,4 +1,6 @@
-import {createContext,ReactElement,useContext} from'react'
+import React, {createContext,ReactElement,useContext} from'react'
+import {SysMenu} from "@/types/RegCenter/data";
+import {API} from "@/services/data";
 
 /***
  * 按钮的path和name
@@ -40,11 +42,11 @@ export function Authorized({
 }
 
 
-export const AccessContextProvider = ({children,currentUser}) =>{
+export const AccessContextProvider = ({children,currentUser}:{children:React.ReactNode,currentUser: API.CurrentUser}) =>{
 
   const isAdmin = currentUser?.user?.superAdminFlag
   let blocks: Block[] = []
-  const flatTree = (menus) =>{
+  const flatTree = (menus: SysMenu[]) =>{
     menus.forEach(({path,children,name,type})=>{
       if(type === 'F'){
         blocks.push({
@@ -59,7 +61,7 @@ export const AccessContextProvider = ({children,currentUser}) =>{
     })
   }
 
-  flatTree(currentUser?.menuList)
+  flatTree(currentUser?.menuList ?? [])
 
   return <AccessContext.Provider value={{isAdmin,blocks}}>
     {children}

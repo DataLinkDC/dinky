@@ -46,6 +46,7 @@ const renderTitle = (value: SysMenu) => (<Space>
         {value.perms && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
         {value.type && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>}
         {value.note && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
+        {value.path && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.path}</span>}
     </Space>
 );
 
