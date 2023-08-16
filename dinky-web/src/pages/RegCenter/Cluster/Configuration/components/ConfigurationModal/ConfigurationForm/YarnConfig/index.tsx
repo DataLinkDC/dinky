@@ -91,7 +91,7 @@ const YarnConfig = () => {
                         tooltipText: l('rc.cc.deleteConfig'),
                     }}
                     creatorButtonProps={{
-                        style: {width: '40vw'},
+                        style: {width: '100%'},
                         creatorButtonText: l('rc.cc.addConfig'),
                     }}
                 >

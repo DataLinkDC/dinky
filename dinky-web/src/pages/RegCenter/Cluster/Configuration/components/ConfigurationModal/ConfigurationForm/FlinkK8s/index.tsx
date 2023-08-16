@@ -17,7 +17,7 @@
  *
  */
 
-import {Col, Divider, Row} from "antd";
+import {Col, Divider, Row, Space} from "antd";
 import {ProCard, ProFormGroup, ProFormItem, ProFormList, ProFormSelect, ProFormText} from "@ant-design/pro-components";
 import {l} from "@/utils/intl";
 import React from "react";
@@ -43,27 +43,16 @@ const FlinkK8s = (props: { type: string, value: any }) => {
 
   const renderK8sConfig = () => {
     return <>
-      {KUBERNETES_CONFIG_LIST
-        .map(item =>
-          <ProFormText
-            tooltip={item.tooltip}
-            key={item.name}
-            name={['configJson', 'kubernetesConfig','configuration', item.name]}
-            label={item.label}
-            width={250}
-            placeholder={item.placeholder}/>
-        )}
-      <ProFormList
-        name={['configJson','flinkConfig', 'flinkConfigList']}
-        copyIconProps={false}
-        deleteIconProps={{tooltipText: l('rc.cc.deleteConfig'),}}
-        creatorButtonProps={{style: {width: '32vw'}, creatorButtonText: l('rc.cc.addConfig'),}}
-      >
-        <ProFormGroup key="flinkGroup">
-          <ProFormText width={'md'} name="name" label={l('rc.cc.key')}/>
-          <ProFormText width={'sm'} name="value" label={l('rc.cc.value')}/>
-        </ProFormGroup>
-      </ProFormList>
+       {KUBERNETES_CONFIG_LIST
+           .map(item =>
+               <ProFormText
+                   tooltip={item.tooltip}
+                   key={item.name}
+                   name={['configJson', 'kubernetesConfig','configuration', item.name]}
+                   label={item.label}
+                   width={260}
+                   placeholder={item.placeholder}/>
+           )}
     </>
   };
 
@@ -118,6 +107,19 @@ const FlinkK8s = (props: { type: string, value: any }) => {
             />}
           {renderK8sConfig()}
         </ProFormGroup>
+          <ProFormList
+              name={['configJson','flinkConfig', 'flinkConfigList']}
+              copyIconProps={false}
+              deleteIconProps={{tooltipText: l('rc.cc.deleteConfig'),}}
+              creatorButtonProps={{style: {width: '100%'}, creatorButtonText: l('rc.cc.addConfig'),}}
+          >
+            <ProFormGroup key="flinkGroup" >
+              <Space key={'config'} style={{display: 'flex'}} align="baseline">
+                <ProFormText width={'md'} name="name" placeholder={l('rc.cc.key')}/>
+                <ProFormText width={'sm'}  name="value" placeholder={l('rc.cc.value')}/>
+              </Space>
+            </ProFormGroup>
+          </ProFormList>
       </Col>
       <ProCard.Divider type={'vertical'}/>
       <Col span={12}>
