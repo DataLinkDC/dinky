@@ -101,7 +101,12 @@ export type DataStudioParams = {
   resultData: Record<string, any>
 }
 
-export enum TabsPageType {None = "", metadata = "metadata", project = "project", flinkSql = "flinksql"}
+export enum TabsPageType {
+  None = "",
+  metadata = "metadata",
+  project = "project",
+  flinkSql = "flinksql"
+}
 
 export type TabsItemType = {
   id: string,

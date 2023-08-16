@@ -76,7 +76,7 @@ const DataStudio = (props: any) => {
   const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
   const [newTabData, setNewTabData] = useState({});
   const app = getDvaApp(); // 获取dva的实例
-  const persistor = app._store.persist;
+  const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
 
   const getClientSize = () => ({
@@ -101,37 +101,38 @@ const DataStudio = (props: any) => {
   }, []);
 
   const loadData = async () => {
-    saveDataBase(await getDataBase());
-    updateBottomConsole(await getConsoleData());
-    saveProject(await getTaskData());
-    saveSession(await getSessionData());
-    saveEnv(await getEnvData());
-    saveClusterConfiguration(await getClusterConfigurationData());
+    Promise.all([getDataBase(), getConsoleData(), getTaskData(), getSessionData(), getEnvData(), getClusterConfigurationData()])
+      .then(res => {
+      saveDataBase(res[0]);
+      updateBottomConsole(res[1]);
+      saveProject(res[2]);
+      saveSession(res[3]);
+      saveEnv(res[4]);
+      saveClusterConfiguration(res[5]);
+    })
 
     // 判断是否需要更新tab内容
-    if (tabs.activeKey) {
-      const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-      const params = (currentTab?.params as DataStudioParams);
-      if (currentTab?.type === "project") {
-        getTaskDetails(params.taskId).then(res => {
-          for (const key of Object.keys(res)) {
-            if (res[key] !== params.taskData[key]) {
-              if (res[key] instanceof Object) {
-                if (JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
-                  setIsModalUpdateTabContentOpen(true)
-                  setNewTabData(res)
-                  break
-                }
-              } else {
-                setIsModalUpdateTabContentOpen(true)
-                setNewTabData(res)
-                break
-              }
-            }
-          }
-        })
-      }
+    if (!tabs.activeKey) {
+      return;
     }
+
+    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+    if (currentTab?.type !== "project") {
+      return;
+    }
+
+    const params = currentTab.params as DataStudioParams;
+    getTaskDetails(params.taskId).then(res => {
+     const changed = Object.keys(res).some(key => {
+        return res[key] !== params.taskData[key] &&
+          (res[key] instanceof Object ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key]) : true)
+      })
+
+      if (changed) {
+        setIsModalUpdateTabContentOpen(true)
+        setNewTabData(res)
+      }
+    })
   }
 
   useEffect(() => {
@@ -144,9 +145,8 @@ const DataStudio = (props: any) => {
    * 渲染头部
    * @returns {JSX.Element}
    */
-  const renderHeaderContainer = () => {
-    return <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
-  }
+  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+
   const updateTabContent = () => {
     (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
     saveTabs({...tabs})
@@ -170,7 +170,7 @@ const DataStudio = (props: any) => {
     return <RightContainer size={size} bottomHeight={bottomHeight}/>
   }
   return (
-    <PersistGate loading={null} persistor={persistor}>
+    <PersistGate loading={null} persistor={persist}>
       <Fragment>
         <Modal title="Sql内容或配置变更" open={isModalUpdateTabContentOpen} onOk={updateTabContent}
                onCancel={() => setIsModalUpdateTabContentOpen(false)}>
