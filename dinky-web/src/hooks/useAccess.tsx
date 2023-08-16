@@ -44,7 +44,7 @@ export const AccessContextProvider = ({children,currentUser}) =>{
 
   const isAdmin = currentUser?.user?.superAdminFlag
   let blocks: Block[] = []
-  const flatTree = (menus) =>{
+  const flatTree = (menus=[]) =>{
     menus.forEach(({path,children,name,type})=>{
       if(type === 'F'){
         blocks.push({
