@@ -1076,6 +1076,21 @@ export default {
   'datastudio.project.create.rootFolder': '创建根目录',
   'datastudio.project.create.folder.name': '目录名称',
   'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
+  'datastudio.project.create.folder.tip': '暂无作业,请点击左上角新建目录',
+  'datastudio.project.delete.job': '删除 [{type}] 作业 [{name}]',
+  'datastudio.project.delete.job.confirm': '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
+
+  'catalog.name': '作业名称',
+  'catalog.name.placeholder': '请输入作业名称',
+  'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName ([配置项: pipeline.name])',
+  'catalog.type': '作业类型',
+  'catalog.type.placeholder': '请选择作业类型',
+  'catalog.type.tip': '作业类型决定了作业的执行方式, 请谨慎选择, 一旦选择后不可修改',
+  'catalog.udf.templateId': 'UDF 模板',
+    'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.udf.className': '类或方法名',
+    'catalog.udf.className.placeholder': '请输入类或方法名',
+
 
 
 };

@@ -21,6 +21,7 @@ package org.dinky.service;
 
 import org.dinky.data.dto.CatalogueTaskDTO;
 import org.dinky.data.model.Catalogue;
+import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -32,7 +33,7 @@ import java.util.List;
  */
 public interface CatalogueService extends ISuperService<Catalogue> {
 
-    List<Catalogue> getAllData();
+    List<Catalogue> getCatalogueTree();
 
     Catalogue findByParentIdAndName(Integer parentId, String name);
 
@@ -42,9 +43,7 @@ public interface CatalogueService extends ISuperService<Catalogue> {
 
     boolean toRename(Catalogue catalogue);
 
-    List<String> removeCatalogueAndTaskById(Integer id);
-
-    boolean moveCatalogue(Integer id, Integer parentId);
+    boolean moveCatalogue(Integer originCatalogueId, Integer targetParentId);
 
     boolean copyTask(Catalogue catalogue);
 
@@ -53,4 +52,8 @@ public interface CatalogueService extends ISuperService<Catalogue> {
     void traverseFile(String sourcePath, Catalogue catalog);
 
     Catalogue getCatalogue(Integer parentId, String name);
+
+    Result<Void> deleteCatalogueById(Integer catalogueId);
+
+    Boolean saveOrUpdateOrRename(Catalogue catalogue);
 }
