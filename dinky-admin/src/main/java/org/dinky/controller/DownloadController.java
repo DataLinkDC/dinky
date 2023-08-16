@@ -46,12 +46,14 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.extra.servlet.ServletUtil;
 import cn.hutool.json.JSONUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 
 /** @since 0.7.0 */
 @Slf4j
 @RestController
+@Api(tags = "UDF & App Jar Controller")
 @RequestMapping("/download")
 public class DownloadController {
 

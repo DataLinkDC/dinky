@@ -65,7 +65,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequestMapping("/api/scheduler")
-@Api(value = "海豚调度", tags = "海豚调度")
+@Api(tags = "DolphinScheduler Controller")
 @RequiredArgsConstructor
 public class SchedulerController {
 

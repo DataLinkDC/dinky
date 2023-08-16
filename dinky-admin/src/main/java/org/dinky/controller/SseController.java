@@ -32,10 +32,12 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
 @RestController
+@Api(tags = "SSE Controller")
 @RequestMapping("/api/sse")
 @RequiredArgsConstructor
 public class SseController {

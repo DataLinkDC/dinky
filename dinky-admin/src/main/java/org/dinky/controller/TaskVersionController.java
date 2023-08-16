@@ -35,6 +35,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.bean.BeanUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -45,6 +47,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "Task Version Controller")
 @RequestMapping("/api/task/version")
 @RequiredArgsConstructor
 public class TaskVersionController {
@@ -57,6 +60,7 @@ public class TaskVersionController {
      * @return {@link ProTableResult}<{@link TaskVersionHistoryDTO}>
      */
     @GetMapping
+    @ApiOperation("Query Task Version list")
     public Result<List<TaskVersionHistoryDTO>> listTaskVersions(@RequestParam int taskId) {
         List<TaskVersion> taskVersions = versionService.getTaskVersionByTaskId(taskId);
         List<TaskVersionHistoryDTO> collect = taskVersions.stream()
@@ -66,6 +70,7 @@ public class TaskVersionController {
     }
 
     @DeleteMapping
+    @ApiOperation("Delete Task Version")
     public Result<Boolean> deleteVersion(@RequestParam int versionId) {
         boolean b = versionService.removeById(versionId);
         return Result.succeed(b);

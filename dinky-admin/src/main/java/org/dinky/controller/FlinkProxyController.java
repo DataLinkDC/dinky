@@ -43,10 +43,12 @@ import cn.hutool.http.HttpRequest;
 import cn.hutool.http.HttpResponse;
 import cn.hutool.http.HttpUtil;
 import cn.hutool.http.Method;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.SneakyThrows;
 
 @Controller
+@Api(tags = "Flink Proxy Controller", hidden = true)
 @RequestMapping(FlinkProxyController.API)
 public class FlinkProxyController {
     public static final String API = "/api/flink/";

@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.map.MapUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "System Config Controller")
 @RequestMapping("/api/sysConfig")
 @RequiredArgsConstructor
 public class SysConfigController {

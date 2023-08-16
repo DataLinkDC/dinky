@@ -48,12 +48,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** UDFController */
 @Slf4j
+@Api(tags = "UDF Controller")
 @RestController
 @RequestMapping("/api/udf/template")
 @RequiredArgsConstructor
