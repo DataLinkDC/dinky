@@ -19,6 +19,9 @@
 import {Reducer} from "umi";
 import {Alert} from "@/types/RegCenter/data.d";
 import {showAlertInstance} from "@/pages/RegCenter/Alert/AlertGroup/service";
+import {generateModelType} from "@/utils/modals";
+import Model, {ModelType} from "@/pages/DataStudio/model";
+import {Effect} from "@@/plugin-dva/types";
 
 export type AlertStateType = {
   instance:Alert.AlertInstance[],
@@ -29,6 +32,7 @@ export type AlertModelType = {
   namespace: string;
   state: AlertStateType;
   effects: {
+    queryInstance: Effect;
   };
   reducers: {
     saveInstance: Reducer<AlertStateType>;
@@ -65,5 +69,16 @@ const AlertModel: AlertModelType = {
     },
   },
 };
+
+const getModelType = (name: string) => generateModelType(AlertModel.namespace, name)
+
+export const ALERT_MODEL_SYNC: {[K in keyof AlertModelType['effects']]: string} = {
+  queryInstance: getModelType('queryInstance'),
+}
+
+export const ALERT_MODEL: {[K in keyof AlertModelType['reducers']]: string} = {
+  saveInstance: getModelType('saveInstance'),
+  saveGroup: getModelType('saveGroup'),
+}
 
 export default AlertModel;

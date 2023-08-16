@@ -21,6 +21,7 @@ import AlertInstanceList from '@/pages/RegCenter/Alert/AlertInstance/components/
 import {PageContainer} from '@ant-design/pro-components';
 import Scale from '@/components/Animation/Scale';
 
+export {ALERT_MODEL, ALERT_MODEL_SYNC} from '@/pages/RegCenter/Alert/AlertInstance/model';
 
 export default () => {
   return <Scale>

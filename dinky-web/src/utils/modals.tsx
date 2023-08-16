@@ -47,3 +47,8 @@ export const ErrorModelWithCode = (title: any = l('global.error'), content: stri
     />
   )
 }
+
+
+export const generateModelType = (nameSpace: string, name: string) => {
+  return `${nameSpace}/${name}`;
+}
