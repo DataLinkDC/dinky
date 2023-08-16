@@ -114,13 +114,10 @@ public class RoleController {
         return Result.succeed(result);
     }
 
-
     @GetMapping(value = "/getUserListByRoleId")
     @ApiOperation("Query User List By RoleId")
     public Result<List<User>> getUserListByRoleId(@RequestParam Integer roleId) {
         List<User> userRoleList = roleService.getUserListByRoleId(roleId);
         return Result.succeed(userRoleList);
     }
-
-
 }

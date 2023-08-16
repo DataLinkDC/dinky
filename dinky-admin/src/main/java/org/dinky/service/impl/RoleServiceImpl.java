@@ -34,6 +34,7 @@ import org.dinky.service.RoleService;
 import org.dinky.service.RowPermissionsService;
 import org.dinky.service.TenantService;
 import org.dinky.service.UserRoleService;
+import org.dinky.service.UserService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,7 +45,6 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
-import org.dinky.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -171,7 +171,8 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
      */
     @Override
     public List<User> getUserListByRoleId(Integer roleId) {
-        List<UserRole> userRoleList = userRoleService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, roleId));
+        List<UserRole> userRoleList =
+                userRoleService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, roleId));
 
         List<User> userList = new ArrayList<>();
 

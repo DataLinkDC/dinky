@@ -79,7 +79,7 @@ public class MenuController {
         return Result.data(menuService.buildMenuTreeSelect(menus));
     }
 
-            /**
+    /**
      * delete menu by id
      *
      * @param id {@link Integer}
