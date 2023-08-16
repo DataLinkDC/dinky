@@ -26,20 +26,26 @@ import {l} from "@/utils/intl";
 import {Drawer} from "antd";
 import {ProDescriptionsItemProps} from "@ant-design/pro-descriptions";
 import {postAll} from "@/services/api";
-import {SavePoint} from "@/types/Studio/data";
 
 const url = '/api/savepoints';
 
-
+export type SavePointTableListItem = {
+  id: number,
+  taskId: number,
+  name: string,
+  type: string,
+  path: string,
+  createTime: Date,
+};
 const SavePoints = (props: any) => {
 
   const { tabs: {panes, activeKey}} = props;
   const current = getCurrentData(panes, activeKey);
-  const [row, setRow] = useState<SavePoint>();
+  const [row, setRow] = useState<SavePointTableListItem>();
   const actionRef = useRef<ActionType>();
   actionRef.current?.reloadAndRest?.();
 
-  const columns: ProDescriptionsItemProps<SavePoint>[] = [
+  const columns: ProDescriptionsItemProps<SavePointTableListItem>[] = [
 
     {
       title: l('pages.task.savePointPath'),
@@ -61,7 +67,7 @@ const SavePoints = (props: any) => {
 
   return (
     <>
-        <ProTable<SavePoint>
+        <ProTable<SavePointTableListItem>
           actionRef={actionRef}
           rowKey="id"
           request={(params, sorter, filter) => postAll(url, {taskId: current.key, ...params, sorter, filter})}
@@ -77,7 +83,7 @@ const SavePoints = (props: any) => {
           closable={false}
         >
           {row?.name && (
-            <ProDescriptions<SavePoint>
+            <ProDescriptions<SavePointTableListItem>
               column={2}
               title={row?.name}
               request={async () => ({

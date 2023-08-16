@@ -179,7 +179,6 @@ export const API_CONSTANTS = {
   UDF_TEMPLATE_DELETE: "/api/udf/template/delete",
   // UDF template enable or disable
   UDF_TEMPLATE_ENABLE: "/api/udf/template/enable",
-  UDF_TEMPLATE_TREE: '/api/udf/template/tree',
 
 
 
