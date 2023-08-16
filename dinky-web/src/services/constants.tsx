@@ -68,11 +68,15 @@ export const API_CONSTANTS = {
   ROLE: "/api/role",
   ROLE_ADDED_OR_UPDATE: "/api/role/addedOrUpdateRole",
   ROLE_DELETE: "/api/role/delete",
+  ROLE_ASSIGN_MENU: "/api/roleMenu/assignMenuToRole",
+  ROLE_MENU_LIST: "/api/menu/roleMenus",
+  ROLE_USER_LIST: "/api/role/getUserListByRoleId",
 
   // menu
-  MENU: "/api/menu",
+  MENU_ADD_OR_UPDATE: "/api/menu/addOrUpdate",
   MENU_DELETE: "/api/menu/delete",
   MENU_TREE: "/api/menu/tree",
+  MENU_LIST: "/api/menu/listMenus",
 
   // --- row Permissions ---
      // row permissions list

@@ -16,13 +16,13 @@
  *
  */
 
-import type {ColumnsType} from 'antd/es/table/interface';
 import React, {useEffect, useState} from 'react';
 import {l} from "@/utils/intl";
 import {API_CONSTANTS} from "@/services/constants";
 import {getData} from "@/services/api";
 import {UserBaseInfo} from '@/types/User/data.d';
 import TableTransfer from "@/components/TableTransfer";
+import {ProColumns} from "@ant-design/pro-components";
 
 
 type TenantTransferFromProps = {
@@ -55,7 +55,7 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
         });
     }, []);
 
-    const columns: ColumnsType<UserBaseInfo.User> = [
+    const columns: ProColumns<UserBaseInfo.User>[] = [
         {
             title: l('user.username'),
             dataIndex: 'username',
@@ -84,9 +84,10 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
             rowKey={item => item.id as any}
             onChange={onChange}
             onSelectChange={onSelectChange}
-            filterOption={(inputValue, item) =>
-                item.username!.indexOf(inputValue) !== -1 || item.nickname!.indexOf(inputValue) !== -1 || item.worknum!.indexOf(inputValue) !== -1
-            }
+            filterOption={(inputValue, item: UserBaseInfo.User) =>{
+                    if(!item.username || !item.nickname || !item.worknum ) return false;
+                    return item.username.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 || item.nickname.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 || item.worknum.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+            }}
             leftColumns={columns}
             rightColumns={columns}
         />

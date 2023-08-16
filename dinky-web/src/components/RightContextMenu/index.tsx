@@ -41,7 +41,7 @@ const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
             overlayStyle={{...contextMenuPosition}}
             overlay={menu}
             open={open}
-            onVisibleChange={openChange}
+            onOpenChange={openChange}
         >
             {/*占位*/}
             <div style={{...contextMenuPosition}}/>

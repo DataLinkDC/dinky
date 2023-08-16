@@ -24,6 +24,7 @@ import org.dinky.data.enums.Status;
 import org.dinky.data.model.Role;
 import org.dinky.data.model.RowPermissions;
 import org.dinky.data.model.Tenant;
+import org.dinky.data.model.User;
 import org.dinky.data.model.UserRole;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.Resource;
 
+import org.dinky.service.UserService;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,6 +66,10 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Lazy
     @Resource
     private RoleService roleService;
+
+    @Lazy
+    @Resource
+    private UserService userService;
 
     @Lazy
     @Resource
@@ -157,5 +163,21 @@ public class RoleServiceImpl extends SuperServiceImpl<RoleMapper, Role> implemen
     @Override
     public List<Integer> selectRoleListByUserId(Integer userId) {
         return roleMapper.selectRoleListByUserId(userId);
+    }
+
+    /**
+     * @param roleId
+     * @return
+     */
+    @Override
+    public List<User> getUserListByRoleId(Integer roleId) {
+        List<UserRole> userRoleList = userRoleService.list(new LambdaQueryWrapper<UserRole>().eq(UserRole::getRoleId, roleId));
+
+        List<User> userList = new ArrayList<>();
+
+        if (Asserts.isNotNull(userRoleList)) {
+            userRoleList.forEach(userRole -> userList.add(userService.getById(userRole.getUserId())));
+        }
+        return userList;
     }
 }

@@ -79,7 +79,7 @@ public class MenuController {
         return Result.data(menuService.buildMenuTreeSelect(menus));
     }
 
-    /**
+            /**
      * delete menu by id
      *
      * @param id {@link Integer}
@@ -98,7 +98,7 @@ public class MenuController {
      * @param roleId role id
      * @return {@link RoleMenuDto}
      */
-    @GetMapping(value = "/roleMenus/")
+    @GetMapping(value = "/roleMenus")
     @ApiOperation("Load Role Menu")
     public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
         List<Menu> menus = menuService.buildMenuTree(menuService.list());

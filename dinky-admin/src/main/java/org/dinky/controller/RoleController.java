@@ -22,6 +22,7 @@ package org.dinky.controller;
 import org.dinky.data.annotation.Log;
 import org.dinky.data.enums.BusinessType;
 import org.dinky.data.model.Role;
+import org.dinky.data.model.User;
 import org.dinky.data.model.UserRole;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
@@ -112,4 +113,14 @@ public class RoleController {
         Dict result = Dict.create().set("roles", roleList).set("roleIds", userRoleIds);
         return Result.succeed(result);
     }
+
+
+    @GetMapping(value = "/getUserListByRoleId")
+    @ApiOperation("Query User List By RoleId")
+    public Result<List<User>> getUserListByRoleId(@RequestParam Integer roleId) {
+        List<User> userRoleList = roleService.getUserListByRoleId(roleId);
+        return Result.succeed(userRoleList);
+    }
+
+
 }
