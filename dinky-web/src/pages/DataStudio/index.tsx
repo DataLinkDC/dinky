@@ -39,6 +39,7 @@ import {
 import * as monaco from "monaco-editor";
 import {Footer} from "antd/es/layout/layout";
 import FooterContainer from "@/pages/DataStudio/FooterContainer";
+import {l} from "@/utils/intl";
 
 const {Sider, Content} = Layout;
 
@@ -166,11 +167,11 @@ const DataStudio = (props: any) => {
 
   return (
     <PersistGate loading={null} persistor={persist}>
-      <Fragment>
-        <Modal title="Sql内容或配置变更" open={isModalUpdateTabContentOpen} onOk={updateTabContent}
+        <Modal title={l('pages.datastudio.help.sqlChanged')} open={isModalUpdateTabContentOpen} onOk={updateTabContent}
                onCancel={() => setIsModalUpdateTabContentOpen(false)}>
-          <p>检测到当前页远程有更改，是否刷新更新数据？</p>
+          <p>{l('pages.datastudio.help.sqlChangedPrompt')}</p>
         </Modal>
+
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}
@@ -183,12 +184,11 @@ const DataStudio = (props: any) => {
                 items={LeftSide.map(x => ({key: x.key, label: x.label, icon: x.icon}))}
                 style={{
                   height: '50%',
-                  borderBlockStart: "1px solid " + themeValue.borderColor,
-                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                  borderBlockStart: `1px solid ${themeValue.borderColor}`,
+                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
                 }}
                 onClick={(item) =>  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)}
               />
-
 
               {/*底部菜单*/}
               <Menu
@@ -199,7 +199,7 @@ const DataStudio = (props: any) => {
                   display: 'flex',
                   height: '50%',
                   flexDirection: "column-reverse",
-                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
                 }}
                 onClick={(item) => {
                   updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
@@ -208,7 +208,6 @@ const DataStudio = (props: any) => {
                   }
                 }}
               />
-
             </Sider>
 
             <Content style={{
@@ -218,7 +217,6 @@ const DataStudio = (props: any) => {
             }}>
               {/*渲染底部内容*/}
               {<BottomContainer size={size}/>}
-
 
               <div style={{
                 display: "flex",
@@ -269,7 +267,6 @@ const DataStudio = (props: any) => {
 
         </div>
 
-      </Fragment>
     </PersistGate>
   );
 };
