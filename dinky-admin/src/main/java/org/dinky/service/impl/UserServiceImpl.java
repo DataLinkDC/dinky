@@ -407,7 +407,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
         // query tenant admin user count
-        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
+        long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
                 .eq(UserTenant::getTenantId, tenantId)
                 .eq(UserTenant::getTenantAdminFlag, 1));
         if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {

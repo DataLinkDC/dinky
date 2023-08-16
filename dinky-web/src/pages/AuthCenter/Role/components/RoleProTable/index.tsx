@@ -40,6 +40,7 @@ import {EditBtn} from "@/components/CallBackButton/EditBtn";
 import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
 import AssignMenu from "@/pages/AuthCenter/Role/components/AssignMenu";
 import {SysMenu} from "@/types/RegCenter/data";
+import RoleUserList from "@/pages/AuthCenter/Role/components/RoleUserList";
 
 
 const RoleProTable: React.FC = () => {
@@ -51,6 +52,8 @@ const RoleProTable: React.FC = () => {
         const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
         const [loading, setLoading] = useState<boolean>(false);
         const [assignMenu ,  setAssignMenu] = useState<boolean>(false);
+        const [openViewUserList ,  setOpenViewUserList] = useState<boolean>(false);
+        const [roleUserList ,  setRoleUserList] = useState<UserBaseInfo.User[]>([]);
 
 
     const actionRef = useRef<ActionType>();
@@ -68,7 +71,6 @@ const RoleProTable: React.FC = () => {
          */
         const handleDeleteSubmit = async (id: number) => {
             await executeAndCallbackRefresh(async () => {
-                // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
                 await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
             });
         }
@@ -95,7 +97,7 @@ const RoleProTable: React.FC = () => {
 
         const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
             await executeAndCallbackRefresh(async () => {
-                await handleOption('/api/roleMenu/assignMenuToRole', '分配菜单',{
+                await handleOption(API_CONSTANTS.ROLE_ASSIGN_MENU, l('role.assign'),{
                     roleId: formValues.id,
                     menuIds: selectKeys
                 });
@@ -125,6 +127,12 @@ const RoleProTable: React.FC = () => {
         setAssignMenu(true);
     };
 
+    const handleClickViewUserList = (record: Partial<UserBaseInfo.Role>) => {
+        setFormValues(record);
+        queryDataByParams(API_CONSTANTS.ROLE_USER_LIST,{roleId: record.id}).then(res =>  setRoleUserList(res));
+        setOpenViewUserList(true);
+    }
+
 
         /**
          * columns
@@ -133,6 +141,9 @@ const RoleProTable: React.FC = () => {
             {
                 title: l('role.roleCode'),
                 dataIndex: 'roleCode',
+                render: (_, record: UserBaseInfo.Role) => (
+                    <a onClick={()=> handleClickViewUserList(record) }> {record.roleCode} </a>
+                )
             },
             {
                 title: l('role.roleName'),
@@ -215,6 +226,15 @@ const RoleProTable: React.FC = () => {
                     open={assignMenu}
                     onSubmit={handleAssignMenuSubmit}
                     onClose={() => setAssignMenu(false)}
+                />
+            }
+            {Object.keys(formValues).length> 0 &&
+                <RoleUserList
+                    role={formValues}
+                    open={openViewUserList}
+                    userList={roleUserList}
+                    loading={loading}
+                    onClose={() => setOpenViewUserList(false)}
                 />
             }
         </>

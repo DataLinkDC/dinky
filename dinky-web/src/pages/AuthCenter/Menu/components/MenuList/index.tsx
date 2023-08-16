@@ -31,6 +31,7 @@ import { ProCard } from "@ant-design/pro-components";
 import { Button, Space } from 'antd';
 import { MenuInfo } from "rc-menu/es/interface";
 import React, { useEffect, useState } from "react";
+import {API_CONSTANTS} from "@/services/constants";
 
 const MenuList: React.FC = () => {
         /**
@@ -54,7 +55,7 @@ const MenuList: React.FC = () => {
          */
         const queryMenuData = async () => {
             setLoading(true);
-            await queryDataByParams('/api/menu/listMenus').then(res => setTreeData(res))
+            await queryDataByParams(API_CONSTANTS.MENU_LIST).then(res => setTreeData(res))
             setLoading(false);
         }
 
@@ -76,7 +77,7 @@ const MenuList: React.FC = () => {
          */
         const handleDeleteSubmit = async () => {
             await executeAndCallbackRefresh(async () => {
-                await handleRemoveById('/api/menu/delete', rightClickedNode.key as number);
+                await handleRemoveById(API_CONSTANTS.MENU_DELETE, rightClickedNode.key as number);
             });
             setContextMenuVisible(false)
         }
@@ -87,7 +88,7 @@ const MenuList: React.FC = () => {
          */
         const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
             await executeAndCallbackRefresh(async () => {
-                await handleAddOrUpdate('/api/menu/addOrUpdate', {...value});
+                await handleAddOrUpdate(API_CONSTANTS.MENU_ADD_OR_UPDATE, {...value});
             });
             handleModalVisible(false);
         };

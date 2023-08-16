@@ -18,11 +18,11 @@
 
 import {UserBaseInfo} from "@/types/User/data";
 import TableTransfer from "@/components/TableTransfer";
-import {ColumnsType} from "antd/es/table";
 import {API_CONSTANTS} from "@/services/constants";
 import {getData} from "@/services/api";
 import {useEffect, useState} from "react";
 import {l} from "@/utils/intl";
+import {ProColumns} from "@ant-design/pro-components";
 
 
 type TransferFromProps = {
@@ -67,7 +67,7 @@ const RoleTransfer = (props: TransferFromProps) => {
     /**
      * table columns
      */
-    const columns: ColumnsType<UserBaseInfo.Role> = [
+    const columns: ProColumns<UserBaseInfo.Role>[] = [
         {
             dataIndex: 'roleCode',
             title: l('role.roleCode'),
@@ -102,12 +102,13 @@ const RoleTransfer = (props: TransferFromProps) => {
             dataSource={roleTableList}
             targetKeys={targetKeys}
             selectedKeys={selectedKeys}
-            rowKey={item => item.id as any}
+            rowKey={item => item.id}
             onChange={onChange}
             onSelectChange={onSelectChange}
-            filterOption={(inputValue, item) =>
-                item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
-            }
+            filterOption={(inputValue, item: UserBaseInfo.Role) =>{
+                if(!item.roleCode || !item.roleName) return false;
+                return item.roleCode.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 || item.roleName.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+            }}
             leftColumns={columns}
             rightColumns={columns}
         />

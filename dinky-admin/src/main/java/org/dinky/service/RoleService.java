@@ -20,6 +20,7 @@
 package org.dinky.service;
 
 import org.dinky.data.model.Role;
+import org.dinky.data.model.User;
 import org.dinky.data.result.ProTableResult;
 import org.dinky.data.result.Result;
 import org.dinky.mybatis.service.ISuperService;
@@ -73,4 +74,6 @@ public interface RoleService extends ISuperService<Role> {
      * @return role list
      */
     List<Integer> selectRoleListByUserId(Integer userId);
+
+    List<User> getUserListByRoleId(Integer roleId);
 }

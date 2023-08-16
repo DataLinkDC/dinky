@@ -43,6 +43,7 @@ dinky-web/node_modules/*
 dinky-web/node/*
 dinky-web/dist/*
 dinky-web/.mfsu-production
+dinky-web/pnpm-lock.yaml
 
 dinky-admin/src/main/resources/static/*
 dinky-admin/tmp/*

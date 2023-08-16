@@ -26,6 +26,7 @@ export default {
   'menu.exception.server-error': '500',
 
   'menu.login': '登录',
+  'menu.center': '个人中心',
   'menu.account.center': '个人中心',
   'menu.account.tenant': '租户: {tenantCode}',
   'menu.account.settings': '个人设置',
