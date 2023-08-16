@@ -18,7 +18,14 @@
 import {ConfigProvider, Divider, Dropdown, Menu, Space, Tabs} from "antd";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
-import {DataStudioParams, MetadataParams, StateType, TabsItemType, TabsPageType} from "@/pages/DataStudio/model";
+import {
+  DataStudioParams,
+  MetadataParams,
+  STUDIO_MODEL,
+  StateType,
+  TabsItemType,
+  TabsPageType
+} from "@/pages/DataStudio/model";
 import RightTagsRouter from "@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter";
 import KeyBoard from "@/pages/DataStudio/MiddleContainer/KeyBoard";
 import {MenuInfo} from "rc-menu/es/interface";
@@ -45,16 +52,20 @@ const MiddleContainer = (props: any) => {
   const updateRightKey = (key:string) => {
     let oldPane:TabsItemType;
     let newPane:TabsItemType;
+
     panes.forEach((pane: TabsItemType) => {
       if (pane.key === key) {
         newPane = pane
       }
+
       if (pane.key === activeKey) {
         oldPane = pane
       }
     })
+
     let oldRightSideAvailableKey:string[]=[];
     let newRightSideAvailableKey:string[]=[];
+
     RightSide.forEach(x=>{
       if (x.isShow){
         if (x.isShow(oldPane.type, oldPane.subType)) {
@@ -67,26 +78,31 @@ const MiddleContainer = (props: any) => {
         newRightSideAvailableKey.push(x.key)
       }
     });
-    if (rightKey && !newRightSideAvailableKey.includes(rightKey)){
-      if (newRightSideAvailableKey.length===0){
-        dispatch({
-          type: 'Studio/updateSelectRightKey',
-          payload: '',
-        })
-        return;
-      }
-      const oldIndex = oldRightSideAvailableKey.findIndex((value)=>value===rightKey);
-      let selectKey: string;
-      if (oldIndex >= newRightSideAvailableKey.length) {
-        selectKey= newRightSideAvailableKey.pop() as string;
-      }else {
-        selectKey= newRightSideAvailableKey[oldIndex];
-      }
-      dispatch({
-        type: 'Studio/updateSelectRightKey',
-        payload: selectKey,
-      })
+
+    if (!rightKey || newRightSideAvailableKey.includes(rightKey)) {
+      return;
     }
+
+    if (newRightSideAvailableKey.length === 0) {
+      dispatch({
+        type: STUDIO_MODEL.updateSelectRightKey,
+        payload: '',
+      })
+      return;
+    }
+
+    const oldIndex = oldRightSideAvailableKey.findIndex((value) => value === rightKey);
+    let selectKey: string;
+    if (oldIndex >= newRightSideAvailableKey.length) {
+      selectKey = newRightSideAvailableKey.pop() as string;
+    } else {
+      selectKey = newRightSideAvailableKey[oldIndex];
+    }
+
+    dispatch({
+      type: STUDIO_MODEL.updateSelectRightKey,
+      payload: selectKey,
+    })
   }
   /**
    * 更新当前激活的tab
@@ -97,41 +113,44 @@ const MiddleContainer = (props: any) => {
     if (key === activeKey) {
       return
     }
+
     const {target: {innerText}} = eInfo;
     if (!innerText){
       return;
     }
-    const replaceLabel = innerText.toString().replace('.', '/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-    setContextMenuVisible(false)
 
+    setContextMenuVisible(false)
     updateRightKey(key);
 
     dispatch({
-      type: 'Studio/updateTabsActiveKey',
+      type: STUDIO_MODEL.updateTabsActiveKey,
       payload: key,
     })
+
+    // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+    const replaceLabel = innerText.toString().replace('.', '/')
     dispatch({
-      type: 'Studio/updateDatabaseSelectKey',
+      type: STUDIO_MODEL.updateDatabaseSelectKey,
       payload: [replaceLabel],
     })
   };
-
 
   /**
    * 关闭所有标签
    */
   const handleCloseAllTabs = () => {
     dispatch({
-      type: 'Studio/closeAllTabs',
+      type: STUDIO_MODEL.closeAllTabs,
     });
     setContextMenuVisible(false)
   }
+
   /**
    * 关闭其他标签
    */
   const handleCloseOtherTabs = () => {
     dispatch({
-      type: 'Studio/closeOtherTabs',
+      type: STUDIO_MODEL.closeOtherTabs,
       payload: includeTab,
     });
     setContextMenuVisible(false)
@@ -143,23 +162,24 @@ const MiddleContainer = (props: any) => {
    * @param item
    */
   const handleRightClick = (info: any, item: any) => {
-    info.preventDefault(); // 阻止默认右键事件
-    const {key, label} = item;
-    const replaceLabel = label.toString().replace('.', '/') // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-    updateActiveKey(key, info);
+    // 阻止默认右键事件
+    info.preventDefault()
+    updateActiveKey(item.key, info);
+
+    // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
+    const replaceLabel = item.label.toString().replace('.', '/')
     dispatch({
-      type: 'Studio/updateDatabaseSelectKey',
+      type: STUDIO_MODEL.updateDatabaseSelectKey,
       payload: [replaceLabel],
     })
-    // 获取 选中的值
+
+    // 设置选中的值
     setIncludeTab(item);
-    // 获取右键点击的位置
-    const {clientX, clientY} = info;
     setContextMenuVisible(true)
     setContextMenuPosition({
       position: 'fixed', cursor: 'context-menu', width: '10vw', zIndex: 9999,
-      left: clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-      top: clientY + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+      left: info.clientX + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
+      top: info.clientY + 10, // + 10 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
     });
   };
 
@@ -180,37 +200,31 @@ const MiddleContainer = (props: any) => {
     }
   };
 
-
   /**
    * 右键菜单
    * @returns {JSX.Element}
    */
   const renderRightClickMenu = () => {
-    // const menuList = <Menu onClick={handleMenuClick} items={STUDIO_TAG_RIGHT_CONTEXT_MENU}/>
-    return <>
-      <Dropdown
-        arrow
-        trigger={['contextMenu']}
-        overlayStyle={{...contextMenuPosition}}
-        menu={{items: STUDIO_TAG_RIGHT_CONTEXT_MENU, onClick: handleMenuClick}}
-        open={contextMenuVisible}
-        onOpenChange={setContextMenuVisible}
-      >
-        {/*占位*/}
-        <div style={{...contextMenuPosition}}/>
-      </Dropdown>
-    </>
+    return <Dropdown
+      arrow
+      trigger={['contextMenu']}
+      overlayStyle={{...contextMenuPosition}}
+      menu={{items: STUDIO_TAG_RIGHT_CONTEXT_MENU, onClick: handleMenuClick}}
+      open={contextMenuVisible}
+      onOpenChange={setContextMenuVisible}>
+      {/*占位*/}
+      <div style={{...contextMenuPosition}}/>
+    </Dropdown>
   }
 
   /**
    * render tabs
    */
-  const tabItems = (panes).map((item: TabsItemType) => {
+  const tabItems = panes.map((item: TabsItemType) => {
     const renderContent = () => {
       switch (item.type) {
         case TabsPageType.metadata:
-          let params: MetadataParams;
-          params = item.params as MetadataParams;
+          const params = item.params as MetadataParams;
           return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams}/>
         case TabsPageType.project:
           if (parseInt(activeKey) < 0) {
@@ -222,23 +236,21 @@ const MiddleContainer = (props: any) => {
           return <></>
       }
     }
+
     return {
       key: item.key,
-      label: <>
-        <Space
-            onClick={()=> updateActiveKey(item.key, {target: {innerText: item.label}})}
-            size={0} onContextMenu={(e) => handleRightClick(e, item)}
-            key={item.key}>{getTabIcon(item.icon, 16)}{item.label}</Space>
-      </>,
-      children:<>
+      label:
+        <Space onClick={() => updateActiveKey(item.key, {target: {innerText: item.label}})}
+               size={0}
+               onContextMenu={(e) => handleRightClick(e, item)}
+               key={item.key}>{getTabIcon(item.icon, 16)}{item.label}
+        </Space>,
+      children:
         <ContentScroll height={activeKey === item.key ? props.centerContentHeight - 35 : 0}>
           {renderContent()}
         </ContentScroll>
-      </>
     }
-
   })
-
 
   /**
    * 关闭tab
@@ -247,16 +259,16 @@ const MiddleContainer = (props: any) => {
   const closeTab = (targetKey: TargetKey) => {
     if (panes.length === 1) {
       dispatch({
-        type: 'Studio/updateSelectRightKey',
+        type: STUDIO_MODEL.updateSelectRightKey,
         payload: "",
       })
     }
+
     dispatch({
-      type: 'Studio/closeTab',
+      type: STUDIO_MODEL.closeTab,
       payload: targetKey,
     })
   };
-
 
   /**
    * render middle content
@@ -269,38 +281,37 @@ const MiddleContainer = (props: any) => {
         <Divider/><br/><br/><br/>
         <QuickGuide/>
       </>
-    } else {
-      return <>
-        <ConfigProvider theme={{
-          components: {
-            Tabs: {
-              margin: 0,
-              borderRadiusLG: 0
-            }
-          }
-        }}>
-          <Tabs
-            className={"data-studio-tabs"}
-            tabBarStyle={{borderBlock: '1px solid ' + themeValue.borderColor}}
-            hideAdd
-            onTabClick={(active, e) => updateActiveKey(active, e)}
-            activeKey={activeKey}
-            type="editable-card"
-            onEdit={closeTab}
-            items={tabItems}
-          />
-          {renderRightClickMenu()}
-        </ConfigProvider>
-
-      </>
     }
-  }
 
+    return <>
+      <ConfigProvider theme={{
+        components: {
+          Tabs: {
+            margin: 0,
+            borderRadiusLG: 0
+          }
+        }
+      }}>
+        <Tabs
+          className={"data-studio-tabs"}
+          tabBarStyle={{borderBlock: `1px solid ${themeValue.borderColor}`}}
+          hideAdd
+          onTabClick={(active, e) => updateActiveKey(active, e)}
+          activeKey={activeKey}
+          type="editable-card"
+          onEdit={closeTab}
+          items={tabItems}
+        />
+        {renderRightClickMenu()}
+      </ConfigProvider>
+    </>
+  }
 
   return <>
     {renderMiddleContent()}
   </>
 }
+
 export default connect(({Studio}: { Studio: StateType }) => ({
   tabs: Studio.tabs,
   centerContentHeight: Studio.centerContentHeight,
