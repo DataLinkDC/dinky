@@ -21,10 +21,6 @@ package org.dinky.data.model;
 
 import org.dinky.mybatis.model.SuperEntity;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 
 import lombok.Data;
@@ -51,12 +47,6 @@ public class Catalogue extends SuperEntity {
     private Integer parentId;
 
     private Boolean isLeaf;
-
-    @TableField(exist = false)
-    private List<Catalogue> children = new ArrayList<>();
-
-    @TableField(exist = false)
-    private Task task;
 
     public Catalogue() {}
 

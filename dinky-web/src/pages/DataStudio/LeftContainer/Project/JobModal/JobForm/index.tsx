@@ -17,14 +17,21 @@
  *
  */
 
-export type Catalogue = {
-    id: number;
-    name: string;
-    tenantId: number;
-    taskId: number;
-    type: string;
-    parentId: number;
-    isLeaf: boolean;
-    createTime: Date;
-    updateTime: Date;
-}
+import React from "react";
+import {ProForm, ProFormText} from "@ant-design/pro-components";
+import {l} from "@/utils/intl";
+
+const JobForm = () => {
+    return <>
+            <ProFormText
+                name="name"
+                width={'md'}
+                label={l('datastudio.project.create.folder.name')}
+                placeholder={l('datastudio.project.create.folder.name.placeholder')}
+                rules={[ {required: true, message: l('datastudio.project.create.folder.name.placeholder')} ]}
+            />
+    </>
+};
+
+
+export default JobForm;

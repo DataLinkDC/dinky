@@ -21,12 +21,13 @@ import React, {useState} from "react";
 import {Space} from "antd";
 import Title from "@/components/Front/Title";
 import {l} from "@/utils/intl";
+import JobModal from "@/pages/DataStudio/LeftContainer/Project/JobModal";
 import {connect} from "@umijs/max";
 import {StateType} from "@/pages/DataStudio/model";
 import {Catalogue} from "@/types/Studio/data";
 import {handleAddOrUpdate} from "@/services/BusinessCrud";
-import {BtnRoute} from "@/pages/DataStudio/route";
-import FolderModal from "@/pages/DataStudio/LeftContainer/Project/FolderModal";
+import {PlusOutlined} from "@ant-design/icons";
+import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
 
@@ -61,10 +62,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
             handleCancelCreate();
             dispatch({type: 'Studio/queryProject'});
         });
-    };
-
-    const btn = BtnRoute['menu.datastudio.project'];
-    btn[0].onClick = () => handleCreateClick();
+    }
 
 
     /**
@@ -75,12 +73,9 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
         if (selectKey && selectKey === "menu.datastudio.project") {
             return <Space>
                 <Title>{l(selectKey)}</Title>
-                <FolderModal
-                    title={l('right.menu.createRoot')}
-                    modalVisible={createModalVisible}
-                    onCancel={handleCancelCreate}
-                    onSubmit={handleSubmit} values={{}}
-                />
+                <CircleBtn title={l("datastudio.project.create.rootFolder")} icon={<PlusOutlined/>}
+                           onClick={() => handleCreateClick()}/>
+                <JobModal modalVisible={createModalVisible} onCancel={handleCancelCreate} onSubmit={handleSubmit}/>
             </Space>
         } else {
             return <Title>{l(selectKey)}</Title>

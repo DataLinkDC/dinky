@@ -30,7 +30,7 @@ import {
   HistoryOutlined,
   InfoCircleOutlined,
   MonitorOutlined,
-  PlayCircleOutlined, PlusCircleOutlined, PlusCircleTwoTone,
+  PlayCircleOutlined,
   ReloadOutlined,
   RightSquareOutlined,
   SettingOutlined, ShrinkOutlined,
@@ -213,12 +213,6 @@ export const BtnRoute: { [c:string]:CircleButtonProps[] } = {
     }
   ],
   'menu.datastudio.project':[
-    {
-      icon: <PlusCircleOutlined />,
-      title: l('right.menu.createRoot'),
-      key: 'right.menu.createRoot',
-      onClick: ()=>{}
-    },
     {
       icon: <ArrowsAltOutlined />,
       title: l('button.expand-all'),

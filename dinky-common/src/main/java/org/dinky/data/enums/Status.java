@@ -223,12 +223,6 @@ public enum Status {
                     + " or do not use LDAP to log in",
             "当前用户登录模式不是LDAP，请联系管理员修改,或不使用LDAP登录"),
 
-    /**
-     * datastudio about
-     */
-    // 该目录下存在子目录/作业，无法删除
-    FOLDER_NOT_EMPTY(19001, "Folder Not Empty, Can Not Delete", "该目录下存在子目录/作业，无法删除"),
-
     /** global exception */
     GLOBAL_PARAMS_CHECK_ERROR(90001, "Field: {0}, {1}", "字段: {0}, {1}"),
     GLOBAL_PARAMS_CHECK_ERROR_VALUE(90002, "Field: {0}, Illegal Value: {1}", "字段: {0}, 不合法的值: {1}"),

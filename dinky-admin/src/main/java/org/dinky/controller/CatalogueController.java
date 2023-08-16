@@ -31,13 +31,11 @@ import org.dinky.service.CatalogueService;
 import java.io.File;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -104,29 +102,22 @@ public class CatalogueController {
     @Log(title = "Insert Or Update Catalogue", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Insert Or Update Catalogue")
     public Result<Void> saveOrUpdateCatalogue(@RequestBody Catalogue catalogue) {
-        if (catalogueService.saveOrUpdateOrRename(catalogue)) {
+        if (catalogueService.saveOrUpdate(catalogue)) {
             return Result.succeed(Status.SAVE_SUCCESS);
         } else {
             return Result.failed(Status.SAVE_FAILED);
         }
     }
 
-    /**
-     * query catalogue tree data
-     * @return {@link Result}< {@link List}< {@link Catalogue}>>}
-     */
+    /** 获取所有目录 */
     @PostMapping("/getCatalogueTreeData")
     @ApiOperation("Get Catalogue Tree Data")
-    public Result<List<Catalogue>> getCatalogueTree() {
-        List<Catalogue> catalogues = catalogueService.getCatalogueTree();
+    public Result<List<Catalogue>> getCatalogueTreeData() {
+        List<Catalogue> catalogues = catalogueService.getAllData();
         return Result.succeed(catalogues);
     }
 
-    /**
-     * create catalogue and task
-     * @param catalogueTaskDTO {@link CatalogueTaskDTO}
-     * @return {@link Result}< {@link Catalogue}>}
-     */
+    /** 创建节点和作业 */
     @PutMapping("/createTask")
     @Log(title = "Create Catalogue And Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Create Catalogue And Task")
@@ -139,30 +130,30 @@ public class CatalogueController {
         }
     }
 
-    /**
-     *  move catalogue
-     * @param originCatalogueId origin catalogue id
-     * @param targetParentId target parent id
-     * @return  {@link Result}< {@link Boolean}>}
-     */
+    /** 重命名节点和作业 */
+    @PutMapping("/toRename")
+    @Log(title = "Rename Catalogue And Task", businessType = BusinessType.UPDATE)
+    @ApiOperation("Rename Catalogue And Task")
+    public Result<Void> toRename(@RequestBody Catalogue catalogue) {
+        if (catalogueService.toRename(catalogue)) {
+            return Result.succeed(Status.RENAME_SUCCESS);
+        } else {
+            return Result.failed(Status.RENAME_FAILED);
+        }
+    }
+
+    /** 重命名节点和作业 */
     @PutMapping("/moveCatalogue")
     @Log(title = "Move Catalogue", businessType = BusinessType.UPDATE)
     @ApiOperation("Move Catalogue")
-    public Result<Boolean> moveCatalogue(
-            @RequestParam("originCatalogueId") Integer originCatalogueId,
-            @RequestParam("targetParentId") Integer targetParentId) {
-        if (catalogueService.moveCatalogue(originCatalogueId, targetParentId)) {
+    public Result<Boolean> moveCatalogue(@RequestBody Catalogue catalogue) {
+        if (catalogueService.moveCatalogue(catalogue.getId(), catalogue.getParentId())) {
             return Result.succeed(true, Status.MOVE_SUCCESS);
         } else {
             return Result.failed(false, Status.MOVE_FAILED);
         }
     }
 
-    /**
-     * copy task
-     * @param catalogue {@link Catalogue}
-     * @return {@link Result}< {@link Catalogue}>}
-     */
     @PostMapping("/copyTask")
     @Log(title = "Copy Task", businessType = BusinessType.INSERT_OR_UPDATE)
     @ApiOperation("Copy Task")
@@ -172,17 +163,5 @@ public class CatalogueController {
         } else {
             return Result.failed(Status.COPY_FAILED);
         }
-    }
-
-    /**
-     * delete catalogue by id
-     * @param id catalogue id
-     * @return {@link Result}< {@link Void}>}
-     */
-    @DeleteMapping("deleteCatalogueById")
-    @Log(title = "Delete Catalogue By Id", businessType = BusinessType.DELETE)
-    @ApiOperation("Delete Catalogue By Id")
-    public Result<Void> deleteCatalogueById(@RequestParam Integer id) {
-        return catalogueService.deleteCatalogueById(id);
     }
 }

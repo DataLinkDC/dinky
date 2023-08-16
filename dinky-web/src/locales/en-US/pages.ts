@@ -1063,18 +1063,4 @@ export default {
   'datastudio.project.create.rootFolder': 'Create Root Folder',
   'datastudio.project.create.folder.name': 'Folder Name',
   'datastudio.project.create.folder.name.placeholder': 'Please enter the folder name',
-  'datastudio.project.create.folder.tip': 'No job, please click the new directory in the upper left corner',
-  'datastudio.project.delete.job': 'Delete [{type}] Job [{name}]',
-  'datastudio.project.delete.job.confirm': 'This operation will delete the execution history of the task and all information of the task. \nPlease operate with caution! This operation is irreversible!!!  \n\t\t\t\tConfirm to delete?',
-
-  'catalog.name': 'Job Name',
-  'catalog.name.placeholder': 'Please enter the job name',
-  'catalog.name.tip': 'This name can be used as the JobName of the FlinkSql task (pipeline.name configuration item)',
-  'catalog.type': 'Job Type',
-  'catalog.type.placeholder': 'Please select the job type',
-  'catalog.type.tip': 'The job type determines the execution method of the job, please choose carefully, once selected, it cannot be modified',
-  'catalog.udf.templateId': 'UDF Template',
-  'catalog.udf.templateId.placeholder': 'Please select UDF template',
-  'catalog.udf.className': 'Class/Method Name',
-  'catalog.udf.className.placeholder': 'Please enter the class or method name',
 };

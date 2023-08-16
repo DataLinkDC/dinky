@@ -221,7 +221,7 @@ const MenuList: React.FC = () => {
                     type={'primary'}
                     onClick={() => handleCreateRoot()}
                 >
-                    {l('right.menu.createRoot')}
+                    {l('right.menu.addRoot')}
                 </Button>
                 <Button
                     size={'middle'}
@@ -241,7 +241,7 @@ const MenuList: React.FC = () => {
                 {(formValues.id && updateModalVisible) ?
                     l('menu.edit') : (!formValues.id && modalVisible && !isRootMenu) ?
                         l('right.menu.addSub') : (!formValues.id && modalVisible && isRootMenu) ?
-                            l('right.menu.createRoot') : ''}
+                            l('right.menu.addRoot') : ''}
             </>
         }
 

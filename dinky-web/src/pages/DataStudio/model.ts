@@ -252,7 +252,6 @@ export type ModelType = {
     saveProject: Reducer<StateType>;
     updateTabsActiveKey: Reducer<StateType>;
     closeTab: Reducer<StateType>;
-    removeTag: Reducer<StateType>;
     addTab: Reducer<StateType>;
     saveTabs: Reducer<StateType>;
     closeAllTabs: Reducer<StateType>;
@@ -538,37 +537,6 @@ const Model: ModelType = {
         }
       };
     },
-    /**
-     * 移除标签
-     * @param {StateType} state
-     * @param {any} payload
-     * @returns {{centerContentHeight: number, tabs: {panes: TabsItemType[], activeBreadcrumbTitle: string, activeKey: string}, project: {data: any[], expandKeys: [], selectKey: []}, leftContainer: Container, env: EnvType[], footContainer: {codeType: string, jobRunningMsg: JobRunningMsgType, codeEncoding: string, memDetails: string, lineSeparator: string, space: number, codePosition: [number, number]}, clusterConfiguration: Cluster.Config[], toolContentHeight: number, database: {dbData: DataSources.DataSource[], selectDatabaseId: number | null, expandKeys: [], selectKey: []}, sessionCluster: Cluster.Instance[], isFullScreen: boolean, rightContainer: Container, bottomContainerContent: BottomContainerContent, bottomContainer: Container}}
-     */
-    removeTag(state, {payload}) {
-      const needRemoveKey = payload
-      const {tabs: {panes, activeKey}} = state;
-
-      const index = panes.findIndex((item,index)=> {
-        const params = item.params as DataStudioParams;
-        return params.taskId === needRemoveKey
-      })
-
-      // 关闭 传过来的key
-      if (index !== -1) {
-        panes.splice(index, 1);
-      }
-        const newActiveKey = activeKey === needRemoveKey ? panes[panes.length - 1].key : activeKey;
-        return {
-            ...state,
-            tabs: {
-                ...state.tabs,
-                panes: panes,
-                activeKey: newActiveKey,
-            }
-        }
-
-    },
-
     /**
      *  关闭tab
      * @param {StateType} state
