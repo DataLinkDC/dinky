@@ -130,7 +130,7 @@ export type TabsType = {
 }
 
 export type ConnectorType = {
-  tablename: string;
+  tableName: string;
 }
 
 export type MetaStoreCatalogType = {
