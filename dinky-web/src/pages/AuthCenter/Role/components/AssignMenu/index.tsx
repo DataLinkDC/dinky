@@ -26,6 +26,7 @@ import {SysMenu} from "@/types/RegCenter/data";
 import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
 import {Key} from "@ant-design/pro-components";
 import {queryDataByParams} from "@/services/BusinessCrud";
+import {API_CONSTANTS} from "@/services/constants";
 
 type AssignMenuProps = {
     values: Partial<UserBaseInfo.Role>,
@@ -51,27 +52,28 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
 
     useEffect(()=> {
         setLoading(true)
-        queryDataByParams(`/api/menu/roleMenus/`, {id: values.id}).then((res) => setMenuData(res))
+        open && queryDataByParams(API_CONSTANTS.ROLE_MENU_LIST, {id: values.id}).then((res) => setMenuData(res))
         setLoading(false)
-    },[values.id])
+    },[values,open])
 
 
     /**
      * close
      * @type {() => void}
      */
-    const handleClose = useCallback(() => {
+    const handleClose = useCallback( () => {
         onClose()
         setMenuData({menus:[],selectedMenuIds: []})
-    }, [values, onClose]);
+    }, [values]);
 
     /**
      * when submit menu , use loading
      */
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         setLoading(true)
-        onSubmit(selectValue)
+        await onSubmit(selectValue)
         setLoading(false)
+        setMenuData({menus:[],selectedMenuIds: []})
     }
 
 

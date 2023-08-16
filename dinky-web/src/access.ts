@@ -24,7 +24,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   const { currentUser } = initialState ?? {};
   return {
     canAdmin: currentUser && currentUser.user.superAdminFlag,
-    canAuth({ path, ...route }) {
+    canAuth({ path, ...route }:{path:string}) {
       if (currentUser && currentUser.user.superAdminFlag) {
         return true;
       }

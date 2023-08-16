@@ -38,6 +38,7 @@ import {
 } from '@ant-design/pro-components';
 import { Form, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {Values} from "async-validator";
 
 type MenuFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -52,6 +53,22 @@ type MenuFormProps = {
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
+
+    /**
+     * init props
+     */
+    const {
+        onSubmit: handleSubmit,
+        onCancel: handleModalVisible,
+        values,
+        open,
+        disabled = false,
+        isRootMenu = false,
+        treeData,
+        selectedKeys,
+    } = props;
+
+
   /**
    * init form
    */
@@ -66,19 +83,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     [form],
   );
 
-  /**
-   * init props
-   */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    values,
-    open,
-    disabled = false,
-    isRootMenu = false,
-    treeData,
-    selectedKeys,
-  } = props;
+
 
   /**
    * when modalVisible or values changed, set form values
@@ -153,11 +158,19 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           rules={[{ required: true, message: l('menu.pathPlaceholder') }]}
         />
 
+          <ProFormRadio.Group
+              label={l('menu.type')}
+              name={'type'}
+              radioType="button"
+              rules={[{ required: true, message: l('menu.typePlaceholder') }]}
+              placeholder={l('menu.typePlaceholder')}
+              options={MENU_TYPE_OPTIONS}
+          />
+
         <ProFormText
           name="perms"
           label={l('menu.perms')}
           placeholder={l('menu.permsPlaceholder')}
-          rules={[{ required: true, message: l('menu.permsPlaceholder') }]}
         />
 
         <ProFormSelect
@@ -175,21 +188,12 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           options={MENU_ICON_OPTIONS()}
           label={l('menu.icon')}
           placeholder={l('menu.iconPlaceholder')}
-          rules={[{ required: true, message: l('menu.iconPlaceholder') }]}
         />
 
-        <ProFormRadio.Group
-          label={l('menu.type')}
-          name={'type'}
-          radioType="button"
-          rules={[{ required: true, message: l('menu.typePlaceholder') }]}
-          placeholder={l('menu.typePlaceholder')}
-          options={MENU_TYPE_OPTIONS}
-        />
         <ProFormDigit
           name="orderNum"
-          label={l('menu.orderNum')}/>
-
+          label={l('menu.orderNum')}
+        />
 
         <ProFormTextArea
           name="note"
@@ -210,13 +214,11 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         disabled={disabled}
         {...FORM_LAYOUT_PUBLIC}
         form={form}
-        initialValues={{ ...values }} // init form data
+        initialValues={{ ...values}} // init form data
         onReset={handleReset}
         onFinish={submitForm}
         submitter={{
-          render: (_, dom) => (
-            <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>
-          ),
+          render: (_, dom) => <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>,
         }}
         layout={'horizontal'}
       >

@@ -26,6 +26,7 @@ export default {
   'menu.exception.server-error': '500',
 
   'menu.login': 'Login',
+  'menu.center': 'Center',
   'menu.account.settings': 'Account Settings',
   'menu.account.tenant': 'Tenant: {tenantCode}',
   'menu.account.center': 'Account Center',
