@@ -140,12 +140,23 @@ const DataStudio = (props: any) => {
     onResize();
   }, []);
 
-
   /**
    * 渲染头部
    * @returns {JSX.Element}
    */
   const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+
+  /**
+   * 渲染左侧侧边栏
+   * @returns {JSX.Element}
+   */
+  const renderLeftContainer = () => <LeftContainer size={size}/>
+
+  /**
+   * 渲染右侧侧边栏
+   * @returns {JSX.Element}
+   */
+  const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight}/>
 
   const updateTabContent = () => {
     (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
@@ -153,22 +164,6 @@ const DataStudio = (props: any) => {
     setIsModalUpdateTabContentOpen(false)
   }
 
-
-  /**
-   * 渲染左侧侧边栏
-   * @returns {JSX.Element}
-   */
-  const renderLeftContainer = () => {
-    return <LeftContainer size={size}/>
-  }
-
-  /**
-   * 渲染右侧侧边栏
-   * @returns {JSX.Element}
-   */
-  const renderRightContainer = () => {
-    return <RightContainer size={size} bottomHeight={bottomHeight}/>
-  }
   return (
     <PersistGate loading={null} persistor={persist}>
       <Fragment>
