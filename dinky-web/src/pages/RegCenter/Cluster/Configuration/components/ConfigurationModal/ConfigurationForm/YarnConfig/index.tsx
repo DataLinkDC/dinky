@@ -18,7 +18,7 @@
  */
 
 
-import {Col, Divider, Row} from "antd";
+import {Col, Divider, Row, Space} from "antd";
 import {l} from "@/utils/intl";
 import {ProCard, ProFormGroup, ProFormList, ProFormText} from "@ant-design/pro-components";
 import React from "react";
@@ -46,13 +46,15 @@ const YarnConfig = () => {
                         tooltipText: l('rc.cc.deleteConfig'),
                     }}
                     creatorButtonProps={{
-                        style: {width: '26vw'},
+                        style: {width: '100%'},
                         creatorButtonText: l('rc.cc.addConfig'),
                     }}
                 >
-                    <ProFormGroup key="hadoopGroup">
-                        <ProFormText width={'sm'} name="name" label={l('rc.cc.key')}/>
-                        <ProFormText width={'sm'} name="value" label={l('rc.cc.value')}/>
+                    <ProFormGroup key="hadoopGroup" style={{ width: '100%'}}>
+                        <Space key={'config'} style={{width: '100%'}} align="baseline">
+                            <ProFormText width={'md'} name="name" placeholder={l('rc.cc.key')}/>
+                            <ProFormText width={'sm'} name="value" placeholder={l('rc.cc.value')}/>
+                        </Space>
                     </ProFormGroup>
                 </ProFormList>
             </Col>
@@ -93,9 +95,11 @@ const YarnConfig = () => {
                         creatorButtonText: l('rc.cc.addConfig'),
                     }}
                 >
-                    <ProFormGroup key="flinkGroup">
-                        <ProFormText width={'md'} name="name" label={l('rc.cc.key')}/>
-                        <ProFormText width={'md'} name="value" label={l('rc.cc.value')}/>
+                    <ProFormGroup key="flinkGroup" style={{display: 'flex',width: '100%'}}>
+                        <Space key={'config'} style={{display: 'flex'}} align="baseline">
+                            <ProFormText width={'md'} name="name" placeholder={l('rc.cc.key')}/>
+                            <ProFormText width={'sm'}  name="value" placeholder={l('rc.cc.value')}/>
+                        </Space>
                     </ProFormGroup>
                 </ProFormList>
             </Col>

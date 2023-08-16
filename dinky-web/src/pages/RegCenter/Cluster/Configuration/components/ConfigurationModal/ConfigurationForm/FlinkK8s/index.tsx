@@ -73,7 +73,7 @@ const FlinkK8s = (props: { type: string, value: any }) => {
       label: <TagAlignCenter>Default Pod Template</TagAlignCenter>,
       children:
         <ProFormItem key="dpe" name={['configJson', 'kubernetesConfig', 'podTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.configJson.kubernetesConfig.podTemplate}/>
+          <CodeEdit {...CodeEditProps} code={value.configJson?.kubernetesConfig.podTemplate ?? ''}/>
         </ProFormItem>
     },
     {
@@ -81,7 +81,7 @@ const FlinkK8s = (props: { type: string, value: any }) => {
       label: <TagAlignCenter>JM Pod Template</TagAlignCenter>,
       children:
         <ProFormItem key="jmdpe" name={['configJson', 'kubernetesConfig', 'jmPodTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.configJson.kubernetesConfig.jmPodTemplate}/>
+          <CodeEdit {...CodeEditProps} code={value.configJson?.kubernetesConfig.jmPodTemplate ?? ''}/>
         </ProFormItem>
     },
     {
@@ -89,7 +89,7 @@ const FlinkK8s = (props: { type: string, value: any }) => {
       label: <TagAlignCenter>TM Pod Template</TagAlignCenter>,
       children:
         <ProFormItem key="tmdpe" name={['configJson', 'kubernetesConfig', 'tmPodTemplate']}>
-          <CodeEdit {...CodeEditProps} code={value.configJson.kubernetesConfig.tmPodTemplate}/>
+          <CodeEdit {...CodeEditProps} code={value.configJson?.kubernetesConfig.tmPodTemplate ?? ''}/>
         </ProFormItem>
     },
   ];
