@@ -280,6 +280,10 @@ const getModelType = (name: string) => {
   return `${ModelTypeName}/${name}`;
 }
 
+export const STUDIO_MODEL_SYNC: {[K in keyof ModelType['effects']]: string} = {
+  queryProject: getModelType('queryProject'),
+}
+
 export const STUDIO_MODEL: {[K in keyof ModelType['reducers']]: string} = {
   updateToolContentHeight: getModelType('updateToolContentHeight'),
   updateCenterContentHeight: getModelType('updateCenterContentHeight'),

@@ -251,6 +251,12 @@ export const API_CONSTANTS = {
   RESOURCE_RENAME:'/api/resource/rename',
   RESOURCE_UPLOAD:'/api/resource/uploadFile',
 
+  // catalog
+  DELETE_CATALOGUE_BY_ID_URL: '/api/catalogue/deleteCatalogueById',
+  CREATE_TASK_URL: '/api/catalogue/createTask',
+  SAVE_OR_UPDATE_CATALOGUE_URL: '/api/catalogue/saveOrUpdateCatalogue',
+  COPY_TASK_URL: '/api/catalogue/copyTask',
+  MOVE_CATALOGUE_URL: '/api/catalogue/moveCatalogue',
 
 };
 

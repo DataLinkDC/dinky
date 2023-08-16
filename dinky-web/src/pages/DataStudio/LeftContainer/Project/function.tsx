@@ -57,7 +57,7 @@ export const buildProjectTree = (data: Catalogue[], searchValue: string = '', pa
     label: searchTreeNode(item.name, searchValue),
     icon:  (item.type && item.children.length === 0) && getTabIcon(item.type,20),
     value: item.id,
-    path: path || [],
+    path: path ?? [],
     type: item.type,
     title: <>{searchTreeNode(item.name, searchValue)}</>,
     fullInfo: item,

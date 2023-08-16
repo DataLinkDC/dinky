@@ -22,11 +22,12 @@ import {Space} from "antd";
 import Title from "@/components/Front/Title";
 import {l} from "@/utils/intl";
 import {connect} from "@umijs/max";
-import {StateType} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL_SYNC} from "@/pages/DataStudio/model";
 import {Catalogue} from "@/types/Studio/data";
 import {handleAddOrUpdate} from "@/services/BusinessCrud";
 import {BtnRoute} from "@/pages/DataStudio/route";
 import FolderModal from "@/pages/DataStudio/LeftContainer/Project/FolderModal";
+import {API_CONSTANTS} from "@/services/constants";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
 
@@ -53,13 +54,13 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
      * @returns {Promise<void>}
      */
     const handleSubmit = async (values: Catalogue) => {
-        await handleAddOrUpdate('/api/catalogue/saveOrUpdateCatalogue', {
+        await handleAddOrUpdate(API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL, {
             ...values,
             isLeaf: false,
             parentId: 0,
         }, ()=>{
             handleCancelCreate();
-            dispatch({type: 'Studio/queryProject'});
+            dispatch({type: STUDIO_MODEL_SYNC.queryProject});
         });
     };
 

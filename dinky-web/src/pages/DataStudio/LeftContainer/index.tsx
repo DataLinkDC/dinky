@@ -21,7 +21,7 @@ import {Tabs} from "antd";
 import MovableSidebar, {MovableSidebarProps} from "@/components/Sidebar/MovableSidebar";
 import React, {useState} from "react";
 import {connect} from "@@/exports";
-import {StateType, VIEW} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL, VIEW} from "@/pages/DataStudio/model";
 import {BtnRoute, LeftSide} from "@/pages/DataStudio/route";
 import useThemeValue from "@/hooks/useThemeValue";
 import {CircleBtn, CircleButtonProps} from "@/components/CallBackButton/CircleBtn";
@@ -41,7 +41,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
    */
   const handleReSizeChange = (width: any) => {
     dispatch({
-      type: 'Studio/updateLeftWidth',
+      type: STUDIO_MODEL.updateLeftWidth,
       payload: width,
     })
   }
@@ -51,7 +51,7 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
    */
   const handleMinimize = () => {
     dispatch({
-      type: 'Studio/updateSelectLeftKey',
+      type: STUDIO_MODEL.updateSelectLeftKey,
       payload: "",
     })
   }
