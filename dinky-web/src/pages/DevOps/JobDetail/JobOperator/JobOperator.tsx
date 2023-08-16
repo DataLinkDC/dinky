@@ -8,10 +8,7 @@ import {isStatusDone} from "@/pages/DevOps/function";
 import {useRequest} from "@@/exports";
 import {API_CONSTANTS} from "@/services/constants";
 import {JOB_LIFE_CYCLE} from "@/pages/DevOps/constants";
-
-type OperatorProps = {
-  jobDetail: Jobs.JobInfoDetail;
-};
+import {JobProps} from "@/pages/DevOps/JobDetail/data";
 
 const operatorType = {
   RESTART_JOB: "restart",
@@ -20,7 +17,7 @@ const operatorType = {
   SAVEPOINT_TRIGGER: "trigger",
   SAVEPOINT_STOP: "stop",
 }
-const JobOperator = (props: OperatorProps) => {
+const JobOperator = (props: JobProps) => {
 
   const {jobDetail} = props
   const webUri = `http://${jobDetail?.history?.jobManagerAddress}/#/job/${jobDetail?.instance?.jid}/overview`;

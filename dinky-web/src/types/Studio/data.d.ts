@@ -17,6 +17,7 @@
  *
  */
 
+
 export type Catalogue = {
     id: number;
     name: string;
@@ -27,4 +28,55 @@ export type Catalogue = {
     isLeaf: boolean;
     createTime: Date;
     updateTime: Date;
-}
+    children: Catalogue[];
+    configJson: Object<string, object>;
+    task: Task;
+};
+
+
+export type Task = {
+    id: number;
+    name: string;
+    dialect: string;
+    tenantId: number;
+    type: string;
+    checkPoint: number;
+    savePointStrategy: number;
+    savePointPath: string;
+    parallelism: number;
+    fragment: boolean;
+    statementSet: boolean;
+    batchModel: boolean;
+    clusterId: number;
+    clusterConfigurationId: number;
+    databaseId: number;
+    jarId: number;
+    envId: number;
+    alertGroupId: number;
+    note: string;
+    step: number;
+    jobInstanceId: number;
+    versionId: number;
+    statement: string;
+    clusterName: string;
+    savePoints: SavePoint[];
+    configJson: Object<string, object>;
+    path: string;
+    jarName: string;
+    clusterConfigurationName: string;
+    databaseName: string;
+    envName: string;
+    alertGroupName: string;
+    createTime: Date;
+    updateTime: Date;
+};
+
+
+export type SavePoint = {
+    id: number,
+    taskId: number,
+    name: string,
+    type: string,
+    path: string,
+    createTime: Date,
+};

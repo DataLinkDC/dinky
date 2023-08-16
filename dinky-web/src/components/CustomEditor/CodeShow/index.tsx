@@ -51,6 +51,7 @@ export type CodeShowFormProps = {
   showFloatButton?: boolean;
   refreshLogCallback?: () => void;
   fullScreenBtn?: boolean;
+
 };
 
 const CodeShow = (props: CodeShowFormProps) => {
@@ -97,6 +98,7 @@ const CodeShow = (props: CodeShowFormProps) => {
   // monaco.languages.register({
   //   id: language || "typescript",
   // });
+
 
   /**
    *  handle sync log

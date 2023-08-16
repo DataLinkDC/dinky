@@ -27,7 +27,6 @@ import org.dinky.gateway.enums.GatewayType;
 import org.dinky.gateway.result.GatewayResult;
 import org.dinky.gateway.result.KubernetesResult;
 import org.dinky.utils.LogUtil;
-import org.dinky.utils.ThreadUtil;
 
 import org.apache.flink.client.deployment.ClusterSpecification;
 import org.apache.flink.client.deployment.application.ApplicationConfiguration;
@@ -42,6 +41,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 
+import cn.hutool.core.thread.ThreadUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 
@@ -135,24 +135,25 @@ public class KubernetesApplicationGateway extends KubernetesGateway {
     }
 
     /**
-     * 等待tm完成，若不等待，则后续步骤可能会查询不到状态，报 NullPointerException
+     * Waiting for TaskManager to successfully start,if skip this step, may obtain an NullPointerException in the next step
      *
      * @param apiPath
      * @param jobId
      */
     static void waitForTaskManagerToBeReady(String apiPath, String jobId) {
         int jobIdWait = SystemConfiguration.getInstances().getJobIdWait();
-        String fullPath = String.format("http://%s/jobs/%s", apiPath, jobId);
+        String fullPath = String.format("%s/jobs/%s", apiPath, jobId);
         for (int i = 1; i <= jobIdWait; i++) {
             try {
                 // 不抛异常，就为成功
                 String result = HttpUtil.get(fullPath, NetConstant.SERVER_TIME_OUT_ACTIVE);
                 logger.info("get job status success,jobPath:{},result: {}", fullPath, result);
-                break;
+                return;
             } catch (Exception e) {
                 logger.info("Unable to connect to Flink JobManager: {},wait count:{}", fullPath, i);
                 ThreadUtil.sleep(1000);
             }
         }
+        logger.error("wait for taskManager to be ready timeout,path=" + fullPath);
     }
 }

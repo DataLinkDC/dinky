@@ -113,13 +113,15 @@ export const handleAddOrUpdate = async (url: string, params: any, afterCallBack?
  * delete by id
  * @param url
  * @param id
+ * @param afterCallBack
  */
-export const handleRemoveById = async (url: string, id: number) => {
+export const handleRemoveById = async (url: string, id: number, afterCallBack?: ()=>void) => {
   await LoadingMessageAsync(l('app.request.delete'));
   try {
     const {code, msg} = await removeById(url, {id});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
+        afterCallBack && afterCallBack();
     } else {
       await WarningMessage(msg);
     }
@@ -170,12 +172,13 @@ export const updateEnabled = async (url: string, params: any) => {
 
 
 
-export const handleOption = async (url: string, title: string, param: any) => {
+export const handleOption = async (url: string, title: string, param: any, afterCallBack?: ()=>void) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
       SuccessMessage(result.msg);
+      afterCallBack && afterCallBack();
       return result;
     } else {
       WarningMessage(result.msg);
@@ -266,12 +269,13 @@ export const queryDataByParams = async (url: string, params?: any) => {
 };
 
 
-export const handlePutDataByParams = async (url: string, title: string, params: any) => {
+export const handlePutDataByParams = async (url: string, title: string, params: any,afterCallBack?: ()=> void) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const {code, msg} = await putData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
+        afterCallBack && afterCallBack();
       return true;
     } else {
       await WarningMessage(msg);

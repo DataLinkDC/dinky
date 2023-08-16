@@ -1196,6 +1196,8 @@ INSERT INTO `dinky_sys_menu` VALUES (28, 9, 'cluster-instance', '/registration/c
 INSERT INTO `dinky_sys_menu` VALUES (29, 12, 'group', '/registration/alert/group', './RegCenter/Alert/AlertGroup', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (30, 9, 'cluster-config', '/registration/cluster/config', './RegCenter/Cluster/Configuration', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
 INSERT INTO `dinky_sys_menu` VALUES (31, 12, 'instance', '/registration/alert/instance', './RegCenter/Alert/AlertInstance', NULL, NULL, 'C', 0, NULL, '2023-08-11 14:06:55', '2023-08-11 14:06:55', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (32, 1, '作业监控', '/home/jobOverView', 'Row', 'show', 'AntCloudOutlined', 'F', 0, NULL, '2023-08-15 16:52:59', '2023-08-15 18:20:23', NULL);
+INSERT INTO `dinky_sys_menu` VALUES (33, 1, '数据开发', '/home/devOverView', 'DevOverView', 'show', 'AimOutlined', 'F', 0, NULL, '2023-08-15 16:54:47', '2023-08-15 18:22:49', NULL);
 COMMIT;
 
 -- ----------------------------

@@ -6,19 +6,26 @@ import {ClusterOutlined, FireOutlined, RocketOutlined} from "@ant-design/icons";
 import {useLocation} from 'umi';
 import {useRequest} from "@umijs/max";
 import {API_CONSTANTS} from "@/services/constants";
-import JobOperator from "@/pages/DevOps/JobDetail/components/JobOperator";
+import JobOperator from "@/pages/DevOps/JobDetail/JobOperator/JobOperator";
 import type {FC} from 'react';
 import {useState} from "react";
-import JobConfigTab from "@/pages/DevOps/JobDetail/components/JobConfigTab";
+import JobConfigTab from "@/pages/DevOps/JobDetail/JobOverview/JobOverview";
 import {l} from "@/utils/intl";
+import JobLogsTab from "@/pages/DevOps/JobDetail/JobLogs/JobLogsTab";
+import JobVersionTab from "@/pages/DevOps/JobDetail/JobVersion/JobVersionTab";
+import CheckPoints from "@/pages/DevOps/JobDetail/CheckPointsTab";
 
 /**
  * Enum defining different operators for the JobDetail component.
  */
 const OperatorEnum = {
   JOB_BASE_INFO:"job_base_info",
-  JOB_OVERIVEW:"job_overivew",
-  JOB_EXCEPTION:"job_exception",
+  JOB_LOGS:"job_logs",
+  JOB_VERSION:"job_version",
+  JOB_CHECKPOINTS:"job_checkpoints",
+  JOB_ALERT:"job_alert",
+  JOB_MONITOR:"job_monitor",
+  JOB_LINEAGE:"job_lineage",
 }
 
 /**
@@ -50,15 +57,23 @@ const JobDetail:FC = (props: any) => {
   // Define the components for each job operator
   const JobOperatorItems = {
     [OperatorEnum.JOB_BASE_INFO]: <JobConfigTab jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_OVERIVEW]: <JobConfigTab jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_EXCEPTION]: <JobConfigTab jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_LOGS]: <JobLogsTab jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_MONITOR]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
   };
 
   // Define the tabs config for job operators
   const JobOperatorTabs = [
     { tab: l('devops.jobinfo.config.JobInfo'), key: OperatorEnum.JOB_BASE_INFO, },
-    { tab: l('devops.jobinfo.config.JobOveriew'), key: OperatorEnum.JOB_OVERIVEW, },
-    { tab: l('devops.jobinfo.config.JobException'), key: OperatorEnum.JOB_EXCEPTION, },
+    { tab: l('devops.jobinfo.config.JobLogs'), key: OperatorEnum.JOB_LOGS, },
+    { tab: l('devops.jobinfo.config.JobVersion'), key: OperatorEnum.JOB_VERSION, },
+    { tab: l('devops.jobinfo.config.JobCheckpoints'), key: OperatorEnum.JOB_CHECKPOINTS, },
+    { tab: l('devops.jobinfo.config.JobMonitor'), key: OperatorEnum.JOB_MONITOR, },
+    { tab: l('devops.jobinfo.config.JobLineage'), key: OperatorEnum.JOB_LINEAGE, },
+    { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT, },
   ];
 
   return (

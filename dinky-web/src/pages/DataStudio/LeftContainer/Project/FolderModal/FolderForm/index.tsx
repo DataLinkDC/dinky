@@ -17,3 +17,20 @@
  *
  */
 
+import React from "react";
+import {ProForm, ProFormText} from "@ant-design/pro-components";
+import {l} from "@/utils/intl";
+
+const FolderForm = () => {
+    return <>
+            <ProFormText
+                name="name"
+                label={l('datastudio.project.create.folder.name')}
+                placeholder={l('datastudio.project.create.folder.name.placeholder')}
+                rules={[ {required: true, message: l('datastudio.project.create.folder.name.placeholder')} ]}
+            />
+    </>
+};
+
+
+export default FolderForm;

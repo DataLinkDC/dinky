@@ -354,12 +354,44 @@ export const parseSecondStr = (s_time: number) => {
   return time;
 };
 
+export function parseByteStr(limit: number) {
+  if (limit == null){
+    return "None"
+  }
+  let size = "";
+  if (limit < 0.1 * 1024) {                            //小于0.1KB，则转化成B
+    size = limit.toFixed(2) + "B"
+  } else if (limit < 0.1 * 1024 * 1024) {            //小于0.1MB，则转化成KB
+    size = (limit / 1024).toFixed(2) + "KB"
+  } else if (limit < 0.1 * 1024 * 1024 * 1024) {        //小于0.1GB，则转化成MB
+    size = (limit / (1024 * 1024)).toFixed(2) + "MB"
+  } else {                                            //其他转化成GB
+    size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
+  }
+
+  let sizeStr = size + "";                        //转成字符串
+  let index = sizeStr.indexOf(".");                    //获取小数点处的索引
+  let dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
+  if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
+    return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+  }
+  return size;
+}
+
+export function parseNumStr(num: number) {
+  let c = (num.toString().indexOf('.') !== -1) ? num.toLocaleString() : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  return c;
+}
+
 /**
  * Generate MilliSecond time string
  * @param {number} second_time
  * @returns {any}
  */
 export function parseMilliSecondStr(second_time: number) {
+  if (second_time == null){
+    return "None"
+  }
   if (((second_time / 1000) % 60) < 1) {
     return second_time + l('global.time.millisecond');
   }
