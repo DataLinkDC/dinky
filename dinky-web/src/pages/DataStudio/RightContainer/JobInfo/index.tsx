@@ -23,7 +23,7 @@ import TextArea from "antd/es/input/TextArea";
 import {l} from "@/utils/intl";
 import Paragraph from "antd/es/typography/Paragraph";
 import {connect} from "umi";
-import { StateType } from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 import React from "react";
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {useForm} from "antd/es/form/Form";
@@ -43,7 +43,7 @@ const JobInfo = (props: any) => {
       }
     }
     dispatch({
-      type: "Studio/saveTabs",
+      type: STUDIO_MODEL.saveTabs,
       payload: {...props.tabs},
     });
   };

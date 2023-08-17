@@ -29,7 +29,7 @@ import {getDataByIdReturnResult} from '@/services/BusinessCrud';
 import {Key, ProCard} from '@ant-design/pro-components';
 import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import {connect} from "@@/exports";
-import {StateType} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 
 const DataSourceDetail = (props : any) => {
   const navigate = useNavigate();
@@ -84,13 +84,13 @@ const DataSourceDetail = (props : any) => {
     const {node: {isLeaf, parentId: schemaName, name: tableName, fullInfo}} = info;
     // 选中的key
     dispatch({
-      type: "Studio/updateDatabaseSelectKey",
+      type: STUDIO_MODEL.updateDatabaseSelectKey,
       payload: keys
     })
     if (isLeaf) {
       const queryParams =  {id: selectDatabaseId , schemaName, tableName};
       dispatch({
-        type: "Studio/addTab",
+        type: STUDIO_MODEL.addTab,
         payload: {
           icon: selectDb.type,
           id: selectDatabaseId + schemaName + tableName,
@@ -125,7 +125,7 @@ const DataSourceDetail = (props : any) => {
    */
   const handleTreeExpand = (expandedKeys: Key[]) => {
     dispatch({
-      type: "Studio/updateDatabaseExpandKey",
+      type: STUDIO_MODEL.updateDatabaseExpandKey,
       payload: expandedKeys
     })
   }

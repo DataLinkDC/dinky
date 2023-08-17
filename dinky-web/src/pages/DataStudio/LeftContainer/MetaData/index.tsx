@@ -1,5 +1,5 @@
 import {connect} from "@umijs/max";
-import { StateType} from "../../model";
+import {StateType, STUDIO_MODEL} from "../../model";
 import {Spin, Tag} from "antd";
 import React, {useEffect, useState} from "react";
 import {
@@ -105,7 +105,7 @@ const MetaData = (props: any) => {
   const handleTreeNodeClick = async (keys: Key[] ,info: any) => {
     // 选中的key
     dispatch({
-        type: "Studio/updateDatabaseSelectKey",
+        type: STUDIO_MODEL.updateDatabaseSelectKey,
         payload: keys
     })
 
@@ -113,7 +113,7 @@ const MetaData = (props: any) => {
     if (isLeaf) {
       const queryParams =  {id: selectDatabaseId , schemaName, tableName};
       dispatch({
-        type: "Studio/addTab",
+        type: STUDIO_MODEL.addTab,
         payload: {
           icon: selectDb.type,
           id: selectDatabaseId + schemaName + tableName,
@@ -132,7 +132,7 @@ const MetaData = (props: any) => {
    */
   const handleSelectDataBaseId = (databaseId: number) => {
     dispatch({
-      type: "Studio/updateSelectDatabaseId",
+      type: STUDIO_MODEL.updateSelectDatabaseId,
       payload: databaseId
     })
     onChangeDataBase(databaseId);
@@ -144,7 +144,7 @@ const MetaData = (props: any) => {
    */
   const handleTreeExpand = (expandedKeys: Key[]) => {
     dispatch({
-      type: "Studio/updateDatabaseExpandKey",
+      type: STUDIO_MODEL.updateDatabaseExpandKey,
       payload: expandedKeys
     })
   }

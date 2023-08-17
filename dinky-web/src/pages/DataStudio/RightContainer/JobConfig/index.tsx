@@ -22,7 +22,7 @@ import {Badge, Space, Typography} from "antd";
 import {l} from "@/utils/intl";
 import {RUN_MODE, SWITCH_OPTIONS} from "@/services/constants";
 import {connect} from "umi";
-import {SessionType, StateType} from "@/pages/DataStudio/model";
+import {SessionType, StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 import {AlertStateType} from "@/pages/RegCenter/Alert/AlertInstance/model";
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {useForm} from "antd/es/form/Form";
@@ -79,7 +79,7 @@ const JobConfig = (props: any) => {
             }
         }
         dispatch({
-            type: "Studio/saveTabs",
+            type: STUDIO_MODEL.saveTabs,
             payload: {...props.tabs},
         });
     };

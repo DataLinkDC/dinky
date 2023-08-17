@@ -20,7 +20,7 @@
 import {InfoCircleOutlined} from "@ant-design/icons";
 import {l} from "@/utils/intl";
 import {connect} from "umi";
-import {StateType} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 import {useForm} from "antd/es/form/Form";
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {SWITCH_OPTIONS} from "@/services/constants";
@@ -44,7 +44,7 @@ const ExecuteConfig = (props: any) => {
             }
         }
         dispatch({
-            type: "Studio/saveTabs",
+            type: STUDIO_MODEL.saveTabs,
             payload: {...props.tabs},
         });
     };
