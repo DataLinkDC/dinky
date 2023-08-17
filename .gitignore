@@ -27,6 +27,7 @@ logs.zip
 hs_err_pid*
 .idea/*
 !.idea/icon.png
+!.idea/vcs.xml
 build
 target/*
 *.iml
