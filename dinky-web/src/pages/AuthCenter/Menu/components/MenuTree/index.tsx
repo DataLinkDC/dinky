@@ -21,7 +21,7 @@
 import {Empty, Input, Spin, Tree} from "antd";
 import React, {useCallback, useState} from "react";
 import {l} from "@/utils/intl";
-import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
+import {buildMenuTree, sortTreeData} from "@/pages/AuthCenter/Menu/function";
 import {SysMenu} from "@/types/RegCenter/data";
 
 const {DirectoryTree} = Tree;
@@ -64,7 +64,7 @@ const MenuTree: React.FC<MenuTreeProps> = (props) => {
                             selectedKeys={selectedKeys}
                             onSelect={(_, info) => onNodeClick(info)}
                             onRightClick={info => onRightClick(info)}
-                            treeData={buildMenuTree(treeData ,searchValue)}
+                            treeData={buildMenuTree(sortTreeData(treeData),searchValue)}
                         />
                     </Spin>
                 </>

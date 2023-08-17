@@ -42,9 +42,9 @@ export function Authorized({
 }
 
 
-export const AccessContextProvider = ({children,currentUser}:{children:React.ReactNode,currentUser: API.CurrentUser}) =>{
+export const AccessContextProvider = ({children,currentUser}:{children: React.ReactNode,currentUser: Partial<API.CurrentUser | undefined>}) =>{
 
-  const isAdmin = currentUser?.user?.superAdminFlag
+  const isAdmin = currentUser?.user?.superAdminFlag ?? false;
   let blocks: Block[] = []
   const flatTree = (menus: SysMenu[]) =>{
     menus.forEach(({path,children,name,type})=>{

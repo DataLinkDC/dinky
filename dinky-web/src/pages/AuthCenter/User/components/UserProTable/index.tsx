@@ -19,11 +19,18 @@
 
 
 import React, {useRef, useState} from "react";
-import {LockTwoTone} from "@ant-design/icons";
+import {LockTwoTone, RedoOutlined} from "@ant-design/icons";
 import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Button} from "antd";
+import {Button, Popconfirm} from "antd";
 import {l} from "@/utils/intl";
-import {handleAddOrUpdate, handleOption, handlePutData, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
+import {
+    handleAddOrUpdate,
+    handleOption,
+    handlePutData,
+    handlePutDataByParams,
+    handleRemoveById,
+    updateDataByParam
+} from "@/services/BusinessCrud";
 import {queryList} from "@/services/api";
 import {
     API_CONSTANTS,
@@ -43,6 +50,8 @@ import RoleModalTransfer from "../RoleModalTransfer";
 import UserModalForm from "@/pages/AuthCenter/User/components/UserModalForm";
 import {USER_TYPE_ENUM, UserType} from "@/pages/AuthCenter/User/components/constants";
 import {YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING} from "@/types/Public/constants";
+import {BackIcon, DangerDeleteIcon} from "@/components/Icons/CustomIcons";
+import {SuccessMessage, WarningMessage} from "@/utils/messages";
 
 
 const UserProTable = () => {
@@ -151,6 +160,24 @@ const UserProTable = () => {
         })
     };
 
+    const handleRecoveryUser = async (value: UserBaseInfo.User) => {
+        await executeAndCallbackRefresh(async () => {
+            await handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l("button.recovery"), {id :value.id});
+        })
+    }
+
+    const handleResetPassword = async (value: UserBaseInfo.User) => {
+        if(value.isDelete){
+            WarningMessage(l('user.isdelete'))
+            return;
+        }else{
+            await handlePutDataByParams(API_CONSTANTS.USER_RESET_PASSWORD, l('user.resetPassword'), {id :value.id}).then( res => {
+                const {datas :{user, originalPassword}} = res;
+                SuccessMessage(l('user.resetPasswordSuccess','',{username: user.username, password: originalPassword}) , 5)
+            })
+        }
+    }
+
 
   /**
    * table columns
@@ -179,14 +206,23 @@ const UserProTable = () => {
       valueEnum: USER_TYPE_ENUM(),
       hideInSearch: true,
     },
-      {
-          title: l("user.superAdminFlag"),
-          dataIndex: "superAdminFlag",
-          valueEnum: YES_OR_NO_ENUM,
-          hideInSearch: true,
-          filters: YES_OR_NO_FILTERS_MAPPING,
-          filterMultiple: false,
-      },
+    {
+      title: l("user.status"),
+      dataIndex: "isDelete",
+      valueEnum: YES_OR_NO_ENUM,
+      hideInSearch: true,
+      filters: YES_OR_NO_FILTERS_MAPPING,
+      filterMultiple: false,
+      sorter: (a, b) => Number(a.isDelete) - Number(b.isDelete)
+    },
+    {
+      title: l("user.superAdminFlag"),
+      dataIndex: "superAdminFlag",
+      valueEnum: YES_OR_NO_ENUM,
+      hideInSearch: true,
+      filters: YES_OR_NO_FILTERS_MAPPING,
+      filterMultiple: false,
+    },
     {
       title: l("global.table.isEnable"),
       dataIndex: "enabled",
@@ -208,16 +244,9 @@ const UserProTable = () => {
       hideInSearch: true,
     },
     {
-      title: l("global.table.updateTime"),
-      dataIndex: "updateTime",
-      hideInSearch: true,
-      sorter: true,
-      valueType: "dateTime",
-    },
-    {
       title: l("global.table.operate"),
       valueType: "option",
-      width: "12vh",
+      width: "10vw",
       fixed: "right",
       render: (_: any, record: UserBaseInfo.User) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
@@ -237,12 +266,40 @@ const UserProTable = () => {
           }
         </>,
         <>
-          {(access.canAdmin && record.username !== "admin") &&
+          {(access.canAdmin && !record.isDelete) &&
             <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteUser(record)}
                                  description={l("user.deleteConfirm")}/>
           }
         </>
         ,
+          <>
+              {(access.canAdmin && record.isDelete) &&
+                  <Popconfirm
+                      placement="topRight"
+                      title={l("button.recovery")}
+                      description={<div className={"needWrap"} >{l('user.recovery')} </div>}
+                      onConfirm={()=>handleRecoveryUser(record)}
+                      okText={l("button.confirm")}
+                      cancelText={l("button.cancel")}
+                  >
+                      <Button title={l("button.recovery")} key={'recovery'} icon={<BackIcon/>}/>
+                  </Popconfirm>
+              }
+          </>,
+          <>
+              {(access.canAdmin) &&
+                  <Popconfirm
+                      placement="topRight"
+                      title={l("button.reset")}
+                      description={<div className={"needWrap"} >{l('user.reset')} </div>}
+                      onConfirm={()=>handleResetPassword(record)}
+                      okText={l("button.confirm")}
+                      cancelText={l("button.cancel")}
+                  >
+                      <Button title={l("button.reset")} key={'reset'} className={'blue-icon'} icon={<RedoOutlined/>}/>
+                  </Popconfirm>
+              }
+          </>
       ],
     },
   ];

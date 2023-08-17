@@ -21,6 +21,7 @@ export default {
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
+  'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
   'button.back': 'Back',

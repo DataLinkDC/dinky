@@ -28,6 +28,7 @@ import org.dinky.data.model.Tenant;
 import org.dinky.data.model.User;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.UserVo;
 import org.dinky.mybatis.service.ISuperService;
 
 import java.util.List;
@@ -166,4 +167,8 @@ public interface UserService extends ISuperService<User> {
     List<User> getUserListByTenantId(int id);
 
     Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag);
+
+    Result<Void> recoveryUser(Integer userId);
+
+    Result<UserVo> resetPassword(Integer userId);
 }

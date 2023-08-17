@@ -23,7 +23,7 @@ import {history} from "@umijs/max";
 import defaultSettings from "../config/defaultSettings";
 import Settings from "../config/defaultSettings";
 import {errorConfig} from "./requestErrorConfig";
-import {currentUser as queryCurrentUser} from "./services/BusinessCrud";
+import { getDataByParamsReturnResult} from "./services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
 import {THEME} from "@/types/Public/data";
 import {UnAccessible} from "@/pages/Other/403";
@@ -35,30 +35,55 @@ import { API } from "./services/data";
 import {AccessContextProvider} from '@/hooks/useAccess';
 import { Navigate } from 'umi';
 import {SysMenu} from "@/types/RegCenter/data";
+import { JSX } from "react";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
-const whiteList = ['/user','/user/login']
+const whiteList = ['/user', '/user/login']
 
 
-
-let extraRoutes=[];
+let extraRoutes: SysMenu[] = [];
 let rendered = false;
 
 /**
  * 初始化路由鉴权
  * @param param0
  */
-export function patchRoutes ({ routes }: any) {
-  Object.keys(routes).forEach(key=>{
+export function patchRoutes({routes}: any) {
+  Object.keys(routes).forEach(key => {
     let route = routes[key];
-    if(!whiteList.includes(route.path)){
-      routes[key] = {...route,access: 'canAuth'}
+    if (!whiteList.includes(route.path)) {
+      routes[key] = {...route, access: 'canAuth'}
     }
   })
 }
 
+
+const queryUserInfo = async () => {
+
+  return getDataByParamsReturnResult(API_CONSTANTS.CURRENT_USER).then(result => {
+    const {user, roleList, tenantList, currentTenant, menuList, saTokenInfo} = result.datas;
+    extraRoutes = menuList;
+    const currentUser: API.CurrentUser = {
+      user: {
+        ...user, avatar: user.avatar ?? "/icons/user_avatar.png"
+      },
+      roleList: roleList,
+      tenantList: tenantList,
+      currentTenant: currentTenant,
+      menuList: menuList,
+      tokenInfo: saTokenInfo,
+    };
+    return currentUser;
+  }, (error) => {
+    history.push(loginPath);
+    console.log(error);
+    return undefined;
+  });
+};
+
+const fetchUserInfo = async () => await queryUserInfo();
 
 
 /**
@@ -70,37 +95,6 @@ export async function getInitialState(): Promise<{
   loading?: boolean;
   fetchUserInfo?: () => Promise<API.CurrentUser | undefined>;
 }> {
-  const fetchUserInfo = async () =>
-    queryCurrentUser().then((result) => {
-      const user = result.datas.user;
-      extraRoutes = result.datas.menuList;
-      const currentUser: API.CurrentUser = {
-        user: {
-          id: user.id,
-          username: user.username,
-          password: user.password,
-          nickname: user.nickname,
-          worknum: user.worknum,
-          avatar: user.avatar ? user.avatar : "/icons/user_avatar.png",
-          mobile: user.mobile,
-          enabled: user.enabled,
-          isDelete: user.isDelete,
-          createTime: user.createTime,
-          updateTime: user.updateTime,
-          superAdminFlag: user.superAdminFlag,
-        },
-        roleList: result.datas.roleList,
-        tenantList: result.datas.tenantList,
-        currentTenant: result.datas.currentTenant,
-        menuList: result.datas.menuList,
-        tokenInfo: result.datas.saTokenInfo,
-      };
-      return currentUser;
-    }, (error) => {
-      history.push(loginPath);
-      console.log(error);
-      return undefined;
-    });
 
   // 如果不是登录页面，执行
   const {location} = history;
@@ -121,7 +115,7 @@ export async function getInitialState(): Promise<{
 // ProLayout 支持的api https://procomponents.ant.design/components/layout
 export const layout: RunTimeLayoutConfig = ({initialState}) => {
 
-  const theme = localStorage.getItem("navTheme");
+  const theme = localStorage.getItem("navTheme") ?? THEME.light;
 
   return {
     headerTitleRender: () => {
@@ -129,7 +123,7 @@ export const layout: RunTimeLayoutConfig = ({initialState}) => {
       Settings.title = l('layouts.userLayout.title');
       // 重新对 logo 的设置进行设置 由于 logo 是一个组件，所以需要重新渲染, 重新渲染的时候，会重新执行一次 layout
       return <>
-        <img height={50} width={50} src={Settings.logo}/>
+        <img height={50} width={50} src={Settings.logo} alt={'logo'}/>
         <span style={{marginLeft: 10, color: 'white'}}>{Settings.title}</span>
       </>;
     },
@@ -195,8 +189,8 @@ export const dva = {
 /***
  * 动态修改默认跳转路由
  */
-const patch = (oldrRoutes, routes: SysMenu[])=>{
-  oldrRoutes[1].routes = oldrRoutes[1].routes.map(route=>{
+const patch = (oldRoutes: any, routes: SysMenu[]) => {
+  oldRoutes[1].routes = oldRoutes[1].routes.map((route: { routes: { path: any; element: JSX.Element; }[]; path: string; }) =>{
     if(route.routes && route.routes.length){
         const redirect = routes.filter(r=>r.path.startsWith(route.path))
         if(redirect.length){
@@ -215,7 +209,7 @@ const patch = (oldrRoutes, routes: SysMenu[])=>{
 /***
  * 动态修改路由
  */
-export function patchClientRoutes({ routes }) {
+export function patchClientRoutes({ routes }:{routes: SysMenu[]}) {
   // 根据 extraRoutes 对 routes 做一些修改
   patch(routes, extraRoutes);
 }
@@ -225,9 +219,9 @@ export function patchClientRoutes({ routes }) {
 /***
  * 路由切换并只加载首次
  */
-export function onRouteChange({ location, clientRoutes, routes, action }) {
+export function onRouteChange({ location, clientRoutes, routes, action }:{location: any, clientRoutes: any, routes: any, action: any}) {
   if (location.pathname !== loginPath && !rendered) {
-    const filterMenus = (menus=[])=>{
+    const filterMenus = (menus:SysMenu[])=>{
       return menus.filter(menu=>menu.type !== 'F')
     }
       extraRoutes = filterMenus(extraRoutes)

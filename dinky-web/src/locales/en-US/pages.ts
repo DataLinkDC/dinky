@@ -176,6 +176,7 @@ export default {
   'user.username': 'User Name',
   'user.jobnumber': 'Job Number',
   'user.phone': 'Phone Number',
+  'user.status': 'Is Deleted',
   'user.type': 'User Type',
   'user.nickname': 'Nick Name',
   'user.superAdminFlag': 'Super Admin',
@@ -185,6 +186,8 @@ export default {
   'user.assignRole': 'Assign Role',
   'user.delete': 'Delete User',
   'user.deleteConfirm': 'Are you sure delete this User？',
+  'user.recovery': 'Are you sure to Recover this User?',
+  'user.reset': 'Are you sure to Reset this User Password?',
   'user.usernamePlaceholder': 'Please enter user name',
   'user.jobnumberPlaceholder': 'Please enter job number',
   'user.nicknamePlaceholder': 'Please enter nickname',
@@ -1030,6 +1033,9 @@ export default {
   'pages.datastudio.editor.help': 'View usage help',
   'pages.datastudio.sql.query': 'SQL query',
   'pages.datastudio.submit.job': 'Submit job',
+
+  'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
+  'pages.datastudio.help.sqlChangedPrompt': 'the remote context corresponding to the current sql has changed, will the data be flushed?',
 
   'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
   'pages.datastudio.explain.validate': 'Validating...',

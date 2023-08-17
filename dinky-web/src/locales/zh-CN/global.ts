@@ -21,6 +21,7 @@ export default {
   'button.check':'检查',
   'button.graph':'图',
   'button.create': '新建',
+  'button.recovery': '恢复',
   'button.close': '关闭',
   'button.confirm': '确定',
   'button.cancel': '取消',

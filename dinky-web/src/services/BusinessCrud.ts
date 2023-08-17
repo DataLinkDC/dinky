@@ -32,17 +32,6 @@ import { API } from './data';
 
 const APPLICATION_JSON = 'application/json';
 
-// ================================ About Account ================================
-/**
- * get current user
- * @param options
- */
-export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.Result>(API_CONSTANTS.CURRENT_USER, {
-    method: METHOD_CONSTANTS.GET,
-    ...(options ?? {}),
-  });
-}
 
 /**
  * user logout
@@ -272,13 +261,13 @@ export const queryDataByParams = async (url: string, params?: any) => {
 export const handlePutDataByParams = async (url: string, title: string, params: any,afterCallBack?: ()=> void) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
-    const {code, msg} = await putData(url, {...params});
-    if (code === RESPONSE_CODE.SUCCESS) {
-      await SuccessMessage(msg);
+    const result = await putData(url, {...params});
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      await SuccessMessage(result.msg);
         afterCallBack?.();
-      return true;
+      return result;
     } else {
-      await WarningMessage(msg);
+      await WarningMessage(result.msg);
       return false;
     }
   } catch (error) {
@@ -300,4 +289,19 @@ export const getDataByIdReturnResult = async (url: string, id: any) => {
   } catch (error) {
     return false;
   }
+};
+
+
+export const getDataByParamsReturnResult = async (url: string, params?: any) => {
+  try {
+    const result = await getData(url, params);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      return result;
+    } else {
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+
 };
