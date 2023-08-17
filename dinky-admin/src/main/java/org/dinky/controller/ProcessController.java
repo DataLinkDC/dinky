@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.dev33.satoken.stp.StpUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 
@@ -44,6 +45,7 @@ import lombok.RequiredArgsConstructor;
  * @since 2022/10/16 22:53
  */
 @RestController
+@Api(tags = "Process Controller")
 @RequestMapping("/api/process")
 @RequiredArgsConstructor
 public class ProcessController {

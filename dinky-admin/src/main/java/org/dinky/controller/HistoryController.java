@@ -30,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -40,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2021/6/26 23:09
  */
 @Slf4j
+@Api(tags = "History Controller")
 @RestController
 @RequestMapping("/api/history")
 @RequiredArgsConstructor

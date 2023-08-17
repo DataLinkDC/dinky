@@ -34,6 +34,7 @@ import {Reducer, StoreEnhancer} from 'redux';
 import { API } from "./services/data";
 import {AccessContextProvider} from '@/hooks/useAccess';
 import { Navigate } from 'umi';
+import {SysMenu} from "@/types/RegCenter/data";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
@@ -42,7 +43,8 @@ const whiteList = ['/user','/user/login']
 
 
 
-let extraRoutes;
+let extraRoutes=[];
+let rendered = false;
 
 /**
  * 初始化路由鉴权
@@ -193,7 +195,7 @@ export const dva = {
 /***
  * 动态修改默认跳转路由
  */
-const patch = (oldrRoutes, routes)=>{
+const patch = (oldrRoutes, routes: SysMenu[])=>{
   oldrRoutes[1].routes = oldrRoutes[1].routes.map(route=>{
     if(route.routes && route.routes.length){
         const redirect = routes.filter(r=>r.path.startsWith(route.path))
@@ -219,19 +221,17 @@ export function patchClientRoutes({ routes }) {
 }
 
 
+
 /***
- * 动态加载路由
+ * 路由切换并只加载首次
  */
-export function render(oldRender) {
-  const {location} = history;
-  if (location.pathname !== loginPath) {
+export function onRouteChange({ location, clientRoutes, routes, action }) {
+  if (location.pathname !== loginPath && !rendered) {
     const filterMenus = (menus=[])=>{
       return menus.filter(menu=>menu.type !== 'F')
     }
-
-    queryCurrentUser().then(res=>{
-      extraRoutes = filterMenus(res.datas.menuList)
-      oldRender();
-    })
+      extraRoutes = filterMenus(extraRoutes)
+      patchClientRoutes({routes: clientRoutes})
+      rendered = true
   }
 }

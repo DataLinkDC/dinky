@@ -43,12 +43,14 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Opt;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@Api(tags = "Monitor Controller")
 @RequestMapping("/api/monitor")
 @RequiredArgsConstructor
 public class MonitorController {

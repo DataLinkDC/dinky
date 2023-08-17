@@ -39,6 +39,7 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2021/5/28 15:52
  */
 @Slf4j
+@Api(tags = "Admin Controller")
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
