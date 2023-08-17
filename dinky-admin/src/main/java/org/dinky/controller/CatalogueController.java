@@ -43,6 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.util.ZipUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,6 +55,7 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 @RestController
+@Api(tags = "Catalogue Controller")
 @RequestMapping("/api/catalogue")
 @RequiredArgsConstructor
 public class CatalogueController {

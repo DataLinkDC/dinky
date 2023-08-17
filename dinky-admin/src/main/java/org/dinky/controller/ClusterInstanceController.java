@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 /** ClusterInstanceController */
 @Slf4j
 @RestController
+@Api(tags = "Cluster Instance Controller")
 @RequestMapping("/api/cluster")
 @RequiredArgsConstructor
 public class ClusterInstanceController {
@@ -139,7 +141,7 @@ public class ClusterInstanceController {
      * @return {@link Result}<{@link List}<{@link Cluster}>>
      */
     @GetMapping("/listSessionEnable")
-    @ApiOperation("Get session enable cluster instances")
+    @ApiOperation(value = "Get Enable Session Cluster", notes = "Get All Enable Cluster Instances Of Session Type")
     public Result<List<Cluster>> listSessionEnable() {
         List<Cluster> clusters = clusterInstanceService.listSessionEnable();
         return Result.succeed(clusters);

@@ -55,6 +55,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.Dict;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 
@@ -63,6 +64,7 @@ import lombok.AllArgsConstructor;
  * @since 0.8.0
  */
 @RestController
+@Api(tags = "Git Project Controller")
 @RequestMapping("/api/git")
 @AllArgsConstructor
 public class GitController {
