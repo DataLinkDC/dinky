@@ -17,6 +17,8 @@
 
 import {Button, Result} from "antd";
 import {l} from "@/utils/intl";
+import {history} from "@umijs/max";
+
 
 export const UnAccessible = () => {
 
@@ -26,7 +28,9 @@ export const UnAccessible = () => {
       title="403"
       subTitle={l("app.request.403")}
       extra={
-        <Button type="primary">
+        <Button type="primary" onClick={e=>{
+          history.push('/')
+        }}>
           {l("app.request.back")}
         </Button>
       }

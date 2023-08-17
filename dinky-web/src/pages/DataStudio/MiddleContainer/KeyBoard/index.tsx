@@ -41,15 +41,14 @@ const KeyBoard = () => {
         });
     }
 
-    return <>
+    return(
         <Typography  style={{padding: '2px', textAlign: 'center', border: 'salmon'}}>
             <br/>
             <Title level={4}>{l('shortcut.title')}</Title>
             <Paragraph  style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >
                 {buildKeyBoard()}
             </Paragraph>
-        </Typography>
-    </>;
+        </Typography>);
 };
 
 export default KeyBoard;

@@ -11,5 +11,5 @@ export function clearMetaDataTable(id: number) {
   return queryDataByParams('api/database/unCacheSchemasAndTables', {id: id});
 }
 export function getDataBase() {
-  return  queryDataByParams('api/database/listEnabledAll');
+  return queryDataByParams('api/database/listEnabledAll');
 }

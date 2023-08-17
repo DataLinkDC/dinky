@@ -101,7 +101,12 @@ export type DataStudioParams = {
   resultData: Record<string, any>
 }
 
-export enum TabsPageType {None = "", metadata = "metadata", project = "project", flinkSql = "flinksql"}
+export enum TabsPageType {
+  None = "",
+  metadata = "metadata",
+  project = "project",
+  flinkSql = "flinksql"
+}
 
 export type TabsItemType = {
   id: string,
@@ -130,7 +135,7 @@ export type TabsType = {
 }
 
 export type ConnectorType = {
-  tablename: string;
+  tableName: string;
 }
 
 export type MetaStoreCatalogType = {
@@ -268,9 +273,45 @@ export type ModelType = {
     updateJobRunningMsg: Reducer<StateType>;
   };
 };
-const Model: ModelType = {
 
-  namespace: 'Studio',
+const ModelTypeName = 'Studio';
+
+const getModelType = (name: string) => {
+  return `${ModelTypeName}/${name}`;
+}
+
+export const STUDIO_MODEL: {[K in keyof ModelType['reducers']]: string} = {
+  updateToolContentHeight: getModelType('updateToolContentHeight'),
+  updateCenterContentHeight: getModelType('updateCenterContentHeight'),
+  updateSelectLeftKey: getModelType('updateSelectLeftKey'),
+  updateLeftWidth: getModelType('updateLeftWidth'),
+  updateSelectRightKey: getModelType('updateSelectRightKey'),
+  updateRightWidth: getModelType('updateRightWidth'),
+  updateSelectBottomKey: getModelType('updateSelectBottomKey'),
+  updateSelectBottomSubKey: getModelType('updateSelectBottomSubKey'),
+  updateBottomHeight: getModelType('updateBottomHeight'),
+  saveDataBase: getModelType('saveDataBase'),
+  saveProject: getModelType('saveProject'),
+  updateTabsActiveKey: getModelType('updateTabsActiveKey'),
+  closeTab: getModelType('closeTab'),
+  removeTag: getModelType('removeTag'),
+  addTab: getModelType('addTab'),
+  saveTabs: getModelType('saveTabs'),
+  closeAllTabs: getModelType('closeAllTabs'),
+  closeOtherTabs: getModelType('closeOtherTabs'),
+  updateSelectDatabaseId: getModelType('updateSelectDatabaseId'),
+  updateDatabaseExpandKey: getModelType('updateDatabaseExpandKey'),
+  updateDatabaseSelectKey: getModelType('updateDatabaseSelectKey'),
+  updateBottomConsole: getModelType('updateBottomConsole'),
+  saveSession: getModelType('saveSession'),
+  saveClusterConfiguration: getModelType('saveClusterConfiguration'),
+  saveEnv: getModelType('saveEnv'),
+  saveFooterValue: getModelType('saveFooterValue'),
+  updateJobRunningMsg: getModelType('updateJobRunningMsg'),
+};
+
+const Model: ModelType = {
+  namespace: ModelTypeName,
   state: {
     isFullScreen: false,
     toolContentHeight: 0,

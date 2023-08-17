@@ -14,12 +14,12 @@ import {
 } from "@/components/Icons/CodeLanguageIcon";
 import {ClickHouseIcons, DorisIcons, HiveIcons, MysqlIcons, OracleIcons, PhoenixIcons,
   PostgresqlIcons, PrestoIcons, SqlServerIcons, StarRocksIcons} from "@/components/Icons/DBIcons";
-import {FolderOutlined} from "@ant-design/icons";
 
 export const getTabIcon = (type: string, size?: number) => {
   if (!type){
     return <FileIcon/>;
   }
+
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
       return <JavaSvg/>;

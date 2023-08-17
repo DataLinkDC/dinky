@@ -39,6 +39,7 @@ import {
 import * as monaco from "monaco-editor";
 import {Footer} from "antd/es/layout/layout";
 import FooterContainer from "@/pages/DataStudio/FooterContainer";
+import {l} from "@/utils/intl";
 
 const {Sider, Content} = Layout;
 
@@ -64,12 +65,8 @@ const DataStudio = (props: any) => {
     saveTabs,
     updateCenterContentHeight,
     updateSelectLeftKey,
-    updateLeftWidth,
-    updateSelectRightKey
-    ,
-    updateRightWidth,
+    updateSelectRightKey,
     updateSelectBottomKey,
-    updateBottomHeight,
     saveClusterConfiguration,
     activeBreadcrumbTitle,
     updateSelectBottomSubKey,
@@ -80,110 +77,101 @@ const DataStudio = (props: any) => {
   const [isModalUpdateTabContentOpen, setIsModalUpdateTabContentOpen] = useState(false);
   const [newTabData, setNewTabData] = useState({});
   const app = getDvaApp(); // 获取dva的实例
-  const persistor = app._store.persist;
+  const persist = app._store.persist;
   const bottomHeight = bottomContainer.selectKey === "" ? 0 : bottomContainer.height;
-  const [size, setSize] = useState({
+
+  const getClientSize = () => ({
     width: document.documentElement.clientWidth,
     height: document.documentElement.clientHeight,
     contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-  });
+  })
 
-  const onResize = useCallback(() => {
-    setSize({
-      width: document.documentElement.clientWidth,
-      height: document.documentElement.clientHeight,
-      contentHeight: document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight,
-    })
-    const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomHeight;
+  const [size, setSize] = useState(getClientSize());
+
+  const onResize = () => {
+    setSize(getClientSize())
+    const centerContentHeight = getClientSize().contentHeight - bottomHeight;
     updateCenterContentHeight(centerContentHeight)
     updateToolContentHeight(centerContentHeight - VIEW.midMargin)
-  }, []);
+  };
 
   useEffect(() => {
     window.addEventListener('resize', onResize);
     onResize();
-    return () => {
-      window.removeEventListener('resize', onResize);
-    };
-  }, [onResize]);
+    return () => window.removeEventListener('resize', onResize);
+  }, []);
 
   const loadData = async () => {
-    saveDataBase(await getDataBase());
-    updateBottomConsole(await getConsoleData());
-    saveProject(await getTaskData());
-    saveSession(await getSessionData());
-    saveEnv(await getEnvData());
-    saveClusterConfiguration(await getClusterConfigurationData());
+    Promise.all([getDataBase(), getConsoleData(), getTaskData(), getSessionData(), getEnvData(), getClusterConfigurationData()])
+      .then(res => {
+      saveDataBase(res[0]);
+      updateBottomConsole(res[1]);
+      saveProject(res[2]);
+      saveSession(res[3]);
+      saveEnv(res[4]);
+      saveClusterConfiguration(res[5]);
+    })
 
     // 判断是否需要更新tab内容
-    if (tabs.activeKey) {
-      const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
-      const params = (currentTab?.params as DataStudioParams);
-      if (currentTab?.type === "project") {
-        getTaskDetails(params.taskId).then(res => {
-          for (const key of Object.keys(res)) {
-            if (res[key] !== params.taskData[key]) {
-              if (res[key] instanceof Object) {
-                if (JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])) {
-                  setIsModalUpdateTabContentOpen(true)
-                  setNewTabData(res)
-                  break
-                }
-              } else {
-                setIsModalUpdateTabContentOpen(true)
-                setNewTabData(res)
-                break
-              }
-            }
-
-          }
-
-        })
-      }
+    if (!tabs.activeKey) {
+      return;
     }
+
+    const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+    if (currentTab?.type !== "project") {
+      return;
+    }
+
+    const params = currentTab.params as DataStudioParams;
+    getTaskDetails(params.taskId).then(res => {
+     const changed = Object.keys(res).some(key => {
+        return res[key] !== params.taskData[key] &&
+          (res[key] instanceof Object ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key]) : true)
+      })
+
+      if (changed) {
+        setIsModalUpdateTabContentOpen(true)
+        setNewTabData(res)
+      }
+    })
   }
+
   useEffect(() => {
     loadData();
     onResize();
   }, []);
 
-
   /**
    * 渲染头部
    * @returns {JSX.Element}
    */
-  const renderHeaderContainer = () => {
-    return <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
-  }
+  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle}/>
+
+  /**
+   * 渲染左侧侧边栏
+   * @returns {JSX.Element}
+   */
+  const renderLeftContainer = () => <LeftContainer size={size}/>
+
+  /**
+   * 渲染右侧侧边栏
+   * @returns {JSX.Element}
+   */
+  const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight}/>
+
   const updateTabContent = () => {
     (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
     saveTabs({...tabs})
     setIsModalUpdateTabContentOpen(false)
   }
 
-
-  /**
-   * 渲染左侧侧边栏
-   * @returns {JSX.Element}
-   */
-  const renderLeftContainer = () => {
-    return <LeftContainer size={size}/>
-  }
-
-  /**
-   * 渲染右侧侧边栏
-   * @returns {JSX.Element}
-   */
-  const renderRightContainer = () => {
-    return <RightContainer size={size} bottomHeight={bottomHeight}/>
-  }
   return (
-    <PersistGate loading={null} persistor={persistor}>
-      <Fragment>
-        <Modal title="Sql内容或配置变更" open={isModalUpdateTabContentOpen} onOk={updateTabContent}
+    <PersistGate loading={null} persistor={persist}>
+        <Modal title={l('pages.datastudio.help.sqlChanged')} open={isModalUpdateTabContentOpen} onOk={updateTabContent}
                onCancel={() => setIsModalUpdateTabContentOpen(false)}>
-          <p>检测到当前页远程有更改，是否刷新更新数据？</p>
+          <p>{l('pages.datastudio.help.sqlChangedPrompt')}</p>
         </Modal>
+
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}
           {renderHeaderContainer()}
@@ -196,12 +184,11 @@ const DataStudio = (props: any) => {
                 items={LeftSide.map(x => ({key: x.key, label: x.label, icon: x.icon}))}
                 style={{
                   height: '50%',
-                  borderBlockStart: "1px solid " + themeValue.borderColor,
-                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                  borderBlockStart: `1px solid ${themeValue.borderColor}`,
+                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
                 }}
                 onClick={(item) =>  updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)}
               />
-
 
               {/*底部菜单*/}
               <Menu
@@ -212,7 +199,7 @@ const DataStudio = (props: any) => {
                   display: 'flex',
                   height: '50%',
                   flexDirection: "column-reverse",
-                  borderInlineEnd: "1px solid " + themeValue.borderColor
+                  borderInlineEnd: `1px solid ${themeValue.borderColor}`
                 }}
                 onClick={(item) => {
                   updateSelectBottomKey(item.key === bottomContainer.selectKey ? '' : item.key)
@@ -221,7 +208,6 @@ const DataStudio = (props: any) => {
                   }
                 }}
               />
-
             </Sider>
 
             <Content style={{
@@ -231,7 +217,6 @@ const DataStudio = (props: any) => {
             }}>
               {/*渲染底部内容*/}
               {<BottomContainer size={size}/>}
-
 
               <div style={{
                 display: "flex",
@@ -269,7 +254,7 @@ const DataStudio = (props: any) => {
                     return TabsPageType.None
                   }
                   const v = (tabs.panes as TabsItemType[]).find(item => item.key === tabs.activeKey);
-                  return x.isShow(v?.type || TabsPageType.None, v?.subType)
+                  return x.isShow(v?.type ?? TabsPageType.None, v?.subType)
                 }).map(x => {
                   return {key: x.key, label: x.label, icon: x.icon}
                 })}
@@ -282,7 +267,6 @@ const DataStudio = (props: any) => {
 
         </div>
 
-      </Fragment>
     </PersistGate>
   );
 };

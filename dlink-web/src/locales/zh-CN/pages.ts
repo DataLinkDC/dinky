@@ -43,6 +43,7 @@ export default {
   'pages.login.submit': '登录',
   'pages.login.loginWith': '其他登录方式 :',
   'pages.login.registerAccount': '注册账户',
+
   'pages.welcome.Community': '官方社区',
   'pages.welcome.upgrade': '更新日志',
   'pages.welcome.QQ': 'QQ官方社区群',
@@ -298,9 +299,11 @@ export default {
 
 
   'pages.metadata.Console': '控制台',
+
   'pages.metadata.help.noSqlSelect': '未选择任何sql！',
   'pages.metadata.help.selectSql': '请在编辑器内选择你要执行的sql',
   'pages.metadata.help.exec': '执行选中sql',
+
   'pages.metadata.exec.result.msg': '执行时间: {time} 秒, 总行数: {rowCount}',
   'pages.metadata.exec.result.msghelp': '行数超过500，仅显示前500',
 
@@ -312,6 +315,9 @@ export default {
   'pages.datastudio.label.info': '控制台',
   'pages.datastudio.label.result': '结果',
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+
+  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
 
   'pages.datastudio.explain.validate.msg': 'FlinkSql 语法和逻辑检查',
   'pages.datastudio.explain.validate': '正在校验中...',
