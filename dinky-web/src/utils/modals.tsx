@@ -49,18 +49,17 @@ export const ErrorModelWithCode = (title: any = l('global.error'), content: stri
 }
 
 
-
 // @ts-ignore
 export const createModelTypes = <T extends any>(target: T): [{[K in keyof T['reducers']]: string}, {[K in keyof T['effects']]: string}] => {
-  type type = typeof target;
+  type TargetType = typeof target;
 
   // @ts-ignore
-  const MODEL_SYNC: {[K in keyof type['reducers']]: string} =  Object.fromEntries(// @ts-ignore
-    new Map<keyof type['reducers'], string>(Object.keys(target['reducers']).map((obj: string) => [obj, `${target.namespace}/${obj}`])));
+  const MODEL_SYNC: {[K in keyof TargetType['reducers']]: string} =  Object.fromEntries(// @ts-ignore
+    new Map<keyof TargetType['reducers'], string>(Object.keys(target['reducers']).map((obj: string) => [obj, `${target.namespace}/${obj}`])));
 
   // @ts-ignore
-  const MODEL_ASYNC: {[K in keyof type['effects']]: string} =  Object.fromEntries(// @ts-ignore
-    new Map<keyof type['effects'], string>(Object.keys(target['effects']).map((obj: string) => [obj, `${target.namespace}/${obj}`])));
+  const MODEL_ASYNC: {[K in keyof TargetType['effects']]: string} =  Object.fromEntries(// @ts-ignore
+    new Map<keyof TargetType['effects'], string>(Object.keys(target['effects']).map((obj: string) => [obj, `${target.namespace}/${obj}`])));
 
   return [MODEL_SYNC, MODEL_ASYNC];
 };
