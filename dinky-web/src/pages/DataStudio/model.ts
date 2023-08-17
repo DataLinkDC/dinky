@@ -5,7 +5,7 @@ import {QueryParams} from "@/pages/RegCenter/DataSource/components/DataSourceDet
 import {l} from "@/utils/intl";
 import {getFooterValue} from "@/pages/DataStudio/function";
 import {getTaskData} from "@/pages/DataStudio/LeftContainer/Project/service";
-import {generateModelType} from "@/utils/modals";
+import {createModelTypes} from "@/utils/modals";
 
 /**
  * 初始化布局宽高度
@@ -238,6 +238,7 @@ export type StateType = {
   bottomContainerContent: BottomContainerContent;
   footContainer: FooterType;
 };
+
 export type ModelType = {
   namespace: string;
   state: StateType;
@@ -780,40 +781,6 @@ const Model: ModelType = {
   }
 }
 
-const getModelType = (name: string) => generateModelType(Model.namespace, name)
-
-export const STUDIO_MODEL_SYNC: {[K in keyof ModelType['effects']]: string} = {
-  queryProject: getModelType('queryProject'),
-}
-
-export const STUDIO_MODEL: {[K in keyof ModelType['reducers']]: string} = {
-  updateToolContentHeight: getModelType('updateToolContentHeight'),
-  updateCenterContentHeight: getModelType('updateCenterContentHeight'),
-  updateSelectLeftKey: getModelType('updateSelectLeftKey'),
-  updateLeftWidth: getModelType('updateLeftWidth'),
-  updateSelectRightKey: getModelType('updateSelectRightKey'),
-  updateRightWidth: getModelType('updateRightWidth'),
-  updateSelectBottomKey: getModelType('updateSelectBottomKey'),
-  updateSelectBottomSubKey: getModelType('updateSelectBottomSubKey'),
-  updateBottomHeight: getModelType('updateBottomHeight'),
-  saveDataBase: getModelType('saveDataBase'),
-  saveProject: getModelType('saveProject'),
-  updateTabsActiveKey: getModelType('updateTabsActiveKey'),
-  closeTab: getModelType('closeTab'),
-  removeTag: getModelType('removeTag'),
-  addTab: getModelType('addTab'),
-  saveTabs: getModelType('saveTabs'),
-  closeAllTabs: getModelType('closeAllTabs'),
-  closeOtherTabs: getModelType('closeOtherTabs'),
-  updateSelectDatabaseId: getModelType('updateSelectDatabaseId'),
-  updateDatabaseExpandKey: getModelType('updateDatabaseExpandKey'),
-  updateDatabaseSelectKey: getModelType('updateDatabaseSelectKey'),
-  updateBottomConsole: getModelType('updateBottomConsole'),
-  saveSession: getModelType('saveSession'),
-  saveClusterConfiguration: getModelType('saveClusterConfiguration'),
-  saveEnv: getModelType('saveEnv'),
-  saveFooterValue: getModelType('saveFooterValue'),
-  updateJobRunningMsg: getModelType('updateJobRunningMsg'),
-};
+export const [STUDIO_MODEL, STUDIO_MODEL_ASYNC] = createModelTypes(Model);
 
 export default Model;

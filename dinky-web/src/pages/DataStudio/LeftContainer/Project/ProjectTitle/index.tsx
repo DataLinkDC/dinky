@@ -22,7 +22,7 @@ import {Space} from "antd";
 import Title from "@/components/Front/Title";
 import {l} from "@/utils/intl";
 import {connect} from "@umijs/max";
-import {StateType, STUDIO_MODEL_SYNC} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL_ASYNC} from "@/pages/DataStudio/model";
 import {Catalogue} from "@/types/Studio/data";
 import {handleAddOrUpdate} from "@/services/BusinessCrud";
 import {BtnRoute} from "@/pages/DataStudio/route";
@@ -60,7 +60,7 @@ const ProjectTitle: React.FC<StateType & connect> = (props) => {
             parentId: 0,
         }, ()=>{
             handleCancelCreate();
-            dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+            dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
         });
     };
 

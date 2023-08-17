@@ -21,7 +21,7 @@
 import React, {Key, useEffect, useState} from "react";
 import JobTree from "@/pages/DataStudio/LeftContainer/Project/JobTree";
 import {connect} from "umi";
-import {StateType, STUDIO_MODEL, STUDIO_MODEL_SYNC} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC} from "@/pages/DataStudio/model";
 import {getTaskDetails} from "@/pages/DataStudio/LeftContainer/Project/service";
 import RightContextMenu from "@/components/RightContextMenu";
 import {MenuInfo} from "rc-menu/es/interface";
@@ -192,7 +192,7 @@ const Project: React.FC = (props: connect) => {
             parentId: options.parentId,
         }, () => {
             setModalAllVisible((prevState) => ({...prevState, isCreateSub: false, isRename: false, isEdit: false,isCreateTask: false,isCut: false}));
-            dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+            dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
             if (modalAllVisible.isRename) {
                 // todo: 如果是重命名/修改(修改了名字), 则需要 更新 tab 的 label
 
@@ -211,7 +211,7 @@ const Project: React.FC = (props: connect) => {
         handleContextCancel();
       if (!isLeaf) {
         await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
-          dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+          dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
           // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
         });
         return;
@@ -234,7 +234,7 @@ const Project: React.FC = (props: connect) => {
           await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
             // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
             dispatch({type: STUDIO_MODEL.removeTag, payload: taskId});
-            dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+            dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
           });
         },
       });
@@ -274,7 +274,7 @@ const Project: React.FC = (props: connect) => {
        await handleOption(API_CONSTANTS.COPY_TASK_URL, l('right.menu.copy'),{
               ...modalAllVisible.value,
        },()=>{
-           dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+           dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
        });
         handleContextCancel();
     }
@@ -298,7 +298,7 @@ const Project: React.FC = (props: connect) => {
            originCatalogueId: cutId,
            targetParentId: contextMenu.selectedKeys[0],
         },()=>{
-            dispatch({type: STUDIO_MODEL_SYNC.queryProject});
+            dispatch({type: STUDIO_MODEL_ASYNC.queryProject});
             // 重置 cutId
             setCutId(undefined);
             setModalAllVisible(prevState => ({...prevState, isCut: false}));

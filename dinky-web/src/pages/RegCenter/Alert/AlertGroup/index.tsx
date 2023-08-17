@@ -35,7 +35,7 @@ import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
 import DescriptionsItem from "antd/es/descriptions/Item";
 import AlertGroupForm from "@/pages/RegCenter/Alert/AlertGroup/components/AlertGroupForm";
 import Pop from "@/components/Animation/Pop";
-import {ALERT_MODEL_SYNC} from "@/pages/RegCenter/Alert/AlertInstance/model";
+import {ALERT_MODEL_ASYNC} from "@/pages/RegCenter/Alert/AlertInstance/model";
 
 const AlertGroupTableList: React.FC = (props: any) => {
     /**
@@ -257,7 +257,7 @@ const AlertGroupTableList: React.FC = (props: any) => {
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({
   queryInstance: () => dispatch({
-    type: ALERT_MODEL_SYNC.queryInstance,
+    type: ALERT_MODEL_ASYNC.queryInstance,
     payload: {},
   }),
 });
