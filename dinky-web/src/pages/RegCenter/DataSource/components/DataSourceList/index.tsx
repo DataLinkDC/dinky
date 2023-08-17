@@ -61,20 +61,19 @@ const DataSourceTable = () => {
    * set   list
    */
   const queryDataSourceList = async () => {
-    await queryList(API_CONSTANTS.DATASOURCE).then(res => {
-      setDataSource(res.data);
-    });
+    const res = await queryList(API_CONSTANTS.DATASOURCE);
+    setDataSource(res.data);
   };
 
   /**
    * extra callback
    * @param callback
    */
-  const executeAndCallbackRefresh = async (callback: () => void) => {
-    await setLoading(true);
+  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+    setLoading(true);
     await callback();
     await queryDataSourceList();
-    await setLoading(false);
+    setLoading(false);
   };
 
   /**
@@ -86,7 +85,6 @@ const DataSourceTable = () => {
       await handleAddOrUpdate(API_CONSTANTS.DATASOURCE, item);
     });
   };
-
 
   /**
    * handle delete
@@ -187,7 +185,6 @@ const DataSourceTable = () => {
       setDetailPage(!detailPage);
     } else {
       await WarningMessage(l('rc.ds.enter.error'));
-      return;
     }
   };
 

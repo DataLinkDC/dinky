@@ -34,7 +34,6 @@ import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 const DataSourceDetail = (props : any) => {
   const navigate = useNavigate();
 
-
   const {dataSource, backClick , dispatch ,database: { dbData , selectDatabaseId , expandKeys, selectKeys}} = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -87,35 +86,33 @@ const DataSourceDetail = (props : any) => {
       type: STUDIO_MODEL.updateDatabaseSelectKey,
       payload: keys
     })
-    if (isLeaf) {
-      const queryParams =  {id: selectDatabaseId , schemaName, tableName};
-      dispatch({
-        type: STUDIO_MODEL.addTab,
-        payload: {
-          icon: selectDb.type,
-          id: selectDatabaseId + schemaName + tableName,
-          breadcrumbLabel: [selectDb.type,selectDb.name].join("/"),
-          label: schemaName + '.' + tableName ,
-          params:{ queryParams: queryParams, tableInfo: fullInfo},
-          type: "metadata"
-        }
-      })
-    }
-    if (isLeaf) {
-      setParams({
-        id: dataSource.id as number,
-        schemaName,
-        tableName
-      });
-      setDisabled(false);
-      /**
-       * get table columns
-       */
 
-      setTableInfo(fullInfo);
-    } else {
+    if (!isLeaf) {
       clearState();
+      return;
     }
+
+    dispatch({
+      type: STUDIO_MODEL.addTab,
+      payload: {
+        icon: selectDb.type,
+        id: selectDatabaseId + schemaName + tableName,
+        breadcrumbLabel: [selectDb.type, selectDb.name].join("/"),
+        label: schemaName + '.' + tableName,
+        params: {queryParams: {id: selectDatabaseId, schemaName, tableName}, tableInfo: fullInfo},
+        type: "metadata"
+      }
+    })
+
+    setParams({
+      id: dataSource.id as number,
+      schemaName,
+      tableName
+    });
+
+    setDisabled(false);
+    // get table columns
+    setTableInfo(fullInfo);
   }, []);
 
 
@@ -130,13 +127,11 @@ const DataSourceDetail = (props : any) => {
     })
   }
 
-
   /**
    * render back button and refresh button
    * @return {JSX.Element}
    */
-  const renderBackButton = () => {
-    return <>
+  const renderBackButton =
       <DataSourceDetailBackButton>
         <Space size={'middle'}>
           <Button size={'middle'} icon={<ReloadOutlined spin={loading}/>} type="primary"
@@ -144,14 +139,12 @@ const DataSourceDetail = (props : any) => {
           <Button size={'middle'} icon={<BackwardOutlined/>} type="primary"
                   onClick={handleBackClick}>{l('button.back')}</Button>
         </Space>
-      </DataSourceDetailBackButton>
-    </>;
-  };
+      </DataSourceDetailBackButton>;
 
   /**
    * render
    */
-  return <>
+  return (
     <ProCard loading={loading} ghost gutter={[16, 16]} split="vertical">
       <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan="16%">
         {/* tree */}
@@ -162,14 +155,13 @@ const DataSourceDetail = (props : any) => {
         <RightTagsRouter
           tableInfo={tableInfo}
           queryParams={params}
-          rightButtons={renderBackButton()}
+          rightButtons={renderBackButton}
           tagDisabled={disabled}
         />
       </ProCard>
-    </ProCard>
-  </>;
+    </ProCard>);
 };
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   database: Studio.database,
-}))(DataSourceDetail); ;
+}))(DataSourceDetail);
