@@ -33,12 +33,18 @@ import storage from 'redux-persist/lib/storage';
 import {Reducer, StoreEnhancer} from 'redux';
 import { API } from "./services/data";
 import {AccessContextProvider} from '@/hooks/useAccess';
+import { Navigate } from 'umi';
+import {SysMenu} from "@/types/RegCenter/data";
 
 // const isDev = process.env.NODE_ENV === "development";
 const loginPath = API_CONSTANTS.LOGIN_PATH;
 
 const whiteList = ['/user','/user/login']
 
+
+
+let extraRoutes=[];
+let rendered = false;
 
 /**
  * 初始化路由鉴权
@@ -67,6 +73,7 @@ export async function getInitialState(): Promise<{
   const fetchUserInfo = async () =>
     queryCurrentUser().then((result) => {
       const user = result.datas.user;
+      extraRoutes = result.datas.menuList;
       const currentUser: API.CurrentUser = {
         user: {
           id: user.id,
@@ -185,3 +192,49 @@ export const dva = {
   },
 };
 
+/***
+ * 动态修改默认跳转路由
+ */
+const patch = (oldrRoutes, routes: SysMenu[])=>{
+  oldrRoutes[1].routes = oldrRoutes[1].routes.map(route=>{
+    if(route.routes && route.routes.length){
+        const redirect = routes.filter(r=>r.path.startsWith(route.path))
+        if(redirect.length){
+          route.routes.shift();
+          route.routes.unshift({
+            path: route.path,
+            element: <Navigate to={redirect[0].path} />
+          })
+        }
+    }
+    return route;
+  })
+}
+
+
+/***
+ * 动态修改路由
+ */
+export function patchClientRoutes({ routes }) {
+  // 根据 extraRoutes 对 routes 做一些修改
+  patch(routes, extraRoutes);
+}
+
+
+
+/***
+ * 路由切换并只加载首次
+ */
+export function onRouteChange({ location, clientRoutes, routes, action }) {
+  if (location.pathname !== loginPath && !rendered) {
+    const filterMenus = (menus=[])=>{
+      return menus.filter(menu=>menu.type !== 'F')
+    }
+
+    queryCurrentUser().then(res=>{
+      extraRoutes = filterMenus(res.datas.menuList)
+      patchClientRoutes({routes: clientRoutes})
+      rendered = true
+    })
+  }
+}
