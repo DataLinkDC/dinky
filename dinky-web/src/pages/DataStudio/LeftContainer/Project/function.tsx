@@ -42,31 +42,27 @@ export const getParentKey = (key: number | string, tree: any): any => {
  * @returns {any}
  */
 
-export const buildProjectTree = (data: Catalogue[], searchValue: string = '', path?: string[]): any => data.filter((ca: Catalogue) => (ca.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).map((item: Catalogue) => {
-
-  // 使用 name 拼接 path todo: 有 bug ，需要修复
-    if (path) {
-        path.push(...path,item.name)
-    }
-
-  return {
-    // isLeaf: (item.type && item.children.length === 0) ,
-    isLeaf: item.isLeaf ,
-    name: item.name,
-    parentId: item.parentId,
-    label: searchTreeNode(item.name, searchValue),
-    icon:  (item.type && item.children.length === 0) && getTabIcon(item.type,20),
-    value: item.id,
-    path: path ?? [],
-    type: item.type,
-    title: <>{searchTreeNode(item.name, searchValue)}</>,
-    fullInfo: item,
-    key: item.id,
-    id: item.id,
-    taskId: item.taskId,
-    children: buildProjectTree(item.children, searchValue , path),
-  }
-});
+export const buildProjectTree = (data: Catalogue[], searchValue: string = '', path?: string[]): any =>
+  data.map((item: Catalogue) => {
+      const currentPath = path ? [...path, item.name] : [item.name];
+      return {
+        // isLeaf: (item.type && item.children.length === 0) ,
+        isLeaf: item.isLeaf,
+        name: item.name,
+        parentId: item.parentId,
+        label: searchTreeNode(item.name, searchValue),
+        icon: (item.type && item.children.length === 0) && getTabIcon(item.type, 20),
+        value: item.id,
+        path: currentPath,
+        type: item.type,
+        title: <>{searchTreeNode(item.name, searchValue)}</>,
+        fullInfo: item,
+        key: item.id,
+        id: item.id,
+        taskId: item.taskId,
+        children: buildProjectTree(item.children, searchValue, currentPath),
+      }
+    });
 
 
 export const isUDF = (jobType: string) => {
