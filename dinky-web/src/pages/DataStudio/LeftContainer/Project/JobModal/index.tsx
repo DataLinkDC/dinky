@@ -39,11 +39,7 @@ type JobModalProps = {
 const JobModal: React.FC<JobModalProps> = (props) => {
 
     const {onCancel, onSubmit, modalVisible, title, values} = props;
-
-
     const [jobType, setJobType] = React.useState<string>(values.type || '');
-
-
     const [form] = Form.useForm<Catalogue>();
 
     /**
@@ -72,7 +68,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         formContext.resetForm();
     };
 
-
     /**
      * form values change
      * @param changedValues
@@ -81,7 +76,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
     const onValuesChange = (changedValues: any, allValues: any) => {
         if (allValues.type) setJobType(allValues.type);
     }
-
 
     /**
      * submit form
@@ -92,7 +86,6 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         formData.configJson.templateId = formData.configJson.templateId.reverse().pop();
         onSubmit({...values, ...formData} as Catalogue);
     };
-
 
     const renderForm = () => {
         return <>

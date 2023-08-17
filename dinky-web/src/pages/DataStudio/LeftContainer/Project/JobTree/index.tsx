@@ -64,7 +64,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     value = String(value).trim();
     const expandList: any[] = generateList(data, []);
     let expandedKeys: any = expandList.map((item: any) => {
-      if (item && item.name.indexOf(value) > -1) {
+      if (item?.name.indexOf(value) > -1) {
         return getParentKey(item.key, data);
       }
       return null;

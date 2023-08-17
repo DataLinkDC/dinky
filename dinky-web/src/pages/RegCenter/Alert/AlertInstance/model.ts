@@ -20,6 +20,9 @@ import {Reducer} from "umi";
 import {Alert} from "@/types/RegCenter/data.d";
 import {showAlertInstance} from "@/pages/RegCenter/Alert/AlertGroup/service";
 
+import {Effect} from "@@/plugin-dva/types";
+import {createModelTypes} from "@/utils/modals";
+
 export type AlertStateType = {
   instance:Alert.AlertInstance[],
   group:Alert.AlertGroup[]
@@ -29,6 +32,7 @@ export type AlertModelType = {
   namespace: string;
   state: AlertStateType;
   effects: {
+    queryInstance: Effect;
   };
   reducers: {
     saveInstance: Reducer<AlertStateType>;
@@ -65,5 +69,7 @@ const AlertModel: AlertModelType = {
     },
   },
 };
+
+export const [ALERT_MODEL, ALERT_MODEL_ASYNC] = createModelTypes(AlertModel);
 
 export default AlertModel;
