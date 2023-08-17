@@ -1051,6 +1051,9 @@ export default {
   'pages.datastudio.sql.query': 'SQL 查询',
   'pages.datastudio.submit.job': '提交作业',
 
+  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
+
   'pages.datastudio.explain.validate.msg': 'FlinkSql 语法和逻辑检查',
   'pages.datastudio.explain.validate': '正在校验中...',
   'pages.datastudio.explain.validate.allright': '全部正确',
