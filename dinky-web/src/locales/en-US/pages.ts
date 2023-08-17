@@ -1031,6 +1031,9 @@ export default {
   'pages.datastudio.sql.query': 'SQL query',
   'pages.datastudio.submit.job': 'Submit job',
 
+  'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
+  'pages.datastudio.help.sqlChangedPrompt': 'the remote context corresponding to the current sql has changed, will the data be flushed?',
+
   'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
   'pages.datastudio.explain.validate': 'Validating...',
   'pages.datastudio.explain.validate.allright': 'All Right',
