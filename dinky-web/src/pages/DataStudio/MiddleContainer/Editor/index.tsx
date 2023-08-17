@@ -1,7 +1,7 @@
 import React from "react";
 import CodeEdit from "@/components/CustomEditor/CodeEdit";
 import {connect} from "@@/exports";
-import {StateType} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
 import {getCurrentData} from "@/pages/DataStudio/function";
 import {convertCodeEditTheme} from "@/utils/function";
 import {editor} from "monaco-editor";
@@ -61,7 +61,7 @@ const CodeEditor: React.FC<EditorProps & any > = (props) => {
         editor.onDidChangeCursorPosition((e) => {
           props.footContainer.codePosition=[e.position.lineNumber,e.position.column]
           dispatch({
-            type: "Studio/saveFooterValue",
+            type: STUDIO_MODEL.saveFooterValue,
             payload: {...props.footContainer},
           });
         });
@@ -69,7 +69,7 @@ const CodeEditor: React.FC<EditorProps & any > = (props) => {
       onChange={(v,d) => {
         current.statement = v;
         dispatch({
-          type: "Studio/saveTabs",
+          type: STUDIO_MODEL.saveTabs,
           payload: {...props.tabs},
         });
       }}
@@ -80,7 +80,7 @@ const CodeEditor: React.FC<EditorProps & any > = (props) => {
     {/*          onChange={(v,d) => {*/}
     {/*            current.statement = v;*/}
     {/*            dispatch({*/}
-    {/*              type: "Studio/saveTabs",*/}
+    {/*              type: STUDIO_MODEL.saveTabs,*/}
     {/*              payload: {...props.tabs},*/}
     {/*            });*/}
 

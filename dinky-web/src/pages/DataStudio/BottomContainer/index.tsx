@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import MovableSidebar from "@/components/Sidebar/MovableSidebar";
 import {l} from "@/utils/intl";
-import {StateType, VIEW} from "@/pages/DataStudio/model";
+import {StateType, STUDIO_MODEL, VIEW} from "@/pages/DataStudio/model";
 import {ConfigProvider, Space, Tabs} from "antd";
 import {LeftBottomMoreTabs, LeftBottomSide} from "@/pages/DataStudio/route";
 import {connect} from "@@/exports";
@@ -22,7 +22,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const handleMinimize = () => {
     dispatch({
-      type: 'Studio/updateSelectBottomKey',
+      type: STUDIO_MODEL.updateSelectBottomKey,
       payload: "",
     })
   }
@@ -33,7 +33,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateBottomHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateBottomHeight",
+      type: STUDIO_MODEL.updateBottomHeight,
       payload: height,
     })
   }
@@ -44,14 +44,14 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateCenterContentHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateCenterContentHeight",
+      type: STUDIO_MODEL.updateCenterContentHeight,
       payload: height,
     })
   }
 
   const updateSelectBottomSubKey = (key: string) => {
     dispatch({
-      type: "Studio/updateSelectBottomSubKey",
+      type: STUDIO_MODEL.updateSelectBottomSubKey,
       payload: key,
     })
   }
@@ -62,7 +62,7 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateToolContentHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateToolContentHeight",
+      type: STUDIO_MODEL.updateToolContentHeight,
       payload: height,
     })
   }

@@ -20,72 +20,72 @@
 
 import {Dispatch} from "@@/plugin-dva/types";
 import {Cluster, DataSources} from "@/types/RegCenter/data";
-import {DataStudioParams, EnvType, JobRunningMsgType, TabsItemType} from "@/pages/DataStudio/model";
+import {DataStudioParams, EnvType, JobRunningMsgType, STUDIO_MODEL, TabsItemType} from "@/pages/DataStudio/model";
 
 export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) => dispatch({
-    type: "Studio/updateToolContentHeight",
+    type: STUDIO_MODEL.updateToolContentHeight,
     payload: key,
   }),
   updateCenterContentHeight: (key: number) => dispatch({
-    type: "Studio/updateCenterContentHeight",
+    type: STUDIO_MODEL.updateCenterContentHeight,
     payload: key,
   }),
   updateSelectLeftKey: (key: string) => dispatch({
-    type: "Studio/updateSelectLeftKey",
+    type: STUDIO_MODEL.updateSelectLeftKey,
     payload: key,
   }),
   updateLeftWidth: (width: number) => dispatch({
-    type: "Studio/updateLeftWidth",
+    type: STUDIO_MODEL.updateLeftWidth,
     payload: width,
   }), updateSelectRightKey: (key: string) => dispatch({
-    type: "Studio/updateSelectRightKey",
+    type: STUDIO_MODEL.updateSelectRightKey,
     payload: key,
   }),
   updateRightWidth: (width: number) => dispatch({
-    type: "Studio/updateRightWidth",
+    type: STUDIO_MODEL.updateRightWidth,
     payload: width,
   }), updateSelectBottomKey: (key: string) => dispatch({
-    type: "Studio/updateSelectBottomKey",
+    type: STUDIO_MODEL.updateSelectBottomKey,
     payload: key,
   }), updateSelectBottomSubKey: (key: string) => dispatch({
-    type: "Studio/updateSelectBottomSubKey",
+    type: STUDIO_MODEL.updateSelectBottomSubKey,
     payload: key,
   }),
   updateBottomHeight: (height: number) => dispatch({
-    type: "Studio/updateBottomHeight",
+    type: STUDIO_MODEL.updateBottomHeight,
     payload: height,
   }),
   saveDataBase: (data: DataSources.DataSource[]) => dispatch({
-    type: "Studio/saveDataBase",
+    type: STUDIO_MODEL.saveDataBase,
     payload: data,
   }),
   saveProject: (data: any[]) => dispatch({
-    type: "Studio/saveProject",
+    type: STUDIO_MODEL.saveProject,
     payload: data,
   }),
   updateBottomConsole: (data: string) => dispatch({
-    type: "Studio/updateBottomConsole",
+    type: STUDIO_MODEL.updateBottomConsole,
     payload: data,
   }),
   saveSession: (data: Cluster.Instance[]) => dispatch({
-    type: "Studio/saveSession",
+    type: STUDIO_MODEL.saveSession,
     payload: data,
   }),
   saveEnv: (data: EnvType[]) => dispatch({
-    type: "Studio/saveEnv",
+    type: STUDIO_MODEL.saveEnv,
     payload: data,
   }),
   saveTabs: (data: TabsItemType[]) => dispatch({
-    type: "Studio/saveTabs",
+    type: STUDIO_MODEL.saveTabs,
     payload: data,
   }),
   saveClusterConfiguration: (data: Cluster.Config[]) => dispatch({
-    type: "Studio/saveClusterConfiguration",
+    type: STUDIO_MODEL.saveClusterConfiguration,
     payload: data,
   }),
   updateJobRunningMsg: (data: JobRunningMsgType) => dispatch({
-    type: "Studio/updateJobRunningMsg",
+    type: STUDIO_MODEL.updateJobRunningMsg,
     payload: data,
   }),
 
