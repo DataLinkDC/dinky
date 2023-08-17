@@ -43,14 +43,13 @@ const QuickGuide = () => {
         });
     }
 
-    return <>
+    return (
         <Typography style={{padding: '2px', textAlign: 'center', border: 'salmon'}}>
             <Title level={4}>{l('datastudio.middle.qg')}</Title>
             <Paragraph style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >
                 {buildQuickGuide()}
             </Paragraph>
-        </Typography>
-    </>
+        </Typography>);
 };
 
 
