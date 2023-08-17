@@ -99,7 +99,7 @@ export const handleAddOrUpdate = async (url: string, params: any, afterCallBack?
     const {code, msg} = await addOrUpdateData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
-      afterCallBack && afterCallBack();
+      afterCallBack?.();
     } else {
       await WarningMessage(msg);
     }
@@ -121,7 +121,7 @@ export const handleRemoveById = async (url: string, id: number, afterCallBack?: 
     const {code, msg} = await removeById(url, {id});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
-        afterCallBack && afterCallBack();
+        afterCallBack?.();
     } else {
       await WarningMessage(msg);
     }
@@ -178,7 +178,7 @@ export const handleOption = async (url: string, title: string, param: any, after
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
       SuccessMessage(result.msg);
-      afterCallBack && afterCallBack();
+      afterCallBack?.();
       return result;
     } else {
       WarningMessage(result.msg);
@@ -275,7 +275,7 @@ export const handlePutDataByParams = async (url: string, title: string, params: 
     const {code, msg} = await putData(url, {...params});
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
-        afterCallBack && afterCallBack();
+        afterCallBack?.();
       return true;
     } else {
       await WarningMessage(msg);
