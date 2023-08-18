@@ -112,34 +112,15 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
   /**
    * submit form
    */
-  const submitForm = async (formData: SysMenu) => {
+  const submitForm = async (formData: any) => {
     await form.validateFields();
-    handleSubmit({ ...values, ...formData });
+    // 获取 parentId 的值
+    const parentId: number[] = formData.parentId;
+    const middleResult :SysMenu = { ...formData, parentId: parentId.pop() } // 转换 parentId 的值
+    handleSubmit({ ...values, ...middleResult });
     handleCancel();
   };
 
-  // const generateOrderNum = (level, baseOrderNum) => {
-  //     return baseOrderNum + level * 100;
-  // };
-
-  /**
-   * 动态构建orderNum , 规则: 按照层级关系 , 从上到下, 递归获取 先获取层级 list 最后一个元素的 orderNum, 然后加上 100
-   *
-   * @param {SysMenu[]} list
-   * @returns {number}
-   */
-  // const generateTreeWithOrderNum = (tree, level = 0, baseOrderNum = 0) => {
-  //     return tree.map((node) => {
-  //         const orderNum = generateOrderNum(level, baseOrderNum);
-  //         const newNode = { ...node, orderNum };
-  //
-  //         if (node.children && node.children.length > 0) {
-  //             newNode.children = generateTreeWithOrderNum(node.children, level + 1, orderNum);
-  //         }
-  //
-  //         return newNode;
-  //     });
-  // };
 
   /**
    * construct role form
