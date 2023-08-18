@@ -29,7 +29,7 @@ declare namespace UserBaseInfo {
     enabled: boolean;
     isDelete: boolean;
     superAdminFlag: boolean;
-    tenantAdminFlag: boolean;
+    tenantAdminFlag?: boolean;
   };
 
   export type ChangePasswordParams = {

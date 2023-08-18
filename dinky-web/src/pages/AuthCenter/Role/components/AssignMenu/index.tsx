@@ -23,7 +23,7 @@ import {Button, Drawer, Empty, Input, Space, Spin, Tree} from "antd";
 import {l} from "@/utils/intl";
 import {UserBaseInfo} from "@/types/User/data";
 import {SysMenu} from "@/types/RegCenter/data";
-import {buildMenuTree} from "@/pages/AuthCenter/Menu/function";
+import {buildMenuTree, sortTreeData} from "@/pages/AuthCenter/Menu/function";
 import {Key} from "@ant-design/pro-components";
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
@@ -131,7 +131,7 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
                                 onCheck={(keys) => onCheck(keys)}
                                 multiple={true}
                                 className={'treeList'}
-                                treeData={buildMenuTree(menuData.menus, searchValue)}
+                                treeData={buildMenuTree(sortTreeData(menuData.menus), searchValue)}
                             />
                         </Spin>
                     </> : <Empty className={'code-content-empty'}/>

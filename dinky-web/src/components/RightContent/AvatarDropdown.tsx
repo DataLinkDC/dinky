@@ -196,7 +196,7 @@ const AvatarDropdown = () => {
     {
       key: 'currentTenant',
       icon: <TeamOutlined />,
-      label: l('menu.account.tenant','', {tenantCode: currentUser?.currentTenant.tenantCode}),
+      label: l('menu.account.tenant','', {tenantCode: currentUser.currentTenant?.tenantCode}),
     },
     {
       type: 'divider' as const,

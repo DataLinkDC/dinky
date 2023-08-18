@@ -173,6 +173,7 @@ export default {
   'user.jobnumber': '工号',
   'user.phone': '手机号',
   'user.type': '注册类型',
+  'user.status': '是否删除',
   'user.nickname': '昵称',
   'user.superAdminFlag': '超级管理员',
   'user.tenantAdminFlag': '租户管理员',
@@ -181,6 +182,11 @@ export default {
   'user.assignRole': '分配角色',
   'user.delete': '删除用户',
   'user.deleteConfirm': '您确定要删除此用户吗？',
+  'user.recovery': '您确定要恢复此用户吗？',
+  'user.isdelete': '该用户已被删除，无法重置密码，请先恢复该用户!',
+  'user.reset': '您确定要重置此用户密码吗?',
+  'user.resetPassword': '重置密码',
+  'user.resetPasswordSuccess': '用户: {username} 密码重置成功! 新密码为: {password}',
   'user.usernamePlaceholder': '请输入用户名',
   'user.jobnumberPlaceholder': '请输入工号',
   'user.nicknamePlaceholder': '请输入昵称',
@@ -1064,6 +1070,8 @@ export default {
   'pages.datastudio.footer.codePosition': "行{Ln}:列{Col} ",
 
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
+  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
 
 
   'datastudio.middle.qg': '快捷引导',

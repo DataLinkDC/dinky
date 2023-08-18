@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {Button, Layout, Menu, Modal, Progress, Space, theme} from 'antd';
+import {Button, Divider, Layout, Menu, Modal, Progress, Space, theme, Typography} from 'antd';
 import {connect, getDvaApp} from "umi";
 import React, {Fragment, useCallback, useEffect, useState} from "react";
 import {DataStudioParams, StateType, TabsItemType, TabsPageType, VIEW} from "@/pages/DataStudio/model";
@@ -40,6 +40,8 @@ import * as monaco from "monaco-editor";
 import {Footer} from "antd/es/layout/layout";
 import FooterContainer from "@/pages/DataStudio/FooterContainer";
 import {l} from "@/utils/intl";
+
+const { Text } = Typography;
 
 const {Sider, Content} = Layout;
 
@@ -100,6 +102,21 @@ const DataStudio = (props: any) => {
     onResize();
     return () => window.removeEventListener('resize', onResize);
   }, []);
+
+
+
+  useEffect(() => {
+    if (isModalUpdateTabContentOpen){
+        Modal.confirm({
+            title: l('pages.datastudio.help.sqlChanged'),
+            keyboard: true,
+            content: <> <Text type={'danger'}>{l('pages.datastudio.help.sqlChangedPrompt')}</Text></>,
+            onOk : updateTabContent,
+            onCancel: () =>  setIsModalUpdateTabContentOpen(false)
+      })
+    }
+  }, [isModalUpdateTabContentOpen]);
+
 
   const loadData = async () => {
     Promise.all([getDataBase(), getConsoleData(), getTaskData(), getSessionData(), getEnvData(), getClusterConfigurationData()])
@@ -167,10 +184,6 @@ const DataStudio = (props: any) => {
 
   return (
     <PersistGate loading={null} persistor={persist}>
-        <Modal title={l('pages.datastudio.help.sqlChanged')} open={isModalUpdateTabContentOpen} onOk={updateTabContent}
-               onCancel={() => setIsModalUpdateTabContentOpen(false)}>
-          <p>{l('pages.datastudio.help.sqlChangedPrompt')}</p>
-        </Modal>
 
         <div style={{marginInline: -10, marginBlock: -5}}>
           {/* 渲染 header */}

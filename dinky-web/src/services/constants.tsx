@@ -39,6 +39,8 @@ export const API_CONSTANTS = {
   CHOOSE_TENANT: "/api/chooseTenant",
   // user list
   USER: "/api/user",
+  USER_RECOVERY: "/api/user/recovery",
+  USER_RESET_PASSWORD: "/api/user/resetPassword",
   // enable user
   USER_ENABLE: "/api/user/enable",
   // delete user

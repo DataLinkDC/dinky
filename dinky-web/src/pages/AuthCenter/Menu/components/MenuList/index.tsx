@@ -40,7 +40,10 @@ const MenuList: React.FC = () => {
         const [formValues, setFormValues] = useState<Partial<SysMenu>>({});
         const [contextMenuPosition, setContextMenuPosition] = useState({});
         const [selectedKeys, setSelectedKeys] = useState([]);
-        const [rightClickedNode, setRightClickedNode] = useState<any>();
+        const [clickedNode, setClickedNode] = useState<{ clickedNode: any,rightClickedNode: any }>({
+            clickedNode: {},
+            rightClickedNode: {},
+        });
         const [treeData, setTreeData] = useState<SysMenu[]>([]);
 
         const [modalVisible, handleModalVisible] = useState<boolean>(false);
@@ -77,7 +80,7 @@ const MenuList: React.FC = () => {
          */
         const handleDeleteSubmit = async () => {
             await executeAndCallbackRefresh(async () => {
-                await handleRemoveById(API_CONSTANTS.MENU_DELETE, rightClickedNode.key as number);
+                await handleRemoveById(API_CONSTANTS.MENU_DELETE, clickedNode?.rightClickedNode.key as number);
             });
             setContextMenuVisible(false)
         }
@@ -138,7 +141,7 @@ const MenuList: React.FC = () => {
             // 获取右键点击的节点信息
             const {node, event} = info;
             setSelectedKeys([node.key] as any);
-            setRightClickedNode(node);
+            setClickedNode( prevState => ({...prevState, rightClickedNode: node}));
             setContextMenuVisible(true);
             setContextMenuPosition({
                 position: 'fixed',
@@ -155,6 +158,7 @@ const MenuList: React.FC = () => {
             const {node: {key, fullInfo}} = info;
             setSelectedKeys([key] as any);
             setFormValues(fullInfo)
+            setClickedNode( prevState => ({...prevState, clickedNode: info}));
             handleUpdateModalVisible(true);
             setDisabled(true)
             setIsRootMenu(fullInfo.parentId === -1)
@@ -165,9 +169,9 @@ const MenuList: React.FC = () => {
         const renderRightCardExtra = () => {
             return <>
                 {(updateModalVisible && formValues && disabled) &&
-                    <Button type={'primary'} onClick={() => setDisabled(false)}>{l('button.edit')}</Button>}
+                    <Button size={'large'} type={'primary'} onClick={() => setDisabled(false)}>{l('button.edit')}</Button>}
                 {(updateModalVisible && formValues && !disabled) &&
-                    <Button type={'dashed'} onClick={() => setDisabled(true)}>{l('button.cancel')}</Button>}
+                    <Button size={'large'} type={'dashed'} onClick={() => setDisabled(true)}>{l('button.cancel')}</Button>}
             </>
         };
 
@@ -187,6 +191,7 @@ const MenuList: React.FC = () => {
                     <MenuForm
                         selectedKeys={selectedKeys}
                         isRootMenu={isRootMenu} treeData={treeData} disabled={disabled}
+                        clickNode={clickedNode.clickedNode}
                         values={formValues} onCancel={handleCancel} open={updateModalVisible}
                         onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}
                     />
@@ -197,6 +202,7 @@ const MenuList: React.FC = () => {
                 return <>
                     <MenuForm
                         selectedKeys={selectedKeys}
+                        clickNode={clickedNode.rightClickedNode}
                         isRootMenu={isRootMenu} treeData={treeData} values={{}} open={modalVisible}
                         onCancel={handleCancel} onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}/>
                 </>
@@ -216,7 +222,7 @@ const MenuList: React.FC = () => {
         const renderLeftExtra = () => {
             return <Space>
                 <Button
-                    size={'middle'}
+                    size={'small'}
                     key={'added-menu'}
                     icon={<PlusSquareTwoTone/>}
                     type={'primary'}
@@ -225,7 +231,7 @@ const MenuList: React.FC = () => {
                     {l('right.menu.createRoot')}
                 </Button>
                 <Button
-                    size={'middle'}
+                    size={'small'}
                     key={'refresh-menu'}
                     icon={<ReloadOutlined/>}
                     type={'primary'}
@@ -272,7 +278,7 @@ const MenuList: React.FC = () => {
 
             <RightContextMenu
                 contextMenuPosition={contextMenuPosition} open={contextMenuVisible}
-                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(rightClickedNode?.type === 'F')}
+                openChange={() => setContextMenuVisible(false)} items={RIGHT_CONTEXT_MENU(clickedNode.rightClickedNode?.type === 'F')}
                 onClick={handleMenuClick}
             />
         </>

@@ -28,6 +28,7 @@ import {isUDF} from "@/pages/DataStudio/LeftContainer/Project/function";
 import {ProFormCascader} from "@ant-design/pro-form/lib";
 import {queryDataByParams} from "@/services/BusinessCrud";
 import {API_CONSTANTS} from "@/services/constants";
+import {UDFTemplate} from "@/types/RegCenter/data";
 
 type JobModalProps = {
     onCancel: () => void
@@ -39,7 +40,8 @@ type JobModalProps = {
 const JobModal: React.FC<JobModalProps> = (props) => {
 
     const {onCancel, onSubmit, modalVisible, title, values} = props;
-    const [jobType, setJobType] = React.useState<string>(values.type || '');
+    const [jobType, setJobType] = React.useState<string>(values.type || 'FlinkSql');
+    const [udfTemplate, setUdfTemplate] = React.useState<any[]>([]);
     const [form] = Form.useForm<Catalogue>();
 
     /**
@@ -58,6 +60,22 @@ const JobModal: React.FC<JobModalProps> = (props) => {
         if (modalVisible) form.resetFields();
         form.setFieldsValue(values);
     }, [open, values, form]);
+
+
+    const queryUdfTemplate = async () => {
+        await queryDataByParams(API_CONSTANTS.UDF_TEMPLATE_TREE).then((res) => {
+            res.map((item :any) => {
+               if( item.value === jobType ) res = item.children.map((item :any) => item)
+            })
+            setUdfTemplate(res);
+        })
+    }
+
+    useEffect(() => {
+        form.setFieldValue('configJson', {});
+        isUDF(jobType) && queryUdfTemplate();
+    }, [jobType, form]);
+
 
 
     /**
@@ -82,8 +100,11 @@ const JobModal: React.FC<JobModalProps> = (props) => {
      */
     const submitForm = async (formData: Catalogue) => {
         await form.validateFields();
-        if(!formData.configJson.templateId) return
-        formData.configJson.templateId = formData.configJson.templateId.reverse().pop();
+        if(isUDF(formData.type) && formData.configJson) {
+            // todo: 有个 bug 接口入参载荷正常, 但是接口获取的 configJson 提示无法
+             const {templateId} = formData.configJson;
+             formData.configJson.templateId = (templateId as any[]).sort((a,b) => a - b).pop();
+        }
         onSubmit({...values, ...formData} as Catalogue);
     };
 
@@ -112,7 +133,11 @@ const JobModal: React.FC<JobModalProps> = (props) => {
                         name={['configJson', 'templateId']}
                         label={l('catalog.udf.templateId')}
                         placeholder={l('catalog.udf.templateId.placeholder')}
-                        request={async () => await queryDataByParams(API_CONSTANTS.UDF_TEMPLATE_TREE)}
+                        fieldProps={{
+                            changeOnSelect: true,
+                            options: udfTemplate,
+                        }}
+
                         rules={[{required: true, message: l('catalog.udf.templateId.placeholder')}]}
                     />
 

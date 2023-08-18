@@ -41,9 +41,15 @@ import {DataAction} from '@/components/StyledComponents';
 import DataSourceDetail from '@/pages/RegCenter/DataSource/components/DataSourceDetail';
 import {WarningMessage} from '@/utils/messages';
 import {useNavigate} from '@@/exports';
+import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
+import {connect} from "umi";
+import {c} from "@umijs/utils/compiled/tar";
+import MetaData from "@/pages/DataStudio/LeftContainer/MetaData";
 
-const DataSourceTable = () => {
+const DataSourceTable : React.FC< connect & StateType>= (props) => {
   const navigate = useNavigate();
+
+  const {dispatch} = props;
 
   /**
    * state
@@ -180,6 +186,10 @@ const DataSourceTable = () => {
   const enterDetailPageClickHandler = async (item: DataSources.DataSource) => {
     // if status is true, enter detail page, else show error message , do nothing
     if (item.status) {
+      dispatch({
+        type: STUDIO_MODEL.updateSelectDatabaseId,
+        payload: item.id
+      })
       setFormValues(item);
       navigate(`/registration/database/detail/${item.id}`, {state: {from: '/registration/database'}});
       setDetailPage(!detailPage);
@@ -293,4 +303,6 @@ const DataSourceTable = () => {
 };
 
 
-export default DataSourceTable;
+export default connect(({Studio}: { Studio: StateType }) => ({
+  database: Studio.database,
+}))(DataSourceTable);

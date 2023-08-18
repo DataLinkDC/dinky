@@ -22,7 +22,7 @@ import {
   MENU_ICON_OPTIONS,
   MENU_TYPE_OPTIONS,
 } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
-import { buildMenuFormTree } from '@/pages/AuthCenter/Menu/function';
+import {buildMenuFormTree, sortTreeData} from '@/pages/AuthCenter/Menu/function';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { SysMenu } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
@@ -49,6 +49,7 @@ type MenuFormProps = {
   selectedKeys: Key[];
   treeData: SysMenu[];
   isRootMenu?: boolean;
+  clickNode?: any
 };
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {
@@ -66,6 +67,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         isRootMenu = false,
         treeData,
         selectedKeys,
+        clickNode: {nextOrderNum},
     } = props;
 
 
@@ -116,6 +118,32 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     handleSubmit({ ...values, ...formData });
     handleCancel();
   };
+
+
+    // const generateOrderNum = (level, baseOrderNum) => {
+    //     return baseOrderNum + level * 100;
+    // };
+
+    /**
+     * 动态构建orderNum , 规则: 按照层级关系 , 从上到下, 递归获取 先获取层级 list 最后一个元素的 orderNum, 然后加上 100
+     *
+     * @param {SysMenu[]} list
+     * @returns {number}
+     */
+    // const generateTreeWithOrderNum = (tree, level = 0, baseOrderNum = 0) => {
+    //     return tree.map((node) => {
+    //         const orderNum = generateOrderNum(level, baseOrderNum);
+    //         const newNode = { ...node, orderNum };
+    //
+    //         if (node.children && node.children.length > 0) {
+    //             newNode.children = generateTreeWithOrderNum(node.children, level + 1, orderNum);
+    //         }
+    //
+    //         return newNode;
+    //     });
+    // };
+
+
   /**
    * construct role form
    * @constructor
@@ -131,10 +159,8 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           rules={[{ required: true, message: l('menu.parentIdPlaceholder') }]}
           placeholder={l('menu.parentIdPlaceholder')}
           fieldProps={{
-              labelInValue: false,
-              treeData: [{ label: <>Root  <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;Root Folder</span></>, value: '-1' }].concat(
-              buildMenuFormTree(treeData, searchValue, true),
-            ),
+            labelInValue: false,
+            treeData: [{ label: <>Root  <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;Root Folder</span></>, value: '-1' ,children: buildMenuFormTree(sortTreeData(treeData), searchValue, true)}],
             onSearch: (value) => setSearchValue(value),
             treeDefaultExpandAll: true,
           }}
@@ -149,7 +175,6 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           name="component"
           label={l('menu.component')}
           placeholder={l('menu.componentPlaceholder')}
-          rules={[{ required: true, message: l('menu.componentPlaceholder') }]}
         />
         <ProFormText
           name="path"
@@ -191,8 +216,9 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         />
 
         <ProFormDigit
-          name="orderNum"
+          name="orderNum" disabled
           label={l('menu.orderNum')}
+          initialValue={nextOrderNum ?? undefined}
         />
 
         <ProFormTextArea
