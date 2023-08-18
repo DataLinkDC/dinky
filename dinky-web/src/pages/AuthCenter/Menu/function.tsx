@@ -29,8 +29,8 @@ export const IconRender = ({ icon }: { icon: string }) => {
   return icon ? React.createElement(Icons[icon]) : null;
 };
 
-const renderMenuType = (menuYype: string) => {
-  switch (menuYype) {
+const renderMenuType = (menuType: string) => {
+  switch (menuType) {
     case 'F':
       return <>{l('menu.type.button')}</>;
     case 'M':
@@ -111,7 +111,7 @@ export const buildMenuTree = (
 
       // 获取当前级别最大的 orderNum
       let maxChildOrderNum =
-        item.children && item.children.length > 0
+        item.children?.length > 0
           ? Math.max(...item.children.map((item) => item.orderNum))
           : item.orderNum;
 
@@ -154,10 +154,6 @@ export const buildMenuTree = (
 
 /**
  * build menu form tree (filter button)
- * @param {SysMenu[]} data
- * @param {string} searchValue
- * @param {boolean} filterButton
- * @returns {any}
  */
 
 export const buildMenuFormTree = (

@@ -48,7 +48,7 @@ const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
   const { values, form } = props;
 
   const [globalVarValue, setGlobalVarValue] = useState<string>(
-    values.fragmentValue || '',
+    values.fragmentValue ?? '',
   );
 
   const handleGlobalVarChange = (value: string) => {
@@ -85,7 +85,7 @@ const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
           rules={[{ required: true, message: l('rc.gv.valuePlaceholder') }]}
         >
           <CodeEdit
-            onChange={(value) => handleGlobalVarChange(value)}
+            onChange={(value) => handleGlobalVarChange(value ?? '')}
             code={globalVarValue}
             language={'sql'}
             {...CodeEditProps}

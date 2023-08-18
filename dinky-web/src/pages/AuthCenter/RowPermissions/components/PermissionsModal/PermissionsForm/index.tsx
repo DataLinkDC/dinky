@@ -43,7 +43,6 @@ type PermissionsFormProps = {
 
 /**
  * CodeEditProps
- * @type {{lineNumbers: string, height: string}}
  */
 const CodeEditProps = {
   height: '25vh',
@@ -52,26 +51,21 @@ const CodeEditProps = {
 
 const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
   const { values, roles, form } = props;
-  const [expression, setExpression] = useState<string>(values.expression || '');
+  const [expression, setExpression] = useState<string>(values.expression ?? '');
 
   /**
    * get role options
-   * @returns {DefaultOptionType[]}
    */
   const getRoleOptions = () => {
-    const itemList: DefaultOptionType[] = [];
-    roles.map((item) => {
-      return itemList.push({
-        label: item.roleName,
-        value: item.id,
-      });
-    });
+    const itemList: DefaultOptionType[] = roles.map((item) => ({
+      label: item.roleName,
+      value: item.id,
+    }));
     return itemList;
   };
 
   /**
    * render row permissions form
-   * @returns {JSX.Element}
    */
   const renderRowPermissionsForm = () => {
     return (
@@ -111,7 +105,7 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
         >
           <CodeEdit
             onChange={(value) => {
-              setExpression(value);
+              setExpression(value ?? '');
             }}
             code={expression}
             language={'sql'}

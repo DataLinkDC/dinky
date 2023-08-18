@@ -75,8 +75,8 @@ const GlobalVarModal: React.FC<GlobalVarModalProps> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    await handleSubmit({ ...values, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
   };
 
   return (

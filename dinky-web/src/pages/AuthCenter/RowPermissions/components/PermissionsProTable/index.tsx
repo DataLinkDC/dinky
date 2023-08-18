@@ -38,7 +38,7 @@ const PermissionsProTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
     setLoading(true);
     await callback();
     setLoading(false);
