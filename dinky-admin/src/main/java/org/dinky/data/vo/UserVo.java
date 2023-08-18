@@ -17,23 +17,16 @@
  *
  */
 
-package org.dinky.mapper;
+package org.dinky.data.vo;
 
 import org.dinky.data.model.User;
-import org.dinky.mybatis.mapper.SuperMapper;
 
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-/**
- * UserMapper
- *
- * @since 2021/11/28 13:36
- */
-@Mapper
-public interface UserMapper extends SuperMapper<User> {
-
-    Integer queryAdminUserByTenant(@Param("tenantId") Integer tenantId);
-
-    Integer recoveryUser(@Param("id") Integer userId);
+@Data
+@AllArgsConstructor
+public class UserVo {
+    private User user;
+    private String originalPassword;
 }

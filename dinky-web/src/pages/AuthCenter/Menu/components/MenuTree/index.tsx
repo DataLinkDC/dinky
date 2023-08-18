@@ -17,71 +17,61 @@
  *
  */
 
-import { buildMenuTree } from '@/pages/AuthCenter/Menu/function';
-import { SysMenu } from '@/types/RegCenter/data';
-import { l } from '@/utils/intl';
-import { Empty, Input, Spin, Tree } from 'antd';
-import React, { useCallback, useState } from 'react';
 
-const { DirectoryTree } = Tree;
+import {Empty, Input, Spin, Tree} from "antd";
+import React, {useCallback, useState} from "react";
+import {l} from "@/utils/intl";
+import {buildMenuTree, sortTreeData} from "@/pages/AuthCenter/Menu/function";
+import {SysMenu} from "@/types/RegCenter/data";
+
+const {DirectoryTree} = Tree;
+
+
 
 type MenuTreeProps = {
-  treeData: SysMenu[];
-  onNodeClick: (info: any) => void;
-  onRightClick: (info: any) => void;
-  selectedKeys: string[];
-  loading: boolean;
-};
+    treeData: SysMenu[] ;
+    onNodeClick: (info: any) => void
+    onRightClick: (info: any) => void
+    selectedKeys: string[],
+    loading: boolean,
+}
 const MenuTree: React.FC<MenuTreeProps> = (props) => {
-  const {
-    treeData = [],
-    selectedKeys,
-    onNodeClick,
-    onRightClick,
-    loading,
-  } = props;
+    const {treeData = [], selectedKeys, onNodeClick, onRightClick , loading} = props;
 
-  const [searchValue, setSearchValue] = useState('');
+    const [searchValue, setSearchValue] = useState('');
 
-  /**
-   * search tree node
-   * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
-   */
-  const onSearchChange = useCallback(
-    (e: { target: { value: React.SetStateAction<string> } }) => {
-      setSearchValue(e.target.value);
-    },
-    [searchValue],
-  );
+    /**
+     * search tree node
+     * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
+     */
+    const onSearchChange = useCallback((e: { target: { value: React.SetStateAction<string>; }; }) => {
+        setSearchValue(e.target.value)
+    },[searchValue])
 
-  return (
-    <>
-      {treeData.length > 0 ? (
-        <>
-          <Input
-            placeholder={l('global.search.text')}
-            allowClear
-            style={{ marginBottom: 8 }}
-            value={searchValue}
-            onChange={onSearchChange}
-          />
-          <Spin spinning={loading}>
-            <DirectoryTree
-              selectedKeys={selectedKeys}
-              onSelect={(_, info) => onNodeClick(info)}
-              onRightClick={(info) => onRightClick(info)}
-              treeData={buildMenuTree(treeData, searchValue)}
-            />
-          </Spin>
-        </>
-      ) : (
-        <Empty
-          className={'code-content-empty'}
-          image={Empty.PRESENTED_IMAGE_DEFAULT}
-        />
-      )}
+    return <>
+        {
+            (treeData.length > 0) ?
+                <>
+                    <Input
+                        placeholder={l('global.search.text')}
+                        allowClear
+                        style={{marginBottom: 8}}
+                        value={searchValue}
+                        onChange={onSearchChange}
+                    />
+                    <Spin spinning={loading}>
+                        <DirectoryTree
+                            selectedKeys={selectedKeys}
+                            onSelect={(_, info) => onNodeClick(info)}
+                            onRightClick={info => onRightClick(info)}
+                            treeData={buildMenuTree(sortTreeData(treeData),searchValue)}
+                        />
+                    </Spin>
+                </>
+               : <Empty className={'code-content-empty'} image={Empty.PRESENTED_IMAGE_DEFAULT} />
+
+        }
     </>
-  );
-};
+}
 
 export default MenuTree;
