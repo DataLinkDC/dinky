@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Tag} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { ProCard } from '@ant-design/pro-components';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface MetricsConfigProps {
@@ -28,29 +27,36 @@ interface MetricsConfigProps {
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const MetricsConfig = ({data, onSave}: MetricsConfigProps) => {
-
+export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
-  const onSaveHandler =async (data: BaseConfigProperties) => {
+  const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);
     await onSave(data);
     setLoading(false);
   };
-  return <>
-    <ProCard
-      title={l('sys.setting.metrics')}
-      tooltip={l('sys.setting.metrics.tooltip')}
-      size="small"
-      headerBordered ghost collapsible
-      defaultCollapsed={false}
-    >
-      <GeneralConfig
-        loading={loading}
-        onSave={onSaveHandler}
-        tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
-        data={data}
-      />
-    </ProCard>
-  </>;
+  return (
+    <>
+      <ProCard
+        title={l('sys.setting.metrics')}
+        tooltip={l('sys.setting.metrics.tooltip')}
+        size="small"
+        headerBordered
+        ghost
+        collapsible
+        defaultCollapsed={false}
+      >
+        <GeneralConfig
+          loading={loading}
+          onSave={onSaveHandler}
+          tag={
+            <>
+              <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
+            </>
+          }
+          data={data}
+        />
+      </ProCard>
+    </>
+  );
 };

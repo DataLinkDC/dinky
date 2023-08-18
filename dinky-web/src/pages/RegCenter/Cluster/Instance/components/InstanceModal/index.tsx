@@ -17,13 +17,13 @@
  *
  */
 
-import {Cluster} from '@/types/RegCenter/data';
-import {Button, Form} from 'antd';
-import {MODAL_FORM_OPTIONS, NORMAL_MODAL_OPTIONS} from '@/services/constants';
-import React, {useEffect} from 'react';
-import {ModalForm} from '@ant-design/pro-components';
-import {l} from '@/utils/intl';
-import {FormContextValue} from '@/components/Context/FormContext';
+import { FormContextValue } from '@/components/Context/FormContext';
+import { MODAL_FORM_OPTIONS } from '@/services/constants';
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 import InstanceForm from './InstanceForm';
 
 type InstanceModalProps = {
@@ -31,10 +31,9 @@ type InstanceModalProps = {
   onClose: () => void;
   value: Partial<Cluster.Instance>;
   onSubmit: (values: Partial<Cluster.Instance>) => void;
-}
+};
 const InstanceModal: React.FC<InstanceModalProps> = (props) => {
-
-  const {visible, onClose, onSubmit, value} = props;
+  const { visible, onClose, onSubmit, value } = props;
 
   /**
    * init form
@@ -43,12 +42,14 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
   /**
    * init form context
    */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }),
+    [form],
+  );
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
-
 
   /**
    * when modalVisible or values changed, set form values
@@ -71,10 +72,9 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({...value, ...fieldsValue});
+    await onSubmit({ ...value, ...fieldsValue });
     handleCancel();
   };
-
 
   /**
    * render footer
@@ -82,25 +82,34 @@ const InstanceModal: React.FC<InstanceModalProps> = (props) => {
    */
   const renderFooter = () => {
     return [
-      <Button key={'cancel'} onClick={() => handleCancel()}>{l('button.cancel')}</Button>,
-      <Button key={'finish'} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l('button.finish')}</Button>,
+      <Button key={'cancel'} onClick={() => handleCancel()}>
+        {l('button.cancel')}
+      </Button>,
+      <Button
+        key={'finish'}
+        loading={submitting}
+        type="primary"
+        onClick={() => submitForm()}
+      >
+        {l('button.finish')}
+      </Button>,
     ];
   };
 
-
-  return <>
-    <ModalForm
-      {...MODAL_FORM_OPTIONS}
-      open={visible}
-      modalProps={{onCancel: handleCancel}}
-      title={value.id ? l('rc.ci.modify') : l('rc.ci.create')}
-      submitter={{render: () => [...renderFooter()]}}
-      initialValues={value}
-    >
-      <InstanceForm form={form} value={value}/>
-    </ModalForm>
-  </>;
+  return (
+    <>
+      <ModalForm
+        {...MODAL_FORM_OPTIONS}
+        open={visible}
+        modalProps={{ onCancel: handleCancel }}
+        title={value.id ? l('rc.ci.modify') : l('rc.ci.create')}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={value}
+      >
+        <InstanceForm form={form} value={value} />
+      </ModalForm>
+    </>
+  );
 };
 
 export default InstanceModal;

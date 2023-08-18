@@ -17,11 +17,11 @@
  *
  */
 
-import React from "react";
-import {GitProject} from "@/types/RegCenter/data";
-import {Modal} from "antd";
-import {l} from "@/utils/intl";
-import {CodeTreeShow} from "@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow";
+import { CodeTreeShow } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow';
+import { GitProject } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { Modal } from 'antd';
+import React from 'react';
 
 type CodeTreeProps = {
   onCancel: (flag?: boolean) => void;
@@ -29,19 +29,21 @@ type CodeTreeProps = {
   values: Partial<GitProject>;
 };
 export const CodeTree: React.FC<CodeTreeProps> = (props) => {
-  const {values, modalVisible, onCancel} = props;
+  const { values, modalVisible, onCancel } = props;
 
-  return <>
-    <Modal
-      title={l("rc.gp.codeTree")}
-      width={"95%"}
-      open={modalVisible}
-      maskClosable={false}
-      onCancel={() => onCancel()}
-      cancelText={l("button.close")}
-      okButtonProps={{style: {display: "none"}}}
-    >
-      <CodeTreeShow values={values}/>
-    </Modal>
-  </>;
+  return (
+    <>
+      <Modal
+        title={l('rc.gp.codeTree')}
+        width={'95%'}
+        open={modalVisible}
+        maskClosable={false}
+        onCancel={() => onCancel()}
+        cancelText={l('button.close')}
+        okButtonProps={{ style: { display: 'none' } }}
+      >
+        <CodeTreeShow values={values} />
+      </Modal>
+    </>
+  );
 };

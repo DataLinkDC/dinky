@@ -17,58 +17,57 @@
  *
  */
 
-import {TagAlignLeft} from "@/components/StyledComponents";
-import {Badge, Tag} from "antd";
-import {Alert, Cluster} from "@/types/RegCenter/data";
-import {PaperClipOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-import {DefaultOptionType} from "antd/es/select";
-import {RUN_MODE} from "@/services/constants";
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { RUN_MODE } from '@/services/constants';
+import { Alert, Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { PaperClipOutlined } from '@ant-design/icons';
+import { Badge, Tag } from 'antd';
+import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * build job run model
  * @returns {DefaultOptionType[]}
  */
 export const buildRunModelOptions = () => {
-    let resultReturn: DefaultOptionType[] = [];
-    resultReturn.push(
-        {
-            label: 'Local',
-            value: RUN_MODE.LOCAL,
-        },
-        {
-            label: 'Standalone',
-            value: RUN_MODE.STANDALONE,
-        },
-        {
-            label: 'Yarn Session',
-            value: RUN_MODE.YARN_SESSION,
-        },
-        {
-            label: 'Yarn Per-Job',
-            value: RUN_MODE.YARN_PER_JOB,
-        },
-        {
-            label: 'Yarn Application',
-            value: RUN_MODE.YARN_APPLICATION,
-        },
-        {
-            label: 'Kubernetes Session',
-            value: RUN_MODE.KUBERNETES_SESSION,
-        },
-        {
-            label: 'Kubernetes Application',
-            value: RUN_MODE.KUBERNETES_APPLICATION,
-        },
-        {
-            label: 'Kubernetes Operator Application',
-            value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR,
-        }
-    );
+  let resultReturn: DefaultOptionType[] = [];
+  resultReturn.push(
+    {
+      label: 'Local',
+      value: RUN_MODE.LOCAL,
+    },
+    {
+      label: 'Standalone',
+      value: RUN_MODE.STANDALONE,
+    },
+    {
+      label: 'Yarn Session',
+      value: RUN_MODE.YARN_SESSION,
+    },
+    {
+      label: 'Yarn Per-Job',
+      value: RUN_MODE.YARN_PER_JOB,
+    },
+    {
+      label: 'Yarn Application',
+      value: RUN_MODE.YARN_APPLICATION,
+    },
+    {
+      label: 'Kubernetes Session',
+      value: RUN_MODE.KUBERNETES_SESSION,
+    },
+    {
+      label: 'Kubernetes Application',
+      value: RUN_MODE.KUBERNETES_APPLICATION,
+    },
+    {
+      label: 'Kubernetes Operator Application',
+      value: RUN_MODE.KUBERNETES_APPLICATION_OPERATOR,
+    },
+  );
 
-    return resultReturn;
-}
-
+  return resultReturn;
+};
 
 /**
  * build cluster options
@@ -76,21 +75,22 @@ export const buildRunModelOptions = () => {
  * @returns {any[]}
  */
 export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
-    const sessionClusterOptions: DefaultOptionType[] = [];
+  const sessionClusterOptions: DefaultOptionType[] = [];
 
-    for (const item of sessionCluster) {
-        const tag = (
-            <TagAlignLeft>
-                <Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}
-            </TagAlignLeft>
-        );
-        sessionClusterOptions.push({
-            label: tag,
-            value: item.id,
-            key: item.id,
-        })
-    }
-    return sessionClusterOptions;
+  for (const item of sessionCluster) {
+    const tag = (
+      <TagAlignLeft>
+        <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
+        {item.name}
+      </TagAlignLeft>
+    );
+    sessionClusterOptions.push({
+      label: tag,
+      value: item.id,
+      key: item.id,
+    });
+  }
+  return sessionClusterOptions;
 };
 
 /**
@@ -99,24 +99,28 @@ export const buildClusterOptions = (sessionCluster: Cluster.Instance[]) => {
  * @param {Cluster.Config[]} clusterConfiguration
  * @returns {any[]}
  */
-export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cluster.Config[]) => {
-    const clusterConfigOptions: DefaultOptionType[]  = [];
-    for (const item of clusterConfiguration) {
-        if (current.type.search(item.type.toLowerCase()) === -1) {
-            continue;
-        }
-        const tag = (
-            <TagAlignLeft>
-                <Tag color={item.enabled ? "processing" : "error"}>{item.type}</Tag>{item.name}
-            </TagAlignLeft>
-        );
-        clusterConfigOptions.push({
-            label: tag,
-            value: item.id,
-            key: item.id,
-        })
+export const buildClusterConfigOptions = (
+  current: any,
+  clusterConfiguration: Cluster.Config[],
+) => {
+  const clusterConfigOptions: DefaultOptionType[] = [];
+  for (const item of clusterConfiguration) {
+    if (current.type.search(item.type.toLowerCase()) === -1) {
+      continue;
     }
-    return clusterConfigOptions;
+    const tag = (
+      <TagAlignLeft>
+        <Tag color={item.enabled ? 'processing' : 'error'}>{item.type}</Tag>
+        {item.name}
+      </TagAlignLeft>
+    );
+    clusterConfigOptions.push({
+      label: tag,
+      value: item.id,
+      key: item.id,
+    });
+  }
+  return clusterConfigOptions;
 };
 
 /**
@@ -125,29 +129,30 @@ export const buildClusterConfigOptions = (current: any, clusterConfiguration: Cl
  * @returns {JSX.Element[]}
  */
 export const buildEnvOptions = (env: any[]) => {
-    const envList:DefaultOptionType[] = [
-        {
-            label: l('button.disable'),
-            value: 0,
-            key: 0,
-        }
-    ];
-    for (const item of env) {
-        const tag = (
-            <>
-                <TagAlignLeft>
-                    {item.enabled ? <Badge status="success"/> : <Badge status="error"/>}{item.fragment ?
-                    <PaperClipOutlined/> : undefined}{item.name}
-                </TagAlignLeft>
-            </>
-        );
-        envList.push({
-            label: tag,
-            value: item.id,
-            key: item.id,
-        })
-    }
-    return envList;
+  const envList: DefaultOptionType[] = [
+    {
+      label: l('button.disable'),
+      value: 0,
+      key: 0,
+    },
+  ];
+  for (const item of env) {
+    const tag = (
+      <>
+        <TagAlignLeft>
+          {item.enabled ? <Badge status="success" /> : <Badge status="error" />}
+          {item.fragment ? <PaperClipOutlined /> : undefined}
+          {item.name}
+        </TagAlignLeft>
+      </>
+    );
+    envList.push({
+      label: tag,
+      value: item.id,
+      key: item.id,
+    });
+  }
+  return envList;
 };
 
 /**
@@ -156,16 +161,18 @@ export const buildEnvOptions = (env: any[]) => {
  * @returns {JSX.Element[]}
  */
 export const buildAlertGroupOptions = (alertGroups: Alert.AlertGroup[]) => {
-    const alertGroupOptions:DefaultOptionType[] = [{
-        label: l('button.disable'),
-        value: 0,
-    }];
-    for (const item of alertGroups) {
-        alertGroupOptions.push({
-            label: item.name,
-            value: item.id,
-            key: item.id,
-        })
-    }
-    return alertGroupOptions;
+  const alertGroupOptions: DefaultOptionType[] = [
+    {
+      label: l('button.disable'),
+      value: 0,
+    },
+  ];
+  for (const item of alertGroups) {
+    alertGroupOptions.push({
+      label: item.name,
+      value: item.id,
+      key: item.id,
+    });
+  }
+  return alertGroupOptions;
 };

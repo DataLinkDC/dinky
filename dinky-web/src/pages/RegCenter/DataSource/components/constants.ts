@@ -15,63 +15,69 @@
  * limitations under the License.
  */
 
-
-import {l} from '@/utils/intl';
+import { l } from '@/utils/intl';
 
 /**
  * data source type
  */
 
 export const DATA_SOURCE_TYPE_OPTIONS = [
-    {
-        label: 'OLTP',
-        options: [
-            {
-                label: 'MySQL',
-                value: 'MySQL',
-            }, {
-                label: 'Oracle',
-                value: 'Oracle',
-            }, {
-                label: 'PostgreSQL',
-                value: 'PostgreSQL',
-            },{
-                label: 'SQLServer',
-                value: 'SQLServer',
-            }, {
-                label: 'Phoenix',
-                value: 'Phoenix',
-            }
-        ],
-    },
-    {
-        label: 'OLAP',
-        options: [
-            {
-                label: 'ClickHouse',
-                value: 'ClickHouse',
-            },{
-                label: 'Doris',
-                value: 'Doris',
-            },{
-                label: 'StarRocks',
-                value: 'StarRocks',
-            }, {
-                label: 'Presto',
-                value: 'Presto',
-            }
-        ],
-    }, {
-        label: 'DataWarehouse/DataLake',
-        options: [
-             {
-                label: 'Hive',
-                value: 'Hive',
-            },
-        ],
-    }
+  {
+    label: 'OLTP',
+    options: [
+      {
+        label: 'MySQL',
+        value: 'MySQL',
+      },
+      {
+        label: 'Oracle',
+        value: 'Oracle',
+      },
+      {
+        label: 'PostgreSQL',
+        value: 'PostgreSQL',
+      },
+      {
+        label: 'SQLServer',
+        value: 'SQLServer',
+      },
+      {
+        label: 'Phoenix',
+        value: 'Phoenix',
+      },
+    ],
+  },
+  {
+    label: 'OLAP',
+    options: [
+      {
+        label: 'ClickHouse',
+        value: 'ClickHouse',
+      },
+      {
+        label: 'Doris',
+        value: 'Doris',
+      },
+      {
+        label: 'StarRocks',
+        value: 'StarRocks',
+      },
+      {
+        label: 'Presto',
+        value: 'Presto',
+      },
+    ],
+  },
+  {
+    label: 'DataWarehouse/DataLake',
+    options: [
+      {
+        label: 'Hive',
+        value: 'Hive',
+      },
+    ],
+  },
 ];
-
 
 /**
  * data source  group type
@@ -159,7 +165,6 @@ export const AUTO_COMPLETE_TYPE = [
     label: 'jdbc:presto://localhost:8080/dinky',
   },
 ];
-
 
 export const QUERY_KEYWORD = [
   'and',

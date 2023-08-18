@@ -17,43 +17,38 @@
  *
  */
 
-
 export type JobMetrics = {
-  taskId: number
-  flinkJobId: string
-  jobName: string
-  subTaskId: string
-  metrics: string
-  url: string
-  title: string
-  layoutName: string
+  taskId: number;
+  flinkJobId: string;
+  jobName: string;
+  subTaskId: string;
+  metrics: string;
+  url: string;
+  title: string;
+  layoutName: string;
   showType: string;
   showSize: string;
-}
-
+};
 
 export type Task = {
-  id: number
-  jid: string
-  name: string
-  type: string
-  clusterName: string
-}
-
+  id: number;
+  jid: string;
+  name: string;
+  type: string;
+  clusterName: string;
+};
 
 export type SubTask = {
-  id: string
-  name: string
-  status: string
-  parallelism: number
-}
-
+  id: string;
+  name: string;
+  status: string;
+  parallelism: number;
+};
 
 export type ChartData = {
   time: Date;
-  value: number|string;
-}
-
+  value: number | string;
+};
 
 export type MetricsLayout = {
   taskId: number;
@@ -64,4 +59,4 @@ export type MetricsLayout = {
   showSize: string;
   title: string;
   layoutName: string;
-}
+};

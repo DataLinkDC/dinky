@@ -47,4 +47,4 @@ export default {
   'shortcut.key.collapseOrExpand': 'Collapse/Expand',
 
   'shortcut.key.checked': 'Checked',
-}
+};

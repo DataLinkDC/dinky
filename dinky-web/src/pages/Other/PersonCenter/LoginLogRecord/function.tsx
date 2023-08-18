@@ -17,36 +17,53 @@
  *
  */
 
-import {TimelineItemProps} from "antd/es/timeline/TimelineItem";
-import {Space, Typography} from "antd";
-import {l} from "@/utils/intl";
-import React from "react";
-import {LoginLog} from "@/types/User/data";
-import moment from "moment";
+import { LoginLog } from '@/types/User/data';
+import { l } from '@/utils/intl';
+import { Space, Typography } from 'antd';
+import { TimelineItemProps } from 'antd/es/timeline/TimelineItem';
+import moment from 'moment';
 
 const { Text } = Typography;
 
-export  const renderTimeLineItems = (loginRecord: LoginLog[]): TimelineItemProps[] => {
-    return loginRecord.filter(item => !item.isDeleted).map(item => {
-
-        const renderTitle = <Space direction="vertical">
-            <Text>{l('user.username')}: {item.username}</Text>
-            <Text type={item.status === 10004 ? 'success' : 'danger'}>{l('user.login.status.code')}: {item.status}</Text>
-            <Text type={item.status === 10004 ? 'success' : 'danger'}>{l('user.login.status.msg')}: {item.msg}</Text>
+export const renderTimeLineItems = (
+  loginRecord: LoginLog[],
+): TimelineItemProps[] => {
+  return loginRecord
+    .filter((item) => !item.isDeleted)
+    .map((item) => {
+      const renderTitle = (
+        <Space direction="vertical">
+          <Text>
+            {l('user.username')}: {item.username}
+          </Text>
+          <Text type={item.status === 10004 ? 'success' : 'danger'}>
+            {l('user.login.status.code')}: {item.status}
+          </Text>
+          <Text type={item.status === 10004 ? 'success' : 'danger'}>
+            {l('user.login.status.msg')}: {item.msg}
+          </Text>
         </Space>
+      );
 
-        const renderLabel = <>
-            <Space direction="vertical">
-                <Text>{l('user.login.accesstime')}: {moment(item.accessTime).format('YYYY-MM-DD HH:mm:ss')}</Text>
-                <Text>{l('user.login.ip')}: {item.ip}</Text>
-            </Space>
+      const renderLabel = (
+        <>
+          <Space direction="vertical">
+            <Text>
+              {l('user.login.accesstime')}:{' '}
+              {moment(item.accessTime).format('YYYY-MM-DD HH:mm:ss')}
+            </Text>
+            <Text>
+              {l('user.login.ip')}: {item.ip}
+            </Text>
+          </Space>
         </>
+      );
 
-        return {
-            key: item.id,
-            color: item.status === 10004 ? 'green' : 'red',
-            label: renderLabel,
-            children: renderTitle,
-        }
-    })
-}
+      return {
+        key: item.id,
+        color: item.status === 10004 ? 'green' : 'red',
+        label: renderLabel,
+        children: renderTitle,
+      };
+    });
+};

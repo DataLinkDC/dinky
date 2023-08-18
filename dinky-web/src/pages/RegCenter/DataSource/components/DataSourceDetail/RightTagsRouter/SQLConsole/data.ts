@@ -36,17 +36,14 @@ export const tempColumns = [
   {
     title: 'col5',
     dataIndex: 'col5',
-
   },
   {
     title: 'col6',
     dataIndex: 'col6',
-
   },
   {
     title: 'col7',
     dataIndex: 'col7',
-
   },
   {
     title: 'col8',
@@ -63,12 +60,10 @@ export const tempColumns = [
   {
     title: 'col11',
     dataIndex: 'col11',
-
   },
   {
     title: 'col12',
     dataIndex: 'col12',
-
   },
   {
     title: 'col13',
@@ -85,7 +80,7 @@ export const tempColumns = [
   {
     title: 'col16',
     dataIndex: 'col16',
-  }
+  },
 ];
 export const tempData = [
   {
@@ -95,98 +90,128 @@ export const tempData = [
   {
     col1: 'col1',
     col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
-    col1: 'col1',
-    col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
   },
   {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
     col1: 'col1',
     col2: 'col2',
-  }, {
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
+    col1: 'col1',
+    col2: 'col2',
+  },
+  {
     col1: 'col1',
     col2: 'col2',
   },

@@ -47,4 +47,4 @@ export default {
   'shortcut.key.collapseOrExpand': '折叠/展开',
 
   'shortcut.key.checked': '选中',
-}
+};

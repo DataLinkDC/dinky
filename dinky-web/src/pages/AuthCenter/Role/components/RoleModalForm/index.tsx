@@ -17,84 +17,84 @@
  *
  */
 
-
-import React, {useEffect} from 'react';
-import {Form, Modal} from 'antd';
-import {l} from "@/utils/intl";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import {UserBaseInfo} from "@/types/User/data.d";
-import RoleProForm from "@/pages/AuthCenter/Role/components/RoleModalForm/RoleForm";
-import {FormContextValue} from '@/components/Context/FormContext';
-
+import { FormContextValue } from '@/components/Context/FormContext';
+import RoleProForm from '@/pages/AuthCenter/Role/components/RoleModalForm/RoleForm';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/User/data.d';
+import { l } from '@/utils/intl';
+import { Form, Modal } from 'antd';
+import React, { useEffect } from 'react';
 
 type RoleModalProps = {
-    onCancel: (flag?: boolean) => void;
-    onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
-    modalVisible: boolean;
-    values: Partial<UserBaseInfo.Role>;
+  onCancel: (flag?: boolean) => void;
+  onSubmit: (values: Partial<UserBaseInfo.Role>) => void;
+  modalVisible: boolean;
+  values: Partial<UserBaseInfo.Role>;
 };
 
 const RoleModalForm: React.FC<RoleModalProps> = (props) => {
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }),
+    [form],
+  );
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * init props
+   */
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleModalVisible,
+    modalVisible,
+    values,
+  } = props;
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        modalVisible,
-        values
-    } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    formContext.resetForm();
+  };
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    await handleSubmit({ ...values, ...fieldsValue });
+    await handleCancel();
+  };
 
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
-    };
-
-
-    /**
-     * render
-     */
-    return <>
-        <Modal
-            {...NORMAL_MODAL_OPTIONS}
-            title={values.id ? l('role.update') : l('role.create')}
-            open={modalVisible}
-            onCancel={() => handleCancel()}
-            onOk={() => submitForm()}
-        >
-            <RoleProForm form={form} values={values}/>
-        </Modal>
+  /**
+   * render
+   */
+  return (
+    <>
+      <Modal
+        {...NORMAL_MODAL_OPTIONS}
+        title={values.id ? l('role.update') : l('role.create')}
+        open={modalVisible}
+        onCancel={() => handleCancel()}
+        onOk={() => submitForm()}
+      >
+        <RoleProForm form={form} values={values} />
+      </Modal>
     </>
-
+  );
 };
 export default RoleModalForm;

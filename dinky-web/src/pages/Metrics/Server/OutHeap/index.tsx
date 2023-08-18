@@ -17,43 +17,45 @@
  *
  */
 
-import React from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {JVMMetric} from "@/pages/Metrics/Server/data";
-import {Datum} from "@antv/g2plot";
-import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
+import { JVMMetric } from '@/pages/Metrics/Server/data';
+import { Area, AreaConfig } from '@ant-design/plots';
+import { Datum } from '@antv/g2plot';
+import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import React from 'react';
 
 type NonHeapProps = {
-    data: JVMMetric[];
-    max: number;
+  data: JVMMetric[];
+  max: number;
   chartConfig: G2plotConfig;
-}
+};
 type NonHeap = {
-    time: Date;
-    value:  number;
-}
+  time: Date;
+  value: number;
+};
 const NonHeap: React.FC<NonHeapProps> = (props) => {
-    const {data, max,chartConfig} = props;
-  const dataList: NonHeap[] = data.map(x=>{
-      return {time:x.time,value:parseInt(String(x.jvm.nonHeapMax / (1024 * 1024)))}
-    })
-
-
-    const config: AreaConfig = {
-      ...chartConfig,
-        data: dataList,
-        yAxis: {
-            min: 0,
-            max: max
-        },
-        tooltip: {
-            formatter: (datum: Datum) => {
-                return {name: "NonHeap Memory", value: datum.value + ' MB'};
-            },
-        }
+  const { data, max, chartConfig } = props;
+  const dataList: NonHeap[] = data.map((x) => {
+    return {
+      time: x.time,
+      value: parseInt(String(x.jvm.nonHeapMax / (1024 * 1024))),
     };
+  });
 
-    return <Area {...config} />;
-}
+  const config: AreaConfig = {
+    ...chartConfig,
+    data: dataList,
+    yAxis: {
+      min: 0,
+      max: max,
+    },
+    tooltip: {
+      formatter: (datum: Datum) => {
+        return { name: 'NonHeap Memory', value: datum.value + ' MB' };
+      },
+    },
+  };
+
+  return <Area {...config} />;
+};
 
 export default NonHeap;

@@ -15,31 +15,37 @@
  * limitations under the License.
  */
 
-import {DataSources} from '@/types/RegCenter/data';
-import {Empty} from 'antd';
-import React from 'react';
+import { Height80VHDiv } from '@/components/StyledComponents';
 import TableInfo from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SchemaDesc/TableInfo';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { Empty } from 'antd';
+import React from 'react';
 import ColumnInfo from './ColumnInfo/Index';
-import {l} from '@/utils/intl';
-import {Height80VHDiv} from '@/components/StyledComponents';
 
 type SchemaDescProps = {
   tableInfo: Partial<DataSources.Table>;
   tableColumns: Partial<DataSources.Column[]>;
-}
+};
 
 const SchemaDesc: React.FC<SchemaDescProps> = (props) => {
-  const {tableInfo, tableColumns} = props;
+  const { tableInfo, tableColumns } = props;
 
-  return <Height80VHDiv>
-    {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ?
-      <>
-        <TableInfo tableInfo={tableInfo}/>
-        <ColumnInfo columnInfo={tableColumns}/>
-      </>
-      : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
-    }
-  </Height80VHDiv>;
+  return (
+    <Height80VHDiv>
+      {!(Object.keys(tableInfo).length === 0 && tableColumns.length === 0) ? (
+        <>
+          <TableInfo tableInfo={tableInfo} />
+          <ColumnInfo columnInfo={tableColumns} />
+        </>
+      ) : (
+        <Empty
+          className={'code-content-empty'}
+          description={l('rc.ds.detail.tips')}
+        />
+      )}
+    </Height80VHDiv>
+  );
 };
 
 export default SchemaDesc;

@@ -1,4 +1,3 @@
-import {DIALECT} from "@/services/constants";
 import {
   FileIcon,
   FlinkSQLEnvSvg,
@@ -10,63 +9,74 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg
-} from "@/components/Icons/CodeLanguageIcon";
-import {ClickHouseIcons, DorisIcons, HiveIcons, MysqlIcons, OracleIcons, PhoenixIcons,
-  PostgresqlIcons, PrestoIcons, SqlServerIcons, StarRocksIcons} from "@/components/Icons/DBIcons";
+  YAMLSvg,
+} from '@/components/Icons/CodeLanguageIcon';
+import {
+  ClickHouseIcons,
+  DorisIcons,
+  HiveIcons,
+  MysqlIcons,
+  OracleIcons,
+  PhoenixIcons,
+  PostgresqlIcons,
+  PrestoIcons,
+  SqlServerIcons,
+  StarRocksIcons,
+} from '@/components/Icons/DBIcons';
+import { DIALECT } from '@/services/constants';
 
 export const getTabIcon = (type: string, size?: number) => {
-  if (!type){
-    return <FileIcon/>;
+  if (!type) {
+    return <FileIcon />;
   }
 
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
-      return <JavaSvg/>;
+      return <JavaSvg />;
     case DIALECT.SCALA:
-      return <ScalaSvg/>;
+      return <ScalaSvg />;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return <PythonSvg/>;
+      return <PythonSvg />;
     case DIALECT.MD:
     case DIALECT.MDX:
-      return <MarkDownSvg/>;
+      return <MarkDownSvg />;
     case DIALECT.XML:
-      return <XMLSvg/>;
+      return <XMLSvg />;
     case DIALECT.YAML:
     case DIALECT.YML:
-      return <YAMLSvg/>;
+      return <YAMLSvg />;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
-      return <ShellSvg/>;
+      return <ShellSvg />;
     case DIALECT.LOG:
-      return <LogSvg/>;
+      return <LogSvg />;
     case DIALECT.FLINK_SQL:
-      return <FlinkSQLSvg/>;
-      case DIALECT.FLINKSQLENV:
-      return <FlinkSQLEnvSvg/>;
+      return <FlinkSQLSvg />;
+    case DIALECT.FLINKSQLENV:
+      return <FlinkSQLEnvSvg />;
     case DIALECT.MYSQL:
-      return <MysqlIcons size={size}/>;
+      return <MysqlIcons size={size} />;
     case DIALECT.ORACLE:
-      return <OracleIcons size={size}/>;
+      return <OracleIcons size={size} />;
     case DIALECT.POSTGRESQL:
-      return <PostgresqlIcons size={size}/>;
+      return <PostgresqlIcons size={size} />;
     case DIALECT.CLICKHOUSE:
-      return <ClickHouseIcons size={size}/>;
+      return <ClickHouseIcons size={size} />;
     case DIALECT.SQLSERVER:
-      return <SqlServerIcons size={size}/>;
-    case DIALECT.DORIS :
-      return <DorisIcons size={size}/>;
-    case DIALECT.PHOENIX :
-      return <PhoenixIcons size={size}/>;
-    case DIALECT.HIVE :
-      return <HiveIcons size={size}/>;
-    case DIALECT.STARROCKS :
-      return <StarRocksIcons size={size}/>;
-    case DIALECT.PRESTO :
-      return <PrestoIcons size={size}/>;
+      return <SqlServerIcons size={size} />;
+    case DIALECT.DORIS:
+      return <DorisIcons size={size} />;
+    case DIALECT.PHOENIX:
+      return <PhoenixIcons size={size} />;
+    case DIALECT.HIVE:
+      return <HiveIcons size={size} />;
+    case DIALECT.STARROCKS:
+      return <StarRocksIcons size={size} />;
+    case DIALECT.PRESTO:
+      return <PrestoIcons size={size} />;
     default:
-      return <FileIcon/>;
+      return <FileIcon />;
   }
 };

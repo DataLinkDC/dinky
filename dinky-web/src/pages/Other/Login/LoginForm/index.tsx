@@ -17,25 +17,28 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {l} from "@/utils/intl";
-import {ProForm, ProFormCheckbox, ProFormText} from "@ant-design/pro-components";
-import {LockOutlined, UserOutlined} from "@ant-design/icons";
-import MainWithStyle from "./MainWithStyle";
-import {SubmitterProps} from "@ant-design/pro-form/es/components";
-import style from "../../../../global.less";
-import FadeIn from "@/components/Animation/FadeIn";
-import {getData} from "@/services/api";
-import {API_CONSTANTS} from "@/services/constants";
-import {Col, Row} from "antd";
+import FadeIn from '@/components/Animation/FadeIn';
+import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  ProForm,
+  ProFormCheckbox,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { SubmitterProps } from '@ant-design/pro-form/es/components';
+import { Col, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
+import style from '../../../../global.less';
+import MainWithStyle from './MainWithStyle';
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;
-}
+};
 
 const LoginForm: React.FC<LoginFormProps> = (props) => {
-
-  const {onSubmit} = props;
+  const { onSubmit } = props;
 
   const [form] = ProForm.useForm();
 
@@ -43,93 +46,98 @@ const LoginForm: React.FC<LoginFormProps> = (props) => {
   const [ldapEnabled, setLdapEnabled] = useState(false);
 
   useEffect(() => {
-    getData(API_CONSTANTS.GET_LDAP_ENABLE).then(res => {
-      setLdapEnabled(res.datas)
-      form.setFieldValue("ldapLogin",res.datas)
-    }, err => console.error(err))
+    getData(API_CONSTANTS.GET_LDAP_ENABLE).then(
+      (res) => {
+        setLdapEnabled(res.datas);
+        form.setFieldValue('ldapLogin', res.datas);
+      },
+      (err) => console.error(err),
+    );
   }, []);
-
 
   const handleClickLogin = async () => {
     setSubmitting(true);
-    await onSubmit({...form.getFieldsValue()});
+    await onSubmit({ ...form.getFieldsValue() });
     setSubmitting(false);
   };
 
   const renderLoginForm = () => {
-
-    return <>
-      <ProFormText
-        name="username"
-        width={"lg"}
-        fieldProps={{
-          prefix: <UserOutlined/>,
-        }}
-        required
-        placeholder={l("login.username.placeholder")}
-        rules={[
-          {
-            required: true,
-            message: l("login.username.required"),
-          },
-        ]}
-      />
-      <ProFormText.Password
-        name="password"
-        fieldProps={{
-          prefix: <LockOutlined/>,
-        }}
-        placeholder={l("login.password.placeholder")}
-        rules={[
-          {
-            required: true,
-            message: l("login.password.required"),
-          },
-        ]}
-      />
-      <Row>
-        <Col span={18}>
-          <ProFormCheckbox name="autoLogin">
-            {l("login.rememberMe")}
-          </ProFormCheckbox>
-        </Col>
-        <Col span={6}>
-          <ProFormCheckbox name="ldapLogin" hidden={!ldapEnabled}>
-            {l("login.ldapLogin")}
-          </ProFormCheckbox>
-        </Col>
-      </Row>
-    </>;
+    return (
+      <>
+        <ProFormText
+          name="username"
+          width={'md'}
+          fieldProps={{
+            size: 'large',
+            prefix: <UserOutlined />,
+          }}
+          required
+          placeholder={l('login.username.placeholder')}
+          rules={[
+            {
+              required: true,
+              message: l('login.username.required'),
+            },
+          ]}
+        />
+        <ProFormText.Password
+          name="password"
+          fieldProps={{
+            size: 'large',
+            prefix: <LockOutlined />,
+          }}
+          placeholder={l('login.password.placeholder')}
+          rules={[
+            {
+              required: true,
+              message: l('login.password.required'),
+            },
+          ]}
+        />
+        <Row>
+          <Col span={18}>
+            <ProFormCheckbox name="autoLogin">
+              {l('login.rememberMe')}
+            </ProFormCheckbox>
+          </Col>
+          <Col span={6}>
+            <ProFormCheckbox name="ldapLogin" hidden={!ldapEnabled}>
+              {l('login.ldapLogin')}
+            </ProFormCheckbox>
+          </Col>
+        </Row>
+      </>
+    );
   };
 
-
   const proFormSubmitter: SubmitterProps = {
-    searchConfig: {submitText: l("menu.login")},
+    searchConfig: { submitText: l('menu.login') },
     resetButtonProps: false,
     submitButtonProps: {
       loading: submitting,
       autoFocus: true,
       htmlType: 'submit',
-      size: "large",
-      shape: "round",
-      style: {width: "100%"}
-    }
+      size: 'large',
+      shape: 'round',
+      style: { width: '100%' },
+    },
   };
 
-
-  return <MainWithStyle>
-    <FadeIn>
-      <ProForm
-        className={style.loginform}
-        form={form}
-        onFinish={handleClickLogin}
-        initialValues={{autoLogin: true}}
-        submitter={{...proFormSubmitter}}
-      >
-        {renderLoginForm()}
-      </ProForm>
-    </FadeIn>
-  </MainWithStyle>;
+  return (
+    <MainWithStyle>
+      <FadeIn>
+        <ProForm
+          className={style.loginform}
+          form={form}
+          onFinish={handleClickLogin}
+          initialValues={{ autoLogin: true }}
+          submitter={{ ...proFormSubmitter }}
+        >
+          {renderLoginForm()}
+        </ProForm>
+      </FadeIn>
+    </MainWithStyle>
+  );
 };
 
 export default LoginForm;

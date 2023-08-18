@@ -17,14 +17,14 @@
  *
  */
 
-import {ActionType, DragSortTable, ProColumns} from "@ant-design/pro-table";
-import {List, Tag} from "antd";
-import React, {useEffect, useRef, useState} from "react";
-import {BuildJarList} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
-import {ProList} from "@ant-design/pro-components";
-import {handleOption} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
+import { handleOption } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { BuildJarList } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ProList } from '@ant-design/pro-components';
+import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
+import { List, Tag } from 'antd';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * props
@@ -32,25 +32,23 @@ import {API_CONSTANTS} from "@/services/constants";
 type JarListProps = {
   projectId: number;
   jarAndClassesList: Partial<BuildJarList[]>;
-}
-
+};
 
 const JarList: React.FC<JarListProps> = (props) => {
-
   /**
    * state
    */
-  const {jarAndClassesList,projectId} = props;
+  const { jarAndClassesList, projectId } = props;
   const actionRef = useRef<ActionType>();
-  const [loading,setLoading] = useState(false)
-  const [classes ,setClasses] = useState<Partial<BuildJarList[]>>()
+  const [loading, setLoading] = useState(false);
+  const [classes, setClasses] = useState<Partial<BuildJarList[]>>();
 
   /**
    * init
    */
-  useEffect(()=>{
-    setClasses(jarAndClassesList)
-  },[jarAndClassesList])
+  useEffect(() => {
+    setClasses(jarAndClassesList);
+  }, [jarAndClassesList]);
 
   /**
    * columns
@@ -58,23 +56,28 @@ const JarList: React.FC<JarListProps> = (props) => {
    */
   const columns: ProColumns<BuildJarList>[] = [
     {
-      title: l("rc.gp.level"),
-      dataIndex: "orderLine",
-      tooltip: l("rc.gp.ucl.orderLine.tooltip"),
+      title: l('rc.gp.level'),
+      dataIndex: 'orderLine',
+      tooltip: l('rc.gp.ucl.orderLine.tooltip'),
       copyable: true,
-      render: (dom:any, record:BuildJarList) => {
-        return <Tag style={{marginLeft: 10}}  color={record.orderLine> 3 ? 'default': 'success'} >{`No.${record.orderLine}`}</Tag>
-      }
+      render: (dom: any, record: BuildJarList) => {
+        return (
+          <Tag
+            style={{ marginLeft: 10 }}
+            color={record.orderLine > 3 ? 'default' : 'success'}
+          >{`No.${record.orderLine}`}</Tag>
+        );
+      },
     },
     {
-      dataIndex: "index",
-      valueType: "indexBorder",
+      dataIndex: 'index',
+      valueType: 'indexBorder',
     },
     {
-      title: l("rc.gp.ucl.jarPath"),
-      dataIndex: "jarPath",
+      title: l('rc.gp.ucl.jarPath'),
+      dataIndex: 'jarPath',
       copyable: true,
-    }
+    },
   ];
 
   /**
@@ -83,22 +86,28 @@ const JarList: React.FC<JarListProps> = (props) => {
    * @returns {JSX.Element}
    */
   const renderUdf = (record: BuildJarList) => {
-    return <>
-      <ProList
+    return (
+      <>
+        <ProList
           dataSource={record.classList as any[]}
           rowKey="index"
-          size={"small"}
+          size={'small'}
           pagination={{
             pageSize: 5,
             hideOnSinglePage: true,
             showSizeChanger: false,
           }}
-          renderItem={(item,index) => {
-            return <List.Item className={'child-list'} key={index}>{item}</List.Item>;
+          renderItem={(item, index) => {
+            return (
+              <List.Item className={'child-list'} key={index}>
+                {item}
+              </List.Item>
+            );
           }}
-      />
-    </>;
-  }
+        />
+      </>
+    );
+  };
 
   /**
    * drag sort call
@@ -106,39 +115,57 @@ const JarList: React.FC<JarListProps> = (props) => {
    * @returns {Promise<void>}
    */
   const handleDragSortEnd = async (newDataSource: BuildJarList[]) => {
-    setLoading(true)
-    const updatedItems = newDataSource.map((item:BuildJarList, index:number) => ({...item, orderLine: index + 1,}));
-    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR,l('rc.gp.ucl.jarOrder'),{projectId, jars: updatedItems})
-    setClasses(updatedItems)
-    setLoading(false)
+    setLoading(true);
+    const updatedItems = newDataSource.map(
+      (item: BuildJarList, index: number) => ({
+        ...item,
+        orderLine: index + 1,
+      }),
+    );
+    await handleOption(
+      API_CONSTANTS.GIT_DRAGEND_SORT_JAR,
+      l('rc.gp.ucl.jarOrder'),
+      { projectId, jars: updatedItems },
+    );
+    setClasses(updatedItems);
+    setLoading(false);
     actionRef.current?.reload();
   };
 
   /**
    * render
    */
-  return <>
-    <DragSortTable<BuildJarList>
-      style={{ overflowY: "auto", msOverflowY: "hidden",marginLeft: "0.5vw" }}
-      columns={columns}
-      toolBarRender={false}
-      sortDirections={['ascend']}
-      showHeader={false}
-      actionRef={actionRef}
-      loading={loading}
-      dataSource={classes as BuildJarList[]}
-      search={false}
-      rowKey="orderLine"
-      revalidateOnFocus
-      pagination={{
-        defaultPageSize: 5,
-        hideOnSinglePage: true,
-      }}
-      expandable={{expandRowByClick: false, expandedRowRender: record => renderUdf(record)}}
-      dragSortKey={"orderLine"}
-      onDragSortEnd={handleDragSortEnd}
-    />
-  </>;
+  return (
+    <>
+      <DragSortTable<BuildJarList>
+        style={{
+          overflowY: 'auto',
+          msOverflowY: 'hidden',
+          marginLeft: '0.5vw',
+        }}
+        columns={columns}
+        toolBarRender={false}
+        sortDirections={['ascend']}
+        showHeader={false}
+        actionRef={actionRef}
+        loading={loading}
+        dataSource={classes as BuildJarList[]}
+        search={false}
+        rowKey="orderLine"
+        revalidateOnFocus
+        pagination={{
+          defaultPageSize: 5,
+          hideOnSinglePage: true,
+        }}
+        expandable={{
+          expandRowByClick: false,
+          expandedRowRender: (record) => renderUdf(record),
+        }}
+        dragSortKey={'orderLine'}
+        onDragSortEnd={handleDragSortEnd}
+      />
+    </>
+  );
 };
 
 export default JarList;

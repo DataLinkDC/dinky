@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import {ExcludeNameAndEnableColumns} from "@/types/Public/data";
+import { ExcludeNameAndEnableColumns } from '@/types/Public/data';
 
 declare namespace UserBaseInfo {
   export type User = ExcludeNameAndEnableColumns & {
@@ -68,8 +68,7 @@ export type SaTokenInfo = {
   tokenActivityTimeout: number;
   loginDevice: string;
   tag: string;
-}
-
+};
 
 export type RowPermissions = ExcludeNameAndEnableColumns & {
   roleId: number;
@@ -79,10 +78,9 @@ export type RowPermissions = ExcludeNameAndEnableColumns & {
   expression: string;
 };
 
-
 export type LoginLog = {
   id: number;
-  userId : number;
+  userId: number;
   username: string;
   ip: string;
   loginType: string;
@@ -95,19 +93,19 @@ export type LoginLog = {
 };
 
 export type OperateLog = {
-    id: number;
-    moduleName: string;
-    businessType: number;
-    method: string;
-    requestMethod: string;
-    operateName: string;
-    operateUserId: number;
-    operateUrl: string;
-    operateIp: string;
-    operateLocation: string;
-    operateParam: string;
-    jsonResult: string;
-    status: number;
-    errorMsg: string;
-    operateTime: Date;
+  id: number;
+  moduleName: string;
+  businessType: number;
+  method: string;
+  requestMethod: string;
+  operateName: string;
+  operateUserId: number;
+  operateUrl: string;
+  operateIp: string;
+  operateLocation: string;
+  operateParam: string;
+  jsonResult: string;
+  status: number;
+  errorMsg: string;
+  operateTime: Date;
 };

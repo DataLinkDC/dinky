@@ -17,17 +17,14 @@
  *
  */
 
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { ProCard } from '@ant-design/pro-components';
+import { Card, Col, List, Row, Typography } from 'antd';
+import moment from 'moment';
+import { useState } from 'react';
 
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard} from "@ant-design/pro-components";
-import {Card, Col, List, Row, Tabs, Typography} from "antd";
-import moment from "moment";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import React, {useState} from "react";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-
-const {Paragraph, Text} = Typography;
-
+const { Paragraph, Text } = Typography;
 
 type Exceptions = {
   location: string;
@@ -35,31 +32,35 @@ type Exceptions = {
   timestamp: string;
   stacktrace: string;
   exceptionName: string;
-
-}
+};
 
 const ExceptionTab = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
   const [currentLog, setCurrentLog] = useState<Exceptions>({
-    exceptionName: "",
-    location: "",
-    stacktrace: "",
-    taskName: "",
-    timestamp: ""
+    exceptionName: '',
+    location: '',
+    stacktrace: '',
+    taskName: '',
+    timestamp: '',
   });
 
   const renderLogTab = () => {
     var logs = [];
-    const rte = jobDetail?.jobHistory?.exceptions["root-exception"];
-    logs.push({"taskName": "RootException", "stacktrace": rte, "exceptionName": rte});
-    logs.push(...jobDetail.jobHistory?.exceptions["exceptionHistory"]["entries"]);
+    const rte = jobDetail?.jobHistory?.exceptions['root-exception'];
+    logs.push({
+      taskName: 'RootException',
+      stacktrace: rte,
+      exceptionName: rte,
+    });
+    logs.push(
+      ...jobDetail.jobHistory?.exceptions['exceptionHistory']['entries'],
+    );
     return (
       <Row>
         <Col span={3}>
           <div id="scrollableDiv">
             <List
-              size={"small"}
+              size={'small'}
               header={'Exception List'}
               dataSource={logs}
               renderItem={(item: Exceptions) => (
@@ -71,13 +72,22 @@ const ExceptionTab = (props: JobProps) => {
           </div>
         </Col>
         <Col span={21}>
-          <Card title={currentLog.taskName} bordered={false}
-                extra={<Paragraph>{moment(currentLog.timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')}</Paragraph>}>
-            <Paragraph ellipsis={{rows: 1, expandable: false}}>
+          <Card
+            title={currentLog.taskName}
+            bordered={false}
+            extra={
+              <Paragraph>
+                {moment(currentLog.timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')}
+              </Paragraph>
+            }
+          >
+            <Paragraph ellipsis={{ rows: 1, expandable: false }}>
               <blockquote>{currentLog.exceptionName}</blockquote>
             </Paragraph>
             <CodeShow
-              code={currentLog.stacktrace?currentLog.stacktrace:"No Exception"}
+              code={
+                currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'
+              }
               height={500}
             />
           </Card>
@@ -86,11 +96,11 @@ const ExceptionTab = (props: JobProps) => {
     );
   };
 
-  return <>
-    <ProCard>
-      {renderLogTab()}
-    </ProCard>
-  </>
+  return (
+    <>
+      <ProCard>{renderLogTab()}</ProCard>
+    </>
+  );
 };
 
 export default ExceptionTab;

@@ -16,25 +16,25 @@
  *
  */
 
-
-import {TransferProps} from "antd/es/transfer";
-import {TableRowSelection} from "antd/es/table/interface";
-import {Transfer} from "antd";
-import {difference} from "lodash";
-import {UserBaseInfo} from "@/types/User/data";
-import {ProColumns, ProTable} from "@ant-design/pro-components";
-import selected from "@antv/g2/src/interaction/action/element/selected";
-
+import { UserBaseInfo } from '@/types/User/data';
+import { ProColumns, ProTable } from '@ant-design/pro-components';
+import { Transfer } from 'antd';
+import { TableRowSelection } from 'antd/es/table/interface';
+import { TransferProps } from 'antd/es/transfer';
+import { difference } from 'lodash';
 
 /**
  * Customize Table Transfer Props
  */
 interface TableTransferProps extends TransferProps<any> {
   dataSource: any[];
-  leftColumns: ProColumns< UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
-  rightColumns: ProColumns< UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
+  leftColumns:
+    | ProColumns<UserBaseInfo.User>[]
+    | ProColumns<UserBaseInfo.Role>[];
+  rightColumns:
+    | ProColumns<UserBaseInfo.User>[]
+    | ProColumns<UserBaseInfo.Role>[];
 }
-
 
 /**
  * Customize Table Transfer
@@ -43,63 +43,82 @@ interface TableTransferProps extends TransferProps<any> {
  * @param restProps Transfer props
  * @constructor
  */
-const TableTransfer = ({leftColumns, rightColumns, ...restProps}: TableTransferProps) => (
+const TableTransfer = ({
+  leftColumns,
+  rightColumns,
+  ...restProps
+}: TableTransferProps) => (
+  <Transfer showSelectAll={false} showSearch={true} {...restProps}>
+    {({
+      direction,
+      filteredItems,
+      onItemSelectAll,
+      onItemSelect,
+      selectedKeys: listSelectedKeys,
+      disabled: enableFlag,
+    }) => {
+      const columns = direction === 'left' ? leftColumns : rightColumns;
+      const rowSelection: TableRowSelection<any> = {
+        getCheckboxProps: (item) => ({
+          disabled:
+            enableFlag ||
+            item.isDelete ||
+            (item.hasOwnProperty('enabled') ? !item.enabled : false),
+        }),
+        onSelectAll: (selected, selectedRows) => {
+          const treeSelectedKeys = selectedRows
+            .filter((item) => !item.isDelete || !item.enabled)
+            .map(({ id }) => id);
 
-  <Transfer
-    showSelectAll={false}
-    showSearch={true}
-    {...restProps}
-  >
-    {
-      ({
-         direction,
-         filteredItems,
-         onItemSelectAll,
-         onItemSelect,
-         selectedKeys: listSelectedKeys,
-         disabled: enableFlag,
-       }) => {
+          const diffKeys = selected
+            ? difference(treeSelectedKeys, listSelectedKeys)
+            : difference(listSelectedKeys, treeSelectedKeys);
 
-        const columns = direction === "left" ? leftColumns : rightColumns;
-        const rowSelection: TableRowSelection<any> = {
-          getCheckboxProps: item => ({disabled: enableFlag || item.isDelete || (item.hasOwnProperty("enabled") ? !item.enabled : false)}),
-          onSelectAll:  (selected, selectedRows) => {
-
-            const treeSelectedKeys = selectedRows.filter(item => !item.isDelete || !item.enabled).map(({id}) => id);
-
-            const diffKeys = selected ? difference(treeSelectedKeys, listSelectedKeys ) : difference(listSelectedKeys, treeSelectedKeys);
-
-            onItemSelectAll(diffKeys, selected);
-          },
-          onSelect:  (item, selected) => {
-            onItemSelect(item.id, selected);
-          },
-          selectedRowKeys: listSelectedKeys,
-        };
-        return (<>
-              <ProTable
-                size="small" ghost
-                toolBarRender={undefined}
-                rowSelection={rowSelection}
-                rowKey={record => record.id}
-                columns={columns}
-                search={false}
-                options={false}
-                tableAlertRender={false}
-                dataSource={filteredItems}
-                pagination={{pageSize: 10, showSizeChanger: false, hideOnSinglePage: true,}}
-                style={{height: "50vh", overflowY: "auto", pointerEvents: enableFlag ? "none" : undefined}}
-                onRow={ item => ({
-                  onClick: () => {
-                    // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
-                    if ((item.hasOwnProperty("isDelete") ? item.isDelete : true) || ((item.hasOwnProperty("enabled") ? !item.enabled : false))) return;
-                    onItemSelect(item.id, !listSelectedKeys.includes(item.id));
-                  },
-                })}
-              />
-          </>
-        );
-      }}
+          onItemSelectAll(diffKeys, selected);
+        },
+        onSelect: (item, selected) => {
+          onItemSelect(item.id, selected);
+        },
+        selectedRowKeys: listSelectedKeys,
+      };
+      return (
+        <>
+          <ProTable
+            size="small"
+            ghost
+            toolBarRender={undefined}
+            rowSelection={rowSelection}
+            rowKey={(record) => record.id}
+            columns={columns}
+            search={false}
+            options={false}
+            tableAlertRender={false}
+            dataSource={filteredItems}
+            pagination={{
+              pageSize: 10,
+              showSizeChanger: false,
+              hideOnSinglePage: true,
+            }}
+            style={{
+              height: '50vh',
+              overflowY: 'auto',
+              pointerEvents: enableFlag ? 'none' : undefined,
+            }}
+            onRow={(item) => ({
+              onClick: () => {
+                // Since the attributes in different objects are different, it is necessary to determine whether there are corresponding attributes in the item
+                if (
+                  (item.hasOwnProperty('isDelete') ? item.isDelete : true) ||
+                  (item.hasOwnProperty('enabled') ? !item.enabled : false)
+                )
+                  return;
+                onItemSelect(item.id, !listSelectedKeys.includes(item.id));
+              },
+            })}
+          />
+        </>
+      );
+    }}
   </Transfer>
 );
 

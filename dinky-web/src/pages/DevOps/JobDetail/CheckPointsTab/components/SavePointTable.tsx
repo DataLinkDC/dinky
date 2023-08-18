@@ -17,20 +17,16 @@
  *
  */
 
-
-
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {l} from "@/utils/intl";
-import {useRef} from "react";
-import {SavePointTableListItem} from "@/pages/DataStudio/RightContainer/SavePoints";
-import {queryList} from "@/services/api";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-import {API_CONSTANTS} from "@/services/constants";
-
+import { SavePointTableListItem } from '@/pages/DataStudio/RightContainer/SavePoints';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/constants';
+import { l } from '@/utils/intl';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { useRef } from 'react';
 
 const SavepointTable = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
 
   const actionRef = useRef<ActionType>();
 
@@ -71,17 +67,18 @@ const SavepointTable = (props: JobProps) => {
     },
   ];
 
-
   return (
     <>
       <ProTable<SavePointTableListItem>
         columns={columns}
-        style={{width: '100%'}}
-        request={(params, sorter, filter) => queryList(API_CONSTANTS.GET_SAVEPOINTS, {
-          ...params,
-          sorter,
-          filter:{taskId: [jobDetail?.instance.taskId]}
-        })}
+        style={{ width: '100%' }}
+        request={(params, sorter, filter) =>
+          queryList(API_CONSTANTS.GET_SAVEPOINTS, {
+            ...params,
+            sorter,
+            filter: { taskId: [jobDetail?.instance.taskId] },
+          })
+        }
         actionRef={actionRef}
         toolBarRender={false}
         rowKey="id"
@@ -92,7 +89,7 @@ const SavepointTable = (props: JobProps) => {
         size="small"
       />
     </>
-  )
+  );
 };
 
 export default SavepointTable;

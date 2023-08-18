@@ -17,38 +17,49 @@
  *
  */
 
-import {Divider, Typography} from "antd";
-import {KEY_BOARD_MIDDLE} from "@/pages/DataStudio/MiddleContainer/KeyBoard/constant";
-import {l} from "@/utils/intl";
-import React from "react";
+import { KEY_BOARD_MIDDLE } from '@/pages/DataStudio/MiddleContainer/KeyBoard/constant';
+import { l } from '@/utils/intl';
+import { Divider, Typography } from 'antd';
 
-const {Title, Paragraph, Text} = Typography;
-
+const { Title, Paragraph, Text } = Typography;
 
 const KeyBoard = () => {
-
-
-    const buildKeyBoard = () => {
-        return KEY_BOARD_MIDDLE.map((item,index) => {
-            return <>
-                {index % 5 === 0 ? <>
-                    <Divider plain orientationMargin={0}/>
-                    <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
-                </>: <>
-                    <Text keyboard>{item.label}</Text>{item.description}<Divider type="vertical"/>
-                </>}
+  const buildKeyBoard = () => {
+    return KEY_BOARD_MIDDLE.map((item, index) => {
+      return (
+        <>
+          {index % 5 === 0 ? (
+            <>
+              <Divider plain orientationMargin={0} />
+              <Text keyboard>{item.label}</Text>
+              {item.description}
+              <Divider type="vertical" />
             </>
-        });
-    }
+          ) : (
+            <>
+              <Text keyboard>{item.label}</Text>
+              {item.description}
+              <Divider type="vertical" />
+            </>
+          )}
+        </>
+      );
+    });
+  };
 
-    return(
-        <Typography  style={{padding: '2px', textAlign: 'center', border: 'salmon'}}>
-            <br/>
-            <Title level={4}>{l('shortcut.title')}</Title>
-            <Paragraph  style={{padding: 0, margin: 0, textAlign: 'center', border: 'salmon'}} >
-                {buildKeyBoard()}
-            </Paragraph>
-        </Typography>);
+  return (
+    <Typography
+      style={{ padding: '2px', textAlign: 'center', border: 'salmon' }}
+    >
+      <br />
+      <Title level={4}>{l('shortcut.title')}</Title>
+      <Paragraph
+        style={{ padding: 0, margin: 0, textAlign: 'center', border: 'salmon' }}
+      >
+        {buildKeyBoard()}
+      </Paragraph>
+    </Typography>
+  );
 };
 
 export default KeyBoard;

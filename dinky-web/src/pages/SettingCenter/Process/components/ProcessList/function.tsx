@@ -15,45 +15,46 @@
  * limitations under the License.
  */
 
-
-import {Tag} from "antd";
-import {ProcessStatus, ProcessType} from "@/pages/SettingCenter/Process/components/ProcessList/constants";
+import {
+  ProcessStatus,
+  ProcessType,
+} from '@/pages/SettingCenter/Process/components/ProcessList/constants';
+import { Tag } from 'antd';
 
 export const MatchProcessType = (type: string) => {
   switch (type) {
     case ProcessType.FLINK_EXPLAIN:
-      return <Tag color={"blue"}>Flink Explain</Tag>;
+      return <Tag color={'blue'}>Flink Explain</Tag>;
     case ProcessType.FLINK_EXECUTE:
-      return <Tag color={"pink"}>Flink Execute</Tag>;
+      return <Tag color={'pink'}>Flink Execute</Tag>;
     case ProcessType.FLINK_SUBMIT:
-      return <Tag color={"purple"}>Flink Submit</Tag>;
+      return <Tag color={'purple'}>Flink Submit</Tag>;
     case ProcessType.SQL_EXPLAIN:
-      return <Tag color={"cyan"}>SQL Explain</Tag>;
+      return <Tag color={'cyan'}>SQL Explain</Tag>;
     case ProcessType.SQL_EXECUTE:
-      return <Tag color={"orange"}>SQL Execute</Tag>;
+      return <Tag color={'orange'}>SQL Execute</Tag>;
     case ProcessType.SQL_SUBMIT:
-      return <Tag color={"green"}>SQL Submit</Tag>;
+      return <Tag color={'green'}>SQL Submit</Tag>;
     case ProcessType.LINEAGE:
-      return <Tag color={"magenta"}>Lineage</Tag>;
+      return <Tag color={'magenta'}>Lineage</Tag>;
     case ProcessType.UNKNOWN:
-      return <Tag color={"default"}>UNKNOWN</Tag>;
+      return <Tag color={'default'}>UNKNOWN</Tag>;
   }
 };
 
 export const MatchProcessStatus = (status: string) => {
   switch (status) {
     case ProcessStatus.INIT:
-      return <Tag color={"default"}>INITIALIZING</Tag>;
+      return <Tag color={'default'}>INITIALIZING</Tag>;
     case ProcessStatus.RUNNING:
-      return <Tag color={"processing"}>RUNNING</Tag>;
+      return <Tag color={'processing'}>RUNNING</Tag>;
     case ProcessStatus.FAILED:
-      return <Tag color={"error"}>FAILED</Tag>;
+      return <Tag color={'error'}>FAILED</Tag>;
     case ProcessStatus.CANCELED:
-      return <Tag color={"warning"}>CANCELED</Tag>;
+      return <Tag color={'warning'}>CANCELED</Tag>;
     case ProcessStatus.FINISHED:
-      return <Tag color={"success"}>FINISHED</Tag>;
+      return <Tag color={'success'}>FINISHED</Tag>;
     case ProcessStatus.UNKNOWN:
-      return <Tag color={"default"}>UNKNOWN</Tag>;
+      return <Tag color={'default'}>UNKNOWN</Tag>;
   }
 };
-

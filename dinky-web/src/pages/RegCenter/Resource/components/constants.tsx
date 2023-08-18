@@ -17,10 +17,14 @@
  *
  */
 
-import {DeleteOutlined, EditOutlined, PlusCircleOutlined, UndoOutlined, UploadOutlined} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-import React from "react";
-
+import { l } from '@/utils/intl';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  UndoOutlined,
+  UploadOutlined,
+} from '@ant-design/icons';
 
 /**
  *  the right context menu
@@ -31,31 +35,32 @@ import React from "react";
 export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
   {
     key: 'createFolder',
-    icon: <PlusCircleOutlined/>,
+    icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
     disabled: isDisabled,
   },
   {
     key: 'upload',
-    icon: <UploadOutlined/>,
+    icon: <UploadOutlined />,
     label: l('button.upload'),
     disabled: isDisabled,
   },
   {
     key: 'delete',
-    icon: <DeleteOutlined/>,
+    icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
     disabled: isDisabled,
   },
   {
     key: 'rename',
-    icon: <EditOutlined/>,
+    icon: <EditOutlined />,
     label: l('right.menu.rename'),
     disabled: isDisabled,
-  },{
+  },
+  {
     key: 'refresh',
     icon: <UndoOutlined />,
     label: l('right.menu.refresh'),
     disabled: isDisabled,
   },
-]
+];

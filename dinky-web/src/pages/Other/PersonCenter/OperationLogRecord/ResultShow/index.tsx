@@ -17,37 +17,40 @@
  *
  */
 
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import React from "react";
-import {Modal} from "antd";
-import {l} from "@/utils/intl";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { Modal } from 'antd';
+import React from 'react';
 
 type ResultShowProps = {
-    config: {
-        open: boolean,
-        data: string,
-    },
-    onCancel: () => void
-
-}
+  config: {
+    open: boolean;
+    data: string;
+  };
+  onCancel: () => void;
+};
 
 const ResultShow: React.FC<ResultShowProps> = (props) => {
+  const {
+    config: { open, data },
+    onCancel,
+  } = props;
 
-    const {config: {open, data},onCancel} = props
-
-    return <>
-    <Modal
+  return (
+    <>
+      <Modal
         title={l('global.result')}
         open={open}
         {...NORMAL_MODAL_OPTIONS}
         onCancel={onCancel}
-        okButtonProps={{hidden: true}}
+        okButtonProps={{ hidden: true }}
         cancelText={l('button.close')}
-    >
+      >
         <CodeShow language={'json'} height={'60vh'} code={data} />
-    </Modal>
+      </Modal>
     </>
-}
+  );
+};
 
 export default ResultShow;

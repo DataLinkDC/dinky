@@ -97,7 +97,8 @@ export default {
   'tips.selected': 'Selected {total} Item',
   'tips.notSelected': 'Not Select',
   'tips.enter': 'Please Enter',
-  'tips.confirm.delete.table': ' Are you sure you want to delete table [{tableName}]?',
+  'tips.confirm.delete.table':
+    ' Are you sure you want to delete table [{tableName}]?',
 
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
@@ -110,8 +111,7 @@ export default {
 
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
-  'global.max':'Max Size',
-
+  'global.max': 'Max Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -178,7 +178,6 @@ export default {
   'global.item': 'Pieces',
   'global.bout': 'Times',
   'global.size': ' Size: {size}',
-
 
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',

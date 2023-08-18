@@ -17,30 +17,33 @@
  *
  */
 
-import {StateType} from "@/pages/DataStudio/model";
-import {connect} from "umi";
-import {getCurrentData} from "@/pages/DataStudio/function";
-import {useRef, useState} from "react";
-import {ActionType, ProDescriptions, ProTable} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
-import {Drawer} from "antd";
-import {ProDescriptionsItemProps} from "@ant-design/pro-descriptions";
-import {postAll} from "@/services/api";
-import {SavePoint} from "@/types/Studio/data";
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { StateType } from '@/pages/DataStudio/model';
+import { postAll } from '@/services/api';
+import { SavePoint } from '@/types/Studio/data';
+import { l } from '@/utils/intl';
+import {
+  ActionType,
+  ProDescriptions,
+  ProTable,
+} from '@ant-design/pro-components';
+import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
+import { Drawer } from 'antd';
+import { useRef, useState } from 'react';
+import { connect } from 'umi';
 
 const url = '/api/savepoints';
 
-
 const SavePoints = (props: any) => {
-
-  const { tabs: {panes, activeKey}} = props;
+  const {
+    tabs: { panes, activeKey },
+  } = props;
   const current = getCurrentData(panes, activeKey);
   const [row, setRow] = useState<SavePoint>();
   const actionRef = useRef<ActionType>();
   actionRef.current?.reloadAndRest?.();
 
   const columns: ProDescriptionsItemProps<SavePoint>[] = [
-
     {
       title: l('pages.task.savePointPath'),
       dataIndex: 'path',
@@ -61,39 +64,41 @@ const SavePoints = (props: any) => {
 
   return (
     <>
-        <ProTable<SavePoint>
-          actionRef={actionRef}
-          rowKey="id"
-          request={(params, sorter, filter) => postAll(url, {taskId: current.key, ...params, sorter, filter})}
-          columns={columns}
-          search={false}
-        />
-        <Drawer
-          width={600}
-          open={!!row}
-          onClose={() => {
-            setRow(undefined);
-          }}
-          closable={false}
-        >
-          {row?.name && (
-            <ProDescriptions<SavePoint>
-              column={2}
-              title={row?.name}
-              request={async () => ({
-                data: row || {},
-              })}
-              params={{
-                id: row?.name,
-              }}
-              columns={columns}
-            />
-          )}
-        </Drawer>
+      <ProTable<SavePoint>
+        actionRef={actionRef}
+        rowKey="id"
+        request={(params, sorter, filter) =>
+          postAll(url, { taskId: current.key, ...params, sorter, filter })
+        }
+        columns={columns}
+        search={false}
+      />
+      <Drawer
+        width={600}
+        open={!!row}
+        onClose={() => {
+          setRow(undefined);
+        }}
+        closable={false}
+      >
+        {row?.name && (
+          <ProDescriptions<SavePoint>
+            column={2}
+            title={row?.name}
+            request={async () => ({
+              data: row || {},
+            })}
+            params={{
+              id: row?.name,
+            }}
+            columns={columns}
+          />
+        )}
+      </Drawer>
     </>
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
 }))(SavePoints);

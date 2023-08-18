@@ -15,22 +15,22 @@
  * limitations under the License.
  */
 
-import {DataSources} from '@/types/RegCenter/data';
-import React, {useCallback, useEffect, useState} from 'react';
 import CodeShow from '@/components/CustomEditor/CodeShow';
-import {ProCard} from '@ant-design/pro-components';
-import {Empty, Typography} from 'antd';
-import {l} from '@/utils/intl';
-import {queryDataByParams} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/constants';
-import {QueryParams} from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ProCard } from '@ant-design/pro-components';
+import { Empty, Typography } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 
 type GenSQLProps = {
-  queryParams: Partial<QueryParams>,
-  tagDisabled: boolean
-}
+  queryParams: Partial<QueryParams>;
+  tagDisabled: boolean;
+};
 
 /**
  * props for CodeShow
@@ -43,15 +43,17 @@ const CodeShowProps = {
   showFloatButton: true,
 };
 
-
 const GenSQL: React.FC<GenSQLProps> = (props) => {
-  const {queryParams, tagDisabled} = props;
+  const { queryParams, tagDisabled } = props;
   const [genSQL, setGenSQL] = useState<Partial<DataSources.SqlGeneration>>({});
   const [activeKey, setActiveKey] = React.useState<string>('flinkddl');
 
   const queryDDL = useCallback(async () => {
     //get gen sql
-    const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {...queryParams});
+    const genSQLData = await queryDataByParams(
+      API_CONSTANTS.DATASOURCE_GET_GEN_SQL,
+      { ...queryParams },
+    );
     setGenSQL(genSQLData);
   }, [queryParams]);
 
@@ -69,7 +71,7 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
    * @param code
    */
   const renderContent = (code = '') => {
-    return <CodeShow {...CodeShowProps} code={tagDisabled ? '' : code}/>;
+    return <CodeShow {...CodeShowProps} code={tagDisabled ? '' : code} />;
   };
 
   /**
@@ -79,9 +81,8 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
    * @returns {JSX.Element}
    */
   const renderLabel = (content: string, title: string) => {
-    return <Paragraph copyable={{text: content}}>{title}</Paragraph>;
+    return <Paragraph copyable={{ text: content }}>{title}</Paragraph>;
   };
-
 
   /**
    * tab list
@@ -91,20 +92,20 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
       key: 'flinkddl',
       label: renderLabel(genSQL.flinkSqlCreate || '', 'Flink DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.flinkSqlCreate)
+      children: renderContent(genSQL.flinkSqlCreate),
     },
     {
       key: 'select',
       label: renderLabel(genSQL.sqlSelect || '', 'Select'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlSelect)
+      children: renderContent(genSQL.sqlSelect),
     },
     {
       key: 'sqlddl',
       label: renderLabel(genSQL.sqlCreate || '', 'SQL DDL'),
       disabled: tagDisabled,
-      children: renderContent(genSQL.sqlCreate)
-    }
+      children: renderContent(genSQL.sqlCreate),
+    },
   ];
 
   // tab props
@@ -113,18 +114,24 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
     onChange: (key: string) => setActiveKey(key),
     tabPosition: 'left',
     size: 'small',
-    items: tabList
+    items: tabList,
   };
 
   /**
    * render
    */
-  return <>
-    {(genSQL.flinkSqlCreate || genSQL.sqlSelect || genSQL.sqlCreate) ?
-      <ProCard tabs={{...restTabProps}}/>
-      : <Empty className={'code-content-empty'} description={l('rc.ds.detail.tips')}/>
-    }
-  </>;
+  return (
+    <>
+      {genSQL.flinkSqlCreate || genSQL.sqlSelect || genSQL.sqlCreate ? (
+        <ProCard tabs={{ ...restTabProps }} />
+      ) : (
+        <Empty
+          className={'code-content-empty'}
+          description={l('rc.ds.detail.tips')}
+        />
+      )}
+    </>
+  );
 };
 
 export default GenSQL;

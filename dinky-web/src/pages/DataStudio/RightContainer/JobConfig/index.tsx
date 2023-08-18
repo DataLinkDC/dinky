@@ -17,240 +17,286 @@
  *
  */
 
-import {InfoCircleOutlined} from "@ant-design/icons";
-import {Badge, Space, Typography} from "antd";
-import {l} from "@/utils/intl";
-import {RUN_MODE, SWITCH_OPTIONS} from "@/services/constants";
-import {connect} from "umi";
-import {SessionType, StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
-import {AlertStateType} from "@/pages/RegCenter/Alert/AlertInstance/model";
-import {getCurrentData} from "@/pages/DataStudio/function";
-import {useForm} from "antd/es/form/Form";
+import { SAVE_POINT_TYPE } from '@/pages/DataStudio/constants';
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { SessionType, StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
 import {
-    buildAlertGroupOptions,
-    buildClusterConfigOptions,
-    buildClusterOptions,
-    buildEnvOptions,
-    buildRunModelOptions
-} from "@/pages/DataStudio/RightContainer/JobConfig/function";
+  buildAlertGroupOptions,
+  buildClusterConfigOptions,
+  buildClusterOptions,
+  buildEnvOptions,
+  buildRunModelOptions,
+} from '@/pages/DataStudio/RightContainer/JobConfig/function';
+import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
+import { RUN_MODE, SWITCH_OPTIONS } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { InfoCircleOutlined } from '@ant-design/icons';
 import {
-    ProForm,
-    ProFormDigit,
-    ProFormGroup,
-    ProFormList,
-    ProFormSelect,
-    ProFormSwitch,
-    ProFormText
-} from "@ant-design/pro-components";
-import {SAVE_POINT_TYPE} from "@/pages/DataStudio/constants";
-import React from "react";
+  ProForm,
+  ProFormDigit,
+  ProFormGroup,
+  ProFormList,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { Badge, Space, Typography } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import { connect } from 'umi';
 
-const {Text} = Typography;
+const { Text } = Typography;
 
 const JobConfig = (props: any) => {
-    const {
-        sessionCluster,
-        clusterConfiguration,
-        dispatch,
-        tabs: {panes, activeKey},
-        env,
-        group,
-        rightContainer,
-    } = props;
+  const {
+    sessionCluster,
+    clusterConfiguration,
+    dispatch,
+    tabs: { panes, activeKey },
+    env,
+    group,
+    rightContainer,
+  } = props;
 
-    const current = getCurrentData(panes, activeKey);
-    const currentSession: SessionType = {
-        connectors: [], sessionConfig: {
-            clusterId: current.clusterId,
-            clusterName: current.clusterName,
+  const current = getCurrentData(panes, activeKey);
+  const currentSession: SessionType = {
+    connectors: [],
+    sessionConfig: {
+      clusterId: current.clusterId,
+      clusterName: current.clusterName,
+    },
+  };
+  const [form] = useForm();
+  form.setFieldsValue(current);
+
+  const onValuesChange = (change: any, all: any) => {
+    for (let i = 0; i < panes.length; i++) {
+      if (panes[i].key === activeKey) {
+        for (let key in change) {
+          panes[i].params.taskData[key] = all[key];
         }
+        break;
+      }
     }
-    const [form] = useForm();
-    form.setFieldsValue(current);
+    dispatch({
+      type: STUDIO_MODEL.saveTabs,
+      payload: { ...props.tabs },
+    });
+  };
 
+  const onChangeClusterSession = () => {
+    //todo 这里需要验证
+    // showTables(currentSession.session, dispatch);
+  };
 
-    const onValuesChange = (change: any, all: any) => {
-        for (let i = 0; i < panes.length; i++) {
-            if (panes[i].key === activeKey) {
-                for (let key in change) {
-                    panes[i].params.taskData[key] = all[key];
-                }
-                break;
-            }
-        }
-        dispatch({
-            type: STUDIO_MODEL.saveTabs,
-            payload: {...props.tabs},
-        });
-    };
+  return (
+    <div style={{ maxHeight: rightContainer.height }}>
+      <ProForm
+        size={'middle'}
+        initialValues={{
+          name: RUN_MODE.LOCAL,
+          envId: 0,
+          parallelism: 1,
+          savePointStrategy: 0,
+          alertGroupId: 0,
+        }}
+        className={'data-studio-form'}
+        style={{ paddingInline: '15px', overflow: 'scroll' }}
+        form={form}
+        submitter={false}
+        layout="vertical"
+        onValuesChange={onValuesChange}
+      >
+        <ProFormSelect
+          name="type"
+          label={l('global.table.execmode')}
+          tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
+          options={buildRunModelOptions()}
+          showSearch
+        />
 
-    const onChangeClusterSession = () => {
-        //todo 这里需要验证
-
-        // showTables(currentSession.session, dispatch);
-    };
-
-    return <div style={{maxHeight: rightContainer.height}}>
-        <ProForm size={'middle'}
-                 initialValues={{
-                     name: RUN_MODE.LOCAL,
-                     envId: 0,
-                     parallelism: 1,
-                     savePointStrategy: 0,
-                     alertGroupId: 0,
-                 }}
-                 className={"data-studio-form"}
-                 style={{paddingInline: '15px' ,overflow: 'scroll'}}
-                 form={form}
-                 submitter={false}
-                 layout="vertical"
-                 onValuesChange={onValuesChange}
-        >
-            <ProFormSelect
-                name="type"
-                label={l('global.table.execmode')}
-                tooltip={l('pages.datastudio.label.jobConfig.execmode.tip')}
-                options={buildRunModelOptions()}
-                showSearch
-            />
-
-            {(current.type === RUN_MODE.YARN_SESSION || current.type === RUN_MODE.KUBERNETES_SESSION || current.type === RUN_MODE.STANDALONE) &&
+        {(current.type === RUN_MODE.YARN_SESSION ||
+          current.type === RUN_MODE.KUBERNETES_SESSION ||
+          current.type === RUN_MODE.STANDALONE) && (
+          <>
+            {currentSession.session ? (
+              currentSession.sessionConfig &&
+              currentSession.sessionConfig.clusterId ? (
                 <>
-                    {
-                        currentSession.session ?
-                            (currentSession.sessionConfig && currentSession.sessionConfig.clusterId ?
-                                    <><Badge status="success"/><Text
-                                        type="success">{currentSession.sessionConfig.clusterName}</Text></>
-                                    : <><Badge status="error"/><Text
-                                        type="danger">{l('pages.devops.jobinfo.localenv')}</Text></>
-                            ) :
-                            <>
-                                <ProFormSelect
-                                    style={{width: '100%'}}
-                                    placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
-                                    label={l('pages.datastudio.label.jobConfig.cluster')}
-                                    tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {type: current.type})}
-                                    name="clusterId"
-                                    options={buildClusterOptions(sessionCluster)}
-                                    fieldProps={{
-                                        onChange: onChangeClusterSession,
-                                    }}
-                                />
-                            </>
-                    }
+                  <Badge status="success" />
+                  <Text type="success">
+                    {currentSession.sessionConfig.clusterName}
+                  </Text>
                 </>
-            }
-            {(current.type === RUN_MODE.YARN_PER_JOB || current.type === RUN_MODE.YARN_APPLICATION
-                || current.type === RUN_MODE.KUBERNETES_APPLICATION || current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) && <>
+              ) : (
+                <>
+                  <Badge status="error" />
+                  <Text type="danger">
+                    {l('pages.devops.jobinfo.localenv')}
+                  </Text>
+                </>
+              )
+            ) : (
+              <>
                 <ProFormSelect
-                    name="clusterConfigurationId"
-                    placeholder={l('pages.datastudio.label.jobConfig.clusterConfig.tip2')}
-                    label={l('pages.datastudio.label.jobConfig.clusterConfig')}
-                    tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
-                        type: current.type
-                    })}
-                    options={buildClusterConfigOptions(current, clusterConfiguration)}
+                  style={{ width: '100%' }}
+                  placeholder={l(
+                    'pages.datastudio.label.jobConfig.cluster.tip',
+                  )}
+                  label={l('pages.datastudio.label.jobConfig.cluster')}
+                  tooltip={l(
+                    'pages.datastudio.label.jobConfig.clusterConfig.tip1',
+                    '',
+                    { type: current.type },
+                  )}
+                  name="clusterId"
+                  options={buildClusterOptions(sessionCluster)}
+                  fieldProps={{
+                    onChange: onChangeClusterSession,
+                  }}
                 />
-            </>}
-
+              </>
+            )}
+          </>
+        )}
+        {(current.type === RUN_MODE.YARN_PER_JOB ||
+          current.type === RUN_MODE.YARN_APPLICATION ||
+          current.type === RUN_MODE.KUBERNETES_APPLICATION ||
+          current.type === RUN_MODE.KUBERNETES_APPLICATION_OPERATOR) && (
+          <>
             <ProFormSelect
-                name="envId"
-                label={l('pages.datastudio.label.jobConfig.flinksql.env')}
-                tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
-                options={buildEnvOptions(env)}
-                showSearch
+              name="clusterConfigurationId"
+              placeholder={l(
+                'pages.datastudio.label.jobConfig.clusterConfig.tip2',
+              )}
+              label={l('pages.datastudio.label.jobConfig.clusterConfig')}
+              tooltip={l(
+                'pages.datastudio.label.jobConfig.clusterConfig.tip1',
+                '',
+                {
+                  type: current.type,
+                },
+              )}
+              options={buildClusterConfigOptions(current, clusterConfiguration)}
             />
+          </>
+        )}
 
-            <ProFormGroup>
-                <ProFormDigit
-                    width={'xs'}
-                    label={l('pages.datastudio.label.jobConfig.parallelism')}
-                    name="parallelism"
-                    tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
-                    max={9999} min={1}
-                />
+        <ProFormSelect
+          name="envId"
+          label={l('pages.datastudio.label.jobConfig.flinksql.env')}
+          tooltip={l('pages.datastudio.label.jobConfig.flinksql.env.tip1')}
+          options={buildEnvOptions(env)}
+          showSearch
+        />
 
-                <ProFormSwitch
-                    label={l('pages.datastudio.label.jobConfig.insert')} name="statementSet"
-                    valuePropName="checked"
-                    tooltip={{
-                        title: l('pages.datastudio.label.jobConfig.insert.tip'),
-                        icon: <InfoCircleOutlined/>
-                    }}
-                    {...SWITCH_OPTIONS()}
-                />
-                <ProFormSwitch
-                    label={l('pages.datastudio.label.jobConfig.fragment')} name="fragment"
-                    valuePropName="checked"
-                    tooltip={{
-                        title: l('pages.datastudio.label.jobConfig.fragment.tip'),
-                        icon: <InfoCircleOutlined/>
-                    }}
-                    {...SWITCH_OPTIONS()}
-                />
-                <ProFormSwitch
-                    label={l('pages.datastudio.label.jobConfig.batchmode')} name="batchModel"
-                    valuePropName="checked"
-                    tooltip={{
-                        title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
-                        icon: <InfoCircleOutlined/>
-                    }}
-                    {...SWITCH_OPTIONS()}
-                />
-            </ProFormGroup>
+        <ProFormGroup>
+          <ProFormDigit
+            width={'xs'}
+            label={l('pages.datastudio.label.jobConfig.parallelism')}
+            name="parallelism"
+            tooltip={l('pages.datastudio.label.jobConfig.parallelism.tip')}
+            max={9999}
+            min={1}
+          />
 
-            <ProFormSelect
-                label={l('pages.datastudio.label.jobConfig.savePointStrategy')}
-                name="savePointStrategy"
-                tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
-                options={SAVE_POINT_TYPE}
+          <ProFormSwitch
+            label={l('pages.datastudio.label.jobConfig.insert')}
+            name="statementSet"
+            valuePropName="checked"
+            tooltip={{
+              title: l('pages.datastudio.label.jobConfig.insert.tip'),
+              icon: <InfoCircleOutlined />,
+            }}
+            {...SWITCH_OPTIONS()}
+          />
+          <ProFormSwitch
+            label={l('pages.datastudio.label.jobConfig.fragment')}
+            name="fragment"
+            valuePropName="checked"
+            tooltip={{
+              title: l('pages.datastudio.label.jobConfig.fragment.tip'),
+              icon: <InfoCircleOutlined />,
+            }}
+            {...SWITCH_OPTIONS()}
+          />
+          <ProFormSwitch
+            label={l('pages.datastudio.label.jobConfig.batchmode')}
+            name="batchModel"
+            valuePropName="checked"
+            tooltip={{
+              title: l('pages.datastudio.label.jobConfig.batchmode.tip'),
+              icon: <InfoCircleOutlined />,
+            }}
+            {...SWITCH_OPTIONS()}
+          />
+        </ProFormGroup>
+
+        <ProFormSelect
+          label={l('pages.datastudio.label.jobConfig.savePointStrategy')}
+          name="savePointStrategy"
+          tooltip={l('pages.datastudio.label.jobConfig.savePointStrategy.tip')}
+          options={SAVE_POINT_TYPE}
+        />
+
+        {current.savePointStrategy === 3 && (
+          <>
+            <ProFormText
+              label={l('pages.datastudio.label.jobConfig.savePointpath')}
+              name="savePointPath"
+              tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
+              placeholder={l(
+                'pages.datastudio.label.jobConfig.savePointpath.tip2',
+              )}
             />
+          </>
+        )}
+        <ProFormSelect
+          label={l('pages.datastudio.label.jobConfig.alertGroup')}
+          name="alertGroupId"
+          placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
+          options={buildAlertGroupOptions(group)}
+        />
 
-            {current.savePointStrategy === 3 &&
-                <>
-                    <ProFormText
-                        label={l('pages.datastudio.label.jobConfig.savePointpath')}
-                        name="savePointPath"
-                        tooltip={l('pages.datastudio.label.jobConfig.savePointpath.tip1')}
-                        placeholder={l('pages.datastudio.label.jobConfig.savePointpath.tip2')}
-                    />
-                </>
-            }
-            <ProFormSelect
-                label={l('pages.datastudio.label.jobConfig.alertGroup')} name="alertGroupId"
-                placeholder={l('pages.datastudio.label.jobConfig.alertGroup.tip')}
-                options={buildAlertGroupOptions(group)}
-            />
-
-            {/*todo 这里需要优化，有有异常抛出*/}
-            <ProFormList
-                label={l('pages.datastudio.label.jobConfig.other')}
-                tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
-                name={'configJson'}
-                copyIconProps={false}
-                creatorButtonProps={{
-                    style: {width: '100%'},
-                    creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig'),
-                }}
-            >
-                <ProFormGroup  style={{display: 'flex',width: '100%'}} >
-                    <Space key={'config'} style={{display: 'flex'}} align="baseline">
-                        <ProFormText name="key"
-                                     placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}/>
-                        <ProFormText name="value"
-                                     placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}/>
-                    </Space>
-                </ProFormGroup>
-            </ProFormList>
-        </ProForm>
+        {/*todo 这里需要优化，有有异常抛出*/}
+        <ProFormList
+          label={l('pages.datastudio.label.jobConfig.other')}
+          tooltip={l('pages.datastudio.label.jobConfig.other.tip')}
+          name={'configJson'}
+          copyIconProps={false}
+          creatorButtonProps={{
+            style: { width: '100%' },
+            creatorButtonText: l('pages.datastudio.label.jobConfig.addConfig'),
+          }}
+        >
+          <ProFormGroup style={{ display: 'flex', width: '100%' }}>
+            <Space key={'config'} style={{ display: 'flex' }} align="baseline">
+              <ProFormText
+                name="key"
+                placeholder={l(
+                  'pages.datastudio.label.jobConfig.addConfig.params',
+                )}
+              />
+              <ProFormText
+                name="value"
+                placeholder={l(
+                  'pages.datastudio.label.jobConfig.addConfig.value',
+                )}
+              />
+            </Space>
+          </ProFormGroup>
+        </ProFormList>
+      </ProForm>
     </div>
+  );
 };
 
-export default connect(({Studio, Alert}: { Studio: StateType, Alert: AlertStateType }) => ({
+export default connect(
+  ({ Studio, Alert }: { Studio: StateType; Alert: AlertStateType }) => ({
     sessionCluster: Studio.sessionCluster,
     clusterConfiguration: Studio.clusterConfiguration,
     rightContainer: Studio.rightContainer,
     tabs: Studio.tabs,
     env: Studio.env,
     group: Alert.group,
-}))(JobConfig);
+  }),
+)(JobConfig);

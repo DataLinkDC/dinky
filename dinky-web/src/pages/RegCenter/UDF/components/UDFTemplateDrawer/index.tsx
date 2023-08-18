@@ -17,31 +17,31 @@
  *
  */
 
-import {UDFTemplate} from "@/types/RegCenter/data";
-import React from "react";
-import {Drawer} from "antd";
-import UDFTemplateDesc from "./UDFTemplateDesc";
+import { UDFTemplate } from '@/types/RegCenter/data';
+import { Drawer } from 'antd';
+import React from 'react';
+import UDFTemplateDesc from './UDFTemplateDesc';
 
 type UDFTemplateDrawerProps = {
   onCancel: (flag?: boolean) => void;
   values: Partial<UDFTemplate>;
   modalVisible: boolean;
   columns: any;
-}
+};
 const UDFTemplateDrawer: React.FC<UDFTemplateDrawerProps> = (props) => {
-  const {onCancel: handleCancel, values, modalVisible, columns} = props;
+  const { onCancel: handleCancel, values, modalVisible, columns } = props;
 
-
-  return <>
-    <Drawer
-      width={"45%"}
-      open={modalVisible}
-      onClose={() => handleCancel(false)}
-    >
-      <UDFTemplateDesc values={values} columns={columns}/>
-    </Drawer>
-  </>;
-
+  return (
+    <>
+      <Drawer
+        width={'45%'}
+        open={modalVisible}
+        onClose={() => handleCancel(false)}
+      >
+        <UDFTemplateDesc values={values} columns={columns} />
+      </Drawer>
+    </>
+  );
 };
 
 export default UDFTemplateDrawer;

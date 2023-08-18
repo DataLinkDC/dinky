@@ -15,13 +15,11 @@
  * limitations under the License.
  */
 
-import {useCallback} from 'react';
-import {RequestConfig, useRequest} from '@umijs/max';
-import {ErrorNotification, SuccessMessage} from '@/utils/messages';
+import { ErrorNotification, SuccessMessage } from '@/utils/messages';
+import { RequestConfig, useRequest } from '@umijs/max';
+import { useCallback } from 'react';
 
-
-const noop = () => {
-};
+const noop = () => {};
 
 /**
  *  return CRUDResult type
@@ -34,8 +32,8 @@ interface CRUDResult<T> {
   run: (config?: RequestConfig) => Promise<any>; // 可以手动触发请求。
   cancel: () => void; // 用于取消当前请求。
   refresh: () => Promise<any>; // 用于重新发起请求
-  mutate: (newData: T | undefined) => void;  // 用于手动更新数据
-  addData: (payload: any) => Promise<any>;  // 用于创建新数据/更新数据。
+  mutate: (newData: T | undefined) => void; // 用于手动更新数据
+  addData: (payload: any) => Promise<any>; // 用于创建新数据/更新数据。
   getDataList: () => Promise<any>; // 用于读取数据。
   updateData: (id: number, payload: any) => Promise<any>; // 用于更新数据。
   removeDataById: (id: number) => Promise<any>; // 用于删除数据。
@@ -47,7 +45,6 @@ interface CRUDResult<T> {
  * @param options 请求的配置
  */
 const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
-
   /**
    * @name BaseOptions
    * @note
@@ -76,27 +73,28 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
    *     throwOnError?: boolean;  // 抛出错误
    */
 
-  const {data, error, loading, params, run, cancel, refresh, mutate} = useRequest(url, {
-    ...options,
-    manual: true,
-    formatResult: (res: { data: any; }) => res.data,
-    onSuccess: async (res) => {
-      SuccessMessage(res.msg);
-      return true;
-    },
-    onError: (e) => {
-      ErrorNotification(e.message);
-      return false;
-    },
-    throwOnError: true, // 错误时抛出 || when error is thrown and throwOnError is true
-    refreshOnWindowFocus: true, // 窗口聚焦时 是否重新刷新 || when window focused and refreshOnWindowFocus is true
-    ready: true, // 初始化状态 || when ready is true and initialData is undefined
-    debounceInterval: 500, // 防抖间隔 || debounce interval
-    throttleInterval: 500, // 节流间隔 || throttle interval
-    initialData: {}, // 初始数据 || init data
-    defaultLoading: true,// 默认加载 || default loading
-    loadMore: true, // 加载更多  || load more
-  });
+  const { data, error, loading, params, run, cancel, refresh, mutate } =
+    useRequest(url, {
+      ...options,
+      manual: true,
+      formatResult: (res: { data: any }) => res.data,
+      onSuccess: async (res) => {
+        SuccessMessage(res.msg);
+        return true;
+      },
+      onError: (e) => {
+        ErrorNotification(e.message);
+        return false;
+      },
+      throwOnError: true, // 错误时抛出 || when error is thrown and throwOnError is true
+      refreshOnWindowFocus: true, // 窗口聚焦时 是否重新刷新 || when window focused and refreshOnWindowFocus is true
+      ready: true, // 初始化状态 || when ready is true and initialData is undefined
+      debounceInterval: 500, // 防抖间隔 || debounce interval
+      throttleInterval: 500, // 节流间隔 || throttle interval
+      initialData: {}, // 初始数据 || init data
+      defaultLoading: true, // 默认加载 || default loading
+      loadMore: true, // 加载更多  || load more
+    });
 
   const addData = useCallback(
     async (payload: any) => {
@@ -106,18 +104,15 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
         data: payload,
       });
     },
-    [run, options]
+    [run, options],
   );
 
-  const getDataList = useCallback(
-    async () => {
-      await run({
-        ...options,
-        method: 'GET',
-      });
-    },
-    [run, options]
-  );
+  const getDataList = useCallback(async () => {
+    await run({
+      ...options,
+      method: 'GET',
+    });
+  }, [run, options]);
 
   const updateData = useCallback(
     async (id: number, payload: any) => {
@@ -128,7 +123,7 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
         data: payload,
       });
     },
-    [run, options, url]
+    [run, options, url],
   );
 
   const removeDataById = useCallback(
@@ -139,7 +134,7 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
         url: `${url}/${id}`,
       });
     },
-    [run, options, url]
+    [run, options, url],
   );
 
   return {
@@ -159,4 +154,3 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
 };
 
 export default useCustomCRUD;
-

@@ -17,51 +17,55 @@
  *
  */
 
-import React from "react";
-import {Divider} from "antd";
-import {l} from "@/utils/intl";
-import {ProFormDigit, ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText} from "@ant-design/pro-components";
-import {CLUSTER_CONFIG_TYPE} from "@/pages/RegCenter/Cluster/Configuration/components/contants";
+import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
+import { l } from '@/utils/intl';
+import {
+  ProFormDigit,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { Divider } from 'antd';
+import React from 'react';
 const BaseConfig: React.FC = () => {
+  return (
+    <>
+      <Divider>{l('rc.cc.baseConfig')}</Divider>
+      <ProFormGroup>
+        <ProFormDigit name="id" hidden={true} />
+        <ProFormSelect
+          name="type"
+          label={l('rc.cc.type')}
+          width="md"
+          options={CLUSTER_CONFIG_TYPE}
+          rules={[{ required: true, message: l('rc.cc.typePlaceholder') }]}
+          placeholder={l('rc.cc.typePlaceholder')}
+        />
+        <ProFormText
+          name="name"
+          label={l('rc.cc.name')}
+          width="md"
+          rules={[{ required: true, message: l('rc.cc.namePlaceholder') }]}
+          placeholder={l('rc.cc.namePlaceholder')}
+        />
 
-
-    return <>
-        <Divider>{l('rc.cc.baseConfig')}</Divider>
-        <ProFormGroup>
-            <ProFormDigit
-              name="id"
-              hidden={true}
-            />
-            <ProFormSelect
-                name="type"
-                label={l('rc.cc.type')}
-                width="md"
-                options={CLUSTER_CONFIG_TYPE}
-                rules={[{required: true, message: l('rc.cc.typePlaceholder')}]}
-                placeholder={l('rc.cc.typePlaceholder')}
-            />
-            <ProFormText
-                name="name"
-                label={l('rc.cc.name')}
-                width="md"
-                rules={[{required: true, message: l('rc.cc.namePlaceholder')}]}
-                placeholder={l('rc.cc.namePlaceholder')}
-            />
-
-            <ProFormText
-                name="note"
-                label={l('global.table.note')}
-                width="lg"
-                placeholder={l('global.table.notePlaceholder')}
-            />
-            <ProFormSwitch
-                name="enabled"
-                label={l('global.table.isEnable')}
-                initialValue={false}
-                checkedChildren={l('button.enable')} unCheckedChildren={l('button.disable')}
-            />
-        </ProFormGroup>
-    </>;
-}
+        <ProFormText
+          name="note"
+          label={l('global.table.note')}
+          width="lg"
+          placeholder={l('global.table.notePlaceholder')}
+        />
+        <ProFormSwitch
+          name="enabled"
+          label={l('global.table.isEnable')}
+          initialValue={false}
+          checkedChildren={l('button.enable')}
+          unCheckedChildren={l('button.disable')}
+        />
+      </ProFormGroup>
+    </>
+  );
+};
 
 export default BaseConfig;

@@ -17,44 +17,50 @@
  *
  */
 
-import {Col, Modal, Progress, Row, Space} from "antd";
-import React from "react";
-import {JobRunningMsgType} from "@/pages/DataStudio/model";
-import {StopTwoTone} from "@ant-design/icons";
+import { JobRunningMsgType } from '@/pages/DataStudio/model';
+import { StopTwoTone } from '@ant-design/icons';
+import { Col, Modal, Progress, Row, Space } from 'antd';
+import React from 'react';
 
 type JobRunningModalProps = {
-    visible: boolean;
-    onCancel: () => void;
-    onOk: () => void;
-    value: JobRunningMsgType;
-}
-const JobRunningModal :React.FC<JobRunningModalProps> =(props) => {
+  visible: boolean;
+  onCancel: () => void;
+  onOk: () => void;
+  value: JobRunningMsgType;
+};
+const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
+  const { visible, onCancel, onOk, value } = props;
 
-    const {visible, onCancel, onOk, value} = props;
-
-    return <>
-        <Modal
-            title={`Job ${value?.jobName} is running`}
-            open={visible}
-            onOk={onOk}
-            width={'50%'}
-            centered
-            onCancel={onCancel}
-            footer={null}
-        >
-            <Space direction="vertical" style={{width: '100%'}}>
-                <Row gutter={[12,12]}>
-                    <Col span={23}>
-                        <Progress showInfo strokeLinecap={'round'} percent={100} status="active" strokeColor={{ from: '#108ee9', to: '#87d068' }} />
-                    </Col>
-                    <Col span={1}>
-                        <StopTwoTone />
-                    </Col>
-                </Row>
-
-            </Space>
-        </Modal>
+  return (
+    <>
+      <Modal
+        title={`Job ${value?.jobName} is running`}
+        open={visible}
+        onOk={onOk}
+        width={'50%'}
+        centered
+        onCancel={onCancel}
+        footer={null}
+      >
+        <Space direction="vertical" style={{ width: '100%' }}>
+          <Row gutter={[12, 12]}>
+            <Col span={23}>
+              <Progress
+                showInfo
+                strokeLinecap={'round'}
+                percent={100}
+                status="active"
+                strokeColor={{ from: '#108ee9', to: '#87d068' }}
+              />
+            </Col>
+            <Col span={1}>
+              <StopTwoTone />
+            </Col>
+          </Row>
+        </Space>
+      </Modal>
     </>
-}
+  );
+};
 
 export default JobRunningModal;

@@ -111,7 +111,7 @@ const MovableSidebar: React.FC<MovableSidebarProps> = (props) => {
             style={{
               height: contentHeight,
               backgroundColor: token.colorBgBase,
-              overflow:"auto"
+              overflow: 'auto',
             }}
           >
             {children}

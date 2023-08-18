@@ -17,9 +17,9 @@
  *
  */
 
-import React, {useState, useEffect} from 'react';
-import {Heatmap, G2, HeatmapConfig} from '@ant-design/plots';
-import {WEEK_LIST} from "@/pages/Home/constants";
+import { WEEK_LIST } from '@/pages/Home/constants';
+import { G2, Heatmap, HeatmapConfig } from '@ant-design/plots';
+import { useEffect, useState } from 'react';
 
 const DevHeatmap = () => {
   const [data, setData] = useState([]);
@@ -29,7 +29,9 @@ const DevHeatmap = () => {
   }, []);
 
   const asyncFetch = () => {
-    fetch('https://gw.alipayobjects.com/os/antvdemo/assets/data/github-commit.json')
+    fetch(
+      'https://gw.alipayobjects.com/os/antvdemo/assets/data/github-commit.json',
+    )
       .then((response) => response.json())
       .then((json) => setData(json))
       .catch((error) => {
@@ -90,7 +92,7 @@ const DevHeatmap = () => {
       return group;
     },
   });
-  const config :HeatmapConfig = {
+  const config: HeatmapConfig = {
     data,
     height: 200,
     autoFit: false,
@@ -161,4 +163,4 @@ const DevHeatmap = () => {
   return <Heatmap {...config} />;
 };
 
-export default DevHeatmap
+export default DevHeatmap;

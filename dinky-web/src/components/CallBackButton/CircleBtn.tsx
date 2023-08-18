@@ -16,8 +16,8 @@
  *
  */
 
-import React from "react";
-import {Button} from "antd";
+import { Button } from 'antd';
+import React from 'react';
 
 export type CircleButtonProps = {
   icon: React.ReactNode;
@@ -28,13 +28,17 @@ export type CircleButtonProps = {
 };
 
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
-  const {onClick,title,icon,loading} = props;
+  const { onClick, title, icon, loading } = props;
 
   return (
-    <Button title={title}
-            loading={loading}
-            icon={icon} block type={"text"}
-            shape={"circle"}
-            onClick={onClick}/>
+    <Button
+      title={title}
+      loading={loading}
+      icon={icon}
+      block
+      type={'text'}
+      shape={'circle'}
+      onClick={onClick}
+    />
   );
 };

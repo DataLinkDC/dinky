@@ -17,20 +17,22 @@
  *
  */
 
-import {ProCard, StatisticCard} from '@ant-design/pro-components';
-import {Badge} from 'antd';
+import JobErrorView from '@/pages/Home/JobOverView/JobErrorView';
+import JobFinishedView from '@/pages/Home/JobOverView/JobFinishedView';
+import JobRecoveryView from '@/pages/Home/JobOverView/JobRecoveryView';
+import JobRunView from '@/pages/Home/JobOverView/JobRunView';
+import JobStatusPie from '@/pages/Home/JobOverView/JobStatusPie';
+import LoadScoreGauge from '@/pages/Home/JobOverView/LoadScoreGauge';
+import { l } from '@/utils/intl';
+import { ProCard } from '@ant-design/pro-components';
+import { Badge } from 'antd';
 import RcResizeObserver from 'rc-resize-observer';
-import React, {useState} from 'react';
-import LoadScoreGauge from "@/pages/Home/JobOverView/LoadScoreGauge";
-import JobStatusPie from "@/pages/Home/JobOverView/JobStatusPie";
-import JobErrorView from "@/pages/Home/JobOverView/JobErrorView";
-import JobRunView from "@/pages/Home/JobOverView/JobRunView";
-import JobFinishedView from "@/pages/Home/JobOverView/JobFinishedView";
-import JobRecoveryView from "@/pages/Home/JobOverView/JobRecoveryView";
-import {l} from "@/utils/intl";
+import React, { useState } from 'react';
 
 const JobOverView: React.FC = () => {
-  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
+  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>(
+    'vertical',
+  );
 
   return (
     <RcResizeObserver
@@ -40,7 +42,12 @@ const JobOverView: React.FC = () => {
       }}
     >
       <ProCard
-        title={<><Badge status="processing"/>{l('home.job.metrics')}</>}
+        title={
+          <>
+            <Badge status="processing" />
+            {l('home.job.metrics')}
+          </>
+        }
         headerBordered
         bordered
         size="small"
@@ -48,31 +55,31 @@ const JobOverView: React.FC = () => {
       >
         <ProCard split={split}>
           <ProCard split="horizontal">
-              <ProCard bodyStyle={{padding: '0 12px'}}>
-                <JobRunView/>
-              </ProCard>
-              <ProCard bodyStyle={{padding: '0 12px'}}>
-                <JobFinishedView/>
-              </ProCard>
-              <ProCard bodyStyle={{padding: '0 12px'}}>
-                <JobRecoveryView/>
+            <ProCard bodyStyle={{ padding: '0 12px' }}>
+              <JobRunView />
+            </ProCard>
+            <ProCard bodyStyle={{ padding: '0 12px' }}>
+              <JobFinishedView />
+            </ProCard>
+            <ProCard bodyStyle={{ padding: '0 12px' }}>
+              <JobRecoveryView />
             </ProCard>
           </ProCard>
           <ProCard title={l('home.job.running.status')}>
-            <JobStatusPie/>
+            <JobStatusPie />
           </ProCard>
         </ProCard>
         <ProCard split={split}>
           <ProCard title={l('home.server.load')}>
-            <LoadScoreGauge/>
+            <LoadScoreGauge />
           </ProCard>
           <ProCard split="horizontal">
-              <JobErrorView/>
+            <JobErrorView />
           </ProCard>
         </ProCard>
       </ProCard>
     </RcResizeObserver>
   );
-}
+};
 
-export default JobOverView
+export default JobOverView;

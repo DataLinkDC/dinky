@@ -1,4 +1,3 @@
-
 /*
  *
  *   Licensed to the Apache Software Foundation (ASF) under one or more
@@ -18,18 +17,20 @@
  *
  */
 
-import {Col, Descriptions, Form, Row } from "antd";
-import TextArea from "antd/es/input/TextArea";
-import {l} from "@/utils/intl";
-import Paragraph from "antd/es/typography/Paragraph";
-import {connect} from "umi";
-import {StateType, STUDIO_MODEL} from "@/pages/DataStudio/model";
-import React from "react";
-import {getCurrentData} from "@/pages/DataStudio/function";
-import {useForm} from "antd/es/form/Form";
+import { getCurrentData } from '@/pages/DataStudio/function';
+import { StateType, STUDIO_MODEL } from '@/pages/DataStudio/model';
+import { l } from '@/utils/intl';
+import { Col, Descriptions, Form, Row } from 'antd';
+import { useForm } from 'antd/es/form/Form';
+import TextArea from 'antd/es/input/TextArea';
+import Paragraph from 'antd/es/typography/Paragraph';
+import { connect } from 'umi';
 
 const JobInfo = (props: any) => {
-  const { dispatch, tabs: {panes, activeKey}} = props;
+  const {
+    dispatch,
+    tabs: { panes, activeKey },
+  } = props;
   const current = getCurrentData(panes, activeKey);
   const [form] = useForm();
   form.setFieldsValue(current);
@@ -44,52 +45,52 @@ const JobInfo = (props: any) => {
     }
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: {...props.tabs},
+      payload: { ...props.tabs },
     });
   };
 
   return (
-    <div style={{paddingInline:8}}>
-        <Descriptions bordered size="small" column={1}>
-          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
-            <Paragraph copyable>{current.id}</Paragraph>
-          </Descriptions.Item>
-          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
-            {current.name}
-          </Descriptions.Item>
-          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
-            {current.dialect}
-          </Descriptions.Item>
-          <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
-            {current.versionId}
-          </Descriptions.Item>
-          <Descriptions.Item label={l('global.table.createTime')}>
-            {current.createTime}
-          </Descriptions.Item>
-          <Descriptions.Item label={l('global.table.updateTime')}>
-            {current.updateTime}
-          </Descriptions.Item>
-        </Descriptions>
-        <Form
-          layout="vertical"
-          form={form}
-          // className={styles.form_setting}
-          onValuesChange={onValuesChange}
+    <div style={{ paddingInline: 8 }}>
+      <Descriptions bordered size="small" column={1}>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
+          <Paragraph copyable>{current.id}</Paragraph>
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
+          {current.name}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
+          {current.dialect}
+        </Descriptions.Item>
+        <Descriptions.Item
+          label={l('pages.datastudio.label.jobInfo.versionId')}
         >
-          <Row>
-            <Col span={24}>
-              <Form.Item
-                label={l('global.table.note')} name="note"
-              >
-                <TextArea rows={4} maxLength={255}/>
-              </Form.Item>
-            </Col>
-          </Row>
-        </Form>
+          {current.versionId}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('global.table.createTime')}>
+          {current.createTime}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('global.table.updateTime')}>
+          {current.updateTime}
+        </Descriptions.Item>
+      </Descriptions>
+      <Form
+        layout="vertical"
+        form={form}
+        // className={styles.form_setting}
+        onValuesChange={onValuesChange}
+      >
+        <Row>
+          <Col span={24}>
+            <Form.Item label={l('global.table.note')} name="note">
+              <TextArea rows={4} maxLength={255} />
+            </Form.Item>
+          </Col>
+        </Row>
+      </Form>
     </div>
   );
 };
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
 }))(JobInfo);

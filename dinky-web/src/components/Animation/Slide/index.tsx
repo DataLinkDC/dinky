@@ -17,18 +17,18 @@
  *
  */
 
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 // 平移效果
-const Slide = (props:any) => {
-    const {children} = props;
-    const style = useSpring({
-        from: { transform: 'translateX(-100%)' },
-        to: { transform: 'translateX(0%)' },
-        config: { duration: 1000 },
-    });
+const Slide = (props: any) => {
+  const { children } = props;
+  const style = useSpring({
+    from: { transform: 'translateX(-100%)' },
+    to: { transform: 'translateX(0%)' },
+    config: { duration: 1000 },
+  });
 
-    return <animated.div style={{...style}}>{children}</animated.div>;
+  return <animated.div style={{ ...style }}>{children}</animated.div>;
 };
 
-export default Slide
+export default Slide;

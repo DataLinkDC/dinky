@@ -15,12 +15,12 @@
  * limitations under the License.
  */
 
-import {PageContainer, ProCard} from '@ant-design/pro-components';
+import { CommunityRules } from '@/pages/Other/About/components/CommunityRules';
+import { QRCode } from '@/pages/Other/About/components/QRCode';
+import { UsingHelp } from '@/pages/Other/About/components/UsingHelp';
+import { PageContainer, ProCard } from '@ant-design/pro-components';
 import React from 'react';
-import {QRCode} from '@/pages/Other/About/components/QRCode';
-import {UsingHelp} from '@/pages/Other/About/components/UsingHelp';
-import {CommunityRules} from '@/pages/Other/About/components/CommunityRules';
-import {Precautions} from './components/Precautions';
+import { Precautions } from './components/Precautions';
 
 export const AlertRestProps = {
   banner: true,
@@ -28,7 +28,7 @@ export const AlertRestProps = {
   style: {
     margin: -12,
     marginBottom: 24,
-  }
+  },
 };
 
 export const ImageRestProps = {
@@ -36,43 +36,41 @@ export const ImageRestProps = {
   width: 250,
 };
 
-
 export const TypographyRestProps = {
   ellipsis: true,
   strong: true,
   style: {
     marginRight: '2vw',
-  }
+  },
 };
 
-
 const About: React.FC = () => {
-  return <>
-    <PageContainer title={false}>
-      <ProCard ghost split="vertical">
-        <ProCard wrap ghost colSpan="55%">
-          <ProCard>
-            <QRCode/>
+  return (
+    <>
+      <PageContainer title={false}>
+        <ProCard ghost split="vertical">
+          <ProCard wrap ghost colSpan="55%">
+            <ProCard>
+              <QRCode />
+            </ProCard>
+            <ProCard>
+              <Precautions />
+            </ProCard>
           </ProCard>
-          <ProCard>
-            <Precautions/>
+
+          <ProCard wrap ghost>
+            <ProCard>
+              <UsingHelp />
+            </ProCard>
+
+            <ProCard>
+              <CommunityRules />
+            </ProCard>
           </ProCard>
         </ProCard>
-
-        <ProCard wrap ghost>
-          <ProCard>
-            <UsingHelp/>
-          </ProCard>
-
-          <ProCard>
-            <CommunityRules/>
-          </ProCard>
-        </ProCard>
-      </ProCard>
-
-
-    </PageContainer>
-  </>;
+      </PageContainer>
+    </>
+  );
 };
 
 export default About;

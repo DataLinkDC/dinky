@@ -18,8 +18,8 @@
  */
 
 export default {
-  'button.check':'检查',
-  'button.graph':'图',
+  'button.check': '检查',
+  'button.graph': '图',
   'button.create': '新建',
   'button.close': '关闭',
   'button.confirm': '确定',
@@ -112,8 +112,7 @@ export default {
 
   'global.stay.tuned': '敬请期待',
   'global.mini': '最小化',
-  'global.max':'最大化',
-
+  'global.max': '最大化',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
@@ -151,7 +150,6 @@ export default {
   'global.table.runmode.remote': '远程',
 
   'global.search.text': '输入关键字搜索',
-
 
   'global.savepoint.strategy.disabled': '禁用',
   'global.savepoint.strategy.latest': '最近一次',
@@ -196,5 +194,4 @@ export default {
   'global.month.october': '十月',
   'global.month.november': '十一月',
   'global.month.december': '十二月',
-
 };

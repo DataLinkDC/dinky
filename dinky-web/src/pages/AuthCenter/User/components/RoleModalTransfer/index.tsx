@@ -16,49 +16,56 @@
  *
  */
 
-import React, {useState} from 'react';
-import {l} from "@/utils/intl";
-import {UserBaseInfo} from '@/types/User/data.d';
-import {Modal} from "antd";
-import RoleTransfer from "@/pages/AuthCenter/User/components/RoleModalTransfer/RoleTransfer";
+import RoleTransfer from '@/pages/AuthCenter/User/components/RoleModalTransfer/RoleTransfer';
+import { UserBaseInfo } from '@/types/User/data.d';
+import { l } from '@/utils/intl';
+import { Modal } from 'antd';
+import { useState } from 'react';
 
 type RoleTransferFromProps = {
-    user: Partial<UserBaseInfo.User>;
-    onChange: (values: string[]) => void;
-    onSubmit: (values: string[]) => void;
-    onCancel: () => void;
-    modalVisible: boolean;
+  user: Partial<UserBaseInfo.User>;
+  onChange: (values: string[]) => void;
+  onSubmit: (values: string[]) => void;
+  onCancel: () => void;
+  modalVisible: boolean;
 };
 
 const RoleModalTransfer = (props: RoleTransferFromProps) => {
-    const {user, modalVisible, onCancel, onSubmit: handleSubmit, onChange: handleChange} = props;
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
+  const {
+    user,
+    modalVisible,
+    onCancel,
+    onSubmit: handleSubmit,
+    onChange: handleChange,
+  } = props;
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
-    const handleValueChange = (value: string[]) => {
-        handleChange(value);
-        setTargetKeys(value);
-    }
+  const handleValueChange = (value: string[]) => {
+    handleChange(value);
+    setTargetKeys(value);
+  };
 
-    const handleCancel = () => {
-        onCancel()
-    }
+  const handleCancel = () => {
+    onCancel();
+  };
 
-
-    return <>
-        <Modal
-            title={l("user.assignRole")}
-            open={modalVisible}
-            destroyOnClose
-            maskClosable={false}
-            width={"75%"}
-            onCancel={() => handleCancel()}
-            onOk={() => handleSubmit(targetKeys)}
-        >
-            <RoleTransfer user={user} onChange={(value) => handleValueChange(value)}/>
-        </Modal>
+  return (
+    <>
+      <Modal
+        title={l('user.assignRole')}
+        open={modalVisible}
+        destroyOnClose
+        maskClosable={false}
+        width={'75%'}
+        onCancel={() => handleCancel()}
+        onOk={() => handleSubmit(targetKeys)}
+      >
+        <RoleTransfer
+          user={user}
+          onChange={(value) => handleValueChange(value)}
+        />
+      </Modal>
     </>
-
-
+  );
 };
 export default RoleModalTransfer;
-

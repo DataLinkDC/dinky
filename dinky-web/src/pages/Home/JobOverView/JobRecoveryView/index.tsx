@@ -17,19 +17,18 @@
  *
  */
 
-import {StatisticCard} from '@ant-design/pro-components';
-import React from 'react';
-import {RingProgress, RingProgressConfig} from '@ant-design/plots';
-import {Space} from "antd";
+import CountFormatter from '@/components/CountFormatter';
 import styles from '@/global.less';
-import CountFormatter from "@/components/CountFormatter";
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
+import { RingProgress, RingProgressConfig } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
+import { Space } from 'antd';
+import React from 'react';
 
-const {Statistic} = StatisticCard;
+const { Statistic } = StatisticCard;
 
 const JobRecoveryView: React.FC = () => {
-
-  const config : RingProgressConfig = {
+  const config: RingProgressConfig = {
     height: 80,
     width: 80,
     autoFit: false,
@@ -44,18 +43,15 @@ const JobRecoveryView: React.FC = () => {
         title: l('home.job.recovery'),
         value: 2,
         suffix: l('global.item'),
-        formatter: (value)=> <CountFormatter value={Number(value)}/>,
+        formatter: (value) => <CountFormatter value={Number(value)} />,
         description: (
           <Space>
             <Statistic
               title={l('home.job.online')}
-              value='5 '
+              value="5 "
               suffix={l('global.item')}
             />
-            <Statistic
-              title={l('home.job.recovery.rate')}
-              value="40 %"
-            />
+            <Statistic title={l('home.job.recovery.rate')} value="40 %" />
           </Space>
         ),
       }}
@@ -66,6 +62,6 @@ const JobRecoveryView: React.FC = () => {
       }
     />
   );
-}
+};
 
-export default JobRecoveryView
+export default JobRecoveryView;

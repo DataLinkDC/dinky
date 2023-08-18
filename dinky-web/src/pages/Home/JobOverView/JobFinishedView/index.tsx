@@ -17,25 +17,24 @@
  *
  */
 
-import {StatisticCard} from '@ant-design/pro-components';
+import CountFormatter from '@/components/CountFormatter';
+import styles from '@/global.less';
+import { l } from '@/utils/intl';
+import { TinyColumn, TinyColumnConfig } from '@ant-design/plots';
+import { StatisticCard } from '@ant-design/pro-components';
 import React from 'react';
-import {TinyColumn, TinyColumnConfig} from '@ant-design/plots';
-import styles from "@/global.less";
-import CountFormatter from "@/components/CountFormatter";
-import {l} from "@/utils/intl";
 
-const {Statistic} = StatisticCard;
+const { Statistic } = StatisticCard;
 
 const JobFinishedView: React.FC = () => {
-
   const data = [274, 337, 81, 497, 666, 219, 269];
-  const config :TinyColumnConfig = {
+  const config: TinyColumnConfig = {
     height: 80,
     width: 220,
     autoFit: false,
     data,
     tooltip: {
-      customContent: function (x: any, data: { data: { y: number; }; }[]) {
+      customContent: function (x: any, data: { data: { y: number } }[]) {
         return `NO.${x}: ${data[0]?.data?.y.toFixed(2)}`;
       },
     },
@@ -48,7 +47,7 @@ const JobFinishedView: React.FC = () => {
         title: l('home.job.finished'),
         value: 123,
         suffix: l('global.bout'),
-          formatter: (value)=> <CountFormatter value={Number(value)}/>,
+        formatter: (value) => <CountFormatter value={Number(value)} />,
         description: (
           <Statistic
             title={l('home.job.running.dayonday')}
@@ -64,6 +63,6 @@ const JobFinishedView: React.FC = () => {
       }
     />
   );
-}
+};
 
-export default JobFinishedView
+export default JobFinishedView;
