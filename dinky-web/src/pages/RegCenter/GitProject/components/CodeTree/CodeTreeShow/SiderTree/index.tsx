@@ -15,12 +15,11 @@
  * limitations under the License.
  */
 
-
-import React from "react";
-import {PageLoading} from "@ant-design/pro-components";
-import {buildTreeData} from "@/pages/RegCenter/GitProject/components/CodeTree/function";
-import {Empty, Tree} from "antd";
-import {GitProjectTreeNode} from "@/types/RegCenter/data";
+import { buildTreeData } from '@/pages/RegCenter/GitProject/components/CodeTree/function';
+import { GitProjectTreeNode } from '@/types/RegCenter/data';
+import { PageLoading } from '@ant-design/pro-components';
+import { Empty, Tree } from 'antd';
+import React from 'react';
 
 /**
  * sider tree props
@@ -29,27 +28,31 @@ type SiderTreeProps = {
   treeData: Partial<GitProjectTreeNode>[];
   onNodeClick: (info: any) => void;
   loading: boolean;
-}
+};
 
-const {DirectoryTree} = Tree;
-
+const { DirectoryTree } = Tree;
 
 export const SiderTree: React.FC<SiderTreeProps> = (props) => {
   /**
    * sider tree props
    */
-  const {loading, treeData, onNodeClick} = props;
+  const { loading, treeData, onNodeClick } = props;
 
   /**
    * render , if loading is true , show loading page , else show tree
    */
-  return <>
-    {loading ? <PageLoading/> :
-      (treeData.length > 0) ?
+  return (
+    <>
+      {loading ? (
+        <PageLoading />
+      ) : treeData.length > 0 ? (
         <DirectoryTree
           onSelect={(_, info) => onNodeClick(info)}
           treeData={buildTreeData(treeData)}
-        /> : <Empty className={"code-content-empty"}/>
-    }
-  </>;
+        />
+      ) : (
+        <Empty className={'code-content-empty'} />
+      )}
+    </>
+  );
 };

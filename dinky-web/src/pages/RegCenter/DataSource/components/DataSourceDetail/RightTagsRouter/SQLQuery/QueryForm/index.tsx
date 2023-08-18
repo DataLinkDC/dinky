@@ -15,24 +15,22 @@
  * limitations under the License.
  */
 
-import {ProForm, ProFormText} from '@ant-design/pro-components';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
-import {Values} from 'async-validator';
-import {AutoComplete} from 'antd';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { AutoComplete } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import { DefaultOptionType } from 'rc-select/es/Select';
 import React from 'react';
-import {l} from '@/utils/intl';
-import {DefaultOptionType} from 'rc-select/es/Select';
 
 type QueryFormProps = {
   form: FormInstance<Values>;
   onSubmit: (values: any) => void;
   autoCompleteColumns: DefaultOptionType[];
-}
+};
 
 const QueryForm: React.FC<QueryFormProps> = (props) => {
-
-  const {form, onSubmit: submitHandle, autoCompleteColumns} = props;
-
+  const { form, onSubmit: submitHandle, autoCompleteColumns } = props;
 
   /**
    * search form submit
@@ -50,45 +48,50 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
   const handleChange = (value: string, tag: string) => {
     switch (tag) {
       case 'where':
-        form.setFieldsValue({where: `${(form.getFieldsValue().where || '') + value}`});
+        form.setFieldsValue({
+          where: `${(form.getFieldsValue().where || '') + value}`,
+        });
         break;
       case 'order':
-        form.setFieldsValue({order: `${(form.getFieldsValue().order || '') + value}`});
+        form.setFieldsValue({
+          order: `${(form.getFieldsValue().order || '') + value}`,
+        });
         break;
     }
   };
 
-
   const renderForm = () => {
-    return <>
-      <AutoComplete
-        backfill
-        autoFocus
-        options={autoCompleteColumns}
-        onSelect={(value: string) => handleChange(value, 'where')}
-      >
-        <ProFormText
-          addonBefore={'WHERE'}
-          width={'md'}
-          key="where"
-          name="where"
-          required
-        />
-      </AutoComplete>
+    return (
+      <>
+        <AutoComplete
+          backfill
+          autoFocus
+          options={autoCompleteColumns}
+          onSelect={(value: string) => handleChange(value, 'where')}
+        >
+          <ProFormText
+            addonBefore={'WHERE'}
+            width={'md'}
+            key="where"
+            name="where"
+            required
+          />
+        </AutoComplete>
 
-      <AutoComplete
-        options={autoCompleteColumns}
-        onSelect={(value: string) => handleChange(value, 'order')}
-      >
-        <ProFormText
-          addonBefore={'ORDER BY'}
-          width={'md'}
-          key="order"
-          name="order"
-          required
-        />
-      </AutoComplete>
-    </>;
+        <AutoComplete
+          options={autoCompleteColumns}
+          onSelect={(value: string) => handleChange(value, 'order')}
+        >
+          <ProFormText
+            addonBefore={'ORDER BY'}
+            width={'md'}
+            key="order"
+            name="order"
+            required
+          />
+        </AutoComplete>
+      </>
+    );
   };
 
   /**
@@ -103,24 +106,27 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
       style: {
         display: 'none',
       },
-    }
+    },
   };
 
   /**
    * render
    */
-  return <>
-    <ProForm
-      layout={'inline'}
-      size={'middle'}
-      form={form}
-      isKeyPressSubmit autoFocusFirstInput
-      className={'query-form'}
-      submitter={{...submitConfig}}
-    >
-      {renderForm()}
-    </ProForm>
-  </>;
+  return (
+    <>
+      <ProForm
+        layout={'inline'}
+        size={'middle'}
+        form={form}
+        isKeyPressSubmit
+        autoFocusFirstInput
+        className={'query-form'}
+        submitter={{ ...submitConfig }}
+      >
+        {renderForm()}
+      </ProForm>
+    </>
+  );
 };
 
 export default QueryForm;

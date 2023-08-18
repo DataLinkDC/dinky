@@ -15,68 +15,73 @@
  * limitations under the License.
  */
 
-import {Alert, ALERT_TYPE} from '@/types/RegCenter/data.d';
-import DingTalk from './DingTalk';
-import {buildJSONData, getJSONData} from '@/pages/RegCenter/Alert/AlertInstance/function';
-import {ProForm, ProFormSelect, ProFormText} from '@ant-design/pro-components';
-import React, {useState} from 'react';
-import {FormInstance} from 'antd/es/form/hooks/useForm';
-import {Values} from 'async-validator';
-import {MODAL_FORM_OPTIONS} from '@/services/constants';
-import {l} from '@/utils/intl';
-import {ALERT_TYPE_LIST_OPTIONS} from '@/pages/RegCenter/Alert/AlertInstance/constans';
-import FeiShu from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/FeiShu';
-import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
 import Email from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Email';
+import FeiShu from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/FeiShu';
 import Sms from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/Sms';
+import WeChat from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm/WeChat';
+import { ALERT_TYPE_LIST_OPTIONS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
+import { getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { MODAL_FORM_OPTIONS } from '@/services/constants';
+import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import {
+  ProForm,
+  ProFormSelect,
+  ProFormText,
+} from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React, { useState } from 'react';
+import DingTalk from './DingTalk';
 
 type InstanceFormProps = {
   values: Partial<Alert.AlertInstance>;
-  form: FormInstance<Values>
-}
+  form: FormInstance<Values>;
+};
 
 const InstanceForm: React.FC<InstanceFormProps> = (props) => {
-  const {values, form} = props;
+  const { values, form } = props;
 
-  const [alertType, setAlertType] = useState<string>(values.type || ALERT_TYPE.DINGTALK);
-  const [data, setData] = useState<any>(
-    values ? getJSONData(values) : {}
-  );// 保存表单数据
+  const [alertType, setAlertType] = useState<string>(
+    values.type || ALERT_TYPE.DINGTALK,
+  );
+  const [data, setData] = useState<any>(values ? getJSONData(values) : {}); // 保存表单数据
 
   const renderPreForm = () => {
-    return <>
-      <ProFormText
-        width="lg"
-        name="name"
-        label={l('rc.ai.name')}
-        rules={[{required: true, message: l('rc.ai.namePleaseHolder')}]}
-        placeholder={l('rc.ai.namePleaseHolder')}
-      />
-      <ProFormSelect
-        width="md"
-        name="type"
-        label={l('rc.ai.type')}
-        rules={[{required: true, message: l('rc.ai.choosetype')}]}
-        placeholder={l('rc.ai.choosetype')}
-        options={ALERT_TYPE_LIST_OPTIONS}
-        initialValue={alertType}
-      />
-
-    </>;
+    return (
+      <>
+        <ProFormText
+          width="lg"
+          name="name"
+          label={l('rc.ai.name')}
+          rules={[{ required: true, message: l('rc.ai.namePleaseHolder') }]}
+          placeholder={l('rc.ai.namePleaseHolder')}
+        />
+        <ProFormSelect
+          width="md"
+          name="type"
+          label={l('rc.ai.type')}
+          rules={[{ required: true, message: l('rc.ai.choosetype') }]}
+          placeholder={l('rc.ai.choosetype')}
+          options={ALERT_TYPE_LIST_OPTIONS}
+          initialValue={alertType}
+        />
+      </>
+    );
   };
 
   const renderFormByType = () => {
     switch (alertType) {
       case ALERT_TYPE.DINGTALK:
-        return <DingTalk values={getJSONData(data)}/>;
+        return <DingTalk values={getJSONData(data)} />;
       case ALERT_TYPE.FEISHU:
-        return <FeiShu values={getJSONData(data)}/>;
+        return <FeiShu values={getJSONData(data)} />;
       case ALERT_TYPE.WECHAT:
-        return <WeChat values={getJSONData(data)}/>;
+        return <WeChat values={getJSONData(data)} />;
       case ALERT_TYPE.EMAIL:
-        return <Email values={getJSONData(data)}/>;
+        return <Email values={getJSONData(data)} />;
       case ALERT_TYPE.SMS:
-        return <Sms values={getJSONData(data)}/>;
+        return <Sms values={getJSONData(data)} />;
     }
   };
 
@@ -88,22 +93,22 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
     }
   };
 
-
-  return <>
-    <ProForm
-      {...MODAL_FORM_OPTIONS}
-      form={form}
-      submitter={false}
-      initialValues={getJSONData(values)}
-      onValuesChange={handleValuesChange}
-    >
-      <ProForm.Group>
-        {renderPreForm()}
-        {renderFormByType()}
-      </ProForm.Group>
-    </ProForm>
-
-  </>;
+  return (
+    <>
+      <ProForm
+        {...MODAL_FORM_OPTIONS}
+        form={form}
+        submitter={false}
+        initialValues={getJSONData(values)}
+        onValuesChange={handleValuesChange}
+      >
+        <ProForm.Group>
+          {renderPreForm()}
+          {renderFormByType()}
+        </ProForm.Group>
+      </ProForm>
+    </>
+  );
 };
 
 export default InstanceForm;

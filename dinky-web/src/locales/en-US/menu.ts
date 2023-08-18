@@ -33,7 +33,8 @@ export default {
   'menu.account.logout': 'Logout',
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
-  'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
+  'menu.account.checkTenantConfirm':
+    'Are you sure to switch  tenant [ {tenantCode} ] ?',
 
   'menu.datastudio': 'Data Studio',
 
@@ -83,13 +84,13 @@ export default {
   'menu.datastudio.historyVision': 'History Vision',
   'menu.datastudio.jobInfo': 'Job Info',
 
- 'menu.datastudio.tool':'Tool',
- 'menu.datastudio.result':'Result',
- 'menu.datastudio.bi':'BI',
- 'menu.datastudio.lineage':'Lineage',
- 'menu.datastudio.process':'Process',
- 'menu.datastudio.history':'History',
- 'menu.datastudio.table-data':'Table Data',
+  'menu.datastudio.tool': 'Tool',
+  'menu.datastudio.result': 'Result',
+  'menu.datastudio.bi': 'BI',
+  'menu.datastudio.lineage': 'Lineage',
+  'menu.datastudio.process': 'Process',
+  'menu.datastudio.history': 'History',
+  'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison':'Text Comparison',
+  'menu.datastudio.tool.text-comparison': 'Text Comparison',
 };

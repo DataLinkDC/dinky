@@ -23,11 +23,10 @@ body,
   padding: 0;
   overflow-x: auto;
   overflow-y: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial,
-  'Noto Sans', sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-  'Noto Color Emoji';
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+    'Helvetica Neue', Arial, 'Noto Sans', sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
 }
-
 
 // .login-form style --- start ----
 .content {
@@ -39,53 +38,50 @@ body,
 }
 
 .header {
-  height: 100px;
-  line-height: 10vh;
   position: relative;
+  height: 100px;
   font-weight: 600;
   font-size: 4rem;
   font-family: PMingLiU-ExtB, 'Helvetica Neue', Arial, Helvetica, sans-serif;
-
+  line-height: 10vh;
 }
 
 .logo {
   position: absolute;
-  width: 28vw;
-  left: -30vw;
   top: -5vh;
+  left: -30vw;
   display: flex;
   flex: auto;
   flex-flow: column-reverse;
+  width: 28vw;
 }
 
-
 .desc {
-  margin-bottom: 1rem;
   margin-top: 2rem;
+  margin-bottom: 1rem;
   //color: @text-color-secondary;
   //font-size: @font-size-base;
 }
 
-
 .loginformMain {
+  z-index: 1;
   display: flex;
   flex: auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   max-height: max-content;
   padding: 0 6vh 30vh 2vh;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  background-size: cover;
-  background-position: left center;
   background-repeat: no-repeat;
-  z-index: 1;
+  background-position: left center;
+  background-size: cover;
 
   .form {
     position: relative;
     height: 100 * 100vw / 320;
-    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
-    margin-left: 60vw;
     margin-bottom: -15vh;
+    margin-left: 60vw;
+    box-shadow: 0 0 10px 5px rgba(0, 0, 0, 0.4);
   }
 
   .loginform {
@@ -94,7 +90,6 @@ body,
 }
 
 // .login-form style --- end ----
-
 
 // scrollbar style --- start ----
 ::-webkit-scrollbar {
@@ -120,7 +115,7 @@ body,
   background-color: #f5f5f5;
 }
 .monaco-scrollable-element > .scrollbar > .slider {
-    background: #8db7fd !important;
+  background: #8db7fd !important;
 }
 
 // scrollbar style --- end ----
@@ -172,17 +167,17 @@ ol {
 }
 
 .options-button {
-  border: none;
-  background-color: rgba(79, 79, 79, 0.04);
   width: 100%;
   height: 100%;
   overflow: hidden;
+  background-color: rgba(79, 79, 79, 0.04);
+  border: none;
 }
 
 .blue-icon {
-  color: rgb(24, 144, 255);
-  height: border-box;
   width: border-box;
+  height: border-box;
+  color: rgb(24, 144, 255);
 }
 
 .ant-pro-page-container-children-content {
@@ -194,8 +189,8 @@ ol {
 }
 
 .ant-pro-card-body {
-  padding: 0;
   height: max-content;
+  padding: 0;
 }
 
 .hidden-overflow {
@@ -207,8 +202,8 @@ ol {
 }
 
 .ant-table-wrapper {
-  overflow-y: auto;
   overflow-x: auto;
+  overflow-y: auto;
   overflow-block: auto;
 }
 
@@ -224,25 +219,24 @@ ol {
   overflow-y: auto;
 
   .ant-tree-list-holder-inner {
-    min-width: max-content;
     z-index: auto;
+    min-width: max-content;
   }
 
   .tree-search-value {
     //color: #00EE76;
     color: #c00b26;
-    background-color: rgba(3, 102, 214, 0.5);
     font-size: 15px;
+    background-color: rgba(3, 102, 214, 0.5);
   }
 }
 
 .siderTree {
   height: 100%;
+  min-height: 82vh;
+  max-height: 82vh;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 82vh;
-  min-height: 82vh;
-
 
   .ant-tree {
     min-width: max-content;
@@ -264,30 +258,30 @@ ol {
   }
 }
 .gitCodeTree {
-  max-height: 70vh;
   min-height: 70vh;
+  max-height: 70vh;
 }
 
 .schemaTree {
-  max-height: 89vh;
   min-height: 89vh;
+  max-height: 89vh;
 }
 
 .code-content-empty {
-  height: 100%;
   display: flex;
-  justify-content: center;
   align-items: center;
-  color: #999;
+  justify-content: center;
+  height: 100%;
   min-height: 70vh;
   max-height: 70vh;
+  color: #999;
 }
 
 .monaco-float {
   position: relative;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
 
   .float-button {
     position: absolute;
@@ -300,28 +294,27 @@ ol {
 
   .full-screen {
     position: absolute;
-    transform: translate(5%, 15%);
     top: 0;
     right: 2vw;
     width: 40px;
     height: 40px;
+    transform: translate(5%, 15%);
   }
 }
-
 
 /**
  * if i18n is too long, it will break line ,
  * so we need to use pre-wrap , but it will first break line at space, so we need to use nowrap
  */
 .needWrap {
-  white-space: pre-wrap;
   align-content: center;
+  white-space: pre-wrap;
 }
 
 .query-form {
-  width: max-content;
-  left: 0;
   position: absolute;
+  left: 0;
+  width: max-content;
 }
 
 .tiny-charts {
@@ -330,16 +323,15 @@ ol {
   right: 12px;
 }
 
-
 .radio-group-chart {
   position: absolute;
-  right: 0;
   top: 7px;
+  right: 0;
 }
 
 .tag-content {
-  align-items: center;
   align-content: center;
+  align-items: center;
 }
 
 .ant-pro-checkcard-title {
@@ -347,18 +339,17 @@ ol {
 }
 
 h5 {
-  margin-left: 0.5rem;
   margin-bottom: 0;
+  margin-left: 0.5rem;
 }
-
 
 // theme
 // light
-.show{
+.show {
   opacity: 1;
   animation: show-anim 0.5s;
 }
-.hide{
+.hide {
   opacity: 0;
   animation: hide-anim 0.5s;
 }
@@ -379,19 +370,19 @@ h5 {
   }
 }
 
-.title{
-  font-size: 15px;
+.title {
   font-weight: 500;
-  font-family: "SimHei",serif;
+  font-size: 15px;
+  font-family: 'SimHei', serif;
 }
 .container-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
   line-height: 32px;
   padding-inline: 10px;
   padding-block: 5px;
-  border-block: 1px solid
+  border-block: 1px solid;
 }
 
 // 滚动条
@@ -401,33 +392,32 @@ h5 {
   scrollbar-color: #d4aa70 #e4e4e4;
   scrollbar-width: thin;
 }
-.monaco-float{
+.monaco-float {
   height: 100%;
 }
 
-.data-studio-tabs{
-  .ant-tabs-nav{
-    .ant-tabs-nav-wrap{
-      .ant-tabs-tab{
+.data-studio-tabs {
+  .ant-tabs-nav {
+    .ant-tabs-nav-wrap {
+      .ant-tabs-tab {
         padding: 4px 8px;
       }
-      .ant-tabs-tab-active{
+      .ant-tabs-tab-active {
+        box-sizing: content-box;
         border-block-end: 3px solid #8db7fd;
-        box-sizing:content-box;
         padding-block-end: 3px;
       }
     }
   }
-
 }
 
-.data-studio-form{
-    .ant-form-item{
-      margin-bottom: 5px!important;
-    }
+.data-studio-form {
+  .ant-form-item {
+    margin-bottom: 5px !important;
+  }
 }
 
 .ant-pro-form-list-item {
-  display: flex!important;
-  align-items: baseline!important;
+  display: flex !important;
+  align-items: baseline !important;
 }

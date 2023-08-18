@@ -16,61 +16,66 @@
  *
  */
 
-import {ProForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import React from "react";
-import {l} from "@/utils/intl";
-import {UserBaseInfo} from "@/types/User/data";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
+import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { UserBaseInfo } from '@/types/User/data';
+import { l } from '@/utils/intl';
+import {
+  ProForm,
+  ProFormText,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React from 'react';
 
 type TenantFormProps = {
-    values: Partial<UserBaseInfo.Tenant>;
-    form: FormInstance<Values>;
+  values: Partial<UserBaseInfo.Tenant>;
+  form: FormInstance<Values>;
 };
 
-
 const TenantForm: React.FC<TenantFormProps> = (props) => {
+  /**
+   * props
+   */
+  const { values, form } = props;
 
-    /**
-     * props
-     */
-    const {values, form} = props;
+  /**
+   * render form
+   * @constructor
+   */
+  const tenantFormRender = () => {
+    return (
+      <>
+        <ProFormText
+          name="tenantCode"
+          label={l('tenant.TenantCode')}
+          placeholder={l('tenant.EnterTenantCode')}
+          rules={[{ required: true, message: l('tenant.EnterTenantCode') }]}
+        />
+        <ProFormTextArea
+          name="note"
+          allowClear
+          label={l('global.table.note')}
+          placeholder={l('tenant.EnterTenantNote')}
+          rules={[{ required: true, message: l('tenant.EnterTenantNote') }]}
+        />
+      </>
+    );
+  };
 
-
-    /**
-     * render form
-     * @constructor
-     */
-    const tenantFormRender = () => {
-        return <>
-            <ProFormText
-                name="tenantCode"
-                label={l('tenant.TenantCode')}
-                placeholder={l('tenant.EnterTenantCode')}
-                rules={[{required: true, message: l('tenant.EnterTenantCode')}]}
-            />
-            <ProFormTextArea
-                name="note"
-                allowClear
-                label={l('global.table.note')}
-                placeholder={l('tenant.EnterTenantNote')}
-                rules={[{required: true, message: l('tenant.EnterTenantNote')}]}
-            />
-        </>
-    };
-
-    return <>
-        <ProForm
-            {...FORM_LAYOUT_PUBLIC}
-            form={form}
-            initialValues={values}
-            submitter={false}
-            layout={"horizontal"}
-        >
-            {tenantFormRender()}
-        </ProForm>
+  return (
+    <>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        submitter={false}
+        layout={'horizontal'}
+      >
+        {tenantFormRender()}
+      </ProForm>
     </>
-}
+  );
+};
 
 export default TenantForm;

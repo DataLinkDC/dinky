@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-
 /*--- get alert instance  ---*/
-import {getData} from "@/services/api";
-import {API_CONSTANTS} from "@/services/constants";
+import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/constants';
 
 export function showAlertInstance() {
   return getData(API_CONSTANTS.ALERT_INSTANCE_LIST_ENABLE_ALL);
 }
-

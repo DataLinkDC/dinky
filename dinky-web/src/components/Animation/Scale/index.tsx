@@ -15,21 +15,17 @@
  * limitations under the License.
  */
 
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
-const Scale = (props:any) => {
-  const {children} = props;
+const Scale = (props: any) => {
+  const { children } = props;
   const scale = useSpring({
     transform: 'scale(1)',
     from: { transform: 'scale(0)' },
     config: { tension: 2000, friction: 300, duration: 500 },
   });
 
-  return (
-    <animated.div style={scale}>
-      {children}
-    </animated.div>
-  );
-}
+  return <animated.div style={scale}>{children}</animated.div>;
+};
 
-export default Scale
+export default Scale;

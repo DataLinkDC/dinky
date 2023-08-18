@@ -1,16 +1,23 @@
-
 const escape2Html = (str: string) => {
-  let arrEntities:Record<string, string> = {'lt': '<', 'gt': '>', 'nbsp': ' ', 'amp': '&', 'quot': '"'};
-  return str.replace(/&(lt|gt|nbsp|amp|quot);/ig, function (all, t) {
+  let arrEntities: Record<string, string> = {
+    lt: '<',
+    gt: '>',
+    nbsp: ' ',
+    amp: '&',
+    quot: '"',
+  };
+  return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, function (all, t) {
     return arrEntities[t];
   });
-}
+};
 const getRangeText = (str: string) => {
   str = escape2Html(str);
   // @ts-ignore
-  const canvas = getRangeText.canvas || (getRangeText.canvas = document.createElement("canvas"));
-  const context = canvas.getContext("2d");
-  context.font = "10px sans-serif";
+  const canvas =
+    getRangeText.canvas ||
+    (getRangeText.canvas = document.createElement('canvas'));
+  const context = canvas.getContext('2d');
+  context.font = '10px sans-serif';
   let result = '';
   let count = 1;
   for (let i = 0, len = str.length; i < len; i++) {
@@ -24,8 +31,7 @@ const getRangeText = (str: string) => {
   return result;
 };
 
-
-export const buildGraphData = (data:any) => {
+export const buildGraphData = (data: any) => {
   const edges = [];
   for (const i in data.nodes) {
     data.nodes[i].id = data.nodes[i].id.toString();
@@ -46,8 +52,8 @@ export const buildGraphData = (data:any) => {
         edges.push({
           source: data.nodes[i].inputs[j].id.toString(),
           target: data.nodes[i].id.toString(),
-          value: data.nodes[i].inputs[j].ship_strategy
-        })
+          value: data.nodes[i].inputs[j].ship_strategy,
+        });
       }
     }
   }

@@ -15,105 +15,123 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {ProcessSteps} from "@/types/SettingCenter/data";
-import {ProColumns} from "@ant-design/pro-table";
-import {ProTable} from "@ant-design/pro-components";
-import ShowLog from "@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable/ShowLog";
-import {ShowLogBtn} from "@/components/CallBackButton/ShowLogBtn";
-import {MatchProcessStatus} from "@/pages/SettingCenter/Process/components/ProcessList/function";
-import {l} from "@/utils/intl";
+import { ShowLogBtn } from '@/components/CallBackButton/ShowLogBtn';
+import { MatchProcessStatus } from '@/pages/SettingCenter/Process/components/ProcessList/function';
+import ShowLog from '@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable/ShowLog';
+import { ProcessSteps } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
+import React from 'react';
 
 type SubStepsTableProps = {
   steps: ProcessSteps[];
-}
+};
 
 type ShowLogProps = {
   type: string;
   log: string;
-}
+};
 
 const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
-
-  const {steps} = props;
+  const { steps } = props;
 
   const [visibleViewLog, setVisibleViewLog] = React.useState<boolean>(false);
   const [viewLogProp, setViewLogProp] = React.useState<ShowLogProps>({
-    type: "",
-    log: "",
+    type: '',
+    log: '',
   });
 
   const handleViewLog = (type: string, log: string) => {
-    setViewLogProp({type, log});
+    setViewLogProp({ type, log });
     setVisibleViewLog(true);
   };
 
   const cancelViewLog = () => {
-    setViewLogProp({type: "", log: ""});
+    setViewLogProp({ type: '', log: '' });
     setVisibleViewLog(false);
   };
 
-
   const renderLog = () => {
-    return <ShowLog cancelViewLog={cancelViewLog} visibleViewLog={visibleViewLog} {...viewLogProp}/>;
+    return (
+      <ShowLog
+        cancelViewLog={cancelViewLog}
+        visibleViewLog={visibleViewLog}
+        {...viewLogProp}
+      />
+    );
   };
 
   const stepsColumns: ProColumns<ProcessSteps>[] = [
     {
-      dataIndex: "index",
-      valueType: "indexBorder",
+      dataIndex: 'index',
+      valueType: 'indexBorder',
       width: 48,
     },
     {
       title: l('sys.process.subStep.status'),
-      dataIndex: "stepStatus",
-      render: (_: any, record:ProcessSteps) => {
+      dataIndex: 'stepStatus',
+      render: (_: any, record: ProcessSteps) => {
         return MatchProcessStatus(record.stepStatus);
-      }
+      },
     },
     {
       title: l('sys.process.subStep.info'),
-      dataIndex: "info",
-      align: "center",
+      dataIndex: 'info',
+      align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewInfoLog"), record.info)}/>;
-      }
+        return (
+          <ShowLogBtn
+            onClick={() =>
+              handleViewLog(l('sys.process.viewInfoLog'), record.info)
+            }
+          />
+        );
+      },
     },
     {
       title: l('sys.process.subStep.error'),
-      dataIndex: "error",
-      align: "center",
+      dataIndex: 'error',
+      align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return <ShowLogBtn onClick={() => handleViewLog(l("sys.process.viewErrorLog"), record.error)}/>;
-      }
+        return (
+          <ShowLogBtn
+            onClick={() =>
+              handleViewLog(l('sys.process.viewErrorLog'), record.error)
+            }
+          />
+        );
+      },
     },
     {
       title: l('sys.process.startTime'),
-      dataIndex: "startTime",
-      valueType: "dateTime",
+      dataIndex: 'startTime',
+      valueType: 'dateTime',
     },
     {
       title: l('sys.process.endTime'),
-      dataIndex: "endTime",
-      valueType: "dateTime",
+      dataIndex: 'endTime',
+      valueType: 'dateTime',
     },
     {
       title: l('sys.process.duration'),
-      dataIndex: "time",
-    }
+      dataIndex: 'time',
+    },
   ];
 
-  return <>
-    <ProTable<ProcessSteps>
-      headerTitle={false}
-      toolBarRender={false}
-      search={false}
-      columns={stepsColumns}
-      dataSource={steps}
-      pagination={false}
-    />
-    {visibleViewLog && renderLog()}
-  </>;
+  return (
+    <>
+      <ProTable<ProcessSteps>
+        headerTitle={false}
+        toolBarRender={false}
+        search={false}
+        columns={stepsColumns}
+        dataSource={steps}
+        pagination={false}
+      />
+      {visibleViewLog && renderLog()}
+    </>
+  );
 };
 
 export default SubStepsTable;

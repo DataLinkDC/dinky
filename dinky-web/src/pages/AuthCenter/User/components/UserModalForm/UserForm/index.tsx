@@ -16,76 +16,80 @@
  *
  */
 
-import {UserBaseInfo} from "@/types/User/data";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
-import React from "react";
-import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {ProForm, ProFormText} from "@ant-design/pro-components";
-import {l} from "@/utils/intl";
-
+import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { UserBaseInfo } from '@/types/User/data';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React from 'react';
 
 type UserFormProps = {
-    values: Partial<UserBaseInfo.Role>;
-    form: FormInstance<Values>;
+  values: Partial<UserBaseInfo.Role>;
+  form: FormInstance<Values>;
 };
 const UserForm: React.FC<UserFormProps> = (props) => {
+  const { values, form } = props;
 
+  /**
+   * user form render
+   * @returns {JSX.Element}
+   */
+  const userFormRender = () => {
+    return (
+      <>
+        <ProFormText
+          name="username"
+          label={l('user.username')}
+          placeholder={l('user.usernamePlaceholder')}
+          rules={[
+            {
+              required: true,
+              message: l('user.usernamePlaceholder'),
+            },
+          ]}
+        />
 
-    const {values, form} = props;
+        <ProFormText
+          name="nickname"
+          label={l('user.nickname')}
+          placeholder={l('user.nicknamePlaceholder')}
+          rules={[
+            {
+              required: true,
+              message: l('user.nicknamePlaceholder'),
+            },
+          ]}
+        />
 
-    /**
-     * user form render
-     * @returns {JSX.Element}
-     */
-    const userFormRender = () => {
-        return <>
-            <ProFormText
-                name="username"
-                label={l("user.username")}
-                placeholder={l("user.usernamePlaceholder")}
-                rules={[{
-                    required: true,
-                    message: l("user.usernamePlaceholder")
-                }]}
-            />
+        <ProFormText
+          name="worknum"
+          label={l('user.jobnumber')}
+          placeholder={l('user.jobnumberPlaceholder')}
+        />
 
-            <ProFormText
-                name="nickname"
-                label={l("user.nickname")}
-                placeholder={l("user.nicknamePlaceholder")}
-                rules={[{
-                    required: true,
-                    message: l("user.nicknamePlaceholder")
-                }]}
-            />
+        <ProFormText
+          name="mobile"
+          label={l('user.phone')}
+          placeholder={l('user.phonePlaceholder')}
+        />
+      </>
+    );
+  };
 
-            <ProFormText
-                name="worknum"
-                label={l("user.jobnumber")}
-                placeholder={l("user.jobnumberPlaceholder")}
-            />
-
-            <ProFormText
-                name="mobile"
-                label={l("user.phone")}
-                placeholder={l("user.phonePlaceholder")}
-            />
-        </>
-    };
-
-    return <>
-        <ProForm
-            {...FORM_LAYOUT_PUBLIC}
-            form={form}
-            initialValues={values}
-            layout={"horizontal"}
-            submitter={false}
-        >
-            {userFormRender()}
-        </ProForm>
+  return (
+    <>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        layout={'horizontal'}
+        submitter={false}
+      >
+        {userFormRender()}
+      </ProForm>
     </>
-
-}
+  );
+};
 
 export default UserForm;

@@ -17,45 +17,39 @@
  *
  */
 
-
-import {Modal} from "antd";
-import React, {useEffect, useState} from "react";
-import {GitProject} from "@/types/RegCenter/data";
-import {AutoSteps, BuildMsgData} from "@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps";
-import {JavaSteps, PythonSteps} from "@/pages/RegCenter/GitProject/components/BuildSteps/constants";
-import {API_CONSTANTS} from "@/services/constants";
-import proxy from "../../../../../../config/proxy";
-import {renderStatus} from '@/pages/RegCenter/GitProject/function';
-import {BuildStepsState} from '@/pages/RegCenter/GitProject/data.d';
-import {getSseData} from "@/services/api";
-
+import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
+import {
+  JavaSteps,
+  PythonSteps,
+} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
+import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
+import { renderStatus } from '@/pages/RegCenter/GitProject/function';
+import { getSseData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/constants';
+import { GitProject } from '@/types/RegCenter/data';
+import { Modal } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 /**
  * props
  */
 type BuildStepsProps = {
-  onCancel: (flag?: boolean) => void
+  onCancel: (flag?: boolean) => void;
   title: string;
   values: GitProject;
 };
 
 export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
-
   /**
    * extract props
    */
-  const {
-    onCancel: handleModalVisible,
-    title,
-    values,
-  } = props;
+  const { onCancel: handleModalVisible, title, values } = props;
   let [logList, setLogList] = useState<Record<number, string[]>>({});
-  const [log, setLog] = useState<string>("");
+  const [log, setLog] = useState<string>('');
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [showList, setShowList] = useState<boolean>(false);
   const [percent, setPercent] = useState<number>(0);
   const [steps, handleSteps] = useState<BuildStepsState[]>([]);
-
 
   /**
    * render step title
@@ -63,7 +57,7 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
    */
   const renderTitle = (step: number) => {
     return (values.codeType === 1 ? JavaSteps : PythonSteps)[step - 1].title;
-  }
+  };
 
   useEffect(() => {
     if (values.buildStep === 0) {
@@ -72,34 +66,36 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
     }
     // 这里不要代理。sse使用代理会变成同步
     // const eventSource = new EventSource("http://127.0.0.1:8888" + API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
-    const eventSource = getSseData( API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + "?id=" + values.id);
+    const eventSource = getSseData(
+      API_CONSTANTS.GIT_PROJECT_BUILD_STEP_LOGS + '?id=' + values.id,
+    );
 
     let stepArray: BuildStepsState[] = []; // 步骤数组
     let globalCurrentStep: number = 0;
     let execNum: number = 0;
     let stepNum: number = 1;
     let showDataStep = -1;
-    let showData = "";
+    let showData = '';
     let finish = false;
-    let lastStep=0;
+    let lastStep = 0;
 
     //sse listen event message
-    eventSource.onmessage = e => {
+    eventSource.onmessage = (e) => {
       try {
         // type  // 1是总状态  2是log  3是部分状态
         // status // 0是失败 1是进行中 2 完成
         let result = JSON.parse(e.data);
-        const {currentStep, type, data, status, history} = result;
-        lastStep=currentStep;
+        const { currentStep, type, data, status, history } = result;
+        lastStep = currentStep;
 
         if (type === 0) {
           if (execNum === 1) {
-            logList = {}
+            logList = {};
           }
           execNum++;
           let parseResultData = JSON.parse(data); // parse data
           stepNum = parseResultData.length; // get step num
-          setPercent(parseInt(String(100 / stepNum * currentStep))); // set percent
+          setPercent(parseInt(String((100 / stepNum) * currentStep))); // set percent
           setCurrentStep(currentStep); // set current step
 
           stepArray = parseResultData.map((item: any) => {
@@ -110,30 +106,30 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
               description: item.startTime,
               disabled: true,
               onClick: () => {
-                if (finish&& item.step<=lastStep) {
+                if (finish && item.step <= lastStep) {
                   if (item.step === showDataStep) {
-                    setShowList(true)
-                    setLog(showData)
+                    setShowList(true);
+                    setLog(showData);
                   } else {
-                    setShowList(false)
-                    setLog(logList[item.step]?.join("\n"))
+                    setShowList(false);
+                    setLog(logList[item.step]?.join('\n'));
                   }
-                  setCurrentStep(item.step)
+                  setCurrentStep(item.step);
                 }
-              }
+              },
             };
-          })
+          });
           globalCurrentStep = currentStep;
           handleSteps(stepArray);
         }
         if (type !== 0) {
           if (type === 1) {
             if (logList[currentStep] === undefined) {
-              logList[currentStep] = []
+              logList[currentStep] = [];
             }
             if (data !== undefined) {
-              logList[currentStep].push(data)
-              setLog(logList[currentStep]?.join("\n"))
+              logList[currentStep].push(data);
+              setLog(logList[currentStep]?.join('\n'));
             }
           } else if (type === 2) {
             showDataStep = currentStep;
@@ -144,11 +140,13 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
 
           if (currentStep >= globalCurrentStep) {
             setCurrentStep(currentStep);
-            setPercent(parseInt(String(100 / stepNum * currentStep)));
-            stepArray[currentStep - 1].status = renderStatus(status)
+            setPercent(parseInt(String((100 / stepNum) * currentStep)));
+            stepArray[currentStep - 1].status = renderStatus(status);
           }
           if ((status === 2 && currentStep === stepNum) || status === 0) {
-            stepArray.filter(x=>x.status!="wait").forEach(d => d.disabled = false)
+            stepArray
+              .filter((x) => x.status != 'wait')
+              .forEach((d) => (d.disabled = false));
             finish = true;
             eventSource.close();
             return;
@@ -160,35 +158,40 @@ export const BuildSteps: React.FC<BuildStepsProps> = (props) => {
       }
     };
 
-
     return () => {
       eventSource.close();
-    }
-
-  }, [])
+    };
+  }, []);
 
   /**
    * cancel
    */
   const handleCancel = () => {
     handleModalVisible();
-  }
-
+  };
 
   /**
    * render
    */
-  return <>
-    <Modal
-      title={title}
-      width={"85%"}
-      open={true}
-      maskClosable={false}
-      onCancel={() => handleCancel()}
-      okButtonProps={{style: {display: "none"}}}
-    >
-      <AutoSteps steps={steps} percent={percent} currentStep={currentStep}
-                 values={values} log={log} showList={showList}/>
-    </Modal>
-  </>;
+  return (
+    <>
+      <Modal
+        title={title}
+        width={'85%'}
+        open={true}
+        maskClosable={false}
+        onCancel={() => handleCancel()}
+        okButtonProps={{ style: { display: 'none' } }}
+      >
+        <AutoSteps
+          steps={steps}
+          percent={percent}
+          currentStep={currentStep}
+          values={values}
+          log={log}
+          showList={showList}
+        />
+      </Modal>
+    </>
+  );
 };

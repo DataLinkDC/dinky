@@ -17,47 +17,54 @@
  *
  */
 
-
-import React, {useRef, useState} from 'react';
-import type {ActionType, ProColumns} from '@ant-design/pro-table';
-import ProTable from '@ant-design/pro-table';
-import {l} from "@/utils/intl";
-import {Document} from "@/types/RegCenter/data";
-import {queryList} from "@/services/api";
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import DocumentDrawer from '@/pages/RegCenter/Document/components/DocumentDrawer';
+import DocumentModalForm from '@/pages/RegCenter/Document/components/DocumentModal';
 import {
   DOCUMENT_CATEGORY,
   DOCUMENT_CATEGORY_ENUMS,
   DOCUMENT_FUNCTION_ENUMS,
   DOCUMENT_FUNCTION_TYPE,
   DOCUMENT_SUBTYPE,
-  DOCUMENT_SUBTYPE_ENUMS
-} from "@/pages/RegCenter/Document/constans";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING,} from "@/services/constants";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import {handleAddOrUpdate, handleRemoveById, updateDataByParam} from "@/services/BusinessCrud";
-import TextArea from "antd/es/input/TextArea";
-import {EnableSwitchBtn} from "@/components/CallBackButton/EnableSwitchBtn";
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
-import DocumentDrawer from "@/pages/RegCenter/Document/components/DocumentDrawer";
-import DocumentModalForm from "@/pages/RegCenter/Document/components/DocumentModal";
+  DOCUMENT_SUBTYPE_ENUMS,
+} from '@/pages/RegCenter/Document/constans';
+import { queryList } from '@/services/api';
+import {
+  handleAddOrUpdate,
+  handleRemoveById,
+  updateDataByParam,
+} from '@/services/BusinessCrud';
+import {
+  API_CONSTANTS,
+  PROTABLE_OPTIONS_PUBLIC,
+  STATUS_ENUM,
+  STATUS_MAPPING,
+} from '@/services/constants';
+import { Document } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import type { ActionType, ProColumns } from '@ant-design/pro-table';
+import ProTable from '@ant-design/pro-table';
+import TextArea from 'antd/es/input/TextArea';
+import React, { useRef, useState } from 'react';
 
 const DocumentTableList: React.FC = () => {
-
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] =
+    useState<boolean>(false);
   const [formValues, setFormValues] = useState<Partial<Document>>({});
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
-
   const handleCancel = () => {
     handleModalVisible(false);
     handleUpdateModalVisible(false);
     setDrawerOpen(false);
-  }
+  };
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setLoading(true);
@@ -65,7 +72,7 @@ const DocumentTableList: React.FC = () => {
     setLoading(false);
     handleCancel();
     actionRef.current?.reload?.();
-  }
+  };
 
   /**
    * delete document by id
@@ -74,8 +81,8 @@ const DocumentTableList: React.FC = () => {
   const handleDeleteSubmit = async (id: number) => {
     await executeAndCallbackRefresh(async () => {
       await handleRemoveById(API_CONSTANTS.DOCUMENT_DELETE, id);
-    })
-  }
+    });
+  };
 
   /**
    * enable or disable document
@@ -83,10 +90,9 @@ const DocumentTableList: React.FC = () => {
    */
   const handleChangeEnable = async (value: Partial<Document>) => {
     await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.DOCUMENT_ENABLE, {id: value.id});
-    })
+      await updateDataByParam(API_CONSTANTS.DOCUMENT_ENABLE, { id: value.id });
+    });
   };
-
 
   /**
    * added or update document var
@@ -95,19 +101,18 @@ const DocumentTableList: React.FC = () => {
   const handleAddOrUpdateSubmit = async (value: Partial<Document>) => {
     await executeAndCallbackRefresh(async () => {
       await handleAddOrUpdate(API_CONSTANTS.DOCUMENT, value);
-    })
-  }
+    });
+  };
 
   const handleClickEdit = (record: Partial<Document>) => {
     setFormValues(record);
     handleUpdateModalVisible(true);
-  }
+  };
 
   const handleOpenDrawer = (record: Partial<Document>) => {
-    setFormValues(record)
-    setDrawerOpen(true)
-  }
-
+    setFormValues(record);
+    setDrawerOpen(true);
+  };
 
   /**
    * columns
@@ -136,7 +141,7 @@ const DocumentTableList: React.FC = () => {
       dataIndex: 'type',
       filterMultiple: false,
       filters: DOCUMENT_FUNCTION_TYPE,
-      valueEnum: DOCUMENT_FUNCTION_ENUMS
+      valueEnum: DOCUMENT_FUNCTION_ENUMS,
     },
     {
       title: l('rc.doc.subFunctionType'),
@@ -152,16 +157,17 @@ const DocumentTableList: React.FC = () => {
       ellipsis: true,
       hideInTable: true,
       renderText: (text: string) => {
-        return <TextArea value={text} autoSize readOnly/>;
-      }
-    }, {
+        return <TextArea value={text} autoSize readOnly />;
+      },
+    },
+    {
       title: l('rc.doc.fillValue'),
       dataIndex: 'fillValue',
       hideInTable: true,
       hideInSearch: true,
       render: (_, record) => {
-        return <CodeShow width={"85vh"} code={record.fillValue}/>
-      }
+        return <CodeShow width={'85vh'} code={record.fillValue} />;
+      },
     },
     {
       title: l('rc.doc.version'),
@@ -179,8 +185,14 @@ const DocumentTableList: React.FC = () => {
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
       render: (_, record) => {
-        return <EnableSwitchBtn key={`${record.id}_enable`} disabled={drawerOpen} record={record}
-                                onChange={() => handleChangeEnable(record)}/>
+        return (
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            disabled={drawerOpen}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
+        );
       },
     },
     {
@@ -204,49 +216,64 @@ const DocumentTableList: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_, record) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)}/>,
-        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                             description={l("rc.doc.deleteConfirm")}/>,
+        <EditBtn
+          key={`${record.id}_edit`}
+          onClick={() => handleClickEdit(record)}
+        />,
+        <PopconfirmDeleteBtn
+          key={`${record.id}_delete`}
+          onClick={() => handleDeleteSubmit(record.id)}
+          description={l('rc.doc.deleteConfirm')}
+        />,
       ],
     },
   ];
 
-
-  return <>
-    {/*TABLE*/}
-    <ProTable<Document>
-      {...PROTABLE_OPTIONS_PUBLIC}
-      loading={loading}
-      headerTitle={l('rc.doc.management')}
-      actionRef={actionRef}
-      toolBarRender={() => [<CreateBtn key={"doctable"} onClick={() => handleModalVisible(true)}/>,]}
-      request={(params, sorter, filter: any) => queryList(API_CONSTANTS.DOCUMENT, {...params, sorter, filter})}
-      columns={columns}
-    />
-    {/*ADDED*/}
-    <DocumentModalForm
-      key={formValues.id}
-      onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-      onCancel={() => handleCancel()}
-      modalVisible={modalVisible}
-      values={{}}
-    />
-    {/*UPDATED*/}
-    <DocumentModalForm
-      key={formValues.id}
-      onSubmit={(value) => handleAddOrUpdateSubmit(value)}
-      onCancel={() => handleCancel()}
-      modalVisible={updateModalVisible}
-      values={formValues}
-    />
-    {/*DRAWER*/}
-    <DocumentDrawer
-      key={formValues.id}
-      onCancel={() => handleCancel()} modalVisible={drawerOpen} values={formValues}
-      columns={columns}
-    />
-  </>
-    ;
+  return (
+    <>
+      {/*TABLE*/}
+      <ProTable<Document>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        loading={loading}
+        headerTitle={l('rc.doc.management')}
+        actionRef={actionRef}
+        toolBarRender={() => [
+          <CreateBtn
+            key={'doctable'}
+            onClick={() => handleModalVisible(true)}
+          />,
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })
+        }
+        columns={columns}
+      />
+      {/*ADDED*/}
+      <DocumentModalForm
+        key={formValues.id}
+        onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={modalVisible}
+        values={{}}
+      />
+      {/*UPDATED*/}
+      <DocumentModalForm
+        key={formValues.id}
+        onSubmit={(value) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={updateModalVisible}
+        values={formValues}
+      />
+      {/*DRAWER*/}
+      <DocumentDrawer
+        key={formValues.id}
+        onCancel={() => handleCancel()}
+        modalVisible={drawerOpen}
+        values={formValues}
+        columns={columns}
+      />
+    </>
+  );
 };
 
 export default DocumentTableList;

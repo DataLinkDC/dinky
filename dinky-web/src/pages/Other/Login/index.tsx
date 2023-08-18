@@ -15,40 +15,44 @@
  * limitations under the License.
  */
 
-import Footer from "@/components/Footer";
-import {setTenantStorageAndCookie} from "@/utils/function";
-import {l} from "@/utils/intl";
-import {useEmotionCss} from "@ant-design/use-emotion-css";
-import {useModel} from "@umijs/max";
-import React, {useEffect, useState} from "react";
-import {flushSync} from "react-dom";
-import {chooseTenantSubmit, login, queryDataByParams} from "@/services/BusinessCrud";
+import Footer from '@/components/Footer';
+import ChooseModal from '@/pages/Other/Login/ChooseModal';
+import { gotoRedirectUrl, redirectToLogin } from '@/pages/Other/Login/function';
+import LangSwitch from '@/pages/Other/Login/LangSwitch';
 import {
-  ErrorMessage,
-  SuccessMessageAsync,
-} from "@/utils/messages";
-import {UserBaseInfo} from "@/types/User/data";
-import LoginForm from "./LoginForm";
-import HelmetTitle from "./HelmetTitle";
-import ChooseModal from "@/pages/Other/Login/ChooseModal";
-import {gotoRedirectUrl, redirectToLogin} from "@/pages/Other/Login/function";
-import LangSwitch from "@/pages/Other/Login/LangSwitch";
-import {useLocalStorage} from "@/utils/hook/useLocalStorage";
-import {API_CONSTANTS} from "@/services/constants";
+  chooseTenantSubmit,
+  login,
+  queryDataByParams,
+} from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/User/data';
+import { setTenantStorageAndCookie } from '@/utils/function';
+import { useLocalStorage } from '@/utils/hook/useLocalStorage';
+import { l } from '@/utils/intl';
+import { ErrorMessage, SuccessMessageAsync } from '@/utils/messages';
+import { useEmotionCss } from '@ant-design/use-emotion-css';
+import { useModel } from '@umijs/max';
+import React, { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
+import HelmetTitle from './HelmetTitle';
+import LoginForm from './LoginForm';
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
-  const {initialState, setInitialState} = useModel("@@initialState");
+  const { initialState, setInitialState } = useModel('@@initialState');
   const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
 
-  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage("token","");
+  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage(
+    'token',
+    '',
+  );
 
   const containerClassName = useEmotionCss(() => {
     return {
-      display: "flex",
-      flexDirection: "column",
-      height: "100%",
+      display: 'flex',
+      flexDirection: 'column',
+      height: '100%',
     };
   });
 
@@ -68,28 +72,30 @@ const Login: React.FC = () => {
    * When the token is expired, redirect to login
    */
   useEffect(() => {
-    const expirationTime = JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
-    let timeRemaining  = 0;
-    let timer : NodeJS.Timeout;
+    const expirationTime =
+      JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
+    let timeRemaining = 0;
+    let timer: NodeJS.Timeout;
     if (expirationTime > 0) {
-    //  calculate the time difference
+      //  calculate the time difference
       const currentTime = Date.now();
       timeRemaining = expirationTime - currentTime;
       //  use setInterval to set a timer
-      timer = setInterval(()=> redirectToLogin(), timeRemaining);
+      timer = setInterval(() => redirectToLogin(), timeRemaining);
     }
     return () => {
       clearTimeout(timer);
-    }
-  },[initialState,localStorageOfToken])
-
+    };
+  }, [initialState, localStorageOfToken]);
 
   const handleChooseTenant = async (chooseTenantResult: API.Result) => {
     if (chooseTenantResult.code === 0) {
-      await SuccessMessageAsync(l("login.chooseTenantSuccess", "", {
-        msg: chooseTenantResult.msg,
-        tenantCode: chooseTenantResult.datas.tenantCode,
-      }),);
+      await SuccessMessageAsync(
+        l('login.chooseTenantSuccess', '', {
+          msg: chooseTenantResult.msg,
+          tenantCode: chooseTenantResult.datas.tenantCode,
+        }),
+      );
       /**
        * After the selection is complete, refresh all user information
        */
@@ -99,11 +105,10 @@ const Login: React.FC = () => {
        */
       gotoRedirectUrl();
     } else {
-      ErrorMessage(l("login.chooseTenantFailed"));
+      ErrorMessage(l('login.chooseTenantFailed'));
       return;
     }
   };
-
 
   /**
    * Determine whether the tenant list is empty
@@ -111,7 +116,7 @@ const Login: React.FC = () => {
    */
   const assertTenant = async (tenantList: UserBaseInfo.Tenant[]) => {
     if (tenantList === null || tenantList.length === 0) {
-      ErrorMessage(l("login.notbindtenant"));
+      ErrorMessage(l('login.notbindtenant'));
       return;
     } else {
       setTenant(tenantList);
@@ -125,20 +130,26 @@ const Login: React.FC = () => {
   const singleTenant = async (tenantList: UserBaseInfo.Tenant[]) => {
     const tenantId = tenantList[0].id;
     setTenantStorageAndCookie(tenantId);
-    const chooseTenantResult: API.Result = await chooseTenantSubmit({tenantId});
+    const chooseTenantResult: API.Result = await chooseTenantSubmit({
+      tenantId,
+    });
     await handleChooseTenant(chooseTenantResult);
   };
 
   const handleSubmitLogin = async (values: API.LoginParams) => {
     try {
       // login
-      const result = await login({...values});
-      if (result.code === 0 ){
+      const result = await login({ ...values });
+      if (result.code === 0) {
         // if login success then get token info and set it to local storage
-        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then( res => setLocalStorageOfToken(JSON.stringify(res)));
+        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) =>
+          setLocalStorageOfToken(JSON.stringify(res)),
+        );
       }
-      setInitialState((s) => ({...s, currentUser: result.datas}));
-      await SuccessMessageAsync(l("login.result", "", {msg: result.msg, time: result.time}));
+      setInitialState((s) => ({ ...s, currentUser: result.datas }));
+      await SuccessMessageAsync(
+        l('login.result', '', { msg: result.msg, time: result.time }),
+      );
       /**
        * After successful login, set the tenant list
        */
@@ -160,25 +171,23 @@ const Login: React.FC = () => {
     }
   };
 
-
   /**
    * Confirm the tenant selection of login users
    * @param tenantId
    */
   const handleConfirmChooseTenant = async (tenantId: number) => {
     setSubmitting(true);
-    const result = await chooseTenantSubmit({tenantId: tenantId});
+    const result = await chooseTenantSubmit({ tenantId: tenantId });
     await handleChooseTenant(result);
     handleTenantVisible(false);
   };
 
-
   return (
     <div className={containerClassName}>
-      <HelmetTitle/>
-      <LangSwitch/>
-      <LoginForm onSubmit={handleSubmitLogin}/>
-      <Footer/>
+      <HelmetTitle />
+      <LangSwitch />
+      <LoginForm onSubmit={handleSubmitLogin} />
+      <Footer />
       <ChooseModal
         tenantVisible={tenantVisible}
         handleTenantVisible={() => handleTenantVisible(false)}

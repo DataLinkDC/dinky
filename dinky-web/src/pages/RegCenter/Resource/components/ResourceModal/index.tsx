@@ -17,82 +17,96 @@
  *
  */
 
-
-import {ModalForm, ProFormText, ProFormTextArea} from "@ant-design/pro-components";
-import React, {useEffect} from "react";
-import {Resource} from "@/pages/RegCenter/Resource/components/ResourceOverView";
-import {Form} from "antd";
-import {FormContextValue} from "@/components/Context/FormContext";
+import { FormContextValue } from '@/components/Context/FormContext';
+import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
+import {
+  ModalForm,
+  ProFormText,
+  ProFormTextArea,
+} from '@ant-design/pro-components';
+import { Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type ResourceModalProps = {
-    title: string;
-    visible: boolean;
-    onClose: () => void;
-    onOk: (value: Partial<Resource>) => void;
-    formValues: Partial<Resource>;
-}
+  title: string;
+  visible: boolean;
+  onClose: () => void;
+  onOk: (value: Partial<Resource>) => void;
+  formValues: Partial<Resource>;
+};
 
-const ResourceModal :React.FC<ResourceModalProps> = ( props) => {
+const ResourceModal: React.FC<ResourceModalProps> = (props) => {
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }),
+    [form],
+  );
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * init props
+   */
+  const {
+    title,
+    onOk: handleSubmit,
+    onClose: handleModalVisible,
+    visible,
+    formValues,
+  } = props;
 
-    /**
-     * init props
-     */
-    const {
-      title,
-        onOk: handleSubmit,
-        onClose: handleModalVisible,
-        visible,
-        formValues
-    } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(formValues);
+  }, [visible, formValues, form]);
 
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(formValues);
-    }, [visible, formValues, form]);
+  /**
+   * handle cancel
+   */
+  const handleCancel = () => {
+    handleModalVisible();
+    formContext.resetForm();
+  };
+  /**
+   * submit form
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    await handleSubmit({ ...formValues, ...fieldsValue });
+    await handleCancel();
+  };
 
-    /**
-     * handle cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible();
-        formContext.resetForm();
-    }
-    /**
-     * submit form
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...formValues, ...fieldsValue});
-        await handleCancel();
-    };
-
-
-    return <>
-        <ModalForm<Resource>
-            title={title}
-            modalProps={{destroyOnClose: true, onCancel: handleModalVisible,}}
-            onFinish={submitForm}
-            form={form}
-            open={visible}
-        >
-            <ProFormText colProps={{ span: 24 }} required name="fileName" label="名称" />
-            <ProFormTextArea colProps={{ span: 24 }} name="description" label="描述"/>
-        </ModalForm>
+  return (
+    <>
+      <ModalForm<Resource>
+        title={title}
+        modalProps={{ destroyOnClose: true, onCancel: handleModalVisible }}
+        onFinish={submitForm}
+        form={form}
+        open={visible}
+      >
+        <ProFormText
+          colProps={{ span: 24 }}
+          required
+          name="fileName"
+          label="名称"
+        />
+        <ProFormTextArea
+          colProps={{ span: 24 }}
+          name="description"
+          label="描述"
+        />
+      </ModalForm>
     </>
+  );
+};
 
-}
-
-export default ResourceModal
+export default ResourceModal;

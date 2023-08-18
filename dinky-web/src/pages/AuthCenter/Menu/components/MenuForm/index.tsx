@@ -22,23 +22,25 @@ import {
   MENU_ICON_OPTIONS,
   MENU_TYPE_OPTIONS,
 } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
-import {buildMenuFormTree, sortTreeData} from '@/pages/AuthCenter/Menu/function';
+import {
+  buildMenuFormTree,
+  sortTreeData,
+} from '@/pages/AuthCenter/Menu/function';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { SysMenu } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
   Key,
   ProForm,
+  ProFormDigit,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
   ProFormTreeSelect,
-  ProFormDigit
 } from '@ant-design/pro-components';
 import { Form, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {Values} from "async-validator";
 
 type MenuFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -49,27 +51,26 @@ type MenuFormProps = {
   selectedKeys: Key[];
   treeData: SysMenu[];
   isRootMenu?: boolean;
-  clickNode?: any
+  clickNode?: any;
 };
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
 
-    /**
-     * init props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel: handleModalVisible,
-        values,
-        open,
-        disabled = false,
-        isRootMenu = false,
-        treeData,
-        selectedKeys,
-        clickNode: {nextOrderNum},
-    } = props;
-
+  /**
+   * init props
+   */
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleModalVisible,
+    values,
+    open,
+    disabled = false,
+    isRootMenu = false,
+    treeData,
+    selectedKeys,
+    clickNode: { nextOrderNum },
+  } = props;
 
   /**
    * init form
@@ -84,8 +85,6 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     }),
     [form],
   );
-
-
 
   /**
    * when modalVisible or values changed, set form values
@@ -119,30 +118,28 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     handleCancel();
   };
 
+  // const generateOrderNum = (level, baseOrderNum) => {
+  //     return baseOrderNum + level * 100;
+  // };
 
-    // const generateOrderNum = (level, baseOrderNum) => {
-    //     return baseOrderNum + level * 100;
-    // };
-
-    /**
-     * 动态构建orderNum , 规则: 按照层级关系 , 从上到下, 递归获取 先获取层级 list 最后一个元素的 orderNum, 然后加上 100
-     *
-     * @param {SysMenu[]} list
-     * @returns {number}
-     */
-    // const generateTreeWithOrderNum = (tree, level = 0, baseOrderNum = 0) => {
-    //     return tree.map((node) => {
-    //         const orderNum = generateOrderNum(level, baseOrderNum);
-    //         const newNode = { ...node, orderNum };
-    //
-    //         if (node.children && node.children.length > 0) {
-    //             newNode.children = generateTreeWithOrderNum(node.children, level + 1, orderNum);
-    //         }
-    //
-    //         return newNode;
-    //     });
-    // };
-
+  /**
+   * 动态构建orderNum , 规则: 按照层级关系 , 从上到下, 递归获取 先获取层级 list 最后一个元素的 orderNum, 然后加上 100
+   *
+   * @param {SysMenu[]} list
+   * @returns {number}
+   */
+  // const generateTreeWithOrderNum = (tree, level = 0, baseOrderNum = 0) => {
+  //     return tree.map((node) => {
+  //         const orderNum = generateOrderNum(level, baseOrderNum);
+  //         const newNode = { ...node, orderNum };
+  //
+  //         if (node.children && node.children.length > 0) {
+  //             newNode.children = generateTreeWithOrderNum(node.children, level + 1, orderNum);
+  //         }
+  //
+  //         return newNode;
+  //     });
+  // };
 
   /**
    * construct role form
@@ -160,7 +157,24 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           placeholder={l('menu.parentIdPlaceholder')}
           fieldProps={{
             labelInValue: false,
-            treeData: [{ label: <>Root  <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;Root Folder</span></>, value: '-1' ,children: buildMenuFormTree(sortTreeData(treeData), searchValue, true)}],
+            treeData: [
+              {
+                label: (
+                  <>
+                    Root{' '}
+                    <span style={{ color: 'grey' }}>
+                      &nbsp;&nbsp;&nbsp;Root Folder
+                    </span>
+                  </>
+                ),
+                value: '-1',
+                children: buildMenuFormTree(
+                  sortTreeData(treeData),
+                  searchValue,
+                  true,
+                ),
+              },
+            ],
             onSearch: (value) => setSearchValue(value),
             treeDefaultExpandAll: true,
           }}
@@ -183,14 +197,14 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           rules={[{ required: true, message: l('menu.pathPlaceholder') }]}
         />
 
-          <ProFormRadio.Group
-              label={l('menu.type')}
-              name={'type'}
-              radioType="button"
-              rules={[{ required: true, message: l('menu.typePlaceholder') }]}
-              placeholder={l('menu.typePlaceholder')}
-              options={MENU_TYPE_OPTIONS}
-          />
+        <ProFormRadio.Group
+          label={l('menu.type')}
+          name={'type'}
+          radioType="button"
+          rules={[{ required: true, message: l('menu.typePlaceholder') }]}
+          placeholder={l('menu.typePlaceholder')}
+          options={MENU_TYPE_OPTIONS}
+        />
 
         <ProFormText
           name="perms"
@@ -216,7 +230,8 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         />
 
         <ProFormDigit
-          name="orderNum" disabled
+          name="orderNum"
+          disabled
           label={l('menu.orderNum')}
           initialValue={nextOrderNum ?? undefined}
         />
@@ -240,11 +255,15 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         disabled={disabled}
         {...FORM_LAYOUT_PUBLIC}
         form={form}
-        initialValues={{ ...values}} // init form data
+        initialValues={{ ...values }} // init form data
         onReset={handleReset}
         onFinish={submitForm}
         submitter={{
-          render: (_, dom) => <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>,
+          render: (_, dom) => (
+            <Space style={{ display: 'flex', justifyContent: 'center' }}>
+              {dom}
+            </Space>
+          ),
         }}
         layout={'horizontal'}
       >

@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-
-import {l} from "@/utils/intl";
+import { l } from '@/utils/intl';
 
 /**
  * BuildSteps
@@ -25,94 +24,87 @@ import {l} from "@/utils/intl";
  */
 export const BuildStepOfCodeType = {
   1: {
-    1: l("rc.gp.build.step.1"),
-    2: l("rc.gp.build.step.2"),
-    3: l("rc.gp.build.step.3"),
-    4: l("rc.gp.build.step.4"),
-    5: l("rc.gp.build.step.5"),
-    6: l("rc.gp.build.step.6"),
+    1: l('rc.gp.build.step.1'),
+    2: l('rc.gp.build.step.2'),
+    3: l('rc.gp.build.step.3'),
+    4: l('rc.gp.build.step.4'),
+    5: l('rc.gp.build.step.5'),
+    6: l('rc.gp.build.step.6'),
   },
   2: {
-    1: l("rc.gp.build.step.1"),
-    2: l("rc.gp.build.step.2"),
-    3: l("rc.gp.build.step.3"),
-    4: l("rc.gp.build.step.4"),
-    5: l("rc.gp.build.step.5"),
-    6: l("rc.gp.build.step.6"),
-  }
+    1: l('rc.gp.build.step.1'),
+    2: l('rc.gp.build.step.2'),
+    3: l('rc.gp.build.step.3'),
+    4: l('rc.gp.build.step.4'),
+    5: l('rc.gp.build.step.5'),
+    6: l('rc.gp.build.step.6'),
+  },
 };
 
 export type BuildMsgResult = {
-  type: number
+  type: number;
   data: any;
   currentStep: number;
   status: string;
-}
-
+};
 
 export const JavaSteps = [
   {
     key: 1,
-    title: l("rc.gp.build.step.1"),
-    status: "wait",
+    title: l('rc.gp.build.step.1'),
+    status: 'wait',
   },
   {
     key: 2,
-    title: l("rc.gp.build.step.2"),
-    status: "wait",
-
+    title: l('rc.gp.build.step.2'),
+    status: 'wait',
   },
   {
     key: 3,
-    title: l("rc.gp.build.step.3"),
-    status: "wait",
-
+    title: l('rc.gp.build.step.3'),
+    status: 'wait',
   },
   {
     key: 4,
-    title: l("rc.gp.build.step.4"),
-    status: "wait",
-
+    title: l('rc.gp.build.step.4'),
+    status: 'wait',
   },
   {
     key: 5,
-    title: l("rc.gp.build.step.5"),
-    status: "wait",
-
+    title: l('rc.gp.build.step.5'),
+    status: 'wait',
   },
   {
     key: 6,
-    title: l("rc.gp.build.step.6"),
-    status: "wait",
-
+    title: l('rc.gp.build.step.6'),
+    status: 'wait',
   },
 ];
-
 
 export const PythonSteps = [
   {
     key: 1,
-    title: l("rc.gp.build.step.1"),
-    status: "process",
+    title: l('rc.gp.build.step.1'),
+    status: 'process',
   },
   {
     key: 2,
-    title: l("rc.gp.build.step.2"),
-    status: "wait",
+    title: l('rc.gp.build.step.2'),
+    status: 'wait',
   },
   {
     key: 3,
-    title: l("rc.gp.build.step.4"),
-    status: "wait",
+    title: l('rc.gp.build.step.4'),
+    status: 'wait',
   },
   {
     key: 4,
-    title: l("rc.gp.build.step.5"),
-    status: "wait",
+    title: l('rc.gp.build.step.5'),
+    status: 'wait',
   },
   {
     key: 5,
-    title: l("rc.gp.build.step.6"),
-    status: "wait",
+    title: l('rc.gp.build.step.6'),
+    status: 'wait',
   },
 ];

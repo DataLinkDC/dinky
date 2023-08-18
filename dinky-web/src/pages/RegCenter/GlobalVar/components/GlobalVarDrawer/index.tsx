@@ -17,31 +17,31 @@
  *
  */
 
-import {GlobalVar} from "@/types/RegCenter/data";
-import React from "react";
-import {Drawer} from "antd";
-import GlobalVarDesc from "@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer/GlobalVarDesc";
+import GlobalVarDesc from '@/pages/RegCenter/GlobalVar/components/GlobalVarDrawer/GlobalVarDesc';
+import { GlobalVar } from '@/types/RegCenter/data';
+import { Drawer } from 'antd';
+import React from 'react';
 
 type GlobalVarDrawerProps = {
-    onCancel: (flag?: boolean) => void;
-    values: Partial<GlobalVar>;
-    modalVisible: boolean;
-    columns: any;
-}
+  onCancel: (flag?: boolean) => void;
+  values: Partial<GlobalVar>;
+  modalVisible: boolean;
+  columns: any;
+};
 const GlobalVarDrawer: React.FC<GlobalVarDrawerProps> = (props) => {
-    const {onCancel: handleCancel, values, modalVisible, columns} = props;
+  const { onCancel: handleCancel, values, modalVisible, columns } = props;
 
-
-    return <>
-        <Drawer
-            width={'50%'}
-            open={modalVisible}
-            onClose={() => handleCancel(false)}
-        >
-            <GlobalVarDesc values={values} columns={columns}/>
-        </Drawer>
+  return (
+    <>
+      <Drawer
+        width={'50%'}
+        open={modalVisible}
+        onClose={() => handleCancel(false)}
+      >
+        <GlobalVarDesc values={values} columns={columns} />
+      </Drawer>
     </>
-
-}
+  );
+};
 
 export default GlobalVarDrawer;

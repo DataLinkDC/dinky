@@ -80,7 +80,6 @@ export default [
         hideInMenu: true,
         component: './DevOps/JobDetail',
       },
-
     ],
   },
   {
@@ -118,8 +117,8 @@ export default [
         routes: [
           {
             path: '/registration/database/detail/:id',
-          }
-        ]
+          },
+        ],
       },
       {
         path: '/registration/alert',

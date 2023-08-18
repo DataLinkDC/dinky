@@ -1,7 +1,6 @@
-import React from "react";
+import React from 'react';
 
 export function useLocalStorage(key: string, initialValue: any) {
-
   const readValue = React.useCallback(() => {
     try {
       const item = window.localStorage.getItem(key);
@@ -18,15 +17,15 @@ export function useLocalStorage(key: string, initialValue: any) {
     (value: any) => {
       try {
         const nextState =
-          typeof value === "function" ? value(localState) : value;
+          typeof value === 'function' ? value(localState) : value;
         window.localStorage.setItem(key, nextState);
         setLocalState(nextState);
-        window.dispatchEvent(new Event("local-storage"));
+        window.dispatchEvent(new Event('local-storage'));
       } catch (e) {
         console.warn(e);
       }
     },
-    [key, localState]
+    [key, localState],
   );
 
   return [localState, handleSetState];

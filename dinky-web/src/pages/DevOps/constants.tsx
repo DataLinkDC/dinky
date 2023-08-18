@@ -15,8 +15,6 @@
  * limitations under the License.
  */
 
-
-
 export enum JOB_LIFE_CYCLE {
   UNKNOWN = 0,
   CREATE = 1,

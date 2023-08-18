@@ -17,45 +17,59 @@
  *
  */
 
-import {SysMenu} from "@/types/RegCenter/data";
-import {renderIcon, searchTreeNode} from "@/utils/function";
+import { SysMenu } from '@/types/RegCenter/data';
+import { searchTreeNode } from '@/utils/function';
+import { l } from '@/utils/intl';
 import * as Icons from '@ant-design/icons';
-import * as React from "react";
-import {Space} from "antd";
-import {l} from "@/utils/intl";
+import { Space } from 'antd';
+import * as React from 'react';
 
-export const IconRender = ({icon}:{icon: string}) => {
-    // @ts-ignore
-    return icon ? React.createElement(Icons[icon]) : null;
-}
-
-const renderMenuType = (menuYype: string) => {
-    switch (menuYype) {
-        case 'F':
-            return <>{l('menu.type.button')}</>
-        case 'M':
-            return <>{l('menu.type.dir')}</>
-        case 'C':
-            return <>{l('menu.type.menu')}</>
-        default:
-            return null
-    }
-}
-
-const renderTitle = (value: SysMenu) => (<Space>
-        {value.perms && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
-        {value.type && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>}
-        {value.note && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
-        {value.path && <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;{value.path}</span>}
-    </Space>
-);
-
-
-export const sortTreeData = (treeData: SysMenu[]) : SysMenu[] => {
-    return treeData.slice().sort((a, b) => a.orderNum - b.orderNum)
-        .map(item => ({ ...item, children: item.children ? sortTreeData(item.children) : [] }));
+export const IconRender = ({ icon }: { icon: string }) => {
+  // @ts-ignore
+  return icon ? React.createElement(Icons[icon]) : null;
 };
 
+const renderMenuType = (menuYype: string) => {
+  switch (menuYype) {
+    case 'F':
+      return <>{l('menu.type.button')}</>;
+    case 'M':
+      return <>{l('menu.type.dir')}</>;
+    case 'C':
+      return <>{l('menu.type.menu')}</>;
+    default:
+      return null;
+  }
+};
+
+const renderTitle = (value: SysMenu) => (
+  <Space>
+    {value.perms && (
+      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>
+    )}
+    {value.type && (
+      <span style={{ color: 'grey' }}>
+        &nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}
+      </span>
+    )}
+    {value.note && (
+      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>
+    )}
+    {value.path && (
+      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>
+    )}
+  </Space>
+);
+
+export const sortTreeData = (treeData: SysMenu[]): SysMenu[] => {
+  return treeData
+    .slice()
+    .sort((a, b) => a.orderNum - b.orderNum)
+    .map((item) => ({
+      ...item,
+      children: item.children ? sortTreeData(item.children) : [],
+    }));
+};
 
 /**
  * 规则
@@ -66,8 +80,6 @@ export const sortTreeData = (treeData: SysMenu[]) : SysMenu[] => {
  *                 level 5 -> 111110 平级下新增 获取当前级别最大的 + 10 下级新增 获取当前级别最大的 + 1
  */
 
-
-
 /**
  * build menu tree
  * @param {SysMenu[]} data
@@ -76,34 +88,46 @@ export const sortTreeData = (treeData: SysMenu[]) : SysMenu[] => {
  * @param nextOrderNum
  * @returns {any}
  */
-export const buildMenuTree = (data: SysMenu[], searchValue: string = '' ,level = 1, nextOrderNum = 0): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).map((item: SysMenu) => {
+export const buildMenuTree = (
+  data: SysMenu[],
+  searchValue: string = '',
+  level = 1,
+  nextOrderNum = 0,
+): any =>
+  data
+    .filter(
+      (sysMenu: SysMenu) =>
+        sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,
+    )
+    .map((item: SysMenu) => {
+      // 获取第一级别的 orderNum 的长度
+      const levelOrderNumLength = data.pop()?.orderNum.toString().length ?? 0;
 
-    // 获取第一级别的 orderNum 的长度
-    const levelOrderNumLength = data.pop()?.orderNum.toString().length ?? 0;
-
-    let increment = 0;
-    if (level <= levelOrderNumLength -1) {
+      let increment = 0;
+      if (level <= levelOrderNumLength - 1) {
         // 获取当前级别最大的 orderNum
-        increment = Math.pow(10, (levelOrderNumLength - 1 ) - level) ;
-    }
+        increment = Math.pow(10, levelOrderNumLength - 1 - level);
+      }
 
+      // 获取当前级别最大的 orderNum
+      let maxChildOrderNum =
+        item.children && item.children.length > 0
+          ? Math.max(...item.children.map((item) => item.orderNum))
+          : item.orderNum;
 
-    // 获取当前级别最大的 orderNum
-    let maxChildOrderNum = item.children && item.children.length > 0 ? Math.max(...item.children.map(item => item.orderNum)) : item.orderNum ;
+      // 更新当前级别最大的 orderNum
+      const updatedNextOrderNum = nextOrderNum + increment;
+      // 计算差值
+      const diff = maxChildOrderNum - updatedNextOrderNum;
+      // 更新最大的 orderNum 为下级的 orderNum
+      const lastUpdatedNextOrderNum = updatedNextOrderNum + diff + increment;
 
-    // 更新当前级别最大的 orderNum
-    const updatedNextOrderNum = nextOrderNum + increment;
-    // 计算差值
-    const  diff = maxChildOrderNum - updatedNextOrderNum ;
-    // 更新最大的 orderNum 为下级的 orderNum
-    const lastUpdatedNextOrderNum = updatedNextOrderNum + diff + increment
-
-    return {
+      return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
         parentId: item.parentId,
         label: searchTreeNode(item.name, searchValue),
-        icon: <IconRender icon={item.icon}/>,
+        icon: <IconRender icon={item.icon} />,
         content: item.note,
         path: item.path,
         nextOrderNum: lastUpdatedNextOrderNum,
@@ -111,12 +135,22 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = '' ,level =
         level: level,
         value: item.id,
         type: item.type,
-        title: <>{searchTreeNode(item.name, searchValue)}{renderTitle(item)}</>,
+        title: (
+          <>
+            {searchTreeNode(item.name, searchValue)}
+            {renderTitle(item)}
+          </>
+        ),
         fullInfo: item,
         key: item.id,
-        children: buildMenuTree(item.children, searchValue,level + 1 , updatedNextOrderNum),
-    }
-});
+        children: buildMenuTree(
+          item.children,
+          searchValue,
+          level + 1,
+          updatedNextOrderNum,
+        ),
+      };
+    });
 
 /**
  * build menu form tree (filter button)
@@ -126,21 +160,37 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = '' ,level =
  * @returns {any}
  */
 
-export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', filterButton = false): any => data.filter((sysMenu: SysMenu) => (sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)).filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false)).map((item: SysMenu) => {
-    // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
+export const buildMenuFormTree = (
+  data: SysMenu[],
+  searchValue: string = '',
+  filterButton = false,
+): any =>
+  data
+    .filter(
+      (sysMenu: SysMenu) =>
+        sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,
+    )
+    .filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false))
+    .map((item: SysMenu) => {
+      // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
 
-    return {
+      return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
         parentId: item.parentId,
         label: searchTreeNode(item.name, searchValue),
-        icon: <IconRender icon={item.icon}/>,
+        icon: <IconRender icon={item.icon} />,
         content: item.note,
         path: item.path,
         value: item.id,
-        title: <>{searchTreeNode(item.name, searchValue)}{renderTitle(item)}</>,
+        title: (
+          <>
+            {searchTreeNode(item.name, searchValue)}
+            {renderTitle(item)}
+          </>
+        ),
         fullInfo: item,
         key: item.id,
         children: buildMenuFormTree(item.children, searchValue, filterButton),
-    }
-});
+      };
+    });

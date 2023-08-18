@@ -20,11 +20,13 @@ import { API } from './services/data';
 /**
  * @see https://umijs.org/zh-CN/plugins/plugin-access
  * */
-export default function access(initialState: { currentUser?: API.CurrentUser } | undefined) {
+export default function access(
+  initialState: { currentUser?: API.CurrentUser } | undefined,
+) {
   const { currentUser } = initialState ?? {};
   return {
     canAdmin: currentUser && currentUser.user.superAdminFlag,
-    canAuth({ path, ...route }:{path:string}) {
+    canAuth({ path, ...route }: { path: string }) {
       if (currentUser && currentUser.user.superAdminFlag) {
         return true;
       }

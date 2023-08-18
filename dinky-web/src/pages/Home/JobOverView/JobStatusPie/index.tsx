@@ -17,14 +17,13 @@
  *
  */
 
-import React, {useState, useEffect} from 'react';
-import {Pie, PieConfig} from '@ant-design/plots';
-import {getStatusCount} from "@/pages/Home/service";
-import {PieItem, StatusCountOverView} from "@/types/Home/data.d";
-import {l} from "@/utils/intl";
+import { getStatusCount } from '@/pages/Home/service';
+import { PieItem, StatusCountOverView } from '@/types/Home/data.d';
+import { l } from '@/utils/intl';
+import { Pie, PieConfig } from '@ant-design/plots';
+import { useEffect, useState } from 'react';
 
 const JobStatusPie = () => {
-
   const [jobStatusData, setJobStatusData] = useState<PieItem[]>([]);
   const [jobCount, setJobCount] = useState<number>(0);
 
@@ -41,63 +40,67 @@ const JobStatusPie = () => {
     res.then((result) => {
       const statusCountData: StatusCountOverView = result.datas.instance;
       const newJobStatusData: PieItem[] = [];
-      for(const item in statusCountData){
-        if(item==='all'){
+      for (const item in statusCountData) {
+        if (item === 'all') {
           setJobCount(statusCountData[item]);
           continue;
         }
-        if(statusCountData[item]===0){
+        if (statusCountData[item] === 0) {
           continue;
         }
         newJobStatusData.push({
           type: item,
           value: statusCountData[item],
-        })
+        });
       }
       setJobStatusData(newJobStatusData);
     });
   };
 
-    const config: PieConfig = {
-        appendPadding: 10,
-        data: jobStatusData,
-        angleField: 'value',
-        colorField: 'type',
-        innerRadius: 0.6,
-        radius: 0.8,
-        legend: false,
-        label: {
-            type: 'spider',
-            labelHeight: 40,
-            content: '{name}\n{value}',
+  const config: PieConfig = {
+    appendPadding: 10,
+    data: jobStatusData,
+    angleField: 'value',
+    colorField: 'type',
+    innerRadius: 0.6,
+    radius: 0.8,
+    legend: false,
+    label: {
+      type: 'spider',
+      labelHeight: 40,
+      content: '{name}\n{value}',
+    },
+    interactions: [
+      {
+        type: 'element-selected',
+      },
+      {
+        type: 'element-active',
+      },
+    ],
+    statistic: {
+      title: {
+        style: {
+          fontSize: '16px',
         },
-        interactions: [
-            {
-                type: 'element-selected',
-            },
-            {
-                type: 'element-active',
-            },
-        ],
-        statistic: {
-            title: {
-                style: {
-                    fontSize: '16px',
-                },
-                customHtml: () => l('home.job.instance')
-            },
-            content: {
-                style: {
-                    whiteSpace: 'pre-wrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    fontSize: '24px',
-                },
-                content: String(jobCount),
-            },
+        customHtml: () => l('home.job.instance'),
+      },
+      content: {
+        style: {
+          whiteSpace: 'pre-wrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          fontSize: '24px',
         },
-    };
-    return <div style={{height: '35vh'}}><Pie {...config} /></div>;
+        content: String(jobCount),
+      },
+    },
+  };
+  return (
+    <div style={{ height: '35vh' }}>
+      <Pie {...config} />
+    </div>
+  );
 };
 
-export default JobStatusPie
+export default JobStatusPie;

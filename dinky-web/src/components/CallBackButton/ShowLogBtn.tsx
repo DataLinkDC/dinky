@@ -17,26 +17,27 @@
  *
  */
 
-import {Button} from "antd";
-import {l} from "@/utils/intl";
-import {ShowLogIcon} from "@/components/Icons/CustomIcons";
-import React from "react";
+import { ShowLogIcon } from '@/components/Icons/CustomIcons';
+import { l } from '@/utils/intl';
+import { Button } from 'antd';
+import React from 'react';
 
 type ShowLogBtnProps = {
-    onClick: () => void;
-    disabled?: boolean;
-}
+  onClick: () => void;
+  disabled?: boolean;
+};
 
-export const ShowLogBtn: React.FC<ShowLogBtnProps> = ( props) => {
-
-    const {onClick,disabled=false} = props;
-    return <>
-        <Button
-            className={"options-button"}
-            title={l("button.showLog")}
-            disabled={disabled}
-            icon={<ShowLogIcon/>}
-            onClick={() => onClick()}
-        />
+export const ShowLogBtn: React.FC<ShowLogBtnProps> = (props) => {
+  const { onClick, disabled = false } = props;
+  return (
+    <>
+      <Button
+        className={'options-button'}
+        title={l('button.showLog')}
+        disabled={disabled}
+        icon={<ShowLogIcon />}
+        onClick={() => onClick()}
+      />
     </>
-}
+  );
+};

@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import styled from "styled-components";
 import { theme } from 'antd';
+import styled from 'styled-components';
 
 const { getDesignToken } = theme;
 const token = getDesignToken();
@@ -27,7 +27,6 @@ export const DataAction = styled.div`
   margin-left: 2vw;
   margin-right: 2vw;
 `;
-
 
 export const DataSourceDetailBackButton = styled.div`
   display: flex !important;
@@ -47,12 +46,11 @@ export const StartButton = styled.div`
   top: 50%;
 `;
 
-
 export const TagAlignCenter = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
 `;
 export const TagAlignLeft = styled.div`
   display: flex;

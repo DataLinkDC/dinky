@@ -17,21 +17,18 @@
  *
  */
 
+import { l } from '@/utils/intl';
 import {
-    CompassTwoTone,
-    CopyrightTwoTone,
-    CopyTwoTone,
-    CustomerServiceTwoTone,
-    DeleteTwoTone,
-    EditTwoTone, ExportOutlined,
-    PlusCircleTwoTone, UpCircleTwoTone, UploadOutlined
-} from "@ant-design/icons";
-import {l} from "@/utils/intl";
-import {BackIcon} from "@/components/Icons/CustomIcons";
-import React from "react";
-import {MenuItemType} from "antd/es/menu/hooks/useItems";
-import {DefaultOptionType} from "antd/es/select";
-import {DIALECT} from "@/services/constants";
+  CompassTwoTone,
+  CopyrightTwoTone,
+  CopyTwoTone,
+  DeleteTwoTone,
+  EditTwoTone,
+  PlusCircleTwoTone,
+  UpCircleTwoTone,
+} from '@ant-design/icons';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { DefaultOptionType } from 'antd/es/select';
 
 /**
  * 目录级别:
@@ -44,35 +41,34 @@ import {DIALECT} from "@/services/constants";
 
  * @type {({icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string})[]}
  */
-export const FOLDER_RIGHT_MENU =(disabled = false) : MenuItemType[] =>[
-    {
-        key: 'addSubFolder',
-        icon: <PlusCircleTwoTone/>,
-        label: l('right.menu.createSubFolder'),
-    },
-    {
-        key: 'createTask',
-        icon: <PlusCircleTwoTone/>,
-        label: l('right.menu.createTask'),
-    },
-    {
-        key: 'delete',
-        icon: <DeleteTwoTone twoToneColor={'red'}/>,
-        label: l('button.delete'),
-    },
-    {
-        key: 'renameFolder',
-        icon: <EditTwoTone />,
-        label: l('right.menu.rename'),
-    },
-    {
-        key: 'paste',
-        icon: <CompassTwoTone />,
-        label: l('right.menu.paste'),
-        disabled: !disabled
-    },
+export const FOLDER_RIGHT_MENU = (disabled = false): MenuItemType[] => [
+  {
+    key: 'addSubFolder',
+    icon: <PlusCircleTwoTone />,
+    label: l('right.menu.createSubFolder'),
+  },
+  {
+    key: 'createTask',
+    icon: <PlusCircleTwoTone />,
+    label: l('right.menu.createTask'),
+  },
+  {
+    key: 'delete',
+    icon: <DeleteTwoTone twoToneColor={'red'} />,
+    label: l('button.delete'),
+  },
+  {
+    key: 'renameFolder',
+    icon: <EditTwoTone />,
+    label: l('right.menu.rename'),
+  },
+  {
+    key: 'paste',
+    icon: <CompassTwoTone />,
+    label: l('right.menu.paste'),
+    disabled: !disabled,
+  },
 ];
-
 
 /**
  * 作业级别:
@@ -84,33 +80,33 @@ export const FOLDER_RIGHT_MENU =(disabled = false) : MenuItemType[] =>[
  *    删除
  * @type {({icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string} | {icon: JSX.Element, label: string, key: string})[]}
  */
-export const JOB_RIGHT_MENU =(disabled = false) : MenuItemType[] => [
-    {
-        key: 'edit',
-        icon: <EditTwoTone />,
-        label: l('button.edit'),
-    },
-    {
-        key: 'exportJson',
-        icon: <UpCircleTwoTone />,
-        label: l('right.menu.exportJson'),
-    },
-    {
-        key: 'copy',
-        icon: <CopyTwoTone />,
-        label: l('right.menu.copy'),
-    },
-    {
-        key: 'cut',
-        icon: <CopyrightTwoTone />,
-        label: l('right.menu.cut'),
-        disabled: disabled
-    },
-    {
-        key: 'delete',
-        icon: <DeleteTwoTone twoToneColor={'red'}/>,
-        label: l('button.delete'),
-    },
+export const JOB_RIGHT_MENU = (disabled = false): MenuItemType[] => [
+  {
+    key: 'edit',
+    icon: <EditTwoTone />,
+    label: l('button.edit'),
+  },
+  {
+    key: 'exportJson',
+    icon: <UpCircleTwoTone />,
+    label: l('right.menu.exportJson'),
+  },
+  {
+    key: 'copy',
+    icon: <CopyTwoTone />,
+    label: l('right.menu.copy'),
+  },
+  {
+    key: 'cut',
+    icon: <CopyrightTwoTone />,
+    label: l('right.menu.cut'),
+    disabled: disabled,
+  },
+  {
+    key: 'delete',
+    icon: <DeleteTwoTone twoToneColor={'red'} />,
+    label: l('button.delete'),
+  },
 ];
 
 /**
@@ -118,91 +114,91 @@ export const JOB_RIGHT_MENU =(disabled = false) : MenuItemType[] => [
  * @type {({options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string} | {options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string} | {options: ({label: string, value: string} | {label: string, value: string} | {label: string, value: string})[], label: string})[]}
  */
 export const JOB_TYPE: DefaultOptionType[] = [
-    {
-        label: 'Flink Job Type',
-        options: [
-            {
-                value: 'FlinkSql',
-                label: 'FlinkSql',
-            },
-            {
-                value: 'FlinkJar',
-                label: 'FlinkJar',
-            },
-            {
-                value: 'FlinkSqlEnv',
-                label: 'FlinkSqlEnv',
-            },
-            {
-                value: 'KubernetesApplication',
-                label: 'KubernetesApplication',
-            }
-        ]
-    },
-    {
-        label: 'Jdbc Query Type',
-        options: [
-            {
-                value: 'Sql',
-                label: 'Sql',
-            },
-            {
-                value: 'Mysql',
-                label: 'Mysql',
-            },
-            {
-                value: 'Oracle',
-                label: 'Oracle',
-            },
-            {
-                value: 'SqlServer',
-                label: 'SqlServer',
-            },
-            {
-                value: 'PostgreSql',
-                label: 'PostgreSql',
-            },
-            {
-                value: 'ClickHouse',
-                label: 'ClickHouse',
-            },
-            {
-                value: 'Doris',
-                label: 'Doris',
-            },
-            {
-                value: 'Hive',
-                label: 'Hive',
-            },
-            {
-                value: 'Phoenix',
-                label: 'Phoenix',
-            },
-            {
-                value: 'StarRocks',
-                label: 'StarRocks',
-            },
-            {
-                value: 'Presto',
-                label: 'Presto',
-            },
-        ]
-    },
-    {
-        label: 'Other Type',
-        options: [
-            {
-                value: 'Java',
-                label: 'Java',
-            },
-            {
-                value: 'Scala',
-                label: 'Scala',
-            },
-            {
-                value: 'Python',
-                label: 'Python',
-            }
-        ]
-    },
-]
+  {
+    label: 'Flink Job Type',
+    options: [
+      {
+        value: 'FlinkSql',
+        label: 'FlinkSql',
+      },
+      {
+        value: 'FlinkJar',
+        label: 'FlinkJar',
+      },
+      {
+        value: 'FlinkSqlEnv',
+        label: 'FlinkSqlEnv',
+      },
+      {
+        value: 'KubernetesApplication',
+        label: 'KubernetesApplication',
+      },
+    ],
+  },
+  {
+    label: 'Jdbc Query Type',
+    options: [
+      {
+        value: 'Sql',
+        label: 'Sql',
+      },
+      {
+        value: 'Mysql',
+        label: 'Mysql',
+      },
+      {
+        value: 'Oracle',
+        label: 'Oracle',
+      },
+      {
+        value: 'SqlServer',
+        label: 'SqlServer',
+      },
+      {
+        value: 'PostgreSql',
+        label: 'PostgreSql',
+      },
+      {
+        value: 'ClickHouse',
+        label: 'ClickHouse',
+      },
+      {
+        value: 'Doris',
+        label: 'Doris',
+      },
+      {
+        value: 'Hive',
+        label: 'Hive',
+      },
+      {
+        value: 'Phoenix',
+        label: 'Phoenix',
+      },
+      {
+        value: 'StarRocks',
+        label: 'StarRocks',
+      },
+      {
+        value: 'Presto',
+        label: 'Presto',
+      },
+    ],
+  },
+  {
+    label: 'Other Type',
+    options: [
+      {
+        value: 'Java',
+        label: 'Java',
+      },
+      {
+        value: 'Scala',
+        label: 'Scala',
+      },
+      {
+        value: 'Python',
+        label: 'Python',
+      },
+    ],
+  },
+];

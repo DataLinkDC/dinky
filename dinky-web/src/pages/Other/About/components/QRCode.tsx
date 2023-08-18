@@ -15,51 +15,52 @@
  * limitations under the License.
  */
 
-import {Alert, Image, Typography} from 'antd';
-import {l} from '@/utils/intl';
-import {VERSION} from '@/services/constants';
-import {SmileOutlined} from '@ant-design/icons';
-import React from 'react';
-import {AlertRestProps, ImageRestProps, TypographyRestProps} from '@/pages/Other/About';
+import {
+  AlertRestProps,
+  ImageRestProps,
+  TypographyRestProps,
+} from '@/pages/Other/About';
+import { VERSION } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { SmileOutlined } from '@ant-design/icons';
+import { Alert, Image, Typography } from 'antd';
 
 const { Paragraph } = Typography;
 
 export const QRCode = () => {
+  return (
+    <>
+      <Alert
+        message={l('about.Community', '', { version: VERSION })}
+        type="success"
+        icon={<SmileOutlined />}
+        {...AlertRestProps}
+      />
+      <Paragraph>
+        <Typography.Text title={l('about.QQcode')} {...TypographyRestProps}>
+          <Image
+            title={l('about.QQcode')}
+            {...ImageRestProps}
+            src="community/qq.png"
+          />
+        </Typography.Text>
 
-  return <>
-    <Alert
-      message={l('about.Community', '', { version: VERSION })}
-      type="success"
-      icon={<SmileOutlined />}
-      {...AlertRestProps}
-    />
-    <Paragraph>
-      <Typography.Text
-        title={l('about.QQcode')}
-        {...TypographyRestProps}
-      >
-        <Image
-          title={l('about.QQcode')}
-          {...ImageRestProps}
-          src="community/qq.png"
-        />
-      </Typography.Text>
+        <Typography.Text {...TypographyRestProps}>
+          <Image
+            title={l('about.wechatCode')}
+            {...ImageRestProps}
+            src="community/wechat.jpg"
+          />
+        </Typography.Text>
 
-      <Typography.Text {...TypographyRestProps}>
-        <Image
-          title={l('about.wechatCode')}
-          {...ImageRestProps}
-          src="community/wechat.jpg"
-        />
-      </Typography.Text>
-
-      <Typography.Text {...TypographyRestProps}>
-        <Image
-          title={l('about.dingTalkCode')}
-          {...ImageRestProps}
-          src="community/dingtalk.jpg"
-        />
-      </Typography.Text>
-    </Paragraph>
-  </>
-}
+        <Typography.Text {...TypographyRestProps}>
+          <Image
+            title={l('about.dingTalkCode')}
+            {...ImageRestProps}
+            src="community/dingtalk.jpg"
+          />
+        </Typography.Text>
+      </Paragraph>
+    </>
+  );
+};

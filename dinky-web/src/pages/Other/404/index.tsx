@@ -15,10 +15,10 @@
  * limitations under the License.
  */
 
+import { l } from '@/utils/intl';
 import { history } from '@umijs/max';
 import { Button, Result } from 'antd';
 import React from 'react';
-import {l} from "@/utils/intl";
 
 const NoFoundPage: React.FC = () => (
   <Result

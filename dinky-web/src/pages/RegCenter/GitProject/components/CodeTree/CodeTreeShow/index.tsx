@@ -17,50 +17,51 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {GitProject, GitProjectTreeNode} from "@/types/RegCenter/data";
-import {API_CONSTANTS} from "@/services/constants";
-import {handleData} from "@/services/BusinessCrud";
-import {Col, Row} from "antd";
-import {SiderTree} from "@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/SiderTree";
-import {CodeContent} from "@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/CodeContent";
+import { CodeContent } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/CodeContent';
+import { SiderTree } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/SiderTree';
+import { handleData } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { GitProject, GitProjectTreeNode } from '@/types/RegCenter/data';
+import { Col, Row } from 'antd';
+import React, { useEffect, useState } from 'react';
 
 /**
  * CodeTreeShowProps
  */
 type CodeTreeShowProps = {
   values: Partial<GitProject>;
-}
-
+};
 
 export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
   /**
    * some state
    */
-  const {values} = props;
+  const { values } = props;
   const [treeData, setTreeData] = useState<Partial<GitProjectTreeNode>[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [codeValue, setCodeValue] = useState<string>("");
-  const [currentGitProjectTreeNode, setCurrentGitProjectTreeNode] = useState<GitProjectTreeNode>({
-    name: "",
-    path: "",
-    content: "",
-    size: 0,
-    leaf: false,
-    children: [],
-  });
+  const [codeValue, setCodeValue] = useState<string>('');
+  const [currentGitProjectTreeNode, setCurrentGitProjectTreeNode] =
+    useState<GitProjectTreeNode>({
+      name: '',
+      path: '',
+      content: '',
+      size: 0,
+      leaf: false,
+      children: [],
+    });
 
   /**
    * query code tree
    */
   const queryCodeTree = async () => {
     setLoading(true);
-    await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then((res) => {
-      setTreeData(res);
-    });
+    await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then(
+      (res) => {
+        setTreeData(res);
+      },
+    );
     setLoading(false);
   };
-
 
   /**
    * init
@@ -69,32 +70,36 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
     queryCodeTree();
   }, [values.id]);
 
-
   /**
    * handle node click
    * @param selectedKeys
    * @param info
    */
   const handleNodeClick = (info: any) => {
-    const {node} = info;
-    setCurrentGitProjectTreeNode({...node});
+    const { node } = info;
+    setCurrentGitProjectTreeNode({ ...node });
     setCodeValue(node.content);
   };
-
 
   /**
    * render
    */
-  return <>
-    <Row>
-      <Col span={6} className={"siderTree gitCodeTree"}>
-        {/* tree */}
-        <SiderTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} loading={loading}/>
-      </Col>
-      <Col span={18}>
-        {/* code */}
-        <CodeContent code={codeValue} current={currentGitProjectTreeNode}/>
-      </Col>
-    </Row>
-  </>;
+  return (
+    <>
+      <Row>
+        <Col span={6} className={'siderTree gitCodeTree'}>
+          {/* tree */}
+          <SiderTree
+            treeData={treeData}
+            onNodeClick={(info: any) => handleNodeClick(info)}
+            loading={loading}
+          />
+        </Col>
+        <Col span={18}>
+          {/* code */}
+          <CodeContent code={codeValue} current={currentGitProjectTreeNode} />
+        </Col>
+      </Row>
+    </>
+  );
 };

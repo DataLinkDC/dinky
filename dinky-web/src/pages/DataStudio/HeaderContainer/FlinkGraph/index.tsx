@@ -1,15 +1,15 @@
-import {FlowAnalysisGraph} from "@ant-design/charts";
-import {Empty} from "antd";
-import {StateType} from "rmc-input-number";
-import {connect} from "umi";
-import {FlowAnalysisGraphConfig} from "@ant-design/graphs/es/components/flow-analysis-graph";
+import { FlowAnalysisGraph } from '@ant-design/charts';
+import { FlowAnalysisGraphConfig } from '@ant-design/graphs/es/components/flow-analysis-graph';
+import { Empty } from 'antd';
+import { StateType } from 'rmc-input-number';
+import { connect } from 'umi';
 
-const FlinkGraph = (props:any) => {
-  const {data} = props;
+const FlinkGraph = (props: any) => {
+  const { data } = props;
 
-  const config:FlowAnalysisGraphConfig = {
+  const config: FlowAnalysisGraphConfig = {
     data,
-    height:350,
+    height: 350,
     nodeCfg: {
       size: [160, 65],
       items: {
@@ -17,7 +17,7 @@ const FlinkGraph = (props:any) => {
         padding: [10],
         containerStyle: {
           fill: '#fff',
-          width:'100px',
+          width: '100px',
         },
         style: (cfg, group, type) => {
           const styles = {
@@ -26,7 +26,7 @@ const FlinkGraph = (props:any) => {
             },
             text: {
               fill: '#222',
-              width:'100px',
+              width: '100px',
             },
           };
           return styles[type];
@@ -78,11 +78,14 @@ const FlinkGraph = (props:any) => {
   };
 
   return (
-    <>{data? <FlowAnalysisGraph {...config} /> :<Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}
+    <>
+      {data ? (
+        <FlowAnalysisGraph {...config} />
+      ) : (
+        <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />
+      )}
     </>
   );
 };
 
-export default connect(({ Studio }: { Studio: StateType }) => ({
-
-}))(FlinkGraph);
+export default connect(({ Studio }: { Studio: StateType }) => ({}))(FlinkGraph);

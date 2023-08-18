@@ -15,11 +15,9 @@
  * limitations under the License.
  */
 
-
-import {ALERT_TYPE} from '@/types/RegCenter/data.d';
-import {l} from '@/utils/intl';
-import {DefaultOptionType} from 'rc-select/es/Select';
-
+import { ALERT_TYPE } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { DefaultOptionType } from 'rc-select/es/Select';
 
 export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
   {
@@ -46,9 +44,8 @@ export const ALERT_TYPE_LIST_OPTIONS: DefaultOptionType[] = [
     label: l('rc.ai.sms'),
     value: ALERT_TYPE.SMS,
     disabled: false,
-  }
+  },
 ];
-
 
 export const MANU_FACTURERS = [
   {

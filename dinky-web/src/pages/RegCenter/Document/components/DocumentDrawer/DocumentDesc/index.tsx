@@ -17,28 +17,30 @@
  *
  */
 
-import React from "react";
-import ProDescriptions from "@ant-design/pro-descriptions";
-import {Document} from "@/types/RegCenter/data";
+import { Document } from '@/types/RegCenter/data';
+import ProDescriptions from '@ant-design/pro-descriptions';
+import React from 'react';
 
 type DocumentDescProps = {
-    values: Partial<Document>;
-    columns: any;
-}
+  values: Partial<Document>;
+  columns: any;
+};
 const DocumentDesc: React.FC<DocumentDescProps> = (props) => {
-    const {values, columns} = props;
-    return <>
-        <ProDescriptions<Document>
-            column={1}
-            loading={values && Object.keys(values).length === 0}
-            title={values.name}
-            request={async () => ({
-                data: values,
-            })}
-            params={{id: values.id}}
-            columns={columns}
-        />
+  const { values, columns } = props;
+  return (
+    <>
+      <ProDescriptions<Document>
+        column={1}
+        loading={values && Object.keys(values).length === 0}
+        title={values.name}
+        request={async () => ({
+          data: values,
+        })}
+        params={{ id: values.id }}
+        columns={columns}
+      />
     </>
-}
+  );
+};
 
 export default DocumentDesc;

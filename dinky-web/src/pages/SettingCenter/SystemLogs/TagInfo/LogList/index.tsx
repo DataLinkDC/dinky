@@ -15,14 +15,12 @@
  * limitations under the License.
  */
 
-
-import {Col, Row} from 'antd';
-import React, {useEffect, useState} from 'react';
-import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
 import LogsShow from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow';
-import {queryDataByParams} from '@/services/BusinessCrud';
-import {API_CONSTANTS} from '@/services/constants';
-import {ProCard} from '@ant-design/pro-components';
+import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { ProCard } from '@ant-design/pro-components';
+import { useEffect, useState } from 'react';
 
 const LogList = () => {
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);
@@ -30,47 +28,55 @@ const LogList = () => {
   const [clickFileName, setClickFileName] = useState<any>();
 
   const queryLogList = async () => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_LIST).then(res => {
+    await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_LIST).then((res) => {
       setTreeData(res);
     });
   };
 
-
   const queryLogContent = async (fileName: string) => {
-    await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_READ, {path: fileName}).then(res => {
+    await queryDataByParams(API_CONSTANTS.SYSTEM_ROOT_LOG_READ, {
+      path: fileName,
+    }).then((res) => {
       setLog(res);
     });
   };
-
 
   useEffect(() => {
     queryLogList();
   }, []);
 
   const handleNodeClick = async (info: any) => {
-    const {node: {path, isLeaf}} = info;
+    const {
+      node: { path, isLeaf },
+    } = info;
     if (isLeaf) {
       setClickFileName(path);
       await queryLogContent(path);
     }
   };
 
-
   const refreshLogByClickNode = async () => {
     await queryLogContent(clickFileName);
   };
 
-
-  return <>
-    <ProCard ghost>
-      <ProCard ghost colSpan={'18%'} className={"siderTree"} >
-        <LogsTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)}/>
+  return (
+    <>
+      <ProCard ghost>
+        <ProCard ghost colSpan={'18%'} className={'siderTree'}>
+          <LogsTree
+            treeData={treeData}
+            onNodeClick={(info: any) => handleNodeClick(info)}
+          />
+        </ProCard>
+        <ProCard ghost>
+          <LogsShow
+            code={log}
+            refreshLogCallback={() => refreshLogByClickNode()}
+          />
+        </ProCard>
       </ProCard>
-      <ProCard ghost >
-        <LogsShow code={log} refreshLogCallback={() => refreshLogByClickNode()}/>
-      </ProCard>
-    </ProCard>
-  </>;
+    </>
+  );
 };
 
 export default LogList;

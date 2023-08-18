@@ -15,13 +15,13 @@
  * limitations under the License.
  */
 
-import {useSpring, animated} from "react-spring";
+import { animated, useSpring } from 'react-spring';
 
 const FadeIn = (props: any) => {
-  const {children} = props;
+  const { children } = props;
   const fadeIn = useSpring({
     opacity: 1,
-    from: {opacity: 0},
+    from: { opacity: 0 },
     config: {
       duration: 1000,
       delay: 1000,

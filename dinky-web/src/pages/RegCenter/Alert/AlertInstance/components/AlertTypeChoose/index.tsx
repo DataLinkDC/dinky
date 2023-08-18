@@ -15,17 +15,19 @@
  * limitations under the License.
  */
 
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
-import React, {useEffect} from 'react';
-import {Button, Form} from 'antd';
-
-import {l} from '@/utils/intl';
-import {Alert} from '@/types/RegCenter/data.d';
-import {NORMAL_MODAL_OPTIONS} from '@/services/constants';
-import {ModalForm} from '@ant-design/pro-components';
-import {FormContextValue} from '@/components/Context/FormContext';
+import { FormContextValue } from '@/components/Context/FormContext';
 import InstanceForm from '@/pages/RegCenter/Alert/AlertInstance/components/AlertTypeChoose/InstanceForm';
-import {buildJSONData, getJSONData} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import {
+  buildJSONData,
+  getJSONData,
+} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { Alert } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
 
 /**
  * update form props
@@ -35,9 +37,8 @@ type UpdateFormProps = {
   onSubmit: (values: Partial<Alert.AlertInstance>) => void;
   onTest: (values: Partial<Alert.AlertInstance>) => void;
   modalVisible: boolean;
-  values: Partial<Alert.AlertInstance> ;
+  values: Partial<Alert.AlertInstance>;
 };
-
 
 const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
   /**
@@ -48,22 +49,23 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     onCancel: handleCancelVisible,
     onTest: handleTest,
     modalVisible,
-    values
+    values,
   } = props;
-
 
   /**
    * init form
    */
   const [form] = Form.useForm();
 
-
   /**
    * init form context
    */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+    }),
+    [form],
+  );
 
   /**
    * cancel choose
@@ -93,27 +95,34 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
     handleCancel();
   };
 
-
   const renderFooter = () => {
     return [
-      <Button key={'AlertCancel'} onClick={handleCancel}>{l('button.cancel')}</Button>,
-      <Button key={'AlertTest'} type="primary" onClick={testSend}>{l('button.test')}</Button>,
-      <Button key={'AlertFinish'} type="primary" onClick={submit}>{l('button.finish')}</Button>,
+      <Button key={'AlertCancel'} onClick={handleCancel}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'AlertTest'} type="primary" onClick={testSend}>
+        {l('button.test')}
+      </Button>,
+      <Button key={'AlertFinish'} type="primary" onClick={submit}>
+        {l('button.finish')}
+      </Button>,
     ];
   };
 
-  return <>
-    <ModalForm
-      {...NORMAL_MODAL_OPTIONS}
-      title={values?.id ? l('rc.ai.modify') : l('rc.ai.create')}
-      open={modalVisible}
-      form={form}
-      modalProps={{onCancel: handleCancel,...NORMAL_MODAL_OPTIONS}}
-      submitter={{render: () => [...renderFooter()]}}
-    >
-      <InstanceForm form={form} values={values}/>
-    </ModalForm>
-  </>;
+  return (
+    <>
+      <ModalForm
+        {...NORMAL_MODAL_OPTIONS}
+        title={values?.id ? l('rc.ai.modify') : l('rc.ai.create')}
+        open={modalVisible}
+        form={form}
+        modalProps={{ onCancel: handleCancel, ...NORMAL_MODAL_OPTIONS }}
+        submitter={{ render: () => [...renderFooter()] }}
+      >
+        <InstanceForm form={form} values={values} />
+      </ModalForm>
+    </>
+  );
 };
 
 export default AlertTypeChoose;

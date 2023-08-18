@@ -17,43 +17,39 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
-import Heap from "@/pages/Metrics/Server/Heap";
-import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
-import {Datum} from "@antv/g2plot";
+import { JVMMetric } from '@/pages/Metrics/Server/data';
+import { Area, AreaConfig } from '@ant-design/plots';
+import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import React from 'react';
 
 type ThreadProps = {
   data: JVMMetric[];
   chartConfig: G2plotConfig;
-}
+};
 type Thread = {
   time: Date;
   value: string | number;
-  name: string
-}
+  name: string;
+};
 const Thread: React.FC<ThreadProps> = (props) => {
-  const {data, chartConfig} = props;
-  const dataList: Thread[] = data.map(x => {
-    return {time: x.time, value: x.jvm.threadPeakCount, name: "Peak"};
-
-  })
-  const dataList2: Thread[] = data.map(x => {
-    return {time: x.time, value: x.jvm.threadCount, name: "Count"};
-  })
+  const { data, chartConfig } = props;
+  const dataList: Thread[] = data.map((x) => {
+    return { time: x.time, value: x.jvm.threadPeakCount, name: 'Peak' };
+  });
+  const dataList2: Thread[] = data.map((x) => {
+    return { time: x.time, value: x.jvm.threadCount, name: 'Count' };
+  });
   const dataListAll = dataList.concat(dataList2);
-
 
   const config: AreaConfig = {
     ...chartConfig,
     data: dataListAll,
     seriesField: 'name',
     isStack: false,
-    tooltip: {}
+    tooltip: {},
   };
 
   return <Area {...config} />;
-}
+};
 
 export default Thread;

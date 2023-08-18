@@ -17,61 +17,56 @@
  *
  */
 
+import CodeShow from '@/components/CustomEditor/CodeShow';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { API_CONSTANTS } from '@/services/constants';
+import { useRequest } from '@@/exports';
+import { ProCard } from '@ant-design/pro-components';
+import { Spin, Tabs, Typography } from 'antd';
 
-import {Descriptions, Spin, Tabs, Tag, Typography} from 'antd';
-import {ProCard} from "@ant-design/pro-components";
-import {Jobs} from "@/types/DevOps/data";
-import CodeShow from "@/components/CustomEditor/CodeShow";
-import React, {useState} from "react";
-import {useRequest} from "@@/exports";
-import {API_CONSTANTS} from "@/services/constants";
-import {getData} from "@/services/api";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
-
-const {Text, Paragraph} = Typography;
+const { Text, Paragraph } = Typography;
 
 const JobManagerLogsTab = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
   const jmaddr = jobDetail?.history?.jobManagerAddress;
 
   const log = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_LOG,
-    params: {address: jmaddr},
+    params: { address: jmaddr },
   });
 
   const stdout = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_STDOUT,
-    params: {address: jmaddr},
+    params: { address: jmaddr },
   });
 
   const dump = useRequest({
     url: API_CONSTANTS.GET_JOBMANAGER_THREAD_DUMP,
-    params: {address: jmaddr},
+    params: { address: jmaddr },
   });
 
   const getLog = (ur: any) => {
-    return <Spin spinning={ur.loading}>
-      <CodeShow
-        code={ur.data ? ur.data : "No Log"}
-        height={600}
-      />
-    </Spin>
-  }
+    return (
+      <Spin spinning={ur.loading}>
+        <CodeShow code={ur.data ? ur.data : 'No Log'} height={600} />
+      </Spin>
+    );
+  };
 
-  return <>
-    <ProCard>
-      <Tabs
-        size={"small"}
-        items={[
-          {label: 'Log', key: "LOG", children: getLog(log)},
-          {label: 'Std Out', key: "STDOUT", children: getLog(stdout)},
-          {label: 'Thread Dump', key: "DUMP", children: getLog(dump)},
-        ]}
-      />
-
-    </ProCard>
-  </>
+  return (
+    <>
+      <ProCard>
+        <Tabs
+          size={'small'}
+          items={[
+            { label: 'Log', key: 'LOG', children: getLog(log) },
+            { label: 'Std Out', key: 'STDOUT', children: getLog(stdout) },
+            { label: 'Thread Dump', key: 'DUMP', children: getLog(dump) },
+          ]}
+        />
+      </ProCard>
+    </>
+  );
 };
 
 export default JobManagerLogsTab;

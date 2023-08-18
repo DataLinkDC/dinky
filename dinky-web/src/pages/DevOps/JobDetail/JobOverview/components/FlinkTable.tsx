@@ -1,24 +1,26 @@
-import {Jobs} from "@/types/DevOps/data";
-import {ProCard, ProColumns, ProTable} from "@ant-design/pro-components";
-import {Descriptions, Tag, Typography} from "antd";
-import {l} from "@/utils/intl";
-import {TagJobStatus} from "@/pages/DevOps/function";
-import {parseByteStr, parseMilliSecondStr, parseNumStr} from "@/utils/function";
-import {JobProps} from "@/pages/DevOps/JobDetail/data";
+import { TagJobStatus } from '@/pages/DevOps/function';
+import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import {
+  parseByteStr,
+  parseMilliSecondStr,
+  parseNumStr,
+} from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ProCard, ProColumns, ProTable } from '@ant-design/pro-components';
+import { Typography } from 'antd';
 
-const {Text,Link } = Typography;
-
+const { Text, Link } = Typography;
 
 export type VerticesTableListItem = {
-  name: string,
-  status: string,
-  metrics: any,
-  parallelism: number,
-  startTime: string,
-  duration: number,
-  endTime: string,
-  tasks: any,
-}
+  name: string;
+  status: string;
+  metrics: any;
+  parallelism: number;
+  startTime: string;
+  duration: number;
+  endTime: string;
+  tasks: any;
+};
 
 /**
  * Renders the JobConfigTab component.
@@ -27,8 +29,7 @@ export type VerticesTableListItem = {
  * @returns {JSX.Element} - The rendered JobConfigTab component.
  */
 const FlinkTable = (props: JobProps) => {
-
-  const {jobDetail} = props;
+  const { jobDetail } = props;
 
   const columns: ProColumns<VerticesTableListItem>[] = [
     {
@@ -89,7 +90,7 @@ const FlinkTable = (props: JobProps) => {
       },
     },
     {
-      title:  l('global.table.endTime'),
+      title: l('global.table.endTime'),
       dataIndex: 'end-time',
       valueType: 'dateTime',
     },
@@ -101,13 +102,12 @@ const FlinkTable = (props: JobProps) => {
     // },
   ];
 
-
-  return(
+  return (
     <>
       <ProCard>
         <ProTable
           columns={columns}
-          style={{width: '100%'}}
+          style={{ width: '100%' }}
           dataSource={jobDetail?.jobHistory?.job.vertices}
           rowKey="name"
           pagination={{
@@ -119,9 +119,9 @@ const FlinkTable = (props: JobProps) => {
           size="small"
         />
       </ProCard>
-      <br/>
+      <br />
     </>
-  )
-}
+  );
+};
 
 export default FlinkTable;

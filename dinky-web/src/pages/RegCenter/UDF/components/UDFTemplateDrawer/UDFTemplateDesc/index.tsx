@@ -17,28 +17,30 @@
  *
  */
 
-import React from "react";
-import {GlobalVar, UDFTemplate} from "@/types/RegCenter/data";
-import { ProDescriptions } from "@ant-design/pro-components";
+import { GlobalVar, UDFTemplate } from '@/types/RegCenter/data';
+import { ProDescriptions } from '@ant-design/pro-components';
+import React from 'react';
 
 type UDFTemplateDescProps = {
   values: Partial<UDFTemplate>;
   columns: any;
-}
+};
 const UDFTemplateDesc: React.FC<UDFTemplateDescProps> = (props) => {
-  const {values, columns} = props;
-  return <>
-    <ProDescriptions<GlobalVar>
-      column={1}
-      loading={values && Object.keys(values).length === 0}
-      title={values.name}
-      request={async () => ({
-        data: values,
-      })}
-      params={{id: values.id}}
-      columns={columns}
-    />
-  </>;
+  const { values, columns } = props;
+  return (
+    <>
+      <ProDescriptions<GlobalVar>
+        column={1}
+        loading={values && Object.keys(values).length === 0}
+        title={values.name}
+        request={async () => ({
+          data: values,
+        })}
+        params={{ id: values.id }}
+        columns={columns}
+      />
+    </>
+  );
 };
 
 export default UDFTemplateDesc;

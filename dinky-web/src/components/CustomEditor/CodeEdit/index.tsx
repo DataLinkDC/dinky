@@ -19,12 +19,12 @@
 
 import * as monaco from 'monaco-editor';
 
-import {MonacoEditorOptions} from "@/types/Public/data";
-import {convertCodeEditTheme} from "@/utils/function";
-import React, {useState} from "react";
-import EditorFloatBtn from "@/components/CustomEditor/EditorFloatBtn";
-import {editor} from "monaco-editor";
-import {Editor, OnChange} from "@monaco-editor/react";
+import EditorFloatBtn from '@/components/CustomEditor/EditorFloatBtn';
+import { MonacoEditorOptions } from '@/types/Public/data';
+import { convertCodeEditTheme } from '@/utils/function';
+import { Editor, OnChange } from '@monaco-editor/react';
+import { editor } from 'monaco-editor';
+import { useState } from 'react';
 
 type CodeEditFormProps = {
   height?: string;
@@ -41,7 +41,6 @@ type CodeEditFormProps = {
 };
 
 const CodeEdit = (props: CodeEditFormProps) => {
-
   const [editorRef, setEditorRef] = useState<any>();
 
   /**
@@ -58,8 +57,8 @@ const CodeEdit = (props: CodeEditFormProps) => {
    * 11. showFloatButton: is show float button, value: true | false (default: false)
    */
   const {
-    height = "100%", // if null or undefined, set default value
-    width = "100%", // if null or undefined, set default value
+    height = '100%', // if null or undefined, set default value
+    width = '100%', // if null or undefined, set default value
     language, // edit language
     options = {
       ...MonacoEditorOptions, // set default options
@@ -69,11 +68,11 @@ const CodeEdit = (props: CodeEditFormProps) => {
     readOnly = false, // is readOnly
     lineNumbers, // show lineNumbers
     theme, // edit theme
-    autoWrap = "on", // auto wrap
+    autoWrap = 'on', // auto wrap
     showFloatButton = false,
   } = props;
 
-  const {ScrollType} = editor;
+  const { ScrollType } = editor;
 
   /**
    *  editorDidMount
@@ -102,20 +101,25 @@ const CodeEdit = (props: CodeEditFormProps) => {
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition({scrollTop: editorRef.getScrollTop() + 500}, ScrollType.Smooth);
+    editorRef.setScrollPosition(
+      { scrollTop: editorRef.getScrollTop() + 500 },
+      ScrollType.Smooth,
+    );
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition({scrollTop: editorRef.getScrollTop() - 500}, ScrollType.Smooth);
+    editorRef?.setScrollPosition(
+      { scrollTop: editorRef.getScrollTop() - 500 },
+      ScrollType.Smooth,
+    );
   };
-
 
   // register TypeScript language service
   monaco.languages.register({
-    id: language || "typescript",
+    id: language || 'typescript',
   });
 
   const restEditBtnProps = {
@@ -125,29 +129,30 @@ const CodeEdit = (props: CodeEditFormProps) => {
     handleDownScroll,
   };
 
-
-  return (<>
-    <div className={"monaco-float"}>
-      <Editor
-        width={width}
-        height={height}
-        value={code}
-        language={language}
-        options={{
-          ...options,
-          readOnly,
-          wordWrap: autoWrap,
-          autoDetectHighContrast: true,
-          lineNumbers,
-        }}
-        className={"editor-develop"}
-        onMount={editorDidMount}
-        onChange={onChange}
-        theme={theme ? theme : convertCodeEditTheme()}
-      />
-      {showFloatButton && <EditorFloatBtn {...restEditBtnProps}/>}
-    </div>
-  </>);
+  return (
+    <>
+      <div className={'monaco-float'}>
+        <Editor
+          width={width}
+          height={height}
+          value={code}
+          language={language}
+          options={{
+            ...options,
+            readOnly,
+            wordWrap: autoWrap,
+            autoDetectHighContrast: true,
+            lineNumbers,
+          }}
+          className={'editor-develop'}
+          onMount={editorDidMount}
+          onChange={onChange}
+          theme={theme ? theme : convertCodeEditTheme()}
+        />
+        {showFloatButton && <EditorFloatBtn {...restEditBtnProps} />}
+      </div>
+    </>
+  );
 };
 
 export default CodeEdit;

@@ -15,9 +15,8 @@
  * limitations under the License.
  */
 
-
-import {SaTokenInfo, UserBaseInfo} from "@/types/User/data";
-import {SysMenu} from "@/types/RegCenter/data";
+import { SysMenu } from '@/types/RegCenter/data';
+import { SaTokenInfo, UserBaseInfo } from '@/types/User/data';
 
 declare namespace API {
   type Result = {

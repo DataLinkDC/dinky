@@ -22,12 +22,12 @@ import React from 'react';
  * init global form context
  */
 export interface FormContextValue {
-    resetForm: () => void;
+  resetForm: () => void;
 }
 
 /**
  * global form context
  */
 export const FormContext = React.createContext<FormContextValue>({
-    resetForm: () => {},
+  resetForm: () => {},
 });

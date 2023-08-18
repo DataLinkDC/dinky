@@ -16,24 +16,24 @@
  *
  */
 
-import {l} from "@/utils/intl";
-import {Button} from "antd";
-import React from "react";
-import {DangerDeleteIcon} from "@/components/Icons/CustomIcons";
+import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import { l } from '@/utils/intl';
+import { Button } from 'antd';
+import React from 'react';
 
 type NormalDeleteButtonProps = {
-    onClick: () => void;
+  onClick: () => void;
 };
 
 export const NormalDeleteBtn: React.FC<NormalDeleteButtonProps> = (props) => {
-    const {onClick} = props;
+  const { onClick } = props;
 
-    return (
-        <Button
-            className={"options-button"}
-            icon={<DangerDeleteIcon/>}
-            title={l("button.delete")}
-            onClick={() => onClick()}
-        />
-    );
+  return (
+    <Button
+      className={'options-button'}
+      icon={<DangerDeleteIcon />}
+      title={l('button.delete')}
+      onClick={() => onClick()}
+    />
+  );
 };

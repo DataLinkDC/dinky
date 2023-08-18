@@ -15,14 +15,9 @@
  * limitations under the License.
  */
 
-import {DIALECT, LANGUAGE_KEY, LANGUAGE_ZH, TENANT_ID} from '@/services/constants';
-import cookies from 'js-cookie';
-import {CODE_EDIT_THEME, THEME} from '@/types/Public/data';
-import {editor} from 'monaco-editor';
-import React, {useEffect, useState} from 'react';
-import {trim} from 'lodash';
 import {
-  FileIcon, FlinkSQLSvg,
+  FileIcon,
+  FlinkSQLSvg,
   FolderSvgExpand,
   JavaSvg,
   LogSvg,
@@ -31,14 +26,21 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg
+  YAMLSvg,
 } from '@/components/Icons/CodeLanguageIcon';
+import {
+  DIALECT,
+  LANGUAGE_KEY,
+  LANGUAGE_ZH,
+  TENANT_ID,
+} from '@/services/constants';
+import { CODE_EDIT_THEME, THEME } from '@/types/Public/data';
+import { l } from '@/utils/intl';
+import cookies from 'js-cookie';
+import { trim } from 'lodash';
+import { editor } from 'monaco-editor';
 import path from 'path';
-import {l} from '@/utils/intl';
-import {RightSide} from "@/pages/DataStudio/route";
-import {TabsItemType} from "@/pages/DataStudio/model";
-import {ProColumns} from "@ant-design/pro-table/es/typing";
-
+import { useEffect, useState } from 'react';
 
 /**
  * get language by localStorage's umi_locale , if not exist , return zh-CN
@@ -56,7 +58,6 @@ export function setKeyToLocalStorage(key: string, value: string) {
   localStorage.setItem(key, value);
 }
 
-
 /**
  * get value by localStorage's key
  * @param key
@@ -65,14 +66,12 @@ export function getValueFromLocalStorage(key: string) {
   return localStorage.getItem(key) ?? '';
 }
 
-
 /**
  * get tenant id
  */
 export function getTenantByLocalStorage() {
   return getValueFromLocalStorage(TENANT_ID);
 }
-
 
 /**
  * get cookie by key
@@ -92,7 +91,6 @@ export function setCookieByKey(key: string, value: string, options?: {}) {
   cookies.set(key, value, options);
 }
 
-
 /**
  * PUT tenantId TO localStorage & cookies
  * @param tenantId
@@ -101,9 +99,8 @@ export function setTenantStorageAndCookie(tenantId: number) {
   // save as localStorage
   setKeyToLocalStorage(TENANT_ID, tenantId.toString());
   // save as cookies
-  setCookieByKey(TENANT_ID, tenantId.toString(), {path: '/'});
+  setCookieByKey(TENANT_ID, tenantId.toString(), { path: '/' });
 }
-
 
 /**
  * parseJsonStr
@@ -125,7 +122,6 @@ export function getLocalTheme(): string {
  * @constructor
  */
 export function convertCodeEditTheme() {
-
   /**
    * user can define a new theme by calling the defineTheme method on the editor.
    */
@@ -134,13 +130,17 @@ export function convertCodeEditTheme() {
     inherit: true, // 是否继承基础主题配置 , 默认为 true, is to inherit the base theme
     // rules is an array of rules. The array must not be sparse (i.e. do not use holes).
     rules: [
-      {token: 'comment', foreground: '#008800', fontStyle: 'italic'},
-      {token: 'keyword', foreground: '#064cff', fontStyle: 'bold'},
-      {token: 'string', foreground: '#507dee'},
-      {token: 'delimiter', foreground: '#041d81'},
-      {token: 'readonly', foreground: '#e73a6e', background: '#141414', fontStyle: 'italic'},
-      {token: 'number', foreground: '#ffffff'},
-
+      { token: 'comment', foreground: '#008800', fontStyle: 'italic' },
+      { token: 'keyword', foreground: '#064cff', fontStyle: 'bold' },
+      { token: 'string', foreground: '#507dee' },
+      { token: 'delimiter', foreground: '#041d81' },
+      {
+        token: 'readonly',
+        foreground: '#e73a6e',
+        background: '#141414',
+        fontStyle: 'italic',
+      },
+      { token: 'number', foreground: '#ffffff' },
     ],
     // colors is an object of color identifiers and their color values.
     colors: {
@@ -154,9 +154,8 @@ export function convertCodeEditTheme() {
       'editor.selectionHighlightBorder': '#4ba1ef', //  editor selection highlight border color
       'editor.findMatchBackground': '#4ba1ef', //  editor find match highlight color
       'editor.wordHighlightBackground': '#8bb2d2', //  editor word highlight color
-    }
+    },
   });
-
 
   const theme = getLocalTheme();
   switch (theme) {
@@ -167,8 +166,7 @@ export function convertCodeEditTheme() {
     default:
       return CODE_EDIT_THEME.HC_BLACK;
   }
-};
-
+}
 
 /**
  * use SSE build single data
@@ -212,7 +210,6 @@ export const useSSEBuildArrayData = (url: string) => {
   return data;
 };
 
-
 /**
  * get file icon by file type
  * @param type
@@ -254,37 +251,36 @@ export const getLanguage = (type: string): string => {
  */
 export const getIcon = (type: string) => {
   if (!type) {
-    return <FileIcon/>;
+    return <FileIcon />;
   }
   switch (type.toLowerCase()) {
     case DIALECT.JAVA:
-      return <JavaSvg/>;
+      return <JavaSvg />;
     case DIALECT.SCALA:
-      return <ScalaSvg/>;
+      return <ScalaSvg />;
     case DIALECT.PYTHON:
     case DIALECT.PYTHON_LONG:
-      return <PythonSvg/>;
+      return <PythonSvg />;
     case DIALECT.MD:
     case DIALECT.MDX:
-      return <MarkDownSvg/>;
+      return <MarkDownSvg />;
     case DIALECT.XML:
-      return <XMLSvg/>;
+      return <XMLSvg />;
     case DIALECT.YAML:
     case DIALECT.YML:
-      return <YAMLSvg/>;
+      return <YAMLSvg />;
     case DIALECT.SH:
     case DIALECT.BASH:
     case DIALECT.CMD:
-      return <ShellSvg/>;
+      return <ShellSvg />;
     case DIALECT.LOG:
-      return <LogSvg/>;
+      return <LogSvg />;
     case DIALECT.FLINK_SQL:
-      return <FlinkSQLSvg/>;
+      return <FlinkSQLSvg />;
     default:
-      return <FileIcon/>;
+      return <FileIcon />;
   }
 };
-
 
 /**
  * Get the icon according to the file suffix
@@ -292,9 +288,13 @@ export const getIcon = (type: string) => {
  * @param splitChar split character
  * @param isLeft is left
  */
-export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => {
+export const renderIcon = (
+  type: string,
+  splitChar: string,
+  isLeft: boolean,
+) => {
   if (isLeft) {
-    return <FolderSvgExpand/>;
+    return <FolderSvgExpand />;
   } else {
     if (trim(splitChar).length === 0) {
       return getIcon(type);
@@ -304,7 +304,6 @@ export const renderIcon = (type: string, splitChar: string, isLeft: boolean) => 
     }
   }
 };
-
 
 /**
  * Get the language according to the file suffix
@@ -320,14 +319,12 @@ export const renderLanguage = (type = '', splitChar: string) => {
   }
 };
 
-
 /**
  * get the folder separator according to the platform
  */
 export const folderSeparator = () => {
   return path.sep;
 };
-
 
 /**
  * Generate time string
@@ -343,11 +340,27 @@ export const parseSecondStr = (s_time: number) => {
     if (min > 60) {
       min = Math.floor(second_time / 60) % 60;
       let hour = Math.floor(Math.floor(second_time / 60) / 60);
-      time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+      time =
+        hour +
+        l('global.time.hour') +
+        min +
+        l('global.time.minute') +
+        second +
+        l('global.time.second');
       if (hour > 24) {
         hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
-        let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
-        time = day + l('global.time.day') + hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+        let day = Math.floor(
+          Math.floor(Math.floor(second_time / 60) / 60) / 24,
+        );
+        time =
+          day +
+          l('global.time.day') +
+          hour +
+          l('global.time.hour') +
+          min +
+          l('global.time.minute') +
+          second +
+          l('global.time.second');
       }
     }
   }
@@ -355,31 +368,39 @@ export const parseSecondStr = (s_time: number) => {
 };
 
 export function parseByteStr(limit: number) {
-  if (limit == null){
-    return "None"
+  if (limit == null) {
+    return 'None';
   }
-  let size = "";
-  if (limit < 0.1 * 1024) {                            //小于0.1KB，则转化成B
-    size = limit.toFixed(2) + "B"
-  } else if (limit < 0.1 * 1024 * 1024) {            //小于0.1MB，则转化成KB
-    size = (limit / 1024).toFixed(2) + "KB"
-  } else if (limit < 0.1 * 1024 * 1024 * 1024) {        //小于0.1GB，则转化成MB
-    size = (limit / (1024 * 1024)).toFixed(2) + "MB"
-  } else {                                            //其他转化成GB
-    size = (limit / (1024 * 1024 * 1024)).toFixed(2) + "GB"
+  let size = '';
+  if (limit < 0.1 * 1024) {
+    //小于0.1KB，则转化成B
+    size = limit.toFixed(2) + 'B';
+  } else if (limit < 0.1 * 1024 * 1024) {
+    //小于0.1MB，则转化成KB
+    size = (limit / 1024).toFixed(2) + 'KB';
+  } else if (limit < 0.1 * 1024 * 1024 * 1024) {
+    //小于0.1GB，则转化成MB
+    size = (limit / (1024 * 1024)).toFixed(2) + 'MB';
+  } else {
+    //其他转化成GB
+    size = (limit / (1024 * 1024 * 1024)).toFixed(2) + 'GB';
   }
 
-  let sizeStr = size + "";                        //转成字符串
-  let index = sizeStr.indexOf(".");                    //获取小数点处的索引
-  let dou = sizeStr.substr(index + 1, 2)            //获取小数点后两位的值
-  if (dou == "00") {                                //判断后两位是否为00，如果是则删除00
-    return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2)
+  let sizeStr = size + ''; //转成字符串
+  let index = sizeStr.indexOf('.'); //获取小数点处的索引
+  let dou = sizeStr.substr(index + 1, 2); //获取小数点后两位的值
+  if (dou == '00') {
+    //判断后两位是否为00，如果是则删除00
+    return sizeStr.substring(0, index) + sizeStr.substr(index + 3, 2);
   }
   return size;
 }
 
 export function parseNumStr(num: number) {
-  let c = (num.toString().indexOf('.') !== -1) ? num.toLocaleString() : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+  let c =
+    num.toString().indexOf('.') !== -1
+      ? num.toLocaleString()
+      : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
   return c;
 }
 
@@ -389,33 +410,54 @@ export function parseNumStr(num: number) {
  * @returns {any}
  */
 export function parseMilliSecondStr(second_time: number) {
-  if (second_time == null){
-    return "None"
+  if (second_time == null) {
+    return 'None';
   }
-  if (((second_time / 1000) % 60) < 1) {
+  if ((second_time / 1000) % 60 < 1) {
     return second_time + l('global.time.millisecond');
   }
   return parseSecondStr(second_time / 1000);
 }
-
 
 /**
  * build tree data
  * @param data
  * @returns {any}
  */
-export const buildTreeData = (data: any): any => data?.map((item: any) => {
+export const buildTreeData = (data: any): any =>
+  data?.map((item: any) => {
+    // build key
+    let buildKey = item.path + folderSeparator() + item.name;
 
-  // build key
-  let buildKey = item.path + folderSeparator() + item.name;
+    const buildTitleLabel = () => {
+      return (
+        <>
+          {item.name}
+          <span style={{ color: 'gray' }}>
+            {' '}
+            &nbsp;&nbsp;{l('global.size', '', { size: item.size })}
+          </span>
+        </>
+      );
+    };
 
-  const buildTitleLabel = () => {
-    return <>{item.name}<span
-      style={{color: 'gray'}}> &nbsp;&nbsp;{l('global.size', '', {size: item.size})}</span></>;
-  }
-
-  // if has children , recursive build
-  if (item.children) {
+    // if has children , recursive build
+    if (item.children) {
+      return {
+        isLeaf: !item.leaf,
+        id: item?.id,
+        name: item.name,
+        parentId: item.path ?? item.parentId,
+        icon: renderIcon(item.name, '.', item.leaf),
+        content: item.content,
+        path: item.path,
+        fullName: item?.fullName,
+        title: buildTitleLabel(),
+        desc: item?.desc ?? item?.description,
+        key: buildKey,
+        children: buildTreeData(item.children),
+      };
+    }
     return {
       isLeaf: !item.leaf,
       id: item?.id,
@@ -425,47 +467,31 @@ export const buildTreeData = (data: any): any => data?.map((item: any) => {
       content: item.content,
       path: item.path,
       fullName: item?.fullName,
-      title: buildTitleLabel(),
       desc: item?.desc ?? item?.description,
+      title: buildTitleLabel(),
       key: buildKey,
-      children: buildTreeData(item.children)
     };
-  }
-  return {
-    isLeaf: !item.leaf,
-    id: item?.id,
-    name: item.name,
-    parentId: item.path ?? item.parentId,
-    icon: renderIcon(item.name, '.', item.leaf),
-    content: item.content,
-    path: item.path,
-    fullName: item?.fullName,
-    desc: item?.desc ?? item?.description,
-    title: buildTitleLabel(),
-    key: buildKey,
-  };
-});
-
+  });
 
 /**
  * Determine whether the file is supported
  * @returns {boolean}
  */
 export const unSupportView = (name: string) => {
-
-  return name.endsWith(".jar")
-    || name.endsWith(".war")
-    || name.endsWith(".zip")
-    || name.endsWith(".tar.gz")
-    || name.endsWith(".tar")
-    || name.endsWith(".jpg")
-    || name.endsWith(".png")
-    || name.endsWith(".gif")
-    || name.endsWith(".bmp")
-    || name.endsWith(".jpeg")
-    || name.endsWith(".ico")
-}
-
+  return (
+    name.endsWith('.jar') ||
+    name.endsWith('.war') ||
+    name.endsWith('.zip') ||
+    name.endsWith('.tar.gz') ||
+    name.endsWith('.tar') ||
+    name.endsWith('.jpg') ||
+    name.endsWith('.png') ||
+    name.endsWith('.gif') ||
+    name.endsWith('.bmp') ||
+    name.endsWith('.jpeg') ||
+    name.endsWith('.ico')
+  );
+};
 
 /**
  * search tree node
@@ -473,8 +499,10 @@ export const unSupportView = (name: string) => {
  * @param {string} searchValue
  * @returns {any}
  */
-export const searchTreeNode = (originValue: string, searchValue: string): any => {
-
+export const searchTreeNode = (
+  originValue: string,
+  searchValue: string,
+): any => {
   let title = <>{originValue}</>;
 
   // searchValue is not empty and trim() after length > 0
@@ -483,34 +511,43 @@ export const searchTreeNode = (originValue: string, searchValue: string): any =>
     const beforeStr = originValue.substring(0, searchIndex); // before search value
     const afterStr = originValue.substring(searchIndex + searchValue.length); // after search value
     // when search index > -1, return render title, else return origin title
-    title = searchIndex > -1 ?
-      <span>{beforeStr}<span className={'treeList tree-search-value'}>{searchValue}</span>{afterStr}</span>
-      : <span className={'treeList'}>{title}</span>;
+    title =
+      searchIndex > -1 ? (
+        <span>
+          {beforeStr}
+          <span className={'treeList tree-search-value'}>{searchValue}</span>
+          {afterStr}
+        </span>
+      ) : (
+        <span className={'treeList'}>{title}</span>
+      );
   }
-  return title
+  return title;
 };
 
-export const transformTreeData = <T, >(data: T[]): T[] => {
+export const transformTreeData = <T,>(data: T[]): T[] => {
   return data.map((item: T, index) => {
-    return {...item, key: index}
+    return { ...item, key: index };
   });
-}
+};
 
-export const transformTableDataToCsv = <T, >(column: string[], data: T[]): string => {
-  let row = "";
-  let csvData = "";
+export const transformTableDataToCsv = <T,>(
+  column: string[],
+  data: T[],
+): string => {
+  let row = '';
+  let csvData = '';
   for (const title of column) {
     row += '"' + title + '",';
   }
-  const delimiter = "\r\n";
+  const delimiter = '\r\n';
   csvData += row + delimiter; // 添加换行符号
   for (const item of data) {
-    row = "";
+    row = '';
     for (let key in item) {
       row += '"' + (item[key] ?? '') + '",';
     }
     csvData += row + delimiter; // 添加换行符号
   }
   return csvData;
-}
-
+};

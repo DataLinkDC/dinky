@@ -23,7 +23,7 @@ export type ProcessSteps = {
   startTime: Date;
   endTime: Date;
   time: string;
-}
+};
 
 export type Process = {
   pid: string;
@@ -39,8 +39,7 @@ export type Process = {
   stepIndex: number;
   steps: ProcessSteps[];
   userId: number;
-}
-
+};
 
 // ============================  System Settings ============================
 export type Settings = {
@@ -51,11 +50,11 @@ export type Settings = {
   ldap: BaseConfigProperties[];
   metrics: BaseConfigProperties[];
   resource: BaseConfigProperties[];
-}
+};
 export type BaseConfigProperties = {
   key: string;
   value: any;
   note: string;
   frontType: string;
-  example: string[]
-}
+  example: string[];
+};

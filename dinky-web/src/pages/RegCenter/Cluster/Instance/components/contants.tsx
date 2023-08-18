@@ -15,25 +15,32 @@
  * limitations under the License.
  */
 
-import {Tag} from 'antd';
-import {l} from '@/utils/intl';
-import React from 'react';
-import {ClusterType} from "@/pages/RegCenter/Cluster/constants";
+import { ClusterType } from '@/pages/RegCenter/Cluster/constants';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 
 /**
  * Cluster instance type
  */
 export const CLUSTER_INSTANCE_TYPE = [
-    {value: ClusterType.STANDALONE, label: ClusterType.STANDALONE},
-    {value: ClusterType.YARN_SESSION, label: ClusterType.YARN_SESSION},
-    {value: ClusterType.KUBERNETES_SESSION, label: ClusterType.KUBERNETES_SESSION},
-]
-
+  { value: ClusterType.STANDALONE, label: ClusterType.STANDALONE },
+  { value: ClusterType.YARN_SESSION, label: ClusterType.YARN_SESSION },
+  {
+    value: ClusterType.KUBERNETES_SESSION,
+    label: ClusterType.KUBERNETES_SESSION,
+  },
+];
 
 /**
  * Cluster instance status enum
  */
 export const CLUSTER_INSTANCE_STATUS_ENUM = {
-  1: {text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>, status: 'Success'},
-  0: {text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>, status: 'Error'},
-}
+  1: {
+    text: <Tag color={'success'}>{l('global.table.status.normal')}</Tag>,
+    status: 'Success',
+  },
+  0: {
+    text: <Tag color={'error'}>{l('global.table.status.abnormal')}</Tag>,
+    status: 'Error',
+  },
+};

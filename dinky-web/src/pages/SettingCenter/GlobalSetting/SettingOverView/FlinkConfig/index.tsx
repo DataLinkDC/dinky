@@ -15,38 +15,40 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Tag, Typography} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface FlinkConfigProps {
-    data: BaseConfigProperties[];
-    onSave: (data: BaseConfigProperties) => void;
+  data: BaseConfigProperties[];
+  onSave: (data: BaseConfigProperties) => void;
 }
 
+export const FlinkConfig = ({ data, onSave }: FlinkConfigProps) => {
+  const [loading, setLoading] = React.useState(false);
 
-export const FlinkConfig = ({data, onSave}: FlinkConfigProps) => {
+  const onSaveHandler = async (data: BaseConfigProperties) => {
+    setLoading(true);
+    await onSave(data);
+    setLoading(false);
+  };
 
-    const [loading, setLoading] = React.useState(false);
-
-    const onSaveHandler = async (data: BaseConfigProperties) => {
-        setLoading(true);
-        await onSave(data);
-        setLoading(false);
-    };
-
-    return <>
-        {/*<Text keyboard>{l('sys.setting.flink.tooltip')}</Text>*/}
-        <GeneralConfig
-            loading={loading}
-            onSave={onSaveHandler}
-            tag={<>
-                <Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag>
-                <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag></>}
-            data={data}
-        />
-    </>;
+  return (
+    <>
+      {/*<Text keyboard>{l('sys.setting.flink.tooltip')}</Text>*/}
+      <GeneralConfig
+        loading={loading}
+        onSave={onSaveHandler}
+        tag={
+          <>
+            <Tag color={'success'}>{l('sys.setting.tag.extend')}</Tag>
+            <Tag color={'processing'}>{l('sys.setting.tag.core')}</Tag>
+          </>
+        }
+        data={data}
+      />
+    </>
+  );
 };
