@@ -22,7 +22,7 @@ import Console from '@/pages/DataStudio/BottomContainer/Console';
 import Result from '@/pages/DataStudio/BottomContainer/Result';
 import MetaData from '@/pages/DataStudio/LeftContainer/MetaData';
 import Project from '@/pages/DataStudio/LeftContainer/Project';
-import { TabsPageType } from '@/pages/DataStudio/model';
+import {TabsPageSubType, TabsPageType} from '@/pages/DataStudio/model';
 import ExecuteConfig from '@/pages/DataStudio/RightContainer/ExecuteConfig';
 import HistoryVersion from '@/pages/DataStudio/RightContainer/HistoryVersion';
 import JobConfig from '@/pages/DataStudio/RightContainer/JobConfig';
@@ -81,7 +81,7 @@ export const RightSide: TabProp[] = [
     label: l('menu.datastudio.jobConfig'),
     children: <JobConfig />,
     isShow: (type, subType) =>
-      type === TabsPageType.project && TabsPageType.flinkSql === subType,
+      type === TabsPageType.project && TabsPageSubType.flinkSql === subType,
   },
   {
     key: 'menu.datastudio.executeConfig',
@@ -89,7 +89,7 @@ export const RightSide: TabProp[] = [
     label: l('menu.datastudio.executeConfig'),
     children: <ExecuteConfig />,
     isShow: (type, subType) =>
-      type === TabsPageType.project && TabsPageType.flinkSql === subType,
+      type === TabsPageType.project && TabsPageSubType.flinkSql === subType,
   },
   {
     key: 'menu.datastudio.savePoint',
@@ -97,7 +97,7 @@ export const RightSide: TabProp[] = [
     label: l('menu.datastudio.savePoint'),
     children: <SavePoints />,
     isShow: (type, subType) =>
-      type === TabsPageType.project && TabsPageType.flinkSql === subType,
+      type === TabsPageType.project && TabsPageSubType.flinkSql === subType,
   },
   {
     key: 'menu.datastudio.historyVision',
@@ -105,7 +105,7 @@ export const RightSide: TabProp[] = [
     label: l('menu.datastudio.historyVision'),
     children: <HistoryVersion />,
     isShow: (type, subType) =>
-      type === TabsPageType.project && TabsPageType.flinkSql === subType,
+      type === TabsPageType.project && TabsPageSubType.flinkSql === subType,
   },
   {
     key: 'menu.datastudio.jobInfo',
@@ -262,5 +262,5 @@ export type TabProp = {
   icon: ReactNode;
   label: string;
   children: ReactNode;
-  isShow?: (type: TabsPageType, subType?: string) => boolean;
+  isShow?: (type: TabsPageType, subType?: TabsPageSubType) => boolean;
 };
