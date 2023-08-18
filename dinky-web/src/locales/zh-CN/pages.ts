@@ -191,7 +191,8 @@ export default {
   'user.isdelete': '该用户已被删除，无法重置密码，请先恢复该用户!',
   'user.reset': '您确定要重置此用户密码吗?',
   'user.resetPassword': '重置密码',
-  'user.resetPasswordSuccess': '用户: {username} 密码重置成功! 新密码为: {password}',
+  'user.resetPasswordSuccess':
+    '用户: {username} 密码重置成功! 新密码为: {password}',
   'user.usernamePlaceholder': '请输入用户名',
   'user.jobnumberPlaceholder': '请输入工号',
   'user.nicknamePlaceholder': '请输入昵称',
@@ -1151,7 +1152,8 @@ export default {
   'pages.datastudio.footer.codePosition': '行{Ln}:列{Col} ',
 
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
-  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChangedPrompt':
+    '检测到当前页远程有更改，是否刷新更新数据？',
   'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
 
   'datastudio.middle.qg': '快捷引导',

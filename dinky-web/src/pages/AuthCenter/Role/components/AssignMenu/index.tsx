@@ -17,128 +17,140 @@
  *
  */
 
-
-import React, {useCallback, useEffect, useState} from "react";
-import {Button, Drawer, Empty, Input, Space, Spin, Tree} from "antd";
-import {l} from "@/utils/intl";
-import {UserBaseInfo} from "@/types/User/data";
-import {SysMenu} from "@/types/RegCenter/data";
-import {buildMenuTree, sortTreeData} from "@/pages/AuthCenter/Menu/function";
-import {Key} from "@ant-design/pro-components";
-import {queryDataByParams} from "@/services/BusinessCrud";
-import {API_CONSTANTS} from "@/services/constants";
+import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
+import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/constants';
+import { SysMenu } from '@/types/RegCenter/data';
+import { UserBaseInfo } from '@/types/User/data';
+import { l } from '@/utils/intl';
+import { Key } from '@ant-design/pro-components';
+import { Button, Drawer, Empty, Input, Space, Spin, Tree } from 'antd';
+import React, { useCallback, useEffect, useState } from 'react';
 
 type AssignMenuProps = {
-    values: Partial<UserBaseInfo.Role>,
-    open: boolean,
-    onClose: () => void,
-    onSubmit: (values: Key[]) => void,
-}
+  values: Partial<UserBaseInfo.Role>;
+  open: boolean;
+  onClose: () => void;
+  onSubmit: (values: Key[]) => void;
+};
 
-const {DirectoryTree} = Tree;
-
+const { DirectoryTree } = Tree;
 
 const AssignMenu: React.FC<AssignMenuProps> = (props) => {
+  const { open, onClose, onSubmit, values } = props;
 
-    const {open, onClose, onSubmit, values } = props
+  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+  const [selectValue, handleSelectValue] = useState<Key[]>([]);
+  const [menuData, setMenuData] = useState<{
+    menus: SysMenu[];
+    selectedMenuIds: number[];
+  }>({
+    menus: [],
+    selectedMenuIds: [],
+  });
 
-    const [loading, setLoading] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
-    const [selectValue, handleSelectValue] = useState<Key[]>([]);
-    const [menuData, setMenuData] = useState<{ menus: SysMenu[], selectedMenuIds: number[] }>({
-        menus: [],
-        selectedMenuIds: [],
-    });
+  useEffect(() => {
+    setLoading(true);
+    open &&
+      queryDataByParams(API_CONSTANTS.ROLE_MENU_LIST, { id: values.id }).then(
+        (res) => setMenuData(res),
+      );
+    setLoading(false);
+  }, [values, open]);
 
-    useEffect(()=> {
-        setLoading(true)
-        open && queryDataByParams(API_CONSTANTS.ROLE_MENU_LIST, {id: values.id}).then((res) => setMenuData(res))
-        setLoading(false)
-    },[values,open])
+  /**
+   * close
+   * @type {() => void}
+   */
+  const handleClose = useCallback(() => {
+    onClose();
+    setMenuData({ menus: [], selectedMenuIds: [] });
+  }, [values]);
 
+  /**
+   * when submit menu , use loading
+   */
+  const handleSubmit = async () => {
+    setLoading(true);
+    await onSubmit(selectValue);
+    setLoading(false);
+    setMenuData({ menus: [], selectedMenuIds: [] });
+  };
 
-    /**
-     * close
-     * @type {() => void}
-     */
-    const handleClose = useCallback( () => {
-        onClose()
-        setMenuData({menus:[],selectedMenuIds: []})
-    }, [values]);
+  /**
+   * render extra buttons
+   * @returns {JSX.Element}
+   */
+  const renderExtraButtons = () => {
+    return (
+      <>
+        <Space>
+          <Button onClick={handleClose}>{l('button.cancel')}</Button>
+          <Button type="primary" loading={loading} onClick={handleSubmit}>
+            {l('button.submit')}
+          </Button>
+        </Space>
+      </>
+    );
+  };
 
-    /**
-     * when submit menu , use loading
-     */
-    const handleSubmit = async () => {
-        setLoading(true)
-        await onSubmit(selectValue)
-        setLoading(false)
-        setMenuData({menus:[],selectedMenuIds: []})
-    }
+  /**
+   * search tree node
+   * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
+   */
+  const onSearchChange = useCallback(
+    (e: { target: { value: React.SetStateAction<string> } }) => {
+      setSearchValue(e.target.value);
+    },
+    [searchValue],
+  );
 
+  const onCheck = (selectKeys: any) => {
+    handleSelectValue(selectKeys);
+  };
 
-
-
-    /**
-     * render extra buttons
-     * @returns {JSX.Element}
-     */
-    const renderExtraButtons = () => {
-        return <>
-            <Space>
-                <Button onClick={handleClose}>{l('button.cancel')}</Button>
-                <Button type="primary" loading={loading} onClick={handleSubmit}>{l('button.submit')}</Button>
-            </Space>
-        </>
-    }
-
-    /**
-     * search tree node
-     * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
-     */
-    const onSearchChange = useCallback((e: { target: { value: React.SetStateAction<string>; }; }) => {
-        setSearchValue(e.target.value)
-    }, [searchValue])
-
-    const onCheck = (selectKeys: any) => {
-        handleSelectValue(selectKeys)
-    };
-
-
-    return <>
-        <Drawer
-            title={l('role.assignMenu','',{roleName: values.roleName})}
-            open={open}
-            width={'55%'}
-            maskClosable={false}
-            onClose={handleClose}
-            extra={renderExtraButtons()}
-        >
-            {
-                (menuData.menus.length > 0) ?
-                    <>
-                        <Input
-                            placeholder={l('global.search.text')}
-                            allowClear
-                            style={{marginBottom: 16}}
-                            value={searchValue}
-                            onChange={onSearchChange}
-                        />
-                        <Spin spinning={loading}>
-                            <DirectoryTree
-                                selectable defaultCheckedKeys={[...menuData.selectedMenuIds]}
-                                checkable defaultExpandAll
-                                onCheck={(keys) => onCheck(keys)}
-                                multiple={true}
-                                className={'treeList'}
-                                treeData={buildMenuTree(sortTreeData(menuData.menus), searchValue)}
-                            />
-                        </Spin>
-                    </> : <Empty className={'code-content-empty'}/>
-            }
-
-        </Drawer>
+  return (
+    <>
+      <Drawer
+        title={l('role.assignMenu', '', { roleName: values.roleName })}
+        open={open}
+        width={'55%'}
+        maskClosable={false}
+        onClose={handleClose}
+        extra={renderExtraButtons()}
+      >
+        {menuData.menus.length > 0 ? (
+          <>
+            <Input
+              placeholder={l('global.search.text')}
+              allowClear
+              style={{ marginBottom: 16 }}
+              value={searchValue}
+              onChange={onSearchChange}
+            />
+            <Spin spinning={loading}>
+              <DirectoryTree
+                selectable
+                defaultCheckedKeys={[...menuData.selectedMenuIds]}
+                checkable
+                defaultExpandAll
+                onCheck={(keys) => onCheck(keys)}
+                multiple={true}
+                className={'treeList'}
+                treeData={buildMenuTree(
+                  sortTreeData(menuData.menus),
+                  searchValue,
+                )}
+              />
+            </Spin>
+          </>
+        ) : (
+          <Empty className={'code-content-empty'} />
+        )}
+      </Drawer>
     </>
-}
+  );
+};
 
-export default AssignMenu
+export default AssignMenu;
