@@ -17,10 +17,10 @@
  *
  */
 
-import { UserBaseInfo } from '@/types/User/data';
 import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
 import { CheckCard } from '@ant-design/pro-components';
 import React from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type TenantCardProps = {
   tenant: UserBaseInfo.Tenant[];

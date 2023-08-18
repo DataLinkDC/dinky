@@ -21,22 +21,22 @@ import { FormContextValue } from '@/components/Context/FormContext';
 import PermissionsForm from '@/pages/AuthCenter/RowPermissions/components/PermissionsModal/PermissionsForm';
 import { queryList } from '@/services/api';
 import { API_CONSTANTS, NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { RowPermissions, UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {RowPermissions, UserBaseInfo} from "@/types/AuthCenter/data";
 
 /**
  * RoleSelectPermissionsFormProps
  */
-type RoleSelectPermissionsFormProps = {
+type RolePermissionsFormProps = {
   onCancel: (flag?: boolean) => void;
   onSubmit: (values: Partial<RowPermissions>) => void;
   modalVisible: boolean;
   values: Partial<RowPermissions>;
 };
 
-export const PermissionsModal: React.FC<RoleSelectPermissionsFormProps> = (
+export const PermissionsModal: React.FC<RolePermissionsFormProps> = (
   props,
 ) => {
   /**

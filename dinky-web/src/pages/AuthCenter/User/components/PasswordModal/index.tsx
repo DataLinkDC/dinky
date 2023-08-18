@@ -20,10 +20,10 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type PasswordModalFormProps = {
   onCancel: (flag?: boolean) => void;

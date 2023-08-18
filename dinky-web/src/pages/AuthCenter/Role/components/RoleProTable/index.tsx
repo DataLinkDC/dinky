@@ -31,13 +31,13 @@ import {
   queryDataByParams,
 } from '@/services/BusinessCrud';
 import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data.d';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Tag } from 'antd';
 import React, { Key, useRef, useState } from 'react';
 import RoleModalForm from '../RoleModalForm';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 const RoleProTable: React.FC = () => {
   /**

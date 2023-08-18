@@ -25,7 +25,6 @@ import {
   queryDataByParams,
 } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -36,6 +35,8 @@ import React, { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
+import {API} from "@/services/data";
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);

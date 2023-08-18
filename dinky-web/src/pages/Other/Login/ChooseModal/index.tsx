@@ -19,12 +19,12 @@
 
 import TenantCard from '@/pages/Other/Login/ChooseModal/TenantCard';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { CheckGroupValueType } from '@ant-design/pro-card/es/components/CheckCard/Group';
 import { Modal } from 'antd';
 import React, { useState } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type ChooseModalProps = {
   tenantVisible: boolean;

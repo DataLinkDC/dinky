@@ -18,10 +18,10 @@
  */
 
 import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
-import { SysMenu } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { Empty, Input, Spin, Tree } from 'antd';
 import React, { useCallback, useState } from 'react';
+import {SysMenu} from "@/types/AuthCenter/data";
 
 const { DirectoryTree } = Tree;
 

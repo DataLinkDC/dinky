@@ -17,11 +17,11 @@
  *
  */
 
-import { LoginLog } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Space, Typography } from 'antd';
 import { TimelineItemProps } from 'antd/es/timeline/TimelineItem';
 import moment from 'moment';
+import {LoginLog} from "@/types/AuthCenter/data";
 
 const { Text } = Typography;
 

@@ -28,13 +28,13 @@ import {
   queryDataByParams,
 } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/constants';
-import { SysMenu } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { PlusSquareTwoTone, ReloadOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
+import {SysMenu} from "@/types/AuthCenter/data";
 
 const MenuList: React.FC = () => {
   /**
@@ -181,7 +181,7 @@ const MenuList: React.FC = () => {
       <>
         {updateModalVisible && formValues && disabled && (
           <Button
-            size={'large'}
+            size={'small'}
             type={'primary'}
             onClick={() => setDisabled(false)}
           >
@@ -190,7 +190,7 @@ const MenuList: React.FC = () => {
         )}
         {updateModalVisible && formValues && !disabled && (
           <Button
-            size={'large'}
+            size={'small'}
             type={'dashed'}
             onClick={() => setDisabled(true)}
           >
@@ -223,7 +223,6 @@ const MenuList: React.FC = () => {
             isRootMenu={isRootMenu}
             treeData={treeData}
             disabled={disabled}
-            clickNode={clickedNode.clickedNode}
             values={formValues}
             onCancel={handleCancel}
             open={updateModalVisible}
@@ -240,7 +239,6 @@ const MenuList: React.FC = () => {
         <>
           <MenuForm
             selectedKeys={selectedKeys}
-            clickNode={clickedNode.rightClickedNode}
             isRootMenu={isRootMenu}
             treeData={treeData}
             values={{}}

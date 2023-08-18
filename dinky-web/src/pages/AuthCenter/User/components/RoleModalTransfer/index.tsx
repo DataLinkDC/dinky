@@ -17,10 +17,10 @@
  */
 
 import RoleTransfer from '@/pages/AuthCenter/User/components/RoleModalTransfer/RoleTransfer';
-import { UserBaseInfo } from '@/types/User/data.d';
 import { l } from '@/utils/intl';
 import { Modal } from 'antd';
 import { useState } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type RoleTransferFromProps = {
   user: Partial<UserBaseInfo.User>;

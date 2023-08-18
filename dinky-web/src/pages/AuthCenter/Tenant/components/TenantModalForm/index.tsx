@@ -19,10 +19,10 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm/TenantForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type TenantModalFormProps = {
   onCancel: (flag?: boolean) => void;

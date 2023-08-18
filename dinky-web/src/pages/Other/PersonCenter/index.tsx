@@ -25,7 +25,6 @@ import LoginLogRecord from '@/pages/Other/PersonCenter/LoginLogRecord';
 import OperationLogRecord from '@/pages/Other/PersonCenter/OperationLogRecord';
 import { handleOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { useModel } from '@@/exports';
 import { SecurityScanTwoTone } from '@ant-design/icons';
@@ -37,6 +36,7 @@ import {
 import { Descriptions, Divider, Form, Tag } from 'antd';
 import { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 const PersonCenter = () => {
   const [form] = Form.useForm();

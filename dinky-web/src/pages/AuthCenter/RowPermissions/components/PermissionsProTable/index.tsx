@@ -24,11 +24,11 @@ import { PermissionsModal } from '@/pages/AuthCenter/RowPermissions/components/P
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
-import { RowPermissions } from '@/types/User/data';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
+import {RowPermissions} from "@/types/AuthCenter/data";
 
 const PermissionsProTable: React.FC = () => {
   const [formValues, setFormValues] = useState<Partial<RowPermissions>>({});

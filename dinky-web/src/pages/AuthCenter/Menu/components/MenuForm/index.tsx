@@ -23,11 +23,12 @@ import {
   MENU_TYPE_OPTIONS,
 } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
 import {
-  buildMenuFormTree,
-  sortTreeData,
+    buildMenuFormTree, getMaxOrderNumToNextOrderNum,
+    sortTreeData,
 } from '@/pages/AuthCenter/Menu/function';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { SysMenu } from '@/types/RegCenter/data';
+import { SysMenu } from '@/types/AuthCenter/data';
+
 import { l } from '@/utils/intl';
 import {
   Key,
@@ -40,7 +41,7 @@ import {
   ProFormTreeSelect,
 } from '@ant-design/pro-components';
 import { Form, Space } from 'antd';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 type MenuFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -51,7 +52,6 @@ type MenuFormProps = {
   selectedKeys: Key[];
   treeData: SysMenu[];
   isRootMenu?: boolean;
-  clickNode?: any;
 };
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {
@@ -69,8 +69,8 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     isRootMenu = false,
     treeData,
     selectedKeys,
-    clickNode: { nextOrderNum },
   } = props;
+
 
   /**
    * init form
@@ -130,7 +130,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     return (
       <>
         <ProFormTreeSelect
-          initialValue={selectedKeys}
+          initialValue={isRootMenu?  [-1]: selectedKeys}
           shouldUpdate
           name={'parentId'}
           label={l('menu.parentId')}
@@ -138,24 +138,11 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           placeholder={l('menu.parentIdPlaceholder')}
           fieldProps={{
             labelInValue: false,
-            treeData: [
-              {
-                label: (
-                  <>
-                    Root{' '}
-                    <span style={{ color: 'grey' }}>
-                      &nbsp;&nbsp;&nbsp;Root Folder
-                    </span>
-                  </>
-                ),
-                value: '-1',
-                children: buildMenuFormTree(
-                  sortTreeData(treeData),
-                  searchValue,
-                  true,
-                ),
-              },
-            ],
+            treeData: [{
+                label: <>Root<span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;Root Folder</span></>,
+                value: -1,
+                children: buildMenuFormTree(sortTreeData(treeData), searchValue, true,),
+              }],
             onSearch: (value) => setSearchValue(value),
             treeDefaultExpandAll: true,
           }}
@@ -214,7 +201,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           name="orderNum"
           disabled
           label={l('menu.orderNum')}
-          initialValue={nextOrderNum ?? undefined}
+          initialValue={getMaxOrderNumToNextOrderNum(sortTreeData(treeData)) + 1}
         />
 
         <ProFormTextArea

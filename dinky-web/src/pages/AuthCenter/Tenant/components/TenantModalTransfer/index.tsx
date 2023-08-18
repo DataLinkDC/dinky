@@ -17,10 +17,10 @@
  */
 
 import TenantTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer/TenantTransfer';
-import { UserBaseInfo } from '@/types/User/data.d';
 import { l } from '@/utils/intl';
 import { Modal } from 'antd';
 import React, { useState } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type TableTransferFromProps = {
   tenant: Partial<UserBaseInfo.Tenant>;

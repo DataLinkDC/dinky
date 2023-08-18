@@ -20,12 +20,11 @@
 import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/constants';
-import { SysMenu } from '@/types/RegCenter/data';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { Key } from '@ant-design/pro-components';
 import { Button, Drawer, Empty, Input, Space, Spin, Tree } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import {SysMenu, UserBaseInfo} from "@/types/AuthCenter/data";
 
 type AssignMenuProps = {
   values: Partial<UserBaseInfo.Role>;

@@ -19,10 +19,10 @@
 import TableTransfer from '@/components/TableTransfer';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data.d';
 import { l } from '@/utils/intl';
 import { ProColumns } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type TenantTransferFromProps = {
   tenant: Partial<UserBaseInfo.Tenant>;

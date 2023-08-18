@@ -214,16 +214,3 @@ export type UDFTemplate = BaseBeanColumns & {
   templateCode: string;
 };
 
-export type SysMenu = BaseBeanColumns & {
-  parentId: number; // 父级
-  orderNum: number; // 排序
-  path: string; // 路由
-  component: string; // 组件
-  type: string; // C菜单 F按钮 M目录
-  display: boolean; // 菜单状态(0显示 1隐藏)
-  perms: string; // 权限标识
-  icon: string; // 图标
-  rootMenu: boolean;
-  note: string;
-  children: SysMenu[];
-};

@@ -22,11 +22,11 @@ import {
   YES_OR_NO_ENUM,
   YES_OR_NO_FILTERS_MAPPING,
 } from '@/types/Public/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Drawer } from 'antd';
 import React, { useEffect, useRef } from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type RoleUserListProps = {
   role: Partial<UserBaseInfo.Role>;

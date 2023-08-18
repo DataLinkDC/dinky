@@ -18,7 +18,6 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data.d';
 import { l } from '@/utils/intl';
 import {
   ProForm,
@@ -28,6 +27,7 @@ import {
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type RoleProFormProps = {
   values: Partial<UserBaseInfo.Role>;

@@ -18,13 +18,13 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type PasswordFormProps = {
   values: UserBaseInfo.User;

@@ -48,7 +48,6 @@ import {
   YES_OR_NO_ENUM,
   YES_OR_NO_FILTERS_MAPPING,
 } from '@/types/Public/constants';
-import { UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import { SuccessMessage, WarningMessage } from '@/utils/messages';
 import { useAccess } from '@@/exports';
@@ -57,6 +56,7 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
 import RoleModalTransfer from '../RoleModalTransfer';
+import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 const UserProTable = () => {
   /**

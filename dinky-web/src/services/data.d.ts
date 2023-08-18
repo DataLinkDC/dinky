@@ -55,9 +55,6 @@ declare namespace API {
     success?: boolean;
   };
 
-  type TenantRequest = {
-    username?: string;
-  };
 }
 
 declare namespace PublicParams {

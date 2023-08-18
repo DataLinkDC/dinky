@@ -19,7 +19,6 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { RowPermissions, UserBaseInfo } from '@/types/User/data';
 import { l } from '@/utils/intl';
 import {
   ProForm,
@@ -31,6 +30,7 @@ import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useState } from 'react';
+import {RowPermissions, UserBaseInfo} from "@/types/AuthCenter/data";
 
 /**
  * PermissionsFormProps
