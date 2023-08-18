@@ -54,7 +54,7 @@ const RoleProTable: React.FC = () => {
 
   const actionRef = useRef<ActionType>();
 
-  const executeAndCallbackRefresh = async (callback: () => void) => {
+  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
     setLoading(true);
     await callback();
     setLoading(false);

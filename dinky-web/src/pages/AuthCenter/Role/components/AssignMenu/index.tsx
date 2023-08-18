@@ -61,7 +61,6 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
 
   /**
    * close
-   * @type {() => void}
    */
   const handleClose = useCallback(() => {
     onClose();
@@ -73,14 +72,13 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
    */
   const handleSubmit = async () => {
     setLoading(true);
-    await onSubmit(selectValue);
+    onSubmit(selectValue);
     setLoading(false);
     setMenuData({ menus: [], selectedMenuIds: [] });
   };
 
   /**
    * render extra buttons
-   * @returns {JSX.Element}
    */
   const renderExtraButtons = () => {
     return (
@@ -97,7 +95,6 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
 
   /**
    * search tree node
-   * @type {(e: {target: {value: React.SetStateAction<string>}}) => void}
    */
   const onSearchChange = useCallback(
     (e: { target: { value: React.SetStateAction<string> } }) => {
@@ -111,7 +108,6 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   };
 
   return (
-    <>
       <Drawer
         title={l('role.assignMenu', '', { roleName: values.roleName })}
         open={open}
@@ -149,7 +145,6 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
           <Empty className={'code-content-empty'} />
         )}
       </Drawer>
-    </>
   );
 };
 

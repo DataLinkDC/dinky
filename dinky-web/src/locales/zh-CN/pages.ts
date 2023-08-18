@@ -1152,9 +1152,6 @@ export default {
   'pages.datastudio.footer.codePosition': '行{Ln}:列{Col} ',
 
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
-  'pages.datastudio.help.sqlChangedPrompt':
-    '检测到当前页远程有更改，是否刷新更新数据？',
-  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
 
   'datastudio.middle.qg': '快捷引导',
   'datastudio.middle.qg.clusterInstance': '注册 Session 集群',

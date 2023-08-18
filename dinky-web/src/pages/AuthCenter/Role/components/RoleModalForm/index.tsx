@@ -76,8 +76,8 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    await handleSubmit({ ...values, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
   };
 
   /**

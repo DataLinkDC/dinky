@@ -91,19 +91,17 @@ export const PermissionsModal: React.FC<RoleSelectPermissionsFormProps> = (
 
   /**
    * submit form
-   * @returns {Promise<void>}
    */
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
-    await handleSubmit({ ...values, ...fieldsValue });
-    await handleCancel();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
   };
 
   /**
    * render
    */
   return (
-    <>
       <Modal
         {...NORMAL_MODAL_OPTIONS}
         title={
@@ -115,6 +113,5 @@ export const PermissionsModal: React.FC<RoleSelectPermissionsFormProps> = (
       >
         <PermissionsForm form={form} values={values} roles={roleList} />
       </Modal>
-    </>
   );
 };
