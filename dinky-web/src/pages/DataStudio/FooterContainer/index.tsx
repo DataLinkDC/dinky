@@ -111,8 +111,6 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
 
   /**
    * render footer right info
-   * @param {ButtonRoute[]} routes
-   * @returns {JSX.Element[]}
    */
   const renderFooterRightInfo = (routes: ButtonRoute[]) => {
     return routes

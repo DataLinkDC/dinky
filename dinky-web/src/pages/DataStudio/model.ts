@@ -105,6 +105,9 @@ export enum TabsPageType {
   None = '',
   metadata = 'metadata',
   project = 'project',
+}
+
+export enum TabsPageSubType {
   flinkSql = 'flinksql',
 }
 
@@ -112,9 +115,9 @@ export type TabsItemType = {
   id: string;
   label: string;
   breadcrumbLabel: string;
-  params: number | string | object | MetadataParams | DataStudioParams;
+  params: MetadataParams | DataStudioParams;
   type: TabsPageType;
-  subType?: TabsPageType;
+  subType?: TabsPageSubType;
   key: string;
   value: string;
   icon: any;
@@ -442,25 +445,21 @@ const Model: ModelType = {
       let toolContentHeight = 0;
       if (payload === '') {
         centerContentHeight =
-          (state.centerContentHeight as number) +
-          (state.bottomContainer.height as number);
+            state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight =
-          (state.toolContentHeight as number) +
-          (state.bottomContainer.height as number);
+            state.toolContentHeight + (state.bottomContainer.height as number);
         console.log(2);
       } else if (
-        state.bottomContainer.selectKey !== '' &&
-        payload !== state.bottomContainer.selectKey
+          state.bottomContainer.selectKey !== '' &&
+          payload !== state.bottomContainer.selectKey
       ) {
-        centerContentHeight = state.centerContentHeight as number;
-        toolContentHeight = state.toolContentHeight as number;
+        centerContentHeight = state.centerContentHeight;
+        toolContentHeight = state.toolContentHeight;
       } else {
         centerContentHeight =
-          (state.centerContentHeight as number) -
-          (state.bottomContainer.height as number);
+            state.centerContentHeight - (state.bottomContainer.height as number);
         toolContentHeight =
-          (state.toolContentHeight as number) -
-          (state.bottomContainer.height as number);
+            state.toolContentHeight - (state.bottomContainer.height as number);
         console.log(3);
       }
 

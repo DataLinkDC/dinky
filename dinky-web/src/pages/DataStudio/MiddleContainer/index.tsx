@@ -52,32 +52,24 @@ const MiddleContainer = (props: any) => {
   const [includeTab, setIncludeTab] = useState({});
 
   const updateRightKey = (key: string) => {
-    let oldPane: TabsItemType;
-    let newPane: TabsItemType;
-
-    panes.forEach((pane: TabsItemType) => {
-      if (pane.key === key) {
-        newPane = pane;
-      }
-
-      if (pane.key === activeKey) {
-        oldPane = pane;
-      }
-    });
+    const oldPane = panes.find((pane: TabsItemType) => pane.key === activeKey);
+    const newPane = panes.find((pane: TabsItemType) => pane.key === key);
 
     let oldRightSideAvailableKey: string[] = [];
     let newRightSideAvailableKey: string[] = [];
 
     RightSide.forEach((x) => {
-      if (x.isShow) {
-        if (x.isShow(oldPane.type, oldPane.subType)) {
-          oldRightSideAvailableKey.push(x.key);
-        }
-        if (x.isShow(newPane.type, newPane.subType)) {
-          newRightSideAvailableKey.push(x.key);
-        }
-      } else {
+      if (!x.isShow) {
         oldRightSideAvailableKey.push(x.key);
+        newRightSideAvailableKey.push(x.key);
+        return;
+      }
+
+      if (x.isShow(oldPane.type, oldPane.subType)) {
+        oldRightSideAvailableKey.push(x.key);
+      }
+
+      if (x.isShow(newPane.type, newPane.subType)) {
         newRightSideAvailableKey.push(x.key);
       }
     });
@@ -109,20 +101,9 @@ const MiddleContainer = (props: any) => {
       payload: selectKey,
     });
   };
-  /**
-   * 更新当前激活的tab
-   * @param {string} key
-   * @param eInfo
-   */
-  const updateActiveKey = (key: string, eInfo: any) => {
-    if (key === activeKey) {
-      return;
-    }
 
-    const {
-      target: { innerText },
-    } = eInfo;
-    if (!innerText) {
+  const updateActiveKey = (key: string, value: string) => {
+    if (key === activeKey) {
       return;
     }
 
@@ -135,12 +116,12 @@ const MiddleContainer = (props: any) => {
     });
 
     // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-    const replaceLabel = innerText.toString().replace('.', '/');
+    const name = value.toString().replace('.', '/');
     dispatch({
       type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: [replaceLabel],
+      payload: [name],
     });
-  };
+  }
 
   /**
    * 关闭所有标签
@@ -165,20 +146,11 @@ const MiddleContainer = (props: any) => {
 
   /**
    * the right click event
-   * @param info
-   * @param item
    */
-  const handleRightClick = (info: any, item: any) => {
+  const handleRightClick = (info: React.MouseEvent<HTMLDivElement>, item: TabsItemType) => {
     // 阻止默认右键事件
     info.preventDefault();
-    updateActiveKey(item.key, info);
-
-    // 替换掉 . 为 /, 因为再 tree 里选中的 key 是 / 分割的
-    const replaceLabel = item.label.toString().replace('.', '/');
-    dispatch({
-      type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: [replaceLabel],
-    });
+    updateActiveKey(item.key, item.label);
 
     // 设置选中的值
     setIncludeTab(item);
@@ -212,7 +184,6 @@ const MiddleContainer = (props: any) => {
 
   /**
    * 右键菜单
-   * @returns {JSX.Element}
    */
   const renderRightClickMenu = () => {
     return (
@@ -262,9 +233,7 @@ const MiddleContainer = (props: any) => {
       key: item.key,
       label: (
         <Space
-          onClick={() =>
-            updateActiveKey(item.key, { target: { innerText: item.label } })
-          }
+          onClick={(e) => updateActiveKey(item.key, item.label) }
           size={0}
           onContextMenu={(e) => handleRightClick(e, item)}
           key={item.key}
@@ -303,7 +272,6 @@ const MiddleContainer = (props: any) => {
 
   /**
    * render middle content
-   * @returns {JSX.Element}
    */
   const renderMiddleContent = () => {
     if (tabItems?.length === 0) {
@@ -320,30 +288,26 @@ const MiddleContainer = (props: any) => {
     }
 
     return (
-      <>
         <ConfigProvider
-          theme={{
-            components: {
-              Tabs: {
-                margin: 0,
-                borderRadiusLG: 0,
+            theme={{
+              components: {
+                Tabs: {
+                  margin: 0,
+                  borderRadiusLG: 0,
+                },
               },
-            },
-          }}
-        >
+            }}>
           <Tabs
-            className={'data-studio-tabs'}
-            tabBarStyle={{ borderBlock: `1px solid ${themeValue.borderColor}` }}
-            hideAdd
-            onTabClick={(active, e) => updateActiveKey(active, e)}
-            activeKey={activeKey}
-            type="editable-card"
-            onEdit={closeTab}
-            items={tabItems}
-          />
+              className={'data-studio-tabs'}
+              tabBarStyle={{borderBlock: `1px solid ${themeValue.borderColor}`}}
+              hideAdd
+              // onTabClick={(active, e) => {updateActiveKey(active, tabItems[active].label)}}
+              activeKey={activeKey}
+              type="editable-card"
+              onEdit={closeTab}
+              items={tabItems}/>
           {renderRightClickMenu()}
         </ConfigProvider>
-      </>
     );
   };
 

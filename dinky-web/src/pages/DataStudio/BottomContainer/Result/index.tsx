@@ -121,9 +121,11 @@ const Result = (props: any) => {
     if (!currentTabs) {
       return;
     }
+
     if (currentTabs.type !== TabsPageType.project) {
       return;
     }
+
     if ((currentTabs?.params as DataStudioParams).resultData && !isRefresh) {
       setData((currentTabs?.params as DataStudioParams).resultData);
     } else {
