@@ -6,7 +6,7 @@ import {
 } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import { queryList } from '@/services/api';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -16,6 +16,7 @@ import { ProTable } from '@ant-design/pro-components';
 import { Button, Table } from 'antd';
 import { useEffect, useRef } from 'react';
 import { history } from 'umi';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const JobList = () => {
   const tableRef = useRef<ActionType>();

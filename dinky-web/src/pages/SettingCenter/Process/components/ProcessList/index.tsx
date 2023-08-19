@@ -21,12 +21,13 @@ import {
 } from '@/pages/SettingCenter/Process/components/ProcessList/function';
 import SubStepsTable from '@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable';
 import { getData } from '@/services/api';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { Process } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import React from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const ProcessList: React.FC = () => {
   const processColumns: ProColumns<Process>[] = [

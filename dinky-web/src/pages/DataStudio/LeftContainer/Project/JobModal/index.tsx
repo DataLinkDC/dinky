@@ -21,7 +21,6 @@ import { FormContextValue } from '@/components/Context/FormContext';
 import { JOB_TYPE } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import { isUDF } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import {
@@ -32,6 +31,7 @@ import {
 import { ProFormCascader } from '@ant-design/pro-form/lib';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type JobModalProps = {
   onCancel: () => void;

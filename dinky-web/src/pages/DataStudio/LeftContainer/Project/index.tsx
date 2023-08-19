@@ -37,7 +37,6 @@ import {
   handlePutDataByParams,
   handleRemoveById,
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { Modal, Typography } from 'antd';
@@ -45,6 +44,7 @@ import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Text } = Typography;
 

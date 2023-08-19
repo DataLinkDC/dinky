@@ -61,7 +61,7 @@ const RoleModalTransfer = (props: RoleTransferFromProps) => {
         onOk={() => handleSubmit(targetKeys)}
       >
         <RoleTransfer
-          user={user}
+          role={user}
           onChange={(value) => handleValueChange(value)}
         />
       </Modal>

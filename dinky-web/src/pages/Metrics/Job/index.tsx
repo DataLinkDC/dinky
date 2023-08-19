@@ -31,12 +31,12 @@ import {
 } from '@/pages/Metrics/Job/function';
 import { getFlinkRunTask, saveFlinkMetrics } from '@/pages/Metrics/Job/service';
 import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Input, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import FlinkChart from './FlinkChart';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const getJobMetrics = async (job: JobMetrics) => {
   const url =

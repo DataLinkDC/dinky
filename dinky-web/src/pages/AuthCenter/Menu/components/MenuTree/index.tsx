@@ -29,7 +29,7 @@ type MenuTreeProps = {
   treeData: SysMenu[];
   onNodeClick: (info: any) => void;
   onRightClick: (info: any) => void;
-  selectedKeys: string[];
+  selectedKeys: string[] | number[];
   loading: boolean;
 };
 const MenuTree: React.FC<MenuTreeProps> = (props) => {

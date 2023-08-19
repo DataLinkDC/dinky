@@ -20,13 +20,13 @@
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { removeById } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { DeleteTwoTone } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Card, Col, List, message, Modal, Row, Skeleton, Tag } from 'antd';
 import { useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type Version = {
   id?: number;

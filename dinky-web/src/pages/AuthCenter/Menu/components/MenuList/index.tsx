@@ -27,60 +27,44 @@ import {
   handleRemoveById,
   queryDataByParams,
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { PlusSquareTwoTone, ReloadOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
-import {SysMenu} from "@/types/AuthCenter/data";
+import {SysMenu} from "@/types/AuthCenter/data.d";
+import { MenuState} from "@/types/AuthCenter/state.d";
+import {InitMenuState} from "@/types/AuthCenter/init.d";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const MenuList: React.FC = () => {
-  /**
-   * status
-   */
-  const [formValues, setFormValues] = useState<Partial<SysMenu>>({});
-  const [contextMenuPosition, setContextMenuPosition] = useState({});
-  const [selectedKeys, setSelectedKeys] = useState([]);
-  const [clickedNode, setClickedNode] = useState<{
-    clickedNode: any;
-    rightClickedNode: any;
-  }>({
-    clickedNode: {},
-    rightClickedNode: {},
-  });
-  const [treeData, setTreeData] = useState<SysMenu[]>([]);
 
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [contextMenuVisible, setContextMenuVisible] = useState(false);
-  const [disabled, setDisabled] = useState<boolean>(false);
-  const [isRootMenu, setIsRootMenu] = useState<boolean>(false);
+
+  const [menuState, setMenuState] = useState<MenuState>(InitMenuState)
+
+  const executeAndCallbackRefresh = async (callback: () => void) => {
+    setMenuState(prevState => ({ ...prevState, loading: true }));
+    await callback();
+    setMenuState(prevState => ({ ...prevState, loading: false }));
+  };
 
   /**
    * query
    */
   const queryMenuData = async () => {
-    setLoading(true);
-    await queryDataByParams(API_CONSTANTS.MENU_LIST).then((res) =>
-      setTreeData(res),
-    );
-    setLoading(false);
+    executeAndCallbackRefresh(async () => {
+      await queryDataByParams(API_CONSTANTS.MENU_LIST).then((res) =>
+          setMenuState(prevState => ({ ...prevState, menuTreeData: res })),
+      );
+    })
   };
 
   useEffect(() => {
     queryMenuData();
   }, []);
 
-  const executeAndCallbackRefresh = async (callback: () => void) => {
-    setLoading(true);
-    await callback();
-    setLoading(false);
-    await queryMenuData();
-  };
+
 
   /**
    * delete role by id
@@ -90,10 +74,10 @@ const MenuList: React.FC = () => {
     await executeAndCallbackRefresh(async () => {
       await handleRemoveById(
         API_CONSTANTS.MENU_DELETE,
-        clickedNode?.rightClickedNode.key as number,
+          menuState.clickNode?.rightClickedNode.key as number,
       );
     });
-    setContextMenuVisible(false);
+    setMenuState(prevState => ({ ...prevState, contextMenuOpen: false }));
   };
 
   /**
@@ -101,30 +85,31 @@ const MenuList: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
-    await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.MENU_ADD_OR_UPDATE, { ...value });
-    });
-    handleModalVisible(false);
+    return await handleAddOrUpdate(API_CONSTANTS.MENU_ADD_OR_UPDATE, { ...value },
+        ()=>{
+          setMenuState(prevState => ({ ...prevState, loading: true }))
+        },
+        ()=> {
+          setMenuState(prevState => ({ ...prevState, addedMenuOpen: false ,loading:false}))
+          queryMenuData()
+        });
   };
 
   /**
    * cancel
    */
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setContextMenuVisible(false);
+    setMenuState(prevState => ({...prevState, addedMenuOpen: false, editMenuOpen: false, contextMenuOpen: false}));
   };
 
   /**
    * create sub menu callback
    */
   const handleCreateSubMenu = () => {
-    handleModalVisible(true);
-    setIsRootMenu(false);
-    handleUpdateModalVisible(false);
-    setContextMenuVisible(false);
-    setFormValues({});
+    setMenuState(prevState => ({
+      ...prevState, addedMenuOpen: true, editMenuOpen: false, contextMenuOpen: false, isRootMenu: false, sysMenuValue: {}
+    }));
+
   };
 
   const handleMenuClick = async (node: MenuInfo) => {
@@ -150,49 +135,46 @@ const MenuList: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    setSelectedKeys([node.key] as any);
-    setClickedNode((prevState) => ({ ...prevState, rightClickedNode: node }));
-    setContextMenuVisible(true);
-    setContextMenuPosition({
-      position: 'fixed',
-      cursor: 'context-menu',
-      width: '12vw',
-      left: event.clientX + 20, // + 20 是为了让鼠标不至于在选中的节点上 && 不遮住当前鼠标位置
-      top: event.clientY + 20, // + 20 是为了让鼠标不至于在选中的节点上
-      zIndex: 888,
-    });
+    setMenuState(prevState => ({
+      ...prevState, contextMenuOpen: true ,selectedKeys: [node.key],
+      clickNode: {...prevState.clickNode, rightClickedNode: node},
+      contextMenuPosition: {...prevState.contextMenuPosition, top: event.clientY + 20, left: event.clientX + 20}
+    }));
+
   };
 
   const handleNodeClick = async (info: any) => {
     const {
       node: { key, fullInfo },
     } = info;
-    setSelectedKeys([key] as any);
-    setFormValues(fullInfo);
-    setClickedNode((prevState) => ({ ...prevState, clickedNode: info }));
-    handleUpdateModalVisible(true);
-    setDisabled(true);
-    setIsRootMenu(fullInfo.parentId === -1);
-    handleModalVisible(false);
+
+    setMenuState(prevState => ({
+        ...prevState, selectedKeys: [key], clickNode: {...prevState.clickNode, oneClickedNode: info},
+      sysMenuValue: fullInfo, editMenuOpen: true, addedMenuOpen: false, isEditDisabled: true,
+        isRootMenu: fullInfo.parentId === -1
+    }));
   };
 
   const renderRightCardExtra = () => {
+    const {  editMenuOpen
+      , sysMenuValue,isEditDisabled,
+    } = menuState;
     return (
       <>
-        {updateModalVisible && formValues && disabled && (
+        {editMenuOpen && sysMenuValue && isEditDisabled && (
           <Button
             size={'small'}
             type={'primary'}
-            onClick={() => setDisabled(false)}
+            onClick={() => setMenuState(prevState => ({ ...prevState, isEditDisabled: false }))}
           >
             {l('button.edit')}
           </Button>
         )}
-        {updateModalVisible && formValues && !disabled && (
+        {editMenuOpen && sysMenuValue && !isEditDisabled && (
           <Button
             size={'small'}
             type={'dashed'}
-            onClick={() => setDisabled(true)}
+            onClick={() => setMenuState(prevState => ({ ...prevState, isEditDisabled: true }))}
           >
             {l('button.cancel')}
           </Button>
@@ -206,8 +188,12 @@ const MenuList: React.FC = () => {
    * @returns {JSX.Element}
    */
   const renderRightContent = () => {
+    const {  editMenuOpen,addedMenuOpen,selectedKeys ,isRootMenu ,menuTreeData
+      , sysMenuValue,isEditDisabled,
+    } = menuState;
+
     // default
-    if (!updateModalVisible && !modalVisible) {
+    if (!editMenuOpen && !addedMenuOpen) {
       return (
         <>
           <OpHelper />
@@ -215,34 +201,32 @@ const MenuList: React.FC = () => {
       );
     }
     // update
-    if (formValues && updateModalVisible) {
+    if (sysMenuValue && editMenuOpen) {
       return (
         <>
           <MenuForm
             selectedKeys={selectedKeys}
             isRootMenu={isRootMenu}
-            treeData={treeData}
-            disabled={disabled}
-            values={formValues}
+            treeData={menuTreeData}
+            disabled={isEditDisabled}
+            values={sysMenuValue}
             onCancel={handleCancel}
-            open={updateModalVisible}
-            onSubmit={(value: Partial<SysMenu>) =>
-              handleAddOrUpdateSubmit(value)
-            }
-          />
+            open={editMenuOpen}
+            onSubmit={ async  (value: Partial<SysMenu>) : Promise<boolean> => await handleAddOrUpdateSubmit(value)}
+              />
         </>
       );
     }
     // add
-    if (modalVisible) {
+    if (addedMenuOpen) {
       return (
         <>
           <MenuForm
             selectedKeys={selectedKeys}
             isRootMenu={isRootMenu}
-            treeData={treeData}
+            treeData={menuTreeData}
             values={{}}
-            open={modalVisible}
+            open={addedMenuOpen}
             onCancel={handleCancel}
             onSubmit={(value: Partial<SysMenu>) =>
               handleAddOrUpdateSubmit(value)
@@ -257,10 +241,7 @@ const MenuList: React.FC = () => {
    * create root menu
    */
   const handleCreateRoot = () => {
-    handleUpdateModalVisible(false);
-    handleModalVisible(true);
-    setIsRootMenu(true);
-    setFormValues({});
+    setMenuState(prevState => ({ ...prevState, addedMenuOpen: true, editMenuOpen: false, contextMenuOpen: false, isRootMenu: true, sysMenuValue: {} }));
   };
 
   const renderLeftExtra = () => {
@@ -289,13 +270,14 @@ const MenuList: React.FC = () => {
   };
 
   const renderAddSubMenuTitle = () => {
+    const { sysMenuValue, editMenuOpen, addedMenuOpen, isRootMenu } = menuState;
     return (
       <>
-        {formValues.id && updateModalVisible
+        {sysMenuValue?.id && editMenuOpen
           ? l('menu.edit')
-          : !formValues.id && modalVisible && !isRootMenu
+          : !sysMenuValue?.id && addedMenuOpen && !isRootMenu
           ? l('right.menu.addSub')
-          : !formValues.id && modalVisible && isRootMenu
+          : !sysMenuValue?.id && addedMenuOpen && isRootMenu
           ? l('right.menu.createRoot')
           : ''}
       </>
@@ -317,9 +299,9 @@ const MenuList: React.FC = () => {
           className={'siderTree schemaTree'}
         >
           <MenuTree
-            loading={loading}
-            selectedKeys={selectedKeys}
-            treeData={treeData}
+            loading={menuState.loading}
+            selectedKeys={menuState.selectedKeys}
+            treeData={menuState.menuTreeData}
             onRightClick={handleRightClick}
             onNodeClick={(info: any) => handleNodeClick(info)}
           />
@@ -337,10 +319,10 @@ const MenuList: React.FC = () => {
       </ProCard>
 
       <RightContextMenu
-        contextMenuPosition={contextMenuPosition}
-        open={contextMenuVisible}
-        openChange={() => setContextMenuVisible(false)}
-        items={RIGHT_CONTEXT_MENU(clickedNode.rightClickedNode?.type === 'F')}
+        contextMenuPosition={menuState.contextMenuPosition}
+        open={menuState.contextMenuOpen}
+        openChange={() => setMenuState(prevState => ({ ...prevState, contextMenuOpen: false }))}
+        items={RIGHT_CONTEXT_MENU(menuState.clickNode.rightClickedNode?.type === 'F')}
         onClick={handleMenuClick}
       />
     </>

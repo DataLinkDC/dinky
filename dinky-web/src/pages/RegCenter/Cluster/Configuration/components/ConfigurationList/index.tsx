@@ -35,7 +35,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
 } from '@/services/constants';
@@ -51,6 +50,7 @@ import { useRequest } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import { useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export default () => {
   /**

@@ -18,11 +18,11 @@
  */
 
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { TaskDialectSummary } from '@/types/Home/data';
 import { l } from '@/utils/intl';
 import { Radar, RadarConfig } from '@ant-design/plots';
 import { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const TaskDialectRadar = () => {
   const [data, setData] = useState<TaskDialectSummary[]>([]);

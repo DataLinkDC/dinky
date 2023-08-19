@@ -30,39 +30,32 @@ import {
   queryDataByParams,
   updateDataByParam,
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
+import {UserBaseInfo} from "@/types/AuthCenter/data.d";
+import {TenantListState} from "@/types/AuthCenter/state.d";
+import {InitTenantListState} from "@/types/AuthCenter/init.d";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const TenantProTable: React.FC = () => {
   /**
    * status
    */
-  const [handleGrantTenant, setHandleGrantTenant] = useState<boolean>(false);
-  const [tenantRelFormValues, setTenantRelFormValues] = useState<string[]>([]);
-  const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  const [tenantState , setTenantState] = useState<TenantListState>(InitTenantListState);
   const actionRef = useRef<ActionType>();
-  const [formValues, setFormValues] = useState<Partial<UserBaseInfo.Tenant>>(
-    {},
-  );
-  const [showUser, setShowUser] = useState<boolean>(false);
-  const [userList, setUserList] = React.useState<UserBaseInfo.User[]>([]);
 
   const queryUserListByTenantId = async (id: number) => {
     queryDataByParams(API_CONSTANTS.TENANT_USERS, { id }).then((res) =>
-      setUserList(res),
+        setTenantState(prevState => ({...prevState,tenantUserList: res}))
     );
   };
 
   const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
-    setLoading(true);
+    setTenantState(prevState => ({...prevState,loading: true}));
     await callback();
-    setLoading(false);
+    setTenantState(prevState => ({...prevState,loading: false}));
     actionRef.current?.reload?.();
   };
 
@@ -74,8 +67,9 @@ const TenantProTable: React.FC = () => {
     value: Partial<UserBaseInfo.Tenant>,
   ) => {
     await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.TENANT, value);
-      handleModalVisible(false);
+      await handleAddOrUpdate(API_CONSTANTS.TENANT, value,()=>{},
+          ()=> setTenantState(prevState => ({...prevState,addedTenantOpen: false})
+      ));
     });
   };
 
@@ -85,7 +79,6 @@ const TenantProTable: React.FC = () => {
    */
   const handleDeleteSubmit = async (id: number) => {
     await executeAndCallbackRefresh(async () => {
-      // TODO: delete tenant interface is use /api/tenant/delete  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/tenant (TENANT)
       await handleRemoveById(API_CONSTANTS.TENANT_DELETE, id);
     });
   };
@@ -96,20 +89,20 @@ const TenantProTable: React.FC = () => {
   const handleAssignUserSubmit = async () => {
     await executeAndCallbackRefresh(async () => {
       await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
-        tenantId: formValues.id,
-        userIds: tenantRelFormValues,
+        tenantId: tenantState.value.id,
+        userIds: tenantState.tenantUserIds,
       });
-      setHandleGrantTenant(false);
+      setTenantState(prevState => ({...prevState,assignUserOpen: false}));
     });
   };
   const handleCancel = () => {
-    handleModalVisible(false);
-    handleUpdateModalVisible(false);
-    setHandleGrantTenant(false);
+    setTenantState(prevState => ({...prevState
+      ,addedTenantOpen: false,editTenantOpen: false,assignUserOpen: false
+    }));
   };
 
   const handleAssignUserChange = (value: string[]) => {
-    setTenantRelFormValues(value);
+    setTenantState(prevState => ({...prevState,tenantUserIds: value}));
   };
 
   /**
@@ -117,22 +110,19 @@ const TenantProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setFormValues(record);
-    handleUpdateModalVisible(true);
+    setTenantState(prevState => ({...prevState,editTenantOpen: true, value: record}));
   };
   /**
    * assign user visible change
    * @param record
    */
   const handleAssignVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setFormValues(record);
-    setHandleGrantTenant(true);
+    setTenantState(prevState => ({...prevState,assignUserOpen: true, value: record}));
   };
 
   const handleShowUser = async (record: Partial<UserBaseInfo.Tenant>) => {
     await queryUserListByTenantId(record.id as number);
-    setShowUser(true);
-    setFormValues(record);
+    setTenantState(prevState => ({...prevState,viewUsersOpen: true, value: record}));
   };
 
   const handleSetTenantAdmin = async (value: Partial<UserBaseInfo.User>) => {
@@ -143,10 +133,10 @@ const TenantProTable: React.FC = () => {
     await executeAndCallbackRefresh(async () => {
       await updateDataByParam(API_CONSTANTS.USER_SET_TENANT_ADMIN, {
         userId: value.id,
-        tenantId: formValues.id,
+        tenantId: tenantState.value.id,
         tenantAdminFlag: tenantAdmin,
       });
-      await queryUserListByTenantId(formValues.id as number);
+      await queryUserListByTenantId(tenantState.value.id as number);
     });
   };
 
@@ -213,13 +203,13 @@ const TenantProTable: React.FC = () => {
       <ProTable<UserBaseInfo.Tenant>
         {...PROTABLE_OPTIONS_PUBLIC}
         key={'tenantTable'}
-        loading={loading}
+        loading={tenantState.loading}
         headerTitle={l('tenant.TenantManager')}
         actionRef={actionRef}
         toolBarRender={() => [
           <CreateBtn
             key={'tenantTable'}
-            onClick={() => handleModalVisible(true)}
+            onClick={() => setTenantState(prevState => ({...prevState,addedTenantOpen: true}))}
           />,
         ]}
         request={(params, sorter, filter: any) =>
@@ -233,7 +223,7 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormAdd'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={modalVisible}
+        modalVisible={tenantState.addedTenantOpen}
         values={{}}
       />
 
@@ -242,25 +232,25 @@ const TenantProTable: React.FC = () => {
         key={'tenantFormUpdate'}
         onSubmit={(value) => handleAddOrUpdateSubmit(value)}
         onCancel={() => handleCancel()}
-        modalVisible={updateModalVisible}
-        values={formValues}
+        modalVisible={tenantState.editTenantOpen}
+        values={tenantState.value}
       />
       {/* assign user to tenant */}
       <TenantModalTransfer
-        tenant={formValues}
-        modalVisible={handleGrantTenant}
+        tenant={tenantState.value}
+        modalVisible={tenantState.assignUserOpen}
         onChange={(values) => handleAssignUserChange(values)}
         onCancel={() => handleCancel()}
         onSubmit={() => handleAssignUserSubmit()}
       />
 
-      {formValues && Object.keys(formValues).length > 0 && (
+      {tenantState.value && Object.keys(tenantState.value).length > 0 && (
         <TenantUserList
-          tenant={formValues}
-          open={showUser}
-          userList={userList}
-          loading={loading}
-          onClose={() => setShowUser(false)}
+          tenant={tenantState.value}
+          open={tenantState.viewUsersOpen}
+          userList={tenantState.tenantUserList}
+          loading={tenantState.loading}
+          onClose={() => setTenantState(prevState => ({...prevState,viewUsersOpen: false}))}
           onSubmit={handleSetTenantAdmin}
         />
       )}

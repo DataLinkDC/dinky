@@ -18,12 +18,12 @@
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { Empty, Typography } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Paragraph } = Typography;
 

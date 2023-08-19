@@ -1,12 +1,12 @@
 import { TagJobStatus } from '@/pages/DevOps/function';
 import { queryList } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { useRef } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type HistoryProps = {
   taskId: number;

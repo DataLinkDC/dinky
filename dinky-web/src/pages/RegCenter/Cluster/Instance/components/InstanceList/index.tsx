@@ -32,7 +32,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   STATUS_ENUM,
   STATUS_MAPPING,
@@ -45,6 +44,7 @@ import { ActionType, ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export default () => {
   /**

@@ -39,7 +39,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   STATUS_ENUM,
   STATUS_MAPPING,
@@ -50,6 +49,7 @@ import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const DocumentTableList: React.FC = () => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);

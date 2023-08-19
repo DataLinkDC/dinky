@@ -53,7 +53,7 @@ const Editor: React.FC<EditorProps> = (props) => {
           </StartButton>
           <CodeEdit
             {...CodeEditProps}
-            onChange={handleInputChange}
+            onChange={(value) => handleInputChange(value ?? '')}
             code={inputValue}
           />
         </Col>

@@ -29,7 +29,7 @@ type ShowLogProps = {
 /**
  * code edit props
  */
-const CodeEditProps = {
+const CodeEditProps:any = {
   height: '70vh',
   width: '60vw',
   lineNumbers: 'on',

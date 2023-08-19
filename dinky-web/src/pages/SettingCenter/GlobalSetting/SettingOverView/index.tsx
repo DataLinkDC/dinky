@@ -34,11 +34,12 @@ import { LdapConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/
 import { MavenConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/MavenConfig';
 import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig';
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
+import { RESPONSE_CODE } from '@/services/constants';
 import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const imgSize = 25;
 

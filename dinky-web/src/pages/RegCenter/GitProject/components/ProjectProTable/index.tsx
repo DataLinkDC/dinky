@@ -47,7 +47,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   STATUS_ENUM,
   STATUS_MAPPING,
@@ -58,6 +57,7 @@ import { BranchesOutlined, BuildTwoTone } from '@ant-design/icons';
 import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
 import { Button, Empty, Popconfirm, Tag } from 'antd';
 import React, { useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const ProjectProTable: React.FC = () => {
   const actionRef = useRef<ActionType>();

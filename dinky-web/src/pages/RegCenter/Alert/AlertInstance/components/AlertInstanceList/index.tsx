@@ -29,7 +29,6 @@ import {
 import { queryList } from '@/services/api';
 import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
   SWITCH_OPTIONS,
@@ -43,6 +42,7 @@ import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const AlertInstanceList: React.FC = () => {
   /**

@@ -25,7 +25,7 @@ import { l } from '@/utils/intl';
 import { ActionType, ProColumns, ProTable } from '@ant-design/pro-components';
 import { Button, Drawer } from 'antd';
 import React, { useEffect, useRef } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
+import {UserBaseInfo} from "@/types/AuthCenter/data.d";
 
 type TenantUserListProps = {
   tenant: Partial<UserBaseInfo.Tenant>;

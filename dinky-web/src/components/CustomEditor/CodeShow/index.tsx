@@ -101,7 +101,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   const handleSyncLog = async () => {
     setLoading(true);
-    setTimeout(() => {
+    setInterval(() => {
       refreshLogCallback?.();
       setLoading(false);
     }, 1000);
@@ -112,7 +112,7 @@ const CodeShow = (props: CodeShowFormProps) => {
    */
   const handleStopAutoRefresh = () => {
     setStopping(true);
-    setTimeout(() => {
+    setInterval(() => {
       clearInterval(timer);
       setStopping(false);
       setAutoRefresh(false);

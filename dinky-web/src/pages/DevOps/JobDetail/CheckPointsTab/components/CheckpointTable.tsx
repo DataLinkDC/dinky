@@ -20,7 +20,6 @@
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { parseByteStr, parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import {
@@ -32,6 +31,7 @@ import {
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, message, Modal, Tag } from 'antd';
 import { useRef } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export type CheckPointsDetailInfo = {
   id: number;

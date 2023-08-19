@@ -20,13 +20,14 @@
 import { ShowLogIcon } from '@/components/Icons/CustomIcons';
 import ResultShow from '@/pages/Other/PersonCenter/OperationLogRecord/ResultShow';
 import { queryList } from '@/services/api';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import { Button } from 'antd';
 import React, { useState } from 'react';
 import {OperateLog} from "@/types/AuthCenter/data";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type OperationLogRecordProps = {
   userId: number;

@@ -45,7 +45,7 @@ import React, {useEffect, useState} from 'react';
 
 type MenuFormProps = {
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: SysMenu) => void;
+  onSubmit: (values: SysMenu) => boolean | Promise<boolean>;
   values: Partial<SysMenu>;
   open: boolean;
   disabled?: boolean;
@@ -117,8 +117,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     // 获取 parentId 的值
     const parentId: number[] = formData.parentId;
     const middleResult :SysMenu = { ...formData, parentId: parentId.pop() } // 转换 parentId 的值
-    handleSubmit({ ...values, ...middleResult });
-    handleCancel();
+    await handleSubmit({ ...values, ...middleResult }) && handleCancel();
   };
 
 

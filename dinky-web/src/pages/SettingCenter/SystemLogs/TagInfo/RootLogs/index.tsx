@@ -17,8 +17,8 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * code edit props

@@ -17,20 +17,20 @@
  *
  */
 
-import { SavePointTableListItem } from '@/pages/DataStudio/RightContainer/SavePoints';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { queryList } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { useRef } from 'react';
+import {SavePoint} from "@/types/Studio/data";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
 
   const actionRef = useRef<ActionType>();
 
-  const columns: ProColumns<SavePointTableListItem>[] = [
+  const columns: ProColumns<SavePoint>[] = [
     {
       title: l('devops.jobinfo.ck.id'),
       align: 'center',
@@ -69,7 +69,7 @@ const SavepointTable = (props: JobProps) => {
 
   return (
     <>
-      <ProTable<SavePointTableListItem>
+      <ProTable<SavePoint>
         columns={columns}
         style={{ width: '100%' }}
         request={(params, sorter, filter) =>

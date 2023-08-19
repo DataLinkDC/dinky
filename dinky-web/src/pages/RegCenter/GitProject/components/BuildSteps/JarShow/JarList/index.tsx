@@ -18,13 +18,13 @@
  */
 
 import { handleOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { BuildJarList } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ProList } from '@ant-design/pro-components';
 import { ActionType, DragSortTable, ProColumns } from '@ant-design/pro-table';
 import { List, Tag } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * props

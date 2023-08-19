@@ -19,11 +19,11 @@
 
 import { renderTimeLineItems } from '@/pages/Other/PersonCenter/LoginLogRecord/function';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { Button, Card, Spin, Timeline } from 'antd';
 import React, { useCallback, useEffect, useState } from 'react';
 import {LoginLog} from "@/types/AuthCenter/data";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type LoginLogRecordProps = {
   userId: number;

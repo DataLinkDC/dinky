@@ -32,7 +32,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
 } from '@/services/constants';
@@ -52,6 +51,7 @@ import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useState } from 'react';
 import { connect } from 'umi';
 import DataSourceModal from '../DataSourceModal';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const navigate = useNavigate();

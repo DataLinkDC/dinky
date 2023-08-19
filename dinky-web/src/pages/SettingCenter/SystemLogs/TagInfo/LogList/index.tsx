@@ -18,9 +18,9 @@
 import LogsShow from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsShow';
 import LogsTree from '@/pages/SettingCenter/SystemLogs/TagInfo/LogList/LogsTree';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { ProCard } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const LogList = () => {
   const [treeData, setTreeData] = useState<Partial<any>[]>([]);

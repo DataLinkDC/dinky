@@ -90,16 +90,19 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
  * add or update data
  * @param url
  * @param params
+ * @param beforeCallBack
  * @param afterCallBack
  */
 export const handleAddOrUpdate = async (
   url: string,
   params: any,
+  beforeCallBack?: () => void,
   afterCallBack?: () => void,
 ) => {
   const tipsTitle = params.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
+    beforeCallBack?.();
     const { code, msg } = await addOrUpdateData(url, { ...params });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
@@ -272,9 +275,11 @@ export const getDataByParams = async (url: string, params?: any) => {
   }
 };
 
-export const queryDataByParams = async (url: string, params?: any) => {
+export const queryDataByParams = async (url: string, params?: any, beforeCallBack?: ()=> void ,afterCallBack?: ()=> void) => {
   try {
+    beforeCallBack?.()
     const { datas } = await getData(url, params);
+    afterCallBack?.()
     return datas;
   } catch (error) {
     return false;

@@ -29,7 +29,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   PRO_LIST_CARD_OPTIONS,
   SWITCH_OPTIONS,
@@ -44,6 +43,7 @@ import { connect, Dispatch } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import React, { useEffect, useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const AlertGroupTableList: React.FC = (props: any) => {
   /**

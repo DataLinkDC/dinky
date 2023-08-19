@@ -31,7 +31,6 @@ import {
   updateDataByParam,
 } from '@/services/BusinessCrud';
 import {
-  API_CONSTANTS,
   PROTABLE_OPTIONS_PUBLIC,
   STATUS_ENUM,
   STATUS_MAPPING,
@@ -41,6 +40,7 @@ import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import { useRef, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const GlobalVarProTable = () => {
   /**

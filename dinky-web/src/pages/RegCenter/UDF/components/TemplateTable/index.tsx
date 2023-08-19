@@ -41,7 +41,7 @@ import { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
 import UDFTemplateDrawer from '../UDFTemplateDrawer';
 
-const CodeShowProps = {
+const CodeShowProps: any = {
   height: '40vh',
   width: '40vw',
   lineNumbers: 'on',

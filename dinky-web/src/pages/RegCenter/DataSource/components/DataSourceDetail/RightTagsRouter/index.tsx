@@ -21,7 +21,6 @@ import SchemaDesc from '@/pages/RegCenter/DataSource/components/DataSourceDetail
 import SQLConsole from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLConsole';
 import SQLQuery from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
@@ -34,6 +33,7 @@ import { ProCard } from '@ant-design/pro-components';
 import { Space } from 'antd';
 import { SearchOutline } from 'antd-mobile-icons';
 import React, { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * props

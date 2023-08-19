@@ -24,7 +24,6 @@ import {
   login,
   queryDataByParams,
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -37,6 +36,7 @@ import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
 import {API} from "@/services/data";
 import {UserBaseInfo} from "@/types/AuthCenter/data";
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);

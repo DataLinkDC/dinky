@@ -19,11 +19,11 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { API_CONSTANTS } from '@/services/constants';
 import { useRequest } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Card, Col, List, Row, Spin, Typography } from 'antd';
 import { useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Paragraph, Text } = Typography;
 

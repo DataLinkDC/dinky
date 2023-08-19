@@ -21,7 +21,7 @@ import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceD
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import { getDataByIdReturnResult } from '@/services/BusinessCrud';
-import { API_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
+import {  RESPONSE_CODE } from '@/services/constants';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -30,6 +30,7 @@ import { Key, ProCard } from '@ant-design/pro-components';
 import { useNavigate } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const DataSourceDetail = (props: any) => {
   const navigate = useNavigate();

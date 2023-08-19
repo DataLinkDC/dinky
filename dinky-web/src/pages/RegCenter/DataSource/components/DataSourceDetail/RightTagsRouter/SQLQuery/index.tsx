@@ -20,12 +20,13 @@ import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceD
 import QueryForm from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/SQLQuery/QueryForm';
 import { buildColumnsQueryKeyWord } from '@/pages/RegCenter/DataSource/components/function';
 import { handleOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-table';
 import { Alert, Empty, Form } from 'antd';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 // props
 type SQLQueryProps = {
   queryParams: QueryParams;

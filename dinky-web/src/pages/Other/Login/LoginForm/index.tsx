@@ -19,7 +19,6 @@
 
 import FadeIn from '@/components/Animation/FadeIn';
 import { getData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import {
@@ -32,6 +31,7 @@ import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
 import style from '../../../../global.less';
 import MainWithStyle from './MainWithStyle';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type LoginFormProps = {
   onSubmit: (values: any) => Promise<void>;

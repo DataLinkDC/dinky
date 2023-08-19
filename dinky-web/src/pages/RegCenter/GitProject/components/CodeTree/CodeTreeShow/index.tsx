@@ -20,10 +20,10 @@
 import { CodeContent } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/CodeContent';
 import { SiderTree } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/SiderTree';
 import { handleData } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { GitProject, GitProjectTreeNode } from '@/types/RegCenter/data';
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * CodeTreeShowProps

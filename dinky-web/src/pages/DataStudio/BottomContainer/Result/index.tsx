@@ -11,7 +11,6 @@ import {
 } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { transformTableDataToCsv } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { FireOutlined, SearchOutlined } from '@ant-design/icons';
@@ -22,6 +21,7 @@ import { FilterConfirmProps } from 'antd/es/table/interface';
 import { DataIndex } from 'rc-table/es/interface';
 import { useEffect, useRef, useState } from 'react';
 import { connect } from 'umi';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 type Data = {
   [c: string]: any;

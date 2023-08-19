@@ -1,11 +1,11 @@
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
-import { API_CONSTANTS } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const operatorType = {
   RESTART_JOB: 'restart',

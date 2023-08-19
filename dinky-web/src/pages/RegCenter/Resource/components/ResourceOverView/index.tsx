@@ -28,11 +28,11 @@ import {
   handleRemoveById,
   queryDataByParams,
 } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { ProCard } from '@ant-design/pro-components';
 import { MenuInfo } from 'rc-menu/es/interface';
 import { Resizable } from 're-resizable';
 import React, { useCallback, useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 export type Resource = {
   id: number;

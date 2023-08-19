@@ -25,10 +25,10 @@ import {
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';
-import { API_CONSTANTS } from '@/services/constants';
 import { GitProject } from '@/types/RegCenter/data';
 import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * props

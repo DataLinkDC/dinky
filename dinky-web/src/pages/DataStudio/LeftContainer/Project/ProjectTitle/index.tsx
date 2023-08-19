@@ -22,12 +22,12 @@ import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import { StateType, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { handleAddOrUpdate } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { connect } from '@umijs/max';
 import { Space } from 'antd';
 import React, { useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const ProjectTitle: React.FC<StateType & connect> = (props) => {
   const {

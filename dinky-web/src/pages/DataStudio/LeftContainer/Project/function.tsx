@@ -1,6 +1,5 @@
 import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
-import { SysMenu } from '@/types/RegCenter/data';
-import { Catalogue } from '@/types/Studio/data';
+import { Catalogue } from '@/types/Studio/data.d';
 import { searchTreeNode } from '@/utils/function';
 
 export const generateList = (data: any, list: any[]) => {
@@ -30,8 +29,8 @@ export const getParentKey = (key: number | string, tree: any): any => {
 };
 
 /**
- * build menu tree
- * @param {SysMenu[]} data
+ * build Catalogue tree
+ * @param {Catalogue[]} data
  * @param {string} searchValue
  * @param path
  * @returns {any}

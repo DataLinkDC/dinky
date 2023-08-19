@@ -5,7 +5,6 @@ import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
 import JobOperatorGraph from '@/pages/Home/JobOverView/JobOperatorGraph';
-import { API_CONSTANTS } from '@/services/constants';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
 import {
@@ -19,6 +18,7 @@ import { Tag } from 'antd';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useLocation } from 'umi';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * Enum defining different operators for the JobDetail component.

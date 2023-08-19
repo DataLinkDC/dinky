@@ -29,12 +29,12 @@ import {
 } from '@/components/Icons/HomeIcon';
 import { imgStyle } from '@/pages/Home/constants';
 import { queryDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS } from '@/services/constants';
 import { ResourceOverView } from '@/types/Home/data';
 import { l } from '@/utils/intl';
 import { StatisticCard } from '@ant-design/pro-components';
 import RcResizeObserver from 'rc-resize-observer';
 import { useEffect, useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const ResourceView = () => {
   const [responsive, setResponsive] = useState(false);
