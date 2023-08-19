@@ -5,20 +5,16 @@ import JobOperator from '@/pages/DevOps/JobDetail/JobOperator/JobOperator';
 import JobConfigTab from '@/pages/DevOps/JobDetail/JobOverview/JobOverview';
 import JobVersionTab from '@/pages/DevOps/JobDetail/JobVersion/JobVersionTab';
 import JobOperatorGraph from '@/pages/Home/JobOverView/JobOperatorGraph';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { l } from '@/utils/intl';
-import {
-  ClusterOutlined,
-  FireOutlined,
-  RocketOutlined,
-} from '@ant-design/icons';
+import { ClusterOutlined, FireOutlined, RocketOutlined } from '@ant-design/icons';
 import { PageContainer } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
 import { Tag } from 'antd';
 import type { FC } from 'react';
 import { useState } from 'react';
 import { useLocation } from 'umi';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * Enum defining different operators for the JobDetail component.
@@ -31,7 +27,7 @@ const OperatorEnum = {
   JOB_ALERT: 'job_alert',
   JOB_MONITOR: 'job_monitor',
   JOB_LINEAGE: 'job_lineage',
-  JOB_GRAPH: 'job_graph',
+  JOB_GRAPH: 'job_graph'
 };
 
 /**
@@ -52,12 +48,12 @@ const JobDetail: FC = (props: any) => {
   const { data } = useRequest(
     {
       url: API_CONSTANTS.GET_JOB_DETAIL,
-      params: { id: id },
+      params: { id: id }
     },
     {
       cacheKey: 'data-detail',
-      pollingInterval: 1000,
-    },
+      pollingInterval: 1000
+    }
   );
 
   // Extract the job info detail from the fetched data
@@ -72,37 +68,37 @@ const JobDetail: FC = (props: any) => {
     [OperatorEnum.JOB_MONITOR]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_GRAPH]: <JobOperatorGraph jobDetail={jobInfoDetail} />
   };
 
   // Define the tabs config for job operators
   const JobOperatorTabs = [
     {
       tab: l('devops.jobinfo.config.JobInfo'),
-      key: OperatorEnum.JOB_BASE_INFO,
+      key: OperatorEnum.JOB_BASE_INFO
     },
     { tab: l('devops.jobinfo.config.JobLogs'), key: OperatorEnum.JOB_LOGS },
     {
       tab: l('devops.jobinfo.config.JobVersion'),
-      key: OperatorEnum.JOB_VERSION,
+      key: OperatorEnum.JOB_VERSION
     },
     {
       tab: l('devops.jobinfo.config.JobCheckpoints'),
-      key: OperatorEnum.JOB_CHECKPOINTS,
+      key: OperatorEnum.JOB_CHECKPOINTS
     },
     {
       tab: l('devops.jobinfo.config.JobMonitor'),
-      key: OperatorEnum.JOB_MONITOR,
+      key: OperatorEnum.JOB_MONITOR
     },
     {
       tab: l('devops.jobinfo.config.JobLineage'),
-      key: OperatorEnum.JOB_LINEAGE,
+      key: OperatorEnum.JOB_LINEAGE
     },
     { tab: l('devops.jobinfo.config.JobAlert'), key: OperatorEnum.JOB_ALERT },
     {
       tab: l('devops.jobinfo.config.OperatorGraph'),
-      key: OperatorEnum.JOB_GRAPH,
-    },
+      key: OperatorEnum.JOB_GRAPH
+    }
   ];
 
   return (
@@ -116,15 +112,15 @@ const JobDetail: FC = (props: any) => {
       tabList={JobOperatorTabs}
       onTabChange={(key) => setTabKey(key)}
       tags={[
-        <Tag key={'tg1'} color="blue">
+        <Tag key={'tg1'} color='blue'>
           <FireOutlined /> {jobInfoDetail?.instance?.jid}
         </Tag>,
-        <Tag key={'tg2'} color="blue">
+        <Tag key={'tg2'} color='blue'>
           <RocketOutlined /> {jobInfoDetail?.history?.type}
         </Tag>,
-        <Tag key={'tg3'} color="green">
+        <Tag key={'tg3'} color='green'>
           <ClusterOutlined /> {jobInfoDetail?.cluster?.alias}
-        </Tag>,
+        </Tag>
       ]}
     >
       {JobOperatorItems[tabKey]}

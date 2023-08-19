@@ -20,10 +20,10 @@
 import { CodeContent } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/CodeContent';
 import { SiderTree } from '@/pages/RegCenter/GitProject/components/CodeTree/CodeTreeShow/SiderTree';
 import { handleData } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { GitProject, GitProjectTreeNode } from '@/types/RegCenter/data';
 import { Col, Row } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * CodeTreeShowProps
@@ -40,26 +40,23 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
   const [treeData, setTreeData] = useState<Partial<GitProjectTreeNode>[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [codeValue, setCodeValue] = useState<string>('');
-  const [currentGitProjectTreeNode, setCurrentGitProjectTreeNode] =
-    useState<GitProjectTreeNode>({
-      name: '',
-      path: '',
-      content: '',
-      size: 0,
-      leaf: false,
-      children: [],
-    });
+  const [currentGitProjectTreeNode, setCurrentGitProjectTreeNode] = useState<GitProjectTreeNode>({
+    name: '',
+    path: '',
+    content: '',
+    size: 0,
+    leaf: false,
+    children: []
+  });
 
   /**
    * query code tree
    */
   const queryCodeTree = async () => {
     setLoading(true);
-    await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then(
-      (res) => {
-        setTreeData(res);
-      },
-    );
+    await handleData(API_CONSTANTS.GIT_PROJECT_CODE_TREE, values.id).then((res) => {
+      setTreeData(res);
+    });
     setLoading(false);
   };
 
@@ -89,11 +86,7 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
       <Row>
         <Col span={6} className={'siderTree gitCodeTree'}>
           {/* tree */}
-          <SiderTree
-            treeData={treeData}
-            onNodeClick={(info: any) => handleNodeClick(info)}
-            loading={loading}
-          />
+          <SiderTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} loading={loading} />
         </Col>
         <Col span={18}>
           {/* code */}

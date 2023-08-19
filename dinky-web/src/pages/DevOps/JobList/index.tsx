@@ -1,12 +1,8 @@
-import {
-  JOB_STATUS_FILTER,
-  LIFECYCLE_FILTER,
-  TagJobLifeCycle,
-  TagJobStatus,
-} from '@/pages/DevOps/function';
+import { JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus } from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import { queryList } from '@/services/api';
-import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
@@ -16,7 +12,6 @@ import { ProTable } from '@ant-design/pro-components';
 import { Button, Table } from 'antd';
 import { useEffect, useRef } from 'react';
 import { history } from 'umi';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const JobList = () => {
   const tableRef = useRef<ActionType>();
@@ -24,11 +19,11 @@ const JobList = () => {
   const jobListColumns: ProColumns<Jobs.JobInstance>[] = [
     {
       title: l('devops.jobinfo.config.taskId'),
-      dataIndex: 'taskId',
+      dataIndex: 'taskId'
     },
     {
       title: l('global.table.jobname'),
-      dataIndex: 'name',
+      dataIndex: 'name'
     },
     {
       title: l('global.table.lifecycle'),
@@ -36,27 +31,27 @@ const JobList = () => {
       hideInSearch: true,
       filterMultiple: false,
       dataIndex: 'step',
-      render: (_: any, row: { step: number }) => TagJobLifeCycle(row.step),
+      render: (_: any, row: { step: number }) => TagJobLifeCycle(row.step)
     },
     {
       title: l('global.table.runmode'),
       dataIndex: 'type',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('devops.jobinfo.config.JobId'),
       dataIndex: 'jid',
-      width: '15%',
+      width: '15%'
     },
     {
       title: l('global.table.createTime'),
       hideInSearch: true,
-      dataIndex: 'createTime',
+      dataIndex: 'createTime'
     },
     {
       title: l('global.table.useTime'),
       hideInSearch: true,
-      render: (_: any, row: Jobs.JobInstance) => parseSecondStr(row.duration),
+      render: (_: any, row: Jobs.JobInstance) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.status'),
@@ -64,7 +59,7 @@ const JobList = () => {
       filterMultiple: false,
       hideInSearch: true,
       dataIndex: 'status',
-      render: (_: any, row: Jobs.JobInstance) => TagJobStatus(row.status),
+      render: (_: any, row: Jobs.JobInstance) => TagJobStatus(row.status)
     },
     Table.EXPAND_COLUMN,
     {
@@ -77,9 +72,9 @@ const JobList = () => {
           title={l('devops.joblist.detail')}
           icon={<EyeTwoTone />}
           onClick={() => history.push(`/devops/job-detail?id=${record.id}`)}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   useEffect(() => {
@@ -98,26 +93,20 @@ const JobList = () => {
         queryList(API_CONSTANTS.GET_JOB_LIST, {
           ...params,
           sorter,
-          filter,
+          filter
         })
       }
       expandable={{
-        expandedRowRender: (record) => (
-          <JobHistoryList taskId={record.taskId} key={record.jid} />
-        ),
+        expandedRowRender: (record) => <JobHistoryList taskId={record.taskId} key={record.jid} />,
         expandIcon: ({ expanded, onExpand, record }) => (
           <Button
             className={'options-button'}
             key={`${record.id}_history`}
             onClick={(e) => onExpand(record, e)}
             title={l('devops.joblist.history')}
-            icon={
-              <ClockCircleTwoTone
-                twoToneColor={expanded ? '#52c41a' : '#4096ff'}
-              />
-            }
+            icon={<ClockCircleTwoTone twoToneColor={expanded ? '#52c41a' : '#4096ff'} />}
           />
-        ),
+        )
       }}
     />
   );

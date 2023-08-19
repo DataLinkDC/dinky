@@ -34,7 +34,7 @@ type ResultShowProps = {
 const ResultShow: React.FC<ResultShowProps> = (props) => {
   const {
     config: { open, data },
-    onCancel,
+    onCancel
   } = props;
 
   return (

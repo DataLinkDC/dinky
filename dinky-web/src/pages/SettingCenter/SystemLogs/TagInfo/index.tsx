@@ -35,7 +35,7 @@ const TagInfo = () => {
           {'Root Logs'}
         </Space>
       ),
-      children: <RootLogs />,
+      children: <RootLogs />
     },
     {
       key: 'logList',
@@ -45,8 +45,8 @@ const TagInfo = () => {
           {'Log List'}
         </Space>
       ),
-      children: <LogList />,
-    },
+      children: <LogList />
+    }
   ];
 
   /**
@@ -57,14 +57,14 @@ const TagInfo = () => {
       <ProCard
         ghost
         className={'schemaTree'}
-        size="small"
+        size='small'
         bordered
         tabs={{
           activeKey: activeKey,
           type: 'card',
           animated: true,
           onChange: (key: string) => setActiveKey(key),
-          items: tabList,
+          items: tabList
         }}
       />
     </>

@@ -17,13 +17,7 @@
  *
  */
 
-import {
-  DataStudioParams,
-  EnvType,
-  JobRunningMsgType,
-  STUDIO_MODEL,
-  TabsItemType,
-} from '@/pages/DataStudio/model';
+import { DataStudioParams, EnvType, JobRunningMsgType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 
@@ -31,88 +25,88 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
   updateToolContentHeight: (key: number) =>
     dispatch({
       type: STUDIO_MODEL.updateToolContentHeight,
-      payload: key,
+      payload: key
     }),
   updateCenterContentHeight: (key: number) =>
     dispatch({
       type: STUDIO_MODEL.updateCenterContentHeight,
-      payload: key,
+      payload: key
     }),
   updateSelectLeftKey: (key: string) =>
     dispatch({
       type: STUDIO_MODEL.updateSelectLeftKey,
-      payload: key,
+      payload: key
     }),
   updateLeftWidth: (width: number) =>
     dispatch({
       type: STUDIO_MODEL.updateLeftWidth,
-      payload: width,
+      payload: width
     }),
   updateSelectRightKey: (key: string) =>
     dispatch({
       type: STUDIO_MODEL.updateSelectRightKey,
-      payload: key,
+      payload: key
     }),
   updateRightWidth: (width: number) =>
     dispatch({
       type: STUDIO_MODEL.updateRightWidth,
-      payload: width,
+      payload: width
     }),
   updateSelectBottomKey: (key: string) =>
     dispatch({
       type: STUDIO_MODEL.updateSelectBottomKey,
-      payload: key,
+      payload: key
     }),
   updateSelectBottomSubKey: (key: string) =>
     dispatch({
       type: STUDIO_MODEL.updateSelectBottomSubKey,
-      payload: key,
+      payload: key
     }),
   updateBottomHeight: (height: number) =>
     dispatch({
       type: STUDIO_MODEL.updateBottomHeight,
-      payload: height,
+      payload: height
     }),
   saveDataBase: (data: DataSources.DataSource[]) =>
     dispatch({
       type: STUDIO_MODEL.saveDataBase,
-      payload: data,
+      payload: data
     }),
   saveProject: (data: any[]) =>
     dispatch({
       type: STUDIO_MODEL.saveProject,
-      payload: data,
+      payload: data
     }),
   updateBottomConsole: (data: string) =>
     dispatch({
       type: STUDIO_MODEL.updateBottomConsole,
-      payload: data,
+      payload: data
     }),
   saveSession: (data: Cluster.Instance[]) =>
     dispatch({
       type: STUDIO_MODEL.saveSession,
-      payload: data,
+      payload: data
     }),
   saveEnv: (data: EnvType[]) =>
     dispatch({
       type: STUDIO_MODEL.saveEnv,
-      payload: data,
+      payload: data
     }),
   saveTabs: (data: TabsItemType[]) =>
     dispatch({
       type: STUDIO_MODEL.saveTabs,
-      payload: data,
+      payload: data
     }),
   saveClusterConfiguration: (data: Cluster.Config[]) =>
     dispatch({
       type: STUDIO_MODEL.saveClusterConfiguration,
-      payload: data,
+      payload: data
     }),
   updateJobRunningMsg: (data: JobRunningMsgType) =>
     dispatch({
       type: STUDIO_MODEL.updateJobRunningMsg,
-      payload: data,
-    }),
+      payload: data
+    })
 });
 
 export const getCurrentTab = (panes: any, activeKey: string) => {
@@ -120,8 +114,7 @@ export const getCurrentTab = (panes: any, activeKey: string) => {
 };
 
 export const getCurrentData = (panes: any, activeKey: string) => {
-  return (getCurrentTab(panes, activeKey)?.params as DataStudioParams)
-    ?.taskData;
+  return (getCurrentTab(panes, activeKey)?.params as DataStudioParams)?.taskData;
 };
 
 export const getFooterValue = (panes: any, activeKey: string) => {
@@ -130,7 +123,7 @@ export const getFooterValue = (panes: any, activeKey: string) => {
   if (currentTab && currentTab.type === 'project') {
     footerValue = {
       codePosition: [1, 1],
-      codeType: (currentTab.params as DataStudioParams).taskData.dialect,
+      codeType: (currentTab.params as DataStudioParams).taskData.dialect
     };
   }
   return footerValue;

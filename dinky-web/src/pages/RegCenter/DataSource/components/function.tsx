@@ -26,7 +26,7 @@ import {
   PostgresqlIcons,
   PrestoIcons,
   SqlServerIcons,
-  StarRocksIcons,
+  StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { QUERY_KEYWORD } from '@/pages/RegCenter/DataSource/components/constants';
 
@@ -65,7 +65,7 @@ export const renderDBIcon = (type: string, size?: number) => {
 export const buildColumnsQueryKeyWord = (data: string[]) => {
   const result = data.concat(QUERY_KEYWORD).map((item: string | number) => ({
     value: item,
-    label: item,
+    label: item
   }));
   return result;
 };

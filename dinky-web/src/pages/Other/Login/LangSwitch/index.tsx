@@ -15,11 +15,7 @@
  * limitations under the License.
  */
 
-import {
-  LANGUAGE_KEY,
-  LANGUAGE_ZH,
-  STORY_LANGUAGE,
-} from '@/services/constants';
+import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE } from '@/services/constants';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { SelectLang, useModel } from '@@/exports';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
@@ -35,7 +31,7 @@ const LangSwitch = () => {
     setLangCache(language);
     setInitialState((s) => ({
       ...s,
-      locale: language,
+      locale: language
     }));
   }, [initialState]);
 
@@ -49,8 +45,8 @@ const LangSwitch = () => {
       borderRadius: token.borderRadius,
       zIndex: 9999,
       ':hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
+        backgroundColor: token.colorBgTextHover
+      }
     };
   });
   return <div className={langClassName}>{SelectLang && <SelectLang />}</div>;

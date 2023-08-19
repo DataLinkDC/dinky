@@ -28,8 +28,7 @@ const { Statistic } = StatisticCard;
 
 const JobRunView: React.FC = () => {
   const data = [
-    264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513,
-    546, 983, 340, 539, 243, 226, 192,
+    264, 417, 438, 887, 309, 397, 550, 575, 563, 430, 525, 592, 492, 467, 513, 546, 983, 340, 539, 243, 226, 192
   ];
   const config: TinyAreaConfig = {
     height: 80,
@@ -38,19 +37,19 @@ const JobRunView: React.FC = () => {
     data,
     smooth: true,
     areaStyle: {
-      fill: '#d6e3fd',
-    },
+      fill: '#d6e3fd'
+    }
   };
 
   return (
     <StatisticCard
-      chartPlacement="right"
+      chartPlacement='right'
       statistic={{
         title: l('home.job.running'),
         value: 20,
         suffix: l('global.item'),
         formatter: (value) => <CountFormatter value={Number(value)} />,
-        description: <Statistic title="已守护" value="520 天" />,
+        description: <Statistic title='已守护' value='520 天' />
       }}
       chart={
         <div className={styles['tiny-charts']}>

@@ -48,7 +48,7 @@ export const ALERT_TYPE = {
   FEISHU: 'FeiShu',
   EMAIL: 'Email',
   SMS: 'Sms',
-  GROUP: 'Group',
+  GROUP: 'Group'
 };
 
 /**
@@ -213,4 +213,3 @@ export type UDFTemplate = BaseBeanColumns & {
   functionType: string;
   templateCode: string;
 };
-

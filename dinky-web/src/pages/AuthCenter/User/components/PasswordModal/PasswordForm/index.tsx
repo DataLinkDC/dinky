@@ -18,13 +18,13 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { ProForm, ProFormText } from '@ant-design/pro-components';
 import { Button } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type PasswordFormProps = {
   values: UserBaseInfo.User;
@@ -47,7 +47,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
         newPassword,
         newPasswordCheck: newPasswordCheck,
         password: password,
-        username: values.username,
+        username: values.username
       });
     }
   };
@@ -59,24 +59,24 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
     return (
       <>
         <ProFormText.Password
-          width="xl"
-          name="password"
+          width='xl'
+          name='password'
           hasFeedback
           label={l('user.oldpwd')}
           placeholder={l('user.oldpwdPlaceholder')}
           rules={[{ required: true, message: l('user.oldpwdPlaceholder') }]}
         />
         <ProFormText.Password
-          width="xl"
-          name="newPassword"
+          width='xl'
+          name='newPassword'
           hasFeedback
           label={l('user.newpwd')}
           placeholder={l('user.newpwdPlaceholder')}
           rules={[{ required: true, message: l('user.newpwdPlaceholder') }]}
         />
         <ProFormText.Password
-          width="xl"
-          name="newPasswordCheck"
+          width='xl'
+          name='newPasswordCheck'
           hasFeedback
           dependencies={['newPassword']}
           label={l('user.repeatpwd')}
@@ -84,7 +84,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
           rules={[
             {
               required: true,
-              message: l('user.oldNewPwdNoMatch'),
+              message: l('user.oldNewPwdNoMatch')
             },
             ({ getFieldValue }) => ({
               validator(_, value) {
@@ -92,8 +92,8 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
                   return Promise.resolve();
                 }
                 return Promise.reject(new Error(l('user.oldNewPwdNoMatch')));
-              },
-            }),
+              }
+            })
           ]}
         />
       </>
@@ -115,7 +115,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
             return renderSubmit ? (
               <>
                 <Button
-                  type="primary"
+                  type='primary'
                   onClick={async () => {
                     await handleSubmit();
                   }}
@@ -126,7 +126,7 @@ const PasswordModal: React.FC<PasswordFormProps> = (props) => {
             ) : (
               <></>
             );
-          },
+          }
         }}
       >
         {pwdFormRender()}

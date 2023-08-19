@@ -29,11 +29,11 @@ type ShowLogProps = {
 /**
  * code edit props
  */
-const CodeEditProps:any = {
+const CodeEditProps: any = {
   height: '70vh',
   width: '60vw',
   lineNumbers: 'on',
-  language: 'java',
+  language: 'java'
 };
 
 const ShowLog: React.FC<ShowLogProps> = (props) => {

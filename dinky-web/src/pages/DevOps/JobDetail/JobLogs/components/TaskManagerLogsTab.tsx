@@ -19,11 +19,11 @@
 
 import CodeShow from '@/components/CustomEditor/CodeShow';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { useRequest } from '@@/exports';
 import { ProCard } from '@ant-design/pro-components';
 import { Card, Col, List, Row, Spin, Typography } from 'antd';
 import { useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Paragraph, Text } = Typography;
 
@@ -44,22 +44,22 @@ const TaskManagerLogsTab = (props: JobProps) => {
     dataPort: '',
     freeSlots: '',
     slotsNumber: '',
-    timeSinceLastHeartbeat: '',
+    timeSinceLastHeartbeat: ''
   });
 
   const jmaddr = jobDetail?.history?.jobManagerAddress;
 
   const taskManagerList = useRequest({
     url: API_CONSTANTS.GET_TASKMANAGER_LIST,
-    params: { address: jmaddr },
+    params: { address: jmaddr }
   });
 
   const tmLog = useRequest(
     (cid) => ({
       url: API_CONSTANTS.GET_TASKMANAGER_LOG,
-      params: { address: jmaddr, containerId: cid },
+      params: { address: jmaddr, containerId: cid }
     }),
-    { manual: true },
+    { manual: true }
   );
 
   const refeshLog = (tm: Taskmanager) => {
@@ -71,7 +71,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
     return (
       <Row>
         <Col span={3}>
-          <div id="scrollableDiv">
+          <div id='scrollableDiv'>
             <List
               size={'small'}
               header={'TaskManager List'}
@@ -85,11 +85,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
           </div>
         </Col>
         <Col span={21}>
-          <Card
-            title={currentTM.containerId}
-            bordered={false}
-            extra={<Paragraph>{currentTM.containerPath}</Paragraph>}
-          >
+          <Card title={currentTM.containerId} bordered={false} extra={<Paragraph>{currentTM.containerPath}</Paragraph>}>
             <Spin spinning={tmLog.loading}>
               <CodeShow code={tmLog.data} height={500} />
             </Spin>

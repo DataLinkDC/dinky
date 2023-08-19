@@ -16,20 +16,11 @@
  */
 
 import { ThemeCloud, ThemeStar } from '@/components/ThemeSvg/ThemeSvg';
-import {
-  LANGUAGE_KEY,
-  LANGUAGE_ZH,
-  STORY_LANGUAGE,
-  VERSION,
-} from '@/services/constants';
+import { LANGUAGE_KEY, LANGUAGE_ZH, STORY_LANGUAGE, VERSION } from '@/services/constants';
 import { THEME } from '@/types/Public/data';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
-import {
-  FullscreenExitOutlined,
-  FullscreenOutlined,
-  GlobalOutlined,
-} from '@ant-design/icons';
+import { FullscreenExitOutlined, FullscreenOutlined, GlobalOutlined } from '@ant-design/icons';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { SelectLang, useModel } from '@umijs/max';
 import { Space, Switch, Tooltip } from 'antd';
@@ -44,10 +35,7 @@ const GlobalHeaderRight: React.FC = () => {
    */
   const [fullScreen, setFullScreen] = useState(true);
   const { initialState, setInitialState } = useModel('@@initialState');
-  const [theme, setTheme] = useLocalStorage(
-    THEME.NAV_THEME,
-    initialState?.settings?.navTheme,
-  );
+  const [theme, setTheme] = useLocalStorage(THEME.NAV_THEME, initialState?.settings?.navTheme);
   const [language, setLanguage] = useLocalStorage(LANGUAGE_KEY, LANGUAGE_ZH);
   const [langCache, setLangCache] = useCookie(STORY_LANGUAGE, language);
 
@@ -60,8 +48,8 @@ const GlobalHeaderRight: React.FC = () => {
         settings: {
           ...initialStateType?.settings,
           navTheme: theme,
-          colorMenuBackground: theme === THEME.dark ? 'transparent' : '#fff',
-        },
+          colorMenuBackground: theme === THEME.dark ? 'transparent' : '#fff'
+        }
       })))();
   }, [theme, language]);
 
@@ -86,8 +74,8 @@ const GlobalHeaderRight: React.FC = () => {
       color: '#fff',
       borderRadius: token.borderRadius,
       '&:hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
+        backgroundColor: token.colorBgTextHover
+      }
     };
   });
 
@@ -106,8 +94,8 @@ const GlobalHeaderRight: React.FC = () => {
       borderRadius: token.borderRadius,
       color: 'red',
       '&:hover': {
-        backgroundColor: token.colorPrimary,
-      },
+        backgroundColor: token.colorPrimary
+      }
     };
   });
 
@@ -123,19 +111,15 @@ const GlobalHeaderRight: React.FC = () => {
 
   const fullScreenProps = {
     style: { color: 'white' },
-    className: fullScreenClassName,
+    className: fullScreenClassName
   };
 
   const menuVersion = l('menu.version', '', { version: VERSION });
   return (
     <>
       <Tooltip
-        placement="bottom"
-        title={
-          <span>
-            {fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}
-          </span>
-        }
+        placement='bottom'
+        title={<span>{fullScreen ? l('global.fullScreen') : l('global.fullScreen.exit')}</span>}
       >
         {fullScreen ? (
           <FullscreenOutlined {...fullScreenProps} onClick={screenFull} />
@@ -144,7 +128,7 @@ const GlobalHeaderRight: React.FC = () => {
         )}
       </Tooltip>
       <Avatar />
-      <Tooltip placement="bottom" title={<span>{menuVersion}</span>}>
+      <Tooltip placement='bottom' title={<span>{menuVersion}</span>}>
         <Space className={actionClassName}>{menuVersion}</Space>
       </Tooltip>
       <SelectLang icon={<GlobalOutlined />} className={actionClassName} />

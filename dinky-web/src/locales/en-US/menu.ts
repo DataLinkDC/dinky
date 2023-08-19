@@ -33,8 +33,7 @@ export default {
   'menu.account.logout': 'Logout',
   'menu.account.changePassword': 'Change Password',
   'menu.account.checkTenant': 'Switch Tenant',
-  'menu.account.checkTenantConfirm':
-    'Are you sure to switch  tenant [ {tenantCode} ] ?',
+  'menu.account.checkTenantConfirm': 'Are you sure to switch  tenant [ {tenantCode} ] ?',
 
   'menu.datastudio': 'Data Studio',
 
@@ -92,5 +91,5 @@ export default {
   'menu.datastudio.history': 'History',
   'menu.datastudio.table-data': 'Table Data',
 
-  'menu.datastudio.tool.text-comparison': 'Text Comparison',
+  'menu.datastudio.tool.text-comparison': 'Text Comparison'
 };

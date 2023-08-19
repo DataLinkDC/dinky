@@ -24,11 +24,7 @@ import { getJSONData } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
@@ -42,24 +38,22 @@ type InstanceFormProps = {
 const InstanceForm: React.FC<InstanceFormProps> = (props) => {
   const { values, form } = props;
 
-  const [alertType, setAlertType] = useState<string>(
-    values.type || ALERT_TYPE.DINGTALK,
-  );
+  const [alertType, setAlertType] = useState<string>(values.type || ALERT_TYPE.DINGTALK);
   const [data, setData] = useState<any>(values ? getJSONData(values) : {}); // 保存表单数据
 
   const renderPreForm = () => {
     return (
       <>
         <ProFormText
-          width="lg"
-          name="name"
+          width='lg'
+          name='name'
           label={l('rc.ai.name')}
           rules={[{ required: true, message: l('rc.ai.namePleaseHolder') }]}
           placeholder={l('rc.ai.namePleaseHolder')}
         />
         <ProFormSelect
-          width="md"
-          name="type"
+          width='md'
+          name='type'
           label={l('rc.ai.type')}
           rules={[{ required: true, message: l('rc.ai.choosetype') }]}
           placeholder={l('rc.ai.choosetype')}

@@ -23,10 +23,7 @@ import { EditBtn } from '@/components/CallBackButton/EditBtn';
 import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
 import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
 import { BackIcon } from '@/components/Icons/CustomIcons';
-import {
-  UserType,
-  USER_TYPE_ENUM,
-} from '@/pages/AuthCenter/User/components/constants';
+import { UserType, USER_TYPE_ENUM } from '@/pages/AuthCenter/User/components/constants';
 import PasswordModal from '@/pages/AuthCenter/User/components/PasswordModal';
 import UserModalForm from '@/pages/AuthCenter/User/components/UserModalForm';
 import { queryList } from '@/services/api';
@@ -36,17 +33,14 @@ import {
   handlePutData,
   handlePutDataByParams,
   handleRemoveById,
-  updateDataByParam,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  STATUS_ENUM,
-  STATUS_MAPPING,
-} from '@/services/constants';
-import {
-  YES_OR_NO_ENUM,
-  YES_OR_NO_FILTERS_MAPPING,
-} from '@/types/Public/constants';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitUserListState } from '@/types/AuthCenter/init.d';
+import { UserListState } from '@/types/AuthCenter/state.d';
+import { YES_OR_NO_ENUM, YES_OR_NO_FILTERS_MAPPING } from '@/types/Public/constants';
 import { l } from '@/utils/intl';
 import { SuccessMessage, WarningMessage } from '@/utils/messages';
 import { useAccess } from '@@/exports';
@@ -55,23 +49,17 @@ import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, Popconfirm } from 'antd';
 import { useRef, useState } from 'react';
 import RoleModalTransfer from '../RoleModalTransfer';
-import {UserBaseInfo} from "@/types/AuthCenter/data.d";
-import {UserListState} from "@/types/AuthCenter/state.d";
-import {InitUserListState} from "@/types/AuthCenter/init.d";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const UserProTable = () => {
-
-  const [userState, setUserState] = useState<UserListState>(InitUserListState)
-
+  const [userState, setUserState] = useState<UserListState>(InitUserListState);
 
   const actionRef = useRef<ActionType>(); // table action
   const access = useAccess(); // access control
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setUserState(prevState => ({...prevState,loading:true}))
+    setUserState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setUserState(prevState => ({...prevState,loading:false}))
+    setUserState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -80,7 +68,7 @@ const UserProTable = () => {
    * @param value
    */
   const handleEditVisible = (value: UserBaseInfo.User) => {
-    setUserState(prevState => ({...prevState,value:value,editUserOpen: true}))
+    setUserState((prevState) => ({ ...prevState, value: value, editUserOpen: true }));
   };
 
   /**
@@ -88,7 +76,7 @@ const UserProTable = () => {
    * @param value
    */
   const handleAssignRole = (value: UserBaseInfo.User) => {
-    setUserState(prevState => ({...prevState,value:value,assignRoleOpen: true}))
+    setUserState((prevState) => ({ ...prevState, value: value, assignRoleOpen: true }));
   };
 
   /**
@@ -96,7 +84,7 @@ const UserProTable = () => {
    * @param value
    */
   const handleChangePassword = (value: UserBaseInfo.User) => {
-    setUserState(prevState => ({...prevState,value:value,editPasswordOpen: true}))
+    setUserState((prevState) => ({ ...prevState, value: value, editPasswordOpen: true }));
   };
 
   /**
@@ -116,9 +104,9 @@ const UserProTable = () => {
     await executeAndCallbackRefresh(async () => {
       await handlePutData(API_CONSTANTS.USER_ASSIGN_ROLE, {
         userId: userState.value.id,
-        roleIds: userState.roleIds,
+        roleIds: userState.roleIds
       });
-      setUserState(prevState => ({...prevState,assignRoleOpen: true}))
+      setUserState((prevState) => ({ ...prevState, assignRoleOpen: true }));
     });
   };
 
@@ -136,16 +124,10 @@ const UserProTable = () => {
    * change password submit
    * @param value
    */
-  const handlePasswordChangeSubmit = async (
-    value: UserBaseInfo.ChangePasswordParams,
-  ) => {
+  const handlePasswordChangeSubmit = async (value: UserBaseInfo.ChangePasswordParams) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(
-        API_CONSTANTS.USER_MODIFY_PASSWORD,
-        l('button.changePassword'),
-        value,
-      );
-      setUserState(prevState => ({...prevState,editPasswordOpen: false}))
+      await handleOption(API_CONSTANTS.USER_MODIFY_PASSWORD, l('button.changePassword'), value);
+      setUserState((prevState) => ({ ...prevState, editPasswordOpen: false }));
     });
   };
 
@@ -156,17 +138,13 @@ const UserProTable = () => {
   const handleSubmitUser = async (value: Partial<UserBaseInfo.User>) => {
     await executeAndCallbackRefresh(async () => {
       await handleAddOrUpdate(API_CONSTANTS.USER, value);
-      setUserState(prevState => ({...prevState,addedUserOpen: false}))
+      setUserState((prevState) => ({ ...prevState, addedUserOpen: false }));
     });
   };
 
   const handleRecoveryUser = async (value: UserBaseInfo.User) => {
     await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(
-        API_CONSTANTS.USER_RECOVERY,
-        l('button.recovery'),
-        { id: value.id },
-      );
+      await handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), { id: value.id });
     });
   };
 
@@ -175,16 +153,20 @@ const UserProTable = () => {
       WarningMessage(l('user.isdelete'));
       return;
     } else {
-      await handlePutDataByParams(API_CONSTANTS.USER_RESET_PASSWORD, l('user.resetPassword'), { id: value.id },).then((res) => {
-        const {datas: { user, originalPassword },} = res;
-        SuccessMessage(
-          l('user.resetPasswordSuccess', '', {
-            username: user.username,
-            password: originalPassword,
-          }),
-          5,
-        );
-      });
+      await handlePutDataByParams(API_CONSTANTS.USER_RESET_PASSWORD, l('user.resetPassword'), { id: value.id }).then(
+        (res) => {
+          const {
+            datas: { user, originalPassword }
+          } = res;
+          SuccessMessage(
+            l('user.resetPasswordSuccess', '', {
+              username: user.username,
+              password: originalPassword
+            }),
+            5
+          );
+        }
+      );
     }
   };
 
@@ -194,26 +176,26 @@ const UserProTable = () => {
   const columns: ProColumns<UserBaseInfo.User>[] = [
     {
       title: l('user.username'),
-      dataIndex: 'username',
+      dataIndex: 'username'
     },
     {
       title: l('user.nickname'),
-      dataIndex: 'nickname',
+      dataIndex: 'nickname'
     },
     {
       title: l('user.jobnumber'),
-      dataIndex: 'worknum',
+      dataIndex: 'worknum'
     },
     {
       title: l('user.phone'),
       dataIndex: 'mobile',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.type'),
       dataIndex: 'userType',
       valueEnum: USER_TYPE_ENUM(),
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.status'),
@@ -222,7 +204,7 @@ const UserProTable = () => {
       hideInSearch: true,
       filters: YES_OR_NO_FILTERS_MAPPING,
       filterMultiple: false,
-      sorter: (a, b) => Number(a.isDelete) - Number(b.isDelete),
+      sorter: (a, b) => Number(a.isDelete) - Number(b.isDelete)
     },
     {
       title: l('user.superAdminFlag'),
@@ -230,7 +212,7 @@ const UserProTable = () => {
       valueEnum: YES_OR_NO_ENUM,
       hideInSearch: true,
       filters: YES_OR_NO_FILTERS_MAPPING,
-      filterMultiple: false,
+      filterMultiple: false
     },
     {
       title: l('global.table.isEnable'),
@@ -238,16 +220,12 @@ const UserProTable = () => {
       hideInSearch: true,
       render: (_: any, record: UserBaseInfo.User) => {
         return (
-          <EnableSwitchBtn
-            key={`${record.id}_enable`}
-            record={record}
-            onChange={() => handleChangeEnable(record)}
-          />
+          <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)} />
         );
       },
       filters: STATUS_MAPPING(),
       filterMultiple: false,
-      valueEnum: STATUS_ENUM(),
+      valueEnum: STATUS_ENUM()
     },
     {
       title: l('global.table.createTime'),
@@ -255,7 +233,7 @@ const UserProTable = () => {
       sorter: true,
       valueType: 'dateTime',
       hideInTable: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.operate'),
@@ -263,15 +241,8 @@ const UserProTable = () => {
       width: '10vw',
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEditVisible(record)}
-        />,
-        <AssignBtn
-          key={`${record.id}_delete`}
-          onClick={() => handleAssignRole(record)}
-          title={l('user.assignRole')}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
+        <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)} title={l('user.assignRole')} />,
         <>
           {record.userType === UserType.LOCAL && (
             <Button
@@ -297,44 +268,33 @@ const UserProTable = () => {
         <>
           {access.canAdmin && record.isDelete && (
             <Popconfirm
-              placement="topRight"
+              placement='topRight'
               title={l('button.recovery')}
-              description={
-                <div className={'needWrap'}>{l('user.recovery')} </div>
-              }
+              description={<div className={'needWrap'}>{l('user.recovery')} </div>}
               onConfirm={() => handleRecoveryUser(record)}
               okText={l('button.confirm')}
               cancelText={l('button.cancel')}
             >
-              <Button
-                title={l('button.recovery')}
-                key={'recovery'}
-                icon={<BackIcon />}
-              />
+              <Button title={l('button.recovery')} key={'recovery'} icon={<BackIcon />} />
             </Popconfirm>
           )}
         </>,
         <>
           {access.canAdmin && (
             <Popconfirm
-              placement="topRight"
+              placement='topRight'
               title={l('button.reset')}
               description={<div className={'needWrap'}>{l('user.reset')} </div>}
               onConfirm={() => handleResetPassword(record)}
               okText={l('button.confirm')}
               cancelText={l('button.cancel')}
             >
-              <Button
-                title={l('button.reset')}
-                key={'reset'}
-                className={'blue-icon'}
-                icon={<RedoOutlined />}
-              />
+              <Button title={l('button.reset')} key={'reset'} className={'blue-icon'} icon={<RedoOutlined />} />
             </Popconfirm>
           )}
-        </>,
-      ],
-    },
+        </>
+      ]
+    }
   ];
 
   /**
@@ -350,14 +310,14 @@ const UserProTable = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'CreateUser'}
-            onClick={() => setUserState(prevState => ({...prevState, addedUserOpen: true}))}
-          />,
+            onClick={() => setUserState((prevState) => ({ ...prevState, addedUserOpen: true }))}
+          />
         ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.USER, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
         columns={columns}
@@ -366,41 +326,41 @@ const UserProTable = () => {
       <UserModalForm
         key={'handleSubmitUser'}
         onSubmit={handleSubmitUser}
-        onCancel={() => setUserState(prevState => ({...prevState, addedUserOpen: false}))}
+        onCancel={() => setUserState((prevState) => ({ ...prevState, addedUserOpen: false }))}
         modalVisible={userState.addedUserOpen}
         values={{}}
       />
       <PasswordModal
         key={'handlePasswordChangeSubmit'}
         onSubmit={handlePasswordChangeSubmit}
-        onCancel={() =>  setUserState(prevState => ({...prevState, editPasswordOpen: false}))}
+        onCancel={() => setUserState((prevState) => ({ ...prevState, editPasswordOpen: false }))}
         modalVisible={userState.editPasswordOpen}
         values={userState.value}
       />
-      {
-        (Object.keys(userState.value).length> 0 )&& <>
-        <UserModalForm
+      {Object.keys(userState.value).length > 0 && (
+        <>
+          <UserModalForm
             key={'handleUpdateUser'}
             onSubmit={handleSubmitUser}
-            onCancel={() =>  setUserState(prevState => ({...prevState, editUserOpen: false,value: {}}))}
+            onCancel={() => setUserState((prevState) => ({ ...prevState, editUserOpen: false, value: {} }))}
             modalVisible={userState.editUserOpen}
             values={userState.value}
-        />
+          />
         </>
-      }
+      )}
 
       {/* assign role to user */}
-      {
-        (Object.keys(userState.value).length> 0 )&& <>
-            <RoleModalTransfer
-                user={userState.value}
-                modalVisible={userState.assignRoleOpen}
-                onChange={(value) => setUserState(prevState => ({...prevState,roleIds: value}))}
-                onCancel={() => setUserState(prevState => ({...prevState, assignRoleOpen: false,value: {}}))}
-                onSubmit={() => handleGrantRoleSubmit()}
-            />
-          </>
-      }
+      {Object.keys(userState.value).length > 0 && (
+        <>
+          <RoleModalTransfer
+            user={userState.value}
+            modalVisible={userState.assignRoleOpen}
+            onChange={(value) => setUserState((prevState) => ({ ...prevState, roleIds: value }))}
+            onCancel={() => setUserState((prevState) => ({ ...prevState, assignRoleOpen: false, value: {} }))}
+            onSubmit={() => handleGrantRoleSubmit()}
+          />
+        </>
+      )}
     </>
   );
 };

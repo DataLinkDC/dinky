@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import CodeShow, {CodeShowFormProps} from '@/components/CustomEditor/CodeShow';
+import CodeShow, { CodeShowFormProps } from '@/components/CustomEditor/CodeShow';
 import { l } from '@/utils/intl';
 import { Empty } from 'antd';
 import React from 'react';
@@ -24,7 +24,7 @@ const CodeEditProps: any = {
   height: '82vh',
   width: '100%',
   lineNumbers: 'on',
-  language: 'java',
+  language: 'java'
 };
 
 type LogsShowProps = {
@@ -38,7 +38,7 @@ const LogsShow: React.FC<LogsShowProps> = (props) => {
   const restLogsShowProps: CodeShowFormProps = {
     showFloatButton: true,
     code,
-    refreshLogCallback,
+    refreshLogCallback
   };
 
   return (
@@ -46,10 +46,7 @@ const LogsShow: React.FC<LogsShowProps> = (props) => {
       {code ? (
         <CodeShow {...restLogsShowProps} {...CodeEditProps} />
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('sys.info.logList.tips')}
-        />
+        <Empty className={'code-content-empty'} description={l('sys.info.logList.tips')} />
       )}
     </>
   );

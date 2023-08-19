@@ -17,12 +17,7 @@
  *
  */
 
-import {
-  CPUIcon,
-  HeapIcon,
-  OutHeapIcon,
-  ThreadIcon,
-} from '@/components/Icons/MetricsIcon';
+import { CPUIcon, HeapIcon, OutHeapIcon, ThreadIcon } from '@/components/Icons/MetricsIcon';
 import CPU from '@/pages/Metrics/Server/CPU';
 import { JvmDataRecord, JVMMetric } from '@/pages/Metrics/Server/data';
 import Heap from '@/pages/Metrics/Server/Heap';
@@ -36,7 +31,7 @@ import React from 'react';
 export const imgStyle = {
   display: 'block',
   width: 24,
-  height: 24,
+  height: 24
 };
 
 type ServerProp = {
@@ -52,25 +47,19 @@ const Server: React.FC<ServerProp> = (props) => {
     xField: 'time',
     xAxis: {
       type: 'time',
-      mask: 'HH:mm:ss',
-    },
+      mask: 'HH:mm:ss'
+    }
   };
   const jvmMetric = data[data.length - 1];
   const showLastData: JvmDataRecord = jvmMetric
     ? {
         cpuLastValue: Number(jvmMetric.jvm.cpuUsed.toFixed(2)),
         heapMax: Number((jvmMetric.jvm.heapMax / (1024 * 1024)).toFixed(0)),
-        heapLastValue: Number(
-          (jvmMetric.jvm.heapUsed / (1024 * 1024)).toFixed(0),
-        ),
-        nonHeapMax: Number(
-          (jvmMetric.jvm.nonHeapMax / (1024 * 1024)).toFixed(0),
-        ),
-        nonHeapLastValue: Number(
-          (jvmMetric.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0),
-        ),
+        heapLastValue: Number((jvmMetric.jvm.heapUsed / (1024 * 1024)).toFixed(0)),
+        nonHeapMax: Number((jvmMetric.jvm.nonHeapMax / (1024 * 1024)).toFixed(0)),
+        nonHeapLastValue: Number((jvmMetric.jvm.nonHeapUsed / (1024 * 1024)).toFixed(0)),
         threadPeakCount: jvmMetric.jvm.threadPeakCount,
-        threadCount: jvmMetric.jvm.threadCount,
+        threadCount: jvmMetric.jvm.threadCount
       }
     : {
         cpuLastValue: 0,
@@ -79,7 +68,7 @@ const Server: React.FC<ServerProp> = (props) => {
         nonHeapMax: 0,
         nonHeapLastValue: 0,
         threadPeakCount: 0,
-        threadCount: 0,
+        threadCount: 0
       };
 
   const extraDataBuilder = (data: JvmDataRecord) => {
@@ -87,7 +76,7 @@ const Server: React.FC<ServerProp> = (props) => {
       cpuLastValue: data.cpuLastValue + '%',
       heapLastValue: data.heapLastValue + ' / ' + data.heapMax + ' MB',
       nonHeapLastValue: data.nonHeapLastValue + ' / ' + data.nonHeapMax + ' MB',
-      threadCount: data.threadCount + ' / ' + data.threadPeakCount,
+      threadCount: data.threadCount + ' / ' + data.threadPeakCount
     };
   };
   return (
@@ -113,11 +102,7 @@ const Server: React.FC<ServerProp> = (props) => {
           }
           extra={extraDataBuilder(showLastData).heapLastValue}
         >
-          <Heap
-            data={data}
-            max={showLastData.heapMax}
-            chartConfig={commonConfig}
-          />
+          <Heap data={data} max={showLastData.heapMax} chartConfig={commonConfig} />
         </ProCard>
         <ProCard
           title={
@@ -139,11 +124,7 @@ const Server: React.FC<ServerProp> = (props) => {
           }
           extra={extraDataBuilder(showLastData).nonHeapLastValue}
         >
-          <NonHeap
-            data={data}
-            max={showLastData.nonHeapMax}
-            chartConfig={commonConfig}
-          />
+          <NonHeap data={data} max={showLastData.nonHeapMax} chartConfig={commonConfig} />
         </ProCard>
       </ProCard>
     </>

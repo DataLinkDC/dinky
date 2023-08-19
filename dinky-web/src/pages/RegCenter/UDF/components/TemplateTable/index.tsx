@@ -25,14 +25,10 @@ import {
   CODE_TYPE_ENUM,
   CODE_TYPE_FILTER,
   FUNCTION_TYPE_ENUM,
-  FUNCTION_TYPE_FILTER,
+  FUNCTION_TYPE_FILTER
 } from '@/pages/RegCenter/UDF/constants';
 import { queryList } from '@/services/api';
-import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  updateDataByParam,
-} from '@/services/BusinessCrud';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
 import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
@@ -45,15 +41,14 @@ const CodeShowProps: any = {
   height: '40vh',
   width: '40vw',
   lineNumbers: 'on',
-  language: 'java',
+  language: 'java'
 };
 
 const TemplateTable: React.FC = () => {
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [drawer, setDrawer] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<Partial<UDFTemplate>>({});
 
@@ -108,8 +103,8 @@ const TemplateTable: React.FC = () => {
     await executeAndCallback(
       async () =>
         await updateDataByParam(API_CONSTANTS.UDF_TEMPLATE_ENABLE, {
-          id: value.id,
-        }),
+          id: value.id
+        })
     );
   };
 
@@ -119,9 +114,7 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallback(
-      async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id),
-    );
+    await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id));
   };
 
   /**
@@ -139,7 +132,7 @@ const TemplateTable: React.FC = () => {
       dataIndex: 'name',
       render: (dom: any, record: UDFTemplate) => {
         return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
-      },
+      }
     },
     {
       title: l('rc.template.codeType'),
@@ -147,7 +140,7 @@ const TemplateTable: React.FC = () => {
       filters: CODE_TYPE_FILTER,
       valueEnum: CODE_TYPE_ENUM,
       filterMultiple: false,
-      onFilter: false,
+      onFilter: false
     },
     {
       title: l('rc.template.functionType'),
@@ -155,7 +148,7 @@ const TemplateTable: React.FC = () => {
       filters: FUNCTION_TYPE_FILTER,
       valueEnum: FUNCTION_TYPE_ENUM,
       filterMultiple: false,
-      onFilter: false,
+      onFilter: false
     },
     {
       title: l('rc.template.templateCode'),
@@ -166,14 +159,8 @@ const TemplateTable: React.FC = () => {
       filterMultiple: false,
       onFilter: false,
       render: (dom: any, record: UDFTemplate) => {
-        return (
-          <CodeShow
-            {...CodeShowProps}
-            code={record.templateCode}
-            showFloatButton
-          />
-        );
-      },
+        return <CodeShow {...CodeShowProps} code={record.templateCode} showFloatButton />;
+      }
     },
     {
       title: l('global.table.isEnable'),
@@ -188,21 +175,21 @@ const TemplateTable: React.FC = () => {
             onChange={() => handleChangeEnable(record)}
           />
         );
-      },
+      }
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
       sorter: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       valueType: 'dateTime',
       sorter: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.operate'),
@@ -210,17 +197,14 @@ const TemplateTable: React.FC = () => {
       hideInSearch: true,
       hideInDescriptions: true,
       render: (text: any, record: UDFTemplate) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEdit(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rc.template.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   return (
@@ -230,15 +214,8 @@ const TemplateTable: React.FC = () => {
         loading={loading}
         actionRef={actionRef}
         headerTitle={l('rc.udf.management')}
-        toolBarRender={() => [
-          <CreateBtn
-            key={'template'}
-            onClick={() => handleModalVisible(true)}
-          />,
-        ]}
-        request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })
-        }
+        toolBarRender={() => [<CreateBtn key={'template'} onClick={() => handleModalVisible(true)} />]}
+        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })}
         columns={columns}
       />
       {/* added */}
@@ -247,9 +224,7 @@ const TemplateTable: React.FC = () => {
           values={formValues}
           visible={modalVisible}
           onCancel={handleCancel}
-          onSubmit={(value: Partial<UDFTemplate>) =>
-            handleAddOrUpdateSubmit(value)
-          }
+          onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
         />
       )}
 
@@ -259,9 +234,7 @@ const TemplateTable: React.FC = () => {
           values={formValues}
           visible={updateModalVisible}
           onCancel={handleCancel}
-          onSubmit={(value: Partial<UDFTemplate>) =>
-            handleAddOrUpdateSubmit(value)
-          }
+          onSubmit={(value: Partial<UDFTemplate>) => handleAddOrUpdateSubmit(value)}
         />
       )}
 

@@ -33,11 +33,7 @@ const DocumentDrawer: React.FC<DocumentDrawerProps> = (props) => {
 
   return (
     <>
-      <Drawer
-        width={'50%'}
-        open={modalVisible}
-        onClose={() => handleCancel(false)}
-      >
+      <Drawer width={'50%'} open={modalVisible} onClose={() => handleCancel(false)}>
         <DocumentDesc values={values} columns={columns} />
       </Drawer>
     </>

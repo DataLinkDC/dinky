@@ -59,13 +59,13 @@ export const RequestProvider = memo(({ children }) => {
           },
           onFinally: () => {
             setAppLoading(false);
-          },
-        },
+          }
+        }
       );
   });
   return (
     <RequestContext.Provider value={{ ...hooks, appLoading }}>
-      <Spin tip="网络请求中..." spinning={appLoading}>
+      <Spin tip='网络请求中...' spinning={appLoading}>
         {children}
       </Spin>
     </RequestContext.Provider>

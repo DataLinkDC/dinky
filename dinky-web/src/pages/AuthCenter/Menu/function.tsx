@@ -44,20 +44,10 @@ const renderMenuType = (menuType: string) => {
 
 const renderTitle = (value: SysMenu) => (
   <Space>
-    {value.perms && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>
-    )}
-    {value.type && (
-      <span style={{ color: 'grey' }}>
-        &nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}
-      </span>
-    )}
-    {value.note && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>
-    )}
-    {value.path && (
-      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>
-    )}
+    {value.perms && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
+    {value.type && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>}
+    {value.note && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
+    {value.path && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>}
   </Space>
 );
 
@@ -67,7 +57,7 @@ export const sortTreeData = (treeData: SysMenu[]): SysMenu[] => {
     .sort((a, b) => a.orderNum - b.orderNum)
     .map((item) => ({
       ...item,
-      children: item.children ? sortTreeData(item.children) : [],
+      children: item.children ? sortTreeData(item.children) : []
     }));
 };
 
@@ -85,7 +75,7 @@ export const getMaxOrderNumToNextOrderNum = (tree: SysMenu[]): number => {
     }
   });
   return maxOrderNum;
-}
+};
 
 /**
  * build menu tree
@@ -96,9 +86,9 @@ export const getMaxOrderNumToNextOrderNum = (tree: SysMenu[]): number => {
  * @returns {any}
  */
 export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level = 1): any =>
-    data.filter((sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,)
+  data
+    .filter((sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)
     .map((item: SysMenu) => {
-
       return {
         isLeaf: !item.children || item.children.length === 0,
         name: item.name,
@@ -119,11 +109,7 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level =
         ),
         fullInfo: item,
         key: item.id,
-        children: buildMenuTree(
-          item.children,
-          searchValue,
-          level + 1,
-        ),
+        children: buildMenuTree(item.children, searchValue, level + 1)
       };
     });
 
@@ -131,16 +117,9 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level =
  * build menu form tree (filter button)
  */
 
-export const buildMenuFormTree = (
-  data: SysMenu[],
-  searchValue: string = '',
-  filterButton = false,
-): any =>
+export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', filterButton = false): any =>
   data
-    .filter(
-      (sysMenu: SysMenu) =>
-        sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1,
-    )
+    .filter((sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)
     .filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false))
     .map((item: SysMenu) => {
       // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)
@@ -162,6 +141,6 @@ export const buildMenuFormTree = (
         ),
         fullInfo: item,
         key: item.id,
-        children: buildMenuFormTree(item.children, searchValue, filterButton),
+        children: buildMenuFormTree(item.children, searchValue, filterButton)
       };
     });

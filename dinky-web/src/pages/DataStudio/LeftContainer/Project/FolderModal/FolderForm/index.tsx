@@ -23,14 +23,14 @@ import { ProFormText } from '@ant-design/pro-components';
 const FolderForm = () => {
   return (
     <ProFormText
-      name="name"
+      name='name'
       label={l('datastudio.project.create.folder.name')}
       placeholder={l('datastudio.project.create.folder.name.placeholder')}
       rules={[
         {
           required: true,
-          message: l('datastudio.project.create.folder.name.placeholder'),
-        },
+          message: l('datastudio.project.create.folder.name.placeholder')
+        }
       ]}
     />
   );

@@ -3,13 +3,7 @@ import { l } from '@/utils/intl';
 
 /*--- 刷新 元数据表 ---*/
 export async function showMetaDataTable(id: number) {
-  return (
-    await handleGetOption(
-      'api/database/getSchemasAndTables',
-      l('pages.metadata.DataSearch'),
-      { id: id },
-    )
-  ).datas;
+  return (await handleGetOption('api/database/getSchemasAndTables', l('pages.metadata.DataSearch'), { id: id })).datas;
 }
 
 /*--- 清理 元数据表缓存 ---*/

@@ -46,7 +46,7 @@ const Thread: React.FC<ThreadProps> = (props) => {
     data: dataListAll,
     seriesField: 'name',
     isStack: false,
-    tooltip: {},
+    tooltip: {}
   };
 
   return <Area {...config} />;

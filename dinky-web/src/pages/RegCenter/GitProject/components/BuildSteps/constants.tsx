@@ -29,7 +29,7 @@ export const BuildStepOfCodeType = {
     3: l('rc.gp.build.step.3'),
     4: l('rc.gp.build.step.4'),
     5: l('rc.gp.build.step.5'),
-    6: l('rc.gp.build.step.6'),
+    6: l('rc.gp.build.step.6')
   },
   2: {
     1: l('rc.gp.build.step.1'),
@@ -37,8 +37,8 @@ export const BuildStepOfCodeType = {
     3: l('rc.gp.build.step.3'),
     4: l('rc.gp.build.step.4'),
     5: l('rc.gp.build.step.5'),
-    6: l('rc.gp.build.step.6'),
-  },
+    6: l('rc.gp.build.step.6')
+  }
 };
 
 export type BuildMsgResult = {
@@ -52,59 +52,59 @@ export const JavaSteps = [
   {
     key: 1,
     title: l('rc.gp.build.step.1'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 2,
     title: l('rc.gp.build.step.2'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 3,
     title: l('rc.gp.build.step.3'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 4,
     title: l('rc.gp.build.step.4'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 5,
     title: l('rc.gp.build.step.5'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 6,
     title: l('rc.gp.build.step.6'),
-    status: 'wait',
-  },
+    status: 'wait'
+  }
 ];
 
 export const PythonSteps = [
   {
     key: 1,
     title: l('rc.gp.build.step.1'),
-    status: 'process',
+    status: 'process'
   },
   {
     key: 2,
     title: l('rc.gp.build.step.2'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 3,
     title: l('rc.gp.build.step.4'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 4,
     title: l('rc.gp.build.step.5'),
-    status: 'wait',
+    status: 'wait'
   },
   {
     key: 5,
     title: l('rc.gp.build.step.6'),
-    status: 'wait',
-  },
+    status: 'wait'
+  }
 ];

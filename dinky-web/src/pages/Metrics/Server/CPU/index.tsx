@@ -43,13 +43,13 @@ const CPU: React.FC<CpuProps> = (props) => {
     data: dataList,
     yAxis: {
       min: 0,
-      max: 100,
+      max: 100
     },
     tooltip: {
       formatter: (datum: Datum) => {
         return { name: 'Cpu Used', value: datum.value + ' %' };
-      },
-    },
+      }
+    }
   };
 
   return <Area {...config} />;

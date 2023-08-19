@@ -30,13 +30,11 @@ import RcResizeObserver from 'rc-resize-observer';
 import React, { useState } from 'react';
 
 const JobOverView: React.FC = () => {
-  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>(
-    'vertical',
-  );
+  const [split, setSplit] = useState<'vertical' | 'horizontal' | undefined>('vertical');
 
   return (
     <RcResizeObserver
-      key="resize-observer"
+      key='resize-observer'
       onResize={(offset) => {
         setSplit(offset.width < 596 ? 'horizontal' : 'vertical');
       }}
@@ -44,17 +42,17 @@ const JobOverView: React.FC = () => {
       <ProCard
         title={
           <>
-            <Badge status="processing" />
+            <Badge status='processing' />
             {l('home.job.metrics')}
           </>
         }
         headerBordered
         bordered
-        size="small"
+        size='small'
         split={split}
       >
         <ProCard split={split}>
-          <ProCard split="horizontal">
+          <ProCard split='horizontal'>
             <ProCard bodyStyle={{ padding: '0 12px' }}>
               <JobRunView />
             </ProCard>
@@ -73,7 +71,7 @@ const JobOverView: React.FC = () => {
           <ProCard title={l('home.server.load')}>
             <LoadScoreGauge />
           </ProCard>
-          <ProCard split="horizontal">
+          <ProCard split='horizontal'>
             <JobErrorView />
           </ProCard>
         </ProCard>

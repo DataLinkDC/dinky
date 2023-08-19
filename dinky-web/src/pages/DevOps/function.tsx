@@ -26,7 +26,7 @@ import {
   EditOutlined,
   MinusCircleOutlined,
   QuestionCircleOutlined,
-  SyncOutlined,
+  SyncOutlined
 } from '@ant-design/icons';
 import { Tag } from 'antd';
 
@@ -40,19 +40,19 @@ export const TagJobLifeCycle = (step?: number) => {
   switch (step) {
     case JOB_LIFE_CYCLE.DEVELOP:
       return (
-        <Tag icon={<EditOutlined />} color="default">
+        <Tag icon={<EditOutlined />} color='default'>
           {l('global.table.lifecycle.dev')}
         </Tag>
       );
     case JOB_LIFE_CYCLE.RELEASE:
       return (
-        <Tag icon={<CameraOutlined />} color="green">
+        <Tag icon={<CameraOutlined />} color='green'>
           {l('global.table.lifecycle.publish')}
         </Tag>
       );
     case JOB_LIFE_CYCLE.ONLINE:
       return (
-        <Tag icon={<CarryOutOutlined />} color="blue">
+        <Tag icon={<CarryOutOutlined />} color='blue'>
           {l('global.table.lifecycle.online')}
         </Tag>
       );
@@ -71,49 +71,49 @@ export const TagJobStatus = (status: string | undefined) => {
   switch (status) {
     case JOB_STATUS.RUNNING:
       return (
-        <Tag icon={<SyncOutlined spin />} color="green">
+        <Tag icon={<SyncOutlined spin />} color='green'>
           RUNNING
         </Tag>
       );
     case JOB_STATUS.FINISHED:
       return (
-        <Tag icon={<CheckCircleOutlined />} color="blue">
+        <Tag icon={<CheckCircleOutlined />} color='blue'>
           FINISHED
         </Tag>
       );
     case JOB_STATUS.CANCELED:
       return (
-        <Tag icon={<MinusCircleOutlined />} color="orange">
+        <Tag icon={<MinusCircleOutlined />} color='orange'>
           CANCELED
         </Tag>
       );
     case JOB_STATUS.INITIALIZING:
       return (
-        <Tag icon={<ClockCircleOutlined />} color="default">
+        <Tag icon={<ClockCircleOutlined />} color='default'>
           INITIALIZING
         </Tag>
       );
     case JOB_STATUS.RESTARTING:
       return (
-        <Tag icon={<ClockCircleOutlined />} color="default">
+        <Tag icon={<ClockCircleOutlined />} color='default'>
           RESTARTING
         </Tag>
       );
     case JOB_STATUS.CREATED:
       return (
-        <Tag icon={<ClockCircleOutlined />} color="default">
+        <Tag icon={<ClockCircleOutlined />} color='default'>
           CREATED
         </Tag>
       );
     case JOB_STATUS.UNKNOWN:
       return (
-        <Tag icon={<QuestionCircleOutlined />} color="default">
+        <Tag icon={<QuestionCircleOutlined />} color='default'>
           UNKNOWN
         </Tag>
       );
     default:
       return (
-        <Tag icon={<CloseCircleOutlined />} color="error">
+        <Tag icon={<CloseCircleOutlined />} color='error'>
           FAILED
         </Tag>
       );
@@ -130,13 +130,13 @@ export const LIFECYCLE_FILTER = () => {
     { text: l('global.table.lifecycle.dev'), value: JOB_LIFE_CYCLE.DEVELOP },
     {
       text: l('global.table.lifecycle.publish'),
-      value: JOB_LIFE_CYCLE.RELEASE,
+      value: JOB_LIFE_CYCLE.RELEASE
     },
     { text: l('global.table.lifecycle.online'), value: JOB_LIFE_CYCLE.ONLINE },
     {
       text: l('global.table.lifecycle.unknown'),
-      value: JOB_LIFE_CYCLE.UNKNOWN,
-    },
+      value: JOB_LIFE_CYCLE.UNKNOWN
+    }
   ];
 };
 
@@ -157,7 +157,7 @@ export const JOB_STATUS_FILTER = () => {
     { text: JOB_STATUS.FAILING, value: JOB_STATUS.FAILING },
     { text: JOB_STATUS.SUSPENDED, value: JOB_STATUS.SUSPENDED },
     { text: JOB_STATUS.CANCELLING, value: JOB_STATUS.CANCELLING },
-    { text: JOB_STATUS.UNKNOWN, value: JOB_STATUS.UNKNOWN },
+    { text: JOB_STATUS.UNKNOWN, value: JOB_STATUS.UNKNOWN }
   ];
 };
 

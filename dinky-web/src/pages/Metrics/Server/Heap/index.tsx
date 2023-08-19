@@ -37,7 +37,7 @@ const Heap: React.FC<HeapProps> = (props) => {
   const dataList: Heap[] = data.map((x) => {
     return {
       time: x.time,
-      value: parseInt(String(x.jvm.heapUsed / (1024 * 1024))),
+      value: parseInt(String(x.jvm.heapUsed / (1024 * 1024)))
     };
   });
 
@@ -46,13 +46,13 @@ const Heap: React.FC<HeapProps> = (props) => {
     data: dataList,
     yAxis: {
       min: 0,
-      max: max,
+      max: max
     },
     tooltip: {
       formatter: (datum: Datum) => {
         return { name: 'Heap Memory', value: datum.value + ' MB' };
-      },
-    },
+      }
+    }
   };
 
   return <Area {...config} />;

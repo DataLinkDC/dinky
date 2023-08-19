@@ -17,7 +17,7 @@
 
 export const ExposedTypeOptions = [
   { label: 'NodePort', value: 'NodePort' },
-  { label: 'ClusterIP', value: 'ClusterIP' },
+  { label: 'ClusterIP', value: 'ClusterIP' }
 ];
 
 export const versionOptions = [
@@ -26,5 +26,5 @@ export const versionOptions = [
   { label: '1.15', value: 'v1_15' },
   { label: '1.16', value: 'v1_16' },
   { label: '1.17', value: 'v1_17' },
-  { label: '1.18', value: 'v1_18', disabled: true },
+  { label: '1.18', value: 'v1_18', disabled: true }
 ];

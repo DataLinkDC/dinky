@@ -17,10 +17,7 @@
  *
  */
 
-import {
-  buildFormData,
-  getFormData,
-} from '@/pages/RegCenter/Alert/AlertGroup/function';
+import { buildFormData, getFormData } from '@/pages/RegCenter/Alert/AlertGroup/function';
 import { AlertStateType } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { MODAL_FORM_STYLE, SWITCH_OPTIONS } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data';
@@ -31,7 +28,7 @@ import {
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 import { connect } from '@umijs/max';
 import { Button, Form, Tag } from 'antd';
@@ -58,18 +55,13 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
     name: props.values.name,
     alertInstanceIds: props.values.alertInstanceIds,
     note: props.values.note,
-    enabled: props.values.enabled ? props.values.enabled : true,
+    enabled: props.values.enabled ? props.values.enabled : true
   });
 
   /**
    * extract props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    instance,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, instance } = props;
 
   /**
    * build alert instance select options
@@ -79,13 +71,13 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
     for (const item of instance) {
       const tag = (
         <>
-          <Tag color="processing">{item.type}</Tag>
+          <Tag color='processing'>{item.type}</Tag>
           {item.name}
         </>
       );
       itemList.push({
         label: tag,
-        value: item.id.toString(),
+        value: item.id.toString()
       });
     }
     return itemList;
@@ -107,33 +99,23 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="name"
+          name='name'
           label={l('rc.ag.name')}
           rules={[{ required: true, message: l('rc.ag.inputName') }]}
           placeholder={l('rc.ag.inputName')}
         />
 
         <ProFormSelect
-          name="alertInstanceIds"
+          name='alertInstanceIds'
           label={l('rc.ag.alertInstanceIds')}
-          rules={[
-            { required: true, message: l('rc.ag.chooseAlertInstanceIds') },
-          ]}
-          mode="multiple"
+          rules={[{ required: true, message: l('rc.ag.chooseAlertInstanceIds') }]}
+          mode='multiple'
           options={buildAlertInstanceSelect()}
         />
 
-        <ProFormTextArea
-          name="note"
-          label={l('global.table.note')}
-          placeholder={l('global.table.notePlaceholder')}
-        />
+        <ProFormTextArea name='note' label={l('global.table.note')} placeholder={l('global.table.notePlaceholder')} />
 
-        <ProFormSwitch
-          name="enabled"
-          label={l('global.table.isEnable')}
-          {...SWITCH_OPTIONS()}
-        />
+        <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
       </>
     );
   };
@@ -146,9 +128,9 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       <Button key={'GroupCancel'} onClick={() => handleModalVisible(false)}>
         {l('button.cancel')}
       </Button>,
-      <Button key={'GroupFinish'} type="primary" onClick={() => submitForm()}>
+      <Button key={'GroupFinish'} type='primary' onClick={() => submitForm()}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 
@@ -162,11 +144,7 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
       {...MODAL_FORM_STYLE}
       submitter={{ render: () => [...renderFooter()] }}
     >
-      <ProForm
-        form={form}
-        initialValues={getFormData(formVals)}
-        submitter={false}
-      >
+      <ProForm form={form} initialValues={getFormData(formVals)} submitter={false}>
         {renderAlertGroupForm()}
       </ProForm>
     </ModalForm>
@@ -174,5 +152,5 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
 };
 
 export default connect(({ Alert }: { Alert: AlertStateType }) => ({
-  instance: Alert.instance,
+  instance: Alert.instance
 }))(AlertGroupForm);

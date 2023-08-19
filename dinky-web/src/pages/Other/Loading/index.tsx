@@ -26,11 +26,7 @@ type LoadingProps = {
 export const Loading: React.FC<LoadingProps> = ({ loading }) => {
   return (
     <>
-      <PageLoading
-        spinning={loading}
-        tip={l('app.request.loading')}
-        size="large"
-      />
+      <PageLoading spinning={loading} tip={l('app.request.loading')} size='large' />
     </>
   );
 };

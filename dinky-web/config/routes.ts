@@ -36,27 +36,27 @@ export default [
       {
         name: 'login',
         path: '/user/login',
-        component: './Other/Login',
-      },
-    ],
+        component: './Other/Login'
+      }
+    ]
   },
   {
     path: '/',
-    redirect: '/home',
+    redirect: '/home'
   },
   {
     path: '/home',
     name: 'home',
     icon: 'HomeOutlined',
     footerRender: false,
-    component: './Home',
+    component: './Home'
   },
   {
     path: '/datastudio',
     name: 'datastudio',
     icon: 'CodeOutlined',
     footerRender: false,
-    component: './DataStudio',
+    component: './DataStudio'
   },
   {
     path: '/devops',
@@ -66,21 +66,21 @@ export default [
     routes: [
       {
         path: '/devops',
-        redirect: '/devops/joblist',
+        redirect: '/devops/joblist'
       },
       {
         path: '/devops/joblist',
         name: 'job',
         hideInMenu: true,
-        component: './DevOps',
+        component: './DevOps'
       },
       {
         path: '/devops/job-detail',
         name: 'job-detail',
         hideInMenu: true,
-        component: './DevOps/JobDetail',
-      },
-    ],
+        component: './DevOps/JobDetail'
+      }
+    ]
   },
   {
     path: '/registration',
@@ -90,7 +90,7 @@ export default [
     routes: [
       {
         path: '/registration',
-        redirect: '/registration/cluster/instance',
+        redirect: '/registration/cluster/instance'
       },
       {
         path: '/registration/cluster',
@@ -100,14 +100,14 @@ export default [
           {
             path: '/registration/cluster/instance',
             name: 'cluster-instance',
-            component: './RegCenter/Cluster/Instance',
+            component: './RegCenter/Cluster/Instance'
           },
           {
             path: '/registration/cluster/config',
             name: 'cluster-config',
-            component: './RegCenter/Cluster/Configuration',
-          },
-        ],
+            component: './RegCenter/Cluster/Configuration'
+          }
+        ]
       },
       {
         path: '/registration/database',
@@ -116,9 +116,9 @@ export default [
         component: './RegCenter/DataSource',
         routes: [
           {
-            path: '/registration/database/detail/:id',
-          },
-        ],
+            path: '/registration/database/detail/:id'
+          }
+        ]
       },
       {
         path: '/registration/alert',
@@ -128,46 +128,46 @@ export default [
           {
             path: '/registration/alert/instance',
             name: 'instance',
-            component: './RegCenter/Alert/AlertInstance',
+            component: './RegCenter/Alert/AlertInstance'
           },
           {
             path: '/registration/alert/group',
             name: 'group',
-            component: './RegCenter/Alert/AlertGroup',
-          },
-        ],
+            component: './RegCenter/Alert/AlertGroup'
+          }
+        ]
       },
       {
         path: '/registration/document',
         name: 'document',
         icon: 'BookOutlined',
-        component: './RegCenter/Document',
+        component: './RegCenter/Document'
       },
       {
         path: '/registration/fragment',
         name: 'fragment',
         icon: 'RocketOutlined',
-        component: './RegCenter/GlobalVar',
+        component: './RegCenter/GlobalVar'
       },
       {
         path: '/registration/gitprojects',
         name: 'gitprojects',
         icon: 'GithubOutlined',
-        component: './RegCenter/GitProject',
+        component: './RegCenter/GitProject'
       },
       {
         path: '/registration/udf',
         name: 'udf',
         icon: 'ToolOutlined',
-        component: './RegCenter/UDF',
+        component: './RegCenter/UDF'
       },
       {
         path: '/registration/resource',
         name: 'resource',
         icon: 'FileZipOutlined',
-        component: './RegCenter/Resource',
-      },
-    ],
+        component: './RegCenter/Resource'
+      }
+    ]
   },
   {
     name: 'auth',
@@ -178,39 +178,39 @@ export default [
     routes: [
       {
         path: '/auth',
-        redirect: '/auth/user',
+        redirect: '/auth/user'
       },
       {
         path: '/auth/user',
         name: 'user',
         icon: 'UserOutlined',
-        component: './AuthCenter/User',
+        component: './AuthCenter/User'
       },
       {
         path: '/auth/role',
         name: 'role',
         icon: 'TeamOutlined',
-        component: './AuthCenter/Role',
+        component: './AuthCenter/Role'
       },
       {
         path: '/auth/menu',
         name: 'menu',
         icon: 'MenuOutlined',
-        component: './AuthCenter/Menu',
+        component: './AuthCenter/Menu'
       },
       {
         path: '/auth/rowpermissions',
         name: 'rowpermissions',
         icon: 'SafetyCertificateOutlined',
-        component: './AuthCenter/RowPermissions',
+        component: './AuthCenter/RowPermissions'
       },
       {
         path: '/auth/tenant',
         name: 'tenant',
         icon: 'SecurityScanOutlined',
-        component: './AuthCenter/Tenant',
-      },
-    ],
+        component: './AuthCenter/Tenant'
+      }
+    ]
   },
 
   {
@@ -221,51 +221,51 @@ export default [
     routes: [
       {
         path: '/settings',
-        redirect: '/settings/globalsetting',
+        redirect: '/settings/globalsetting'
       },
       {
         path: '/settings/globalsetting',
         name: 'globalsetting',
         icon: 'SettingOutlined',
-        component: './SettingCenter/GlobalSetting',
+        component: './SettingCenter/GlobalSetting'
       },
       {
         path: '/settings/systemlog',
         name: 'systemlog',
         icon: 'InfoCircleOutlined',
-        component: './SettingCenter/SystemLogs',
+        component: './SettingCenter/SystemLogs'
       },
       {
         path: '/settings/process',
         name: 'process',
         icon: 'ReconciliationOutlined',
-        component: './SettingCenter/Process',
-      },
-    ],
+        component: './SettingCenter/Process'
+      }
+    ]
   },
   {
     path: '/metrics',
     name: 'metrics',
     icon: 'DashboardOutlined',
     footerRender: false,
-    component: './Metrics',
+    component: './Metrics'
   },
   {
     path: '/about',
     name: 'about',
     icon: 'SmileOutlined',
     footerRender: false,
-    component: './Other/About',
+    component: './Other/About'
   },
   {
     path: '/account/center',
     footerRender: false,
     name: 'center',
     hideInMenu: true,
-    component: './Other/PersonCenter',
+    component: './Other/PersonCenter'
   },
   {
     path: '*',
-    component: './Other/404',
-  },
+    component: './Other/404'
+  }
 ];

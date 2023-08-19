@@ -39,7 +39,7 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
   const [visibleViewLog, setVisibleViewLog] = React.useState<boolean>(false);
   const [viewLogProp, setViewLogProp] = React.useState<ShowLogProps>({
     type: '',
-    log: '',
+    log: ''
   });
 
   const handleViewLog = (type: string, log: string) => {
@@ -53,70 +53,52 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
   };
 
   const renderLog = () => {
-    return (
-      <ShowLog
-        cancelViewLog={cancelViewLog}
-        visibleViewLog={visibleViewLog}
-        {...viewLogProp}
-      />
-    );
+    return <ShowLog cancelViewLog={cancelViewLog} visibleViewLog={visibleViewLog} {...viewLogProp} />;
   };
 
   const stepsColumns: ProColumns<ProcessSteps>[] = [
     {
       dataIndex: 'index',
       valueType: 'indexBorder',
-      width: 48,
+      width: 48
     },
     {
       title: l('sys.process.subStep.status'),
       dataIndex: 'stepStatus',
       render: (_: any, record: ProcessSteps) => {
         return MatchProcessStatus(record.stepStatus);
-      },
+      }
     },
     {
       title: l('sys.process.subStep.info'),
       dataIndex: 'info',
       align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return (
-          <ShowLogBtn
-            onClick={() =>
-              handleViewLog(l('sys.process.viewInfoLog'), record.info)
-            }
-          />
-        );
-      },
+        return <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewInfoLog'), record.info)} />;
+      }
     },
     {
       title: l('sys.process.subStep.error'),
       dataIndex: 'error',
       align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return (
-          <ShowLogBtn
-            onClick={() =>
-              handleViewLog(l('sys.process.viewErrorLog'), record.error)
-            }
-          />
-        );
-      },
+        return <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewErrorLog'), record.error)} />;
+      }
     },
     {
       title: l('sys.process.startTime'),
       dataIndex: 'startTime',
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('sys.process.endTime'),
       dataIndex: 'endTime',
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('sys.process.duration'),
-      dataIndex: 'time',
-    },
+      dataIndex: 'time'
+    }
   ];
 
   return (

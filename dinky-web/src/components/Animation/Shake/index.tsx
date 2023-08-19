@@ -30,7 +30,7 @@ const Shake = (props: any) => {
         await next({ transform: 'translateX(10px)' });
       }
     },
-    config: { duration: 500 },
+    config: { duration: 500 }
   });
 
   return <animated.div style={style}>{children}</animated.div>;

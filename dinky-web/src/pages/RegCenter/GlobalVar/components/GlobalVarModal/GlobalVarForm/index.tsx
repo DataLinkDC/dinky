@@ -21,13 +21,7 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { GlobalVar } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormItem,
-  ProFormSwitch,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormItem, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
@@ -42,14 +36,12 @@ type GlobalVarModalProps = {
  */
 const CodeEditProps = {
   height: '25vh',
-  lineNumbers: 'on',
+  lineNumbers: 'on'
 };
 const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
   const { values, form } = props;
 
-  const [globalVarValue, setGlobalVarValue] = useState<string>(
-    values.fragmentValue ?? '',
-  );
+  const [globalVarValue, setGlobalVarValue] = useState<string>(values.fragmentValue ?? '');
 
   const handleGlobalVarChange = (value: string) => {
     setGlobalVarValue(value);
@@ -59,28 +51,28 @@ const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="name"
+          name='name'
           label={l('rc.gv.name')}
           placeholder={l('rc.gv.namePlaceholder')}
           rules={[{ required: true, message: l('rc.gv.namePlaceholder') }]}
         />
 
         <ProFormTextArea
-          name="note"
+          name='note'
           label={l('global.table.note')}
           placeholder={l('global.table.notePlaceholder')}
           allowClear
         />
 
         <ProFormSwitch
-          name="enabled"
+          name='enabled'
           label={l('global.table.isEnable')}
           checkedChildren={l('button.enable')}
           unCheckedChildren={l('button.disable')}
         />
 
         <ProFormItem
-          name="fragmentValue"
+          name='fragmentValue'
           label={l('rc.gv.value')}
           rules={[{ required: true, message: l('rc.gv.valuePlaceholder') }]}
         >
@@ -97,13 +89,7 @@ const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
 
   return (
     <>
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        layout={'horizontal'}
-        submitter={false}
-        form={form}
-        initialValues={values}
-      >
+      <ProForm {...FORM_LAYOUT_PUBLIC} layout={'horizontal'} submitter={false} form={form} initialValues={values}>
         {globalVarRender()}
       </ProForm>
     </>

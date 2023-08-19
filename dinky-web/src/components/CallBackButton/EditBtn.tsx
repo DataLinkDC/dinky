@@ -29,11 +29,6 @@ export const EditBtn: React.FC<EditButtonProps> = (props) => {
   const { onClick } = props;
 
   return (
-    <Button
-      className={'options-button'}
-      icon={<EditTwoTone />}
-      title={l('button.edit')}
-      onClick={() => onClick()}
-    />
+    <Button className={'options-button'} icon={<EditTwoTone />} title={l('button.edit')} onClick={() => onClick()} />
   );
 };

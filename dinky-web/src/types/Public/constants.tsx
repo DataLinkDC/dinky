@@ -27,9 +27,9 @@ import { Tag } from 'antd';
 export const YES_OR_NO_ENUM = {
   true: {
     text: <Tag color={'success'}>{l('global.yes')}</Tag>,
-    status: 'Success',
+    status: 'Success'
   },
-  false: { text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error' },
+  false: { text: <Tag color={'error'}>{l('global.no')}</Tag>, status: 'Error' }
 };
 
 /**
@@ -39,10 +39,10 @@ export const YES_OR_NO_ENUM = {
 export const YES_OR_NO_FILTERS_MAPPING = [
   {
     value: 1,
-    text: l('global.yes'),
+    text: l('global.yes')
   },
   {
     value: 0,
-    text: l('global.no'),
-  },
+    text: l('global.no')
+  }
 ];

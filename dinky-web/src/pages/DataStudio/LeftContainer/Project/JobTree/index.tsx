@@ -17,11 +17,7 @@
  *
  */
 
-import {
-  buildProjectTree,
-  generateList,
-  getParentKey,
-} from '@/pages/DataStudio/LeftContainer/Project/function';
+import { buildProjectTree, generateList, getParentKey } from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { Catalogue } from '@/types/Studio/data';
@@ -46,8 +42,7 @@ type TreeProps = {
 };
 
 const JobTree: React.FC<TreeProps & connect> = (props) => {
-  const { treeData, onNodeClick, style, height, onRightClick, selectedKeys } =
-    props;
+  const { treeData, onNodeClick, style, height, onRightClick, selectedKeys } = props;
   const [searchValue, setSearchValueValue] = useState('');
   const data = buildProjectTree(treeData, searchValue);
 
@@ -70,9 +65,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
         }
         return null;
       })
-      .filter(
-        (item: any, i: number, self: any) => item && self.indexOf(item) === i,
-      );
+      .filter((item: any, i: number, self: any) => item && self.indexOf(item) === i);
     setExpandedKeys(expandedKeys);
     setSearchValueValue(value);
     setAutoExpandParent(true);
@@ -82,9 +75,7 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
     setExpandedKeys(expandedKeys);
   };
   const expandAll = () => {
-    const map = data
-      .filter((x: { isLeaf: any }) => !x.isLeaf)
-      .map((x: { key: any }) => x.key);
+    const map = data.filter((x: { isLeaf: any }) => !x.isLeaf).map((x: { key: any }) => x.key);
     setExpandedKeys(map);
   };
   const btn = BtnRoute['menu.datastudio.project'];
@@ -115,15 +106,12 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           autoExpandParent={autoExpandParent}
         />
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          description={l('datastudio.project.create.folder.tip')}
-        />
+        <Empty className={'code-content-empty'} description={l('datastudio.project.create.folder.tip')} />
       )}
     </>
   );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  height: Studio.toolContentHeight,
+  height: Studio.toolContentHeight
 }))(JobTree);

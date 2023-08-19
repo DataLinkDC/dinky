@@ -20,10 +20,10 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import RoleProForm from '@/pages/AuthCenter/Role/components/RoleModalForm/RoleForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type RoleModalProps = {
   onCancel: (flag?: boolean) => void;
@@ -42,20 +42,15 @@ const RoleModalForm: React.FC<RoleModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * when modalVisible or values changed, set form values

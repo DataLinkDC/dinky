@@ -22,11 +22,11 @@ import React from 'react';
 
 const NoFoundPage: React.FC = () => (
   <Result
-    status="404"
-    title="404"
+    status='404'
+    title='404'
     subTitle={l('app.request.404')}
     extra={
-      <Button type="primary" onClick={() => history.push('/')}>
+      <Button type='primary' onClick={() => history.push('/')}>
         {l('app.request.back')}
       </Button>
     }

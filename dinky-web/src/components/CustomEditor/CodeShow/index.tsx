@@ -66,7 +66,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     width = '100%', // if null or undefined, set default value
     language,
     options = {
-      ...MonacoEditorOptions, // set default options
+      ...MonacoEditorOptions // set default options
     },
     code, // content
     lineNumbers, // show lineNumbers
@@ -74,14 +74,12 @@ const CodeShow = (props: CodeShowFormProps) => {
     autoWrap = 'on', //  auto wrap
     showFloatButton = false,
     refreshLogCallback,
-    fullScreenBtn = false,
+    fullScreenBtn = false
   } = props;
 
   const { ScrollType } = editor;
 
-  const [scrollBeyondLastLine] = useState<boolean>(
-    options.scrollBeyondLastLine,
-  );
+  const [scrollBeyondLastLine] = useState<boolean>(options.scrollBeyondLastLine);
 
   const [loading, setLoading] = useState<boolean>(false);
   const [stopping, setStopping] = useState<boolean>(false);
@@ -148,20 +146,14 @@ const CodeShow = (props: CodeShowFormProps) => {
    *  handle scroll to down
    */
   const handleDownScroll = () => {
-    editorRef.setScrollPosition(
-      { scrollTop: editorRef.getScrollTop() + 500 },
-      ScrollType.Smooth,
-    );
+    editorRef.setScrollPosition({ scrollTop: editorRef.getScrollTop() + 500 }, ScrollType.Smooth);
   };
 
   /**
    *  handle scroll to up
    */
   const handleUpScroll = () => {
-    editorRef?.setScrollPosition(
-      { scrollTop: editorRef.getScrollTop() - 500 },
-      ScrollType.Smooth,
-    );
+    editorRef?.setScrollPosition({ scrollTop: editorRef.getScrollTop() - 500 }, ScrollType.Smooth);
   };
 
   /**
@@ -195,7 +187,7 @@ const CodeShow = (props: CodeShowFormProps) => {
     handleBackTop,
     handleBackBottom,
     handleUpScroll,
-    handleDownScroll,
+    handleDownScroll
   };
 
   /**
@@ -206,10 +198,7 @@ const CodeShow = (props: CodeShowFormProps) => {
       <div className={'monaco-float'}>
         {/* fullScreen button */}
         {fullScreenBtn && (
-          <FullscreenBtn
-            isFullscreen={fullScreen}
-            fullScreenCallBack={() => setFullScreen(!fullScreen)}
-          />
+          <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)} />
         )}
 
         {/* editor */}
@@ -247,8 +236,8 @@ const CodeShow = (props: CodeShowFormProps) => {
               horizontal: 'visible',
               verticalScrollbarSize: 8,
               horizontalScrollbarSize: 8,
-              arrowSize: 30,
-            },
+              arrowSize: 30
+            }
           }}
           onMount={editorDidMount}
           theme={theme ? theme : convertCodeEditTheme()}
@@ -261,7 +250,7 @@ const CodeShow = (props: CodeShowFormProps) => {
               width: 35,
               height: height,
               backgroundColor: '#f4f4f4',
-              paddingBlock: 10,
+              paddingBlock: 10
             }}
           >
             <EditorFloatBtn {...restEditBtnProps} />

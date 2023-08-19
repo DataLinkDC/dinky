@@ -64,10 +64,10 @@ export const renderWebUiRedirect = (record: Cluster.Instance) => {
         <Button
           icon={<WebIcon />}
           key={`${record.id}_webui`}
-          type="link"
+          type='link'
           title={`http://${record.jobManagerHost}/#/overview`}
           href={`http://${record.jobManagerHost}/#/overview`}
-          target="_blank"
+          target='_blank'
         />
       </>
     );

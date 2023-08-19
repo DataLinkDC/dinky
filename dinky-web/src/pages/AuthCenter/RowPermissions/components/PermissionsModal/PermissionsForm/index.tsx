@@ -19,18 +19,13 @@
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { RowPermissions, UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormItem,
-  ProFormSelect,
-  ProFormText,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormItem, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import { DefaultOptionType } from 'rc-select/lib/Select';
 import React, { useState } from 'react';
-import {RowPermissions, UserBaseInfo} from "@/types/AuthCenter/data";
 
 /**
  * PermissionsFormProps
@@ -46,7 +41,7 @@ type PermissionsFormProps = {
  */
 const CodeEditProps = {
   height: '25vh',
-  lineNumbers: 'off',
+  lineNumbers: 'off'
 };
 
 const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
@@ -59,7 +54,7 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
   const getRoleOptions = () => {
     const itemList: DefaultOptionType[] = roles.map((item) => ({
       label: item.roleName,
-      value: item.id,
+      value: item.id
     }));
     return itemList;
   };
@@ -71,36 +66,36 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
     return (
       <>
         <ProFormSelect
-          name="roleId"
+          name='roleId'
           label={l('rowPermissions.roleName')}
           rules={[
             {
               required: true,
-              message: l('rowPermissions.roleNamePlaceholder'),
-            },
+              message: l('rowPermissions.roleNamePlaceholder')
+            }
           ]}
           options={getRoleOptions()}
         />
 
         <ProFormText
-          name="tableName"
+          name='tableName'
           label={l('rowPermissions.tableName')}
           rules={[
             {
               required: true,
-              message: l('rowPermissions.tableNamePlaceholder'),
-            },
+              message: l('rowPermissions.tableNamePlaceholder')
+            }
           ]}
         />
 
         <ProFormItem
-          name="expression"
+          name='expression'
           label={l('rowPermissions.expression')}
           rules={[
             {
               required: true,
-              message: l('rowPermissions.expressionPlaceholder'),
-            },
+              message: l('rowPermissions.expressionPlaceholder')
+            }
           ]}
         >
           <CodeEdit
@@ -121,13 +116,7 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
    */
   return (
     <>
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        form={form}
-        submitter={false}
-        layout={'horizontal'}
-        initialValues={values}
-      >
+      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} submitter={false} layout={'horizontal'} initialValues={values}>
         {renderRowPermissionsForm()}
       </ProForm>
     </>

@@ -24,5 +24,5 @@ export enum SettingConfigKeyEnum {
   DOLPHIN_SCHEDULER = 'DolphinScheduler',
   LDAP = 'LDAP',
   METRIC = 'Metric',
-  RESOURCE = 'Resource',
+  RESOURCE = 'Resource'
 }

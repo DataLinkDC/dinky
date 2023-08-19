@@ -50,14 +50,12 @@ const FileTree: React.FC<FileTreeProps> = (props) => {
       ) : (
         <>
           <div style={{ marginTop: '40vh', marginLeft: '1vw' }}>
-            <Upload action="/api/resource/uploadFile?pid=0" directory>
-              <Button icon={<UploadOutlined />}>
-                {l('rc.resource.upload')}
-              </Button>
+            <Upload action='/api/resource/uploadFile?pid=0' directory>
+              <Button icon={<UploadOutlined />}>{l('rc.resource.upload')}</Button>
             </Upload>
             <br />
           </div>
-          <Text className={'needWrap'} type="warning">
+          <Text className={'needWrap'} type='warning'>
             {l('rc.resource.noResource')}
           </Text>
         </>

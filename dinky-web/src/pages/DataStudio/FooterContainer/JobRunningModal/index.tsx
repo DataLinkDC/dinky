@@ -42,14 +42,14 @@ const JobRunningModal: React.FC<JobRunningModalProps> = (props) => {
         onCancel={onCancel}
         footer={null}
       >
-        <Space direction="vertical" style={{ width: '100%' }}>
+        <Space direction='vertical' style={{ width: '100%' }}>
           <Row gutter={[12, 12]}>
             <Col span={23}>
               <Progress
                 showInfo
                 strokeLinecap={'round'}
                 percent={100}
-                status="active"
+                status='active'
                 strokeColor={{ from: '#108ee9', to: '#87d068' }}
               />
             </Col>

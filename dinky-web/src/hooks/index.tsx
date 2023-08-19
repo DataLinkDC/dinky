@@ -73,44 +73,43 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
    *     throwOnError?: boolean;  // 抛出错误
    */
 
-  const { data, error, loading, params, run, cancel, refresh, mutate } =
-    useRequest(url, {
-      ...options,
-      manual: true,
-      formatResult: (res: { data: any }) => res.data,
-      onSuccess: async (res) => {
-        SuccessMessage(res.msg);
-        return true;
-      },
-      onError: (e) => {
-        ErrorNotification(e.message);
-        return false;
-      },
-      throwOnError: true, // 错误时抛出 || when error is thrown and throwOnError is true
-      refreshOnWindowFocus: true, // 窗口聚焦时 是否重新刷新 || when window focused and refreshOnWindowFocus is true
-      ready: true, // 初始化状态 || when ready is true and initialData is undefined
-      debounceInterval: 500, // 防抖间隔 || debounce interval
-      throttleInterval: 500, // 节流间隔 || throttle interval
-      initialData: {}, // 初始数据 || init data
-      defaultLoading: true, // 默认加载 || default loading
-      loadMore: true, // 加载更多  || load more
-    });
+  const { data, error, loading, params, run, cancel, refresh, mutate } = useRequest(url, {
+    ...options,
+    manual: true,
+    formatResult: (res: { data: any }) => res.data,
+    onSuccess: async (res) => {
+      SuccessMessage(res.msg);
+      return true;
+    },
+    onError: (e) => {
+      ErrorNotification(e.message);
+      return false;
+    },
+    throwOnError: true, // 错误时抛出 || when error is thrown and throwOnError is true
+    refreshOnWindowFocus: true, // 窗口聚焦时 是否重新刷新 || when window focused and refreshOnWindowFocus is true
+    ready: true, // 初始化状态 || when ready is true and initialData is undefined
+    debounceInterval: 500, // 防抖间隔 || debounce interval
+    throttleInterval: 500, // 节流间隔 || throttle interval
+    initialData: {}, // 初始数据 || init data
+    defaultLoading: true, // 默认加载 || default loading
+    loadMore: true // 加载更多  || load more
+  });
 
   const addData = useCallback(
     async (payload: any) => {
       await run({
         ...options,
         method: 'POST',
-        data: payload,
+        data: payload
       });
     },
-    [run, options],
+    [run, options]
   );
 
   const getDataList = useCallback(async () => {
     await run({
       ...options,
-      method: 'GET',
+      method: 'GET'
     });
   }, [run, options]);
 
@@ -120,10 +119,10 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
         ...options,
         method: 'PUT',
         url: `${url}/${id}`,
-        data: payload,
+        data: payload
       });
     },
-    [run, options, url],
+    [run, options, url]
   );
 
   const removeDataById = useCallback(
@@ -131,10 +130,10 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
       await run({
         ...options,
         method: 'DELETE',
-        url: `${url}/${id}`,
+        url: `${url}/${id}`
       });
     },
-    [run, options, url],
+    [run, options, url]
   );
 
   return {
@@ -149,7 +148,7 @@ const useCustomCRUD = (url: string, options = {}): CRUDResult<any> => {
     addData,
     getDataList,
     updateData,
-    removeDataById,
+    removeDataById
   };
 };
 

@@ -43,7 +43,7 @@ export enum METHOD_CONSTANTS {
   GET = 'GET',
   POST = 'POST',
   PUT = 'PUT',
-  DELETE = 'DELETE',
+  DELETE = 'DELETE'
 }
 
 /**
@@ -54,12 +54,12 @@ export const STATUS_MAPPING = () => {
   return [
     {
       text: l('status.enabled'),
-      value: 1,
+      value: 1
     },
     {
       text: l('status.disabled'),
-      value: 0,
-    },
+      value: 0
+    }
   ];
 };
 
@@ -70,13 +70,13 @@ export const STATUS_MAPPING = () => {
 export const STATUS_ENUM = () => {
   return {
     true: { text: l('status.enabled'), status: 'Success' },
-    false: { text: l('status.disabled'), status: 'Error' },
+    false: { text: l('status.disabled'), status: 'Error' }
   };
 };
 
 export const RESPONSE_CODE = {
   SUCCESS: 0,
-  ERROR: 1,
+  ERROR: 1
 };
 
 /**
@@ -84,7 +84,7 @@ export const RESPONSE_CODE = {
  */
 export const FORM_LAYOUT_PUBLIC = {
   labelCol: { span: 5 },
-  wrapperCol: { span: 15 },
+  wrapperCol: { span: 15 }
 };
 
 /**
@@ -94,8 +94,8 @@ export const MODAL_FORM_STYLE: any = {
   width: '50%',
   style: {
     maxHeight: '70vh',
-    overflowY: 'auto',
-  },
+    overflowY: 'auto'
+  }
 };
 
 export const PRO_LIST_CARD_META = {
@@ -105,8 +105,8 @@ export const PRO_LIST_CARD_META = {
   avatar: {},
   content: {},
   actions: {
-    cardActionProps: 'actions',
-  },
+    cardActionProps: 'actions'
+  }
 };
 
 export const PRO_LIST_CARD_OPTIONS = {
@@ -115,9 +115,9 @@ export const PRO_LIST_CARD_OPTIONS = {
   size: 'small',
   pagination: {
     defaultPageSize: 15,
-    hideOnSinglePage: true,
+    hideOnSinglePage: true
   },
-  grid: { gutter: 24, column: 5 },
+  grid: { gutter: 24, column: 5 }
 };
 
 /**
@@ -129,18 +129,18 @@ export const PROTABLE_OPTIONS_PUBLIC: any = {
     hideOnSinglePage: true,
     showQuickJumper: false,
     showSizeChanger: false,
-    position: ['bottomCenter'],
+    position: ['bottomCenter']
   },
   ghost: false,
   rowKey: 'id',
   size: 'small',
   scroll: {
-    y: 'auto',
+    y: 'auto'
   },
   search: {
     labelWidth: 100, // must be number
-    span: 4,
-  },
+    span: 4
+  }
 };
 
 /**
@@ -150,14 +150,14 @@ export const NORMAL_MODAL_OPTIONS = {
   width: '50%',
   bodyStyle: { padding: '20px 10px 10px' },
   destroyOnClose: true,
-  maskClosable: false,
+  maskClosable: false
 };
 
 /**
  * the modal layout of public
  */
 export const MODAL_FORM_OPTIONS: ModalFormProps = {
-  width: '50%',
+  width: '50%'
 };
 
 /**
@@ -166,19 +166,19 @@ export const MODAL_FORM_OPTIONS: ModalFormProps = {
 export const NORMAL_TABLE_OPTIONS = {
   pagination: {
     defaultPageSize: 6,
-    hideOnSinglePage: true,
+    hideOnSinglePage: true
   },
   rowKey: 'id',
   style: {
     scrollY: 'auto',
-    scrollX: 'auto',
-  },
+    scrollX: 'auto'
+  }
 };
 
 export const SWITCH_OPTIONS = () => {
   return {
     checkedChildren: l('status.enabled'),
-    unCheckedChildren: l('status.disabled'),
+    unCheckedChildren: l('status.disabled')
   };
 };
 
@@ -214,7 +214,7 @@ export const DIALECT = {
   PHOENIX: 'phoenix',
   STARROCKS: 'starRocks',
   PRESTO: 'presto',
-  KUBERNETES_APPLICATION: 'kubernetesapplication',
+  KUBERNETES_APPLICATION: 'kubernetesapplication'
 };
 
 export const RUN_MODE = {
@@ -225,5 +225,5 @@ export const RUN_MODE = {
   YARN_APPLICATION: 'yarn-application',
   KUBERNETES_SESSION: 'kubernetes-session',
   KUBERNETES_APPLICATION: 'kubernetes-application',
-  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator',
+  KUBERNETES_APPLICATION_OPERATOR: 'kubernetes-application-operator'
 };

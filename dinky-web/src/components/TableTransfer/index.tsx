@@ -28,12 +28,8 @@ import { difference } from 'lodash';
  */
 interface TableTransferProps extends TransferProps<any> {
   dataSource: any[];
-  leftColumns:
-    | ProColumns<UserBaseInfo.User>[]
-    | ProColumns<UserBaseInfo.Role>[];
-  rightColumns:
-    | ProColumns<UserBaseInfo.User>[]
-    | ProColumns<UserBaseInfo.Role>[];
+  leftColumns: ProColumns<UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
+  rightColumns: ProColumns<UserBaseInfo.User>[] | ProColumns<UserBaseInfo.Role>[];
 }
 
 /**
@@ -43,11 +39,7 @@ interface TableTransferProps extends TransferProps<any> {
  * @param restProps Transfer props
  * @constructor
  */
-const TableTransfer = ({
-  leftColumns,
-  rightColumns,
-  ...restProps
-}: TableTransferProps) => (
+const TableTransfer = ({ leftColumns, rightColumns, ...restProps }: TableTransferProps) => (
   <Transfer showSelectAll={false} showSearch={true} {...restProps}>
     {({
       direction,
@@ -55,20 +47,15 @@ const TableTransfer = ({
       onItemSelectAll,
       onItemSelect,
       selectedKeys: listSelectedKeys,
-      disabled: enableFlag,
+      disabled: enableFlag
     }) => {
       const columns = direction === 'left' ? leftColumns : rightColumns;
       const rowSelection: TableRowSelection<any> = {
         getCheckboxProps: (item) => ({
-          disabled:
-            enableFlag ||
-            item.isDelete ||
-            (item.hasOwnProperty('enabled') ? !item.enabled : false),
+          disabled: enableFlag || item.isDelete || (item.hasOwnProperty('enabled') ? !item.enabled : false)
         }),
         onSelectAll: (selected, selectedRows) => {
-          const treeSelectedKeys = selectedRows
-            .filter((item) => !item.isDelete || !item.enabled)
-            .map(({ id }) => id);
+          const treeSelectedKeys = selectedRows.filter((item) => !item.isDelete || !item.enabled).map(({ id }) => id);
 
           const diffKeys = selected
             ? difference(treeSelectedKeys, listSelectedKeys)
@@ -79,12 +66,12 @@ const TableTransfer = ({
         onSelect: (item, selected) => {
           onItemSelect(item.id, selected);
         },
-        selectedRowKeys: listSelectedKeys,
+        selectedRowKeys: listSelectedKeys
       };
       return (
         <>
           <ProTable
-            size="small"
+            size='small'
             ghost
             toolBarRender={undefined}
             rowSelection={rowSelection}
@@ -97,12 +84,12 @@ const TableTransfer = ({
             pagination={{
               pageSize: 10,
               showSizeChanger: false,
-              hideOnSinglePage: true,
+              hideOnSinglePage: true
             }}
             style={{
               height: '50vh',
               overflowY: 'auto',
-              pointerEvents: enableFlag ? 'none' : undefined,
+              pointerEvents: enableFlag ? 'none' : undefined
             }}
             onRow={(item) => ({
               onClick: () => {
@@ -113,7 +100,7 @@ const TableTransfer = ({
                 )
                   return;
                 onItemSelect(item.id, !listSelectedKeys.includes(item.id));
-              },
+              }
             })}
           />
         </>

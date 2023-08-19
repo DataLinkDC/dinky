@@ -45,9 +45,9 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   const [submitting, setSubmitting] = React.useState<boolean>(false);
@@ -55,12 +55,7 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * when modalVisible or values changed, set form values
@@ -96,14 +91,9 @@ const ProjectModal: React.FC<ProjectModalProps> = (props) => {
       <Button key={'cancel'} onClick={() => handleCancel()}>
         {l('button.cancel')}
       </Button>,
-      <Button
-        key={'finish'}
-        loading={submitting}
-        type="primary"
-        onClick={() => submitForm()}
-      >
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
         {l('button.finish')}
-      </Button>,
+      </Button>
     ];
   };
 

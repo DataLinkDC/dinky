@@ -18,7 +18,7 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
   const [chartProps, setChartProps] = useState({
     chartType: chartType,
     chartSize: chartSize,
-    titleWidth: '50%',
+    titleWidth: '50%'
   });
 
   const [counter, setCounter] = useState(0);
@@ -39,8 +39,8 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
     yField: 'value',
     xAxis: {
       type: 'time',
-      mask: 'HH:mm:ss',
-    },
+      mask: 'HH:mm:ss'
+    }
   };
 
   /**
@@ -52,14 +52,14 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
       <>
         <Radio.Group
           className={'radio-group-chart'}
-          size="small"
-          buttonStyle="solid"
+          size='small'
+          buttonStyle='solid'
           value={chartProps.chartSize}
           onChange={(e) => {
             setChartProps((prevState) => ({
               ...prevState,
               titleWidth: e.target.value == '25%' ? '50%' : '100%',
-              chartSize: e.target.value,
+              chartSize: e.target.value
             }));
             onChangeJobState(e.target.value, chartProps.chartType);
           }}
@@ -79,22 +79,22 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
   const renderChartNumericRadio = () => [
     <>
       <Radio.Group
-        size="small"
-        buttonStyle="solid"
+        size='small'
+        buttonStyle='solid'
         value={chartProps.chartType}
         onChange={(e) => {
           setChartProps((prevState) => ({
             ...prevState,
-            chartType: e.target.value,
+            chartType: e.target.value
           }));
           onChangeJobState(chartProps.chartSize, e.target.value);
         }}
         style={{ textAlign: 'left', paddingLeft: '5%' }}
       >
-        <Radio.Button value="Chart">Chart</Radio.Button>
-        <Radio.Button value="Numeric">Numeric</Radio.Button>
+        <Radio.Button value='Chart'>Chart</Radio.Button>
+        <Radio.Button value='Numeric'>Numeric</Radio.Button>
       </Radio.Group>
-    </>,
+    </>
   ];
 
   /**
@@ -123,12 +123,12 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
                 minWidth: '100%',
                 display: 'flex',
                 justifyContent: 'center',
-                alignItems: 'center',
+                alignItems: 'center'
               }}
             >
               <StatisticCard
                 statistic={{
-                  value: data != undefined ? data[data.length - 1].value : 0,
+                  value: data != undefined ? data[data.length - 1].value : 0
                 }}
               />
             </StatisticCard.Group>
@@ -141,6 +141,6 @@ const FlinkChart: React.FC<FlinkChartProps> = (props) => {
 };
 FlinkChart.defaultProps = {
   chartSize: '25%',
-  chartType: 'Chart',
+  chartType: 'Chart'
 };
 export default FlinkChart;

@@ -33,11 +33,7 @@ const UDFTemplateDrawer: React.FC<UDFTemplateDrawerProps> = (props) => {
 
   return (
     <>
-      <Drawer
-        width={'45%'}
-        open={modalVisible}
-        onClose={() => handleCancel(false)}
-      >
+      <Drawer width={'45%'} open={modalVisible} onClose={() => handleCancel(false)}>
         <UDFTemplateDesc values={values} columns={columns} />
       </Drawer>
     </>

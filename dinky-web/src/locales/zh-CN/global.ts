@@ -194,5 +194,5 @@ export default {
   'global.month.september': '九月',
   'global.month.october': '十月',
   'global.month.november': '十一月',
-  'global.month.december': '十二月',
+  'global.month.december': '十二月'
 };

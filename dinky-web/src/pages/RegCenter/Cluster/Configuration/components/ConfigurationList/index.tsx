@@ -32,25 +32,18 @@ import {
   handleOption,
   handlePutDataByParams,
   handleRemoveById,
-  updateDataByParam,
+  updateDataByParam
 } from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  PRO_LIST_CARD_OPTIONS,
-} from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import {
-  CheckCircleOutlined,
-  ExclamationCircleOutlined,
-  HeartTwoTone,
-} from '@ant-design/icons';
+import { CheckCircleOutlined, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { useRequest } from '@umijs/max';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
 import { useRef, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 export default () => {
   /**
@@ -65,7 +58,7 @@ export default () => {
   const { data, run } = useRequest({
     url: API_CONSTANTS.CLUSTER_CONFIGURATION,
     method: 'POST',
-    data: {},
+    data: {}
   });
 
   /**
@@ -93,12 +86,9 @@ export default () => {
       cancelText: l('button.cancel'),
       onOk: async () => {
         await executeAndCallbackRefresh(async () => {
-          await handleRemoveById(
-            API_CONSTANTS.CLUSTER_CONFIGURATION_DELETE,
-            id,
-          );
+          await handleRemoveById(API_CONSTANTS.CLUSTER_CONFIGURATION_DELETE, id);
         });
-      },
+      }
     });
   };
 
@@ -109,7 +99,7 @@ export default () => {
   const handleEnable = async (item: Cluster.Config) => {
     await executeAndCallbackRefresh(async () => {
       await updateDataByParam(API_CONSTANTS.CLUSTER_CONFIGURATION_ENABLE, {
-        id: item.id,
+        id: item.id
       });
     });
   };
@@ -120,11 +110,7 @@ export default () => {
    */
   const handleStartCluster = async (item: Cluster.Config) => {
     await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(
-        API_CONSTANTS.CLUSTER_CONFIGURATION_START,
-        l('rc.cc.start'),
-        { id: item.id },
-      );
+      await handlePutDataByParams(API_CONSTANTS.CLUSTER_CONFIGURATION_START, l('rc.cc.start'), { id: item.id });
     });
   };
 
@@ -181,11 +167,7 @@ export default () => {
    */
   const handleCheckHeartBeat = async (item: Cluster.Config) => {
     await executeAndCallbackRefresh(async () => {
-      await handleOption(
-        API_CONSTANTS.CLUSTER_CONFIGURATION_TEST,
-        l('button.heartbeat'),
-        item,
-      );
+      await handleOption(API_CONSTANTS.CLUSTER_CONFIGURATION_TEST, l('button.heartbeat'), item);
     });
   };
 
@@ -196,26 +178,15 @@ export default () => {
   const renderDataActionButton = (item: Cluster.Config) => {
     return [
       <EditBtn key={`${item.id}_edit`} onClick={() => editClick(item)} />,
-      <NormalDeleteBtn
-        key={`${item.id}_delete`}
-        onClick={() => handleDeleteSubmit(item.id)}
-      />,
-      <RunningBtn
-        key={`${item.id}_running`}
-        title={l('rc.cc.start')}
-        onClick={() => handleStartCluster(item)}
-      />,
+      <NormalDeleteBtn key={`${item.id}_delete`} onClick={() => handleDeleteSubmit(item.id)} />,
+      <RunningBtn key={`${item.id}_running`} title={l('rc.cc.start')} onClick={() => handleStartCluster(item)} />,
       <Button
         className={'options-button'}
         key={`${item.id}_heart`}
         onClick={() => handleCheckHeartBeat(item)}
         title={l('button.heartbeat')}
-        icon={
-          <HeartTwoTone
-            twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'}
-          />
-        }
-      />,
+        icon={<HeartTwoTone twoToneColor={item.isAvailable ? '#1ac431' : '#e10d0d'} />}
+      />
     ];
   };
   /**
@@ -226,25 +197,12 @@ export default () => {
     return (
       <Space size={4} align={'baseline'} className={'hidden-overflow'}>
         <EnableSwitchBtn record={item} onChange={() => handleEnable(item)} />
-        <Tag color="cyan">
-          {
-            CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)
-              ?.label
-          }
-        </Tag>
+        <Tag color='cyan'>{CLUSTER_CONFIG_TYPE.find((record) => item.type === record.value)?.label}</Tag>
         <Tag
-          icon={
-            item.isAvailable ? (
-              <CheckCircleOutlined />
-            ) : (
-              <ExclamationCircleOutlined />
-            )
-          }
+          icon={item.isAvailable ? <CheckCircleOutlined /> : <ExclamationCircleOutlined />}
           color={item.isAvailable ? 'success' : 'warning'}
         >
-          {item.isAvailable
-            ? l('global.table.status.normal')
-            : l('global.table.status.abnormal')}
+          {item.isAvailable ? l('global.table.status.normal') : l('global.table.status.abnormal')}
         </Tag>
       </Space>
     );
@@ -258,15 +216,13 @@ export default () => {
     actions: <DataAction>{renderDataActionButton(item)}</DataAction>,
     avatar: <ClusterConfigIcon style={imgStyle} />,
     content: renderDataContent(item),
-    key: item.id,
+    key: item.id
   }));
 
   /**
    * tool bar render
    */
-  const toolBarRender = () => [
-    <CreateBtn key={'configcreate'} onClick={() => setCreateOpen(true)} />,
-  ];
+  const toolBarRender = () => [<CreateBtn key={'configcreate'} onClick={() => setCreateOpen(true)} />];
 
   /**
    * render
@@ -284,20 +240,10 @@ export default () => {
       />
 
       {/*added*/}
-      <ConfigurationModal
-        visible={createOpen}
-        onClose={handleCancel}
-        value={{}}
-        onSubmit={handleSubmit}
-      />
+      <ConfigurationModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit} />
       {/*modify*/}
       {modifyOpen && (
-        <ConfigurationModal
-          visible={modifyOpen}
-          onClose={handleCancel}
-          value={formValue}
-          onSubmit={handleSubmit}
-        />
+        <ConfigurationModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit} />
       )}
     </>
   );

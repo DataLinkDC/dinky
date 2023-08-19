@@ -24,38 +24,33 @@ import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm';
 import TenantModalTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer';
 import TenantUserList from '@/pages/AuthCenter/Tenant/components/TenantUserList';
 import { queryList } from '@/services/api';
-import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  queryDataByParams,
-  updateDataByParam,
-} from '@/services/BusinessCrud';
-import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { handleAddOrUpdate, handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitTenantListState } from '@/types/AuthCenter/init.d';
+import { TenantListState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data.d";
-import {TenantListState} from "@/types/AuthCenter/state.d";
-import {InitTenantListState} from "@/types/AuthCenter/init.d";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const TenantProTable: React.FC = () => {
   /**
    * status
    */
-  const [tenantState , setTenantState] = useState<TenantListState>(InitTenantListState);
+  const [tenantState, setTenantState] = useState<TenantListState>(InitTenantListState);
   const actionRef = useRef<ActionType>();
 
   const queryUserListByTenantId = async (id: number) => {
     queryDataByParams(API_CONSTANTS.TENANT_USERS, { id }).then((res) =>
-        setTenantState(prevState => ({...prevState,tenantUserList: res}))
+      setTenantState((prevState) => ({ ...prevState, tenantUserList: res }))
     );
   };
 
   const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
-    setTenantState(prevState => ({...prevState,loading: true}));
+    setTenantState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setTenantState(prevState => ({...prevState,loading: false}));
+    setTenantState((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -63,13 +58,14 @@ const TenantProTable: React.FC = () => {
    * add tenant
    * @param value
    */
-  const handleAddOrUpdateSubmit = async (
-    value: Partial<UserBaseInfo.Tenant>,
-  ) => {
+  const handleAddOrUpdateSubmit = async (value: Partial<UserBaseInfo.Tenant>) => {
     await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.TENANT, value,()=>{},
-          ()=> setTenantState(prevState => ({...prevState,addedTenantOpen: false})
-      ));
+      await handleAddOrUpdate(
+        API_CONSTANTS.TENANT,
+        value,
+        () => {},
+        () => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: false }))
+      );
     });
   };
 
@@ -90,19 +86,22 @@ const TenantProTable: React.FC = () => {
     await executeAndCallbackRefresh(async () => {
       await handleAddOrUpdate(API_CONSTANTS.ASSIGN_USER_TO_TENANT, {
         tenantId: tenantState.value.id,
-        userIds: tenantState.tenantUserIds,
+        userIds: tenantState.tenantUserIds
       });
-      setTenantState(prevState => ({...prevState,assignUserOpen: false}));
+      setTenantState((prevState) => ({ ...prevState, assignUserOpen: false }));
     });
   };
   const handleCancel = () => {
-    setTenantState(prevState => ({...prevState
-      ,addedTenantOpen: false,editTenantOpen: false,assignUserOpen: false
+    setTenantState((prevState) => ({
+      ...prevState,
+      addedTenantOpen: false,
+      editTenantOpen: false,
+      assignUserOpen: false
     }));
   };
 
   const handleAssignUserChange = (value: string[]) => {
-    setTenantState(prevState => ({...prevState,tenantUserIds: value}));
+    setTenantState((prevState) => ({ ...prevState, tenantUserIds: value }));
   };
 
   /**
@@ -110,19 +109,19 @@ const TenantProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setTenantState(prevState => ({...prevState,editTenantOpen: true, value: record}));
+    setTenantState((prevState) => ({ ...prevState, editTenantOpen: true, value: record }));
   };
   /**
    * assign user visible change
    * @param record
    */
   const handleAssignVisible = (record: Partial<UserBaseInfo.Tenant>) => {
-    setTenantState(prevState => ({...prevState,assignUserOpen: true, value: record}));
+    setTenantState((prevState) => ({ ...prevState, assignUserOpen: true, value: record }));
   };
 
   const handleShowUser = async (record: Partial<UserBaseInfo.Tenant>) => {
     await queryUserListByTenantId(record.id as number);
-    setTenantState(prevState => ({...prevState,viewUsersOpen: true, value: record}));
+    setTenantState((prevState) => ({ ...prevState, viewUsersOpen: true, value: record }));
   };
 
   const handleSetTenantAdmin = async (value: Partial<UserBaseInfo.User>) => {
@@ -134,7 +133,7 @@ const TenantProTable: React.FC = () => {
       await updateDataByParam(API_CONSTANTS.USER_SET_TENANT_ADMIN, {
         userId: value.id,
         tenantId: tenantState.value.id,
-        tenantAdminFlag: tenantAdmin,
+        tenantAdminFlag: tenantAdmin
       });
       await queryUserListByTenantId(tenantState.value.id as number);
     });
@@ -147,36 +146,31 @@ const TenantProTable: React.FC = () => {
     {
       title: l('tenant.TenantCode'),
       dataIndex: 'tenantCode',
-      render: (text, record) => (
-        <a onClick={() => handleShowUser(record)}> {text} </a>
-      ),
+      render: (text, record) => <a onClick={() => handleShowUser(record)}> {text} </a>
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       valueType: 'dateTime',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: UserBaseInfo.Tenant) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEditVisible(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
         <AssignBtn
           key={`${record.id}_ass`}
           onClick={() => handleAssignVisible(record)}
@@ -190,9 +184,9 @@ const TenantProTable: React.FC = () => {
               description={l('tenant.deleteConfirm')}
             />
           )}
-        </>,
-      ],
-    },
+        </>
+      ]
+    }
   ];
 
   /**
@@ -209,12 +203,10 @@ const TenantProTable: React.FC = () => {
         toolBarRender={() => [
           <CreateBtn
             key={'tenantTable'}
-            onClick={() => setTenantState(prevState => ({...prevState,addedTenantOpen: true}))}
-          />,
+            onClick={() => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: true }))}
+          />
         ]}
-        request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })
-        }
+        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })}
         columns={columns}
       />
 
@@ -250,7 +242,7 @@ const TenantProTable: React.FC = () => {
           open={tenantState.viewUsersOpen}
           userList={tenantState.tenantUserList}
           loading={tenantState.loading}
-          onClose={() => setTenantState(prevState => ({...prevState,viewUsersOpen: false}))}
+          onClose={() => setTenantState((prevState) => ({ ...prevState, viewUsersOpen: false }))}
           onSubmit={handleSetTenantAdmin}
         />
       )}

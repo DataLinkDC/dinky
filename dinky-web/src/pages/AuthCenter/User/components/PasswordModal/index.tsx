@@ -20,10 +20,10 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import PasswordForm from '@/pages/AuthCenter/User/components/PasswordModal/PasswordForm';
 import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Form, Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type PasswordModalFormProps = {
   onCancel: (flag?: boolean) => void;
@@ -36,12 +36,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
   /**
    * init props
    */
-  const {
-    onSubmit: handleSubmit,
-    onCancel: handleModalVisible,
-    modalVisible,
-    values,
-  } = props;
+  const { onSubmit: handleSubmit, onCancel: handleModalVisible, modalVisible, values } = props;
 
   /**
    * status
@@ -52,9 +47,9 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
@@ -64,9 +59,7 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
     form.setFieldsValue(values);
   }, [modalVisible, values, form]);
 
-  const [formVals, setFormVals] = useState<
-    Partial<UserBaseInfo.ChangePasswordParams>
-  >({ ...values });
+  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({ ...values });
 
   /**
    * handle cancel

@@ -22,7 +22,7 @@ import { l } from '@/utils/intl';
 export const imgStyle = {
   display: 'block',
   width: 42,
-  height: 42,
+  height: 42
 };
 
 export const MONTH_LIST = {
@@ -37,7 +37,7 @@ export const MONTH_LIST = {
   '09': l('global.month.september'),
   '10': l('global.month.october'),
   '11': l('global.month.november'),
-  '12': l('global.month.december'),
+  '12': l('global.month.december')
 };
 
 export const WEEK_LIST = [
@@ -47,5 +47,5 @@ export const WEEK_LIST = [
   l('global.week.wednesday'),
   l('global.week.thursday'),
   l('global.week.friday'),
-  l('global.week.saturday'),
+  l('global.week.saturday')
 ];

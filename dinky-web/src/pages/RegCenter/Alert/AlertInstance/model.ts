@@ -43,30 +43,30 @@ const AlertModel: AlertModelType = {
   namespace: 'Alert',
   state: {
     instance: [],
-    group: [],
+    group: []
   },
 
   effects: {
     *queryInstance({}, { call, put }) {
       const { datas } = yield call(showAlertInstance);
       yield put({ type: 'saveInstance', payload: datas });
-    },
+    }
   },
 
   reducers: {
     saveInstance(state, { payload }) {
       return {
         ...state,
-        instance: payload,
+        instance: payload
       };
     },
     saveGroup(state, { payload }) {
       return {
         ...state,
-        group: payload,
+        group: payload
       };
-    },
-  },
+    }
+  }
 };
 
 export const [ALERT_MODEL, ALERT_MODEL_ASYNC] = createModelTypes(AlertModel);

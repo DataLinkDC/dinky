@@ -18,10 +18,7 @@
  */
 
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
-import {
-  CLONE_TYPES,
-  GIT_PROJECT_CODE_TYPE_ENUM,
-} from '@/pages/RegCenter/GitProject/constans';
+import { CLONE_TYPES, GIT_PROJECT_CODE_TYPE_ENUM } from '@/pages/RegCenter/GitProject/constans';
 import { getDataByParams } from '@/services/BusinessCrud';
 import { API_CONSTANTS, SWITCH_OPTIONS } from '@/services/constants';
 import { GitProject } from '@/types/RegCenter/data';
@@ -32,7 +29,7 @@ import {
   ProFormSelect,
   ProFormSwitch,
   ProFormText,
-  ProFormTextArea,
+  ProFormTextArea
 } from '@ant-design/pro-components';
 import { Input, Radio, Select } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
@@ -54,7 +51,7 @@ const CodeEditProps = {
   height: '15vh',
   width: '20vw',
   lineNumbers: 'off',
-  language: 'shell',
+  language: 'shell'
 };
 
 const ProjectForm: React.FC<ProjectFormProps> = (props) => {
@@ -64,9 +61,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    * state
    */
   const [cloneType, setCloneType] = useState<number>(values.type || 1);
-  const [buildArgs, setBuildArgsValue] = useState<string>(
-    values.buildArgs || '',
-  );
+  const [buildArgs, setBuildArgsValue] = useState<string>(values.buildArgs || '');
   const [branches, setBranches] = useState<string[]>([]);
 
   /**
@@ -74,11 +69,9 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    */
   const getBranchList = async () => {
     const values = form.getFieldsValue();
-    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then(
-      (result: any) => {
-        setBranches(result);
-      },
-    );
+    await getDataByParams(API_CONSTANTS.GIT_BRANCH, { ...values }).then((result: any) => {
+      setBranches(result);
+    });
   };
 
   /**
@@ -95,12 +88,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    */
   const renderUrlBeforeSelect = () => {
     return (
-      <Select
-        style={{ width: '5vw' }}
-        defaultValue={cloneType}
-        onChange={handleTypeChange}
-        options={CLONE_TYPES}
-      />
+      <Select style={{ width: '5vw' }} defaultValue={cloneType} onChange={handleTypeChange} options={CLONE_TYPES} />
     );
   };
 
@@ -112,21 +100,16 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
       <>
         <ProForm.Group>
           <ProFormText
-            name="name"
+            name='name'
             width={'sm'}
             label={l('rc.gp.name')}
             rules={[{ required: true, message: l('rc.gp.namePlaceholder') }]}
             placeholder={l('rc.gp.namePlaceholder')}
           />
-          <ProFormSelect
-            name="type"
-            hidden
-            shouldUpdate
-            initialValue={cloneType}
-          />
+          <ProFormSelect name='type' hidden shouldUpdate initialValue={cloneType} />
 
           <ProFormText
-            name="url"
+            name='url'
             width={'xs'}
             label={l('rc.gp.url')}
             rules={[{ required: true, message: l('rc.gp.urlPlaceholder') }]}
@@ -134,7 +117,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
           >
             <Input
               style={{
-                width: '18vw',
+                width: '18vw'
               }}
               addonBefore={undefined}
               onBlur={cloneType === 1 ? getBranchList : () => Promise<void>}
@@ -146,7 +129,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
         <ProForm.Group>
           {cloneType !== 2 ? (
             <ProFormText
-              name="username"
+              name='username'
               allowClear
               width={'sm'}
               label={l('rc.gp.username')}
@@ -154,18 +137,16 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
             />
           ) : (
             <ProFormText
-              name="privateKey"
+              name='privateKey'
               width={'xl'}
               tooltip={l('rc.gp.privateKeyPlaceholder')}
               label={l('rc.gp.privateKey')}
-              rules={[
-                { required: true, message: l('rc.gp.privateKeyPlaceholder') },
-              ]}
+              rules={[{ required: true, message: l('rc.gp.privateKeyPlaceholder') }]}
               placeholder={l('rc.gp.privateKeyPlaceholder')}
             >
               <Input
                 style={{
-                  width: '12vw',
+                  width: '12vw'
                 }}
                 onBlur={cloneType === 2 ? getBranchList : () => Promise<void>}
                 placeholder={l('rc.gp.privateKeyPlaceholder')}
@@ -174,7 +155,7 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
           )}
 
           <ProFormText.Password
-            name="password"
+            name='password'
             label={l('rc.gp.password')}
             placeholder={l('rc.gp.passwordPlaceholder')}
           />
@@ -185,11 +166,10 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
             disabled={
               cloneType === 1
                 ? !form.getFieldsValue().url
-                : !form.getFieldsValue().privateKey &&
-                  !form.getFieldsValue().url
+                : !form.getFieldsValue().privateKey && !form.getFieldsValue().url
             }
             colon={true}
-            name="branch"
+            name='branch'
             width={'sm'}
             label={l('rc.gp.branch')}
             placeholder={l('rc.gp.branchPlaceholder')}
@@ -199,27 +179,16 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProForm.Item name="buildArgs" label={l('rc.gp.buildArgs')}>
-            <CodeEdit
-              onChange={(value) => setBuildArgsValue(value)}
-              code={buildArgs}
-              {...CodeEditProps}
-            />
+          <ProForm.Item name='buildArgs' label={l('rc.gp.buildArgs')}>
+            <CodeEdit onChange={(value) => setBuildArgsValue(value)} code={buildArgs} {...CodeEditProps} />
           </ProForm.Item>
 
-          <ProFormSwitch
-            width="xs"
-            name="enabled"
-            label={l('global.table.isEnable')}
-            {...SWITCH_OPTIONS()}
-          />
+          <ProFormSwitch width='xs' name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
           <ProFormRadio.Group
-            name="codeType"
+            name='codeType'
             width={'xs'}
             label={l('rc.gp.codeType')}
-            rules={[
-              { required: true, message: l('rc.gp.codeTypePlaceholder') },
-            ]}
+            rules={[{ required: true, message: l('rc.gp.codeTypePlaceholder') }]}
           >
             <Radio.Group>
               <Radio value={1}>{GIT_PROJECT_CODE_TYPE_ENUM[1].text}</Radio>
@@ -229,14 +198,9 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
+          <ProFormTextArea name='pom' width={'md'} label={l('rc.gp.pom')} placeholder={l('rc.gp.pomPlaceholder')} />
           <ProFormTextArea
-            name="pom"
-            width={'md'}
-            label={l('rc.gp.pom')}
-            placeholder={l('rc.gp.pomPlaceholder')}
-          />
-          <ProFormTextArea
-            name="description"
+            name='description'
             width={'md'}
             label={l('global.table.note')}
             placeholder={l('global.table.notePlaceholder')}

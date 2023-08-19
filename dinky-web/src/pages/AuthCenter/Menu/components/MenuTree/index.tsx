@@ -18,10 +18,10 @@
  */
 
 import { buildMenuTree, sortTreeData } from '@/pages/AuthCenter/Menu/function';
+import { SysMenu } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { Empty, Input, Spin, Tree } from 'antd';
 import React, { useCallback, useState } from 'react';
-import {SysMenu} from "@/types/AuthCenter/data";
 
 const { DirectoryTree } = Tree;
 
@@ -33,13 +33,7 @@ type MenuTreeProps = {
   loading: boolean;
 };
 const MenuTree: React.FC<MenuTreeProps> = (props) => {
-  const {
-    treeData = [],
-    selectedKeys,
-    onNodeClick,
-    onRightClick,
-    loading,
-  } = props;
+  const { treeData = [], selectedKeys, onNodeClick, onRightClick, loading } = props;
 
   const [searchValue, setSearchValue] = useState('');
 
@@ -51,7 +45,7 @@ const MenuTree: React.FC<MenuTreeProps> = (props) => {
     (e: { target: { value: React.SetStateAction<string> } }) => {
       setSearchValue(e.target.value);
     },
-    [searchValue],
+    [searchValue]
   );
 
   return (
@@ -75,10 +69,7 @@ const MenuTree: React.FC<MenuTreeProps> = (props) => {
           </Spin>
         </>
       ) : (
-        <Empty
-          className={'code-content-empty'}
-          image={Empty.PRESENTED_IMAGE_DEFAULT}
-        />
+        <Empty className={'code-content-empty'} image={Empty.PRESENTED_IMAGE_DEFAULT} />
       )}
     </>
   );

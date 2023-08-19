@@ -73,7 +73,7 @@ if (pwa) {
     const key = `open${Date.now()}`;
     const btn = (
       <Button
-        type="primary"
+        type='primary'
         onClick={() => {
           notification.destroy(key);
           reloadSW();
@@ -87,7 +87,7 @@ if (pwa) {
       description: l('app.pwa.serviceworker.updated.hint'),
       btn,
       key,
-      onClose: async () => null,
+      onClose: async () => null
     });
   });
 } else if ('serviceWorker' in navigator && isHttps) {

@@ -21,7 +21,8 @@ import RightTagsRouter from '@/pages/RegCenter/DataSource/components/DataSourceD
 import { QueryParams } from '@/pages/RegCenter/DataSource/components/DataSourceDetail/RightTagsRouter/data';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
 import { getDataByIdReturnResult } from '@/services/BusinessCrud';
-import {  RESPONSE_CODE } from '@/services/constants';
+import { RESPONSE_CODE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { DataSources } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -30,7 +31,6 @@ import { Key, ProCard } from '@ant-design/pro-components';
 import { useNavigate } from '@umijs/max';
 import { Button, Space } from 'antd';
 import { useCallback, useEffect, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const DataSourceDetail = (props: any) => {
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const DataSourceDetail = (props: any) => {
     dataSource,
     backClick,
     dispatch,
-    database: { dbData, selectDatabaseId, expandKeys, selectKeys },
+    database: { dbData, selectDatabaseId, expandKeys, selectKeys }
   } = props;
   const [loading, setLoading] = useState<boolean>(false);
   const [disabled, setDisabled] = useState<boolean>(true);
@@ -48,16 +48,14 @@ const DataSourceDetail = (props: any) => {
   const [params, setParams] = useState<QueryParams>({
     id: 0,
     schemaName: '',
-    tableName: '',
+    tableName: ''
   });
-  const selectDb = (dbData as DataSources.DataSource[]).filter(
-    (x) => x.id === selectDatabaseId,
-  )[0];
+  const selectDb = (dbData as DataSources.DataSource[]).filter((x) => x.id === selectDatabaseId)[0];
 
   const handleBackClick = () => {
     // go back
     navigate('/registration/database', {
-      state: { from: `/registration/database/detail/${dataSource.id}` },
+      state: { from: `/registration/database/detail/${dataSource.id}` }
     });
     // back click callback
     backClick();
@@ -69,17 +67,14 @@ const DataSourceDetail = (props: any) => {
     setParams({
       id: 0,
       schemaName: '',
-      tableName: '',
+      tableName: ''
     });
   };
 
   const querySchemaTree = useCallback(async () => {
     clearState();
     setLoading(true);
-    await getDataByIdReturnResult(
-      API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES,
-      dataSource.id,
-    ).then((res) => {
+    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then((res) => {
       if (res.code === RESPONSE_CODE.SUCCESS) {
         setTreeData(res.datas);
       }
@@ -96,12 +91,12 @@ const DataSourceDetail = (props: any) => {
    */
   const onSchemaTreeNodeClick = useCallback(async (keys: Key[], info: any) => {
     const {
-      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo },
+      node: { isLeaf, parentId: schemaName, name: tableName, fullInfo }
     } = info;
     // 选中的key
     dispatch({
       type: STUDIO_MODEL.updateDatabaseSelectKey,
-      payload: keys,
+      payload: keys
     });
 
     if (!isLeaf) {
@@ -118,16 +113,16 @@ const DataSourceDetail = (props: any) => {
         label: schemaName + '.' + tableName,
         params: {
           queryParams: { id: selectDatabaseId, schemaName, tableName },
-          tableInfo: fullInfo,
+          tableInfo: fullInfo
         },
-        type: 'metadata',
-      },
+        type: 'metadata'
+      }
     });
 
     setParams({
       id: dataSource.id as number,
       schemaName,
-      tableName,
+      tableName
     });
 
     setDisabled(false);
@@ -142,7 +137,7 @@ const DataSourceDetail = (props: any) => {
   const handleTreeExpand = (expandedKeys: Key[]) => {
     dispatch({
       type: STUDIO_MODEL.updateDatabaseExpandKey,
-      payload: expandedKeys,
+      payload: expandedKeys
     });
   };
 
@@ -156,17 +151,12 @@ const DataSourceDetail = (props: any) => {
         <Button
           size={'middle'}
           icon={<ReloadOutlined spin={loading} />}
-          type="primary"
+          type='primary'
           onClick={() => querySchemaTree()}
         >
           {l('button.refresh')}
         </Button>
-        <Button
-          size={'middle'}
-          icon={<BackwardOutlined />}
-          type="primary"
-          onClick={handleBackClick}
-        >
+        <Button size={'middle'} icon={<BackwardOutlined />} type='primary' onClick={handleBackClick}>
           {l('button.back')}
         </Button>
       </Space>
@@ -177,13 +167,8 @@ const DataSourceDetail = (props: any) => {
    * render
    */
   return (
-    <ProCard loading={loading} ghost gutter={[16, 16]} split="vertical">
-      <ProCard
-        hoverable
-        bordered
-        className={'siderTree schemaTree'}
-        colSpan="16%"
-      >
+    <ProCard loading={loading} ghost gutter={[16, 16]} split='vertical'>
+      <ProCard hoverable bordered className={'siderTree schemaTree'} colSpan='16%'>
         {/* tree */}
         <SchemaTree
           selectKeys={selectKeys}
@@ -193,7 +178,7 @@ const DataSourceDetail = (props: any) => {
           treeData={treeData}
         />
       </ProCard>
-      <ProCard hoverable colSpan="84%" ghost headerBordered>
+      <ProCard hoverable colSpan='84%' ghost headerBordered>
         {/* tags */}
         <RightTagsRouter
           tableInfo={tableInfo}
@@ -207,5 +192,5 @@ const DataSourceDetail = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  database: Studio.database,
+  database: Studio.database
 }))(DataSourceDetail);

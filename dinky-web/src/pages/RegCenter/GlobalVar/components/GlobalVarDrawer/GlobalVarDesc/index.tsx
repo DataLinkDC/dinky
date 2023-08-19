@@ -34,7 +34,7 @@ const GlobalVarDesc: React.FC<GlobalVarDescProps> = (props) => {
         loading={values && Object.keys(values).length === 0}
         title={values.name}
         request={async () => ({
-          data: values,
+          data: values
         })}
         params={{ id: values.id }}
         columns={columns}

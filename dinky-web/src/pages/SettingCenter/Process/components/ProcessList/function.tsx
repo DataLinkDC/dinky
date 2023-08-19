@@ -15,10 +15,7 @@
  * limitations under the License.
  */
 
-import {
-  ProcessStatus,
-  ProcessType,
-} from '@/pages/SettingCenter/Process/components/ProcessList/constants';
+import { ProcessStatus, ProcessType } from '@/pages/SettingCenter/Process/components/ProcessList/constants';
 import { Tag } from 'antd';
 
 export const MatchProcessType = (type: string) => {

@@ -1,12 +1,12 @@
 import { TagJobStatus } from '@/pages/DevOps/function';
 import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Jobs } from '@/types/DevOps/data';
 import { parseSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-components';
 import { ProTable } from '@ant-design/pro-components';
 import { useRef } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 type HistoryProps = {
   taskId: number;
@@ -21,36 +21,32 @@ const JobHistoryList = (props: HistoryProps) => {
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.endTime'),
       dataIndex: 'finishTime',
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.jobid'),
       dataIndex: 'jid',
-      key: 'jid',
+      key: 'jid'
     },
     {
       title: l('global.table.status'),
       dataIndex: 'status',
-      render: (_: any, row: { status: string | undefined }) =>
-        TagJobStatus(row.status),
+      render: (_: any, row: { status: string | undefined }) => TagJobStatus(row.status)
     },
     {
       title: l('global.table.useTime'),
-      render: (_: any, row: { duration: number }) =>
-        parseSecondStr(row.duration),
+      render: (_: any, row: { duration: number }) => parseSecondStr(row.duration)
     },
     {
       title: l('global.table.operate'),
       valueType: 'option',
-      render: () => [
-        <a key={'history-detail'}>{l('devops.joblist.detail')}</a>,
-      ],
-    },
+      render: () => [<a key={'history-detail'}>{l('devops.joblist.detail')}</a>]
+    }
   ];
 
   return (
@@ -61,7 +57,7 @@ const JobHistoryList = (props: HistoryProps) => {
         tableStyle={{
           overflowX: 'hidden',
           overflowY: 'hidden',
-          margin: '10px',
+          margin: '10px'
         }}
         size={'small'}
         columns={jobListColumns}
@@ -69,7 +65,7 @@ const JobHistoryList = (props: HistoryProps) => {
         request={(params) =>
           queryList(API_CONSTANTS.GET_JOB_LIST, {
             ...params,
-            filter: { task_id: [taskId] },
+            filter: { task_id: [taskId] }
           })
         }
         rowKey={(record) => record.id}

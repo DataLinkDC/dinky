@@ -22,31 +22,25 @@ import MenuForm from '@/pages/AuthCenter/Menu/components/MenuForm';
 import { RIGHT_CONTEXT_MENU } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
 import OpHelper from '@/pages/AuthCenter/Menu/components/MenuList/OpHelper';
 import MenuTree from '@/pages/AuthCenter/Menu/components/MenuTree';
-import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  queryDataByParams,
-} from '@/services/BusinessCrud';
+import { handleAddOrUpdate, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { SysMenu } from '@/types/AuthCenter/data.d';
+import { InitMenuState } from '@/types/AuthCenter/init.d';
+import { MenuState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import { PlusSquareTwoTone, ReloadOutlined } from '@ant-design/icons';
 import { ProCard } from '@ant-design/pro-components';
 import { Button, Space } from 'antd';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { useEffect, useState } from 'react';
-import {SysMenu} from "@/types/AuthCenter/data.d";
-import { MenuState} from "@/types/AuthCenter/state.d";
-import {InitMenuState} from "@/types/AuthCenter/init.d";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const MenuList: React.FC = () => {
-
-
-  const [menuState, setMenuState] = useState<MenuState>(InitMenuState)
+  const [menuState, setMenuState] = useState<MenuState>(InitMenuState);
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
-    setMenuState(prevState => ({ ...prevState, loading: true }));
+    setMenuState((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setMenuState(prevState => ({ ...prevState, loading: false }));
+    setMenuState((prevState) => ({ ...prevState, loading: false }));
   };
 
   /**
@@ -55,16 +49,14 @@ const MenuList: React.FC = () => {
   const queryMenuData = async () => {
     executeAndCallbackRefresh(async () => {
       await queryDataByParams(API_CONSTANTS.MENU_LIST).then((res) =>
-          setMenuState(prevState => ({ ...prevState, menuTreeData: res })),
+        setMenuState((prevState) => ({ ...prevState, menuTreeData: res }))
       );
-    })
+    });
   };
 
   useEffect(() => {
     queryMenuData();
   }, []);
-
-
 
   /**
    * delete role by id
@@ -72,12 +64,9 @@ const MenuList: React.FC = () => {
    */
   const handleDeleteSubmit = async () => {
     await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(
-        API_CONSTANTS.MENU_DELETE,
-          menuState.clickNode?.rightClickedNode.key as number,
-      );
+      await handleRemoveById(API_CONSTANTS.MENU_DELETE, menuState.clickNode?.rightClickedNode.key as number);
     });
-    setMenuState(prevState => ({ ...prevState, contextMenuOpen: false }));
+    setMenuState((prevState) => ({ ...prevState, contextMenuOpen: false }));
   };
 
   /**
@@ -85,31 +74,38 @@ const MenuList: React.FC = () => {
    * @param value
    */
   const handleAddOrUpdateSubmit = async (value: Partial<SysMenu>) => {
-    return await handleAddOrUpdate(API_CONSTANTS.MENU_ADD_OR_UPDATE, { ...value },
-        ()=>{
-          setMenuState(prevState => ({ ...prevState, loading: true }))
-        },
-        ()=> {
-          setMenuState(prevState => ({ ...prevState, addedMenuOpen: false ,loading:false}))
-          queryMenuData()
-        });
+    return await handleAddOrUpdate(
+      API_CONSTANTS.MENU_ADD_OR_UPDATE,
+      { ...value },
+      () => {
+        setMenuState((prevState) => ({ ...prevState, loading: true }));
+      },
+      () => {
+        setMenuState((prevState) => ({ ...prevState, addedMenuOpen: false, loading: false }));
+        queryMenuData();
+      }
+    );
   };
 
   /**
    * cancel
    */
   const handleCancel = () => {
-    setMenuState(prevState => ({...prevState, addedMenuOpen: false, editMenuOpen: false, contextMenuOpen: false}));
+    setMenuState((prevState) => ({ ...prevState, addedMenuOpen: false, editMenuOpen: false, contextMenuOpen: false }));
   };
 
   /**
    * create sub menu callback
    */
   const handleCreateSubMenu = () => {
-    setMenuState(prevState => ({
-      ...prevState, addedMenuOpen: true, editMenuOpen: false, contextMenuOpen: false, isRootMenu: false, sysMenuValue: {}
+    setMenuState((prevState) => ({
+      ...prevState,
+      addedMenuOpen: true,
+      editMenuOpen: false,
+      contextMenuOpen: false,
+      isRootMenu: false,
+      sysMenuValue: {}
     }));
-
   };
 
   const handleMenuClick = async (node: MenuInfo) => {
@@ -135,37 +131,41 @@ const MenuList: React.FC = () => {
   const handleRightClick = (info: any) => {
     // 获取右键点击的节点信息
     const { node, event } = info;
-    setMenuState(prevState => ({
-      ...prevState, contextMenuOpen: true ,selectedKeys: [node.key],
-      clickNode: {...prevState.clickNode, rightClickedNode: node},
-      contextMenuPosition: {...prevState.contextMenuPosition, top: event.clientY + 20, left: event.clientX + 20}
+    setMenuState((prevState) => ({
+      ...prevState,
+      contextMenuOpen: true,
+      selectedKeys: [node.key],
+      clickNode: { ...prevState.clickNode, rightClickedNode: node },
+      contextMenuPosition: { ...prevState.contextMenuPosition, top: event.clientY + 20, left: event.clientX + 20 }
     }));
-
   };
 
   const handleNodeClick = async (info: any) => {
     const {
-      node: { key, fullInfo },
+      node: { key, fullInfo }
     } = info;
 
-    setMenuState(prevState => ({
-        ...prevState, selectedKeys: [key], clickNode: {...prevState.clickNode, oneClickedNode: info},
-      sysMenuValue: fullInfo, editMenuOpen: true, addedMenuOpen: false, isEditDisabled: true,
-        isRootMenu: fullInfo.parentId === -1
+    setMenuState((prevState) => ({
+      ...prevState,
+      selectedKeys: [key],
+      clickNode: { ...prevState.clickNode, oneClickedNode: info },
+      sysMenuValue: fullInfo,
+      editMenuOpen: true,
+      addedMenuOpen: false,
+      isEditDisabled: true,
+      isRootMenu: fullInfo.parentId === -1
     }));
   };
 
   const renderRightCardExtra = () => {
-    const {  editMenuOpen
-      , sysMenuValue,isEditDisabled,
-    } = menuState;
+    const { editMenuOpen, sysMenuValue, isEditDisabled } = menuState;
     return (
       <>
         {editMenuOpen && sysMenuValue && isEditDisabled && (
           <Button
             size={'small'}
             type={'primary'}
-            onClick={() => setMenuState(prevState => ({ ...prevState, isEditDisabled: false }))}
+            onClick={() => setMenuState((prevState) => ({ ...prevState, isEditDisabled: false }))}
           >
             {l('button.edit')}
           </Button>
@@ -174,7 +174,7 @@ const MenuList: React.FC = () => {
           <Button
             size={'small'}
             type={'dashed'}
-            onClick={() => setMenuState(prevState => ({ ...prevState, isEditDisabled: true }))}
+            onClick={() => setMenuState((prevState) => ({ ...prevState, isEditDisabled: true }))}
           >
             {l('button.cancel')}
           </Button>
@@ -188,9 +188,8 @@ const MenuList: React.FC = () => {
    * @returns {JSX.Element}
    */
   const renderRightContent = () => {
-    const {  editMenuOpen,addedMenuOpen,selectedKeys ,isRootMenu ,menuTreeData
-      , sysMenuValue,isEditDisabled,
-    } = menuState;
+    const { editMenuOpen, addedMenuOpen, selectedKeys, isRootMenu, menuTreeData, sysMenuValue, isEditDisabled } =
+      menuState;
 
     // default
     if (!editMenuOpen && !addedMenuOpen) {
@@ -212,8 +211,8 @@ const MenuList: React.FC = () => {
             values={sysMenuValue}
             onCancel={handleCancel}
             open={editMenuOpen}
-            onSubmit={ async  (value: Partial<SysMenu>) : Promise<boolean> => await handleAddOrUpdateSubmit(value)}
-              />
+            onSubmit={async (value: Partial<SysMenu>): Promise<boolean> => await handleAddOrUpdateSubmit(value)}
+          />
         </>
       );
     }
@@ -228,9 +227,7 @@ const MenuList: React.FC = () => {
             values={{}}
             open={addedMenuOpen}
             onCancel={handleCancel}
-            onSubmit={(value: Partial<SysMenu>) =>
-              handleAddOrUpdateSubmit(value)
-            }
+            onSubmit={(value: Partial<SysMenu>) => handleAddOrUpdateSubmit(value)}
           />
         </>
       );
@@ -241,7 +238,14 @@ const MenuList: React.FC = () => {
    * create root menu
    */
   const handleCreateRoot = () => {
-    setMenuState(prevState => ({ ...prevState, addedMenuOpen: true, editMenuOpen: false, contextMenuOpen: false, isRootMenu: true, sysMenuValue: {} }));
+    setMenuState((prevState) => ({
+      ...prevState,
+      addedMenuOpen: true,
+      editMenuOpen: false,
+      contextMenuOpen: false,
+      isRootMenu: true,
+      sysMenuValue: {}
+    }));
   };
 
   const renderLeftExtra = () => {
@@ -321,7 +325,7 @@ const MenuList: React.FC = () => {
       <RightContextMenu
         contextMenuPosition={menuState.contextMenuPosition}
         open={menuState.contextMenuOpen}
-        openChange={() => setMenuState(prevState => ({ ...prevState, contextMenuOpen: false }))}
+        openChange={() => setMenuState((prevState) => ({ ...prevState, contextMenuOpen: false }))}
         items={RIGHT_CONTEXT_MENU(menuState.clickNode.rightClickedNode?.type === 'F')}
         onClick={handleMenuClick}
       />

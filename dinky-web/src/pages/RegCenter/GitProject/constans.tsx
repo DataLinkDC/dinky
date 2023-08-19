@@ -24,11 +24,11 @@ import { l } from '@/utils/intl';
  */
 export const GIT_PROJECT_CODE_TYPE_ENUM = {
   1: {
-    text: 'Java',
+    text: 'Java'
   },
   2: {
-    text: 'Python',
-  },
+    text: 'Python'
+  }
 };
 /**
  * git project code language type filter
@@ -36,12 +36,12 @@ export const GIT_PROJECT_CODE_TYPE_ENUM = {
 export const GIT_PROJECT_CODE_TYPE = [
   {
     value: 1,
-    text: 'Java',
+    text: 'Java'
   },
   {
     value: 2,
-    text: 'Python',
-  },
+    text: 'Python'
+  }
 ];
 
 /**
@@ -49,11 +49,11 @@ export const GIT_PROJECT_CODE_TYPE = [
  */
 export const GIT_PROJECT_TYPE_ENUM = {
   1: {
-    text: 'HTTP/HTTPS',
+    text: 'HTTP/HTTPS'
   },
   2: {
-    text: 'SSH',
-  },
+    text: 'SSH'
+  }
 };
 /**
  * git project clone type filter
@@ -61,12 +61,12 @@ export const GIT_PROJECT_TYPE_ENUM = {
 export const GIT_PROJECT_TYPE = [
   {
     text: 'HTTP/HTTPS',
-    value: 1,
+    value: 1
   },
   {
     text: 'SSH',
-    value: 2,
-  },
+    value: 2
+  }
 ];
 
 /**
@@ -77,23 +77,23 @@ export const GIT_PROJECT_STATUS_ENUM = {
   0: {
     title: l('rc.gp.notBuild'),
     text: l('rc.gp.notBuild'),
-    status: 'default',
+    status: 'default'
   },
   1: {
     title: l('rc.gp.building'),
     text: l('rc.gp.building'),
-    status: 'processing',
+    status: 'processing'
   },
   2: {
     title: l('rc.gp.buildFail'),
     text: l('rc.gp.buildFail'),
-    status: 'error',
+    status: 'error'
   },
   3: {
     title: l('rc.gp.buildSuccess'),
     text: l('rc.gp.buildSuccess'),
-    status: 'success',
-  },
+    status: 'success'
+  }
 };
 /**
  * git project build status filter
@@ -102,28 +102,28 @@ export const GIT_PROJECT_STATUS = [
   {
     value: 0,
     status: 'default',
-    text: l('rc.gp.notBuild'),
+    text: l('rc.gp.notBuild')
   },
   {
     value: 1,
     status: 'processing',
-    text: l('rc.gp.building'),
+    text: l('rc.gp.building')
   },
   {
     value: 2,
     status: 'error',
-    text: l('rc.gp.buildFail'),
+    text: l('rc.gp.buildFail')
   },
   {
     value: 3,
     status: 'success',
-    text: l('rc.gp.buildSuccess'),
-  },
+    text: l('rc.gp.buildSuccess')
+  }
 ];
 
 export const CLONE_TYPES = [
   { label: 'http/https', value: 1 },
-  { label: 'ssh', value: 2 },
+  { label: 'ssh', value: 2 }
 ];
 
 /**
@@ -152,38 +152,38 @@ export const GIT_PROJECT_BUILD_STEP_ENUM = {
   0: {
     title: l('rc.gp.build.step.0'),
     text: l('rc.gp.build.step.0'),
-    status: 'default',
+    status: 'default'
   },
   1: {
     title: l('rc.gp.build.step.1'),
     text: l('rc.gp.build.step.1'),
-    status: 'default',
+    status: 'default'
   },
   2: {
     title: l('rc.gp.build.step.2'),
     text: l('rc.gp.build.step.2'),
-    status: 'processing',
+    status: 'processing'
   },
   3: {
     title: l('rc.gp.build.step.3'),
     text: l('rc.gp.build.step.3'),
-    status: 'error',
+    status: 'error'
   },
   4: {
     title: l('rc.gp.build.step.4'),
     text: l('rc.gp.build.step.4'),
-    status: 'success',
+    status: 'success'
   },
   5: {
     title: l('rc.gp.build.step.5'),
     text: l('rc.gp.build.step.5'),
-    status: 'success',
+    status: 'success'
   },
   6: {
     title: l('rc.gp.build.step.6'),
     text: l('rc.gp.build.step.6'),
-    status: 'success',
-  },
+    status: 'success'
+  }
 };
 /**
  * git project build step filter
@@ -192,38 +192,38 @@ export const GIT_PROJECT_BUILD_STEP = [
   {
     value: 0,
     status: 'default',
-    text: l('rc.gp.build.step.0'),
+    text: l('rc.gp.build.step.0')
   },
   {
     value: 1,
     status: 'default',
-    text: l('rc.gp.build.step.1'),
+    text: l('rc.gp.build.step.1')
   },
   {
     value: 2,
     status: 'processing',
-    text: l('rc.gp.build.step.2'),
+    text: l('rc.gp.build.step.2')
   },
   {
     value: 3,
     status: 'error',
-    text: l('rc.gp.build.step.3'),
+    text: l('rc.gp.build.step.3')
   },
   {
     value: 4,
     status: 'success',
-    text: l('rc.gp.build.step.4'),
+    text: l('rc.gp.build.step.4')
   },
   {
     value: 5,
     status: 'success',
-    text: l('rc.gp.build.step.5'),
+    text: l('rc.gp.build.step.5')
   },
   {
     value: 6,
     status: 'success',
-    text: l('rc.gp.build.step.6'),
-  },
+    text: l('rc.gp.build.step.6')
+  }
 ];
 
 /**
@@ -236,5 +236,5 @@ export const processColor = {
   '40%': '#9ae77b',
   '60%': '#59b732',
   '80%': '#47d50a',
-  '100%': '#01ad31',
+  '100%': '#01ad31'
 };

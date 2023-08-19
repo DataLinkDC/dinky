@@ -23,12 +23,12 @@ export const UnAccessible = () => {
   return (
     <>
       <Result
-        status="403"
-        title="403"
+        status='403'
+        title='403'
         subTitle={l('app.request.403')}
         extra={
           <Button
-            type="primary"
+            type='primary'
             onClick={(e) => {
               history.push('/');
             }}

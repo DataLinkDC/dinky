@@ -31,12 +31,8 @@ const FullscreenBtn: React.FC<FullscreenBtnProps> = (props) => {
     <>
       <FloatButton
         className={'full-screen'}
-        icon={
-          isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />
-        }
-        tooltip={
-          isFullscreen ? l('global.fullScreen.exit') : l('global.fullScreen')
-        }
+        icon={isFullscreen ? <FullscreenExitOutlined /> : <FullscreenOutlined />}
+        tooltip={isFullscreen ? l('global.fullScreen.exit') : l('global.fullScreen')}
         onClick={fullScreenCallBack}
       />
     </>

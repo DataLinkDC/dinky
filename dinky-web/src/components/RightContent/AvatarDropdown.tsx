@@ -19,12 +19,7 @@ import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { l } from '@/utils/intl';
 import { ErrorNotification, SuccessNotification } from '@/utils/messages';
-import {
-  LogoutOutlined,
-  TeamOutlined,
-  UserOutlined,
-  UserSwitchOutlined,
-} from '@ant-design/icons';
+import { LogoutOutlined, TeamOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
@@ -49,16 +44,12 @@ const Name = () => {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       [`@media only screen and (max-width: ${token.screenMD}px)`]: {
-        display: 'none',
-      },
+        display: 'none'
+      }
     };
   });
 
-  return (
-    <span className={`${nameClassName} anticon`}>
-      {currentUser?.user.username}
-    </span>
-  );
+  return <span className={`${nameClassName} anticon`}>{currentUser?.user.username}</span>;
 };
 
 const AvatarLogo = () => {
@@ -72,19 +63,12 @@ const AvatarLogo = () => {
       verticalAlign: 'top',
       background: setAlpha(token.colorBgContainer, 0.85),
       [`@media only screen and (max-width: ${token.screenMD}px)`]: {
-        margin: 0,
-      },
+        margin: 0
+      }
     };
   });
 
-  return (
-    <Avatar
-      size="small"
-      className={avatarClassName}
-      src={currentUser?.user.avatar}
-      alt="avatar"
-    />
-  );
+  return <Avatar size='small' className={avatarClassName} src={currentUser?.user.avatar} alt='avatar' />;
 };
 
 const AvatarDropdown = () => {
@@ -102,8 +86,8 @@ const AvatarDropdown = () => {
       history.replace({
         pathname: '/user/login',
         search: stringify({
-          redirect: pathname + search,
-        }),
+          redirect: pathname + search
+        })
       });
     }
   };
@@ -120,8 +104,8 @@ const AvatarDropdown = () => {
       color: 'white',
       borderRadius: token.borderRadius,
       '&:hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
+        backgroundColor: token.colorBgTextHover
+      }
     };
   });
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -135,16 +119,16 @@ const AvatarDropdown = () => {
       await loginOut();
       return;
     },
-    [setInitialState],
+    [setInitialState]
   );
 
   const loading = (
     <span className={actionClassName}>
       <Spin
-        size="small"
+        size='small'
         style={{
           marginLeft: 8,
-          marginRight: 8,
+          marginRight: 8
         }}
       />
     </span>
@@ -180,7 +164,7 @@ const AvatarDropdown = () => {
         }
         // trigger global refresh, such as reload page
         window.location.reload();
-      },
+      }
     });
   };
   const renderTenantList = () => {
@@ -190,7 +174,7 @@ const AvatarDropdown = () => {
         key: item.id,
         label: item.tenantCode,
         disabled: item.id === currentUser.currentTenant?.id,
-        onClick: (e) => tenantHandleChange(e),
+        onClick: (e) => tenantHandleChange(e)
       });
     });
     return chooseTenantList;
@@ -201,43 +185,43 @@ const AvatarDropdown = () => {
       key: 'currentTenant',
       icon: <TeamOutlined />,
       label: l('menu.account.tenant', '', {
-        tenantCode: currentUser.currentTenant?.tenantCode,
-      }),
+        tenantCode: currentUser.currentTenant?.tenantCode
+      })
     },
     {
-      type: 'divider' as const,
+      type: 'divider' as const
     },
     {
       key: 'center',
       icon: <UserOutlined />,
       label: l('menu.account.center'),
-      onClick: () => history.push('/account/center'),
+      onClick: () => history.push('/account/center')
     },
     {
-      type: 'divider' as const,
+      type: 'divider' as const
     },
     {
       key: 'switching',
       icon: <UserSwitchOutlined />,
       label: l('menu.account.checkTenant'),
-      children: renderTenantList(),
+      children: renderTenantList()
     },
     {
-      type: 'divider' as const,
+      type: 'divider' as const
     },
     {
       key: 'logout',
       icon: <LogoutOutlined />,
       label: l('menu.account.logout'),
-      onClick: loginOutHandler,
-    },
+      onClick: loginOutHandler
+    }
   ];
 
   return (
     <HeaderDropdown
       menu={{
         selectedKeys: [],
-        items: menuItems,
+        items: menuItems
       }}
     >
       <span className={actionClassName}>

@@ -29,5 +29,5 @@ export interface FormContextValue {
  * global form context
  */
 export const FormContext = React.createContext<FormContextValue>({
-  resetForm: () => {},
+  resetForm: () => {}
 });

@@ -36,11 +36,7 @@ export const getParentKey = (key: number | string, tree: any): any => {
  * @returns {any}
  */
 
-export const buildProjectTree = (
-  data: Catalogue[],
-  searchValue: string = '',
-  path?: string[],
-): any =>
+export const buildProjectTree = (data: Catalogue[], searchValue: string = '', path?: string[]): any =>
   data.map((item: Catalogue) => {
     const currentPath = path ? [...path, item.name] : [item.name];
     return {
@@ -49,8 +45,7 @@ export const buildProjectTree = (
       name: item.name,
       parentId: item.parentId,
       label: searchTreeNode(item.name, searchValue),
-      icon:
-        item.type && item.children.length === 0 && getTabIcon(item.type, 20),
+      icon: item.type && item.children.length === 0 && getTabIcon(item.type, 20),
       value: item.id,
       path: currentPath,
       type: item.type,
@@ -59,7 +54,7 @@ export const buildProjectTree = (
       key: item.id,
       id: item.id,
       taskId: item.taskId,
-      children: buildProjectTree(item.children, searchValue, currentPath),
+      children: buildProjectTree(item.children, searchValue, currentPath)
     };
   });
 

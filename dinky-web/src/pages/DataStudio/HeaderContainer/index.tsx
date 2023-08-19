@@ -17,31 +17,13 @@
  *
  */
 import { FlexCenterDiv } from '@/components/StyledComponents';
-import {
-  getCurrentData,
-  getCurrentTab,
-  mapDispatchToProps,
-} from '@/pages/DataStudio/function';
+import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
-import {
-  buildBreadcrumbItems,
-  projectCommonShow,
-} from '@/pages/DataStudio/HeaderContainer/function';
-import {
-  executeSql,
-  getJobPlan,
-  isOnline,
-  isSql,
-  offLineTask,
-} from '@/pages/DataStudio/HeaderContainer/service';
-import {
-  DataStudioParams,
-  StateType,
-  TabsPageType,
-  VIEW,
-} from '@/pages/DataStudio/model';
+import { buildBreadcrumbItems, projectCommonShow } from '@/pages/DataStudio/HeaderContainer/function';
+import { executeSql, getJobPlan, isOnline, isSql, offLineTask } from '@/pages/DataStudio/HeaderContainer/service';
+import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -54,17 +36,9 @@ import {
   PlayCircleTwoTone,
   SafetyCertificateTwoTone,
   SaveTwoTone,
-  SmileOutlined,
+  SmileOutlined
 } from '@ant-design/icons';
-import {
-  Breadcrumb,
-  Button,
-  Descriptions,
-  message,
-  Modal,
-  notification,
-  Space,
-} from 'antd';
+import { Breadcrumb, Button, Descriptions, message, Modal, notification, Space } from 'antd';
 import React from 'react';
 
 const headerStyle: React.CSSProperties = {
@@ -74,7 +48,7 @@ const headerStyle: React.CSSProperties = {
   fontStyle: 'normal',
   fontWeight: 'bold',
   fontSize: '16px',
-  padding: '4px 10px',
+  padding: '4px 10px'
 };
 type ButtonRoute = {
   icon: React.ReactNode;
@@ -91,67 +65,55 @@ const HeaderContainer = (props: any) => {
     activeBreadcrumbTitle,
     tabs: { panes, activeKey },
     saveTabs,
-    updateJobRunningMsg,
+    updateJobRunningMsg
   } = props;
 
   const [modal, contextHolder] = Modal.useModal();
-  const [notificationApi, notificationContextHolder] =
-    notification.useNotification();
+  const [notificationApi, notificationContextHolder] = notification.useNotification();
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
-        jobName: current.name,
+        jobName: current.name
       }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        offLineTask(
-          l('pages.datastudio.editor.stop.job'),
-          current.id,
-          'canceljob',
-        ).then((result) => {
-          (
-            getCurrentTab(panes, activeKey)?.params as DataStudioParams
-          ).taskData.jobInstanceId = 0;
+        offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then((result) => {
+          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = 0;
           saveTabs({ ...props.tabs });
         });
-      },
+      }
     });
   };
   const handlerExec = () => {
     const current = getCurrentData(panes, activeKey);
     if (!isSql(current.dialect) && !isOnline(current.type)) {
-      messageApi.warning(
-        l('pages.datastudio.editor.execute.warn', '', { type: current.type }),
-      );
+      messageApi.warning(l('pages.datastudio.editor.execute.warn', '', { type: current.type }));
       return;
     }
 
     const param: any = {
       ...current,
       jobName: current.name,
-      taskId: current.id,
+      taskId: current.id
     };
     const key = current.key;
     const taskKey = Math.random() * 1000 + '';
 
     notificationApi.success({
       message: l('pages.datastudio.editor.submiting', '', {
-        jobName: param.name,
+        jobName: param.name
       }),
       description: param.statement.substring(0, 40) + '...',
       duration: null,
       key: taskKey,
-      icon: <SmileOutlined style={{ color: '#108ee9' }} />,
+      icon: <SmileOutlined style={{ color: '#108ee9' }} />
     });
 
-    executeSql(
-      l('pages.datastudio.editor.submiting', '', { jobName: param.name }),
-      param,
-    ).then((res) => {
+    executeSql(l('pages.datastudio.editor.submiting', '', { jobName: param.name }), param).then((res) => {
       notificationApi.destroy(taskKey);
       if (!res) {
         return;
@@ -160,20 +122,14 @@ const HeaderContainer = (props: any) => {
         taskId: current.id,
         jobName: current.name,
         jobState: res.datas.status,
-        runningLog: res.msg,
+        runningLog: res.msg
       });
       if (res.datas.success) {
         messageApi.success(l('pages.datastudio.editor.exec.success'));
-        (
-          getCurrentTab(panes, activeKey)?.params as DataStudioParams
-        ).taskData.jobInstanceId = res.datas.jobInstanceId;
+        (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = res.datas.jobInstanceId;
         saveTabs({ ...props.tabs });
       } else {
-        ErrorNotification(
-          res.datas.error,
-          l('pages.datastudio.editor.exec.error', '', { jobName: param.name }),
-          null,
-        );
+        ErrorNotification(res.datas.error, l('pages.datastudio.editor.exec.error', '', { jobName: param.name }), null);
       }
 
       // let newTabs = tabs;
@@ -195,13 +151,11 @@ const HeaderContainer = (props: any) => {
       title: l('button.save'),
       click: () => {
         const current = getCurrentData(panes, activeKey);
-        handlePutDataJson('/api/task', current).then(() =>
-          saveTabs({ ...props.tabs }),
-        );
+        handlePutDataJson('/api/task', current).then(() => saveTabs({ ...props.tabs }));
       },
       hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's',
       hotKeyDesc: 'Ctrl+S',
-      isShow: projectCommonShow,
+      isShow: projectCommonShow
     },
     {
       // 检查 sql按钮
@@ -213,10 +167,10 @@ const HeaderContainer = (props: any) => {
           width: '100%',
           icon: null,
           content: <Explain />,
-          cancelButtonProps: { style: { display: 'none' } },
+          cancelButtonProps: { style: { display: 'none' } }
         });
       },
-      isShow: projectCommonShow,
+      isShow: projectCommonShow
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
     },
     {
@@ -225,10 +179,7 @@ const HeaderContainer = (props: any) => {
       title: l('button.graph'),
       click: () => {
         const currentData = getCurrentData(panes, activeKey);
-        const res = getJobPlan(
-          l('pages.datastudio.editor.explan.tip'),
-          currentData,
-        );
+        const res = getJobPlan(l('pages.datastudio.editor.explan.tip'), currentData);
         res.then((result) => {
           if (result) {
             modal.confirm({
@@ -236,13 +187,13 @@ const HeaderContainer = (props: any) => {
               width: '100%',
               icon: null,
               content: <FlinkGraph data={buildGraphData(result.datas)} />,
-              cancelButtonProps: { style: { display: 'none' } },
+              cancelButtonProps: { style: { display: 'none' } }
             });
           }
         });
       },
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-      isShow: projectCommonShow,
+      isShow: projectCommonShow
     },
     {
       // 执行按钮
@@ -252,7 +203,7 @@ const HeaderContainer = (props: any) => {
       hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       hotKeyDesc: 'Shift+F10',
       isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && !data?.jobInstanceId,
+        type === TabsPageType.project && !data?.jobInstanceId
     },
     {
       // 停止按钮
@@ -260,7 +211,7 @@ const HeaderContainer = (props: any) => {
       title: l('pages.datastudio.editor.stop'),
       click: handlerStop,
       isShow: (type?: TabsPageType, subType?: string, data?: any) =>
-        type === TabsPageType.project && data?.jobInstanceId,
+        type === TabsPageType.project && data?.jobInstanceId
       // hotKey: (e: KeyboardEvent) => e.shiftKey && e.key === 'F10',
       // hotKeyDesc: "Shift+F10"
     },
@@ -301,9 +252,9 @@ const HeaderContainer = (props: any) => {
       icon: <MoreOutlined />,
       title: 'More',
       click: () => {},
-      isShow: () => true,
+      isShow: () => true
       // hotKey: (e: KeyboardEvent) => e.ctrlKey && e.key === 's'
-    },
+    }
   ];
 
   /**
@@ -322,13 +273,8 @@ const HeaderContainer = (props: any) => {
 
     return (
       <>
-        <FlexCenterDiv
-          style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}
-        >
-          <Breadcrumb
-            separator={'>'}
-            items={buildBreadcrumbItems(activeBreadcrumbTitle)}
-          />
+        <FlexCenterDiv style={{ width: (size.width - 2 * VIEW.paddingInline) / 2 }}>
+          <Breadcrumb separator={'>'} items={buildBreadcrumbItems(activeBreadcrumbTitle)} />
         </FlexCenterDiv>
       </>
     );
@@ -361,7 +307,7 @@ const HeaderContainer = (props: any) => {
                   return x.isShow(
                     currentTab?.type,
                     currentTab?.subType,
-                    (currentTab?.params as DataStudioParams).taskData,
+                    (currentTab?.params as DataStudioParams).taskData
                   );
                 }
               }
@@ -393,17 +339,9 @@ const HeaderContainer = (props: any) => {
    */
   return (
     <>
-      <Descriptions
-        column={2}
-        size={'middle'}
-        layout={'horizontal'}
-        key={'h'}
-        style={headerStyle}
-      >
+      <Descriptions column={2} size={'middle'} layout={'horizontal'} key={'h'} style={headerStyle}>
         <Descriptions.Item>{renderBreadcrumbItems()}</Descriptions.Item>
-        <Descriptions.Item
-          contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}
-        >
+        <Descriptions.Item contentStyle={{ display: 'flex', flexDirection: 'row-reverse' }}>
           {renderRightButtons()}
         </Descriptions.Item>
       </Descriptions>
@@ -413,7 +351,7 @@ const HeaderContainer = (props: any) => {
 
 export default connect(
   ({ Studio }: { Studio: StateType }) => ({
-    tabs: Studio.tabs,
+    tabs: Studio.tabs
   }),
-  mapDispatchToProps,
+  mapDispatchToProps
 )(HeaderContainer);

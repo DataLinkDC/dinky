@@ -20,37 +20,30 @@
 import { ChartData, MetricsLayout } from '@/pages/Metrics/Job/data';
 import FlinkChart from '@/pages/Metrics/Job/FlinkChart';
 import Server from '@/pages/Metrics/Server';
-import {
-  FlinkMetricsData,
-  JVMMetric,
-  MetricsDataType,
-} from '@/pages/Metrics/Server/data';
+import { FlinkMetricsData, JVMMetric, MetricsDataType } from '@/pages/Metrics/Server/data';
 import { getSubMinTime } from '@/pages/Metrics/Server/function';
 import GlobalFilter from '@/pages/Metrics/Server/GlobalFilter';
 import { getMetricsLayout } from '@/pages/Metrics/service';
 import { getSseData } from '@/services/api';
 import { queryDataByParams } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { PageContainer, ProCard } from '@ant-design/pro-components';
 import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
 import { Row } from 'antd';
 import { useEffect, useState } from 'react';
 import Job from './Job';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const commonChartConfig: G2plotConfig = {
   data: [],
   autoFit: false,
   animation: false,
-  height: 150,
+  height: 150
 };
 export default () => {
-  const [layoutData, setLayoutData] =
-    useState<Record<string, MetricsLayout[]>>();
+  const [layoutData, setLayoutData] = useState<Record<string, MetricsLayout[]>>();
   const [jvmData] = useState<JVMMetric[]>([]);
   const [flinkMetricsData] = useState<FlinkMetricsData[]>([]);
-  const [chartDataList, setChartDataList] = useState<
-    Record<string, ChartData[]>
-  >({});
+  const [chartDataList, setChartDataList] = useState<Record<string, ChartData[]>>({});
   const [eventSource, setEventSource] = useState<EventSource>();
   const [endTime, setEndTime] = useState(new Date());
   const [dateRange, setDateRange] = useState<string>('60s');
@@ -83,7 +76,7 @@ export default () => {
               }
               chartDataList[x.taskId + y + m].push({
                 time: data.heartTime,
-                value: verticesMap[y][m],
+                value: verticesMap[y][m]
               });
             });
           });
@@ -106,11 +99,7 @@ export default () => {
   }, [startTime]);
 
   useEffect(() => {
-    setEventSource(
-      getSseData(
-        API_CONSTANTS.MONITOR_GET_LAST_DATA + '?lastTime=' + endTime.getTime(),
-      ),
-    );
+    setEventSource(getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + '?lastTime=' + endTime.getTime()));
   }, [endTime]);
 
   useEffect(() => {
@@ -131,7 +120,7 @@ export default () => {
   const getInitData = () => {
     queryDataByParams(API_CONSTANTS.MONITOR_GET_SYSTEM_DATA, {
       startTime: startTime.getTime(),
-      endTime: endTime.getTime(),
+      endTime: endTime.getTime()
     }).then((res) => {
       jvmData.length = 0;
       flinkMetricsData.length = 0;
@@ -198,29 +187,14 @@ export default () => {
         />
       </ProCard>
       {showDinkyServer && (
-        <ProCard
-          collapsible
-          title={'Dinky Server'}
-          ghost
-          hoverable
-          bordered
-          headerBordered
-        >
+        <ProCard collapsible title={'Dinky Server'} ghost hoverable bordered headerBordered>
           <Server chartConfig={commonChartConfig} data={jvmData} />
         </ProCard>
       )}
       {layoutData != undefined &&
         Object.keys(layoutData).map((name) => {
           return (
-            <ProCard
-              collapsible
-              title={name}
-              ghost
-              hoverable
-              bordered
-              headerBordered
-              gutter={[0, 8]}
-            >
+            <ProCard collapsible title={name} ghost hoverable bordered headerBordered gutter={[0, 8]}>
               <Row gutter={[8, 16]}>
                 {layoutData[name].map((j) => {
                   // return <></>

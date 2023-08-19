@@ -16,9 +16,7 @@
  *
  */
 
-import CodeShow, {
-  CodeShowFormProps,
-} from '@/components/CustomEditor/CodeShow';
+import CodeShow, { CodeShowFormProps } from '@/components/CustomEditor/CodeShow';
 import { MonacoEditorOptions } from '@/types/Public/data';
 import { l } from '@/utils/intl';
 import { Button, Modal, ModalFuncProps, Typography } from 'antd';
@@ -74,9 +72,9 @@ const ErrorShowModal = (props: ShowModalProps) => {
        */
       options: {
         ...MonacoEditorOptions, // set default options
-        minimap: { enabled: false },
-      },
-    },
+        minimap: { enabled: false }
+      }
+    }
   } = props;
 
   const [showModal, setShowModal] = useState<boolean>(open);
@@ -89,7 +87,7 @@ const ErrorShowModal = (props: ShowModalProps) => {
       title={title}
       closable={closable}
       footer={
-        <Button type="primary" onClick={() => setShowModal(false)}>
+        <Button type='primary' onClick={() => setShowModal(false)}>
           {l('global.notifaction.iknow')}
         </Button>
       }

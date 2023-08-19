@@ -22,11 +22,7 @@ import { Alert, Typography } from 'antd';
 export const CommunityRules = () => {
   return (
     <>
-      <Alert
-        message={l('about.communityRules')}
-        type="success"
-        {...AlertRestProps}
-      />
+      <Alert message={l('about.communityRules')} type='success' {...AlertRestProps} />
       <Typography.Text {...TypographyRestProps}>
         <ul>
           <li>{l('about.communityRules.1')}</li>
@@ -34,11 +30,7 @@ export const CommunityRules = () => {
           <li>{l('about.communityRules.3')}</li>
           <li>{l('about.communityRules.4')}</li>
           <li>
-            <a
-              href={'https://github.com/DataLinkDC/dinky/issues/66'}
-              target={'_blank'}
-              rel="noreferrer"
-            >
+            <a href={'https://github.com/DataLinkDC/dinky/issues/66'} target={'_blank'} rel='noreferrer'>
               Issue
             </a>
             {l('about.communityRules.5')}

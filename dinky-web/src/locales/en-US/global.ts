@@ -98,8 +98,7 @@ export default {
   'tips.selected': 'Selected {total} Item',
   'tips.notSelected': 'Not Select',
   'tips.enter': 'Please Enter',
-  'tips.confirm.delete.table':
-    ' Are you sure you want to delete table [{tableName}]?',
+  'tips.confirm.delete.table': ' Are you sure you want to delete table [{tableName}]?',
 
   'status.enabled': 'Enabled',
   'status.disabled': 'Disabled',
@@ -198,5 +197,5 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December',
+  'global.month.december': 'December'
 };

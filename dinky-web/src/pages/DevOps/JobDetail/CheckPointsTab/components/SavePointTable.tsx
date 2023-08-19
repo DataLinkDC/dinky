@@ -19,11 +19,11 @@
 
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
 import { queryList } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { useRef } from 'react';
-import {SavePoint} from "@/types/Studio/data";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const SavepointTable = (props: JobProps) => {
   const { jobDetail } = props;
@@ -35,36 +35,36 @@ const SavepointTable = (props: JobProps) => {
       title: l('devops.jobinfo.ck.id'),
       align: 'center',
       dataIndex: 'id',
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('devops.jobinfo.ck.taskid'),
       align: 'center',
       dataIndex: 'taskId',
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('devops.jobinfo.ck.name'),
       align: 'center',
-      dataIndex: 'name',
+      dataIndex: 'name'
     },
     {
       title: l('devops.jobinfo.ck.checkpoint_type'),
       align: 'center',
-      dataIndex: 'type',
+      dataIndex: 'type'
     },
     {
       title: l('devops.jobinfo.ck.external_path'),
       align: 'center',
       copyable: true,
-      dataIndex: 'path',
+      dataIndex: 'path'
     },
     {
       title: l('devops.jobinfo.ck.trigger_timestamp'),
       align: 'center',
       valueType: 'dateTime',
-      dataIndex: 'createTime',
-    },
+      dataIndex: 'createTime'
+    }
   ];
 
   return (
@@ -76,17 +76,17 @@ const SavepointTable = (props: JobProps) => {
           queryList(API_CONSTANTS.GET_SAVEPOINTS, {
             ...params,
             sorter,
-            filter: { taskId: [jobDetail?.instance.taskId] },
+            filter: { taskId: [jobDetail?.instance.taskId] }
           })
         }
         actionRef={actionRef}
         toolBarRender={false}
-        rowKey="id"
+        rowKey='id'
         pagination={{
-          pageSize: 10,
+          pageSize: 10
         }}
         search={false}
-        size="small"
+        size='small'
       />
     </>
   );

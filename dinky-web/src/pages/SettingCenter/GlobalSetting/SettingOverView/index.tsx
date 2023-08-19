@@ -23,7 +23,7 @@ import {
   LDAPIcon,
   MavenIcon,
   MetricsIcon,
-  ResourceIcon,
+  ResourceIcon
 } from '@/components/Icons/CustomIcons';
 import { TagAlignCenter } from '@/components/StyledComponents';
 import { SettingConfigKeyEnum } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/constants';
@@ -35,11 +35,11 @@ import { MavenConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView
 import { ResourcesConfig } from '@/pages/SettingCenter/GlobalSetting/SettingOverView/ResourcesConfig';
 import { handleOption, queryDataByParams } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { BaseConfigProperties, Settings } from '@/types/SettingCenter/data';
 import { l } from '@/utils/intl';
 import { ProCard } from '@ant-design/pro-components';
 import { memo, useEffect, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const imgSize = 25;
 
@@ -53,7 +53,7 @@ const SettingOverView = () => {
     maven: [],
     ldap: [],
     metrics: [],
-    resource: [],
+    resource: []
   });
 
   const fetchData = async () => {
@@ -70,7 +70,7 @@ const SettingOverView = () => {
     const { code } = await handleOption(
       API_CONSTANTS.SYSTEM_MODIFY_CONFIG,
       l('sys.setting.modify', '', { key: l(`sys.${dataConfig.key}`) }),
-      dataConfig,
+      dataConfig
     );
 
     if (code === RESPONSE_CODE.ERROR) {
@@ -95,7 +95,7 @@ const SettingOverView = () => {
         dolphinscheduler: dsConfig,
         ldap: ldapConfig,
         metrics: metricsConfig,
-        resource: resourceConfig,
+        resource: resourceConfig
       } = data;
 
       const configTags = [
@@ -107,7 +107,7 @@ const SettingOverView = () => {
               {l('sys.setting.dinky')}
             </TagAlignCenter>
           ),
-          children: <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv} />,
+          children: <EnvConfig onSave={handleSaveSubmit} data={dinkyEnv} />
         },
         {
           key: SettingConfigKeyEnum.FLINK,
@@ -117,9 +117,7 @@ const SettingOverView = () => {
               {l('sys.setting.flink')}
             </TagAlignCenter>
           ),
-          children: (
-            <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig} />
-          ),
+          children: <FlinkConfig onSave={handleSaveSubmit} data={flinkConfig} />
         },
         {
           key: SettingConfigKeyEnum.MAVEN,
@@ -129,9 +127,7 @@ const SettingOverView = () => {
               {l('sys.setting.maven')}
             </TagAlignCenter>
           ),
-          children: (
-            <MavenConfig onSave={handleSaveSubmit} data={mavenConfig} />
-          ),
+          children: <MavenConfig onSave={handleSaveSubmit} data={mavenConfig} />
         },
         {
           key: SettingConfigKeyEnum.DOLPHIN_SCHEDULER,
@@ -141,7 +137,7 @@ const SettingOverView = () => {
               {l('sys.setting.ds')}
             </TagAlignCenter>
           ),
-          children: <DSConfig onSave={handleSaveSubmit} data={dsConfig} />,
+          children: <DSConfig onSave={handleSaveSubmit} data={dsConfig} />
         },
         {
           key: SettingConfigKeyEnum.LDAP,
@@ -151,7 +147,7 @@ const SettingOverView = () => {
               {l('sys.setting.ldap')}
             </TagAlignCenter>
           ),
-          children: <LdapConfig onSave={handleSaveSubmit} data={ldapConfig} />,
+          children: <LdapConfig onSave={handleSaveSubmit} data={ldapConfig} />
         },
         {
           key: SettingConfigKeyEnum.METRIC,
@@ -161,7 +157,7 @@ const SettingOverView = () => {
               {l('sys.setting.metrics')}
             </TagAlignCenter>
           ),
-          children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig} />,
+          children: <DSConfig onSave={handleSaveSubmit} data={metricsConfig} />
         },
         {
           key: SettingConfigKeyEnum.RESOURCE,
@@ -171,10 +167,8 @@ const SettingOverView = () => {
               {l('sys.setting.resource')}
             </TagAlignCenter>
           ),
-          children: (
-            <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig} />
-          ),
-        },
+          children: <ResourcesConfig onSave={handleSaveSubmit} data={resourceConfig} />
+        }
       ];
 
       return (
@@ -182,14 +176,14 @@ const SettingOverView = () => {
           <ProCard
             ghost
             className={'schemaTree'}
-            size="small"
+            size='small'
             bordered
             tabs={{
               activeKey: activeKey,
               type: 'card',
               animated: true,
               onChange: (key: any) => setActiveKey(key),
-              items: configTags,
+              items: configTags
             }}
           />
         </div>

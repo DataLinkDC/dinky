@@ -47,7 +47,7 @@ export const MENU_ICON_OPTIONS = (): DefaultOptionType[] => {
         </TagAlignLeft>
       ), // render icon component
       key: iconName,
-      value: iconName,
+      value: iconName
     };
   });
 };
@@ -63,34 +63,34 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false): MenuItemType[] => [
     key: 'addSub',
     icon: <PlusCircleTwoTone />,
     label: l('right.menu.addSub'),
-    disabled: isDisabled,
+    disabled: isDisabled
   },
   {
     key: 'delete',
     icon: <DeleteTwoTone twoToneColor={'red'} />,
-    label: l('button.delete'),
+    label: l('button.delete')
   },
   {
     key: 'cancel',
     icon: <BackIcon />,
-    label: l('button.cancel'),
-  },
+    label: l('button.cancel')
+  }
 ];
 
 export const MENU_TYPE_OPTIONS = [
   {
     title: l('menu.type.dir'),
     label: l('menu.type.dir'),
-    value: 'M',
+    value: 'M'
   },
   {
     title: l('menu.type.menu'),
     label: l('menu.type.menu'),
-    value: 'C',
+    value: 'C'
   },
   {
     title: l('menu.type.button'),
     label: l('menu.type.button'),
-    value: 'F',
-  },
+    value: 'F'
+  }
 ];

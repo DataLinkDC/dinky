@@ -24,25 +24,24 @@ import { PermissionsModal } from '@/pages/AuthCenter/RowPermissions/components/P
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById } from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { RowPermissions } from '@/types/AuthCenter/data.d';
+import { InitRowPermissionsState } from '@/types/AuthCenter/init.d';
+import { RowPermissionsState } from '@/types/AuthCenter/state.d';
 import { getTenantByLocalStorage } from '@/utils/function';
 import { l } from '@/utils/intl';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import React, { useRef, useState } from 'react';
-import {RowPermissions} from "@/types/AuthCenter/data.d";
-import {InitRowPermissionsState} from "@/types/AuthCenter/init.d";
-import {RowPermissionsState} from "@/types/AuthCenter/state.d";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const PermissionsProTable: React.FC = () => {
-
   const [rowPermissions, setRowPermissions] = useState<RowPermissionsState>(InitRowPermissionsState);
 
   const actionRef = useRef<ActionType>();
 
   const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
-    setRowPermissions(prevState => ({...prevState,loading: true}));
+    setRowPermissions((prevState) => ({ ...prevState, loading: true }));
     await callback();
-    setRowPermissions(prevState => ({...prevState,loading: false}));
+    setRowPermissions((prevState) => ({ ...prevState, loading: false }));
     actionRef.current?.reload?.();
   };
 
@@ -62,12 +61,14 @@ const PermissionsProTable: React.FC = () => {
    */
   const handleAddOrUpdateSubmit = async (value: any) => {
     await executeAndCallbackRefresh(async () => {
-      await handleAddOrUpdate(API_CONSTANTS.ROW_PERMISSIONS, {
-        ...value,
-        tenantId: getTenantByLocalStorage(),
-      },
-          ()=>{},
-          ()=> setRowPermissions(prevState => ({...prevState,addedRowPermissionsOpen: false}))
+      await handleAddOrUpdate(
+        API_CONSTANTS.ROW_PERMISSIONS,
+        {
+          ...value,
+          tenantId: getTenantByLocalStorage()
+        },
+        () => {},
+        () => setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: false }))
       );
     });
   };
@@ -77,14 +78,14 @@ const PermissionsProTable: React.FC = () => {
    * @param record
    */
   const handleEditVisible = (record: Partial<RowPermissions>) => {
-    setRowPermissions(prevState => ({...prevState,value: record,editRowPermissionsOpen: false }));
+    setRowPermissions((prevState) => ({ ...prevState, value: record, editRowPermissionsOpen: false }));
   };
 
   /**
    * cancel
    */
   const handleCancel = () => {
-    setRowPermissions(prevState => ({...prevState,addedRowPermissionsOpen: false,editRowPermissionsOpen: false }));
+    setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: false, editRowPermissionsOpen: false }));
   };
 
   /**
@@ -94,37 +95,37 @@ const PermissionsProTable: React.FC = () => {
   const columns: ProColumns<RowPermissions>[] = [
     {
       title: l('role.roleCode'),
-      dataIndex: 'roleCode',
+      dataIndex: 'roleCode'
     },
     {
       title: l('role.roleName'),
-      dataIndex: 'roleName',
+      dataIndex: 'roleName'
     },
     {
       title: l('rowPermissions.tableName'),
       dataIndex: 'tableName',
-      copyable: true,
+      copyable: true
     },
 
     {
       title: l('rowPermissions.expression'),
       dataIndex: 'expression',
       ellipsis: true,
-      copyable: true,
+      copyable: true
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       hideInSearch: true,
       sorter: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       sorter: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
@@ -132,17 +133,14 @@ const PermissionsProTable: React.FC = () => {
       valueType: 'option',
       width: '10vh',
       render: (_: any, record: RowPermissions) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleEditVisible(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rowPermissions.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   /**
@@ -157,15 +155,15 @@ const PermissionsProTable: React.FC = () => {
         loading={rowPermissions.loading}
         toolBarRender={() => [
           <CreateBtn
-            key="createBtn"
-            onClick={() => setRowPermissions(prevState => ({...prevState,addedRowPermissionsOpen: true}))}
-          />,
+            key='createBtn'
+            onClick={() => setRowPermissions((prevState) => ({ ...prevState, addedRowPermissionsOpen: true }))}
+          />
         ]}
         request={(params: any, sorter: any, filter: any) =>
           queryList(API_CONSTANTS.ROW_PERMISSIONS, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
         columns={columns}

@@ -18,25 +18,14 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import {
-  FOLDER_RIGHT_MENU,
-  JOB_RIGHT_MENU,
-} from '@/pages/DataStudio/LeftContainer/Project/constants';
+import { FOLDER_RIGHT_MENU, JOB_RIGHT_MENU } from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import { getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
-import {
-  StateType,
-  STUDIO_MODEL,
-  STUDIO_MODEL_ASYNC,
-} from '@/pages/DataStudio/model';
-import {
-  handleAddOrUpdate,
-  handleOption,
-  handlePutDataByParams,
-  handleRemoveById,
-} from '@/services/BusinessCrud';
+import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
+import { handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
 import { Modal, Typography } from 'antd';
@@ -44,7 +33,6 @@ import { MenuItemType } from 'antd/es/menu/hooks/useItems';
 import { MenuInfo } from 'rc-menu/es/interface';
 import React, { Key, useEffect, useState } from 'react';
 import { connect } from 'umi';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const { Text } = Typography;
 
@@ -68,12 +56,12 @@ const Project: React.FC = (props: connect) => {
       width: '12vw',
       left: 0,
       top: 0,
-      zIndex: 999, // 搞大点, 用来置顶
+      zIndex: 999 // 搞大点, 用来置顶
     },
     isLeaf: false,
     item: [],
     selectedKeys: [],
-    rightClickedNode: null,
+    rightClickedNode: null
   });
 
   const [modalAllVisible, setModalAllVisible] = useState<{
@@ -89,7 +77,7 @@ const Project: React.FC = (props: connect) => {
     isRename: false,
     value: {},
     isCreateTask: false,
-    isCut: false,
+    isCut: false
   });
 
   useEffect(() => {
@@ -97,7 +85,7 @@ const Project: React.FC = (props: connect) => {
       ...prevState,
       item: prevState.isLeaf
         ? JOB_RIGHT_MENU(modalAllVisible.isCut && cutId !== undefined)
-        : FOLDER_RIGHT_MENU(modalAllVisible.isCut && cutId !== undefined),
+        : FOLDER_RIGHT_MENU(modalAllVisible.isCut && cutId !== undefined)
     }));
   }, [modalAllVisible.isCut, cutId]);
 
@@ -109,7 +97,7 @@ const Project: React.FC = (props: connect) => {
     const {
       node: { isLeaf, key, fullInfo },
       node,
-      event,
+      event
     } = info;
     // 设置右键菜单
     setContextMenu((prevState) => ({
@@ -118,14 +106,12 @@ const Project: React.FC = (props: connect) => {
       position: {
         ...prevState.position,
         left: event.clientX + 10,
-        top: event.clientY + 5,
+        top: event.clientY + 5
       },
       isLeaf: isLeaf,
       selectedKeys: [key],
       rightClickedNode: { ...node, ...fullInfo },
-      item: isLeaf
-        ? JOB_RIGHT_MENU(modalAllVisible.isCut)
-        : FOLDER_RIGHT_MENU(modalAllVisible.isCut),
+      item: isLeaf ? JOB_RIGHT_MENU(modalAllVisible.isCut) : FOLDER_RIGHT_MENU(modalAllVisible.isCut)
     }));
     setModalAllVisible((prevState) => ({ ...prevState, value: fullInfo }));
   };
@@ -137,12 +123,12 @@ const Project: React.FC = (props: connect) => {
   const onNodeClick = (info: any) => {
     // 选中的key
     const {
-      node: { isLeaf, name, type, parentId, path, key, taskId },
+      node: { isLeaf, name, type, parentId, path, key, taskId }
     } = info;
     setContextMenu((prevState) => ({
       ...prevState,
       visible: false,
-      selectedKeys: [key],
+      selectedKeys: [key]
     }));
 
     if (!isLeaf) {
@@ -160,11 +146,11 @@ const Project: React.FC = (props: connect) => {
           label: name,
           params: {
             taskId: taskId,
-            taskData: { ...res, useResult: true, maxRowNum: 100 },
+            taskData: { ...res, useResult: true, maxRowNum: 100 }
           },
           type: 'project',
-          subType: type.toLowerCase(),
-        },
+          subType: type.toLowerCase()
+        }
       });
     });
   };
@@ -172,7 +158,7 @@ const Project: React.FC = (props: connect) => {
   const handleContextCancel = () => {
     setContextMenu((prevState) => ({
       ...prevState,
-      visible: false,
+      visible: false
     }));
   };
 
@@ -192,18 +178,13 @@ const Project: React.FC = (props: connect) => {
   const handleSubmit = async (values: Catalogue) => {
     const options = {
       url: '',
-      isLeaf: modalAllVisible.isCreateSub
-        ? false
-        : modalAllVisible.value.isLeaf,
-      parentId: modalAllVisible.isCreateSub
-        ? contextMenu.selectedKeys[0]
-        : modalAllVisible.value.parentId,
+      isLeaf: modalAllVisible.isCreateSub ? false : modalAllVisible.value.isLeaf,
+      parentId: modalAllVisible.isCreateSub ? contextMenu.selectedKeys[0] : modalAllVisible.value.parentId
     };
 
     if (rightActiveKey === 'createTask') {
       options.url = API_CONSTANTS.CREATE_TASK_URL;
-      options.parentId =
-        modalAllVisible.isCreateTask && modalAllVisible.value.id;
+      options.parentId = modalAllVisible.isCreateTask && modalAllVisible.value.id;
     } else {
       options.url = API_CONSTANTS.SAVE_OR_UPDATE_CATALOGUE_URL;
     }
@@ -213,7 +194,7 @@ const Project: React.FC = (props: connect) => {
       {
         ...values,
         isLeaf: options.isLeaf,
-        parentId: options.parentId,
+        parentId: options.parentId
       },
       () => {
         setModalAllVisible((prevState) => ({
@@ -222,13 +203,13 @@ const Project: React.FC = (props: connect) => {
           isRename: false,
           isEdit: false,
           isCreateTask: false,
-          isCut: false,
+          isCut: false
         }));
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         if (modalAllVisible.isRename) {
           // todo: 如果是重命名/修改(修改了名字), 则需要 更新 tab 的 label
         }
-      },
+      }
     );
   };
 
@@ -241,20 +222,16 @@ const Project: React.FC = (props: connect) => {
     const { key, isLeaf, name, type, taskId } = contextMenu.rightClickedNode;
     handleContextCancel();
     if (!isLeaf) {
-      await handleRemoveById(
-        API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL,
-        key,
-        () => {
-          dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-          // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
-        },
-      );
+      await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
+        dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项 && 有一个 bug Dinky/src/pages/DataStudio/RightContainer/JobInfo/index.tsx:55 -> Cannot read properties of undefined (reading 'id')
+      });
       return;
     }
 
     const renderContent = () => {
       return (
-        <Text className={'needWrap'} type="danger">
+        <Text className={'needWrap'} type='danger'>
           {l('datastudio.project.delete.job.confirm')}
         </Text>
       );
@@ -267,16 +244,12 @@ const Project: React.FC = (props: connect) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        await handleRemoveById(
-          API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL,
-          key,
-          () => {
-            // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
-            dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
-            dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-          },
-        );
-      },
+        await handleRemoveById(API_CONSTANTS.DELETE_CATALOGUE_BY_ID_URL, key, () => {
+          // TODO: 如果打开的 tag 中包含了这个 key 则更新 dav 的 tag 数据 删除此项
+          dispatch({ type: STUDIO_MODEL.removeTag, payload: taskId });
+          dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
+        });
+      }
     });
   };
 
@@ -314,11 +287,11 @@ const Project: React.FC = (props: connect) => {
       API_CONSTANTS.COPY_TASK_URL,
       l('right.menu.copy'),
       {
-        ...modalAllVisible.value,
+        ...modalAllVisible.value
       },
       () => {
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
-      },
+      }
     );
     handleContextCancel();
   };
@@ -343,14 +316,14 @@ const Project: React.FC = (props: connect) => {
       l('right.menu.paste'),
       {
         originCatalogueId: cutId,
-        targetParentId: contextMenu.selectedKeys[0],
+        targetParentId: contextMenu.selectedKeys[0]
       },
       () => {
         dispatch({ type: STUDIO_MODEL_ASYNC.queryProject });
         // 重置 cutId
         setCutId(undefined);
         setModalAllVisible((prevState) => ({ ...prevState, isCut: false }));
-      },
+      }
     );
     handleContextCancel();
   };
@@ -408,9 +381,7 @@ const Project: React.FC = (props: connect) => {
       <RightContextMenu
         contextMenuPosition={contextMenu.position}
         open={contextMenu.visible}
-        openChange={() =>
-          setContextMenu((prevState) => ({ ...prevState, visible: false }))
-        }
+        openChange={() => setContextMenu((prevState) => ({ ...prevState, visible: false }))}
         items={contextMenu.item}
         onClick={handleMenuClick}
       />
@@ -423,7 +394,7 @@ const Project: React.FC = (props: connect) => {
           setModalAllVisible((prevState) => ({
             ...prevState,
             isCreateSub: false,
-            value: {},
+            value: {}
           }))
         }
         onSubmit={handleSubmit}
@@ -438,7 +409,7 @@ const Project: React.FC = (props: connect) => {
           setModalAllVisible((prevState) => ({
             ...prevState,
             isRename: false,
-            value: {},
+            value: {}
           }))
         }
         onSubmit={handleSubmit}
@@ -453,7 +424,7 @@ const Project: React.FC = (props: connect) => {
           setModalAllVisible((prevState) => ({
             ...prevState,
             isCreateTask: false,
-            value: {},
+            value: {}
           }))
         }
         onSubmit={handleSubmit}
@@ -468,7 +439,7 @@ const Project: React.FC = (props: connect) => {
             setModalAllVisible((prevState) => ({
               ...prevState,
               isEdit: false,
-              value: {},
+              value: {}
             }))
           }
           onSubmit={handleSubmit}
@@ -480,5 +451,5 @@ const Project: React.FC = (props: connect) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   data: Studio.project.data,
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(Project);

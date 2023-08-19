@@ -24,10 +24,7 @@ const MainWithStyle = (props: any) => {
   const { children } = props;
 
   return (
-    <div
-      className={style.loginformMain}
-      style={{ backgroundImage: `url('/icons/main-bg.svg')` }}
-    >
+    <div className={style.loginformMain} style={{ backgroundImage: `url('/icons/main-bg.svg')` }}>
       <Scale>
         <img className={style.logo} src={Settings.logo} />
       </Scale>

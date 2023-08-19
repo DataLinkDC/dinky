@@ -19,11 +19,10 @@ import Footer from '@/components/Footer';
 import ChooseModal from '@/pages/Other/Login/ChooseModal';
 import { gotoRedirectUrl, redirectToLogin } from '@/pages/Other/Login/function';
 import LangSwitch from '@/pages/Other/Login/LangSwitch';
-import {
-  chooseTenantSubmit,
-  login,
-  queryDataByParams,
-} from '@/services/BusinessCrud';
+import { chooseTenantSubmit, login, queryDataByParams } from '@/services/BusinessCrud';
+import { API } from '@/services/data';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { setTenantStorageAndCookie } from '@/utils/function';
 import { useLocalStorage } from '@/utils/hook/useLocalStorage';
 import { l } from '@/utils/intl';
@@ -34,9 +33,6 @@ import React, { useEffect, useState } from 'react';
 import { flushSync } from 'react-dom';
 import HelmetTitle from './HelmetTitle';
 import LoginForm from './LoginForm';
-import {API} from "@/services/data";
-import {UserBaseInfo} from "@/types/AuthCenter/data";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const Login: React.FC = () => {
   const [submitting, setSubmitting] = useState(false);
@@ -44,16 +40,13 @@ const Login: React.FC = () => {
   const [tenantVisible, handleTenantVisible] = useState<boolean>(false);
   const [tenant, setTenant] = useState<UserBaseInfo.Tenant[]>([]);
 
-  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage(
-    'token',
-    '',
-  );
+  const [localStorageOfToken, setLocalStorageOfToken] = useLocalStorage('token', '');
 
   const containerClassName = useEmotionCss(() => {
     return {
       display: 'flex',
       flexDirection: 'column',
-      height: '100%',
+      height: '100%'
     };
   });
 
@@ -63,7 +56,7 @@ const Login: React.FC = () => {
       flushSync(() => {
         setInitialState((s) => ({
           ...s,
-          currentUser: userInfo,
+          currentUser: userInfo
         }));
       });
     }
@@ -73,8 +66,7 @@ const Login: React.FC = () => {
    * When the token is expired, redirect to login
    */
   useEffect(() => {
-    const expirationTime =
-      JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
+    const expirationTime = JSON.parse(JSON.stringify(localStorageOfToken)).tokenTimeout ?? 0; // GET TOKEN TIMEOUT
     let timeRemaining = 0;
     let timer: NodeJS.Timeout;
     if (expirationTime > 0) {
@@ -94,8 +86,8 @@ const Login: React.FC = () => {
       await SuccessMessageAsync(
         l('login.chooseTenantSuccess', '', {
           msg: chooseTenantResult.msg,
-          tenantCode: chooseTenantResult.datas.tenantCode,
-        }),
+          tenantCode: chooseTenantResult.datas.tenantCode
+        })
       );
       /**
        * After the selection is complete, refresh all user information
@@ -132,7 +124,7 @@ const Login: React.FC = () => {
     const tenantId = tenantList[0].id;
     setTenantStorageAndCookie(tenantId);
     const chooseTenantResult: API.Result = await chooseTenantSubmit({
-      tenantId,
+      tenantId
     });
     await handleChooseTenant(chooseTenantResult);
   };
@@ -143,14 +135,10 @@ const Login: React.FC = () => {
       const result = await login({ ...values });
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
-        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) =>
-          setLocalStorageOfToken(JSON.stringify(res)),
-        );
+        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) => setLocalStorageOfToken(JSON.stringify(res)));
       }
       setInitialState((s) => ({ ...s, currentUser: result.datas }));
-      await SuccessMessageAsync(
-        l('login.result', '', { msg: result.msg, time: result.time }),
-      );
+      await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));
       /**
        * After successful login, set the tenant list
        */

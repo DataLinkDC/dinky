@@ -18,13 +18,7 @@
  */
 
 import { l } from '@/utils/intl';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  PlusCircleOutlined,
-  UndoOutlined,
-  UploadOutlined,
-} from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, PlusCircleOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
 
 /**
  *  the right context menu
@@ -37,30 +31,30 @@ export const RIGHT_CONTEXT_MENU = (isDisabled = false) => [
     key: 'createFolder',
     icon: <PlusCircleOutlined />,
     label: l('right.menu.createFolder'),
-    disabled: isDisabled,
+    disabled: isDisabled
   },
   {
     key: 'upload',
     icon: <UploadOutlined />,
     label: l('button.upload'),
-    disabled: isDisabled,
+    disabled: isDisabled
   },
   {
     key: 'delete',
     icon: <DeleteOutlined />,
     label: l('right.menu.delete'),
-    disabled: isDisabled,
+    disabled: isDisabled
   },
   {
     key: 'rename',
     icon: <EditOutlined />,
     label: l('right.menu.rename'),
-    disabled: isDisabled,
+    disabled: isDisabled
   },
   {
     key: 'refresh',
     icon: <UndoOutlined />,
     label: l('right.menu.refresh'),
-    disabled: isDisabled,
-  },
+    disabled: isDisabled
+  }
 ];

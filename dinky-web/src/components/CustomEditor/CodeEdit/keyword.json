@@ -1,10 +1,6 @@
 {
   "_comment": "this is comments，按照数据库类型输入对应得关键字数组，如果想要函数提示也可，函数内得参数定位需要手动编写：eg：SUM(${1:}) 在输入后会将光标定位在括号内，多个参数列表 则数字依次向下+1, presto & phoenix & clickhouse 暂未整理",
-  "fragments": [
-    "CASE WHEN ${1:} THEN ${2:} ELSE ${3:} END AS ${4:}",
-    "SELECT ${1:} FROM ${2:}",
-    "SELECT * FROM ${1:}"
-  ],
+  "fragments": ["CASE WHEN ${1:} THEN ${2:} ELSE ${3:} END AS ${4:}", "SELECT ${1:} FROM ${2:}", "SELECT * FROM ${1:}"],
   "mysql": [
     "ALL",
     "ALTER",
@@ -2031,40 +2027,7 @@
     "WRITE",
     "YEAR"
   ],
-  "presto": [
-    "ALL",
-    "ALTER",
-    "ANALYZE",
-    "AND",
-    "AS",
-    "ASC",
-    "ASENSITIVE",
-    "BEFORE",
-    "BETWEEN",
-    "BIGINT"
-  ],
-  "clickhouse": [
-    "ALL",
-    "ALTER",
-    "ANALYZE",
-    "AND",
-    "AS",
-    "ASC",
-    "ASENSITIVE",
-    "BEFORE",
-    "BETWEEN",
-    "BIGINT"
-  ],
-  "phoenix": [
-    "ALL",
-    "ALTER",
-    "ANALYZE",
-    "AND",
-    "AS",
-    "ASC",
-    "ASENSITIVE",
-    "BEFORE",
-    "BETWEEN",
-    "BIGINT"
-  ]
+  "presto": ["ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ASENSITIVE", "BEFORE", "BETWEEN", "BIGINT"],
+  "clickhouse": ["ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ASENSITIVE", "BEFORE", "BETWEEN", "BIGINT"],
+  "phoenix": ["ALL", "ALTER", "ANALYZE", "AND", "AS", "ASC", "ASENSITIVE", "BEFORE", "BETWEEN", "BIGINT"]
 }

@@ -17,16 +17,12 @@
  */
 
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
-import {
-  ProForm,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ProForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data";
 
 type TenantFormProps = {
   values: Partial<UserBaseInfo.Tenant>;
@@ -47,13 +43,13 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
     return (
       <>
         <ProFormText
-          name="tenantCode"
+          name='tenantCode'
           label={l('tenant.TenantCode')}
           placeholder={l('tenant.EnterTenantCode')}
           rules={[{ required: true, message: l('tenant.EnterTenantCode') }]}
         />
         <ProFormTextArea
-          name="note"
+          name='note'
           allowClear
           label={l('global.table.note')}
           placeholder={l('tenant.EnterTenantNote')}
@@ -65,13 +61,7 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <>
-      <ProForm
-        {...FORM_LAYOUT_PUBLIC}
-        form={form}
-        initialValues={values}
-        submitter={false}
-        layout={'horizontal'}
-      >
+      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} initialValues={values} submitter={false} layout={'horizontal'}>
         {tenantFormRender()}
       </ProForm>
     </>

@@ -20,14 +20,14 @@
 import { ShowLogIcon } from '@/components/Icons/CustomIcons';
 import ResultShow from '@/pages/Other/PersonCenter/OperationLogRecord/ResultShow';
 import { queryList } from '@/services/api';
-import {  PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { OperateLog } from '@/types/AuthCenter/data';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
 import { ProColumns } from '@ant-design/pro-table';
 import { Button } from 'antd';
 import React, { useState } from 'react';
-import {OperateLog} from "@/types/AuthCenter/data";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 type OperationLogRecordProps = {
   userId: number;
@@ -37,7 +37,7 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
 
   const [showResult, setShowResult] = useState({
     open: false,
-    data: '',
+    data: ''
   });
 
   const columns: ProColumns<OperateLog>[] = [
@@ -45,31 +45,31 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
       title: l('user.op.time'),
       dataIndex: 'operateTime',
       valueType: 'dateTime',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.name'),
       dataIndex: 'operateName',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.module'),
       dataIndex: 'moduleName',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('user.op.type'),
-      dataIndex: 'businessType',
+      dataIndex: 'businessType'
     },
     {
       title: l('user.op.method'),
       dataIndex: 'method',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('user.request.type'),
       dataIndex: 'requestMethod',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.params'),
@@ -81,13 +81,13 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
             onClick={() =>
               setShowResult({
                 open: true,
-                data: record.operateParam,
+                data: record.operateParam
               })
             }
           />
         );
       },
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.result'),
@@ -101,31 +101,31 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
             onClick={() =>
               setShowResult({
                 open: true,
-                data: record.jsonResult,
+                data: record.jsonResult
               })
             }
           />
         );
-      },
+      }
     },
     {
       title: l('user.op.url'),
       dataIndex: 'operateUrl',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.ip'),
       dataIndex: 'operateIp',
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.status'),
       dataIndex: 'status',
       valueEnum: {
         1: { text: l('global.error'), status: 'error' },
-        0: { text: l('global.success'), status: 'Success' },
+        0: { text: l('global.success'), status: 'Success' }
       },
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('user.op.error.msg'),
@@ -140,7 +140,7 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
                 onClick={() =>
                   setShowResult({
                     open: true,
-                    data: record.errorMsg,
+                    data: record.errorMsg
                   })
                 }
               />
@@ -149,15 +149,15 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
             )}
           </>
         );
-      },
-    },
+      }
+    }
   ];
 
   const handleCloseResult = () => {
     setShowResult((prevState) => ({
       ...prevState,
       open: false,
-      data: '',
+      data: ''
     }));
   };
 
@@ -173,13 +173,13 @@ const OperationLogRecord: React.FC<OperationLogRecordProps> = (props) => {
           position: ['bottomCenter'],
           pageSize: 18,
           hideOnSinglePage: true,
-          showQuickJumper: true,
+          showQuickJumper: true
         }}
         request={async (params, sorter, filter: any) =>
           await queryList(`${API_CONSTANTS.OPERATE_LOG}/${userId}`, {
             ...params,
             sorter,
-            filter,
+            filter
           })
         }
         columns={columns}

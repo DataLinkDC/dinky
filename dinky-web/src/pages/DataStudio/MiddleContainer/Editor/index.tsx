@@ -14,7 +14,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
   const {
     statement,
     tabs: { panes, activeKey },
-    dispatch,
+    dispatch
   } = props;
   const current = getCurrentData(panes, activeKey);
 
@@ -48,8 +48,8 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
             horizontal: 'visible',
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,
-            arrowSize: 30,
-          },
+            arrowSize: 30
+          }
         }}
         className={'editor-develop'}
         onMount={(editor: editor.IStandaloneCodeEditor) => {
@@ -57,13 +57,10 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           editor.focus();
 
           editor.onDidChangeCursorPosition((e) => {
-            props.footContainer.codePosition = [
-              e.position.lineNumber,
-              e.position.column,
-            ];
+            props.footContainer.codePosition = [e.position.lineNumber, e.position.column];
             dispatch({
               type: STUDIO_MODEL.saveFooterValue,
-              payload: { ...props.footContainer },
+              payload: { ...props.footContainer }
             });
           });
         }}
@@ -71,7 +68,7 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
           current.statement = v;
           dispatch({
             type: STUDIO_MODEL.saveTabs,
-            payload: { ...props.tabs },
+            payload: { ...props.tabs }
           });
         }}
         theme={'vs-dark'}
@@ -93,5 +90,5 @@ const CodeEditor: React.FC<EditorProps & any> = (props) => {
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
   tabs: Studio.tabs,
-  footContainer: Studio.footContainer,
+  footContainer: Studio.footContainer
 }))(CodeEditor);

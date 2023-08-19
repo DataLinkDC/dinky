@@ -22,7 +22,7 @@ const Scale = (props: any) => {
   const scale = useSpring({
     transform: 'scale(1)',
     from: { transform: 'scale(0)' },
-    config: { tension: 2000, friction: 300, duration: 500 },
+    config: { tension: 2000, friction: 300, duration: 500 }
   });
 
   return <animated.div style={scale}>{children}</animated.div>;

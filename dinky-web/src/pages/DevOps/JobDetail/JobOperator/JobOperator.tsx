@@ -1,18 +1,18 @@
 import { JOB_LIFE_CYCLE } from '@/pages/DevOps/constants';
 import { isStatusDone } from '@/pages/DevOps/function';
 import { JobProps } from '@/pages/DevOps/JobDetail/data';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { useRequest } from '@@/exports';
 import { EllipsisOutlined } from '@ant-design/icons';
 import { Button, Dropdown, message, Modal, Space } from 'antd';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const operatorType = {
   RESTART_JOB: 'restart',
   CANCEL_JOB: 'canceljob',
   SAVEPOINT_CANCEL: 'cancel',
   SAVEPOINT_TRIGGER: 'trigger',
-  SAVEPOINT_STOP: 'stop',
+  SAVEPOINT_STOP: 'stop'
 };
 const JobOperator = (props: JobProps) => {
   const { jobDetail } = props;
@@ -30,84 +30,71 @@ const JobOperator = (props: JobProps) => {
             url: API_CONSTANTS.CANCEL_JOB,
             params: {
               clusterId: jobDetail?.cluster?.id,
-              jobId: jobDetail?.instance?.jid,
-            },
+              jobId: jobDetail?.instance?.jid
+            }
           });
         } else if (key == operatorType.RESTART_JOB) {
           useRequest({
             url: API_CONSTANTS.RESTART_TASK,
             params: {
               id: jobDetail?.instance?.taskId,
-              isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE,
-            },
+              isOnLine: jobDetail?.instance?.step == JOB_LIFE_CYCLE.ONLINE
+            }
           });
         } else {
           useRequest({
             url: API_CONSTANTS.OFFLINE_TASK,
-            params: { id: jobDetail?.instance?.taskId, type: key },
+            params: { id: jobDetail?.instance?.taskId, type: key }
           });
         }
         message.success(l('devops.jobinfo.job.key.success', '', { key: key }));
-      },
+      }
     });
   };
 
   return (
     <Space>
-      <Button key="flinkwebui" href={webUri} target={'_blank'}>
+      <Button key='flinkwebui' href={webUri} target={'_blank'}>
         FlinkWebUI
       </Button>
 
-      <Button
-        key="autorestart"
-        type="primary"
-        onClick={() => handleJobOperator(operatorType.RESTART_JOB)}
-      >
-        {jobDetail?.instance?.step == 5
-          ? l('devops.jobinfo.reonline')
-          : l('devops.jobinfo.restart')}
+      <Button key='autorestart' type='primary' onClick={() => handleJobOperator(operatorType.RESTART_JOB)}>
+        {jobDetail?.instance?.step == 5 ? l('devops.jobinfo.reonline') : l('devops.jobinfo.restart')}
       </Button>
 
       {isStatusDone(jobDetail?.instance?.status as string) ? (
         <></>
       ) : (
         <>
-          <Button
-            key="autostop"
-            type="primary"
-            onClick={() => handleJobOperator(operatorType.SAVEPOINT_STOP)}
-            danger
-          >
-            {jobDetail?.instance?.step == 5
-              ? l('devops.jobinfo.offline')
-              : l('devops.jobinfo.smart_stop')}
+          <Button key='autostop' type='primary' onClick={() => handleJobOperator(operatorType.SAVEPOINT_STOP)} danger>
+            {jobDetail?.instance?.step == 5 ? l('devops.jobinfo.offline') : l('devops.jobinfo.smart_stop')}
           </Button>
           <Dropdown
-            key="dropdown"
+            key='dropdown'
             trigger={['click']}
             menu={{
               onClick: (e) => handleJobOperator(e.key as string),
               items: [
                 {
                   key: operatorType.SAVEPOINT_TRIGGER,
-                  label: l('devops.jobinfo.savepoint.trigger'),
+                  label: l('devops.jobinfo.savepoint.trigger')
                 },
                 {
                   key: operatorType.SAVEPOINT_STOP,
-                  label: l('devops.jobinfo.savepoint.stop'),
+                  label: l('devops.jobinfo.savepoint.stop')
                 },
                 {
                   key: operatorType.SAVEPOINT_CANCEL,
-                  label: l('devops.jobinfo.savepoint.cancel'),
+                  label: l('devops.jobinfo.savepoint.cancel')
                 },
                 {
                   key: operatorType.CANCEL_JOB,
-                  label: l('devops.jobinfo.savepoint.canceljob'),
-                },
-              ],
+                  label: l('devops.jobinfo.savepoint.canceljob')
+                }
+              ]
             }}
           >
-            <Button key="4" style={{ padding: '0 8px' }}>
+            <Button key='4' style={{ padding: '0 8px' }}>
               <EllipsisOutlined />
             </Button>
           </Dropdown>

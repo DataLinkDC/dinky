@@ -9,7 +9,7 @@ import {
   ScalaSvg,
   ShellSvg,
   XMLSvg,
-  YAMLSvg,
+  YAMLSvg
 } from '@/components/Icons/CodeLanguageIcon';
 import {
   ClickHouseIcons,
@@ -21,7 +21,7 @@ import {
   PostgresqlIcons,
   PrestoIcons,
   SqlServerIcons,
-  StarRocksIcons,
+  StarRocksIcons
 } from '@/components/Icons/DBIcons';
 import { DIALECT } from '@/services/constants';
 

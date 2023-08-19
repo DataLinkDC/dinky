@@ -19,11 +19,7 @@
 
 import { FormContextValue } from '@/components/Context/FormContext';
 import { Resource } from '@/pages/RegCenter/Resource/components/ResourceOverView';
-import {
-  ModalForm,
-  ProFormText,
-  ProFormTextArea,
-} from '@ant-design/pro-components';
+import { ModalForm, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
 import { Form } from 'antd';
 import React, { useEffect } from 'react';
 
@@ -45,21 +41,15 @@ const ResourceModal: React.FC<ResourceModalProps> = (props) => {
    */
   const formContext = React.useMemo<FormContextValue>(
     () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
     }),
-    [form],
+    [form]
   );
 
   /**
    * init props
    */
-  const {
-    title,
-    onOk: handleSubmit,
-    onClose: handleModalVisible,
-    visible,
-    formValues,
-  } = props;
+  const { title, onOk: handleSubmit, onClose: handleModalVisible, visible, formValues } = props;
 
   /**
    * when modalVisible or values changed, set form values
@@ -93,17 +83,8 @@ const ResourceModal: React.FC<ResourceModalProps> = (props) => {
         form={form}
         open={visible}
       >
-        <ProFormText
-          colProps={{ span: 24 }}
-          required
-          name="fileName"
-          label="名称"
-        />
-        <ProFormTextArea
-          colProps={{ span: 24 }}
-          name="description"
-          label="描述"
-        />
+        <ProFormText colProps={{ span: 24 }} required name='fileName' label='名称' />
+        <ProFormTextArea colProps={{ span: 24 }} name='description' label='描述' />
       </ModalForm>
     </>
   );

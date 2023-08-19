@@ -22,11 +22,7 @@ import { StateType } from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { SavePoint } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
-import {
-  ActionType,
-  ProDescriptions,
-  ProTable,
-} from '@ant-design/pro-components';
+import { ActionType, ProDescriptions, ProTable } from '@ant-design/pro-components';
 import { ProDescriptionsItemProps } from '@ant-design/pro-descriptions';
 import { Drawer } from 'antd';
 import { useRef, useState } from 'react';
@@ -36,7 +32,7 @@ const url = '/api/savepoints';
 
 const SavePoints = (props: any) => {
   const {
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const current = getCurrentData(panes, activeKey);
   const [row, setRow] = useState<SavePoint>();
@@ -48,7 +44,7 @@ const SavePoints = (props: any) => {
       title: l('pages.task.savePointPath'),
       dataIndex: 'path',
       hideInForm: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('global.table.createTime'),
@@ -58,18 +54,16 @@ const SavePoints = (props: any) => {
       hideInSearch: true,
       render: (dom, entity) => {
         return <a onClick={() => setRow(entity)}>{dom}</a>;
-      },
-    },
+      }
+    }
   ];
 
   return (
     <>
       <ProTable<SavePoint>
         actionRef={actionRef}
-        rowKey="id"
-        request={(params, sorter, filter) =>
-          postAll(url, { taskId: current.key, ...params, sorter, filter })
-        }
+        rowKey='id'
+        request={(params, sorter, filter) => postAll(url, { taskId: current.key, ...params, sorter, filter })}
         columns={columns}
         search={false}
       />
@@ -86,10 +80,10 @@ const SavePoints = (props: any) => {
             column={2}
             title={row?.name}
             request={async () => ({
-              data: row || {},
+              data: row || {}
             })}
             params={{
-              id: row?.name,
+              id: row?.name
             }}
             columns={columns}
           />
@@ -100,5 +94,5 @@ const SavePoints = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(SavePoints);

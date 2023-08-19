@@ -40,7 +40,7 @@ export const MetricsConfig = ({ data, onSave }: MetricsConfigProps) => {
       <ProCard
         title={l('sys.setting.metrics')}
         tooltip={l('sys.setting.metrics.tooltip')}
-        size="small"
+        size='small'
         headerBordered
         ghost
         collapsible

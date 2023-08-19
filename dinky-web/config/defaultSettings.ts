@@ -39,7 +39,7 @@ const Settings: ProLayoutProps & {
   iconfontUrl: '',
   splitMenus: true,
   menu: {
-    locale: true,
+    locale: true
   },
   token: {
     // bgLayout: '', //layout 的背景颜色
@@ -54,16 +54,16 @@ const Settings: ProLayoutProps & {
       colorTextMenuSelected: '#fff',
       colorBgMenuItemSelected: '#1e252a',
       colorTextMenuActive: 'rgba(255,255,255,0.85)',
-      colorTextRightActionsItem: '#dfdfdf',
+      colorTextRightActionsItem: '#dfdfdf'
     },
     sider: {
-      colorBgMenuItemSelected: '#3399FF',
+      colorBgMenuItemSelected: '#3399FF'
     },
     pageContainer: {
       paddingBlockPageContainerContent: 5,
-      paddingInlinePageContainerContent: 10,
-    },
-  },
+      paddingInlinePageContainerContent: 10
+    }
+  }
 };
 
 export default Settings;

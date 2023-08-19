@@ -36,25 +36,19 @@ const JobFinishedView: React.FC = () => {
     tooltip: {
       customContent: function (x: any, data: { data: { y: number } }[]) {
         return `NO.${x}: ${data[0]?.data?.y.toFixed(2)}`;
-      },
-    },
+      }
+    }
   };
 
   return (
     <StatisticCard
-      chartPlacement="right"
+      chartPlacement='right'
       statistic={{
         title: l('home.job.finished'),
         value: 123,
         suffix: l('global.bout'),
         formatter: (value) => <CountFormatter value={Number(value)} />,
-        description: (
-          <Statistic
-            title={l('home.job.running.dayonday')}
-            value="3.57 %"
-            trend="up"
-          />
-        ),
+        description: <Statistic title={l('home.job.running.dayonday')} value='3.57 %' trend='up' />
       }}
       chart={
         <div className={styles['tiny-charts']}>

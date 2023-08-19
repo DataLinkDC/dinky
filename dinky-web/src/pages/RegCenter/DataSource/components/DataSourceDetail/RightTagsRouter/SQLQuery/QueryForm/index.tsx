@@ -49,12 +49,12 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
     switch (tag) {
       case 'where':
         form.setFieldsValue({
-          where: `${(form.getFieldsValue().where || '') + value}`,
+          where: `${(form.getFieldsValue().where || '') + value}`
         });
         break;
       case 'order':
         form.setFieldsValue({
-          order: `${(form.getFieldsValue().order || '') + value}`,
+          order: `${(form.getFieldsValue().order || '') + value}`
         });
         break;
     }
@@ -69,26 +69,11 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
           options={autoCompleteColumns}
           onSelect={(value: string) => handleChange(value, 'where')}
         >
-          <ProFormText
-            addonBefore={'WHERE'}
-            width={'md'}
-            key="where"
-            name="where"
-            required
-          />
+          <ProFormText addonBefore={'WHERE'} width={'md'} key='where' name='where' required />
         </AutoComplete>
 
-        <AutoComplete
-          options={autoCompleteColumns}
-          onSelect={(value: string) => handleChange(value, 'order')}
-        >
-          <ProFormText
-            addonBefore={'ORDER BY'}
-            width={'md'}
-            key="order"
-            name="order"
-            required
-          />
+        <AutoComplete options={autoCompleteColumns} onSelect={(value: string) => handleChange(value, 'order')}>
+          <ProFormText addonBefore={'ORDER BY'} width={'md'} key='order' name='order' required />
         </AutoComplete>
       </>
     );
@@ -100,13 +85,13 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
   const submitConfig = {
     onSubmit: onSubmitHandle,
     searchConfig: {
-      submitText: l('button.search'),
+      submitText: l('button.search')
     },
     resetButtonProps: {
       style: {
-        display: 'none',
-      },
-    },
+        display: 'none'
+      }
+    }
   };
 
   /**

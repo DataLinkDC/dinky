@@ -24,7 +24,7 @@ export const VIEW = {
   leftMargin: 36,
   midMargin: 44,
   otherHeight: 1,
-  paddingInline: 50,
+  paddingInline: 50
 };
 
 export type SqlMetaData = {
@@ -104,11 +104,11 @@ export type DataStudioParams = {
 export enum TabsPageType {
   None = '',
   metadata = 'metadata',
-  project = 'project',
+  project = 'project'
 }
 
 export enum TabsPageSubType {
-  flinkSql = 'flinksql',
+  flinkSql = 'flinksql'
 }
 
 export type TabsItemType = {
@@ -288,38 +288,38 @@ const Model: ModelType = {
       selectKey: 'menu.datastudio.project',
       selectSubKey: {},
       height: '100%',
-      width: 260,
+      width: 260
     },
     rightContainer: {
       selectKey: '',
       selectSubKey: {},
       height: '100%',
-      width: 260,
+      width: 260
     },
     bottomContainer: {
       selectKey: 'menu.datastudio.console',
       selectSubKey: {},
       height: 180,
-      width: '100%',
+      width: '100%'
     },
     database: {
       dbData: [],
       selectDatabaseId: null,
       expandKeys: [],
-      selectKey: [],
+      selectKey: []
     },
     project: {
       data: [],
       expandKeys: [],
-      selectKey: [],
+      selectKey: []
     },
     tabs: {
       activeBreadcrumbTitle: '',
       activeKey: '0',
-      panes: [],
+      panes: []
     },
     bottomContainerContent: {
-      console: '',
+      console: ''
     },
     sessionCluster: [],
     clusterConfiguration: [],
@@ -335,18 +335,18 @@ const Model: ModelType = {
         taskId: null,
         jobName: '',
         jobState: '',
-        runningLog: '',
-      },
-    },
+        runningLog: ''
+      }
+    }
   },
   effects: {
     *queryProject({ payload }, { call, put }) {
       const response: [] = yield call(getTaskData, payload);
       yield put({
         type: 'saveProject',
-        payload: response,
+        payload: response
       });
-    },
+    }
   },
   reducers: {
     /**
@@ -358,7 +358,7 @@ const Model: ModelType = {
     updateToolContentHeight(state, { payload }) {
       return {
         ...state,
-        toolContentHeight: payload,
+        toolContentHeight: payload
       };
     },
     /**
@@ -370,7 +370,7 @@ const Model: ModelType = {
     updateCenterContentHeight(state, { payload }) {
       return {
         ...state,
-        centerContentHeight: payload,
+        centerContentHeight: payload
       };
     },
     /**
@@ -385,8 +385,8 @@ const Model: ModelType = {
         leftContainer: {
           ...state.leftContainer,
           selectKey: payload,
-          label: payload.trim() === '' ? '' : l(payload),
-        },
+          label: payload.trim() === '' ? '' : l(payload)
+        }
       };
     },
     /**
@@ -400,8 +400,8 @@ const Model: ModelType = {
         ...state,
         leftContainer: {
           ...state.leftContainer,
-          width: payload,
-        },
+          width: payload
+        }
       };
     },
     /**
@@ -415,8 +415,8 @@ const Model: ModelType = {
         ...state,
         rightContainer: {
           ...state.rightContainer,
-          selectKey: payload,
-        },
+          selectKey: payload
+        }
       };
     },
     /**
@@ -430,8 +430,8 @@ const Model: ModelType = {
         ...state,
         rightContainer: {
           ...state.rightContainer,
-          width: payload,
-        },
+          width: payload
+        }
       };
     },
     /**
@@ -444,22 +444,15 @@ const Model: ModelType = {
       let centerContentHeight = 0;
       let toolContentHeight = 0;
       if (payload === '') {
-        centerContentHeight =
-            state.centerContentHeight + (state.bottomContainer.height as number);
-        toolContentHeight =
-            state.toolContentHeight + (state.bottomContainer.height as number);
+        centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
+        toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
         console.log(2);
-      } else if (
-          state.bottomContainer.selectKey !== '' &&
-          payload !== state.bottomContainer.selectKey
-      ) {
+      } else if (state.bottomContainer.selectKey !== '' && payload !== state.bottomContainer.selectKey) {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
       } else {
-        centerContentHeight =
-            state.centerContentHeight - (state.bottomContainer.height as number);
-        toolContentHeight =
-            state.toolContentHeight - (state.bottomContainer.height as number);
+        centerContentHeight = state.centerContentHeight - (state.bottomContainer.height as number);
+        toolContentHeight = state.toolContentHeight - (state.bottomContainer.height as number);
         console.log(3);
       }
 
@@ -469,8 +462,8 @@ const Model: ModelType = {
         toolContentHeight: toolContentHeight,
         bottomContainer: {
           ...state.bottomContainer,
-          selectKey: payload,
-        },
+          selectKey: payload
+        }
       };
     },
     updateSelectBottomSubKey(state, { payload }) {
@@ -480,9 +473,9 @@ const Model: ModelType = {
           ...state.bottomContainer,
           selectSubKey: {
             ...state.bottomContainer.selectSubKey,
-            [state.bottomContainer.selectKey]: payload,
-          },
-        },
+            [state.bottomContainer.selectKey]: payload
+          }
+        }
       };
     },
     /**
@@ -496,8 +489,8 @@ const Model: ModelType = {
         ...state,
         bottomContainer: {
           ...state.bottomContainer,
-          height: payload,
-        },
+          height: payload
+        }
       };
     },
     /**
@@ -509,13 +502,13 @@ const Model: ModelType = {
     saveDataBase(state, { payload }) {
       return {
         ...state,
-        database: { ...state.database, dbData: payload },
+        database: { ...state.database, dbData: payload }
       };
     },
     saveProject(state, { payload }) {
       return {
         ...state,
-        project: { ...state.project, data: payload },
+        project: { ...state.project, data: payload }
       };
     },
     /**
@@ -534,28 +527,24 @@ const Model: ModelType = {
           tabs: {
             ...state.tabs,
             activeKey: payload,
-            activeBreadcrumbTitle: [
-              itemType.type,
-              itemType.breadcrumbLabel,
-              itemType.label,
-            ].join('/'),
+            activeBreadcrumbTitle: [itemType.type, itemType.breadcrumbLabel, itemType.label].join('/')
           },
           footContainer: {
             ...state.footContainer,
-            ...footerValue,
-          },
+            ...footerValue
+          }
         };
       }
       return {
         ...state,
         tabs: {
           ...state.tabs,
-          activeKey: payload,
+          activeKey: payload
         },
         rightContainer: {
           ...state.rightContainer,
-          selectKey: '',
-        },
+          selectKey: ''
+        }
       };
     },
     /**
@@ -567,7 +556,7 @@ const Model: ModelType = {
     removeTag(state, { payload }) {
       const needRemoveKey = payload;
       const {
-        tabs: { panes, activeKey },
+        tabs: { panes, activeKey }
       } = state;
 
       const index = panes.findIndex((item, index) => {
@@ -579,15 +568,14 @@ const Model: ModelType = {
       if (index !== -1) {
         panes.splice(index, 1);
       }
-      const newActiveKey =
-        activeKey === needRemoveKey ? panes[panes.length - 1].key : activeKey;
+      const newActiveKey = activeKey === needRemoveKey ? panes[panes.length - 1].key : activeKey;
       return {
         ...state,
         tabs: {
           ...state.tabs,
           panes: panes,
-          activeKey: newActiveKey,
-        },
+          activeKey: newActiveKey
+        }
       };
     },
 
@@ -600,7 +588,7 @@ const Model: ModelType = {
     closeTab(state, { payload }) {
       const needCloseKey = (payload as TargetKey).toString();
       const {
-        tabs: { panes, activeKey },
+        tabs: { panes, activeKey }
       } = state;
       // close self
       if (needCloseKey === activeKey) {
@@ -619,15 +607,12 @@ const Model: ModelType = {
               tabs: {
                 panes: newPanes,
                 activeKey: item.key,
-                activeBreadcrumbTitle:
-                  panes.length < 2
-                    ? ''
-                    : [item.type, item.breadcrumbLabel, item.label].join('/'),
+                activeBreadcrumbTitle: panes.length < 2 ? '' : [item.type, item.breadcrumbLabel, item.label].join('/')
               },
               footContainer: {
                 ...state.footContainer,
-                ...footerValue,
-              },
+                ...footerValue
+              }
             };
           }
         }
@@ -639,12 +624,12 @@ const Model: ModelType = {
         tabs: {
           panes: newPanes,
           activeKey: activeKey,
-          activeBreadcrumbTitle: state.tabs.activeBreadcrumbTitle,
+          activeBreadcrumbTitle: state.tabs.activeBreadcrumbTitle
         },
         footContainer: {
           ...state.footContainer,
-          ...footerValue,
-        },
+          ...footerValue
+        }
       };
     },
     /**
@@ -662,38 +647,32 @@ const Model: ModelType = {
             ...state,
             tabs: {
               ...state.tabs,
-              activeKey: item.key,
+              activeKey: item.key
             },
             footContainer: {
               ...state.footContainer,
-              ...footerValue,
-            },
+              ...footerValue
+            }
           };
         }
       }
       node.key =
         state.tabs.panes.length === 0
           ? '0'
-          : (
-              parseInt(state.tabs.panes[state.tabs.panes.length - 1].key) + 1
-            ).toString();
+          : (parseInt(state.tabs.panes[state.tabs.panes.length - 1].key) + 1).toString();
       const panes = [...state.tabs.panes, node];
       let footerValue: object = getFooterValue(panes, node.key);
       return {
         ...state,
         tabs: {
           panes: panes,
-          activeBreadcrumbTitle: [
-            node.type,
-            node.breadcrumbLabel,
-            node.label,
-          ].join('/'),
-          activeKey: node.key,
+          activeBreadcrumbTitle: [node.type, node.breadcrumbLabel, node.label].join('/'),
+          activeKey: node.key
         },
         footContainer: {
           ...state.footContainer,
-          ...footerValue,
-        },
+          ...footerValue
+        }
       };
     },
 
@@ -706,8 +685,8 @@ const Model: ModelType = {
         tabs: {
           panes: [],
           activeKey: '',
-          activeBreadcrumbTitle: '',
-        },
+          activeBreadcrumbTitle: ''
+        }
       };
     },
     /**
@@ -718,16 +697,14 @@ const Model: ModelType = {
      */
     closeOtherTabs(state, { payload }) {
       // 从 pans 中找到需要关闭的 tab
-      const tabsItem = state.tabs.panes.find(
-        (pane) => pane.key === payload.key,
-      );
+      const tabsItem = state.tabs.panes.find((pane) => pane.key === payload.key);
       return {
         ...state,
         tabs: {
           panes: tabsItem ? [tabsItem] : [],
           activeKey: tabsItem?.key || '',
-          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel || '',
-        },
+          activeBreadcrumbTitle: tabsItem?.breadcrumbLabel || ''
+        }
       };
     },
 
@@ -740,7 +717,7 @@ const Model: ModelType = {
     updateSelectDatabaseId(state, { payload }) {
       return {
         ...state,
-        database: { ...state.database, selectDatabaseId: payload },
+        database: { ...state.database, selectDatabaseId: payload }
       };
     },
 
@@ -753,7 +730,7 @@ const Model: ModelType = {
     updateDatabaseExpandKey(state, { payload }) {
       return {
         ...state,
-        database: { ...state.database, expandKeys: payload },
+        database: { ...state.database, expandKeys: payload }
       };
     },
     /**
@@ -765,7 +742,7 @@ const Model: ModelType = {
     updateDatabaseSelectKey(state, { payload }) {
       return {
         ...state,
-        database: { ...state.database, selectKeys: payload },
+        database: { ...state.database, selectKeys: payload }
       };
     },
     updateBottomConsole(state, { payload }) {
@@ -773,38 +750,38 @@ const Model: ModelType = {
         ...state,
         bottomContainerContent: {
           ...state.bottomContainerContent,
-          console: payload,
-        },
+          console: payload
+        }
       };
     },
     saveSession(state, { payload }) {
       return {
         ...state,
-        sessionCluster: payload,
+        sessionCluster: payload
       };
     },
     saveEnv(state, { payload }) {
       return {
         ...state,
-        env: payload,
+        env: payload
       };
     },
     saveTabs(state, { payload }) {
       return {
         ...state,
-        tabs: payload,
+        tabs: payload
       };
     },
     saveClusterConfiguration(state, { payload }) {
       return {
         ...state,
-        clusterConfiguration: payload,
+        clusterConfiguration: payload
       };
     },
     saveFooterValue(state, { payload }) {
       return {
         ...state,
-        footContainer: payload,
+        footContainer: payload
       };
     },
     updateJobRunningMsg(state, { payload }) {
@@ -812,11 +789,11 @@ const Model: ModelType = {
         ...state,
         footContainer: {
           ...state.footContainer,
-          jobRunningMsg: payload,
-        },
+          jobRunningMsg: payload
+        }
       };
-    },
-  },
+    }
+  }
 };
 
 export const [STUDIO_MODEL, STUDIO_MODEL_ASYNC] = createModelTypes(Model);

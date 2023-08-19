@@ -24,29 +24,16 @@ const BaseInfo = (props: any) => {
   const { user, tenant } = props;
   return (
     <>
-      <Avatar
-        style={{ alignSelf: 'center', marginBottom: 50 }}
-        draggable
-        size={200}
-        src={user.avatar}
-      />
+      <Avatar style={{ alignSelf: 'center', marginBottom: 50 }} draggable size={200} src={user.avatar} />
 
       <Divider orientation={'left'} plain>
         {l('user.info')}
       </Divider>
       <Descriptions size={'small'} column={2}>
-        <Descriptions.Item label={l('user.username')}>
-          {user.username}
-        </Descriptions.Item>
-        <Descriptions.Item label={l('user.nickname')}>
-          {user.nickname}
-        </Descriptions.Item>
-        <Descriptions.Item label={l('user.phone')}>
-          {user.mobile}
-        </Descriptions.Item>
-        <Descriptions.Item label={l('user.jobnumber')}>
-          {user.worknum}
-        </Descriptions.Item>
+        <Descriptions.Item label={l('user.username')}>{user.username}</Descriptions.Item>
+        <Descriptions.Item label={l('user.nickname')}>{user.nickname}</Descriptions.Item>
+        <Descriptions.Item label={l('user.phone')}>{user.mobile}</Descriptions.Item>
+        <Descriptions.Item label={l('user.jobnumber')}>{user.worknum}</Descriptions.Item>
         <Descriptions.Item label={l('user.current.tenant')}>
           <Tag color={'processing'}>{tenant?.tenantCode}</Tag>
         </Descriptions.Item>

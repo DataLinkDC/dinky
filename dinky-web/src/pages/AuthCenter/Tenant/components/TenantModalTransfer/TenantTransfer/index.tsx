@@ -18,13 +18,13 @@
 
 import TableTransfer from '@/components/TableTransfer';
 import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitTenantTransferState } from '@/types/AuthCenter/init.d';
+import { TenantTransferState } from '@/types/AuthCenter/state.d';
 import { l } from '@/utils/intl';
 import { ProColumns } from '@ant-design/pro-components';
 import React, { useEffect, useState } from 'react';
-import {UserBaseInfo} from "@/types/AuthCenter/data.d";
-import {TenantTransferState} from "@/types/AuthCenter/state.d";
-import {InitTenantTransferState} from "@/types/AuthCenter/init.d";
-import {API_CONSTANTS} from "@/services/endpoints";
 
 type TenantTransferFromProps = {
   tenant: Partial<UserBaseInfo.Tenant>;
@@ -36,37 +36,39 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
 
   const [tenantTransferState, setTenantTransferState] = useState<TenantTransferState>(InitTenantTransferState);
 
-  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[],) => {
+  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
     const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
-    setTenantTransferState(prevState => ({...prevState, selectedKeys: newSelectedKeys}))
+    setTenantTransferState((prevState) => ({ ...prevState, selectedKeys: newSelectedKeys }));
   };
 
   useEffect(() => {
-    getData(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, { id: tenant.id }).then(
-      result => {
-        setTenantTransferState(prevState => ({...prevState, userList: result.datas.users, targetKeys: result.datas.userIds}))
-        handleChange(result.datas.userIds);
-      },
-    );
+    getData(API_CONSTANTS.GET_USER_LIST_BY_TENANTID, { id: tenant.id }).then((result) => {
+      setTenantTransferState((prevState) => ({
+        ...prevState,
+        userList: result.datas.users,
+        targetKeys: result.datas.userIds
+      }));
+      handleChange(result.datas.userIds);
+    });
   }, []);
 
   const columns: ProColumns<UserBaseInfo.User>[] = [
     {
       title: l('user.username'),
-      dataIndex: 'username',
+      dataIndex: 'username'
     },
     {
       title: l('user.nickname'),
-      dataIndex: 'nickname',
+      dataIndex: 'nickname'
     },
     {
       title: l('user.jobnumber'),
-      dataIndex: 'worknum',
-    },
+      dataIndex: 'worknum'
+    }
   ];
 
   const onChange = (nextTargetKeys: string[]) => {
-    setTenantTransferState(prevState => ({...prevState, targetKeys: nextTargetKeys}))
+    setTenantTransferState((prevState) => ({ ...prevState, targetKeys: nextTargetKeys }));
     handleChange(nextTargetKeys);
   };
 
@@ -82,10 +84,8 @@ const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
         filterOption={(inputValue, item: UserBaseInfo.User) => {
           if (!item.username || !item.nickname || !item.worknum) return false;
           return (
-            item.username.toLowerCase().indexOf(inputValue.toLowerCase()) !==
-              -1 ||
-            item.nickname.toLowerCase().indexOf(inputValue.toLowerCase()) !==
-              -1 ||
+            item.username.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 ||
+            item.nickname.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 ||
             item.worknum.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
           );
         }}

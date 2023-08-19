@@ -23,36 +23,36 @@ export const DATE_RANGE_OPTIONS = (disable: boolean) => [
   {
     value: '60s',
     label: l('metrics.filter.60seconds'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: '5min',
     label: l('metrics.filter.5minutes'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: '10min',
     label: l('metrics.filter.10minutes'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: '1h',
     label: l('metrics.filter.1hour'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: '2h',
     label: l('metrics.filter.2hours'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: '5h',
     label: l('metrics.filter.5hours'),
-    disable: !disable,
+    disable: !disable
   },
   {
     value: 'custom',
     label: l('metrics.filter.custom'),
-    disable: disable,
-  },
+    disable: disable
+  }
 ];

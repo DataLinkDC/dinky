@@ -23,5 +23,5 @@ export default {
   'app.response.error': '错误',
   'app.response.exception': '服务端错误',
   'app.response.notlogin': '未登录',
-  'app.response.notexist': '你访问的页面/接口不存在',
+  'app.response.notexist': '你访问的页面/接口不存在'
 };

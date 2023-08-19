@@ -30,31 +30,22 @@ import {
   DOCUMENT_FUNCTION_ENUMS,
   DOCUMENT_FUNCTION_TYPE,
   DOCUMENT_SUBTYPE,
-  DOCUMENT_SUBTYPE_ENUMS,
+  DOCUMENT_SUBTYPE_ENUMS
 } from '@/pages/RegCenter/Document/constans';
 import { queryList } from '@/services/api';
-import {
-  handleAddOrUpdate,
-  handleRemoveById,
-  updateDataByParam,
-} from '@/services/BusinessCrud';
-import {
-  PROTABLE_OPTIONS_PUBLIC,
-  STATUS_ENUM,
-  STATUS_MAPPING,
-} from '@/services/constants';
+import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { Document } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import type { ActionType, ProColumns } from '@ant-design/pro-table';
 import ProTable from '@ant-design/pro-table';
 import TextArea from 'antd/es/input/TextArea';
 import React, { useRef, useState } from 'react';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const DocumentTableList: React.FC = () => {
   const [modalVisible, handleModalVisible] = useState<boolean>(false);
-  const [updateModalVisible, handleUpdateModalVisible] =
-    useState<boolean>(false);
+  const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
   const [formValues, setFormValues] = useState<Partial<Document>>({});
   const actionRef = useRef<ActionType>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -125,7 +116,7 @@ const DocumentTableList: React.FC = () => {
       width: '20vw',
       render: (dom, record) => {
         return <a onClick={() => handleOpenDrawer(record)}>{dom}</a>;
-      },
+      }
     },
     {
       title: l('rc.doc.category'),
@@ -133,7 +124,7 @@ const DocumentTableList: React.FC = () => {
       dataIndex: 'category',
       filterMultiple: false,
       filters: DOCUMENT_CATEGORY,
-      valueEnum: DOCUMENT_CATEGORY_ENUMS,
+      valueEnum: DOCUMENT_CATEGORY_ENUMS
     },
     {
       title: l('rc.doc.functionType'),
@@ -141,7 +132,7 @@ const DocumentTableList: React.FC = () => {
       dataIndex: 'type',
       filterMultiple: false,
       filters: DOCUMENT_FUNCTION_TYPE,
-      valueEnum: DOCUMENT_FUNCTION_ENUMS,
+      valueEnum: DOCUMENT_FUNCTION_ENUMS
     },
     {
       title: l('rc.doc.subFunctionType'),
@@ -149,7 +140,7 @@ const DocumentTableList: React.FC = () => {
       dataIndex: 'subtype',
       filters: DOCUMENT_SUBTYPE,
       filterMultiple: false,
-      valueEnum: DOCUMENT_SUBTYPE_ENUMS,
+      valueEnum: DOCUMENT_SUBTYPE_ENUMS
     },
     {
       title: l('rc.doc.description'),
@@ -158,7 +149,7 @@ const DocumentTableList: React.FC = () => {
       hideInTable: true,
       renderText: (text: string) => {
         return <TextArea value={text} autoSize readOnly />;
-      },
+      }
     },
     {
       title: l('rc.doc.fillValue'),
@@ -167,7 +158,7 @@ const DocumentTableList: React.FC = () => {
       hideInSearch: true,
       render: (_, record) => {
         return <CodeShow width={'85vh'} code={record.fillValue} />;
-      },
+      }
     },
     {
       title: l('rc.doc.version'),
@@ -175,7 +166,7 @@ const DocumentTableList: React.FC = () => {
       dataIndex: 'version',
       hideInForm: false,
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.isEnable'),
@@ -193,7 +184,7 @@ const DocumentTableList: React.FC = () => {
             onChange={() => handleChangeEnable(record)}
           />
         );
-      },
+      }
     },
     {
       title: l('global.table.createTime'),
@@ -201,7 +192,7 @@ const DocumentTableList: React.FC = () => {
       sorter: true,
       hideInTable: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.lastUpdateTime'),
@@ -209,24 +200,21 @@ const DocumentTableList: React.FC = () => {
       sorter: true,
       hideInTable: true,
       hideInSearch: true,
-      valueType: 'dateTime',
+      valueType: 'dateTime'
     },
     {
       title: l('global.table.operate'),
       valueType: 'option',
       width: '10vh',
       render: (_, record) => [
-        <EditBtn
-          key={`${record.id}_edit`}
-          onClick={() => handleClickEdit(record)}
-        />,
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleClickEdit(record)} />,
         <PopconfirmDeleteBtn
           key={`${record.id}_delete`}
           onClick={() => handleDeleteSubmit(record.id)}
           description={l('rc.doc.deleteConfirm')}
-        />,
-      ],
-    },
+        />
+      ]
+    }
   ];
 
   return (
@@ -237,15 +225,8 @@ const DocumentTableList: React.FC = () => {
         loading={loading}
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
-        toolBarRender={() => [
-          <CreateBtn
-            key={'doctable'}
-            onClick={() => handleModalVisible(true)}
-          />,
-        ]}
-        request={(params, sorter, filter: any) =>
-          queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })
-        }
+        toolBarRender={() => [<CreateBtn key={'doctable'} onClick={() => handleModalVisible(true)} />]}
+        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })}
         columns={columns}
       />
       {/*ADDED*/}

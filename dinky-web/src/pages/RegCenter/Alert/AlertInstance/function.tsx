@@ -22,7 +22,7 @@ import {
   EmailSvg,
   FeiShuSvg,
   SmsSvg,
-  WeChatSvg,
+  WeChatSvg
 } from '@/components/Icons/AlertIcon';
 import { MANU_FACTURERS } from '@/pages/RegCenter/Alert/AlertInstance/constans';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
@@ -44,10 +44,7 @@ export const getJSONData = (values: Partial<Alert.AlertInstance>) => {
  * @param values
  * @param params
  */
-export const buildJSONData = (
-  values: Partial<Alert.AlertInstance>,
-  params: any,
-) => {
+export const buildJSONData = (values: Partial<Alert.AlertInstance>, params: any) => {
   let newValue = values;
   if (params.name) {
     newValue.name = params.name;

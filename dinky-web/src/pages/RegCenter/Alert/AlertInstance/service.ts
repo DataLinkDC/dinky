@@ -20,26 +20,16 @@ import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import {
-  ErrorMessage,
-  LoadingMessageAsync,
-  SuccessMessage,
-  WarningMessage,
-} from '@/utils/messages';
+import { ErrorMessage, LoadingMessageAsync, SuccessMessage, WarningMessage } from '@/utils/messages';
 
-export async function createOrModifyAlertInstance(
-  alertInstance: Alert.AlertInstance,
-) {
+export async function createOrModifyAlertInstance(alertInstance: Alert.AlertInstance) {
   return handleAddOrUpdate('/api/alertInstance', alertInstance);
 }
 
 export async function sendTest(alertInstance: Alert.AlertInstance) {
   await LoadingMessageAsync(l('app.request.test.alert.msg'));
   try {
-    const { code, msg } = await postAll(
-      '/api/alertInstance/sendTest',
-      alertInstance,
-    );
+    const { code, msg } = await postAll('/api/alertInstance/sendTest', alertInstance);
     if (code === RESPONSE_CODE.SUCCESS) {
       SuccessMessage(msg);
       return true;

@@ -48,8 +48,8 @@ export const buildSchemaTree = (data: any, searchValue = ''): any =>
             path: item.name + folderSeparator() + table.name,
             title: searchTreeNode(table.name, searchValue),
             key: item.name + folderSeparator() + table.name,
-            fullInfo: table,
+            fullInfo: table
           };
-        }),
+        })
     };
   });

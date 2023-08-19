@@ -54,7 +54,6 @@ declare namespace API {
     /** 业务上的请求是否成功 */
     success?: boolean;
   };
-
 }
 
 declare namespace PublicParams {

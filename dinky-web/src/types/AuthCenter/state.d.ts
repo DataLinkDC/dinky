@@ -17,111 +17,109 @@
  *
  */
 
-import {RowPermissions, SysMenu, UserBaseInfo} from "@/types/AuthCenter/data.d";
-import {Key} from "@ant-design/pro-components";
-import {ContextMenuPosition} from "@/types/Public/state";
-
+import { RowPermissions, SysMenu, UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { ContextMenuPosition } from '@/types/Public/state';
+import { Key } from '@ant-design/pro-components';
 
 /**
  * meuTree点击节点 单击和右击
  */
 export type MenuTreeClickNode = {
-    oneClickedNode: any;
-    rightClickedNode: any;
-}
-
+  oneClickedNode: any;
+  rightClickedNode: any;
+};
 
 /**
  * 菜单管理 的state
  */
 export type MenuState = {
-    sysMenuValue: Partial<SysMenu>;
-    contextMenuPosition: ContextMenuPosition;
-    selectedKeys: string[] | number[];
-    clickNode: MenuTreeClickNode;
-    menuTreeData: SysMenu[];
-    addedMenuOpen: boolean;
-    editMenuOpen: boolean;
-    loading: boolean;
-    contextMenuOpen: boolean;
-    isEditDisabled: boolean;
-    isRootMenu: boolean;
-}
+  sysMenuValue: Partial<SysMenu>;
+  contextMenuPosition: ContextMenuPosition;
+  selectedKeys: string[] | number[];
+  clickNode: MenuTreeClickNode;
+  menuTreeData: SysMenu[];
+  addedMenuOpen: boolean;
+  editMenuOpen: boolean;
+  loading: boolean;
+  contextMenuOpen: boolean;
+  isEditDisabled: boolean;
+  isRootMenu: boolean;
+};
 
 /**
  * 给角色分配菜单 的state
  */
 export type RoleAssignMenuState = {
-    loading: boolean;
-    searchValue: string;
-    selectValue: Key[];
-    menuTreeData: {
-        menus: SysMenu[];
-        selectedMenuIds: number[];
-    };
-}
+  loading: boolean;
+  searchValue: string;
+  selectValue: Key[];
+  menuTreeData: {
+    menus: SysMenu[];
+    selectedMenuIds: number[];
+  };
+};
 
 /**
  * 角色管理 的state
  */
 export type RoleListState = {
-    loading: boolean;
-    value: Partial<UserBaseInfo.Role>;
-    addedRoleOpen: boolean;
-    editRoleOpen: boolean;
-    assignMenuOpen: boolean;
-    viewUsersOpen: boolean;
-    roleUserList: UserBaseInfo.User[];
-}
+  loading: boolean;
+  value: Partial<UserBaseInfo.Role>;
+  addedRoleOpen: boolean;
+  editRoleOpen: boolean;
+  assignMenuOpen: boolean;
+  viewUsersOpen: boolean;
+  roleUserList: UserBaseInfo.User[];
+};
 
 /**
  * 角色行权限 的state
  */
 export type RowPermissionsState = {
-    loading: boolean;
-    value: Partial<RowPermissions>;
-    addedRowPermissionsOpen: boolean;
-    editRowPermissionsOpen: boolean;
-}
+  loading: boolean;
+  value: Partial<RowPermissions>;
+  addedRowPermissionsOpen: boolean;
+  editRowPermissionsOpen: boolean;
+};
 
 /**
  * 租户分配用户 的state
  */
 export type TenantTransferState = {
-    targetKeys: string[];
-    selectedKeys: string[];
-    userList: UserBaseInfo.User[];
-}
+  targetKeys: string[];
+  selectedKeys: string[];
+  userList: UserBaseInfo.User[];
+};
 
 /**
  * 租户管理 的state
  */
-export type TenantListState ={
-    loading: boolean;
-    value: Partial<UserBaseInfo.Tenant>;
-    assignUserOpen: boolean;
-    addedTenantOpen: boolean;
-    editTenantOpen: boolean;
-    viewUsersOpen: boolean;
-    tenantUserList: UserBaseInfo.User[];
-    tenantUserIds: string[];
-}
+export type TenantListState = {
+  loading: boolean;
+  value: Partial<UserBaseInfo.Tenant>;
+  assignUserOpen: boolean;
+  addedTenantOpen: boolean;
+  editTenantOpen: boolean;
+  viewUsersOpen: boolean;
+  tenantUserList: UserBaseInfo.User[];
+  tenantUserIds: string[];
+};
 
 /**
  * 给用户分配角色 的state
  */
 export type RoleTransferState = {
-    targetKeys: string[];
-    selectedKeys: string[];
-    roleList: UserBaseInfo.Role[];
-}
+  targetKeys: string[];
+  selectedKeys: string[];
+  roleList: UserBaseInfo.Role[];
+};
 
 export type UserListState = {
-    loading: boolean;
-    value: Partial<UserBaseInfo.User>;
-    addedUserOpen: boolean;
-    editUserOpen: boolean;
-    assignRoleOpen: boolean;
-    roleIds: string[];
-    editPasswordOpen: boolean;
-}
+  loading: boolean;
+  value: Partial<UserBaseInfo.User>;
+  addedUserOpen: boolean;
+  editUserOpen: boolean;
+  assignRoleOpen: boolean;
+  roleIds: string[];
+  editPasswordOpen: boolean;
+};

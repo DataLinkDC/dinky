@@ -16,21 +16,17 @@
  */
 
 import { handleOption } from '@/services/BusinessCrud';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { LoginOutlined } from '@ant-design/icons';
 import { ModalForm, ProFormText } from '@ant-design/pro-components';
 import { Form, Tag } from 'antd';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 export const TestLogin = () => {
   const [form] = Form.useForm();
 
   const testLogin = async (value: any) => {
-    await handleOption(
-      API_CONSTANTS.LDAP_TEST_LOGIN,
-      l('sys.ldap.settings.testLogin'),
-      value,
-    );
+    await handleOption(API_CONSTANTS.LDAP_TEST_LOGIN, l('sys.ldap.settings.testLogin'), value);
   };
 
   return (
@@ -41,13 +37,13 @@ export const TestLogin = () => {
         form={form}
         modalProps={{ onCancel: () => form.resetFields() }}
         trigger={
-          <Tag icon={<LoginOutlined />} color="#108ee9">
+          <Tag icon={<LoginOutlined />} color='#108ee9'>
             {l('sys.ldap.settings.testLogin')}
           </Tag>
         }
       >
-        <ProFormText name="username" label={l('login.username.placeholder')} />
-        <ProFormText name="password" label={l('login.password.placeholder')} />
+        <ProFormText name='username' label={l('login.username.placeholder')} />
+        <ProFormText name='password' label={l('login.password.placeholder')} />
       </ModalForm>
     </>
   );

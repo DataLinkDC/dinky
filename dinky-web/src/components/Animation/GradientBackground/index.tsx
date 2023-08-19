@@ -25,7 +25,7 @@ const GradientBackground = (props: any) => {
   const style = useSpring({
     from: { background: 'linear-gradient(45deg, #ff0000, #00ff00)' },
     to: { background: 'linear-gradient(45deg, #00ff00, #0000ff)' },
-    config: { duration: 2000 },
+    config: { duration: 2000 }
   });
 
   return <animated.div style={style}>{children}</animated.div>;

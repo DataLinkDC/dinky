@@ -17,26 +17,16 @@
  *
  */
 
-import {
-  ChartData,
-  JobMetrics,
-  MetricsLayout,
-  SubTask,
-  Task,
-} from '@/pages/Metrics/Job/data';
-import {
-  buildMetricsList,
-  buildRunningJobList,
-  buildSubTaskList,
-} from '@/pages/Metrics/Job/function';
+import { ChartData, JobMetrics, MetricsLayout, SubTask, Task } from '@/pages/Metrics/Job/data';
+import { buildMetricsList, buildRunningJobList, buildSubTaskList } from '@/pages/Metrics/Job/function';
 import { getFlinkRunTask, saveFlinkMetrics } from '@/pages/Metrics/Job/service';
 import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { ProCard, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Input, Row } from 'antd';
 import { useEffect, useState } from 'react';
 import FlinkChart from './FlinkChart';
-import {API_CONSTANTS} from "@/services/endpoints";
 
 const getJobMetrics = async (job: JobMetrics) => {
   const url =
@@ -61,7 +51,7 @@ const Job = () => {
     flinkName: '',
     selectTaskId: 0,
     selectSubTask: '',
-    selectMetrics: [] as string[],
+    selectMetrics: [] as string[]
   });
 
   const [subTaskList, setSubTaskList] = useState<SubTask[]>([]);
@@ -100,9 +90,7 @@ const Job = () => {
    * @returns {Promise<[]>}
    */
   const getFlinkJobSubTask = async (url: string, jid: string) => {
-    const flinkJobVertices = await getData(
-      API_CONSTANTS.FLINK_PROXY + '/' + url + '/jobs/' + jid,
-    );
+    const flinkJobVertices = await getData(API_CONSTANTS.FLINK_PROXY + '/' + url + '/jobs/' + jid);
     return flinkJobVertices.vertices as SubTask[];
   };
 
@@ -113,20 +101,9 @@ const Job = () => {
    * @param subTask
    * @returns {Promise<string[]>}
    */
-  const getFlinkJobMetrics = async (
-    url: string,
-    jid: string,
-    subTask: string,
-  ) => {
+  const getFlinkJobMetrics = async (url: string, jid: string, subTask: string) => {
     const flinkJobMetrics = await getData(
-      API_CONSTANTS.FLINK_PROXY +
-        '/' +
-        url +
-        '/jobs/' +
-        jid +
-        '/vertices/' +
-        subTask +
-        '/metrics',
+      API_CONSTANTS.FLINK_PROXY + '/' + url + '/jobs/' + jid + '/vertices/' + subTask + '/metrics'
     );
     return (flinkJobMetrics as any[]).map((x) => x.id as string);
   };
@@ -142,14 +119,14 @@ const Job = () => {
     // 解构出 flink job url , job name , job id
     const {
       cluster: { hosts: url },
-      instance: { name: flinkJobName, jid: flinkJobId },
+      instance: { name: flinkJobName, jid: flinkJobId }
     } = taskDetail.datas;
     setMetricsData((prevState) => ({
       ...prevState,
       url: url,
       flinkName: flinkJobName,
       jid: flinkJobId,
-      selectTaskId: taskId,
+      selectTaskId: taskId
     }));
     const subTasks = await getFlinkJobSubTask(url, flinkJobId);
     setSubTaskList(subTasks);
@@ -163,13 +140,9 @@ const Job = () => {
   const handleSubTaskChange = async (subTaskName: string) => {
     setMetricsData((prevState) => ({
       ...prevState,
-      selectSubTask: subTaskName,
+      selectSubTask: subTaskName
     }));
-    const jobMetricsDataList = await getFlinkJobMetrics(
-      metricsData.url,
-      metricsData.jid,
-      subTaskName,
-    );
+    const jobMetricsDataList = await getFlinkJobMetrics(metricsData.url, metricsData.jid, subTaskName);
     setMetrics(jobMetricsDataList.sort());
   };
 
@@ -181,7 +154,7 @@ const Job = () => {
   const handleMetricsChange = async (selectList: string[]) => {
     setMetricsData((prevState) => ({
       ...prevState,
-      selectMetrics: selectList,
+      selectMetrics: selectList
     }));
 
     const d: JobMetrics[] = selectList.map((item) => {
@@ -195,7 +168,7 @@ const Job = () => {
         layoutName: layoutName,
         title: item,
         showSize: '25%',
-        showType: 'Chart',
+        showType: 'Chart'
       };
     });
     d.map((j) => {
@@ -249,30 +222,28 @@ const Job = () => {
         gutter={[0, 8]}
         title={
           <Input
-            placeholder="Flink Job Metrics"
+            placeholder='Flink Job Metrics'
             onChange={(e) => setLayoutName(e.target.value)}
             style={{ width: '100vh' }}
           />
         }
         extra={
           <Button
-            size="small"
+            size='small'
             onClick={(e) => {
               const saveThisLayout = () => {
-                const metricsLayouts: MetricsLayout[] = jobMetricsList.map(
-                  (job, index) => {
-                    return {
-                      layoutName: layoutName,
-                      position: index,
-                      metrics: job.metrics,
-                      showSize: job.showSize,
-                      showType: job.showType,
-                      taskId: job.taskId,
-                      vertices: job.subTaskId,
-                      title: job.metrics,
-                    } as MetricsLayout;
-                  },
-                );
+                const metricsLayouts: MetricsLayout[] = jobMetricsList.map((job, index) => {
+                  return {
+                    layoutName: layoutName,
+                    position: index,
+                    metrics: job.metrics,
+                    showSize: job.showSize,
+                    showType: job.showType,
+                    taskId: job.taskId,
+                    vertices: job.subTaskId,
+                    title: job.metrics
+                  } as MetricsLayout;
+                });
                 saveFlinkMetrics(metricsLayouts).then((res) => {
                   if (res.success) {
                     setSubTaskList([]);
@@ -289,7 +260,7 @@ const Job = () => {
         }
       >
         <ProFormSelect
-          name="job"
+          name='job'
           label={l('metrics.flink.job.name')}
           placeholder={l('metrics.flink.job.placeholder')}
           options={buildRunningJobList(taskData)}
@@ -297,7 +268,7 @@ const Job = () => {
         />
         {metricsData.selectTaskId !== 0 && (
           <ProFormSelect
-            name="vertices"
+            name='vertices'
             label={l('metrics.flink.subTask')}
             placeholder={l('metrics.flink.subTask.placeholder')}
             options={buildSubTaskList(subTaskList)}
@@ -306,11 +277,11 @@ const Job = () => {
         )}
         {metricsData.selectSubTask !== '' && (
           <ProFormSelect
-            name="metrics"
+            name='metrics'
             label={l('metrics.flink.metrics.name')}
             placeholder={l('metrics.flink.metrics.placeholder')}
             options={buildMetricsList(metrics)}
-            mode="multiple"
+            mode='multiple'
             fieldProps={{ onChange: (value) => handleMetricsChange(value) }}
           />
         )}

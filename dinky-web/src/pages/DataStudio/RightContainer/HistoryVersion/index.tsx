@@ -40,14 +40,13 @@ export type TaskHistoryTableListItem = {
 
 const HistoryVersion = (props: any) => {
   const {
-    tabs: { panes, activeKey },
+    tabs: { panes, activeKey }
   } = props;
   const current = getCurrentData(panes, activeKey);
   const actionRef = useRef<ActionType>();
 
   const [versionDiffVisible, setVersionDiffVisible] = useState<boolean>(false);
-  const [versionDiffRow, setVersionDiffRow] =
-    useState<TaskHistoryTableListItem>();
+  const [versionDiffRow, setVersionDiffRow] = useState<TaskHistoryTableListItem>();
   actionRef.current?.reloadAndRest?.();
 
   const cancelHandle = () => {
@@ -57,14 +56,12 @@ const HistoryVersion = (props: any) => {
   const VersionDiffForm = () => {
     let leftTitle = l('pages.datastudio.label.version.leftTitle', '', {
       versionId: versionDiffRow?.versionId,
-      createTime: moment(versionDiffRow?.createTime).format(
-        'YYYY-MM-DD HH:mm:ss',
-      ),
+      createTime: moment(versionDiffRow?.createTime).format('YYYY-MM-DD HH:mm:ss')
     });
 
     let rightTitle = l('pages.datastudio.label.version.rightTitle', '', {
       createTime: moment(current?.createTime).format('YYYY-MM-DD HH:mm:ss'),
-      updateTime: moment(current?.updateTime).format('YYYY-MM-DD HH:mm:ss'),
+      updateTime: moment(current?.updateTime).format('YYYY-MM-DD HH:mm:ss')
     });
     let originalValue = versionDiffRow?.statement;
     let currentValue = current?.statement;
@@ -82,26 +79,26 @@ const HistoryVersion = (props: any) => {
           }}
           footer={[
             <Button
-              key="back"
+              key='back'
               onClick={() => {
                 cancelHandle();
               }}
             >
               {l('button.close')}
-            </Button>,
+            </Button>
           ]}
         >
           <div
             style={{
               display: 'flex',
               flexDirection: 'row',
-              justifyContent: 'space-between',
+              justifyContent: 'space-between'
             }}
           >
-            <Tag color="green" style={{ height: '20px' }}>
+            <Tag color='green' style={{ height: '20px' }}>
               <RocketOutlined /> {leftTitle}
             </Tag>
-            <Tag color="blue" style={{ height: '20px' }}>
+            <Tag color='blue' style={{ height: '20px' }}>
               <SyncOutlined spin /> {rightTitle}
             </Tag>
           </div>
@@ -114,7 +111,7 @@ const HistoryVersion = (props: any) => {
                 selectOnLineNumbers: true,
                 lineDecorationsWidth: 20,
                 mouseWheelZoom: true,
-                automaticLayout: true,
+                automaticLayout: true
               }}
               language={'sql'}
               theme={'vs-dark'}
@@ -130,25 +127,21 @@ const HistoryVersion = (props: any) => {
   const onRollBackVersion = async (row: TaskHistoryTableListItem) => {
     Modal.confirm({
       title: l('pages.datastudio.label.version.rollback.flinksql'),
-      content: l(
-        'pages.datastudio.label.version.rollback.flinksqlConfirm',
-        '',
-        { versionId: row.versionId },
-      ),
+      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', { versionId: row.versionId }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
         const TaskHistoryRollbackItem = {
           id: current.key,
-          versionId: row.versionId,
+          versionId: row.versionId
         };
         await handleOption(
           'api/task/rollbackTask',
           l('pages.datastudio.label.version.rollback.flinksql'),
-          TaskHistoryRollbackItem,
+          TaskHistoryRollbackItem
         );
         actionRef.current?.reloadAndRest?.();
-      },
+      }
     });
   };
 
@@ -157,7 +150,7 @@ const HistoryVersion = (props: any) => {
       title: l('pages.datastudio.label.version.id'),
       dataIndex: 'versionId',
       hideInForm: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       sorter: true,
@@ -165,7 +158,7 @@ const HistoryVersion = (props: any) => {
       dataIndex: 'createTime',
       valueType: 'dateTime',
       hideInForm: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       align: 'center',
@@ -173,11 +166,11 @@ const HistoryVersion = (props: any) => {
       valueType: 'option',
       render: (text, record) => (
         <>
-          <Button type="link" onClick={async () => onRollBackVersion(record)}>
+          <Button type='link' onClick={async () => onRollBackVersion(record)}>
             {l('pages.datastudio.label.version.rollback')}
           </Button>
           <Button
-            type="link"
+            type='link'
             title={l('pages.datastudio.label.version.diff.tip')}
             onClick={() => {
               setVersionDiffRow(record);
@@ -187,18 +180,16 @@ const HistoryVersion = (props: any) => {
             {l('pages.datastudio.label.version.diff')}
           </Button>
         </>
-      ),
-    },
+      )
+    }
   ];
 
   return (
     <>
       <ProTable<TaskHistoryTableListItem>
         actionRef={actionRef}
-        rowKey="id"
-        request={(params, sorter, filter) =>
-          postAll(url, { taskId: current.key, ...params, sorter, filter })
-        }
+        rowKey='id'
+        request={(params, sorter, filter) => postAll(url, { taskId: current.key, ...params, sorter, filter })}
         columns={columns}
         search={false}
       />
@@ -208,5 +199,5 @@ const HistoryVersion = (props: any) => {
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({
-  tabs: Studio.tabs,
+  tabs: Studio.tabs
 }))(HistoryVersion);
