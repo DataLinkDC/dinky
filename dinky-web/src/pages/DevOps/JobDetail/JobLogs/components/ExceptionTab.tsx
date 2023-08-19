@@ -45,7 +45,7 @@ const ExceptionTab = (props: JobProps) => {
   });
 
   const renderLogTab = () => {
-    var logs = [];
+    let logs = [];
     const rte = jobDetail?.jobHistory?.exceptions['root-exception'];
     logs.push({
       taskName: 'RootException',
