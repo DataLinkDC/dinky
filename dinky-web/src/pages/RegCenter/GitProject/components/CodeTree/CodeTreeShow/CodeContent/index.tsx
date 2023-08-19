@@ -59,7 +59,9 @@ export const CodeContent: React.FC<CodeContentProps> = (props) => {
    */
   const render = () => {
     if (unSupportView(current.name)) {
-      return <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />;
+      return (
+        <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />
+      );
     } else if (code === '' || code === null) {
       return <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.clickShow')} />;
     } else {

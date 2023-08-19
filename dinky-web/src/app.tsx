@@ -131,7 +131,8 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     siderWidth: 180,
     waterMarkProps: {
       content: initialState?.currentUser?.user.username + ' ' + new Date().toLocaleString(),
-      fontColor: theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
+      fontColor:
+        theme === THEME.light || undefined ? 'rgba(0, 0, 0, 0.15)' : 'rgba(255, 255, 255, 0.15)'
     },
     isChildrenLayout: true,
     onPageChange: () => {
@@ -146,7 +147,11 @@ export const layout: RunTimeLayoutConfig = ({ initialState }) => {
     // 增加一个 loading 的状态
     childrenRender: (children) => {
       if (initialState?.loading) return <PageLoading />;
-      return <AccessContextProvider currentUser={initialState?.currentUser}>{children}</AccessContextProvider>;
+      return (
+        <AccessContextProvider currentUser={initialState?.currentUser}>
+          {children}
+        </AccessContextProvider>
+      );
     },
     ...initialState?.settings
   };

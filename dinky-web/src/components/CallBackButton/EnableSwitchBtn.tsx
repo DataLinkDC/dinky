@@ -31,7 +31,12 @@ export const EnableSwitchBtn: React.FC<EnableSwitchProps> = (props) => {
   return (
     <>
       <Space className={'hidden-overflow'}>
-        <Switch {...SWITCH_OPTIONS()} checked={record.enabled} disabled={disabled} onChange={() => onChange()} />
+        <Switch
+          {...SWITCH_OPTIONS()}
+          checked={record.enabled}
+          disabled={disabled}
+          onChange={() => onChange()}
+        />
       </Space>
     </>
   );

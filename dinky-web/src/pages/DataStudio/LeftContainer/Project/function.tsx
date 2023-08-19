@@ -36,7 +36,11 @@ export const getParentKey = (key: number | string, tree: any): any => {
  * @returns {any}
  */
 
-export const buildProjectTree = (data: Catalogue[], searchValue: string = '', path?: string[]): any =>
+export const buildProjectTree = (
+  data: Catalogue[],
+  searchValue: string = '',
+  path?: string[]
+): any =>
   data.map((item: Catalogue) => {
     const currentPath = path ? [...path, item.name] : [item.name];
     return {

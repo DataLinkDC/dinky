@@ -127,7 +127,9 @@ const HistoryVersion = (props: any) => {
   const onRollBackVersion = async (row: TaskHistoryTableListItem) => {
     Modal.confirm({
       title: l('pages.datastudio.label.version.rollback.flinksql'),
-      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', { versionId: row.versionId }),
+      content: l('pages.datastudio.label.version.rollback.flinksqlConfirm', '', {
+        versionId: row.versionId
+      }),
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
@@ -189,7 +191,9 @@ const HistoryVersion = (props: any) => {
       <ProTable<TaskHistoryTableListItem>
         actionRef={actionRef}
         rowKey='id'
-        request={(params, sorter, filter) => postAll(url, { taskId: current.key, ...params, sorter, filter })}
+        request={(params, sorter, filter) =>
+          postAll(url, { taskId: current.key, ...params, sorter, filter })
+        }
         columns={columns}
         search={false}
       />

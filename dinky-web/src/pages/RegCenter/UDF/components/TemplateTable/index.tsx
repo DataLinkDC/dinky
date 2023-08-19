@@ -114,7 +114,9 @@ const TemplateTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id));
+    await executeAndCallback(
+      async () => await handleRemoveById(API_CONSTANTS.UDF_TEMPLATE_DELETE, id)
+    );
   };
 
   /**
@@ -214,8 +216,12 @@ const TemplateTable: React.FC = () => {
         loading={loading}
         actionRef={actionRef}
         headerTitle={l('rc.udf.management')}
-        toolBarRender={() => [<CreateBtn key={'template'} onClick={() => handleModalVisible(true)} />]}
-        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })}
+        toolBarRender={() => [
+          <CreateBtn key={'template'} onClick={() => handleModalVisible(true)} />
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.UDF_TEMPLATE, { ...params, sorter, filter })
+        }
         columns={columns}
       />
       {/* added */}

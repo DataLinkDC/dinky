@@ -83,7 +83,11 @@ export const AutoSteps: React.FC<BuildStepsProps> = (props) => {
         {
           // if resultType is 1, data is log, else data is jar list or class list
           !showList ? (
-            <CodeShow code={log || ''} options={{ scrollBeyondLastLine: true }} {...CodeShowProps} />
+            <CodeShow
+              code={log || ''}
+              options={{ scrollBeyondLastLine: true }}
+              {...CodeShowProps}
+            />
           ) : (
             <JarShow value={values} data={log} />
           )

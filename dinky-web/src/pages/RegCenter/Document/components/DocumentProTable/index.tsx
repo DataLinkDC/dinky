@@ -225,8 +225,12 @@ const DocumentTableList: React.FC = () => {
         loading={loading}
         headerTitle={l('rc.doc.management')}
         actionRef={actionRef}
-        toolBarRender={() => [<CreateBtn key={'doctable'} onClick={() => handleModalVisible(true)} />]}
-        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })}
+        toolBarRender={() => [
+          <CreateBtn key={'doctable'} onClick={() => handleModalVisible(true)} />
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.DOCUMENT, { ...params, sorter, filter })
+        }
         columns={columns}
       />
       {/*ADDED*/}

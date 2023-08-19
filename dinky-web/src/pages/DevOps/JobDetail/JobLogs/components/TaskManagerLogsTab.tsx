@@ -85,7 +85,11 @@ const TaskManagerLogsTab = (props: JobProps) => {
           </div>
         </Col>
         <Col span={21}>
-          <Card title={currentTM.containerId} bordered={false} extra={<Paragraph>{currentTM.containerPath}</Paragraph>}>
+          <Card
+            title={currentTM.containerId}
+            bordered={false}
+            extra={<Paragraph>{currentTM.containerPath}</Paragraph>}
+          >
             <Spin spinning={tmLog.loading}>
               <CodeShow code={tmLog.data} height={500} />
             </Spin>

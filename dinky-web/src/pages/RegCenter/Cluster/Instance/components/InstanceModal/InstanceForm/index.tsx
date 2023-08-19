@@ -22,7 +22,13 @@ import { validatorJMHAAdderess } from '@/pages/RegCenter/Cluster/Instance/compon
 import { MODAL_FORM_OPTIONS } from '@/services/constants';
 import { Cluster } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormGroup, ProFormSelect, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React from 'react';
@@ -46,7 +52,12 @@ const InstanceForm: React.FC<InstanceFormProps> = (props) => {
             placeholder={l('rc.ci.namePlaceholder')}
           />
 
-          <ProFormText name='alias' label={l('rc.ci.alias')} width='sm' placeholder={l('rc.ci.aliasPlaceholder')} />
+          <ProFormText
+            name='alias'
+            label={l('rc.ci.alias')}
+            width='sm'
+            placeholder={l('rc.ci.aliasPlaceholder')}
+          />
 
           <ProFormSelect
             name='type'

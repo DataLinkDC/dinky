@@ -25,7 +25,12 @@ import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance
 import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
 import { queryList } from '@/services/api';
-import { handleAddOrUpdate, handleOption, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import {
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  updateDataByParam
+} from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { YES_OR_NO_ENUM } from '@/types/Public/constants';
@@ -190,7 +195,11 @@ export default () => {
       valueEnum: STATUS_ENUM(),
       render: (_: any, record: Cluster.Instance) => {
         return (
-          <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)} />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },
@@ -228,7 +237,12 @@ export default () => {
    */
   const toolBarRender = () => [
     <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)} />,
-    <Button key={'heartbeat_all'} type={'primary'} icon={<HeartTwoTone />} onClick={() => handleHeartBeat()}>
+    <Button
+      key={'heartbeat_all'}
+      type={'primary'}
+      icon={<HeartTwoTone />}
+      onClick={() => handleHeartBeat()}
+    >
       {l('button.heartbeat')}
     </Button>,
     <Popconfirm
@@ -264,9 +278,19 @@ export default () => {
         }
       />
       {/*added*/}
-      <InstanceModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit} />
+      <InstanceModal
+        visible={createOpen}
+        onClose={handleCancel}
+        value={{}}
+        onSubmit={handleSubmit}
+      />
       {/*modify*/}
-      <InstanceModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit} />
+      <InstanceModal
+        visible={modifyOpen}
+        onClose={handleCancel}
+        value={formValue}
+        onSubmit={handleSubmit}
+      />
     </>
   );
 };

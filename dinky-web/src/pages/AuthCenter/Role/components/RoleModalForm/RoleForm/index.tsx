@@ -54,7 +54,12 @@ const RoleProForm: React.FC<RoleProFormProps> = (props) => {
           rules={[{ required: true, message: l('role.EnterRoleName') }]}
         />
 
-        <ProFormTextArea name='note' label={l('global.table.note')} placeholder={l('role.EnterNote')} allowClear />
+        <ProFormTextArea
+          name='note'
+          label={l('global.table.note')}
+          placeholder={l('role.EnterNote')}
+          allowClear
+        />
       </>
     );
   };
@@ -64,7 +69,13 @@ const RoleProForm: React.FC<RoleProFormProps> = (props) => {
    */
   return (
     <>
-      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} initialValues={values} submitter={false} layout={'horizontal'}>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        submitter={false}
+        layout={'horizontal'}
+      >
         {renderRoleForm()}
       </ProForm>
     </>

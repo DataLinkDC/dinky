@@ -32,7 +32,9 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       //TODO根据path判断应用、目录、菜单、按钮，判断返回true,false
       //TODOpath可以是window.location.href、key
 
-      return currentUser?.menuList?.some?.((item) => item?.path?.startsWith(path) || item?.path?.endsWith(path));
+      return currentUser?.menuList?.some?.(
+        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path)
+      );
     }
   };
 }

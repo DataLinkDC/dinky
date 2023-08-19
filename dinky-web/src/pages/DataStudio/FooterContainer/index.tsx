@@ -20,7 +20,15 @@ type ButtonRoute = {
 
 const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
   const {
-    footContainer: { memDetails, codeType, lineSeparator, codeEncoding, space, codePosition, jobRunningMsg },
+    footContainer: {
+      memDetails,
+      codeType,
+      lineSeparator,
+      codeEncoding,
+      space,
+      codePosition,
+      jobRunningMsg
+    },
     token,
     tabs
   } = props;
@@ -34,7 +42,10 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     eventSource.onmessage = (event) => {
       const data = JSON.parse(event.data);
       setMemDetailInfo(
-        Number(data['heapUsed'] / 1024 / 1024).toFixed(0) + '/' + Number(data['max'] / 1024 / 1024).toFixed(0) + 'M'
+        Number(data['heapUsed'] / 1024 / 1024).toFixed(0) +
+          '/' +
+          Number(data['max'] / 1024 / 1024).toFixed(0) +
+          'M'
       );
     };
     return () => {
@@ -49,7 +60,11 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
         <span style={{ backgroundColor: token.colorBgContainer }}>
           <div
             style={{
-              width: (1 - parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) * 100 + '%',
+              width:
+                (1 -
+                  parseInt(memDetailInfo.split('/')[0]) / parseInt(memDetailInfo.split('/')[1])) *
+                  100 +
+                '%',
               backgroundColor: token.colorFill
             }}
           >

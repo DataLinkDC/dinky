@@ -62,16 +62,30 @@ const UserForm: React.FC<UserFormProps> = (props) => {
           ]}
         />
 
-        <ProFormText name='worknum' label={l('user.jobnumber')} placeholder={l('user.jobnumberPlaceholder')} />
+        <ProFormText
+          name='worknum'
+          label={l('user.jobnumber')}
+          placeholder={l('user.jobnumberPlaceholder')}
+        />
 
-        <ProFormText name='mobile' label={l('user.phone')} placeholder={l('user.phonePlaceholder')} />
+        <ProFormText
+          name='mobile'
+          label={l('user.phone')}
+          placeholder={l('user.phonePlaceholder')}
+        />
       </>
     );
   };
 
   return (
     <>
-      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} initialValues={values} layout={'horizontal'} submitter={false}>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        layout={'horizontal'}
+        submitter={false}
+      >
         {userFormRender()}
       </ProForm>
     </>

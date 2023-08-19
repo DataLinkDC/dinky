@@ -45,15 +45,34 @@ const SQLConsole: React.FC = () => {
 
   const renderAlertMsg = (flag: boolean, msg: string) => {
     if (!flag) {
-      return <Alert style={{ margin: 0, height: '2vw', alignItems: 'center' }} message={msg} type='error' showIcon />;
+      return (
+        <Alert
+          style={{ margin: 0, height: '2vw', alignItems: 'center' }}
+          message={msg}
+          type='error'
+          showIcon
+        />
+      );
     } else {
-      return <Alert style={{ margin: 0, height: '2vw', alignItems: 'center' }} message={msg} type='success' showIcon />;
+      return (
+        <Alert
+          style={{ margin: 0, height: '2vw', alignItems: 'center' }}
+          message={msg}
+          type='success'
+          showIcon
+        />
+      );
     }
   };
 
   return (
     <Height80VHDiv>
-      <Editor inputValue={inputValue} loading={loading} execCallback={execSql} handleInputChange={handleInputChange} />
+      <Editor
+        inputValue={inputValue}
+        loading={loading}
+        execCallback={execSql}
+        handleInputChange={handleInputChange}
+      />
       {/*{renderAlertMsg(false, '执行成功')}*/}
       {loading ? (
         <Result icon={<PageLoading spin={loading} />} title={l('rc.ds.console.running')} />

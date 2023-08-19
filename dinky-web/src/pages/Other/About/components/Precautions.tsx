@@ -22,7 +22,12 @@ import { Alert } from 'antd';
 export const Precautions = () => {
   return (
     <>
-      <Alert message={l('about.precautions')} description={l('about.wechatApply')} type='warning' {...AlertRestProps} />
+      <Alert
+        message={l('about.precautions')}
+        description={l('about.wechatApply')}
+        type='warning'
+        {...AlertRestProps}
+      />
     </>
   );
 };

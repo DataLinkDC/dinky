@@ -118,9 +118,13 @@ const ProjectProTable: React.FC = () => {
    */
   const handleBuild = async (value: Partial<GitProject>) => {
     await executeAndCallback(async () => {
-      const result = await handlePutDataByParams(API_CONSTANTS.GIT_PROJECT_BUILD, l('rc.gp.building'), {
-        id: value.id
-      });
+      const result = await handlePutDataByParams(
+        API_CONSTANTS.GIT_PROJECT_BUILD,
+        l('rc.gp.building'),
+        {
+          id: value.id
+        }
+      );
       if (result) {
         setFormValues(value);
         handleBuildVisible(true);
@@ -144,7 +148,10 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDragSortEnd = async (newDataSource: GitProject[]) => {
-    const updatedItems = newDataSource.map((item: GitProject, index: number) => ({ ...item, orderLine: index + 1 }));
+    const updatedItems = newDataSource.map((item: GitProject, index: number) => ({
+      ...item,
+      orderLine: index + 1
+    }));
     await executeAndCallback(
       async () =>
         await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_PROJECT, l('rc.gp.ucl.projectOrder'), {
@@ -159,7 +166,9 @@ const ProjectProTable: React.FC = () => {
    * @returns {Promise<void>}
    */
   const handleDeleteSubmit = async (id: number) => {
-    await executeAndCallback(async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id));
+    await executeAndCallback(
+      async () => await handleRemoveById(API_CONSTANTS.GIT_PROJECT_DELETE, id)
+    );
     await queryList(API_CONSTANTS.GIT_PROJECT).then((res) => handleDragSortEnd(res.data));
     actionRef.current?.reload();
   };
@@ -262,7 +271,11 @@ const ProjectProTable: React.FC = () => {
       valueEnum: STATUS_ENUM(),
       render: (_: any, record: GitProject) => {
         return (
-          <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)} />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       }
     },
@@ -353,12 +366,16 @@ const ProjectProTable: React.FC = () => {
         loading={loading}
         actionRef={actionRef}
         dragSortKey={'id'}
-        toolBarRender={() => [<CreateBtn key={'gittable'} onClick={() => handleModalVisible(true)} />]}
+        toolBarRender={() => [
+          <CreateBtn key={'gittable'} onClick={() => handleModalVisible(true)} />
+        ]}
         expandable={{
           expandRowByClick: false,
           expandedRowRender: (record: GitProject) => renderClassList(record)
         }}
-        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.GIT_PROJECT, { ...params, sorter, filter })}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.GIT_PROJECT, { ...params, sorter, filter })
+        }
         onDragSortEnd={handleDragSortEnd}
       />
       {/* added modal form */}
@@ -376,10 +393,14 @@ const ProjectProTable: React.FC = () => {
         values={formValues}
       />
       {/* build steps modal */}
-      {buildModalVisible && <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel} values={formValues as any} />}
+      {buildModalVisible && (
+        <BuildSteps title={l('rc.gp.build')} onCancel={handleCancel} values={formValues as any} />
+      )}
       {/* show build log modal */}
       {/*{logModalVisible &&  <ShowLog modalVisible={logModalVisible} onCancel={handleCancel} values={formValues}/>}*/}
-      {logModalVisible && <BuildSteps title={l('rc.gp.log')} onCancel={handleCancel} values={formValues as any} />}
+      {logModalVisible && (
+        <BuildSteps title={l('rc.gp.log')} onCancel={handleCancel} values={formValues as any} />
+      )}
       {/* show code tree modal */}
       <CodeTree modalVisible={codeTreeModalVisible} onCancel={handleCancel} values={formValues} />
     </>

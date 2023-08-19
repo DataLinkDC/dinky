@@ -116,7 +116,13 @@ const PermissionsForm: React.FC<PermissionsFormProps> = (props) => {
    */
   return (
     <>
-      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} submitter={false} layout={'horizontal'} initialValues={values}>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        submitter={false}
+        layout={'horizontal'}
+        initialValues={values}
+      >
         {renderRowPermissionsForm()}
       </ProForm>
     </>

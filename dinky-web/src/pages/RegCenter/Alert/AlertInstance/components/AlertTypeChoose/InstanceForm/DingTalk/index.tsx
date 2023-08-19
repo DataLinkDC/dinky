@@ -71,9 +71,19 @@ const DingTalk = (props: any) => {
       </ProForm.Group>
 
       <ProForm.Group>
-        <ProFormSwitch width='xs' name='isEnableProxy' label={l('rc.ai.isEnableProxy')} {...SWITCH_OPTIONS()} />
+        <ProFormSwitch
+          width='xs'
+          name='isEnableProxy'
+          label={l('rc.ai.isEnableProxy')}
+          {...SWITCH_OPTIONS()}
+        />
         <ProFormSwitch width='xs' name='isAtAll' label={l('rc.ai.isAtAll')} {...SWITCH_OPTIONS()} />
-        <ProFormSwitch width='xs' name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
+        <ProFormSwitch
+          width='xs'
+          name='enabled'
+          label={l('global.table.isEnable')}
+          {...SWITCH_OPTIONS()}
+        />
         {/* if not Enable At All this group do render */}
         {!values.isAtAll && (
           <>

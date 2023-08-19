@@ -17,7 +17,13 @@
  *
  */
 
-import { DataStudioParams, EnvType, JobRunningMsgType, STUDIO_MODEL, TabsItemType } from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  EnvType,
+  JobRunningMsgType,
+  STUDIO_MODEL,
+  TabsItemType
+} from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
 

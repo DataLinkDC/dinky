@@ -52,10 +52,13 @@ const TableTransfer = ({ leftColumns, rightColumns, ...restProps }: TableTransfe
       const columns = direction === 'left' ? leftColumns : rightColumns;
       const rowSelection: TableRowSelection<any> = {
         getCheckboxProps: (item) => ({
-          disabled: enableFlag || item.isDelete || (item.hasOwnProperty('enabled') ? !item.enabled : false)
+          disabled:
+            enableFlag || item.isDelete || (item.hasOwnProperty('enabled') ? !item.enabled : false)
         }),
         onSelectAll: (selected, selectedRows) => {
-          const treeSelectedKeys = selectedRows.filter((item) => !item.isDelete || !item.enabled).map(({ id }) => id);
+          const treeSelectedKeys = selectedRows
+            .filter((item) => !item.isDelete || !item.enabled)
+            .map(({ id }) => id);
 
           const diffKeys = selected
             ? difference(treeSelectedKeys, listSelectedKeys)

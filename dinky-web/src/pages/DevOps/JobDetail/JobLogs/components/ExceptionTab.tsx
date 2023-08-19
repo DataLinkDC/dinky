@@ -73,12 +73,19 @@ const ExceptionTab = (props: JobProps) => {
           <Card
             title={currentLog.taskName}
             bordered={false}
-            extra={<Paragraph>{moment(currentLog.timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')}</Paragraph>}
+            extra={
+              <Paragraph>
+                {moment(currentLog.timestamp).format('YYYY-MM-DD HH:mm:ss.SSS')}
+              </Paragraph>
+            }
           >
             <Paragraph ellipsis={{ rows: 1, expandable: false }}>
               <blockquote>{currentLog.exceptionName}</blockquote>
             </Paragraph>
-            <CodeShow code={currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'} height={500} />
+            <CodeShow
+              code={currentLog.stacktrace ? currentLog.stacktrace : 'No Exception'}
+              height={500}
+            />
           </Card>
         </Col>
       </Row>

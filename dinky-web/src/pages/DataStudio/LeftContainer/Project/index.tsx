@@ -18,13 +18,21 @@
  */
 
 import RightContextMenu from '@/components/RightContextMenu';
-import { FOLDER_RIGHT_MENU, JOB_RIGHT_MENU } from '@/pages/DataStudio/LeftContainer/Project/constants';
+import {
+  FOLDER_RIGHT_MENU,
+  JOB_RIGHT_MENU
+} from '@/pages/DataStudio/LeftContainer/Project/constants';
 import FolderModal from '@/pages/DataStudio/LeftContainer/Project/FolderModal';
 import JobModal from '@/pages/DataStudio/LeftContainer/Project/JobModal';
 import JobTree from '@/pages/DataStudio/LeftContainer/Project/JobTree';
 import { getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import { StateType, STUDIO_MODEL, STUDIO_MODEL_ASYNC } from '@/pages/DataStudio/model';
-import { handleAddOrUpdate, handleOption, handlePutDataByParams, handleRemoveById } from '@/services/BusinessCrud';
+import {
+  handleAddOrUpdate,
+  handleOption,
+  handlePutDataByParams,
+  handleRemoveById
+} from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Catalogue } from '@/types/Studio/data';
 import { l } from '@/utils/intl';
@@ -111,7 +119,9 @@ const Project: React.FC = (props: connect) => {
       isLeaf: isLeaf,
       selectedKeys: [key],
       rightClickedNode: { ...node, ...fullInfo },
-      item: isLeaf ? JOB_RIGHT_MENU(modalAllVisible.isCut) : FOLDER_RIGHT_MENU(modalAllVisible.isCut)
+      item: isLeaf
+        ? JOB_RIGHT_MENU(modalAllVisible.isCut)
+        : FOLDER_RIGHT_MENU(modalAllVisible.isCut)
     }));
     setModalAllVisible((prevState) => ({ ...prevState, value: fullInfo }));
   };
@@ -179,7 +189,9 @@ const Project: React.FC = (props: connect) => {
     const options = {
       url: '',
       isLeaf: modalAllVisible.isCreateSub ? false : modalAllVisible.value.isLeaf,
-      parentId: modalAllVisible.isCreateSub ? contextMenu.selectedKeys[0] : modalAllVisible.value.parentId
+      parentId: modalAllVisible.isCreateSub
+        ? contextMenu.selectedKeys[0]
+        : modalAllVisible.value.parentId
     };
 
     if (rightActiveKey === 'createTask') {

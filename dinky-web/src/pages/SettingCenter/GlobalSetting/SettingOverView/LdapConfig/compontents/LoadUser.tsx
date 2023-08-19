@@ -55,7 +55,11 @@ export const LoadUser = () => {
   };
 
   const importUser = async () => {
-    await handleOption(API_CONSTANTS.LDAP_IMPORT_USERS, l('sys.ldap.settings.loadUser'), selectedUsers);
+    await handleOption(
+      API_CONSTANTS.LDAP_IMPORT_USERS,
+      l('sys.ldap.settings.loadUser'),
+      selectedUsers
+    );
     await fetchUserData();
     setSelectedUsers([]);
   };

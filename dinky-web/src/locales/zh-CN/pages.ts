@@ -41,7 +41,8 @@ export default {
   'about.usingHelp': '使用帮助',
   'about.communityRules': '社区守则',
   'about.communityRules.1': '禁止发布或讨论与本群主旨无关或不良的内容，一经发现立马被踢。',
-  'about.communityRules.2': '关于 Bug 反馈与功能改进或提议请通过 issue 进行，请阅读 issue 文档要求。',
+  'about.communityRules.2':
+    '关于 Bug 反馈与功能改进或提议请通过 issue 进行，请阅读 issue 文档要求。',
   'about.communityRules.3': '部署和使用前请先仔细阅读 Readme、公众号文章、官网文档、B站视频。',
   'about.communityRules.4': '群提问题请礼貌并且说明【版本、执行模式、操作描述、截图】。',
   'about.communityRules.5': ' 登记谁在使用 Dinky，可进入企业用户群提供技术支持。',
@@ -355,9 +356,11 @@ export default {
   'rc.cc.sqlSubmitJarPathHelp': '请输入 Jar 文件路径! eg: hdfs:///dlink/jar/dlink-app.jar',
   'rc.cc.defineConfig': 'Flink 预设配置（高优先级）',
   'rc.cc.jmMem': 'JobManager 内存',
-  'rc.cc.jmMemHelp': '请输入 JobManager 内存大小! 此参数配置项为: jobmanager.memory.process.size    eg: 1024MB',
+  'rc.cc.jmMemHelp':
+    '请输入 JobManager 内存大小! 此参数配置项为: jobmanager.memory.process.size    eg: 1024MB',
   'rc.cc.tmMem': 'TaskManager 内存',
-  'rc.cc.tmMemHelp': '请输入 TaskManager 内存大小! 此参数配置项为: taskmanager.memory.process.size   eg: 1024MB',
+  'rc.cc.tmMemHelp':
+    '请输入 TaskManager 内存大小! 此参数配置项为: taskmanager.memory.process.size   eg: 1024MB',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
   'rc.cc.tmHeapHelp':
     '请输入 TaskManager 堆内存大小! 此参数配置项为: taskmanager.memory.framework.heap.size   eg: 1024MB',
@@ -366,12 +369,14 @@ export default {
   'rc.cc.spDir': '保存点路径',
   'rc.cc.spDirHelp': '请输入保存点路径! 此参数配置项为: tate.savepoints.dir  eg: hdfs:///dinky/sp',
   'rc.cc.ckpDir': '检查点路径',
-  'rc.cc.ckpDirHelp': '请输入检查点路径! 此参数配置项为: state.checkpoints.dir  eg: hdfs:///dinky/ckp',
+  'rc.cc.ckpDirHelp':
+    '请输入检查点路径! 此参数配置项为: state.checkpoints.dir  eg: hdfs:///dinky/ckp',
   'rc.cc.dockerConfig': 'Docker 配置',
   'rc.cc.docker.dinky.addr': 'Dinky 远程地址',
   'rc.cc.docker.dinky.addrHelp': 'Dinky 远程地址! eg: 127.0.0.1:8888',
   'rc.cc.docker.instance': 'Docker 实例',
-  'rc.cc.docker.instanceHelp': 'Docker 实例! eg: 本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375',
+  'rc.cc.docker.instanceHelp':
+    'Docker 实例! eg: 本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375',
   'rc.cc.docker.url': 'DockerHub 容器地址',
   'rc.cc.docker.urlHelp':
     'DockerHub 容器地址! eg: (阿里云，docker.io，harbor) registry.cn-hangzhou.aliyuncs.com/dlink/dlink:1.0.0',
@@ -397,7 +402,8 @@ export default {
   'rc.cc.k8s.tmCpu': 'TaskManager CPU 配置',
   'rc.cc.k8s.tmCpuHelp': 'TaskManager CPU 配置! eg: 10',
   'rc.cc.k8s.configFile': 'Kube 文件路径',
-  'rc.cc.k8s.configFileHelp': '默认~/.kube/config， 填写kube文件路径，可用作远程连接! eg: /opt/module/kube/config',
+  'rc.cc.k8s.configFileHelp':
+    '默认~/.kube/config， 填写kube文件路径，可用作远程连接! eg: /opt/module/kube/config',
   'rc.cc.k8s.account': 'K8s 提交账号',
   'rc.cc.k8s.accountHelp': 'K8s 提交使用的账号，默认 default! eg: default',
   'rc.cc.k8s.podTemplate': 'K8s Pod 模板',
@@ -438,7 +444,8 @@ export default {
   'rc.ds.application': '应用',
   'rc.ds.backup': '备份',
   'rc.ds.other': '其他',
-  'rc.ds.enter': '点击列表中的 icon 图片进入该数据源的详情页! 支持查看该数据源的库&表信息,以及可以进行即时查询',
+  'rc.ds.enter':
+    '点击列表中的 icon 图片进入该数据源的详情页! 支持查看该数据源的库&表信息,以及可以进行即时查询',
   'rc.ds.enter.error': '该数据源状态异常无法进入,心跳正常后方可进入!',
 
   // datasource of schema info page
@@ -680,7 +687,8 @@ export default {
   'rc.gp.create': '创建项目',
   'rc.gp.modify': '修改项目',
   'rc.gp.delete': '删除项目',
-  'rc.gp.deleteConfirm': '此操作会删除该项目下所有下载的代码! \n请谨慎操作!! \n此操作不可逆!!\n 你确定删除此项目吗?',
+  'rc.gp.deleteConfirm':
+    '此操作会删除该项目下所有下载的代码! \n请谨慎操作!! \n此操作不可逆!!\n 你确定删除此项目吗?',
   'rc.gp.namePlaceholder': '请输入名称!',
   'rc.gp.urlPlaceholder': '请输入项目地址!',
   'rc.gp.branchPlaceholder': '请选择分支!',
@@ -760,7 +768,8 @@ export default {
   'sys.flink.settings.sqlSeparator': 'SQL 分隔符',
   'sys.flink.settings.sqlSeparator.note': 'SQL 分隔符',
   'sys.flink.settings.jobIdWait': 'Job 提交等待时间',
-  'sys.flink.settings.jobIdWait.note': '提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）',
+  'sys.flink.settings.jobIdWait.note':
+    '提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）',
   'sys.maven.settings.settingsFilePath': 'Maven 配置文件路径',
   'sys.maven.settings.settingsFilePath.note':
     'Maven 配置文件路径, eg: /opt/maven/conf/settings.xml , 请注意填写全路径,包含settings.xml文件名',
@@ -781,7 +790,8 @@ export default {
   'sys.dolphinscheduler.settings.token.note':
     'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
-  'sys.dolphinscheduler.settings.projectName.note': 'DolphinScheduler 中指定的项目名称，不区分大小写',
+  'sys.dolphinscheduler.settings.projectName.note':
+    'DolphinScheduler 中指定的项目名称，不区分大小写',
 
   //LDAP
   'sys.ldap.settings.enable': '是否启用ldap',
@@ -799,7 +809,8 @@ export default {
   'sys.ldap.settings.baseDn': '用户基础DN',
   'sys.ldap.settings.baseDn.note': 'Dinky会在此基础dn下进行用户搜索,例如：ou=users,dc=dinky,dc=com',
   'sys.ldap.settings.filter': '用户过滤规则',
-  'sys.ldap.settings.filter.note': '使用ldap的filter语法进行用户过滤，例如: (&(objectClass=inetOrgPerson))',
+  'sys.ldap.settings.filter.note':
+    '使用ldap的filter语法进行用户过滤，例如: (&(objectClass=inetOrgPerson))',
   'sys.ldap.settings.autoload': '登录时自动映射用户',
   'sys.ldap.settings.autoload.note':
     '开启后，当用户使用LDAP登录时，如果没有相应的Dinky用户映射，则会自动拉取LDAP信息创建一个Dinky用户与之映射，如果关闭此功能，对于未导入的LDAP用户将无法登录',
@@ -810,7 +821,8 @@ export default {
   'sys.ldap.settings.castNickname.note':
     '需要填写一个LDAP中用户的属性字段来与Dinky昵称对应，必须填写，一般可选为 sn 或者其他标识，不要求唯一',
   'sys.ldap.settings.defaultTeant': 'LDAP导入默认租户编码',
-  'sys.ldap.settings.defaultTeant.note': '开启自动导入用户后，新用户登录需要一个默认的租户编码，否则无法登录',
+  'sys.ldap.settings.defaultTeant.note':
+    '开启自动导入用户后，新用户登录需要一个默认的租户编码，否则无法登录',
 
   'sys.ldap.settings.testConnect': '测试连接',
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
@@ -832,20 +844,23 @@ export default {
 
   // Resource
   'sys.resource.settings.enable': '是否启用Resource',
-  'sys.resource.settings.enable.note': '启用资源管理功能，如果切换存储模式时，需关闭此开关，相关配置完成后，再开启',
+  'sys.resource.settings.enable.note':
+    '启用资源管理功能，如果切换存储模式时，需关闭此开关，相关配置完成后，再开启',
   'sys.resource.settings.upload.base.path': '上传目录的根路径',
   // 'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
   'sys.resource.settings.upload.base.path.note':
     '资源存储在HDFS/OSS路径上，资源文件将存储到此基本路径，自行配置，请确保该目录存在于hdfs上并具有读写权限。推荐:/dinky',
   'sys.resource.settings.model': '存储模式：支持HDFS、OSS',
-  'sys.resource.settings.model.note': '存储模式：支持HDFS、OSS，切换选项后即可生效，同时并迁移资源文件',
+  'sys.resource.settings.model.note':
+    '存储模式：支持HDFS、OSS，切换选项后即可生效，同时并迁移资源文件',
   'sys.resource.settings.hdfs.root.user': 'HDFS操作用户名',
   'sys.resource.settings.hdfs.root.user.note': 'HDFS操作用户名',
   'sys.resource.settings.hdfs.fs.defaultFS': 'HDFS defaultFS',
   'sys.resource.settings.hdfs.fs.defaultFS.note':
     'fs.defaultFS 配置项，例如远程：hdfs://localhost:9000，本地：file:///',
   'sys.resource.settings.oss.endpoint': '对象存储服务的URL',
-  'sys.resource.settings.oss.endpoint.note': '对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com',
+  'sys.resource.settings.oss.endpoint.note':
+    '对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com',
   'sys.resource.settings.oss.accessKey': 'Access key就像用户ID，可以唯一标识你的账户',
   'sys.resource.settings.oss.accessKey.note': 'Access key就像用户ID，可以唯一标识你的账户',
   'sys.resource.settings.oss.secretKey': 'Secret key是你账户的密码',
@@ -919,14 +934,16 @@ export default {
   'pages.datastudio.label.jobConfig.cluster': 'Flink集群',
   'pages.datastudio.label.jobConfig.cluster.tip': '选择Flink集群',
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink集群配置',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip1': '选择Flink集群配置进行【{type}】模式的远程提交任务',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip1':
+    '选择Flink集群配置进行【{type}】模式的远程提交任务',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2': '选择Flink集群配置',
   'pages.datastudio.label.jobConfig.jar': '可执行 Jar',
   'pages.datastudio.label.jobConfig.jar.tip1':
     '选择可执行 Jar 进行 【{type}】模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.',
   'pages.datastudio.label.jobConfig.jar.tip2': '选择可执行Jar，非必填',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
-  'pages.datastudio.label.jobConfig.execmode.k8s.tip': '指定 Flink 任务的执行模式，默认为 KUBERNETES_APPLICATION',
+  'pages.datastudio.label.jobConfig.execmode.k8s.tip':
+    '指定 Flink 任务的执行模式，默认为 KUBERNETES_APPLICATION',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
   'pages.datastudio.label.jobConfig.flinksql.env.tip1':
     '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
@@ -972,7 +989,8 @@ export default {
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
-  'pages.datastudio.label.execConfig.autostop.tip': '开启自动停止，将在捕获最大行数记录后自动停止任务',
+  'pages.datastudio.label.execConfig.autostop.tip':
+    '开启自动停止，将在捕获最大行数记录后自动停止任务',
 
   'pages.datastudio.label.savepoint': '保存点',
   'pages.task.savePointPath': '保存点路径',
@@ -982,7 +1000,8 @@ export default {
   'pages.datastudio.label.version.diff': '版本对比',
   'pages.datastudio.label.version.rollback': '回滚',
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
-  'pages.datastudio.label.version.rollback.flinksqlConfirm': '确定回滚Flink SQL版本至【{versionId}】吗？',
+  'pages.datastudio.label.version.rollback.flinksqlConfirm':
+    '确定回滚Flink SQL版本至【{versionId}】吗？',
   'pages.datastudio.label.version.diff.tip': '只和当前编辑器内的内容对比',
   'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间: 【{createTime}】',
   'pages.datastudio.label.version.rightTitle':
@@ -1002,7 +1021,8 @@ export default {
   'pages.datastudio.editor.query.explan.error': '获取作业执行计划失败，原因：\n{msg}',
   'pages.datastudio.editor.query.ds.error': '获取海豚数据失败，原因：\n{msg}',
   'pages.datastudio.editor.release.job': '发布作业',
-  'pages.datastudio.editor.release.jobConfirm': '确定发布作业【{jobName}】吗？请确认您的作业是否已经被保存！',
+  'pages.datastudio.editor.release.jobConfirm':
+    '确定发布作业【{jobName}】吗？请确认您的作业是否已经被保存！',
   'pages.datastudio.editor.release.job.success': '发布作业【{jobName}】成功',
   'pages.datastudio.editor.release.job.error': '发布作业【{jobName}】失败',
   'pages.datastudio.editor.edit.job': '维护作业',

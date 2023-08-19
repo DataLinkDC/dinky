@@ -58,16 +58,29 @@ const JobOperator = (props: JobProps) => {
         FlinkWebUI
       </Button>
 
-      <Button key='autorestart' type='primary' onClick={() => handleJobOperator(operatorType.RESTART_JOB)}>
-        {jobDetail?.instance?.step == 5 ? l('devops.jobinfo.reonline') : l('devops.jobinfo.restart')}
+      <Button
+        key='autorestart'
+        type='primary'
+        onClick={() => handleJobOperator(operatorType.RESTART_JOB)}
+      >
+        {jobDetail?.instance?.step == 5
+          ? l('devops.jobinfo.reonline')
+          : l('devops.jobinfo.restart')}
       </Button>
 
       {isStatusDone(jobDetail?.instance?.status as string) ? (
         <></>
       ) : (
         <>
-          <Button key='autostop' type='primary' onClick={() => handleJobOperator(operatorType.SAVEPOINT_STOP)} danger>
-            {jobDetail?.instance?.step == 5 ? l('devops.jobinfo.offline') : l('devops.jobinfo.smart_stop')}
+          <Button
+            key='autostop'
+            type='primary'
+            onClick={() => handleJobOperator(operatorType.SAVEPOINT_STOP)}
+            danger
+          >
+            {jobDetail?.instance?.step == 5
+              ? l('devops.jobinfo.offline')
+              : l('devops.jobinfo.smart_stop')}
           </Button>
           <Dropdown
             key='dropdown'

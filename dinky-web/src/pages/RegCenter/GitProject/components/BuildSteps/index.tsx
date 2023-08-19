@@ -18,7 +18,10 @@
  */
 
 import { AutoSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/AutoSteps';
-import { JavaSteps, PythonSteps } from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
+import {
+  JavaSteps,
+  PythonSteps
+} from '@/pages/RegCenter/GitProject/components/BuildSteps/constants';
 import { BuildStepsState } from '@/pages/RegCenter/GitProject/data.d';
 import { renderStatus } from '@/pages/RegCenter/GitProject/function';
 import { getSseData } from '@/services/api';

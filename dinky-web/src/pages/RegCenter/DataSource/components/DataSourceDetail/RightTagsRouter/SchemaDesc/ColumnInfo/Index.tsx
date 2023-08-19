@@ -60,7 +60,9 @@ const ColumnInfo: React.FC<ColumnInfoProps> = (props) => {
       dataIndex: 'autoIncrement',
       width: '4%',
       render: (_, record) => {
-        return record.autoIncrement ? <CheckSquareOutlined style={{ color: '#1296db' }} /> : undefined;
+        return record.autoIncrement ? (
+          <CheckSquareOutlined style={{ color: '#1296db' }} />
+        ) : undefined;
       }
     },
     {

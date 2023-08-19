@@ -24,7 +24,12 @@ const BaseInfo = (props: any) => {
   const { user, tenant } = props;
   return (
     <>
-      <Avatar style={{ alignSelf: 'center', marginBottom: 50 }} draggable size={200} src={user.avatar} />
+      <Avatar
+        style={{ alignSelf: 'center', marginBottom: 50 }}
+        draggable
+        size={200}
+        src={user.avatar}
+      />
 
       <Divider orientation={'left'} plain>
         {l('user.info')}

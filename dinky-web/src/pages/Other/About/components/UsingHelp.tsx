@@ -25,7 +25,12 @@ const { Paragraph } = Typography;
 export const UsingHelp = () => {
   return (
     <>
-      <Alert message={l('about.usingHelp')} icon={<SmileOutlined />} type='info' {...AlertRestProps} />
+      <Alert
+        message={l('about.usingHelp')}
+        icon={<SmileOutlined />}
+        type='info'
+        {...AlertRestProps}
+      />
       <Paragraph>
         <Typography.Text {...TypographyRestProps}>
           <LinkOutlined /> GitHub：

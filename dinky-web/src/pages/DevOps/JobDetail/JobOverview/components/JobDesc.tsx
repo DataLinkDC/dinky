@@ -91,7 +91,9 @@ const JobDesc = (props: JobProps) => {
 
           {jobDetail?.clusterConfiguration ? (
             <Descriptions.Item label={l('devops.jobinfo.config.clusterConfiguration')}>
-              <Link to={'/registration/cluster/instance'}>{jobDetail?.clusterConfiguration?.name}</Link>
+              <Link to={'/registration/cluster/instance'}>
+                {jobDetail?.clusterConfiguration?.name}
+              </Link>
             </Descriptions.Item>
           ) : undefined}
 

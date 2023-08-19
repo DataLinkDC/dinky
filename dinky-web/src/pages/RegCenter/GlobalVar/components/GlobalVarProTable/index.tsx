@@ -200,7 +200,9 @@ const GlobalVarProTable = () => {
         actionRef={actionRef}
         loading={loading}
         {...PROTABLE_OPTIONS_PUBLIC}
-        toolBarRender={() => [<CreateBtn key={'vartable'} onClick={() => handleModalVisible(true)} />]}
+        toolBarRender={() => [
+          <CreateBtn key={'vartable'} onClick={() => handleModalVisible(true)} />
+        ]}
         request={(params, sorter, filter: any) =>
           queryList(API_CONSTANTS.GLOBAL_VARIABLE, {
             ...params,

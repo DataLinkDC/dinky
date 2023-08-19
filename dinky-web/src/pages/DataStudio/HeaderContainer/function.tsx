@@ -28,7 +28,9 @@ export const buildBreadcrumbItems = (breadcrumb: string) => {
   const items = [{ title: <HomeOutlined /> }];
 
   // 如果有 activeBreadcrumbTitle, 则切割 activeBreadcrumbTitle, 生成面包屑数组, 并映射
-  const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({ title: <>{title}</> }));
+  const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({
+    title: <>{title}</>
+  }));
   items.push(...activeBreadcrumbTitleList);
   return items;
 };

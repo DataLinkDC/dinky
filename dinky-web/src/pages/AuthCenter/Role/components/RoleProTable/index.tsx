@@ -24,7 +24,12 @@ import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDelet
 import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
 import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
 import { queryList } from '@/services/api';
-import { handleAddOrUpdate, handleOption, handleRemoveById, queryDataByParams } from '@/services/BusinessCrud';
+import {
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
@@ -125,7 +130,12 @@ const RoleProTable: React.FC = () => {
 
   const handleClickViewUserList = (record: Partial<UserBaseInfo.Role>) => {
     queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
-      setRoleListState((prevState) => ({ ...prevState, roleUserList: res, value: record, viewUsersOpen: true }))
+      setRoleListState((prevState) => ({
+        ...prevState,
+        roleUserList: res,
+        value: record,
+        viewUsersOpen: true
+      }))
     );
   };
 
@@ -211,7 +221,9 @@ const RoleProTable: React.FC = () => {
             onClick={() => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: true }))}
           />
         ]}
-        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
+        }
         columns={columns}
       />
       {/* create  */}

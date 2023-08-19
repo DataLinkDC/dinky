@@ -50,7 +50,9 @@ const GenSQL: React.FC<GenSQLProps> = (props) => {
 
   const queryDDL = useCallback(async () => {
     //get gen sql
-    const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, { ...queryParams });
+    const genSQLData = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_GEN_SQL, {
+      ...queryParams
+    });
     setGenSQL(genSQLData);
   }, [queryParams]);
 

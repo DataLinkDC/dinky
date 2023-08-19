@@ -118,7 +118,11 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           onChange={(key: string) => {
             updateSelectBottomSubKey(key.split('/')[1]);
           }}
-          activeKey={bottomContainer.selectKey + '/' + bottomContainer.selectSubKey[bottomContainer.selectKey]}
+          activeKey={
+            bottomContainer.selectKey +
+            '/' +
+            bottomContainer.selectSubKey[bottomContainer.selectKey]
+          }
           size='small'
           tabPosition='top'
         />
@@ -135,7 +139,11 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     ].map((item) => {
       return {
         ...item,
-        children: <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>{item.children}</ContentScroll>
+        children: (
+          <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>
+            {item.children}
+          </ContentScroll>
+        )
       };
     });
   };

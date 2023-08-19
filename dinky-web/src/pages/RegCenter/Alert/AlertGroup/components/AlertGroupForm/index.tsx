@@ -113,7 +113,11 @@ const AlertGroupForm: React.FC<AlertGroupFormProps> = (props) => {
           options={buildAlertInstanceSelect()}
         />
 
-        <ProFormTextArea name='note' label={l('global.table.note')} placeholder={l('global.table.notePlaceholder')} />
+        <ProFormTextArea
+          name='note'
+          label={l('global.table.note')}
+          placeholder={l('global.table.notePlaceholder')}
+        />
 
         <ProFormSwitch name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
       </>

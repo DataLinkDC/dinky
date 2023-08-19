@@ -20,7 +20,12 @@ import { handleAddOrUpdate } from '@/services/BusinessCrud';
 import { RESPONSE_CODE } from '@/services/constants';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
-import { ErrorMessage, LoadingMessageAsync, SuccessMessage, WarningMessage } from '@/utils/messages';
+import {
+  ErrorMessage,
+  LoadingMessageAsync,
+  SuccessMessage,
+  WarningMessage
+} from '@/utils/messages';
 
 export async function createOrModifyAlertInstance(alertInstance: Alert.AlertInstance) {
   return handleAddOrUpdate('/api/alertInstance', alertInstance);

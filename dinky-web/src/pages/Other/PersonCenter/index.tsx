@@ -152,7 +152,9 @@ const PersonCenter = () => {
           {l('button.changePassword')}
         </>
       ),
-      children: <PasswordForm form={form} renderSubmit values={user} onSubmit={handleSubmitPassWord} />
+      children: (
+        <PasswordForm form={form} renderSubmit values={user} onSubmit={handleSubmitPassWord} />
+      )
     }
   ];
 
@@ -163,7 +165,12 @@ const PersonCenter = () => {
     <Pop>
       <PageContainer title={false}>
         <ProCard ghost gutter={[16, 16]} hoverable loading={!loading && currentUser}>
-          <ProCard style={{ height: '91vh', textAlign: 'center', overflowY: 'auto' }} colSpan='22%' hoverable bordered>
+          <ProCard
+            style={{ height: '91vh', textAlign: 'center', overflowY: 'auto' }}
+            colSpan='22%'
+            hoverable
+            bordered
+          >
             <BaseInfo user={user} tenant={currentTenant} />
             <Divider orientation={'left'} plain>
               {l('user.tenant')}

@@ -50,17 +50,21 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
   // query data
   const fetchData = async (values: any) => {
     setLoading(true);
-    const result = await handleOption(API_CONSTANTS.DATASOURCE_QUERY_DATA, l('global.getdata.tips'), {
-      id: dbId,
-      schemaName,
-      tableName,
-      option: {
-        where: values.where,
-        order: values.order,
-        limitStart: '0',
-        limitEnd: '500'
+    const result = await handleOption(
+      API_CONSTANTS.DATASOURCE_QUERY_DATA,
+      l('global.getdata.tips'),
+      {
+        id: dbId,
+        schemaName,
+        tableName,
+        option: {
+          where: values.where,
+          order: values.order,
+          limitStart: '0',
+          limitEnd: '500'
+        }
       }
-    });
+    );
     const {
       code,
       datas: { columns, rowData }
@@ -107,7 +111,15 @@ const SQLQuery: React.FC<SQLQueryProps> = (props) => {
    * render alert msg
    */
   const renderAlert = () => {
-    return <>{errMsg.isErr ? <Alert message='Error' description={errMsg.msg} type='error' showIcon /> : <></>}</>;
+    return (
+      <>
+        {errMsg.isErr ? (
+          <Alert message='Error' description={errMsg.msg} type='error' showIcon />
+        ) : (
+          <></>
+        )}
+      </>
+    );
   };
 
   /**

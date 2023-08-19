@@ -24,7 +24,11 @@ import { getAlertIcon } from '@/pages/RegCenter/Alert/AlertInstance/function';
 import { ALERT_MODEL_ASYNC } from '@/pages/RegCenter/Alert/AlertInstance/model';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS, SWITCH_OPTIONS } from '@/services/constants';
+import {
+  PROTABLE_OPTIONS_PUBLIC,
+  PRO_LIST_CARD_OPTIONS,
+  SWITCH_OPTIONS
+} from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert, ALERT_TYPE } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
@@ -177,7 +181,12 @@ const AlertGroupTableList: React.FC = (props: any) => {
     return (
       <>
         <Space className={'hidden-overflow'}>
-          <Switch key={item.id} {...SWITCH_OPTIONS()} checked={item.enabled} onChange={() => handleEnable(item)} />
+          <Switch
+            key={item.id}
+            {...SWITCH_OPTIONS()}
+            checked={item.enabled}
+            onChange={() => handleEnable(item)}
+          />
           <Tag color='warning'>{l('rc.ag.alertCount', '', { count: instanceCnt })}</Tag>
         </Space>
       </>
@@ -224,7 +233,12 @@ const AlertGroupTableList: React.FC = (props: any) => {
           dataSource={renderDataSource}
         />
 
-        <AlertGroupForm onSubmit={handleSubmit} onCancel={handleCleanState} modalVisible={modalVisible} values={{}} />
+        <AlertGroupForm
+          onSubmit={handleSubmit}
+          onCancel={handleCleanState}
+          modalVisible={modalVisible}
+          values={{}}
+        />
         {formValues && Object.keys(formValues).length > 0 && (
           <AlertGroupForm
             onSubmit={handleSubmit}

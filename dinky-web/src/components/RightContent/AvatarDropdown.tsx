@@ -68,7 +68,9 @@ const AvatarLogo = () => {
     };
   });
 
-  return <Avatar size='small' className={avatarClassName} src={currentUser?.user.avatar} alt='avatar' />;
+  return (
+    <Avatar size='small' className={avatarClassName} src={currentUser?.user.avatar} alt='avatar' />
+  );
 };
 
 const AvatarDropdown = () => {

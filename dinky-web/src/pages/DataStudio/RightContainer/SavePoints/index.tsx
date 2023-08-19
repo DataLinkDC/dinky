@@ -63,7 +63,9 @@ const SavePoints = (props: any) => {
       <ProTable<SavePoint>
         actionRef={actionRef}
         rowKey='id'
-        request={(params, sorter, filter) => postAll(url, { taskId: current.key, ...params, sorter, filter })}
+        request={(params, sorter, filter) =>
+          postAll(url, { taskId: current.key, ...params, sorter, filter })
+        }
         columns={columns}
         search={false}
       />

@@ -41,7 +41,13 @@ const AlertTypeChoose: React.FC<UpdateFormProps> = (props) => {
   /**
    * extract props
    */
-  const { onSubmit: handleSubmit, onCancel: handleCancelVisible, onTest: handleTest, modalVisible, values } = props;
+  const {
+    onSubmit: handleSubmit,
+    onCancel: handleCancelVisible,
+    onTest: handleTest,
+    modalVisible,
+    values
+  } = props;
 
   /**
    * init form

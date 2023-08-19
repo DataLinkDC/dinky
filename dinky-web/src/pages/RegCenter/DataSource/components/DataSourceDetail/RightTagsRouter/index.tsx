@@ -46,7 +46,10 @@ const RightTagsRouter: React.FC<RightTagsRouterProps> = (props) => {
   const [tableColumns, setTableColumns] = useState<Partial<DataSources.Column[]>>([]);
   useEffect(() => {
     const fetchData = async () => {
-      const result = await queryDataByParams(API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE, queryParams);
+      const result = await queryDataByParams(
+        API_CONSTANTS.DATASOURCE_GET_COLUMNS_BY_TABLE,
+        queryParams
+      );
       setTableColumns(result);
     };
     if (queryParams.id !== 0) {

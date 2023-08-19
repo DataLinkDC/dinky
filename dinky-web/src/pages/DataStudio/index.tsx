@@ -25,7 +25,13 @@ import LeftContainer from '@/pages/DataStudio/LeftContainer';
 import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
-import { DataStudioParams, StateType, TabsItemType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {
+  DataStudioParams,
+  StateType,
+  TabsItemType,
+  TabsPageType,
+  VIEW
+} from '@/pages/DataStudio/model';
 import RightContainer from '@/pages/DataStudio/RightContainer';
 import {
   getClusterConfigurationData,
@@ -162,7 +168,9 @@ const DataStudio = (props: any) => {
       const changed = Object.keys(res).some((key) => {
         return (
           res[key] !== params.taskData[key] &&
-          (res[key] instanceof Object ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key]) : true)
+          (res[key] instanceof Object
+            ? JSON.stringify(res[key]) !== JSON.stringify(params.taskData[key])
+            : true)
         );
       });
 
@@ -182,7 +190,9 @@ const DataStudio = (props: any) => {
    * 渲染头部
    * @returns {JSX.Element}
    */
-  const renderHeaderContainer = () => <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />;
+  const renderHeaderContainer = () => (
+    <HeaderContainer size={size} activeBreadcrumbTitle={activeBreadcrumbTitle} />
+  );
 
   /**
    * 渲染左侧侧边栏
@@ -223,7 +233,9 @@ const DataStudio = (props: any) => {
                 borderBlockStart: `1px solid ${themeValue.borderColor}`,
                 borderInlineEnd: `1px solid ${themeValue.borderColor}`
               }}
-              onClick={(item) => updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)}
+              onClick={(item) =>
+                updateSelectLeftKey(item.key === leftContainer.selectKey ? '' : item.key)
+              }
             />
 
             {/*底部菜单*/}
@@ -276,7 +288,8 @@ const DataStudio = (props: any) => {
 
               <Content
                 style={{
-                  width: size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width
+                  width:
+                    size.width - 2 * VIEW.sideWidth - leftContainer.width - rightContainer.width
                 }}
               >
                 <MiddleContainer />
@@ -303,12 +316,16 @@ const DataStudio = (props: any) => {
                 if (parseInt(tabs.activeKey) < 0) {
                   return TabsPageType.None;
                 }
-                const v = (tabs.panes as TabsItemType[]).find((item) => item.key === tabs.activeKey);
+                const v = (tabs.panes as TabsItemType[]).find(
+                  (item) => item.key === tabs.activeKey
+                );
                 return x.isShow(v?.type ?? TabsPageType.None, v?.subType);
               }).map((x) => {
                 return { key: x.key, label: x.label, icon: x.icon };
               })}
-              onClick={(item) => updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)}
+              onClick={(item) =>
+                updateSelectRightKey(item.key === rightContainer.selectKey ? '' : item.key)
+              }
             />
           </Sider>
         </Layout>

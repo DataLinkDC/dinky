@@ -1,4 +1,9 @@
-import { JOB_STATUS_FILTER, LIFECYCLE_FILTER, TagJobLifeCycle, TagJobStatus } from '@/pages/DevOps/function';
+import {
+  JOB_STATUS_FILTER,
+  LIFECYCLE_FILTER,
+  TagJobLifeCycle,
+  TagJobStatus
+} from '@/pages/DevOps/function';
 import JobHistoryList from '@/pages/DevOps/JobList/components/JobHistoryList';
 import { queryList } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';

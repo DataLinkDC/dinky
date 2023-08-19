@@ -64,7 +64,10 @@ const MenuList: React.FC = () => {
    */
   const handleDeleteSubmit = async () => {
     await executeAndCallbackRefresh(async () => {
-      await handleRemoveById(API_CONSTANTS.MENU_DELETE, menuState.clickNode?.rightClickedNode.key as number);
+      await handleRemoveById(
+        API_CONSTANTS.MENU_DELETE,
+        menuState.clickNode?.rightClickedNode.key as number
+      );
     });
     setMenuState((prevState) => ({ ...prevState, contextMenuOpen: false }));
   };
@@ -91,7 +94,12 @@ const MenuList: React.FC = () => {
    * cancel
    */
   const handleCancel = () => {
-    setMenuState((prevState) => ({ ...prevState, addedMenuOpen: false, editMenuOpen: false, contextMenuOpen: false }));
+    setMenuState((prevState) => ({
+      ...prevState,
+      addedMenuOpen: false,
+      editMenuOpen: false,
+      contextMenuOpen: false
+    }));
   };
 
   /**
@@ -136,7 +144,11 @@ const MenuList: React.FC = () => {
       contextMenuOpen: true,
       selectedKeys: [node.key],
       clickNode: { ...prevState.clickNode, rightClickedNode: node },
-      contextMenuPosition: { ...prevState.contextMenuPosition, top: event.clientY + 20, left: event.clientX + 20 }
+      contextMenuPosition: {
+        ...prevState.contextMenuPosition,
+        top: event.clientY + 20,
+        left: event.clientX + 20
+      }
     }));
   };
 
@@ -188,8 +200,15 @@ const MenuList: React.FC = () => {
    * @returns {JSX.Element}
    */
   const renderRightContent = () => {
-    const { editMenuOpen, addedMenuOpen, selectedKeys, isRootMenu, menuTreeData, sysMenuValue, isEditDisabled } =
-      menuState;
+    const {
+      editMenuOpen,
+      addedMenuOpen,
+      selectedKeys,
+      isRootMenu,
+      menuTreeData,
+      sysMenuValue,
+      isEditDisabled
+    } = menuState;
 
     // default
     if (!editMenuOpen && !addedMenuOpen) {
@@ -211,7 +230,9 @@ const MenuList: React.FC = () => {
             values={sysMenuValue}
             onCancel={handleCancel}
             open={editMenuOpen}
-            onSubmit={async (value: Partial<SysMenu>): Promise<boolean> => await handleAddOrUpdateSubmit(value)}
+            onSubmit={async (value: Partial<SysMenu>): Promise<boolean> =>
+              await handleAddOrUpdateSubmit(value)
+            }
           />
         </>
       );

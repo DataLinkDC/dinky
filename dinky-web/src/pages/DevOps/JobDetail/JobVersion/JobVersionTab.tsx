@@ -119,7 +119,11 @@ const JobVersionTab = (props: JobProps) => {
                         }
                         description={item.createTime}
                       />
-                      {!item.isLatest ? <DeleteTwoTone onClick={() => deleteVersion(item)} /> : <></>}
+                      {!item.isLatest ? (
+                        <DeleteTwoTone onClick={() => deleteVersion(item)} />
+                      ) : (
+                        <></>
+                      )}
                     </Skeleton>
                   </List.Item>
                 </>

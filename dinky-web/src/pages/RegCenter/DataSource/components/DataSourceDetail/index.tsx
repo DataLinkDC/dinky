@@ -74,11 +74,13 @@ const DataSourceDetail = (props: any) => {
   const querySchemaTree = useCallback(async () => {
     clearState();
     setLoading(true);
-    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then((res) => {
-      if (res.code === RESPONSE_CODE.SUCCESS) {
-        setTreeData(res.datas);
+    await getDataByIdReturnResult(API_CONSTANTS.DATASOURCE_GET_SCHEMA_TABLES, dataSource.id).then(
+      (res) => {
+        if (res.code === RESPONSE_CODE.SUCCESS) {
+          setTreeData(res.datas);
+        }
       }
-    });
+    );
     setLoading(false);
   }, [dataSource.id]);
 
@@ -156,7 +158,12 @@ const DataSourceDetail = (props: any) => {
         >
           {l('button.refresh')}
         </Button>
-        <Button size={'middle'} icon={<BackwardOutlined />} type='primary' onClick={handleBackClick}>
+        <Button
+          size={'middle'}
+          icon={<BackwardOutlined />}
+          type='primary'
+          onClick={handleBackClick}
+        >
           {l('button.back')}
         </Button>
       </Space>

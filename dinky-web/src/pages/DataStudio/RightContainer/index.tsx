@@ -34,7 +34,15 @@ export type RightContainerProps = {
 };
 const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
   const themeValue = useThemeValue();
-  const { size, leftContainer, rightContainer, bottomHeight, updateRightWidth, updateSelectRightKey, tabs } = prop;
+  const {
+    size,
+    leftContainer,
+    rightContainer,
+    bottomHeight,
+    updateRightWidth,
+    updateSelectRightKey,
+    tabs
+  } = prop;
   const maxWidth = size.width - 2 * VIEW.leftToolWidth - leftContainer.width - 600;
   return (
     <MovableSidebar
@@ -60,7 +68,11 @@ const RightContainer: React.FC<RightContainerProps> = (prop: any) => {
       style={{ borderInlineStart: '1px solid ' + themeValue.borderColor }}
     >
       {tabs.panes.length > 0 ? (
-        <Tabs activeKey={rightContainer.selectKey} items={RightSide} tabBarStyle={{ display: 'none' }} />
+        <Tabs
+          activeKey={rightContainer.selectKey}
+          items={RightSide}
+          tabBarStyle={{ display: 'none' }}
+        />
       ) : (
         <> </>
       )}

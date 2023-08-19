@@ -135,7 +135,9 @@ const Login: React.FC = () => {
       const result = await login({ ...values });
       if (result.code === 0) {
         // if login success then get token info and set it to local storage
-        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) => setLocalStorageOfToken(JSON.stringify(res)));
+        await queryDataByParams(API_CONSTANTS.TOKEN_INFO).then((res) =>
+          setLocalStorageOfToken(JSON.stringify(res))
+        );
       }
       setInitialState((s) => ({ ...s, currentUser: result.datas }));
       await SuccessMessageAsync(l('login.result', '', { msg: result.msg, time: result.time }));

@@ -72,7 +72,10 @@ const QueryForm: React.FC<QueryFormProps> = (props) => {
           <ProFormText addonBefore={'WHERE'} width={'md'} key='where' name='where' required />
         </AutoComplete>
 
-        <AutoComplete options={autoCompleteColumns} onSelect={(value: string) => handleChange(value, 'order')}>
+        <AutoComplete
+          options={autoCompleteColumns}
+          onSelect={(value: string) => handleChange(value, 'order')}
+        >
           <ProFormText addonBefore={'ORDER BY'} width={'md'} key='order' name='order' required />
         </AutoComplete>
       </>

@@ -36,7 +36,9 @@ const DataSourceModal: React.FC<DataSourceModalProps> = (props) => {
   const { visible, values, onCancel, onSubmit, onTest } = props;
   const [submitting, setSubmitting] = React.useState<boolean>(false);
   const [flinkConfigValue, setFlinkConfigValue] = React.useState<string>(values.flinkConfig || '');
-  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(values.flinkTemplate || '');
+  const [flinkTemplateValue, setFlinkTemplateValue] = React.useState<string>(
+    values.flinkTemplate || ''
+  );
 
   /**
    * init form

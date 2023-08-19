@@ -17,11 +17,22 @@
 
 import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
 import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
-import { getAlertIcon, getJSONData, getSmsType } from '@/pages/RegCenter/Alert/AlertInstance/function';
-import { createOrModifyAlertInstance, sendTest } from '@/pages/RegCenter/Alert/AlertInstance/service';
+import {
+  getAlertIcon,
+  getJSONData,
+  getSmsType
+} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import {
+  createOrModifyAlertInstance,
+  sendTest
+} from '@/pages/RegCenter/Alert/AlertInstance/service';
 import { queryList } from '@/services/api';
 import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import { PROTABLE_OPTIONS_PUBLIC, PRO_LIST_CARD_OPTIONS, SWITCH_OPTIONS } from '@/services/constants';
+import {
+  PROTABLE_OPTIONS_PUBLIC,
+  PRO_LIST_CARD_OPTIONS,
+  SWITCH_OPTIONS
+} from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { Alert } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
@@ -161,7 +172,12 @@ const AlertInstanceList: React.FC = () => {
         <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
-        <Switch key={item.id} {...SWITCH_OPTIONS()} checked={item.enabled} onChange={() => handleEnable(item)} />
+        <Switch
+          key={item.id}
+          {...SWITCH_OPTIONS()}
+          checked={item.enabled}
+          onChange={() => handleEnable(item)}
+        />
       </Space>
     );
   };
@@ -180,7 +196,9 @@ const AlertInstanceList: React.FC = () => {
    * render right tool bar
    */
   const renderToolBar = () => {
-    return () => [<CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)} />];
+    return () => [
+      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)} />
+    ];
   };
 
   /**

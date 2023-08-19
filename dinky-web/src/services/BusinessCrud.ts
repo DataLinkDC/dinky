@@ -166,7 +166,12 @@ export const updateEnabled = async (url: string, params: any) => {
   }
 };
 
-export const handleOption = async (url: string, title: string, param: any, afterCallBack?: () => void) => {
+export const handleOption = async (
+  url: string,
+  title: string,
+  param: any,
+  afterCallBack?: () => void
+) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const result = await postAll(url, param);
@@ -267,7 +272,12 @@ export const queryDataByParams = async (
   }
 };
 
-export const handlePutDataByParams = async (url: string, title: string, params: any, afterCallBack?: () => void) => {
+export const handlePutDataByParams = async (
+  url: string,
+  title: string,
+  params: any,
+  afterCallBack?: () => void
+) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const result = await putData(url, { ...params });

@@ -71,7 +71,11 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
       <Space direction={'vertical'} size={0}>
         {refreshLogCallback && (
           <>
-            <CircleBtn icon={<SyncOutlined spin={loading} />} onClick={handleSyncLog} title={l('button.refresh')} />
+            <CircleBtn
+              icon={<SyncOutlined spin={loading} />}
+              onClick={handleSyncLog}
+              title={l('button.refresh')}
+            />
             {autoRefresh ? (
               <CircleBtn
                 icon={<StopFilled spin={stopping} />}
@@ -87,10 +91,26 @@ const EditorFloatBtn: React.FC<EditFloatBtnProps> = (props) => {
             )}
           </>
         )}
-        <CircleBtn icon={<VerticalAlignTopOutlined />} onClick={handleBackTop} title={l('button.backTop')} />
-        <CircleBtn icon={<VerticalAlignBottomOutlined />} onClick={handleBackBottom} title={l('button.backBottom')} />
-        <CircleBtn icon={<UpCircleFilled />} onClick={handleUpScroll} title={l('button.upScroll')} />
-        <CircleBtn icon={<DownCircleFilled />} onClick={handleDownScroll} title={l('button.downScroll')} />
+        <CircleBtn
+          icon={<VerticalAlignTopOutlined />}
+          onClick={handleBackTop}
+          title={l('button.backTop')}
+        />
+        <CircleBtn
+          icon={<VerticalAlignBottomOutlined />}
+          onClick={handleBackBottom}
+          title={l('button.backBottom')}
+        />
+        <CircleBtn
+          icon={<UpCircleFilled />}
+          onClick={handleUpScroll}
+          title={l('button.upScroll')}
+        />
+        <CircleBtn
+          icon={<DownCircleFilled />}
+          onClick={handleDownScroll}
+          title={l('button.downScroll')}
+        />
       </Space>
     </>
   );

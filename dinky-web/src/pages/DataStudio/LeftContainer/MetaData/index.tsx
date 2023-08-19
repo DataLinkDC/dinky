@@ -158,7 +158,11 @@ const MetaData = (props: any) => {
 
   return (
     <Spin spinning={isLoadingDatabase} delay={500}>
-      <ProForm style={{ height: 40 }} initialValues={{ selectDb: selectDatabaseId }} submitter={false}>
+      <ProForm
+        style={{ height: 40 }}
+        initialValues={{ selectDb: selectDatabaseId }}
+        submitter={false}
+      >
         <ProFormSelect
           style={{ paddingInline: 10 }}
           // width={leftContainer.width  }

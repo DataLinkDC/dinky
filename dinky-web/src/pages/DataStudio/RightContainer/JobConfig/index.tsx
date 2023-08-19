@@ -136,7 +136,9 @@ const JobConfig = (props: any) => {
                   style={{ width: '100%' }}
                   placeholder={l('pages.datastudio.label.jobConfig.cluster.tip')}
                   label={l('pages.datastudio.label.jobConfig.cluster')}
-                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', { type: current.type })}
+                  tooltip={l('pages.datastudio.label.jobConfig.clusterConfig.tip1', '', {
+                    type: current.type
+                  })}
                   name='clusterId'
                   options={buildClusterOptions(sessionCluster)}
                   fieldProps={{
@@ -251,8 +253,14 @@ const JobConfig = (props: any) => {
         >
           <ProFormGroup style={{ display: 'flex', width: '100%' }}>
             <Space key={'config'} style={{ display: 'flex' }} align='baseline'>
-              <ProFormText name='key' placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')} />
-              <ProFormText name='value' placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')} />
+              <ProFormText
+                name='key'
+                placeholder={l('pages.datastudio.label.jobConfig.addConfig.params')}
+              />
+              <ProFormText
+                name='value'
+                placeholder={l('pages.datastudio.label.jobConfig.addConfig.value')}
+              />
             </Space>
           </ProFormGroup>
         </ProFormList>

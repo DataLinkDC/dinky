@@ -115,7 +115,10 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <AutoComplete options={AUTO_COMPLETE_TYPE} onSelect={(value) => form.setFieldsValue({ url: value })}>
+          <AutoComplete
+            options={AUTO_COMPLETE_TYPE}
+            onSelect={(value) => form.setFieldsValue({ url: value })}
+          >
             <ProForm.Item
               name='url'
               label={l('rc.ds.url')}
@@ -128,8 +131,16 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
 
         {!excludeFormItem && (
           <ProFormGroup>
-            <ProForm.Item name='flinkConfig' label={l('rc.ds.flinkConfig')} tooltip={l('rc.ds.flinkConfigTooltip')}>
-              <CodeEdit {...CodeEditProps} onChange={flinkConfigChange} code={values.flinkConfig || ''} />
+            <ProForm.Item
+              name='flinkConfig'
+              label={l('rc.ds.flinkConfig')}
+              tooltip={l('rc.ds.flinkConfigTooltip')}
+            >
+              <CodeEdit
+                {...CodeEditProps}
+                onChange={flinkConfigChange}
+                code={values.flinkConfig || ''}
+              />
             </ProForm.Item>
 
             <ProForm.Item
@@ -137,7 +148,11 @@ const DataSourceProForm: React.FC<DataSourceProFormProps> = (props) => {
               label={l('rc.ds.flinkTemplate')}
               tooltip={l('rc.ds.flinkTemplateTooltip')}
             >
-              <CodeEdit {...CodeEditProps} onChange={flinkTemplateChange} code={values.flinkTemplate || ''} />
+              <CodeEdit
+                {...CodeEditProps}
+                onChange={flinkTemplateChange}
+                code={values.flinkTemplate || ''}
+              />
             </ProForm.Item>
           </ProFormGroup>
         )}

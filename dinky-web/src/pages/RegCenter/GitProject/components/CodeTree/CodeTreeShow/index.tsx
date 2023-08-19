@@ -86,7 +86,11 @@ export const CodeTreeShow: React.FC<CodeTreeShowProps> = (props) => {
       <Row>
         <Col span={6} className={'siderTree gitCodeTree'}>
           {/* tree */}
-          <SiderTree treeData={treeData} onNodeClick={(info: any) => handleNodeClick(info)} loading={loading} />
+          <SiderTree
+            treeData={treeData}
+            onNodeClick={(info: any) => handleNodeClick(info)}
+            loading={loading}
+          />
         </Col>
         <Col span={18}>
           {/* code */}

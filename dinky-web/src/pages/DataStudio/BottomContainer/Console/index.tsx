@@ -7,7 +7,13 @@ const Console: React.FC = (props: any) => {
   useEffect(() => {}, []);
 
   return (
-    <CodeShow code={props.console} height={props.height - 53} language={'kotlin'} lineNumbers={'off'} showFloatButton />
+    <CodeShow
+      code={props.console}
+      height={props.height - 53}
+      language={'kotlin'}
+      lineNumbers={'off'}
+      showFloatButton
+    />
   );
 };
 

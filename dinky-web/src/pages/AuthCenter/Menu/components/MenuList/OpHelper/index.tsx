@@ -23,7 +23,12 @@ import { Alert, Space } from 'antd';
 export default () => {
   return (
     <>
-      <Space className={'code-content-empty'} direction='horizontal' size={'large'} style={{ width: '100%' }}>
+      <Space
+        className={'code-content-empty'}
+        direction='horizontal'
+        size={'large'}
+        style={{ width: '100%' }}
+      >
         <Alert showIcon banner message={l('menu.tips.1')} type='success' />
         <Alert showIcon banner message={l('menu.tips.2')} type='info' />
         <Alert showIcon banner message={l('menu.tips.3')} type='warning' />

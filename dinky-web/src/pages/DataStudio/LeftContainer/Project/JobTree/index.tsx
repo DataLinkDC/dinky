@@ -17,7 +17,11 @@
  *
  */
 
-import { buildProjectTree, generateList, getParentKey } from '@/pages/DataStudio/LeftContainer/Project/function';
+import {
+  buildProjectTree,
+  generateList,
+  getParentKey
+} from '@/pages/DataStudio/LeftContainer/Project/function';
 import { StateType } from '@/pages/DataStudio/model';
 import { BtnRoute } from '@/pages/DataStudio/route';
 import { Catalogue } from '@/types/Studio/data';
@@ -106,7 +110,10 @@ const JobTree: React.FC<TreeProps & connect> = (props) => {
           autoExpandParent={autoExpandParent}
         />
       ) : (
-        <Empty className={'code-content-empty'} description={l('datastudio.project.create.folder.tip')} />
+        <Empty
+          className={'code-content-empty'}
+          description={l('datastudio.project.create.folder.tip')}
+        />
       )}
     </>
   );

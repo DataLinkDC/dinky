@@ -99,7 +99,9 @@ export default () => {
   }, [startTime]);
 
   useEffect(() => {
-    setEventSource(getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + '?lastTime=' + endTime.getTime()));
+    setEventSource(
+      getSseData(API_CONSTANTS.MONITOR_GET_LAST_DATA + '?lastTime=' + endTime.getTime())
+    );
   }, [endTime]);
 
   useEffect(() => {
@@ -194,7 +196,15 @@ export default () => {
       {layoutData != undefined &&
         Object.keys(layoutData).map((name) => {
           return (
-            <ProCard collapsible title={name} ghost hoverable bordered headerBordered gutter={[0, 8]}>
+            <ProCard
+              collapsible
+              title={name}
+              ghost
+              hoverable
+              bordered
+              headerBordered
+              gutter={[0, 8]}
+            >
               <Row gutter={[8, 16]}>
                 {layoutData[name].map((j) => {
                   // return <></>

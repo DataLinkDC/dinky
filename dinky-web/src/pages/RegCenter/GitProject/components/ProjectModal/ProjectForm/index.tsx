@@ -88,7 +88,12 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
    */
   const renderUrlBeforeSelect = () => {
     return (
-      <Select style={{ width: '5vw' }} defaultValue={cloneType} onChange={handleTypeChange} options={CLONE_TYPES} />
+      <Select
+        style={{ width: '5vw' }}
+        defaultValue={cloneType}
+        onChange={handleTypeChange}
+        options={CLONE_TYPES}
+      />
     );
   };
 
@@ -180,10 +185,19 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
 
         <ProForm.Group>
           <ProForm.Item name='buildArgs' label={l('rc.gp.buildArgs')}>
-            <CodeEdit onChange={(value) => setBuildArgsValue(value)} code={buildArgs} {...CodeEditProps} />
+            <CodeEdit
+              onChange={(value) => setBuildArgsValue(value)}
+              code={buildArgs}
+              {...CodeEditProps}
+            />
           </ProForm.Item>
 
-          <ProFormSwitch width='xs' name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
+          <ProFormSwitch
+            width='xs'
+            name='enabled'
+            label={l('global.table.isEnable')}
+            {...SWITCH_OPTIONS()}
+          />
           <ProFormRadio.Group
             name='codeType'
             width={'xs'}
@@ -198,7 +212,12 @@ const ProjectForm: React.FC<ProjectFormProps> = (props) => {
         </ProForm.Group>
 
         <ProForm.Group>
-          <ProFormTextArea name='pom' width={'md'} label={l('rc.gp.pom')} placeholder={l('rc.gp.pomPlaceholder')} />
+          <ProFormTextArea
+            name='pom'
+            width={'md'}
+            label={l('rc.gp.pom')}
+            placeholder={l('rc.gp.pomPlaceholder')}
+          />
           <ProFormTextArea
             name='description'
             width={'md'}

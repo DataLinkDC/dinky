@@ -18,7 +18,13 @@
  */
 
 import { l } from '@/utils/intl';
-import { DeleteOutlined, EditOutlined, PlusCircleOutlined, UndoOutlined, UploadOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  PlusCircleOutlined,
+  UndoOutlined,
+  UploadOutlined
+} from '@ant-design/icons';
 
 /**
  *  the right context menu

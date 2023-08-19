@@ -18,7 +18,11 @@
  */
 
 import { ChartData, JobMetrics, MetricsLayout, SubTask, Task } from '@/pages/Metrics/Job/data';
-import { buildMetricsList, buildRunningJobList, buildSubTaskList } from '@/pages/Metrics/Job/function';
+import {
+  buildMetricsList,
+  buildRunningJobList,
+  buildSubTaskList
+} from '@/pages/Metrics/Job/function';
 import { getFlinkRunTask, saveFlinkMetrics } from '@/pages/Metrics/Job/service';
 import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -142,7 +146,11 @@ const Job = () => {
       ...prevState,
       selectSubTask: subTaskName
     }));
-    const jobMetricsDataList = await getFlinkJobMetrics(metricsData.url, metricsData.jid, subTaskName);
+    const jobMetricsDataList = await getFlinkJobMetrics(
+      metricsData.url,
+      metricsData.jid,
+      subTaskName
+    );
     setMetrics(jobMetricsDataList.sort());
   };
 

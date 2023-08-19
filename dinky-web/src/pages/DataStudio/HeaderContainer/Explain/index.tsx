@@ -141,7 +141,9 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
                 return (
                   <>
                     {row.sql ? (
-                      <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>{row.sql}</Paragraph>
+                      <Paragraph ellipsis={{ rows: 2, expandable: true, symbol: 'more' }}>
+                        {row.sql}
+                      </Paragraph>
                     ) : null}
                     {row.error ? (
                       <Paragraph>
@@ -157,14 +159,22 @@ const Explain: React.FC<ExplainProps> = (props: any) => {
                 return (
                   <Space size={0}>
                     {row.parseTrue ? (
-                      <Tag color='#44b549'>{l('pages.datastudio.explain.validate.grammar.right')}</Tag>
+                      <Tag color='#44b549'>
+                        {l('pages.datastudio.explain.validate.grammar.right')}
+                      </Tag>
                     ) : (
-                      <Tag color='#ff4d4f'>{l('pages.datastudio.explain.validate.grammar.error')}</Tag>
+                      <Tag color='#ff4d4f'>
+                        {l('pages.datastudio.explain.validate.grammar.error')}
+                      </Tag>
                     )}
                     {row.explainTrue ? (
-                      <Tag color='#108ee9'>{l('pages.datastudio.explain.validate.logic.right')}</Tag>
+                      <Tag color='#108ee9'>
+                        {l('pages.datastudio.explain.validate.logic.right')}
+                      </Tag>
                     ) : (
-                      <Tag color='#ff4d4f'>{l('pages.datastudio.explain.validate.logic.error')}</Tag>
+                      <Tag color='#ff4d4f'>
+                        {l('pages.datastudio.explain.validate.logic.error')}
+                      </Tag>
                     )}
                     {row.explainTime}
                   </Space>

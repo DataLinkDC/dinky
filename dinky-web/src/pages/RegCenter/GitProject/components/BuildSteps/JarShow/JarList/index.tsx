@@ -120,7 +120,10 @@ const JarList: React.FC<JarListProps> = (props) => {
       ...item,
       orderLine: index + 1
     }));
-    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR, l('rc.gp.ucl.jarOrder'), { projectId, jars: updatedItems });
+    await handleOption(API_CONSTANTS.GIT_DRAGEND_SORT_JAR, l('rc.gp.ucl.jarOrder'), {
+      projectId,
+      jars: updatedItems
+    });
     setClasses(updatedItems);
     setLoading(false);
     actionRef.current?.reload();

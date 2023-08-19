@@ -30,7 +30,11 @@ export const CommunityRules = () => {
           <li>{l('about.communityRules.3')}</li>
           <li>{l('about.communityRules.4')}</li>
           <li>
-            <a href={'https://github.com/DataLinkDC/dinky/issues/66'} target={'_blank'} rel='noreferrer'>
+            <a
+              href={'https://github.com/DataLinkDC/dinky/issues/66'}
+              target={'_blank'}
+              rel='noreferrer'
+            >
               Issue
             </a>
             {l('about.communityRules.5')}

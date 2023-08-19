@@ -37,7 +37,8 @@ const RoleTransfer = (props: TransferFromProps) => {
    */
   const { role, onChange: handleChange } = props;
 
-  const [roleTransferState, setRoleTransferState] = useState<RoleTransferState>(InitRoleTransferState);
+  const [roleTransferState, setRoleTransferState] =
+    useState<RoleTransferState>(InitRoleTransferState);
 
   /**
    * select change

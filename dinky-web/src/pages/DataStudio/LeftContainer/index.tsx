@@ -87,7 +87,9 @@ const LeftContainer: React.FC<LeftContainerProps> = (props: any) => {
     style: { borderInlineEnd: '1px solid ' + themeValue.borderColor }
   };
 
-  const content = <Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{ display: 'none' }} />;
+  const content = (
+    <Tabs activeKey={leftContainer.selectKey} items={LeftSide} tabBarStyle={{ display: 'none' }} />
+  );
 
   return (
     <MovableSidebar {...restMovableSidebarProps}>

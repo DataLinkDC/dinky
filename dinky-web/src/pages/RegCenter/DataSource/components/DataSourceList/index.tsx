@@ -37,7 +37,12 @@ import { DataSources } from '@/types/RegCenter/data.d';
 import { l } from '@/utils/intl';
 import { WarningMessage } from '@/utils/messages';
 import { useNavigate } from '@@/exports';
-import { CheckCircleOutlined, CopyTwoTone, ExclamationCircleOutlined, HeartTwoTone } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  CopyTwoTone,
+  ExclamationCircleOutlined,
+  HeartTwoTone
+} from '@ant-design/icons';
 import { ActionType, ProList } from '@ant-design/pro-components';
 import { Button, Descriptions, Modal, Space, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
@@ -133,9 +138,13 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
    */
   const handleCheckHeartBeat = async (item: DataSources.DataSource) => {
     await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID, l('button.heartbeat'), {
-        id: item.id
-      });
+      await handlePutDataByParams(
+        API_CONSTANTS.DATASOURCE_CHECK_HEARTBEAT_BY_ID,
+        l('button.heartbeat'),
+        {
+          id: item.id
+        }
+      );
     });
   };
 
@@ -247,7 +256,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
   const renderDataSource = dataSource.map((item) => ({
     subTitle: renderDataSourceSubTitle(item),
     actions: <DataAction>{renderDataSourceActionButton(item)}</DataAction>,
-    avatar: <Space onClick={() => enterDetailPageClickHandler(item)}>{renderDBIcon(item.type, 60)}</Space>,
+    avatar: (
+      <Space onClick={() => enterDetailPageClickHandler(item)}>{renderDBIcon(item.type, 60)}</Space>
+    ),
     content: renderDataSourceContent(item),
     key: item.id
   }));
@@ -275,7 +286,9 @@ const DataSourceTable: React.FC<connect & StateType> = (props) => {
             tooltip={l('rc.ds.enter')}
             actionRef={actionRef}
             headerTitle={l('rc.ds.management')}
-            toolBarRender={() => [<CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />]}
+            toolBarRender={() => [
+              <CreateBtn key={'CreateBtn'} onClick={() => setModalVisible(true)} />
+            ]}
             dataSource={renderDataSource}
           />
 

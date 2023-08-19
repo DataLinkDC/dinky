@@ -45,7 +45,9 @@ const renderMenuType = (menuType: string) => {
 const renderTitle = (value: SysMenu) => (
   <Space>
     {value.perms && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.perms}</span>}
-    {value.type && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>}
+    {value.type && (
+      <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{renderMenuType(value.type)}</span>
+    )}
     {value.note && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.note}</span>}
     {value.path && <span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;{value.path}</span>}
   </Space>
@@ -87,7 +89,9 @@ export const getMaxOrderNumToNextOrderNum = (tree: SysMenu[]): number => {
  */
 export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level = 1): any =>
   data
-    .filter((sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)
+    .filter(
+      (sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+    )
     .map((item: SysMenu) => {
       return {
         isLeaf: !item.children || item.children.length === 0,
@@ -117,9 +121,15 @@ export const buildMenuTree = (data: SysMenu[], searchValue: string = '', level =
  * build menu form tree (filter button)
  */
 
-export const buildMenuFormTree = (data: SysMenu[], searchValue: string = '', filterButton = false): any =>
+export const buildMenuFormTree = (
+  data: SysMenu[],
+  searchValue: string = '',
+  filterButton = false
+): any =>
   data
-    .filter((sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1)
+    .filter(
+      (sysMenu: SysMenu) => sysMenu.name.toLowerCase().indexOf(searchValue.toLowerCase()) > -1
+    )
     .filter((sysMenu: SysMenu) => (filterButton ? sysMenu.type !== 'F' : false))
     .map((item: SysMenu) => {
       // const renderTitle = (value: SysMenu) =>( <>{value.name} {value.perms && <span style={{color: 'grey'}}> ----- {value.perms}</span>}</>)

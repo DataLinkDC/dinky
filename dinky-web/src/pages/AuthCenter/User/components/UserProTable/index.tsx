@@ -144,7 +144,9 @@ const UserProTable = () => {
 
   const handleRecoveryUser = async (value: UserBaseInfo.User) => {
     await executeAndCallbackRefresh(async () => {
-      await handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), { id: value.id });
+      await handlePutDataByParams(API_CONSTANTS.USER_RECOVERY, l('button.recovery'), {
+        id: value.id
+      });
     });
   };
 
@@ -153,20 +155,20 @@ const UserProTable = () => {
       WarningMessage(l('user.isdelete'));
       return;
     } else {
-      await handlePutDataByParams(API_CONSTANTS.USER_RESET_PASSWORD, l('user.resetPassword'), { id: value.id }).then(
-        (res) => {
-          const {
-            datas: { user, originalPassword }
-          } = res;
-          SuccessMessage(
-            l('user.resetPasswordSuccess', '', {
-              username: user.username,
-              password: originalPassword
-            }),
-            5
-          );
-        }
-      );
+      await handlePutDataByParams(API_CONSTANTS.USER_RESET_PASSWORD, l('user.resetPassword'), {
+        id: value.id
+      }).then((res) => {
+        const {
+          datas: { user, originalPassword }
+        } = res;
+        SuccessMessage(
+          l('user.resetPasswordSuccess', '', {
+            username: user.username,
+            password: originalPassword
+          }),
+          5
+        );
+      });
     }
   };
 
@@ -220,7 +222,11 @@ const UserProTable = () => {
       hideInSearch: true,
       render: (_: any, record: UserBaseInfo.User) => {
         return (
-          <EnableSwitchBtn key={`${record.id}_enable`} record={record} onChange={() => handleChangeEnable(record)} />
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
         );
       },
       filters: STATUS_MAPPING(),
@@ -242,7 +248,11 @@ const UserProTable = () => {
       fixed: 'right',
       render: (_: any, record: UserBaseInfo.User) => [
         <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
-        <AssignBtn key={`${record.id}_delete`} onClick={() => handleAssignRole(record)} title={l('user.assignRole')} />,
+        <AssignBtn
+          key={`${record.id}_delete`}
+          onClick={() => handleAssignRole(record)}
+          title={l('user.assignRole')}
+        />,
         <>
           {record.userType === UserType.LOCAL && (
             <Button
@@ -289,7 +299,12 @@ const UserProTable = () => {
               okText={l('button.confirm')}
               cancelText={l('button.cancel')}
             >
-              <Button title={l('button.reset')} key={'reset'} className={'blue-icon'} icon={<RedoOutlined />} />
+              <Button
+                title={l('button.reset')}
+                key={'reset'}
+                className={'blue-icon'}
+                icon={<RedoOutlined />}
+              />
             </Popconfirm>
           )}
         </>
@@ -342,7 +357,9 @@ const UserProTable = () => {
           <UserModalForm
             key={'handleUpdateUser'}
             onSubmit={handleSubmitUser}
-            onCancel={() => setUserState((prevState) => ({ ...prevState, editUserOpen: false, value: {} }))}
+            onCancel={() =>
+              setUserState((prevState) => ({ ...prevState, editUserOpen: false, value: {} }))
+            }
             modalVisible={userState.editUserOpen}
             values={userState.value}
           />
@@ -356,7 +373,9 @@ const UserProTable = () => {
             user={userState.value}
             modalVisible={userState.assignRoleOpen}
             onChange={(value) => setUserState((prevState) => ({ ...prevState, roleIds: value }))}
-            onCancel={() => setUserState((prevState) => ({ ...prevState, assignRoleOpen: false, value: {} }))}
+            onCancel={() =>
+              setUserState((prevState) => ({ ...prevState, assignRoleOpen: false, value: {} }))
+            }
             onSubmit={() => handleGrantRoleSubmit()}
           />
         </>

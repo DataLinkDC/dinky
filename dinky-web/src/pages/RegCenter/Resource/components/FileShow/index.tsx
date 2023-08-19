@@ -59,7 +59,9 @@ const FileShow: React.FC<FileShowProps> = (props) => {
    */
   const renderContent = () => {
     if (name && unSupportView(name) && isLeaf) {
-      return <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />;
+      return (
+        <Empty className={'code-content-empty'} description={l('rc.gp.codeTree.unSupportView')} />
+      );
     } else if (code === '' || code === null || code === undefined) {
       return <Empty className={'code-content-empty'} description={l('rc.resource.click')} />;
     } else {

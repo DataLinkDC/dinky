@@ -24,7 +24,12 @@ import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm';
 import TenantModalTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer';
 import TenantUserList from '@/pages/AuthCenter/Tenant/components/TenantUserList';
 import { queryList } from '@/services/api';
-import { handleAddOrUpdate, handleRemoveById, queryDataByParams, updateDataByParam } from '@/services/BusinessCrud';
+import {
+  handleAddOrUpdate,
+  handleRemoveById,
+  queryDataByParams,
+  updateDataByParam
+} from '@/services/BusinessCrud';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { UserBaseInfo } from '@/types/AuthCenter/data.d';
@@ -206,7 +211,9 @@ const TenantProTable: React.FC = () => {
             onClick={() => setTenantState((prevState) => ({ ...prevState, addedTenantOpen: true }))}
           />
         ]}
-        request={(params, sorter, filter: any) => queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.TENANT, { ...params, sorter, filter })
+        }
         columns={columns}
       />
 

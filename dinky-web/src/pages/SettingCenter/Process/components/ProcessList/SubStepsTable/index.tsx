@@ -53,7 +53,9 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
   };
 
   const renderLog = () => {
-    return <ShowLog cancelViewLog={cancelViewLog} visibleViewLog={visibleViewLog} {...viewLogProp} />;
+    return (
+      <ShowLog cancelViewLog={cancelViewLog} visibleViewLog={visibleViewLog} {...viewLogProp} />
+    );
   };
 
   const stepsColumns: ProColumns<ProcessSteps>[] = [
@@ -74,7 +76,9 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       dataIndex: 'info',
       align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewInfoLog'), record.info)} />;
+        return (
+          <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewInfoLog'), record.info)} />
+        );
       }
     },
     {
@@ -82,7 +86,9 @@ const SubStepsTable: React.FC<SubStepsTableProps> = (props) => {
       dataIndex: 'error',
       align: 'center',
       render: (_: any, record: ProcessSteps) => {
-        return <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewErrorLog'), record.error)} />;
+        return (
+          <ShowLogBtn onClick={() => handleViewLog(l('sys.process.viewErrorLog'), record.error)} />
+        );
       }
     },
     {

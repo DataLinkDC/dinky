@@ -59,7 +59,9 @@ const PasswordModal: React.FC<PasswordModalFormProps> = (props) => {
     form.setFieldsValue(values);
   }, [modalVisible, values, form]);
 
-  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({ ...values });
+  const [formVals, setFormVals] = useState<Partial<UserBaseInfo.ChangePasswordParams>>({
+    ...values
+  });
 
   /**
    * handle cancel

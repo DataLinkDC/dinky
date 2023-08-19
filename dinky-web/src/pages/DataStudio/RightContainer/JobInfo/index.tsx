@@ -55,11 +55,21 @@ const JobInfo = (props: any) => {
         <Descriptions.Item label={l('pages.datastudio.label.jobInfo.id')}>
           <Paragraph copyable>{current.id}</Paragraph>
         </Descriptions.Item>
-        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>{current.name}</Descriptions.Item>
-        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>{current.dialect}</Descriptions.Item>
-        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>{current.versionId}</Descriptions.Item>
-        <Descriptions.Item label={l('global.table.createTime')}>{current.createTime}</Descriptions.Item>
-        <Descriptions.Item label={l('global.table.updateTime')}>{current.updateTime}</Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.name')}>
+          {current.name}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.dialect')}>
+          {current.dialect}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('pages.datastudio.label.jobInfo.versionId')}>
+          {current.versionId}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('global.table.createTime')}>
+          {current.createTime}
+        </Descriptions.Item>
+        <Descriptions.Item label={l('global.table.updateTime')}>
+          {current.updateTime}
+        </Descriptions.Item>
       </Descriptions>
       <Form
         layout='vertical'

@@ -17,7 +17,13 @@
 
 import { SWITCH_OPTIONS } from '@/services/constants';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormDigit, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormDigit,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { Form, Radio } from 'antd';
 
 const Email = (props: any) => {
@@ -68,10 +74,30 @@ const Email = (props: any) => {
 
         {/* switch */}
         <ProForm.Group>
-          <ProFormSwitch width='xs' name='enableSmtpAuth' label={l('rc.ai.enableSmtpAuth')} {...SWITCH_OPTIONS()} />
-          <ProFormSwitch width='xs' name='starttlsEnable' label={l('rc.ai.starttlsEnable')} {...SWITCH_OPTIONS()} />
-          <ProFormSwitch width='xs' name='sslEnable' label={l('rc.ai.sslEnable')} {...SWITCH_OPTIONS()} />
-          <ProFormSwitch width='xs' name='enabled' label={l('global.table.isEnable')} {...SWITCH_OPTIONS()} />
+          <ProFormSwitch
+            width='xs'
+            name='enableSmtpAuth'
+            label={l('rc.ai.enableSmtpAuth')}
+            {...SWITCH_OPTIONS()}
+          />
+          <ProFormSwitch
+            width='xs'
+            name='starttlsEnable'
+            label={l('rc.ai.starttlsEnable')}
+            {...SWITCH_OPTIONS()}
+          />
+          <ProFormSwitch
+            width='xs'
+            name='sslEnable'
+            label={l('rc.ai.sslEnable')}
+            {...SWITCH_OPTIONS()}
+          />
+          <ProFormSwitch
+            width='xs'
+            name='enabled'
+            label={l('global.table.isEnable')}
+            {...SWITCH_OPTIONS()}
+          />
 
           {/* msgtype */}
           <Form.Item

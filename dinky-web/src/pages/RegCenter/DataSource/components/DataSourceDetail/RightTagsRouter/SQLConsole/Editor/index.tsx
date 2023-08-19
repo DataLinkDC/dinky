@@ -51,7 +51,11 @@ const Editor: React.FC<EditorProps> = (props) => {
               disabled={loading}
             />
           </StartButton>
-          <CodeEdit {...CodeEditProps} onChange={(value) => handleInputChange(value ?? '')} code={inputValue} />
+          <CodeEdit
+            {...CodeEditProps}
+            onChange={(value) => handleInputChange(value ?? '')}
+            code={inputValue}
+          />
         </Col>
       </Row>
     </>

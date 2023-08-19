@@ -34,7 +34,8 @@ type TenantTransferFromProps = {
 const TenantTransfer: React.FC<TenantTransferFromProps> = (props) => {
   const { tenant, onChange: handleChange } = props;
 
-  const [tenantTransferState, setTenantTransferState] = useState<TenantTransferState>(InitTenantTransferState);
+  const [tenantTransferState, setTenantTransferState] =
+    useState<TenantTransferState>(InitTenantTransferState);
 
   const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
     const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];

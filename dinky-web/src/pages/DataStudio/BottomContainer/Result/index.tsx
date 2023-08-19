@@ -67,13 +67,19 @@ const Result = (props: any) => {
           >
             {l('button.search')}
           </Button>
-          <Button onClick={() => clearFilters && handleReset(clearFilters)} size='small' style={{ width: 90 }}>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size='small'
+            style={{ width: 90 }}
+          >
             {l('button.reset')}
           </Button>
         </Space>
       </div>
     ),
-    filterIcon: (filtered: boolean) => <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />,
+    filterIcon: (filtered: boolean) => (
+      <SearchOutlined style={{ color: filtered ? '#1677ff' : undefined }} />
+    ),
     onFilter: (value, record) =>
       record[dataIndex]
         .toString()
@@ -85,7 +91,11 @@ const Result = (props: any) => {
       }
     },
     render: (text) =>
-      searchedColumn === dataIndex ? <Highlight label={text ? text.toString() : ''} words={[searchText]} /> : text
+      searchedColumn === dataIndex ? (
+        <Highlight label={text ? text.toString() : ''} words={[searchText]} />
+      ) : (
+        text
+      )
   });
 
   const loadData = async (isRefresh?: boolean) => {
@@ -119,7 +129,9 @@ const Result = (props: any) => {
           const jobData = res.datas;
           if ('unknown' !== jobData.status.toLowerCase()) {
             const jid = jobData.jid;
-            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', { jobId: jid });
+            const tableData = await handleGetOption('api/studio/getJobData', 'Get Data', {
+              jobId: jid
+            });
             const datas = tableData.datas;
             datas.jid = jid;
             if (datas.success) {
@@ -160,7 +172,12 @@ const Result = (props: any) => {
         {current.jobInstanceId ? (
           <>
             <Space>
-              <Button loading={loading} type='primary' onClick={showDetail} icon={<SearchOutlined />}>
+              <Button
+                loading={loading}
+                type='primary'
+                onClick={showDetail}
+                icon={<SearchOutlined />}
+              >
                 {l('pages.datastudio.label.result.query.latest.data')}
               </Button>
               <Tag color='blue' key={data.jid}>

@@ -46,7 +46,10 @@ export const SiderTree: React.FC<SiderTreeProps> = (props) => {
       {loading ? (
         <PageLoading />
       ) : treeData.length > 0 ? (
-        <DirectoryTree onSelect={(_, info) => onNodeClick(info)} treeData={buildTreeData(treeData)} />
+        <DirectoryTree
+          onSelect={(_, info) => onNodeClick(info)}
+          treeData={buildTreeData(treeData)}
+        />
       ) : (
         <Empty className={'code-content-empty'} />
       )}

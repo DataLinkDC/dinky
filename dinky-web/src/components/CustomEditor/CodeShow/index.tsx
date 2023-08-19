@@ -198,7 +198,10 @@ const CodeShow = (props: CodeShowFormProps) => {
       <div className={'monaco-float'}>
         {/* fullScreen button */}
         {fullScreenBtn && (
-          <FullscreenBtn isFullscreen={fullScreen} fullScreenCallBack={() => setFullScreen(!fullScreen)} />
+          <FullscreenBtn
+            isFullscreen={fullScreen}
+            fullScreenCallBack={() => setFullScreen(!fullScreen)}
+          />
         )}
 
         {/* editor */}

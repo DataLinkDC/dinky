@@ -23,7 +23,12 @@ import { getData } from '@/services/api';
 import { API_CONSTANTS } from '@/services/endpoints';
 import { parseByteStr, parseMilliSecondStr } from '@/utils/function';
 import { l } from '@/utils/intl';
-import { CheckCircleOutlined, CloseCircleOutlined, MinusCircleOutlined, SyncOutlined } from '@ant-design/icons';
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  MinusCircleOutlined,
+  SyncOutlined
+} from '@ant-design/icons';
 import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
 import { Button, message, Modal, Tag } from 'antd';
 import { useRef } from 'react';
@@ -158,7 +163,9 @@ const CheckpointTable = (props: JobProps) => {
         return (
           <>
             {entity.status === 'COMPLETED' ? (
-              <Button onClick={() => recoveryCheckPoint(entity)}>{l('devops.jobinfo.ck.recovery.recoveryTo')}</Button>
+              <Button onClick={() => recoveryCheckPoint(entity)}>
+                {l('devops.jobinfo.ck.recovery.recoveryTo')}
+              </Button>
             ) : undefined}
           </>
         );

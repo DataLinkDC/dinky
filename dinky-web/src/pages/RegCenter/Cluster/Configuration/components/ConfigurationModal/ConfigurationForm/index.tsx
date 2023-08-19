@@ -41,7 +41,11 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
     return (
       <>
         <BaseConfig />
-        {type && type === ClusterType.YARN ? <YarnConfig /> : <FlinkK8s type={type} value={value} />}
+        {type && type === ClusterType.YARN ? (
+          <YarnConfig />
+        ) : (
+          <FlinkK8s type={type} value={value} />
+        )}
         <HighPriorityConfig />
         <ApplicationConfig />
       </>
@@ -54,7 +58,12 @@ const ConfigurationForm: React.FC<ConfigurationFormProps> = (props) => {
 
   return (
     <>
-      <ProForm onValuesChange={handleValueChange} form={form} initialValues={{ ...value, type }} submitter={false}>
+      <ProForm
+        onValuesChange={handleValueChange}
+        form={form}
+        initialValues={{ ...value, type }}
+        submitter={false}
+      >
         {renderAllForm()}
       </ProForm>
     </>

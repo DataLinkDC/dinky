@@ -15,7 +15,10 @@
  * limitations under the License.
  */
 
-import { MatchProcessStatus, MatchProcessType } from '@/pages/SettingCenter/Process/components/ProcessList/function';
+import {
+  MatchProcessStatus,
+  MatchProcessType
+} from '@/pages/SettingCenter/Process/components/ProcessList/function';
 import SubStepsTable from '@/pages/SettingCenter/Process/components/ProcessList/SubStepsTable';
 import { getData } from '@/services/api';
 import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';

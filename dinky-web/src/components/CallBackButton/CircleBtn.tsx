@@ -30,5 +30,15 @@ export type CircleButtonProps = {
 export const CircleBtn: React.FC<CircleButtonProps> = (props) => {
   const { onClick, title, icon, loading } = props;
 
-  return <Button title={title} loading={loading} icon={icon} block type={'text'} shape={'circle'} onClick={onClick} />;
+  return (
+    <Button
+      title={title}
+      loading={loading}
+      icon={icon}
+      block
+      type={'text'}
+      shape={'circle'}
+      onClick={onClick}
+    />
+  );
 };

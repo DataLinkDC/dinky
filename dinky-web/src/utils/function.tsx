@@ -331,7 +331,13 @@ export const parseSecondStr = (s_time: number) => {
     if (min > 60) {
       min = Math.floor(second_time / 60) % 60;
       let hour = Math.floor(Math.floor(second_time / 60) / 60);
-      time = hour + l('global.time.hour') + min + l('global.time.minute') + second + l('global.time.second');
+      time =
+        hour +
+        l('global.time.hour') +
+        min +
+        l('global.time.minute') +
+        second +
+        l('global.time.second');
       if (hour > 24) {
         hour = Math.floor(Math.floor(second_time / 60) / 60) % 24;
         let day = Math.floor(Math.floor(Math.floor(second_time / 60) / 60) / 24);
@@ -381,7 +387,9 @@ export function parseByteStr(limit: number) {
 
 export function parseNumStr(num: number) {
   let c =
-    num.toString().indexOf('.') !== -1 ? num.toLocaleString() : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
+    num.toString().indexOf('.') !== -1
+      ? num.toLocaleString()
+      : num.toString().replace(/(\d)(?=(\d{3})+$)/g, '$1,');
   return c;
 }
 
@@ -414,7 +422,10 @@ export const buildTreeData = (data: any): any =>
       return (
         <>
           {item.name}
-          <span style={{ color: 'gray' }}> &nbsp;&nbsp;{l('global.size', '', { size: item.size })}</span>
+          <span style={{ color: 'gray' }}>
+            {' '}
+            &nbsp;&nbsp;{l('global.size', '', { size: item.size })}
+          </span>
         </>
       );
     };

@@ -84,7 +84,9 @@ const ResourceOverView: React.FC = () => {
   };
 
   const refreshTree = async () => {
-    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) => setTreeData(res));
+    await queryDataByParams(API_CONSTANTS.RESOURCE_SHOW_TREE, { pid: -1 }).then((res) =>
+      setTreeData(res)
+    );
   };
 
   useEffect(() => {

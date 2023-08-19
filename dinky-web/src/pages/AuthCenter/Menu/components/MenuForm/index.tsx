@@ -18,8 +18,15 @@
  */
 
 import { FormContextValue } from '@/components/Context/FormContext';
-import { MENU_ICON_OPTIONS, MENU_TYPE_OPTIONS } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
-import { buildMenuFormTree, getMaxOrderNumToNextOrderNum, sortTreeData } from '@/pages/AuthCenter/Menu/function';
+import {
+  MENU_ICON_OPTIONS,
+  MENU_TYPE_OPTIONS
+} from '@/pages/AuthCenter/Menu/components/MenuList/constants';
+import {
+  buildMenuFormTree,
+  getMaxOrderNumToNextOrderNum,
+  sortTreeData
+} from '@/pages/AuthCenter/Menu/function';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { SysMenu } from '@/types/AuthCenter/data';
 
@@ -150,7 +157,11 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           placeholder={l('menu.namePlaceholder')}
           rules={[{ required: true, message: l('menu.namePlaceholder') }]}
         />
-        <ProFormText name='component' label={l('menu.component')} placeholder={l('menu.componentPlaceholder')} />
+        <ProFormText
+          name='component'
+          label={l('menu.component')}
+          placeholder={l('menu.componentPlaceholder')}
+        />
         <ProFormText
           name='path'
           label={l('menu.path')}
@@ -167,7 +178,11 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           options={MENU_TYPE_OPTIONS}
         />
 
-        <ProFormText name='perms' label={l('menu.perms')} placeholder={l('menu.permsPlaceholder')} />
+        <ProFormText
+          name='perms'
+          label={l('menu.perms')}
+          placeholder={l('menu.permsPlaceholder')}
+        />
 
         <ProFormSelect
           addonAfter={
@@ -193,7 +208,12 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           initialValue={getMaxOrderNumToNextOrderNum(sortTreeData(treeData)) + 1}
         />
 
-        <ProFormTextArea name='note' label={l('global.table.note')} placeholder={l('role.EnterNote')} allowClear />
+        <ProFormTextArea
+          name='note'
+          label={l('global.table.note')}
+          placeholder={l('role.EnterNote')}
+          allowClear
+        />
       </>
     );
   };
@@ -211,7 +231,9 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         onReset={handleReset}
         onFinish={submitForm}
         submitter={{
-          render: (_, dom) => <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>
+          render: (_, dom) => (
+            <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>
+          )
         }}
         layout={'horizontal'}
       >

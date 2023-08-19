@@ -61,7 +61,13 @@ const TenantForm: React.FC<TenantFormProps> = (props) => {
 
   return (
     <>
-      <ProForm {...FORM_LAYOUT_PUBLIC} form={form} initialValues={values} submitter={false} layout={'horizontal'}>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        submitter={false}
+        layout={'horizontal'}
+      >
         {tenantFormRender()}
       </ProForm>
     </>

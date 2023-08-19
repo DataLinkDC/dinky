@@ -21,8 +21,17 @@ import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataS
 import Explain from '@/pages/DataStudio/HeaderContainer/Explain';
 import FlinkGraph from '@/pages/DataStudio/HeaderContainer/FlinkGraph';
 import { buildGraphData } from '@/pages/DataStudio/HeaderContainer/FlinkGraph/function';
-import { buildBreadcrumbItems, projectCommonShow } from '@/pages/DataStudio/HeaderContainer/function';
-import { executeSql, getJobPlan, isOnline, isSql, offLineTask } from '@/pages/DataStudio/HeaderContainer/service';
+import {
+  buildBreadcrumbItems,
+  projectCommonShow
+} from '@/pages/DataStudio/HeaderContainer/function';
+import {
+  executeSql,
+  getJobPlan,
+  isOnline,
+  isSql,
+  offLineTask
+} from '@/pages/DataStudio/HeaderContainer/service';
 import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
@@ -81,10 +90,14 @@ const HeaderContainer = (props: any) => {
       okText: l('button.confirm'),
       cancelText: l('button.cancel'),
       onOk: async () => {
-        offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then((result) => {
-          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = 0;
-          saveTabs({ ...props.tabs });
-        });
+        offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
+          (result) => {
+            (
+              getCurrentTab(panes, activeKey)?.params as DataStudioParams
+            ).taskData.jobInstanceId = 0;
+            saveTabs({ ...props.tabs });
+          }
+        );
       }
     });
   };
@@ -113,35 +126,42 @@ const HeaderContainer = (props: any) => {
       icon: <SmileOutlined style={{ color: '#108ee9' }} />
     });
 
-    executeSql(l('pages.datastudio.editor.submiting', '', { jobName: param.name }), param).then((res) => {
-      notificationApi.destroy(taskKey);
-      if (!res) {
-        return;
-      }
-      updateJobRunningMsg({
-        taskId: current.id,
-        jobName: current.name,
-        jobState: res.datas.status,
-        runningLog: res.msg
-      });
-      if (res.datas.success) {
-        messageApi.success(l('pages.datastudio.editor.exec.success'));
-        (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId = res.datas.jobInstanceId;
-        saveTabs({ ...props.tabs });
-      } else {
-        ErrorNotification(res.datas.error, l('pages.datastudio.editor.exec.error', '', { jobName: param.name }), null);
-      }
+    executeSql(l('pages.datastudio.editor.submiting', '', { jobName: param.name }), param).then(
+      (res) => {
+        notificationApi.destroy(taskKey);
+        if (!res) {
+          return;
+        }
+        updateJobRunningMsg({
+          taskId: current.id,
+          jobName: current.name,
+          jobState: res.datas.status,
+          runningLog: res.msg
+        });
+        if (res.datas.success) {
+          messageApi.success(l('pages.datastudio.editor.exec.success'));
+          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
+            res.datas.jobInstanceId;
+          saveTabs({ ...props.tabs });
+        } else {
+          ErrorNotification(
+            res.datas.error,
+            l('pages.datastudio.editor.exec.error', '', { jobName: param.name }),
+            null
+          );
+        }
 
-      // let newTabs = tabs;
-      // for (const element of newTabs.panes) {
-      //   if (element.key == key) {
-      //     element.console.result = res.datas;
-      //     break;
-      //   }
-      // }
-      // props.saveTabs(newTabs);
-      // useSession && showTables(currentSession.session, dispatch);
-    });
+        // let newTabs = tabs;
+        // for (const element of newTabs.panes) {
+        //   if (element.key == key) {
+        //     element.console.result = res.datas;
+        //     break;
+        //   }
+        // }
+        // props.saveTabs(newTabs);
+        // useSession && showTables(currentSession.session, dispatch);
+      }
+    );
   };
 
   const routes: ButtonRoute[] = [

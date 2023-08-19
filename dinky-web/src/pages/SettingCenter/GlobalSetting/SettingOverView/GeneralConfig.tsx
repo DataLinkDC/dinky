@@ -127,7 +127,8 @@ const GeneralConfig: React.FC<GeneralConfigProps> = (props) => {
       render: (dom: any, entity: BaseConfigProperties) => renderValuesOfForm(entity)
     },
     actions: {
-      render: (text: any, row: BaseConfigProperties, index: number, action: any) => renderActions(action, row)
+      render: (text: any, row: BaseConfigProperties, index: number, action: any) =>
+        renderActions(action, row)
     }
   };
 

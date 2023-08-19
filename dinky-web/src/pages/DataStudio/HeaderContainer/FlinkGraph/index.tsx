@@ -77,7 +77,9 @@ const FlinkGraph = (props: any) => {
     },*/
   };
 
-  return <>{data ? <FlowAnalysisGraph {...config} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}</>;
+  return (
+    <>{data ? <FlowAnalysisGraph {...config} /> : <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} />}</>
+  );
 };
 
 export default connect(({ Studio }: { Studio: StateType }) => ({}))(FlinkGraph);

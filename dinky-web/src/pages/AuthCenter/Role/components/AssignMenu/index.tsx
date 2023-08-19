@@ -40,7 +40,8 @@ const { DirectoryTree } = Tree;
 const AssignMenu: React.FC<AssignMenuProps> = (props) => {
   const { open, onClose, onSubmit, values } = props;
 
-  const [roleAssignMenu, setRoleAssignMenu] = useState<RoleAssignMenuState>(InitRoleAssignMenuState);
+  const [roleAssignMenu, setRoleAssignMenu] =
+    useState<RoleAssignMenuState>(InitRoleAssignMenuState);
 
   useEffect(() => {
     open &&
@@ -57,7 +58,10 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
    */
   const handleClose = useCallback(() => {
     onClose();
-    setRoleAssignMenu((prevState) => ({ ...prevState, menuTreeData: InitRoleAssignMenuState.menuTreeData }));
+    setRoleAssignMenu((prevState) => ({
+      ...prevState,
+      menuTreeData: InitRoleAssignMenuState.menuTreeData
+    }));
   }, [values]);
 
   /**
@@ -130,7 +134,10 @@ const AssignMenu: React.FC<AssignMenuProps> = (props) => {
               onCheck={(keys) => onCheck(keys)}
               multiple={true}
               className={'treeList'}
-              treeData={buildMenuTree(sortTreeData(roleAssignMenu.menuTreeData.menus), roleAssignMenu.searchValue)}
+              treeData={buildMenuTree(
+                sortTreeData(roleAssignMenu.menuTreeData.menus),
+                roleAssignMenu.searchValue
+              )}
             />
           </Spin>
         </>

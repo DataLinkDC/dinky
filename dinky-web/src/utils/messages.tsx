@@ -86,7 +86,11 @@ export const ErrorNotification = (
  * @param placement
  * @constructor
  */
-export const SuccessNotification = (description: string, message = l('global.success'), duration = defaultDuration) =>
+export const SuccessNotification = (
+  description: string,
+  message = l('global.success'),
+  duration = defaultDuration
+) =>
   notification.success({
     message,
     description,
@@ -101,7 +105,11 @@ export const SuccessNotification = (description: string, message = l('global.suc
  * @param placement
  * @constructor
  */
-export const WarningNotification = (description: string, message = l('global.warning'), duration = defaultDuration) =>
+export const WarningNotification = (
+  description: string,
+  message = l('global.warning'),
+  duration = defaultDuration
+) =>
   notification.warning({
     message,
     description,
@@ -116,7 +124,11 @@ export const WarningNotification = (description: string, message = l('global.war
  * @param placement
  * @constructor
  */
-export const InfoNotification = (description: string, message = l('global.info'), duration = defaultDuration) =>
+export const InfoNotification = (
+  description: string,
+  message = l('global.info'),
+  duration = defaultDuration
+) =>
   notification.info({
     message,
     description,
@@ -132,7 +144,8 @@ export const InfoNotification = (description: string, message = l('global.info')
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const SuccessMessage = (content: string, duration = defaultDuration) => message.success(content, duration);
+export const SuccessMessage = (content: string, duration = defaultDuration) =>
+  message.success(content, duration);
 
 /**
  *  message handler success async
@@ -151,7 +164,8 @@ export const SuccessMessageAsync = async (content: string, duration = AsyncDurat
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const InfoMessage = (content: string, duration = defaultDuration) => message.info(content, duration);
+export const InfoMessage = (content: string, duration = defaultDuration) =>
+  message.info(content, duration);
 
 /**
  *  message handler info async
@@ -170,7 +184,8 @@ export const InfoMessageAsync = async (content: string, duration = AsyncDuration
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const ErrorMessage = (content: string, duration = defaultDuration) => message.error(content, duration);
+export const ErrorMessage = (content: string, duration = defaultDuration) =>
+  message.error(content, duration);
 
 /**
  *  message handler error async
@@ -189,7 +204,8 @@ export const ErrorMessageAsync = async (content: string, duration = AsyncDuratio
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const WarningMessage = (content: string, duration = defaultDuration) => message.warning(content, duration);
+export const WarningMessage = (content: string, duration = defaultDuration) =>
+  message.warning(content, duration);
 
 /**
  *  message handler warning async
@@ -208,7 +224,8 @@ export const WarningMessageAsync = async (content: string, duration = AsyncDurat
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const LoadingMessage = (content: string, duration = defaultDuration) => message.loading(content, duration);
+export const LoadingMessage = (content: string, duration = defaultDuration) =>
+  message.loading(content, duration);
 
 /**
  *  message handler loading async

@@ -447,7 +447,10 @@ const Model: ModelType = {
         centerContentHeight = state.centerContentHeight + (state.bottomContainer.height as number);
         toolContentHeight = state.toolContentHeight + (state.bottomContainer.height as number);
         console.log(2);
-      } else if (state.bottomContainer.selectKey !== '' && payload !== state.bottomContainer.selectKey) {
+      } else if (
+        state.bottomContainer.selectKey !== '' &&
+        payload !== state.bottomContainer.selectKey
+      ) {
         centerContentHeight = state.centerContentHeight;
         toolContentHeight = state.toolContentHeight;
       } else {
@@ -527,7 +530,9 @@ const Model: ModelType = {
           tabs: {
             ...state.tabs,
             activeKey: payload,
-            activeBreadcrumbTitle: [itemType.type, itemType.breadcrumbLabel, itemType.label].join('/')
+            activeBreadcrumbTitle: [itemType.type, itemType.breadcrumbLabel, itemType.label].join(
+              '/'
+            )
           },
           footContainer: {
             ...state.footContainer,
@@ -607,7 +612,8 @@ const Model: ModelType = {
               tabs: {
                 panes: newPanes,
                 activeKey: item.key,
-                activeBreadcrumbTitle: panes.length < 2 ? '' : [item.type, item.breadcrumbLabel, item.label].join('/')
+                activeBreadcrumbTitle:
+                  panes.length < 2 ? '' : [item.type, item.breadcrumbLabel, item.label].join('/')
               },
               footContainer: {
                 ...state.footContainer,

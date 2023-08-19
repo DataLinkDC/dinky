@@ -19,7 +19,13 @@
 
 import { CLUSTER_CONFIG_TYPE } from '@/pages/RegCenter/Cluster/Configuration/components/contants';
 import { l } from '@/utils/intl';
-import { ProFormDigit, ProFormGroup, ProFormSelect, ProFormSwitch, ProFormText } from '@ant-design/pro-components';
+import {
+  ProFormDigit,
+  ProFormGroup,
+  ProFormSelect,
+  ProFormSwitch,
+  ProFormText
+} from '@ant-design/pro-components';
 import { Divider } from 'antd';
 import React from 'react';
 const BaseConfig: React.FC = () => {

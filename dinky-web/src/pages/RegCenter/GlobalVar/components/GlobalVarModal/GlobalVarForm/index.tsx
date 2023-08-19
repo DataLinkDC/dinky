@@ -21,7 +21,13 @@ import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
 import { GlobalVar } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
-import { ProForm, ProFormItem, ProFormSwitch, ProFormText, ProFormTextArea } from '@ant-design/pro-components';
+import {
+  ProForm,
+  ProFormItem,
+  ProFormSwitch,
+  ProFormText,
+  ProFormTextArea
+} from '@ant-design/pro-components';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
@@ -89,7 +95,13 @@ const GlobalVarForm: React.FC<GlobalVarModalProps> = (props) => {
 
   return (
     <>
-      <ProForm {...FORM_LAYOUT_PUBLIC} layout={'horizontal'} submitter={false} form={form} initialValues={values}>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        layout={'horizontal'}
+        submitter={false}
+        form={form}
+        initialValues={values}
+      >
         {globalVarRender()}
       </ProForm>
     </>
