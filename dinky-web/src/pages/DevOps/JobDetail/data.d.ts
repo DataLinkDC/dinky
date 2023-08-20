@@ -1,5 +1,16 @@
 import {Jobs} from "@/types/DevOps/data";
 
-type JobProps = {
+export type JobProps = {
   jobDetail: Jobs.JobInfoDetail;
 };
+
+export type JobVertice = {
+  id: string,
+  name: string,
+  maxParallelism: number,
+  parallelism: number,
+  status: string,
+  duration: number,
+  tasks: any,
+  metrics: any
+}

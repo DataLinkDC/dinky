@@ -212,6 +212,7 @@ export const API_CONSTANTS = {
   GET_JOBMANAGER_THREAD_DUMP: "api/jobInstance/getJobManagerThreadDump",
   GET_TASKMANAGER_LIST: "api/jobInstance/getTaskManagerList",
   GET_TASKMANAGER_LOG: "api/jobInstance/getTaskManagerLog",
+  GET_JOB_MERTICE_ITEMS: "api/jobInstance/getJobMetricsItems",
   CANCEL_JOB: "/api/studio/cancel",
   OFFLINE_TASK: "/api/task/offLineTask",
   RESTART_TASK: "/api/task/restartTask",

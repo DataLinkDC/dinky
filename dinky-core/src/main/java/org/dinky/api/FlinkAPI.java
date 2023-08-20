@@ -380,4 +380,10 @@ public class FlinkAPI {
     public JsonNode getTaskManagerThreadDump(String containerId) {
         return get(FlinkRestAPIConstant.TASK_MANAGER + containerId + FlinkRestAPIConstant.THREAD_DUMP);
     }
+
+    public JsonNode getJobMetricesItems(String jobId,String verticeId) {
+        return get(FlinkRestAPIConstant.JOBS + jobId + FlinkRestAPIConstant.VERTICES + verticeId + FlinkRestAPIConstant.METRICS);
+    }
+
+
 }

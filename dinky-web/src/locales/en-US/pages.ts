@@ -860,6 +860,8 @@ export default {
   'metrics.filter.1hour': '1 Hours',
   'metrics.filter.2hours': '2 Hours',
   'metrics.filter.5hours': '5 Hours',
+  'metrics.filter.1day': 'one day',
+  'metrics.filter.1week': 'one week',
   'metrics.filter.custom': 'Custom',
   'metrics.filter.custom.range': 'DateTime Range',
 

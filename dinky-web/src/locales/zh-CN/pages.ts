@@ -866,6 +866,8 @@ export default {
   'metrics.filter.1hour': '1小时',
   'metrics.filter.2hours': '2小时',
   'metrics.filter.5hours': '5小时',
+  'metrics.filter.1day': '近一天',
+  'metrics.filter.1week': '近一周',
   'metrics.filter.custom': '自定义',
   'metrics.filter.custom.range': '日期时间范围',
   // flink job

@@ -148,6 +148,12 @@ public class JobInstanceController {
         return Result.succeed(taskManagerConfigurationList);
     }
 
+    @GetMapping("/getJobMetricsItems")
+    @ApiOperation(" getJobMetricsItems List")
+    public Result<JsonNode> getJobMetricsItems(@RequestParam String address,@RequestParam String jobId,@RequestParam String verticeId) {
+        return Result.succeed(FlinkAPI.build(address).getJobMetricesItems(jobId,verticeId));
+    }
+
     /** 获取 TaskManager 的信息 */
     @GetMapping("/getTaskManagerLog")
     @ApiOperation("Get task manager log")

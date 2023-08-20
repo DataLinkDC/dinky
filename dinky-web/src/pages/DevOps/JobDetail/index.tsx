@@ -14,6 +14,7 @@ import {l} from "@/utils/intl";
 import JobLogsTab from "@/pages/DevOps/JobDetail/JobLogs/JobLogsTab";
 import JobVersionTab from "@/pages/DevOps/JobDetail/JobVersion/JobVersionTab";
 import CheckPoints from "@/pages/DevOps/JobDetail/CheckPointsTab";
+import JobMonitor from "@/pages/DevOps/JobDetail/JobMonitor";
 
 /**
  * Enum defining different operators for the JobDetail component.
@@ -60,7 +61,7 @@ const JobDetail:FC = (props: any) => {
     [OperatorEnum.JOB_LOGS]: <JobLogsTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_VERSION]: <JobVersionTab jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_CHECKPOINTS]: <CheckPoints jobDetail={jobInfoDetail} />,
-    [OperatorEnum.JOB_MONITOR]: <CheckPoints jobDetail={jobInfoDetail} />,
+    [OperatorEnum.JOB_MONITOR]: <JobMonitor jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_LINEAGE]: <CheckPoints jobDetail={jobInfoDetail} />,
     [OperatorEnum.JOB_ALERT]: <CheckPoints jobDetail={jobInfoDetail} />,
   };
