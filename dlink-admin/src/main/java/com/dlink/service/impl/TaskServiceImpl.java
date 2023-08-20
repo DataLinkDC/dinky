@@ -113,7 +113,7 @@ import com.dlink.utils.JSONUtil;
 import com.dlink.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang.SerializationUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
