@@ -113,6 +113,7 @@ import com.dlink.utils.JSONUtil;
 import com.dlink.utils.UDFUtils;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -316,7 +317,6 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
         } else {
             task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
             task.setSavePointPath(savePointPath);
-            updateById(task);
         }
         JobConfig config = buildJobConfig(task);
         JobManager jobManager = JobManager.build(config);
@@ -773,15 +773,16 @@ public class TaskServiceImpl extends SuperServiceImpl<TaskMapper, Task> implemen
     @Override
     public Result reOnLineTask(Integer id, String savePointPath) {
         final Task task = this.getTaskInfoById(id);
+        final Task taskForConfig = (Task) SerializationUtils.clone(task);
         Asserts.checkNull(task, Tips.TASK_NOT_EXIST);
         if (Asserts.isNotNull(task.getJobInstanceId()) && task.getJobInstanceId() != 0) {
             savepointJobInstance(task.getJobInstanceId(), SavePointType.CANCEL.getValue());
         }
         if (StringUtils.isNotBlank(savePointPath)) {
-            task.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
-            task.setSavePointPath(savePointPath);
+            taskForConfig.setSavePointStrategy(SavePointStrategy.CUSTOM.getValue());
+            taskForConfig.setSavePointPath(savePointPath);
         }
-        final JobResult jobResult = submitTaskToOnline(task, id);
+        final JobResult jobResult = submitTaskToOnline(taskForConfig, id);
         if (Job.JobStatus.SUCCESS == jobResult.getStatus()) {
             task.setStep(JobLifeCycle.ONLINE.getValue());
             task.setJobInstanceId(jobResult.getJobInstanceId());
