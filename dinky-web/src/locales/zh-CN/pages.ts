@@ -43,8 +43,7 @@ export default {
   'about.communityRules.1': '禁止发布或讨论与本群主旨无关或不良的内容，一经发现立马被踢。',
   'about.communityRules.2':
     '关于 Bug 反馈与功能改进或提议请通过 issue 进行，请阅读 issue 文档要求。',
-  'about.communityRules.3':
-    '部署和使用前请先仔细阅读 Readme、公众号文章、官网文档、B站视频。',
+  'about.communityRules.3': '部署和使用前请先仔细阅读 Readme、公众号文章、官网文档、B站视频。',
   'about.communityRules.4': '群提问题请礼貌并且说明【版本、执行模式、操作描述、截图】。',
   'about.communityRules.5': ' 登记谁在使用 Dinky，可进入企业用户群提供技术支持。',
 
@@ -90,45 +89,81 @@ export default {
   'devops.joblist.history': '历史',
   'devops.joblist.detail': '详情',
 
-  'devops.jobinfo.savepoint.trigger':'SavePoint 触发',
-  'devops.jobinfo.savepoint.stop':'SavePoint 暂停',
-  'devops.jobinfo.savepoint.cancel':'SavePoint 停止',
-  'devops.jobinfo.savepoint.canceljob':'普通停止',
-  'devops.jobinfo.localenv':'本地环境',
-  'devops.jobinfo.offline':'下线',
-  'devops.jobinfo.smart_stop':'智能停止',
-  'devops.jobinfo.reonline':'重新上线',
-  'devops.jobinfo.reonlineJob':'重新上线任务',
-  'devops.jobinfo.reonlineJobConfirm':'确定重新上线该作业吗？',
-  'devops.jobinfo.reonline.success':'重新上线成功',
-  'devops.jobinfo.reonline.failed':'重新上线失败',
-  'devops.jobinfo.restart':'重新启动',
-  'devops.jobinfo.stopJob':'停止任务',
-  'devops.jobinfo.stopJobConfirm':'确定只停止该作业，不进行 SavePoint 操作吗？',
-  'devops.jobinfo.canceljob.success':'普通停止成功',
-  'devops.jobinfo.canceljob.failed':'普通停止失败',
-  'devops.jobinfo.job.key':'{key} 任务',
-  'devops.jobinfo.job.key.success':'{key} 成功',
-  'devops.jobinfo.job.keyConfirm':'确定{key} 该作业吗？',
+  'devops.jobinfo.savepoint.trigger': 'SavePoint 触发',
+  'devops.jobinfo.savepoint.stop': 'SavePoint 暂停',
+  'devops.jobinfo.savepoint.cancel': 'SavePoint 停止',
+  'devops.jobinfo.savepoint.canceljob': '普通停止',
+  'devops.jobinfo.localenv': '本地环境',
+  'devops.jobinfo.offline': '下线',
+  'devops.jobinfo.smart_stop': '智能停止',
+  'devops.jobinfo.reonline': '重新上线',
+  'devops.jobinfo.reonlineJob': '重新上线任务',
+  'devops.jobinfo.reonlineJobConfirm': '确定重新上线该作业吗？',
+  'devops.jobinfo.reonline.success': '重新上线成功',
+  'devops.jobinfo.reonline.failed': '重新上线失败',
+  'devops.jobinfo.restart': '重新启动',
+  'devops.jobinfo.stopJob': '停止任务',
+  'devops.jobinfo.stopJobConfirm': '确定只停止该作业，不进行 SavePoint 操作吗？',
+  'devops.jobinfo.canceljob.success': '普通停止成功',
+  'devops.jobinfo.canceljob.failed': '普通停止失败',
+  'devops.jobinfo.job.key': '{key} 任务',
+  'devops.jobinfo.job.key.success': '{key} 成功',
+  'devops.jobinfo.job.keyConfirm': '确定{key} 该作业吗？',
 
-  'devops.jobinfo.config.JobInfo':'作业信息',
-  'devops.jobinfo.config.JobOveriew':'作业概览',
-  'devops.jobinfo.config.JobException':'异常信息',
-  'devops.jobinfo.config.JobBaseInfo':'作业基本信息',
-  'devops.jobinfo.config.UserCustomConf':'用户自定义配置',
-  'devops.jobinfo.config.taskId':'Dinky作业ID',
-  'devops.jobinfo.config.JobId':'Flink Job ID',
-  'devops.jobinfo.config.submitType':'提交模式',
-  'devops.jobinfo.config.execmode':'执行模式',
-  'devops.jobinfo.config.ClusterInstanceName':'Flink实例',
-  'devops.jobinfo.config.ClusterConfigName':'集群配置',
-  'devops.jobinfo.config.useSqlFragment':'语句集',
-  'devops.jobinfo.config.JobType':'任务类型',
-  'devops.jobinfo.config.startFromSavePoint':'从SavePoint启动',
-  'devops.jobinfo.config.savePointPath':'savePoint路径',
-  'devops.jobinfo.config.RestartStrategy':'重启策略',
-  'devops.jobinfo.config.JobParallelism':'作业并行度',
+  'devops.jobinfo.config.JobInfo': '作业信息',
+  'devops.jobinfo.config.JobLogs': '作业日志',
+  'devops.jobinfo.config.JobVersion': '版本信息',
+  'devops.jobinfo.config.JobCheckpoints': '作业快照',
+  'devops.jobinfo.config.JobMonitor': '监控',
+  'devops.jobinfo.config.JobLineage': 'SQL 血缘',
+  'devops.jobinfo.config.JobAlert': '告警记录',
+  'devops.jobinfo.config.OperatorGraph': '算子图',
+  'devops.jobinfo.config.JobBaseInfo': '作业基本信息',
+  'devops.jobinfo.config.UserCustomConf': '用户自定义配置',
+  'devops.jobinfo.config.taskId': 'Dinky作业ID',
+  'devops.jobinfo.config.JobId': 'Flink Job ID',
+  'devops.jobinfo.config.submitType': '提交模式',
+  'devops.jobinfo.config.execmode': '执行模式',
+  'devops.jobinfo.config.ClusterInstanceName': 'Flink实例',
+  'devops.jobinfo.config.ClusterConfigName': '集群配置',
+  'devops.jobinfo.config.useSqlFragment': '语句集',
+  'devops.jobinfo.config.JobType': '任务类型',
+  'devops.jobinfo.config.startFromSavePoint': '从SavePoint启动',
+  'devops.jobinfo.config.savePointPath': 'savePoint路径',
+  'devops.jobinfo.config.RestartStrategy': '重启策略',
+  'devops.jobinfo.config.JobParallelism': '作业并行度',
 
+  'devops.jobinfo.version.versionList': '版本列表',
+  'devops.jobinfo.version.latestVersion': '当前版本',
+  'devops.jobinfo.version.delete': '删除版本',
+  'devops.jobinfo.version.delete.sure': '确定删除此版本吗？V{version}',
+
+  'devops.jobinfo.ck.id': 'ID',
+  'devops.jobinfo.ck.taskid': '任务ID',
+  'devops.jobinfo.ck.status': '状态',
+  'devops.jobinfo.ck.name': '名称',
+  'devops.jobinfo.ck.duration': '耗时',
+  'devops.jobinfo.ck.checkpoint_type': '类型',
+  'devops.jobinfo.ck.external_path': '存储位置',
+  'devops.jobinfo.ck.latest_ack_timestamp': '最后响应时间',
+  'devops.jobinfo.ck.state_size': '状态大小',
+  'devops.jobinfo.ck.trigger_timestamp': '触发时间',
+  'devops.jobinfo.ck.recovery': '从检查点恢复！',
+  'devops.jobinfo.ck.recoveryConfirm': '确定从检查点【{path}】恢复吗?',
+  'devops.jobinfo.ck.recovery.success': '恢复作业成功',
+  'devops.jobinfo.ck.recovery.failed': '恢复作业失败',
+  'devops.jobinfo.ck.recovery.recoveryTo': '此处恢复',
+
+  'devops.baseinfo.taskid': '任务ID',
+  'devops.baseinfo.name': '任务名称',
+  'devops.baseinfo.status': '状态',
+  'devops.baseinfo.readbytes': '接收字节',
+  'devops.baseinfo.readrecords': '接收记录',
+  'devops.baseinfo.writebytes': '发送字节',
+  'devops.baseinfo.writerecords': '发送记录',
+  'devops.baseinfo.parallelism': '并行度',
+  'devops.baseinfo.tasks': '算子',
+  'devops.baseinfo.restart_number': '重启次数',
 
   //-------------------------------- auth center --------------------------------
   // user
@@ -137,6 +172,7 @@ export default {
   'user.jobnumber': '工号',
   'user.phone': '手机号',
   'user.type': '注册类型',
+  'user.status': '是否删除',
   'user.nickname': '昵称',
   'user.superAdminFlag': '超级管理员',
   'user.tenantAdminFlag': '租户管理员',
@@ -145,6 +181,11 @@ export default {
   'user.assignRole': '分配角色',
   'user.delete': '删除用户',
   'user.deleteConfirm': '您确定要删除此用户吗？',
+  'user.recovery': '您确定要恢复此用户吗？',
+  'user.isdelete': '该用户已被删除，无法重置密码，请先恢复该用户!',
+  'user.reset': '您确定要重置此用户密码吗?',
+  'user.resetPassword': '重置密码',
+  'user.resetPasswordSuccess': '用户: {username} 密码重置成功! 新密码为: {password}',
   'user.usernamePlaceholder': '请输入用户名',
   'user.jobnumberPlaceholder': '请输入工号',
   'user.nicknamePlaceholder': '请输入昵称',
@@ -209,6 +250,8 @@ export default {
   'role.delete': '删除角色',
   'role.deleteConfirm': '您确定要删除此角色吗？',
   'role.assignMenu': '角色: [{roleName}] 分配权限',
+  'role.assign': '分配权限',
+  'role.user.list': '角色用户列表',
 
   // menu
   'menu.management': '菜单管理',
@@ -238,7 +281,6 @@ export default {
   'menu.tips.2': '添加根菜单: 点击树状图的右上角的按钮进行新增',
   'menu.tips.3': '新增/删除子菜单: 树状图上右键单击,进行添加/删除',
 
-
   // rowPermissions
   'rowPermissions.management': '行权限管理',
   'rowPermissions.tableName': '表名',
@@ -250,7 +292,6 @@ export default {
   'rowPermissions.roleNamePlaceholder': '请选择角色',
   'rowPermissions.create': '创建行权限',
   'rowPermissions.update': '修改行权限',
-
 
   //-------------------------------- register center --------------------------------
 
@@ -273,7 +314,8 @@ export default {
   'rc.ci.recycleConfirm': '确定回收所有自动创建且过期的 Flink 实例吗？',
   'rc.ci.jmha.validate.slash': '不符合规则! 不能包含/',
   'rc.ci.jmha.validate.port': '不符合规则! 端口号区间[0-65535]',
-  'rc.ci.jmha.tips': '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
+  'rc.ci.jmha.tips':
+    '添加 Flink 集群的 JobManager 的 RestApi 地址。当 HA 模式时，地址间用英文逗号分隔，例如：192.168.123.101:8081,192.168.123.102:8081,192.168.123.103:8081',
   'rc.ci.jmhaPlaceholder': '请输入 JobManager HA 地址!',
   'rc.ci.typePlaceholder': '请选择集群类型!',
   'rc.ci.namePlaceholder': '请输入名称!',
@@ -292,15 +334,16 @@ export default {
   'rc.cc.start': '启动 Session 集群',
   'rc.cc.baseConfig': '基本配置',
   'rc.cc.hadoopConfig': 'Hadoop 配置',
-  'rc.cc.hadoop.defineConfig': 'Hadoop 自定义配置（高优先级）)',
+  'rc.cc.hadoop.defineConfig': 'Hadoop 自定义配置（高优先级）',
   'rc.cc.hadoopConfigPath': 'Hadoop 配置文件路径',
   'rc.cc.hadoopConfigPathPlaceholder': '请输入 hadoop 配置文件路径 ,值如 /etc/hadoop/conf！',
-  'rc.cc.hadoopConfigPathHelp': '指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml ！',
+  'rc.cc.hadoopConfigPathHelp':
+    '指定配置文件路径（末尾无/），需要包含以下文件：core-site.xml,hdfs-site.xml,yarn-site.xml ！',
   'rc.cc.libPath': 'Flink Lib 路径',
   'rc.cc.libPathPlaceholder': '请输入 lib 的 hdfs 路径！值如 hdfs:///flink/lib',
   'rc.cc.libPathHelp': '指定 lib 的 hdfs 路径（末尾无/），需要包含 Flink 运行时的依赖',
   'rc.cc.flinkConfig': 'Flink 配置',
-  'rc.cc.flink.defineConfig': 'Flink 自定义配置（高优先级）)',
+  'rc.cc.flink.defineConfig': 'Flink 自定义配置（高优先级）',
   'rc.cc.flinkConfigPath': 'Flink 配置文件路径',
   'rc.cc.flinkConfigPathPlaceholder': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
   'rc.cc.flinkConfigPathHelp': '请输入 flink-conf.yaml 路径！值如 /opt/module/flink/conf ',
@@ -313,24 +356,30 @@ export default {
   'rc.cc.sqlSubmitJarPathHelp': '请输入 Jar 文件路径! eg: hdfs:///dlink/jar/dlink-app.jar',
   'rc.cc.defineConfig': 'Flink 预设配置（高优先级）',
   'rc.cc.jmMem': 'JobManager 内存',
-  'rc.cc.jmMemHelp': '请输入 JobManager 内存大小! 此参数配置项为: jobmanager.memory.process.size    eg: 1024MB',
+  'rc.cc.jmMemHelp':
+    '请输入 JobManager 内存大小! 此参数配置项为: jobmanager.memory.process.size    eg: 1024MB',
   'rc.cc.tmMem': 'TaskManager 内存',
-  'rc.cc.tmMemHelp': '请输入 TaskManager 内存大小! 此参数配置项为: taskmanager.memory.process.size   eg: 1024MB',
+  'rc.cc.tmMemHelp':
+    '请输入 TaskManager 内存大小! 此参数配置项为: taskmanager.memory.process.size   eg: 1024MB',
   'rc.cc.tmHeap': 'TaskManager 堆内存',
-  'rc.cc.tmHeapHelp': '请输入 TaskManager 堆内存大小! 此参数配置项为: taskmanager.memory.framework.heap.size   eg: 1024MB',
+  'rc.cc.tmHeapHelp':
+    '请输入 TaskManager 堆内存大小! 此参数配置项为: taskmanager.memory.framework.heap.size   eg: 1024MB',
   'rc.cc.tsNum': '插槽数',
   'rc.cc.tsNumHelp': '请输入 TaskSet 数量! eg: 1',
   'rc.cc.spDir': '保存点路径',
   'rc.cc.spDirHelp': '请输入保存点路径! 此参数配置项为: tate.savepoints.dir  eg: hdfs:///dinky/sp',
   'rc.cc.ckpDir': '检查点路径',
-  'rc.cc.ckpDirHelp': '请输入检查点路径! 此参数配置项为: state.checkpoints.dir  eg: hdfs:///dinky/ckp',
+  'rc.cc.ckpDirHelp':
+    '请输入检查点路径! 此参数配置项为: state.checkpoints.dir  eg: hdfs:///dinky/ckp',
   'rc.cc.dockerConfig': 'Docker 配置',
   'rc.cc.docker.dinky.addr': 'Dinky 远程地址',
   'rc.cc.docker.dinky.addrHelp': 'Dinky 远程地址! eg: 127.0.0.1:8888',
   'rc.cc.docker.instance': 'Docker 实例',
-  'rc.cc.docker.instanceHelp': 'Docker 实例! eg: 本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375',
+  'rc.cc.docker.instanceHelp':
+    'Docker 实例! eg: 本地：unix:///var/run/docker.sock  或者 远程：tcp://remoteIp:2375',
   'rc.cc.docker.url': 'DockerHub 容器地址',
-  'rc.cc.docker.urlHelp': 'DockerHub 容器地址! eg: (阿里云，docker.io，harbor) registry.cn-hangzhou.aliyuncs.com/dlink/dlink:1.0.0',
+  'rc.cc.docker.urlHelp':
+    'DockerHub 容器地址! eg: (阿里云，docker.io，harbor) registry.cn-hangzhou.aliyuncs.com/dlink/dlink:1.0.0',
   'rc.cc.docker.username': 'DockerHub 用户名',
   'rc.cc.docker.usernameHelp': 'DockerHub 用户名! eg: dinky',
   'rc.cc.docker.password': 'DockerHub 密码',
@@ -353,7 +402,8 @@ export default {
   'rc.cc.k8s.tmCpu': 'TaskManager CPU 配置',
   'rc.cc.k8s.tmCpuHelp': 'TaskManager CPU 配置! eg: 10',
   'rc.cc.k8s.configFile': 'Kube 文件路径',
-  'rc.cc.k8s.configFileHelp': '默认~/.kube/config， 填写kube文件路径，可用作远程连接! eg: /opt/module/kube/config',
+  'rc.cc.k8s.configFileHelp':
+    '默认~/.kube/config， 填写kube文件路径，可用作远程连接! eg: /opt/module/kube/config',
   'rc.cc.k8s.account': 'K8s 提交账号',
   'rc.cc.k8s.accountHelp': 'K8s 提交使用的账号，默认 default! eg: default',
   'rc.cc.k8s.podTemplate': 'K8s Pod 模板',
@@ -361,7 +411,6 @@ export default {
   'rc.cc.k8sOp.version': 'Flink 版本',
   'rc.cc.k8sOp.versionHelp': '请选择Flink 版本!',
   'rc.cc.k8sOp.unSupportBatch': '（不支持批任务）',
-
 
   // =============== data source =======================
   // datasource list page
@@ -385,15 +434,18 @@ export default {
   'rc.ds.usernamePlaceholder': '请输入用户名!',
   'rc.ds.passwordPlaceholder': '请输入密码!',
   'rc.ds.flinkConfigPlaceholder': '请指定 Flink With 的默认配置!',
-  'rc.ds.flinkConfigTooltip': '避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用 `变量引用方式` 来加载连接配置。说明：引用名称指的是唯一标识，即该表单中的`名称`。注意需要开启全局变量（原片段机制）',
+  'rc.ds.flinkConfigTooltip':
+    '避免私密信息泄露，同时作为全局变量复用连接配置，在FlinkSQL中可使用 `变量引用方式` 来加载连接配置。说明：引用名称指的是唯一标识，即该表单中的`名称`。注意需要开启全局变量（原片段机制）',
   'rc.ds.flinkTemplatePlaceholder': '请指定 Flink With 的生成模板!',
-  'rc.ds.flinkTemplateTooltip': 'Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 `变量引用方式`中的 schemaName 是指动态获取数据库，`变量引用方式`中的 tableName 动态获取表名称',
+  'rc.ds.flinkTemplateTooltip':
+    'Flink 连接模板作用是为生成 FlinkSQL DDL 而扩展的功能。其中 `变量引用方式`中的 schemaName 是指动态获取数据库，`变量引用方式`中的 tableName 动态获取表名称',
   'rc.ds.source': '来源',
   'rc.ds.warehouse': '数仓',
   'rc.ds.application': '应用',
   'rc.ds.backup': '备份',
   'rc.ds.other': '其他',
-  'rc.ds.enter': '点击列表中的 icon 图片进入该数据源的详情页! 支持查看该数据源的库&表信息,以及可以进行即时查询',
+  'rc.ds.enter':
+    '点击列表中的 icon 图片进入该数据源的详情页! 支持查看该数据源的库&表信息,以及可以进行即时查询',
   'rc.ds.enter.error': '该数据源状态异常无法进入,心跳正常后方可进入!',
 
   // datasource of schema info page
@@ -426,7 +478,6 @@ export default {
   // console sql
   'rc.ds.console.exec': '执行',
   'rc.ds.console.running': '运行中...',
-
 
   // alert instance
   'rc.ai.management': '告警实例管理',
@@ -559,7 +610,6 @@ export default {
   'rc.ai.mf.emay': '亿美软通国内短信',
   'rc.ai.mf.ctyun': '天翼云短信',
 
-
   // alert group
   'rc.ag.management': '告警组管理',
   'rc.ag.name': '告警组名称',
@@ -589,7 +639,8 @@ export default {
   'rc.doc.deleteConfirm': '确定删除此文档吗？',
   'rc.doc.namePlaceholder': '请输入名称!',
   'rc.doc.versionPlaceholder': '请选择该文档所属版本!',
-  'rc.doc.fillValuePlaceholder': '请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值',
+  'rc.doc.fillValuePlaceholder':
+    '请输入填充值,编辑器内使用名称触发提示 eg: 如果希望在函数LTRIM(parms)中输入参数 则语法为: LTRIM(${1:})  此时的1代表第一个光标 如需多个 数字+1即可 tab键切换光标 ; 如不需要参数则直接输入期望填充值',
   'rc.doc.fillValueHelp': '请输入填充值',
   'rc.doc.descriptionPlaceholder': '请输入文档描述信息!',
   'rc.doc.typePlaceholder': '请选择该文档所属函数类型!',
@@ -636,7 +687,8 @@ export default {
   'rc.gp.create': '创建项目',
   'rc.gp.modify': '修改项目',
   'rc.gp.delete': '删除项目',
-  'rc.gp.deleteConfirm': '此操作会删除该项目下所有下载的代码! \n请谨慎操作!! \n此操作不可逆!!\n 你确定删除此项目吗?',
+  'rc.gp.deleteConfirm':
+    '此操作会删除该项目下所有下载的代码! \n请谨慎操作!! \n此操作不可逆!!\n 你确定删除此项目吗?',
   'rc.gp.namePlaceholder': '请输入名称!',
   'rc.gp.urlPlaceholder': '请输入项目地址!',
   'rc.gp.branchPlaceholder': '请选择分支!',
@@ -686,7 +738,6 @@ export default {
   'rc.resource.noResource': '\t\t暂无资源\n请点击上方按钮上传文件夹/文件',
   'rc.resource.upload': '上传文件夹/文件',
 
-
   //-------------------------------- setting center --------------------------------
   //setting
   'sys.setting.dinky': 'Dinky 环境配置',
@@ -717,23 +768,30 @@ export default {
   'sys.flink.settings.sqlSeparator': 'SQL 分隔符',
   'sys.flink.settings.sqlSeparator.note': 'SQL 分隔符',
   'sys.flink.settings.jobIdWait': 'Job 提交等待时间',
-  'sys.flink.settings.jobIdWait.note': '提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）',
+  'sys.flink.settings.jobIdWait.note':
+    '提交 Application 或 PerJob 任务时获取 Job ID 的最大等待时间（秒）',
   'sys.maven.settings.settingsFilePath': 'Maven 配置文件路径',
-  'sys.maven.settings.settingsFilePath.note': 'Maven 配置文件路径, eg: /opt/maven/conf/settings.xml , 请注意填写全路径,包含settings.xml文件名',
+  'sys.maven.settings.settingsFilePath.note':
+    'Maven 配置文件路径, eg: /opt/maven/conf/settings.xml , 请注意填写全路径,包含settings.xml文件名',
   'sys.maven.settings.repository': 'Maven 仓库地址',
   'sys.maven.settings.repository.note': 'Maven 仓库地址',
   'sys.maven.settings.repositoryUser': 'Maven 仓库用户名',
   'sys.maven.settings.repositoryUser.note': 'Maven 私服认证用户名',
   'sys.maven.settings.repositoryPassword': 'Maven 仓库密码',
-  'sys.maven.settings.repositoryPassword.note': 'Maven 私服认证密码,请注意: 此处为了安全起见,密码不会显示明文,返回时已做脱敏处理',
+  'sys.maven.settings.repositoryPassword.note':
+    'Maven 私服认证密码,请注意: 此处为了安全起见,密码不会显示明文,返回时已做脱敏处理',
   'sys.dolphinscheduler.settings.enable': '是否启用 DolphinScheduler',
-  'sys.dolphinscheduler.settings.enable.note': '是否启用 DolphinScheduler ,启用后才能使用 DolphinScheduler 的相关功能, 请确保 DolphinScheduler 的相关配置正确',
+  'sys.dolphinscheduler.settings.enable.note':
+    '是否启用 DolphinScheduler ,启用后才能使用 DolphinScheduler 的相关功能, 请确保 DolphinScheduler 的相关配置正确',
   'sys.dolphinscheduler.settings.url': 'DolphinScheduler 地址',
-  'sys.dolphinscheduler.settings.url.note': '地址必须和DolphinScheduler后台配置的地址一致，eg: http://127.0.0.1:12345/dolphinscheduler',
+  'sys.dolphinscheduler.settings.url.note':
+    '地址必须和DolphinScheduler后台配置的地址一致，eg: http://127.0.0.1:12345/dolphinscheduler',
   'sys.dolphinscheduler.settings.token': 'DolphinScheduler Token',
-  'sys.dolphinscheduler.settings.token.note': 'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
+  'sys.dolphinscheduler.settings.token.note':
+    'DolphinScheduler的Token，请在DolphinScheduler的安全中心->Token管理中创建一个token，并填入该配置中',
   'sys.dolphinscheduler.settings.projectName': 'DolphinScheduler 项目名',
-  'sys.dolphinscheduler.settings.projectName.note': 'DolphinScheduler 中指定的项目名称，不区分大小写',
+  'sys.dolphinscheduler.settings.projectName.note':
+    'DolphinScheduler 中指定的项目名称，不区分大小写',
 
   //LDAP
   'sys.ldap.settings.enable': '是否启用ldap',
@@ -751,15 +809,20 @@ export default {
   'sys.ldap.settings.baseDn': '用户基础DN',
   'sys.ldap.settings.baseDn.note': 'Dinky会在此基础dn下进行用户搜索,例如：ou=users,dc=dinky,dc=com',
   'sys.ldap.settings.filter': '用户过滤规则',
-  'sys.ldap.settings.filter.note': '使用ldap的filter语法进行用户过滤，例如: (&(objectClass=inetOrgPerson))',
+  'sys.ldap.settings.filter.note':
+    '使用ldap的filter语法进行用户过滤，例如: (&(objectClass=inetOrgPerson))',
   'sys.ldap.settings.autoload': '登录时自动映射用户',
-  'sys.ldap.settings.autoload.note': '开启后，当用户使用LDAP登录时，如果没有相应的Dinky用户映射，则会自动拉取LDAP信息创建一个Dinky用户与之映射，如果关闭此功能，对于未导入的LDAP用户将无法登录',
+  'sys.ldap.settings.autoload.note':
+    '开启后，当用户使用LDAP登录时，如果没有相应的Dinky用户映射，则会自动拉取LDAP信息创建一个Dinky用户与之映射，如果关闭此功能，对于未导入的LDAP用户将无法登录',
   'sys.ldap.settings.castUsername': 'LDAP用户名字段',
-  'sys.ldap.settings.castUsername.note': '需要填写一个LDAP中用户的属性字段来与Dinky用户对应，必须填写，一般可选为 cn 或者 uid表示用户唯一标识',
+  'sys.ldap.settings.castUsername.note':
+    '需要填写一个LDAP中用户的属性字段来与Dinky用户对应，必须填写，一般可选为 cn 或者 uid表示用户唯一标识',
   'sys.ldap.settings.castNickname': 'LDAP昵称字段',
-  'sys.ldap.settings.castNickname.note': '需要填写一个LDAP中用户的属性字段来与Dinky昵称对应，必须填写，一般可选为 sn 或者其他标识，不要求唯一',
+  'sys.ldap.settings.castNickname.note':
+    '需要填写一个LDAP中用户的属性字段来与Dinky昵称对应，必须填写，一般可选为 sn 或者其他标识，不要求唯一',
   'sys.ldap.settings.defaultTeant': 'LDAP导入默认租户编码',
-  'sys.ldap.settings.defaultTeant.note': '开启自动导入用户后，新用户登录需要一个默认的租户编码，否则无法登录',
+  'sys.ldap.settings.defaultTeant.note':
+    '开启自动导入用户后，新用户登录需要一个默认的租户编码，否则无法登录',
 
   'sys.ldap.settings.testConnect': '测试连接',
   'sys.ldap.settings.testConnect.success': '测试连接成功，获取到了{count}个用户',
@@ -769,36 +832,43 @@ export default {
 
   // Metrics
   'sys.metrics.settings.sys.enable': 'Dinky JVM Monitor 开关',
-  'sys.metrics.settings.sys.enable.note': '此开关会关系到Dinky JVM Monitor，决定监控页面中的Dinky Server显示，以及JVM Metrics采集',
+  'sys.metrics.settings.sys.enable.note':
+    '此开关会关系到Dinky JVM Monitor，决定监控页面中的Dinky Server显示，以及JVM Metrics采集',
   'sys.metrics.settings.sys.gatherTiming': 'Dinky JVM Metrics 采集时间粒度',
   'sys.metrics.settings.sys.gatherTiming.note': 'Dinky JVM Metrics 采集时间粒度，定时任务间隔触发',
   'sys.metrics.settings.flink.gatherTiming': 'Flink Metrics 采集时间粒度',
   'sys.metrics.settings.flink.gatherTiming.note': 'Flink Metrics 采集时间粒度，定时任务间隔触发',
   'sys.metrics.settings.flink.gatherTimeout': 'Flink Metrics 采集时间粒度，定时任务间隔触发',
-  'sys.metrics.settings.flink.gatherTimeout.note': 'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
+  'sys.metrics.settings.flink.gatherTimeout.note':
+    'Flink Metrics 采集超时时长，定时任务间隔触发（此配置项应小于Flink Metrics 采集时间粒度）',
 
   // Resource
-  'sys.resource.settings.enable':'是否启用Resource',
-  'sys.resource.settings.enable.note':'启用资源管理功能，如果切换存储模式时，需关闭此开关，相关配置完成后，再开启',
-  'sys.resource.settings.upload.base.path':'上传目录的根路径',
+  'sys.resource.settings.enable': '是否启用Resource',
+  'sys.resource.settings.enable.note':
+    '启用资源管理功能，如果切换存储模式时，需关闭此开关，相关配置完成后，再开启',
+  'sys.resource.settings.upload.base.path': '上传目录的根路径',
   // 'sys.resource.settings.upload.base.path.note':'resource store on HDFS/OSS path, resource file will store to this base path, self configuration, please make sure the directory exists on hdfs and have read write permissions. /dinky is recommended',
-  'sys.resource.settings.upload.base.path.note':'资源存储在HDFS/OSS路径上，资源文件将存储到此基本路径，自行配置，请确保该目录存在于hdfs上并具有读写权限。推荐:/dinky',
-  'sys.resource.settings.model':'存储模式：支持HDFS、OSS',
-  'sys.resource.settings.model.note':'存储模式：支持HDFS、OSS，切换选项后即可生效，同时并迁移资源文件',
-  'sys.resource.settings.hdfs.root.user':'HDFS操作用户名',
-  'sys.resource.settings.hdfs.root.user.note':'HDFS操作用户名',
-  'sys.resource.settings.hdfs.fs.defaultFS':'HDFS defaultFS',
-  'sys.resource.settings.hdfs.fs.defaultFS.note':'fs.defaultFS 配置项，例如远程：hdfs://localhost:9000，本地：file:///',
-  'sys.resource.settings.oss.endpoint':'对象存储服务的URL',
-  'sys.resource.settings.oss.endpoint.note':'对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com',
-  'sys.resource.settings.oss.accessKey':'Access key就像用户ID，可以唯一标识你的账户',
-  'sys.resource.settings.oss.accessKey.note':'Access key就像用户ID，可以唯一标识你的账户',
-  'sys.resource.settings.oss.secretKey':'Secret key是你账户的密码',
-  'sys.resource.settings.oss.secretKey.note':'Secret key是你账户的密码',
-  'sys.resource.settings.oss.bucketName':'默认的存储桶名称',
-  'sys.resource.settings.oss.bucketName.note':'默认的存储桶名称',
-  'sys.resource.settings.oss.region':'区域',
-  'sys.resource.settings.oss.region.note':'区域',
+  'sys.resource.settings.upload.base.path.note':
+    '资源存储在HDFS/OSS路径上，资源文件将存储到此基本路径，自行配置，请确保该目录存在于hdfs上并具有读写权限。推荐:/dinky',
+  'sys.resource.settings.model': '存储模式：支持HDFS、OSS',
+  'sys.resource.settings.model.note':
+    '存储模式：支持HDFS、OSS，切换选项后即可生效，同时并迁移资源文件',
+  'sys.resource.settings.hdfs.root.user': 'HDFS操作用户名',
+  'sys.resource.settings.hdfs.root.user.note': 'HDFS操作用户名',
+  'sys.resource.settings.hdfs.fs.defaultFS': 'HDFS defaultFS',
+  'sys.resource.settings.hdfs.fs.defaultFS.note':
+    'fs.defaultFS 配置项，例如远程：hdfs://localhost:9000，本地：file:///',
+  'sys.resource.settings.oss.endpoint': '对象存储服务的URL',
+  'sys.resource.settings.oss.endpoint.note':
+    '对象存储服务的URL，例如：https://oss-cn-hangzhou.aliyuncs.com',
+  'sys.resource.settings.oss.accessKey': 'Access key就像用户ID，可以唯一标识你的账户',
+  'sys.resource.settings.oss.accessKey.note': 'Access key就像用户ID，可以唯一标识你的账户',
+  'sys.resource.settings.oss.secretKey': 'Secret key是你账户的密码',
+  'sys.resource.settings.oss.secretKey.note': 'Secret key是你账户的密码',
+  'sys.resource.settings.oss.bucketName': '默认的存储桶名称',
+  'sys.resource.settings.oss.bucketName.note': '默认的存储桶名称',
+  'sys.resource.settings.oss.region': '区域',
+  'sys.resource.settings.oss.region.note': '区域',
 
   // process
   'sys.process.id': '进程ID',
@@ -819,7 +889,6 @@ export default {
   // system info of log
   'sys.info.logList.tips': '点击左侧日志文件查看',
 
-
   // metrics
   // server
   'metrics.filter.60seconds': '60秒',
@@ -833,13 +902,12 @@ export default {
   // flink job
   'metrics.flink.job.name': '任务名称',
   'metrics.flink.job.placeholder': '请选择任务名称',
-  "metrics.flink.jobId": 'Flink 任务ID',
+  'metrics.flink.jobId': 'Flink 任务ID',
   'metrics.flink.taskId': 'Dinky 任务ID',
   'metrics.flink.subTask': '子任务',
   'metrics.flink.subTask.placeholder': '请选择子任务名称',
   'metrics.flink.metrics.name': '指标名称',
   'metrics.flink.metrics.placeholder': '请选择指标名称(可多选)',
-
 
   // metadata
   'pages.metadata.NoDatabaseSelected': '未选择数据源',
@@ -854,7 +922,6 @@ export default {
   'pages.metadata.catalogRefreshSuccess': '刷新 Catalog 成功',
   'pages.metadata.selectDatabase': '选择数据源',
 
-
   'pages.metadata.Console': '控制台',
   'pages.metadata.help.noSqlSelect': '未选择任何sql！',
   'pages.metadata.help.selectSql': '请在编辑器内选择你要执行的sql',
@@ -867,22 +934,28 @@ export default {
   'pages.datastudio.label.jobConfig.cluster': 'Flink集群',
   'pages.datastudio.label.jobConfig.cluster.tip': '选择Flink集群',
   'pages.datastudio.label.jobConfig.clusterConfig': 'Flink集群配置',
-  'pages.datastudio.label.jobConfig.clusterConfig.tip1': '选择Flink集群配置进行【{type}】模式的远程提交任务',
+  'pages.datastudio.label.jobConfig.clusterConfig.tip1':
+    '选择Flink集群配置进行【{type}】模式的远程提交任务',
   'pages.datastudio.label.jobConfig.clusterConfig.tip2': '选择Flink集群配置',
   'pages.datastudio.label.jobConfig.jar': '可执行 Jar',
-  'pages.datastudio.label.jobConfig.jar.tip1': '选择可执行 Jar 进行 【{type}】模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.',
+  'pages.datastudio.label.jobConfig.jar.tip1':
+    '选择可执行 Jar 进行 【{type}】模式的远程提交 Jar 任务。当该参数项存在值时，将只提交可执行 Jar.',
   'pages.datastudio.label.jobConfig.jar.tip2': '选择可执行Jar，非必填',
   'pages.datastudio.label.jobConfig.execmode.tip': '指定 Flink 任务的执行模式，默认为 Local',
-  'pages.datastudio.label.jobConfig.execmode.k8s.tip': '指定 Flink 任务的执行模式，默认为 KUBERNETES_APPLICATION',
+  'pages.datastudio.label.jobConfig.execmode.k8s.tip':
+    '指定 Flink 任务的执行模式，默认为 KUBERNETES_APPLICATION',
   'pages.datastudio.label.jobConfig.flinksql.env': 'FlinkSQL 环境',
-  'pages.datastudio.label.jobConfig.flinksql.env.tip1': '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
+  'pages.datastudio.label.jobConfig.flinksql.env.tip1':
+    '选择当前任务的 FlinkSQL 执行环境，会提前执行环境语句，默认无。',
   'pages.datastudio.label.jobConfig.flinksql.env.tip2': '选择 FlinkSQL 环境，非必填',
   'pages.datastudio.label.jobConfig.parallelism': '任务并行度',
   'pages.datastudio.label.jobConfig.parallelism.tip': '设置Flink任务的并行度，最小为 1',
   'pages.datastudio.label.jobConfig.insert': 'Insert语句集',
-  'pages.datastudio.label.jobConfig.insert.tip': '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
+  'pages.datastudio.label.jobConfig.insert.tip':
+    '【增强特性】 开启语句集机制，将把多个 Insert 语句合成一个 JobGraph 再进行提交，Select 语句无效',
   'pages.datastudio.label.jobConfig.fragment': '全局变量',
-  'pages.datastudio.label.jobConfig.fragment.tip': '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），进行调用',
+  'pages.datastudio.label.jobConfig.fragment.tip':
+    '【增强特性】 开启FlinkSql全局变量，使用“:=”进行定义（以“;”结束），进行调用',
   'pages.datastudio.label.jobConfig.batchmode': '批模式',
   'pages.datastudio.label.jobConfig.batchmode.tip': '使用批模式',
   'pages.datastudio.label.jobConfig.checkPoint': '检查点间隔',
@@ -911,39 +984,45 @@ export default {
   'pages.datastudio.label.execConfig.preview.result': '预览结果',
   'pages.datastudio.label.execConfig.preview.result.tip': '开启预览结果，将同步运行并返回数据结果',
   'pages.datastudio.label.execConfig.changelog': '打印流',
-  'pages.datastudio.label.execConfig.changelog.tip': '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table',
+  'pages.datastudio.label.execConfig.changelog.tip':
+    '开启打印流，将同步运行并返回含有 op 信息的 ChangeLog，默认不开启且返回最终结果 Table',
   'pages.datastudio.label.execConfig.maxrow': '最大行数',
   'pages.datastudio.label.execConfig.maxrow.tip': '预览数据的最大行数',
   'pages.datastudio.label.execConfig.autostop': '自动停止',
-  'pages.datastudio.label.execConfig.autostop.tip': '开启自动停止，将在捕获最大行数记录后自动停止任务',
+  'pages.datastudio.label.execConfig.autostop.tip':
+    '开启自动停止，将在捕获最大行数记录后自动停止任务',
 
   'pages.datastudio.label.savepoint': '保存点',
-  'pages.task.savePointPath' : '保存点路径',
+  'pages.task.savePointPath': '保存点路径',
 
   'pages.datastudio.label.version': '版本历史',
   'pages.datastudio.label.version.id': '版本ID',
   'pages.datastudio.label.version.diff': '版本对比',
   'pages.datastudio.label.version.rollback': '回滚',
   'pages.datastudio.label.version.rollback.flinksql': '回滚Flink SQL版本',
-  'pages.datastudio.label.version.rollback.flinksqlConfirm': '确定回滚Flink SQL版本至【{versionId}】吗？',
+  'pages.datastudio.label.version.rollback.flinksqlConfirm':
+    '确定回滚Flink SQL版本至【{versionId}】吗？',
   'pages.datastudio.label.version.diff.tip': '只和当前编辑器内的内容对比',
   'pages.datastudio.label.version.leftTitle': '版本号：【{versionId}】 创建时间: 【{createTime}】',
-  'pages.datastudio.label.version.rightTitle': '版本号：【当前编辑版本】 创建时间: 【{createTime}】 最后更新时间: 【{updateTime}】',
+  'pages.datastudio.label.version.rightTitle':
+    '版本号：【当前编辑版本】 创建时间: 【{createTime}】 最后更新时间: 【{updateTime}】',
 
-
-  'pages.datastudio.editor.execute.warn': '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
+  'pages.datastudio.editor.execute.warn':
+    '该任务执行模式为【{type}】，不支持 SQL 查询，请手动保存后使用右侧按钮——作业提交',
   'pages.datastudio.editor.submiting': '新任务【{jobName}】正在执行',
   'pages.datastudio.editor.exec.success': '执行成功',
   'pages.datastudio.editor.exec.error': '任务【{jobName}】执行失败',
   'pages.datastudio.editor.async.submit': '异步提交作业',
   'pages.datastudio.editor.async.submiting': '任务【{jobName}】正在异步提交',
-  'pages.datastudio.editor.async.submitConfirm': '确定异步提交作业【{jobName}】到其配置的集群吗？请确认您的作业是否已经被保存！',
+  'pages.datastudio.editor.async.submitConfirm':
+    '确定异步提交作业【{jobName}】到其配置的集群吗？请确认您的作业是否已经被保存！',
   'pages.datastudio.editor.async.success': '异步提交成功',
   'pages.datastudio.editor.async.error': '异步提交失败',
   'pages.datastudio.editor.query.explan.error': '获取作业执行计划失败，原因：\n{msg}',
   'pages.datastudio.editor.query.ds.error': '获取海豚数据失败，原因：\n{msg}',
   'pages.datastudio.editor.release.job': '发布作业',
-  'pages.datastudio.editor.release.jobConfirm': '确定发布作业【{jobName}】吗？请确认您的作业是否已经被保存！',
+  'pages.datastudio.editor.release.jobConfirm':
+    '确定发布作业【{jobName}】吗？请确认您的作业是否已经被保存！',
   'pages.datastudio.editor.release.job.success': '发布作业【{jobName}】成功',
   'pages.datastudio.editor.release.job.error': '发布作业【{jobName}】失败',
   'pages.datastudio.editor.edit.job': '维护作业',
@@ -1007,6 +1086,9 @@ export default {
   'pages.datastudio.sql.query': 'SQL 查询',
   'pages.datastudio.submit.job': '提交作业',
 
+  'pages.datastudio.help.sqlChangedPrompt': '检测到当前页远程有更改，是否刷新更新数据？',
+  'pages.datastudio.help.sqlChanged': 'Sql内容或配置变更',
+
   'pages.datastudio.explain.validate.msg': 'FlinkSql 语法和逻辑检查',
   'pages.datastudio.explain.validate': '正在校验中...',
   'pages.datastudio.explain.validate.allright': '全部正确',
@@ -1016,14 +1098,13 @@ export default {
   'pages.datastudio.explain.validate.logic.right': '逻辑正确',
   'pages.datastudio.explain.validate.logic.error': '逻辑有误',
 
-  'pages.datastudio.footer.memDetails': "最大堆大小：{max}\n已使用：   {used}M",
-  'pages.datastudio.footer.codeType': "代码类型：",
-  'pages.datastudio.footer.lineSeparator': "行分隔符：",
-  'pages.datastudio.footer.codeEncoding': "文件编码：",
-  'pages.datastudio.footer.codePosition': "行{Ln}:列{Col} ",
+  'pages.datastudio.footer.memDetails': '最大堆大小：{max}\n已使用：   {used}M',
+  'pages.datastudio.footer.codeType': '代码类型：',
+  'pages.datastudio.footer.lineSeparator': '行分隔符：',
+  'pages.datastudio.footer.codeEncoding': '文件编码：',
+  'pages.datastudio.footer.codePosition': '行{Ln}:列{Col} ',
 
   'pages.datastudio.label.result.query.latest.data': '获取最新数据',
-
 
   'datastudio.middle.qg': '快捷引导',
   'datastudio.middle.qg.clusterInstance': '注册 Session 集群',
@@ -1040,6 +1121,19 @@ export default {
   'datastudio.project.create.rootFolder': '创建根目录',
   'datastudio.project.create.folder.name': '目录名称',
   'datastudio.project.create.folder.name.placeholder': '请输入目录名称',
+  'datastudio.project.create.folder.tip': '暂无作业,请点击左上角新建目录',
+  'datastudio.project.delete.job': '删除 [{type}] 作业 [{name}]',
+  'datastudio.project.delete.job.confirm':
+    '此操作会将该任务的执行历史, 以及任务的所有信息全部删除.\n\t\t\t\t请谨慎操作! 该操作不可逆!!!\n\t\t\t\t\t确认删除吗?',
 
-
+  'catalog.name': '作业名称',
+  'catalog.name.placeholder': '请输入作业名称',
+  'catalog.name.tip': '此名称可作为 FlinkSql 任务的 JobName ([配置项: pipeline.name])',
+  'catalog.type': '作业类型',
+  'catalog.type.placeholder': '请选择作业类型',
+  'catalog.type.tip': '作业类型决定了作业的执行方式, 请谨慎选择, 一旦选择后不可修改',
+  'catalog.udf.templateId': 'UDF 模板',
+  'catalog.udf.templateId.placeholder': '请选择 UDF 模板',
+  'catalog.udf.className': '类或方法名',
+  'catalog.udf.className.placeholder': '请输入类或方法名'
 };

@@ -18,9 +18,10 @@
  */
 
 export default {
-  'button.check':'检查',
-  'button.graph':'图',
+  'button.check': '检查',
+  'button.graph': '图',
   'button.create': '新建',
+  'button.recovery': '恢复',
   'button.close': '关闭',
   'button.confirm': '确定',
   'button.cancel': '取消',
@@ -79,6 +80,7 @@ export default {
   'right.menu.open': '打开',
   'right.menu.submit': '异步提交',
   'right.menu.addSub': '添加子项',
+  'right.menu.createSubFolder': '添加子目录',
   'right.menu.exportJson': '导出 JSON',
   'right.menu.importJson': '导入 JSON',
   'right.menu.rename': '重命名',
@@ -89,7 +91,7 @@ export default {
   'right.menu.paste': '粘贴',
   'right.menu.delete': '删除',
   'right.menu.createCatalogue': '创建目录',
-  'right.menu.createRootCatalogue': '创建根目录',
+  'right.menu.createRoot': '创建根目录',
   'right.menu.uploadZipToCreate': '上传zip包创建工程',
   'right.menu.createTask': '创建作业',
   'right.menu.closeAll': '关闭所有',
@@ -111,8 +113,7 @@ export default {
 
   'global.stay.tuned': '敬请期待',
   'global.mini': '最小化',
-  'global.max':'最大化',
-
+  'global.max': '最大化',
 
   'global.table.operate': '操作',
   'global.table.updateTime': '更新时间',
@@ -150,7 +151,6 @@ export default {
   'global.table.runmode.remote': '远程',
 
   'global.search.text': '输入关键字搜索',
-
 
   'global.savepoint.strategy.disabled': '禁用',
   'global.savepoint.strategy.latest': '最近一次',
@@ -194,6 +194,5 @@ export default {
   'global.month.september': '九月',
   'global.month.october': '十月',
   'global.month.november': '十一月',
-  'global.month.december': '十二月',
-
+  'global.month.december': '十二月'
 };

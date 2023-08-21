@@ -17,28 +17,29 @@
  *
  */
 
-import React, {useEffect, useState} from "react";
-import {Area, AreaConfig} from "@ant-design/plots";
-import {JVMMetric, MetricsDataType} from "@/pages/Metrics/Server/data";
-import {Datum} from "@antv/g2plot";
-import {AreaOptions as G2plotConfig} from "@antv/g2plot/lib/plots/area/types";
+import { JVMMetric } from '@/pages/Metrics/Server/data';
+import { Area, AreaConfig } from '@ant-design/plots';
+import { Datum } from '@antv/g2plot';
+import { AreaOptions as G2plotConfig } from '@antv/g2plot/lib/plots/area/types';
+import React from 'react';
 
 type HeapProps = {
   data: JVMMetric[];
   max: number;
   chartConfig: G2plotConfig;
-
-}
+};
 type Heap = {
   time: Date;
   value: string | number;
-}
+};
 const Heap: React.FC<HeapProps> = (props) => {
-  const {data, max, chartConfig} = props;
-  const dataList: Heap[] = data.map(x => {
-    return {time: x.time, value: parseInt(String(x.jvm.heapUsed / (1024 * 1024)))}
-  })
-
+  const { data, max, chartConfig } = props;
+  const dataList: Heap[] = data.map((x) => {
+    return {
+      time: x.time,
+      value: parseInt(String(x.jvm.heapUsed / (1024 * 1024)))
+    };
+  });
 
   const config: AreaConfig = {
     ...chartConfig,
@@ -49,12 +50,12 @@ const Heap: React.FC<HeapProps> = (props) => {
     },
     tooltip: {
       formatter: (datum: Datum) => {
-        return {name: "Heap Memory", value: datum.value + ' MB'};
-      },
+        return { name: 'Heap Memory', value: datum.value + ' MB' };
+      }
     }
   };
 
   return <Area {...config} />;
-}
+};
 
 export default Heap;

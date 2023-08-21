@@ -15,19 +15,19 @@
  * limitations under the License.
  */
 
-import {l} from '@/utils/intl';
-import {Alert} from 'antd';
-import React from 'react';
-import {AlertRestProps} from '@/pages/Other/About';
+import { AlertRestProps } from '@/pages/Other/About';
+import { l } from '@/utils/intl';
+import { Alert } from 'antd';
 
 export const Precautions = () => {
-
-  return <>
-    <Alert
-      message={l('about.precautions')}
-      description={l('about.wechatApply')}
-      type="warning"
-      {...AlertRestProps}
-    />
-  </>;
+  return (
+    <>
+      <Alert
+        message={l('about.precautions')}
+        description={l('about.wechatApply')}
+        type='warning'
+        {...AlertRestProps}
+      />
+    </>
+  );
 };

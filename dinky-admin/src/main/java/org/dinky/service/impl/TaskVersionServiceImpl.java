@@ -37,6 +37,8 @@ public class TaskVersionServiceImpl extends SuperServiceImpl<TaskVersionMapper, 
     @Override
     public List<TaskVersion> getTaskVersionByTaskId(Integer taskId) {
 
-        return baseMapper.selectList(new LambdaQueryWrapper<TaskVersion>().eq(TaskVersion::getTaskId, taskId));
+        return baseMapper.selectList(new LambdaQueryWrapper<TaskVersion>()
+                .eq(TaskVersion::getTaskId, taskId)
+                .orderByDesc(true, TaskVersion::getVersionId));
     }
 }

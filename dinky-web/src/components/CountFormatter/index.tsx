@@ -17,9 +17,10 @@
  *
  */
 
-import CountUp from "react-countup";
-import React from "react";
+import CountUp from 'react-countup';
 
-const CountFormatter = ({value}:{value:number}) => <CountUp duration={2} redraw enableScrollSpy scrollSpyOnce preserveValue  end={value} />;
+const CountFormatter = ({ value }: { value: number }) => (
+  <CountUp duration={2} redraw enableScrollSpy scrollSpyOnce preserveValue end={value} />
+);
 
 export default CountFormatter;

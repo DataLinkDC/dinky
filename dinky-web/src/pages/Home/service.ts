@@ -15,8 +15,8 @@
  * limitations under the License.
  */
 
-import {getData} from "@/services/api";
-import {API_CONSTANTS} from "@/services/constants";
+import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
 
 export function getStatusCount() {
   return getData(API_CONSTANTS.GET_STATUS_COUNT);

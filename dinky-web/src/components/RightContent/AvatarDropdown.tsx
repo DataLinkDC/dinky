@@ -15,29 +15,21 @@
  * limitations under the License.
  */
 
-import {
-  LogoutOutlined,
-  TeamOutlined, UserOutlined,
-  UserSwitchOutlined
-} from '@ant-design/icons';
+import { chooseTenantSubmit, outLogin } from '@/services/BusinessCrud';
+import { setTenantStorageAndCookie } from '@/utils/function';
+import { l } from '@/utils/intl';
+import { ErrorNotification, SuccessNotification } from '@/utils/messages';
+import { LogoutOutlined, TeamOutlined, UserOutlined, UserSwitchOutlined } from '@ant-design/icons';
 import { setAlpha } from '@ant-design/pro-components';
 import { useEmotionCss } from '@ant-design/use-emotion-css';
 import { history, useModel } from '@umijs/max';
-import {Avatar, Modal, Spin} from 'antd';
+import { Avatar, Modal, Spin } from 'antd';
 import { stringify } from 'querystring';
+import { ItemType } from 'rc-menu/es/interface';
 import type { MenuInfo } from 'rc-menu/lib/interface';
-import React, { useCallback } from 'react';
+import { useCallback } from 'react';
 import { flushSync } from 'react-dom';
 import HeaderDropdown from '../HeaderDropdown';
-import {chooseTenantSubmit, outLogin} from "@/services/BusinessCrud";
-import {l} from "@/utils/intl";
-import {setTenantStorageAndCookie} from "@/utils/function";
-import {ErrorNotification, SuccessNotification} from "@/utils/messages";
-import {
-  ItemType,
-} from "rc-menu/es/interface";
-
-
 
 const Name = () => {
   const { initialState } = useModel('@@initialState');
@@ -52,8 +44,8 @@ const Name = () => {
       whiteSpace: 'nowrap',
       textOverflow: 'ellipsis',
       [`@media only screen and (max-width: ${token.screenMD}px)`]: {
-        display: 'none',
-      },
+        display: 'none'
+      }
     };
   });
 
@@ -71,13 +63,13 @@ const AvatarLogo = () => {
       verticalAlign: 'top',
       background: setAlpha(token.colorBgContainer, 0.85),
       [`@media only screen and (max-width: ${token.screenMD}px)`]: {
-        margin: 0,
-      },
+        margin: 0
+      }
     };
   });
 
   return (
-    <Avatar size="small" className={avatarClassName} src={currentUser?.user.avatar} alt="avatar" />
+    <Avatar size='small' className={avatarClassName} src={currentUser?.user.avatar} alt='avatar' />
   );
 };
 
@@ -96,8 +88,8 @@ const AvatarDropdown = () => {
       history.replace({
         pathname: '/user/login',
         search: stringify({
-          redirect: pathname + search,
-        }),
+          redirect: pathname + search
+        })
       });
     }
   };
@@ -114,8 +106,8 @@ const AvatarDropdown = () => {
       color: 'white',
       borderRadius: token.borderRadius,
       '&:hover': {
-        backgroundColor: token.colorBgTextHover,
-      },
+        backgroundColor: token.colorBgTextHover
+      }
     };
   });
   const { initialState, setInitialState } = useModel('@@initialState');
@@ -123,22 +115,22 @@ const AvatarDropdown = () => {
   const loginOutHandler = useCallback(
     async (event: MenuInfo) => {
       const { key } = event;
-        flushSync(() => {
-            setInitialState((s) => ({ ...s, currentUser: undefined }));
-        });
-        await loginOut();
-        return;
+      flushSync(() => {
+        setInitialState((s) => ({ ...s, currentUser: undefined }));
+      });
+      await loginOut();
+      return;
     },
-    [setInitialState],
+    [setInitialState]
   );
 
   const loading = (
     <span className={actionClassName}>
       <Spin
-        size="small"
+        size='small'
         style={{
           marginLeft: 8,
-          marginRight: 8,
+          marginRight: 8
         }}
       />
     </span>
@@ -152,21 +144,20 @@ const AvatarDropdown = () => {
     return loading;
   }
 
-
   /**
    *
    * @param option
    */
-  const tenantHandleChange = (option:any) => {
+  const tenantHandleChange = (option: any) => {
     const tenantCode = option.domEvent.target.innerText;
     const tenantId = option.key as number;
     Modal.confirm({
-      title: l("menu.account.checkTenant"),
-      content: l("menu.account.checkTenantConfirm", "", {tenantCode}),
-      okText: l("button.confirm"),
-      cancelText: l("button.cancel"),
+      title: l('menu.account.checkTenant'),
+      content: l('menu.account.checkTenantConfirm', '', { tenantCode }),
+      okText: l('button.confirm'),
+      cancelText: l('button.cancel'),
       onOk: async () => {
-        const result = await chooseTenantSubmit({tenantId});
+        const result = await chooseTenantSubmit({ tenantId });
         setTenantStorageAndCookie(tenantId);
         if (result.code === 0) {
           SuccessNotification(result.msg);
@@ -175,63 +166,64 @@ const AvatarDropdown = () => {
         }
         // trigger global refresh, such as reload page
         window.location.reload();
-      },
+      }
     });
   };
   const renderTenantList = () => {
     let chooseTenantList: ItemType[] = [];
     currentUser.tenantList?.map((item) => {
-     return chooseTenantList.push({
+      return chooseTenantList.push({
         key: item.id,
         label: item.tenantCode,
         disabled: item.id === currentUser.currentTenant?.id,
-        onClick: (e) => tenantHandleChange(e),
-      })
-    })
+        onClick: (e) => tenantHandleChange(e)
+      });
+    });
     return chooseTenantList;
-  }
-
+  };
 
   const menuItems = [
     {
       key: 'currentTenant',
       icon: <TeamOutlined />,
-      label: l('menu.account.tenant','', {tenantCode: currentUser?.currentTenant.tenantCode}),
+      label: l('menu.account.tenant', '', {
+        tenantCode: currentUser.currentTenant?.tenantCode
+      })
     },
     {
-      type: 'divider' as const,
+      type: 'divider' as const
     },
-      {
-        key: 'center',
-        icon: <UserOutlined />,
-        label: l('menu.account.center'),
-        onClick: () => history.push('/account/center'),
-      },
-      {
-        type: 'divider' as const,
-      },
-      {
-        key: 'switching',
-        icon: <UserSwitchOutlined />,
-        label: l('menu.account.checkTenant'),
-        children:  renderTenantList(),
-      },
-      {
-        type: 'divider' as const,
-      },
-      {
-        key: 'logout',
-        icon: <LogoutOutlined />,
-        label: l('menu.account.logout'),
-        onClick: loginOutHandler,
-      },
+    {
+      key: 'center',
+      icon: <UserOutlined />,
+      label: l('menu.account.center'),
+      onClick: () => history.push('/account/center')
+    },
+    {
+      type: 'divider' as const
+    },
+    {
+      key: 'switching',
+      icon: <UserSwitchOutlined />,
+      label: l('menu.account.checkTenant'),
+      children: renderTenantList()
+    },
+    {
+      type: 'divider' as const
+    },
+    {
+      key: 'logout',
+      icon: <LogoutOutlined />,
+      label: l('menu.account.logout'),
+      onClick: loginOutHandler
+    }
   ];
 
   return (
     <HeaderDropdown
       menu={{
         selectedKeys: [],
-        items: menuItems,
+        items: menuItems
       }}
     >
       <span className={actionClassName}>

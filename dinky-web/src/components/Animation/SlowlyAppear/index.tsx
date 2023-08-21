@@ -17,23 +17,18 @@
  *
  */
 
-import React from 'react';
-import { useSpring, animated } from 'react-spring';
+import { animated, useSpring } from 'react-spring';
 
 // 缓慢出现
 const SlowlyAppear = (props: any) => {
-    const { children } = props;
-    const slowlyAppearProps = useSpring({
-        opacity: 1,
-        from: { opacity: 0 },
-        config: { duration: 1000 },
-    });
+  const { children } = props;
+  const slowlyAppearProps = useSpring({
+    opacity: 1,
+    from: { opacity: 0 },
+    config: { duration: 1000 }
+  });
 
-    return (
-        <animated.h1 style={slowlyAppearProps}>
-            {children}
-        </animated.h1>
-    );
+  return <animated.h1 style={slowlyAppearProps}>{children}</animated.h1>;
 };
 
 export default SlowlyAppear;

@@ -15,51 +15,51 @@
  * limitations under the License.
  */
 
-import {Alert, Typography} from 'antd';
-import {l} from '@/utils/intl';
-import {LinkOutlined, SmileOutlined} from '@ant-design/icons';
-import React from 'react';
-import {AlertRestProps, TypographyRestProps} from '@/pages/Other/About';
+import { AlertRestProps, TypographyRestProps } from '@/pages/Other/About';
+import { l } from '@/utils/intl';
+import { LinkOutlined, SmileOutlined } from '@ant-design/icons';
+import { Alert, Typography } from 'antd';
 
 const { Paragraph } = Typography;
 
 export const UsingHelp = () => {
-
-  return <>
-    <Alert
-      message={l('about.usingHelp')}
-      icon={<SmileOutlined />}
-      type="info"
-      {...AlertRestProps}
-    />
-    <Paragraph >
-      <Typography.Text {...TypographyRestProps}>
-        <LinkOutlined /> GitHub：
-        <a href={'https://github.com/DataLinkDC/dinky'} target={'_blank'} rel="noreferrer">
-          https://github.com/DataLinkDC/dinky
-        </a>
-      </Typography.Text>
-      <br />
-      <Typography.Text {...TypographyRestProps}>
-        <LinkOutlined /> Gitee:{' '}
-        <a href={'https://gitee.com/DataLinkDC/Dinky'} target={'_blank'} rel="noreferrer">
-          https://gitee.com/DataLinkDC/Dinky
-        </a>
-      </Typography.Text>
-      <br />
-      <Typography.Text  {...TypographyRestProps}>
-        <LinkOutlined /> Document:{' '}
-        <a href={'http://www.dlink.top'} target={'_blank'} rel="noreferrer">
-          http://www.dlink.top
-        </a>
-      </Typography.Text>
-      <br />
-      <Typography.Text  {...TypographyRestProps}>
-        <LinkOutlined /> bilibili:{' '}
-        <a href={'https://space.bilibili.com/366484959/video'} target={'_blank'} rel="noreferrer">
-          https://space.bilibili.com/366484959/video
-        </a>
-      </Typography.Text>
-    </Paragraph>
-  </>
-}
+  return (
+    <>
+      <Alert
+        message={l('about.usingHelp')}
+        icon={<SmileOutlined />}
+        type='info'
+        {...AlertRestProps}
+      />
+      <Paragraph>
+        <Typography.Text {...TypographyRestProps}>
+          <LinkOutlined /> GitHub：
+          <a href={'https://github.com/DataLinkDC/dinky'} target={'_blank'} rel='noreferrer'>
+            https://github.com/DataLinkDC/dinky
+          </a>
+        </Typography.Text>
+        <br />
+        <Typography.Text {...TypographyRestProps}>
+          <LinkOutlined /> Gitee:{' '}
+          <a href={'https://gitee.com/DataLinkDC/Dinky'} target={'_blank'} rel='noreferrer'>
+            https://gitee.com/DataLinkDC/Dinky
+          </a>
+        </Typography.Text>
+        <br />
+        <Typography.Text {...TypographyRestProps}>
+          <LinkOutlined /> Document:{' '}
+          <a href={'http://www.dlink.top'} target={'_blank'} rel='noreferrer'>
+            http://www.dlink.top
+          </a>
+        </Typography.Text>
+        <br />
+        <Typography.Text {...TypographyRestProps}>
+          <LinkOutlined /> bilibili:{' '}
+          <a href={'https://space.bilibili.com/366484959/video'} target={'_blank'} rel='noreferrer'>
+            https://space.bilibili.com/366484959/video
+          </a>
+        </Typography.Text>
+      </Paragraph>
+    </>
+  );
+};

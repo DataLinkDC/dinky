@@ -45,10 +45,10 @@ export default {
           'Content-Type': 'text/event-stream',
           'Cache-Control': 'no-cache, no-transform',
           Connection: 'keep-alive',
-          'X-Accel-Buffering': 'noe',
+          'X-Accel-Buffering': 'noe'
         });
-      },
-    },
+      }
+    }
   },
 
   /**
@@ -60,14 +60,14 @@ export default {
     '/api/': {
       target: 'https://proapi.azurewebsites.net',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
+      pathRewrite: { '^': '' }
+    }
   },
   pre: {
     '/api/': {
       target: 'your pre url',
       changeOrigin: true,
-      pathRewrite: { '^': '' },
-    },
-  },
+      pathRewrite: { '^': '' }
+    }
+  }
 };

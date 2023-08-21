@@ -15,20 +15,23 @@
  * limitations under the License.
  */
 
+import { showAlertInstance } from '@/pages/RegCenter/Alert/AlertGroup/service';
+import { Alert } from '@/types/RegCenter/data.d';
+import { Reducer } from 'umi';
 
-import {Reducer} from "umi";
-import {Alert} from "@/types/RegCenter/data.d";
-import {showAlertInstance} from "@/pages/RegCenter/Alert/AlertGroup/service";
+import { createModelTypes } from '@/utils/modals';
+import { Effect } from '@@/plugin-dva/types';
 
 export type AlertStateType = {
-  instance:Alert.AlertInstance[],
-  group:Alert.AlertGroup[]
+  instance: Alert.AlertInstance[];
+  group: Alert.AlertGroup[];
 };
 
 export type AlertModelType = {
   namespace: string;
   state: AlertStateType;
   effects: {
+    queryInstance: Effect;
   };
   reducers: {
     saveInstance: Reducer<AlertStateType>;
@@ -39,31 +42,33 @@ export type AlertModelType = {
 const AlertModel: AlertModelType = {
   namespace: 'Alert',
   state: {
-    instance:[],
-    group:[],
+    instance: [],
+    group: []
   },
 
   effects: {
-    *queryInstance({ }, { call, put }) {
+    *queryInstance({}, { call, put }) {
       const { datas } = yield call(showAlertInstance);
       yield put({ type: 'saveInstance', payload: datas });
-    },
+    }
   },
 
   reducers: {
-    saveInstance(state, {payload}) {
+    saveInstance(state, { payload }) {
       return {
         ...state,
-        instance: payload,
+        instance: payload
       };
     },
-    saveGroup(state, {payload}) {
+    saveGroup(state, { payload }) {
       return {
         ...state,
-        group: payload,
+        group: payload
       };
-    },
-  },
+    }
+  }
 };
+
+export const [ALERT_MODEL, ALERT_MODEL_ASYNC] = createModelTypes(AlertModel);
 
 export default AlertModel;

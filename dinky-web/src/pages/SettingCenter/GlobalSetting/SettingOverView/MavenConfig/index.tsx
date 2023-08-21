@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Tag} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface MavenConfigProps {
@@ -28,24 +26,28 @@ interface MavenConfigProps {
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const MavenConfig = ({data, onSave}: MavenConfigProps) => {
-
+export const MavenConfig = ({ data, onSave }: MavenConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
-  const onSaveHandler =async (data: BaseConfigProperties) => {
+  const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);
     await onSave(data);
     setLoading(false);
   };
 
-
-  return <>
+  return (
+    <>
       {/*tooltip={l('sys.setting.maven.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
-        tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
+        tag={
+          <>
+            <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
+          </>
+        }
         data={data}
       />
-  </>;
+    </>
+  );
 };

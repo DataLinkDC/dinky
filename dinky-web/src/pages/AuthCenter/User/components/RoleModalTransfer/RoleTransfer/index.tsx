@@ -16,102 +16,106 @@
  *
  */
 
-import {UserBaseInfo} from "@/types/User/data";
-import TableTransfer from "@/components/TableTransfer";
-import {ColumnsType} from "antd/es/table";
-import {API_CONSTANTS} from "@/services/constants";
-import {getData} from "@/services/api";
-import {useEffect, useState} from "react";
-import {l} from "@/utils/intl";
-
+import TableTransfer from '@/components/TableTransfer';
+import { getData } from '@/services/api';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleTransferState } from '@/types/AuthCenter/init.d';
+import { RoleTransferState } from '@/types/AuthCenter/state.d';
+import { l } from '@/utils/intl';
+import { ProColumns } from '@ant-design/pro-components';
+import { useEffect, useState } from 'react';
 
 type TransferFromProps = {
-    user: Partial<UserBaseInfo.Role>;
-    onChange: (values: string[]) => void;
+  role: Partial<UserBaseInfo.Role>;
+  onChange: (values: string[]) => void;
 };
 
-
 const RoleTransfer = (props: TransferFromProps) => {
-    /**
-     * status
-     */
-    const {user, onChange: handleChange} = props;
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
-    const [roleTableList, setRoleTableList] = useState<UserBaseInfo.Role[]>([]);
-    const [selectedKeys, setSelectedKeys] = useState<string[]>([]);
+  /**
+   * status
+   */
+  const { role, onChange: handleChange } = props;
 
-    /**
-     * select change
-     * @param sourceSelectedKeys
-     * @param targetSelectedKeys
-     */
-    const onSelectChange = (
-        sourceSelectedKeys: string[],
-        targetSelectedKeys: string[],
-    ) => {
-        const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
-        setSelectedKeys(newSelectedKeys);
-    };
+  const [roleTransferState, setRoleTransferState] =
+    useState<RoleTransferState>(InitRoleTransferState);
 
-    /**
-     * get data
-     */
-    useEffect(() => {
-        getData(API_CONSTANTS.GET_ROLES_BY_USERID, {id: user.id}).then(result => {
-            setRoleTableList(result.datas.roles);
-            setTargetKeys(result.datas.roleIds);
-            handleChange(result.datas.roleIds);
-        });
-    }, []);
+  /**
+   * select change
+   * @param sourceSelectedKeys
+   * @param targetSelectedKeys
+   */
+  const onSelectChange = (sourceSelectedKeys: string[], targetSelectedKeys: string[]) => {
+    const newSelectedKeys = [...sourceSelectedKeys, ...targetSelectedKeys];
+    setRoleTransferState((prevState) => ({ ...prevState, selectedKeys: newSelectedKeys }));
+  };
 
-    /**
-     * table columns
-     */
-    const columns: ColumnsType<UserBaseInfo.Role> = [
-        {
-            dataIndex: 'roleCode',
-            title: l('role.roleCode'),
-        },
-        {
-            dataIndex: 'roleName',
-            title: l('role.roleName'),
-        },
-        {
-            dataIndex: 'note',
-            title: l('global.table.note'),
-            ellipsis: true,
-        },
-    ];
+  /**
+   * get data
+   */
+  useEffect(() => {
+    getData(API_CONSTANTS.GET_ROLES_BY_USERID, { id: role.id }).then((result) => {
+      setRoleTransferState((prevState) => ({
+        ...prevState,
+        roleList: result.datas.roles,
+        targetKeys: result.datas.roleIds
+      }));
+      handleChange(result.datas.roleIds);
+    });
+  }, []);
 
+  /**
+   * table columns
+   */
+  const columns: ProColumns<UserBaseInfo.Role>[] = [
+    {
+      dataIndex: 'roleCode',
+      title: l('role.roleCode')
+    },
+    {
+      dataIndex: 'roleName',
+      title: l('role.roleName')
+    },
+    {
+      dataIndex: 'note',
+      title: l('global.table.note'),
+      ellipsis: true
+    }
+  ];
 
-    /**
-     * transfer change
-     * @param nextTargetKeys
-     */
-    const onChange = (nextTargetKeys: string[]) => {
-        setTargetKeys(nextTargetKeys);
-        handleChange(nextTargetKeys);
-    };
+  /**
+   * transfer change
+   * @param nextTargetKeys
+   */
+  const onChange = (nextTargetKeys: string[]) => {
+    setRoleTransferState((prevState) => ({ ...prevState, targetKeys: nextTargetKeys }));
+    handleChange(nextTargetKeys);
+  };
 
-
-    /**
-     * render
-     */
-    return <>
-        <TableTransfer
-            dataSource={roleTableList}
-            targetKeys={targetKeys}
-            selectedKeys={selectedKeys}
-            rowKey={item => item.id as any}
-            onChange={onChange}
-            onSelectChange={onSelectChange}
-            filterOption={(inputValue, item) =>
-                item.roleCode!.indexOf(inputValue) !== -1 || item.roleName!.indexOf(inputValue) !== -1
-            }
-            leftColumns={columns}
-            rightColumns={columns}
-        />
+  /**
+   * render
+   */
+  return (
+    <>
+      <TableTransfer
+        dataSource={roleTransferState.roleList}
+        targetKeys={roleTransferState.targetKeys}
+        selectedKeys={roleTransferState.selectedKeys}
+        rowKey={(item) => item.id}
+        onChange={onChange}
+        onSelectChange={onSelectChange}
+        filterOption={(inputValue, item: UserBaseInfo.Role) => {
+          if (!item.roleCode || !item.roleName) return false;
+          return (
+            item.roleCode.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1 ||
+            item.roleName.toLowerCase().indexOf(inputValue.toLowerCase()) !== -1
+          );
+        }}
+        leftColumns={columns}
+        rightColumns={columns}
+      />
     </>
+  );
 };
 
 export default RoleTransfer;

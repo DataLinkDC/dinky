@@ -24,7 +24,7 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
   const { currentUser } = initialState ?? {};
   return {
     canAdmin: currentUser && currentUser.user.superAdminFlag,
-    canAuth({ path, ...route }) {
+    canAuth({ path, ...route }: { path: string }) {
       if (currentUser && currentUser.user.superAdminFlag) {
         return true;
       }
@@ -33,8 +33,8 @@ export default function access(initialState: { currentUser?: API.CurrentUser } |
       //TODOpath可以是window.location.href、key
 
       return currentUser?.menuList?.some?.(
-        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path),
+        (item) => item?.path?.startsWith(path) || item?.path?.endsWith(path)
       );
-    },
+    }
   };
 }

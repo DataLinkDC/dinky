@@ -15,24 +15,34 @@
  * limitations under the License.
  */
 
-
-import React, {useEffect, useRef, useState} from 'react';
-import {EditTwoTone} from '@ant-design/icons';
-import {ActionType} from '@ant-design/pro-table';
-import {Button, Descriptions, Modal, Space, Switch, Tag, Tooltip} from 'antd';
-import {l} from '@/utils/intl';
-import {Alert} from '@/types/RegCenter/data.d';
-import {queryList} from '@/services/api';
-import {handleRemoveById, updateDataByParam} from '@/services/BusinessCrud';
-import {ProList} from '@ant-design/pro-components';
-import {API_CONSTANTS, PRO_LIST_CARD_OPTIONS, PROTABLE_OPTIONS_PUBLIC, SWITCH_OPTIONS} from '@/services/constants';
-import {DangerDeleteIcon} from '@/components/Icons/CustomIcons';
-import {getAlertIcon, getJSONData, getSmsType} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { DangerDeleteIcon } from '@/components/Icons/CustomIcons';
+import {
+  getAlertIcon,
+  getJSONData,
+  getSmsType
+} from '@/pages/RegCenter/Alert/AlertInstance/function';
+import {
+  createOrModifyAlertInstance,
+  sendTest
+} from '@/pages/RegCenter/Alert/AlertInstance/service';
+import { queryList } from '@/services/api';
+import { handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
+import {
+  PROTABLE_OPTIONS_PUBLIC,
+  PRO_LIST_CARD_OPTIONS,
+  SWITCH_OPTIONS
+} from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { Alert } from '@/types/RegCenter/data.d';
+import { l } from '@/utils/intl';
+import { EditTwoTone } from '@ant-design/icons';
+import { ProList } from '@ant-design/pro-components';
+import { ActionType } from '@ant-design/pro-table';
+import { Button, Descriptions, Modal, Space, Switch, Tag, Tooltip } from 'antd';
 import DescriptionsItem from 'antd/es/descriptions/Item';
+import React, { useEffect, useRef, useState } from 'react';
 import AlertTypeChoose from '../AlertTypeChoose';
-import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
-import {createOrModifyAlertInstance, sendTest} from '@/pages/RegCenter/Alert/AlertInstance/service';
-
 
 const AlertInstanceList: React.FC = () => {
   /**
@@ -50,11 +60,10 @@ const AlertInstanceList: React.FC = () => {
    * set alert instance list
    */
   const queryAlertInstanceList = async () => {
-    await queryList(API_CONSTANTS.ALERT_INSTANCE).then(res => {
+    await queryList(API_CONSTANTS.ALERT_INSTANCE).then((res) => {
       setAlertInstanceList(res.data);
     });
   };
-
 
   const executeAndCallbackRefresh = async (callback: () => void) => {
     setLoading(true);
@@ -87,7 +96,9 @@ const AlertInstanceList: React.FC = () => {
    */
   const handleEnable = async (item: Alert.AlertInstance) => {
     await executeAndCallbackRefresh(async () => {
-      await updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {id: item.id});
+      await updateDataByParam(API_CONSTANTS.ALERT_INSTANCE_ENABLE, {
+        id: item.id
+      });
     });
   };
 
@@ -105,10 +116,10 @@ const AlertInstanceList: React.FC = () => {
   const renderAlertInstanceSubTitle = (item: Alert.AlertInstance) => {
     return (
       <Descriptions size={'small'} layout={'vertical'} column={1}>
-        <DescriptionsItem
-          className={'hidden-overflow'}
-          key={item.id}>
-          <Tooltip key={item.name} title={item.name}>{item.name}</Tooltip>
+        <DescriptionsItem className={'hidden-overflow'} key={item.id}>
+          <Tooltip key={item.name} title={item.name}>
+            {item.name}
+          </Tooltip>
         </DescriptionsItem>
       </Descriptions>
     );
@@ -132,16 +143,16 @@ const AlertInstanceList: React.FC = () => {
       <Button
         className={'options-button'}
         key={'AlertInstanceEdit'}
-        icon={<EditTwoTone/>}
+        icon={<EditTwoTone />}
         title={l('button.edit')}
         onClick={() => editClick(item)}
       />,
       <Button
         className={'options-button'}
         key={'DeleteAlertInstanceIcon'}
-        icon={<DangerDeleteIcon/>}
+        icon={<DangerDeleteIcon />}
         onClick={() => handleDeleteSubmit(item.id)}
-      />,
+      />
     ];
   };
 
@@ -151,7 +162,6 @@ const AlertInstanceList: React.FC = () => {
     }
   };
 
-
   /**
    * render alert instance action button
    * @param item
@@ -159,7 +169,7 @@ const AlertInstanceList: React.FC = () => {
   const renderAlertInstanceContent = (item: Alert.AlertInstance) => {
     return (
       <Space className={'hidden-overflow'}>
-        <Tag color="#5BD8A6">
+        <Tag color='#5BD8A6'>
           {item.type} {renderSubType(item)}
         </Tag>
         <Switch
@@ -172,7 +182,6 @@ const AlertInstanceList: React.FC = () => {
     );
   };
 
-
   /**
    * render data source
    */
@@ -180,16 +189,15 @@ const AlertInstanceList: React.FC = () => {
     subTitle: renderAlertInstanceSubTitle(item),
     actions: renderAlertInstanceActionButton(item),
     avatar: getAlertIcon(item.type, 60),
-    content: renderAlertInstanceContent(item),
+    content: renderAlertInstanceContent(item)
   }));
-
 
   /**
    * render right tool bar
    */
   const renderToolBar = () => {
     return () => [
-      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)}/>
+      <CreateBtn key={'CreateAlertInstanceBtn'} onClick={() => handleAddVisible(true)} />
     ];
   };
 
@@ -224,29 +232,42 @@ const AlertInstanceList: React.FC = () => {
   /**
    * render main list
    */
-  return <>
-    {/* alert instance list */}
-    <ProList<Alert.AlertInstance>
-      {...PROTABLE_OPTIONS_PUBLIC}
-      {...PRO_LIST_CARD_OPTIONS as any}
-      loading={loading}
-      actionRef={actionRef}
-      headerTitle={l('rc.ai.management')}
-      toolBarRender={renderToolBar()}
-      dataSource={renderDataSource}
-    />
+  return (
+    <>
+      {/* alert instance list */}
+      <ProList<Alert.AlertInstance>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        {...(PRO_LIST_CARD_OPTIONS as any)}
+        loading={loading}
+        actionRef={actionRef}
+        headerTitle={l('rc.ai.management')}
+        toolBarRender={renderToolBar()}
+        dataSource={renderDataSource}
+      />
 
-    {/* added */}
-    {addVisible && <AlertTypeChoose onTest={handleTestSend} onCancel={cancelHandler} modalVisible={addVisible}
-                                    onSubmit={handleSubmit}
-                                    values={{}}/>}
-    {/* modify */}
+      {/* added */}
+      {addVisible && (
+        <AlertTypeChoose
+          onTest={handleTestSend}
+          onCancel={cancelHandler}
+          modalVisible={addVisible}
+          onSubmit={handleSubmit}
+          values={{}}
+        />
+      )}
+      {/* modify */}
 
-    {updateVisible &&
-      <AlertTypeChoose onTest={handleTestSend} onCancel={cancelHandler} modalVisible={updateVisible}
-                                       onSubmit={handleSubmit}
-                                       values={formValues}/>}
-  </>;
+      {updateVisible && (
+        <AlertTypeChoose
+          onTest={handleTestSend}
+          onCancel={cancelHandler}
+          modalVisible={updateVisible}
+          onSubmit={handleSubmit}
+          values={formValues}
+        />
+      )}
+    </>
+  );
 };
 
 export default AlertInstanceList;

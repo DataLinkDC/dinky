@@ -38,12 +38,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RestController
+@Api(tags = "Menu Controller")
 @RequestMapping("/api/menu")
 @RequiredArgsConstructor
 public class MenuController {
@@ -98,7 +100,7 @@ public class MenuController {
      * @param roleId role id
      * @return {@link RoleMenuDto}
      */
-    @GetMapping(value = "/roleMenus/")
+    @GetMapping(value = "/roleMenus")
     @ApiOperation("Load Role Menu")
     public Result<RoleMenuDto> roleMenuTreeSelect(@RequestParam("id") Integer roleId) {
         List<Menu> menus = menuService.buildMenuTree(menuService.list());

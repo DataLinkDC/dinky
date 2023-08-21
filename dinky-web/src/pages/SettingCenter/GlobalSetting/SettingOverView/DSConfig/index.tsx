@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Tag} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface DSConfigProps {
@@ -28,8 +26,7 @@ interface DSConfigProps {
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const DSConfig = ({data, onSave}: DSConfigProps) => {
-
+export const DSConfig = ({ data, onSave }: DSConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
   const onSaveHandler = async (data: BaseConfigProperties) => {
@@ -37,13 +34,19 @@ export const DSConfig = ({data, onSave}: DSConfigProps) => {
     await onSave(data);
     setLoading(false);
   };
-  return <>
+  return (
+    <>
       {/*tooltip={l('sys.setting.ds.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
-        tag={<><Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag></>}
+        tag={
+          <>
+            <Tag color={'default'}>{l('sys.setting.tag.integration')}</Tag>
+          </>
+        }
         data={data}
       />
-  </>;
+    </>
+  );
 };

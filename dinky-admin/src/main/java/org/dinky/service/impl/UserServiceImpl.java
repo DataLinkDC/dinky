@@ -40,6 +40,7 @@ import org.dinky.data.model.UserTenant;
 import org.dinky.data.params.AssignRoleParams;
 import org.dinky.data.params.AssignUserToTenantParams;
 import org.dinky.data.result.Result;
+import org.dinky.data.vo.UserVo;
 import org.dinky.mapper.UserMapper;
 import org.dinky.mybatis.service.impl.SuperServiceImpl;
 import org.dinky.service.MenuService;
@@ -63,6 +64,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 
 import cn.dev33.satoken.secure.SaSecureUtil;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -407,7 +409,7 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
     @Override
     public Result<Void> modifyUserToTenantAdmin(Integer userId, Integer tenantId, Boolean tenantAdminFlag) {
         // query tenant admin user count
-        Long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
+        long queryAdminUserByTenantCount = userTenantService.count(new LambdaQueryWrapper<UserTenant>()
                 .eq(UserTenant::getTenantId, tenantId)
                 .eq(UserTenant::getTenantAdminFlag, 1));
         if (queryAdminUserByTenantCount >= 1 && !tenantAdminFlag) {
@@ -421,6 +423,31 @@ public class UserServiceImpl extends SuperServiceImpl<UserMapper, User> implemen
             return Result.succeed(Status.MODIFY_SUCCESS);
         }
         return Result.failed(Status.MODIFY_FAILED);
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result<Void> recoveryUser(Integer userId) {
+
+        Integer recoveryUser = baseMapper.recoveryUser(userId);
+        return recoveryUser > 0 ? Result.succeed(Status.MODIFY_SUCCESS) : Result.failed(Status.MODIFY_FAILED);
+    }
+
+    /**
+     * @param userId
+     * @return
+     */
+    @Override
+    public Result<UserVo> resetPassword(Integer userId) {
+        String randomPassword = RandomUtil.randomStringUpper(6) + RandomUtil.randomNumber();
+        String resetPassword = SaSecureUtil.md5(randomPassword);
+        User user = getById(userId);
+        user.setPassword(resetPassword);
+        UserVo userVo = new UserVo(user, randomPassword);
+        return updateById(user) ? Result.succeed(userVo) : Result.failed(Status.MODIFY_FAILED);
     }
 
     /**

@@ -17,25 +17,24 @@
  *
  */
 
-import {HomeOutlined} from "@ant-design/icons";
-import React from "react";
-import {TabsPageType} from "@/pages/DataStudio/model";
+import { TabsPageType } from '@/pages/DataStudio/model';
+import { HomeOutlined } from '@ant-design/icons';
 
 /**
  * @description: 生成面包屑
  * @type {({title: JSX.Element} | {title: string})[]}
  */
 export const buildBreadcrumbItems = (breadcrumb: string) => {
-  const items = [
-    {title: <HomeOutlined/>,}
-  ];
+  const items = [{ title: <HomeOutlined /> }];
 
   // 如果有 activeBreadcrumbTitle, 则切割 activeBreadcrumbTitle, 生成面包屑数组, 并映射
-  const activeBreadcrumbTitleList = Array.from(breadcrumb.split("/")).map(title => ({title: <>{title}</>}));
+  const activeBreadcrumbTitleList = Array.from(breadcrumb.split('/')).map((title) => ({
+    title: <>{title}</>
+  }));
   items.push(...activeBreadcrumbTitleList);
   return items;
 };
 
 export const projectCommonShow = (type?: TabsPageType, subType?: string, data?: any) => {
-  return type === TabsPageType.project
-}
+  return type === TabsPageType.project;
+};

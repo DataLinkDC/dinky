@@ -16,83 +16,75 @@
  *
  */
 
-
-import React, {useEffect} from 'react';
-import {Form, Modal} from 'antd';
-import {l} from "@/utils/intl";
-import {NORMAL_MODAL_OPTIONS} from "@/services/constants";
-import {UserBaseInfo} from "@/types/User/data";
-import TenantForm from "@/pages/AuthCenter/Tenant/components/TenantModalForm/TenantForm";
-import {FormContextValue} from "@/components/Context/FormContext";
+import { FormContextValue } from '@/components/Context/FormContext';
+import TenantForm from '@/pages/AuthCenter/Tenant/components/TenantModalForm/TenantForm';
+import { NORMAL_MODAL_OPTIONS } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { Form, Modal } from 'antd';
+import React, { useEffect } from 'react';
 
 type TenantModalFormProps = {
-    onCancel: (flag?: boolean) => void;
-    onSubmit: (values: Partial<UserBaseInfo.Tenant>) => void;
-    modalVisible: boolean;
-    values: Partial<UserBaseInfo.Tenant>;
+  onCancel: (flag?: boolean) => void;
+  onSubmit: (values: Partial<UserBaseInfo.Tenant>) => void;
+  modalVisible: boolean;
+  values: Partial<UserBaseInfo.Tenant>;
 };
 
-
 const TenantModalForm: React.FC<TenantModalFormProps> = (props) => {
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
-    /**
-     * init form
-     */
-    const [form] = Form.useForm();
-    /**
-     * init form context
-     */
-    const formContext = React.useMemo<FormContextValue>(() => ({
-        resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }), [form]);
+  /**
+   * props
+   */
+  const { onSubmit: handleSubmit, onCancel, modalVisible, values } = props;
+  /**
+   * when modalVisible or values changed, set form values
+   */
+  useEffect(() => {
+    form.setFieldsValue(values);
+  }, [modalVisible, values, form]);
 
-    /**
-     * props
-     */
-    const {
-        onSubmit: handleSubmit,
-        onCancel,
-        modalVisible,
-        values,
-    } = props;
-    /**
-     * when modalVisible or values changed, set form values
-     */
-    useEffect(() => {
-        form.setFieldsValue(values);
-    }, [modalVisible, values, form]);
+  const handleCancel = () => {
+    onCancel();
+    formContext.resetForm();
+  };
 
+  /**
+   * submit
+   */
+  const submitForm = async () => {
+    const fieldsValue = await form.validateFields();
+    handleSubmit({ ...values, ...fieldsValue });
+    handleCancel();
+  };
 
-    const handleCancel = () => {
-        onCancel();
-        formContext.resetForm();
-    }
-
-
-    /**
-     * submit
-     */
-    const submitForm = async () => {
-        const fieldsValue = await form.validateFields();
-        await handleSubmit({...values, ...fieldsValue});
-        await handleCancel();
-    };
-
-
-    /**
-     * render
-     */
-    return <>
-        <Modal
-            {...NORMAL_MODAL_OPTIONS}
-            title={values.id ? l('tenant.update') : l('tenant.create')}
-            open={modalVisible}
-            onOk={() => submitForm()}
-            onCancel={() => handleCancel()}
-        >
-            <TenantForm values={values} form={form}/>
-        </Modal>
-    </>
+  /**
+   * render
+   */
+  return (
+    <Modal
+      {...NORMAL_MODAL_OPTIONS}
+      title={values.id ? l('tenant.update') : l('tenant.create')}
+      open={modalVisible}
+      onOk={() => submitForm()}
+      onCancel={() => handleCancel()}
+    >
+      <TenantForm values={values} form={form} />
+    </Modal>
+  );
 };
 
 export default TenantModalForm;

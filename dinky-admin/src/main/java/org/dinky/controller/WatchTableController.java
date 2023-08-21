@@ -30,6 +30,7 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import lombok.AllArgsConstructor;
 
 @RestController
+@Api(tags = "Watch Table Controller")
 @AllArgsConstructor
 @RequestMapping("api")
 public class WatchTableController {

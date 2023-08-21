@@ -17,208 +17,247 @@
  *
  */
 
-
-import React, {Key, useRef, useState} from "react";
-import ProTable, {ActionType, ProColumns} from "@ant-design/pro-table";
-import {Tag} from 'antd';
-import {l} from "@/utils/intl";
+import { AssignBtn } from '@/components/CallBackButton/AssignBtn';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import AssignMenu from '@/pages/AuthCenter/Role/components/AssignMenu';
+import RoleUserList from '@/pages/AuthCenter/Role/components/RoleUserList';
+import { queryList } from '@/services/api';
 import {
-    handleAddOrUpdate,
-    handleOption,
-    handlePutDataByParams,
-    handleRemoveById,
-    queryDataByParams
-} from "@/services/BusinessCrud";
-import {queryList} from "@/services/api";
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC} from "@/services/constants";
-import {getTenantByLocalStorage} from "@/utils/function";
-import {UserBaseInfo} from "@/types/User/data.d";
-import RoleModalForm from "../RoleModalForm";
-import {CreateBtn} from "@/components/CallBackButton/CreateBtn";
-import {PopconfirmDeleteBtn} from "@/components/CallBackButton/PopconfirmDeleteBtn";
-import {EditBtn} from "@/components/CallBackButton/EditBtn";
-import {AssignBtn} from "@/components/CallBackButton/AssignBtn";
-import AssignMenu from "@/pages/AuthCenter/Role/components/AssignMenu";
-import {SysMenu} from "@/types/RegCenter/data";
-
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  queryDataByParams
+} from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { UserBaseInfo } from '@/types/AuthCenter/data.d';
+import { InitRoleListState } from '@/types/AuthCenter/init.d';
+import { RoleListState } from '@/types/AuthCenter/state.d';
+import { getTenantByLocalStorage } from '@/utils/function';
+import { l } from '@/utils/intl';
+import ProTable, { ActionType, ProColumns } from '@ant-design/pro-table';
+import { Tag } from 'antd';
+import React, { Key, useRef, useState } from 'react';
+import RoleModalForm from '../RoleModalForm';
 
 const RoleProTable: React.FC = () => {
-        /**
-         * status
-         */
-        const [formValues, setFormValues] = useState<Partial<UserBaseInfo.Role>>({});
-        const [modalVisible, handleModalVisible] = useState<boolean>(false);
-        const [updateModalVisible, handleUpdateModalVisible] = useState<boolean>(false);
-        const [loading, setLoading] = useState<boolean>(false);
-        const [assignMenu ,  setAssignMenu] = useState<boolean>(false);
+  /**
+   * status
+   */
+  const [roleListState, setRoleListState] = useState<RoleListState>(InitRoleListState);
 
+  const actionRef = useRef<ActionType>();
 
-    const actionRef = useRef<ActionType>();
+  const executeAndCallbackRefresh = async (callback: () => Promise<void>) => {
+    setRoleListState((prevState) => ({ ...prevState, loading: true }));
+    await callback();
+    setRoleListState((prevState) => ({ ...prevState, loading: false }));
+    actionRef.current?.reload?.();
+  };
 
-        const executeAndCallbackRefresh = async (callback: () => void) => {
-            setLoading(true);
-            await callback();
-            setLoading(false);
-            actionRef.current?.reload?.();
-        }
+  /**
+   * delete role by id
+   * @param id role id
+   */
+  const handleDeleteSubmit = async (id: number) => {
+    await executeAndCallbackRefresh(async () => {
+      await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
+    });
+  };
 
-        /**
-         * delete role by id
-         * @param id role id
-         */
-        const handleDeleteSubmit = async (id: number) => {
-            await executeAndCallbackRefresh(async () => {
-                // TODO: DELETE role interface is use /api/role  , because of the backend interface 'DeleteMapping' is repeat , in the future, we need to change the interface to /api/role (ROLE)
-                await handleRemoveById(API_CONSTANTS.ROLE_DELETE, id);
-            });
-        }
+  /**
+   * add or update role submit callback
+   * @param value
+   */
+  const handleAddOrUpdateSubmit = async (value: any) => {
+    await executeAndCallbackRefresh(async () => {
+      await handleAddOrUpdate(
+        API_CONSTANTS.ROLE_ADDED_OR_UPDATE,
+        {
+          ...value,
+          tenantId: getTenantByLocalStorage()
+        },
+        () => {},
+        () => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: false }))
+      );
+    });
+  };
 
-        /**
-         * add or update role submit callback
-         * @param value
-         */
-        const handleAddOrUpdateSubmit = async (value: any) => {
-            await executeAndCallbackRefresh(async () => {
-                await handleAddOrUpdate(API_CONSTANTS.ROLE_ADDED_OR_UPDATE, {...value, tenantId: getTenantByLocalStorage()});
-                handleModalVisible(false);
-            });
-        }
+  /**
+   * cancel
+   */
+  const handleCancel = () => {
+    setRoleListState((prevState) => ({
+      ...prevState,
+      addedRoleOpen: false,
+      editRoleOpen: false,
+      assignMenuOpen: false,
+      viewUsersOpen: false
+    }));
+  };
 
-    /**
-     * cancel
-     */
-    const handleCancel = () => {
-        handleModalVisible(false);
-        handleUpdateModalVisible(false);
-        setAssignMenu(false);
-    }
+  const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
+    await executeAndCallbackRefresh(async () => {
+      await handleOption(
+        API_CONSTANTS.ROLE_ASSIGN_MENU,
+        l('role.assign'),
+        {
+          roleId: roleListState.value.id,
+          menuIds: selectKeys
+        },
+        () => handleCancel()
+      );
+    });
+  };
 
-        const handleAssignMenuSubmit = async (selectKeys: Key[]) => {
-            await executeAndCallbackRefresh(async () => {
-                await handleOption('/api/roleMenu/assignMenuToRole', '分配菜单',{
-                    roleId: formValues.id,
-                    menuIds: selectKeys
-                });
-                handleCancel();
-            });
-        }
+  /**
+   * edit role status
+   * @param record
+   */
+  const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
+    setRoleListState((prevState) => ({ ...prevState, value: record, editRoleOpen: true }));
+  };
 
+  /**
+   * assign user visible change
+   * @param record
+   */
+  const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
+    setRoleListState((prevState) => ({ ...prevState, value: record, assignMenuOpen: true }));
+  };
 
+  const handleClickViewUserList = (record: Partial<UserBaseInfo.Role>) => {
+    queryDataByParams(API_CONSTANTS.ROLE_USER_LIST, { roleId: record.id }).then((res) =>
+      setRoleListState((prevState) => ({
+        ...prevState,
+        roleUserList: res,
+        value: record,
+        viewUsersOpen: true
+      }))
+    );
+  };
 
-        /**
-         * edit role status
-         * @param record
-         */
-        const handleEditVisible = (record: Partial<UserBaseInfo.Role>) => {
-            setFormValues(record);
-            handleUpdateModalVisible(true);
-        }
-
-
-
-    /**
-     * assign user visible change
-     * @param record
-     */
-    const handleAssignVisible = (record: Partial<UserBaseInfo.Role>) => {
-        setFormValues(record);
-        setAssignMenu(true);
-    };
-
-
-        /**
-         * columns
-         */
-        const columns: ProColumns<UserBaseInfo.Role>[] = [
-            {
-                title: l('role.roleCode'),
-                dataIndex: 'roleCode',
-            },
-            {
-                title: l('role.roleName'),
-                dataIndex: 'roleName',
-            },
-            {
-                title: l('role.belongTenant'),
-                hideInSearch: true,
-                render: (_:any, record: UserBaseInfo.Role) => {
-                    return <Tag color="blue">{record.tenant.tenantCode}</Tag>
-                }
-            },
-            {
-                title: l('global.table.note'),
-                dataIndex: 'note',
-                hideInSearch: true,
-                ellipsis: true,
-            },
-            {
-                title: l('global.table.createTime'),
-                dataIndex: 'createTime',
-                sorter: true,
-                hideInSearch: true,
-                valueType: 'dateTime',
-            },
-            {
-                title: l('global.table.updateTime'),
-                dataIndex: 'updateTime',
-                sorter: true,
-                hideInSearch: true,
-                valueType: 'dateTime',
-            },
-            {
-                title: l('global.table.operate'),
-                valueType: 'option',
-                width: "10vh",
-                render: (_:any, record: UserBaseInfo.Role) => [
-                    <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)}/>,
-                    <>{record.id !== 1 &&
-                        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDeleteSubmit(record.id)}
-                                             description={l("role.deleteConfirm")}/>}
-                        <AssignBtn key={`${record.id}_ass`} onClick={() => handleAssignVisible(record)}
-                                   title={l('role.assignMenu','',{roleName: record.roleName})}/>
-                    </>
-                ],
-            },
-        ];
-
-
-        /**
-         * render
-         */
-        return <>
-            <ProTable<UserBaseInfo.Role>
-                {...PROTABLE_OPTIONS_PUBLIC}
-                headerTitle={l('role.roleManagement')}
-                actionRef={actionRef}
-                loading={loading}
-                toolBarRender={() => [<CreateBtn key={"toolBarRender"} onClick={() => handleModalVisible(true)}/>,]}
-                request={(params, sorter, filter: any) => queryList(API_CONSTANTS.ROLE, {...params, sorter, filter})}
-                columns={columns}
+  /**
+   * columns
+   */
+  const columns: ProColumns<UserBaseInfo.Role>[] = [
+    {
+      title: l('role.roleCode'),
+      dataIndex: 'roleCode',
+      render: (_, record: UserBaseInfo.Role) => (
+        <a onClick={() => handleClickViewUserList(record)}> {record.roleCode} </a>
+      )
+    },
+    {
+      title: l('role.roleName'),
+      dataIndex: 'roleName'
+    },
+    {
+      title: l('role.belongTenant'),
+      hideInSearch: true,
+      render: (_: any, record: UserBaseInfo.Role) => {
+        return <Tag color='blue'>{record.tenant.tenantCode}</Tag>;
+      }
+    },
+    {
+      title: l('global.table.note'),
+      dataIndex: 'note',
+      hideInSearch: true,
+      ellipsis: true
+    },
+    {
+      title: l('global.table.createTime'),
+      dataIndex: 'createTime',
+      sorter: true,
+      hideInSearch: true,
+      valueType: 'dateTime'
+    },
+    {
+      title: l('global.table.updateTime'),
+      dataIndex: 'updateTime',
+      sorter: true,
+      hideInSearch: true,
+      valueType: 'dateTime'
+    },
+    {
+      title: l('global.table.operate'),
+      valueType: 'option',
+      width: '10vh',
+      render: (_: any, record: UserBaseInfo.Role) => [
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEditVisible(record)} />,
+        <>
+          {record.id !== 1 && (
+            <PopconfirmDeleteBtn
+              key={`${record.id}_delete`}
+              onClick={() => handleDeleteSubmit(record.id)}
+              description={l('role.deleteConfirm')}
             />
-            {/* create  */}
-            <RoleModalForm
-                onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={modalVisible}
-                values={{}}
-            />
-            {/* modify */}
-            <RoleModalForm
-                onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
-                onCancel={() => handleCancel()}
-                modalVisible={updateModalVisible}
-                values={formValues}
-            />
-            {Object.keys(formValues).length> 0 &&
-                <AssignMenu
-                    values={formValues}
-                    open={assignMenu}
-                    onSubmit={handleAssignMenuSubmit}
-                    onClose={() => setAssignMenu(false)}
-                />
-            }
+          )}
+          <AssignBtn
+            key={`${record.id}_ass`}
+            onClick={() => handleAssignVisible(record)}
+            title={l('role.assignMenu', '', { roleName: record.roleName })}
+          />
         </>
+      ]
     }
-;
+  ];
 
+  /**
+   * render
+   */
+  return (
+    <>
+      <ProTable<UserBaseInfo.Role>
+        {...PROTABLE_OPTIONS_PUBLIC}
+        headerTitle={l('role.roleManagement')}
+        actionRef={actionRef}
+        loading={roleListState.loading}
+        toolBarRender={() => [
+          <CreateBtn
+            key={'toolBarRender'}
+            onClick={() => setRoleListState((prevState) => ({ ...prevState, addedRoleOpen: true }))}
+          />
+        ]}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.ROLE, { ...params, sorter, filter })
+        }
+        columns={columns}
+      />
+      {/* create  */}
+      <RoleModalForm
+        onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={roleListState.addedRoleOpen}
+        values={{}}
+      />
+      {/* modify */}
+      <RoleModalForm
+        onSubmit={(value: any) => handleAddOrUpdateSubmit(value)}
+        onCancel={() => handleCancel()}
+        modalVisible={roleListState.editRoleOpen}
+        values={roleListState.value}
+      />
+      {Object.keys(roleListState.value).length > 0 && (
+        <AssignMenu
+          values={roleListState.value}
+          open={roleListState.assignMenuOpen}
+          onSubmit={handleAssignMenuSubmit}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, assignMenuOpen: false }))}
+        />
+      )}
+      {Object.keys(roleListState.value).length > 0 && (
+        <RoleUserList
+          role={roleListState.value}
+          open={roleListState.viewUsersOpen}
+          userList={roleListState.roleUserList}
+          loading={roleListState.loading}
+          onClose={() => setRoleListState((prevState) => ({ ...prevState, viewUsersOpen: false }))}
+        />
+      )}
+    </>
+  );
+};
 export default RoleProTable;

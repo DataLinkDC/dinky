@@ -1,31 +1,30 @@
-import React, {useEffect, useState} from "react";
-import MovableSidebar from "@/components/Sidebar/MovableSidebar";
-import {l} from "@/utils/intl";
-import {StateType, VIEW} from "@/pages/DataStudio/model";
-import {ConfigProvider, Space, Tabs} from "antd";
-import {LeftBottomMoreTabs, LeftBottomSide} from "@/pages/DataStudio/route";
-import {connect} from "@@/exports";
-import ContentScroll from "@/components/Scroll/ContentScroll";
-import {CircleBtn} from "@/components/CallBackButton/CircleBtn";
-import {PlusOutlined, PlusSquareOutlined} from "@ant-design/icons";
-import Title from "@/components/Front/Title";
+import { CircleBtn } from '@/components/CallBackButton/CircleBtn';
+import Title from '@/components/Front/Title';
+import ContentScroll from '@/components/Scroll/ContentScroll';
+import MovableSidebar from '@/components/Sidebar/MovableSidebar';
+import { StateType, STUDIO_MODEL, VIEW } from '@/pages/DataStudio/model';
+import { LeftBottomMoreTabs, LeftBottomSide } from '@/pages/DataStudio/route';
+import { l } from '@/utils/intl';
+import { connect } from '@@/exports';
+import { PlusOutlined } from '@ant-design/icons';
+import { ConfigProvider, Space, Tabs } from 'antd';
+import React from 'react';
 
 export type BottomContainerProps = {
-  size: number
-}
+  size: number;
+};
 const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
-  const {dispatch, size, bottomContainer} = props;
-
+  const { dispatch, size, bottomContainer } = props;
 
   /**
    * 侧边栏最小化
    */
   const handleMinimize = () => {
     dispatch({
-      type: 'Studio/updateSelectBottomKey',
-      payload: "",
-    })
-  }
+      type: STUDIO_MODEL.updateSelectBottomKey,
+      payload: ''
+    });
+  };
 
   /**
    * 更新底部高度
@@ -33,10 +32,10 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateBottomHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateBottomHeight",
-      payload: height,
-    })
-  }
+      type: STUDIO_MODEL.updateBottomHeight,
+      payload: height
+    });
+  };
 
   /**
    * 更新中间内容高度
@@ -44,17 +43,17 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateCenterContentHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateCenterContentHeight",
-      payload: height,
-    })
-  }
+      type: STUDIO_MODEL.updateCenterContentHeight,
+      payload: height
+    });
+  };
 
   const updateSelectBottomSubKey = (key: string) => {
     dispatch({
-      type: "Studio/updateSelectBottomSubKey",
-      payload: key,
-    })
-  }
+      type: STUDIO_MODEL.updateSelectBottomSubKey,
+      payload: key
+    });
+  };
 
   /**
    * 更新工具栏内容高度
@@ -62,16 +61,20 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    */
   const updateToolContentHeight = (height: number) => {
     dispatch({
-      type: "Studio/updateToolContentHeight",
-      payload: height,
-    })
-  }
+      type: STUDIO_MODEL.updateToolContentHeight,
+      payload: height
+    });
+  };
   const getSubTabs = () => {
     // @ts-ignore
-    return Object.values(Object.keys(LeftBottomMoreTabs).map(x => LeftBottomMoreTabs[x].map(y => {
-      return {...y, key: x + "/" + y.key}
-    }))).flatMap(x => x)
-  }
+    return Object.values(
+      Object.keys(LeftBottomMoreTabs).map((x) =>
+        LeftBottomMoreTabs[x].map((y) => {
+          return { ...y, key: x + '/' + y.key };
+        })
+      )
+    ).flatMap((x) => x);
+  };
 
   /**
    * 拖动回调
@@ -79,12 +82,18 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
    * @param direction
    * @param {{offsetHeight: any}} elementRef
    */
-  const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any; }) => {
-    updateBottomHeight(elementRef.offsetHeight)
-    const centerContentHeight = document.documentElement.clientHeight - VIEW.headerHeight - VIEW.headerNavHeight - VIEW.footerHeight - VIEW.otherHeight - bottomContainer.height;
-    updateCenterContentHeight(centerContentHeight)
-    updateToolContentHeight(centerContentHeight - VIEW.midMargin)
-  }
+  const resizeCallback = (event: any, direction: any, elementRef: { offsetHeight: any }) => {
+    updateBottomHeight(elementRef.offsetHeight);
+    const centerContentHeight =
+      document.documentElement.clientHeight -
+      VIEW.headerHeight -
+      VIEW.headerNavHeight -
+      VIEW.footerHeight -
+      VIEW.otherHeight -
+      bottomContainer.height;
+    updateCenterContentHeight(centerContentHeight);
+    updateToolContentHeight(centerContentHeight - VIEW.midMargin);
+  };
 
   const renderTabPane = () => {
     // @ts-ignore
@@ -92,36 +101,52 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
     if (leftBottomMoreTab) {
       const items = leftBottomMoreTab.map((item: any) => {
         return {
-          key: bottomContainer.selectKey + "/" + item.key,
-          label: <span>{item.icon}{item.label}</span>
-        }
-      })
-      return (<Tabs
-          style={{height: "32px", display: "-webkit-box"}}
+          key: bottomContainer.selectKey + '/' + item.key,
+          label: (
+            <span>
+              {item.icon}
+              {item.label}
+            </span>
+          )
+        };
+      });
+      return (
+        <Tabs
+          style={{ height: '32px', display: '-webkit-box' }}
           items={items}
-          type="card"
+          type='card'
           onChange={(key: string) => {
-            updateSelectBottomSubKey(key.split("/")[1])
+            updateSelectBottomSubKey(key.split('/')[1]);
           }}
-          activeKey={bottomContainer.selectKey + "/" + bottomContainer.selectSubKey[bottomContainer.selectKey]}
-          size="small" tabPosition="top"/>
-      )
+          activeKey={
+            bottomContainer.selectKey +
+            '/' +
+            bottomContainer.selectSubKey[bottomContainer.selectKey]
+          }
+          size='small'
+          tabPosition='top'
+        />
+      );
     }
-    return <></>
-  }
+    return <></>;
+  };
   const renderItems = () => {
-    return [...LeftBottomSide.map(x => {
-      return {...x, key: x.key + "/"}
-    })
-      , ...getSubTabs()].map((item) => {
+    return [
+      ...LeftBottomSide.map((x) => {
+        return { ...x, key: x.key + '/' };
+      }),
+      ...getSubTabs()
+    ].map((item) => {
       return {
-        ...item, children:
+        ...item,
+        children: (
           <ContentScroll height={props.bottomContainer.height - VIEW.midMargin}>
             {item.children}
           </ContentScroll>
-      }
-    })
-  }
+        )
+      };
+    });
+  };
 
   // @ts-ignore
   return (
@@ -131,9 +156,9 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           theme={{
             components: {
               Tabs: {
-                horizontalMargin: "0",
-                cardPaddingSM: "6px",
-                horizontalItemPadding: "0",
+                horizontalMargin: '0',
+                cardPaddingSM: '6px',
+                horizontalItemPadding: '0'
               }
             }
           }}
@@ -144,28 +169,44 @@ const BottomContainer: React.FC<BottomContainerProps> = (props: any) => {
           </Space>
         </ConfigProvider>
       }
-      visible={bottomContainer.selectKey !== ""}
-      style={{zIndex: 999, height: bottomContainer.height, marginTop: 0, backgroundColor: "#fff"}}
-      defaultSize={{width: "100%", height: bottomContainer.height}}
+      visible={bottomContainer.selectKey !== ''}
+      style={{
+        zIndex: 999,
+        height: bottomContainer.height,
+        marginTop: 0,
+        backgroundColor: '#fff'
+      }}
+      defaultSize={{ width: '100%', height: bottomContainer.height }}
       minHeight={VIEW.midMargin}
       maxHeight={size.contentHeight - 40}
-      onResize={(event: any, direction: any, elementRef: {
-        offsetHeight: any;
-      }) => resizeCallback(event, direction, elementRef)}
-      btnGroup={[<CircleBtn key={"max"} icon={<PlusOutlined />}/>]}
-      enable={{top: true}}
+      onResize={(
+        event: any,
+        direction: any,
+        elementRef: {
+          offsetHeight: any;
+        }
+      ) => resizeCallback(event, direction, elementRef)}
+      btnGroup={[<CircleBtn key={'max'} icon={<PlusOutlined />} />]}
+      enable={{ top: true }}
       handlerMinimize={handleMinimize}
     >
       <Tabs
-        activeKey={bottomContainer.selectKey + "/" + (bottomContainer.selectSubKey[bottomContainer.selectKey] ? bottomContainer.selectSubKey[bottomContainer.selectKey] : "")}
+        activeKey={
+          bottomContainer.selectKey +
+          '/' +
+          (bottomContainer.selectSubKey[bottomContainer.selectKey]
+            ? bottomContainer.selectSubKey[bottomContainer.selectKey]
+            : '')
+        }
         items={renderItems()}
-        tabBarStyle={{display: "none"}}/>
+        tabBarStyle={{ display: 'none' }}
+      />
     </MovableSidebar>
-  )
-}
+  );
+};
 
-export default connect(({Studio}: { Studio: StateType }) => ({
+export default connect(({ Studio }: { Studio: StateType }) => ({
   leftContainer: Studio.leftContainer,
   bottomContainer: Studio.bottomContainer,
-  centerContentHeight: Studio.centerContentHeight,
+  centerContentHeight: Studio.centerContentHeight
 }))(BottomContainer);

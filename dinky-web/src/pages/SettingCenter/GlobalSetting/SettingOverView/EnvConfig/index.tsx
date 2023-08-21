@@ -15,12 +15,10 @@
  * limitations under the License.
  */
 
-
-import {BaseConfigProperties} from '@/types/SettingCenter/data';
-import {ProCard} from '@ant-design/pro-components';
 import GeneralConfig from '@/pages/SettingCenter/GlobalSetting/SettingOverView/GeneralConfig';
-import {l} from '@/utils/intl';
-import {Tag} from 'antd';
+import { BaseConfigProperties } from '@/types/SettingCenter/data';
+import { l } from '@/utils/intl';
+import { Tag } from 'antd';
 import React from 'react';
 
 interface EnvConfigProps {
@@ -28,22 +26,28 @@ interface EnvConfigProps {
   onSave: (data: BaseConfigProperties) => void;
 }
 
-export const EnvConfig = ({data, onSave}: EnvConfigProps) => {
+export const EnvConfig = ({ data, onSave }: EnvConfigProps) => {
   const [loading, setLoading] = React.useState(false);
 
-  const onSaveHandler =async (data: BaseConfigProperties) => {
+  const onSaveHandler = async (data: BaseConfigProperties) => {
     setLoading(true);
     await onSave(data);
     setLoading(false);
   };
 
-  return <>
+  return (
+    <>
       {/*tooltip={l('sys.setting.dinky.tooltip')}*/}
       <GeneralConfig
         loading={loading}
         onSave={onSaveHandler}
-        tag={<><Tag color={'error'}>{l('sys.setting.tag.system')}</Tag></>}
+        tag={
+          <>
+            <Tag color={'error'}>{l('sys.setting.tag.system')}</Tag>
+          </>
+        }
         data={data}
       />
-  </>;
+    </>
+  );
 };

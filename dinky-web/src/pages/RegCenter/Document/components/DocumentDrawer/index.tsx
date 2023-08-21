@@ -17,31 +17,27 @@
  *
  */
 
-import {Document} from "@/types/RegCenter/data";
-import React from "react";
-import {Drawer} from "antd";
-import DocumentDesc from "@/pages/RegCenter/Document/components/DocumentDrawer/DocumentDesc";
+import DocumentDesc from '@/pages/RegCenter/Document/components/DocumentDrawer/DocumentDesc';
+import { Document } from '@/types/RegCenter/data';
+import { Drawer } from 'antd';
+import React from 'react';
 
 type DocumentDrawerProps = {
-    onCancel: (flag?: boolean) => void;
-    values: Partial<Document>;
-    modalVisible: boolean;
-    columns: any;
-}
+  onCancel: (flag?: boolean) => void;
+  values: Partial<Document>;
+  modalVisible: boolean;
+  columns: any;
+};
 const DocumentDrawer: React.FC<DocumentDrawerProps> = (props) => {
-    const {onCancel: handleCancel, values, modalVisible, columns} = props;
+  const { onCancel: handleCancel, values, modalVisible, columns } = props;
 
-
-    return <>
-        <Drawer
-            width={'50%'}
-            open={modalVisible}
-            onClose={() => handleCancel(false)}
-        >
-            <DocumentDesc values={values} columns={columns}/>
-        </Drawer>
+  return (
+    <>
+      <Drawer width={'50%'} open={modalVisible} onClose={() => handleCancel(false)}>
+        <DocumentDesc values={values} columns={columns} />
+      </Drawer>
     </>
-
-}
+  );
+};
 
 export default DocumentDrawer;

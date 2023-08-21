@@ -16,33 +16,23 @@
  */
 
 import {
-  addOrUpdateData, putData, getDataByRequestBody, getInfoById,
+  addOrUpdateData,
+  getData,
+  getDataByRequestBody,
+  getInfoById,
   postAll,
-  removeById, updateDataByParams, getData, putDataJson,
+  putData,
+  putDataJson,
+  removeById,
+  updateDataByParams
 } from '@/services/api';
-import {l} from '@/utils/intl';
-import {API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE} from '@/services/constants';
-import {request} from '@@/exports';
-import {
-  LoadingMessageAsync, SuccessMessage, WarningMessage,
-} from '@/utils/messages';
+import { API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
+import { l } from '@/utils/intl';
+import { LoadingMessageAsync, SuccessMessage, WarningMessage } from '@/utils/messages';
+import { request } from '@@/exports';
 import { API } from './data';
 
-
-
 const APPLICATION_JSON = 'application/json';
-
-// ================================ About Account ================================
-/**
- * get current user
- * @param options
- */
-export async function currentUser(options?: { [key: string]: any }) {
-  return request<API.Result>(API_CONSTANTS.CURRENT_USER, {
-    method: METHOD_CONSTANTS.GET,
-    ...(options ?? {}),
-  });
-}
 
 /**
  * user logout
@@ -51,7 +41,7 @@ export async function currentUser(options?: { [key: string]: any }) {
 export async function outLogin(options?: { [key: string]: any }) {
   return request<Record<string, any>>(API_CONSTANTS.LOGOUT, {
     method: METHOD_CONSTANTS.DELETE,
-    ...(options ?? {}),
+    ...(options ?? {})
   });
 }
 
@@ -64,10 +54,10 @@ export async function login(body: API.LoginParams, options?: { [key: string]: an
   return request<API.Result>(API_CONSTANTS.LOGIN, {
     method: METHOD_CONSTANTS.POST,
     headers: {
-      CONTENT_TYPE: APPLICATION_JSON,
+      CONTENT_TYPE: APPLICATION_JSON
     },
     data: body,
-    ...(options ?? {}),
+    ...(options ?? {})
   });
 }
 
@@ -79,27 +69,33 @@ export function chooseTenantSubmit(params: { tenantId: number }) {
   return request<API.Result>(API_CONSTANTS.CHOOSE_TENANT, {
     method: METHOD_CONSTANTS.POST,
     params: {
-      ...(params || {}),
-    },
+      ...(params || {})
+    }
   });
 }
-
 
 // ================================ About crud ================================
 /**
  * add or update data
  * @param url
  * @param params
+ * @param beforeCallBack
  * @param afterCallBack
  */
-export const handleAddOrUpdate = async (url: string, params: any, afterCallBack? : ()=> void) => {
+export const handleAddOrUpdate = async (
+  url: string,
+  params: any,
+  beforeCallBack?: () => void,
+  afterCallBack?: () => void
+) => {
   const tipsTitle = params.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg} = await addOrUpdateData(url, {...params});
+    beforeCallBack?.();
+    const { code, msg } = await addOrUpdateData(url, { ...params });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
-      afterCallBack && afterCallBack();
+      afterCallBack?.();
     } else {
       await WarningMessage(msg);
     }
@@ -113,13 +109,15 @@ export const handleAddOrUpdate = async (url: string, params: any, afterCallBack?
  * delete by id
  * @param url
  * @param id
+ * @param afterCallBack
  */
-export const handleRemoveById = async (url: string, id: number) => {
+export const handleRemoveById = async (url: string, id: number, afterCallBack?: () => void) => {
   await LoadingMessageAsync(l('app.request.delete'));
   try {
-    const {code, msg} = await removeById(url, {id});
+    const { code, msg } = await removeById(url, { id });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
+      afterCallBack?.();
     } else {
       await WarningMessage(msg);
     }
@@ -136,7 +134,7 @@ export const handleRemoveById = async (url: string, id: number) => {
 export const updateDataByParam = async (url: string, params: any) => {
   await LoadingMessageAsync(l('app.request.update'));
   try {
-    const {code, msg} = await updateDataByParams(url, {...params});
+    const { code, msg } = await updateDataByParams(url, { ...params });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
     } else {
@@ -156,7 +154,7 @@ export const updateDataByParam = async (url: string, params: any) => {
 export const updateEnabled = async (url: string, params: any) => {
   await LoadingMessageAsync(l('app.request.update'));
   try {
-    const {code, msg} = await updateDataByParams(url, {...params});
+    const { code, msg } = await updateDataByParams(url, { ...params });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
     } else {
@@ -168,14 +166,18 @@ export const updateEnabled = async (url: string, params: any) => {
   }
 };
 
-
-
-export const handleOption = async (url: string, title: string, param: any) => {
+export const handleOption = async (
+  url: string,
+  title: string,
+  param: any,
+  afterCallBack?: () => void
+) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
     const result = await postAll(url, param);
     if (result.code === RESPONSE_CODE.SUCCESS) {
       SuccessMessage(result.msg);
+      afterCallBack?.();
       return result;
     } else {
       WarningMessage(result.msg);
@@ -203,7 +205,7 @@ export const handleGetOption = async (url: string, title: string, param: any) =>
 
 export const handleData = async (url: string, id: any) => {
   try {
-    const {code, datas} = await getInfoById(url, id);
+    const { code, datas } = await getInfoById(url, id);
     if (code === RESPONSE_CODE.SUCCESS) {
       return datas;
     } else {
@@ -214,12 +216,11 @@ export const handleData = async (url: string, id: any) => {
   }
 };
 
-
 export const handlePutData = async (url: string, fields: any) => {
   const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg} = await postAll(url, {...fields});
+    const { code, msg } = await postAll(url, { ...fields });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
     } else {
@@ -234,7 +235,7 @@ export const handlePutDataJson = async (url: string, fields: any) => {
   const tipsTitle = fields.id ? l('app.request.update') : l('app.request.add');
   await LoadingMessageAsync(l('app.request.running') + tipsTitle);
   try {
-    const {code, msg} = await putDataJson(url, {...fields});
+    const { code, msg } = await putDataJson(url, { ...fields });
     if (code === RESPONSE_CODE.SUCCESS) {
       await SuccessMessage(msg);
     } else {
@@ -246,42 +247,52 @@ export const handlePutDataJson = async (url: string, fields: any) => {
   }
 };
 
-
 export const getDataByParams = async (url: string, params?: any) => {
   try {
-    const {datas} = await getDataByRequestBody(url, params);
+    const { datas } = await getDataByRequestBody(url, params);
     return datas;
   } catch (error) {
     return false;
   }
 };
 
-export const queryDataByParams = async (url: string, params?: any) => {
+export const queryDataByParams = async (
+  url: string,
+  params?: any,
+  beforeCallBack?: () => void,
+  afterCallBack?: () => void
+) => {
   try {
-    const {datas} = await getData(url, params);
+    beforeCallBack?.();
+    const { datas } = await getData(url, params);
+    afterCallBack?.();
     return datas;
   } catch (error) {
     return false;
   }
 };
 
-
-export const handlePutDataByParams = async (url: string, title: string, params: any) => {
+export const handlePutDataByParams = async (
+  url: string,
+  title: string,
+  params: any,
+  afterCallBack?: () => void
+) => {
   await LoadingMessageAsync(l('app.request.running') + title);
   try {
-    const {code, msg} = await putData(url, {...params});
-    if (code === RESPONSE_CODE.SUCCESS) {
-      await SuccessMessage(msg);
-      return true;
+    const result = await putData(url, { ...params });
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      await SuccessMessage(result.msg);
+      afterCallBack?.();
+      return result;
     } else {
-      await WarningMessage(msg);
+      await WarningMessage(result.msg);
       return false;
     }
   } catch (error) {
     return false;
   }
 };
-
 
 export const getDataByIdReturnResult = async (url: string, id: any) => {
   try {
@@ -291,6 +302,19 @@ export const getDataByIdReturnResult = async (url: string, id: any) => {
       return result;
     } else {
       await WarningMessage(result.msg);
+      return false;
+    }
+  } catch (error) {
+    return false;
+  }
+};
+
+export const getDataByParamsReturnResult = async (url: string, params?: any) => {
+  try {
+    const result = await getData(url, params);
+    if (result.code === RESPONSE_CODE.SUCCESS) {
+      return result;
+    } else {
       return false;
     }
   } catch (error) {

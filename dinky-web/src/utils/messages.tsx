@@ -16,19 +16,17 @@
  *
  */
 
-import {notification, message, Button} from "antd"
-import {l} from "@/utils/intl";
-import {Typography} from 'antd';
-import {InfoCircleOutlined} from "@ant-design/icons";
-import {ErrorModelWithCode} from "@/utils/modals";
+import { l } from '@/utils/intl';
+import { ErrorModelWithCode } from '@/utils/modals';
+import { InfoCircleOutlined } from '@ant-design/icons';
+import { Button, message, notification, Typography } from 'antd';
 
-const {Paragraph} = Typography;
+const { Paragraph } = Typography;
 /**
  * default params
  */
-const defaultDuration = 2
-const AsyncDuration = 0.5
-
+const defaultDuration = 2;
+const AsyncDuration = 0.5;
 
 // ================================ About Notification Component ================================
 
@@ -40,24 +38,30 @@ const AsyncDuration = 0.5
  * @param duration The duration (in milliseconds) that the notification should be displayed for.
  *                  This parameter is optional, and if no value is provided, it defaults to a default duration.
  */
-export const ErrorNotification = (description: string, message = l('global.error'), duration:number|null = defaultDuration) => {
-
+export const ErrorNotification = (
+  description: string,
+  message = l('global.error'),
+  duration: number | null = defaultDuration
+) => {
   /** The title of the notification, with an icon and the provided message. */
   const title = (
-    <div style={{display: 'flex'}}>
-      <InfoCircleOutlined style={{marginRight: 10, color: "red"}}/>
+    <div style={{ display: 'flex' }}>
+      <InfoCircleOutlined style={{ marginRight: 10, color: 'red' }} />
       <b>{message}</b>
     </div>
-  )
+  );
   /**
    * A button that is displayed in the notification
    * if the error message is longer than 40 characters, click it will create a Modal to show more information detail
    */
-  const moreBtn = description.length > 40 ? (
-    <Button type="primary" danger onClick={() => ErrorModelWithCode(title, description)}>
-      {l('global.notifaction.full-error')}
-    </Button>
-  ) : (<></>);
+  const moreBtn =
+    description.length > 40 ? (
+      <Button type='primary' danger onClick={() => ErrorModelWithCode(title, description)}>
+        {l('global.notifaction.full-error')}
+      </Button>
+    ) : (
+      <></>
+    );
 
   /** Display the notification. */
   notification.open({
@@ -68,11 +72,11 @@ export const ErrorNotification = (description: string, message = l('global.error
      * The short error message to display in the notification.
      * if the error message is longer than 40 characters,Parts beyond the length are hidden
      */
-    description: (<Paragraph ellipsis={{rows: 2}}>{description}</Paragraph>),
+    description: <Paragraph ellipsis={{ rows: 2 }}>{description}</Paragraph>,
     duration: duration,
-    btn: moreBtn,
-  })
-}
+    btn: moreBtn
+  });
+};
 
 /**
  * Success handler message
@@ -82,11 +86,16 @@ export const ErrorNotification = (description: string, message = l('global.error
  * @param placement
  * @constructor
  */
-export const SuccessNotification = (description: string,  message = l('global.success'), duration = defaultDuration) => notification.success({
-  message,
-  description,
-  duration,
-})
+export const SuccessNotification = (
+  description: string,
+  message = l('global.success'),
+  duration = defaultDuration
+) =>
+  notification.success({
+    message,
+    description,
+    duration
+  });
 
 /**
  * Warning handler message
@@ -96,11 +105,16 @@ export const SuccessNotification = (description: string,  message = l('global.su
  * @param placement
  * @constructor
  */
-export const WarningNotification = (description: string,  message = l('global.warning'), duration = defaultDuration) => notification.warning({
-  message,
-  description,
-  duration,
-})
+export const WarningNotification = (
+  description: string,
+  message = l('global.warning'),
+  duration = defaultDuration
+) =>
+  notification.warning({
+    message,
+    description,
+    duration
+  });
 
 /**
  * Info handler message
@@ -110,12 +124,16 @@ export const WarningNotification = (description: string,  message = l('global.wa
  * @param placement
  * @constructor
  */
-export const InfoNotification = (description: string,  message = l('global.info'), duration = defaultDuration) => notification.info({
-  message,
-  description,
-  duration
-})
-
+export const InfoNotification = (
+  description: string,
+  message = l('global.info'),
+  duration = defaultDuration
+) =>
+  notification.info({
+    message,
+    description,
+    duration
+  });
 
 // ================================ About Message Component ================================
 
@@ -126,7 +144,8 @@ export const InfoNotification = (description: string,  message = l('global.info'
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const SuccessMessage = (content: string, duration = defaultDuration) => message.success( content, duration )
+export const SuccessMessage = (content: string, duration = defaultDuration) =>
+  message.success(content, duration);
 
 /**
  *  message handler success async
@@ -134,8 +153,8 @@ export const SuccessMessage = (content: string, duration = defaultDuration) => m
  * @param duration {@link AsyncDuration}
  * @constructor
  */
-export const SuccessMessageAsync = async (content: string, duration = AsyncDuration) => await message.success( content, duration )
-
+export const SuccessMessageAsync = async (content: string, duration = AsyncDuration) =>
+  await message.success(content, duration);
 
 // ------------------------------- About Message Info -------------------------------
 
@@ -145,7 +164,8 @@ export const SuccessMessageAsync = async (content: string, duration = AsyncDurat
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const InfoMessage =  (content: string, duration = defaultDuration) => message.info( content, duration )
+export const InfoMessage = (content: string, duration = defaultDuration) =>
+  message.info(content, duration);
 
 /**
  *  message handler info async
@@ -153,8 +173,8 @@ export const InfoMessage =  (content: string, duration = defaultDuration) => mes
  * @param duration {@link AsyncDuration}
  * @constructor
  */
-export const InfoMessageAsync = async (content: string, duration = AsyncDuration) => await message.info( content, duration )
-
+export const InfoMessageAsync = async (content: string, duration = AsyncDuration) =>
+  await message.info(content, duration);
 
 // ------------------------------- About Message Error -------------------------------
 
@@ -164,7 +184,8 @@ export const InfoMessageAsync = async (content: string, duration = AsyncDuration
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const ErrorMessage = (content: string, duration = defaultDuration) => message.error( content, duration )
+export const ErrorMessage = (content: string, duration = defaultDuration) =>
+  message.error(content, duration);
 
 /**
  *  message handler error async
@@ -172,7 +193,8 @@ export const ErrorMessage = (content: string, duration = defaultDuration) => mes
  * @param duration {@link AsyncDuration}
  * @constructor
  */
-export const ErrorMessageAsync =async (content: string, duration = AsyncDuration) => await message.error( content, duration )
+export const ErrorMessageAsync = async (content: string, duration = AsyncDuration) =>
+  await message.error(content, duration);
 
 // ------------------------------- About Message Warning -------------------------------
 
@@ -182,7 +204,8 @@ export const ErrorMessageAsync =async (content: string, duration = AsyncDuration
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const WarningMessage = (content: string, duration = defaultDuration) => message.warning( content, duration )
+export const WarningMessage = (content: string, duration = defaultDuration) =>
+  message.warning(content, duration);
 
 /**
  *  message handler warning async
@@ -190,7 +213,8 @@ export const WarningMessage = (content: string, duration = defaultDuration) => m
  * @param duration {@link AsyncDuration}
  * @constructor
  */
-export const WarningMessageAsync =async (content: string, duration = AsyncDuration) =>  await message.warning( content, duration )
+export const WarningMessageAsync = async (content: string, duration = AsyncDuration) =>
+  await message.warning(content, duration);
 
 // ------------------------------- About Message Loading -------------------------------
 
@@ -200,7 +224,8 @@ export const WarningMessageAsync =async (content: string, duration = AsyncDurati
  * @param duration {@link defaultDuration}
  * @constructor
  */
-export const LoadingMessage =  (content: string,duration = defaultDuration) =>  message.loading( content, duration )
+export const LoadingMessage = (content: string, duration = defaultDuration) =>
+  message.loading(content, duration);
 
 /**
  *  message handler loading async
@@ -208,4 +233,5 @@ export const LoadingMessage =  (content: string,duration = defaultDuration) =>  
  * @param duration {@link AsyncDuration}
  * @constructor
  */
-export const LoadingMessageAsync = async (content: string,duration =AsyncDuration) => await message.loading( content, duration )
+export const LoadingMessageAsync = async (content: string, duration = AsyncDuration) =>
+  await message.loading(content, duration);

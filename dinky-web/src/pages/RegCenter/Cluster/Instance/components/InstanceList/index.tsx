@@ -17,30 +17,32 @@
  *
  */
 
-import {ActionType, ProTable} from '@ant-design/pro-components';
-import {API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING} from '@/services/constants';
-import {ProColumns} from '@ant-design/pro-table';
-import {Cluster} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {queryList} from '@/services/api';
-import {CreateBtn} from '@/components/CallBackButton/CreateBtn';
-import React, {useRef, useState} from 'react';
+import { CreateBtn } from '@/components/CallBackButton/CreateBtn';
+import { EditBtn } from '@/components/CallBackButton/EditBtn';
+import { EnableSwitchBtn } from '@/components/CallBackButton/EnableSwitchBtn';
+import { PopconfirmDeleteBtn } from '@/components/CallBackButton/PopconfirmDeleteBtn';
+import { CLUSTER_INSTANCE_STATUS_ENUM } from '@/pages/RegCenter/Cluster/Instance/components/contants';
+import { renderWebUiRedirect } from '@/pages/RegCenter/Cluster/Instance/components/function';
 import InstanceModal from '@/pages/RegCenter/Cluster/Instance/components/InstanceModal';
-import {handleAddOrUpdate, handleOption, handleRemoveById, updateDataByParam} from '@/services/BusinessCrud';
-import {EditBtn} from '@/components/CallBackButton/EditBtn';
-import {PopconfirmDeleteBtn} from '@/components/CallBackButton/PopconfirmDeleteBtn';
-import {EnableSwitchBtn} from '@/components/CallBackButton/EnableSwitchBtn';
-import {Button, Popconfirm} from 'antd';
-import {ClearOutlined, HeartTwoTone} from '@ant-design/icons';
-import {renderWebUiRedirect} from '@/pages/RegCenter/Cluster/Instance/components/function';
+import { queryList } from '@/services/api';
 import {
-  CLUSTER_INSTANCE_STATUS_ENUM
-} from '@/pages/RegCenter/Cluster/Instance/components/contants';
-import {YES_OR_NO_ENUM} from "@/types/Public/constants";
-
+  handleAddOrUpdate,
+  handleOption,
+  handleRemoveById,
+  updateDataByParam
+} from '@/services/BusinessCrud';
+import { PROTABLE_OPTIONS_PUBLIC, STATUS_ENUM, STATUS_MAPPING } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
+import { YES_OR_NO_ENUM } from '@/types/Public/constants';
+import { Cluster } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ClearOutlined, HeartTwoTone } from '@ant-design/icons';
+import { ActionType, ProTable } from '@ant-design/pro-components';
+import { ProColumns } from '@ant-design/pro-table';
+import { Button, Popconfirm } from 'antd';
+import { useRef, useState } from 'react';
 
 export default () => {
-
   /**
    * state
    */
@@ -107,7 +109,9 @@ export default () => {
    */
   const handleChangeEnable = async (record: Partial<Cluster.Instance>) => {
     await executeAndCallback(async () => {
-      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {id: record.id});
+      await updateDataByParam(API_CONSTANTS.CLUSTER_INSTANCE_ENABLE, {
+        id: record.id
+      });
     });
   };
 
@@ -136,50 +140,50 @@ export default () => {
     {
       title: l('rc.ci.name'),
       dataIndex: 'name',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.alias'),
       dataIndex: 'alias',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('rc.ci.type'),
       dataIndex: 'type',
       hideInSearch: true,
-      width: '8%',
+      width: '8%'
     },
     {
       title: l('rc.ci.jma'),
       dataIndex: 'jobManagerHost',
       copyable: true,
-      hideInSearch: true,
+      hideInSearch: true
     },
     {
       title: l('rc.ci.ar'),
       dataIndex: 'autoRegisters',
       hideInSearch: true,
       width: '8%',
-      valueEnum: YES_OR_NO_ENUM,
+      valueEnum: YES_OR_NO_ENUM
     },
     {
       title: l('rc.ci.version'),
       dataIndex: 'version',
       hideInSearch: true,
-      width: '5%',
+      width: '5%'
     },
     {
       title: l('rc.ci.status'),
       dataIndex: 'status',
       hideInSearch: true,
       width: '8%',
-      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM,
+      valueEnum: CLUSTER_INSTANCE_STATUS_ENUM
     },
     {
       title: l('global.table.note'),
       dataIndex: 'note',
       width: '5%',
-      ellipsis: true,
+      ellipsis: true
     },
     {
       title: l('global.table.isEnable'),
@@ -190,21 +194,26 @@ export default () => {
       filterMultiple: false,
       valueEnum: STATUS_ENUM(),
       render: (_: any, record: Cluster.Instance) => {
-        return <EnableSwitchBtn key={`${record.id}_enable`} record={record}
-                                onChange={() => handleChangeEnable(record)}/>;
-      },
+        return (
+          <EnableSwitchBtn
+            key={`${record.id}_enable`}
+            record={record}
+            onChange={() => handleChangeEnable(record)}
+          />
+        );
+      }
     },
     {
       title: l('global.table.createTime'),
       dataIndex: 'createTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.updateTime'),
       dataIndex: 'updateTime',
       hideInSearch: true,
-      hideInTable: true,
+      hideInTable: true
     },
     {
       title: l('global.table.operate'),
@@ -212,44 +221,76 @@ export default () => {
       valueType: 'option',
       width: '8vw',
       render: (_: any, record: Cluster.Instance) => [
-        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)}/>,
-        <PopconfirmDeleteBtn key={`${record.id}_delete`} onClick={() => handleDelete(record.id)}
-                             description={l('rc.ci.deleteConfirm')}/>,
-        renderWebUiRedirect(record),
-      ],
-    },
+        <EditBtn key={`${record.id}_edit`} onClick={() => handleEdit(record)} />,
+        <PopconfirmDeleteBtn
+          key={`${record.id}_delete`}
+          onClick={() => handleDelete(record.id)}
+          description={l('rc.ci.deleteConfirm')}
+        />,
+        renderWebUiRedirect(record)
+      ]
+    }
   ];
 
   /**
    * tool bar render
    */
   const toolBarRender = () => [
-    <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)}/>,
-    <Button key={'heartbeat_all'} type={'primary'} icon={<HeartTwoTone/>}
-            onClick={() => handleHeartBeat()}>{l('button.heartbeat')}</Button>,
-    <Popconfirm key={'recycle'} title={l('rc.ci.recycle')} description={l('rc.ci.recycleConfirm')}
-                onConfirm={handleRecycle}>
-      <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined/>}>{l('button.recycle')}</Button>
-    </Popconfirm>,
+    <CreateBtn key={'instancecreate'} onClick={() => setCreateOpen(true)} />,
+    <Button
+      key={'heartbeat_all'}
+      type={'primary'}
+      icon={<HeartTwoTone />}
+      onClick={() => handleHeartBeat()}
+    >
+      {l('button.heartbeat')}
+    </Button>,
+    <Popconfirm
+      key={'recycle'}
+      title={l('rc.ci.recycle')}
+      description={l('rc.ci.recycleConfirm')}
+      onConfirm={handleRecycle}
+    >
+      <Button key={'recycle_btn'} type={'primary'} icon={<ClearOutlined />}>
+        {l('button.recycle')}
+      </Button>
+    </Popconfirm>
   ];
 
   /**
    * render
    */
-  return <>
-    <ProTable<Cluster.Instance>
-      headerTitle={l('rc.ci.management')}
-      {...PROTABLE_OPTIONS_PUBLIC}
-      columns={columns}
-      actionRef={actionRef}
-      loading={loading}
-      toolBarRender={toolBarRender}
-      request={(params, sorter, filter: any) => queryList(API_CONSTANTS.CLUSTER_INSTANCE, {...params, sorter, filter})}
-    />
-    {/*added*/}
-    <InstanceModal visible={createOpen} onClose={handleCancel} value={{}} onSubmit={handleSubmit}/>
-    {/*modify*/}
-    <InstanceModal visible={modifyOpen} onClose={handleCancel} value={formValue} onSubmit={handleSubmit}/>
-
-  </>;
+  return (
+    <>
+      <ProTable<Cluster.Instance>
+        headerTitle={l('rc.ci.management')}
+        {...PROTABLE_OPTIONS_PUBLIC}
+        columns={columns}
+        actionRef={actionRef}
+        loading={loading}
+        toolBarRender={toolBarRender}
+        request={(params, sorter, filter: any) =>
+          queryList(API_CONSTANTS.CLUSTER_INSTANCE, {
+            ...params,
+            sorter,
+            filter
+          })
+        }
+      />
+      {/*added*/}
+      <InstanceModal
+        visible={createOpen}
+        onClose={handleCancel}
+        value={{}}
+        onSubmit={handleSubmit}
+      />
+      {/*modify*/}
+      <InstanceModal
+        visible={modifyOpen}
+        onClose={handleCancel}
+        value={formValue}
+        onSubmit={handleSubmit}
+      />
+    </>
+  );
 };

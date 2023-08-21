@@ -302,6 +302,8 @@ export default {
   'pages.datastudio.label.result': 'Result',
   'pages.datastudio.label.result.query.latest.data': 'Get the latest data',
 
+  'pages.datastudio.help.sqlChanged': 'Sql context or configure changed',
+  'pages.datastudio.help.sqlChangedPrompt': 'the remote context corresponding to the current sql has changed, will the data be flushed?',
 
   'pages.datastudio.explain.validate.msg': 'FlinkSql Syntax and logic check',
   'pages.datastudio.explain.validate': 'Validating...',

@@ -35,6 +35,7 @@ import java.util.Set;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -47,12 +48,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /** UDFController */
 @Slf4j
+@Api(tags = "UDF Controller")
 @RestController
 @RequestMapping("/api/udf/template")
 @RequiredArgsConstructor
@@ -65,7 +68,7 @@ public class UDFController {
      *
      * @return
      */
-    @PostMapping("/tree")
+    @GetMapping("/tree")
     @ApiOperation("Build UDF Tree")
     public Result<List<Object>> listUdfTemplates() {
         List<UDFTemplate> list = udfTemplateService.list();

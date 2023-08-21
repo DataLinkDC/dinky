@@ -46,5 +46,5 @@ export default {
   'shortcut.key.transpositionUpAndDown': '上下换位',
   'shortcut.key.collapseOrExpand': '折叠/展开',
 
-  'shortcut.key.checked': '选中',
-}
+  'shortcut.key.checked': '选中'
+};

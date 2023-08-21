@@ -17,108 +17,122 @@
  *
  */
 
-
-import {l} from "@/utils/intl";
-import {ProForm, ProFormText} from '@ant-design/pro-components';
-import {FORM_LAYOUT_PUBLIC} from "@/services/constants";
-import {UserBaseInfo} from "@/types/User/data";
-import React from "react";
-import {FormInstance} from "antd/es/form/hooks/useForm";
-import {Values} from "async-validator";
-import {Button} from "antd";
+import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { ProForm, ProFormText } from '@ant-design/pro-components';
+import { Button } from 'antd';
+import { FormInstance } from 'antd/es/form/hooks/useForm';
+import { Values } from 'async-validator';
+import React from 'react';
 
 type PasswordFormProps = {
-    values: UserBaseInfo.User;
-    form: FormInstance<Values>
-    renderSubmit?: boolean;
-    onSubmit?: (values: UserBaseInfo.ChangePasswordParams) => void;
+  values: UserBaseInfo.User;
+  form: FormInstance<Values>;
+  renderSubmit?: boolean;
+  onSubmit?: (values: UserBaseInfo.ChangePasswordParams) => void;
 };
 
-
 const PasswordModal: React.FC<PasswordFormProps> = (props) => {
-
-    /**
-     * init props
-     */
-    const {values, form,renderSubmit=false, onSubmit} = props;
-    const handleSubmit = async () => {
-       const value = await form?.validateFields()
-        if (onSubmit) {
-            const {password, newPassword, newPasswordCheck} = value;
-            onSubmit({id: values.id, newPassword, newPasswordCheck: newPasswordCheck, password: password , username: values.username})
-        }
+  /**
+   * init props
+   */
+  const { values, form, renderSubmit = false, onSubmit } = props;
+  const handleSubmit = async () => {
+    const value = await form?.validateFields();
+    if (onSubmit) {
+      const { password, newPassword, newPasswordCheck } = value;
+      onSubmit({
+        id: values.id,
+        newPassword,
+        newPasswordCheck: newPasswordCheck,
+        password: password,
+        username: values.username
+      });
     }
+  };
 
+  /**
+   * render changePassword form
+   */
+  const pwdFormRender = () => {
+    return (
+      <>
+        <ProFormText.Password
+          width='xl'
+          name='password'
+          hasFeedback
+          label={l('user.oldpwd')}
+          placeholder={l('user.oldpwdPlaceholder')}
+          rules={[{ required: true, message: l('user.oldpwdPlaceholder') }]}
+        />
+        <ProFormText.Password
+          width='xl'
+          name='newPassword'
+          hasFeedback
+          label={l('user.newpwd')}
+          placeholder={l('user.newpwdPlaceholder')}
+          rules={[{ required: true, message: l('user.newpwdPlaceholder') }]}
+        />
+        <ProFormText.Password
+          width='xl'
+          name='newPasswordCheck'
+          hasFeedback
+          dependencies={['newPassword']}
+          label={l('user.repeatpwd')}
+          placeholder={l('user.repeatpwdPlaceholder')}
+          rules={[
+            {
+              required: true,
+              message: l('user.oldNewPwdNoMatch')
+            },
+            ({ getFieldValue }) => ({
+              validator(_, value) {
+                if (!value || getFieldValue('newPassword') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject(new Error(l('user.oldNewPwdNoMatch')));
+              }
+            })
+          ]}
+        />
+      </>
+    );
+  };
 
-    /**
-     * render changePassword form
-     */
-    const pwdFormRender = () => {
-        return <>
-            <ProFormText.Password
-                width="xl"
-                name="password"
-                hasFeedback
-                label={l('user.oldpwd')}
-                placeholder={l('user.oldpwdPlaceholder')}
-                rules={[{required: true, message: l('user.oldpwdPlaceholder')}]}
-            />
-            <ProFormText.Password
-                width="xl"
-                name="newPassword"
-                hasFeedback
-                label={l('user.newpwd')}
-                placeholder={l('user.newpwdPlaceholder')}
-                rules={[{required: true, message: l('user.newpwdPlaceholder')}]}
-            />
-            <ProFormText.Password
-                width="xl"
-                name="newPasswordCheck"
-                hasFeedback
-                dependencies={['newPassword']}
-                label={l('user.repeatpwd')}
-                placeholder={l('user.repeatpwdPlaceholder')}
-                rules={[
-                    {
-                        required: true,
-                        message: l('user.oldNewPwdNoMatch'),
-                    },
-                    ({getFieldValue}) => ({
-                        validator(_, value) {
-                            if (!value || getFieldValue('newPassword') === value) {
-                                return Promise.resolve();
-                            }
-                            return Promise.reject(new Error(l('user.oldNewPwdNoMatch')));
-                        },
-                    }),
-                ]}
-
-            />
-        </>
-    };
-
-    /**
-     * render
-     */
-    return <>
-        <ProForm
-            {...FORM_LAYOUT_PUBLIC}
-            form={form}
-            initialValues={values}
-            layout={"horizontal"}
-            submitter={{
-                render: (submitProps, doms) => {
-                    return renderSubmit?<>
-                        <Button type="primary" onClick={async ()=>{
-                            await handleSubmit();
-                        }}>{l('button.submit')}</Button>
-                    </>:<></>
-                },
-            }}
-        >
-            {pwdFormRender()}
-        </ProForm>
+  /**
+   * render
+   */
+  return (
+    <>
+      <ProForm
+        {...FORM_LAYOUT_PUBLIC}
+        form={form}
+        initialValues={values}
+        layout={'horizontal'}
+        submitter={{
+          render: (submitProps, doms) => {
+            return renderSubmit ? (
+              <>
+                <Button
+                  type='primary'
+                  onClick={async () => {
+                    await handleSubmit();
+                  }}
+                >
+                  {l('button.submit')}
+                </Button>
+              </>
+            ) : (
+              <></>
+            );
+          }
+        }}
+      >
+        {pwdFormRender()}
+      </ProForm>
     </>
+  );
 };
 
 export default PasswordModal;

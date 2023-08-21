@@ -16,44 +16,43 @@
  *
  */
 
-import React, {useState} from 'react';
-import {l} from "@/utils/intl";
-import {UserBaseInfo} from '@/types/User/data.d';
-import {Modal} from "antd";
-import TenantTransfer from "@/pages/AuthCenter/Tenant/components/TenantModalTransfer/TenantTransfer";
-
+import TenantTransfer from '@/pages/AuthCenter/Tenant/components/TenantModalTransfer/TenantTransfer';
+import { UserBaseInfo } from '@/types/AuthCenter/data';
+import { l } from '@/utils/intl';
+import { Modal } from 'antd';
+import React, { useState } from 'react';
 
 type TableTransferFromProps = {
-    tenant: Partial<UserBaseInfo.Tenant>;
-    onChange: (values: string[]) => void;
-    onSubmit: (values: string[]) => void;
-    onCancel: () => void;
-    modalVisible: boolean;
+  tenant: Partial<UserBaseInfo.Tenant>;
+  onChange: (values: string[]) => void;
+  onSubmit: (values: string[]) => void;
+  onCancel: () => void;
+  modalVisible: boolean;
 };
 
 const TenantModalTransfer: React.FC<TableTransferFromProps> = (props) => {
+  const { tenant, modalVisible, onCancel, onSubmit: handleSubmit, onChange: handleChange } = props;
+  const [targetKeys, setTargetKeys] = useState<string[]>([]);
 
-    const {tenant, modalVisible, onCancel, onSubmit: handleSubmit, onChange: handleChange} = props;
-    const [targetKeys, setTargetKeys] = useState<string[]>([]);
+  const handleValueChange = (value: string[]) => {
+    handleChange(value);
+    setTargetKeys(value);
+  };
 
-    const handleValueChange = (value: string[]) => {
-        handleChange(value);
-        setTargetKeys(value);
-    }
-
-    return <>
-        <Modal
-            title={l('tenant.AssignUser')}
-            open={modalVisible}
-            destroyOnClose
-            maskClosable={false}
-            width={"75%"}
-            onCancel={() => onCancel()}
-            onOk={() => handleSubmit(targetKeys)}
-        >
-            <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)}/>
-        </Modal>
+  return (
+    <>
+      <Modal
+        title={l('tenant.AssignUser')}
+        open={modalVisible}
+        destroyOnClose
+        maskClosable={false}
+        width={'75%'}
+        onCancel={() => onCancel()}
+        onOk={() => handleSubmit(targetKeys)}
+      >
+        <TenantTransfer tenant={tenant} onChange={(value) => handleValueChange(value)} />
+      </Modal>
     </>
+  );
 };
 export default TenantModalTransfer;
-

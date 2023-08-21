@@ -21,6 +21,7 @@ export default {
   'button.create': 'Create',
   'button.close': 'Close',
   'button.confirm': 'Confirm',
+  'button.recovery': 'Recovery',
   'button.cancel': 'Cancel',
   'button.finish': 'Finish',
   'button.back': 'Back',
@@ -77,7 +78,7 @@ export default {
   'right.menu.open': 'Open',
   'right.menu.submit': 'Sync Submit',
   'right.menu.addSub': 'Add Sub Item',
-  'right.menu.addRoot': 'Add Root Menu',
+  'right.menu.createSubFolder': 'Create Sub Folder',
   'right.menu.exportJson': 'Export JSON',
   'right.menu.importJson': 'Import JSON',
   'right.menu.rename': 'Rename',
@@ -88,6 +89,7 @@ export default {
   'right.menu.paste': 'Paste',
   'right.menu.delete': 'Delete',
   'right.menu.createCatalogue': 'Create Directory',
+  'right.menu.createRoot': 'Create Root Directory',
   'right.menu.uploadZipToCreate': 'Upload Zip To Create',
   'right.menu.createTask': 'Create Task',
   'right.menu.closeAll': 'Close All',
@@ -109,8 +111,7 @@ export default {
 
   'global.stay.tuned': 'Stay tuned',
   'global.mini': 'Mini Size',
-  'global.max':'Max Size',
-
+  'global.max': 'Max Size',
 
   'global.table.operate': 'Operation',
   'global.table.config': 'Config',
@@ -178,7 +179,6 @@ export default {
   'global.bout': 'Times',
   'global.size': ' Size: {size}',
 
-
   'global.week.sunday': 'Sunday',
   'global.week.monday': 'Monday',
   'global.week.tuesday': 'Tuesday',
@@ -197,5 +197,5 @@ export default {
   'global.month.september': 'September',
   'global.month.october': 'October',
   'global.month.november': 'November',
-  'global.month.december': 'December',
+  'global.month.december': 'December'
 };

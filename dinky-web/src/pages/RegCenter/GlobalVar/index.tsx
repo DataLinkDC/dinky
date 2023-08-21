@@ -17,19 +17,19 @@
  *
  */
 
-import React from 'react';
-import {PageContainer} from '@ant-design/pro-layout';
-import GlobalVarProTable from "@/pages/RegCenter/GlobalVar/components/GlobalVarProTable";
 import SlowlyAppear from '@/components/Animation/SlowlyAppear';
+import GlobalVarProTable from '@/pages/RegCenter/GlobalVar/components/GlobalVarProTable';
+import { PageContainer } from '@ant-design/pro-layout';
 
 export default () => {
-
-    /**
-     * render
-     */
-    return <SlowlyAppear>
-        <PageContainer title={false}>
-            <GlobalVarProTable/>
-        </PageContainer>
+  /**
+   * render
+   */
+  return (
+    <SlowlyAppear>
+      <PageContainer title={false}>
+        <GlobalVarProTable />
+      </PageContainer>
     </SlowlyAppear>
+  );
 };

@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,7 @@ import lombok.extern.slf4j.Slf4j;
 /** AlertGroupController */
 @Slf4j
 @RestController
+@Api(tags = "Alert Group Controller")
 @RequestMapping("/api/alertGroup")
 @RequiredArgsConstructor
 public class AlertGroupController {

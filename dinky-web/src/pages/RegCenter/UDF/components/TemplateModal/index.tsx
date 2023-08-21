@@ -15,24 +15,23 @@
  * limitations under the License.
  */
 
-import TemplateProFrom from "@/pages/RegCenter/UDF/components/TemplateModal/TemplateProFrom";
-import React, {useEffect} from "react";
-import {Button, Form} from "antd";
-import {GitProject, UDFTemplate} from "@/types/RegCenter/data";
-import {l} from "@/utils/intl";
-import {ModalForm} from "@ant-design/pro-components";
-import {FormContextValue} from "@/components/Context/FormContext";
+import { FormContextValue } from '@/components/Context/FormContext';
+import TemplateProFrom from '@/pages/RegCenter/UDF/components/TemplateModal/TemplateProFrom';
+import { GitProject, UDFTemplate } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { ModalForm } from '@ant-design/pro-components';
+import { Button, Form } from 'antd';
+import React, { useEffect } from 'react';
 
 type TemplateModalProps = {
   visible: boolean;
   onCancel: () => void;
   onSubmit: (values: Partial<UDFTemplate>) => void;
   values: Partial<UDFTemplate>;
-}
-
+};
 
 const TemplateModal: React.FC<TemplateModalProps> = (props) => {
-  const {visible, onCancel, onSubmit, values} = props;
+  const { visible, onCancel, onSubmit, values } = props;
   const [submitting, setSubmitting] = React.useState<boolean>(false);
 
   /**
@@ -42,9 +41,12 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
   /**
    * init form context
    */
-  const formContext = React.useMemo<FormContextValue>(() => ({
-    resetForm: () => form.resetFields(), // 定义 resetForm 方法
-  }), [form]);
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
   /**
    * when modalVisible or values changed, set form values
@@ -67,10 +69,9 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
   const submitForm = async () => {
     const fieldsValue = await form.validateFields();
     setSubmitting(true);
-    await onSubmit({...values, ...fieldsValue});
+    await onSubmit({ ...values, ...fieldsValue });
     onCancel();
   };
-
 
   /**
    * render footer
@@ -78,24 +79,28 @@ const TemplateModal: React.FC<TemplateModalProps> = (props) => {
    */
   const renderFooter = () => {
     return [
-      <Button key={"cancel"} onClick={() => handleCancel()}>{l("button.cancel")}</Button>,
-      <Button key={"finish"} loading={submitting} type="primary"
-              onClick={() => submitForm()}>{l("button.finish")}</Button>,
+      <Button key={'cancel'} onClick={() => handleCancel()}>
+        {l('button.cancel')}
+      </Button>,
+      <Button key={'finish'} loading={submitting} type='primary' onClick={() => submitForm()}>
+        {l('button.finish')}
+      </Button>
     ];
   };
 
-
-  return <>
-    <ModalForm<GitProject>
-      title={values.id ? l("rc.template.modify") : l("rc.template.create")}
-      open={visible}
-      form={form}
-      submitter={{render: () => [...renderFooter()]}}
-      initialValues={values}
-    >
-      <TemplateProFrom form={form} values={values}/>
-    </ModalForm>
-  </>;
+  return (
+    <>
+      <ModalForm<GitProject>
+        title={values.id ? l('rc.template.modify') : l('rc.template.create')}
+        open={visible}
+        form={form}
+        submitter={{ render: () => [...renderFooter()] }}
+        initialValues={values}
+      >
+        <TemplateProFrom form={form} values={values} />
+      </ModalForm>
+    </>
+  );
 };
 
 export default TemplateModal;

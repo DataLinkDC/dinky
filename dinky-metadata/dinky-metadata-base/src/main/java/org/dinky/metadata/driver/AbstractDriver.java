@@ -107,7 +107,7 @@ public abstract class AbstractDriver implements Driver {
                 }
                 sb.append(String.format("`%s`  --  %s \n", columns.get(i).getName(), columnComment));
             } else {
-                sb.append(String.format("`%s` %\n", columns.get(i).getName()));
+                sb.append(String.format("`%s` \n", columns.get(i).getName()));
             }
         }
 

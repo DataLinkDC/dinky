@@ -20,28 +20,33 @@
 import { FormContextValue } from '@/components/Context/FormContext';
 import {
   MENU_ICON_OPTIONS,
-  MENU_TYPE_OPTIONS,
+  MENU_TYPE_OPTIONS
 } from '@/pages/AuthCenter/Menu/components/MenuList/constants';
-import { buildMenuFormTree } from '@/pages/AuthCenter/Menu/function';
+import {
+  buildMenuFormTree,
+  getMaxOrderNumToNextOrderNum,
+  sortTreeData
+} from '@/pages/AuthCenter/Menu/function';
 import { FORM_LAYOUT_PUBLIC } from '@/services/constants';
-import { SysMenu } from '@/types/RegCenter/data';
+import { SysMenu } from '@/types/AuthCenter/data';
+
 import { l } from '@/utils/intl';
 import {
   Key,
   ProForm,
+  ProFormDigit,
   ProFormRadio,
   ProFormSelect,
   ProFormText,
   ProFormTextArea,
-  ProFormTreeSelect,
-  ProFormDigit
+  ProFormTreeSelect
 } from '@ant-design/pro-components';
 import { Form, Space } from 'antd';
 import React, { useEffect, useState } from 'react';
 
 type MenuFormProps = {
   onCancel: (flag?: boolean) => void;
-  onSubmit: (values: SysMenu) => void;
+  onSubmit: (values: SysMenu) => boolean | Promise<boolean>;
   values: Partial<SysMenu>;
   open: boolean;
   disabled?: boolean;
@@ -52,19 +57,6 @@ type MenuFormProps = {
 
 const MenuForm: React.FC<MenuFormProps> = (props) => {
   const [searchValue, setSearchValue] = useState('');
-  /**
-   * init form
-   */
-  const [form] = Form.useForm();
-  /**
-   * init form context
-   */
-  const formContext = React.useMemo<FormContextValue>(
-    () => ({
-      resetForm: () => form.resetFields(), // 定义 resetForm 方法
-    }),
-    [form],
-  );
 
   /**
    * init props
@@ -77,8 +69,22 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     disabled = false,
     isRootMenu = false,
     treeData,
-    selectedKeys,
+    selectedKeys
   } = props;
+
+  /**
+   * init form
+   */
+  const [form] = Form.useForm();
+  /**
+   * init form context
+   */
+  const formContext = React.useMemo<FormContextValue>(
+    () => ({
+      resetForm: () => form.resetFields() // 定义 resetForm 方法
+    }),
+    [form]
+  );
 
   /**
    * when modalVisible or values changed, set form values
@@ -106,11 +112,14 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
   /**
    * submit form
    */
-  const submitForm = async (formData: SysMenu) => {
+  const submitForm = async (formData: any) => {
     await form.validateFields();
-    handleSubmit({ ...values, ...formData });
-    handleCancel();
+    // 获取 parentId 的值
+    const parentId: number[] = formData.parentId;
+    const middleResult: SysMenu = { ...formData, parentId: parentId.pop() }; // 转换 parentId 的值
+    (await handleSubmit({ ...values, ...middleResult })) && handleCancel();
   };
+
   /**
    * construct role form
    * @constructor
@@ -119,45 +128,60 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
     return (
       <>
         <ProFormTreeSelect
-          initialValue={selectedKeys}
+          initialValue={isRootMenu ? [-1] : selectedKeys}
           shouldUpdate
           name={'parentId'}
           label={l('menu.parentId')}
           rules={[{ required: true, message: l('menu.parentIdPlaceholder') }]}
           placeholder={l('menu.parentIdPlaceholder')}
           fieldProps={{
-              labelInValue: false,
-              treeData: [{ label: <>Root  <span style={{color: 'grey'}}>&nbsp;&nbsp;&nbsp;Root Folder</span></>, value: '-1' }].concat(
-              buildMenuFormTree(treeData, searchValue, true),
-            ),
+            labelInValue: false,
+            treeData: [
+              {
+                label: (
+                  <>
+                    Root<span style={{ color: 'grey' }}>&nbsp;&nbsp;&nbsp;Root Folder</span>
+                  </>
+                ),
+                value: -1,
+                children: buildMenuFormTree(sortTreeData(treeData), searchValue, true)
+              }
+            ],
             onSearch: (value) => setSearchValue(value),
-            treeDefaultExpandAll: true,
+            treeDefaultExpandAll: true
           }}
         />
         <ProFormText
-          name="name"
+          name='name'
           label={l('menu.name')}
           placeholder={l('menu.namePlaceholder')}
           rules={[{ required: true, message: l('menu.namePlaceholder') }]}
         />
         <ProFormText
-          name="component"
+          name='component'
           label={l('menu.component')}
           placeholder={l('menu.componentPlaceholder')}
-          rules={[{ required: true, message: l('menu.componentPlaceholder') }]}
         />
         <ProFormText
-          name="path"
+          name='path'
           label={l('menu.path')}
           placeholder={l('menu.pathPlaceholder')}
           rules={[{ required: true, message: l('menu.pathPlaceholder') }]}
         />
 
+        <ProFormRadio.Group
+          label={l('menu.type')}
+          name={'type'}
+          radioType='button'
+          rules={[{ required: true, message: l('menu.typePlaceholder') }]}
+          placeholder={l('menu.typePlaceholder')}
+          options={MENU_TYPE_OPTIONS}
+        />
+
         <ProFormText
-          name="perms"
+          name='perms'
           label={l('menu.perms')}
           placeholder={l('menu.permsPlaceholder')}
-          rules={[{ required: true, message: l('menu.permsPlaceholder') }]}
         />
 
         <ProFormSelect
@@ -167,7 +191,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
             </a>
           }
           cacheForSwr
-          name="icon"
+          name='icon'
           allowClear
           showSearch
           mode={'single'}
@@ -175,24 +199,17 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
           options={MENU_ICON_OPTIONS()}
           label={l('menu.icon')}
           placeholder={l('menu.iconPlaceholder')}
-          rules={[{ required: true, message: l('menu.iconPlaceholder') }]}
         />
 
-        <ProFormRadio.Group
-          label={l('menu.type')}
-          name={'type'}
-          radioType="button"
-          rules={[{ required: true, message: l('menu.typePlaceholder') }]}
-          placeholder={l('menu.typePlaceholder')}
-          options={MENU_TYPE_OPTIONS}
-        />
         <ProFormDigit
-          name="orderNum"
-          label={l('menu.orderNum')}/>
-
+          name='orderNum'
+          disabled
+          label={l('menu.orderNum')}
+          initialValue={getMaxOrderNumToNextOrderNum(sortTreeData(treeData)) + 1}
+        />
 
         <ProFormTextArea
-          name="note"
+          name='note'
           label={l('global.table.note')}
           placeholder={l('role.EnterNote')}
           allowClear
@@ -216,7 +233,7 @@ const MenuForm: React.FC<MenuFormProps> = (props) => {
         submitter={{
           render: (_, dom) => (
             <Space style={{ display: 'flex', justifyContent: 'center' }}>{dom}</Space>
-          ),
+          )
         }}
         layout={'horizontal'}
       >

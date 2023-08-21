@@ -15,21 +15,18 @@
  * limitations under the License.
  */
 
-import React from "react";
-import {l} from "@/utils/intl";
-import {PageLoading} from "@ant-design/pro-components";
+import { l } from '@/utils/intl';
+import { PageLoading } from '@ant-design/pro-components';
+import React from 'react';
 
 type LoadingProps = {
-  loading: boolean
-}
+  loading: boolean;
+};
 
-export const Loading: React.FC<LoadingProps> = ({loading}) => {
-
-  return <>
-    <PageLoading
-      spinning={loading}
-      tip={l("app.request.loading")}
-      size="large"
-    />
-  </>;
+export const Loading: React.FC<LoadingProps> = ({ loading }) => {
+  return (
+    <>
+      <PageLoading spinning={loading} tip={l('app.request.loading')} size='large' />
+    </>
+  );
 };

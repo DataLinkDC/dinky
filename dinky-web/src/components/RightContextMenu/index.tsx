@@ -17,36 +17,38 @@
  *
  */
 
-import {Dropdown, Menu} from "antd";
-import React from "react";
-import {MenuInfo} from "rc-menu/es/interface";
-import {MenuItemType} from "antd/es/menu/hooks/useItems";
+import { Dropdown, Menu } from 'antd';
+import { MenuItemType } from 'antd/es/menu/hooks/useItems';
+import { MenuInfo } from 'rc-menu/es/interface';
+import React from 'react';
 
 type RightContextMenuProps = {
-    onClick: (values: MenuInfo) => void;
-    items: MenuItemType[];
-    contextMenuPosition: any;
-    open: boolean;
-    openChange: () => void;
-}
+  onClick: (values: MenuInfo) => void;
+  items: MenuItemType[];
+  contextMenuPosition: any;
+  open: boolean;
+  openChange: () => void;
+};
 
 const RightContextMenu: React.FC<RightContextMenuProps> = (props) => {
-    const {onClick,items,openChange,open,contextMenuPosition} = props;
+  const { onClick, items, openChange, open, contextMenuPosition } = props;
 
-    const menu = <Menu onClick={onClick} items={items}/>
-    return <>
-        <Dropdown
-            arrow
-            trigger={['contextMenu']}
-            overlayStyle={{...contextMenuPosition}}
-            overlay={menu}
-            open={open}
-            onVisibleChange={openChange}
-        >
-            {/*占位*/}
-            <div style={{...contextMenuPosition}}/>
-        </Dropdown>
+  const menu = <Menu onClick={onClick} items={items} />;
+  return (
+    <>
+      <Dropdown
+        arrow
+        trigger={['contextMenu']}
+        overlayStyle={{ ...contextMenuPosition }}
+        overlay={menu}
+        open={open}
+        onOpenChange={openChange}
+      >
+        {/*占位*/}
+        <div style={{ ...contextMenuPosition }} />
+      </Dropdown>
     </>
-}
+  );
+};
 
 export default RightContextMenu;
