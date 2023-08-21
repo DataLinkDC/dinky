@@ -115,7 +115,6 @@ export type TabsItemType = {
   id: string;
   label: string;
   breadcrumbLabel: string;
-  params: MetadataParams | DataStudioParams;
   type: TabsPageType;
   subType?: TabsPageSubType;
   key: string;
@@ -130,6 +129,14 @@ export type TabsItemType = {
   sqlMetaData?: SqlMetaData;
   metaStore?: MetaStoreCatalogType[];
 };
+
+export type MetadataTabsItemType = TabsItemType & {
+  params: MetadataParams;
+}
+
+export type DataStudioTabsItemType = TabsItemType & {
+  params: DataStudioParams;
+}
 
 export type TabsType = {
   activeKey: string;
@@ -565,8 +572,7 @@ const Model: ModelType = {
       } = state;
 
       const index = panes.findIndex((item, index) => {
-        const params = item.params as DataStudioParams;
-        return params.taskId === needRemoveKey;
+        return (item as DataStudioTabsItemType).params.taskId === needRemoveKey;
       });
 
       // 关闭 传过来的key

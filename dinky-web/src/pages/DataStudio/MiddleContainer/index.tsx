@@ -23,8 +23,8 @@ import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import {
-  DataStudioParams,
-  MetadataParams,
+  DataStudioParams, DataStudioTabsItemType,
+  MetadataParams, MetadataTabsItemType,
   StateType,
   STUDIO_MODEL,
   TabsItemType,
@@ -209,13 +209,13 @@ const MiddleContainer = (props: any) => {
     const renderContent = () => {
       switch (item.type) {
         case TabsPageType.metadata:
-          const params = item.params as MetadataParams;
+          const params = (item as MetadataTabsItemType).params;
           return <RightTagsRouter tableInfo={params.tableInfo} queryParams={params.queryParams} />;
         case TabsPageType.project:
           if (parseInt(activeKey) < 0) {
             return TabsPageType.None;
           }
-          const v = item.params as DataStudioParams;
+          const v = (item as DataStudioTabsItemType).params;
           return <Editor statement={v.taskData.statement} />;
         default:
           return <></>;

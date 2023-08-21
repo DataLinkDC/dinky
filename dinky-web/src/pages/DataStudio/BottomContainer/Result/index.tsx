@@ -1,6 +1,6 @@
 import { getCurrentData, getCurrentTab, mapDispatchToProps } from '@/pages/DataStudio/function';
 import { isSql } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioParams, StateType, TabsPageType } from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType} from '@/pages/DataStudio/model';
 import { postAll } from '@/services/api';
 import { handleGetOption } from '@/services/BusinessCrud';
 import { API_CONSTANTS } from '@/services/endpoints';
@@ -99,6 +99,7 @@ const Result = (props: any) => {
   });
 
   const loadData = async (isRefresh?: boolean) => {
+    const params = (currentTabs as DataStudioTabsItemType)?.params
     if (!currentTabs) {
       return;
     }
@@ -107,16 +108,16 @@ const Result = (props: any) => {
       return;
     }
 
-    if ((currentTabs?.params as DataStudioParams).resultData && !isRefresh) {
-      setData((currentTabs?.params as DataStudioParams).resultData);
+    if (params.resultData && !isRefresh) {
+      setData(params.resultData);
     } else {
       if (isSql(current.dialect)) {
         // common sql
         const res = await handleGetOption('api/studio/getCommonSqlData', 'Get Data', {
-          taskId: (currentTabs?.params as DataStudioParams).taskId
+          taskId: params.taskId
         });
         if (res.datas) {
-          (currentTabs?.params as DataStudioParams).resultData = res.datas;
+          params.resultData = res.datas;
           saveTabs({ ...props.tabs });
           setData(res.datas);
         }
@@ -135,7 +136,7 @@ const Result = (props: any) => {
             const datas = tableData.datas;
             datas.jid = jid;
             if (datas.success) {
-              (currentTabs?.params as DataStudioParams).resultData = datas;
+              params.resultData = datas;
               saveTabs({ ...props.tabs });
             }
           }

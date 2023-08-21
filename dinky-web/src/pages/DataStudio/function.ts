@@ -18,11 +18,11 @@
  */
 
 import {
-  DataStudioParams,
-  EnvType,
-  JobRunningMsgType,
-  STUDIO_MODEL,
-  TabsItemType
+    DataStudioTabsItemType,
+    EnvType,
+    JobRunningMsgType,
+    STUDIO_MODEL,
+    TabsItemType
 } from '@/pages/DataStudio/model';
 import { Cluster, DataSources } from '@/types/RegCenter/data';
 import { Dispatch } from '@@/plugin-dva/types';
@@ -120,7 +120,7 @@ export const getCurrentTab = (panes: any, activeKey: string) => {
 };
 
 export const getCurrentData = (panes: any, activeKey: string) => {
-  return (getCurrentTab(panes, activeKey)?.params as DataStudioParams)?.taskData;
+  return (getCurrentTab(panes, activeKey) as DataStudioTabsItemType)?.params?.taskData;
 };
 
 export const getFooterValue = (panes: any, activeKey: string) => {
@@ -129,7 +129,7 @@ export const getFooterValue = (panes: any, activeKey: string) => {
   if (currentTab && currentTab.type === 'project') {
     footerValue = {
       codePosition: [1, 1],
-      codeType: (currentTab.params as DataStudioParams).taskData.dialect
+      codeType: (currentTab as DataStudioTabsItemType).params.taskData.dialect
     };
   }
   return footerValue;

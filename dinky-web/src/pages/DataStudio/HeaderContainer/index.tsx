@@ -32,7 +32,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import { DataStudioParams, StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {DataStudioParams, DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -92,9 +92,7 @@ const HeaderContainer = (props: any) => {
       onOk: async () => {
         offLineTask(l('pages.datastudio.editor.stop.job'), current.id, 'canceljob').then(
           (result) => {
-            (
-              getCurrentTab(panes, activeKey)?.params as DataStudioParams
-            ).taskData.jobInstanceId = 0;
+            (getCurrentTab(panes, activeKey) as DataStudioTabsItemType).params.taskData.jobInstanceId = 0;
             saveTabs({ ...props.tabs });
           }
         );
@@ -113,7 +111,6 @@ const HeaderContainer = (props: any) => {
       jobName: current.name,
       taskId: current.id
     };
-    const key = current.key;
     const taskKey = Math.random() * 1000 + '';
 
     notificationApi.success({
@@ -140,7 +137,7 @@ const HeaderContainer = (props: any) => {
         });
         if (res.datas.success) {
           messageApi.success(l('pages.datastudio.editor.exec.success'));
-          (getCurrentTab(panes, activeKey)?.params as DataStudioParams).taskData.jobInstanceId =
+          (getCurrentTab(panes, activeKey) as DataStudioTabsItemType).params.taskData.jobInstanceId =
             res.datas.jobInstanceId;
           saveTabs({ ...props.tabs });
         } else {
@@ -327,7 +324,7 @@ const HeaderContainer = (props: any) => {
                   return x.isShow(
                     currentTab?.type,
                     currentTab?.subType,
-                    (currentTab?.params as DataStudioParams).taskData
+                    (currentTab as DataStudioTabsItemType)?.params.taskData
                   );
                 }
               }

@@ -26,7 +26,7 @@ import { getDataBase } from '@/pages/DataStudio/LeftContainer/MetaData/service';
 import { getTaskData, getTaskDetails } from '@/pages/DataStudio/LeftContainer/Project/service';
 import MiddleContainer from '@/pages/DataStudio/MiddleContainer';
 import {
-  DataStudioParams,
+  DataStudioParams, DataStudioTabsItemType,
   StateType,
   TabsItemType,
   TabsPageType,
@@ -163,7 +163,7 @@ const DataStudio = (props: any) => {
       return;
     }
 
-    const params = currentTab.params as DataStudioParams;
+    const params = (currentTab as DataStudioTabsItemType)?.params;
     getTaskDetails(params.taskId).then((res) => {
       const changed = Object.keys(res).some((key) => {
         return (
@@ -207,7 +207,7 @@ const DataStudio = (props: any) => {
   const renderRightContainer = () => <RightContainer size={size} bottomHeight={bottomHeight} />;
 
   const updateTabContent = () => {
-    (getCurrentTab(tabs.panes, tabs.activeKey)?.params as DataStudioParams).taskData = newTabData;
+    (getCurrentTab(tabs.panes, tabs.activeKey) as DataStudioTabsItemType).params.taskData = newTabData;
     saveTabs({ ...tabs });
     setIsModalUpdateTabContentOpen(false);
   };
