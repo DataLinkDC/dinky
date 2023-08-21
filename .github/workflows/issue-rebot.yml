@@ -43,6 +43,6 @@ jobs:
         uses: ./.github/actions/comment-on-issue
         with:
           message: |
-            Thank you for your feedback, we have received your issue, Please wait patiently for a reply.
+            Hello @${{ github.event.issue.user.login }}. We totally like your proposal/feedback, welcome to [send us a Pull Request](https://help.github.com/en/articles/creating-a-pull-request) for it. Please send your Pull Request to proper branch (feature branch for the new feature, master for bugfix and other changes), fill the [Pull Request Template](https://github.com/DataLinkDC/dinky/blob/dev/.github/PULL_REQUEST_TEMPLATE.md) here, provide changelog/documentation/test cases if needed and make sure CI passed, we will review it soon. We appreciate your effort in advance and looking forward to your contribution!
             * In order for us to understand your request as soon as possible, please provide detailed information, version or pictures.
           GITHUB_TOKEN: ${{ secrets.TOKEN }}
