@@ -107,6 +107,7 @@ public class AppConfig implements WebMvcConfigurer {
                 .addPathPatterns("/api/**")
                 .excludePathPatterns(
                         "/api/login", "/api/ldap/ldapEnableStatus",
+                        "/api/getCasdoorUrl", "/api/loginWithCasdoor",
                         "/druid/**", "/openapi/**");
 
         registry.addInterceptor(new TenantInterceptor())

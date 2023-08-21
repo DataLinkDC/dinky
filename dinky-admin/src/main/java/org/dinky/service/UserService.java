@@ -80,6 +80,15 @@ public interface UserService extends ISuperService<User> {
     Result<UserDTO> loginUser(LoginDTO loginDTO);
 
     /**
+     * loginCasdoorUser
+     *
+     * @param code
+     * @param state
+     * @return {@link Result}{@link UserDTO} obtain the user's UserDTO
+     */
+    Result<UserDTO> loginCasdoorUser(String code, String state);
+
+    /**
      * getUserByUsername
      *
      * @param username username

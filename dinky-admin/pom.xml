@@ -243,6 +243,10 @@
             <artifactId>jsqlparser</artifactId>
             <version>4.4</version>
         </dependency>
+        <dependency>
+            <groupId>org.casbin</groupId>
+            <artifactId>casdoor-spring-boot-starter</artifactId>
+        </dependency>
 
         <!-- test dependencies -->
         <dependency>

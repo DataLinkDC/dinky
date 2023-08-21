@@ -1105,7 +1105,7 @@ CREATE TABLE `dinky_sys_login_log` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'key',
   `user_id` int NOT NULL COMMENT 'user id',
   `username` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'username',
-  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:LDAP）',
+  `login_type` int NOT NULL COMMENT 'login type（0:LOCAL,1:ldap,2:Casdoor）',
   `ip` varchar(40) COLLATE utf8mb4_general_ci NOT NULL COMMENT 'ip addr',
   `status` int NOT NULL COMMENT 'login status',
   `msg` text COLLATE utf8mb4_general_ci NOT NULL COMMENT 'status msg',
