@@ -20,7 +20,7 @@
 import {
     DataStudioTabsItemType,
     EnvType,
-    JobRunningMsgType,
+    JobRunningMsgType, MetadataTabsItemType,
     STUDIO_MODEL,
     TabsItemType
 } from '@/pages/DataStudio/model';
@@ -115,12 +115,13 @@ export const mapDispatchToProps = (dispatch: Dispatch) => ({
     })
 });
 
-export const getCurrentTab = (panes: any, activeKey: string) => {
-  return (panes as TabsItemType[]).find((item) => item.key === activeKey);
-};
 
-export const getCurrentData = (panes: any, activeKey: string) => {
-  return (getCurrentTab(panes, activeKey) as DataStudioTabsItemType)?.params?.taskData;
+export function getCurrentTab<T extends TabsItemType>(panes: T[], activeKey: string): T | undefined {
+    return panes.find((item) => item.key === activeKey);
+}
+
+export const getCurrentData = (panes: DataStudioTabsItemType[], activeKey: string) => {
+  return getCurrentTab(panes, activeKey)?.params?.taskData;
 };
 
 export const getFooterValue = (panes: any, activeKey: string) => {

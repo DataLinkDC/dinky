@@ -32,7 +32,7 @@ import {
   isSql,
   offLineTask
 } from '@/pages/DataStudio/HeaderContainer/service';
-import {DataStudioParams, DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
+import { DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import { handlePutDataJson } from '@/services/BusinessCrud';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
@@ -82,6 +82,8 @@ const HeaderContainer = (props: any) => {
   const [messageApi, messageContextHolder] = message.useMessage();
   const handlerStop = () => {
     const current = getCurrentData(panes, activeKey);
+    if (!current)return;
+
     modal.confirm({
       title: l('pages.datastudio.editor.stop.job'),
       content: l('pages.datastudio.editor.stop.jobConfirm', '', {
@@ -99,8 +101,13 @@ const HeaderContainer = (props: any) => {
       }
     });
   };
+
   const handlerExec = () => {
     const current = getCurrentData(panes, activeKey);
+    if (!current) {
+      return;
+    }
+
     if (!isSql(current.dialect) && !isOnline(current.type)) {
       messageApi.warning(l('pages.datastudio.editor.execute.warn', '', { type: current.type }));
       return;
@@ -276,7 +283,6 @@ const HeaderContainer = (props: any) => {
 
   /**
    * @description: 生成面包屑
-   * @type {({title: JSX.Element} | {title: string})[]}
    */
   const renderBreadcrumbItems = () => {
     if (!activeBreadcrumbTitle) {
@@ -298,11 +304,9 @@ const HeaderContainer = (props: any) => {
   };
   const renderHotkey = () => {
     document.onkeydown = (e) => {
-      routes.forEach((r) => {
-        if (r.hotKey && r.hotKey(e)) {
+      routes.filter(r => r.hotKey?.(e)).forEach(r => {
           r.click();
           e.preventDefault();
-        }
       });
     };
   };
@@ -310,7 +314,6 @@ const HeaderContainer = (props: any) => {
 
   /**
    * @description: 渲染右侧按钮
-   * @returns {JSX.Element}
    */
   const renderRightButtons = () => {
     return (

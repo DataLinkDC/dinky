@@ -1,7 +1,7 @@
 import useThemeValue from '@/hooks/useThemeValue';
 import JobRunningModal from '@/pages/DataStudio/FooterContainer/JobRunningModal';
 import { getCurrentTab } from '@/pages/DataStudio/function';
-import { StateType, TabsPageType, VIEW } from '@/pages/DataStudio/model';
+import {DataStudioTabsItemType, StateType, TabsPageType, VIEW} from '@/pages/DataStudio/model';
 import { getSseData } from '@/services/api';
 import { l } from '@/utils/intl';
 import { connect } from '@@/exports';
@@ -53,7 +53,7 @@ const FooterContainer: React.FC<FooterContainerProps & StateType> = (props) => {
     };
   }, []);
 
-  const currentTab = getCurrentTab(tabs.panes, tabs.activeKey);
+  const currentTab = getCurrentTab((tabs.panes as DataStudioTabsItemType[]) ?? [], tabs.activeKey);
   const route: ButtonRoute[] = [
     {
       text: (

@@ -23,8 +23,8 @@ import { getTabIcon } from '@/pages/DataStudio/MiddleContainer/function';
 import KeyBoard from '@/pages/DataStudio/MiddleContainer/KeyBoard';
 import QuickGuide from '@/pages/DataStudio/MiddleContainer/QuickGuide';
 import {
-  DataStudioParams, DataStudioTabsItemType,
-  MetadataParams, MetadataTabsItemType,
+  DataStudioTabsItemType,
+  MetadataTabsItemType,
   StateType,
   STUDIO_MODEL,
   TabsItemType,
