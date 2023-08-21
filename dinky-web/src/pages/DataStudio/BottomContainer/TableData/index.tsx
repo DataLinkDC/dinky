@@ -1,6 +1,6 @@
 import React, {ReactNode, useEffect, useState} from "react";
 import {connect} from "@@/exports";
-import {StateType} from "@/pages/DataStudio/model";
+import {DataStudioParams, StateType} from "@/pages/DataStudio/model";
 import {getData, getSseData, postAll} from "@/services/api";
 import TextArea from "antd/es/input/TextArea";
 import {Modal, Select, Tabs} from "antd";
@@ -46,24 +46,13 @@ const DataPage = (props: any) => {
 }
 
 const TableData = (props: any) => {
-
   const {statement} = props;
   const [panes, setPanes] = useState<{label: string, key: string, children: ReactNode}[]>([]);
 
   const addTab = async () => {
     let title: string
 
-    // TODO:
-    const statement = 'CREATE TABLE Orders (\n' +
-        '    order_number BIGINT,\n' +
-        '    price        DECIMAL(32,2),\n' +
-        '    buyer        ROW<first_name STRING, last_name STRING>,\n' +
-        '    order_time   TIMESTAMP(3)\n' +
-        ') WITH (\n' +
-        '  \'connector\' = \'datagen\'\n' +
-        ');\n' +
-        '\nWATCH ' +
-        ' Orders;';
+    if (!statement) return;
     const result = await getWatchTables(statement);
     let tables: [string] = result.datas
     Modal.confirm({
@@ -99,5 +88,5 @@ const TableData = (props: any) => {
 
 export default connect(({Studio}: { Studio: StateType }) => ({
   height: Studio.bottomContainer.height,
-  statement: Studio.tabs.panes.find(pane => Studio.tabs.activeKey === pane.key)?.sqlMetaData?.statement
+  statement:(Studio.tabs.panes.find(pane => Studio.tabs.activeKey === pane.key)?.params as DataStudioParams).taskData?.statement
 }))(TableData);
