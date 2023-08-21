@@ -20,7 +20,7 @@
 import CodeEdit from '@/components/CustomEditor/CodeEdit';
 import { CLONE_TYPES, GIT_PROJECT_CODE_TYPE_ENUM } from '@/pages/RegCenter/GitProject/constans';
 import { getDataByParams } from '@/services/BusinessCrud';
-import { API_CONSTANTS, SWITCH_OPTIONS } from '@/services/constants';
+import {SWITCH_OPTIONS } from '@/services/constants';
 import { GitProject } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import {
@@ -35,6 +35,7 @@ import { Input, Radio, Select } from 'antd';
 import { FormInstance } from 'antd/es/form/hooks/useForm';
 import { Values } from 'async-validator';
 import React, { useState } from 'react';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 /**
  * props
