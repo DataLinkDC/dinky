@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-import { API_CONSTANTS } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { l } from '@/utils/intl';
 import { ErrorNotification } from '@/utils/messages';
 import { history } from '@@/core/history';

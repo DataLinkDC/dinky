@@ -29,7 +29,8 @@ import {
 } from '@/pages/RegCenter/UDF/constants';
 import { queryList } from '@/services/api';
 import { handleAddOrUpdate, handleRemoveById, updateDataByParam } from '@/services/BusinessCrud';
-import { API_CONSTANTS, PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { PROTABLE_OPTIONS_PUBLIC } from '@/services/constants';
+import { API_CONSTANTS } from '@/services/endpoints';
 import { UDFTemplate } from '@/types/RegCenter/data';
 import { l } from '@/utils/intl';
 import { ProTable } from '@ant-design/pro-components';
