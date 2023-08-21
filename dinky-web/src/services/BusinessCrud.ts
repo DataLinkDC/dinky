@@ -26,11 +26,12 @@ import {
   removeById,
   updateDataByParams
 } from '@/services/api';
-import { API_CONSTANTS, METHOD_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
+import {  METHOD_CONSTANTS, RESPONSE_CODE } from '@/services/constants';
 import { l } from '@/utils/intl';
 import { LoadingMessageAsync, SuccessMessage, WarningMessage } from '@/utils/messages';
 import { request } from '@@/exports';
 import { API } from './data';
+import {API_CONSTANTS} from "@/services/endpoints";
 
 const APPLICATION_JSON = 'application/json';
 
