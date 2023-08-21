@@ -1,15 +1,15 @@
-import {TagAlignLeft} from '@/components/StyledComponents';
-import {BtnRoute} from '@/pages/DataStudio/route';
+import { TagAlignLeft } from '@/components/StyledComponents';
+import { BtnRoute } from '@/pages/DataStudio/route';
 import SchemaTree from '@/pages/RegCenter/DataSource/components/DataSourceDetail/SchemaTree';
-import {DataSources} from '@/types/RegCenter/data';
-import {l} from '@/utils/intl';
-import {DatabaseOutlined, TableOutlined} from '@ant-design/icons';
-import {Key, ProForm, ProFormSelect} from '@ant-design/pro-components';
-import {connect} from '@umijs/max';
-import {Spin, Tag} from 'antd';
-import {useEffect, useState} from 'react';
-import {StateType, STUDIO_MODEL} from '../../model';
-import {clearMetaDataTable, showMetaDataTable} from './service';
+import { DataSources } from '@/types/RegCenter/data';
+import { l } from '@/utils/intl';
+import { DatabaseOutlined, TableOutlined } from '@ant-design/icons';
+import { Key, ProForm, ProFormSelect } from '@ant-design/pro-components';
+import { connect } from '@umijs/max';
+import { Spin, Tag } from 'antd';
+import { useEffect, useState } from 'react';
+import { StateType, STUDIO_MODEL } from '../../model';
+import { clearMetaDataTable, showMetaDataTable } from './service';
 
 const MetaData = (props: any) => {
   const {
@@ -32,7 +32,7 @@ const MetaData = (props: any) => {
     }
 
     setIsLoadingDatabase(true);
-    const tables = await showMetaDataTable(databaseId) ?? []
+    const tables = (await showMetaDataTable(databaseId)) ?? [];
     setIsLoadingDatabase(false);
 
     for (let table of tables) {
@@ -113,7 +113,7 @@ const MetaData = (props: any) => {
       return;
     }
 
-    const queryParams = {id: selectDatabaseId, schemaName, tableName};
+    const queryParams = { id: selectDatabaseId, schemaName, tableName };
     dispatch({
       type: STUDIO_MODEL.addTab,
       payload: {
@@ -121,9 +121,9 @@ const MetaData = (props: any) => {
         id: selectDatabaseId + schemaName + tableName,
         breadcrumbLabel: [selectDb.type, selectDb.name].join('/'),
         label: schemaName + '.' + tableName,
-        params: {queryParams: queryParams, tableInfo: fullInfo},
-        type: 'metadata',
-      },
+        params: { queryParams: queryParams, tableInfo: fullInfo },
+        type: 'metadata'
+      }
     });
   };
 

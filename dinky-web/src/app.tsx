@@ -19,7 +19,6 @@ import Footer from '@/components/Footer';
 import RightContent from '@/components/RightContent';
 import { AccessContextProvider } from '@/hooks/useAccess';
 import { UnAccessible } from '@/pages/Other/403';
-import { API_CONSTANTS } from '@/services/constants';
 import { SysMenu } from '@/types/AuthCenter/data';
 import { THEME } from '@/types/Public/data';
 import { l } from '@/utils/intl';
