@@ -100,9 +100,7 @@ const TaskManagerLogsTab = (props: JobProps) => {
   };
 
   return (
-    <>
       <ProCard>{renderLogTab()}</ProCard>
-    </>
   );
 };
 

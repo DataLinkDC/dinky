@@ -174,7 +174,6 @@ const CheckpointTable = (props: JobProps) => {
   ];
 
   return (
-    <>
       <ProTable<CheckPointsDetailInfo>
         columns={columns}
         style={{ width: '100%' }}
@@ -191,7 +190,6 @@ const CheckpointTable = (props: JobProps) => {
         search={false}
         size='small'
       />
-    </>
   );
 };
 

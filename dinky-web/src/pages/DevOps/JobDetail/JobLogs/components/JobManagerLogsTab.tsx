@@ -54,7 +54,6 @@ const JobManagerLogsTab = (props: JobProps) => {
   };
 
   return (
-    <>
       <ProCard>
         <Tabs
           size={'small'}
@@ -65,7 +64,6 @@ const JobManagerLogsTab = (props: JobProps) => {
           ]}
         />
       </ProCard>
-    </>
   );
 };
 

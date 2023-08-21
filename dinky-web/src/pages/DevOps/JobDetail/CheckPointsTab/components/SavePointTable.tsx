@@ -68,7 +68,6 @@ const SavepointTable = (props: JobProps) => {
   ];
 
   return (
-    <>
       <ProTable<SavePoint>
         columns={columns}
         style={{ width: '100%' }}
@@ -88,7 +87,6 @@ const SavepointTable = (props: JobProps) => {
         search={false}
         size='small'
       />
-    </>
   );
 };
 

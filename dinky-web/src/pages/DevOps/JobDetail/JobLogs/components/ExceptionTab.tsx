@@ -93,9 +93,7 @@ const ExceptionTab = (props: JobProps) => {
   };
 
   return (
-    <>
       <ProCard>{renderLogTab()}</ProCard>
-    </>
   );
 };
 
