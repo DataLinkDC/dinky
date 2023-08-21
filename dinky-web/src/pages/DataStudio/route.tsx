@@ -51,7 +51,8 @@ import {
   ToolOutlined
 } from '@ant-design/icons';
 import { DiffEditor } from '@monaco-editor/react';
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
+import TableData from "@/pages/DataStudio/BottomContainer/TableData";
 
 export const LeftSide = [
   {
@@ -149,7 +150,7 @@ export const LeftBottomSide = [
     key: 'menu.datastudio.table-data',
     icon: <TableOutlined />,
     label: l('menu.datastudio.table-data'),
-    children: <TableData/>
+    children: <TableData />
   },
   {
     key: 'menu.datastudio.tool',

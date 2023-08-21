@@ -19,6 +19,7 @@
 
 package org.dinky.controller;
 
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.dinky.data.result.Result;
 import org.dinky.service.WatchTableService;
@@ -32,12 +33,12 @@ import lombok.AllArgsConstructor;
 @RestController
 @Api(tags = "Watch Table Controller")
 @AllArgsConstructor
-@RequestMapping("api")
+@RequestMapping("/api")
 public class WatchTableController {
 
     private final WatchTableService watchTableService;
 
-    @GetMapping(name = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/subscribe/watch", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @ApiOperation("Subscribe watch table")
     public SseEmitter subscribe(@RequestParam String table) {
         return watchTableService.registerListenEntry(table);
